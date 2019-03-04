@@ -775,7 +775,7 @@ function categories($_data, $db, $user) {
 }
 
 
-function orders($_data, $db, $user,$account) {
+function orders($_data, $db, $user, $account) {
 
     if (!$user->can_view('suppliers')) {
         echo json_encode(
@@ -797,10 +797,8 @@ function orders($_data, $db, $user,$account) {
     $table_data = array();
 
 
-
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
 
 
             switch ($data['Purchase Order State']) {
@@ -847,17 +845,17 @@ function orders($_data, $db, $user,$account) {
 
 
             $table_data[] = array(
-                'id'           => (integer)$data['Purchase Order Key'],
-                'parent'       => sprintf('<span class="link" onclick="change_view(\'/%s/%d\')" >%s</span>  ', strtolower($data['Purchase Order Parent']), $data['Purchase Order Parent Key'], $data['Purchase Order Parent Name']),
-                'public_id'    => sprintf(
+                'id'              => (integer)$data['Purchase Order Key'],
+                'parent'          => sprintf('<span class="link" onclick="change_view(\'/%s/%d\')" >%s</span>  ', strtolower($data['Purchase Order Parent']), $data['Purchase Order Parent Key'], $data['Purchase Order Parent Name']),
+                'public_id'       => sprintf(
                     '<span class="link" onclick="change_view(\'suppliers/order/%d\')" >%s</span>  ', $data['Purchase Order Key'],
                     ($data['Purchase Order Public ID'] == '' ? '<i class="fa fa-exclamation-circle error"></i> <span class="very_discreet italic">'._('empty').'</span>' : $data['Purchase Order Public ID'])
                 ),
-                'date'         => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
-                'last_date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
-                'state'        => $state,
-                'total_amount' => money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code']),
-                'total_ac_amount' => money($data['Purchase Order Total Amount']*$data['Purchase Order Currency Exchange'], $account->get('Currency Code'))
+                'date'            => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
+                'last_date'       => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
+                'state'           => $state,
+                'total_amount'    => money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code']),
+                'total_ac_amount' => money($data['Purchase Order Total Amount'] * $data['Purchase Order Currency Exchange'], $account->get('Currency Code'))
 
 
             );
@@ -1642,9 +1640,9 @@ function order_items($_data, $db, $user, $account) {
 
             $items_qty = $data['Purchase Order Submitted Units'].'<span class="small discreet">u.</span> | ';
 
-            if($data['Part Units Per Package']==0) {
+            if ($data['Part Units Per Package'] == 0) {
                 $items_qty .= '<span class="error">Units per SKO=0</span> ';
-            }else {
+            } else {
 
 
                 if ($data['Purchase Order Submitted Units'] % $data['Part Units Per Package'] != 0) {
@@ -1668,37 +1666,32 @@ function order_items($_data, $db, $user, $account) {
             $items_qty = '<span class="submitted_items_qty" onclick="use_submitted_qty_in_delivery(this,'.$data['Purchase Order Submitted Units'].')">'.$items_qty.'</span>';
 
 
-
-
-
             $amount = money($data['Purchase Order Net Amount'], $purchase_order->get('Purchase Order Currency Code'));
 
 
-
-
             if ($data['Supplier Part Currency Code'] != $account->get('Account Currency')) {
-
 
 
                 $amount .= ' <span class="">('.money($data['Purchase Order Net Amount'] * $purchase_order->get('Purchase Order Currency Exchange'), $account->get('Account Currency')).')</span>';
 
             }
 
-            if($data['Purchase Order Submitted Unit Cost']!=$data['Supplier Part Unit Cost']){
-                $amount.='<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Unit cost changed').' 
-                <span title="'._('Submitted unit cost').'">'.money($data['Purchase Order Submitted Unit Cost'],$purchase_order->get('Purchase Order Currency Code')).'</span>  <i class="far fa-arrow-right"></i>
-                <span class="strong" title="'._('Current unit cost').'">'.money($data['Supplier Part Unit Cost'],$purchase_order->get('Purchase Order Currency Code')).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'cost\','.$data['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current price').'"></i></div>';
+            if ($data['Purchase Order Submitted Unit Cost'] != $data['Supplier Part Unit Cost']) {
+                $amount .= '<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Unit cost changed').' 
+                <span title="'._('Submitted unit cost').'">'.money($data['Purchase Order Submitted Unit Cost'], $purchase_order->get('Purchase Order Currency Code')).'</span>  <i class="far fa-arrow-right"></i>
+                <span class="strong" title="'._('Current unit cost').'">'.money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'cost\','
+                    .$data['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current price').'"></i></div>';
             }
 
 
-
-            if($data['Purchase Order Submitted Unit Extra Cost Percentage']!=$data['Supplier Part Unit Extra Cost Percentage']){
-                $amount.='<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Extra cost % changed').' 
-                <span title="'._('Submitted extra cost %').'">'.percentage($data['Purchase Order Submitted Unit Extra Cost Percentage'],1,1).'</span>  <i class="far fa-arrow-right"></i>
-                <span class="strong" title="'._('Current extra cost %').'">'.percentage($data['Supplier Part Unit Extra Cost Percentage'],1,1).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'extra_cost\','.$data['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current extra cost').'"></i></div>';
+            if ($data['Purchase Order Submitted Unit Extra Cost Percentage'] != $data['Supplier Part Unit Extra Cost Percentage']) {
+                $amount .= '<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Extra cost % changed').' 
+                <span title="'._('Submitted extra cost %').'">'.percentage($data['Purchase Order Submitted Unit Extra Cost Percentage'], 1, 1).'</span>  <i class="far fa-arrow-right"></i>
+                <span class="strong" title="'._('Current extra cost %').'">'.percentage($data['Supplier Part Unit Extra Cost Percentage'], 1, 1).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'extra_cost\','
+                    .$data['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current extra cost').'"></i></div>';
             }
 
-            $amount='<span class="po_amount_'.$data['Purchase Order Transaction Fact Key'].'">'.$amount.'</span>';
+            $amount = '<span class="po_amount_'.$data['Purchase Order Transaction Fact Key'].'">'.$amount.'</span>';
 
             if ($data['Part Package Weight'] > 0) {
                 $weight = weight(
@@ -1758,16 +1751,14 @@ function order_items($_data, $db, $user, $account) {
 
             if (
 
-            floor($data['Purchase Order Submitted Units']) != $data['Purchase Order Submitted Units'] or
-            floor($skos_qty) != $skos_qty
+                floor($data['Purchase Order Submitted Units']) != $data['Purchase Order Submitted Units'] or
+                floor($skos_qty) != $skos_qty
 
-            ){
+            ) {
                 $class = 'error';
             } else {
                 $class = '';
             }
-
-
 
 
             if ($data['Part Next Deliveries Data'] == '') {
@@ -1806,8 +1797,8 @@ function order_items($_data, $db, $user, $account) {
 
             //   $image = '';
 
-            if($data['Purchase Order Transaction State']=='Submitted'){
-                $operations= sprintf('<i key="%d" class="far fa-fw fa-check-square  button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']);
+            if ($data['Purchase Order Transaction State'] == 'Submitted') {
+                $operations = sprintf('<i key="%d" class="far fa-fw fa-check-square  button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']);
 
                 $quantity_units = sprintf(
                     '<span   class="delivery_quantity_%d delivery_quantity_item_container on"    data-settings=\'{ "key":%d,  "type": "Units", "sko_factor":%d , "carton_factor":%d }\'   >
@@ -1841,11 +1832,11 @@ function order_items($_data, $db, $user, $account) {
                     $transaction_key, $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'], $data['Supplier Part Packages Per Carton'], $class, ($cartons_qty == 0 ? '' : $cartons_qty + 0), ($cartons_qty == 0 ? '' : $cartons_qty + 0)
 
                 );
-            }else{
-                $operations= '';
-                $quantity_units='';
-                $quantity_skos='';
-                $quantity_cartons='';
+            } else {
+                $operations       = '';
+                $quantity_units   = '';
+                $quantity_skos    = '';
+                $quantity_cartons = '';
             }
 
             $table_data[] = array(
@@ -1856,8 +1847,8 @@ function order_items($_data, $db, $user, $account) {
                 'parent_type'       => strtolower($purchase_order->get('Purchase Order Parent')),
                 'supplier_part_key' => (integer)$data['Supplier Part Key'],
                 'supplier_key'      => (integer)$data['Supplier Key'],
-               // 'checkbox'          => sprintf('<i key="%d" class="invisible far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
-                'operations'        =>$operations,
+                // 'checkbox'          => sprintf('<i key="%d" class="invisible far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
+                'operations'        => $operations,
 
 
                 'reference' => $reference,
@@ -2312,10 +2303,10 @@ function delivery_items($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-           // $quantity = number($data['Supplier Delivery Units']);
+            // $quantity = number($data['Supplier Delivery Units']);
 
 
-           // $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
+            // $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
 
 
             $data['units_qty'] = $data['Supplier Delivery Units'];
@@ -2323,9 +2314,6 @@ function delivery_items($_data, $db, $user, $account) {
             $data['account_currency_code'] = $account->get('Account Currency');
             $data['currency_code']         = $supplier_delivery->get('Supplier Delivery Currency Code');
             $data['exchange']              = $supplier_delivery->get('Supplier Delivery Currency Exchange');
-
-
-
 
 
             //  $subtotals = get_purchase_order_subtotals($data);
@@ -2365,27 +2353,27 @@ function delivery_items($_data, $db, $user, $account) {
             $amount = money($data['Supplier Delivery Net Amount'], $data['currency_code']);
 
             if ($data['currency_code'] != $data['account_currency_code']) {
-                $amount .= ' <span class="">('.money($data['Supplier Delivery Net Amount']*$data['exchange'], $data['account_currency_code']).')</span>';
+                $amount .= ' <span class="">('.money($data['Supplier Delivery Net Amount'] * $data['exchange'], $data['account_currency_code']).')</span>';
 
             }
 
 
-            if($data['Purchase Order Submitted Unit Cost']!=$data['Supplier Part Unit Cost']){
-                $amount.='<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Unit cost changed').' 
-                <span title="'._('Submitted unit cost').'">'.money($data['Purchase Order Submitted Unit Cost'],$data['currency_code']).'</span>  <i class="far fa-arrow-right"></i>
-                <span class="strong" title="'._('Current unit cost').'">'.money($data['Supplier Part Unit Cost'],$data['currency_code']).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'cost\','.$data['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current price').'"></i></div>';
+            if ($data['Purchase Order Submitted Unit Cost'] != $data['Supplier Part Unit Cost']) {
+                $amount .= '<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Unit cost changed').' 
+                <span title="'._('Submitted unit cost').'">'.money($data['Purchase Order Submitted Unit Cost'], $data['currency_code']).'</span>  <i class="far fa-arrow-right"></i>
+                <span class="strong" title="'._('Current unit cost').'">'.money($data['Supplier Part Unit Cost'], $data['currency_code']).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'cost\','.$data['Purchase Order Transaction Fact Key']
+                    .')" class="button fa fa-sync-alt" title="'._('Update item amount to current price').'"></i></div>';
             }
 
 
-
-            if($data['Purchase Order Submitted Unit Extra Cost Percentage']!=$data['Supplier Part Unit Extra Cost Percentage']){
-                $amount.='<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Extra cost % changed').' 
-                <span title="'._('Submitted extra cost %').'">'.percentage($data['Purchase Order Submitted Unit Extra Cost Percentage'],1,1).'</span>  <i class="far fa-arrow-right"></i>
-                <span class="strong" title="'._('Current extra cost %').'">'.percentage($data['Supplier Part Unit Extra Cost Percentage'],1,1).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'extra_cost\','.$data['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current extra cost').'"></i></div>';
+            if ($data['Purchase Order Submitted Unit Extra Cost Percentage'] != $data['Supplier Part Unit Extra Cost Percentage']) {
+                $amount .= '<div style="color:#ffc822" class="small"><i class="fa fa-exclamation-triangle attention"></i> <span class="warning">'._('Extra cost % changed').' 
+                <span title="'._('Submitted extra cost %').'">'.percentage($data['Purchase Order Submitted Unit Extra Cost Percentage'], 1, 1).'</span>  <i class="far fa-arrow-right"></i>
+                <span class="strong" title="'._('Current extra cost %').'">'.percentage($data['Supplier Part Unit Extra Cost Percentage'], 1, 1).'</span> <i onclick="set_po_transaction_amount_to_current_cost(this,\'extra_cost\','
+                    .$data['Purchase Order Transaction Fact Key'].')" class="button fa fa-sync-alt" title="'._('Update item amount to current extra cost').'"></i></div>';
             }
 
-            $amount='<span class="po_amount_'.$data['Purchase Order Transaction Fact Key'].'">'.$amount.'</span>';
-
+            $amount = '<span class="po_amount_'.$data['Purchase Order Transaction Fact Key'].'">'.$amount.'</span>';
 
 
             if ($data['Part Package Weight'] > 0) {
@@ -2486,9 +2474,6 @@ function delivery_items_mismatch($_data, $db, $user, $account) {
             $data['exchange']              = $supplier_delivery->get('Supplier Delivery Currency Exchange');
 
 
-
-
-
             //  $subtotals = get_purchase_order_subtotals($data);
             /*
 
@@ -2512,46 +2497,42 @@ function delivery_items_mismatch($_data, $db, $user, $account) {
             }
 
 
-
-
             $description_skos = $data['Part Package Description'].'<br/> 
              <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, sko/C: <b>'.$data['Supplier Part Packages Per Carton'].'</b></span>';
 
 
             $data['units_qty'] = $data['Supplier Delivery Units'];
 
-            $items_qty         = get_purchase_order_items_qty($data);
+            $items_qty = get_purchase_order_items_qty($data);
 
             $data['units_qty'] = $data['Supplier Delivery Checked Units'];
 
-            $checked_qty         = get_purchase_order_items_qty($data);
+            $checked_qty = get_purchase_order_items_qty($data);
 
-            $diff_units=$data['Supplier Delivery Checked Units']-$data['Supplier Delivery Units'];
-
-
+            $diff_units = $data['Supplier Delivery Checked Units'] - $data['Supplier Delivery Units'];
 
 
             $table_data[] = array(
 
-                'id' => (integer)$data['Purchase Order Transaction Fact Key'],
+                'id'          => (integer)$data['Purchase Order Transaction Fact Key'],
                 //'supplier_part_key' => (integer)$data['Supplier Part Key'],
                 //'checkbox'          => sprintf('<i key="%d" class="far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
 
                 //'operations' => sprintf(
                 //    '<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
                 //),
-                'type'=>    ($diff_units>0?'<i class="far fa-box-open"></i>':'<i class="fa fa-box-full"></i>'),
+                'type'        => ($diff_units > 0 ? '<i class="far fa-box-open"></i>' : '<i class="fa fa-box-full"></i>'),
                 'reference'   => $reference,
                 'description' => $description_skos,
                 'items_qty'   => $items_qty,
-                'checked_qty'   => $checked_qty,
-                'diff'   => delta($data['Supplier Delivery Checked Units'],$data['Supplier Delivery Units']),
-                'diff_units'   => ($diff_units>0?'+':'').$diff_units,
-                'diff_skos'   => ($diff_units>0?'+':'').($diff_units)/$data['Part Units Per Package'],
+                'checked_qty' => $checked_qty,
+                'diff'        => delta($data['Supplier Delivery Checked Units'], $data['Supplier Delivery Units']),
+                'diff_units'  => ($diff_units > 0 ? '+' : '').$diff_units,
+                'diff_skos'   => ($diff_units > 0 ? '+' : '').($diff_units) / $data['Part Units Per Package'],
 
                 // 'amount' => $amount,
-               // 'weight' => $weight,
-               // 'cbm'    => $cbm,
+                // 'weight' => $weight,
+                // 'cbm'    => $cbm,
 
                 //'quantity'  => $delivery_quantity,
                 //'items_qty' => $subtotals,
@@ -2674,7 +2655,6 @@ function delivery_checking_items($_data, $db, $user, $account) {
             }
 
 
-
             if ($data['Supplier Delivery Checked Units'] == '') {
 
                 $sko_checked_quantity = '';
@@ -2685,7 +2665,6 @@ function delivery_checking_items($_data, $db, $user, $account) {
 
 
             }
-
 
 
             $edit_sko_checked_quantity = sprintf(

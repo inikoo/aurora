@@ -647,9 +647,9 @@
                                                     if (data.state == '200') {
                                                         $('.ordered_products_number').html('0')
                                                         $('.order_total').html('')
-
-                                                        ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.revenue);
                                                         ga('auTracker.ec:setAction', 'purchase', data.analytics_data);
+                                                        ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.gbp_revenue);
+
 
                                                         window.location.replace("thanks.sys?order_key="+data.order_key);
 
@@ -783,9 +783,9 @@
                                                     if (data.state == '200') {
                                                         $('.ordered_products_number').html('0')
                                                         $('.order_total').html('')
-
-                                                        ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.revenue);
                                                         ga('auTracker.ec:setAction', 'purchase', data.analytics_data);
+
+                                                        ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.gbp_revenue);
 
 
                                                         window.location.replace("thanks.sys?order_key="+data.order_key);
@@ -881,9 +881,9 @@
                                                             if (data.state == '200') {
 
 
-
-                                                                ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.revenue);
                                                                 ga('auTracker.ec:setAction', 'purchase', data.analytics_data);
+
+                                                                ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.gbp_revenue);
 
                                                                 window.location.replace("thanks.sys?order_key="+data.order_key);
 

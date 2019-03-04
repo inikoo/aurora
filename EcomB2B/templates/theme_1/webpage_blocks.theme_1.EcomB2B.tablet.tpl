@@ -452,7 +452,7 @@
                 {if $with_checkout==1}
                 getScript('/js/mobile.logged_in.min.js?v=190227', function () {
                     getScript('/js/mobile.forms.min.js', function () {
-                        getScript('/js/mobile.checkout.min.js?v=190227', function () {
+                        getScript('/js/mobile.checkout.min.js?v=190304', function () {
                             $.getJSON("ar_web_checkout.php?tipo=get_checkout_html&device_prefix=tablet", function (data) {
 
                                 $('#checkout').html(data.html)

@@ -16,6 +16,7 @@ require_once '../vendor/autoload.php';
 include_once 'ar_web_common_logged_in.php';
 require_once 'utils/placed_order_functions.php';
 require_once 'utils/aes.php';
+require_once 'utils/currency_functions.php';
 
 
 $smarty = new Smarty();
@@ -78,6 +79,19 @@ switch ($tipo) {
         );
 
 
+        $store   = get_object('Store', $order->get('Order Store Key'));
+
+        
+        
+        
+        $exchange = currency_conversion(
+            $db, $store->get('Store Currency Code'), $account->get('Account Currency Code'), '- 1440 minutes'
+        );
+
+
+
+
+
         $to_pay = $order->get('Order To Pay Amount');
 
         $payment_account_key = $data['payment_account_key'];
@@ -104,9 +118,12 @@ switch ($tipo) {
         }
 
         $website = get_object('Website', $_SESSION['website_key']);
-        $store   = get_object('Store', $order->get('Order Store Key'));
 
         place_order($store, $order, $payment_account_key, $customer, $website, $editor, $smarty, $account, $db);
+
+
+
+
         $response = array(
             'state'          => 200,
             'order_key'      => $order->id,
@@ -114,6 +131,7 @@ switch ($tipo) {
                 'id'          => $order->get('Public ID'),
                 'affiliation' => $store->get('Name'),
                 'revenue'     => $order->get('Order Total Amount'),
+                'gbp_revenue' => ceil($order->get('Order Total Amount') * $exchange),
                 'tax'         => $order->get('Order Total Tax Amount'),
                 'shipping'    => $order->get('Order Shipping Net Amount')
 
@@ -233,15 +251,21 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
 
             place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
 
+            $exchange = currency_conversion(
+                $db, $store->get('Store Currency Code'), $account->get('Account Currency Code'), '- 1440 minutes'
+            );
+
             $response = array(
-                'state'     => 200,
-                'order_key' => $order->id,
-                'analytics_data'=>array(
-                    'id'=>$order->get('Public ID'),
-                    'affiliation'=>$store->get('Name'),
-                    'revenue'=>$order->get('Order Total Amount'),
-                    'tax'=>$order->get('Order Total Tax Amount'),
-                    'shipping'=>$order->get('Order Shipping Net Amount')
+                'state'          => 200,
+                'order_key'      => $order->id,
+                'analytics_data' => array(
+                    'id'          => $order->get('Public ID'),
+                    'affiliation' => $store->get('Name'),
+                    'revenue'     => $order->get('Order Total Amount'),
+                    'gbp_revenue' => ceil($order->get('Order Total Amount') * $exchange),
+
+                    'tax'      => $order->get('Order Total Tax Amount'),
+                    'shipping' => $order->get('Order Shipping Net Amount')
 
 
                 )
@@ -657,15 +681,23 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
 
                 place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
 
+
+                $exchange = currency_conversion(
+                    $db, $store->get('Store Currency Code'), $account->get('Account Currency Code'), '- 1440 minutes'
+                );
+
+
                 $response = array(
-                    'state'     => 200,
-                    'order_key' => $order->id,
-                    'analytics_data'=>array(
-                        'id'=>$order->get('Public ID'),
-                        'affiliation'=>$store->get('Name'),
-                        'revenue'=>$order->get('Order Total Amount'),
-                        'tax'=>$order->get('Order Total Tax Amount'),
-                        'shipping'=>$order->get('Order Shipping Net Amount')
+                    'state'          => 200,
+                    'order_key'      => $order->id,
+                    'analytics_data' => array(
+                        'id'          => $order->get('Public ID'),
+                        'affiliation' => $store->get('Name'),
+                        'revenue'     => $order->get('Order Total Amount'),
+                        'gbp_revenue' => ceil($order->get('Order Total Amount') * $exchange),
+
+                        'tax'      => $order->get('Order Total Tax Amount'),
+                        'shipping' => $order->get('Order Shipping Net Amount')
 
 
                     )
@@ -877,6 +909,12 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
 
 
             place_order($store, $order, $payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
+
+            $exchange = currency_conversion(
+                $db, $store->get('Store Currency Code'), $account->get('Account Currency Code'), '- 1440 minutes'
+            );
+
+
             $response = array(
                 'state'          => 200,
                 'order_key'      => $order->id,
@@ -884,8 +922,10 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
                     'id'          => $order->get('Public ID'),
                     'affiliation' => $store->get('Name'),
                     'revenue'     => $order->get('Order Total Amount'),
-                    'tax'         => $order->get('Order Total Tax Amount'),
-                    'shipping'    => $order->get('Order Shipping Net Amount')
+                    'gbp_revenue' => ceil($order->get('Order Total Amount') * $exchange),
+
+                    'tax'      => $order->get('Order Total Tax Amount'),
+                    'shipping' => $order->get('Order Shipping Net Amount')
 
 
                 )
