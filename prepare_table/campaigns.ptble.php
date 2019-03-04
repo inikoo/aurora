@@ -76,13 +76,23 @@ if ($order == 'name') {
     $order = '`Deal Campaign Valid From`';
 } elseif ($order == 'to') {
     $order = '`Deal Campaign Valid To`';
+} elseif ($order == 'active_deal_components') {
+    $order = '`Deal Campaign Number Active Deal Components`';
+} elseif ($order == 'suspended_deal_components') {
+    $order = '`Deal Campaign Number Suspended Deal Components`';
+} elseif ($order == 'waiting_deal_components') {
+    $order = '`Deal Campaign Number Waiting Deal Components`';
+} elseif ($order == 'finish_deal_components') {
+    $order = '`Deal Campaign Number Finish Deal Components`';
 } else {
     $order = '`Deal Campaign Key`';
 }
 $table = '`Deal Campaign Dimension` C ';
 $fields
        = "`Deal Campaign Key`,`Deal Campaign Code`,`Deal Campaign Name`,`Deal Campaign Store Key`,`Deal Campaign Status`,`Deal Campaign Valid From`,`Deal Campaign Valid To`,
-`Deal Campaign Total Acc Used Orders`,`Deal Campaign Total Acc Used Customers`,`Deal Campaign Status`,`Deal Campaign Number Current Deals`,`Deal Campaign Icon`";
+`Deal Campaign Total Acc Used Orders`,`Deal Campaign Total Acc Used Customers`,`Deal Campaign Status`,`Deal Campaign Number Current Deals`,`Deal Campaign Icon`,
+`Deal Campaign Number Active Deal Components`,`Deal Campaign Number Suspended Deal Components`,`Deal Campaign Number Waiting Deal Components`,`Deal Campaign Number Finish Deal Components`
+";
 
 
 $sql_totals = "select count(*) as num from $table $where ";

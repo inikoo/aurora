@@ -2473,6 +2473,8 @@ class DeliveryNote extends DB_Table {
         );
         $this->db->exec($sql);
 
+
+
         if (in_array(
             $this->data['Delivery Note Type'], array(
                                                  'Replacement & Shortages',

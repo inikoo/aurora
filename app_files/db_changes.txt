@@ -982,6 +982,9 @@ ALTER TABLE `Deal Dimension` CHANGE `Deal Trigger Key` `Deal Trigger Key` MEDIUM
 
 ALTER TABLE `Stack Dimension` CHANGE `Stack Operation` `Stack Operation` ENUM('update_order_in_basket_low_priority','update_order_in_basket','reindex_webpage','warehouse_ISF','product_web_state_legacy','update_part_products_availability','part_stock_in_paid_orders','full_after_part_stock_update_legacy','product_sales','product_family_sales','product_department_sales','part_sales','part_category_sales','supplier_sales','supplier_category_sales') CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL;
 
+ALTER TABLE `Deal Campaign Dimension` ADD `Deal Campaign Number Suspended Deal Components` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Deal Campaign Number Active Deal Components`, ADD `Deal Campaign Number Waiting Deal Components` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Deal Campaign Number Suspended Deal Components`, ADD `Deal Campaign Number Finish Deal Components` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Deal Campaign Number Waiting Deal Components`;
+ALTER TABLE `Deal Campaign Dimension` CHANGE `Deal Campaign Number Suspended Deal Components` `Deal Campaign Number Suspended Deal Components` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', CHANGE `Deal Campaign Number Waiting Deal Components` `Deal Campaign Number Waiting Deal Components` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', CHANGE `Deal Campaign Number Finish Deal Components` `Deal Campaign Number Finish Deal Components` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0';
+
 
 
 ======= fer migration ordering in dw and costa

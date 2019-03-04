@@ -3,24 +3,27 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 17 January 2017 at 11:05:48 GMT, Sheffield, UK
- Copyright (c) 2017, Inikoo
+ Created: 2 March 2019 at 12:47:06 GMT+8, Kuala Lumpur, Malaysia
+ Copyright (c) 2019, Inikoo
 
  Version 3
 
 */
 
 require_once 'common.php';
-
 require_once 'vendor/autoload.php';
-
 
 require_once 'utils/get_addressing.php';
 require_once 'utils/parse_natural_language.php';
-require_once 'class.DeliveryNote.php';
+require_once 'utils/object_functions.php';
+include_once 'class.Billing_To.php';
+include_once 'class.Store.php';
 
-require_once 'class.Store.php';
-require_once 'class.Ship_To.php';
+use CommerceGuys\Addressing\Address;
+use CommerceGuys\Addressing\Formatter\PostalLabelFormatter;
+use CommerceGuys\Addressing\AddressFormat\AddressFormatRepository;
+use CommerceGuys\Addressing\Country\CountryRepository;
+use CommerceGuys\Addressing\Subdivision\SubdivisionRepository;
 
 
 $editor = array(
@@ -35,9 +38,9 @@ $editor = array(
 
 $store_key=7;
 
-$print_est = true;
+$print_est = false;
 
-$sql = sprintf("select count(*) as num FROM `Delivery Note Dimension` O left join `Store Dimension` on (`Store Key`=`Delivery Note Store Key`)  where `Store Key`=%d ",$store_key);
+$sql = sprintf("select count(*) as num FROM `Invoice Dimension` O left join `Store Dimension` on (`Store Key`=`Invoice Store Key`)  where `Store key`=%d and `Invoice Type`='Refund' ",$store_key);
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -52,43 +55,82 @@ if ($result = $db->query($sql)) {
 $lap_time0 = date('U');
 $contador  = 0;
 
-$sql = sprintf('SELECT `Delivery Note Key` FROM `Delivery Note Dimension`  left join `Store Dimension` on (`Store Key`=`Delivery Note Store Key`) where `Store Key`=%d  order by `Delivery Note Key` desc ',$store_key);
+
+$sql = sprintf('SELECT `Invoice Key` FROM `Invoice Dimension`  where `Invoice Key`=1913501 order by `Invoice Key` desc ');
+$sql = sprintf('SELECT `Invoice Key` FROM `Invoice Dimension` left join `Store Dimension` on (`Store Key`=`Invoice Store Key`)  where `Store key`=%d  and `Invoice Type`="Refund" order by `Invoice Key` desc ',$store_key);
+
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
-        $dn                       = new DeliveryNote($row['Delivery Note Key']);
+
+        $invoice                  = get_object('Invoice', $row['Invoice Key']);
         $data_to_update           = array();
         $address_fields_to_update = array();
 
+        $sql = sprintf("update  `Order Transaction Fact` set  `Invoice Key`=`Refund Key` where `Refund Key`=%d  ", $invoice->id);
+        $db->exec($sql);
 
-        $sql = sprintf("select `Order Key` from `Order Transaction Fact` where `Delivery Note Key`=%d and  `Order Key`>0", $dn->id);
+
+
+        $sql = sprintf("select `Order Key` from `Order Transaction Fact` where `Refund Key`=%d ", $invoice->id);
+
 
         if ($result2 = $db->query($sql)) {
             if ($row2 = $result2->fetch()) {
 
+
+
+
+
                 $order = get_object('Order', $row2['Order Key']);
 
 
-                $data_to_update['Delivery Note Order Key'] = $row2['Order Key'];
 
 
-                $ship_to = new Ship_To($dn->get('Delivery Note Ship To Key'));
+
+                $data_to_update['Invoice Order Key'] = $row2['Order Key'];
+
+                $recipient    = $invoice->get('Invoice Customer Contact Name');
+                $organization = $invoice->get('Invoice Customer Name');
 
 
-                if ($ship_to->id) {
-                    $recipient    = $ship_to->get('Ship To Contact Name');
-                    $organization = $ship_to->get('Ship To Company Name');
-
-
-                    if ($organization == $recipient) {
-                        $organization = '';
-                    }
-                    $store           = new Store($dn->get('Store Key'));
-                    $default_country = $store->get('Store Home Country Code 2 Alpha');
-
-                    $address_fields_to_update = parse_old_dn_address_fields($store, $ship_to, $recipient, $organization, $default_country);
+                if ($organization == $recipient) {
+                    $organization = '';
                 }
+                $store           = new Store($invoice->get('Store Key'));
+                $default_country = $store->get('Store Home Country Code 2 Alpha');
 
+                $address_fields_to_update = parse_old_invoice_address_fields($store, $order->get('Order Billing To Key To Bill'), $recipient, $organization, $default_country);
+
+
+                $sql = sprintf('select * from `Invoice Payment Bridge`  where `Invoice Key`=%d', $invoice->id);
+                if ($result3 = $db->query($sql)) {
+                    foreach ($result3 as $row3) {
+
+
+                        $sql = sprintf(
+                            'update `Order Payment Bridge` set `Invoice Key`=%d where `Order Key`=%d and `Payment Key`=%d ', $invoice->id, $order->id, $row3['Payment Key']
+
+
+                        );
+                        //print "$sql\n";
+                        $db->exec($sql);
+
+                        $sql = sprintf(
+                            'Insert into `Order Payment Bridge` values  (%d,%d,%d,%d,%d,%.2f,%s) ', $order->id, $invoice->id, $row3['Payment Key'], $row3['Payment Account Key'], $row3['Payment Service Provider Key'], $row3['Amount'], prepare_mysql('No')
+
+
+                        );
+                       //print "$sql\n";
+
+                        $db->exec($sql);
+
+                    }
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
 
 
             }
@@ -97,11 +139,13 @@ if ($result = $db->query($sql)) {
             print "$sql\n";
             exit;
         }
+
+        $invoice->fast_update($data_to_update);
+        $invoice->fast_update($address_fields_to_update);
+        $invoice->update_payments_totals();
+
         //print_r($data_to_update);
         //print_r($address_fields_to_update);
-        $dn->fast_update($data_to_update);
-        $dn->fast_update($address_fields_to_update);
-
 
         $contador++;
         $lap_time1 = date('U');
@@ -121,20 +165,20 @@ if ($result = $db->query($sql)) {
 }
 
 
-function parse_old_dn_address_fields($store, $address, $recipient, $organization, $default_country) {
+function parse_old_invoice_address_fields($store, $address_key, $recipient, $organization, $default_country) {
 
 
+    $address = new Billing_To($address_key);
     if ($address->id > 0) {
 
 
-
-        if($address->data['Ship To Country 2 Alpha Code'] == 'XX' or $address->data['Ship To Country 2 Alpha Code'] == '' ){
-            $address->data['Ship To Country 2 Alpha Code'] =$default_country;
+        if ($address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '') {
+            $address->data['Billing To Country 2 Alpha Code'] = $default_country;
         }
 
 
         $address_format = get_address_format(
-            (($address->data['Ship To Country 2 Alpha Code'] == 'XX' or $address->data['Ship To Country 2 Alpha Code'] == '') ? $default_country : $address->data['Ship To Country 2 Alpha Code'])
+            (($address->data['Billing To Country 2 Alpha Code'] == 'XX' or $address->data['Billing To Country 2 Alpha Code'] == '') ? $default_country : $address->data['Billing To Country 2 Alpha Code'])
         );
 
 
@@ -146,14 +190,14 @@ function parse_old_dn_address_fields($store, $address, $recipient, $organization
         $address_fields = array(
             'Address Recipient'            => $recipient,
             'Address Organization'         => $organization,
-            'Address Line 1'               => $address->get('Ship To Line 1'),
-            'Address Line 2'               => $address->get('Ship To Line 2'),
+            'Address Line 1'               => $address->get('Billing To Line 1'),
+            'Address Line 2'               => $address->get('Billing To Line 2'),
             'Address Sorting Code'         => '',
-            'Address Postal Code'          => $address->get('Ship To Postal Code'),
-            'Address Dependent Locality'   => $address->get('Ship To Line 3'),
-            'Address Locality'             => $address->get('Ship To Town'),
-            'Address Administrative Area'  => $address->get('Ship To Line 4'),
-            'Address Country 2 Alpha Code' => ($address->data['Ship To Country 2 Alpha Code'] == 'XX' ? $default_country : $address->data['Ship To Country 2 Alpha Code']),
+            'Address Postal Code'          => $address->get('Billing To Postal Code'),
+            'Address Dependent Locality'   => $address->get('Billing To Line 3'),
+            'Address Locality'             => $address->get('Billing To Town'),
+            'Address Administrative Area'  => $address->get('Billing To Line 4'),
+            'Address Country 2 Alpha Code' => ($address->data['Billing To Country 2 Alpha Code'] == 'XX' ? $default_country : $address->data['Billing To Country 2 Alpha Code']),
 
         );
         //print_r($used_fields);
@@ -183,9 +227,7 @@ function parse_old_dn_address_fields($store, $address, $recipient, $organization
             $address_fields['Address Dependent Locality'] = '';
         }
 
-        if (!in_array('administrativeArea', $used_fields) and $address->get(
-                'Ship To Line 4'
-            ) != '') {
+        if (!in_array('administrativeArea', $used_fields) and $address->get('Billing To Line 4') != '') {
             $address_fields['Address Administrative Area'] = '';
             //print_r($address->data);
             //print_r($address_fields);
@@ -201,9 +243,7 @@ function parse_old_dn_address_fields($store, $address, $recipient, $organization
 
         }
 
-        if (!in_array('postalCode', $used_fields) and $address->get(
-                'Ship To Postal Code'
-            ) != '') {
+        if (!in_array('postalCode', $used_fields) and $address->display('Billing To Postal Code') != '') {
 
             if (in_array('sortingCode', $used_fields)) {
                 $address_fields['Address Sorting Code'] = $address_fields['Address Postal Code'];
@@ -232,9 +272,10 @@ function parse_old_dn_address_fields($store, $address, $recipient, $organization
 
         }
 
+
         if (!in_array('locality', $used_fields) and ($address->get(
-                    'Ship To Town'
-                ) != '' or $address->get('Ship To Line 4') != '')) {
+                    'Billing To Town'
+                ) != '' or $address->get('Billing To Line 4') != '')) {
 
 
             //$address_fields['Address Locality']='';
@@ -300,28 +341,28 @@ function parse_old_dn_address_fields($store, $address, $recipient, $organization
 
     $_address_fields = array();
     foreach ($address_fields as $key => $value) {
-        $_address_fields['Delivery Note '.$key] = $value;
+        $_address_fields['Invoice '.$key] = $value;
     }
 
 
     $new_checksum = md5(
         json_encode(
             array(
-                'Address Recipient'            => $_address_fields['Delivery Note Address Recipient'],
-                'Address Organization'         => $_address_fields['Delivery Note Address Organization'],
-                'Address Line 1'               => $_address_fields['Delivery Note Address Line 1'],
-                'Address Line 2'               => $_address_fields['Delivery Note Address Line 2'],
-                'Address Sorting Code'         => $_address_fields['Delivery Note Address Sorting Code'],
-                'Address Postal Code'          => $_address_fields['Delivery Note Address Postal Code'],
-                'Address Dependent Locality'   => $_address_fields['Delivery Note Address Dependent Locality'],
-                'Address Locality'             => $_address_fields['Delivery Note Address Locality'],
-                'Address Administrative Area'  => $_address_fields['Delivery Note Address Administrative Area'],
-                'Address Country 2 Alpha Code' => $_address_fields['Delivery Note Address Country 2 Alpha Code'],
+                'Address Recipient'            => $_address_fields['Invoice Address Recipient'],
+                'Address Organization'         => $_address_fields['Invoice Address Organization'],
+                'Address Line 1'               => $_address_fields['Invoice Address Line 1'],
+                'Address Line 2'               => $_address_fields['Invoice Address Line 2'],
+                'Address Sorting Code'         => $_address_fields['Invoice Address Sorting Code'],
+                'Address Postal Code'          => $_address_fields['Invoice Address Postal Code'],
+                'Address Dependent Locality'   => $_address_fields['Invoice Address Dependent Locality'],
+                'Address Locality'             => $_address_fields['Invoice Address Locality'],
+                'Address Administrative Area'  => $_address_fields['Invoice Address Administrative Area'],
+                'Address Country 2 Alpha Code' => $_address_fields['Invoice Address Country 2 Alpha Code'],
             )
         )
     );
 
-    $_address_fields['Delivery Note Address Checksum'] = $new_checksum;
+    $_address_fields['Invoice Address Checksum'] = $new_checksum;
 
 
     $account = get_object('Account', 1);
@@ -332,16 +373,17 @@ function parse_old_dn_address_fields($store, $address, $recipient, $organization
     list($address, $formatter, $postal_label_formatter) = get_address_formatter($country, $locale);
 
 
-    $address = $address->withFamilyName($_address_fields['Delivery Note Address Recipient'])->withOrganization($_address_fields['Delivery Note Address Organization'])->withAddressLine1($_address_fields['Delivery Note Address Line 1'])->withAddressLine2(
-        $_address_fields['Delivery Note Address Line 2']
+    $address = $address->withFamilyName($_address_fields['Invoice Address Recipient'])->withOrganization($_address_fields['Invoice Address Organization'])->withAddressLine1($_address_fields['Invoice Address Line 1'])->withAddressLine2(
+        $_address_fields['Invoice Address Line 2']
     )->withSortingCode(
-        $_address_fields['Delivery Note Address Sorting Code']
-    )->withPostalCode($_address_fields['Delivery Note Address Postal Code'])->withDependentLocality(
-        $_address_fields['Delivery Note Address Dependent Locality']
-    )->withLocality($_address_fields['Delivery Note Address Locality'])->withAdministrativeArea(
-        $_address_fields['Delivery Note Address Administrative Area']
+        $_address_fields['Invoice Address Sorting Code']
+    )->withPostalCode($_address_fields['Invoice Address Postal Code'])->withDependentLocality(
+        $_address_fields['Invoice Address Dependent Locality']
+    )->withLocality($_address_fields['Invoice Address Locality'])->withAdministrativeArea(
+        $_address_fields['Invoice Address Administrative Area']
     )->withCountryCode(
-        $_address_fields['Delivery Note Address Country 2 Alpha Code']
+        $_address_fields['Invoice Address Country 2 Alpha Code']
+
     );
 
 
@@ -358,11 +400,22 @@ function parse_old_dn_address_fields($store, $address, $recipient, $organization
 
     //  print $xhtml_address;
 
+    $_address_fields['Invoice Address Formatted'] = $xhtml_address;
+    /*
+        $account=get_object('Account',1);
+        $country = $account->get('Account Country 2 Alpha Code');
+        $country = $store->get('Store Home Country Code 2 Alpha');
+
+        $locale  = $store->get('Store Locale');
 
 
 
-    $_address_fields['Delivery Note Address Formatted'] = $xhtml_address;
-    $_address_fields['Delivery Note Address Postal Label'] = $postal_label_formatter->format($address);
+        list($address, $formatter, $postal_label_formatter) = get_address_formatter($country, $locale);
+    */
+
+
+    $_address_fields['Invoice Address Postal Label'] = $postal_label_formatter->format($address);
+
 
     //print "\n".$customer->id."\n";
     //print_r($address_fields);
@@ -374,5 +427,6 @@ function parse_old_dn_address_fields($store, $address, $recipient, $organization
 function trim_value(&$value) {
     $value = trim(preg_replace('/\s+/', ' ', $value));
 }
+
 
 ?>

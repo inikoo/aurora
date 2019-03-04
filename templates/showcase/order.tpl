@@ -12,7 +12,6 @@
     <div id="sticky_note">{$order->get('Order Customer Message')}</div>
 </div>
 
-
 <div class="timeline_horizontal with_time   {if $order->get('State Index')<0}hide{/if}  ">
 
     <ul class="timeline">
@@ -65,7 +64,7 @@
                 <span class="state">{t}Dispatched{/t}</span>
             </div>
             <div class="timestamp">
-                <span>&nbsp;<span class=""></span>
+                <span>&nbsp;<span class="Order_Dispatched_Date"> {$order->get('Dispatched Date')}</span>
                     &nbsp;</span>
             </div>
             <div class="dot"></div>
@@ -531,9 +530,9 @@
 
             {foreach from=$deliveries item=dn}
                 <div class="node" id="delivery_node_{$dn->id}">
-                    <span class="node_label" {if  $dn->get('Delivery Note Type')=='Replacement'}error{/if}>
-                         <i class="fa fa-truck fa-flip-horizontal fa-fw  {if  $dn->get('Delivery Note Type')=='Replacement'}error{/if}" aria-hidden="true"></i> <span
-                                class="link  {if  $dn->get('Delivery Note Type')=='Replacement'}error{/if}" onClick="change_view('delivery_notes/{$dn->get('Delivery Note Store Key')}/{$dn->id}')">{$dn->get('ID')}</span>
+                    <span class="node_label" {if  $dn->get('Delivery Note Type')!='Order'}error{/if}>
+                         <i class="fa fa-truck fa-flip-horizontal fa-fw  {if  $dn->get('Delivery Note Type')!='Order'}error{/if}" aria-hidden="true"></i> <span
+                                class="link  {if  $dn->get('Delivery Note Type')!='Order'}error{/if}" onClick="change_view('delivery_notes/{$dn->get('Delivery Note Store Key')}/{$dn->id}')">{$dn->get('ID')}</span>
                         (<span class="Delivery_Note_State">{$dn->get('Abbreviated State')}</span>)
 
 
@@ -550,7 +549,7 @@
                     </div>
 
 
-                    <div id="submit_operations" class="order_operation {if !($dn->get('State Index')==80   and  $dn->get('Delivery Note Type')=='Replacement') }hide{/if}">
+                    <div id="submit_operations" class="order_operation {if !($dn->get('State Index')==80   and  $dn->get('Delivery Note Type')!='Order') }hide{/if}">
                         <div class="square_button right  " title="{t}Approve dispatch{/t}">
                             <i class="fa fa-thumbs-up   " aria-hidden="true" onclick="toggle_order_operation_dialog('approve_replacement')"></i>
                             <table id="approve_replacement_dialog" border="0" class="order_operation_dialog hide">

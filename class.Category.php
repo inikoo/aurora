@@ -83,6 +83,7 @@ class Category extends DB_Table {
                 break;
         }
 
+
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Category Key'];
 

@@ -91,6 +91,11 @@ function get_object($object_name, $key, $load_other_data = false) {
 
             $object = new Website($key);
             break;
+        case 'voucher':
+            include_once 'class.Voucher.php';
+
+            $object = new Voucher($key);
+            break;
         case 'public_website':
             include_once 'class.Public_Website.php';
 

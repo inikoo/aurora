@@ -297,7 +297,10 @@ function campaigns($_data, $db, $user) {
                 'code' => sprintf('<span class="link" onclick="change_view(\'offers/%d/%s\')">%s</span>', $data['Deal Campaign Store Key'], strtolower($data['Deal Campaign Code']), $data['Deal Campaign Icon']),
                 'name' => sprintf('<span class="link" onclick="change_view(\'offers/%d/%s\')">%s</span>', $data['Deal Campaign Store Key'], strtolower($data['Deal Campaign Code']), $data['Deal Campaign Name']),
 
-                'deals' => number($data['Deal Campaign Number Current Deals']),
+                'active_deal_components'    => number($data['Deal Campaign Number Active Deal Components']),
+                'suspended_deal_components' => number($data['Deal Campaign Number Suspended Deal Components']),
+                'waiting_deal_components'   => number($data['Deal Campaign Number Waiting Deal Components']),
+                'finish_deal_components'    => number($data['Deal Campaign Number Finish Deal Components']),
 
                 'orders'    => number($data['Deal Campaign Total Acc Used Orders']),
                 'customers' => number($data['Deal Campaign Total Acc Used Customers'])

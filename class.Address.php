@@ -3812,7 +3812,7 @@ class _Address extends DB_Table {
                     $res         = mysql_query($sql);
                     $num_results = mysql_num_rows($res);
                     if ($num_results > 100) {
-                        continue;
+                        break;
                     }
                     while ($row = mysql_fetch_assoc($res)) {
                         $val = 25;
@@ -3833,7 +3833,7 @@ class _Address extends DB_Table {
                     $res         = mysql_query($sql);
                     $num_results = mysql_num_rows($res);
                     if ($num_results > 120) {
-                        continue;
+                        break;
                     }
                     while ($row = mysql_fetch_assoc($res)) {
                         $val = 20;

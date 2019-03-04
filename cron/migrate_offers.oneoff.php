@@ -10,68 +10,25 @@
 
 */
 
-//$_handle = fopen("sk.csv", "r");
-//$handle  = fopen("sk.csv", "r");
+require_once 'common.php';
 
-chdir('../');
-require_once 'vendor/autoload.php';
-
-require_once 'keyring/dns.php';
-require_once 'keyring/key.php';
-require_once 'utils/i18n.php';
-require_once 'utils/general_functions.php';
-require_once "class.Account.php";
-
-
-$mem = new Memcached();
-$mem->addServer($memcache_ip, 11211);
-
-
-$dns_db = 'sk';
-
-$dns_db_aw = 'dw';
-
-
-$db = new PDO(
-    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
-);
-$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
-
-$db_aw = new PDO(
-    "mysql:host=$dns_host;dbname=$dns_db_aw;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
-);
-$db_aw->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
-$account = new Account($db);
-
-
-date_default_timezone_set($account->data['Account Timezone']);
-
-
-require_once 'utils/get_addressing.php';
-require_once 'utils/object_functions.php';
-
-require_once 'utils/parse_natural_language.php';
 require_once 'class.User.php';
 
-require_once 'class.Page.php';
-require_once 'class.Website.php';
-require_once 'class.WebsiteNode.php';
-require_once 'class.Webpage.php';
-require_once 'class.Product.php';
-require_once 'class.Store.php';
-require_once 'class.Part.php';
-require_once 'class.Agent.php';
-require_once 'class.Image.php';
 
-require_once 'class.Public_Product.php';
-require_once 'class.Category.php';
-require_once 'class.Webpage_Type.php';
-include_once 'utils/currency_functions.php';
-require_once 'conf/footer_data.php';
-require_once 'conf/header_data.php';
-require_once 'utils/object_functions.php';
+$editor = array(
+
+
+    'Author Type'  => '',
+    'Author Key'   => '',
+    'User Key'     => 0,
+    'Date'         => gmdate('Y-m-d H:i:s'),
+    'Subject'      => 'System',
+    'Subject Key'  => 0,
+    'Author Name'  => 'System (Migration from Inikoo)',
+    'Author Alias' => 'System (Migration from Inikoo)',
+
+
+);
 
 
 $_user = new User('handle', 'raul', 'Contractor');
@@ -88,131 +45,47 @@ $editor = array(
 //Second part migration run fist one forst
 
 
+$store_key = 7;
 
 
 
-$sql = sprintf('SELECT `Deal Campaign Store Key`,`Deal Campaign Key` FROM `Deal Campaign Dimension`   left join `Store Dimension` on (`Store Key`=`Deal Campaign Store Key`)  where `Store Version`=2 ');
+$sql = sprintf('SELECT `Store Key` FROM `Store Dimension`  where `Store Key`=%d ', $store_key);
+print $sql;
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
-        $store = get_object('Store', $row['Deal Campaign Store Key']);
 
-        $campaign = get_object('DealCampaign', $row['Deal Campaign Key']);
+          print_r($row);
 
-        print $store->get('Store Order Recursion Campaign Key').' '.$campaign->id."\n";
-        if ($store->get('Store Order Recursion Campaign Key') == $campaign->id) {
-            $campaign->fast_update(array('Deal Campaign Code' => 'OR'));
+        $store = get_object('Store', $row['Store Key']);
+
+
+        if ($store->get('Store Order Recursion Campaign Key') == '') {
+            $categories_deals_data = array(
+                'Deal Campaign Code'       => 'FO',
+                'Deal Campaign Name'       => 'First order offer',
+                'Deal Campaign Valid From' => gmdate('Y-m-d'),
+                'Deal Campaign Valid To'   => '',
+
+
+            );
+
+            $categories_deals = $store->create_campaign($categories_deals_data);
+
+
         }
-        if ($store->get('Store Bulk Discounts Campaign Key') == $campaign->id) {
-            $campaign->fast_update(array('Deal Campaign Code' => 'VL'));
-        }
-        if ($store->get('Store First Order Campaign Key') == $campaign->id) {
-            $campaign->fast_update(array('Deal Campaign Code' => 'FO'));
-        }
 
-
-        $categories_deals_data = array(
-            'Deal Campaign Code'       => 'CA',
-            'Deal Campaign Name'       => 'Family offers',
-            'Deal Campaign Valid From' => gmdate('Y-m-d'),
-            'Deal Campaign Valid To'   => '',
-
-
-        );
-
-        $categories_deals = $store->create_campaign($categories_deals_data);
-
-
-        $sql = sprintf(
-            'update `Deal Dimension` set `Deal Campaign Key`=%d where `Deal Campaign Key` is null and `Deal Store Key`=%d ',
-            $categories_deals->id,
-            $store->id
-        );
-
-        $db->exec($sql);
-
-
-
-        $categories_deals->update_usage();
-        $categories_deals->update_number_of_deals();
-        $categories_deals->update_websites();
-
-
-
-
-
-
-        $categories_deals_data = array(
-            'Deal Campaign Code'       => 'CU',
-            'Deal Campaign Name'       => 'Customers offers',
-            'Deal Campaign Valid From' => gmdate('Y-m-d'),
-            'Deal Campaign Valid To'   => '',
-
-
-        );
-
-        $categories_deals = $store->create_campaign($categories_deals_data);
-
-
-        $categories_deals_data = array(
-            'Deal Campaign Code'       => 'VO',
-            'Deal Campaign Name'       => 'Vouchers',
-            'Deal Campaign Valid From' => gmdate('Y-m-d'),
-            'Deal Campaign Valid To'   => '',
-
-
-        );
-
-        $categories_deals = $store->create_campaign($categories_deals_data);
-
-        $categories_deals_data = array(
-            'Deal Campaign Code'       => 'SO',
-            'Deal Campaign Name'       => 'Store offers',
-            'Deal Campaign Valid From' => gmdate('Y-m-d'),
-            'Deal Campaign Valid To'   => '',
-
-
-        );
-
-        $categories_deals = $store->create_campaign($categories_deals_data);
 
     }
 }
 
 
-$sql=sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="VO" ',prepare_mysql('<i class="far fa-money-bill-wave"></i>'));
-$db->exec($sql);
-
-$sql=sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="VL" ',prepare_mysql('<i class="far fa-ball-pile"></i>'));
-$db->exec($sql);
-
-$sql=sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="SO" ',prepare_mysql('<i class="far fa-badge-percent"></i>'));
-$db->exec($sql);
-
-$sql=sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="OR" ',prepare_mysql('<i class="far fa-repeat-1"></i>'));
-$db->exec($sql);
-
-$sql=sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="CU" ',prepare_mysql('<i class="far fa-user-crown"></i>'));
-$db->exec($sql);
-
-$sql=sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="FO" ',prepare_mysql('<i class="far fa-trophy-alt"></i>'));
-$db->exec($sql);
-
-
-$sql=sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="CA" ',prepare_mysql('<i class="far fa-bullseye-arrow"></i>'));
-$db->exec($sql);
-
-
-
-exit;
-// Here first part of the migration
-
-$sql = sprintf('SELECT `Deal Component Key`,`Deal Component Deal Key`,`Deal Component Campaign Key` FROM `Deal Component Dimension`  ');
+$sql = sprintf('SELECT `Deal Component Key`,`Deal Component Deal Key`,`Deal Component Campaign Key` FROM `Deal Component Dimension` where `Deal Component Store Key`=%d ',$store_key);
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
 
-        //   print_r($row);
+        //print_r($row);
 
 
         $deal           = get_object('Deal', $row['Deal Component Deal Key']);
@@ -262,6 +135,400 @@ if ($result = $db->query($sql)) {
     }
 
 }
+
+
+$sql = sprintf('SELECT `Deal Campaign Store Key`,`Deal Campaign Key` FROM `Deal Campaign Dimension`   left join `Store Dimension` on (`Store Key`=`Deal Campaign Store Key`)  where `Store Key`=%d ',$store_key);
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+        $store = get_object('Store', $row['Deal Campaign Store Key']);
+
+        $campaign = get_object('DealCampaign', $row['Deal Campaign Key']);
+
+
+        print $store->get('Store Order Recursion Campaign Key').' '.$campaign->id."\n";
+        if ($store->get('Store Order Recursion Campaign Key') == $campaign->id) {
+            $campaign->fast_update(array('Deal Campaign Code' => 'OR'));
+        }
+        if ($store->get('Store Bulk Discounts Campaign Key') == $campaign->id) {
+            $campaign->fast_update(array('Deal Campaign Code' => 'VL'));
+        }
+        if ($store->get('Store First Order Campaign Key') == $campaign->id) {
+            $campaign->fast_update(array('Deal Campaign Code' => 'FO'));
+        }
+
+
+        $categories_deals_data = array(
+            'Deal Campaign Code'       => 'CA',
+            'Deal Campaign Name'       => 'Family offers',
+            'Deal Campaign Valid From' => gmdate('Y-m-d'),
+            'Deal Campaign Valid To'   => '',
+
+
+        );
+
+        $categories_deals = $store->create_campaign($categories_deals_data);
+
+
+        $sql = sprintf(
+            'update `Deal Dimension` set `Deal Campaign Key`=%d where `Deal Campaign Key` is null and `Deal Store Key`=%d ',
+            $categories_deals->id,
+            $store->id
+        );
+
+        $db->exec($sql);
+
+
+        $categories_deals->update_usage();
+        $categories_deals->update_number_of_deals();
+        $categories_deals->update_websites();
+
+
+        $categories_deals_data = array(
+            'Deal Campaign Code'       => 'CU',
+            'Deal Campaign Name'       => 'Customers offers',
+            'Deal Campaign Valid From' => gmdate('Y-m-d'),
+            'Deal Campaign Valid To'   => '',
+
+
+        );
+
+        $categories_deals = $store->create_campaign($categories_deals_data);
+
+
+        $categories_deals_data = array(
+            'Deal Campaign Code'       => 'VO',
+            'Deal Campaign Name'       => 'Vouchers',
+            'Deal Campaign Valid From' => gmdate('Y-m-d'),
+            'Deal Campaign Valid To'   => '',
+
+
+        );
+
+        $categories_deals = $store->create_campaign($categories_deals_data);
+
+        $categories_deals_data = array(
+            'Deal Campaign Code'       => 'SO',
+            'Deal Campaign Name'       => 'Store offers',
+            'Deal Campaign Valid From' => gmdate('Y-m-d'),
+            'Deal Campaign Valid To'   => '',
+
+
+        );
+
+        $categories_deals = $store->create_campaign($categories_deals_data);
+
+
+        $categories_deals_data = array(
+            'Deal Campaign Code'       => 'PO',
+            'Deal Campaign Name'       => 'Product offers',
+            'Deal Campaign Valid From' => gmdate('Y-m-d'),
+            'Deal Campaign Valid To'   => '',
+
+
+        );
+
+        $categories_deals = $store->create_campaign($categories_deals_data);
+
+    }
+}
+
+
+$sql = sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="VO" ', prepare_mysql('<i class="far fa-money-bill-wave"></i>'));
+$db->exec($sql);
+
+$sql = sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="VL" ', prepare_mysql('<i class="far fa-ball-pile"></i>'));
+$db->exec($sql);
+
+$sql = sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="SO" ', prepare_mysql('<i class="far fa-badge-percent"></i>'));
+$db->exec($sql);
+
+$sql = sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="OR" ', prepare_mysql('<i class="far fa-repeat-1"></i>'));
+$db->exec($sql);
+
+$sql = sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="CU" ', prepare_mysql('<i class="far fa-user-crown"></i>'));
+$db->exec($sql);
+
+$sql = sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="FO" ', prepare_mysql('<i class="far fa-trophy-alt"></i>'));
+$db->exec($sql);
+
+
+$sql = sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="CA" ', prepare_mysql('<i class="far fa-bullseye-arrow"></i>'));
+$db->exec($sql);
+
+$sql = sprintf('update `Deal Campaign Dimension` set `Deal Campaign Icon`=%s where `Deal Campaign Code`="PO" ', prepare_mysql('<i class="far fa-crosshairs"></i>'));
+$db->exec($sql);
+
+
+
+
+
+
+$category_offers=get_object('campaign_code-store_key','CA|'.$store_key);
+$voucher_offers=get_object('campaign_code-store_key','VO|'.$store_key);
+$customer_offers=get_object('campaign_code-store_key','CU|'.$store_key);
+$store_offers=get_object('campaign_code-store_key','SO|'.$store_key);
+$product_offers=get_object('campaign_code-store_key','PO|'.$store_key);
+
+$sql = sprintf('SELECT `Deal Component Key`,`Deal Component Deal Key`,`Deal Component Campaign Key` FROM `Deal Component Dimension` where `Deal Component Store Key`=%d ',$store_key);
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+        //print_r($row);
+
+
+        $deal           = get_object('Deal', $row['Deal Component Deal Key']);
+        $deal_component = get_object('DealComponent', $row['Deal Component Key']);
+        $deal_campaign  = get_object('DealCampaign', $row['Deal Component Campaign Key']);
+
+
+        $deal_component->fast_update(
+            array('Deal Component Allowance Target Label'=>strip_tags($deal_component->get('Deal Component Allowance Target Label')))
+        );
+
+
+//'Category','Department','Family','Product','Order','Customer','Customer Category','Customer List'
+
+        if(!in_array($deal_campaign->get('Code'),array('OR','VL','VO','FO'))){
+
+
+
+//'Category For Every Quantity Any Product Ordered','Category Quantity Ordered','Category Quantity Ordered AND Voucher','Department Quantity Ordered','Every Order','Family For Every Quantity Any Product Ordered','Department For Every Quantity Any Product Ordered','Voucher AND Order Interval','Amount AND Order Number','Amount AND Order Interval','Voucher AND Order Number','Voucher AND Amount','Amount','Order Total Net Amount','Order Total Net Amount AND Order Number','Order Total Net Amount AND Shipping Country','Order Total Net Amount AND Order Interval','Order Items Net Amount','Order Items Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Items Net Amount AND Order Interval','Order Total Amount','Order Total Amount AND Order Number','Order Total Amount AND Shipping Country','Order Total Amount AND Order Interval','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Order Number','Shipping Country','Voucher','Department For Every Quantity Ordered','Family For Every Quantity Ordered','Product For Every Quantity Ordered AND Voucher','Product For Every Quantity Ordered'
+
+            if(in_array($deal->get('Deal Terms Type'),array('Category For Every Quantity Ordered AND Voucher','Category For Every Quantity Any Product Ordered AND Voucher','Category Quantity Ordered AND Voucher','Voucher','Voucher AND Order Number','Voucher AND Amount','Product For Every Quantity Ordered AND Voucher')  )) {
+
+                $deal_component->fast_update(array('Deal Component Campaign Key'=>$voucher_offers->id));
+                $deal->fast_update(array('Deal Campaign Key'=>$voucher_offers->id));
+            }elseif(in_array($deal_component->get('Deal Component Trigger'),array('Product')  )){
+
+                $deal_component->fast_update(array('Deal Component Campaign Key'=>$product_offers->id));
+                $deal->fast_update(array('Deal Campaign Key'=>$product_offers->id));
+
+            }elseif(in_array($deal_component->get('Deal Component Trigger'),array('Category','Department','Family')  )){
+
+                $deal_component->fast_update(array('Deal Component Campaign Key'=>$category_offers->id));
+                $deal->fast_update(array('Deal Campaign Key'=>$category_offers->id));
+
+            }elseif(in_array($deal_component->get('Deal Component Trigger'),array('Customer')  )){
+
+                $deal_component->fast_update(array('Deal Component Campaign Key'=>$customer_offers->id));
+                $deal->fast_update(array('Deal Campaign Key'=>$customer_offers->id));
+
+            }elseif(in_array($deal_component->get('Deal Component Trigger'),array('Order')  )){
+
+                $deal_component->fast_update(array('Deal Component Campaign Key'=>$store_offers->id));
+                $deal->fast_update(array('Deal Campaign Key'=>$store_offers->id));
+
+            }
+
+
+        }
+
+
+
+
+
+    }
+}
+
+
+
+$sql = sprintf("SELECT `Deal Campaign Key` FROM `Deal Campaign Dimension` where `Deal Campaign Store Key`=%d ",$store_key);
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+        $deal_campaign = get_object('DealCampaign', $row['Deal Campaign Key']);
+
+        $deal_campaign->update_number_of_deals();
+
+
+        if($deal_campaign->get('Deal Campaign Code')==''
+            and $deal_campaign->get('Deal Campaign Number Active Deal Components')==0
+            and $deal_campaign->get('Deal Campaign Number Suspended Deal Components')==0
+            and $deal_campaign->get('Deal Campaign Number Waiting Deal Components')==0
+            and $deal_campaign->get('Deal Campaign Number Finish Deal Components')==0
+        ){
+
+            $sql=sprintf('delete from `Deal Campaign Dimension`  where `Deal Campaign Key`=%d ',$deal_campaign->id);
+
+            $db->exec($sql);
+
+        }
+
+
+
+    }
+
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
+
+
+
+
+
+include_once 'class.Category.php';
+
+
+$store = get_object('Store', $store_key);
+
+$sql = sprintf('SELECT `Deal Component Key`,`Deal Component Deal Key`,`Deal Component Campaign Key` FROM `Deal Component Dimension` where `Deal Component Store Key`=%d    ', $store_key);
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+      //  print_r($row);
+
+
+        $deal           = get_object('Deal', $row['Deal Component Deal Key']);
+        $deal_component = get_object('DealComponent', $row['Deal Component Key']);
+        $deal_campaign  = get_object('DealCampaign', $row['Deal Component Campaign Key']);
+
+
+
+
+        if ($deal_component->get('Deal Component Trigger') == 'Family') {
+
+
+            $sql = sprintf('select * from `Product Family Dimension` where `Product Family Key`=%d', $deal_component->get('Deal Component Trigger Key'));
+
+
+            $stmt = $db->prepare($sql);
+            if ($stmt->execute()) {
+                while ($row = $stmt->fetch()) {
+
+
+
+                    $category = new Category('root_key_code', $store->get('Store Family Category Key'), $row['Product Family Code']);
+
+
+                    if ($category->id) {
+
+
+
+                        $deal_component->fast_update(
+                            array(
+                                'Deal Component Trigger'=>'Category',
+                                'Deal Component Trigger Key'=>$category->id,
+
+                            )
+                        );
+
+                        if($deal_component->get('Deal Component Allowance Target')=='Family'){
+                            $deal_component->fast_update(
+                                array(
+
+                                    'Deal Component Allowance Target'=>'Category',
+                                    'Deal Component Allowance Target Key'=>$category->id
+
+                                )
+                            );
+                        }
+
+
+                        if($deal_component->get('Deal Component Terms Type')=='Family Quantity Ordered'){
+                            $deal_component->fast_update(
+                                array(
+
+                                    'Deal Component Terms Type'=>'Category Quantity Ordered'
+
+                                )
+                            );
+                        }
+
+
+                    } else {
+                        print $row['Product Family Code'].' '.$store->get('Code')." not found\n";
+                    }
+
+
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit();
+            }
+
+
+            exit;
+        }
+
+
+    }
+}
+
+
+
+$sql = sprintf('SELECT `Deal Key`,`Deal Campaign Key` FROM `Deal Dimension` where `Deal Store Key`=%d ', $store_key);
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+        //print_r($row);
+
+
+        $deal           = get_object('Deal', $row['Deal Key']);
+        $deal_campaign  = get_object('DealCampaign', $row['Deal Campaign Key']);
+
+
+        if ($deal->get('Deal Trigger') == 'Family') {
+
+
+            $sql = sprintf('select * from `Product Family Dimension` where `Product Family Key`=%d', $deal->get('Deal Trigger Key'));
+
+
+            $stmt = $db->prepare($sql);
+            if ($stmt->execute()) {
+                while ($row = $stmt->fetch()) {
+
+                    $category = new Category('root_key_code', $store->get('Store Family Category Key'), $row['Product Family Code']);
+
+
+                    if ($category->id) {
+                        $deal->fast_update(
+                            array(
+                                'Deal Trigger'=>'Category',
+                                'Deal Trigger Key'=>$category->id,
+
+                            )
+                        );
+
+
+
+                        if($deal->get('Deal Terms Type')=='Family Quantity Ordered'){
+                            $deal->fast_update(
+                                array(
+
+                                    'Deal Terms Type'=>'Category Quantity Ordered'
+
+                                )
+                            );
+                        }
+
+
+                    } else {
+                        print $row['Product Family Code'].' '.$store->get('Code')." not found\n";
+                    }
+
+
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit();
+            }
+
+
+            exit;
+        }
+
+
+    }
+}
+
+exit;
+// Here first part of the migration
 
 
 exit;

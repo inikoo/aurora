@@ -17,14 +17,6 @@ editable: false,
 renderable: false,
 cell: "string",
 
-}, {
-name: "store_key",
-label: "",
-editable: false,
-renderable: false,
-cell: "string",
-sortType: "toggle",
-
 },
 {
 name: "status",

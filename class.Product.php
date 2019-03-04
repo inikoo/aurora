@@ -101,8 +101,8 @@ class Product extends Asset {
             }
         } else {
 
-            sdasdas();
-            exit ("wrong id in class.product get_data :$key  \n");
+            //sdasdas();
+            exit ("wrong id in class.product get_data A :$key  ".$this->get('Code')." \n");
 
             return;
         }
@@ -357,7 +357,7 @@ class Product extends Asset {
             //todo : no need for the version if after migration
 
             $store = get_object('Store', $this->get('Product Store Key'));
-            if ($store->get('Store Version') >= 2) {
+            if ($store->get('Store Version') >= 2) { //todo Checked ok
                 new_housekeeping_fork(
                     'au_housekeeping', array(
                     'type'       => 'product_price_updated',
@@ -1633,11 +1633,11 @@ class Product extends Asset {
 
         //todo remove this after migration (Store version stuff)
         $store = get_object('Store', $this->get('Product Store Key'));
-        if ($use_fork or $store->get('Store Version') == 1) {
+        if ($use_fork or $store->get('Store Version') == 1) { //todo checked ok
             include_once 'utils/new_fork.php';
             $account = new Account($this->db);
 
-            if ($store->get('Store Version') == 1) {
+            if ($store->get('Store Version') == 1) { //todo checked ok
                 $msg = new_fork(
                     'housekeeping', array(
                     'type'       => 'product_web_state',

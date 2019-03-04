@@ -696,6 +696,9 @@ class DealComponent extends DB_Table {
 
         $families    = array();
         $departments = array();
+        $products=array();
+
+
         $sql         = sprintf(
             'select `Deal Component Trigger Key`,`Category Scope` from  `Deal Component Dimension`  left join `Category Dimension` on (`Deal Component Trigger Key`=`Category Key`)   where `Deal Component Key`=%d  and `Deal Component Trigger`="Category"  ', $this->id
         );

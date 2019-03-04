@@ -27,7 +27,10 @@ $editor = array(
 
 // and `Customer Key`=103576'
 
-$store    = get_object('store', 7);
+
+$store_key=7;
+
+$store    = get_object('store', $store_key);
 
 $website = get_object('website', $store->get('Store Website Key'));
 

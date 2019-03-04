@@ -80,8 +80,8 @@ class Public_Product {
             }
         } else {
 
-            sdasdas();
-            exit ("wrong id in class.product get_data :$key  \n");
+            //sdasdas();
+            exit ("wrong id in class.product get_data A :$key  ".$this->get('Code')." \n");
 
             return;
         }
@@ -259,7 +259,59 @@ class Public_Product {
                 }
 
                 break;
+            case 'Image Data2':
 
+                include_once 'utils/image_functions.php';
+
+                $sql = sprintf(
+                    "SELECT `Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` 
+                    FROM `Image Dimension`    LEFT JOIN `Image Subject Bridge`   ON (`Image Subject Image Key`=`Image Key`)  WHERE `Image key`=%d ", $this->data['Product Main Image Key']
+                );
+
+
+
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+
+
+
+
+
+                      //  $image_website = create_cached_image($row['Image Key'], 330, 330, 'fit_highest');
+
+
+
+                        $image_data = array(
+                            'key'           => $row['Image Key'],
+                            'src'           => $img = '/image_root.php?&id='.$row['Image Key'],
+                            'caption'       => $row['Image Subject Image Caption'],
+                            'width'         => $row['Image Width'],
+                            'height'        => $row['Image Height'],
+                            'image_website' => $img = '/image_root.php?&id='.$row['Image Key'],
+                        );
+                    } else {
+                        $image_data = array(
+                            'key'           => 0,
+                            'src'           => '/art/nopic.png',
+                            'caption'       => '',
+                            'width'         => 190,
+                            'height'        => 130,
+                            'image_website' => '/art/nopic.png'
+                        );
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+
+
+                return $image_data;
+
+                break;
             case 'Image Data':
 
                 include_once 'utils/image_functions.php';
@@ -270,10 +322,16 @@ class Public_Product {
                 );
 
 
+
+
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
 
+
+
                         $image_website = create_cached_image($row['Image Key'], 330, 330, 'fit_highest');
+
+
 
                         $image_data = array(
                             'key'           => $row['Image Key'],
@@ -298,6 +356,8 @@ class Public_Product {
                     print "$sql\n";
                     exit;
                 }
+
+
 
 
                 return $image_data;
@@ -989,6 +1049,50 @@ class Public_Product {
 
     }
 
+
+    function get_image_gallery2() {
+
+        include_once 'utils/image_functions.php';
+
+
+        $sql = sprintf(
+            "SELECT `Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` FROM `Image Subject Bridge` B LEFT JOIN `Image Dimension` I ON (`Image Subject Image Key`=`Image Key`) WHERE `Image Subject Object`=%s AND   `Image Subject Object Key`=%d ORDER BY `Image Subject Is Principal`,`Image Subject Date`,`Image Subject Key`",
+            prepare_mysql('Product'), $this->id
+        );
+
+
+        $gallery = array();
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Image Key']) {
+
+                   // $image_website = create_cached_image($row['Image Key'], '', 50, 'height');
+
+                    $gallery[] = array(
+                        'src'           => 'image_root.php?id='.$row['Image Key'],
+                        'caption'       => $row['Image Subject Image Caption'],
+                        'key'           => $row['Image Key'],
+                        'width'         => $row['Image Width'],
+                        'height'        => $row['Image Height'],
+                        'image_website' => 'image_root.php?id='.$row['Image Key'],
+
+                    );
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql";
+            exit;
+        }
+
+
+        // print_r($gallery);
+
+        return $gallery;
+
+    }
 
     function get_image_gallery() {
 
