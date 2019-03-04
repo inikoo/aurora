@@ -1642,23 +1642,28 @@ function order_items($_data, $db, $user, $account) {
 
             $items_qty = $data['Purchase Order Submitted Units'].'<span class="small discreet">u.</span> | ';
 
-            if ($data['Purchase Order Submitted Units'] % $data['Part Units Per Package'] != 0) {
-                $items_qty .= '<span class="error">'.number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'], 3).'<span class="small discreet">sko.</span></span> | ';
+            if($data['Part Units Per Package']==0) {
+                $items_qty .= '<span class="error">Units per SKO=0</span> ';
+            }else {
 
-            } else {
-                $items_qty .= number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'], 3).'<span class="small discreet">sko.</span> | ';
 
+                if ($data['Purchase Order Submitted Units'] % $data['Part Units Per Package'] != 0) {
+                    $items_qty .= '<span class="error">'.number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'], 3).'<span class="small discreet">sko.</span></span> | ';
+
+                } else {
+                    $items_qty .= number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'], 3).'<span class="small discreet">sko.</span> | ';
+
+                }
+
+
+                if ($data['Purchase Order Submitted Units'] % ($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton']) != 0) {
+                    $items_qty .= '<span class="error">'.number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton'], 3).'<span title="'._('Cartons').'" class="small discreet">C.</span></span>';
+
+                } else {
+                    $items_qty .= number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton'], 3).'<span title="'._('Cartons').'" class="small discreet">C.</span>';
+
+                }
             }
-
-
-            if ($data['Purchase Order Submitted Units'] % ($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton']) != 0) {
-                $items_qty .= '<span class="error">'.number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton'], 3).'<span title="'._('Cartons').'" class="small discreet">C.</span></span>';
-
-            } else {
-                $items_qty .= number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'] / $data['Supplier Part Packages Per Carton'], 3).'<span title="'._('Cartons').'" class="small discreet">C.</span>';
-
-            }
-
 
             $items_qty = '<span class="submitted_items_qty" onclick="use_submitted_qty_in_delivery(this,'.$data['Purchase Order Submitted Units'].')">'.$items_qty.'</span>';
 
