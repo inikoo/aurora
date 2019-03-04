@@ -1401,9 +1401,9 @@ function migrate_products() {
                 ), 'no_history'
             );
 
-            //$webpage->reindex_items();
-            //$webpage->refill_see_also();
-            //$webpage->update_navigation();
+            $webpage->reindex_items();
+            $webpage->refill_see_also();
+            $webpage->update_navigation();
 
 
             $contador++;
