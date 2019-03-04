@@ -1860,7 +1860,7 @@ function order_items($_data, $db, $user, $account) {
                 'operations'        =>$operations,
 
 
-                'reference' => $data['Purchase Order Item Index'].' '.$reference,
+                'reference' => $reference,
 
                 'unit_description' => $data['Supplier Part Description'].'<br><span class="discreet">'._('Unit cost').':</span> '.money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
                 'units_per_sko'    => number($data['Part Units Per Package']),
