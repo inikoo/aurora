@@ -24,6 +24,34 @@ $editor = array(
 
 
 
+
+$sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension`  left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where    `Website Theme`="theme_1"  ');
+if ($result=$db->query($sql)) {
+    foreach ($result as $row) {
+
+        $webpage = get_object('Webpage', $row['Page Key']);
+
+        // print_r(json_decode($webpage->data['Webpage Navigation Data']));
+
+        $webpage->update_navigation();
+
+        //$webpage = get_object('Webpage', $row['Page Key']);
+
+        //  print_r(json_decode($webpage->data['Webpage Navigation Data']));
+
+print $webpage->get('Code')."\n";
+
+
+
+    }
+}else {
+    print_r($error_info=$db->errorInfo());
+    print "$sql\n";
+    exit;
+}
+
+
+
 $sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension` left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where     `Website Theme`="theme_1"  ');
 if ($result=$db->query($sql)) {
     foreach ($result as $row) {
@@ -43,31 +71,6 @@ if ($result=$db->query($sql)) {
 }
 //exit;
 
-
-$sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension`  left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where    `Website Theme`="theme_1"  ');
-if ($result=$db->query($sql)) {
-		foreach ($result as $row) {
-
-            $webpage = get_object('Webpage', $row['Page Key']);
-
-           // print_r(json_decode($webpage->data['Webpage Navigation Data']));
-
-            $webpage->update_navigation();
-
-            //$webpage = get_object('Webpage', $row['Page Key']);
-
-          //  print_r(json_decode($webpage->data['Webpage Navigation Data']));
-
-
-
-
-
-		}
-}else {
-		print_r($error_info=$db->errorInfo());
-		print "$sql\n";
-		exit;
-}
 
 
 
