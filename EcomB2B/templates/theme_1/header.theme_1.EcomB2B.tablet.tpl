@@ -85,7 +85,8 @@
 
 
             <a href="#" class="close-sidebar hide"><i class="icon-bg bg-red-light fa fa-times"></i><span>{t}Close{/t}</span><i class="ion-record"></i></a>
-            <em class="menu-divider">{t}Copyright{/t} <u class="copyright-year"></u>. {t}All rights reserved{/t}</em>
+            <em class="menu-divider">{t}Copyright{/t} <u class="copyright-year"></u>.</em>
+            <em class="menu-divider">{t}All rights reserved{/t}</em>
         </div>
     </div>
     <div class="sidebar sidebar-right">
@@ -135,8 +136,8 @@
                 <a class="default-link" href="#" id="logout"><span style="padding-left: 20px">{t}Log out{/t}</span><i class="ion-record"></i></a>
             {/if}
 
-                <em class="menu-divider">Copyright <u class="copyright-year"></u>. {t}All rights reserved{/t}</em>
-        </div>
+            <em class="menu-divider">{t}Copyright{/t} <u class="copyright-year"></u>.</em>
+            <em class="menu-divider">{t}All rights reserved{/t}</em>        </div>
 
 
 
