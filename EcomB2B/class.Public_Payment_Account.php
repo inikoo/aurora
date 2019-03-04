@@ -114,10 +114,13 @@ class Public_Payment_Account {
             case 'Block Data':
 
 
-                if ($this->data['Payment Account Block'] == 'BTreePaypal') {
+                if ($this->data['Payment Account Block'] == 'Paypal') {
 
 
                     //$key=md5('83edh3847203942,'.CKEY);
+
+
+
                     $key = 'xx';
 
 
@@ -140,6 +143,8 @@ class Public_Payment_Account {
 
 
                     return $paypal_data;
+
+
 
                 } elseif ($this->data['Payment Account Block'] = 'BTree') {
 

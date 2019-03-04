@@ -26,8 +26,9 @@ if ($redis->connect('127.0.0.1', 6379)) {
 
 require 'keyring/dns.php';
 
-
 session_start();
+
+
 if (empty($_SESSION['website_key'])) {
 
 
