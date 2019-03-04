@@ -197,7 +197,7 @@
 
 
 
-        getScript('/js/tablet.min.js?v=190225', function () {
+        getScript('/js/mobile.190304.min.js', function () {
 
 
 
