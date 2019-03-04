@@ -94,10 +94,8 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
         'ZAR'
     );
 
-    if (in_array($currency_from, $valid_currencies) and in_array(
-            $currency_to, $valid_currencies
-        )
-    ) {
+
+    if (in_array($currency_from, $valid_currencies) and in_array($currency_to, $valid_currencies)) {
 
         $contents = json_decode(
             file_get_contents(

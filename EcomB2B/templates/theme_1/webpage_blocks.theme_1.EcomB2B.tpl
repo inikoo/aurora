@@ -79,8 +79,6 @@
 
 
 
-
-
                 {if $block.show}
 
 
@@ -136,7 +134,10 @@
                         {/if}
 
                     {elseif $block.type=='thanks'}
-                            {if $logged_in}{assign "with_thanks" 1}
+
+
+
+                        {if $logged_in}{assign "with_thanks" 1}
                                 <div id="thanks">
                                     <div style="text-align: center">
                                         <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>
@@ -465,6 +466,9 @@
 
             {/if}
             {if $with_thanks==1}
+
+
+
             getScript('/js/desktop.logged_in.min.js?v=190227', function () {
 
                 var _args=document.location.href.split("?")[1];
@@ -496,7 +500,7 @@
             {if $with_checkout==1}
             getScript('/js/desktop.logged_in.min.js?v=190227', function () {
                 getScript('/js/desktop.forms.min.js', function () {
-                    getScript('/js/desktop.checkout.min.js?v=190227', function () {
+                    getScript('/js/desktop.checkout.min.js?v=190304', function () {
                         $.getJSON("ar_web_checkout.php?tipo=get_checkout_html&device_prefix=", function (data) {
 
 

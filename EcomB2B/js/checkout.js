@@ -58,8 +58,9 @@ function place_order(element) {
                 $('.ordered_products_number').html('0')
                 $('.order_total').html('')
 
-                ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.revenue);
                 ga('auTracker.ec:setAction', 'purchase', data.analytics_data);
+
+                ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.gbp_revenue);
 
 
 
