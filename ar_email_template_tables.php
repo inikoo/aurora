@@ -108,6 +108,7 @@ function email_blueprints($_data, $db, $user) {
                 'id'         => (integer)$data['Email Blueprint Key'],
                 'image'      => $image,
                 'author'     => $author,
+                'store'       => $data['Store Code'],
                 'name'       => $data['Email Blueprint Name'],
                 'date'       => strftime("%a %e %b %Y", strtotime($data['Email Blueprint Created'].' +0:00')),
                 'operations' => $operations,

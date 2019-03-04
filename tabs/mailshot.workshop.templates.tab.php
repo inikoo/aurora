@@ -31,6 +31,8 @@ $table_filters = array(
 $parameters = array(
     'parent'     => 'Mailshot',
     'parent_key' => $state['_object']->id,
+    'email_template_type_code'=>$email_template_type->get('Email Campaign Type Code'),
+
     'email_template_type_key'=>$state['_object']->get('Email Campaign Email Template Type Key'),
     'redirect' => base64_url_encode('mailshot.workshop'),
 );
