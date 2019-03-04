@@ -10,17 +10,24 @@
 */
 
 $table
-    = '`Email Blueprint Dimension` EB left join `Staff Dimension`  on (`Email Blueprint Created By`=`Staff Key`)';
+    = '`Email Blueprint Dimension` EB left join `Staff Dimension`  on (`Email Blueprint Created By`=`Staff Key`)   left join `Email Campaign Type Dimension` on (`Email Campaign Type Key`=`Email Blueprint Email Campaign Type Key`)  
+      left join `Store Dimension` on  (`Store Key`=`Email Campaign Type Store Key`)
+      
+      ';
 
-$fields = "`Email Blueprint Name`,`Email Blueprint Created`,`Email Blueprint Key`,`Email Blueprint Image Key`,`Staff Alias`";
+$fields = "`Store Key`,`Store Code`,`Store Name`,`Email Blueprint Name`,`Email Blueprint Created`,`Email Blueprint Key`,`Email Blueprint Image Key`,`Staff Alias`";
+
+
 
 switch ($parameters['parent']) {
 
     case 'Mailshot':
 
 
+
+
         $where = sprintf(
-            " where  `Email Blueprint Email Campaign Type Key`=%d", $parameters['email_template_type_key']
+            " where  `Email Campaign Type Code`=%s", prepare_mysql($parameters['email_template_type_code'])
         );
 
         break;

@@ -9,6 +9,16 @@ renderable: false
 },
 
 {
+name: "store",
+label: "{t}Store{/t}",
+sortType: "toggle",
+editable: false,
+cell: Backgrid.HtmlCell.extend({
+
+
+}),
+},
+{
 name: "name",
 label: "{t}Name{/t}",
 sortType: "toggle",
