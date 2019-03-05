@@ -104,6 +104,10 @@
             <img src="/conf/etemplates/reset_password.png"  />
             <div style="text-align: center">{t}Reset password{/t}</div>
         </div>
+        <div blueprint='reset_password_cool' class="blueprint_option">
+            <img src="/conf/etemplates/reset_password_cool.png"  />
+            <div style="text-align: center">{t}Reset password{/t}</div>
+        </div>
     {elseif $role=='OOS Notification'}
         <div blueprint='empty' class="blueprint_option">
             <img src="/conf/etemplates/empty.png"  />
