@@ -69,7 +69,7 @@
     }
 
 
-    getScript('/theme_1/js/tablet.min.js?v=4', function () {
+    getScript('/theme_1/js/mobile.190304.min.js', function () {
 
 
         {if $website->get('Website Text Font')!=''  and !$logged_in}

@@ -164,7 +164,7 @@
 
 
 
-                <script src="js/tablet.min.js?v=190225"></script>
+                <script src="js/mobile.190304.min.js"></script>
                 <script src="js/mobile.forms.min.js"></script>
                 <script src="js/sweetalert.min.js"></script>
             {elseif $block.type=='reviews'}
