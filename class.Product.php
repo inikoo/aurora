@@ -2748,6 +2748,8 @@ class Product extends Asset {
             case 'Product Unit Dimensions':
 
 
+//                print $field."\n";
+
                 include_once 'utils/parse_natural_language.php';
 
                 $tag = preg_replace('/ Dimensions$/', '', $field);
@@ -2769,9 +2771,7 @@ class Product extends Asset {
                     //   $vol  = $_tmp['vol'];
                 }
 
-                if (!preg_match('/from_part/', $options) and count(
-                        $this->get_parts()
-                    ) == 1) {
+                if (!preg_match('/from_part/', $options) and count($this->get_parts()) == 1) {
 
 
                     $part = array_values($this->get_parts('objects'))[0];
@@ -2783,7 +2783,7 @@ class Product extends Asset {
 
                     $this->get_data('id', $this->id);
                     $this->updated = $part->updated;
-                    $this->update_webpages();
+
 
                     return;
 
@@ -2792,6 +2792,11 @@ class Product extends Asset {
 
                 $this->update_field($tag.' Dimensions', $dim, $options);
                 $this->fast_update(array('Product Unit XHTML Dimensions' => $this->get('Unit Dimensions')));
+
+
+
+
+                $this->update_webpages();
 
 
                 break;
