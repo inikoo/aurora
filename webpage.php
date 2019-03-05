@@ -73,11 +73,7 @@ if ($webpage->get('Webpage Template Filename') == 'products_showcase') {
     }
 
 
-} elseif ($webpage->get('Webpage Template Filename') == 'register') {
-
-      $template = $theme.'/'.$webpage->get('Webpage Template Filename').'.'.$theme.'.tpl';
-
-} else {
+}  else {
 
 
     if($webpage->get('Webpage Code')=='register.sys'){
