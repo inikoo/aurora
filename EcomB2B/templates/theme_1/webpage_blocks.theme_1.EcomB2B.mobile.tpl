@@ -1147,6 +1147,8 @@
 
                 $('.iframe').each(function (i, obj) {
 
+                    alert($(this).width())
+
 
                     $(this).css({
                         height: $(this).width() * $(this).data('h') / $(this).data('w')
