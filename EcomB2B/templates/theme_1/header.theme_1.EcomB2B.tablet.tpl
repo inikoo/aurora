@@ -35,11 +35,13 @@
         <div class="menu-options icon-background no-submenu-numbers sidebar-menu">
 
             {foreach from=$header_data.menu.columns item=column key=key}
-                <a data-sub="sidebar-sub-{$key}" href="#" class="{if !$column.show}hide{/if}">
+
+                {if $column.show}
+
+                <a data-sub="sidebar-sub-{$key}" href="#" >
                     <i class="icon-bg bg-orange-dark fa  {$column.icon}"></i>
 
                     <span>{$column.label|strip_tags}</span><strong class="plushide-animated"></strong></a>
-
                 {if $column.type=='three_columns'}
 
                     <div class="submenu" id="sidebar-sub-{$key}">
@@ -79,7 +81,7 @@
 
                 {/if}
 
-
+                {/if}
 
             {/foreach}
 
