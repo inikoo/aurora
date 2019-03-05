@@ -136,6 +136,15 @@
             <div style="text-align: center">{t}Minimalistic{/t}</div>
         </div>
 
+    {elseif $role=='Order Confirmation'}
+        <div blueprint='empty' class="blueprint_option">
+            <img src="/conf/etemplates/empty.png"  />
+            <div style="text-align: center">{t}Empty{/t}</div>
+        </div>
+        <div blueprint='order_confirmation_cool' class="blueprint_option">
+            <img src="/conf/etemplates/order_confirmation_cool.png"   />
+            <div style="text-align: center">{t}Fresh{/t}</div>
+        </div>
 
     {else}
         <div blueprint='empty' class="blueprint_option">
