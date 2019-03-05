@@ -1155,6 +1155,10 @@
 
                    // console.log($(this).data('src'))
 
+
+                    $(this).find('iframe').css({ height:$(this).height(),width:$(this).width()})
+
+
                     $(this).find('iframe').attr( 'src', $(this).data('src'));
 
                   //  alert($(this).height())
