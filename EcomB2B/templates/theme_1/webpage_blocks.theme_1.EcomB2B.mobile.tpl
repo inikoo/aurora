@@ -1147,7 +1147,7 @@
 
                 $('.iframe').each(function (i, obj) {
 
-                    alert($(this).width())
+                   // alert($(this).width())
 
 
                     $(this).css({
