@@ -83,7 +83,10 @@
         <img src="/conf/etemplates/welcome_default.png"   />
         <div style="text-align: center">{t}Light{/t}</div>
     </div>
-
+        <div blueprint='welcome_cool' class="blueprint_option">
+            <img src="/conf/etemplates/welcome_cool.png"   />
+            <div style="text-align: center">{t}Fresh{/t}</div>
+        </div>
 
     <div blueprint='welcome_simple' class="blueprint_option">
         <img src="/conf/etemplates/welcome_simple.png"  />

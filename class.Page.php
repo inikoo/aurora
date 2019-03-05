@@ -1856,7 +1856,8 @@ class Page extends DB_Table {
             $smarty_web->clearCache(null, $cache_id);
 
 
-        } else {
+        }
+        else {
             if ($this->get('Webpage Scope') == 'Category Categories') {
 
                 if ($this->get('Webpage Version') == 2) {
