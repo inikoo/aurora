@@ -1147,15 +1147,14 @@
 
                 $('.iframe').each(function (i, obj) {
 
-                   alert($(this).height())
+                 //  alert($(this).height())
 
 
-                    $(this).css({
-                        height: $(this).width() * $(this).data('h') / $(this).data('w')
-                    })
+                  //  $(this).css({ height: $(this).width() * $(this).data('h') / $(this).data('w')})
+                    $(this).css({ height: 100})
 
 
-                    alert($(this).height())
+                  //  alert($(this).height())
 
                 });
             }
