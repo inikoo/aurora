@@ -1150,8 +1150,8 @@
                  //  alert($(this).height())
 
 
-                  //  $(this).css({ height: $(this).width() * $(this).data('h') / $(this).data('w')})
-                    $(this).css({ height: 100})
+                    $(this).css({ height: $(this).width() * $(this).data('h') / $(this).data('w')})
+                    //$(this).css({ height: 100})
 
 
                   //  alert($(this).height())
