@@ -1153,6 +1153,7 @@
                     $(this).css({ height: $(this).width() * $(this).data('h') / $(this).data('w')})
                     //$(this).css({ height: 100})
 
+                    $(this).find('iframe').attr( 'src', function ( i, val ) { return val; });
 
                   //  alert($(this).height())
 
