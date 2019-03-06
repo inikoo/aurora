@@ -915,16 +915,16 @@
                             }, success: function (data) {
 
 
+                                console.log(data)
                                 if (data.state == '200') {
+
+
 
 
                                     ga('auTracker.send', 'event', 'Login', 'login');
 
 
-                                {if isset($redirect_after_login)}
-                                    window.location.replace('{$redirect_after_login}');
 
-                                    {else}
 
 
                                    if(document.referrer.indexOf(location.protocol + "//" + location.host) === 0){
@@ -945,7 +945,7 @@
                                     }else{
                                         window.location.replace("index.php");
                                     }
-                                    {/if}
+                                 
 
 
 
