@@ -45,15 +45,13 @@ update_products_next_shipment_date($db);
 function update_products_next_shipment_date($db) {
 
     $sql = sprintf(
-        "SELECT `Product ID` FROM `Product Dimension`  "
+        "SELECT `Product ID` FROM `Product Dimension` left join `Store Dimension` on (`Store Key`=`Product Store Key`) where `Store Version`=2  "
     );
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
-
             $product = new Product($row['Product ID']);
             $product->update_next_shipment();
-            $product->update_webpages();
         }
 
     } else {
