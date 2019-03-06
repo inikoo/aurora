@@ -376,7 +376,7 @@ function payments($_data, $db, $user) {
             $refunds = preg_replace('/^, /', '', $refunds);
 
 
-            if ($data['Payment Account Block'] == 'Accounts'  or  $data['Payment Mathod'] == 'Account' ) {
+            if ($data['Payment Account Block'] == 'Accounts'  or  $data['Payment Method'] == 'Account' ) {
                 $account = _('Customer credits');
 
             } else {
