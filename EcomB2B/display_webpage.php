@@ -242,11 +242,11 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
     if ($webpage->get('Webpage Code') == 'login.sys') {
 
-        if (!empty($_REQUEST['invoice_pdf'])) {
-            $smarty->assign('redirect_after_login', '/invoice.pdf.php?id='.$_REQUEST['invoice_pdf']);
+        if (!empty($_GET['invoice_pdf'])) {
+            $smarty->assign('redirect_after_login', '/invoice.pdf.php?id='.$_GET['invoice_pdf']);
 
-        } elseif (!empty($_REQUEST['order'])) {
-            $smarty->assign('redirect_after_login', '/profile.sys?order='.$_REQUEST['order']);
+        } elseif (!empty($_GET['order'])) {
+            $smarty->assign('redirect_after_login', '/profile.sys?order='.$_GET['order']);
 
         }
 
