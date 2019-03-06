@@ -51,7 +51,6 @@ switch ($tipo) {
     case 'order.payments':
     case 'account.payments':
     case 'refund.payments':
-    case 'order.payments':
     case 'invoice.payments':
 
         payments(get_table_parameters(), $db, $user);
@@ -377,7 +376,7 @@ function payments($_data, $db, $user) {
             $refunds = preg_replace('/^, /', '', $refunds);
 
 
-            if ($data['Payment Account Block'] == 'Accounts') {
+            if ($data['Payment Account Block'] == 'Accounts'  or  $data['Payment Mathod'] == 'Account' ) {
                 $account = _('Customer credits');
 
             } else {
