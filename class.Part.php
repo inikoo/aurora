@@ -285,7 +285,7 @@ class Part extends Asset {
         $this->fast_update(
             array(
                 'Part Next Deliveries Data'     => json_encode($data['deliveries']),
-                'Part Next Shipment Date'       => ($data['next_delivery_time']!=''?gmdate('Y-m-d H:i:s',$data['next_delivery_time']):''),
+                'Part Next Shipment Date'       => ($data['next_delivery_time'] != '' ? gmdate('Y-m-d H:i:s', $data['next_delivery_time']) : ''),
                 'Part Number Active Deliveries' => $data['number_non_draft_POs'],
                 'Part Number Draft Deliveries'  => $data['number_draft_POs']
             )
@@ -313,7 +313,7 @@ class Part extends Asset {
 
 
             $sql = sprintf(
-                'SELECT  `Supplier Part Packages Per Carton`,`Purchase Order Key`,`Supplier Delivery Transaction State`,`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,`Part Units Per Package`,
+                'SELECT  `Supplier Delivery Estimated Receiving Date`,`Supplier Part Packages Per Carton`,`Purchase Order Key`,`Supplier Delivery Transaction State`,`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,`Part Units Per Package`,
                 `Supplier Delivery Units`, `Supplier Delivery Checked Units`,
                 ifnull(`Supplier Delivery Placed Units`,0) AS placed,POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` FROM 
                 `Purchase Order Transaction Fact` POTF LEFT JOIN 
@@ -332,8 +332,6 @@ class Part extends Asset {
                 foreach ($result as $row) {
 
 
-
-
                     if ($row['Supplier Delivery Checked Units'] > 0 or $row['Supplier Delivery Checked Units'] == '') {
 
 
@@ -348,8 +346,9 @@ class Part extends Asset {
 
                         if ($raw_units_qty > 0) {
 
-                            $_next_delivery_time = strtotime('tomorrow');
-                            $raw_skos_qty        = $raw_units_qty / $row['Part Units Per Package'];
+                            $raw_skos_qty = $raw_units_qty / $row['Part Units Per Package'];
+
+                            $supplier_delivery = get_object('SupplierDelivery', $row['Supplier Delivery Key']);
 
 
                             switch ($row['Supplier Delivery Transaction State']) {
@@ -396,9 +395,23 @@ class Part extends Asset {
                             );
 
 
-                            if ($_next_delivery_time > $next_delivery_time) {
-                                $next_delivery_time = $_next_delivery_time;
+                            if ($supplier_delivery->get('State Index') >= 40) {
+                                $_next_delivery_time = strtotime('tomorrow');
+
+                                if ($_next_delivery_time > $next_delivery_time) {
+                                    $next_delivery_time = $_next_delivery_time;
+                                }
+                            } else {
+
+
+                                if ($row['Supplier Delivery Estimated Receiving Date'] != '') {
+                                    $_next_delivery_time = strtotime($row['Supplier Delivery Estimated Receiving Date'].' +0:00');
+
+                                }
+
+
                             }
+
                         }
                     }
                 }
@@ -407,8 +420,6 @@ class Part extends Asset {
                 print "$sql\n";
                 exit;
             }
-
-
 
 
             $sql = sprintf(
@@ -486,6 +497,7 @@ class Part extends Asset {
             }
 
         }
+
 
 
 
@@ -676,11 +688,11 @@ class Part extends Asset {
 
             case 'made_in_production_data':
 
-                $made_in_production_data=$this->properties($key);
-                if($made_in_production_data==''){
+                $made_in_production_data = $this->properties($key);
+                if ($made_in_production_data == '') {
                     return array();
-                }else{
-                    return json_decode($made_in_production_data,true);
+                } else {
+                    return json_decode($made_in_production_data, true);
                 }
 
 
@@ -1410,6 +1422,10 @@ class Part extends Asset {
         }
 
         return false;
+    }
+
+    function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
     }
 
     function validate_barcode() {
@@ -2618,7 +2634,6 @@ class Part extends Asset {
 
 
     }
-
 
     function get_locations($scope = 'keys', $_order = '', $exclude_unknown = false) {
 
@@ -4062,11 +4077,6 @@ class Part extends Asset {
 
     }
 
-    function get_current_formatted_value_at_cost() {
-        //return number($this->data['Part Current Value'],2);
-        return money($this->data['Part Current Value']);
-    }
-
     /*
     function get_products_data($with_objects = false) {
 
@@ -4107,6 +4117,11 @@ class Part extends Asset {
         return $products_data;
     }
 */
+
+    function get_current_formatted_value_at_cost() {
+        //return number($this->data['Part Current Value'],2);
+        return money($this->data['Part Current Value']);
+    }
 
     function get_current_formatted_value_at_current_cost() {
 
@@ -4351,7 +4366,7 @@ class Part extends Asset {
                 "Part $i Year Ago With Stock Days"  => $data_iy_ago['with_stock_days'],
             );
 
-            $this->fast_update($data_to_update,'Part Data');
+            $this->fast_update($data_to_update, 'Part Data');
         }
 
     }
@@ -4394,7 +4409,7 @@ class Part extends Asset {
                 "Part $i Quarter Ago 1YB Keeping Day"      => $sales_data_1yb['keep_days'],
                 "Part $i Quarter Ago 1YB With Stock Days"  => $sales_data_1yb['with_stock_days'],
             );
-            $this->fast_update($data_to_update,'Part Data');
+            $this->fast_update($data_to_update, 'Part Data');
         }
 
     }
@@ -4832,7 +4847,6 @@ class Part extends Asset {
 
     }
 
-
     function update_commercial_value() {
 
         include_once 'utils/currency_functions.php';
@@ -4980,7 +4994,6 @@ class Part extends Asset {
 
     }
 
-
     function update_number_locations() {
 
 
@@ -5004,7 +5017,6 @@ class Part extends Asset {
         $this->fast_update(array('Part Distinct Locations' => $locations));
 
     }
-
 
     function update_unknown_location() {
 
@@ -5095,7 +5107,6 @@ class Part extends Asset {
 
     }
 
-
     function update_made_in_production_data() {
 
 
@@ -5114,23 +5125,15 @@ class Part extends Asset {
 
         $this->fast_update(
             array(
-                'Part Made in Production' => (count($made_in_production_data)>0 ? 'Yes' : 'No'),
+                'Part Made in Production' => (count($made_in_production_data) > 0 ? 'Yes' : 'No'),
             )
         );
-
-
 
 
         $this->fast_update_json_field('Part Properties', 'made_in_production_data', json_encode($made_in_production_data));
 
 
-
-
     }
-
-
-
-
 
     function update_production_supply_data() {
 
@@ -5167,10 +5170,6 @@ class Part extends Asset {
         }
 
 
-    }
-
-    function properties($key) {
-        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
     }
 
 }

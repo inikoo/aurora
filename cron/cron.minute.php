@@ -361,19 +361,22 @@ if($time=='05:00'   ){
 
 if($time=='01:00'   ){
 
+
     $sql = sprintf(
-        "SELECT `Product ID` FROM `Product Dimension` left join `Store Dimension` on (`Store Key`=`Product Store Key`) where `Store Version`=2  "
+        'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`  DESC '
     );
+
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
+            $part =  get_object('Part',$row['Part SKU']);
+            $part->update_next_deliveries_data();
 
-            $product = new Product($row['Product ID']);
-            $product->update_next_shipment();
         }
 
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
+
     }
 
 
