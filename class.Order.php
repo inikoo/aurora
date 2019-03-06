@@ -721,6 +721,8 @@ class Order extends DB_Table {
 
         include_once 'utils/new_fork.php';
 
+        $store = get_object('Store', $this->data['Order Store Key']);
+
 
         $date = gmdate('Y-m-d H:i:s');
 
@@ -1017,7 +1019,6 @@ class Order extends DB_Table {
                         $dispatch_method = 'Dispatch';
                     }
 
-                    $store = get_object('Store', $this->data['Order Store Key']);
 
                     $data_dn                                              = array(
                         'Delivery Note Warehouse Key' => $warehouse_key,
