@@ -14,7 +14,7 @@ require_once 'common.php';
 
 
 $sql = sprintf(
-    'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`  DESC '
+    'SELECT `Part SKU` FROM `Part Dimension`   ORDER BY `Part SKU`  DESC '
 );
 
 if ($result = $db->query($sql)) {
