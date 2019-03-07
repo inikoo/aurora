@@ -2047,7 +2047,6 @@ function agent_order_items($_data, $db, $user, $account) {
                 'supplier_key'      => (integer)$data['Supplier Key'],
                 'checkbox'          => sprintf('<i key="%d" class="invisible far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']),
                 'operations'        => sprintf('<i key="%d" class="fa fa-fw fa-truck fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']),
-                'reference'         => $data['Supplier Part Reference'],
 
 
                 'reference' => sprintf(

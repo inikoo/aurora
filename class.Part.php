@@ -82,6 +82,7 @@ class Part extends Asset {
         // print $sql;
 
         if ($this->data = $this->db->query($sql)->fetch()) {
+
             $this->id         = $this->data['Part SKU'];
             $this->sku        = $this->id;
             $this->properties = json_decode($this->data['Part Properties'], true);
@@ -302,7 +303,10 @@ class Part extends Asset {
     function get_next_deliveries_data() {
 
 
-        $next_delivery_time   = 0;
+        $next_delivery_time       = 999999999999;
+        $valid_next_delivery_time = false;
+
+
         $next_deliveries_data = array();
 
         $number_draft_POs     = 0;
@@ -375,31 +379,14 @@ class Part extends Asset {
                             }
 
                             $number_non_draft_POs++;
-
-                            $next_deliveries_data[] = array(
-                                'type'            => 'delivery',
-                                'qty'             => '+'.number($raw_skos_qty),
-                                'raw_sko_qty'     => $raw_skos_qty,
-                                'raw_units_qty'   => $raw_units_qty,
-                                'date'            => '',
-                                'formatted_link'  => sprintf(
-                                    '<i class="fal fa-truck fa-fw" ></i> <i style="visibility: hidden" class="fal fa-truck fa-fw" ></i> <span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"> %s</span>', strtolower($row['Supplier Delivery Parent']),
-                                    $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key'], $row['Supplier Delivery Public ID']
-                                ),
-                                'link'            => sprintf('%s/%d/delivery/%d', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key']),
-                                'order_id'        => $row['Supplier Delivery Public ID'],
-                                'formatted_state' => '<span class=" italic">'.$row['Supplier Delivery Transaction State'].'</span>',
-                                'state'           => $state,
-
-                                'po_key' => $row['Purchase Order Key']
-                            );
-
+                            $date = '';
 
                             if ($supplier_delivery->get('State Index') >= 40) {
                                 $_next_delivery_time = strtotime('tomorrow');
 
-                                if ($_next_delivery_time > $next_delivery_time) {
-                                    $next_delivery_time = $_next_delivery_time;
+                                if ($_next_delivery_time > gmdate('U') and $_next_delivery_time < $next_delivery_time) {
+                                    $next_delivery_time       = $_next_delivery_time;
+                                    $valid_next_delivery_time = true;
                                 }
                             } else {
 
@@ -407,10 +394,40 @@ class Part extends Asset {
                                 if ($row['Supplier Delivery Estimated Receiving Date'] != '') {
                                     $_next_delivery_time = strtotime($row['Supplier Delivery Estimated Receiving Date'].' +0:00');
 
+                                    if ($_next_delivery_time > gmdate('U')) {
+
+
+                                        if ($_next_delivery_time < $next_delivery_time) {
+                                            $next_delivery_time       = $_next_delivery_time;
+                                            $valid_next_delivery_time = true;
+                                            $date                     = strftime("%e %b %y", strtotime($row['Supplier Delivery Estimated Receiving Date'].' +0:00'));
+                                        }
+                                    }
+
+
                                 }
 
 
                             }
+
+
+                            $next_deliveries_data[] = array(
+                                'type'            => 'delivery',
+                                'qty'             => '+'.number($raw_skos_qty),
+                                'raw_sko_qty'     => $raw_skos_qty,
+                                'raw_units_qty'   => $raw_units_qty,
+                                'date'            => $date,
+                                'formatted_link'  => sprintf(
+                                    '<i class="fal fa-truck fa-fw" ></i> <i style="visibility: hidden" class="fal fa-truck fa-fw" ></i> <span class="link" onclick="change_view(\'%s/%d/delivery/%d\')"> %s</span>', strtolower($row['Supplier Delivery Parent']),
+                                    $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key'], $row['Supplier Delivery Public ID']
+                                ),
+                                'link'            => sprintf('%s/%d/delivery/%d', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key']),
+                                'order_id'        => $row['Supplier Delivery Public ID'],
+                                'formatted_state' => ($date == '' ? '<span class=" italic">'.$row['Supplier Delivery Transaction State'].'</span>' : $date),
+                                'state'           => $state,
+
+                                'po_key' => $row['Purchase Order Key']
+                            );
 
                         }
                     }
@@ -457,14 +474,24 @@ class Part extends Asset {
                         $raw_skos_qty  = $raw_units_qty / $row['Part Units Per Package'];
 
                         $_next_delivery_time = strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00');
-                        $date                = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
 
-                        $formatted_state = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
-                        $link            = sprintf(
+
+                        $date = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
+
+                        if ($_next_delivery_time < gmdate('U')) {
+                            $formatted_state = '<span class="discreet error italic" title="'.strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00')).'" >'._('Delayed').'</span>';
+
+                        } else {
+
+                            $formatted_state = strftime("%e %b %y", strtotime($row['Purchase Order Estimated Receiving Date'].' +0:00'));
+
+                        }
+
+                        $link = sprintf(
                             '<i class="fal fa-fw  fa-clipboard" ></i> <i class="fal fa-fw  fa-paper-plane" title="%s" ></i> <span class="link" onclick="change_view(\'suppliers/order/%d\')">  %s</span>', _('Submitted'), $row['Purchase Order Key'],
                             $row['Purchase Order Public ID']
                         );
-                        $qty             = '+'.number($raw_skos_qty);
+                        $qty  = '+'.number($raw_skos_qty);
                     }
 
 
@@ -485,8 +512,9 @@ class Part extends Asset {
                     );
 
 
-                    if ($_next_delivery_time > $next_delivery_time) {
-                        $next_delivery_time = $_next_delivery_time;
+                    if ($_next_delivery_time > gmdate('U') and $_next_delivery_time < $next_delivery_time) {
+                        $next_delivery_time       = $_next_delivery_time;
+                        $valid_next_delivery_time = true;
                     }
 
                 }
@@ -498,7 +526,9 @@ class Part extends Asset {
 
         }
 
-
+        if (!$valid_next_delivery_time) {
+            $next_deliveries_data = 0;
+        }
 
 
         return array(
