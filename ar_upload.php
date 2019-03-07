@@ -774,6 +774,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
                 'error_msg'      => $error_msg,
                 'uploads'        => $uploads,
                 'number_images'  => $parent->get_number_images(),
+
                 'main_image_key' => $parent->get_main_image_key(),
                 'image_src'      => sprintf('/image_root.php?id=%d', $image->id),
                 'thumbnail'      => sprintf('<img src="/image_root.php?id=%d&size=thumbnail">', $image->id),

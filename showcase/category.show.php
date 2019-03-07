@@ -27,7 +27,6 @@ function get_category_showcase($data, $smarty) {
         $main_image = '';
     }
 
-
     $smarty->assign('category', $category);
 
     return $smarty->fetch('showcase/category.tpl');

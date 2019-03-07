@@ -1121,9 +1121,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     }
 
 
-
-
-
                     $campaign = get_object('campaign_code-store_key', 'CA|'.$store->id);
 
 
@@ -1360,7 +1357,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
         case 'Deal_Component':
 
 
-
             switch ($data['parent']) {
                 case 'category':
 
@@ -1369,9 +1365,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     $store->editor = $editor;
 
 
-                  //  print_r($data);
+                    //  print_r($data);
 
-                    $data['fields_data']['Deal Name']=$data['fields_data']['Deal Component Name Label'];
+                    $data['fields_data']['Deal Name'] = $data['fields_data']['Deal Component Name Label'];
 
                     if ($data['fields_data']['Entitled To Voucher']) {
                         $voucher      = true;
@@ -1404,8 +1400,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
                     );
-
-
 
 
                     if ($data['fields_data']['Deal Type Percentage Off']) {
@@ -1481,24 +1475,18 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     }
 
 
-
-
-
                     $campaign = get_object('campaign_code-store_key', 'CA|'.$store->id);
 
 
                     $object = $campaign->create_deal($deal_new_data, $new_component_data);
 
                     //$deal_components        = $object->get_deal_components('objects');
-                    $deal_component         = $campaign->new_deal_component;
+                    $deal_component = $campaign->new_deal_component;
 
 
-
-                  //  print_r($deal_component);
+                    //  print_r($deal_component);
 
                     $pcard = '';
-
-
 
 
                     $redirect     = 'products/'.$category->get('Store Key').'/category/'.$category->id.'/deal_component/'.$deal_component->id;
@@ -2762,9 +2750,10 @@ function delete_image($account, $db, $user, $editor, $data, $smarty) {
             $object->delete_image($data['image_bridge_key']);
 
             $response = array(
-                'state'          => 200,
-                'msg'            => _('Image deleted'),
-                'number_images'  => $object->get_number_images(),
+                'state'         => 200,
+                'msg'           => _('Image deleted'),
+                'number_images' => $object->get_number_images(),
+
                 'main_image_key' => $object->get_main_image_key()
 
             );

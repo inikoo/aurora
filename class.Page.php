@@ -4839,6 +4839,10 @@ class Page extends DB_Table {
     }
 
     function reindex_category_categories() {
+
+        include_once('utils/image_functions.php');
+
+
         $content_data = $this->get('Content Data');
 
 
@@ -4879,6 +4883,9 @@ class Page extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
+
+
+
                 $items[$row['Category Key']]                    = $row;
                 $items_category_key_index[$row['Category Key']] = $row['Category Key'];
             }
@@ -4887,7 +4894,6 @@ class Page extends DB_Table {
             print "$sql\n";
             exit;
         }
-
 
         $offline_items_category_key_index = array();
         $sql                              = sprintf(
@@ -4927,12 +4933,37 @@ class Page extends DB_Table {
 
                         $item_data = $items[$item['category_key']];
 
+
+
+
+
+                        if (preg_match('/id=(\d+)/', $item_data['Category Main Image'], $matches)) {
+
+                            $image_mobile_website=create_cached_image($matches[1], 320, 200);
+                            $image_website = create_cached_image($matches[1], 432, 330, 'fit_highest');
+
+                        }else{
+                            $image_mobile_website= 'art/nopic_mobile.png';
+                            $image_website= $item_data['Category Main Image'];
+
+                        }
+
+
+
                         $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Subject';
                         $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_key']     = $item_data['Page Key'];
                         $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_code']    = $item_data['Webpage Code'];
                         $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['category_code']   = $item_data['Category Code'];
                         $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['number_products'] = $item_data['Product Category Active Products'];
                         $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['link']            = $item_data['Webpage URL'];
+
+                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_src']=$item_data['Category Main Image'];
+                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website']= $image_website;
+
+                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website']= $image_mobile_website;
+
+
+
 
                         unset($items_category_key_index[$item['category_key']]);
                     } else {
@@ -4983,6 +5014,8 @@ class Page extends DB_Table {
 
         }
 
+
+
         foreach ($items_category_key_index as $index) {
             $item_data = $items[$index];
             $item      = array(
@@ -5004,6 +5037,8 @@ class Page extends DB_Table {
 
             array_unshift($content_data['blocks'][$block_key]['sections'][$anchor_section_key]['items'], $item);
         }
+
+
 
         // print_r($content_data['blocks'][$block_key]['sections']);
 

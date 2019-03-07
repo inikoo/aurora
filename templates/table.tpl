@@ -239,6 +239,9 @@
                                 reset: true
                             });
 
+
+                            $('.Number_Images').html('('+data.number_images+')')
+
                             if (data.number_images == 0) {
 
                                 $('div.main_image').addClass('hide')
@@ -677,6 +680,8 @@
                     if (data.state == '200') {
 
                         if (data.tipo == 'upload_images') {
+
+                            $('.Number_Images').html('('+data.number_images+')')
 
                             rows.url = '/' + rows.ar_file + '?tipo=' + rows.tipo + '&parameters=' + rows.parameters
                             rows.fetch({

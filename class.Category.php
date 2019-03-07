@@ -3911,4 +3911,57 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
     }
 
 
+    function update_webpages() {
+
+
+        if($this->data['Category Scope'] == 'Product'){
+            $webpages_to_reindex = array();
+
+            $sql = sprintf(
+                'select `Website Webpage Scope Webpage Key`  from `Website Webpage Scope Map` where `Website Webpage Scope Scope`="Category" and `Website Webpage Scope Scope Key`=%d ', $this->id
+            );
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+
+                    $webpages_to_reindex[$row['Website Webpage Scope Webpage Key']] = $row['Website Webpage Scope Webpage Key'];
+
+
+
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+            $webpages_to_reindex[$this->get('Product Category Webpage Key')] = $this->get('Product Category Webpage Key');
+
+            $date = gmdate('Y-m-d H:i:s');
+            foreach ($webpages_to_reindex as $webpage_to_reindex_key) {
+                if ($webpage_to_reindex_key > 0) {
+                    $sql = sprintf(
+                        'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
+                        prepare_mysql($date),
+                        prepare_mysql($date),
+                        prepare_mysql('reindex_webpage'),
+                        $webpage_to_reindex_key,
+                        prepare_mysql($date)
+
+                    );
+                    $this->db->exec($sql);
+
+                }
+
+            }
+
+        }
+
+
+
+
+
+    }
+
+
 }

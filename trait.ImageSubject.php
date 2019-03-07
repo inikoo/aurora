@@ -20,7 +20,7 @@ trait ImageSubject {
 
         include_once 'utils/units_functions.php';
 
-      // print_r($raw_data);
+        // print_r($raw_data);
 
 
         $data = array(
@@ -37,26 +37,21 @@ trait ImageSubject {
         );
 
 
-
-
-
-        if (isset($raw_data['Image Subject Object Image Scope']) and $raw_data['Image Subject Object Image Scope']!='' ) {
+        if (isset($raw_data['Image Subject Object Image Scope']) and $raw_data['Image Subject Object Image Scope'] != '') {
 
             if ($this->table_name == 'Page') {
 
                 json_decode($raw_data['Image Subject Object Image Scope']);
-                if(json_last_error() == JSON_ERROR_NONE){
+                if (json_last_error() == JSON_ERROR_NONE) {
                     $scope_data         = json_decode($raw_data['Image Subject Object Image Scope'], true);
                     $object_image_scope = $scope_data['scope'];
-                }else{
-                    $scope_data=array('scope'=>'');
-                    $object_image_scope=$raw_data['Image Subject Object Image Scope'];
+                } else {
+                    $scope_data         = array('scope' => '');
+                    $object_image_scope = $raw_data['Image Subject Object Image Scope'];
                 }
 
 
-
-
-            } else{
+            } else {
                 $object_image_scope = $raw_data['Image Subject Object Image Scope'];
             }
 
@@ -64,8 +59,6 @@ trait ImageSubject {
         } else {
             $object_image_scope = 'Default';
         }
-
-
 
 
         $image = new Image('find', $data, 'create');
@@ -81,8 +74,6 @@ trait ImageSubject {
                 if ($object_image_scope != 'SKO') {
 
 
-
-
                     foreach ($this->get_products('objects') as $product) {
 
                         if (count($product->get_parts()) == 1) {
@@ -95,7 +86,7 @@ trait ImageSubject {
 
             } elseif ($this->table_name == 'Category') {
                 $account = new Account();
-                if ($this->get('Category Scope') == 'Part' and $this->get('Category Root Key') == $account->get('Account Part Family Category Key')  and $object_image_scope=='Marketing' ) {
+                if ($this->get('Category Scope') == 'Part' and $this->get('Category Root Key') == $account->get('Account Part Family Category Key') and $object_image_scope == 'Marketing') {
 
                     $sql = sprintf(
                         'SELECT `Category Key` FROM `Category Dimension` WHERE `Category Scope`="Product" AND `Category Code`=%s  ', prepare_mysql($this->get('Code'))
@@ -119,11 +110,7 @@ trait ImageSubject {
 
                 }
 
-            }
-            elseif ($this->table_name == 'Page') {
-
-
-
+            } elseif ($this->table_name == 'Page') {
 
 
                 if ($scope_data['scope'] == 'content') {
@@ -232,9 +219,6 @@ trait ImageSubject {
                 }
 
 
-
-
-
             }
 
             return $image;
@@ -270,8 +254,6 @@ trait ImageSubject {
                 "SELECT `Image Subject Image Key`,`Image Subject Is Principal` FROM `Image Subject Bridge` WHERE `Image Subject Object`=%s AND `Image Subject Object Key`=%d  AND `Image Subject Image Key`=%d",
                 prepare_mysql($subject), $subject_key, $image->id
             );
-
-
 
 
             if ($result = $this->db->query($sql)) {
@@ -313,7 +295,6 @@ trait ImageSubject {
                 prepare_mysql($is_public)
 
             );
-
 
 
             $this->db->exec($sql);
@@ -373,7 +354,6 @@ trait ImageSubject {
         } else {
 
 
-
             $this->error = true;
             $this->msg   = "Can't create/found image (a), ".$image->msg;
 
@@ -411,31 +391,41 @@ trait ImageSubject {
     function update_images_data() {
 
 
-
-
-        $number_images = 0;
-
         $subject = $this->table_name;
 
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Image Subject Bridge` WHERE `Image Subject Object`=%s AND `Image Subject Object Key`=%d ", prepare_mysql($subject), $this->id
-        );
+        $sql = "SELECT count(*) AS num FROM `Image Subject Bridge` WHERE `Image Subject Object`=? AND `Image Subject Object Key`=? ";
 
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
+        $stmt = $this->db->prepare($sql);
+        if ($stmt->execute(
+            array(
+                $subject,
+                $this->id
+            )
+        )) {
+            if ($row = $stmt->fetch()) {
                 $number_images = $row['num'];
+            } else {
+                $number_images = 0;
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+            exit();
         }
 
 
-        $this->fast_update(
-            array(($this->get_object_name() == 'Category' ? $this->subject_table_name : $this->get_object_name()).' Number Images' => $number_images)
-        );
+        if($this->get_object_name() == 'Category'){
+            $this->fast_update(
+                array($this->subject_table_name.' Number Images' => $number_images),$this->subject_table_name.' Dimension'
+            );
+        }else{
+            $this->fast_update(
+                array($this->get_object_name().' Number Images' => $number_images)
+            );
+        }
+
+
+
 
 
     }
@@ -477,8 +467,6 @@ trait ImageSubject {
     function update_main_image() {
 
 
-
-
         $image_key = $this->get_main_image_key();
 
 
@@ -515,12 +503,9 @@ trait ImageSubject {
                 $main_image_src = 'art/nopic.png';
             }
 
-            $main_image_src = preg_replace(
-                '/image_root/', 'image', $main_image_src
-            );
+            $main_image_src = preg_replace('/image_root/', 'image', $main_image_src);
 
-            include_once 'class.Store.php';
-            $store = new Store($this->get('Category Store Key'));
+            $store = get_object('Store',$this->get('Category Store Key'));
             if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
 
 
@@ -534,10 +519,12 @@ trait ImageSubject {
 
             }
 
+            $this->update_webpages();
+
 
         } elseif ($this->table_name == 'Part') {
             $this->activate();
-        }elseif ($this->table_name == 'Product') {
+        } elseif ($this->table_name == 'Product') {
 
             $this->update_webpages();
 
