@@ -8,6 +8,8 @@ renderable: false
 
 },{
 name: "visibility",
+renderable: false,
+
 label: "",
 editable: false,
 cell: Backgrid.HtmlCell.extend({
