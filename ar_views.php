@@ -2996,7 +2996,9 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
     foreach ($tabs as $key => $tab) {
         if (isset($tab['quantity_data'])) {
-            $tabs[$key]['label'] .= sprintf(' <span class=\'discreet\'>(%s)</span>', $data[$tab['quantity_data']['object']]->get($tab['quantity_data']['field']));
+            $tabs[$key]['label'] .= sprintf(' <span class=\'discreet %s\'>(%s)</span>',
+                                            preg_replace('/\s/','_',$tab['quantity_data']['field']),
+                                            $data[$tab['quantity_data']['object']]->get($tab['quantity_data']['field']));
         }
 
         if (isset($tab['dynamic_reference'])) {
@@ -3007,7 +3009,11 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
     foreach ($subtabs as $key => $subtab) {
         if (isset($subtab['quantity_data'])) {
-            $subtabs[$key]['label'] .= sprintf(' <span class=\'discreet\'>(%s)</span>', $data[$subtab['quantity_data']['object']]->get($subtab['quantity_data']['field']));
+            $subtabs[$key]['label'] .= sprintf(
+                ' <span class=\'discreet %s\'>(%s)</span>',
+                preg_replace('/\s/','_',$subtab['quantity_data']['field']),
+                $data[$subtab['quantity_data']['object']]->get($subtab['quantity_data']['field'])
+            );
         }
     }
 

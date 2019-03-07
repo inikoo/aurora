@@ -480,6 +480,7 @@ function get_family_showcase($data, $smarty) {
         'header_total_sales', sprintf(_('All sales since: %s'), $category->get('Valid From'))
     );
 
+    //$category->update_images_data();
 
     return $smarty->fetch('showcase/family.tpl');
 

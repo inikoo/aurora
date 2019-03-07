@@ -112,6 +112,10 @@ function delete_image(image_bridge_key) {
 
         if (data.state == 200) {
 
+
+            $('.Number_Images').html('('+data.number_images+')')
+
+
             tr.removeClass('deleting_tr').addClass('deleted_tr')
             $('#delete_image_button_' + image_bridge_key).html(data.msg).closest('td').addClass('inmmune')
 
