@@ -1196,7 +1196,7 @@ function intrastat($_data, $db, $user, $account) {
                 'period'      => $data['monthyear'],
                 'tariff_code' => $data['tariff_code'],
                 'value'       => money($data['value'], $account->get('Account Currency')),
-                'items'       => $data['items'],
+                'items'       => number(ceil($data['items'])),
                 'products'    => sprintf(
                     '<span class="link" onClick="change_view(\'report/intrastat/products/%s/%s\')" >%s</span>', $data['Delivery Note Address Country 2 Alpha Code'], ($data['tariff_code'] == '' ? 'missing' : $data['tariff_code']), number($data['products'])
                 ),
@@ -1268,6 +1268,7 @@ function intrastat_orders($_data, $db, $user, $account) {
                 'customer' => sprintf('<span class="link" onClick="change_view(\'customers/%s/%s\')" >%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
                 'date'     => strftime("%e %b %Y", strtotime($data['Delivery Note Date'].' +0:00')),
                 'amount'   => money($data['amount'], $data['Order Currency Code']),
+                'amount_ac'   => money($data['amount_ac'], $account->get('Currency Code')),
                 'weight'   => weight($data['weight'], 'Kg', 2, false, true),
                 'products' => $data['products']
 

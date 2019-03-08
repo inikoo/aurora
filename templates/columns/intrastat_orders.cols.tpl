@@ -59,6 +59,16 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 {
+name: "amount_ac",
+label: "{$account->get('Account Currency')}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+{
 name: "weight",
 label: "{t}Weight{/t}",
 editable: false,

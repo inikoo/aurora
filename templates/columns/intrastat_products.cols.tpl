@@ -64,6 +64,7 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
+
 {
 name: "weight",
 label: "{t}Unit weight{/t}",
