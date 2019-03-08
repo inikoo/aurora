@@ -99,6 +99,8 @@ if ($order == 'number') {
     $order = '`Order Customer Name`';
 }elseif ($order == 'amount') {
     $order = 'amount';
+}elseif ($order == 'amount_ac') {
+    $order = 'amount_ac';
 }elseif ($order == 'weight') {
     $order = 'weight';
 }else{
@@ -110,38 +112,43 @@ if ($order == 'number') {
 $group_by
     = ' group by OTF.`Order Key` ';
 
-$table = ' `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  left join `Order Dimension` O  on (OTF.`Order Key`=O.`Order Key`) left join `Delivery Note Dimension` DN  on (OTF.`Delivery Note Key`=DN.`Delivery Note Key`) left join `Invoice Dimension` I  on (OTF.`Invoice Key`=I.`Invoice Key`) ';
+$table = ' `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)  left join `Order Dimension` O  on (OTF.`Order Key`=O.`Order Key`) left join `Delivery Note Dimension` DN  on (OTF.`Delivery Note Key`=DN.`Delivery Note Key`) left join `Invoice Dimension` I  on (OTF.`Invoice Key`=I.`Invoice Key`) 
+left join `Store Dimension` S on (S.`Store Key`=OTF.`Store Key`)
+
+';
 
 $sql_totals = "";
 
 
 
-if ($account->get('Account Code') == 'AWEU') {
 
 
     $fields = "OTF.`Order Key`,O.`Order Public ID`,`Order Customer Name`,`Delivery Note Date`,`Order Store Key`,`Order Customer Key`,`Order Currency Code`,
-sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
+sum(   
+if(`Store Version`=2,  
+`Order Transaction Amount`*`Invoice Currency Exchange Rate` , 
+`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`)
+ )
+ ) as amount_ac,
+ 
+ sum(   
+if(`Store Version`=2,  
+`Order Transaction Amount` , 
+(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`)
+ )
+ ) as amount,
+ 
+ 
 	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight ,
 	group_concat(P.`Product Code` SEPARATOR ', ') as products
 
 ";
 
-} else {
-
-
-    $fields = "OTF.`Order Key`,O.`Order Public ID`,`Order Customer Name`,`Delivery Note Date`,`Order Store Key`,`Order Customer Key`,`Order Currency Code`,
-
-	sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`)) as amount, 
-
-	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight ,
-	group_concat(P.`Product Code` SEPARATOR ', ') as products
-
-";
 
 
 
 
-}
+
 
 
 
