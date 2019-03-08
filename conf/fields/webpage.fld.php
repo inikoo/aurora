@@ -349,7 +349,7 @@ if (in_array($object->get('Webpage Scope'), array('Contact'))) {
 
 }
 
-if (in_array($object->get('Webpage Scope'), array('Category Categories'))) {
+if (in_array($object->get('Webpage Scope'), array('Category Categories')) and $website->get('Website Theme')!='theme_1'   ) {
 
     $template_options = array(
         'categories_classic_showcase' => _('Responsive grid'),
@@ -366,6 +366,7 @@ if (in_array($object->get('Webpage Scope'), array('Category Categories'))) {
                 'edit' => ($edit ? 'option' : ''),
 
                 'id'              => 'Webpage_Template_Filename',
+
                 'value'           => $object->get('Webpage Template Filename'),
                 'formatted_value' => $object->get('Template Filename'),
                 'options'         => $template_options,
