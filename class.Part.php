@@ -527,7 +527,7 @@ class Part extends Asset {
         }
 
         if (!$valid_next_delivery_time) {
-            $next_deliveries_data = 0;
+            $next_delivery_time = 0;
         }
 
 
