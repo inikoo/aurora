@@ -337,7 +337,7 @@ if ($validator->isValid($sns)) {
                                 $customer         = get_object('Customer', $row2['Customer Key']);
                                 $customer->editor = $editor;
 
-                                if ($bounce_type == 'Hard' or ($bounce_type == 'Soft' and $bounce_count > 1)) {
+                                if ($bounce_type == 'Hard Bounce' or ($bounce_type == 'Soft Bounce' and $bounce_count > 1)) {
 
                                     if ($customer->get('Customer Send Newsletter') == 'Yes' or $customer->get('Customer Send Email Marketing') == 'Yes') {
 
