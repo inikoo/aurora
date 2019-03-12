@@ -309,8 +309,13 @@ class Deal extends DB_Table {
     function update_term_allowances() {
 
 
-        $this->update_field_switcher(
-            'Deal Term Allowances Label', '<span class="term">'.$this->get_formatted_terms().'</span> <i class="fa fa-arrow-right"></i> <span class="allowance">'.$this->get_formatted_allowances().'</span>', 'no_history'
+        $this->fast_update(
+
+            array(
+                'Deal Term Allowances Label'=>'<span class="term">'.$this->get_formatted_terms().'</span> <i class="fa fa-arrow-right"></i> <span class="allowance">'.$this->get_formatted_allowances().'</span>'
+            )
+
+
         );
     }
 
@@ -318,13 +323,29 @@ class Deal extends DB_Table {
 
         $terms = '';
 
+
+
         switch ($this->data['Deal Terms Type']) {
+
+            case 'Voucher AND Amount':
+
+                $store=get_object('Store',$this->data['Deal Store Key']);
+
+               // $voucher=get_object('Voucher',$this->data['Deal Voucher Key']);
+
+                $_terms=json_decode($this->get('Deal Terms'),true);
+
+                $terms = '<span style="border:1px solid ;padding: 1px 10px">'.$_terms['voucher'].'</span> <span style="opacity: .8">'.money($_terms['amount'],$store->get('Store Currency Code')).'</span>';
+
+
+                break;
 
             case 'Order Interval':
                 $terms = sprintf('last order within %d days', $this->get('Deal Terms'));
 
 
                 break;
+
             case 'Category Quantity Ordered':
 
                 $component = $this->get_deal_components('objects');
@@ -381,6 +402,8 @@ class Deal extends DB_Table {
                 break;
 
         }
+
+
 
 
         return $terms;
@@ -1155,8 +1178,15 @@ class Deal extends DB_Table {
         switch ($field) {
 
             case 'Deal Name':
-                $label = _('name');
+                $label = _('code');
                 break;
+            case 'Deal Name Label':
+                $label = _('public name');
+                break;
+            case 'Deal Term Label':
+                $label = _('public terms info');
+                break;
+
             case 'Deal Description':
                 $label = _('description');
                 break;

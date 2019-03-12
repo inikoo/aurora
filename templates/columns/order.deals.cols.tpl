@@ -36,7 +36,7 @@ headerCell: HeaderHtmlCell
 
 {
 name: "name",
-label: "{t}Offer{/t}",
+label: "{t}Name{/t}",
 editable: false,
 
 sortType: "toggle",
@@ -64,7 +64,7 @@ headerCell: HeaderHtmlCell
 
 {
 name: "description",
-label: "{t}Deal description{/t}",
+label: "{t}Terms/Allowances{/t}",
 editable: false,
 
 sortType: "toggle",

@@ -138,6 +138,9 @@
                         </tbody>
                     </table>
 
+
+
+
                 </div>
 
             </div>
@@ -162,7 +165,7 @@
 
                     <section >
 
-                        <div class="row"   style="display:none"  >
+                        <div class="row"  id="voucher"  >
                             <section class="col col-6">
                                 <label class="input">
                                     <i class="icon-append fa fa-tag"></i>
@@ -170,7 +173,7 @@
                                 </label>
                             </section>
                             <section class="col col-6">
-                                <button style="margin:0px" type="submit" class="button">{$data._voucher_label}</button>
+                                <button  style="margin:0px" type="submit" class="button">{$data._voucher_label} <i style="margin-left: 5px" class=" fa fa-fw fa-plus"></i> </button>
 
                             </section>
                         </div>
@@ -506,6 +509,65 @@
 
 
 
+    $(document).on('click', "#voucher .button", function(ev){
+
+
+
+        var button=$(this)
+
+
+        if( button.hasClass('wait')){
+            return;
+        }
+
+        button.addClass('wait')
+        button.find('i').addClass('fa-spin fa-spinner')
+        var voucher=$(this).closest('div').find('input').val()
+
+
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'update_voucher')
+        ajaxData.append("voucher",voucher)
+
+
+
+
+
+        $.ajax({
+            url: "/ar_web_voucher.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+            complete: function () {
+            }, success: function (data) {
+
+
+                if (data.state == '200') {
+
+                    for (var key in data.metadata.class_html) {
+
+
+                        $('.' + key).html(data.metadata.class_html[key])
+                    }
+
+
+
+
+
+                } else if (data.state == '400') {
+                    swal("{t}Error{/t}!", data.msg, "error")
+                }
+
+
+                button.removeClass('wait')
+                button.find('i').removeClass('fa-spinner fa-spin')
+            }, error: function () {
+                button.removeClass('wait')
+                button.find('i').removeClass('fa-spinner fa-spin')
+            }
+        });
+
+    });
+
 
 
 
@@ -825,6 +887,7 @@
         error.insertAfter(element.parent());
     }
     });
+
 
 
 

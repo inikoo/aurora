@@ -542,7 +542,10 @@
                 <td class="label small">{t}Charges{/t}</td>
                 <td class="aright"><span class="discreet italic">(<span class=" Charges_Discount_Percentage">{$order->get('Charges Discount Percentage')}</span>)</span> <span class="padding_left_10 Charges_Discount_Amount">{$order->get('Charges Discount Amount')}</span></td>
             </tr>
-
+            <tr class="subtotal Charges_Discount_Amount_tr  {if $order->get('Order Deal Amount Off')==0}hide{/if} ">
+                <td class="label small">{t}Amount off{/t}</td>
+                <td class="aright"><span class="discreet italic">(<span class=" Amount_Off_Discount_Percentage">{$order->get('Amount Off Percentage')}</span>)</span> <span class="padding_left_10 Charges_Discount_Amount">{$order->get('Amount Off')}</span></td>
+            </tr>
         </table>
 
 
@@ -807,6 +810,10 @@
                                                                                                                                                                                                onClick="save_shipping_value()"
                                                                                                                                                                                                aria-hidden="true"></i> </span><span
                             id="Shipping_Net_Amount" class="Shipping_Net_Amount button">{$order->get('Shipping Net Amount')}<span></td>
+            </tr>
+            <tr class="Deal_Amount_Off_tr  {if $order->get('Order Deal Amount Off')==0}hide{/if}">
+                <td class="label">{t}Amount off{/t}</td>
+                <td class="aright Deal_Amount_Off">{$order->get('Deal Amount Off')}</td>
             </tr>
             <tr class="subtotal">
                 <td class="label">{t}Net{/t}</td>

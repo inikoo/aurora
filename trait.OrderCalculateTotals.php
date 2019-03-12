@@ -196,12 +196,14 @@ trait OrderCalculateTotals {
 
         }
 
+        $total_net-=$this->data['Order Deal Amount Off'];
 
         $total = round($total_net + $total_tax, 2);
 
         $shipping  = 0;
         $charges   = 0;
         $insurance = 0;
+
 
         $total_charges_discounts   = 0;
         $total_shipping_discounts  = 0;

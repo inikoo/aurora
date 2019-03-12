@@ -751,6 +751,8 @@ abstract class DB_Table extends stdClass {
                 $value = null;
             }
 
+
+
             $stmt->bindParam(1, $value);
             $stmt->bindParam(2, $this->id);
 
