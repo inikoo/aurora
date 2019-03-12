@@ -27,7 +27,7 @@
 
     </style>
 
-<script src="js/website_style.js"></script>
+<script src="js/website_style.js?v=2"></script>
 
 
 <body xmlns="http://www.w3.org/1999/html">
@@ -37,7 +37,15 @@
 
     <div id="aux" class="">
 
+        <div style="background-color: #fff;width: 150px;padding:3px 10px;border:1px solid #ccc;border-bottom: none;height: 24px;line-height: 24px">
 
+
+            <input style="display:none" type="file" name="favicon" id="update_image_favicon" class="image_upload" data-options='{ }'/>
+            <label style="cursor: pointer" for="update_image_favicon">
+                <img id="favicon"     style="height: 20px;width: 20px" src="{if empty($settings['favicon'])}art/favicon_empty.png{else}{$settings['favicon']}{/if}">  <span style="position: relative;bottom: 4.5px;margin-left: 5px">Favicon</span>
+            </label>
+
+        </div>
 
         <div id="header_style" class="hide object_control_panel element_for_color element_for_margins" style="padding: 0px;z-index: 5002;">
 

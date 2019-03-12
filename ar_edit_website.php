@@ -2077,6 +2077,10 @@ function update_website_styles($data, $editor) {
         $website->update_mobile_styles(json_decode($data['mobile_styles'], true));
     }
 
+
+
+
+
     $website->clean_cache();
 
     $response = array(

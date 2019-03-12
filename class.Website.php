@@ -532,6 +532,8 @@ class Website extends DB_Table {
 
                 break;
 
+
+
             default:
 
 
@@ -825,6 +827,32 @@ class Website extends DB_Table {
 
 
         $this->fast_update(array('Website Settings' => json_encode($this->settings)));
+
+
+        if (empty($this->data['Website Settings'])) {
+            $this->settings = array();
+        } else {
+            $this->settings = json_decode($this->data['Website Settings'], true);
+        }
+        include_once 'utils/image_functions.php';
+
+
+        if(!empty($this->settings['favicon'])){
+
+            if (preg_match('/id=(\d+)/',$this->settings['favicon'], $matches)) {
+
+                $favicon_website = create_cached_image($matches[1], 32, 32, 'fit_highest');
+
+                $this->fast_update(array('Website Settings' => json_encode(array_merge($this->settings, array('favicon_website'=>$favicon_website)))));
+                $this->settings = json_decode($this->data['Website Settings'], true);
+
+
+
+            }
+
+
+        }
+
         $this->clean_cache();
     }
 

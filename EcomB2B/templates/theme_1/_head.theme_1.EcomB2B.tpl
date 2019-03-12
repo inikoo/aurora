@@ -77,7 +77,10 @@
     <meta charset="utf-8">
     <meta name="keywords" content=""/>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
-    <link rel="shortcut icon" type="image/png" href="art/favicon.png"/>
+    {if !empty($settings['favicon_website'])}
+       <link rel="shortcut icon" type="image/png" href="{$settings['favicon_website']}"/>
+    {/if}
+
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--[if lt IE 9]>
