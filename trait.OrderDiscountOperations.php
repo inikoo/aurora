@@ -1515,7 +1515,6 @@ trait OrderDiscountOperations {
                 );
 
 
-
                 $this->skip_update_after_individual_transaction = true;
 
                 $transaction_data = $this->update_item($data);
@@ -1883,9 +1882,13 @@ trait OrderDiscountOperations {
 
         }
 
+
         $this->fast_update(
-            array('Order Deal Amount Off' => $this->amount_off_allowance_data)
+            array('Order Deal Amount Off' => $this->amount_off_allowance_data['Amount Off'])
         );
+
+
+        // print_r($current_OTDBs_to_delete);
 
 
         foreach ($current_OTDBs_to_delete as $current_OTDB_to_delete_data) {
@@ -1906,22 +1909,25 @@ trait OrderDiscountOperations {
 
             $tax_category = get_object('Tax Category', $data['tax_category_code']);
             /*
-                        if(!$tax_category->id){
+                                    if(!$tax_category->id){
 
-                            print_r($this);
-                            print_r($data);
-                            exit('error tax category');
-                        }
-                        if(!is_numeric($tax_category->get('Tax Category Rate'))){
-                            print_r($tax_category);
-                       exit('error tax category error error');
-                    }
+                                        print_r($this);
+                                        print_r($data);
+                                        exit('error tax category');
+                                    }
+                                    if(!is_numeric($tax_category->get('Tax Category Rate'))){
+                                        print_r($tax_category);
+                                   exit('error tax category error error');
+                                }
+
             */
+
 
             $sql = sprintf(
                 'UPDATE `Order No Product Transaction Fact` SET `Transaction Total Discount Amount`=0 , `Transaction Net Amount`=`Transaction Gross Amount` ,`Transaction Tax Amount`=%.2f WHERE `Order No Product Transaction Fact Key`=%d  ',
                 $data['onpt_key'],
-                $data['gross_amount'] * $tax_category->get('Tax Category Rate')
+                $data['gross_amount'] *
+                $tax_category->get('Tax Category Rate')
             );
             $this->db->exec($sql);
 
@@ -2454,6 +2460,48 @@ trait OrderDiscountOperations {
 
 
         return $vouchers_info;
+
+    }
+
+    function get_vouchers($scope = 'keys') {
+        $vouchers = array();
+
+
+        if ($scope == 'data') {
+            $sql = "SELECT `Voucher Key`,`Voucher Code` FROM `Voucher Order Bridge` B  left join `Voucher Dimension` V on (V.`Voucher Key`=B.`Voucher Key`) WHERE `Order Key`=?  ";
+
+        } else {
+            $sql = "SELECT `Voucher Key` FROM `Voucher Order Bridge` WHERE `Order Key`=?  ";
+
+        }
+
+        $stmt = $this->db->prepare($sql);
+        if ($stmt->execute(
+            array(
+                $this->id
+            )
+        )) {
+            while ($row = $stmt->fetch()) {
+
+                if ($scope == 'objects') {
+
+                    $vouchers[$row['Voucher Key']] = get_object('Voucher', $row['Voucher Key']);
+
+                } elseif ($scope == 'keys') {
+                    $vouchers[$row['Voucher Key']] = $row['Voucher Key'];
+
+                } else {
+                    $vouchers[$row['Voucher Key']] = $row;
+
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit();
+        }
+
+
+        return $vouchers;
 
     }
 

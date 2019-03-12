@@ -27,7 +27,7 @@ className: "width_30 align_center"
 },
 {
 name: "name",
-label: "{t}Name{/t}",
+label: "{t}Code{/t}",
 editable: false,
 
 sortType: "toggle",

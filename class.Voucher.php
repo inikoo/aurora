@@ -151,6 +151,9 @@ class Voucher extends DB_Table {
             "INSERT INTO `Voucher Dimension` (%s) VALUES (%s)", $keys, $values
         );
 
+       // print "$sql\n";
+
+
         if ($this->db->exec($sql)) {
             $this->id =$this->db->lastInsertId();
             $this->get_data('id', $this->id);
@@ -159,8 +162,7 @@ class Voucher extends DB_Table {
 
 
         } else {
-            print "Error can not create voucher  $sql\n";
-            exit;
+           $this->error=true;
 
         }
     }

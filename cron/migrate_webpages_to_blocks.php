@@ -37,18 +37,21 @@ $editor = array(
 );
 
 ini_set('memory_limit', '10000M');
-$website_key = 7;
+$website_key = 9;
 
 $where = " and `Webpage Website Key`=$website_key";
 
 $sql = sprintf('update `Website Dimension` set `Website Theme`="theme_1"  where `Website Key`=%d', $website_key);
 $db->exec($sql);
 
+migrate_departments();
+//print "departments done\n";
+migrate_families();
+//print "families done\n";
+
 migrate_products();
 
 
-migrate_families();
-migrate_departments();
 
 
 //$where=' and true';
@@ -1194,7 +1197,7 @@ function migrate_products() {
     $contador  = 0;
 
     $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="product"  %s order by `Product Code` ', $where);
-    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="product" and `Webpage Website Key`=%d ', $website_key);
+    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="product"  and  `Webpage Website Key`=%d ', $website_key);
 
     if ($result3 = $db->query($sql)) {
         foreach ($result3 as $row3) {
@@ -2247,8 +2250,8 @@ function migrate_departments() {
 
                                     );
                                 } else {
-                                    print_r($item);
-                                    exit;
+                                    //print_r($item);
+                                    //exit('cacaca');
 
                                 }
 
@@ -2310,7 +2313,7 @@ function migrate_departments() {
 
             $db->exec($sql);
 
-            print_r($new_content_data);
+           // print_r($new_content_data);
 
             $webpage->update(
                 array(

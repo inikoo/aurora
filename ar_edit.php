@@ -1242,7 +1242,13 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
                         $deal_new_data['Deal Allowance Label'] = sprintf(_('%s%% off'), $percentage);
-                        $deal_new_data['Deal Terms']           = 1;
+
+
+                        if ($deal_new_data['Deal Terms Type'] = 'Voucher AND Amount') {
+                            $deal_new_data['Deal Terms'] = $data['fields_data']['Trigger Extra Amount Net'];
+                        } else {
+                            $deal_new_data['Deal Terms'] = 1;
+                        }
 
 
                         $new_component_data = array(

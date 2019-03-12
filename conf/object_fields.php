@@ -12,10 +12,10 @@
 
 
 /**
- * @param $object \DB_Table
- * @param      $db \PDO
- * @param      $user \User
- * @param      $smarty \Smarty
+ * @param       $object \DB_Table
+ * @param       $db     \PDO
+ * @param       $user   \User
+ * @param       $smarty \Smarty
  * @param array $options
  *
  * @return array|string
@@ -24,7 +24,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
     $account = new Account($db);
-    $edit = true;
+    $edit    = true;
 
 
     switch ($object->get_object_name()) {
@@ -39,10 +39,9 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                 case 'Marketing':
 
 
-
                     if ($options['type'] == 'mailing_list') {
                         include 'fields/mailshot.mailing_list.fld.php';
-                    }else{
+                    } else {
                         include 'fields/mailshot.marketing.fld.php';
                     }
 
@@ -117,15 +116,15 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             $object_fields = array();
             if ($options['type'] == 'employee') {
 
-                $options_Attachment_Subject_Type = array(
+                $options_Attachment_Subject_Type               = array(
                     'CV'       => _('Curriculum vitae'),
                     'Contract' => _('Employment contract'),
                     'Other'    => _('Other'),
 
                 );
-                $options_Attachment_Subject_Type_default_value='Contract';
+                $options_Attachment_Subject_Type_default_value = 'Contract';
             } elseif ($options['type'] == 'supplier') {
-                $options_Attachment_Subject_Type = array(
+                $options_Attachment_Subject_Type               = array(
                     'Invoice'       => _('Invoice'),
                     'PurchaseOrder' => _('Purchase order'),
                     'Catalogue'     => _('Catalogue'),
@@ -133,25 +132,25 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     'Contact Card'  => _('Contact card'),
                     'Other'         => _('Other'),
                 );
-                $options_Attachment_Subject_Type_default_value='Contact Card';
+                $options_Attachment_Subject_Type_default_value = 'Contact Card';
 
             } elseif ($options['type'] == 'part') {
-                $options_Attachment_Subject_Type = array(
+                $options_Attachment_Subject_Type               = array(
                     'Other' => _('Other'),
                     'MSDS'  => _('MSDS'),
 
 
                 );
-                $options_Attachment_Subject_Type_default_value='MSDS';
-            }elseif ($options['type'] == 'supplier_delivery') {
+                $options_Attachment_Subject_Type_default_value = 'MSDS';
+            } elseif ($options['type'] == 'supplier_delivery') {
                 $options_Attachment_Subject_Type = array(
-                    'Delivery Paperwork'  => _('Delivery paperwork'),
-                    'Invoice'  => _('Invoice'),
-                    'Other' => _('Other'),
+                    'Delivery Paperwork' => _('Delivery paperwork'),
+                    'Invoice'            => _('Invoice'),
+                    'Other'              => _('Other'),
 
                 );
 
-                $options_Attachment_Subject_Type_default_value='Delivery Paperwork';
+                $options_Attachment_Subject_Type_default_value = 'Delivery Paperwork';
 
             }
 
@@ -221,7 +220,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
                 include 'fields/campaign_bulk_discounts.fld.php';
 
-            }elseif ($object->get('Deal Campaign Code')=='VO') {
+            } elseif ($object->get('Deal Campaign Code') == 'VO') {
 
                 $deals = $object->get_deals();
                 $deal  = array_pop($deals);
@@ -239,86 +238,29 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             break;
         case 'Deal':
 
-            if(isset($options['new'])){
-               switch ($options['parent']){
-                   case 'campaign':
-
-                       switch ($options['parent_object']->get('Deal Campaign Code')){
-                           case 'VO':
-                               $store    = get_object('Store', $options['store_key']);
-;
-                               include 'fields/new_voucher.fld.php';
-                               break;
-                           default:
-                               $store    = get_object('Store', $options['store_key']);
-
-                               include 'fields/new_deal.fld.php';
-                       }
-
-
-
-                       break;
-                   case 'category':
-
-                       $smarty->assign('control_class','hide');
-
-                       $smarty->assign('overwrite_parent_key',$options['store_key']);
-
-
-
-                       include 'fields/new_category_deal.fld.php';
-
-
-                       break;
-               }
-
-            }else{
-
-                $campaign = get_object('DealCampaign', $object->get('Deal Campaign Key'));
-                $store    = get_object('Store', $object->get('Deal Store Key'));
-
-
-                if ($store->get('Store Bulk Discounts Campaign Key') == $campaign->id) {
-
-
-                    include 'fields/bulk_deal.fld.php';
-
-                } else {
-                    include 'fields/deal.fld.php';
-
-                }
-
-
-
-            }
-            return $object_fields;
-            break;
-        case 'Deal Component':
-
-            if(isset($options['new'])){
-                switch ($options['parent']){
+            if (isset($options['new'])) {
+                switch ($options['parent']) {
                     case 'campaign':
 
-                        switch ($options['parent_object']->get('Deal Campaign Code')){
+                        switch ($options['parent_object']->get('Deal Campaign Code')) {
                             case 'VO':
-                                $store    = get_object('Store', $options['store_key']);;
+                                $store = get_object('Store', $options['store_key']);;
                                 include 'fields/new_voucher.fld.php';
                                 break;
-
                             default:
-                                $store    = get_object('Store', $options['store_key']);
+                                $store = get_object('Store', $options['store_key']);
 
                                 include 'fields/new_deal.fld.php';
                         }
 
 
-
                         break;
                     case 'category':
 
-                        $smarty->assign('control_class','hide');
+                        $smarty->assign('control_class', 'hide');
 
-                        $smarty->assign('overwrite_parent_key',$options['store_key']);
+                        $smarty->assign('overwrite_parent_key', $options['store_key']);
+
 
                         include 'fields/new_category_deal.fld.php';
 
@@ -326,13 +268,68 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                         break;
                 }
 
-            }else{
+            } else {
+
+                $campaign = get_object('DealCampaign', $object->get('Deal Campaign Key'));
+                $store    = get_object('Store', $object->get('Deal Store Key'));
+
+
+                switch ($campaign->get('Deal Campaign Code')) {
+                    case 'VO':
+                        include 'fields/voucher.fld.php';
+                        break;
+                    case 'VL':
+                        include 'fields/bulk_deal.fld.php';
+                        break;
+                    default:
+
+                        include 'fields/deal.fld.php';
+                }
+
+
+            }
+
+            return $object_fields;
+            break;
+        case 'Deal Component':
+
+            if (isset($options['new'])) {
+                switch ($options['parent']) {
+                    case 'campaign':
+
+                        switch ($options['parent_object']->get('Deal Campaign Code')) {
+                            case 'VO':
+                                $store = get_object('Store', $options['store_key']);;
+                                include 'fields/new_voucher.fld.php';
+                                break;
+
+                            default:
+                                $store = get_object('Store', $options['store_key']);
+
+                                include 'fields/new_deal.fld.php';
+                        }
+
+
+                        break;
+                    case 'category':
+
+                        $smarty->assign('control_class', 'hide');
+
+                        $smarty->assign('overwrite_parent_key', $options['store_key']);
+
+                        include 'fields/new_category_deal.fld.php';
+
+
+                        break;
+                }
+
+            } else {
 
                 $campaign = get_object('DealCampaign', $object->get('Deal Component Campaign Key'));
-               // $store    = get_object('Store', $object->get('Deal Store Key'));
+                // $store    = get_object('Store', $object->get('Deal Store Key'));
 
 
-                switch ($campaign->get('Code')){
+                switch ($campaign->get('Code')) {
                     case 'OR':
                         include 'fields/order_recursion_deal_component.fld.php';
                         break;
@@ -344,9 +341,8 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                 }
 
 
-
-
             }
+
             return $object_fields;
             break;
         case 'Website':
@@ -400,10 +396,9 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
         case 'Customer':
 
 
-
-            if(!empty($options['poll'])){
+            if (!empty($options['poll'])) {
                 include 'fields/customer.poll.fld.php';
-            }else{
+            } else {
                 include 'fields/customer.fld.php';
             }
 
@@ -459,7 +454,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     } else {
 
 
-
                         $operations = array(
                             'label'      => _('Operations'),
                             'show_title' => true,
@@ -489,19 +483,17 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
                     return $supplier_part_fields;
-                }elseif ($options['parent'] == 'production') {
-
+                } elseif ($options['parent'] == 'production') {
 
 
                     include 'fields/production_part.fld.php';
 
 
                     if (isset($options['new'])) {
-                        $object = get_object('Part',0);
+                        $object = get_object('Part', 0);
                         include 'fields/part.fld.php';
                         $supplier_part_fields = array_merge($supplier_part_fields, $part_fields);
                     } else {
-
 
 
                         $operations = array(
@@ -646,7 +638,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
         case 'List':
 
 
-            switch ( $options['scope']){
+            switch ($options['scope']) {
                 case 'customers':
                     include 'fields/customers_new_list.fld.php';
                     break;
@@ -655,6 +647,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     break;
 
             }
+
             return $object_fields;
             break;
         case 'Prospect':
@@ -665,7 +658,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
         case 'Email Template':
 
 
-            switch ($options['role']){
+            switch ($options['role']) {
                 case 'Invite Mailshot':
                     include 'fields/prospects.email_template.fld.php';
             }
@@ -675,7 +668,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
         case 'Email Campaign Type':
 
 
-            switch ($object->get('Email Campaign Type Code')){
+            switch ($object->get('Email Campaign Type Code')) {
                 case 'OOS Notification':
                     include 'fields/email_campaign_type.oos_notification.fld.php';
                     break;
@@ -695,12 +688,11 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     break;
 
 
-
                 case 'Invite Mailshot':
                 case 'Invite':
                 case 'AbandonedCart':
                 case 'Newsletter':
-                $object_fields=array();
+                    $object_fields = array();
                     break;
                 default:
                     print 'todo  Email Campaign Type -->> '.$object->get('Email Campaign Type Code');
@@ -708,6 +700,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     break;
 
             }
+
             return $object_fields;
 
 

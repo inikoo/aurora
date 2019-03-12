@@ -501,6 +501,7 @@ class DealCampaign extends DB_Table {
                 if ($data['Voucher']) {
                     include_once 'class.Voucher.php';
 
+
                     $voucher_data = array(
                         'Voucher Store Key'                => $this->data['Deal Campaign Store Key'],
                         'Voucher Deal Key'                 => $deal->id,
@@ -512,7 +513,6 @@ class DealCampaign extends DB_Table {
                     $voucher_ok = false;
 
 
-                    // print_r($voucher_data);
                     if (!$data['Voucher Data']['Voucher Auto Code'] and $data['Voucher Data']['Voucher Code'] != '') {
                         $voucher_data['Voucher Code'] = $data['Voucher Data']['Voucher Code'];
                         $voucher                      = new Voucher('find create', $voucher_data);
@@ -548,8 +548,10 @@ class DealCampaign extends DB_Table {
                             for ($i = 0; $i < $voucher_length; $i++) {
                                 $voucher_code .= $chars[mt_rand(0, strlen($chars) - 1)];
                             }
-                            $voucher_data['Voucher Code'] = $data['Voucher Data']['Voucher Code'];
-                            $voucher                      = new Voucher('find create', $voucher_data);
+                            $voucher_data['Voucher Code'] = $voucher_code;
+
+
+                            $voucher = new Voucher('find create', $voucher_data);
 
                             if (!$voucher->error) {
 
@@ -564,7 +566,18 @@ class DealCampaign extends DB_Table {
                     }
 
 
-                    $deal->fast_update(array('Deal Voucher Key' => $voucher->id));
+                    $deal->fast_update(
+                        array(
+                            'Deal Voucher Key' => $voucher->id,
+                            'Deal Terms'        => json_encode(
+                                array(
+                                    'voucher' => $voucher->get('Voucher Code'),
+                                    'amount' => $deal->get('Deal Terms')
+
+                                )
+                            )
+                        )
+                    );
 
 
                 }
@@ -637,10 +650,10 @@ class DealCampaign extends DB_Table {
         $number_current_deals   = 0;
         $number_deal_components = 0;
 
-        $number_active_deal_components     = 0;
+        $number_active_deal_components    = 0;
         $number_suspended_deal_components = 0;
-        $number_waiting_deal_components    = 0;
-        $number_finish_deal_components     = 0;
+        $number_waiting_deal_components   = 0;
+        $number_finish_deal_components    = 0;
 
         $sql = sprintf("SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d  AND `Deal Status`='Active'  ", $this->id);
 
@@ -691,7 +704,7 @@ class DealCampaign extends DB_Table {
                         $number_finish_deal_components = $row['num'];
                         break;
                 }
-                }
+            }
         } else {
             print_r($error_info = $this->db->errorInfo());
             exit();

@@ -280,7 +280,14 @@ class Order extends DB_Table {
 
                 return percentage($this->data['Order Insurance Discount Amount'], $this->data['Order Insurance Gross Amount']);
                 break;
+            case 'Amount Off Percentage':
 
+                return percentage($this->data['Order Deal Amount Off'], $this->data['Order Total Net Amount']);
+                break;
+            case 'Amount Off':
+
+                return money($this->data['Order Deal Amount Off'], $this->data['Order Currency']);
+                break;
             case 'Currency Code':
 
                 return $this->data['Order Currency'];

@@ -4630,25 +4630,48 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     $state['store'] = new Store($state['_parent']->get('Store Key'));
 
                     $branch[] = array(
-                        'label'     => _('Marketing').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
-                        'icon'      => 'bullhorn',
-                        'reference' => 'marketing/'.$state['store']->id
+                        'label'     => _('Offers').' <span class="Store_Code">'.$state['store']->get('Code').'</span>',
+                        'icon'      => 'tags',
+                        'reference' => 'offers/'.$state['store']->id
                     );
 
                     $branch[] = array(
                         'label'     => '<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>',
-                        'icon'      => 'tags',
+                        'html_icon'      => $state['_parent']->get('Icon'),
+                        'reference' => 'offers/'.$state['store']->id.'/'.strtolower($state['_parent']->get('Code'))
+                    );
+
+
+
+                    switch ($state['_parent']->get('Code')){
+                        case 'VO':
+                            $branch[] = array(
+                                'label'     => _('New voucher'),
+                                'icon'      => '',
+                                'reference' => ''
+                            );
+                            break;
+                        default:
+                            $branch[] = array(
+                                'label'     => _('New offer'),
+                                'icon'      => '',
+                                'reference' => ''
+                            );
+
+                    }
+
+
+                }else{
+
+                    $branch[] = array(
+                        'label'     => _('New offer'),
+                        'icon'      => '',
                         'reference' => ''
                     );
 
                 }
 
 
-                $branch[] = array(
-                    'label'     => _('New offer'),
-                    'icon'      => '',
-                    'reference' => ''
-                );
             } elseif ($state['section'] == 'deal') {
 
                 if ($state['parent'] == 'campaign') {

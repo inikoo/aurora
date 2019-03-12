@@ -118,13 +118,13 @@ switch ($tipo) {
         replacment_items(get_table_parameters(), $db, $user);
         break;
     case 'invoice.items':
-            case 'refund.items':
+    case 'refund.items':
 
-        invoice_items(get_table_parameters(),$db, $user);
+        invoice_items(get_table_parameters(), $db, $user);
         break;
 
     case 'deleted_invoice.items':
-            case 'deleted_refund.items':
+    case 'deleted_refund.items':
 
         deleted_invoice_items(get_table_parameters(), $db, $user);
         break;
@@ -1780,15 +1780,13 @@ function order_items($_data, $db, $user) {
         }
 
 
-
-
-        if ($data['Order Quantity'] != $data['Delivery Note Quantity']  and  in_array(
+        if ($data['Order Quantity'] != $data['Delivery Note Quantity'] and in_array(
                 $customer_order->get('Order State'), array(
                                                        'PackedDone',
                                                        'Approved',
                                                        'Dispatched'
                                                    )
-            ) ) {
+            )) {
             $quantity = '<span class="discreet " title="'.sprintf(_('%s ordered by customer'), number($data['Order Quantity'])).'" >(<span class="strikethrough">'.number($data['Order Quantity']).'</span>)</span> '.number($data['Delivery Note Quantity']);
 
         } else {
@@ -1811,15 +1809,11 @@ function order_items($_data, $db, $user) {
             );
 
 
-
-
         } else {
 
 
             $quantity_edit = '';
         }
-
-
 
 
         if (in_array(
@@ -1845,14 +1839,14 @@ function order_items($_data, $db, $user) {
 
         $adata[] = array(
 
-            'id'          => (integer)$data['Order Transaction Fact Key'],
-            'product_pid' => (integer)$data['Product ID'],
-            'code'        => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product Code']),
-            'description' => $description,
-            'quantity'    => $quantity,
-            'quantity_edit'    => $quantity_edit,
+            'id'            => (integer)$data['Order Transaction Fact Key'],
+            'product_pid'   => (integer)$data['Product ID'],
+            'code'          => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product Code']),
+            'description'   => $description,
+            'quantity'      => $quantity,
+            'quantity_edit' => $quantity_edit,
 
-            'discounts'   => '<span id="transaction_discounts_'.$data['Order Transaction Fact Key'].'" class="_item_discounts">'.$discounts.'</span>',
+            'discounts' => '<span id="transaction_discounts_'.$data['Order Transaction Fact Key'].'" class="_item_discounts">'.$discounts.'</span>',
 
 
             'net' => sprintf('<span  id="transaction_item_net_'.$data['Order Transaction Fact Key'].'" class="_order_item_net">%s</span>', money($data['Order Transaction Amount'], $data['Order Currency Code'])),
@@ -1877,7 +1871,7 @@ function order_items($_data, $db, $user) {
 }
 
 
-function invoice_items($_data,$db, $user) {
+function invoice_items($_data, $db, $user) {
 
     global $_locale;// fix this locale stuff
 
@@ -1887,8 +1881,8 @@ function invoice_items($_data,$db, $user) {
     include_once 'prepare_table/init.php';
 
 
-    $invoice = get_object('Invoice',$_data['parameters']['parent_key']);
-    $type=$invoice->get('Invoice Type');
+    $invoice = get_object('Invoice', $_data['parameters']['parent_key']);
+    $type    = $invoice->get('Invoice Type');
     if (in_array(
         $invoice->data['Invoice Delivery Country Code'], get_countries_EC_Fiscal_VAT_area($db)
     )) {
@@ -1902,10 +1896,10 @@ function invoice_items($_data,$db, $user) {
 
     // print $sql;
 
-    if($type=='Invoice'){
-        $factor=1;
-    }else{
-        $factor=-1;
+    if ($type == 'Invoice') {
+        $factor = 1;
+    } else {
+        $factor = -1;
     }
 
     $adata = array();
@@ -1958,15 +1952,16 @@ function invoice_items($_data,$db, $user) {
             $description .= ' '._('Discount').':'.$discount;
         }
 
-        if($type=='Invoice')
-        if ($print_tariff_code and $data['Product Tariff Code'] != '') {
-            $description .= '<br>'._('Tariff Code').': '.$data['Product Tariff Code'];
+        if ($type == 'Invoice') {
+            if ($print_tariff_code and $data['Product Tariff Code'] != '') {
+                $description .= '<br>'._('Tariff Code').': '.$data['Product Tariff Code'];
+            }
         }
 
-        if($type=='Invoice'){
+        if ($type == 'Invoice') {
             $quantity = number($data['Delivery Note Quantity']);
 
-        }else {
+        } else {
             $quantity = '<span class="italic discreet"><span >~</span>'.number(-1 * $data['Order Transaction Amount'] / $data['Product History Price']).'</span>';
 
         }
@@ -2001,9 +1996,7 @@ function invoice_items($_data,$db, $user) {
 }
 
 
-
-
-function deleted_invoice_items($_data,$db, $user) {
+function deleted_invoice_items($_data, $db, $user) {
 
     global $_locale;// fix this locale stuff
 
@@ -2011,9 +2004,8 @@ function deleted_invoice_items($_data,$db, $user) {
     include_once 'utils/geography_functions.php';
 
 
-
-    $invoice = get_object('Invoice_Deleted',$_data['parameters']['parent_key']);
-    $type=$invoice->get('Invoice Type');
+    $invoice = get_object('Invoice_Deleted', $_data['parameters']['parent_key']);
+    $type    = $invoice->get('Invoice Type');
     if (in_array(
         $invoice->data['Invoice Delivery Country Code'], get_countries_EC_Fiscal_VAT_area($db)
     )) {
@@ -2024,24 +2016,24 @@ function deleted_invoice_items($_data,$db, $user) {
 
     // print $sql;
 
-    if($type=='Invoice'){
-        $factor=1;
-    }else{
-        $factor=-1;
+    if ($type == 'Invoice') {
+        $factor = 1;
+    } else {
+        $factor = -1;
     }
 
-    $adata = array();
-    $counter=0;
-    foreach ($invoice->items as  $data) {
+    $adata   = array();
+    $counter = 0;
+    foreach ($invoice->items as $data) {
 
-        $data['id']=$counter++;
+        $data['id'] = $counter++;
 
 
         $adata[] = $data;
 
     }
 
-    $rtext=ngettext('item', 'items', $counter);
+    $rtext = ngettext('item', 'items', $counter);
 
     $response = array(
         'resultset' => array(
@@ -2754,8 +2746,6 @@ function refund_new_items($_data, $db, $user) {
 }
 
 
-
-
 function replacement_new_items($_data, $db, $user) {
 
     global $_locale;// fix this locale stuff
@@ -3460,17 +3450,12 @@ function order_deals($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
 
-    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction  limit $start_from,$number_results";
-    $adata = array();
+    $adata     = array();
+    $deal_keys = array();
 
-
-    //print $sql;
-
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction  limit $start_from,$number_results";
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
-
-            //  print_r($data);
 
 
             if ($data['Deal Key']) {
@@ -3520,11 +3505,13 @@ function order_deals($_data, $db, $user) {
 
             // $type = sprintf('<span class="link" onclick="change_view(\'orders/%d/%d/email/%d\')"  >%s</span>', $parent->get('Store Key'), $parent->id, $data['Email Tracking Key'], $type);
 
+            $deal_keys[$data['Deal Key']] = $data['Deal Key'];
+
 
             $adata[] = array(
                 'id'                  => (integer)$data['Order Transaction Fact Key'],
                 'name'                => $name,
-                'description'         => $data['Deal Info'],
+                'description'         => $data['Deal Term Allowances Label'],
                 'current_deal_status' => $status,
                 'pin'                 => $pin,
                 'items'               => number($data['items']),
@@ -3539,6 +3526,91 @@ function order_deals($_data, $db, $user) {
 
 
             );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $sql = sprintf("select `Deal Name` ,`Deal Status` ,`Deal Store Key`,B.`Deal Key`,`Deal Term Allowances Label` from `Order Deal Bridge`  B left join `Deal Dimension` D  on (D.`Deal Key`=B.`Deal Key`)  where `Order Key`=%d  ", $_data['parameters']['parent_key']);
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            if (!in_array($data['Deal Key'], $deal_keys)) {
+
+                if ($data['Deal Key']) {
+                    $name = sprintf('<span class="link" onclick="change_view(\'deals/%d/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Key'], $data['Deal Name']);
+
+/*// to do
+                    if ($data['Order Transaction Deal Pinned'] == 'Yes') {
+                        $pin = sprintf('<i class="fa fa-thumbtack"></i>');
+
+                    } else {
+                        $pin = sprintf('<i class="fal fa-empty-set super_discreet"></i>');
+
+                    }
+*/
+                    $pin    = sprintf('<i class="fa fa-thumbtack"></i>');
+                    switch ($data['Deal Status']) {
+                        case 'Waiting':
+                            $status = sprintf(
+                                '<i class="far fa-clock discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
+                            );
+                            break;
+                        case 'Active':
+                            $status = sprintf(
+                                '<i class="fa fa-play success fa-fw" aria-hidden="true" title="%s" ></i>', _('Active')
+                            );
+                            break;
+                        case 'Suspended':
+                            $status = sprintf(
+                                '<i class="fa fa-pause error fa-fw" aria-hidden="true" title="%s" ></i>', _('Suspended')
+                            );
+                            break;
+                        case 'Finish':
+                            $status = sprintf(
+                                '<i class="fa fa-stop discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Finished')
+                            );
+                            break;
+                        default:
+                            $status = $data['Deal Status'];
+                    }
+
+                } else {
+                    $name   = '<span class="italic">'._('Custom made').'</span>';
+                    $pin    = sprintf('<i class="fa fa-thumbtack"></i>');
+                    $status = '';
+                }
+
+
+
+
+
+                $adata[] = array(
+                    'id'                  => (integer)-1*$data['Deal Key'],
+                    'name'                => $name,
+                    'description'         => $data['Deal Term Allowances Label'],
+                    'current_deal_status' => $status,
+                    'pin'                 => $pin,
+                    'items'               => 0,
+                    'bonus'               => 0,
+                    'discount_percentage' => 0,
+                    'amount_discounted'   => 'to do',
+                    'pin'                 => $pin
+                    //'state' => $state,
+
+                    //'type' => $type,
+                    //'date' => strftime("%a, %e %b %Y %R", strtotime($data['Email Tracking Created Date']." +00:00")),
+
+
+                );
+
+
+            }
 
 
         }
