@@ -690,8 +690,15 @@ function save_styles(){
 
     settings={
         'header_title':$('#header_title').html(),
-        'logo_website':  $('#website_logo').attr('src')
+        'logo_website':  $('#website_logo').attr('src'),
+
+
     }
+
+    if($('#favicon').attr('src')!='art/favicon_empty.png'){
+        settings.favicon= $('#favicon').attr('src')
+    }
+
 
     var ajaxData = new FormData();
 
@@ -779,7 +786,10 @@ $(document).on('change', '.image_upload', function (e) {
                     switch (element.attr('name')){
                     case 'logo':
                         $('#website_logo').attr('src',data.image_src);
-
+                        break;
+                        case 'favicon':
+                            $('#favicon').attr('src',data.image_src);
+                            break;
                     }
 
 

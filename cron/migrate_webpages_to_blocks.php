@@ -45,9 +45,9 @@ $sql = sprintf('update `Website Dimension` set `Website Theme`="theme_1"  where 
 $db->exec($sql);
 
 migrate_departments();
-//print "departments done\n";
+print "departments done\n";
 migrate_families();
-//print "families done\n";
+print "families done\n";
 
 migrate_products();
 

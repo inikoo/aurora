@@ -102,6 +102,9 @@ function create_cached_image($image_key, $width, $height ,$mode='') {
 
 
     $cached_image=preg_replace('/^.*EcomB2B\//','',$cached_image);
+
+    $cached_image=str_replace('//','/',$cached_image);
+
     return $cached_image;
 }
 
