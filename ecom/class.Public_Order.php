@@ -495,6 +495,25 @@ class Public_Order extends DBW_Table {
         return strftime("%e %b %Y", strtotime($this->data[$field].' +0:00'));
     }
 
+    function get_voucher_code() {
+
+        $vouchers_data=$this->get_vouchers('data');
+        $voucher_data = reset($vouchers_data);
+
+        if($voucher_data){
+
+
+            return $voucher_data['Voucher Code'];
+        }else{
+            return '';
+        }
+
+
+
+
+
+    }
+
 
 }
 

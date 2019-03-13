@@ -63,9 +63,9 @@ trait OrderDiscountOperations {
         $this->get_allowances_from_customer_trigger();
         $this->get_allowances_from_pinned_deal_components();
 
-        //  print_r($this->allowance);
+         //print_r($this->deals);
 
-        //   print_r($this->allowance);
+          //print_r($this->allowance);
 
         $this->apply_items_discounts();
 
@@ -234,13 +234,23 @@ trait OrderDiscountOperations {
                 if ($result2 = $this->db->query($sql)) {
                     if ($_row = $result2->fetch()) {
                         if ($_row['num'] > 0) {
+
+
+
                             $terms       = preg_split(
                                 '/;/', $deal_component_data['Deal Component Terms']
                             );
+
+
                             $amount_term = $terms[1];
                             $amount_type = $terms[2];
 
+
+
+
                             if ($this->data[$amount_type] >= $amount_term) {
+
+
                                 $this->deals['Order']['Terms'] = true;
                                 $this->create_allowances_from_deal_component_data(
                                     $deal_component_data
@@ -2463,12 +2473,31 @@ trait OrderDiscountOperations {
 
     }
 
+
+    function voucher_formatted_info(){
+
+        $voucher_formatted_info='';
+
+        $vouchers_data=$this->get_vouchers('data');
+
+        foreach($vouchers_data as $voucher_data){
+
+
+            $voucher_formatted_info.='<div>'._('Voucher').' <span style="border:1px solid #ccc;padding:2px 5px">'.$voucher_data['Voucher Code'].'</span></div>';
+        }
+
+        ;
+
+        return $voucher_formatted_info;
+
+    }
+
     function get_vouchers($scope = 'keys') {
         $vouchers = array();
 
 
         if ($scope == 'data') {
-            $sql = "SELECT `Voucher Key`,`Voucher Code` FROM `Voucher Order Bridge` B  left join `Voucher Dimension` V on (V.`Voucher Key`=B.`Voucher Key`) WHERE `Order Key`=?  ";
+            $sql = "SELECT V.`Voucher Key`,`Voucher Code` FROM `Voucher Order Bridge` B  left join `Voucher Dimension` V on (V.`Voucher Key`=B.`Voucher Key`) WHERE `Order Key`=?  ";
 
         } else {
             $sql = "SELECT `Voucher Key` FROM `Voucher Order Bridge` WHERE `Order Key`=?  ";
