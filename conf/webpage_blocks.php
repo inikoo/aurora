@@ -140,40 +140,6 @@ function get_webpage_blocks($theme = '') {
 
 
 
-        'in_process'     => array(
-            'type'          => 'in_process',
-            'label'         => _('Under construction'),
-            'icon'          => 'fa-seedling',
-            'show'          => 1,
-            'top_margin'    => 40,
-            'bottom_margin' => 60,
-            'labels'        => array(
-                '_title'        => _('Under construction'),
-                '_text'         => _('This page is under construction. Please come back soon!.'),
-
-
-            )
-        ),
-
-
-
-
-        'favourites'  => array(
-            'type'          => 'favourites',
-            'label'         => _('Favourites'),
-            'icon'          => 'fa-heart',
-            'show'          => 1,
-            'top_margin'    => 40,
-            'bottom_margin' => 60,
-            'labels'        => array(
-                'with_items' => '<h1>'._('My favourites').'</h1><p>'._('Here you can see your favourites').'</p>',
-                'no_items'   => '<h1>'._('My favourites').'</h1><p>'._('You still have no favourites').'</p>',
-            )
-        ),
-
-
-
-
 
         'reviews' => array(
             'type'          => 'reviews',
