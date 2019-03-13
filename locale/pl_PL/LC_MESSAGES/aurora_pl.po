@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kaktus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-07 15:32+0800\n"
-"PO-Revision-Date: 2019-03-07 15:32+0800\n"
+"PO-Revision-Date: 2019-03-13 17:36+0800\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: pl_PL\n"
@@ -90,15 +90,13 @@ msgstr ""
 "dokładnie informacje o płatności i spróbuj ponownie"
 
 #: EcomB2B/ar_web_checkout.php:655
-#, fuzzy
-#| msgid "There is another object with the same value"
 msgid "There was a problem with your saved card"
-msgstr "Podobny produkt posiada tą samą wartość"
+msgstr "Wystąpił problem z Twoją zapisaną kartą"
 
 #: EcomB2B/ar_web_checkout.php:655
 #, php-format
 msgid "click in %s and provide the credit card details again"
-msgstr ""
+msgstr "kliknij %s i wprowadź dane karty kredytowej ponownie"
 
 #: EcomB2B/ar_web_checkout.php:655 _web_smarty.php:185 _web_smarty.php:689
 #: _web_smarty.php:941
@@ -107,7 +105,7 @@ msgstr "Zapłać inną kartą"
 
 #: EcomB2B/ar_web_checkout.php:732
 msgid "Card verification value (CVV) failed"
-msgstr ""
+msgstr "Wartość weryfikacji karty (CVV) nie powiodła się"
 
 #: EcomB2B/ar_web_checkout.php:978 EcomB2B/ar_web_checkout.php:1058
 msgid ""
@@ -118,14 +116,10 @@ msgstr ""
 "dokładnie sprawdzić informacje dotyczące płatności i spróbować ponownie"
 
 #: EcomB2B/ar_web_checkout.php:1108 EcomB2B/ar_web_checkout.php:1124
-#, fuzzy
-#| msgid ""
-#| "There was a problem processing your credit card, please provide your "
-#| "payment information again"
 msgid "There was a problem deleting your card please try again later"
 msgstr ""
-"Wystąpił problem podczas przetwarzania Twojej karty kredytowej, podaj "
-"ponownie informacje o płatności"
+"Wystąpił błąd podczas usuwania Twojej karty kredytowej, spróbuj ponownie "
+"później"
 
 #: EcomB2B/ar_web_customer_products.php:77
 #: EcomB2B/ar_web_customer_products.php:87
@@ -206,10 +200,8 @@ msgid "Order not found"
 msgstr "Zamówienie nie znalezione"
 
 #: EcomB2B/ar_web_order.php:88
-#, fuzzy
-#| msgid "Cartons ordered"
 msgid "Wrong order id"
-msgstr "Kartony Zamówione"
+msgstr "Nieprawidłowe ID zamówienia"
 
 #: EcomB2B/ar_web_search.php:191 EcomB2B/ar_web_search.php:320
 #: EcomB2B/class.Public_Product.php:570 EcomB2B/class.Public_Product.php:572
@@ -374,11 +366,8 @@ msgstr "Mailshoty"
 #: ar_marketing_tables.php:942 ar_marketing_tables.php:1112
 #: class.EmailCampaignType.php:190 conf/elements_options.php:1639
 #: conf/email_templates_data.php:47
-#, fuzzy
-#| msgid "%s order in basket"
-#| msgid_plural "%s orders in basket"
 msgid "Orders in basket"
-msgstr "%s zamówienie w koszyku"
+msgstr "Zamówienia w koszyku"
 
 #: EcomB2B/class.EmailCampaignType.php:193 ar_customers_tables.php:1765
 #: ar_marketing_tables.php:948 class.EmailCampaignType.php:193
@@ -406,40 +395,28 @@ msgid "Reorder reminders"
 msgstr "Przypomnienia ponownych zamówień"
 
 #: EcomB2B/class.EmailCampaignType.php:208 class.EmailCampaignType.php:208
-#, fuzzy
-#| msgid "Prospect's agents"
 msgid "Prospect's invitations"
-msgstr "Agent perspektywy"
+msgstr "Zaproszenia "
 
 #: EcomB2B/class.EmailCampaignType.php:211 class.EmailCampaignType.php:211
-#, fuzzy
-#| msgid "Personalized invitation"
 msgid "Personalised prospect invitations"
-msgstr "Tworzenie personalnego zaproszenia"
+msgstr "Spersonalizowane zaproszenia dla potencjalnych klientów"
 
 #: EcomB2B/class.EmailCampaignType.php:214 class.EmailCampaignType.php:214
-#, fuzzy
-#| msgid "Order confirmation"
 msgid "New order notification"
-msgstr "Potwierdzenie zamówienia"
+msgstr "Nowe powiadomienie o zamówieniu"
 
 #: EcomB2B/class.EmailCampaignType.php:217 class.EmailCampaignType.php:217
-#, fuzzy
-#| msgid "Order confirmation"
 msgid "New registration notification"
-msgstr "Potwierdzenie zamówienia"
+msgstr "Nowe powiadomienie o zamówieniu"
 
 #: EcomB2B/class.EmailCampaignType.php:220 class.EmailCampaignType.php:220
-#, fuzzy
-#| msgid "Deleted location"
 msgid "Deleted invoice notification"
-msgstr "Usuń lokalizację"
+msgstr "Usunięto powiadomienie o fakturze"
 
 #: EcomB2B/class.EmailCampaignType.php:223 class.EmailCampaignType.php:223
-#, fuzzy
-#| msgid "Dispatched delivery notes"
 msgid "Undispatched delivery notification"
-msgstr "Dokumenty dostawy z"
+msgstr "Nie wysłane powiadomienie o dostawie"
 
 #: EcomB2B/class.EmailCampaignType.php:245 class.EmailCampaignType.php:245
 msgid "Email template not set"
@@ -985,10 +962,8 @@ msgstr "Anulowane - powrót do lokalizacji"
 #: ar_orders_tables.php:1307 class.DeliveryNote.php:426
 #: class.DeliveryNote.php:476 class.Order.php:634 search_functions.php:1962
 #: search_functions.php:2201
-#, fuzzy
-#| msgid "Packed & Sealed"
 msgid "Packed & Closed"
-msgstr "Zapakowane & Zabezpieczone"
+msgstr "Zapakowane & Zamknięte"
 
 #: EcomB2B/class.Public_Delivery_Note.php:296 _smarty.php:4472
 #: ar_delivery_notes_tables.php:188 ar_edit_marketing.php:182
@@ -1015,9 +990,9 @@ msgstr "Kurier nie ustawiony"
 #: class.DeliveryNote.php:2672 class.Part.php:3991
 msgid "box"
 msgid_plural "boxes"
-msgstr[0] "pudełko"
-msgstr[1] "pudełka"
-msgstr[2] "pudełek"
+msgstr[0] "karton"
+msgstr[1] "kartony"
+msgstr[2] "kartonów"
 
 #: EcomB2B/class.Public_Delivery_Note.php:471
 #: EcomB2B/class.Public_Delivery_Note.php:539 class.DeliveryNote.php:621
@@ -1166,10 +1141,8 @@ msgid "Partially Paid"
 msgstr "Częściowo zapłacone"
 
 #: EcomB2B/class.Public_Order.php:175 class.Public_Order.php:175
-#, fuzzy
-#| msgid "Submitted by Customer"
 msgid "Order submitted by customer"
-msgstr "Potwierdzone przez klienta"
+msgstr "Zamówienie potwierdzone przez klienta"
 
 #: EcomB2B/class.Public_Order.php:315 ar_orders_tables.php:1091
 #: ar_orders_tables.php:1178 class.Order.php:625 class.Public_Order.php:315
@@ -1568,7 +1541,7 @@ msgstr "cena SCD jednostki"
 #: EcomB2B/class.Public_Product.php:1359 class.Part.php:4524
 #: class.Product.php:1085 class.Public_Product.php:1359
 msgid "tariff code"
-msgstr "Kod teryfy"
+msgstr "Kod taryfy"
 
 #: EcomB2B/class.Public_Product.php:1363 class.Part.php:4527
 #: class.Product.php:1089 class.Public_Product.php:1363
@@ -1694,7 +1667,7 @@ msgstr "Notka kredytu nr"
 #: pdf/proforma.pdf.php:250 pdf/proforma.pdf.php:377
 #: utils/order_functions.php:507
 msgid "Refund"
-msgstr "Zwrot pieniędzy"
+msgstr "Faktura Korekta"
 
 #: EcomB2B/invoice.pdf.php:169 pdf/invoice.pdf.php:160
 msgid "Refund No."
@@ -1784,7 +1757,7 @@ msgstr "Kredyt"
 #: pdf/invoice.pdf.php:480 pdf/proforma.pdf.php:253 pdf/proforma.pdf.php:380
 #: trait.OrderShippingOperations.php:77
 msgid "Shipping"
-msgstr "Wysyłanie"
+msgstr "Wysyłka"
 
 #: EcomB2B/invoice.pdf.php:321 EcomB2B/invoice.pdf.php:498
 #: pdf/invoice.pdf.php:316 pdf/invoice.pdf.php:486 pdf/proforma.pdf.php:259
@@ -1889,17 +1862,15 @@ msgstr "Zniżka"
 
 #: EcomB2B/trait.OrderDiscountOperations.php:2027
 #: trait.OrderDiscountOperations.php:2027
-#, fuzzy
-#| msgid "percentage"
 msgid "Wrong percentage"
-msgstr "procent"
+msgstr "nieprawidłowy procent"
 
 #: EcomB2B/trait.OrderDiscountOperations.php:2032
 #: EcomB2B/trait.OrderDiscountOperations.php:2037
 #: trait.OrderDiscountOperations.php:2032
 #: trait.OrderDiscountOperations.php:2037
 msgid "Percentage must be a number between 0 and 100"
-msgstr ""
+msgstr "Procent musi być liczbą z zakresu od 0 do 100"
 
 #: EcomB2B/trait.OrderDiscountOperations.php:2131 ar_edit_marketing.php:245
 #: ar_edit_marketing.php:260 class.Deal.php:577 class.DealComponent.php:386
@@ -2065,10 +2036,8 @@ msgstr "Oznacz jako wysłane"
 #: trait.Published_Email_Template.send_email.php:573
 #: trait.Published_Email_Template.send_email.php:705
 #: trait.Published_Email_Template.send_email.php:706
-#, fuzzy
-#| msgid "Customer registration number"
 msgid "New customer registration"
-msgstr "Numer rejestracji klienta"
+msgstr "Nowa rejestracja klienta"
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:576
 #: EcomB2B/trait.Published_Email_Template.send_email.php:739
@@ -2089,10 +2058,8 @@ msgstr "Nowe zamówienie"
 #: trait.Published_Email_Template.send_email.php:580
 #: trait.Published_Email_Template.send_email.php:779
 #: trait.Published_Email_Template.send_email.php:780
-#, fuzzy
-#| msgid "Invoice Date"
 msgid "Invoice deleted"
-msgstr "Data wyst. faktury"
+msgstr "Faktura usunięta"
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:582
 #: EcomB2B/trait.Published_Email_Template.send_email.php:791
@@ -2100,10 +2067,8 @@ msgstr "Data wyst. faktury"
 #: trait.Published_Email_Template.send_email.php:582
 #: trait.Published_Email_Template.send_email.php:791
 #: trait.Published_Email_Template.send_email.php:792
-#, fuzzy
-#| msgid "Refund net"
 msgid "Refund deleted"
-msgstr "zwrot netto"
+msgstr "Zwrot pieniędzy usunięty"
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:588
 #: EcomB2B/trait.Published_Email_Template.send_email.php:830
@@ -2111,10 +2076,8 @@ msgstr "zwrot netto"
 #: trait.Published_Email_Template.send_email.php:588
 #: trait.Published_Email_Template.send_email.php:830
 #: trait.Published_Email_Template.send_email.php:831
-#, fuzzy
-#| msgid "Replacement packed"
 msgid "Replacement undispatched"
-msgstr "Produkt zastępczy przygotowany"
+msgstr "Wymiana bez wysyłania"
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:590
 #: EcomB2B/trait.Published_Email_Template.send_email.php:842
@@ -2123,19 +2086,16 @@ msgstr "Produkt zastępczy przygotowany"
 #: trait.Published_Email_Template.send_email.php:590
 #: trait.Published_Email_Template.send_email.php:842
 #: trait.Published_Email_Template.send_email.php:843
-#, fuzzy
-#| msgid "Delivery note date"
 msgid "Delivery note undispatched"
-msgstr "Data notatki dostawy"
+msgstr "Notatka dostawy - nie wysłano"
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:608
 #: EcomB2B/trait.Published_Email_Template.send_email.php:711
 #: trait.Published_Email_Template.send_email.php:608
 #: trait.Published_Email_Template.send_email.php:711
-#, fuzzy, php-format
-#| msgid "Customer %s registered"
+#, php-format
 msgid "%s (%s) has registered"
-msgstr "Rejestracja  %s klienta"
+msgstr "%s (%s) zarejestrowało się "
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:617
 #: EcomB2B/trait.Published_Email_Template.send_email.php:752
@@ -2143,85 +2103,69 @@ msgstr "Rejestracja  %s klienta"
 #: trait.Published_Email_Template.send_email.php:752
 #, php-format
 msgid "New order %s (%s) has been placed by %s"
-msgstr ""
+msgstr "Nowe zamówienie% s (%s) zostało umieszczone przez%s"
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:627
 #: EcomB2B/trait.Published_Email_Template.send_email.php:783
 #: trait.Published_Email_Template.send_email.php:627
 #: trait.Published_Email_Template.send_email.php:783
-#, fuzzy, php-format
-#| msgid "%s %s %s was deleted"
+#, php-format
 msgid "Invoice %s (%s, %s) has been deleted by %s."
-msgstr "%s %s %s zostało skasowane"
+msgstr "Faktura %s (%s %s) zostało skasowane przez %s"
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:635
 #: EcomB2B/trait.Published_Email_Template.send_email.php:796
 #: trait.Published_Email_Template.send_email.php:635
 #: trait.Published_Email_Template.send_email.php:796
-#, fuzzy, php-format
-#| msgid "%s %s %s was deleted"
+#, php-format
 msgid "Refund %s (%s, %s) has been deleted by %s."
-msgstr "%s %s %s zostało skasowane"
+msgstr "Zwrot% s (% s,% s) został usunięty przez% s."
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:647
 #: EcomB2B/trait.Published_Email_Template.send_email.php:836
 #: trait.Published_Email_Template.send_email.php:647
 #: trait.Published_Email_Template.send_email.php:836
-#, fuzzy, php-format
-#| msgid "Replacement approved to dispatch"
+#, php-format
 msgid "Replacement %s has been undispatched by %s."
-msgstr "Wysyłka produktu zastępczego potwierdzona"
+msgstr "Nota dostawy% s nie została wysłana przez% s."
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:655
 #: EcomB2B/trait.Published_Email_Template.send_email.php:848
 #: trait.Published_Email_Template.send_email.php:655
 #: trait.Published_Email_Template.send_email.php:848
-#, fuzzy, php-format
-#| msgid "Delivery note date"
+#, php-format
 msgid "Delivery note %s has been undispatched by %s."
-msgstr "Data notatki dostawy"
+msgstr "Nota dostawy% s nie została wysłana przez% s."
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:707
 #: trait.Published_Email_Template.send_email.php:707
-#, fuzzy
-#| msgid "Lost customers"
 msgid "Link to customer"
-msgstr "Straceni klienci"
+msgstr "Połącz z klientem "
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:741
 #: trait.Published_Email_Template.send_email.php:741
-#, fuzzy
-#| msgid "Link to offer 1"
 msgid "Link to order"
-msgstr "link do oferty 1"
+msgstr "link do zamówienia"
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:781
 #: trait.Published_Email_Template.send_email.php:781
-#, fuzzy
-#| msgid "Delete invoice"
 msgid "Link to deleted invoice"
-msgstr "Usuń fakturę"
+msgstr "link do usuniętych faktur"
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:794
 #: trait.Published_Email_Template.send_email.php:794
-#, fuzzy
-#| msgid "Delete refund"
 msgid "Link to deleted refund"
-msgstr "Usuń zwrot"
+msgstr "link do usuniętych zwrotów"
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:832
 #: trait.Published_Email_Template.send_email.php:832
-#, fuzzy
-#| msgid "Creating replacement"
 msgid "Link to replacement"
-msgstr "tworzenie produktu zastępczego"
+msgstr "połącz z produktem zastępczym "
 
 #: EcomB2B/trait.Published_Email_Template.send_email.php:844
 #: trait.Published_Email_Template.send_email.php:844
-#, fuzzy
-#| msgid "Input delivery note"
 msgid "Link to delivery note"
-msgstr "Wprowadź informację odnośnie dostawy"
+msgstr "Link do dokumentu dostawy"
 
 #: _smarty.php:2 _smarty.php:6617 _smarty.php:8564 _smarty.php:8924
 #: conf/export_fields.php:207 conf/export_fields.php:245
@@ -2375,11 +2319,11 @@ msgstr "z"
 
 #: _smarty.php:20 _web_smarty.php:14
 msgid "Invoice Date"
-msgstr "Data wyst. faktury"
+msgstr "Data wystawienia faktury"
 
 #: _smarty.php:23 _web_smarty.php:17
 msgid "Tax liability date"
-msgstr "Data obciążenia podatkowego"
+msgstr "Data zobowiązania podatkowego"
 
 #: _smarty.php:26 _web_smarty.php:20
 msgid "Order Date"
@@ -2399,7 +2343,7 @@ msgstr "Status Płatności"
 #: _smarty.php:38 _smarty.php:3023 _smarty.php:6245 _web_smarty.php:32
 #: conf/export_fields.php:48
 msgid "Tax Number"
-msgstr "Numer Podatkowy:"
+msgstr "Numer Podatkowy"
 
 #: _smarty.php:47 _smarty.php:3215 _smarty.php:5300 _smarty.php:15146
 #: _smarty.php:17150 _smarty.php:17246 _web_smarty.php:41
@@ -2409,7 +2353,7 @@ msgstr "Kurier"
 #: _smarty.php:50 _smarty.php:3029 _web_smarty.php:44 conf/export_fields.php:80
 #: conf/export_fields.php:88
 msgid "Billing address"
-msgstr "Adres do faktury"
+msgstr "Adres Faktury"
 
 #: _smarty.php:53 _smarty.php:3032 _smarty.php:5291 _web_smarty.php:47
 #: _web_smarty.php:299 _web_smarty.php:389 _web_smarty.php:824
@@ -2644,7 +2588,7 @@ msgstr "Łącznie netto"
 #: utils/modules.php:2304 utils/modules.php:2309 utils/modules.php:2356
 #: utils/modules.php:4130
 msgid "Payments"
-msgstr "Płatnośći"
+msgstr "Płatności"
 
 #: _smarty.php:110 _web_smarty.php:104
 msgid "Method"
@@ -2731,10 +2675,8 @@ msgid "Status"
 msgstr "Status"
 
 #: _smarty.php:131
-#, fuzzy
-#| msgid "Tax liability date"
 msgid "Transfer of tax liability"
-msgstr "Data obciążenia podatkowego"
+msgstr "Przeniesienie zobowiązania podatkowego"
 
 #: _smarty.php:134 _smarty.php:341 _smarty.php:386 _smarty.php:671
 #: _smarty.php:2096 _smarty.php:2873 _smarty.php:2876 _smarty.php:3263
@@ -2766,14 +2708,12 @@ msgid "Undo"
 msgstr "Cofnij"
 
 #: _smarty.php:140
-#, fuzzy
 msgid "Add"
-msgstr "Adres"
+msgstr "Dodaj"
 
 #: _smarty.php:143
-#, fuzzy
 msgid "Remove"
-msgstr "Nie można usunąć kontaktu, bo nie jest w związany z firmą"
+msgstr "Usuń"
 
 #: _smarty.php:149 _smarty.php:239 _smarty.php:2954 _smarty.php:3488
 #: _smarty.php:3878 _smarty.php:4595 _smarty.php:4790 _smarty.php:17303
@@ -2789,7 +2729,7 @@ msgstr "Ogień"
 
 #: _smarty.php:158 _smarty.php:161
 msgid "Share screen"
-msgstr ""
+msgstr "Udostępnij ekran"
 
 #: _smarty.php:164 _smarty.php:170 _smarty.php:173 _smarty.php:182
 #: _smarty.php:185 _smarty.php:4748 ar_views.php:6867
@@ -2798,10 +2738,8 @@ msgid "Help"
 msgstr "Pomoc"
 
 #: _smarty.php:167
-#, fuzzy
-#| msgid "Online state"
 msgid "Online chat"
-msgstr "Status online"
+msgstr "Czat online"
 
 #: _smarty.php:176 _smarty.php:179 ar_setup.php:406 ar_views.php:734
 msgid "Logout"
@@ -3197,10 +3135,8 @@ msgid "Change template"
 msgstr "Zmień Szablon"
 
 #: _smarty.php:362
-#, fuzzy
-#| msgid "Set recipients"
 msgid "No recipients set"
-msgstr "Ustaw odbiorców"
+msgstr "Nie ustawiono odbiorców"
 
 #: _smarty.php:365 _smarty.php:3491 _smarty.php:4607 _smarty.php:10163
 #: ar_address.php:97
@@ -3208,15 +3144,12 @@ msgid "Recipient"
 msgstr "Odbiorca"
 
 #: _smarty.php:368 _smarty.php:14327
-#, fuzzy
-#| msgid "Active users"
 msgid "Inactive user"
-msgstr "Aktywni użytkownicy"
+msgstr "Nieaktywny użytkownik"
 
 #: _smarty.php:371 _smarty.php:14330 ar_find.php:384
-#, fuzzy
 msgid "No email set"
-msgstr "Stara wartość"
+msgstr "Brak ustawień email"
 
 #: _smarty.php:374 _smarty.php:401 _smarty.php:5681 _smarty.php:5966
 #: _smarty.php:6353 _smarty.php:7721 _smarty.php:9179 _smarty.php:9350
@@ -3230,20 +3163,16 @@ msgid "User"
 msgstr "Użytkownik"
 
 #: _smarty.php:377 ar_mailshots_tables.php:576
-#, fuzzy
 msgid "External email"
-msgstr "Link resetowania hasła wygasł"
+msgstr "Zewnętrzny Email"
 
 #: _smarty.php:380
-#, fuzzy
-#| msgid "Add Voucher"
 msgid "Add user"
-msgstr "Dodaj kupon promocyjny"
+msgstr "dodaj użytkownika"
 
 #: _smarty.php:383
-#, fuzzy
 msgid "Add external email"
-msgstr "Nowy E-Mail"
+msgstr "dodaj zewnętrzny Email"
 
 #: _smarty.php:389 _smarty.php:419 _smarty.php:425 _smarty.php:437
 #: _smarty.php:446 _smarty.php:458 _smarty.php:467 _smarty.php:479
@@ -3396,10 +3325,8 @@ msgstr "Agent ( użytkownik systemu)"
 #: navigation/warehouses.nav.php:1732 navigation/warehouses.nav.php:1745
 #: navigation/warehouses.nav.php:1820 navigation/warehouses.nav.php:2136
 #: navigation/warehouses.nav.php:2204 utils/modules.php:6270
-#, fuzzy
-#| msgid "Warehouse Area"
 msgid "Warehouse area"
-msgstr "Obszar magazynu"
+msgstr "Obszar magazynu "
 
 #: _smarty.php:530 _smarty.php:6407 ar_users_tables.php:111
 #: ar_users_tables.php:558 class.Staff.php:899
@@ -3600,10 +3527,8 @@ msgid "Purges"
 msgstr "czystki"
 
 #: _smarty.php:707
-#, fuzzy
-#| msgid "Total orders in basket"
 msgid "Mailshots for orders in basket"
-msgstr "Łączna liczba zamówień w koszyku"
+msgstr "Mailshoty dla zamówień w koszyku"
 
 #: _smarty.php:710 _smarty.php:3179 _smarty.php:4691
 msgid "Invoices with no VAT"
@@ -4412,10 +4337,8 @@ msgid "Valid until"
 msgstr "ważne do"
 
 #: _smarty.php:1424 conf/webpage_blocks.php:180
-#, fuzzy
-#| msgid "Pageviews"
 msgid "Reviews"
-msgstr "Ilość Odwiedzonych Stron"
+msgstr "Opinie"
 
 #: _smarty.php:1427 conf/fields/website_localization.fld.php:568
 #: conf/website_system_webpages.php:367 conf/website_system_webpages.php:368
@@ -4667,7 +4590,7 @@ msgstr "Widok z lotu ptaka"
 
 #: _smarty.php:1625
 msgid "Upload new image"
-msgstr "Przeslij nowy obraz"
+msgstr "Prześlij nowy obraz"
 
 #: _smarty.php:1634
 msgid "Can't add category"
@@ -4712,10 +4635,8 @@ msgid "Delete this section"
 msgstr "Usuń sekcje"
 
 #: _smarty.php:1724 _smarty.php:2357
-#, fuzzy
-#| msgid "http://... or webpage code"
 msgid "https://... or webpage code"
-msgstr "http://... lub kod strony internetowej"
+msgstr "http://... lub kod strony internetowej "
 
 #: _smarty.php:1730
 msgid "Copyright owner"
@@ -5272,11 +5193,11 @@ msgstr "Pojedyńcza Kolumna"
 
 #: _smarty.php:2843
 msgid "Add column"
-msgstr "Dodaj kolumne"
+msgstr "Dodaj kolumnę"
 
 #: _smarty.php:2846
 msgid "Delete this column"
-msgstr "Usuń kolumne"
+msgstr "Usuń kolumnę"
 
 #: _smarty.php:2858
 msgid "Special families"
@@ -5295,17 +5216,15 @@ msgstr "Nagłówek - zresetuj"
 
 #: _smarty.php:2882
 msgid "Left menu"
-msgstr ""
+msgstr "Lewe menu"
 
 #: _smarty.php:2888
 msgid "Logo"
 msgstr "Logo"
 
 #: _smarty.php:2891 _smarty.php:19421
-#, fuzzy
-#| msgid "margin"
 msgid "Left margin"
-msgstr "marża"
+msgstr "Lewy margines"
 
 #: _smarty.php:2909
 msgid "Column"
@@ -5511,10 +5430,8 @@ msgid "per hour"
 msgstr "na godzinę"
 
 #: _smarty.php:3203
-#, fuzzy
-#| msgid "Missing required fields"
 msgid "Missing required fields:"
-msgstr "Brakujące dane w wymaganych polach"
+msgstr "Brakujące wymagane pola:"
 
 #: _smarty.php:3206 _smarty.php:3266 _smarty.php:3650 _smarty.php:4826
 #: _smarty.php:15173 _smarty.php:17177 _smarty.php:17237
@@ -5527,69 +5444,52 @@ msgid "Picker"
 msgstr "Osoba przygotowująca zamówienie"
 
 #: _smarty.php:3212
-#, fuzzy
-#| msgid "number parcels"
 msgid "Number of parcels"
 msgstr "Liczba Paczek"
 
 #: _smarty.php:3218
 msgid "Are you sure you want to continue?"
-msgstr ""
+msgstr "Jesteś pewien, że chcesz kontynuować?"
 
 #: _smarty.php:3221
-#, fuzzy
 msgid "There is some issues with this order"
-msgstr "Taki klijent nie istnieje"
+msgstr "Występują pewne problemy z tym zamówieniem"
 
 #: _smarty.php:3224
-#, fuzzy
 msgid "Yes, continue"
-msgstr "Produkty"
+msgstr "Tak, kontynuuj"
 
 #: _smarty.php:3227
-#, fuzzy
-#| msgid "Active products out of stock"
 msgid "Some products where mark as out of stock"
-msgstr "Aktywne produkty - brak na stanie"
+msgstr "Niektóre produkty są oznaczone jako niedostępne"
 
 #: _smarty.php:3230
-#, fuzzy
-#| msgid "Product name missing"
 msgid "Tracking number is missing"
-msgstr "Brakująca nazwa produktu"
+msgstr "Brak numeru śledzenia przesyłki"
 
 #: _smarty.php:3242
-#, fuzzy
-#| msgid "Select a courier"
 msgid "Select courier"
-msgstr "Wybierz kuriera"
+msgstr "Wybierz kuriera "
 
 #: _smarty.php:3245 _smarty.php:3275
-#, fuzzy
-#| msgid "Courier"
 msgid "No courier"
-msgstr "Kurier"
+msgstr "Brak kuriera"
 
 #: _smarty.php:3248
-#, fuzzy
-#| msgid "Tax number"
 msgid "Tracking number"
-msgstr "Numer Podatkowy:"
+msgstr "Numer przesyłki"
 
 #: _smarty.php:3251 conf/fields/store.fld.php:349
-#, fuzzy
-#| msgid "Set as Ready"
 msgid "Set as closed"
-msgstr "Ustaw jako gotowe"
+msgstr "Ustaw jako zamknięte"
 
 #: _smarty.php:3254 _smarty.php:14801 conf/fields/store.fld.php:352
 msgid "Create invoice"
-msgstr "Utwórz fakture"
+msgstr "Utwórz fakturę"
 
 #: _smarty.php:3257 conf/fields/store.fld.php:355
-#, fuzzy
 msgid "Set as dispatched"
-msgstr "wysłane"
+msgstr "Ustaw jak wysłane"
 
 #: _smarty.php:3260 _smarty.php:14561 _smarty.php:14567 _smarty.php:14726
 #: _smarty.php:14732 _smarty.php:15107 _smarty.php:15113 _smarty.php:15242
@@ -5618,14 +5518,12 @@ msgid "Guest category"
 msgstr "Kategoria Gość"
 
 #: _smarty.php:3281
-#, fuzzy
-#| msgid "Set all as packed"
 msgid "Set all allowances as active"
-msgstr "Ustaw jako zapakowane"
+msgstr "Ustaw wszystkie uprawnienia jako aktywne"
 
 #: _smarty.php:3284
 msgid "Set all allowances as suspended"
-msgstr ""
+msgstr "Ustaw wszystkie uprawnienia jako zawieszone"
 
 #: _smarty.php:3290 _smarty.php:13766
 msgid "Allowance"
@@ -5762,11 +5660,8 @@ msgid "Refundable amount"
 msgstr "Wartość Refundowana"
 
 #: _smarty.php:3404
-#, fuzzy
-#| msgid "%s refund"
-#| msgid_plural "%s refunds"
 msgid "Log refund"
-msgstr "%s zwrot"
+msgstr "Zwrot dziennika"
 
 #: _smarty.php:3407 _smarty.php:6926 ar_inventory_tables.php:2583
 #: ar_products_tables.php:226 ar_products_tables.php:1620 class.Page.php:505
@@ -5814,7 +5709,7 @@ msgstr "Zależne od lokalizacji"
 
 #: _smarty.php:3515 _smarty.php:4631 ar_address.php:137
 msgid "Administrative area"
-msgstr "Miejsce Admisnistracji"
+msgstr "Miejsce Administarcji"
 
 #: _smarty.php:3521 _smarty.php:4637
 msgid "Values don't match"
@@ -5826,7 +5721,7 @@ msgstr "Zacznij jeszcze raz"
 
 #: _smarty.php:3527 _smarty.php:4643
 msgid "Retype new password"
-msgstr "Wpisz ponownie nowe chasło"
+msgstr "Wpisz ponownie nowe hasło"
 
 #: _smarty.php:3530
 msgid "Next available barcode will be assigned"
@@ -5947,10 +5842,8 @@ msgid "Unit description"
 msgstr "Opis jednostki"
 
 #: _smarty.php:3731
-#, fuzzy
-#| msgid "Quantity invoiced"
 msgid "Quantity ordered"
-msgstr "Ilości zaksięgowane"
+msgstr "Ilości zamówione"
 
 #: _smarty.php:3734 _smarty.php:6590 _smarty.php:8375 _smarty.php:13742
 #: _smarty.php:14057 _smarty.php:17621 _smarty.php:17927 _smarty.php:18329
@@ -5962,9 +5855,8 @@ msgid "Unit cost"
 msgstr "Koszt jednostki"
 
 #: _smarty.php:3740
-#, fuzzy
 msgid "Total items"
-msgstr "Suma"
+msgstr "Produkty razem"
 
 #: _smarty.php:3743 _smarty.php:3953 _smarty.php:4208
 msgid "Interval"
@@ -6120,7 +6012,7 @@ msgstr "Przypisz przygotowującego"
 
 #: _smarty.php:3875 _smarty.php:15164 _smarty.php:17168
 msgid "Please assign packer"
-msgstr "Przypisz przygotowujacego"
+msgstr "Przypisz przygotowującego"
 
 #: _smarty.php:3911
 msgid "Urgent"
@@ -6262,11 +6154,8 @@ msgid "Surplus"
 msgstr "Nadmiar"
 
 #: _smarty.php:4058
-#, fuzzy
-#| msgid "%s part with excess stock"
-#| msgid_plural "%s parts with excess stock"
 msgid "Number active parts with surplus stock"
-msgstr "%s część z dodatkowym stanem "
+msgstr "Liczba aktywnych części z nadwyżką zapasów"
 
 #: _smarty.php:4061 _smarty.php:4076 _smarty.php:4091 _smarty.php:4106
 #: _smarty.php:5429 _smarty.php:5585 _smarty.php:6569 _smarty.php:7433
@@ -6281,16 +6170,12 @@ msgstr "Wartość Stanów Magazynowych"
 #: _smarty.php:4064 _smarty.php:4067 _smarty.php:4079 _smarty.php:4082
 #: _smarty.php:4094 _smarty.php:4097 _smarty.php:4109 _smarty.php:4112
 #: _smarty.php:4121 _smarty.php:4124
-#, fuzzy
-#| msgid "New purchase order"
 msgid "Current purchase orders"
-msgstr "Nowe zamówienie "
+msgstr "Aktualne zamówienia zakupu"
 
 #: _smarty.php:4073
-#, fuzzy
-#| msgid "Active products out of stock"
 msgid "Number active parts with normal stock"
-msgstr "Aktywne produkty - brak na stanie"
+msgstr "Liczba aktywnych części z normalnym zapasem"
 
 #: _smarty.php:4085 _smarty.php:5807 _smarty.php:5873 _smarty.php:7664
 #: _smarty.php:8648 _smarty.php:8906 _smarty.php:9311 _smarty.php:9566
@@ -6300,10 +6185,8 @@ msgid "Low"
 msgstr "Niski"
 
 #: _smarty.php:4088
-#, fuzzy
-#| msgid "Active products out of stock"
 msgid "Number active parts with low stock"
-msgstr "Aktywne produkty - brak na stanie"
+msgstr "Liczba aktywnych części z niskim zapasem"
 
 #: _smarty.php:4100 _smarty.php:5810 _smarty.php:5876 _smarty.php:7667
 #: _smarty.php:8651 _smarty.php:8909 _smarty.php:9314 _smarty.php:9569
@@ -6313,16 +6196,12 @@ msgid "Critical"
 msgstr "Krytyczny"
 
 #: _smarty.php:4103
-#, fuzzy
-#| msgid "%s part with critical stock or out of stock"
-#| msgid_plural "%s parts with critical stock or out of stock"
 msgid "Number active parts with critical stock"
-msgstr "%s część z zapasem krytycznym lub brak w magazynie"
+msgstr "Liczba aktywnych części z zapasem krytycznym"
 
 #: _smarty.php:4118
-#, fuzzy
 msgid "Number of out of stock parts"
-msgstr "Brak"
+msgstr "Liczba brakujących części"
 
 #: _smarty.php:4127 _smarty.php:4187 _smarty.php:4526
 msgid "Insufficient picking stock"
@@ -6435,9 +6314,8 @@ msgid "Store currency"
 msgstr "Waluta sklepu"
 
 #: _smarty.php:4205 ar_views.php:9561 navigation/reports.nav.php:89
-#, fuzzy
 msgid "Sales report"
-msgstr "Sprawozdanie roczne "
+msgstr "Raport Sprzedaży"
 
 #: _smarty.php:4292 _smarty.php:4304
 msgid "Change compared with last year"
@@ -6505,10 +6383,8 @@ msgid "In dispatch area"
 msgstr "w rejonie wysyłkowym"
 
 #: _smarty.php:4379
-#, fuzzy
-#| msgid "Sales representatives report"
 msgid "Sales representative reports"
-msgstr "Raport przedstawicieli handlowych"
+msgstr "Raporty przedstawicieli handlowych"
 
 #: _smarty.php:4382
 msgid "Urgent audit"
@@ -6528,98 +6404,72 @@ msgid "Total customers"
 msgstr "Łącznie klientów"
 
 #: _smarty.php:4430
-#, fuzzy
 msgid "Number of customers"
-msgstr "Klienci "
+msgstr "Liczba klientów"
 
 #: _smarty.php:4433 _smarty.php:4436
-#, fuzzy
-#| msgid "New customer list"
 msgid "New customers last 7 days"
-msgstr "nowa lista klientów "
+msgstr "Nowi klienci ostatnie 7 dni"
 
 #: _smarty.php:4439
-#, fuzzy
 msgid "New contacts with orders"
-msgstr "zamówienia"
+msgstr "Nowe kontakty z zamówieniami"
 
 #: _smarty.php:4442 class.List.php:280
 msgid "Active customers"
 msgstr "Aktywni Klienci "
 
 #: _smarty.php:4445
-#, fuzzy
-#| msgid "active customers"
 msgid "Number of active customers"
-msgstr "Aktywni Klienci "
+msgstr "Liczba aktywnych klientów"
 
 #: _smarty.php:4448 _smarty.php:4457
-#, fuzzy
-#| msgid "Parentage of total customers who answer this poll"
 msgid "Percentage of total customers"
-msgstr "Klienci którzy odpowiedzieli na sondaż"
+msgstr "Procent łącznej liczby klientów"
 
 #: _smarty.php:4451
-#, fuzzy
-#| msgid "Customers with credits"
 msgid "Customers with orders"
-msgstr "Klienci z kredytem"
+msgstr "Klienci z zamówieniami"
 
 #: _smarty.php:4454
-#, fuzzy
 msgid "Number of customers with orders"
-msgstr "Klijent"
+msgstr "Liczba klientów z zamówieniami"
 
 #: _smarty.php:4460
 msgid "Missing SKO Barcodes"
 msgstr "Brakujące Kody Kreskowe SKO"
 
 #: _smarty.php:4463
-#, fuzzy
-#| msgid "Storing Area"
 msgid "Staging area"
-msgstr "obszar przechowywania"
+msgstr "obszar przechowywania "
 
 #: _smarty.php:4466
-#, fuzzy
 msgid "New delivery notes"
-msgstr "Uwagi Dostawy"
+msgstr "Nowe dokumenty dostawy"
 
 #: _smarty.php:4469
-#, fuzzy
-#| msgid "Delivery note date"
 msgid "Delivery note assigned"
-msgstr "Data notatki dostawy"
+msgstr "Przypisana nota dostawy"
 
 #: _smarty.php:4475
-#, fuzzy
-#| msgid "Waiting for payment"
 msgid "Waiting for customer"
-msgstr "Oczekiwanie na płatność"
+msgstr "Czekam na klienta"
 
 #: _smarty.php:4478
-#, fuzzy
-#| msgid "Waiting for payment"
 msgid "Waiting for restock"
-msgstr "Oczekiwanie na płatność"
+msgstr "Oczekiwanie na uzupełnienie zapasów"
 
 #: _smarty.php:4481
-#, fuzzy
-#| msgid "Send to production"
 msgid "Waiting for production"
-msgstr "Wyślij ns produkcję"
+msgstr "Oczekiwanie na Dział Produckyjny "
 
 #: _smarty.php:4499
-#, fuzzy
-#| msgid "Delivery address"
 msgid "Delivery area"
-msgstr "Adres Dostawy"
+msgstr "Adres Dostawy "
 
 #: _smarty.php:4508
-#, fuzzy
-#| msgid "Active parts"
 msgid "Number active parts"
-msgstr "Aktywna Części"
+msgstr "Liczba aktywnych części"
 
 #: _smarty.php:4511 _smarty.php:4514 _smarty.php:7634 _smarty.php:15185
 msgid "Parts in process"
@@ -6669,16 +6519,12 @@ msgid "All stores"
 msgstr "Wszystkie sklepy"
 
 #: _smarty.php:4553
-#, fuzzy
-#| msgid "Total orders in basket"
 msgid "Number of orders in basket"
-msgstr "Łączna liczba zamówień w koszyku"
+msgstr "Liczba zamówień w koszyku"
 
 #: _smarty.php:4556
-#, fuzzy
-#| msgid "Just in basket"
 msgid "Amount in basket"
-msgstr "W koszyku"
+msgstr "Wartość koszyka"
 
 #: _smarty.php:4571
 msgid "Orders in warehouse"
@@ -6689,48 +6535,36 @@ msgid "Excess stock"
 msgstr "Dodatkowy Zasób"
 
 #: _smarty.php:4649 _smarty.php:17279
-#, fuzzy
-#| msgid "Postal code"
 msgid "Postal codes"
-msgstr "Kod pocztowy"
+msgstr "Kody pocztowe "
 
 #: _smarty.php:4652 _smarty.php:5198 _smarty.php:17282 _smarty.php:17336
 msgid "Note for pickers"
 msgstr "Notatka dla przygotowującego zamówienie"
 
 #: _smarty.php:4655 _smarty.php:17285
-#, fuzzy
 msgid "Add postal code condition"
-msgstr "kod pocztowy"
+msgstr "Dodaj warunek kodu pocztowego"
 
 #: _smarty.php:4658 _smarty.php:17288
-#, fuzzy
-#| msgid "postal code"
 msgid "Only this postal codes"
-msgstr "Kod Pocztowy"
+msgstr "Tylko te kody pocztowe"
 
 #: _smarty.php:4661 _smarty.php:17291
-#, fuzzy
-#| msgid "Contact address postal code"
 msgid "without this postal codes"
-msgstr "Kod Pocztowy adresu"
+msgstr "bez tych kodów pocztowych"
 
 #: _smarty.php:4664 _smarty.php:17294
 msgid "Clean"
-msgstr ""
+msgstr "Wyczyść"
 
 #: _smarty.php:4667 _smarty.php:17297
-#, fuzzy
-#| msgid "Postal code: %s"
 msgid "Postal codes ranges or Regex"
-msgstr "Kod Pocztowy %s"
+msgstr "Zakresy kodów pocztowych "
 
 #: _smarty.php:4670 _smarty.php:17300
-#, fuzzy
-#| msgid "%s country"
-#| msgid_plural "%s countries"
 msgid "Add country"
-msgstr "%s kraj "
+msgstr "Dodaj kraj"
 
 #: _smarty.php:4673
 msgid "Order quantity"
@@ -6783,20 +6617,12 @@ msgid "Signature"
 msgstr "Podpis"
 
 #: _smarty.php:4796 conf/fields/website_localization.fld.php:575
-#, fuzzy
-#| msgid ""
-#| "If you do not wish to receive more marketing emails from us, plese "
-#| "unsubscribe"
 msgid "If you do not wish to receive more marketing emails from us"
-msgstr ""
-"Jeżeli nie chcesz otrzymywać emaili marketingowych, możesz wypisać się z "
-"newslettera"
+msgstr "Jeśli nie chcesz otrzymywać więcej e-maili marketingowych od nas"
 
 #: _smarty.php:4799 conf/fields/website_localization.fld.php:583
-#, fuzzy
-#| msgid "Unsubscribe"
 msgid "Unsubscribe here"
-msgstr "Anuluj subskrypcję"
+msgstr "Zrezygnuj z subskrypcji tutaj"
 
 #: _smarty.php:4808
 msgid "Make category not public"
@@ -6807,10 +6633,8 @@ msgid "Marginals"
 msgstr "Marginesy"
 
 #: _smarty.php:4859
-#, fuzzy
-#| msgid "Part's location note"
 msgid "Add part's location note"
-msgstr "Notatka lokalizacji części"
+msgstr "Dodaj notatkę lokalizacji części"
 
 #: _smarty.php:4862 ar_edit_stock.php:707 class.Part.php:2699
 #: class.Part.php:2726
@@ -6824,21 +6648,16 @@ msgid "Picking location"
 msgstr "Lokalizacja produktu"
 
 #: _smarty.php:4868
-#, fuzzy
-#| msgid "Picking location"
 msgid "Preferred picking location cc"
-msgstr "Lokalizacja produktu"
+msgstr "Preferowana lokalizacja pobrania cc"
 
 #: _smarty.php:4871 _smarty.php:4874
-#, fuzzy
 msgid "current stock"
-msgstr "Brak"
+msgstr "Aktualny stan magazynowy"
 
 #: _smarty.php:4877
-#, fuzzy
-#| msgid "Picking location"
 msgid "Preferred picking location zz"
-msgstr "Lokalizacja produktu"
+msgstr "Preferowana lokalizacja pobrania zz"
 
 #: _smarty.php:4880
 msgid "Recommended min/max stock"
@@ -6900,10 +6719,8 @@ msgid "Move from"
 msgstr "Przesuń z "
 
 #: _smarty.php:4895 _smarty.php:16604
-#, fuzzy
-#| msgid "Picking location"
 msgid "Unlink location"
-msgstr "Lokalizacja produktu"
+msgstr "Nie powiązuj lokalizacji"
 
 #: _smarty.php:4907
 msgid "Current SKO cost"
@@ -6951,7 +6768,7 @@ msgstr "lekki"
 
 #: _smarty.php:4949 _smarty.php:4961 _smarty.php:4985 _smarty.php:4991
 msgid "Fresh"
-msgstr ""
+msgstr "świeży"
 
 #: _smarty.php:4952 _smarty.php:4973
 msgid "Standard"
@@ -7018,14 +6835,12 @@ msgid "Close dialog"
 msgstr "Zamknij okno dialogowe"
 
 #: _smarty.php:5045 _smarty.php:5081
-#, fuzzy
 msgid "Export as spreadsheet"
-msgstr "Szyfr Produktu "
+msgstr "Eksportuj jako arkusz kalkulacyjny "
 
 #: _smarty.php:5048 _smarty.php:5084
-#, fuzzy
 msgid "Export as CSV file"
-msgstr "Klienci Wymieniać kolejno"
+msgstr "Eksportuj (CSV)"
 
 #: _smarty.php:5051
 msgid "Last page"
@@ -7037,7 +6852,7 @@ msgstr "następna strona"
 
 #: _smarty.php:5057
 msgid "Results per page"
-msgstr "rezultaty na strone"
+msgstr "rezultaty na stronę"
 
 #: _smarty.php:5060
 msgid "Previous page"
@@ -7128,58 +6943,44 @@ msgid "Comma Separated Value"
 msgstr "Wartość oddzielona przecinkiem"
 
 #: _smarty.php:5147
-#, fuzzy
 msgid "Price Increase"
-msgstr "Cena produktu uległa zmianie"
+msgstr "Wzrost ceny"
 
 #: _smarty.php:5150
-#, fuzzy
-#| msgid "Unit price"
 msgid "New unit price"
-msgstr "Cena jednostki"
+msgstr "Nowa cena jednostki"
 
 #: _smarty.php:5153
-#, fuzzy
-#| msgid "Placement quantity greater than the checked quantity"
 msgid "Supplier can less than the ordered quantity"
-msgstr "umieszczona Ilość większa niż ilość sprawdzona"
+msgstr "Dostawca może dostarczyć  mniej niż zamówiona ilość"
 
 #: _smarty.php:5156 class.Part.php:793
 msgid "Low stock"
 msgstr "Niski Stan Magazynowy"
 
 #: _smarty.php:5159
-#, fuzzy
-#| msgid "Cartons ordered"
 msgid "Cartons can order"
-msgstr "Kartony Zamówione"
+msgstr "Kartony Zamówione "
 
 #: _smarty.php:5162
-#, fuzzy
 msgid "Supplier can only delivery time to long"
-msgstr "Uwagi Dostawy"
+msgstr "Dostawca może dostarczyć czas tylko na długo"
 
 #: _smarty.php:5165
 msgid "Delay"
-msgstr ""
+msgstr "Opóźnienie"
 
 #: _smarty.php:5168
-#, fuzzy
-#| msgid "delivery time (days)"
 msgid "Delay (days)"
-msgstr "czas dostawy (dni)"
+msgstr "Opóźnienie (dni)"
 
 #: _smarty.php:5171
-#, fuzzy
-#| msgid "Product availability"
 msgid "Product no longer available"
-msgstr "Dostepność produktu"
+msgstr "Produkt nie jest już dostępny"
 
 #: _smarty.php:5177
-#, fuzzy
-#| msgid "Supplier's individual orders"
 msgid "Supplier minimum order not meet"
-msgstr "Indywidualne zamówienia dostawcy"
+msgstr "Minimalne zamówienie dostawcy nie spełnione"
 
 #: _smarty.php:5180 _smarty.php:17588 _smarty.php:17894 _smarty.php:18296
 #: _smarty.php:18797 _smarty.php:19157
@@ -7187,10 +6988,8 @@ msgid "Minimum order"
 msgstr "Minimalne zamówienie"
 
 #: _smarty.php:5183
-#, fuzzy
-#| msgid "Minimum order"
 msgid "Minimum carton order"
-msgstr "Minimalne zamówienie"
+msgstr "Minimalne zamówienie kartonów"
 
 #: _smarty.php:5192 _smarty.php:7331 _smarty.php:9224 _smarty.php:9944
 #: _smarty.php:10589 _smarty.php:14123 _smarty.php:14270 _smarty.php:14303
@@ -7462,10 +7261,8 @@ msgstr "Wysłany"
 #: _smarty.php:5534 _smarty.php:5558 _smarty.php:7016 _smarty.php:7019
 #: _smarty.php:7595 _smarty.php:9464 _smarty.php:9467 _smarty.php:14144
 #: _smarty.php:15884
-#, fuzzy
-#| msgid "Bounced"
 msgid "Bounces"
-msgstr "Odbity"
+msgstr "Odbity "
 
 #: _smarty.php:5546 _smarty.php:5570 _smarty.php:7043 _smarty.php:7607
 #: _smarty.php:9491 _smarty.php:14156 conf/elements_options.php:1613
@@ -7628,7 +7425,7 @@ msgstr "Ostatie logowanie"
 #: _smarty.php:9059 _smarty.php:10391 _smarty.php:10775 _smarty.php:11717
 #: _smarty.php:12512
 msgid "Level"
-msgstr "Level"
+msgstr "Poziom"
 
 #: _smarty.php:5753 _smarty.php:5906 _smarty.php:6011 _smarty.php:7370
 #: _smarty.php:8582 _smarty.php:9062 _smarty.php:10394 _smarty.php:10778
@@ -7721,9 +7518,8 @@ msgid "Suppliers"
 msgstr "Dostawcy"
 
 #: _smarty.php:5849 _smarty.php:13790
-#, fuzzy
 msgid "Items with problems"
-msgstr "Klienci bez adresu email"
+msgstr "Przedmioty z problemami"
 
 #: _smarty.php:5909 _smarty.php:6014 _smarty.php:8585
 msgid "Subjects"
@@ -7740,10 +7536,8 @@ msgstr "Dostawca / Agent"
 
 #: _smarty.php:5942 _smarty.php:8345 _smarty.php:11900 _smarty.php:12743
 #: _smarty.php:13385
-#, fuzzy
-#| msgid "Total"
 msgid "Total AC"
-msgstr "Łącznie "
+msgstr "Łącznie AC"
 
 #: _smarty.php:5948
 msgid "Dispatch date"
@@ -7898,15 +7692,12 @@ msgid "Placement notes"
 msgstr "Nottki umieszczenia"
 
 #: _smarty.php:6203
-#, fuzzy
-#| msgid "Returned"
 msgid "Returned SKOs"
-msgstr "Zwrócono"
+msgstr "Zwrócone SKO"
 
 #: _smarty.php:6206
-#, fuzzy
 msgid "SKO to return"
-msgstr "Zasoby"
+msgstr "SKO do zwrotu"
 
 #: _smarty.php:6209 _smarty.php:6212 _smarty.php:6392 _smarty.php:6395
 msgid "Checked SKO"
@@ -7969,10 +7760,8 @@ msgid "Delivery"
 msgstr "Dostawa"
 
 #: _smarty.php:6389
-#, fuzzy
-#| msgid "Delivered unit cost"
 msgid "Delivered quantity"
-msgstr "koszt dostawy produktu"
+msgstr "Dostarczona ilość"
 
 #: _smarty.php:6416 _smarty.php:6644 _smarty.php:10523
 #: tabs/users.contractors.tab.php:23 tabs/users.staff.tab.php:23
@@ -8017,8 +7806,6 @@ msgstr "Logowania"
 
 #: _smarty.php:6434 _smarty.php:6662 _smarty.php:7916 _smarty.php:10541
 #: _smarty.php:13655
-#, fuzzy
-#| msgid "Fail Logins"
 msgid "Fail logins"
 msgstr "Nieudane logowania"
 
@@ -8046,7 +7833,7 @@ msgstr "Podwęzły"
 
 #: _smarty.php:6560
 msgid "Picking here"
-msgstr "Przygotowywanie tutsj"
+msgstr "Przygotowywanie tutaj"
 
 #: _smarty.php:6566
 msgid "Value/SKO"
@@ -8072,10 +7859,8 @@ msgid "Units"
 msgstr "Jednostki"
 
 #: _smarty.php:6602 _smarty.php:14069
-#, fuzzy
-#| msgid "Unit barcode"
 msgid "Unit Barcode"
-msgstr "Kod kreskowy jednostki"
+msgstr "Kod kreskowy jednostki "
 
 #: _smarty.php:6620 tabs/page.users.tab.php:28 tabs/website.users.tab.php:28
 msgid "Customer Name"
@@ -8091,21 +7876,19 @@ msgstr "Stanowisko pracy"
 
 #: _smarty.php:6737 _smarty.php:9380
 msgid "Number of refunds difference form previous year"
-msgstr ""
+msgstr "Liczba różnicy refundacji z poprzedniego roku"
 
 #: _smarty.php:6740 _smarty.php:6743 _smarty.php:8264
-#, fuzzy
-#| msgid "Refund amount"
 msgid "Refunded amount"
-msgstr "Wartość zwrotu"
+msgstr "Wartość zwrotu "
 
 #: _smarty.php:6749
 msgid "Refunded amount difference form previous year"
-msgstr ""
+msgstr "Różnica kwoty zwrotu z poprzedniego roku"
 
 #: _smarty.php:6761
 msgid "Number of invoices difference form previous year"
-msgstr ""
+msgstr "Liczba różnicy faktur z poprzedniego roku"
 
 #: _smarty.php:6791 _smarty.php:7865 _smarty.php:8444 _smarty.php:12527
 msgid "Login date"
@@ -8178,7 +7961,7 @@ msgstr "Offline"
 
 #: _smarty.php:6962 _smarty.php:7625 conf/elements_options.php:701
 msgid "Category status"
-msgstr "Status Kategori"
+msgstr "Status Kategorii"
 
 #: _smarty.php:6977 conf/fields/category.webpage.fld.php:62
 #: conf/fields/product.webpage.fld.php:45 conf/fields/webpage.fld.php:88
@@ -8247,10 +8030,8 @@ msgid "ID"
 msgstr "ID "
 
 #: _smarty.php:7145
-#, fuzzy
-#| msgid "Back to stock notification requests"
 msgid "Notification requests"
-msgstr "Żądanie Informowania o ponownym pojawieniu się na stanie"
+msgstr "Żądania Informowania"
 
 #: _smarty.php:7148
 msgid "Device"
@@ -8292,10 +8073,8 @@ msgstr "Opis Kartonu"
 #: _smarty.php:7220 _smarty.php:7223 _smarty.php:7226 _smarty.php:12473
 #: _smarty.php:12476 _smarty.php:12479 _smarty.php:12641 _smarty.php:12644
 #: _smarty.php:12647
-#, fuzzy
-#| msgid "Sale deliveries"
 msgid "Other deliveries"
-msgstr "Dostawa Wyprzeda\\zy"
+msgstr "Inne dostawy"
 
 #: _smarty.php:7244 _smarty.php:7991
 msgid "Qty (products)"
@@ -8359,7 +8138,7 @@ msgstr "Zignorowane"
 #: _smarty.php:7343 _smarty.php:7439 _smarty.php:12056 _smarty.php:12689
 #: _smarty.php:13556 _smarty.php:14003
 msgid "Available forecast"
-msgstr "Prognoza dostepności"
+msgstr "Prognoza dostępności"
 
 #: _smarty.php:7349 _smarty.php:11555 _smarty.php:12695
 msgid "In production"
@@ -8379,10 +8158,8 @@ msgid "Kind"
 msgstr "Kolejny rodzaj"
 
 #: _smarty.php:7430
-#, fuzzy
-#| msgid "SKO weight"
 msgid "Stock weight"
-msgstr "Waga SKO"
+msgstr "Waga produktów"
 
 #: _smarty.php:7442 _smarty.php:14498 _smarty.php:15029 _smarty.php:16028
 #: _smarty.php:16115
@@ -8447,7 +8224,7 @@ msgstr "Pracować"
 #: _smarty.php:7778 _smarty.php:10025 tabs/page.users.tab.php:24
 #: tabs/website.users.tab.php:24
 msgid "User Handle"
-msgstr "Obsługa Uzytkownika"
+msgstr "Obsługa Użytkownika"
 
 #: _smarty.php:7784 _smarty.php:10031
 msgid "Sessions"
@@ -8516,20 +8293,16 @@ msgid "To re-send"
 msgstr "ponownie wysłać"
 
 #: _smarty.php:8015
-#, fuzzy
-#| msgid "Prospect Deleted"
 msgid "Prospects created"
-msgstr "Perspektywa usunięta"
+msgstr "Prospekt utworzony"
 
 #: _smarty.php:8018 conf/elements_options.php:227
 msgid "Calls"
 msgstr "Telefony"
 
 #: _smarty.php:8021
-#, fuzzy
-#| msgid "Emails send"
 msgid "Emails sent"
-msgstr "wiadomości email wysłane"
+msgstr "wiadomości email wysłane "
 
 #: _smarty.php:8024 _smarty.php:14378 _smarty.php:15122 _smarty.php:17126
 #: class.Store.php:492 class.Website.php:437 conf/fields/webpage.fld.php:15
@@ -8537,28 +8310,20 @@ msgid "Open"
 msgstr "Otwarte"
 
 #: _smarty.php:8036
-#, fuzzy
-#| msgid "Open"
 msgid "Open %"
-msgstr "Otwarte"
+msgstr "Otwarte %"
 
 #: _smarty.php:8039
-#, fuzzy
-#| msgid "Clicked"
 msgid "Click %"
-msgstr "Kliknięty "
+msgstr "Kliknij % "
 
 #: _smarty.php:8042
-#, fuzzy
-#| msgid "Register"
 msgid "Register %"
-msgstr "Zarejestruj"
+msgstr "Zarejestruj %"
 
 #: _smarty.php:8045
-#, fuzzy
-#| msgid "Invoiced"
 msgid "Invoiced %"
-msgstr "Zaksięgowane"
+msgstr "Zaksięgowane %"
 
 #: _smarty.php:8063
 msgid "Warehouse Name"
@@ -8616,9 +8381,8 @@ msgid "Percentage picks with errors"
 msgstr "Dostawy z błędami w procentach"
 
 #: _smarty.php:8267
-#, fuzzy
 msgid "Total amount"
-msgstr "Suma"
+msgstr "Wartość łącznie"
 
 #: _smarty.php:8291 _smarty.php:8402 _smarty.php:9266 _smarty.php:9287
 #: _smarty.php:10562 _smarty.php:11009 _smarty.php:11183 _smarty.php:12380
@@ -8653,7 +8417,7 @@ msgstr "Wartość zamówienia"
 
 #: _smarty.php:8318 _smarty.php:16079 _smarty.php:16094
 msgid "Sale deliveries"
-msgstr "Dostawa Wyprzeda\\zy"
+msgstr "Dostawa Wyprzedaży"
 
 #: _smarty.php:8324 _smarty.php:16085 _smarty.php:16100
 msgid "Sales amount"
@@ -8716,22 +8480,16 @@ msgid "Click rate"
 msgstr "Współczynnik konwersji"
 
 #: _smarty.php:8597
-#, fuzzy
-#| msgid "Returned"
 msgid "SKOs Returned"
-msgstr "Zwrócono"
+msgstr "Zwrócono SKO"
 
 #: _smarty.php:8600
-#, fuzzy
-#| msgid "SKO received"
 msgid "SKOs Received"
-msgstr "otrzymano SKO"
+msgstr "otrzymano SKO "
 
 #: _smarty.php:8609 _smarty.php:8612 _smarty.php:8615 _smarty.php:8618
-#, fuzzy
-#| msgid "Activate offer"
 msgid "Active offers"
-msgstr "Aktywuj ofertę"
+msgstr "Aktywuj oferty"
 
 #: _smarty.php:8687 _smarty.php:10850
 msgid "Problem"
@@ -8742,10 +8500,8 @@ msgid "Qty"
 msgstr "Ilość"
 
 #: _smarty.php:8735
-#, fuzzy
-#| msgid "Submit order"
 msgid "Sum orders"
-msgstr "Złóż zamówieie"
+msgstr "Suma zamówień"
 
 #: _smarty.php:8765 _smarty.php:9410 _smarty.php:14126 class.ReadEmail.php:192
 #: class.ReadEmail.php:251 tabs/email_tracking.email.tab.php:22
@@ -8774,16 +8530,12 @@ msgid "Replacement cost"
 msgstr "Produkt zastępczy"
 
 #: _smarty.php:8837
-#, fuzzy
-#| msgid "Packed & Checked"
 msgid "Picked & packed"
-msgstr "Zapakowane & sprawdzone"
+msgstr "Przygotowane % zapakowane"
 
 #: _smarty.php:8966
-#, fuzzy
-#| msgid "Assign Picker"
 msgid "Assign picker"
-msgstr "Przypisz Osobę Przygotowującą"
+msgstr "Przypisz Osobę Przygotowującą "
 
 #: _smarty.php:8975
 msgid "Picking note"
@@ -8833,10 +8585,8 @@ msgid "Campaigns"
 msgstr "Kampanie"
 
 #: _smarty.php:9446
-#, fuzzy
-#| msgid "Mailshot"
 msgid "Mailshot type"
-msgstr "Mailshot"
+msgstr "Rodzaj Mailshot"
 
 #: _smarty.php:9596
 msgid "Sets"
@@ -8872,7 +8622,7 @@ msgstr "Produkty niekontynuowane"
 #: _smarty.php:9701 _smarty.php:14504 _smarty.php:15035 _smarty.php:16034
 #: _smarty.php:16121
 msgid "Discontinued products"
-msgstr "Produkty niekontunuowane"
+msgstr "Produkty niekontynuowane "
 
 #: _smarty.php:9728 conf/roles.php:54 utils/modules.php:2118
 msgid "Accounts"
@@ -8893,41 +8643,31 @@ msgstr "Maksymalna wielkość"
 
 #: _smarty.php:9860
 msgid "Show if offer is pinned"
-msgstr ""
+msgstr "Pokaż, czy oferta jest przypięta"
 
 #: _smarty.php:9866
-#, fuzzy
 msgid "Current offer state"
-msgstr "Stany Zjednoczone"
+msgstr "Aktualny stan oferty"
 
 #: _smarty.php:9869
-#, fuzzy
 msgid "Deal description"
-msgstr "zajmuje się opisem, jak"
+msgstr "Opis transakcji"
 
 #: _smarty.php:9875
-#, fuzzy
-#| msgid "Percentages"
 msgid "Percentage discounted"
-msgstr "Procentowo"
+msgstr "Procentowo niekontynuowane"
 
 #: _smarty.php:9878
-#, fuzzy
-#| msgid "Favourited products in"
 msgid "Free products given"
-msgstr "Ulubione produkty w"
+msgstr "Dodano bezpłatne produkty"
 
 #: _smarty.php:9881
-#, fuzzy
-#| msgid "Discount"
 msgid "Discount value"
-msgstr "Zniżka"
+msgstr "Wartość Zniżki"
 
 #: _smarty.php:9884
-#, fuzzy
-#| msgid "Amount found"
 msgid "Amount discounted"
-msgstr "Kwota znaleziona"
+msgstr "Kwota zdyskontowana"
 
 #: _smarty.php:10043 conf/elements_options.php:812
 #: conf/elements_options.php:815
@@ -8939,10 +8679,8 @@ msgid "Product availability"
 msgstr "Dostepność produktu"
 
 #: _smarty.php:10079
-#, fuzzy
-#| msgid "Discontinued parts"
 msgid "Discontinued date"
-msgstr "Produkty niekontynuowane"
+msgstr "Data wycofania"
 
 #: _smarty.php:10148 navigation/orders.nav.php:1136
 #: navigation/orders.nav.php:1152 utils/modules.php:1804
@@ -8950,20 +8688,16 @@ msgid "Delivery note"
 msgstr "Dokumenty dostawy"
 
 #: _smarty.php:10238
-#, fuzzy
-#| msgid "Store code"
 msgid "Store Code"
-msgstr "Kod sklepu "
+msgstr "Kod sklepu  "
 
 #: _smarty.php:10277
 msgid "Active users"
 msgstr "Aktywni użytkownicy"
 
 #: _smarty.php:10280
-#, fuzzy
-#| msgid "Suspended"
 msgid "Suspended users"
-msgstr "Zawieszone"
+msgstr "Zawieszeni użytkownicy"
 
 #: _smarty.php:10364 _smarty.php:12557
 msgid "Sold"
@@ -9024,35 +8758,28 @@ msgid "Target"
 msgstr "Cel"
 
 #: _smarty.php:10982
-#, fuzzy
 msgid "Net amount"
-msgstr "ilość sprzedaży"
+msgstr "Kwota netto"
 
 #: _smarty.php:10985
-#, fuzzy
-#| msgid "Web state"
 msgid "Purged state"
-msgstr "Status strony"
+msgstr "Stan oczyszczony"
 
 #: _smarty.php:10988
-#, fuzzy
-#| msgid "end date"
 msgid "Purged date"
-msgstr "data zakończenia"
+msgstr "Data oczyszczania"
 
 #: _smarty.php:11072
-#, fuzzy
-#| msgid "Deliver to"
 msgid "Delivery Qty"
-msgstr "Dostarcz do"
+msgstr "Ilość dostaw"
 
 #: _smarty.php:11075
 msgid "Actual checked Qty"
-msgstr ""
+msgstr "Rzeczywista liczba sprawdzonych sztuk"
 
 #: _smarty.php:11078
 msgid "Diff"
-msgstr ""
+msgstr "Diff"
 
 #: _smarty.php:11207
 msgid "Favourited"
@@ -9194,22 +8921,16 @@ msgid "Payment account"
 msgstr "Konto płatności"
 
 #: _smarty.php:12026 _smarty.php:13526
-#, fuzzy
-#| msgid "Create supplier's orders"
 msgid "Current supplier cost per SKO"
-msgstr "Stwórz zamówienia dostawcy"
+msgstr "Aktualny koszt dostawcy na SKO"
 
 #: _smarty.php:12029 _smarty.php:13529
-#, fuzzy
-#| msgid "Stock value per SKO"
 msgid "Warehouse stock value per SKO"
-msgstr "Wartość stanów magazynowych na SKO"
+msgstr "Wartość stanów magazynowych na SKO "
 
 #: _smarty.php:12032 _smarty.php:13532
-#, fuzzy
-#| msgid "Commercial Value"
 msgid "Commercial value per SKO"
-msgstr "Wartość Handlowa"
+msgstr "Wartość handlowa na SKO"
 
 #: _smarty.php:12248
 msgid "Event"
@@ -9265,25 +8986,20 @@ msgid "Company name"
 msgstr "Nazwa firmy"
 
 #: _smarty.php:12839
-#, fuzzy
-#| msgid "Invoices one year back %s, (%s)"
 msgid "Invoices same period 1 year back"
-msgstr "Faktury rok wcześniej %s, (%s)"
+msgstr "Faktury z tego samego okresu 1 rok wstecz"
 
 #: _smarty.php:12845
-#, fuzzy
-#| msgid "Refunds one year back %s, (%s)"
 msgid "Refunds same period 1 year back"
-msgstr "Faktury rok wcześniej %s, (%s)"
+msgstr "Zwroty w tym samym okresie 1 rok wstecz"
 
 #: _smarty.php:12851
-#, fuzzy
 msgid "Sales minus refunds"
-msgstr "Transakcje Powiadamiać"
+msgstr "Transakcje pomniejszone o zwroty"
 
 #: _smarty.php:12854
 msgid "Revenue same period 1 year back"
-msgstr ""
+msgstr "Przychody z tego samego okresu 1 rok wstecz"
 
 #: _smarty.php:13004 ar_views.php:9243 ar_views.php:9255
 #: navigation/account.nav.php:168 navigation/account.nav.php:201
@@ -9313,9 +9029,8 @@ msgid "Versions"
 msgstr "Wersja"
 
 #: _smarty.php:13325
-#, fuzzy
 msgid "Used in"
-msgstr "stworzono"
+msgstr "Użyte w"
 
 #: _smarty.php:13394
 msgid "Orders dispatched"
@@ -9327,12 +9042,11 @@ msgstr "ostatnie zamówienie"
 
 #: _smarty.php:13619
 msgid "Can make up"
-msgstr ""
+msgstr "Może nadrobić"
 
 #: _smarty.php:13889
-#, fuzzy
 msgid "Requested date"
-msgstr "data zwrotu"
+msgstr "Wyznaczona data"
 
 #: _smarty.php:13928 conf/export_fields.php:575 conf/export_fields.php:1360
 msgid "Customer ID"
@@ -9494,15 +9208,12 @@ msgid "Active products offline"
 msgstr "Aktywne produkty offline"
 
 #: _smarty.php:14519
-#, fuzzy
 msgid "Site map"
-msgstr "Oszczędzasz"
+msgstr "Mapa strony"
 
 #: _smarty.php:14531
-#, fuzzy
-#| msgid "Sent date"
 msgid "Sent back"
-msgstr "data wysłania"
+msgstr "odesłać"
 
 #: _smarty.php:14534 _smarty.php:16721 _smarty.php:16859
 #: ar_suppliers_tables.php:824 ar_suppliers_tables.php:1090
@@ -9536,9 +9247,8 @@ msgstr "Sprawdzone"
 #: conf/elements_options.php:1177 conf/elements_options.php:1182
 #: conf/elements_options.php:1220 conf/elements_options.php:1257
 #: conf/elements_options.php:1261 conf/elements_options.php:1325
-#, fuzzy
 msgid "Booked in"
-msgstr "Produkt ostatnio sprzedany"
+msgstr "Zarezerwowane"
 
 #: _smarty.php:14552 _smarty.php:15089 _smarty.php:15233 _smarty.php:16763
 #: _smarty.php:16895 _smarty.php:17093
@@ -9554,9 +9264,8 @@ msgid "Cancel delivery"
 msgstr "Anuluj dostawę"
 
 #: _smarty.php:14570
-#, fuzzy
 msgid "Undo booked in"
-msgstr "Produkt ostatnio sprzedany"
+msgstr "Cofnij zarezerwowane w"
 
 #: _smarty.php:14573 _smarty.php:14576 conf/website_system_webpages.php:190
 msgid "Go back"
@@ -9567,28 +9276,20 @@ msgid "Mark delivery as received"
 msgstr "Zaznacz dostawę jako otrzymaną"
 
 #: _smarty.php:14582
-#, fuzzy
-#| msgid "Mark delivery as received"
 msgid "Mark return as received"
-msgstr "Zaznacz dostawę jako otrzymaną"
+msgstr "Oznacz zwrot jako otrzymany"
 
 #: _smarty.php:14588 _smarty.php:16973
-#, fuzzy
-#| msgid "Number of audits"
 msgid "Number of items"
-msgstr "Liczba audytów"
+msgstr "Liczba produktów"
 
 #: _smarty.php:14597 _smarty.php:16982
-#, fuzzy
-#| msgid "In delivery"
 msgid "Items under delivered"
-msgstr "w dostawie"
+msgstr "Przedmioty nie dostarczone"
 
 #: _smarty.php:14600 _smarty.php:16985
-#, fuzzy
-#| msgid "User deleted"
 msgid "Items over delivered"
-msgstr "Użytkownik usunięty"
+msgstr "Przedmioty nad dostarczone"
 
 #: _smarty.php:14603 _smarty.php:16988
 msgid "Purchase order amount"
@@ -9633,7 +9334,7 @@ msgstr "Odbiór Osobisty"
 
 #: _smarty.php:14654 _smarty.php:15500 _smarty.php:15635
 msgid "Original order"
-msgstr "Zamówienie orginał"
+msgstr "Zamówienie oryginał"
 
 #: _smarty.php:14675
 msgid "Creating replacement"
@@ -9641,7 +9342,7 @@ msgstr "tworzenie produktu zastępczego"
 
 #: _smarty.php:14678 _smarty.php:14783 _smarty.php:14786
 msgid "Create replacement"
-msgstr "utwórz produkt zastepczy"
+msgstr "utwórz produkt zastępczy"
 
 #: _smarty.php:14699
 msgid "Dispatch approved"
@@ -9668,16 +9369,12 @@ msgid "Proforma invoice"
 msgstr "Faktura Proforma"
 
 #: _smarty.php:14759 _smarty.php:14879 _smarty.php:16436
-#, fuzzy
-#| msgid "Recommended product values"
 msgid "Recommended retail prices"
-msgstr "Rekomendowana wartość produktu"
+msgstr "Sugerowane ceny detaliczne"
 
 #: _smarty.php:14762 _smarty.php:14882 _smarty.php:16439
-#, fuzzy
-#| msgid "Commodity code"
 msgid "Commodity codes"
-msgstr "Kod towarowy"
+msgstr "Kody towarowe"
 
 #: _smarty.php:14768 _smarty.php:14891 _smarty.php:16448
 #: conf/export_edit_template_fields.php:277
@@ -9700,26 +9397,20 @@ msgid "Next"
 msgstr "Następny"
 
 #: _smarty.php:14792 _smarty.php:14795 _smarty.php:15656 _smarty.php:15659
-#, fuzzy
-#| msgid "Create refund"
 msgid "Create return"
-msgstr "Utwórz Zwrot pieniędzy"
+msgstr "Utwórz Zwrot "
 
 #: _smarty.php:14804
 msgid "Invoice order"
 msgstr "Fakturuj zamówienie"
 
 #: _smarty.php:14810
-#, fuzzy
-#| msgid "Create invoice"
 msgid "Create invoice again"
-msgstr "Utwórz fakture"
+msgstr "Utwórz fakturę ponownie"
 
 #: _smarty.php:14813
-#, fuzzy
-#| msgid "Invoice order"
 msgid "Invoice order again"
-msgstr "Fakturuj zamówienie"
+msgstr "Fakturuj ponownie"
 
 #: _smarty.php:14819 _smarty.php:14822 _smarty.php:15062 _smarty.php:17063
 msgid "Send to warehouse"
@@ -9732,13 +9423,11 @@ msgstr "Potwierdź"
 
 #: _smarty.php:14831
 msgid "Submit order"
-msgstr "Złóż zamówieie"
+msgstr "Złóż zamówienie"
 
 #: _smarty.php:14837
-#, fuzzy
-#| msgid "Edit items"
 msgid "Edit order items"
-msgstr "Edytuj produkty"
+msgstr "Edytuj elementy zamówienia"
 
 #: _smarty.php:14840
 msgid "Items profit"
@@ -9749,16 +9438,12 @@ msgid "lost revenue"
 msgstr "Stracony Przychód"
 
 #: _smarty.php:14855 class.Order.php:127 class.Order.php:1492
-#, fuzzy
-#| msgid "Picking here"
 msgid "Picking sheet"
-msgstr "Przygotowywanie tutsj"
+msgstr "Dokument produktów do przygotowania"
 
 #: _smarty.php:14858 class.Order.php:129 class.Order.php:1494
-#, fuzzy
-#| msgid "Insufficient picking stock"
 msgid "Input picking sheet data"
-msgstr "Niewystarczająca ilość zasobów"
+msgstr "Wprowadź dane arkusza pobierania"
 
 #: _smarty.php:14861 _smarty.php:14864
 msgid "Approve dispatch"
@@ -9773,24 +9458,20 @@ msgid "Return payment pending"
 msgstr "zwrot płatności w toku"
 
 #: _smarty.php:14876 _smarty.php:16433
-#, fuzzy
 msgid "PDF Invoice"
-msgstr "Faktury "
+msgstr "Faktura PDF"
 
 #: _smarty.php:14885 _smarty.php:16442
-#, fuzzy
-#| msgid "Product code"
 msgid "Product barcode"
-msgstr "Kod  Produktu "
+msgstr "Kod Kreskowy Produktu"
 
 #: _smarty.php:14900 _smarty.php:15356 _smarty.php:15491
 msgid "add payment"
 msgstr "dodaj płatność"
 
 #: _smarty.php:14930
-#, fuzzy
 msgid "Show order tax dialog"
-msgstr "szczegóły sklepu"
+msgstr "Pokaż okno dialogowe podatku od zamówień"
 
 #: _smarty.php:14939
 msgid "Total refunds"
@@ -9809,20 +9490,16 @@ msgid "Customer credit"
 msgstr "Kredyt Klienta"
 
 #: _smarty.php:14981
-#, fuzzy
-#| msgid "Location Code already in the warehouse"
 msgid "Are you sure you want to modify an order already in warehouse?"
-msgstr "Kod lokalizacji istnieje już na magazynie"
+msgstr "Czy na pewno chcesz zmodyfikować zamówienie już w magazynie?"
 
 #: _smarty.php:14984
-#, fuzzy
-#| msgid "Location warehouse area changed"
 msgid "Please notify warehouse staff of changes"
-msgstr "Lokalizacja w magazynie została zmieniona"
+msgstr "Proszę powiadomić personel magazynowy o zmianach"
 
 #: _smarty.php:14987
 msgid "Yes, i want to modify it!"
-msgstr ""
+msgstr "Tak, chcę to zmodyfikować!"
 
 #: _smarty.php:14990 _smarty.php:15581 conf/export_edit_template_fields.php:68
 #: conf/export_edit_template_fields.php:389
@@ -9856,16 +9533,12 @@ msgid "Cancel delivery note"
 msgstr "Anuluj dokument dostawy"
 
 #: _smarty.php:15116 _smarty.php:15119 _smarty.php:17120 _smarty.php:17123
-#, fuzzy
-#| msgid "Open rate"
 msgid "Open boxes"
-msgstr "Otwarta rata"
+msgstr "Otwarte pudełka"
 
 #: _smarty.php:15125 _smarty.php:17129
-#, fuzzy
-#| msgid "Close store"
 msgid "Close boxes"
-msgstr "Zamknij sklep"
+msgstr "Zamknij karton"
 
 #: _smarty.php:15128 _smarty.php:17132
 msgid "Dispatch"
@@ -9950,10 +9623,8 @@ msgid "Unmark as received"
 msgstr "Odznacz jako otrzymane"
 
 #: _smarty.php:15269 _smarty.php:15272
-#, fuzzy
-#| msgid "Mark delivery as received"
 msgid "Mark delivery as consolidated"
-msgstr "Zaznacz dostawę jako otrzymaną"
+msgstr "Oznaczyć dostawę jako skonsolidowaną"
 
 #: _smarty.php:15278 _smarty.php:16952
 msgid "Mark as dispatched"
@@ -10081,36 +9752,28 @@ msgid "Client's order received"
 msgstr "Zamówienie klienta otrzymane"
 
 #: _smarty.php:15728
-#, fuzzy
-#| msgid "Order confirmation"
 msgid "Order confirmed"
-msgstr "Potwierdzenie zamówienia"
+msgstr "Zamówienie potwierdzone"
 
 #: _smarty.php:15731
-#, fuzzy
-#| msgid "Supplier's orders created"
 msgid "Supplier's orders received"
-msgstr "Utworzono zamówienie dostawcy"
+msgstr "Otrzymane zamówienia dostawcy"
 
 #: _smarty.php:15734 _smarty.php:16247 _smarty.php:16256
 msgid "Order received"
 msgstr "Zamówienie otrzymane"
 
 #: _smarty.php:15737
-#, fuzzy
-#| msgid "Order idle"
 msgid "Order in delivery"
-msgstr "zamówienie zawieszone"
+msgstr "Zamówienie w trakcie dostawy"
 
 #: _smarty.php:15746 _smarty.php:15749 _smarty.php:16274 _smarty.php:16277
 msgid "Create supplier's orders"
 msgstr "Stwórz zamówienia dostawcy"
 
 #: _smarty.php:15770
-#, fuzzy
-#| msgid "Number of audits"
 msgid "Number of cartons"
-msgstr "Liczba audytów"
+msgstr "Liczba kartonów"
 
 #: _smarty.php:15788
 msgid "Compose newsletter"
@@ -10141,10 +9804,8 @@ msgid "Estimated recipients"
 msgstr "Przewidywana liczba odbiorców"
 
 #: _smarty.php:15815
-#, fuzzy
-#| msgid "New newsletter"
 msgid "Delete newsletter"
-msgstr "Nowy Newsletter"
+msgstr "Usuń newsletter"
 
 #: _smarty.php:15818 _smarty.php:17036
 msgid "Delete mailshot"
@@ -10159,10 +9820,8 @@ msgid "Stop sending emails"
 msgstr "Zatrzymaj wysyłanie meaili"
 
 #: _smarty.php:15833
-#, fuzzy
-#| msgid "Setup mail list"
 msgid "Set mailing list"
-msgstr "Skonfiguruj listę mailową"
+msgstr "Skonfiguruj listę mailową "
 
 #: _smarty.php:15839
 msgid "Send mailshot"
@@ -10209,16 +9868,12 @@ msgid "Resume sending"
 msgstr "ponów wysyłanie"
 
 #: _smarty.php:15887 _smarty.php:15905 ar_mailshots_tables.php:226
-#, fuzzy
-#| msgid "Hard bounces"
 msgid "Hard bounce"
-msgstr "Odbity"
+msgstr "Twarde odbicie"
 
 #: _smarty.php:15890 _smarty.php:15908 ar_mailshots_tables.php:238
-#, fuzzy
-#| msgid "Soft bounces"
 msgid "Soft bounce"
-msgstr "Miękkie odbijanie"
+msgstr "Miękkie odbicie"
 
 #: _smarty.php:15938 _smarty.php:15971
 msgid "This product is not longer required by client"
@@ -10233,30 +9888,24 @@ msgid "Stock keeping unit (Outer)"
 msgstr "Stock Keeping Unit (opakowanie)"
 
 #: _smarty.php:15989
-#, fuzzy
-#| msgid "Packed in"
 msgid "Packed individually"
-msgstr "Zapakowane w"
+msgstr "Zapakowane indywidualnie"
 
 #: _smarty.php:15995
 msgid "Each carton contain"
-msgstr ""
+msgstr "Każde opakowanie zawiera"
 
 #: _smarty.php:16004
-#, fuzzy
-#| msgid "Production task"
 msgid "Production time"
-msgstr "Zadanie produkcji"
+msgstr "Czas produkcji"
 
 #: _smarty.php:16007
 msgid "Can to make up"
-msgstr ""
+msgstr "Może nadrobić"
 
 #: _smarty.php:16010
-#, fuzzy
-#| msgid "Production"
 msgid "Production queue"
-msgstr "Produkcja"
+msgstr "Produkcja - Kolejka"
 
 #: _smarty.php:16016
 msgid "Customers who choose this option"
@@ -10383,9 +10032,8 @@ msgid "Currency"
 msgstr "Waluta"
 
 #: _smarty.php:16343
-#, fuzzy
 msgid "Customer manually linked"
-msgstr "Klienci "
+msgstr "Klient ręcznie połączony"
 
 #: _smarty.php:16364
 msgid "Fail"
@@ -10416,9 +10064,8 @@ msgid "Ex-employee"
 msgstr "Były pracownik"
 
 #: _smarty.php:16469
-#, fuzzy
 msgid "Warehouse area name"
-msgstr "Skład"
+msgstr "nazwa obszaru magazynu"
 
 #: _smarty.php:16481 _smarty.php:16562
 msgid "min"
@@ -10454,7 +10101,7 @@ msgid ""
 "                                    Save"
 msgstr ""
 "\n"
-"Zapisz"
+"Zapisz "
 
 #: _smarty.php:16517 class.Part.php:892 class.Part.php:906 class.Part.php:928
 msgid "SKO stock value no set up yet"
@@ -10471,10 +10118,8 @@ msgid "Exit edit stock"
 msgstr "Wyjdź z edycji produktów"
 
 #: _smarty.php:16538 _smarty.php:16541
-#, fuzzy
-#| msgid "Exit edit stock"
 msgid "Exit move stock"
-msgstr "Wyjdź z edycji produktów"
+msgstr "Wyjdź z edycji przenoszenia produktów"
 
 #: _smarty.php:16550 _smarty.php:16589 _smarty.php:16625
 msgid "Move stock"
@@ -10485,21 +10130,16 @@ msgid "Part's location note"
 msgstr "Notatka lokalizacji części"
 
 #: _smarty.php:16574
-#, fuzzy
 msgid "Location to be linked"
-msgstr "Brak zmian"
+msgstr "Lokalizacja do połączenia"
 
 #: _smarty.php:16580
-#, fuzzy
-#| msgid "Duplicated location code"
 msgid "New linked location code"
-msgstr "Kod lokalizacji zduplikowany"
+msgstr "Nowy połączony kod lokalizacji"
 
 #: _smarty.php:16586
-#, fuzzy
-#| msgid "Stock cost"
 msgid "Stock check"
-msgstr "Koszt stanu magazynowego"
+msgstr "Kontrola zasobów magazynowych"
 
 #: _smarty.php:16592 tabs/warehouse.locations.tab.php:102
 #: tabs/warehouse_area.locations.tab.php:106
@@ -10507,27 +10147,20 @@ msgid "Edit locations"
 msgstr "Edytuj lokalizacje"
 
 #: _smarty.php:16595 _smarty.php:16616
-#, fuzzy
 msgid "Save changes"
-msgstr "Bez zmian"
+msgstr "Zapisz Zmiany"
 
 #: _smarty.php:16598
-#, fuzzy
-#| msgid "location"
 msgid "Link location"
-msgstr "lokalizacja"
+msgstr "Połącz lokalizację"
 
 #: _smarty.php:16601
-#, fuzzy
-#| msgid "Hide locations"
 msgid "Link locations"
-msgstr "Ukryj lokalizację"
+msgstr "Powiąż lokalizację"
 
 #: _smarty.php:16607
-#, fuzzy
-#| msgid "Upload locations"
 msgid "Unlink locations"
-msgstr "Prześlij lokalizację "
+msgstr "Odłącz lokalizacje"
 
 #: _smarty.php:16610 _smarty.php:16613 _smarty.php:16619 _smarty.php:16622
 #: _smarty.php:16628 _smarty.php:16631
@@ -10563,42 +10196,30 @@ msgid "Estimated delivery date"
 msgstr "Przybliżona data dostawy"
 
 #: _smarty.php:16718
-#, fuzzy
-#| msgid "Estimated delivery date"
 msgid "No estimated delivery date"
-msgstr "Przybliżona data dostawy"
+msgstr "Brak szacowanej daty dostawy"
 
 #: _smarty.php:16730 _smarty.php:16874 ar_suppliers_tables.php:836
 #: class.PurchaseOrder.php:674 conf/elements_options.php:1182
 #: conf/elements_options.php:1261
-#, fuzzy
-#| msgid "Costing"
 msgid "Costing done"
-msgstr "Kosztorys"
+msgstr "Wykonano Kosztorys"
 
 #: _smarty.php:16742 _smarty.php:16880
-#, fuzzy
-#| msgid "Courier not set"
 msgid "Incoterm not set"
-msgstr "Kurier nie ustawiony"
+msgstr "Incoterm nie ustawiony"
 
 #: _smarty.php:16748 _smarty.php:16886
-#, fuzzy
-#| msgid "Port of export"
 msgid "Port of export not set"
-msgstr "Port Eksportu"
+msgstr "Port eksportu nie został ustawiony"
 
 #: _smarty.php:16754 _smarty.php:16892
-#, fuzzy
-#| msgid "Port of import"
 msgid "Port of import not set"
-msgstr "Port importu"
+msgstr "Port importu nie został ustawiony"
 
 #: _smarty.php:16760
-#, fuzzy
-#| msgid "Delivery address line 2"
 msgid "Delivery address not set"
-msgstr "Adres dostawy linia 2"
+msgstr "Adres dostawy nie ustawiony"
 
 #: _smarty.php:16766
 msgid "Delete purchase order"
@@ -10621,48 +10242,36 @@ msgid "Create delivery"
 msgstr "U'twórz dostawę"
 
 #: _smarty.php:16931 _smarty.php:16937
-#, fuzzy
 msgid "Redo costing"
-msgstr "Klienci Wymieniać kolejno"
+msgstr "Ponów kalkulację kosztów"
 
 #: _smarty.php:16934
-#, fuzzy
-#| msgid "Match to Delivery Note"
 msgid "Go back to delivery costing"
-msgstr "dopasuj do zamówienia otwartego"
+msgstr "Wróć do kosztu dostawy"
 
 #: _smarty.php:16955
 msgid "Delivery dispatched by supplier"
 msgstr "Dostawa wysłana przez dostawcę"
 
 #: _smarty.php:16964 _smarty.php:16967
-#, fuzzy
 msgid "Start checking costs"
-msgstr "data zwrotu"
+msgstr "Rozpocznij sprawdzanie kosztów"
 
 #: _smarty.php:17030
-#, fuzzy
-#| msgid "Estimated delivery"
 msgid "Estimated orders"
-msgstr "Przybliżona data dostawy"
+msgstr "Szacowane zamówienia"
 
 #: _smarty.php:17045 _smarty.php:17048 _smarty.php:17051
-#, fuzzy
-#| msgid "Start packing"
 msgid "Start purge"
-msgstr "Zacznij pakowanie"
+msgstr "Rozpocznij oczyszczanie"
 
 #: _smarty.php:17054
-#, fuzzy
-#| msgid "Order placed"
 msgid "Orders purged"
-msgstr "Zamówienie złożone"
+msgstr "Zamówienia oczyszczone"
 
 #: _smarty.php:17057
-#, fuzzy
-#| msgid "Item placed"
 msgid "Items purged"
-msgstr "Produkt umieszczony"
+msgstr "Przedmioty zostały wyczyszczone"
 
 #: _smarty.php:17084 ar_orders_tables.php:1103 ar_orders_tables.php:1190
 #: class.Order.php:640 search_functions.php:1968
@@ -11107,7 +10716,7 @@ msgstr "NASTĘPNY dla następnego dostępnego kodu kreskowego"
 
 #: _smarty.php:18137
 msgid "When the part sales are calculated"
-msgstr ""
+msgstr "Po obliczeniu sprzedaży części"
 
 #: _smarty.php:18176
 msgid "Employment relevant official employee's Id number"
@@ -11247,14 +10856,12 @@ msgid "Text in search area"
 msgstr "Tekst w obszarze wyszukiwania"
 
 #: _smarty.php:19415
-#, fuzzy
 msgid "Text color"
-msgstr "Nowy E-Mail"
+msgstr "kolor tekstu"
 
 #: _smarty.php:19418
-#, fuzzy
 msgid "Header image"
-msgstr "Obraz główny"
+msgstr "Obraz nagłówka"
 
 #: _smarty.php:19430
 msgid "There is not active email templates"
@@ -11325,35 +10932,28 @@ msgid "Exchange"
 msgstr "wymiana"
 
 #: _smarty.php:19562 _smarty.php:19574
-#, fuzzy
-#| msgid "Unit extra costs"
 msgid "Set extra costs"
-msgstr "Dodatkowy koszt jednostki"
+msgstr "Ustaw dodatkowe koszty"
 
 #: _smarty.php:19565 _smarty.php:19577
 msgid "exclude 0 SKOs in"
-msgstr ""
+msgstr "wykluczyć 0 SKO w"
 
 #: _smarty.php:19568 _smarty.php:19580
 msgid "distribute equally each item "
-msgstr ""
+msgstr "rozpowszechniać jednakowo każdy przedmiot"
 
 #: _smarty.php:19571 _smarty.php:19583
-#, fuzzy
-#| msgid "District"
 msgid "Distribute"
-msgstr "Obszar"
+msgstr "Rozprowadzać"
 
 #: _smarty.php:19586
-#, fuzzy
 msgid "Finish costing"
-msgstr "data zwrotu"
+msgstr "Zakończ kalkulację"
 
 #: _web_smarty.php:125 ar_accounting_tables.php:264
-#, fuzzy
-#| msgid "Return payments"
 msgid "Return excess payment"
-msgstr "Zwroty płatności"
+msgstr "Zwróć nadpłatę"
 
 #: _web_smarty.php:128 _web_smarty.php:383
 msgid "Results"
@@ -11395,44 +10995,36 @@ msgid "Show saved cards list"
 msgstr "Pokaż listę zapisanych kart"
 
 #: _web_smarty.php:203 _web_smarty.php:713 _web_smarty.php:965
-#, fuzzy
-#| msgid "Loading"
 msgid "Loading paypal"
-msgstr "Ładowanie"
+msgstr "Ładowanie PayPal"
 
 #: _web_smarty.php:206 _web_smarty.php:716 _web_smarty.php:968
-#, fuzzy
-#| msgid "Processing Payment"
 msgid "Processing payment"
-msgstr "Pobieranie opłaty"
+msgstr "Przetwarzanie płatności"
 
 #: _web_smarty.php:209 _web_smarty.php:719 _web_smarty.php:971
-#, fuzzy
-#| msgid "Processing Payment"
 msgid "Processing payment, please wait"
-msgstr "Pobieranie opłaty"
+msgstr "Przetwarzanie płatności, proszę czekać "
 
 #: _web_smarty.php:215 _web_smarty.php:725 _web_smarty.php:977
 msgid "Choose a saved credit card or click in pay with other card"
-msgstr ""
+msgstr "Wybierz zapisaną kartę kredytową lub kliknij opcję zapłać inną kartą"
 
 #: _web_smarty.php:218 _web_smarty.php:728 _web_smarty.php:980
 msgid "Pleas fill the CVV field"
-msgstr ""
+msgstr "Proszę wypełnić pole CVV"
 
 #: _web_smarty.php:221 _web_smarty.php:731 _web_smarty.php:983
-#, fuzzy
 msgid "CVV is invalid"
-msgstr "Nie ważny"
+msgstr "Numer CVV jest nie ważny"
 
 #: _web_smarty.php:230 _web_smarty.php:740 _web_smarty.php:992
-#, fuzzy
 msgid "All fields are empty"
-msgstr "Wszystko"
+msgstr "Wszystkie pola są puste"
 
 #: _web_smarty.php:233 _web_smarty.php:743 _web_smarty.php:995
 msgid "Some payment input fields are invalid"
-msgstr ""
+msgstr "Niektóre pola wprowadzania płatności są nieprawidłowe"
 
 #: _web_smarty.php:245 _web_smarty.php:365
 msgid "Empty basket"
@@ -11513,7 +11105,7 @@ msgstr "Newsletter"
 
 #: _web_smarty.php:485 _web_smarty.php:2252 _web_smarty.php:2654
 msgid "Email marketing"
-msgstr "Marketing Emailowy"
+msgstr "Marketing E-mai"
 
 #: _web_smarty.php:488 _web_smarty.php:2255 _web_smarty.php:2657
 #: conf/fields/customer.fld.php:292 conf/fields/customer.fld.php:682
@@ -11599,10 +11191,8 @@ msgid "Enter the same password as above"
 msgstr "Wprowadź to samo hasło co powyżej"
 
 #: _web_smarty.php:695
-#, fuzzy
-#| msgid "Select all"
 msgid "Select"
-msgstr "Wybierz wszystkie"
+msgstr "Wybierz "
 
 #: _web_smarty.php:794 _web_smarty.php:881 _web_smarty.php:1778
 msgid "Saved"
@@ -11654,7 +11244,7 @@ msgstr "Poprzednie"
 
 #: _web_smarty.php:1856
 msgid "Taxx"
-msgstr ""
+msgstr "Podatek"
 
 #: ar_account_tables.php:86 utils/modules.php:7936
 msgid "Timeseries"
@@ -11741,16 +11331,12 @@ msgid "Missing required fields"
 msgstr "Brakujące dane w wymaganych polach"
 
 #: ar_account_tables.php:761
-#, fuzzy
-#| msgid "Duplicated code"
 msgid "Duplicate code"
-msgstr "Kod zduplikowany "
+msgstr "Powielony kod"
 
 #: ar_account_tables.php:764
-#, fuzzy
-#| msgid "Duplicate email"
 msgid "Duplicate field"
-msgstr "Kopiuj adres email"
+msgstr "Zduplikowane pole"
 
 #: ar_account_tables.php:771
 msgid "Record not changed"
@@ -11810,34 +11396,25 @@ msgid "Cancel payment"
 msgstr "Anuluj Opłatę"
 
 #: ar_accounting_tables.php:249 ar_accounting_tables.php:252
-#, fuzzy
-#| msgid "Refund pay back"
 msgid "Refund (pay back)"
-msgstr "zwrot płatności "
+msgstr "Zwrot ( zapłać)"
 
 #: ar_accounting_tables.php:250
-#, fuzzy
-#| msgid "Create refund"
 msgid "Cancel refund"
-msgstr "Utwórz Zwrot pieniędzy"
+msgstr "Usuń Zwrot "
 
 #: ar_accounting_tables.php:253 ar_accounting_tables.php:262
 #: ar_accounting_tables.php:274 ar_accounting_tables.php:313
-#, fuzzy
-#| msgid "Remove item"
 msgid "Remove credit"
-msgstr "Usuń produkt"
+msgstr "Usuń kredyt"
 
 #: ar_accounting_tables.php:261
-#, fuzzy
-#| msgid "Refund/Credit payment"
 msgid "Credit excess payment"
-msgstr "Zwróć koszty / Płatność "
+msgstr "Nadpłata kredytowa"
 
 #: ar_accounting_tables.php:265
-#, fuzzy
 msgid "Remove return"
-msgstr "Zasoby"
+msgstr "Usuń zwrot"
 
 #: ar_accounting_tables.php:323
 #, php-format
@@ -12088,7 +11665,7 @@ msgstr "Tworzenie szablonu email"
 #: ar_customers_tables.php:1753 ar_marketing_tables.php:936
 #: ar_marketing_tables.php:1106
 msgid "Marketing mailshots"
-msgstr "Marketing Mailshoty"
+msgstr "Marketing Mailshot"
 
 #: ar_customers_tables.php:1784 ar_mailshots_tables.php:352
 #: ar_marketing_tables.php:967 ar_marketing_tables.php:1120
@@ -12183,33 +11760,25 @@ msgid "Voucher"
 msgstr "Kupon promocyjny"
 
 #: ar_edit.php:1171 ar_edit.php:1529
-#, fuzzy, php-format
-#| msgid "Voucher"
+#, php-format
 msgid "Voucher & +%s"
-msgstr "Kupon promocyjny"
+msgstr "Kupon promocyjny &+%s"
 
 #: ar_edit.php:1192 ar_edit.php:1202 ar_edit.php:1550 ar_edit.php:1560
-#, fuzzy
-#| msgid "Discontinuing"
 msgid "Discounted shipping"
-msgstr "Niekontynuowane"
+msgstr "Zniżka na wysyłkę"
 
 #: ar_edit.php:1221 ar_edit.php:1230 ar_edit.php:1579 ar_edit.php:1588
-#, fuzzy
-#| msgid "Invalid percentage (%s)"
 msgid "Invalid percentage"
-msgstr "Nieprawidłowy procent (%s)"
+msgstr "Nieprawidłowy procent "
 
 #: ar_edit.php:1237 ar_edit.php:1595
-#, fuzzy
-#| msgid "Percentage off"
 msgid "Percentage off cant be zero"
-msgstr "procenty wyłączone"
+msgstr "Procent nie może wynosić zero"
 
 #: ar_edit.php:2010
-#, fuzzy
 msgid "Location not found"
-msgstr "Operacja zakazana"
+msgstr "Nie znaleziono lokalizacji"
 
 #: ar_edit.php:2040
 msgid "Product not found"
@@ -12276,62 +11845,54 @@ msgstr "Wartość płatności nie może przekraczać bilansu na koncie"
 #, php-format
 msgid "Transaction still not settled, can't do partial refunds"
 msgstr ""
+"Transakcja nie została jeszcze uregulowana, nie można dokonać częściowych "
+"zwrotów"
 
 #: ar_edit_orders.php:1045
 #, php-format
 msgid "Can't refund transaction with status %s"
-msgstr ""
+msgstr "Nie można zwrócić transakcji o statusie%s"
 
 #: ar_edit_orders.php:1484 ar_suppliers_tables.php:1680
 #: ar_suppliers_tables.php:2362
-#, fuzzy
-#| msgid "Unit cost"
 msgid "Unit cost changed"
-msgstr "Koszt jednostki"
+msgstr "Zmieniono koszt jednostkowy"
 
 #: ar_edit_orders.php:1485 ar_suppliers_tables.php:1681
 #: ar_suppliers_tables.php:2363
-#, fuzzy
-#| msgid "Submitted to agent"
 msgid "Submitted unit cost"
-msgstr "Przekazane  agentowi"
+msgstr "Przesłane koszty jednostkowe"
 
 #: ar_edit_orders.php:1486 ar_suppliers_tables.php:1682
 #: ar_suppliers_tables.php:2364
-#, fuzzy
-#| msgid "Current SKO cost"
 msgid "Current unit cost"
-msgstr "Obecny koszt SKO"
+msgstr "Bieżący koszt jednostkowy"
 
 #: ar_edit_orders.php:1487 ar_suppliers_tables.php:1683
 #: ar_suppliers_tables.php:2365
 msgid "Update item amount to current price"
-msgstr ""
+msgstr "Zaktualizuj kwotę produktu do bieżącej ceny"
 
 #: ar_edit_orders.php:1492 ar_suppliers_tables.php:1688
 #: ar_suppliers_tables.php:2370
-#, fuzzy, php-format
+#, php-format
 msgid "Extra cost % changed"
-msgstr "Nazwa produktu uległa zmianie"
+msgstr "Zmieniono  % kosztów dodatkowych"
 
 #: ar_edit_orders.php:1493 ar_suppliers_tables.php:1689
 #: ar_suppliers_tables.php:2371
-#, fuzzy
-#| msgid "unit extra costs"
 msgid "Submitted extra cost %"
-msgstr "dodatkowy koszt jednostki"
+msgstr "Przesłano dodatkowy koszt%"
 
 #: ar_edit_orders.php:1494 ar_suppliers_tables.php:1690
 #: ar_suppliers_tables.php:2372
-#, fuzzy
-#| msgid "unit extra costs"
 msgid "Current extra cost %"
-msgstr "dodatkowy koszt jednostki"
+msgstr "Aktualny dodatkowy koszt%"
 
 #: ar_edit_orders.php:1495 ar_suppliers_tables.php:1691
 #: ar_suppliers_tables.php:2373
 msgid "Update item amount to current extra cost"
-msgstr ""
+msgstr "Zaktualizuj kwotę produktu do bieżącej z dodatkowymi kosztami"
 
 #: ar_edit_stock.php:737
 msgid "Location already associated with the part"
@@ -12351,14 +11912,12 @@ msgstr[1] "%s części"
 msgstr[2] "%s części"
 
 #: ar_edit_stock.php:884
-#, fuzzy
-#| msgid "Quantity On Hand should be a number"
 msgid "Quantity must be numeric"
-msgstr "Ilość powinna być numerem"
+msgstr "Ilość musi być numeryczna"
 
 #: ar_edit_stock.php:893
 msgid "Quantity must be more than zero"
-msgstr ""
+msgstr "Ilość musi być większa niż zero"
 
 #: ar_edit_stock.php:1197
 msgid "Placement quantity greater than the checked quantity"
@@ -12633,26 +12192,20 @@ msgid "Marketing"
 msgstr "Marketing"
 
 #: ar_inventory_tables.php:161
-#, fuzzy
-#| msgid "Total stock"
 msgid "To much stock"
-msgstr "Całkowity stan magazynowy"
+msgstr "Za dużo zapasów"
 
 #: ar_inventory_tables.php:165
-#, fuzzy
-#| msgid "out of stock"
 msgid "Good level of stock"
-msgstr "Brak na stanie"
+msgstr "Dobry poziom stanu magazynowego"
 
 #: ar_inventory_tables.php:169
-#, fuzzy
-#| msgid "Last order not within"
 msgid "Low stock, order now"
-msgstr "Ostatnie zamówienie nie mieści się w "
+msgstr "Niski stan magazynowy, zamów teraz"
 
 #: ar_inventory_tables.php:173
 msgid "Critical low stock, will be out of stock anytime"
-msgstr ""
+msgstr "Krytycznie niski stan magazynowy, brak produktu w każdej chwili"
 
 #: ar_inventory_tables.php:228 ar_inventory_tables.php:2443
 msgid "No set"
@@ -12662,10 +12215,8 @@ msgstr "Brak ustawień"
 #: ar_suppliers_tables.php:1504 ar_suppliers_tables.php:1781
 #: ar_suppliers_tables.php:3356 ar_warehouse_tables.php:304
 #: ar_warehouse_tables.php:646
-#, fuzzy
-#| msgid "Ordered"
 msgid "SKOs ordered"
-msgstr "Zamówiono"
+msgstr "Zamówione SKO"
 
 #: ar_inventory_tables.php:266 ar_inventory_tables.php:283
 #: ar_inventory_tables.php:2520 ar_inventory_tables.php:2538
@@ -12683,21 +12234,17 @@ msgstr[1] "Dni"
 msgstr[2] "Dni"
 
 #: ar_inventory_tables.php:293 ar_inventory_tables.php:2454
-#, fuzzy
-#| msgid "Unknown"
 msgid "Unknown cost"
-msgstr "Nieznane"
+msgstr "Nieznany koszt"
 
 #: ar_inventory_tables.php:297 ar_inventory_tables.php:2458
-#, fuzzy
 msgid "Cost is zero"
-msgstr "Faktury "
+msgstr "Koszt 0"
 
 #: ar_inventory_tables.php:301 ar_inventory_tables.php:2462
 #: ar_inventory_tables.php:2473
-#, fuzzy
 msgid "Unknown stock"
-msgstr "Nieznane"
+msgstr "Nieznany stan magazynowy"
 
 #: ar_inventory_tables.php:658 ar_warehouse_tables.php:448
 #, php-format
@@ -12714,7 +12261,7 @@ msgstr "Opakowanie"
 #: ar_inventory_tables.php:672 ar_warehouse_tables.php:462
 #, php-format
 msgid "%sx %s (%s) to be taken from %s"
-msgstr "% sx% s (% s) do pobrania z% s"
+msgstr "%s %s (% s) do pobrania z% s"
 
 #: ar_inventory_tables.php:698
 #, php-format
@@ -12724,7 +12271,7 @@ msgstr "%s wróciło z %s z anulowanych %s"
 #: ar_inventory_tables.php:720 ar_inventory_tables.php:763
 #, php-format
 msgid "%sx %s (%s) taken from %s"
-msgstr "%sx %s (%s) zabrane z %s"
+msgstr "%s  %s (%s) zabrane z %s"
 
 #: ar_inventory_tables.php:747
 #, php-format
@@ -12770,10 +12317,8 @@ msgid "Reserved"
 msgstr "Zarezerwowany"
 
 #: ar_inventory_tables.php:1241
-#, fuzzy
-#| msgid "No set"
 msgid "No code set"
-msgstr "Brak ustawień"
+msgstr "Brak ustawionego kodu"
 
 #: ar_inventory_tables.php:1645
 msgid "Not associated"
@@ -12834,41 +12379,31 @@ msgid "No audited yet"
 msgstr "Nie sprawdzone"
 
 #: ar_inventory_tables.php:2481
-#, fuzzy
-#| msgid "SKO weight"
 msgid "SKO weight is 0"
-msgstr "Waga SKO"
+msgstr "Waga SKO jest 0"
 
 #: ar_inventory_tables.php:2514
 msgid "Discontinuing, click to set as an active part"
-msgstr ""
+msgstr "Niekontynuowany, kliknij, aby ustawić jako aktywną część"
 
 #: ar_inventory_tables.php:2577
-#, fuzzy
-#| msgid "Parts discontinued"
 msgid "Show as discontinued"
-msgstr "Produkty niekontynuowane"
+msgstr "Pokaż jako wycofany"
 
 #: ar_inventory_tables.php:2580
-#, fuzzy
-#| msgid "out of stock"
 msgid "Show as out of stock"
-msgstr "Brak na stanie"
+msgstr "Pokaż jako niedostępny"
 
 #: ar_inventory_tables.php:2604
-#, fuzzy
-#| msgid "Active products"
 msgid "No active products"
-msgstr "Produkty aktywne"
+msgstr "Brak aktywnych produktów"
 
 #: ar_lists.php:90
-#, fuzzy, php-format
-#| msgid "The list will have %s customer"
-#| msgid_plural "The list will have %s customers"
+#, php-format
 msgid "The mailing list will have %s recipient"
 msgid_plural "The mailing list will have %s recipients"
 msgstr[0] "Lista będzie zawierała %s klientów"
-msgstr[1] "Listy będą zawierały %s klientów"
+msgstr[1] "Listy będą zawierały %s klientów "
 msgstr[2] "List będzie zawierać %s klientów"
 
 #: ar_lists.php:118
@@ -13027,98 +12562,72 @@ msgstr[1] "%s wysłane części"
 msgstr[2] "%s wysłanych części"
 
 #: ar_orders_tables.php:3141
-#, fuzzy
 msgid "Dispatch notification"
-msgstr "zamów produkt"
+msgstr "Powiadomienie o wysyłce "
 
 #: ar_orders_tables.php:3144
-#, fuzzy
-#| msgid "Order confirmation"
 msgid "Order notification"
-msgstr "Potwierdzenie zamówienia"
+msgstr "Potwierdzenie zamówienia "
 
 #: ar_orders_tables.php:3147
-#, fuzzy
-#| msgid "Out of stock notification"
 msgid "Replacement dispatch notification"
-msgstr "Notyfikacja brak na stanie"
+msgstr "Powiadomienie o wysyłce zastępczej"
 
 #: ar_orders_tables.php:3209 class.Order_Basket_Purge.php:192
-#, fuzzy
-#| msgid "Purges"
 msgid "Purging"
-msgstr "czystki"
+msgstr "Oczyszczanie"
 
 #: ar_orders_tables.php:3224
-#, fuzzy
-#| msgid "Schedule send"
 msgid "Scheduled"
-msgstr "Przewidziany wysłany"
+msgstr "Przewidziane"
 
 #: ar_orders_tables.php:3243 ar_orders_tables.php:3244
 #: ar_orders_tables.php:3245
-#, fuzzy
-#| msgid "Estimated delivery"
 msgid "Estimated"
-msgstr "Przybliżona data dostawy"
+msgstr "Szacowany"
 
 #: ar_orders_tables.php:3309 class.Order_Basket_Purge.php:884
 #: conf/elements_options.php:1551
-#, fuzzy
-#| msgid "Purges"
 msgid "Purged"
-msgstr "czystki"
+msgstr "Oczyszczono"
 
 #: ar_orders_tables.php:3312 class.Order_Basket_Purge.php:887
 #: conf/elements_options.php:1555
-#, fuzzy
-#| msgid "Duplicated"
 msgid "Exculpated"
-msgstr "Zduplikowane"
+msgstr "Zduplikowane "
 
 #: ar_orders_tables.php:3315 class.Order_Basket_Purge.php:475
 #: class.Order_Basket_Purge.php:604 class.Order_Basket_Purge.php:890
 #: conf/elements_options.php:1559
-#, fuzzy
-#| msgid "Order cancelled"
 msgid "Purge cancelled"
-msgstr "Zamówienie anulowane"
+msgstr "Czyszczenie anulowane"
 
 #: ar_orders_tables.php:3515
-#, fuzzy
-#| msgid "Custome"
 msgid "Custom made"
-msgstr "Obyczaj"
+msgstr "Wytworzone na zamówienie"
 
 #: ar_production_tables.php:426 ar_production_tables.php:546
 #: ar_production_tables.php:642
-#, fuzzy, php-format
-#| msgid "units per SKO"
+#, php-format
 msgid "%s units per SKO"
-msgstr "Jednostki na SKO"
+msgstr "%s jednostki na SKO"
 
 #: ar_production_tables.php:440
-#, fuzzy
-#| msgid "Units per carton"
 msgid "Units per part"
-msgstr "jednostki na karton"
+msgstr "jednostki na karton "
 
 #: ar_production_tables.php:442
-#, fuzzy
-#| msgid "Packages per carton"
 msgid "Packages per part"
-msgstr "Opakowania na karton"
+msgstr "Opakowania na część "
 
 #: ar_production_tables.php:444
-#, fuzzy
-#| msgid "Units per package"
 msgid "Packed in (Units per packages)"
-msgstr "jednostki na opakowanie"
+msgstr "Zapakowane w (jednostki na opakowanie)"
 
 #: ar_products_tables.php:309
 #, php-format
 msgid "Each outer pick %s part SKOs"
-msgstr ""
+msgstr "Każdy zewnętrzny wybór% s części SKO"
 
 #: ar_products_tables.php:310 class.SupplierPart.php:1410
 msgid "units"
@@ -13127,33 +12636,27 @@ msgstr "jednostki"
 #: ar_products_tables.php:319
 #, php-format
 msgid "Margin %s lower than expected"
-msgstr ""
+msgstr "Marża% s niższa niż oczekiwano"
 
 #: ar_products_tables.php:1344
 msgid "Unlink"
 msgstr "Nie powiązuj "
 
 #: ar_products_tables.php:1554
-#, fuzzy
-#| msgid "Currency"
 msgid "Current"
-msgstr "Waluta"
+msgstr "Obecny"
 
 #: ar_products_tables.php:1557
-#, fuzzy
-#| msgid "Reserved"
 msgid "In reserve"
-msgstr "Zarezerwowany"
+msgstr "Zarezerwowane "
 
 #: ar_products_tables.php:1816 class.Page.php:503 conf/elements_options.php:537
 msgid "Ready"
 msgstr "Gotowe"
 
 #: ar_products_tables.php:1911
-#, fuzzy
-#| msgid "In registration"
 msgid "New registration"
-msgstr "w rejestracji"
+msgstr "Nowa reejstracja"
 
 #: ar_reports_tables.php:257
 #, php-format
@@ -13265,11 +12768,11 @@ msgstr "Inny użytkownik używa tego loginu"
 
 #: ar_setup.php:778 ar_validation.php:280
 msgid "Another contractor is using this payroll Id"
-msgstr "Inny kontrachent używa tego kodu płatności"
+msgstr "Inny kontrahent używa tego kodu płatności"
 
 #: ar_setup.php:791 ar_validation.php:293 ar_validation.php:306
 msgid "Another contractor is using this code"
-msgstr "Inny kontrachent używa tego kodu "
+msgstr "Inny kontrahent używa tego kodu "
 
 #: ar_setup.php:804 ar_setup.php:834 ar_validation.php:319
 #: ar_validation.php:404
@@ -13339,43 +12842,32 @@ msgid "There is not help for this section"
 msgstr "Brak pomocy dla tej sekcji"
 
 #: ar_suppliers_tables.php:815 class.PurchaseOrder.php:653
-#, fuzzy
 msgid "editing"
-msgstr "edycja produkt"
+msgstr "edytowanie"
 
 #: ar_suppliers_tables.php:818 class.PurchaseOrder.php:656
-#, fuzzy
-#| msgid "Delivery notes"
 msgid "Delivery in process"
-msgstr "Notatki dostawy"
+msgstr "Dostawa w toku"
 
 #: ar_suppliers_tables.php:821 class.PurchaseOrder.php:659
-#, fuzzy
-#| msgid "Delivery dispatched by supplier"
 msgid "Delivery dispatched"
-msgstr "Dostawa wysłana przez dostawcę"
+msgstr "Dostawa wysłana "
 
 #: ar_suppliers_tables.php:833 class.PurchaseOrder.php:671
 msgid "Review costing"
-msgstr ""
+msgstr "Przejrzyj kalkulację kosztów"
 
 #: ar_suppliers_tables.php:852
-#, fuzzy
-#| msgid "Empty"
 msgid "empty"
-msgstr "Pusty"
+msgstr "pusty "
 
 #: ar_suppliers_tables.php:1099 class.SupplierDelivery.php:278
-#, fuzzy
-#| msgid "Check digit missing"
 msgid "checking costing"
-msgstr "Sprawdź , brak cyfry"
+msgstr "sprawdzanie kosztów"
 
 #: ar_suppliers_tables.php:1102 class.SupplierDelivery.php:281
-#, fuzzy
-#| msgid "Sorting code"
 msgid "costing done"
-msgstr "Sortowanie kodu"
+msgstr "Wykonano Kosztorys"
 
 #: ar_suppliers_tables.php:1250 ar_suppliers_tables.php:1608
 #: ar_suppliers_tables.php:2329 ar_suppliers_tables.php:2487
@@ -13416,10 +12908,8 @@ msgstr "SKO na karton"
 
 #: ar_suppliers_tables.php:1301 ar_suppliers_tables.php:1722
 #: ar_suppliers_tables.php:3130
-#, fuzzy
-#| msgid "Minimum order (cartons)"
 msgid "Minimum order (units)"
-msgstr "Minimalne zamówienie ( kartony)"
+msgstr "Minimalne zamówienie (jednostki)"
 
 #: ar_suppliers_tables.php:1311 ar_suppliers_tables.php:1321
 #: ar_suppliers_tables.php:1732 ar_suppliers_tables.php:1742
@@ -13443,10 +12933,8 @@ msgid "%s availability"
 msgstr "%s dostępne"
 
 #: ar_suppliers_tables.php:1372 ar_suppliers_tables.php:3201
-#, fuzzy
-#| msgid "Stock audit"
 msgid "Stock (units)"
-msgstr "Stan magazynowy audyt"
+msgstr "Stan magazynowy (jednostki)"
 
 #: ar_suppliers_tables.php:1375 ar_suppliers_tables.php:1398
 #: ar_suppliers_tables.php:1422 ar_suppliers_tables.php:3204
@@ -13455,9 +12943,8 @@ msgid "Cartons dispatched by year"
 msgstr "Kartony wysłane przez rok czasu"
 
 #: ar_suppliers_tables.php:1396 ar_suppliers_tables.php:3225
-#, fuzzy
 msgid "Stock (SKOs)"
-msgstr "Brak"
+msgstr "Stan magazynowy (SKOs)"
 
 #: ar_suppliers_tables.php:1419 ar_suppliers_tables.php:3248
 msgid "Stock (cartons)"
@@ -13465,9 +12952,8 @@ msgstr "Stan magazynowy (kartony)"
 
 #: ar_suppliers_tables.php:1502 ar_suppliers_tables.php:1779
 #: ar_suppliers_tables.php:3354
-#, fuzzy
 msgid "Units ordered"
-msgstr "Rozkazy "
+msgstr "Zamówione jednostki"
 
 #: ar_suppliers_tables.php:1507 ar_suppliers_tables.php:1784
 #: ar_suppliers_tables.php:3359
@@ -13584,7 +13070,7 @@ msgstr "Maksymalna szerokość obrazu to %s (px)"
 
 #: ar_upload.php:474 ar_upload.php:487
 msgid "Image too large"
-msgstr "Obraz jest zbyt duzy"
+msgstr "Obraz jest zbyt duży"
 
 #: ar_upload.php:484
 #, php-format
@@ -13607,13 +13093,12 @@ msgstr "Minimalna wysokość obrazu to %s(px)"
 
 #: ar_upload.php:806
 msgid "There is a problem uploading your image"
-msgstr ""
+msgstr "Podczas przesyłania obrazu wystąpił problem"
 
 #: ar_upload.php:826
-#, fuzzy, php-format
-#| msgid "file exceeds the upload max filesize (%s)"
+#, php-format
 msgid "file exceeds the upload max file size (%s)"
-msgstr "rozmiar pliku do załadowania (%s)"
+msgstr "plik przekracza maksymalny rozmiar przesłanego pliku (%s)"
 
 #: ar_upload.php:989
 msgid "File can't be uploaded"
@@ -13791,10 +13276,8 @@ msgid "There is an invitation template que this name"
 msgstr "Szablon zapraszający z tą nazwą już istnieje"
 
 #: ar_validation.php:992
-#, fuzzy
-#| msgid "There is an invitation template que this name"
 msgid "There is another mailshot  que this name"
-msgstr "Szablon zapraszający z tą nazwą już istnieje"
+msgstr "Jest jeszcze jedna wiadomość mailshot"
 
 #: ar_validation.php:1019
 msgid "Reference used"
@@ -13867,10 +13350,8 @@ msgstr "Nowa oferta"
 
 #: ar_views.php:4744 conf/fields/store.fld.php:473 utils/modules.php:424
 #: utils/modules.php:2954
-#, fuzzy
-#| msgid "Locations"
 msgid "Notifications"
-msgstr "Lokalizacje"
+msgstr "notyfikacje"
 
 #: ar_views.php:4901 ar_views.php:6160 ar_views.php:6245 ar_views.php:6517
 #: navigation/customers.nav.php:73 navigation/customers.nav.php:878
@@ -13879,10 +13360,8 @@ msgid "Customers (All stores)"
 msgstr "Klienci ( wszystkie sklepy)"
 
 #: ar_views.php:4907
-#, fuzzy
-#| msgid "Customers (All stores)"
 msgid "Customer notifications (All stores)"
-msgstr "Klienci ( wszystkie sklepy)"
+msgstr "Komunikacja Email (wszystkie sklepy)"
 
 #: ar_views.php:4944 ar_views.php:4950 ar_views.php:9870
 msgid "(All stores)"
@@ -13921,10 +13400,8 @@ msgstr "wysłany email "
 #: ar_views.php:5317 ar_views.php:5332 navigation/customers.nav.php:791
 #: navigation/customers.nav.php:805 navigation/customers.nav.php:844
 #: navigation/customers.nav.php:931
-#, fuzzy
-#| msgid "Customer operations"
 msgid "Customer notifications"
-msgstr "Operacje klienta"
+msgstr "Powiadomienia klienta"
 
 #: ar_views.php:5219
 msgid "Composing personalized invitation"
@@ -14040,17 +13517,13 @@ msgid "Delivery notes grouped by store"
 msgstr "Dokumenty dostawy grupowane na sklep"
 
 #: ar_views.php:6227
-#, fuzzy
-#| msgid "Creating refund"
 msgid "Creating return"
-msgstr "tworzenie zwrotu "
+msgstr "tworzenie zwrotu  "
 
 #: ar_views.php:6464 navigation/orders.nav.php:2791
 #: navigation/orders.nav.php:2810 navigation/orders.nav.php:2941
-#, fuzzy
-#| msgid "Purges"
 msgid "Purge"
-msgstr "czystki"
+msgstr "Oczyszczanie"
 
 #: ar_views.php:6894 navigation/hr.nav.php:99
 msgid "Manpower history"
@@ -14131,10 +13604,8 @@ msgstr "Tablica Informacyjna magazynu"
 #: navigation/warehouses.nav.php:2102 navigation/warehouses.nav.php:2170
 #: tabs/warehouse.areas.tab.php:110 tabs/warehouse.areas.tab.php:111
 #: utils/modules.php:6344
-#, fuzzy
-#| msgid "Warehouse Area"
 msgid "Warehouse areas"
-msgstr "Obszar magazynu"
+msgstr "Obszary magazynu"
 
 #: ar_views.php:7686 utils/modules.php:1950
 msgid "Pending delivery notes"
@@ -14153,10 +13624,8 @@ msgid "New warehouse"
 msgstr "Nowy magazyn"
 
 #: ar_views.php:7839 utils/modules.php:6382
-#, fuzzy
-#| msgid "New warehouse"
 msgid "New warehouse area"
-msgstr "Nowy magazyn"
+msgstr "Nowy obszar magazynu"
 
 #: ar_views.php:7871 ar_views.php:7885 navigation/warehouses.nav.php:1138
 #: navigation/warehouses.nav.php:1292
@@ -14166,10 +13635,8 @@ msgstr "Wycieki "
 #: ar_views.php:7905 ar_views.php:7920 navigation/warehouses.nav.php:1382
 #: navigation/warehouses.nav.php:1984 utils/modules.php:5591
 #: utils/modules.php:5597 utils/modules.php:6576 utils/modules.php:6582
-#, fuzzy
-#| msgid "Returned"
 msgid "Returns"
-msgstr "Zwrócono"
+msgstr "Zwroty"
 
 #: ar_views.php:7941 ar_views.php:7956 ar_views.php:7977
 #: navigation/warehouses.nav.php:1423 utils/modules.php:6247
@@ -14182,25 +13649,20 @@ msgid "Add shipping company"
 msgstr "Dodaj firmę wysyłkową"
 
 #: ar_views.php:8012
-#, fuzzy
 msgid "Editing warehouse areas"
-msgstr "Skład"
+msgstr "edytowanie obszaru magazynu"
 
 #: ar_views.php:8051
-#, fuzzy
 msgid "Editing locations"
-msgstr "Szyfr Produktu "
+msgstr "Edytowanie Lokalizacji"
 
 #: ar_views.php:8074
-#, fuzzy
 msgid "Adding warehouse areas"
-msgstr "Skład"
+msgstr "Dodawanie obszarów magazynu "
 
 #: ar_views.php:8113
-#, fuzzy
-#| msgid "Add location"
 msgid "Adding locations"
-msgstr "Dodaj lokalizacje"
+msgstr "dodawanie lokalizacji"
 
 #: ar_views.php:8192
 msgid "All websites"
@@ -14217,10 +13679,8 @@ msgstr "Mój profil"
 
 #: ar_views.php:8390 navigation/accounting.nav.php:21 navigation/menu.php:351
 #: navigation/menu.php:362
-#, fuzzy
-#| msgid "Account"
 msgid "Accounting"
-msgstr "Konto"
+msgstr "Księgowość"
 
 #: ar_views.php:8401 ar_views.php:8419 ar_views.php:8440 ar_views.php:8624
 #: ar_views.php:8654 ar_views.php:8659 ar_views.php:8834 ar_views.php:8839
@@ -14256,10 +13716,8 @@ msgstr "Konta płatności"
 #: ar_views.php:8728 ar_views.php:8809 tabs/payments_group_by_store.tab.php:41
 #: tabs/payments_group_by_store.tab.php:42 tabs/store.payments.tab.php:48
 #: utils/modules.php:2041
-#, fuzzy
-#| msgid "Payments by store"
 msgid "Payments per store"
-msgstr "Płatność na sklep"
+msgstr "Płatność na sklep "
 
 #: ar_views.php:8923 navigation/account.nav.php:90
 msgid "Order's index"
@@ -14436,10 +13894,8 @@ msgid "Last audit %s"
 msgstr "ostatni audyt %s"
 
 #: ar_warehouse_tables.php:1318
-#, fuzzy
-#| msgid "Waiting for payment"
 msgid "Waiting to receive return"
-msgstr "Oczekiwanie na płatność"
+msgstr "Oczekiwanie na zwrot"
 
 #: ar_websites_tables.php:334 class.Page.php:5765
 msgid "Information"
@@ -15055,7 +14511,7 @@ msgstr "abonamentowy marketing pocztowy"
 
 #: class.Customer.php:1735
 msgid "subscription to newsletter"
-msgstr "subskrypcja newslettera"
+msgstr "subskrypcja newsletter"
 
 #: class.Customer.php:1738 class.Prospect.php:1138
 #: conf/export_edit_template_fields.php:213
@@ -15107,7 +14563,7 @@ msgstr "Źródło oryginału"
 
 #: class.Customer.php:2440
 msgid "Original Source Filename"
-msgstr "nazwa źródła orginału"
+msgstr "nazwa źródła oryginału"
 
 #: class.Customer.php:2898
 msgid "Cancelled because customer was deleted"
@@ -15122,9 +14578,9 @@ msgid "Customer Deleted"
 msgstr "Klient usunięty"
 
 #: class.Customer.php:3623
-#, fuzzy, php-format
+#, php-format
 msgid "Customer account balance adjusted %s"
-msgstr "Usunięto klienta"
+msgstr "Saldo konta klienta skorygowane %s"
 
 #: class.Customer_Poll_Query.php:109 class.Customer_Poll_Query.php:130
 msgid "Customer poll query created"
@@ -15224,10 +14680,9 @@ msgid "Offer %s (%s) created"
 msgstr "Oferta %s (%s) stworzono"
 
 #: class.DealCampaign.php:609
-#, fuzzy, php-format
-#| msgid "Duplicated name"
+#, php-format
 msgid "Duplicated name %s"
-msgstr "Nazwa zduplikowana"
+msgstr "Nazwa zduplikowana %s"
 
 #: class.DealCampaign.php:954
 msgid "start date"
@@ -15238,16 +14693,13 @@ msgid "end date"
 msgstr "data zakończenia"
 
 #: class.DealComponent.php:383
-#, fuzzy, php-format
-#| msgid "%s%% off"
+#, php-format
 msgid "%s %s off"
-msgstr "%s%% off"
+msgstr "%s %s zniżki"
 
 #: class.DealComponent.php:409
-#, fuzzy
-#| msgid "New charge"
 msgid "Free charges"
-msgstr "Nowa opłata"
+msgstr "Bezpłatne opłaty"
 
 #: class.DeliveryNote.php:2155 utils/order_handing_functions.php:231
 #: utils/order_handing_functions.php:306
@@ -15361,13 +14813,11 @@ msgstr "obraz dodany "
 #: class.EmailCampaign.php:175
 #, php-format
 msgid "Mailshot for orders in basket created (%s)"
-msgstr ""
+msgstr "Utworzono mailshot dla zamówień w koszyku (% s)"
 
 #: class.EmailCampaign.php:179
-#, fuzzy
-#| msgid "Website created"
 msgid "Newsletter created"
-msgstr "Witryna utworzona"
+msgstr "Utworzono Newsletter"
 
 #: class.EmailCampaign.php:184
 #, php-format
@@ -15376,19 +14826,15 @@ msgstr "kampania email stworzona %s"
 
 #: class.EmailCampaign.php:270
 msgid "Setting up newsletter"
-msgstr "Konfigurowanie newslettera"
+msgstr "Konfigurowanie newsletter"
 
 #: class.EmailCampaign.php:282
-#, fuzzy
-#| msgid "Change template"
 msgid "Changing template"
-msgstr "Zmień Szablon"
+msgstr "Zmień Szablon "
 
 #: class.EmailCampaign.php:326
-#, fuzzy
-#| msgid "Inactive"
 msgid "Inactive day"
-msgstr "Nieaktywny "
+msgstr "Nieaktywny dzień"
 
 #: class.EmailCampaign.php:369
 msgid "Initializing launch"
@@ -15411,7 +14857,7 @@ msgstr "Kampania już wysłana"
 
 #: class.EmailCampaign.php:925
 msgid "Campaign cancelled"
-msgstr "Kampania uniewazniona"
+msgstr "Kampania unieważniona"
 
 #: class.EmailCampaign.php:958
 msgid "Mailshot already sent"
@@ -15426,10 +14872,9 @@ msgid "Inactive days in basket"
 msgstr "Nieaktywne dni w koszyku"
 
 #: class.EmailCampaign.php:1066
-#, fuzzy, php-format
-#| msgid "Last updated"
+#, php-format
 msgid "Last updated %s days ago"
-msgstr "Ostatnio zaktualizowany"
+msgstr "Ostatnia aktualizacja:% s dni temu"
 
 #: class.EmailCredentials.php:164
 msgid "Email Credentials Added"
@@ -15538,11 +14983,11 @@ msgstr "Rodzina Produktu"
 
 #: class.Family.php:1049
 msgid "Family Sales Type updated"
-msgstr "Wyprzedaż rodziny produtów uaktualniona "
+msgstr "Wyprzedaż rodziny produktów uaktualniona "
 
 #: class.Family.php:1057
 msgid "Error: Family sales type could not be updated "
-msgstr "Błąd: Wyprzedaż rodziny produktów nie może być uatkualniona"
+msgstr "Błąd: Wyprzedaż rodziny produktów nie może być uaktualniona"
 
 #: class.Family.php:1081
 msgid "Product Family Description Changed"
@@ -15553,22 +14998,19 @@ msgid "Error: can not delete family"
 msgstr "Błąd: Nie można skasować rodziny produktów"
 
 #: class.Invoice.php:450
-#, fuzzy, php-format
-#| msgid "Agent %s created"
+#, php-format
 msgid "Refund %s created"
-msgstr "Agent %s utworzono"
+msgstr "Utworzono %s zwrotu"
 
 #: class.Invoice.php:1088
-#, fuzzy, php-format
-#| msgid "Invoice Date"
+#, php-format
 msgid "Invoice %s created"
-msgstr "Data wyst. faktury"
+msgstr "Utworzono %s faktury"
 
 #: class.Invoice.php:1540
-#, fuzzy, php-format
-#| msgid "Invoice sales"
+#, php-format
 msgid "Invoice %s deleted"
-msgstr "Faktury - Sprzedaż"
+msgstr "Usunięto fakturę %s"
 
 #: class.List.php:135
 #, php-format
@@ -15672,10 +15114,8 @@ msgid "Other location has this code"
 msgstr "Inna lokalizacja posiada już ten kod"
 
 #: class.Location.php:388
-#, fuzzy
-#| msgid "Warehouse not found"
 msgid "Warehouse area not found"
-msgstr "Magazyn nie znaleziony"
+msgstr "Magazyn nie znaleziony "
 
 #: class.Location.php:411
 msgid "The maximum weight for this location show be numeric"
@@ -15710,23 +15150,22 @@ msgid "cubic meter"
 msgid_plural "cubic meters"
 msgstr[0] "metr sześcienny"
 msgstr[1] "metry sześcienne"
-msgstr[2] "metrów sześcięnnych"
+msgstr[2] "metrów sześciennych"
 
 #: class.Location.php:803
-#, fuzzy, php-format
+#, php-format
 msgid "Location moved from to warehouse area %s to %s"
-msgstr "Skład"
+msgstr "Lokalizacja została przeniesiona z obszaru magazynowego %s do %s"
 
 #: class.Location.php:814
-#, fuzzy, php-format
+#, php-format
 msgid "Location associated to warehouse area %s"
-msgstr "Skład"
+msgstr "Lokalizacja powiązana z obszarem magazynowym %s"
 
 #: class.Location.php:827
-#, fuzzy, php-format
-#| msgid "Barcode %s associated"
+#, php-format
 msgid "Location %s associated"
-msgstr "Kod kreskowy %s powiązany"
+msgstr "Lokalizacja %s przypisana "
 
 #: class.Location.php:870
 msgid "Wrong location shape"
@@ -15872,20 +15311,14 @@ msgid "Order send to warehouse"
 msgstr "Zamówienie wysłane na magazyn"
 
 #: class.Order.php:1124
-#, fuzzy
-#| msgid "Order packed and sealed"
 msgid "Order packed and closed"
-msgstr "Zamówienie przygotowane i zapakowane "
+msgstr "Zamówienie przygotowane i zapakowane"
 
 #: class.Order.php:1165
-#, fuzzy
-#| msgid "Order packed and sealed"
 msgid "Undo packed and closed"
-msgstr "Zamówienie przygotowane i zapakowane "
+msgstr "Cofnij status zamówienie przygotowane i zapakowane "
 
 #: class.Order.php:1197
-#, fuzzy
-#| msgid "Invoice deleted, order state back to packed and sealed"
 msgid "Invoice deleted, order state back to packed and closed"
 msgstr ""
 "Faktura została anulowana, zamówienie wróciło do stanu \"uszykowane i "
@@ -15904,10 +15337,8 @@ msgid "Order dispatched"
 msgstr "Zamówienie zostało wysłane"
 
 #: class.Order.php:1463
-#, fuzzy
-#| msgid "Order invoiced"
 msgid "Order invoiced again"
-msgstr "Zamówienie zostało zafakturowane"
+msgstr "Faktura ponownie utworzona"
 
 #: class.Order.php:1558
 msgid "Order can not be cancelled, because has already been dispatched"
@@ -15934,67 +15365,55 @@ msgstr "To zamówienie ma zastępstwo w toku"
 
 #: class.Order_Basket_Purge.php:124
 msgid "Scheduled order's in basket purge created"
-msgstr ""
+msgstr "Zaplanowane zamówienie zostało utworzone w koszyku"
 
 #: class.Order_Basket_Purge.php:129
 #, php-format
 msgid "Order's in basket purge created by %s"
-msgstr ""
+msgstr "Czyszczenie zamówienia w koszyku utworzone przez% s"
 
 #: class.Order_Basket_Purge.php:189
-#, fuzzy
-#| msgid "Setting up newsletter"
 msgid "Setting up purge"
-msgstr "Konfigurowanie newslettera"
+msgstr "Konfigurowanie czyszczenia"
 
 #: class.Order_Basket_Purge.php:199
-#, fuzzy
-#| msgid "Completed"
 msgid "Purge completed"
-msgstr "Kompletny"
+msgstr "Czyszczenie zakończone"
 
 #: class.Order_Basket_Purge.php:233
-#, fuzzy
-#| msgid "Initializing launch"
 msgid "Initializing purge"
-msgstr "Uruchom stronę"
+msgstr "Uruchom oczyszczanie"
 
 #: class.Order_Basket_Purge.php:242
-#, fuzzy, php-format
-#| msgid "Sent %s of %s"
+#, php-format
 msgid "Purged %s of %s"
-msgstr "Wysłane %s z %s"
+msgstr "Oczyszczono %s z %s"
 
 #: class.Order_Basket_Purge.php:463
 msgid "Already purging"
-msgstr ""
+msgstr "Już oczyszczam"
 
 #: class.Order_Basket_Purge.php:469
-#, fuzzy
-#| msgid "Prospect already inputted"
 msgid "Purge already finished"
-msgstr "Perspektywa już wprowadzona "
+msgstr "Czyszczenie już zakończone"
 
 #: class.Order_Basket_Purge.php:548
-#, fuzzy
-#| msgid "Web state"
 msgid "Purge started"
-msgstr "Status strony"
+msgstr "Oczyszczanie rozpoczęte"
 
 #: class.Order_Basket_Purge.php:748
-#, fuzzy
-#| msgid "Inactive days in basket"
 msgid "Inactive days in basket purge criteria"
-msgstr "Nieaktywne dni w koszyku"
+msgstr "Nieaktywne dni w kryteriach czyszczenia koszyka"
 
 #: class.Order_Basket_Purge.php:846
 msgid "cancelled due inactivity in the basket (Scheduled purge)"
 msgstr ""
+"anulowane z powodu braku aktywności w koszyku (Zaplanowane oczyszczanie)"
 
 #: class.Order_Basket_Purge.php:849
 #, php-format
 msgid "cancelled due inactivity in the basket (Purged by %s)"
-msgstr ""
+msgstr "anulowane z powodu braku aktywności w koszyku (oczyszczanie przez %s)"
 
 #: class.Overtime.php:103 class.Timesheet.php:159 class.Timesheet_Record.php:99
 msgid "Record already exists"
@@ -16035,7 +15454,7 @@ msgstr "Strona została opublikowana"
 #: class.Page.php:5647
 #, php-format
 msgid "Webpage %s deleted"
-msgstr "Strona internetowa %s usnięta"
+msgstr "Strona internetowa %s usunięta"
 
 #: class.Page.php:5755
 msgid "Front Page Store"
@@ -16055,7 +15474,7 @@ msgstr "Katalog Rodzin Produktów"
 
 #: class.Page.php:5774
 msgid "Department Catalogue"
-msgstr "Katalog Deaprtamentów"
+msgstr "Katalog Departamentów"
 
 #: class.Page.php:5777
 msgid "Store Catalogue"
@@ -16183,7 +15602,7 @@ msgstr "Błąd: Adres URL powinien zawierać podkategorie strony"
 
 #: class.Page.php:8565
 msgid "Same URL as the redirect"
-msgstr "Ten sam adres URL jak przedadresowany"
+msgstr "Ten sam adres URL jak przeadresowany"
 
 #: class.Page.php:9981
 msgid "Permanent redirection"
@@ -16246,12 +15665,12 @@ msgstr "Nie ustawione"
 #: class.Part.php:970
 #, php-format
 msgid "Current stock value per unit in warehouse %s"
-msgstr ""
+msgstr "Aktualna wartość zapasów na jednostkę w magazynie%s"
 
 #: class.Part.php:974
-#, fuzzy, php-format
+#, php-format
 msgid "Supplier unit cost %s"
-msgstr "Dostawca"
+msgstr "Koszt jednostki dostawcy%s"
 
 #: class.Part.php:1742 class.Product.php:2981 class.Store.php:3443
 #: class.Supplier.php:924 class.SupplierPart.php:390
@@ -16403,7 +15822,7 @@ msgstr "Średni czas dostawy "
 
 #: class.Part.php:4648 class.Supplier.php:1293
 msgid "Duplicated supplier's part reference"
-msgstr "Referencja Produktu Dostawcy Zduplikowanya"
+msgstr "Referencja Produktu Dostawcy Zduplikowana"
 
 #: class.Part.php:4670 class.Supplier.php:1235 class.Supplier.php:1315
 msgid "Duplicated part reference"
@@ -16424,11 +15843,11 @@ msgstr "Ilość powinna być numerem"
 
 #: class.PartLocation.php:430
 msgid "F&L stack updated to offset lost stock"
-msgstr ""
+msgstr "Stos F & L zaktualizowany, aby zrekompensować stracony czas"
 
 #: class.PartLocation.php:432
 msgid "F&L stack updated to offset found stock"
-msgstr ""
+msgstr "Stos F & L zaktualizowany, aby skompensować znaleziony zapas"
 
 #: class.PartLocation.php:749
 msgid "Minimum quantity has to be lower than the maximum quantity"
@@ -16636,7 +16055,7 @@ msgstr "Inny użytkownik uaktualnił listę produktów, odśwież i spróbuj pon
 
 #: class.ProductionPart.php:56
 msgid "You can't add same part as a material"
-msgstr ""
+msgstr "Nie możesz dodać tej samej części co materiał"
 
 #: class.Prospect.php:118
 msgid "Another prospect with same email has been found"
@@ -16689,10 +16108,9 @@ msgid "Not interested status removed"
 msgstr "nie zainteresowany, status usuniety"
 
 #: class.Prospect.php:928
-#, fuzzy, php-format
-#| msgid "Prospect unlinked from customer"
+#, php-format
 msgid "Prospect unlinked from customer %s"
-msgstr "Perspektywa odłączona od klienta"
+msgstr "Prospect odłączony od klienta %s"
 
 #: class.Prospect.php:1173
 msgid "Prospect Deleted"
@@ -16741,7 +16159,7 @@ msgstr "CO otrzymane"
 
 #: class.PurchaseOrder.php:1821
 msgid "Purchase order deleted"
-msgstr "Zamówienie zostało usuniete"
+msgstr "Zamówienie zostało usunięte"
 
 #: class.ReadEmail.php:66
 msgid "can not connect to the email server"
@@ -16794,18 +16212,14 @@ msgid "tracking link"
 msgstr "link śledzący"
 
 #: class.Shipping_Zone.php:171
-#, fuzzy, php-format
-#| msgid "%s shipping zone"
-#| msgid_plural "%s shipping zones"
+#, php-format
 msgid "%s shipping zone created"
-msgstr "% s strefa wysyłki"
+msgstr "Utworzono strefę wysyłkową %s"
 
 #: class.Shipping_Zone_Schema.php:171
-#, fuzzy, php-format
-#| msgid "%s shipping zone"
-#| msgid_plural "%s shipping zones"
+#, php-format
 msgid "%s shipping zone schema created"
-msgstr "% s strefa wysyłki"
+msgstr "Utworzono schemat strefy wysyłkowej %s"
 
 #: class.Shipping_Zone_Schema.php:286
 msgid "Duplicated name"
@@ -17088,38 +16502,30 @@ msgid "Employee is no longer working"
 msgstr "Pracownik już nie pracuje"
 
 #: class.Store.php:195
-#, fuzzy
-#| msgid "Store Added"
 msgid "Store added"
-msgstr "Dodano sklep"
+msgstr "Dodano sklep "
 
 #: class.Store.php:228
-#, fuzzy, php-format
-#| msgid "%s shipping zone"
-#| msgid_plural "%s shipping zones"
+#, php-format
 msgid "%s shipping zones"
-msgstr "% s strefa wysyłki"
+msgstr "%s strefy wysyłki"
 
 #: class.Store.php:344
 #, php-format
 msgid "Store %s (%s) created"
-msgstr "Sklep %s (%s) stworono"
+msgstr "Sklep %s (%s) utworzono"
 
 #: class.Store.php:362
 msgid "Error can not create store"
 msgstr "Błąd: Nie można utworzyć sklepu"
 
 #: class.Store.php:398
-#, fuzzy
-#| msgid "th of the month"
 msgid "Rest of the world"
-msgstr "dzień miesiąca"
+msgstr "Reszta świata"
 
 #: class.Store.php:418
-#, fuzzy
-#| msgid "Duplicated name"
 msgid "Duplicated label"
-msgstr "Nazwa zduplikowana"
+msgstr "Naklejka zduplikowana"
 
 #: class.Store.php:495 class.Website.php:440 conf/elements_options.php:549
 #: conf/fields/webpage.fld.php:16
@@ -17218,10 +16624,8 @@ msgid "Value can't be empty"
 msgstr "Wartość nie może być pusta"
 
 #: class.Store.php:4263
-#, fuzzy
-#| msgid "Invalid number"
 msgid "Invalid user"
-msgstr "Nieprawidłowy numer "
+msgstr "Nieprawidłowy użytkownik"
 
 #: class.Subject.php:31 conf/email_templates_data.php:48
 #: conf/email_templates_data.php:62 conf/email_templates_data.php:83
@@ -17399,26 +16803,20 @@ msgid "checked"
 msgstr "sprawdzone "
 
 #: class.SupplierDelivery.php:313
-#, fuzzy
-#| msgid "Checking"
 msgid "Checking costs"
-msgstr "Sprawdzanie"
+msgstr "Sprawdzanie kosztów"
 
 #: class.SupplierDelivery.php:333
-#, fuzzy
-#| msgid "Updated by customer"
 msgid "Sent by customer"
-msgstr "Uaktualnione przez klienta"
+msgstr "Wysłane przez klienta"
 
 #: class.SupplierDelivery.php:430 class.SupplierDelivery.php:440
 msgid "Placing"
 msgstr "Umieszczenie"
 
 #: class.SupplierDelivery.php:532
-#, fuzzy
-#| msgid "Unknown Weight"
 msgid "Unknown weight"
-msgstr "Nieznana waga"
+msgstr "Nieznana waga "
 
 #: class.SupplierDelivery.php:1070
 msgid "Supplier delivery cancelled"
@@ -17650,17 +17048,13 @@ msgstr "Dostawcy"
 #: class.Upload.php:191 navigation/warehouses.nav.php:2122
 #: navigation/warehouses.nav.php:2144 navigation/warehouses.nav.php:2190
 #: navigation/warehouses.nav.php:2212
-#, fuzzy
-#| msgid "location"
 msgid "locations"
-msgstr "lokalizacja"
+msgstr "lokalizacje"
 
 #: class.Upload.php:194 navigation/warehouses.nav.php:2107
 #: navigation/warehouses.nav.php:2175
-#, fuzzy
-#| msgid "Warehouse Area"
 msgid "warehouse areas"
-msgstr "Obszar magazynu"
+msgstr "Obszary magazynu"
 
 #: class.Upload.php:210
 #, php-format
@@ -17668,10 +17062,9 @@ msgid "supplier %s"
 msgstr "Dostawca %s"
 
 #: class.Upload.php:213
-#, fuzzy, php-format
-#| msgid "warehouses"
+#, php-format
 msgid "warehouse %s"
-msgstr "magazyny"
+msgstr "magazyn %s"
 
 #: class.Upload.php:217
 #, php-format
@@ -17846,22 +17239,17 @@ msgid "Calculate leakage from"
 msgstr "Oblicz wartość wycieku"
 
 #: class.WarehouseArea.php:60
-#, fuzzy
-#| msgid "required"
 msgid "Field required"
-msgstr "wymagane"
+msgstr "wymagane pole"
 
 #: class.WarehouseArea.php:116
-#, fuzzy, php-format
-#| msgid "Warehouse (%s) created"
+#, php-format
 msgid "Warehouse area %s (%s) created"
-msgstr "Utworzono (%s) magazynu"
+msgstr "Utworzono obszar %s (%s) magazynu"
 
 #: class.WarehouseArea.php:270
-#, fuzzy
-#| msgid "Missing SKO Barcodes"
 msgid "Missing code"
-msgstr "Brakujące Kody Kreskowe SKO"
+msgstr "Brakujący kod"
 
 #: class.Webpage.php:204
 #, php-format
@@ -18023,7 +17411,7 @@ msgstr "Część niekontynuowana"
 
 #: conf/elements_options.php:798
 msgid "Part discontinued"
-msgstr "Część niekontynuwana"
+msgstr "Część niekontynuowana"
 
 #: conf/elements_options.php:819
 msgid "Not required"
@@ -18089,7 +17477,7 @@ msgstr "Przekazane  agentowi"
 
 #: conf/elements_options.php:1212
 msgid "In transit"
-msgstr "w przemiszczaniu"
+msgstr "w drodze"
 
 #: conf/elements_options.php:1285
 msgid "To do"
@@ -18385,54 +17773,36 @@ msgid "Stock value per SKO"
 msgstr "Wartość stanów magazynowych na SKO"
 
 #: conf/export_fields.php:693
-#, fuzzy
-#| msgid "In process web pages"
 msgid "In process parts"
-msgstr "w strony internetowe w procesie"
+msgstr "Części w toku"
 
 #: conf/export_fields.php:713
-#, fuzzy
-#| msgid "%s part with excess stock"
-#| msgid_plural "%s parts with excess stock"
 msgid "Active parts with surplus stock"
-msgstr "%s część z dodatkowym stanem "
+msgstr "Aktywne części z nadwyżką zapasów"
 
 #: conf/export_fields.php:718
-#, fuzzy
-#| msgid "Active products out of stock"
 msgid "Active parts with optimal stock"
-msgstr "Aktywne produkty - brak na stanie"
+msgstr "Aktywne części z optymalnym zapasem"
 
 #: conf/export_fields.php:723
-#, fuzzy
-#| msgid "Active products out of stock"
 msgid "Active parts with low stock"
-msgstr "Aktywne produkty - brak na stanie"
+msgstr "Aktywne części o niskim zapasie"
 
 #: conf/export_fields.php:728
-#, fuzzy
-#| msgid "%s part with critical stock or out of stock"
-#| msgid_plural "%s parts with critical stock or out of stock"
 msgid "Active parts with critical stock"
-msgstr "%s część z zapasem krytycznym lub brak w magazynie"
+msgstr "Aktywne części z krytycznym zapasem"
 
 #: conf/export_fields.php:733
-#, fuzzy
-#| msgid "Active products out of stock"
 msgid "Active parts out of stock"
-msgstr "Aktywne produkty - brak na stanie"
+msgstr "Aktywne części niedostępne"
 
 #: conf/export_fields.php:738
-#, fuzzy
-#| msgid "Picks with errors"
 msgid "Parts with stock errors"
-msgstr "Przygotowane z błędami "
+msgstr "Części z błędami zapasów"
 
 #: conf/export_fields.php:753
-#, fuzzy
-#| msgid "Location code"
 msgid "Location expanded code"
-msgstr "Kod lokalizacji"
+msgstr "Rozszerzony kod lokalizacji"
 
 #: conf/export_fields.php:783 conf/export_fields.php:1279
 #: conf/fields/website_localization.fld.php:119
@@ -18456,9 +17826,8 @@ msgid "Ordered cartons"
 msgstr "Kartony Zamówione"
 
 #: conf/export_fields.php:850 conf/export_fields.php:1346
-#, fuzzy
 msgid "Picture"
-msgstr "Zasoby"
+msgstr "Obraz"
 
 #: conf/export_fields.php:871
 msgid "Sales deliveries"
@@ -18521,33 +17890,24 @@ msgid "Supplier name"
 msgstr "Nazwa Dostawcy"
 
 #: conf/export_fields.php:1375
-#, fuzzy
-#| msgid "Dates"
 msgid "Date sent"
-msgstr "Daty"
+msgstr "Data wysłania"
 
 #: conf/export_fields.php:1380
-#, fuzzy
 msgid "Number of times opened"
-msgstr "Numer rejestracji zmieniony z"
+msgstr "Liczba otwarć"
 
 #: conf/export_fields.php:1385
-#, fuzzy
-#| msgid "Number links"
 msgid "Number of clicks"
-msgstr "liczba linków"
+msgstr "liczba kliknięć"
 
 #: conf/export_fields.php:1390
-#, fuzzy
-#| msgid "Mark as spam"
 msgid "Marked as spam"
-msgstr "Oznacz jako wysłane"
+msgstr "Oznaczono jako spam"
 
 #: conf/export_fields.php:1395
-#, fuzzy
-#| msgid "Unsubscribe"
 msgid "Unsubscribed"
-msgstr "Anuluj subskrypcję"
+msgstr "Anulowano subskrypcję"
 
 #: conf/fields/account.fld.php:48 conf/fields/account.setup.fld.php:75
 #: conf/fields/store.fld.php:123 utils/modules.php:3123
@@ -18665,7 +18025,7 @@ msgstr "Dostawca utworzony"
 
 #: conf/fields/agent_part.fld.php:95
 msgid "Cost & availability"
-msgstr "Koszty & Dostepność"
+msgstr "Koszty & Dostępność"
 
 #: conf/fields/agent_part.fld.php:154
 #: conf/fields/part.supplier_part.new.fld.php:216
@@ -18784,7 +18144,7 @@ msgstr "Tekst ( wliczając produkty)"
 
 #: conf/fields/category.webpage.fld.php:332
 msgid "Reindex category & products webpages"
-msgstr "Kategorie reindeksu & strony produktów"
+msgstr "Kategorie reindex  & strony produktów"
 
 #: conf/fields/category.webpage.fld.php:341
 #: conf/fields/payment_account.fld.php:293 conf/fields/webpage.fld.php:565
@@ -19145,9 +18505,8 @@ msgid "Preferences"
 msgstr "preferencje"
 
 #: conf/fields/store.fld.php:65 conf/fields/store.fld.php:76
-#, fuzzy
 msgid "No default"
-msgstr "Usuń"
+msgstr "Brak wartości domyślnej"
 
 #: conf/fields/store.fld.php:160
 msgid "Contact/Details"
@@ -19162,57 +18521,44 @@ msgid "Input collection address"
 msgstr "wprowadź adres odbioru"
 
 #: conf/fields/store.fld.php:317 conf/fields/store.fld.php:332
-#, fuzzy
-#| msgid "for picking aid"
 msgid "Data entry of paper picking aid"
-msgstr "dokument zamówienia"
+msgstr "Wprowadzanie danych dokumentu przygotowania produktów"
 
 #: conf/fields/store.fld.php:328
-#, fuzzy
-#| msgid "Yellow"
 msgid "Allow"
-msgstr "Żółty"
+msgstr "Pozwól"
 
 #: conf/fields/store.fld.php:347
-#, fuzzy
-#| msgid "Set all as packed"
 msgid "Just set as packed"
-msgstr "Ustaw jako zapakowane"
+msgstr "Ustaw jako zapakowane "
 
 #: conf/fields/store.fld.php:360
 msgid "Actions after data entry"
-msgstr ""
+msgstr "Akcje po wprowadzeniu danych"
 
 #: conf/fields/store.fld.php:376
-#, fuzzy
 msgid "Default picker"
-msgstr "Usuń"
+msgstr "Domyślna osoba przygotowująca zamówienie "
 
 #: conf/fields/store.fld.php:390
-#, fuzzy
 msgid "Default packer"
-msgstr "Usuń"
+msgstr "Domyślna osoba pakująca zamówienie"
 
 #: conf/fields/store.fld.php:405
-#, fuzzy
-#| msgid "Select a courier"
 msgid "Default courier"
-msgstr "Wybierz kuriera"
+msgstr "Kurier domyślny"
 
 #: conf/fields/store.fld.php:418
-#, fuzzy
 msgid "Default number boxes"
-msgstr "Numer komurkowy usunięty"
+msgstr "Domyślne pola liczbowe"
 
 #: conf/fields/store.fld.php:429
 msgid "Signatures"
 msgstr "Podpisy"
 
 #: conf/fields/store.fld.php:492
-#, fuzzy
-#| msgid "Customer registration number"
 msgid "Customer registration"
-msgstr "Numer rejestracji klienta"
+msgstr "Rejestracja klienta"
 
 #: conf/fields/store.fld.php:534
 msgid "Close store"
@@ -19250,7 +18596,7 @@ msgstr "Usuń dostawcę & części dostawcy"
 
 #: conf/fields/supplier.fld.php:853
 msgid "Unarchive supplier"
-msgstr "Nie archywizowany dostawca "
+msgstr "Nie archiwizowany dostawca "
 
 #: conf/fields/supplier.order.fld.php:53
 msgid "Estimated delivery"
@@ -19279,7 +18625,7 @@ msgstr "Rekomendowana wartość produktu"
 
 #: conf/fields/supplier_part.fld.php:526
 msgid "for website"
-msgstr "po stronę iternetową"
+msgstr "po stronę internetową"
 
 #: conf/fields/suppliers.settings.fld.php:76
 msgid "Terms and Conditions"
@@ -19296,7 +18642,7 @@ msgstr "Usuń użytkownika"
 
 #: conf/fields/warehouse.fld.php:90
 msgid "Emails templates"
-msgstr "Szablony emaili"
+msgstr "Szablony email "
 
 #: conf/fields/warehouse.fld.php:159
 msgid "Location's flag labels"
@@ -19440,16 +18786,12 @@ msgid "District (country subdivision)"
 msgstr "Departamenty (obszary)"
 
 #: conf/fields/website_localization.fld.php:576
-#, fuzzy
-#| msgid "Unsubscribe"
 msgid "Unsubscribe text"
-msgstr "Anuluj subskrypcję"
+msgstr "Anuluj subskrypcję tekst"
 
 #: conf/fields/website_localization.fld.php:584
-#, fuzzy
-#| msgid "Unsubscribe"
 msgid "Unsubscribe link text"
-msgstr "Anuluj subskrypcję"
+msgstr "Anuluj subskrypcję - tekst linku "
 
 #: conf/fields/website_localization.fld.php:595 utils/modules.php:3093
 msgid "General"
@@ -19697,10 +19039,8 @@ msgid "Supply Intelligence"
 msgstr "Dostawa ( intelligence)"
 
 #: conf/user_groups.php:249
-#, fuzzy
-#| msgid "Customer Services"
 msgid "Customer Services Manager"
-msgstr "Obsługa Klienta"
+msgstr "Menedżer ds. Obsługi klienta"
 
 #: conf/webpage_blocks.php:90
 msgid "Phone"
@@ -19878,7 +19218,7 @@ msgstr "subskrypcje poprzez email"
 
 #: conf/website_system_webpages.php:383
 msgid "Select which kind of emails you want to receive from us"
-msgstr "wybierz rodzaj emaili które chcesz od nas otrzymywać"
+msgstr "wybierz rodzaj email które chcesz od nas otrzymywać"
 
 #: conf/website_system_webpages.php:386
 msgid "Marketing emails and special offers"
@@ -20077,12 +19417,12 @@ msgstr "Informacje o dostawie"
 #: email_tracker.php:345
 msgid "Unsubscribed to newsletter and marketing emails because email bounced"
 msgstr ""
+"Anulowano subskrypcję newslettera i marketingowych wiadomości e-mail, "
+"ponieważ wiadomości e-mail zostały odrzucone"
 
 #: email_tracker.php:356
-#, fuzzy
-#| msgid "Soft bounced"
 msgid "Email soft bounced"
-msgstr "Miękkie odbijanie"
+msgstr "Miękkie odbicie wiadomości email"
 
 #: locale.php:19 utils/available_locales.php:19
 msgid "Czech"
@@ -20147,10 +19487,8 @@ msgid "Search orders all stores"
 msgstr "Szukaj zamówień wszystkie sklepy"
 
 #: navigation/accounting.nav.php:31
-#, fuzzy
-#| msgid "Search account"
 msgid "Search accounting"
-msgstr "Szukaj konta"
+msgstr "Szukaj księgowość"
 
 #: navigation/accounting.nav.php:48 navigation/accounting.nav.php:154
 #: navigation/accounting.nav.php:370 navigation/accounting.nav.php:913
@@ -20196,10 +19534,8 @@ msgid "Credit for customer %s"
 msgstr "Kredyt dla klienta %s"
 
 #: navigation/accounting.nav.php:1583
-#, fuzzy
-#| msgid "Products (All stores)"
 msgid "Credits (All stores)"
-msgstr "Produkty ( Wszystkie sklepy)"
+msgstr "Kredyty ( Wszystkie sklepy)"
 
 #: navigation/accounting.nav.php:1782 navigation/orders.nav.php:287
 #: navigation/orders.nav.php:540
@@ -20438,7 +19774,7 @@ msgstr "Rodzaj emaila operacyjnego"
 
 #: navigation/customers.nav.php:3185
 msgid "Operational email types"
-msgstr "Rodzaje emaili operacyjnych"
+msgstr "Rodzaje e-maili operacyjnych"
 
 #: navigation/help.nav.php:29
 msgid "Search help"
@@ -20598,10 +19934,8 @@ msgstr "Prześlij do kategorii %s"
 
 #: navigation/marketing.nav.php:28 navigation/marketing.nav.php:77
 #: tabs/campaign.deals.tab.php:46
-#, fuzzy
-#| msgid "New user"
 msgid "New voucher"
-msgstr "Nowy użytkownik"
+msgstr "Nowy kupon promocyjny"
 
 #: navigation/marketing.nav.php:32 navigation/marketing.nav.php:81
 #, php-format
@@ -20617,10 +19951,9 @@ msgid "Search offers"
 msgstr "Szukaj ofert"
 
 #: navigation/marketing.nav.php:89
-#, fuzzy, php-format
-#| msgid "New offer for campaign %s"
+#, php-format
 msgid "New offer for category %s"
-msgstr "Nowa oferta dla kompanii %s"
+msgstr "Nowa oferta dla kategorii %s"
 
 #: navigation/marketing.nav.php:135
 msgid "New Campaign"
@@ -20631,10 +19964,8 @@ msgid "Campaigns & offers"
 msgstr "Kampanie & oferty"
 
 #: navigation/marketing.nav.php:206
-#, fuzzy
-#| msgid "Search marketing"
 msgid "Search marketing emails"
-msgstr "Szukaj Marketing"
+msgstr "Szukaj wiadomości email"
 
 #: navigation/marketing.nav.php:491
 msgid "Search offers all stores"
@@ -20642,23 +19973,17 @@ msgstr "Szukaj ofert w sklepach"
 
 #: navigation/marketing.nav.php:575 navigation/marketing.nav.php:593
 #: navigation/marketing.nav.php:675 utils/modules.php:3666
-#, fuzzy
-#| msgid "New category"
 msgid "Offer category"
-msgstr "Nowa Kategoria"
+msgstr "Kategoria Ofert"
 
 #: navigation/marketing.nav.php:617 tabs/campaigns.tab.php:54
 #: utils/modules.php:3435
-#, fuzzy
-#| msgid "Users categories"
 msgid "Offer's categories"
-msgstr "Kategorie użytkowników"
+msgstr "Kategorie ofert"
 
 #: navigation/marketing.nav.php:1347
-#, fuzzy
-#| msgid "Order confirmation"
 msgid "User's notifications"
-msgstr "Potwierdzenie zamówienia"
+msgstr "Powiadomienia klienta"
 
 #: navigation/menu.mobile.php:386
 msgid "Incoming orders"
@@ -20669,10 +19994,8 @@ msgid "Pending Orders"
 msgstr "Zamówienia w toku"
 
 #: navigation/menu.php:128
-#, fuzzy
-#| msgid "Deliveries"
 msgid "Delivering"
-msgstr "Dostawy"
+msgstr "Dostarczanie"
 
 #: navigation/orders.nav.php:181
 msgid "Archived orders"
@@ -20713,16 +20036,14 @@ msgid "New replacement for order %s"
 msgstr "Nowe zastąpienie dla zamówienia %s"
 
 #: navigation/orders.nav.php:2678
-#, fuzzy, php-format
-#| msgid "Sent emails"
+#, php-format
 msgid "Sent email for %s"
-msgstr "wysłane wiadomości email "
+msgstr "wysłano email %s"
 
 #: navigation/orders.nav.php:2985
-#, fuzzy, php-format
-#| msgid "New refund for order %s"
+#, php-format
 msgid "New return for order %s"
-msgstr "Nowy zwrot dla zamówienia %s"
+msgstr "Nowy zwrot dla zamówienia %s "
 
 #: navigation/production.nav.php:32
 #, php-format
@@ -20767,17 +20088,15 @@ msgstr "Zadania Producenta"
 
 #: navigation/production.nav.php:310
 msgid "New manufacture task"
-msgstr "Nowe aadanie producenta"
+msgstr "Nowe zadanie producenta"
 
 #: navigation/production.nav.php:504
 msgid "Production task"
 msgstr "Zadanie produkcji"
 
 #: navigation/production.nav.php:706
-#, fuzzy
-#| msgid "Production %s parts"
 msgid "Production's part"
-msgstr "Produkcja %s części"
+msgstr "Produkcja część"
 
 #: navigation/products.nav.php:98 navigation/products.nav.php:204
 #: navigation/products.nav.php:302 navigation/products.nav.php:683
@@ -20908,7 +20227,7 @@ msgstr "Lista sprzedaży (ESL)"
 
 #: navigation/reports.nav.php:581 navigation/reports.nav.php:626
 msgid "Intrastat report"
-msgstr "Raport Wewnątrzny"
+msgstr "Raport Wewnętrzny"
 
 #: navigation/reports.nav.php:601
 #, php-format
@@ -20929,10 +20248,9 @@ msgid "Prospect's agents productivity"
 msgstr "Produktywność agenta perspektywy"
 
 #: navigation/reports.nav.php:839
-#, fuzzy, php-format
-#| msgid "%s prospect record created"
+#, php-format
 msgid "Agent %s prospects report"
-msgstr "Utworzono rekord perspektywy %s"
+msgstr "Raport potencjalnych agentów %s"
 
 #: navigation/setup_menu.php:33
 msgid "Root account"
@@ -21054,10 +20372,8 @@ msgid "New Warehouse"
 msgstr "Nowy Magazyn"
 
 #: navigation/warehouses.nav.php:164
-#, fuzzy
-#| msgid "New Warehouse"
 msgid "New Warehouse area"
-msgstr "Nowy Magazyn"
+msgstr "Nowy obszar magazynu"
 
 #: navigation/warehouses.nav.php:208 navigation/warehouses.nav.php:261
 #: navigation/warehouses.nav.php:554 navigation/warehouses.nav.php:1143
@@ -21075,24 +20391,23 @@ msgid "Search locations"
 msgstr "Szukaj lokalizacji"
 
 #: navigation/warehouses.nav.php:255
-#, fuzzy, php-format
+#, php-format
 msgid "Warehouse areas for %s"
-msgstr "Skład"
+msgstr "Obszary magazynowe dla%s"
 
 #: navigation/warehouses.nav.php:606
 msgid "New main locations's category"
 msgstr "Nowa Kategoria Głównej Lokalizacji"
 
 #: navigation/warehouses.nav.php:637
-#, fuzzy, php-format
-#| msgid "New location"
+#, php-format
 msgid "New location in area %s"
-msgstr "Nowa lokalizacja"
+msgstr "Nowa lokalizacja w obszarze %s"
 
 #: navigation/warehouses.nav.php:646
-#, fuzzy, php-format
+#, php-format
 msgid "New location in warehouse %s"
-msgstr "Skład"
+msgstr "Nowa lokalizacja w magazynie%s"
 
 #: navigation/warehouses.nav.php:714 navigation/warehouses.nav.php:762
 msgid "Locations's Categories"
@@ -21112,39 +20427,33 @@ msgid "New shipping company"
 msgstr "Nowa firma dostawcza"
 
 #: navigation/warehouses.nav.php:1642
-#, fuzzy
-#| msgid "Set consignment"
 msgid "Search consignments"
-msgstr "Ustaw przesyłkę"
+msgstr "Wyszukaj przesyłki"
 
 #: navigation/warehouses.nav.php:2043
-#, fuzzy, php-format
-#| msgid "Sent %s of %s"
+#, php-format
 msgid "Return %s for %s"
-msgstr "Wysłane %s z %s"
+msgstr "Zwrócono %s z %s"
 
 #: navigation/warehouses.nav.php:2107 navigation/warehouses.nav.php:2122
-#, fuzzy, php-format
-#| msgid "Editing Warehouse"
+#, php-format
 msgid "Editing %s from warehouse (%s)"
-msgstr "edycja magazynu"
+msgstr "Edytowanie%s z magazynu (%s)"
 
 #: navigation/warehouses.nav.php:2144
-#, fuzzy, php-format
+#, php-format
 msgid "Editing %s from warehouse area (%s)"
-msgstr "Skład"
+msgstr "Edytowanie%s z obszaru magazynu (%s)"
 
 #: navigation/warehouses.nav.php:2175 navigation/warehouses.nav.php:2190
-#, fuzzy, php-format
-#| msgid "Adding %s to %s"
+#, php-format
 msgid "Adding %s to warehouse (%s)"
-msgstr "Dodanie% s do% s"
+msgstr "dodawanie %s do magazynu (%s)"
 
 #: navigation/warehouses.nav.php:2212
-#, fuzzy, php-format
-#| msgid "Edit Warehouse Area "
+#, php-format
 msgid "Adding %s to warehouse area (%s)"
-msgstr "edytuj obszar magazynu"
+msgstr "Dodawanie%s do obszaru magazynu (%s)"
 
 #: navigation/websites.nav.php:43 navigation/websites.nav.php:1633
 msgid "Search websites (all)"
@@ -21640,10 +20949,8 @@ msgstr "Nowy przedmiot"
 
 #: tabs/agent_supplier_order.items.tab.php:21
 #: tabs/client_order.items.tab.php:21 tabs/client_order.items.tab.php:22
-#, fuzzy
-#| msgid "Order quantity"
 msgid "Ordered quantity"
-msgstr "Wielkość zamówienia"
+msgstr "Zamówiona ilość"
 
 #: tabs/agents.tab.php:48
 msgid "Agent name"
@@ -21654,15 +20961,12 @@ msgid "Agent email"
 msgstr "Email Agenta"
 
 #: tabs/bill_of_materials.tab.php:45
-#, fuzzy
 msgid "Add component"
-msgstr "Firma"
+msgstr "Dodaj składnik"
 
 #: tabs/bill_of_materials.tab.php:50
-#, fuzzy
-#| msgid "Units"
 msgid "qty (Units)"
-msgstr "Jednostki"
+msgstr "Ilość (Jednostki)"
 
 #: tabs/billingregion_taxcategory.invoices.tab.php:43
 #: tabs/billingregion_taxcategory.refunds.tab.php:44
@@ -21884,7 +21188,7 @@ msgstr "Kod produktu"
 
 #: tabs/category.subjects.tab.php:167 utils/modules.php:272
 msgid "Webpages"
-msgstr "Strony Inernetowe"
+msgstr "Strony Internetowe"
 
 #: tabs/category.subjects.tab.php:199 tabs/category.subjects.tab.php:203
 msgid "Associate family"
@@ -22011,7 +21315,7 @@ msgstr "Adres IP"
 #: tabs/deleted.users.tab.php:29 tabs/users.agents.tab.php:27
 #: tabs/users.staff.tab.php:31 tabs/users.suppliers.tab.php:28
 msgid "User handle"
-msgstr "Obsługa Uzytkownika"
+msgstr "Obsługa Użytkownika"
 
 #: tabs/deleted.users.tab.php:33 tabs/users.staff.tab.php:35
 msgid "User name"
@@ -22048,10 +21352,8 @@ msgstr "Nowy mailshot marketingowy"
 
 #: tabs/email_campaign_type.mailshots.tab.php:91
 #: tabs/email_campaigns.abandoned_cart.tab.php:40
-#, fuzzy
-#| msgid "Total orders in basket"
 msgid "New mailshot for orders in basket"
-msgstr "Łączna liczba zamówień w koszyku"
+msgstr "Nowy mailshot dla zamówień w koszyku"
 
 #: tabs/email_campaign_type.workshop.tab.php:54
 msgid "Reset password URL"
@@ -22071,16 +21373,12 @@ msgid "Back in stock products"
 msgstr "Produkty ponownie na stanie"
 
 #: tabs/email_campaign_type.workshop.tab.php:64
-#, fuzzy
-#| msgid "Tracking code"
 msgid "Tracking code block"
-msgstr "Kod śledzący"
+msgstr "Kod śledzący przesyłkę - blok"
 
 #: tabs/email_campaign_type.workshop.tab.php:68
-#, fuzzy
-#| msgid "tracking link"
 msgid "Tracking link"
-msgstr "link śledzący"
+msgstr "Link śledzenia"
 
 #: tabs/email_campaign_type.workshop.tab.php:71
 #: tabs/mailshot.workshop.composer.tab.php:64
@@ -22165,14 +21463,12 @@ msgid "Add barcodes"
 msgstr "dodaj kody kreskowe"
 
 #: tabs/invoices.categories.tab.php:53 tabs/invoices.categories.tab.php:54
-#, fuzzy
 msgid "Invoices per category"
-msgstr "Faktury "
+msgstr "Faktury na kategorię"
 
 #: tabs/location.details.tab.php:24
-#, fuzzy
 msgid "This is a special location, can't be edited"
-msgstr "Operacja zakazana"
+msgstr "To jest specjalna lokalizacja, nie można jej edytować"
 
 #: tabs/manufacture_task.details.tab.php:19
 #: tabs/manufacture_task.new.tab.php:20
@@ -22223,10 +21519,8 @@ msgid "Add task"
 msgstr "Dodaj zadanie"
 
 #: tabs/no_website.tab.php:16
-#, fuzzy
-#| msgid "Store don't have website, set it up %s"
 msgid "Store don't have website"
-msgstr "Sklep nie posiada strony, ustaw %s"
+msgstr "Sklep nie posiada strony internetowej"
 
 #: tabs/operatives.tab.php:39
 msgid "Add employee"
@@ -22237,10 +21531,8 @@ msgid "Tariff Codes"
 msgstr "Kody Taryfy"
 
 #: tabs/orders.website.purges.wget.tab.php:37
-#, fuzzy
-#| msgid "New charge"
 msgid "New purge"
-msgstr "Nowa opłata"
+msgstr "Nowe czyszczenie"
 
 #: tabs/overtimes.tab.php:23
 msgid "Overtime reference"
@@ -22290,15 +21582,12 @@ msgid "Upload supplier's parts"
 msgstr "Prześlij części dostawcy"
 
 #: tabs/production_part.tasks.tab.php:45
-#, fuzzy
-#| msgid "Links"
 msgid "Link task"
-msgstr "Linki"
+msgstr "zadanie łącza"
 
 #: tabs/production_part.tasks.tab.php:50
-#, fuzzy
 msgid "Component"
-msgstr "Firma"
+msgstr "Składnik"
 
 #: tabs/prospect.history.tab.php:52
 msgid "Log postal mail"
@@ -22325,10 +21614,8 @@ msgid "New invitation template"
 msgstr "Nowy Szablon Zaproszenia"
 
 #: tabs/returns_server.tab.php:43
-#, fuzzy
-#| msgid "Registration number"
 msgid "Return number"
-msgstr "Numer rejestracji"
+msgstr "Numer zwrotny"
 
 #: tabs/salesmen.tab.php:43
 msgid "New account"
@@ -22355,10 +21642,8 @@ msgstr ""
 "skonfigurować magazyn% s"
 
 #: tabs/store.shipping_zones_schemas.tab.php:47
-#, fuzzy
-#| msgid "New shipping zone"
 msgid "New shipping zone schema"
-msgstr "Nowy obszar dostarczania"
+msgstr "Nowy obszar dostarczania "
 
 #: tabs/supplier.order.all_supplier_parts.tab.php:21
 #: tabs/supplier.order.items.tab.php:23
@@ -22368,17 +21653,13 @@ msgstr "Zamawianie kartonów"
 
 #: tabs/supplier.order.all_supplier_parts.tab.php:22
 #: tabs/supplier.order.items_in_process.tab.php:21
-#, fuzzy
-#| msgid "Ordering"
 msgid "Ordering SKOs"
-msgstr "Zamawianie"
+msgstr "Zamawianie SKO"
 
 #: tabs/supplier.order.all_supplier_parts.tab.php:23
 #: tabs/supplier.order.items_in_process.tab.php:22
-#, fuzzy
-#| msgid "Ordered units"
 msgid "Ordering units"
-msgstr "Zamówione jednostki"
+msgstr "Zamówione jednostki "
 
 #: tabs/supplier.supplier_parts.tab.php:21
 #: tabs/supplier.supplier_parts.tab.php:34
@@ -22434,50 +21715,36 @@ msgid "Delete API key"
 msgstr "Usuń klucz API"
 
 #: tabs/users.agents.tab.php:31
-#, fuzzy
-#| msgid "Page code"
 msgid "agent code"
-msgstr "Kod strony "
+msgstr "Kod Agenta"
 
 #: tabs/users_by_category.tab.php:30 tabs/users_by_category.tab.php:31
-#, fuzzy
-#| msgid "Users categories"
 msgid "Users by category"
-msgstr "Kategorie użytkowników"
+msgstr "Użytkownicy według kategorii"
 
 #: tabs/warehouse.areas.tab.php:59
-#, fuzzy
 msgid "Add area(s)"
-msgstr "obszar skasowany"
+msgstr "Dodaj Obszar (y)"
 
 #: tabs/warehouse.areas.tab.php:60
-#, fuzzy
-#| msgid "Edit address"
 msgid "Edit area(s)"
-msgstr "Edytuj adres"
+msgstr "Edytuj obszar(y)"
 
 #: tabs/warehouse.areas.tab.php:68
-#, fuzzy
-#| msgid "Duplicated warehouse name"
 msgid "Upload warehouse areas"
-msgstr "Nazwa magazynu zduplikowana"
+msgstr "Prześlij obszary magazynowe"
 
 #: tabs/warehouse.areas.tab.php:103
-#, fuzzy
 msgid "Edit warehouse areas"
-msgstr "Skład"
+msgstr "edytuj obszary magazynu"
 
 #: tabs/warehouse.locations.tab.php:58 tabs/warehouse_area.locations.tab.php:57
-#, fuzzy
-#| msgid "Add location"
 msgid "Add location(s)"
-msgstr "Dodaj lokalizacje"
+msgstr "dodaj lokalizację"
 
 #: tabs/warehouse.locations.tab.php:59 tabs/warehouse_area.locations.tab.php:58
-#, fuzzy
-#| msgid "Edit locations"
 msgid "Edit location(s)"
-msgstr "Edytuj lokalizacje"
+msgstr "Edytuj lokalizacje "
 
 #: tabs/warehouse.locations.tab.php:67 tabs/warehouse_area.locations.tab.php:66
 msgid "Upload locations"
@@ -22494,10 +21761,8 @@ msgid "Associate location"
 msgstr "Przypisz lokalizacje"
 
 #: tabs/warehouse_area.locations.tab.php:122
-#, fuzzy
-#| msgid "Location code"
 msgid "Location's code"
-msgstr "Kod lokalizacji"
+msgstr "Kod lokalizacji "
 
 #: tabs/warehouses.tab.php:15
 #, php-format
@@ -22523,11 +21788,11 @@ msgstr "Szukaj zapytania"
 
 #: tabs/website.user.details.tab.php:55
 msgid "User_Password"
-msgstr "Hasło_Uzytkownika"
+msgstr "Hasło_Użytkownika"
 
 #: tabs/website.user.details.tab.php:67
 msgid "Language"
-msgstr "Języka"
+msgstr "Język"
 
 #: tabs/website.user.pageviews.tab.php:25
 msgid "Page code"
@@ -22559,21 +21824,19 @@ msgstr "Nowi_Pracownicy"
 
 #: upload_arrangement.php:43
 msgid "new_parts"
-msgstr "Nowe_Czesci"
+msgstr "Nowe_Cześci"
 
 #: upload_arrangement.php:51
 msgid "new_supplier_parts"
-msgstr "Nowe_Czesci_Dostawcy"
+msgstr "Nowe_Cześci_Dostawcy"
 
 #: upload_arrangement.php:59
 msgid "new_locations"
 msgstr "Nowe_Lokalizacje"
 
 #: upload_arrangement.php:69
-#, fuzzy
-#| msgid "new warehouse"
 msgid "new_warehouse_area"
-msgstr "Nowy Magazyn"
+msgstr "Nowy_obszar_magazynu"
 
 #: utils/available_reports.php:15
 msgid "Sales representatives"
@@ -22585,9 +21848,8 @@ msgid "Productivity"
 msgstr "Produktywność"
 
 #: utils/available_reports.php:39
-#, fuzzy
 msgid "Sales overview"
-msgstr "Transakcje Powiadamiać"
+msgstr "Podgląd sprzedaży"
 
 #: utils/available_reports.php:46
 msgid "Dispatched orders"
@@ -22847,7 +22109,7 @@ msgstr "Brakujące pola "
 
 #: utils/invalid_messages.php:239
 msgid "Please provide a recipient"
-msgstr "Podaj odbiorce"
+msgstr "Podaj odbiorcę"
 
 #: utils/invalid_messages.php:241
 msgid "Please provide the address first line"
@@ -22998,9 +22260,8 @@ msgstr "Kalendarz"
 #: utils/modules.php:88 utils/modules.php:669 utils/modules.php:2920
 #: utils/modules.php:4345 utils/modules.php:5126 utils/modules.php:5808
 #: utils/modules.php:5933
-#, fuzzy
 msgid "Sales data info"
-msgstr "Transakcje Powiadamiać"
+msgstr "Informacje o sprzedaży"
 
 #: utils/modules.php:122 utils/modules.php:248
 msgid "Customers who favored"
@@ -23129,59 +22390,44 @@ msgid "Communications, history, notes"
 msgstr "Komunikacje, historia, notatki"
 
 #: utils/modules.php:1012
-#, fuzzy
-#| msgid "Locations"
 msgid "Notifications."
-msgstr "Lokalizacje"
+msgstr "notyfikacje"
 
 #: utils/modules.php:1032 utils/modules.php:1466
 msgid "Control panel"
 msgstr "Panel Kontroli "
 
 #: utils/modules.php:1070
-#, fuzzy
 msgid "Customer notes/history"
-msgstr "Klient istnieje w innym sklepie"
+msgstr "Notatki klienta / historia"
 
 #: utils/modules.php:1120
-#, fuzzy
-#| msgid "Picking & Packing"
 msgid "Picking/Packing data entry"
-msgstr "Przygotowywanie & Pakowanie"
+msgstr "Przygotowywanie & Pakowanie wpis danych"
 
 #: utils/modules.php:1352 utils/modules.php:3536
-#, fuzzy
 msgid "HTML email composer"
-msgstr "Nowy E-Mail"
+msgstr "Kompozytor wiadomości e-mail w formacie HTML"
 
 #: utils/modules.php:1356 utils/modules.php:3540
-#, fuzzy
-#| msgid "Text version"
 msgid "Plain text version"
-msgstr "Wersja tekstowa"
+msgstr "Zwykła wersja tekstowa "
 
 #: utils/modules.php:1361 utils/modules.php:3545
-#, fuzzy
 msgid "Templates"
-msgstr "Usuń"
+msgstr "szablony"
 
 #: utils/modules.php:1366 utils/modules.php:3550
-#, fuzzy
-#| msgid "Marketing mailshots"
 msgid "Previous mailshots"
-msgstr "Marketing Mailshoty"
+msgstr "Poprzedni mailshot"
 
 #: utils/modules.php:1370 utils/modules.php:3554
-#, fuzzy
-#| msgid "Other Customers Details"
 msgid "Other stores mailshots"
-msgstr "inne dane klientów"
+msgstr "inne sklepy - mailshot"
 
 #: utils/modules.php:1429
-#, fuzzy
-#| msgid "Purchase orders"
 msgid "Purged orders"
-msgstr "Dokumenty zamówień"
+msgstr "Oczyszczone zamówienia"
 
 #: utils/modules.php:1455 utils/modules.php:1987
 msgid "Group by store"
@@ -23200,10 +22446,8 @@ msgid "Fast track packing"
 msgstr "Szybkie pakowanie"
 
 #: utils/modules.php:2019
-#, fuzzy
-#| msgid "Invoices categories"
 msgid "Invoices per categories"
-msgstr "Kategorie Faktur"
+msgstr "Faktury na kategorie"
 
 #: utils/modules.php:2024
 msgid "All invoices"
@@ -23218,9 +22462,8 @@ msgid "Payments transactions"
 msgstr "Transakcje płatności"
 
 #: utils/modules.php:2162 utils/modules.php:2357
-#, fuzzy
 msgid "Payments & refunds"
-msgstr "Faktury "
+msgstr "Płatności & Zwroty"
 
 #: utils/modules.php:2393
 msgid "Websites (All stores)"
@@ -23231,22 +22474,16 @@ msgid "Shipping zones"
 msgstr "obszary przesyłki"
 
 #: utils/modules.php:2940
-#, fuzzy
-#| msgid "New shipping zone"
 msgid "Current shipping zones"
-msgstr "Nowy obszar dostarczania"
+msgstr "Obecne obszary dostarczania"
 
 #: utils/modules.php:2945
-#, fuzzy
-#| msgid "Shipping zones"
 msgid "Shipping zones schemas"
-msgstr "obszary przesyłki"
+msgstr "Schematy stref wysyłki"
 
 #: utils/modules.php:2959
-#, fuzzy
-#| msgid "Locations"
 msgid "Notifications by type"
-msgstr "Lokalizacje"
+msgstr "notyfikacje według rodzaju"
 
 #: utils/modules.php:3019
 msgid "Back in stock notification requests"
@@ -23289,22 +22526,16 @@ msgid "Analytics"
 msgstr "Analityczny"
 
 #: utils/modules.php:3412
-#, fuzzy
-#| msgid "Deleted webpage"
 msgid "Deleted web page"
-msgstr "Usunięte strony internetowe"
+msgstr "Usunięte strony internetowe "
 
 #: utils/modules.php:3616 utils/modules.php:3622
-#, fuzzy
-#| msgid "Voucher"
 msgid "Vouchers"
-msgstr "Kupon promocyjny"
+msgstr "Kupony promocyjne"
 
 #: utils/modules.php:3718
-#, fuzzy
-#| msgid "Reorder reminder"
 msgid "Reorder incentive"
-msgstr "Zamów ponownie - przypomnienie"
+msgstr "Zamów ponownie"
 
 #: utils/modules.php:3731
 msgid "Reminders"
@@ -23339,22 +22570,16 @@ msgid "Manufacture dashboard"
 msgstr "Tablica producenta"
 
 #: utils/modules.php:4606
-#, fuzzy
-#| msgid "materials"
 msgid "Bill of materials"
-msgstr "Materiały"
+msgstr "Zestawienie materiałów"
 
 #: utils/modules.php:4612
-#, fuzzy
-#| msgid "Production %s materials"
 msgid "Edit bill of materials"
-msgstr "Produkcja %s Materiały"
+msgstr "Edytuj zestawienie materiałów"
 
 #: utils/modules.php:4616
-#, fuzzy
-#| msgid "List of bright ideas"
 msgid "List of tasks"
-msgstr "Lista pomysłów"
+msgstr "Lista zadań"
 
 #: utils/modules.php:4661
 msgid "materials"
@@ -23381,10 +22606,8 @@ msgid "Costing"
 msgstr "Kosztorys"
 
 #: utils/modules.php:4930
-#, fuzzy
-#| msgid "Ordered Items"
 msgid "Under/Over delivered items"
-msgstr "zamówione produkty"
+msgstr "Brak / Nadwyżka dostarczonych produktów"
 
 #: utils/modules.php:5013
 msgid "agent"
@@ -23427,10 +22650,8 @@ msgid "Supplier's deliveries"
 msgstr "Dostawy dostawcy"
 
 #: utils/modules.php:5602
-#, fuzzy
-#| msgid "Group by store"
 msgid "Group by warehouse"
-msgstr "Grupuj według sklepów"
+msgstr "Grupuj według magazynów"
 
 #: utils/modules.php:5701
 msgid "Retail barcodes"
@@ -23445,10 +22666,8 @@ msgid "Part's categories"
 msgstr "Kategorie części"
 
 #: utils/modules.php:5769
-#, fuzzy
-#| msgid "Category status"
 msgid "Category (Part)"
-msgstr "Status Kategori"
+msgstr "Kategoria (Część)"
 
 #: utils/modules.php:5839
 msgid "Parts locations"
@@ -23479,23 +22698,20 @@ msgid "Chart"
 msgstr "Wykres"
 
 #: utils/modules.php:6243
-#, fuzzy
-#| msgid "Warehouse details"
 msgid "Warehouse settings"
-msgstr "Detale magazynu"
+msgstr "Ustawienia magazynu"
 
 #: utils/modules.php:6259 utils/modules.php:6292
 msgid "Part-Locations"
 msgstr "Część - lokalizacje"
 
 #: utils/modules.php:6277
-#, fuzzy
 msgid "Warehouse area settings"
-msgstr "Skład"
+msgstr "Ustawienia obszarów magazynu"
 
 #: utils/modules.php:6345
 msgid "Warehouse areas (Rankings, aisles, rooms)"
-msgstr ""
+msgstr "Obszary magazynowe (rankingi, przejścia, pokoje)"
 
 #: utils/modules.php:6400
 msgid "Location detais"
@@ -23519,15 +22735,12 @@ msgid "Pickers & Packers"
 msgstr "Osoby przygotowujące / Pakujące "
 
 #: utils/modules.php:6691
-#, fuzzy
-#| msgid "Payments by store"
 msgid "Sales by store"
-msgstr "Płatność na sklep"
+msgstr "Sprzedaż na sklep"
 
 #: utils/modules.php:6695
-#, fuzzy
 msgid "Sales by invoices' categories"
-msgstr "Faktury "
+msgstr "Sprzedaż według kategorii faktur"
 
 #: utils/modules.php:6844 utils/modules.php:6847
 msgid "Tax Reports"
@@ -23538,10 +22751,8 @@ msgid "No Tax Report"
 msgstr "Brak Raportu Podatkowego"
 
 #: utils/modules.php:6890
-#, fuzzy
-#| msgid "Orders grouped by store"
 msgid "Invoices grouped by customers"
-msgstr "Zamówienia grupowane wg sklepów"
+msgstr "Faktury pogrupowane według klientów"
 
 #: utils/modules.php:6982
 msgid "Ex Employees"
@@ -23679,7 +22890,7 @@ msgstr "produkty na magazynie"
 
 #: utils/modules.php:8712
 msgid "Boxes"
-msgstr "Pudełka"
+msgstr "kartony"
 
 #: utils/natural_language.php:13 utils/natural_language.php:154
 #: utils/natural_language.php:178
@@ -23897,16 +23108,12 @@ msgid "Credit in customer file"
 msgstr "Kredyt w pliku klienta"
 
 #: utils/order_handing_functions.php:280 utils/order_handing_functions.php:352
-#, fuzzy
-#| msgid "No location !"
 msgid "No location"
-msgstr "Brak lokalizacji!"
+msgstr "Brak lokalizacji"
 
 #: utils/order_handing_functions.php:287 utils/order_handing_functions.php:359
-#, fuzzy
-#| msgid "Other locations stock"
 msgid "Other locations"
-msgstr "Inna lokalizacja zasobów"
+msgstr "Inna lokalizacje"
 
 #: utils/store_functions.php:31
 msgid "each"
@@ -24140,7 +23347,7 @@ msgstr[2] "%s miesięcy"
 #, php-format
 msgid "%s picker"
 msgid_plural "%s pickers"
-msgstr[0] "%s osoba przygotowujaca"
+msgstr[0] "%s osoba przygotowująca"
 msgstr[1] "%s osoby przygotowujace"
 msgstr[2] "%s osób przygotowujących"
 
@@ -24289,13 +23496,12 @@ msgstr[1] "%s usuniętych kontraktorów"
 msgstr[2] "%s usuniętych kontraktorów"
 
 #: utils/table_functions.php:362
-#, fuzzy, php-format
-#| msgid "location"
+#, php-format
 msgid "%s location"
 msgid_plural "%s locations"
-msgstr[0] "lokalizacja"
-msgstr[1] "lokalizacja"
-msgstr[2] "lokalizacja"
+msgstr[0] "%s lokalizacja"
+msgstr[1] "%s lokalizacje"
+msgstr[2] "%s lokalizacji"
 
 #: utils/table_functions.php:366
 #, php-format
@@ -24405,13 +23611,11 @@ msgstr[1] "%s zamówienia zafakturowane"
 msgstr[2] "%s zamówień zafakturowanych"
 
 #: utils/table_functions.php:426
-#, fuzzy, php-format
-#| msgid "%s order packed and sealed"
-#| msgid_plural "%s packed and sealed"
+#, php-format
 msgid "%s order packed & closed"
 msgid_plural "%s orders packed & closed"
 msgstr[0] "%s Zamówienie przygotowane i zapakowane "
-msgstr[1] "%s Zamówienia przygotowane i zapakowane "
+msgstr[1] "%s Zamówienia przygotowane i zapakowane  "
 msgstr[2] "%s Zamówień przygotowane i zapakowane "
 
 #: utils/table_functions.php:430
@@ -24563,8 +23767,8 @@ msgstr[2] "%s firm transportowych"
 msgid "%s mailshot"
 msgid_plural "%s mailshots"
 msgstr[0] "%s Mailshot"
-msgstr[1] "%s mailshoty"
-msgstr[2] "%s mailshotów"
+msgstr[1] "%s mailshot"
+msgstr[2] "%s mailshot"
 
 #: utils/table_functions.php:510
 #, php-format
@@ -24575,13 +23779,11 @@ msgstr[1] "%s zamówienia klienta"
 msgstr[2] "%s zamówień klienta"
 
 #: utils/table_functions.php:514
-#, fuzzy, php-format
-#| msgid "%s discontinued part"
-#| msgid_plural "%s discontinued parts"
+#, php-format
 msgid "%s discontinuing part"
 msgid_plural "%s discontinuing parts"
 msgstr[0] "%s część niekontynuowana"
-msgstr[1] "%s części niekontynuowane"
+msgstr[1] "%s części niekontynuowane "
 msgstr[2] "%s część niekontynuowanych"
 
 #: utils/table_functions.php:518
@@ -24593,24 +23795,20 @@ msgstr[1] "%s poinformuj:  ponownie na stanie"
 msgstr[2] "%s poinformuj:  ponownie na stanie"
 
 #: utils/table_functions.php:522
-#, fuzzy, php-format
-#| msgid "%s warehouse"
-#| msgid_plural "%s warehouses"
+#, php-format
 msgid "%s warehouse area"
 msgid_plural "%s warehouse areas"
 msgstr[0] "%s magazyn"
-msgstr[1] "%s magazyny"
+msgstr[1] "%s magazyny "
 msgstr[2] "%s magazynów"
 
 #: utils/table_functions.php:526
-#, fuzzy, php-format
-#| msgid "%s shipping zone"
-#| msgid_plural "%s shipping zones"
+#, php-format
 msgid "%s shipping zone schema"
 msgid_plural "%s shipping zone schemas"
 msgstr[0] "% s strefa wysyłki"
 msgstr[1] "%s strefy wysyłki"
-msgstr[2] "%s stref wysyłki"
+msgstr[2] "%s stref wysyłki "
 
 #: utils/table_functions.php:540
 #, php-format
@@ -25029,13 +24227,11 @@ msgstr[1] "%s usuniętych kontraktorów %s"
 msgstr[2] "%s usuniętych kontraktorów %s"
 
 #: utils/table_functions.php:830
-#, fuzzy, php-format
-#| msgid "%s part location of %s"
-#| msgid_plural "%s part locations of %s"
+#, php-format
 msgid "%s location of %s"
 msgid_plural "%s locations of %s"
 msgstr[0] "%s lokalizacja części z %s"
-msgstr[1] "%s lokalizacje części z %s"
+msgstr[1] "%s lokalizacje części z %s "
 msgstr[2] "%s lokalizacji z części z %s"
 
 #: utils/table_functions.php:836
@@ -25274,23 +24470,19 @@ msgstr[1] "%s informuj o ponownie na stanie %s"
 msgstr[2] "%s informuj o ponownie na stanie %s"
 
 #: utils/table_functions.php:1020
-#, fuzzy, php-format
-#| msgid "%s warehouse of %s"
-#| msgid_plural "%s warehouses of %s"
+#, php-format
 msgid "%s warehouse area of %s"
 msgid_plural "%s warehouse areas of %s"
 msgstr[0] "%s magazyn z %s"
-msgstr[1] "%s magazyny z %s"
+msgstr[1] "%s magazyny z %s "
 msgstr[2] "%s magazynów z %s"
 
 #: utils/table_functions.php:1026
-#, fuzzy, php-format
-#| msgid "%s shipping zone of %s"
-#| msgid_plural "%s shipping zones of %s"
+#, php-format
 msgid "%s shipping zone schema of %s"
 msgid_plural "%s shipping zone schemas of %s"
-msgstr[0] "% s strefa wysyłkowa% s"
-msgstr[1] "% s strefy wysyłkowe% s"
+msgstr[0] "% s strefa wysyłkowa% s "
+msgstr[1] "% s strefy wysyłkowe% s "
 msgstr[2] "% s stref wysyłkowych% s"
 
 #: utils/table_functions.php:1031
