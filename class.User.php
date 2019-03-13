@@ -1229,9 +1229,7 @@ class User extends DB_Table {
     }
 
     function delete_store($to_delete, $history = true) {
-        include_once 'class.Store.php';
 
-        include_once 'class.Store.php';
         $changed = 0;
         foreach ($to_delete as $store_key) {
 
@@ -1241,7 +1239,7 @@ class User extends DB_Table {
             $_changed = $this->db->exec($sql);
             $changed  += $_changed;
 
-            $store = new Store($store_key);
+            $store = get_object('Store',$store_key);
             if ($store->id and $_changed) {
                 $history_data = array(
                     'History Abstract'    => sprintf(
@@ -1267,11 +1265,13 @@ class User extends DB_Table {
     }
 
     function add_store($to_add, $history = true) {
-        include_once 'class.Store.php';
+
         $changed = 0;
         foreach ($to_add as $scope_id) {
 
-            $store = new Store($scope_id);
+            $store = get_object('Store',$scope_id);
+
+
             if (!$store->id) {
                 continue;
             }

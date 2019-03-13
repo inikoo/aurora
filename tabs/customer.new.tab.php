@@ -38,7 +38,7 @@ $smarty->assign('object_name', $customer->get_object_name());
 
 $smarty->assign('object_fields', $object_fields);
 
-$store = new Store($state['parent_key']);
+$store = get_object('Store',$state['parent_key']);
 
 $country_2alpha_code= $store->get('Store Home Country Code 2 Alpha');
 

@@ -2029,8 +2029,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
                     //  Migration  ----
-                    include_once 'class.Store.php';
-                    $store = new Store($this->get('Category Store Key'));
+
+                    $store = get_object('Store',$this->get('Category Store Key'));
                     if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
 
 

@@ -1965,8 +1965,10 @@ function get_invoices_element_numbers($db, $parameters) {
             $where = sprintf(
                 ' where  `Invoice Store Key`=%d ', $parameters['parent_key']
             );
-            include_once 'class.Store.php';
-            $store    = new Store($parameters['parent_key']);
+            $store    = get_object('Store',$parameters['parent_key']);
+
+
+
             $currency = $store->data['Store Currency Code'];
         } else {
             $where = sprintf(' and  false');
