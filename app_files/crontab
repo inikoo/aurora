@@ -186,7 +186,6 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 * * * * * inikoo sh -c "date >> /tmp/test_date7"
 # m h dom mon dow command
-* * * * * inikoo curl -m 10 'https://plus.site24x7.com/cron/us_00cd5caecb7c81bc09d511caaf5739f2/cron/start'; /path/script.sh && curl -m 10 'https://plus.site24x7.com/cron/us_00cd5caecb7c81bc09d511caaf5739f2/cron/end'
 
 0 3 * * * root find /home/drop/www/var/session -name 'sess_*' -type f -mtime +10 -exec rm {} \;
 * 2 * * * drop sh -c "cd /home/drop/www/;php5.6 cron.php"
