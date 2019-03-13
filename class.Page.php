@@ -513,15 +513,13 @@ class Page extends DB_Table {
                 break;
 
             case 'Send Email Address':
-                include_once 'class.Store.php';
-                $store = new Store($this->data['Webpage Store Key']);
+                $store = get_object('Store',$this->data['Webpage Store Key']);
 
                 return $store->get('Store Email');
 
                 break;
             case 'Send Email Signature':
-                include_once 'class.Store.php';
-                $store = new Store($this->data['Webpage Store Key']);
+                $store = get_object('Store',$this->data['Webpage Store Key']);
 
                 return $store->get('Store Email Template Signature');
 

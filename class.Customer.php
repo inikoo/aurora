@@ -790,7 +790,6 @@ class Customer extends Subject {
 
     function update_full_search() {
 
-        // $store = new Store($this->data['Customer Store Key']);
 
 
         $address_plain      = strip_tags($this->get('Contact Address'));
@@ -844,7 +843,7 @@ class Customer extends Subject {
 
     function update_location_type() {
 
-        $store = new Store($this->data['Customer Store Key']);
+        $store = get_object('Store',$this->data['Customer Store Key']);
 
         if ($this->data['Customer Contact Address Country 2 Alpha Code'] == $store->data['Store Home Country Code 2 Alpha'] or $this->data['Customer Contact Address Country 2 Alpha Code'] == 'XX') {
             $location_type = 'Domestic';
@@ -1436,7 +1435,7 @@ class Customer extends Subject {
         }
 
 
-        $store = new Store($this->get('Store Key'));
+        $store = get_object('Store',$this->get('Store Key'));
 
 
         list($address, $formatter, $postal_label_formatter) = get_address_formatter($store->get('Store Home Country Code 2 Alpha'), $store->get('Store Locale'));
@@ -1901,7 +1900,7 @@ class Customer extends Subject {
             );
             $this->db->exec($sql);
 
-            $store = new Store($this->get('Store Key'));
+            $store = get_object('Store',$this->get('Store Key'));
 
 
             list(
@@ -2070,7 +2069,7 @@ class Customer extends Subject {
 
         $credits = $this->get_credits();
 
-        $store = new Store($this->data['Customer Store Key']);
+        $store = get_object('Store',$this->data['Customer Store Key']);
 
 
         return money($credits, $store->data['Store Currency Code']);

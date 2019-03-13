@@ -21,7 +21,7 @@ $object_fields = get_object_fields(
 );
 
 
-$store = new Store($state['_object']->get('Customer Store Key'));
+$store = get_object('Store',$state['_object']->get('Customer Store Key'));
 
 $smarty->assign(
     'default_country', $store->get('Store Home Country Code 2 Alpha')

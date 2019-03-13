@@ -4911,11 +4911,8 @@ class Part extends Asset {
 
 
                     // todo quick hack before migration is done
+                    $store = get_object('Store', $product->get('Product Store Key'));
 
-
-
-                    $store=get_object('Store',$product->get('Product Store Key'));
-                    
                     if ($store->get('Store Version') == 1) {
                         $sql = sprintf(
                             "SELECT round(ifnull(sum(`Invoice Quantity`),0),1) AS invoiced FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` IS NOT NULL AND  `Product ID`=%d %s %s ", $product->id, ($from_date ? sprintf(

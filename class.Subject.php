@@ -401,13 +401,10 @@ class Subject extends DB_Table {
         $updated_fields_number = 0;
 
 
-
         if (preg_match('/gb|im|jy|gg/i', $fields['Address Country 2 Alpha Code'])) {
             include_once 'utils/geography_functions.php';
-            $fields['Address Postal Code']=gbr_pretty_format_post_code($fields['Address Postal Code']);
+            $fields['Address Postal Code'] = gbr_pretty_format_post_code($fields['Address Postal Code']);
         }
-
-
 
 
         foreach ($fields as $field => $value) {
@@ -516,8 +513,6 @@ class Subject extends DB_Table {
 
 
         list($address, $formatter, $postal_label_formatter) = get_address_formatter($country, $locale);
-
-
 
 
         $address =
@@ -717,10 +712,10 @@ class Subject extends DB_Table {
                         if ($this->get('Contact Address Country 2 Alpha Code') == '' or $this->get('Contact Address Country 2 Alpha Code') == 'XX') {
 
                             if ($this->get('Store Key')) {
-                                $store   = new Store($this->get('Store Key'));
+                                $store   = get_object('Store', $this->get('Store Key'));
                                 $country = $store->get('Home Country Code 2 Alpha');
                             } else {
-                                $account = new Account();
+                                $account = get_object('Account', 1);
                                 $country = $account->get('Country 2 Alpha Code');
                             }
 
@@ -1132,28 +1127,18 @@ class Subject extends DB_Table {
                         $phoneUtil = get_phoneUtil();
 
                         try {
-                            if ($this->get(
-                                    'Contact Address Country 2 Alpha Code'
-                                ) == '' or $this->get(
-                                    'Contact Address Country 2 Alpha Code'
-                                ) == 'XX') {
+                            if ($this->get('Contact Address Country 2 Alpha Code') == '' or $this->get('Contact Address Country 2 Alpha Code') == 'XX') {
                                 if ($this->get('Store Key')) {
-                                    $store   = new Store(
-                                        $this->get('Store Key')
-                                    );
-                                    $country = $store->get(
-                                        'Home Country Code 2 Alpha'
-                                    );
+                                    $store   = get_object('Store',$this->get('Store Key'));
+                                    $country = $store->get('Home Country Code 2 Alpha');
                                 } else {
-                                    $account = new Account();
+                                    $account = get_object('Account',1);
                                     $country = $account->get(
                                         'Country 2 Alpha Code'
                                     );
                                 }
                             } else {
-                                $country = $this->get(
-                                    'Contact Address Country 2 Alpha Code'
-                                );
+                                $country = $this->get('Contact Address Country 2 Alpha Code');
                             }
                             $proto_number    = $phoneUtil->parse(
                                 $value, $country
@@ -1851,10 +1836,10 @@ class Subject extends DB_Table {
 
             if ($this->get('Contact Address Country 2 Alpha Code') == '' or $this->get('Contact Address Country 2 Alpha Code') == 'XX') {
                 if ($this->get('Store Key')) {
-                    $store   = new Store($this->get('Store Key'));
+                    $store   = get_object('Store',$this->get('Store Key'));
                     $country = $store->get('Home Country Code 2 Alpha');
                 } else {
-                    $account = new Account();
+                    $account = get_object('Account',1);
                     $country = $account->get('Country 2 Alpha Code');
                 }
             } else {
@@ -2046,10 +2031,10 @@ class Subject extends DB_Table {
             if ($this->get('Contact Address Country 2 Alpha Code') == '' or $this->get('Contact Address Country 2 Alpha Code') == 'XX') {
 
                 if ($this->get('Store Key')) {
-                    $store   = new Store($this->get('Store Key'));
+                    $store   = get_object('Store',$this->get('Store Key'));
                     $country = $store->get('Home Country Code 2 Alpha');
                 } else {
-                    $account = new Account();
+                    $account = get_object('Account',1);
                     $country = $account->get('Country 2 Alpha Code');
                 }
 
