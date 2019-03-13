@@ -2095,8 +2095,10 @@ class Product extends Asset {
         }
 
         // todo quick hack before migration is done
-        global $account;
-        if ($account->get('Code') == 'AW') {
+
+        $store=get_object('Store',$this->data['Product Store Key']);
+
+        if ($store->get('Store Version') == 1) {
             $sql = sprintf(
                 "SELECT
 		ifnull(count(DISTINCT `Customer Key`),0) AS customers,

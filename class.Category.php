@@ -1633,34 +1633,31 @@ class Category extends DB_Table {
             if ($this->get('Category Scope') == 'Product') {
 
 
-                include_once 'class.Family.php';
-                include_once 'class.Store.php';
-                include_once 'class.Department.php';
-                $store = new Store($this->get('Category Store Key'));
+                $store = get_object('Store', $this->get('Category Store Key'));
 
 
                 if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
 
 
-                    $code = $subcategory->get('Category Code');
+                    if (function_exists('mysql_query') and $store->get('Store Version') == 1) {
+                        $code = $subcategory->get('Category Code');
 
 
-                    $sql = sprintf('SELECT `Product Department Key` FROM `Product Department Dimension` WHERE `Product Department Store Key`=%s ', $store->id);
+                        include_once 'class.Family.php';
+                        include_once 'class.Department.php';
 
-                    $dept_key = 0;
-                    if ($result = $this->db->query($sql)) {
-                        if ($row = $result->fetch()) {
-                            $dept_key = $row['Product Department Key'];
+
+                        $sql = sprintf('SELECT `Product Department Key` FROM `Product Department Dimension` WHERE `Product Department Store Key`=%s ', $store->id);
+
+                        $dept_key = 0;
+                        if ($result = $this->db->query($sql)) {
+                            if ($row = $result->fetch()) {
+                                $dept_key = $row['Product Department Key'];
+                            }
+                        } else {
+                            print_r($error_info = $this->db->errorInfo());
+                            exit;
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
-                    }
-
-                    include_once 'class.Account.php';
-                    $account = new Account($this->db);
-
-                    if (function_exists('mysql_query') and $account->get('Account Code') == 'AW') {
 
 
                         $fam_data = array(
@@ -1679,7 +1676,7 @@ class Category extends DB_Table {
 
                     }
 
-                    $account = new Account($this->db);
+                    $account = get_object('Account', 1);
 
                     $sql = sprintf(
                         'SELECT `Image Subject Image Key` FROM `Image Subject Bridge` LEFT JOIN `Category Dimension` ON (`Image Subject Object Key`=`Category Key`)  WHERE `Category Subject`="Part" AND `Category Code`=%s  AND `Category Root Key`=%d AND `Image Subject Object`="Category" ',
@@ -3914,7 +3911,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
     function update_webpages() {
 
 
-        if($this->data['Category Scope'] == 'Product'){
+        if ($this->data['Category Scope'] == 'Product') {
             $webpages_to_reindex = array();
 
             $sql = sprintf(
@@ -3925,7 +3922,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 foreach ($result as $row) {
 
                     $webpages_to_reindex[$row['Website Webpage Scope Webpage Key']] = $row['Website Webpage Scope Webpage Key'];
-
 
 
                 }
@@ -3956,9 +3952,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
             }
 
         }
-
-
-
 
 
     }

@@ -47,7 +47,7 @@ trait ProductCategory {
         $data['Timeseries Parent']     = 'Category';
         $data['Timeseries Parent Key'] = $this->id;
         $data['editor']                = $this->editor;
-        $timeseries = new Timeseries('find', $data, 'create');
+        $timeseries                    = new Timeseries('find', $data, 'create');
         if ($timeseries->id) {
 
 
@@ -156,14 +156,14 @@ trait ProductCategory {
             $index++;
 
 
-           // print_r($date_frequency_period);
+            // print_r($date_frequency_period);
 
             list($invoices, $customers, $net, $dc_net) = $this->get_product_timeseries_record_data(
                 $timeseries, $date_frequency_period
             );
 
 
-           // print "$invoices, $customers, $net, $dc_net \n";
+            // print "$invoices, $customers, $net, $dc_net \n";
 
             $_date = gmdate(
                 'Y-m-d', strtotime($date_frequency_period['from'].' +0:00')
@@ -249,8 +249,11 @@ trait ProductCategory {
         if ($timeseries->get('Timeseries Scope') == 'Sales') {
 
             // todo quick hack before migration is done
-            global $account;
-            if ($account->get('Code') == 'AW') {
+
+            $store = get_object('Store', $this->get('Category Store Key'));
+
+
+            if ($store->get('Store Version') == 1) {
 
                 $sql = sprintf(
                     "SELECT count(DISTINCT `Invoice Key`)  AS invoices,count(DISTINCT `Customer Key`)  AS customers, ifnull(sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`),0) net,ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`),0) dc_net FROM `Order Transaction Fact` WHERE `Product ID` IN (%s)  AND `Invoice Key`>0 AND  `Invoice Date`>=%s  AND   `Invoice Date`<=%s  ",
@@ -259,10 +262,11 @@ trait ProductCategory {
             } else {
 
                 $sql = sprintf(
-                    "SELECT count(DISTINCT `Invoice Key`)  AS invoices,count(DISTINCT `Customer Key`)  AS customers, round(ifnull(sum(`Order Transaction Amount`),0),2) AS net , 	round(ifnull(sum((`Order Transaction Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net FROM `Order Transaction Fact` WHERE `Product ID` IN (%s)  AND `Invoice Key`>0 AND  `Invoice Date`>=%s  AND   `Invoice Date`<=%s  ", $product_ids, prepare_mysql($date_frequency_period['from']), prepare_mysql($date_frequency_period['to'])
+                    "SELECT count(DISTINCT `Invoice Key`)  AS invoices,count(DISTINCT `Customer Key`)  AS customers, round(ifnull(sum(`Order Transaction Amount`),0),2) AS net , 	round(ifnull(sum((`Order Transaction Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net FROM `Order Transaction Fact` WHERE `Product ID` IN (%s)  AND `Invoice Key`>0 AND  `Invoice Date`>=%s  AND   `Invoice Date`<=%s  ",
+                    $product_ids, prepare_mysql($date_frequency_period['from']), prepare_mysql($date_frequency_period['to'])
                 );
             }
-//print "$sql\n";
+            //print "$sql\n";
 
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -300,12 +304,10 @@ trait ProductCategory {
 
     function get_product_ids() {
 
-        $product_ids  = '';
-        $sql          = sprintf(
+        $product_ids = '';
+        $sql         = sprintf(
             'SELECT `Subject Key` FROM `Category Bridge` WHERE `Category Key`=%d AND `Subject Key`>0 ', $this->id
-        );
-        $product_ids  = '';
-        $subject_type = '';
+        );;
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
                 $product_ids .= $row['Subject Key'].',';
@@ -463,8 +465,11 @@ trait ProductCategory {
 
 
             // todo quick hack before migration is done
-            global $account;
-            if ($account->get('Code') == 'AW') {
+            $store = get_object('Store', $this->get('Category Store Key'));
+
+
+            if ($store->get('Store Version') == 1) {
+
 
                 $sql = sprintf(
                     "SELECT
@@ -700,11 +705,9 @@ trait ProductCategory {
         $this->update($update_data, 'no_history');
 
 
-        $this->get_data('id',$this->id);
+        $this->get_data('id', $this->id);
 
         if ($old_active_products != $this->get('Product Category Active Products')) {
-
-
 
 
             $webpage = $this->get_webpage();
@@ -757,14 +760,11 @@ trait ProductCategory {
 
     function get_webpage() {
 
-        if(isset($this->data['Product Category Webpage Key'])){
-            $webpage_key=$this->data['Product Category Webpage Key'];
-        }else{
-            $webpage_key=0;
+        if (isset($this->data['Product Category Webpage Key'])) {
+            $webpage_key = $this->data['Product Category Webpage Key'];
+        } else {
+            $webpage_key = 0;
         }
-
-
-
 
 
         $this->webpage         = get_object('Webpage', $webpage_key);
@@ -1057,7 +1057,7 @@ trait ProductCategory {
 
         if ($this->get('Category Subject') == 'Product') {
 
-            include_once 'class.Product.php';
+            include_once 'class.product.php';
 
             $this->get_webpage();
 
@@ -1066,32 +1066,32 @@ trait ProductCategory {
             }
 
 
-            $sql = sprintf('DELETE FROM  `Product Category Index` WHERE `Product Category Index Website Key`=%d  ', $this->webpage->id);
+            $sql = sprintf('delete from  `product category index` where `product category index website key`=%d  ', $this->webpage->id);
             $this->db->exec($sql);
 
 
-            if ($this->webpage->get('Webpage State') == 'InProcess') {
-                $state = "'Online','InProcess','Out of Stock '";
+            if ($this->webpage->get('webpage state') == 'inprocess') {
+                $state = "'online','inprocess','out of stock '";
             } else {
-                $state = "'Online','Out of Stock '";
+                $state = "'online','out of stock '";
             }
 
             $sql = sprintf(
-                "SELECT  P.`Product ID`,`Product Code`,`Product Web State` ,`Product Webpage Key`
-                    FROM `Category Bridge` B  
-                    LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  
-                    LEFT JOIN `Page Store Dimension` W ON (W.`Page Key`=P.`Product Webpage Key`)   
-                        WHERE  `Category Key`=%d    AND `Product Public`='Yes' AND   `Webpage State` IN (%s)   ORDER BY `Product Code File As`", $this->id, $state
+                "select  p.`product id`,`product code`,`product web state` ,`product webpage key`
+                    from `category bridge` b  
+                    left join `product dimension` p on (`subject key`=p.`product id`)  
+                    left join `page store dimension` w on (w.`page key`=p.`product webpage key`)   
+                        where  `category key`=%d    and `product public`='yes' and   `webpage state` in (%s)   order by `product code file as`", $this->id, $state
             );
 
 
-            include_once 'class.Image.php';
+            include_once 'class.image.php';
 
             $stack = 0;
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
-                    $product = new Product($row['Product ID']);
+                    $product = new product($row['product id']);
 
                     /*
 
@@ -1113,7 +1113,7 @@ trait ProductCategory {
                     */
 
 
-                    $image = new Image($product->get('Product Main Image Key'));
+                    $image = new image($product->get('product main image key'));
 
                     $_image_filename = uniqid('tmp_ftc_image_bis_');
 
@@ -1121,12 +1121,12 @@ trait ProductCategory {
 
                     $image_filename = 'server_files/tmp/'.$_image_filename.'.jpeg';
                     $image_data     = array(
-                        'Upload Data'                      => array(
+                        'upload data'                      => array(
                             'tmp_name' => $image_filename,
                             'type'     => 'image/jpeg'
                         ),
-                        'Image Filename'                   => $image->get('Image Filename'),
-                        'Image Subject Object Image Scope' => 'Item'
+                        'image filename'                   => $image->get('image filename'),
+                        'image subject object image scope' => 'item'
 
                     );
 
@@ -1148,15 +1148,15 @@ trait ProductCategory {
                     unlink($image_filename);
 
                     $_data = array(
-                        'code'          => $product->get('Code'),
-                        'label'         => $product->get('Name'),
-                        'hover_code'    => $product->get('Code'),
-                        'hover_label'   => $product->get('Name'),
+                        'code'          => $product->get('code'),
+                        'label'         => $product->get('name'),
+                        'hover_code'    => $product->get('code'),
+                        'hover_label'   => $product->get('name'),
                         'image_375x250' => $image_375x250,
 
 
                         'product_id'  => $product->id,
-                        'webpage_key' => $row['Product Webpage Key'],
+                        'webpage_key' => $row['product webpage key'],
                         'tags'        => '',
                         'guest'       => false,
 
@@ -1167,8 +1167,8 @@ trait ProductCategory {
 
 
                     $sql = sprintf(
-                        'INSERT INTO `Product Category Index` (`Product Category Index Category Key`,`Product Category Index Product ID`,`Product Category Index Website Key`,`Product Category Index Product Webpage Key`,`Product Category Index Content Data`,`Product Category Index Stack`) VALUES (%d,%d,%d,%d,%s,%d) ',
-                        $this->id, $row['Product ID'], $this->webpage->id, $row['Product Webpage Key'], prepare_mysql(json_encode($_data)), $stack
+                        'insert into `product category index` (`product category index category key`,`product category index product id`,`product category index website key`,`product category index product webpage key`,`product category index content data`,`product category index stack`) values (%d,%d,%d,%d,%s,%d) ',
+                        $this->id, $row['product id'], $this->webpage->id, $row['product webpage key'], prepare_mysql(json_encode($_data)), $stack
                     );
 
 
@@ -1177,7 +1177,7 @@ trait ProductCategory {
 
                 }
             } else {
-                print_r($error_info = $this->db->errorInfo());
+                print_r($error_info = $this->db->errorinfo());
                 print "$sql\n";
                 exit;
             }
@@ -1306,7 +1306,6 @@ trait ProductCategory {
             );
 
 
-
             $stack = 0;
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
@@ -1424,8 +1423,7 @@ trait ProductCategory {
             }
 
 
-        }
-        elseif ($this->get('Category Subject') == 'Category') {
+        } elseif ($this->get('Category Subject') == 'Category') {
 
 
             include_once 'class.Public_Webpage.php';
@@ -1474,8 +1472,6 @@ trait ProductCategory {
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
-
-
 
 
                     if ($row['Category Webpage Index Category Key'] == '') {
@@ -1973,9 +1969,8 @@ trait ProductCategory {
         }
 
         $this->fast_update(
-            array('Product Category Number History Records' => $number),'Product Category Dimension'
+            array('Product Category Number History Records' => $number), 'Product Category Dimension'
         );
-
 
 
     }

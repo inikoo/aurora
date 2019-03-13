@@ -411,7 +411,7 @@
         .order table{
             margin:40px 0px 30px 0px;
         }
-        
+
         .order table td{
             border-top:1px solid #ccc;
             padding:4px 3px;

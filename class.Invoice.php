@@ -26,7 +26,7 @@ class Invoice extends DB_Table {
         $this->table_name      = 'Invoice';
         $this->ignore_fields   = array('Invoice Key');
         $this->update_customer = true;
-        $this->deleted = false;
+        $this->deleted         = false;
 
         global $db;
         $this->db = $db;
@@ -97,20 +97,16 @@ class Invoice extends DB_Table {
             $this->id = $this->data['Invoice Deleted Key'];
 
 
-
             foreach (
                 json_decode($this->data['Invoice Deleted Metadata'], true) as $key => $value
             ) {
 
 
-
-
-                if($key=='items'){
+                if ($key == 'items') {
                     $this->items = $value;
-                }else{
+                } else {
                     $this->data[$key] = $value;
                 }
-
 
 
             }
@@ -1083,7 +1079,6 @@ class Invoice extends DB_Table {
             //$this->distribute_insurance_over_the_otf();
 
 
-
             $history_data = array(
                 'History Abstract' => sprintf(_('Invoice %s created'), $this->get('Public ID')),
                 'History Details'  => '',
@@ -1123,10 +1118,14 @@ class Invoice extends DB_Table {
         $category_key = 0;
 
 
-        $account = get_object('Account', 1);
-
         // Todo remove after migration
-        if ($account->get('Account Code') == 'AW') {
+
+
+        $store = get_object('Store', $this->get('Invoice Store Key'));
+
+
+        if ($store->get('Store Version') == 1) {
+
             $sql = sprintf(
                 "SELECT * FROM `Category Dimension` WHERE `Category Subject`='Invoice' AND `Category Store Key`=%d ORDER BY `Category Function Order`, `Category Key` ", $this->data['Invoice Store Key']
             );
@@ -1330,12 +1329,12 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
                 }
 
 
-                if($this->get('Invoice Type')=='Invoice'){
-                    $quantity=number($row['Delivery Note Quantity']);
-                    $factor=1;
-                }else{
+                if ($this->get('Invoice Type') == 'Invoice') {
+                    $quantity = number($row['Delivery Note Quantity']);
+                    $factor   = 1;
+                } else {
                     $quantity = '<span class="italic discreet"><span >~</span>'.number(-1 * $row['Order Transaction Amount'] / $row['Product History Price']).'</span>';
-                    $factor=-1;
+                    $factor   = -1;
                 }
 
 
@@ -1344,16 +1343,13 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
                     'code'        => $row['Product Code'],
                     'description' => $description,
                     'quantity'    => $quantity,
-                    'net'         => money($factor*$row['Order Transaction Amount'], $row['Invoice Currency Code'])
+                    'net'         => money($factor * $row['Order Transaction Amount'], $row['Invoice Currency Code'])
                 );
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
             exit();
         }
-
-
-
 
 
         $sql = sprintf("DELETE FROM `Invoice Tax Bridge` WHERE `Invoice Key`=%d", $this->id);
@@ -1488,14 +1484,11 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         );
         $this->db->exec($sql);
 
-        $this->data['items']=$items_data;
-
+        $this->data['items'] = $items_data;
 
 
         $sql =
             "INSERT INTO `Invoice Deleted Dimension` (`Invoice Deleted Key`,`Invoice Deleted Store Key`,`Invoice Deleted Order Key`,`Invoice Deleted Public ID`,`Invoice Deleted Metadata`,`Invoice Deleted Date`,`Invoice Deleted Note`,`Invoice Deleted User Key`,`Invoice Deleted Type`,`Invoice Deleted Total Amount`) VALUE (?,?,?,?,?,?,?,?,?,?) ";
-
-
 
 
         $this->db->prepare($sql)->execute(
@@ -1512,7 +1505,6 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
                 $this->data['Invoice Total Amount']
             )
         );
-
 
 
         if (!$is_refund) {
