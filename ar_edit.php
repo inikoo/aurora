@@ -1245,7 +1245,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
                         if ($deal_new_data['Deal Terms Type'] = 'Voucher AND Amount') {
-                            $deal_new_data['Deal Terms'] = $data['fields_data']['Trigger Extra Amount Net'];
+                            $deal_new_data['Deal Terms'] = ';'.$data['fields_data']['Trigger Extra Amount Net'].';Order Items Gross Amount';
                         } else {
                             $deal_new_data['Deal Terms'] = 1;
                         }

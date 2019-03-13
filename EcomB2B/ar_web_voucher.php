@@ -68,8 +68,32 @@ function update_voucher($_data, $customer, $order, $editor, $db) {
 
             return;
         } else {
-            // remove old voucher
+            $sql = "delete from `Voucher Order Bridge` where `Order Key`=? ";
+            $db->prepare($sql)->execute(
+                [
+                    $order->id,
+                ]
+            );
 
+            $order->update_discounts_items();
+            $order->update_totals();
+            $order->update_shipping();
+            $order->update_charges();
+            $order->update_discounts_no_items();
+            $order->update_deal_bridge();
+
+
+            $order->update_totals();
+
+            $response = array(
+                'state'    => 200,
+                'action'   => 'deleted',
+                'metadata' => array(
+                    'class_html' => array()
+                )
+            );
+            echo json_encode($response);
+            exit;
 
         }
     }
@@ -87,27 +111,68 @@ function update_voucher($_data, $customer, $order, $editor, $db) {
         if ($row = $stmt->fetch()) {
 
 
-            $voucher_keys=$order->get_vouchers();
+            if ($row['Deal Status'] == 'Active') {
+                $voucher_keys = $order->get_vouchers();
 
-            if(in_array($row['Voucher Key'],$voucher_keys)){
 
-            }else{
+                if (in_array($row['Voucher Key'], $voucher_keys)) {
+                    $response = array(
+                        'state'    => 200,
+                        'action'   => 'none',
+                        'metadata' => array(
+                            'class_html' => array()
+                        )
+                    );
+                } else {
 
+                    $sql = "delete from `Voucher Order Bridge` where `Order Key`=? ";
+                    $db->prepare($sql)->execute(
+                        [
+                            $order->id,
+                        ]
+                    );
+
+                }
+
+
+                $sql = "INSERT INTO `Voucher Order Bridge` (`Voucher Key`, `Order Key`, `Date`,`Deal Key`,`Customer Key`,`State`) VALUES (?,?,?,?,?,?)";
+                $db->prepare($sql)->execute(
+                    [
+                        $row['Voucher Key'],
+                        $order->id,
+                        gmdate('Y-m-d H:i:s'),
+                        $row['Deal Key'],
+                        $customer->id,
+                        'In Process'
+                    ]
+                );
+
+
+                $order->update_discounts_items();
+                $order->update_totals();
+                $order->update_shipping();
+                $order->update_charges();
+                $order->update_discounts_no_items();
+                $order->update_deal_bridge();
+
+
+                $order->update_totals();
+
+                $response = array(
+                    'state'    => 200,
+                    'action'   => 'add',
+                    'metadata' => array(
+                        'class_html' => array()
+                    )
+                );
+                echo json_encode($response);
+                exit;
+
+
+            } else {
+                $fail_code = 'not_expired';
+                $error     = true;
             }
-
-
-
-            $sql = "INSERT INTO `Voucher Order Bridge` (`Voucher Key`, `Order Key`, `Date`,`Deal Key`,`Customer Key`,`State`) VALUES (?,?,?,?,?,?)";
-            $db->prepare($sql)->execute(
-                [
-                    $row['Voucher Key'],
-                    $order->id,
-                    gmdate('Y-m-d H:i:s'),
-                    $row['Deal Key'],
-                    $customer->id,
-                    'In Process'
-                ]
-            );
 
 
         } else {
