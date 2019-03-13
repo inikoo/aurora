@@ -205,12 +205,9 @@
             </div>
 
             <div class="data_field small {if $customer->get('Customer Main Plain Email')==''}hide{/if}" style="margin-top:5px">
-
-
                 <div class="">
-                    <i class="fa fa-envelope fa-fw" aria-hidden="true" title="{t}Email{/t}"></i> {mailto address=$customer->get('Customer Main Plain Email')}
+                    <i class="fa fa-envelope fa-fw" title="{t}Email{/t}"></i> {if $customer->get('Customer Main Plain Email')!=''}{mailto address=$customer->get('Customer Main Plain Email')}{/if}
                 </div>
-
             </div>
 
             <div class="data_field  " style="padding:10px 0px 20px 0px;">
