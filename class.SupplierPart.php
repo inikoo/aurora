@@ -1192,7 +1192,11 @@ class SupplierPart extends DB_Table {
                 return $this->part->get($key);
                 break;
 
+            case 'Supplier Code':
 
+                $supplier=get_object('Supplier',$this->data['Supplier Part Supplier Key']);
+                return $supplier->get('Code');
+                break;
             case 'Supplier Key':
                 return $this->get('Supplier Name').(($this->get('Supplier Code') != '' and $this->get('Supplier Code') != $this->get(
                             'Supplier Name'
@@ -1273,6 +1277,12 @@ class SupplierPart extends DB_Table {
 
                 return weight(
                     $this->part->data['Part Package Weight'] * $this->data['Supplier Part Packages Per Carton']
+                );
+                break;
+            case 'Carton Weight Approx':
+
+                return weight(
+                    ceil($this->part->data['Part Package Weight'] * $this->data['Supplier Part Packages Per Carton'])
                 );
                 break;
             case 'SKO Weight':
