@@ -3,13 +3,13 @@
 </script>
 <div style="">
 
-    <table style="width:100%;font-size:2.0mm;" border="0">
+    <table style="width:100%;font-size:2.0mm;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif" border="0">
         <tr>
 
             <td colspan="2" style=" text-align: center;"><b>{$part->get('Reference')}</b> {$part->get('Recommended Product Unit Name')}</td>
         </tr>
         <tr>
-            <td style=" text-align: center;width: 25mm">
+            <td style=" text-align: center;width: 25mm;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif">
                 <div style=";font-size:0.5mm;">
                 {if $part->get('Origin Country')!='' and $part->get('Part Origin Country Code')!=$account->get('Account Country Code')  }
                     Imported from {$part->get('Origin Country')} by
