@@ -11,7 +11,7 @@
 
 <style>
 .labels td{
-    font-size: 2mm;color:gray; text-align: center;vertical-align:bottom;padding:4px 5px 0px 5px;border-top:.1mm solid #000}
+    font-size: 2mm;color:#000; text-align: center;vertical-align:bottom;padding:4px 5px 0px 5px;border-top:.1mm solid #000}
 .data td{
     text-align: center;vertical-align:bottom;padding:1px 5px 4px 5px;border-bottom:.1mm solid #000}
 </style>
