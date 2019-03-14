@@ -11,12 +11,12 @@
 
 <style>
 .labels td{
-    font-size: 2mm;color:#000; text-align: center;vertical-align:bottom;padding:4px 5px 0px 5px;border-top:.1mm solid #000}
+    font-size: 2mm;color:#000; text-align: center;vertical-align:bottom;padding:4px 5px 0px 5px;border-top:.1mm solid #000;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;}
 .data td{
-    text-align: center;vertical-align:bottom;padding:1px 5px 4px 5px;border-bottom:.1mm solid #000}
+    text-align: center;vertical-align:bottom;padding:1px 5px 4px 5px;border-bottom:.1mm solid #000;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;}
 </style>
 
-<div style="font-size:10.0mm;padding:3px 5px 2px 5px;">
+<div style="font-size:10.0mm;padding:3px 5px 2px 5px;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;">
 
 
 
