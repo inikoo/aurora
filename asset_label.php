@@ -24,26 +24,53 @@ $key         = $_REQUEST['key'];
 $type        = $_REQUEST['type'];
 
 
-if (!in_array($object_name, array('part'))) {
+if (!in_array($object_name, array('part','supplier_part'))) {
     exit('error 1');
 }
 
 if (!in_array(
     $type, array(
              'package',
-             'unit'
+             'unit',
+             'carton'
          )
 )
 ) {
-    exit('error 1');
+    exit('error 2');
 }
 
 $object = get_object($object_name, $key);
 
 
+
+if($type=='carton'){
+    $w = 100;
+    $h = 70;
+}else{
+    $w = 65;
+    $h = 27;
+}
+
+
+if ($object_name == 'part') {
+
+    $smarty->assign('part', $object);
+
+
+    $template='labels/part_'.$type.'.tpl';
+
+
+
+}elseif ($object_name == 'supplier_part') {
+    $account=get_object('Account',1);
+    $smarty->assign('account', $account);
+    $smarty->assign('supplier_part', $object);
+
+    $template='labels/supplier_part_'.$type.'.tpl';
+}
+
 //============
-$w = 65;
-$h = 27;
+
 
 
 
@@ -67,15 +94,12 @@ $mpdf = new \Mpdf\Mpdf(
 
 $mpdf->SetTitle('Label '.$object->get_name().' '.$object->id);
 $mpdf->SetAuthor('Aurora Systems');
+$smarty->assign('account', $account);
 
 
-if ($object_name == 'part') {
+$html = $smarty->fetch($template);
 
-    $smarty->assign('account', $account);
 
-    $smarty->assign('part', $object);
-    $html = $smarty->fetch('labels/part_'.$type.'.tpl');
-}
 $mpdf->WriteHTML($html);
 
 $mpdf->Output();
