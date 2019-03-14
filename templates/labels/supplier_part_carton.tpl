@@ -11,9 +11,9 @@
 
 <style>
 .labels td{
-    font-size: 2mm;color:#000; text-align: center;vertical-align:bottom;padding:4px 5px 0px 5px;border-top:.1mm solid #000;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;}
+   font-size: 2mm;color:#000; text-align: center;vertical-align:bottom;padding:4px 5px 0px 5px;border-top:.1mm solid #000;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;}
 .data td{
-    text-align: center;vertical-align:bottom;padding:1px 5px 4px 5px;border-bottom:.1mm solid #000;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;}
+     text-align: center;vertical-align:bottom;padding:1px 5px 4px 5px;border-bottom:.1mm solid #000;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;}
 </style>
 
 <div style="font-size:10.0mm;padding:3px 5px 2px 5px;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;">
@@ -33,7 +33,7 @@
                 Packs per carton
             </td>
             <td >
-                <b>Units per carton</b>
+                Units per carton
             </td>
         </tr>
         <tr class="data">
@@ -42,13 +42,13 @@
 
             </td>
             <td >
-                {$supplier_part->get('Part Units')}
+                <b> {$supplier_part->get('Part Units')}</b>
             </td>
             <td >
-                {$supplier_part->get('Supplier Part Packages Per Carton')}
+                <b> {$supplier_part->get('Supplier Part Packages Per Carton')}</b>
             </td>
             <td >
-                {$supplier_part->get('Units Per Carton')}
+                <b> {$supplier_part->get('Supplier Part Units Per Carton')}</b>
             </td>
         </tr>
 
@@ -61,7 +61,7 @@
         </tr>
         <tr class="data">
             <td colspan="4">
-                {$supplier_part->get('Supplier Part Description')}
+                <b>{$supplier_part->get('Supplier Part Description')}</b>
 
             </td>
 
@@ -99,17 +99,17 @@
 
         <tr class="data">
             <td >
-                {if empty($batch_code)}{$supplier_part->get('Supplier Code')}{$smarty.now|date_format:"%Y%m"}{else}{$batch_code}{/if}
+                <b> {if empty($batch_code)}{$supplier_part->get('Supplier Code')}{$smarty.now|date_format:"%Y%m"}{else}{$batch_code}{/if}</b>
 
             </td>
             <td  >
-                {$supplier_part->get('Carton Weight Approx')}
+                <b>{$supplier_part->get('Carton Weight Approx')}</b>
             </td>
             <td  >
-                {$supplier_part->part->get('Origin Country')}
+                <b>{$supplier_part->part->get('Origin Country')}</b>
             </td>
             <td  >
-                {$account->get('Code')}
+                <b> {$account->get('Code')}</b>
             </td>
         </tr>
 
