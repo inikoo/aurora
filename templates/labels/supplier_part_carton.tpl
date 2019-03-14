@@ -22,13 +22,9 @@
 
     <table style="margin-top:.75mm;width: 100%; border-collapse: collapse;" >
         <tr class="labels">
-            <td >
-                Reference
-
+            <td >Reference
             </td>
-            <td >
-                Units per pack
-            </td>
+            <td >Units per pack</td>
             <td >
                 Packs per carton
             </td>
@@ -42,7 +38,7 @@
 
             </td>
             <td >
-                <b> {$supplier_part->get('Part Units')}</b>
+                <b> {$supplier_part->part->get('Part Units Per Package')}</b>
             </td>
             <td >
                 <b> {$supplier_part->get('Supplier Part Packages Per Carton')}</b>
