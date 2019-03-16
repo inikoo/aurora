@@ -8,6 +8,10 @@
  Version 3
 -->
 *}
+<div class="sticky_notes">
+{include file="sticky_note.tpl" value=$product->get('Sticky Note') object="Product" key="{$product->id}" field="Product_Sticky_Note"  }
+</div>
+
 <div class="name_and_categories">
     <span class="strong"> <span class="Product_Units_Per_Case">{$product->get('Units Per Case')}</span>x <span
                 class="Product_Name">{$product->get('Name')}</span></span>
@@ -28,7 +32,6 @@
     </div>
 </div>
 
-{include file="sticky_note.tpl" value=$product->get('Sticky Note') object="Product" key="{$product->id}" field="Product_Sticky_Note"  }
 
 <div class="asset_container">
     {assign "image_key" $product->get_main_image_key()}

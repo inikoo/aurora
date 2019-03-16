@@ -1,4 +1,6 @@
+<div class="sticky_notes" style="border-top: 1px solid #ccc">
 {include file="sticky_note.tpl" value=$category->get('Sticky Note') object="Category" key="{$category->id}" field="Category_Sticky_Note"  }
+</div>
 
 <div class="name_and_categories">
 

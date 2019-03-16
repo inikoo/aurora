@@ -683,7 +683,6 @@ class Store extends DB_Table {
                 $default_number_of_boxed = $this->settings(preg_replace('/\s/', '_', $key));
 
                 if ($default_number_of_boxed > 0) {
-
                     return number($default_number_of_boxed);
                 } else {
                     return '';

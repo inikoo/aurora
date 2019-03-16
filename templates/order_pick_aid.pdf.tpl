@@ -137,7 +137,7 @@ mpdf-->
 	{assign expected_payment $order->get('Expected Payment')}
 	{if $expected_payment!=''}<div style="font-size: 7pt;font-family: sans-serif;">{$expected_payment}</div>{/if}
 	<span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Notes{/t}:</span>
-
+	{if $order->get('Order Delivery Sticky Note')!=''}<br> {$order->get('Order Delivery Sticky Note')|nl2br}<br>{/if}
 	<br> {$delivery_note->get('Delivery Note Warehouse Note')|nl2br}<br>
 </div>
 <div style=" font-size: 9pt;margin-botom:2pt">

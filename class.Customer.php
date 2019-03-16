@@ -791,7 +791,6 @@ class Customer extends Subject {
     function update_full_search() {
 
 
-
         $address_plain      = strip_tags($this->get('Contact Address'));
         $first_full_search  = $this->data['Customer Name'].' '.$this->data['Customer Name'].' '.$address_plain.' '.$this->data['Customer Main Contact Name'].' '.$this->data['Customer Main Plain Email'];
         $second_full_search = '';
@@ -843,7 +842,7 @@ class Customer extends Subject {
 
     function update_location_type() {
 
-        $store = get_object('Store',$this->data['Customer Store Key']);
+        $store = get_object('Store', $this->data['Customer Store Key']);
 
         if ($this->data['Customer Contact Address Country 2 Alpha Code'] == $store->data['Store Home Country Code 2 Alpha'] or $this->data['Customer Contact Address Country 2 Alpha Code'] == 'XX') {
             $location_type = 'Domestic';
@@ -970,6 +969,8 @@ class Customer extends Subject {
         $order_data['Order Delivery Address Formatted']            = $this->data['Customer Delivery Address Formatted'];
         $order_data['Order Delivery Address Postal Label']         = $this->data['Customer Delivery Address Postal Label'];
 
+        $order_data['Order Sticky Note'] = $this->data['Customer Order Sticky Note'];
+        $order_data['Order Delivery Sticky Note'] = $this->data['Customer Delivery Sticky Note'];
 
         $order_data['Order Customer Order Number'] = $this->get_number_of_orders() + 1;
 
@@ -1435,7 +1436,7 @@ class Customer extends Subject {
         }
 
 
-        $store = get_object('Store',$this->get('Store Key'));
+        $store = get_object('Store', $this->get('Store Key'));
 
 
         list($address, $formatter, $postal_label_formatter) = get_address_formatter($store->get('Store Home Country Code 2 Alpha'), $store->get('Store Locale'));
@@ -1900,7 +1901,7 @@ class Customer extends Subject {
             );
             $this->db->exec($sql);
 
-            $store = get_object('Store',$this->get('Store Key'));
+            $store = get_object('Store', $this->get('Store Key'));
 
 
             list(
@@ -2069,7 +2070,7 @@ class Customer extends Subject {
 
         $credits = $this->get_credits();
 
-        $store = get_object('Store',$this->data['Customer Store Key']);
+        $store = get_object('Store', $this->data['Customer Store Key']);
 
 
         return money($credits, $store->data['Store Currency Code']);
@@ -3619,8 +3620,9 @@ class Customer extends Subject {
 
 
         $history_data = array(
-            'History Abstract' => sprintf(_('Customer account balance adjusted %s'),
-                                          ($amount > 0 ? '+' : ':').money($amount, $this->data['Customer Currency Code']).($note != '' ? ' ('.$note.')' : '')
+            'History Abstract' => sprintf(
+                _('Customer account balance adjusted %s'),
+                ($amount > 0 ? '+' : ':').money($amount, $this->data['Customer Currency Code']).($note != '' ? ' ('.$note.')' : '')
             ),
             'History Details'  => '',
             'Action'           => 'edited'

@@ -1,3 +1,6 @@
+<div class="sticky_notes" >
+{include file="sticky_note.tpl" value=$supplier_part->get('Sticky Note') object="Supplier_Part" key="{$supplier_part->id}" field="Supplier_Part_Sticky_Note"  }
+</div>
 <div class="name_and_categories">
     <span class="strong"><span class="Supplier_Part_Description">{$supplier_part->get('Supplier Part Description')}</span>  </span>
     <ul class="tags Categories" style="float:right">
@@ -9,7 +12,7 @@
     <div style="clear:both">
     </div>
 </div>
-{include file="sticky_note.tpl" value=$supplier_part->get('Sticky Note') object="Supplier_Part" key="{$supplier_part->id}" field="Supplier_Part_Sticky_Note"  }
+
 
 <div class="asset_container">
     <div class="block picture">

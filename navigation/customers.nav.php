@@ -1342,12 +1342,30 @@ function get_customer_navigation($data, $smarty, $user, $db) {
     }
 
 
+
+
+    $right_buttons[] = array(
+        'icon'  => 'sticky-note',
+        'title' => _('Note for warehouse'),
+        'class' => 'open_sticky_note square_button right delivery_note_sticky_note '.($customer->get('Customer Delivery Sticky Note') == '' ? '' : 'hide')
+    );
+
+
+
+    $right_buttons[] = array(
+        'icon'  => 'sticky-note',
+        'title' => _('Note for orders'),
+        'class' => 'open_sticky_note square_button right order_sticky_note '.($customer->get('Customer Order Sticky Note') == '' ? '' : 'hide')
+    );
+
+
+
     $right_buttons[] = array(
         'icon'  => 'sticky-note',
         'title' => _('Sticky note'),
-        'id'    => 'sticky_note_button',
-        'class' => ($customer->get('Sticky Note') == '' ? '' : 'hide')
+        'class' => 'open_sticky_note  square_button right customer_sticky_note  '.($customer->get('Sticky Note') == '' ? '' : 'hide')
     );
+
 
 
     if (isset($sections[$_section])) {

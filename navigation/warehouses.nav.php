@@ -558,6 +558,18 @@ function get_location_navigation($data, $smarty, $user, $db, $account) {
         $title = ' <i class="fa fa-lock padding_right_10"></i>'.$title;
     }
 
+
+
+
+    $right_buttons[] = array(
+        'icon'  => 'sticky-note',
+        'title' => _('Sticky note'),
+        'class' => 'open_sticky_note  square_button right object_sticky_note  '.($data['_object']->get('Sticky Note') == '' ? '' : 'hide')
+
+    );
+
+
+
     $_content = array(
 
         'sections_class' => '',

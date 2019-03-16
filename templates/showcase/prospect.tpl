@@ -8,8 +8,9 @@
  Version 3
 -->
 *}
+<div class="sticky_notes">
 {include file="sticky_note.tpl" value=$prospect->get('Sticky Note') object="Prospect" key="{$prospect->id}" field="Prospect_Sticky_Note"  }
-
+</div>
 {if $prospect->get('Prospect Customer Assigned by User Key')}
     <div style="padding: 5px 15px"><i class="warning fa fa-exclamation-circle"></i> {t}Customer manually linked{/t}  <span class="link" onclick="change_view('customers/{$prospect->customer->get('Store Key')}/{$prospect->customer->id}')">{$prospect->customer->get('Name')}</span> </div>
 {/if}
