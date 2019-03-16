@@ -521,7 +521,7 @@ class Invoice extends DB_Table {
                 'Invoice Payments Amount'       => $payments,
                 'Invoice To Pay Amount'         => $to_pay,
                 'Invoice Has Been Paid In Full' => ($to_pay == 0 ? 'Yes' : 'No'),
-                'Invoice Paid'                  => ($to_pay == 0 ? 'Yes' : ($payments == 0 ? 'No' : 'Partially')),
+                'Invoice Paid'                  => ($to_pay <=0 ? 'Yes' : ($payments == 0 ? 'No' : 'Partially')),
 
             )
         );
