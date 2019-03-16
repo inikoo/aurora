@@ -1,3 +1,7 @@
+<div class="sticky_notes">
+{include file="sticky_note.tpl" value=$part->get('Sticky Note') object="Part" key="{$part->id}" field="Part_Sticky_Note"  }
+</div>
+
 <div id="edit_stock_min_max" location_key="" class="hide " style="position:absolute;border:1px solid #ccc;padding:5px;width:auto;background-color: #fff;z-index: 100">
     <i style="position: relative;top:-5px;padding-right:5px" onClick="close_edit_min_max(this)" class="close_min_max button fa fa-window-close" aria-hidden="true"></i>
     <input class="recommended_min min_max" style="width:50px" ovalue="" value="" placeholder="{t}min{/t}"/>
@@ -11,7 +15,6 @@
 </div>
 
 
-{include file="sticky_note.tpl" value=$part->get('Sticky Note') object="Part" key="{$part->id}" field="Part_Sticky_Note"  }
 
 <div class="name_and_categories">
     <span class="strong"><span class="strong Part_Unit_Description">{$part->get('Part Package Description')}</span> </span>

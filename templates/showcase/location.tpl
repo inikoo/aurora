@@ -1,3 +1,6 @@
+<div class="sticky_notes" style="border-top: 1px solid #ccc">
+    {include file="sticky_note.tpl" value=$location->get('Sticky Note') object="Location" key="{$location->id}" field="Location_Sticky_Note"  }
+</div>
 <div class="subject_profile">
 
 

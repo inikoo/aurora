@@ -1,5 +1,10 @@
-{include file="sticky_note.tpl" value=$customer->get('Sticky Note') object="Customer" key="{$customer->id}" field="Customer_Sticky_Note"  }
+<div class="sticky_notes">
 
+    {include file="sticky_note.tpl" _scope="customer_sticky_note" value=$customer->get('Sticky Note') object="Customer" key="{$customer->id}" field="Customer_Sticky_Note"  }
+    {include file="sticky_note.tpl" _scope="order_sticky_note" value=$customer->get('Order Sticky Note') object="customer" key="{$customer->id}" field="Customer_Order_Sticky_Note"  }
+    {include file="sticky_note.tpl" _scope="delivery_note_sticky_note" value=$customer->get('Delivery Sticky Note') object="customer" key="{$customer->id}" field="Customer_Delivery_Sticky_Note"  }
+
+</div>
 
 <div id="customer" class="subject_profile" key="{$customer->id}" store_key="{$customer->get('Store Key')}">
     <div id="contact_data">

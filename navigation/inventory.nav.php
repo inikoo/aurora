@@ -423,8 +423,8 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
     $right_buttons[] = array(
         'icon'  => 'sticky-note',
         'title' => _('Sticky note'),
-        'id'    => 'sticky_note_button',
-        'class' => ($object->get('Sticky Note') == '' ? '' : 'hide')
+        'class' => 'open_sticky_note  square_button right object_sticky_note  '.($object->get('Sticky Note') == '' ? '' : 'hide')
+
     );
 
 
@@ -1384,10 +1384,6 @@ function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-    //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('Sticky note'), 'id'=>'sticky_note_button', 'click'=>"show_sticky_note_edit_dialog('sticky_note_button')",  'class'=> ($category->get('Sticky Note')==''?'':'hide'));
-
-    //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_product_categories.php?store_id=".$data['store']->id);
-
     $sections                           = get_sections('inventory', $data['store']->id);
     $sections['categories']['selected'] = true;
 
@@ -1397,8 +1393,8 @@ function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
         $right_buttons[] = array(
             'icon'  => 'sticky-note',
             'title' => _('Sticky note'),
-            'id'    => 'sticky_note_button',
-            'class' => ($category->get('Sticky Note') == '' ? '' : 'hide')
+            'class' => 'open_sticky_note  square_button right object_sticky_note  '.($category->get('Sticky Note') == '' ? '' : 'hide')
+
         );
 
     }
@@ -1643,8 +1639,8 @@ function get_part_product_navigation($data, $smarty, $user, $db, $account) {
     $right_buttons[] = array(
         'icon'  => 'sticky-note',
         'title' => _('Sticky note'),
-        'id'    => 'sticky_note_button',
-        'class' => ($object->get('Sticky Note') == '' ? '' : 'hide')
+        'class' => 'open_sticky_note  square_button right object_sticky_note  '.($object->get('Sticky Note') == '' ? '' : 'hide')
+
     );
 
 

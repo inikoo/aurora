@@ -1749,18 +1749,6 @@ table.totals .total td {
   max-width: 270px;
   max-height: 270px; }
 
-#sticky_note_container {
-  position: relative;
-  color: white; }
-  #sticky_note_container i {
-    opacity: .4;
-    position: absolute;
-    right: 10px; }
-  #sticky_note_container #sticky_note {
-    border-bottom: 1px solid #ccc;
-    padding: 20px;
-    background-color: #ff69b4; }
-
 textarea {
   position: relative;
   padding: 4px 6px;
@@ -2135,26 +2123,49 @@ textarea {
   #inline_new_object_msg.invalid {
     color: tomato; }
 
-.sticky_note_button {
-  min-height: 80px;
-  float: left;
-  width: 28px; }
+.open_sticky_note.order_sticky_note {
+  color: #ff7dbd; }
+.open_sticky_note.delivery_note_sticky_note {
+  color: #94db84; }
+.open_sticky_note.customer_sticky_note {
+  color: #7da7f4; }
 
-.sticky_note {
-  font-size: 90%;
-  float: left;
-  max-width: 242px;
-  padding: 7px 10px 15px 10px;
-  border: 1px solid #BAB84E;
-  background: #EDEB82; }
+.sticky_notes {
+  display: flex;
+  align-items: stretch; }
 
-.sticky_note.pink {
-  background: #ff7dbd;
-  border: 1px solid #e52789; }
-
-.sticky_note.green {
-  background: #94db84;
-  border: 1px solid #78bf41; }
+.sticky_note_container {
+  flex-grow: 1;
+  position: relative;
+  color: black;
+  border-bottom: 1px solid #777;
+  background-color: #fff; }
+  .sticky_note_container.order_customer_sticky_note {
+    color: #7d7b19;
+    background-color: #EDEB82;
+    border-bottom: 1px solid #BAB84E; }
+  .sticky_note_container.delivery_note_sticky_note {
+    color: #444;
+    background-color: #94db84;
+    border-bottom: 1px solid #78bf41; }
+  .sticky_note_container.order_sticky_note {
+    color: #fff;
+    background-color: #ff7dbd;
+    border-bottom: 1px solid #e52789; }
+  .sticky_note_container.customer_sticky_note {
+    color: #fff;
+    background-color: #7da7f4;
+    border-bottom: 1px solid #406ec2; }
+  .sticky_note_container i {
+    opacity: .5;
+    position: absolute;
+    right: 10px;
+    color: #000; }
+    .sticky_note_container i.copy_to_delivery_note_sticky_note {
+      color: #78bf41;
+      opacity: 1; }
+  .sticky_note_container .sticky_note {
+    padding: 20px; }
 
 input.input_file {
   width: 0.1px;

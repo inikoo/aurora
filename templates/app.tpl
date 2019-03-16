@@ -9,7 +9,7 @@
     <link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon"/>
 
 
-    <link href="/css/au_app.min.css?v=190227" rel="stylesheet">
+    <link href="/css/au_app.min.css?v=190315v5" rel="stylesheet">
 
 
     {if $_server_name!='au.bali'}
@@ -18,7 +18,7 @@
     {/if}
     <script src="/js/aurora_libs.min.js?v190225v2"></script>
 
-    <script src="/js/aurora.min.js?v190227"></script>
+    <script src="/js/aurora.min.js?v190315"></script>
 
 
 

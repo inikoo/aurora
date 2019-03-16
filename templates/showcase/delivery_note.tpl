@@ -7,10 +7,15 @@
         border: 1px solid #000;
         color:#000;
     }
-
-
-
 </style>
+
+
+<div class="sticky_notes">
+    <div  class="sticky_note_container delivery_note_sticky_note {if $order->get('Delivery Sticky Note')==''}hide{/if}"    >
+        <div class="sticky_note" >{$order->get('Delivery Sticky Note')}</div>
+    </div>
+</div>
+
 <div class="timeline_horizontal">
 
     <input type="hidden" id="Delivery_Note_State_Index" value="{$delivery_note->get('State Index')}">
@@ -425,7 +430,6 @@
 
 </div>
 
-
 <div id="set_out_of_stock_items_dialog" class="hide" style="position:absolute;border:1px solid #ccc;background-color: white;padding:10px 20px;z-index: 100">
     <table>
 
@@ -448,10 +452,8 @@
     </table>
 </div>
 
-
 <span id="dn_data" class="hide" dn_key="{$delivery_note->id}" picker_key="{$delivery_note->get('Delivery Note Assigned Picker Key')}" packer_key="{$delivery_note->get('Delivery Note Assigned Packer Key')}"
       no_picker_msg="{t}Please assign picker{/t}" no_packer_msg="{t}Please assign packer{/t}"></span>
-
 
 <div class="table_new_fields delivery_note_handling_fields   {if $delivery_note->get('State Index')<=10    }hide{/if} " style="border-bottom:1px solid #ccc;">
 
@@ -573,7 +575,6 @@
         </div>
     </div>
 </div>
-
 
 <script>
 

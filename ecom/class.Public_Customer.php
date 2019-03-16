@@ -1248,6 +1248,10 @@ class Public_Customer extends DBW_Table {
         $order_data['Order Delivery Address Postal Label']         = $this->data['Customer Delivery Address Postal Label'];
 
 
+        $order_data['Order Sticky Note'] = $this->data['Customer Order Sticky Note'];
+        $order_data['Order Delivery Sticky Note'] = $this->data['Customer Delivery Sticky Note'];
+
+
         $order_data['Order Customer Order Number'] = $this->get_number_of_orders() + 1;
 
         $store = get_object('Store', $this->get('Customer Store Key'));

@@ -985,6 +985,10 @@ ALTER TABLE `Stack Dimension` CHANGE `Stack Operation` `Stack Operation` ENUM('u
 ALTER TABLE `Deal Campaign Dimension` ADD `Deal Campaign Number Suspended Deal Components` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Deal Campaign Number Active Deal Components`, ADD `Deal Campaign Number Waiting Deal Components` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Deal Campaign Number Suspended Deal Components`, ADD `Deal Campaign Number Finish Deal Components` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Deal Campaign Number Waiting Deal Components`;
 ALTER TABLE `Deal Campaign Dimension` CHANGE `Deal Campaign Number Suspended Deal Components` `Deal Campaign Number Suspended Deal Components` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', CHANGE `Deal Campaign Number Waiting Deal Components` `Deal Campaign Number Waiting Deal Components` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', CHANGE `Deal Campaign Number Finish Deal Components` `Deal Campaign Number Finish Deal Components` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0';
 
+ALTER TABLE `Order Dimension` ADD `Order Delivery Sticky Note` TEXT  CHARACTER SET utf8  COLLATE utf8_general_ci  NULL  AFTER `Order Sticky Note`;
+ALTER TABLE `Customer Dimension` ADD `Customer Delivery Sticky Note` TEXT  CHARACTER SET utf8  COLLATE utf8_general_ci  NULL  AFTER `Customer Sticky Note`;
+ALTER TABLE `Customer Dimension` ADD `Customer Order Sticky Note` TEXT  CHARACTER SET utf8  COLLATE utf8_general_ci  NULL  AFTER `Customer Sticky Note`;
+ALTER TABLE `Location Dimension` ADD `Location Sticky Note` TEXT  CHARACTER SET utf8  COLLATE utf8_general_ci  NULL  ;
 
 
 ======= fer migration ordering in dw and costa

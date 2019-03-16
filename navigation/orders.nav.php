@@ -1020,6 +1020,21 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
         $sections[$_section]['selected'] = true;
     }
 
+    $right_buttons[] = array(
+        'icon'  => 'sticky-note',
+        'title' => _('Note for warehouse'),
+        'class' => 'open_sticky_note square_button right delivery_note_sticky_note '.($object->get('Delivery Sticky Note') == '' ? '' : 'hide')
+    );
+
+
+
+    $right_buttons[] = array(
+        'icon'  => 'sticky-note',
+        'title' => _('Sticky note'),
+        'class' => 'open_sticky_note  square_button right order_sticky_note '.($object->get('Sticky Note') == '' ? '' : 'hide')
+    );
+
+
 
     $title = _('Order').' <span class="id">'.$object->get('Order Public ID').'</span>';
 

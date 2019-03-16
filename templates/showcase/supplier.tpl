@@ -1,5 +1,6 @@
-{include file="sticky_note.tpl" value=$supplier->get('Sticky Note') object="Supplier" key="{$supplier->id}" field="Supplier_Sticky_Note"  }
-
+<div class="sticky_notes" style="border-top: 1px solid #ccc">
+    {include file="sticky_note.tpl" value=$supplier->get('Sticky Note') object="Supplier" key="{$supplier->id}" field="Supplier_Sticky_Note"  }
+</div>
 
 <div class="subject_profile" style="padding-top:10px">
 
