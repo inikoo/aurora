@@ -16,13 +16,21 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
-<div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
+<div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}"  style="padding-top:10px;padding-bottom: 30px"  >
 
 
             <div class="content" style="margin-bottom: 10px">
+
+                <div style="margin: auto;width: 445px;text-align: center;margin-bottom: 10px">
+                <h3>{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if} <span class="order_number">{$order->get('Public ID')}</span></h3>
+
+                </div>
                 <table class="order_totals" style="margin-bottom: 0px;width: 400px;margin:auto">
 
                     <tbody>
+
+
+
 
                     <tr class="net">
                         <td>{if isset($labels._total_net) and $labels._total_net!=''}{$labels._total_net}{else}{t}Total Net{/t}{/if}</td>

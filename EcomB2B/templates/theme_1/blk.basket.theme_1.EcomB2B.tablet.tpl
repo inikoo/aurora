@@ -22,6 +22,7 @@
 
     <div class="content">
 
+        <h4>{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if} <span class="order_number">{$order->get('Public ID')}</span></h4>
 
 
                 <div class="one-third-responsive">

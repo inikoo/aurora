@@ -36,7 +36,13 @@
 <div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
 
 
-    <div class="order_header  text_blocks  text_template_3">
+    <div class="order_header  text_blocks  text_template_21">
+
+
+                <div class="text_block '">
+                    <h2>{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if} <span class="order_number">{$order->get('Public ID')}</span></h2>
+
+                 <div class="text_blocks text_template_2">
                 <div class="text_block ">
                     <h5>
 
@@ -66,7 +72,8 @@
                     </h5>
                     <p ><div class="formatted_invoice_address">{$order->get('Order Invoice Address Formatted')}</div></p>
                 </div>
-
+                 </div>
+                </div>
                 <div class="totals text_block">
 
 
