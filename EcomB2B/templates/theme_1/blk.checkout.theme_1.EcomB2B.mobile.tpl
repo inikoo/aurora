@@ -9,6 +9,9 @@
 -->
 *}
             <div class="content" style="margin-bottom: 10px">
+
+                <h4>{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if} <span class="order_number">{$order->get('Public ID')}</span></h4>
+
                 <table class="order_totals" style="margin-bottom: 0px">
 
 

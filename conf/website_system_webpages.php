@@ -134,11 +134,23 @@ function website_system_webpages_config($website_type) {
             'Page Store Content Data'   => json_encode(
                 array(
                     'blocks' => array(
-                        $blocks['favourites']
-                    )
+                        array(
+                            'type'          => 'favourites',
+                            'label'         => _('Favourites'),
+                            'icon'          => 'fa-heart',
+                            'show'          => 1,
+                            'top_margin'    => 40,
+                            'bottom_margin' => 60,
+                            'labels'        => array(
+                                'with_items' => '<h1>'._('My favourites').'</h1><p>'._('Here you can see your favourites').'</p>',
+                                'no_items'   => '<h1>'._('My favourites').'</h1><p>'._('You still have no favourites').'</p>',
+                            )
+                        )
 
+                    )
                 )
             )
+
         ),
 
 
@@ -177,25 +189,23 @@ function website_system_webpages_config($website_type) {
                             'top_margin'    => 80,
                             'bottom_margin' => 120,
                             'labels'        => array(
-                                '_title'          => _('Login form'),
-                                '_title_recovery' => _('Password recovery'),
-                                '_email_label'          => _('E-mail'),
-                                '_password_label'       => _('Password'),
-                                '_email_recovery_label' => _('E-mail'),
-                                '_forgot_password_label' => _('Forgot password?'),
-                                '_keep_logged_in_label'  => _('Keep me logged in'),
-                                '_register_label' => _('Register'),
-                                '_log_in_label'   => _('Log in'),
-                                '_submit_label'   => _('Submit'),
-                                '_close_label'    => _('Go back'),
+                                '_title'                                          => _('Login form'),
+                                '_title_recovery'                                 => _('Password recovery'),
+                                '_email_label'                                    => _('E-mail'),
+                                '_password_label'                                 => _('Password'),
+                                '_email_recovery_label'                           => _('E-mail'),
+                                '_forgot_password_label'                          => _('Forgot password?'),
+                                '_keep_logged_in_label'                           => _('Keep me logged in'),
+                                '_register_label'                                 => _('Register'),
+                                '_log_in_label'                                   => _('Log in'),
+                                '_submit_label'                                   => _('Submit'),
+                                '_close_label'                                    => _('Go back'),
                                 '_password_recovery_success_msg'                  => _('Your request successfully sent!'),
                                 '_password_recovery_email_not_register_error_msg' => _('Email is not registered in our system'),
                                 '_password_recovery_unknown_error_msg'            => _("Recovery email could't be send, please contact customer services"),
                                 '_password_recovery_go_back'                      => _('Try again'),
                             )
                         )
-
-
 
 
                     )
@@ -314,7 +324,7 @@ function website_system_webpages_config($website_type) {
                 array(
                     'blocks' => array(
                         array(
-                            'locked' => true,
+                            'locked'        => true,
                             'type'          => 'reset_password',
                             'label'         => _('Reset password'),
                             'icon'          => 'fa-lock-open-alt',
@@ -379,17 +389,16 @@ function website_system_webpages_config($website_type) {
                             'top_margin'    => 40,
                             'bottom_margin' => 60,
                             'labels'        => array(
-                                '_unsubscribe_title'      => _('Email subscriptions'),
-                                '_unsubscribe_text'       => _('Select which kind of emails you want to receive from us'),
-                                '_save_unsubscribe_label' => _('Save'),
-                                '_newsletter'             => _('Newsletter'),
-                                '_marketing_emails'       => _('Marketing emails and special offers'),
-                                '_unsubscribe_error_msg'=>_('Sorry, we could not access your record, please login to you account and unsubscribe in your profile section or contact our customer services'),
-                                '_unsubscribe_error_login_link'=>_('Login'),
+                                '_unsubscribe_title'            => _('Email subscriptions'),
+                                '_unsubscribe_text'             => _('Select which kind of emails you want to receive from us'),
+                                '_save_unsubscribe_label'       => _('Save'),
+                                '_newsletter'                   => _('Newsletter'),
+                                '_marketing_emails'             => _('Marketing emails and special offers'),
+                                '_unsubscribe_error_msg'        => _('Sorry, we could not access your record, please login to you account and unsubscribe in your profile section or contact our customer services'),
+                                '_unsubscribe_error_login_link' => _('Login'),
 
-                                '_unsubscribe_error_logged_in_msg'=>_('Oops..., that link is not working properly, please click link below to unsubscribe'),
-                                '_unsubscribe_error_profile_link'=>_('Profile')
-
+                                '_unsubscribe_error_logged_in_msg' => _('Oops..., that link is not working properly, please click link below to unsubscribe'),
+                                '_unsubscribe_error_profile_link'  => _('Profile')
 
 
                             )
@@ -693,7 +702,9 @@ function website_system_webpages_config($website_type) {
                             'show'          => 1,
                             'top_margin'    => 40,
                             'bottom_margin' => 60,
-                            'text'          => '<h1 >'._('Thank you for your order').'</h1><p>'._('Thank you!  We are delighted to receive your order').'</p><p>[Pay Info]</p><p>'._('Your order details are listed below, if you have any questions please email our team')
+                            'text'          => '<h1 >'._('Thank you for your order').'</h1><p>'._('Thank you!  We are delighted to receive your order').'</p><p>[Pay Info]</p><p>'._(
+                                    'Your order details are listed below, if you have any questions please email our team'
+                                )
                                 .'</p><p>[Order]</p>'
                         ),
                         $blocks['telephone'],
@@ -754,7 +765,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Name'              => _('Offline'),
             'Webpage Meta Description'  => '',
 
-            'Page Store Content Data'   => json_encode(
+            'Page Store Content Data' => json_encode(
 
                 array(
                     'blocks' => array(
@@ -796,9 +807,22 @@ function website_system_webpages_config($website_type) {
             'Page Store Content Data'   => json_encode(
                 array(
                     'blocks' => array(
-                        $blocks['in_process'],
-                    )
+                        array(
+                            'type'          => 'in_process',
+                            'label'         => _('Under construction'),
+                            'icon'          => 'fa-seedling',
+                            'show'          => 1,
+                            'top_margin'    => 40,
+                            'bottom_margin' => 60,
+                            'labels'        => array(
+                                '_title' => _('Under construction'),
+                                '_text'  => _('This page is under construction. Please come back soon!.'),
 
+
+                            )
+                        )
+
+                    )
                 )
             )
         ),
