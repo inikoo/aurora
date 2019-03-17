@@ -14,7 +14,7 @@ include_once 'class.DB_Table.php';
 class Shipper extends DB_Table {
 
 
-    function Shipper($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
         global $db;
         $this->db = $db;
@@ -152,7 +152,7 @@ class Shipper extends DB_Table {
             $keys .= "`$key`,";
 
 
-                $values .= prepare_mysql($value).",";
+            $values .= prepare_mysql($value).",";
 
         }
         $keys   = preg_replace('/,$/', ')', $keys);
@@ -172,8 +172,6 @@ class Shipper extends DB_Table {
             );
 
             $this->db->exec($sql);
-
-
 
 
             $history_data = array(
@@ -230,8 +228,6 @@ class Shipper extends DB_Table {
                 }
 
 
-
-
         }
 
         return '';
@@ -255,11 +251,10 @@ class Shipper extends DB_Table {
                 }
 
 
-
         }
     }
 
-      function get_field_label($field) {
+    function get_field_label($field) {
 
         switch ($field) {
 
@@ -287,6 +282,120 @@ class Shipper extends DB_Table {
 
     }
 
+    function suspend() {
+
+        $this->update(array('Shipper Status' => 'Suspended'));
+
+
+        $sql  = 'select `Store Key` from `Store Dimension` ';
+        $stmt = $this->db->prepare($sql);
+        if ($stmt->execute(
+            array()
+        )) {
+            while ($row = $stmt->fetch()) {
+                $store         = get_object('Store', $row['Store Key']);
+                $store->editor = $this->editor;
+
+                if ($store->settings('data_entry_picking_aid_default_shipper') == $this->id) {
+
+
+                    $store->update(
+                        array(
+                            'data entry picking aid default shipper' => 0
+                        )
+                    );
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $stmt > errorInfo());
+            exit();
+        }
+
+
+    }
+
+    function activate() {
+
+        $this->update(array('Shipper Status' => 'Active'));
+
+    }
+
+    function delete() {
+
+        $this->update_shipper_usage();
+
+        if ($this->data['Shipper Consignments'] > 0) {
+
+            $this->error = true;
+            $this->msg   = _("Can;t delete shipper if has been used before");
+
+            return;
+
+        }
+
+
+    }
+
+    function update_shipper_usage() {
+
+        $consignments = 0;
+
+        $last_consignment = '';
+        $parcels          = 0;
+        $disatched_weight = 0;
+
+        $sql = 'select  count(*) as num from `Delivery Note Dimension` where   `Delivery Note Shipper Key`=?';
+
+
+        $stmt = $this->db->prepare($sql);
+        if ($stmt->execute(
+            array(
+                $this->id
+            )
+        )) {
+            if ($row = $stmt->fetch()) {
+                $consignments = $row['num'];
+
+            }
+        } else {
+            print_r($error_info = $stmt->errorInfo());
+            exit();
+        }
+
+
+        $sql = 'select  sum(`Delivery Note Weight`) as weight,sum(`Delivery Note Number Parcels`) as parcels, max(`Delivery Note Date Dispatched`)  last_date from `Delivery Note Dimension` where `Delivery Note State`="Dispatched" and `Delivery Note Shipper Key`=?';
+
+
+        $stmt = $this->db->prepare($sql);
+        if ($stmt->execute(
+            array(
+                $this->id
+            )
+        )) {
+            if ($row = $stmt->fetch()) {
+                $last_consignment = $row['last_date'];
+                $parcels          = $row['parcels'];
+                $disatched_weight = $row['weight'];
+
+            }
+        } else {
+            print_r($error_info = $stmt->errorInfo());
+            exit();
+        }
+
+        $this->fast_update(
+            array(
+                'Shipper Consignments'      => $consignments,
+                'Shipper Number Parcels'    => $parcels,
+                'Shipper Dispatched Weight' => $disatched_weight,
+                'Shipper Last Consignment'  => $last_consignment
+            )
+        );
+
+
+    }
 
 }
 

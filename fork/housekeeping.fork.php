@@ -1471,8 +1471,15 @@ function fork_housekeeping($job) {
             break;
 
 
-        case 'update_cancelled_delivery_note_products_sales_data':
+        case 'delivery_note_cancelled':
 
+            $delivery_note = get_object('delivery_note', $data['delivery_note_key']);
+
+            $shipper=get_object('Shipper',$delivery_note->get('Delivery Note Shipper Key'));
+            $shipper->update_shipper_usage();
+
+
+            //update_cancelled_delivery_note_products_sales_data sectoion
             include_once 'class.PartLocation.php';
 
             $returned_parts = array();
@@ -2224,13 +2231,24 @@ function fork_housekeeping($job) {
 
 
             break;
+        case 'delivery_note_dispatched':
 
+            $delivery_note = get_object('delivery_note', $data['delivery_note_key']);
+
+            $shipper=get_object('Shipper',$delivery_note->get('Delivery Note Shipper Key'));
+            $shipper->update_shipper_usage();
+
+            break;
         case 'delivery_note_un_dispatched':
 
             $delivery_note = get_object('delivery_note', $data['delivery_note_key']);
 
 
             $store = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
+
+
+            $shipper=get_object('Shipper',$delivery_note->get('Delivery Note Shipper Key'));
+            $shipper->update_shipper_usage();
 
 
             $smarty = new Smarty();
@@ -2268,81 +2286,7 @@ function fork_housekeeping($job) {
 
 
             }
-            /*
-                        if (count($recipients) > 0) {
-                            include_once 'utils/email_notification.class.php';
 
-                            $email_notification = new email_notification();
-                            foreach ($recipients as $recipient) {
-                                $email_notification->mail->addAddress($recipient);
-
-                            }
-
-
-                            $author = get_object('User', $data['user_key']);
-
-
-                            if ($delivery_note->get('Delivery Note Type') == 'Replacement') {
-                                $subject    = _('Replacement undispatched').' '.$store->get('Name');
-                                $title      = '<b>'._('Replacement undispatched').'</b> '.$store->get('Name');
-                                $link_label = _('Link to replacement');
-
-
-                                $info = sprintf(
-                                    _('Replacement %s has been undispatched by %s.'),
-                                    '<b>'.$delivery_note->get('ID').'</b>',
-                                    $author->get('Alias')
-
-                                );
-                            } else {
-                                $subject    = _('Delivery note undispatched').' '.$store->get('Name');
-                                $title      = '<b>'._('Delivery note undispatched').'</b> '.$store->get('Name');
-                                $link_label = _('Link to delivery note');
-
-
-                                $info = sprintf(
-                                    _('Delivery note %s has been undispatched by %s.'),
-                                    '<b>'.$delivery_note->get('ID').'</b>',
-                                    $author->get('Alias')
-
-                                );
-                            }
-
-
-                            $link = sprintf(
-                                '%s/delivery_notes/%d/%d',
-                                $account->get('Account System Public URL'),
-                                $store->id,
-                                $delivery_note->id
-                            );
-
-                            $smarty->assign('type', 'Warning');
-
-                            $smarty->assign('store', $store);
-                            $smarty->assign('account', $account);
-                            $smarty->assign('title', $title);
-                            $smarty->assign('subject', $subject);
-                            $smarty->assign('link_label', $link_label);
-                            $smarty->assign('link', $link);
-                            $smarty->assign('info', $info);
-
-                            $email_notification->mail->Subject = $subject;
-
-                            try {
-                                $email_notification->mail->msgHTML($smarty->fetch('notification_emails/alert.ntfy.tpl'));
-                                $email_notification->mail->AltBody = strip_tags($info);
-
-                            } catch (Exception $e) {
-                                echo 'Caught exception: ', $e->getMessage(), "\n";
-                            }
-
-
-                            $email_notification->send();
-
-
-                        }
-
-            */
             break;
 
 

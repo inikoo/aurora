@@ -1433,7 +1433,8 @@ function get_shipper_new_navigation($data, $smarty, $user, $db, $account) {
     $left_buttons[] = array(
         'icon'      => 'arrow-up',
         'title'     => _('Shipping companies'),
-        'reference' => 'warehouse/'.$data['parent_key'].'/shippers',
+        'reference' => 'warehouse/'.$data['parent_key'],
+        'metadata'=>"{'tab':'warehouse.shippers'}",
         'parent'    => ''
     );
 

@@ -110,4 +110,41 @@ $object_fields[] = array(
 
 );
 
+
+$operations = array(
+    'label'      => _('Operations'),
+    'show_title' => true,
+    'class'      => 'operations',
+    'fields'     => array(
+
+        array(
+            'id'        => 'suspend_shipper',
+            'class'     => 'operation',
+            'render'=>($object->get('Shipper Status')=='Suspended'?false:true),
+            'value'     => '',
+            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                .'"}\' onClick="suspend_object(this)" class="delete_object disabled">'._("Suspend shipper").' <i class="fa fa-stop error new_button link"></i></span>',
+            'reference' => '',
+            'type'      => 'operation'
+        ),
+
+        array(
+            'id'        => 'activate_shipper',
+            'class'     => 'operation',
+            'render'=>($object->get('Shipper Status')=='Active'?false:true),
+
+            'value'     => '',
+            'label'     => '<i class="fa fa-fw fa-lock hide button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                .'"}\' onClick="activate_object(this)" class="button">'._("Activate shipper").' <i class="fa fa-play success new_button"></i></span>',
+            'reference' => '',
+            'type'      => 'operation'
+        ),
+
+
+    )
+
+);
+
+$object_fields[] = $operations;
+
 ?>

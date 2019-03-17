@@ -1095,7 +1095,6 @@ class DeliveryNote extends DB_Table {
 
                 $this->update_state($value, $options, $metadata);
                 break;
-
             case 'Delivery Note Shipper Key':
 
                 $this->update_field($field, $value, $options);
@@ -1115,6 +1114,8 @@ class DeliveryNote extends DB_Table {
 
                         ),
                     );
+
+                    $shipper->update_shipper_usage();
                 } else {
 
                     $this->fast_update(array('Delivery Note Shipper Tracking' => ''));
@@ -1131,6 +1132,9 @@ class DeliveryNote extends DB_Table {
                         ),
                     );
                 }
+
+
+
                 break;
             case 'Delivery Note Shipper Tracking':
 
@@ -1739,11 +1743,20 @@ class DeliveryNote extends DB_Table {
 
                 }
 
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'              => 'delivery_note_dispatched',
+                    'user_key'            => $this->editor['User Key'],
+                    'delivery_note_key' => $this->id,
+
+                ), $account->get('Account Code')
+                );
+
                 break;
             case 'Cancelled':
 
 
-                // todo before cancel the picked stock has to go some cleaver way back to locations, (making fork update_cancelled_delivery_note_products_sales_data obsolete? )
+                // todo before cancel the picked stock has to go some cleaver way back to locations, (making fork update_cancelled_delivery_note_products_sales_data section in delivery_note_cancelled fork obsolete? )
 
 
                 $returned_part_locations = array();
@@ -1878,11 +1891,11 @@ class DeliveryNote extends DB_Table {
 
                 new_housekeeping_fork(
                     'au_housekeeping', array(
-                    'type' => 'update_cancelled_delivery_note_products_sales_data',
+                    'type' => 'delivery_note_cancelled',
                     'date' => gmdate('Y-m-d', strtotime($date.' +0:00')),
-
                     'returned_part_locations' => $returned_part_locations,
-                    'customer_key'            => $this->get('Delivery Note Customer Key')
+                    'customer_key'            => $this->get('Delivery Note Customer Key'),
+                    'delivery_note_key' => $this->id
 
                 ), $account->get('Account Code')
                 );

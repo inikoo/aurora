@@ -42,7 +42,7 @@ $smarty->assign('order', $order);
 $shipper_data = array();
 
 $sql    = sprintf(
-    "SELECT `Shipper Key`,`Shipper Code`,`Shipper Name` FROM `Shipper Dimension` WHERE `Shipper Active`='Yes' ORDER BY `Shipper Name` "
+    "SELECT `Shipper Key`,`Shipper Code`,`Shipper Name` FROM `Shipper Dimension` WHERE `Shipper Status`='Active' ORDER BY `Shipper Name` "
 );
 
 if ($result=$db->query($sql)) {
