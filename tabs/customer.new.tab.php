@@ -43,11 +43,11 @@ $store = get_object('Store',$state['parent_key']);
 $country_2alpha_code= $store->get('Store Home Country Code 2 Alpha');
 
 $smarty->assign(
-    'default_country', $store->get('Store Home Country Code 2 Alpha')
+    'default_country', $country_2alpha_code
 );
 $smarty->assign(
     'preferred_countries', '"'.join(
-        '", "', preferred_countries($store->get('Store Home Country Code 2 Alpha'))
+        '", "', preferred_countries($country_2alpha_code)
     ).'"'
 );
 

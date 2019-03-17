@@ -256,6 +256,46 @@ $export_fields = array(
             'checked' => 1
         ),
     ),
+
+    'consignments' => array(
+        array(
+            'name'    => '`Delivery Note ID`',
+            'label'   => _('ID'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Delivery Note Shipper Tracking`',
+            'label'   => _('Tracking'),
+            'checked' => 1
+        ),
+
+        array(
+            'name'    => '`Delivery Note Date`',
+            'label'   => _('Date'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Delivery Note Weight`',
+            'label'   => _('Weight'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Delivery Note Number Parcels`',
+            'label'   => _('Number parcels'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Delivery Note Customer Name`',
+            'label'   => _('Customer'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Delivery Note Customer Key`',
+            'label'   => _('Customer Id'),
+            'checked' => 0
+        ),
+    ),
+
     'invoices'                     => array(
         array(
             'name'    => '`Invoice Title`',

@@ -75,7 +75,7 @@ foreach ($db->query($sql) as $row) {
 $options_Shipper    = array();
 $options_Shipper[0] = _('No default');
 $sql                = sprintf(
-    'SELECT `Shipper Name`,`Shipper Key`,`Shipper Code` FROM `Shipper Dimension` WHERE  `Shipper Active`="Yes" order by `Shipper Name` '
+    'SELECT `Shipper Name`,`Shipper Key`,`Shipper Code` FROM `Shipper Dimension` WHERE  `Shipper Status`="Active" order by `Shipper Name` '
 );
 foreach ($db->query($sql) as $row) {
     $options_Shipper[$row['Shipper Key']] = $row['Shipper Name'].' ('.$row['Shipper Code'].')';

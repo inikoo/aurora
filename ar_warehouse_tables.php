@@ -86,6 +86,9 @@ switch ($tipo) {
     case 'return.items_done':
         return_items_done(get_table_parameters(), $db, $user, $account);
         break;
+    case 'consignments':
+        consignments(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -178,8 +181,6 @@ function areas($_data, $db, $user) {
 function locations($_data, $db, $user, $account) {
 
 
-
-
     $rtext_label = 'location';
     include_once 'prepare_table/init.php';
 
@@ -187,12 +188,12 @@ function locations($_data, $db, $user, $account) {
     $adata = array();
 
 
-   // print_r($_data);
+    // print_r($_data);
 
     switch ($_data['parameters']['parent']) {
         case 'warehouse_area':
 
-            $warehouse_area=get_object('WarehouseArea',$_data['parameters']['parent_key']);
+            $warehouse_area = get_object('WarehouseArea', $_data['parameters']['parent_key']);
 
             $link = 'warehouse/'.$warehouse_area->get('Warehouse Key').'/areas/'.$_data['parameters']['parent_key'].'/location/';
             break;
@@ -218,7 +219,7 @@ function locations($_data, $db, $user, $account) {
 
 
         $code = sprintf('<span class="link" onclick="change_view(\'%s/%d\')">%s</span>', $link, $data['Location Key'], $data['Location Code']);
-        $area = sprintf('<span class="link" onclick="change_view(\'warehouse/%d/areas/%d\')">%s</span>', $data['Location Warehouse Key'],$data['Location Warehouse Area Key'], $data['Warehouse Area Code']);
+        $area = sprintf('<span class="link" onclick="change_view(\'warehouse/%d/areas/%d\')">%s</span>', $data['Location Warehouse Key'], $data['Location Warehouse Area Key'], $data['Warehouse Area Code']);
 
         $adata[] = array(
             'id'          => (integer)$data['Location Key'],
@@ -1235,7 +1236,7 @@ function shippers($_data, $db, $user, $account) {
                     $status = sprintf('<i class="fa fa-play success" title="%s"></i>', _('Active'));
 
                     break;
-                case 'Active':
+                case 'Suspended':
                     $status = sprintf('<i class="fa fa-pause discreet error" title="%s"></i>', _('Suspended'));
                     break;
                 default:
@@ -1699,5 +1700,168 @@ function return_items_done($_data, $db, $user) {
     echo json_encode($response);
 }
 
+
+function consignments($_data, $db, $user) {
+
+
+    $rtext_label = 'delivery_note';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+            $notes = '';
+
+            switch ($data['Delivery Note State']) {
+
+                case 'Picker & Packer Assigned':
+                    $state = _('Picker & packer assigned');
+                    break;
+                case 'Picking & Packing':
+                    $state = _('Picking & packing');
+                    break;
+                case 'Packer Assigned':
+                    $state = _('Packer assigned');
+                    break;
+                case 'Ready to be Picked':
+                    $state = _('Waiting');
+                    break;
+                case 'Picker Assigned':
+                    $state = _('Picker assigned');
+                    break;
+                case 'Picking':
+                    $state = _('Picking');
+                    break;
+                case 'Picked':
+                    $state = _('Picked');
+                    break;
+                case 'Packing':
+                    $state = _('Packing');
+                    break;
+                case 'Packed':
+                    $state = _('Packed');
+                    break;
+                case 'Approved':
+                    $state = _('Approved');
+                    $notes = sprintf(
+                        '<a class="pdf_link " target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>', $data['Delivery Note Key']
+                    );
+                    break;
+                case 'Dispatched':
+                    $state = _('Dispatched');
+                    $notes = sprintf(
+                        '<a class="pdf_link " target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>', $data['Delivery Note Key']
+                    );
+                    break;
+                case 'Cancelled':
+                    $state = _('Cancelled');
+                    break;
+                case 'Cancelled to Restock':
+                    $state = _('Cancelled to restock');
+                    break;
+                case 'Packed Done':
+                    $state = _('Packed & Closed');
+                    break;
+                default:
+                    $state = $data['Delivery Note State'];
+                    break;
+            }
+
+            switch ($data['Delivery Note Type']) {
+                case('Order'):
+                    $type = _('Order');
+                    $type_icon='<i class="fa fa-truck " title="'.$type.'"></i>';
+                    break;
+                case('Sample'):
+                    $type = _('Sample');
+                    $type_icon='<i class="fa fa-truck " title="'.$type.'"></i>';
+
+                    break;
+                case('Donation'):
+                    $type = _('Donation');
+                    $type_icon='<i class="fa fa-truck " title="'.$type.'"></i>';
+
+                    break;
+                case('Replacement'):
+                case('Replacement & Shortages'):
+                    $type = _('Replacement');
+                $type_icon='<i class="fa fa-truck error" title="'.$type.'"></i>';
+
+                break;
+                case('Shortages'):
+                    $type = _('Shortages');
+                    $type_icon='<i class="fa fa-truck error" title="'.$type.'"></i>';
+
+                    break;
+                default:
+                    $type = $data['Delivery Note Type'];
+
+            }
+
+            switch ($data['Delivery Note Parcel Type']) {
+                case('Pallet'):
+                    $parcel_type = ' <i class="fa fa-calendar  fa-flip-vertical" aria-hidden="true"></i>';
+                    break;
+                case('Envelope'):
+                    $parcel_type = ' <i class="fa fa-envelope" aria-hidden="true"></i>';
+                    break;
+                default:
+                    $parcel_type = ' <i class="fa fa-archive" aria-hidden="true"></i>';
+
+            }
+
+            if ($data['Delivery Note Number Parcels'] == '') {
+                $parcels = '?';
+            } elseif ($data['Delivery Note Parcel Type'] == 'Pallet' and $data['Delivery Note Number Boxes']) {
+                $parcels = number($data['Delivery Note Number Parcels']).$parcel_type.' ('.$data['Delivery Note Number Boxes'].' b)';
+            } else {
+                $parcels = number($data['Delivery Note Number Parcels']).$parcel_type;
+            }
+
+
+            $adata[] = array(
+                'id' => (integer)$data['Delivery Note Key'],
+
+
+                'number'   => sprintf('<span class="link" onclick="change_view(\'delivery_notes/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Key'], $data['Delivery Note ID']),
+                'customer' => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Customer Key'], $data['Delivery Note Customer Name']),
+
+                'date'    => ($data['Delivery Note Date Dispatched']==''?'':strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Dispatched'].' +0:00'))),
+               // 'state'   => $data['Delivery Note XHTML State'],
+                'weight'  => weight($data['Delivery Note Weight']),
+                'parcels' => $parcels,
+                'type'    => $type,
+                'type_icon'    => $type_icon,
+
+                'state'   => $state,
+                'notes'   => $notes,
+                'tracking'=>$data['Delivery Note Shipper Tracking']
+
+            );
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 
 ?>

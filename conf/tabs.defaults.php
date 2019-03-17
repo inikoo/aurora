@@ -641,6 +641,16 @@ $tab_defaults = array(
         'export_fields' => $export_fields['delivery_notes']
 
     ),
+    'shipper.consignments' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => '',
+        'export_fields' => $export_fields['consignments']
+
+    ),
     'order.payments'       => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
