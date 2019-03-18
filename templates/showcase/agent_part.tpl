@@ -63,8 +63,11 @@
             </tr>
             <tr class="sko">
                 <td class="canvas">
+                    <a target="_blank" title="{t}Stock keeping unit (Outer){/t}" href="/asset_label.php?object=part&key={$supplier_part->part->id}&type=package">
+
                     <canvas width="80" height="80">
                     </canvas>
+                    </a>
                 </td>
                 <td class="info">
                     <div>
@@ -88,8 +91,11 @@
             </tr>
             <tr class="unit">
                 <td class="canvas">
+                    <a target="_blank" class="padding_left_10" title="{t}Commercial unit label{/t}" href="/asset_label.php?object=part&key={$part->id}&type=unit">
+
                     <canvas width="80" height="80">
                     </canvas>
+                    </a>
                 </td>
                 <td class="info">
                     <div>
