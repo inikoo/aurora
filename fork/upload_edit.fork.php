@@ -322,6 +322,7 @@ function fork_upload_edit($job) {
 
                             $msg .= '<span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true" title="'.$field.'"></i> '.$object->msg.'</span>, ';
                             $errors++;
+                            $message_code.=$object->msg;
                         } else {
                             //print "$field ".$record_data[$index]." ";
                             //print "nochange \n";
@@ -343,6 +344,8 @@ function fork_upload_edit($job) {
                         } else {
                             $record_state = 'Warning';
                         }
+
+
 
                     } else {
                         $record_state = 'OK';
