@@ -38,7 +38,7 @@
         <table border="0">
             <tr class="carton">
                 <td class=" canvas">
-                    <a href="/asset_label.php?object=supplier_part&key={$supplier_part->id}&type=carton">
+                    <a target="_blank" href="/asset_label.php?object=supplier_part&key={$supplier_part->id}&type=carton">
 
                     <canvas width="80" height="80">
                     </canvas>
