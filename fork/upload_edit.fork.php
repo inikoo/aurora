@@ -323,6 +323,10 @@ function fork_upload_edit($job) {
                             $msg .= '<span class="error"><i class="fa fa-exclamation-circle fa-fw" aria-hidden="true" title="'.$field.'"></i> '.$object->msg.'</span>, ';
                             $errors++;
                             $message_code.=$object->msg;
+
+
+                            print_r($object);
+
                         } else {
                             //print "$field ".$record_data[$index]." ";
                             //print "nochange \n";
