@@ -57,7 +57,7 @@ else {
     $theme = $website->get('Website Theme');
 
     //todo remove this after migration
-    if(preg_match('/\.sys$/',$webpage->get('Code'))){
+    if(preg_match('/\.sys$/',$webpage->get('Code')) or ($webpage->get('Webpage Template Filename')=='blocks')  ){
         $theme='theme_1';
     }
 
