@@ -152,11 +152,19 @@ function get_delivery_note_fast_track_packing_input($total_required,$total_picke
         );
 
 
+        if($total_required>=$quantity_on_location){
+            $icon_plus_button='fa fa-lock';
+        }else{
+            $icon_plus_button='fa fa-plus';
+        }
+
+
+
         $picked_offline_input .= sprintf(
             ' <span data-settings=\'{"field": "Picked_Offline", "transaction_key":"%s","item_key":"%s" }\' class="picked_quantity %s"  >
                 <i onClick="delivery_note_fast_track_packing_qty_change(this)" class="fa  minus fa-minus fa-fw button picked_offline_items_qty_change " aria-hidden="true"></i>
-                    <input class="fast_track_packing width_50" style="text-align: center" value="%s" ovalue="%s"  data-to_pick="%s"  data-max="%s"  data-location_key="%d"   > 
-                    <i onClick="delivery_note_fast_track_packing_qty_change(this)" class="fa plus fa-plus fa-fw button picked_offline_items_qty_change %s" aria-hidden="true"></i>
+                    <input class="fast_track_packing width_50" style="text-align: center" value="%s" ovalue="%s"  data-to_pick="%s"  data-max="%s" data-quantity_on_location="%s" data-quantity_on_location_locked=true  data-location_key="%d"   > 
+                    <i onClick="delivery_note_fast_track_packing_qty_change(this)" class=" plus %s fa-fw button picked_offline_items_qty_change %s" aria-hidden="true"></i>
                 </span>',
 
 
@@ -167,7 +175,9 @@ function get_delivery_note_fast_track_packing_input($total_required,$total_picke
             $itf_key, $part_sku,
 
             ($total_pending != 0 && $quantity_on_location >= 1 ? '' : 'hide'),
-            ($quantity_on_location<$total_pending?$quantity_on_location:$total_pending), ($quantity_on_location<$total_pending?$quantity_on_location:$total_pending), $pending_in_location, $quantity_on_location,  $location_key,   ''
+            ($quantity_on_location<$total_pending?$quantity_on_location:$total_pending), ($quantity_on_location<$total_pending?$quantity_on_location:$total_pending), $pending_in_location,
+            $total_pending,$quantity_on_location,
+            $location_key, $icon_plus_button,  ''
         );
 
 
