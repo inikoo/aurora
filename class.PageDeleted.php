@@ -79,8 +79,8 @@ class PageDeleted {
         );
 
 
-        if (mysql_query($sql)) {
-            $this->id  = mysql_insert_id();
+        if ($this->db->exec($sql)) {
+            $this->id  =$this->db->lastInsertId();
             $this->msg = "Page Deleted Created";
             $this->get_data('id', $this->id);
             $this->new = true;

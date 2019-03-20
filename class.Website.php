@@ -686,6 +686,8 @@ class Website extends DB_Table {
 
     function create_system_webpage($data) {
 
+
+
         include_once 'class.Webpage_Type.php';
         include_once 'class.Page.php';
 
@@ -719,6 +721,8 @@ class Website extends DB_Table {
         $webpage_type = new Webpage_Type('website_code', $this->id, $data['Webpage Type']);
 
         unset($data['Webpage Type']);
+
+
 
 
         $page_data = array(
