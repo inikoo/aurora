@@ -80,33 +80,97 @@ function on_field_to_check_changed(element){
 
 $(document).on('input propertychange', '.fast_track_packing', function (evt) {
 
+    fast_track_packing_qty_changed(this)
 
-    if ($(this).val() == $(this).attr('ovalue')) {
-        $(this).closest('span').find('i.plus').removeClass('fa-sign-in-alt fa-exclamation-circle error').addClass('fa-plus')
-        $(this).closest('span').find('i.minus').removeClass('invisible')
+
+});
+
+
+function fast_track_packing_qty_changed(input_element){
+
+    if ($(input_element).val() == $(input_element).attr('ovalue')) {
+        $(input_element).closest('span').find('i.plus').removeClass('fa-exclamation-circle error fa-lock fa-plus')
+        $(input_element).closest('span').find('i.minus').removeClass('invisible')
+
+
+        if($(input_element).val()>=$(input_element).data('quantity_on_location')  && $(input_element).data('quantity_on_location_locked')){
+            $(input_element).closest('span').find('i.plus').addClass('fa-lock')
+
+        }else{
+            $(input_element).closest('span').find('i.plus').addClass('fa-plus')
+        }
+
 
     } else {
 
         var labels = $('body').data('labels');
 
 
-        var max_value = Math.min($(this).data('max'), $(this).data('to_pick'))
+        var max_value = Math.min($(input_element).data('max'), $(input_element).data('to_pick'))
 
-        if (!validate_number($(this).val(), 0, max_value) || $(this).val() == '') {
+        if (!validate_number($(input_element).val(), 0, max_value) || $(input_element).val() == '') {
 
 
-            $(this).closest('span').find('i.plus').removeClass('fa-plus fa-exclamation-circle error').addClass('fa-sign-in-alt').prop('title', labels.save)
-            $(this).closest('span').find('i.minus').removeClass('fa-minus').addClass('fa-undo very_discreet').prop('title', labels.undo)
 
-            $(this).addClass('discreet')
+
+            $(input_element).closest('span').find('i.plus').removeClass('fa-plus fa-exclamation-circle error').prop('title', labels.save)
+            //  $(input_element).closest('span').find('i.minus').removeClass('fa-minus').addClass('fa-undo very_discreet').prop('title', labels.undo)
+            $(input_element).addClass('discreet')
+
+
+            if($(input_element).val()>=$(input_element).data('quantity_on_location') && $(input_element).data('quantity_on_location_locked')   ){
+                $(input_element).closest('span').find('i.plus').addClass('fa-lock error')
+            }else{
+                $(input_element).closest('span').find('i.plus').addClass('fa-plus')
+
+            }
+
+
         } else {
-            $(this).closest('span').find('i.plus').removeClass('fa-plus fa-sign-in-alt').addClass('fa-exclamation-circle error').prop('title', labels.invalid_val)
-            $(this).closest('span').find('i.minus').removeClass('fa-minus').addClass('fa-undo very_discreet').prop('title', labels.undo)
+
+            $(input_element).closest('span').find('i.plus').removeClass('fa-plus fa-lock').addClass('fa-exclamation-circle error').prop('title', labels.invalid_val)
+            //   $(input_element).closest('span').find('i.minus').removeClass('fa-minus').addClass('fa-undo very_discreet').prop('title', labels.undo)
 
 
         }
     }
-});
+
+    var new_total_qty=$(input_element).val()
+    var picked_quantity_components = $(input_element).closest('.picked_quantity_components')
+    var pending = picked_quantity_components.data('pending')
+
+
+
+
+    var status_icon = $(input_element).closest('tr').find('.picked_offline_status')
+    var status_notes = $(input_element).closest('tr').find('.picked_offline_status_notes')
+
+    var diff = new_total_qty - pending;
+
+    console.log(pending)
+
+    console.log(diff)
+
+    if (diff < 0) {
+        status_notes.html(parseFloat(diff.toFixed(4)))
+        status_icon.addClass('error fa-exclamation-circle').removeClass('success  fa-check-circle')
+    } else if (diff > 0) {
+        status_notes.html('+' + parseFloat(diff.toFixed(4)))
+
+        status_icon.addClass('error fa-exclamation-circle').removeClass('success  fa-check-circle')
+
+    } else {
+
+
+        status_notes.html('')
+        status_icon.removeClass('error fa-exclamation-circle').addClass('success  fa-check-circle')
+
+    }
+
+
+
+    validate_data_entry_picking_aid()
+}
 
 
 function data_entry_delivery_note(dn_key) {
@@ -186,11 +250,12 @@ function delivery_note_fast_track_packing_qty_change(element) {
     var labels = $('body').data('labels');
 
 
-    $(element).addClass('fa-spinner fa-spin')
+
+
 
     var ops_trigger;
 
-
+    console.log('hola2')
     if ($(element).hasClass('fa-plus')) {
 
         ops_trigger = 'add';
@@ -200,6 +265,20 @@ function delivery_note_fast_track_packing_qty_change(element) {
             var qty = 1
         } else {
             qty = parseFloat(input.val()) + 1
+        }
+
+
+
+        var fast_track_packing_element=$(element).closest('.picked_quantity').find('.fast_track_packing')
+
+
+        if(qty>=fast_track_packing_element.data('quantity_on_location') && fast_track_packing_element.data('quantity_on_location_locked')  ){
+            $(element).removeClass('fa-spinner fa-spin')
+
+            $(element).addClass('fa-lock').removeClass('fa-plus')
+
+            return
+
         }
 
 
@@ -222,8 +301,65 @@ function delivery_note_fast_track_packing_qty_change(element) {
 
         var _icon = 'fa-minus'
 
+    } else if ($(element).hasClass('fa-lock')) {
+
+
+        $(element).removeClass('fa-spinner fa-spin')
+
+        if (isNaN(parseFloat(input.val())) || input.val() == '' || input.val() == 0) {
+            var qty = 0
+        } else {
+            qty = parseFloat(input.val())
+        }
+
+        _labels=$('.input_picking_sheet_table').data('labels')
+
+
+
+        console.log(_labels.title_no_stock)
+
+        swal({
+            title: _labels.title_no_stock,
+            text: _labels.text_no_stock,
+            type: "warning",
+            showCloseButton: true,
+            showCancelButton: true,
+            cancelButtonText:_labels.no_text_no_stock,
+            confirmButtonText:_labels.yes_text_no_stock
+
+        }).then(function (result) {
+
+            console.log(result)
+
+            if (result.value) {
+
+
+
+
+                $(element).removeClass('fa-lock error').addClass('fa-plus')
+
+                var fast_track_packing_element=$(element).closest('.picked_quantity').find('.fast_track_packing')
+                fast_track_packing_element.data('quantity_on_location_locked',false)
+                console.log(fast_track_packing_element)
+                console.log($(element))
+                fast_track_packing_qty_changed(fast_track_packing_element)
+
+            }else{
+
+
+            }
+        });
+
+
+
+        return;
+
+
     } else {
 
+        return;
+
+        /*
         ops_trigger = 'save';
 
         if (isNaN(parseFloat(input.val())) || input.val() == '' || input.val() == 0) {
@@ -233,8 +369,15 @@ function delivery_note_fast_track_packing_qty_change(element) {
         }
 
         var _icon = 'fa-sign-in-alt'
-
+*/
     }
+
+
+
+
+
+    console.log('hola')
+
 
     var picked_quantity_components = input.closest('.picked_quantity_components')
 
@@ -268,6 +411,7 @@ function delivery_note_fast_track_packing_qty_change(element) {
 
     if (qty > input.data('max')) {
 
+        console.log('maxout')
 
         qty = input.data('max')
     }
@@ -298,7 +442,7 @@ function delivery_note_fast_track_packing_qty_change(element) {
         input.val(qty)
     }
 
-    $(element).closest('span').find('i.plus').removeClass('fa-spinner fa-spin fa-sign-in-alt error fa-exclamation-circle').addClass('fa-plus').prop('title', labels.add)
+    $(element).closest('span').find('i.plus').removeClass('fa-spinner fa-spin  error fa-exclamation-circle').addClass('fa-plus').prop('title', labels.add)
     $(element).closest('span').find('i.minus').removeClass('fa-spinner fa-spin invisible fa-undo very_discreet').addClass('fa-minus').prop('title', labels.remove)
 
 
@@ -318,10 +462,8 @@ function delivery_note_fast_track_packing_qty_change(element) {
     });
 
 
-    console.log(new_total_qty + '----' + pending)
 
     var diff = new_total_qty - pending;
-
     if (diff < 0) {
         status_notes.html(parseFloat(diff.toFixed(4)))
         status_icon.addClass('error fa-exclamation-circle').removeClass('success  fa-check-circle')
@@ -439,6 +581,7 @@ function validate_data_entry_picking_aid() {
         'shipper':        {filled:false,valid:true},
         'tracking_number': {filled:false,valid:true},
         'items':           {filled:true,valid:true},
+         'items_errors':           {filled:true,valid:true},
     };
 
 
@@ -505,6 +648,16 @@ function validate_data_entry_picking_aid() {
     }else{
         check_list.tracking_number.valid = true
     }
+
+    $('.picked_quantity_components i.plus').each(function (i, obj) {
+
+
+        if ($(obj).hasClass('error')) {
+            check_list.items_errors.valid = false;
+            return false;
+        }
+    });
+
 
     $('i.picked_offline_status').each(function (i, obj) {
 

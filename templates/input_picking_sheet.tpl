@@ -42,6 +42,9 @@
 
 </style>
 
+
+
+
 <div  style="border-bottom: 1px solid #ccc;">
 
 <table class="input_picking_sheet_table"  data-order_key="{$order->id}" data-delivery_note_key="{$dn->id}" border="0" data-labels='{
@@ -54,7 +57,14 @@
 "issues":"{t}There is some issues with this order{/t}",
 "confirm_button_text":"{t}Yes, continue{/t}",
 "out_of_stock":"{t}Some products where mark as out of stock{/t}",
-"tracking_number":"{t}Tracking number is missing{/t}"
+"tracking_number":"{t}Tracking number is missing{/t}",
+
+"title_no_stock":"{t}There is not enough stock in this location{/t}",
+"text_no_stock":"{t}Are you sure you want to proceed?{/t}",
+"yes_text_no_stock":"{t}Yes unlock it{/t}",
+"no_text_no_stock":"{t}No, I replenish the location{/t}"
+
+
 
 }'>
 
@@ -225,7 +235,7 @@
 
 <script>
 
-
+    confirmButtonText: 'Yes, delete it!'
 
     $('.shippers_options').niceSelect();
 
