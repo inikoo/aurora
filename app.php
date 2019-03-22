@@ -39,7 +39,6 @@ $display_device_version='desktop';
 $_SESSION['display_device_version']=$display_device_version;
 $_SESSION['detected_device']=$detected_device;
 
-$smarty->assign('_server_name', $_SERVER['SERVER_NAME']);
 
 $smarty->assign('is_devel', preg_match('/bali|sasi/', gethostname()));
 
