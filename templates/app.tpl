@@ -9,7 +9,7 @@
     <link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon"/>
 
 
-    <link href="/css/au_app.min.css?v=190315v5" rel="stylesheet">
+    <link href="/css/au_app.min.css?v=190315v7" rel="stylesheet">
 
 
     {if $_server_name!='au.bali'}
@@ -39,7 +39,7 @@
 
 
 </head>
-<body data-labels='{
+<body  data-labels='{
 "save":"{t}Save{/t}",
 "undo":"{t}Undo{/t}",
 "add":"{t}Add{/t}",
@@ -103,14 +103,10 @@
                 </div>
             </div>
             <div id="account_name" class="link Account_Name" data-user_handle="{$user->get('Handle')}" data-account_code="{$account->get('Account Code')}" onclick="change_view('account')">{$account->get('Account Name')}</div>
-
             <div id="aurora_logo_small_screen">
                 <img src="/art/aurora_log_v2_orange_small.png"/>
             </div>
-
-
             <div id="menu"></div>
-
             <ul style="margin-top:5px">
                 {if $user->get('User Type')=='Staff' or $user->get('User Type')=='Contractor' }
                     <li onclick="change_view('/fire')"><i class="fa fa-fire fa-fw" style="color:orange;opacity:.8"></i><span id="fire_label" class="label"> {t}Fire{/t}</span>
@@ -126,8 +122,6 @@
                                                                                                                                                                              class="label"> {t}Help{/t}</span>
                 </li>
             </ul>
-
-
             <ul style="margin-top:20px">
                 <li onclick="logout()"><i title="{t}Logout{/t}" class="fa fa-sign-out fa-fw fa-flip-horizontal"></i><span id="logout_label" class="label"> {t}Logout{/t}</span>
                 </li>
@@ -140,7 +134,6 @@
             <div id="object_showcase"></div>
             <div id="tabs"></div>
             <div id="tab"></div>
-
             <div style="clear:both;margin-bottom:100px"></div>
         </div>
     </section>
