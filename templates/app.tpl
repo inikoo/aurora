@@ -9,7 +9,7 @@
     <link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon"/>
 
 
-    <link href="/css/au_app.min.css?v=190315v5" rel="stylesheet">
+    <link href="/css/au_app.min.css?v=190319v1" rel="stylesheet">
 
 
     {if $_server_name!='au.bali'}
@@ -19,11 +19,6 @@
     <script src="/js/aurora_libs.min.js?v190319"></script>
 
     <script src="/js/aurora.min.js?v190318v11"></script>
-
-
-
-
-
 
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 
