@@ -37,8 +37,11 @@ $table_filters = array(
 $parameters = array(
     'parent'     => 'shipping_zone_schema',
     'parent_key' => $state['_object']->properties['current_shipping_zone_schema'],
+    'store_key'     => $state['key'],
+    'store_currency'     => $state['_object']->get('Store Currency Code')
 
 );
+
 
 
 $table_buttons   = array();
