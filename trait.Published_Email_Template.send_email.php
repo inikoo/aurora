@@ -150,7 +150,7 @@ trait Send_Email {
 
         $to_address = $recipient->get('Main Plain Email');
 
-        if (preg_match('/bali/', gethostname())) {
+        if (preg_match('/bali|sasi/', gethostname())) {
 
 
             $to_address = 'raul@inikoo.com';

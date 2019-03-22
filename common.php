@@ -8,12 +8,9 @@ require_once 'vendor/autoload.php';
 require_once 'utils/sentry.php';
 
 
-
-
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
-
+use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 
 
 
@@ -34,7 +31,6 @@ require_once "utils/aes.php";
 require_once "class.Account.php";
 require_once "class.Auth.php";
 require_once "class.User.php";
-
 
 $memcached = new Memcached();
 $memcached->addServer($memcache_ip, 11211);
@@ -103,6 +99,7 @@ require_once 'utils/modules.php';
 
 $sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
 $session        = new Session($sessionStorage);
+
 
 
 
