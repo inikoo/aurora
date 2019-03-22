@@ -969,7 +969,7 @@ class Customer extends Subject {
         $order_data['Order Delivery Address Formatted']            = $this->data['Customer Delivery Address Formatted'];
         $order_data['Order Delivery Address Postal Label']         = $this->data['Customer Delivery Address Postal Label'];
 
-        $order_data['Order Sticky Note'] = $this->data['Customer Order Sticky Note'];
+        $order_data['Order Sticky Note']          = $this->data['Customer Order Sticky Note'];
         $order_data['Order Delivery Sticky Note'] = $this->data['Customer Delivery Sticky Note'];
 
         $order_data['Order Customer Order Number'] = $this->get_number_of_orders() + 1;
@@ -3555,10 +3555,47 @@ class Customer extends Subject {
 
     }
 
+
+    function update_credit_account_running_balances() {
+        $running_balance = 0;
+        $credit_transactions = 0;
+
+        $sql  = 'SELECT `Credit Transaction Amount`,`Credit Transaction Key`  FROM `Credit Transaction Fact`  WHERE `Credit Transaction Customer Key`=? order by `Credit Transaction Date`,`Credit Transaction Key`    ';
+        $stmt = $this->db->prepare($sql);
+        if ($stmt->execute(
+            array(
+                $this->id
+            )
+        )) {
+            while ($row = $stmt->fetch()) {
+
+                $running_balance += $row['Credit Transaction Amount'];
+                $sql             = 'update `Credit Transaction Fact` set `Credit Transaction Running Amount`=? where `Credit Transaction Key`=?  ';
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $running_balance,
+                        $row['Credit Transaction Key']
+                    )
+                );
+                $credit_transactions++;
+            }
+        } else {
+            print_r($error_info = $stmt > errorInfo());
+            exit();
+        }
+
+        $this->fast_update(array('Customer Number Credit Transactions' => $credit_transactions));
+
+
+    }
+
+
     function update_account_balance() {
         $balance = 0;
-        $sql     = sprintf(
-            'SELECT sum(`Credit Transaction Amount`) AS balance FROM `Credit Transaction Fact`  WHERE `Credit Transaction Customer Key`=%d  ', $this->id
+
+
+        $sql = sprintf(
+            'SELECT sum(`Credit Transaction Amount`) AS balance FROM `Credit Transaction Fact`  WHERE `Credit Transaction Customer Key`=%d  order by `Credit Transaction Date`,`Credit Transaction Key` ', $this->id
         );
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -3640,6 +3677,10 @@ class Customer extends Subject {
 
         );
         $this->db->exec($sql);
+
+
+        $this->update_account_balance();
+        $this->update_credit_account_running_balances();
 
 
     }
