@@ -325,7 +325,7 @@ function fork_upload_edit($job) {
                             $message_code.=$object->msg;
 
 
-                            print_r($object);
+                           // print_r($object);
 
                         } else {
                             //print "$field ".$record_data[$index]." ";

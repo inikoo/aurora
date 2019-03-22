@@ -41,6 +41,9 @@ $_SESSION['detected_device']=$detected_device;
 
 $smarty->assign('_server_name', $_SERVER['SERVER_NAME']);
 
+$smarty->assign('is_devel', preg_match('/bali|sasi/', gethostname()));
+
+
 
 if ($display_device_version == 'mobile') {
     $smarty->display('app.mobile.tpl');

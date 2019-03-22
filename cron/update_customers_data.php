@@ -29,10 +29,10 @@ $print_est = true;
 print date('l jS \of F Y h:i:s A')."\n";
 
 
-$where = 'where `Customer Key`=1020';
-$where = '';
+$where = 'where `Store Version`>1 and `Customer Key`=1020';
+$where = 'where `Store Version`>1';
 
-$sql = sprintf("select count(*) as num from `Customer Dimension` $where");
+$sql = sprintf("select count(*) as num from `Customer Dimension` left join `Store Dimension` on (`Store Key`=`Customer Store Key`) $where");
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -49,7 +49,7 @@ $contador  = 0;
 
 
 $sql = sprintf(
-    "select `Customer Key` from `Customer Dimension` $where order by `Customer Key` desc "
+    "select `Customer Key` from `Customer Dimension`  left join `Store Dimension` on (`Store Key`=`Customer Store Key`)  $where order by `Customer Key` desc "
 );
 
 
@@ -63,7 +63,8 @@ if ($result = $db->query($sql)) {
         $customer->update_invoices();
         $customer->update_payments();
         $customer->update_activity();
-
+        $customer->update_account_balance();
+        $customer->update_credit_account_running_balances();
 
         $contador++;
         $lap_time1 = date('U');

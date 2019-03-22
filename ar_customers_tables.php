@@ -92,6 +92,9 @@ switch ($tipo) {
     case 'families':
         families(get_table_parameters(), $db, $user, $account);
         break;
+    case 'credit_blockchain':
+        credit_blockchain(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -1879,3 +1882,109 @@ function customer_notifications($_data, $db, $user) {
 
 
 
+
+function credit_blockchain($_data, $db, $user,$account) {
+
+
+
+
+    $rtext_label = 'transaction';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+            $note='';
+            switch ($data['Credit Transaction Type']){
+                case 'Payment':
+
+                    if($data['Credit Transaction Amount']<0){
+                        $type=_('Used');
+                        $note=sprintf('<span class="link" onclick="change_view(\'orders/%d/%d\')" >%s</span>',$data['Order Store Key'],$data['Order Key'],$data['Order Public ID']);
+
+                    }else{
+                        $note=sprintf('<span class="link" onclick="change_view(\'orders/%d/%d\')" >%s</span>',$data['Order Store Key'],$data['Order Key'],$data['Order Public ID']);
+
+
+                        if($data['Invoice Key'] and $data['Invoice Type']=='Refund'){
+                            $type=_('Credited from refund');
+
+                            $note.=sprintf(' <span class="error padding_left_10"> <i class="fal fa-file-alt error"></i> <span class="link error" onclick="change_view(\'invoices/%d/%d\')" >%s</span></span>',$data['Order Store Key'],$data['Invoice Key'],$data['Invoice Public ID']);
+
+                        }else{
+
+                            $icon='fa-sack-dollar';
+
+                            $type=_('Credited from payment');
+                            $note.=sprintf(' <span class=" padding_left_10"> <i class="fal %s "></i> <span class="link discreet" onclick="change_view(\'payments/%d/%d\')" >%s</span></span>',$icon,$data['Order Store Key'],$data['Payment Related Payment Key'],$data['Payment Related Payment Transaction ID']);
+
+                        }
+
+                    }
+
+
+                    break;
+                case 'Cancel':
+                    $type=_('Cancelled');
+
+                    break;
+                case 'Adjust':
+                    $type=_('Adjust');
+
+                    break;
+                default:
+                    $type=$data['Credit Transaction Type'];
+
+            }
+
+
+            $amount_ac=$data['Credit Transaction Amount']*$data['Credit Transaction Currency Exchange Rate'];
+            $date = strftime(
+                "%a %e %b %y %T %Z", strtotime($data['Credit Transaction Date']." +00:00")
+            );
+
+            $adata[] = array(
+                'id'           => (integer)$data['Credit Transaction Key'],
+                'amount'           => money($data['Credit Transaction Amount'],$data['Credit Transaction Currency Code']),
+                'running_amount'           => money($data['Credit Transaction Running Amount'],$data['Credit Transaction Currency Code']),
+
+                'type'           =>$type,
+                'notes'           =>$note,
+
+
+                'amount_ac'           => money($amount_ac,$account->get('Currency Code')),
+                'date'           =>$date
+
+
+
+            );
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}

@@ -1586,6 +1586,42 @@ class Public_Customer extends DBW_Table {
     }
 
 
+
+    function update_credit_account_running_balances() {
+        $running_balance = 0;
+        $credit_transactions = 0;
+
+        $sql  = 'SELECT `Credit Transaction Amount`,`Credit Transaction Key`  FROM `Credit Transaction Fact`  WHERE `Credit Transaction Customer Key`=? order by `Credit Transaction Date`,`Credit Transaction Key`    ';
+        $stmt = $this->db->prepare($sql);
+        if ($stmt->execute(
+            array(
+                $this->id
+            )
+        )) {
+            while ($row = $stmt->fetch()) {
+
+                $running_balance += $row['Credit Transaction Amount'];
+                $sql             = 'update `Credit Transaction Fact` set `Credit Transaction Running Amount`=? where `Credit Transaction Key`=?  ';
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $running_balance,
+                        $row['Credit Transaction Key']
+                    )
+                );
+                $credit_transactions++;
+            }
+        } else {
+            print_r($error_info = $stmt > errorInfo());
+            exit();
+        }
+
+        $this->fast_update(array('Customer Number Credit Transactions' => $credit_transactions));
+
+
+    }
+
+
+
 }
 
 ?>
