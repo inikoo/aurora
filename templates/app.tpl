@@ -18,7 +18,7 @@
     {/if}
     <script src="/js/aurora_libs.min.js?v190319"></script>
 
-    <script src="/js/aurora.min.js?v190318v12"></script>
+    <script src="/js/aurora.min.js?v190319"></script>
 
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 
@@ -44,7 +44,6 @@
 
 }'>
 <input type="hidden" id="_request" value="{$_request}">
-<input type="hidden" id="_server_name" value="{$_server_name}">
 <input type="hidden" id="is_devel" value="{$is_devel}">
 
 
