@@ -730,7 +730,10 @@ $modules = array(
                         'label' => _('Discounts'),
                         'icon'  => 'tags'
                     ),
-
+                    'customer.credit_blockchain'   => array(
+                        'label' => _('Credits blockchain'),
+                        'icon'  => 'code-commit'
+                    ),
 
                 )
             ),
