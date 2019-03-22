@@ -620,6 +620,7 @@
                                         <ul id="{$field.id}_options_ul">
                                             {foreach from=$field.options item=option key=value}
                                                 <li class="{if $value==$field.value}selected{/if}"
+                                                    data-value="{$value}"
                                                     onclick="select_option(this,'{$field.id}','{$value}' )">{$option}<i
                                                             class="fa fa-circle fw padding_left_5 current_mark {if $value==$field.value}current{/if}"></i>
                                                 </li>
