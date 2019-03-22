@@ -12,7 +12,7 @@
     <link href="/css/au_app.min.css?v=190315v7" rel="stylesheet">
 
 
-    {if $_server_name!='au.bali'}
+    {if !is_devel}
         <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
         <script src="https://wchat.freshchat.com/js/widget.js"></script>
     {/if}
@@ -50,9 +50,10 @@
 }'>
 <input type="hidden" id="_request" value="{$_request}">
 <input type="hidden" id="_server_name" value="{$_server_name}">
+<input type="hidden" id="is_devel" value="{$is_devel}">
 
 
-{if $_server_name!='au.bali'}
+{if !is_devel}
     <script>
         (function (i, s, o, g, r, a, m) {
             i['GoogleAnalyticsObject'] = r;
@@ -181,7 +182,7 @@
     </aside>
 </div>
 
-{if $_server_name!='au.bali'}
+{if !is_devel}
     <style>
         #freshwidget-frame, #fc_widget {
             background-color: initial
