@@ -387,7 +387,7 @@ function change_browser_history_state(request) {
 
 
 
-        if (!$('#_server_name').val()) {
+        if (!$('#is_devel').val()) {
 
             var _tmp=$('#account_name');
             ga('set', 'contentGroup1', state.module.replace("_", " ").capitalize());
