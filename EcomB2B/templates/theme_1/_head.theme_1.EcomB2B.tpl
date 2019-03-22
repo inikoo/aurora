@@ -14,7 +14,7 @@
 <html lang="en-gb" class="no-js"> <!--<![endif]-->
 
 <head>
-    {if $smarty.server.SERVER_NAME!='ecom.bali'  }
+    {if !isset($is_devel) or !$is_devel  }
 
        {if  $client_tag_google_manager_id!=''}
         <!-- Google Tag Manager -->
@@ -89,7 +89,7 @@
 
     <![endif]-->
 
-    {if $smarty.server.SERVER_NAME!='ecom.bali' }
+    {if !isset($is_devel) or !$is_devel  }
         <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
         <script>
             Sentry.init({
@@ -224,7 +224,8 @@
         <link rel="stylesheet" href="css/image_gallery.min.css">
     {/if}
 
-    {if $smarty.server.SERVER_NAME!='ecom.bali' and $zendesk_chat_code!=''}
+    {if !isset($is_devel) or !$is_devel  }
+    {if  $zendesk_chat_code!=''}
         <!--Start of Zendesk Chat Script-->
         <script>
             window.$zopim || (function (d, s) {
@@ -254,7 +255,7 @@
         <!--End of Zendesk Chat Script-->
 
     {/if}
-
+    {/if}
 
 
 

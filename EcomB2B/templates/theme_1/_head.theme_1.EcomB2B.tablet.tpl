@@ -10,7 +10,7 @@
 *}<!DOCTYPE HTML>
 <html lang="en">
 <head>
-    {if $smarty.server.SERVER_NAME!='ecom.bali'  }
+    {if !isset($is_devel) or !$is_devel  }
 
     {if  $client_tag_google_manager_id!=''}
         <!-- Google Tag Manager -->
@@ -69,7 +69,7 @@
 
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
-    {if $smarty.server.SERVER_NAME!='ecom.bali' }
+    {if !isset($is_devel) or !$is_devel  }
         <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
         <script>
             Sentry.init({ dsn: 'https://ca602819cbd14ce99a6d3ab94e1c5f04@sentry.io/1329969',
@@ -301,8 +301,9 @@
 
     </style>
 
+    {if !isset($is_devel) or !$is_devel  }
 
-    {if $smarty.server.SERVER_NAME!='ecom.bali' and $zendesk_chat_code!=''}
+    {if  $zendesk_chat_code!=''}
         <!--Start of Zendesk Chat Script-->
         <script>
             window.$zopim || (function (d, s) {
@@ -331,6 +332,7 @@
         </script>
         <!--End of Zendesk Chat Script-->
 
+    {/if}
     {/if}
 
 </head>

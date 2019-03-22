@@ -396,6 +396,8 @@ class Payment extends DB_Table {
 
 
             $customer->update_account_balance();
+            $customer->update_credit_account_running_balances();
+
 
         }
 
