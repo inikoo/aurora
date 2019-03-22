@@ -22,7 +22,7 @@
 
 require_once 'vendor/autoload.php';
 
-if ( !preg_match('/bali/', gethostname()) ) {
+if ( !preg_match('/bali|sasi/', gethostname()) ) {
 
     $sentry_client = new Raven_Client('https://ece368725b6440adb9dcd83517454636@sentry.io/1353529');
     $sentry_client->install();
