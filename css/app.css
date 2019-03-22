@@ -8276,7 +8276,7 @@ input.input_file {
     color: #FFF; }
 
 .nice-select {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent;
   background-color: #fff;
   border-radius: 5px;
   border: solid 1px #e8e8e8;
@@ -8614,5 +8614,23 @@ h2.dashboard {
     color: dimgrey; }
   .options_dialog .options td:hover {
     color: #333; }
+
+.app_theme_red #top_bar, .app_theme_red #app_leftmenu li {
+  background: #611919; }
+
+.app_theme_red #app_leftmenu, .app_theme_red #app_leftmenu #top_info, .app_theme_red #app_leftmenu li:hover {
+  background: #8a3d3d; }
+
+.app_theme_green #top_bar, .app_theme_green #app_leftmenu li {
+  background: #035003; }
+
+.app_theme_green #app_leftmenu, .app_theme_green #app_leftmenu #top_info, .app_theme_green #app_leftmenu li:hover {
+  background: #356f55; }
+
+.app_theme_blue #top_bar, .app_theme_blue #app_leftmenu li {
+  background: #0d1875; }
+
+.app_theme_blue #app_leftmenu, .app_theme_blue #app_leftmenu #top_info, .app_theme_blue #app_leftmenu li:hover {
+  background: #424fbd; }
 
 /*# sourceMappingURL=app.css.map */
