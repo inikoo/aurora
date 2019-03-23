@@ -1497,14 +1497,65 @@ function shipping_zones($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
+
+
     $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $record_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-            $price       = '';
+            $price='';
             $territories = '';
+
+            $price_data       = json_decode($data['Shipping Zone Price'],true);
+
+
+
+            if($data['Shipping Zone Territories']!=''){
+
+                $territories_data       = json_decode($data['Shipping Zone Territories'],true);
+
+
+
+
+                foreach($territories_data as $territory){
+                    $territories.='<img class="padding_left_5" style="width:20px" src="/art/flags/'.strtolower($territory['country_code']).'.gif"> '.$territory['country_code'];
+
+                }
+
+            }
+
+
+
+
+            switch ($price_data['type']){
+                case 'Step Order Items Net Amount':
+
+
+                    $price.='<div class="as_table">';
+                    foreach($price_data['steps'] as $step){
+                        $price.='<div class="as_row">';
+
+                        $price.='<div class="as_cell  width_75"><span class="discreet">'._('Items').' <i class="fa fa-dollar-sign"></i></span> </div>';
+
+                        $to=($step['to']=='INF'?'<i class="fal fa-infinity"></i>':money($step['to'],$_data['parameters']['store_currency']));
+
+
+                        $amount=($step['price']==0?'<span class="success ">'._('free').'</span>':'<span class="highlight">'.money($step['price'],$_data['parameters']['store_currency']).'</span>');
+                        $price.=' <div class="as_cell">'.money($step['from'],$_data['parameters']['store_currency']).'</div> <div class="as_cell align_center width_50"><i class="fal fa-arrow-right"></i> </div><div class="as_cell">'.$to.'</div> '  ;
+                        $price.='<div class="as_cell discreet align_center width_50"><i class="fal hide fa-equals"></i></div> <div  class="width_75 aright ">'.$amount.'</div>';
+                        $price.='</div>';
+                    }
+                    $price.='</div>';
+                    break;
+            }
+
+
+
+
+
+
 
             $record_data[] = array(
                 'id'          => (integer)$data['Shipping Zone Key'],

@@ -240,7 +240,13 @@ class User extends DB_Table {
 
                     $this->data = array_merge($this->data, $row);
                 }
+
+
+
+
             }
+
+            $this->settings   = json_decode($this->data['User Settings'], true);
         }
 
 
@@ -865,7 +871,6 @@ class User extends DB_Table {
                 $this->fast_update_json_field('User Settings',$field,$value);
 
                 break;
-
             case('Staff Position'):
 
                 if (!in_array(
