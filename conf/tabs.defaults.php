@@ -419,7 +419,18 @@ $tab_defaults = array(
         'period'      => 'all',
 
     ),
+    'customer.credit_blockchain' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'from'        => '',
+        'to'          => '',
+        'f_field'     => '',
 
+
+    ),
     'prospect.history' => array(
         'view'          => 'overview',
         'sort_key'      => 'date',

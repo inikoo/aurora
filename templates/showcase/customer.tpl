@@ -94,7 +94,7 @@
             <table border="0" class="overview" style="">
                 <tr id="account_balance_tr" class="main">
                     <td id="account_balance_label">{t}Account Balance{/t}</td>
-                    <td id="account_balance" class="aright highlight">{$customer->get('Account Balance')} </td>
+                    <td id="account_balance" class="aright "><span onclick="change_tab('customer.credit_blockchain')" class="very_discreet_on_hover small padding_right_10 button"><i class="fal fa-code-commit "></i> {$customer->get('Customer Number Credit Transactions')}</span>  <span class="highlight">{$customer->get('Account Balance')}</span> </td>
                 </tr>
 
             </table>

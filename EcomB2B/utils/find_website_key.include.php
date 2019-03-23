@@ -10,8 +10,8 @@
 */
 
 
-if ($_SERVER['SERVER_NAME'] == 'ecom.bali' ) {
-    $_SESSION['website_key'] = 9;
+if ( preg_match('/bali|sasi/', gethostname()) ) {
+    $_SESSION['website_key'] = 2;
 } else {
 
     include_once 'utils/general_functions.php';

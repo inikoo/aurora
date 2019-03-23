@@ -805,6 +805,7 @@ function new_payment($data, $editor, $db, $account, $user) {
 
 
         $customer->update_account_balance();
+        $customer->update_credit_account_running_balances();
 
 
     }
@@ -1194,6 +1195,8 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
 
             $customer->update_account_balance();
+            $customer->update_credit_account_running_balances();
+
             $payment->fast_update(array('Payment Transaction Amount Credited' => $payment->get('Payment Transaction Amount Credited') + $data['amount']));
 
 

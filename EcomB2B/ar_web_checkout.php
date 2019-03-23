@@ -489,7 +489,7 @@ function pay_credit($order, $amount, $editor, $db, $account) {
 
 
     $customer->update_account_balance();
-
+    $customer->update_update_credit_account_running_balances();
 
     $order->add_payment($payment);
     $order->update_totals();
