@@ -19,6 +19,13 @@ $options_yn = array(
     'No'  => _('No')
 );
 
+$options_tc = array(
+    'app_theme_default' => _('Black'),
+    'app_theme_red' => _('Red'),
+    'app_theme_green' => _('Green'),
+    'app_theme_blue'  => _('Blue')
+);
+
 $options_locales = array();
 foreach ($available_locales as $locale) {
 
@@ -113,6 +120,16 @@ $object_fields = array(
                     $object->get_field_label('Preferred Locale')
                 ),
                 'options'         => $options_locales,
+
+
+            ),
+            array(
+                'id'              => 'theme',
+                'edit'            => 'option',
+                'value'           => $user->get('theme_raw'),
+                'formatted_value' => $options_tc[$user->get('theme_raw')],
+                'label'           => _('Theme'),
+                'options'         => $options_tc,
 
 
             )
