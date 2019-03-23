@@ -20,7 +20,7 @@
 
             <link href="/css/login.min.css?v=3" rel="stylesheet">
 
-        {if $smarty.server.SERVER_NAME!='ecom.bali' }
+        {if $is_devel }
             <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
             <script>
                 Sentry.init({
