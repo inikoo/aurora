@@ -42,7 +42,7 @@
 "error":"{t}Error{/t}",
 "invalid_val":"{t}Invalid value{/t}"
 
-}'>
+}' class="{$user->get('theme_raw')}">
 <input type="hidden" id="_request" value="{$_request}">
 <input type="hidden" id="_server_name" value="{$_server_name}">
 <input type="hidden" id="is_devel" value="{$is_devel}">
@@ -70,11 +70,11 @@
 
         Sentry.configureScope((scope) => {
             scope
-            .setUser({
-                "id":       "{$user->id}",
-                "username": "{$user->get('Alias')}",
-                "email":    "{$user->get_staff_email()}"
-            });
+                .setUser({
+                    "id":       "{$user->id}",
+                    "username": "{$user->get('Alias')}",
+                    "email":    "{$user->get_staff_email()}"
+                });
         })
         ;
 
