@@ -454,7 +454,13 @@ class User extends DB_Table {
 
 
         switch ($key) {
-
+            case('theme_raw'):
+                if(empty(json_decode($this->data['User Settings'],true))){
+                    return 'app_theme_default';
+                } else {
+                    return json_decode($this->data['User Settings'])->theme;
+                }
+                break;
             case 'User Groups':
                 return $this->get_groups();
                 break;
@@ -855,6 +861,11 @@ class User extends DB_Table {
         }
 
         switch ($field) {
+            case('theme'):
+                $this->fast_update_json_field('User Settings',$field,$value);
+
+                break;
+
             case('Staff Position'):
 
                 if (!in_array(
