@@ -2994,6 +2994,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     }
 
 
+
     foreach ($tabs as $key => $tab) {
         if (isset($tab['quantity_data'])) {
             $tabs[$key]['label'] .= sprintf(' <span class=\'discreet %s\'>(%s)</span>',

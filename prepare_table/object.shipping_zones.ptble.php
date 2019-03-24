@@ -54,6 +54,8 @@ if ($order == 'code') {
     $order = '`Shipping Zone Creation Date`';
 }  elseif ($order == 'active') {
     $order = '`Shipping Zone Active`';
+} elseif ($order == 'position') {
+    $order = '`Shipping Zone Position`';
 } else {
     $order = 'SZ.`Shipping Zone Key`';
 }

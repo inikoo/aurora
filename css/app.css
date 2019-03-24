@@ -503,6 +503,8 @@ input {
     color: #000; }
   .tabs .tab:hover, .tabs .tab.selected > .fa, .tabs .tab .far, .tabs .tab .fas, .tabs .tab .fab, .tabs .tab .fal, .subtabs .tab:hover, .subtabs .tab.selected > .fa, .subtabs .tab .far, .subtabs .tab .fas, .subtabs .tab .fab, .subtabs .tab .fal {
     color: #666; }
+  .tabs .tab i.success, .subtabs .tab i.success {
+    color: #26A65B; }
   .tabs .element .qty, .subtabs .element .qty {
     color: #aaa; }
   .tabs .element.selected, .subtabs .element.selected {

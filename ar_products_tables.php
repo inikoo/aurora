@@ -1602,7 +1602,7 @@ function shipping_zones_schemas($_data, $db, $user) {
         foreach ($result as $data) {
             switch ($data['Shipping Zone Schema Type']) {
                 case 'Current':
-                    $type = '<i class="fa fa-play success margin_right_5"></i> '._('Current');
+                    $type = sprintf('<i class="fa fa-play success margin_right_5" title="%s"></i> ',_('Current'));
                     break;
                 case 'InReserve':
                     $type = '<i class="fa fa-pause discreet margin_right_5"></i> '._('In reserve');
@@ -1622,7 +1622,16 @@ function shipping_zones_schemas($_data, $db, $user) {
             $record_data[] = array(
                 'id'    => (integer)$data['Shipping Zone Schema Key'],
                 'type'  => $type,
-                'label' => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone/%d\')" >%s</span>', $data['Shipping Zone Schema Store Key'], $data['Shipping Zone Schema Key'], $data['Shipping Zone Schema Label']),
+                'label' => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone_schema/%d\')" >%s</span>', $data['Shipping Zone Schema Store Key'], $data['Shipping Zone Schema Key'], $data['Shipping Zone Schema Label']),
+                'zones'  => number($data['Shipping Zone Schema Number Zones']),
+                'customers'  => number($data['Shipping Zone Schema Number Customers']),
+                'orders'  => number($data['Shipping Zone Schema Number Orders']),
+
+
+
+
+                'first_used'     => ($data['Shipping Zone Schema First Used']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Shipping Zone Schema First Used'].' +0:00')):''),
+                'last_used'     => ($data['Shipping Zone Schema Last Used']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Shipping Zone Schema Last Used'].' +0:00')):''),
 
 
             );
