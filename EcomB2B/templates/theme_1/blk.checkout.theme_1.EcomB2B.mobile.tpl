@@ -650,6 +650,10 @@
                                                     if (data.state == '200') {
                                                         $('.ordered_products_number').html('0')
                                                         $('.order_total').html('')
+                                                        var i;
+                                                        for (i = 0; i < data.analytics_data.items.length; ++i) {
+                                                            ga('auTracker.ec:addProduct',data.analytics_data.items[i] );
+                                                        }
                                                         ga('auTracker.ec:setAction', 'purchase', data.analytics_data);
                                                         ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.gbp_revenue);
 
@@ -786,6 +790,10 @@
                                                     if (data.state == '200') {
                                                         $('.ordered_products_number').html('0')
                                                         $('.order_total').html('')
+                                                        var i;
+                                                        for (i = 0; i < data.analytics_data.items.length; ++i) {
+                                                            ga('auTracker.ec:addProduct',data.analytics_data.items[i] );
+                                                        }
                                                         ga('auTracker.ec:setAction', 'purchase', data.analytics_data);
 
                                                         ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.gbp_revenue);
@@ -883,7 +891,10 @@
 
                                                             if (data.state == '200') {
 
-
+                                                                var i;
+                                                                for (i = 0; i < data.analytics_data.items.length; ++i) {
+                                                                    ga('auTracker.ec:addProduct',data.analytics_data.items[i] );
+                                                                }
                                                                 ga('auTracker.ec:setAction', 'purchase', data.analytics_data);
 
                                                                 ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.gbp_revenue);
