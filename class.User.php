@@ -460,32 +460,12 @@ class User extends DB_Table {
 
 
         switch ($key) {
-
-
-            case 'theme_raw';
-                if(empty ($this->settings['theme'])){
+            case('theme_raw'):
+                if(empty(json_decode($this->data['User Settings'],true))){
                     return 'app_theme_default';
-                }else{
-                    return $this->settings['theme'];
+                } else {
+                    return json_decode($this->data['User Settings'])->theme;
                 }
-                break;
-            case 'theme';
-
-            switch ($this->get('theme_raw')){
-                case 'app_theme_default':
-                    return _('Black');
-                    break;
-                case 'app_theme_red':
-                    return _('Red');
-                    break;
-                case 'app_theme_green':
-                    return _('Green');
-                    break;
-                case 'app_theme_blue':
-                    return _('Blue');
-                    break;
-            }
-
                 break;
             case 'User Groups':
                 return $this->get_groups();
@@ -887,9 +867,7 @@ class User extends DB_Table {
         }
 
         switch ($field) {
-
-            case 'theme':
-
+            case('theme'):
                 $this->fast_update_json_field('User Settings',$field,$value);
 
                 break;
