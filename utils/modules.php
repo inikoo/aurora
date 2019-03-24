@@ -2940,9 +2940,10 @@ $modules = array(
                         'subtabs' => array(
 
                             'store.current_shipping_zones' => array(
-                                'label' => _('Current shipping zones'),
-                                'icon'  => 'truck fa-flip-horizontal',
+                                'label' => _('Shipping zones'),
+                                'icon'  => 'globe-americas',
                             ),
+
 
                             'store.shipping_zones_schemas' => array(
                                 'label' => _('Shipping zones schemas'),
@@ -4236,20 +4237,27 @@ $modules = array(
                 )
             ),
 
-
-            'shipping_zone' => array(
+            'shipping_zone_schema' => array(
                 'type' => 'object',
 
 
                 'tabs' => array(
-                    'charge.details' => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database',
-                        'title' => _('Details')
+                    'shipping_zone_schema.details' => array(
+                        'label' => _('Settings'),
+                        'icon'  => 'sliders-h',
+                        'title' => _('Settings')
+                    ),
+                    'shipping_zone_schema.zones'    => array(
+                        'label' => _('Zones'),
+                        'icon'  => 'layer-group',
+
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Zones'
+                        ),
                     ),
 
-
-                    'charge.orders'    => array(
+                    'shipping_zone_schema.orders'    => array(
                         'label' => _('Orders'),
                         'icon'  => 'shopping-cart',
 
@@ -4258,7 +4266,7 @@ $modules = array(
                             'field'  => 'Orders'
                         ),
                     ),
-                    'charge.customers' => array(
+                    'shipping_zone_schema.customers' => array(
                         'label'         => _('Customers'),
                         'icon'          => 'users',
                         'quantity_data' => array(
@@ -4266,7 +4274,49 @@ $modules = array(
                             'field'  => 'Customers'
                         ),
                     ),
-                    'charge.history'   => array(
+                    'shipping_zone_schema.history'   => array(
+                        'title'         => _('History/Notes'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number History Records'
+                        ),
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only'
+                    ),
+
+                )
+            ),
+            'shipping_zone' => array(
+                'type' => 'object',
+
+
+                'tabs' => array(
+                    'shipping_zone.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database',
+                        'title' => _('Details')
+                    ),
+
+
+                    'shipping_zone.orders'    => array(
+                        'label' => _('Orders'),
+                        'icon'  => 'shopping-cart',
+
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Orders'
+                        ),
+                    ),
+                    'shipping_zone.customers' => array(
+                        'label'         => _('Customers'),
+                        'icon'          => 'users',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Customers'
+                        ),
+                    ),
+                    'shipping_zone.history'   => array(
                         'title'         => _('History/Notes'),
                         'label'         => '',
                         'quantity_data' => array(

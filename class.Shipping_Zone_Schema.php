@@ -50,6 +50,8 @@ class Shipping_Zone_Schema extends DB_Table {
 
         }
 
+        $this->load_data();
+
 
     }
 
@@ -144,20 +146,27 @@ class Shipping_Zone_Schema extends DB_Table {
     function create($data) {
 
 
-        $keys   = '(';
-        $values = 'values(';
-        foreach ($data as $key => $value) {
-            $keys   .= "`$key`,";
-            $values .= prepare_mysql($value).",";
-        }
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
-        $sql    = sprintf(
-            "INSERT INTO `Shipping Zone Schema Dimension` %s %s", $keys, $values
+        $data['Shipping Zone Schema Created']=gmdate('Y-m-d H:i:s');
+
+
+        $sql = sprintf(
+            "INSERT INTO `Shipping Zone Schema Dimension` (%s) values (%s)",
+            '`'.join('`,`', array_keys($data)).'`',
+            join(',', array_fill(0, count($data), '?'))
         );
 
 
-        if ($this->db->exec($sql)) {
+        $stmt = $this->db->prepare($sql);
+        $i = 1;
+        foreach ($this->data as $key => $value) {
+            $stmt->bindValue($i, $value);
+            $i++;
+        }
+
+
+        if ($stmt->execute()) {
+
+
             $this->new=true;
             $this->id = $this->db->lastInsertId();
             $this->get_data('id', $this->id);
@@ -179,7 +188,7 @@ class Shipping_Zone_Schema extends DB_Table {
 
 
         } else {
-            print "Error can not create charge  $sql\n";
+            print "Error can not create shipping zone schema:  $sql\n";
             exit;
 
         }
@@ -202,8 +211,9 @@ class Shipping_Zone_Schema extends DB_Table {
                 break;
             case 'Orders':
             case 'Customers':
+            case 'Zones':
 
-                return number($this->data['Shipping Zone Schema Total Acc '.$key]);
+                return number($this->data['Shipping Zone Schema Number '.$key]);
 
                 break;
 
@@ -357,7 +367,7 @@ class Shipping_Zone_Schema extends DB_Table {
             array(
 
                 'Shipping Zone Schema Number Zones'    => $zones,
-            ),'Shipping Zone Schema Data'
+            )
 
         );
 

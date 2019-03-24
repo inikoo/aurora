@@ -203,7 +203,7 @@ class Shipping_Zone extends DB_Table {
             case 'Orders':
             case 'Customers':
 
-                return number($this->data['Shipping Zone Total Acc '.$key]);
+                return number($this->data['Shipping Zone Number '.$key]);
 
                 break;
 

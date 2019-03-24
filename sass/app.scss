@@ -611,7 +611,15 @@ input {
     &:hover, &.selected > .fa,.far,.fas,.fab,.fal {
       color: #666;
     }
+    i.success {
+
+
+        color: $color_success
+
+    }
   }
+
+
   .element {
     .qty {
       color: #aaa;
