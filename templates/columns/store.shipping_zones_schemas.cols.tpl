@@ -17,12 +17,13 @@ renderable: false
 
 }, {
 name: "type",
-label: "{t}Type{/t}",
+label: "",
 editable: false,
-sortType: "toggle",
-{if $sort_key=='type'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+sortable:false,
+cell: Backgrid.HtmlCell.extend({
+className: "width_30 align_center"
 
-cell: Backgrid.HtmlCell.extend({ })
+})
 },
 {
 name: "label",
@@ -32,7 +33,66 @@ defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='label'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ } ),
+},
+{
+name: "zones",
+label: "{t}Zones{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='zones'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({
+className: "aright"
+
+} ),
+headerCell: integerHeaderCell
+
+},
+{
+name: "first_used",
+label: "{t}First used{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='first_used'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+
+},
+{
+name: "last_used",
+label: "{t}Last used{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='last_used'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright" } ),
+headerCell: integerHeaderCell
+
+},
+{
+name: "customers",
+label: "{t}Customers{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='customers'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+
+},
+{
+name: "orders",
+label: "{t}Order{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='customers'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+
 }
+
 
 ]
 

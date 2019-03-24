@@ -1093,11 +1093,11 @@ $tab_defaults = array(
     ),
     'store.current_shipping_zones' => array(
         'view'        => 'overview',
-        'sort_key'    => 'id',
+        'sort_key'    => 'position',
         'sort_order'  => 1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'name'
+        'f_field'     => ''
     ),
     'store.shipping_zones_schemas' => array(
         'view'        => 'overview',

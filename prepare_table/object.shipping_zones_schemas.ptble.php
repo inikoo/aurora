@@ -55,7 +55,9 @@ if ($order == 'label') {
     $order = 'SZ.`Shipping Zone Schema Key`';
 }
 $table  = '`Shipping Zone Schema Dimension` SZ left join `Shipping Zone Schema Data` D on (D.`Shipping Zone Schema Key`=SZ.`Shipping Zone Schema Key`) left join `Store Dimension` S on (S.`Store Key`=SZ.`Shipping Zone Schema Store Key`) ';
-$fields = "SZ.`Shipping Zone Schema Key`,`Shipping Zone Schema Label`,`Shipping Zone Schema Store Key`,S.`Store Code`,`Store Name`,`Shipping Zone Schema Type`,`Shipping Zone Schema Creation Date`,
+$fields = " 
+`Shipping Zone Schema Number Customers`,`Shipping Zone Schema Number Orders`,`Shipping Zone Schema First Used`,`Shipping Zone Schema Last Used`,
+SZ.`Shipping Zone Schema Key`,`Shipping Zone Schema Label`,`Shipping Zone Schema Store Key`,S.`Store Code`,`Store Name`,`Shipping Zone Schema Type`,`Shipping Zone Schema Creation Date`,
 `Shipping Zone Schema Total Acc Submitted Orders`,`Shipping Zone Schema Total Acc Submitted Orders Customers`,`Shipping Zone Schema Total Acc Submitted Orders Amount`,`Shipping Zone Schema Number Zones`";
 
 

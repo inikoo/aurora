@@ -158,6 +158,23 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 if (is_numeric($view_path[2])) {
                                     $key = $view_path[2];
                                 }
+                            } elseif ($view_path[1] == 'shipping_zone_schema') {
+
+
+                                $section = 'shipping_zone_schema';
+                                $object  = 'shipping_zone_schema';
+
+                                $parent     = 'store';
+                                $parent_key = $key;
+
+
+                                if (is_numeric($view_path[2])) {
+                                    $key = $view_path[2];
+                                } elseif ($view_path[2] == 'new') {
+
+                                    $section = 'shipping_zone_schema.new';
+                                }
+
                             } elseif ($view_path[1] == 'shipping_zone') {
 
 
