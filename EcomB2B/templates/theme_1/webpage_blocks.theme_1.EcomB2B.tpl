@@ -500,7 +500,7 @@
             {if $with_checkout==1}
             getScript('/js/desktop.logged_in.min.js?v=190227', function () {
                 getScript('/js/desktop.forms.min.js', function () {
-                    getScript('/js/desktop.checkout.min.js?v=190304', function () {
+                    getScript('/js/desktop.checkout.min.js?v=190323v3', function () {
                         $.getJSON("ar_web_checkout.php?tipo=get_checkout_html&device_prefix=", function (data) {
 
 
