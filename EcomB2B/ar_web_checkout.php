@@ -79,17 +79,12 @@ switch ($tipo) {
         );
 
 
-        $store   = get_object('Store', $order->get('Order Store Key'));
+        $store = get_object('Store', $order->get('Order Store Key'));
 
-        
-        
-        
+
         $exchange = currency_conversion(
             $db, $store->get('Store Currency Code'), $account->get('Account Currency Code'), '- 1440 minutes'
         );
-
-
-
 
 
         $to_pay = $order->get('Order To Pay Amount');
@@ -122,7 +117,10 @@ switch ($tipo) {
         place_order($store, $order, $payment_account_key, $customer, $website, $editor, $smarty, $account, $db);
 
 
-
+        $analytics_items = array();
+        foreach ($items = $order->get_items() as $item) {
+            $analytics_items[] = $item['analytics_data'];
+        }
 
         $response = array(
             'state'          => 200,
@@ -133,10 +131,9 @@ switch ($tipo) {
                 'revenue'     => $order->get('Order Total Amount'),
                 'gbp_revenue' => ceil($order->get('Order Total Amount') * $exchange),
                 'tax'         => $order->get('Order Total Tax Amount'),
-                'shipping'    => $order->get('Order Shipping Net Amount')
-
+                'shipping'    => $order->get('Order Shipping Net Amount'),
+                'items'       => $analytics_items
             )
-
         );
 
 
@@ -255,6 +252,11 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
                 $db, $store->get('Store Currency Code'), $account->get('Account Currency Code'), '- 1440 minutes'
             );
 
+            $analytics_items = array();
+            foreach ($items = $order->get_items() as $item) {
+                $analytics_items[] = $item['analytics_data'];
+            }
+
             $response = array(
                 'state'          => 200,
                 'order_key'      => $order->id,
@@ -263,14 +265,13 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
                     'affiliation' => $store->get('Name'),
                     'revenue'     => $order->get('Order Total Amount'),
                     'gbp_revenue' => ceil($order->get('Order Total Amount') * $exchange),
-
-                    'tax'      => $order->get('Order Total Tax Amount'),
-                    'shipping' => $order->get('Order Shipping Net Amount')
-
-
+                    'tax'         => $order->get('Order Total Tax Amount'),
+                    'shipping'    => $order->get('Order Shipping Net Amount'),
+                    'items'       => $analytics_items
                 )
-
             );
+
+
 
 
             echo json_encode($response);
@@ -687,6 +688,11 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
                 );
 
 
+                $analytics_items = array();
+                foreach ($items = $order->get_items() as $item) {
+                    $analytics_items[] = $item['analytics_data'];
+                }
+
                 $response = array(
                     'state'          => 200,
                     'order_key'      => $order->id,
@@ -695,15 +701,11 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
                         'affiliation' => $store->get('Name'),
                         'revenue'     => $order->get('Order Total Amount'),
                         'gbp_revenue' => ceil($order->get('Order Total Amount') * $exchange),
-
-                        'tax'      => $order->get('Order Total Tax Amount'),
-                        'shipping' => $order->get('Order Shipping Net Amount')
-
-
+                        'tax'         => $order->get('Order Total Tax Amount'),
+                        'shipping'    => $order->get('Order Shipping Net Amount'),
+                        'items'       => $analytics_items
                     )
-
                 );
-
 
                 echo json_encode($response);
                 exit;
@@ -914,6 +916,10 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
                 $db, $store->get('Store Currency Code'), $account->get('Account Currency Code'), '- 1440 minutes'
             );
 
+            $analytics_items = array();
+            foreach ($items = $order->get_items() as $item) {
+                $analytics_items[] = $item['analytics_data'];
+            }
 
             $response = array(
                 'state'          => 200,
@@ -923,11 +929,9 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
                     'affiliation' => $store->get('Name'),
                     'revenue'     => $order->get('Order Total Amount'),
                     'gbp_revenue' => ceil($order->get('Order Total Amount') * $exchange),
-
-                    'tax'      => $order->get('Order Total Tax Amount'),
-                    'shipping' => $order->get('Order Shipping Net Amount')
-
-
+                    'tax'         => $order->get('Order Total Tax Amount'),
+                    'shipping'    => $order->get('Order Shipping Net Amount'),
+                    'items'       => $analytics_items
                 )
             );
 
