@@ -1134,7 +1134,6 @@ class DeliveryNote extends DB_Table {
                 }
 
 
-
                 break;
             case 'Delivery Note Shipper Tracking':
 
@@ -1689,8 +1688,9 @@ class DeliveryNote extends DB_Table {
                 new_housekeeping_fork(
                     'au_housekeeping', array(
                     'type'              => 'delivery_note_un_dispatched',
-                    'user_key'            => $this->editor['User Key'],
+                    'user_key'          => $this->editor['User Key'],
                     'delivery_note_key' => $this->id,
+                    'note'              => $metadata['note']
 
                 ), $account->get('Account Code')
                 );
@@ -1699,17 +1699,15 @@ class DeliveryNote extends DB_Table {
                 break;
             case 'Dispatched':
 
-                 if ($this->data['Delivery Note Type'] == 'Order') {
-                     if ($this->get('State Index') != 90) {
-                         return;
-                     }
-                 }else{
-                     if (!($this->get('State Index') == 80 or $this->get('State Index') == 90)) {
-                         return;
-                     }
-                 }
-
-
+                if ($this->data['Delivery Note Type'] == 'Order') {
+                    if ($this->get('State Index') != 90) {
+                        return;
+                    }
+                } else {
+                    if (!($this->get('State Index') == 80 or $this->get('State Index') == 90)) {
+                        return;
+                    }
+                }
 
 
                 $this->update_field('Delivery Note Date Dispatched', $date, 'no_history');
@@ -1746,7 +1744,7 @@ class DeliveryNote extends DB_Table {
                 new_housekeeping_fork(
                     'au_housekeeping', array(
                     'type'              => 'delivery_note_dispatched',
-                    'user_key'            => $this->editor['User Key'],
+                    'user_key'          => $this->editor['User Key'],
                     'delivery_note_key' => $this->id,
 
                 ), $account->get('Account Code')
@@ -1891,11 +1889,11 @@ class DeliveryNote extends DB_Table {
 
                 new_housekeeping_fork(
                     'au_housekeeping', array(
-                    'type' => 'delivery_note_cancelled',
-                    'date' => gmdate('Y-m-d', strtotime($date.' +0:00')),
+                    'type'                    => 'delivery_note_cancelled',
+                    'date'                    => gmdate('Y-m-d', strtotime($date.' +0:00')),
                     'returned_part_locations' => $returned_part_locations,
                     'customer_key'            => $this->get('Delivery Note Customer Key'),
-                    'delivery_note_key' => $this->id
+                    'delivery_note_key'       => $this->id
 
                 ), $account->get('Account Code')
                 );
@@ -2485,7 +2483,6 @@ class DeliveryNote extends DB_Table {
             "DELETE FROM  `Order Delivery Note Bridge` WHERE `Delivery Note Key`=%d  ", $this->id
         );
         $this->db->exec($sql);
-
 
 
         if (in_array(
