@@ -24,11 +24,18 @@
 
   color:black;border-bottom:1px solid #777;background-color: #fff;
 
+  &.deleted_note_sticky_note  {
+    color: #fff;
+    background-color:indianred;
+    border-bottom:1px solid tomato;
+  }
+
   &.order_customer_sticky_note  {
     color: #7d7b19;
     background-color:#EDEB82;
     border-bottom:1px solid #BAB84E;
   }
+
   &.delivery_note_sticky_note   {
     color: #444;
     background-color:#94db84;

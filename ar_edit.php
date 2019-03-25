@@ -877,7 +877,15 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
             $request = $object->reset_element($data['object']);
             break;
         case 'delete':
-            $request = $object->delete();
+
+
+            if(!empty($data['metadata']['note'])){
+                $request = $object->delete($data['metadata']['note']);
+            }else{
+                $request = $object->delete();
+            }
+
+
             break;
         case 'suspend':
             $request = $object->suspend();

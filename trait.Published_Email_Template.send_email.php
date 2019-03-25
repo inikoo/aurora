@@ -799,6 +799,13 @@ trait Send_Email {
                     );
                 }
 
+                $note = $this->invoice->get('Invoice Deleted Note');
+                if ($note == '') {
+                    $note = _("User did not left a note");
+                }
+
+
+                $info .= sprintf('<p style="border:1px solid orange;width: 100%%;padding-top: 20px;padding-bottom: 20px"><span style="padding:0px 20px;color:#777">%s</span></p>', $note);
 
                 $link = sprintf(
                     '%s/orders/%d/%d/invoice/%d',
