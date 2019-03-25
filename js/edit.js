@@ -2106,12 +2106,14 @@ function unlink_customer_object(element) {
 }
 
 
-function save_object_operation(type, element) {
+function save_object_operation(type, element, metadata) {
 
 
     if ($(element).hasClass('disabled')) {
         return
     }
+
+
 
 
     if (type == 'delete') var icon = 'fa-trash-alt'; else if (type == 'archive') var icon = 'fa-archive'; else if (type == 'unarchive') var icon = 'fa-folder-open';
@@ -2120,6 +2122,12 @@ function save_object_operation(type, element) {
     $(element).find('i').removeClass(icon).addClass('fa-spinner fa-spin')
 
     var request = '/ar_edit.php?tipo=object_operation&operation=' + type + '&object=' + $(element).data('data').object + '&key=' + $(element).data('data').key + '&state=' + JSON.stringify(state)
+
+    if(metadata!=undefined){
+        request=request+'&metadata='+JSON.stringify(metadata)
+    }
+
+
 
     $.getJSON(request, function (data) {
         if (data.state == 200) {
