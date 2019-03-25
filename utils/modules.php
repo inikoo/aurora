@@ -1132,19 +1132,19 @@ $modules = array(
             'invoice' => array(
                 'type' => 'object',
                 'tabs' => array(
-
+                    'invoice.details'  => array(
+                        'label' => _('Properties/Operations'),
+                        'icon'  => 'database'
+                    ),
 
                     'invoice.items'    => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
-                    'invoice.details'  => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
+
                     'invoice.payments' => array(
                         'label' => _('Payments'),
-                        'icon'  => 'fa-dollar-sign',
+                        'icon'  => 'dollar-sign',
 
                     ),
                     'invoice.history'  => array(
@@ -2199,22 +2199,24 @@ $modules = array(
 
                 )
             ),
-            'invoice'                  => array(
+
+
+            'invoice' => array(
                 'type' => 'object',
                 'tabs' => array(
-
+                    'invoice.details'  => array(
+                        'label' => _('Properties/Operations'),
+                        'icon'  => 'database'
+                    ),
 
                     'invoice.items'    => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
-                    'invoice.details'  => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
+
                     'invoice.payments' => array(
                         'label' => _('Payments'),
-                        'icon'  => 'fa-dollar-sign',
+                        'icon'  => 'dollar-sign',
 
                     ),
                     'invoice.history'  => array(
@@ -2228,6 +2230,8 @@ $modules = array(
                 )
 
             ),
+
+
 
 
         ),
@@ -2259,20 +2263,21 @@ $modules = array(
                 'type' => 'object',
                 'tabs' => array(
 
-
                     'invoice.items'    => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
-                    'invoice.details'  => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
+
                     'invoice.payments' => array(
                         'label' => _('Payments'),
-                        'icon'  => 'fa-dollar-sign',
+                        'icon'  => 'dollar-sign',
 
                     ),
+                    'invoice.details'  => array(
+                        'label' => _('Properties/Operations'),
+                        'icon'  => 'database'
+                    ),
+
                     'invoice.history'  => array(
                         'label' => '',
                         'title' => _('History'),
