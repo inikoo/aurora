@@ -8,6 +8,18 @@
  Version 3
 -->
 *}
+
+
+
+<div class="sticky_notes">
+
+
+    <div  class="sticky_note_container deleted_note_sticky_note {if $invoice->get('Invoice Deleted Note')==''}hide{/if}"    >
+
+        <div class="sticky_note" >{$invoice->get('Invoice Deleted Note')}</div>
+    </div>
+
+</div>
 <div class="invoice">
     <div id="contact_data" class="block" style="float:left;padding:20px 20px;max-width:500px;">
         <div class="data_container">

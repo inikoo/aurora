@@ -2142,6 +2142,10 @@ textarea {
   color: black;
   border-bottom: 1px solid #777;
   background-color: #fff; }
+  .sticky_note_container.deleted_note_sticky_note {
+    color: #fff;
+    background-color: indianred;
+    border-bottom: 1px solid tomato; }
   .sticky_note_container.order_customer_sticky_note {
     color: #7d7b19;
     background-color: #EDEB82;
