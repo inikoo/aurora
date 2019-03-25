@@ -1322,7 +1322,8 @@ class DeliveryNote extends DB_Table {
                 );
 
 
-                $order = get_object('order', $this->data['Delivery Note Order Key']);
+                $order         = get_object('order', $this->data['Delivery Note Order Key']);
+                $order->editor = $this->editor;
                 $order->update_totals();
 
 
@@ -1412,10 +1413,12 @@ class DeliveryNote extends DB_Table {
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
 
 
-                    $order = get_object('Order', $this->get('Delivery Note Order Key'));
+                    $order         = get_object('Order', $this->get('Delivery Note Order Key'));
+                    $order->editor = $this->editor;
                     $order->update(array('Order State' => 'PackedDone'));
                 } else {
-                    $order = get_object('Order', $this->get('Delivery Note Order Key'));
+                    $order         = get_object('Order', $this->get('Delivery Note Order Key'));
+                    $order->editor = $this->editor;
                     $order->update(array('Order Replacement State' => 'PackedDone'));
 
 
@@ -1531,7 +1534,8 @@ class DeliveryNote extends DB_Table {
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
 
 
-                    $order = get_object('Order', $this->get('Delivery Note Order Key'));
+                    $order         = get_object('Order', $this->get('Delivery Note Order Key'));
+                    $order->editor = $this->editor;
                     $order->update(array('Order State' => 'Undo PackedDone'));
 
 
@@ -1545,7 +1549,8 @@ class DeliveryNote extends DB_Table {
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
 
 
-                    $order = get_object('Order', $this->get('Delivery Note Order Key'));
+                    $order         = get_object('Order', $this->get('Delivery Note Order Key'));
+                    $order->editor = $this->editor;
                     $order->update(array('Order Replacement State' => 'InWarehouse'));
 
 
@@ -1717,7 +1722,8 @@ class DeliveryNote extends DB_Table {
                     return;
                 }
 
-                $order = get_object('Order', $this->data['Delivery Note Order Key']);
+                $order         = get_object('Order', $this->data['Delivery Note Order Key']);
+                $order->editor = $this->editor;
 
 
                 if ($order->get('Order Invoice Key')) {
