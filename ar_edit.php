@@ -921,7 +921,7 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
             $request = $object->unlink_customer();
             break;
         case 'un_dispatch':
-            $request = $object->update_state('un_dispatch');
+            $request = $object->update_state('un_dispatch','',$data['metadata']);
             break;
         case 'set_all_products_web_configuration':
 
