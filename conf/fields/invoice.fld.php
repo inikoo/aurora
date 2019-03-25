@@ -117,8 +117,8 @@ $order = get_object('order', $object->get('Invoice Order Key'));
             'id'        => 'delete_refund',
             'class'     => 'operation',
             'value'     => '',
-            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._('Delete refund').' <i class="far fa-trash-alt new_button link "></i></span>',
+            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-labels=\'{ "no_message":"'._('A reason should be provided').'", "button_text":"'._('Delete').'",  "title":"'._('Deleting refund').'", "text":"'._("This operation cannot be undone").'",  "placeholder":"'._('Write the reason for deleting this refund').'" }\' data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                .'"}\' onClick="delete_invoice(this)" class="delete_object disabled">'._('Delete refund').' <i class="far fa-trash-alt new_button link "></i></span>',
             'reference' => '',
             'type'      => 'operation'
         );

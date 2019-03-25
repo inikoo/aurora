@@ -188,7 +188,7 @@ function fork_housekeeping($job) {
         case 'deal_created':
 
 
-            $deal = get_object('Deal', $data['deal_key']);
+            $deal     = get_object('Deal', $data['deal_key']);
             $campaign = get_object('Campaign', $deal->get('Deal Campaign Key'));
 
 
@@ -1475,7 +1475,7 @@ function fork_housekeeping($job) {
 
             $delivery_note = get_object('delivery_note', $data['delivery_note_key']);
 
-            $shipper=get_object('Shipper',$delivery_note->get('Delivery Note Shipper Key'));
+            $shipper = get_object('Shipper', $delivery_note->get('Delivery Note Shipper Key'));
             $shipper->update_shipper_usage();
 
 
@@ -1875,8 +1875,8 @@ function fork_housekeeping($job) {
 
                 if ($result = $db->query($sql)) {
                     foreach ($result as $row) {
-                        $supplier_part = get_object('SupplierPart', $row['Supplier Part Key']);
-                        $supplier_part->editor= $editor;
+                        $supplier_part         = get_object('SupplierPart', $row['Supplier Part Key']);
+                        $supplier_part->editor = $editor;
                         if (isset($supplier_part->part)) {
                             $supplier_part->part->update_next_deliveries_data();
                         }
@@ -2235,7 +2235,7 @@ function fork_housekeeping($job) {
 
             $delivery_note = get_object('delivery_note', $data['delivery_note_key']);
 
-            $shipper=get_object('Shipper',$delivery_note->get('Delivery Note Shipper Key'));
+            $shipper = get_object('Shipper', $delivery_note->get('Delivery Note Shipper Key'));
             $shipper->update_shipper_usage();
 
             break;
@@ -2247,7 +2247,7 @@ function fork_housekeeping($job) {
             $store = get_object('Store', $delivery_note->get('Delivery Note Store Key'));
 
 
-            $shipper=get_object('Shipper',$delivery_note->get('Delivery Note Shipper Key'));
+            $shipper = get_object('Shipper', $delivery_note->get('Delivery Note Shipper Key'));
             $shipper->update_shipper_usage();
 
 
@@ -2273,7 +2273,8 @@ function fork_housekeeping($job) {
                     'Email_Template_Type' => $email_template_type,
                     'Email_Template'      => $email_template,
                     'delivery_note_key'   => $delivery_note->id,
-                    'user_key'            => $data['user_key']
+                    'user_key'            => $data['user_key'],
+                    'note'                => $data['note'],
 
                 );
 
@@ -2420,7 +2421,6 @@ function fork_housekeeping($job) {
                     $deal = get_object('Deal', $row['Deal Key']);
 
 
-
                     $deal->update_status_from_dates(false);
                     foreach ($deal->get_deal_components('objects', 'all') as $component) {
                         $component->update_status_from_dates();
@@ -2433,7 +2433,6 @@ function fork_housekeeping($job) {
                 print_r($error_info = $db->errorInfo());
                 exit;
             }
-
 
 
             break;

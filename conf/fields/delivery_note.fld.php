@@ -97,8 +97,7 @@ if($delivery_note->get('Delivery Note State')=='Dispatched') {
                 'id'        => 'un_dispatch',
                 'class'     => 'operation',
                 'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
-                    ).'", "key":"'.$object->id.'"}\' onClick="save_object_operation(\'un_dispatch\', this)" class="delete_object disabled">'._('Set delivery note as no dispatched').' 
+                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-labels=\'{ "no_message":"'._('A reason should be provided').'", "button_text":"'._('Un dispatch').'",  "title":"'._('Un dispatching delivery').'", "text":"'._("This operation cannot be undone").'",  "placeholder":"'._('Write the reason for un dispatching this delivery note').'" }\' data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="un_dispatch_delivery_note(this)" class="delete_object disabled">'._('Set delivery note as no dispatched').' 
 <span class="fa-stack ">
   <i class="fa fa-paper-plane fa-stack-1x "></i>
   <i style="color:red" class="fa fa-ban fa-stack-1x text-danger"></i>

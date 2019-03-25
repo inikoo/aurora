@@ -553,6 +553,7 @@ trait Send_Email {
 
                 $this->delivery_note               = get_object('delivery_note', $data['delivery_note_key']);
                 $this->notification_trigger_author = get_object('User', $data['user_key']);
+                $this->note                        = $data['note'];
 
                 break;
             default:
@@ -856,6 +857,16 @@ trait Send_Email {
 
                     );
                 }
+
+
+                $note = $this->note;
+                if ($note == '') {
+                    $note = _("User did not left a note");
+                }
+
+
+                $info .= sprintf('<p style="border:1px solid orange;width: 100%%;padding-top: 20px;padding-bottom: 20px"><span style="padding:0px 20px;color:#777">%s</span></p>', $note);
+
 
 
                 $link = sprintf(
