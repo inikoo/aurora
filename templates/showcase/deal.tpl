@@ -21,8 +21,12 @@
 
 
             <table border=0 style="width: 100%">
-
-
+                {if $campaign->get('Deal Campaign Code')=='CA'}
+                <tr class="top">
+                    <td class="label">{t}Category{/t}</td>
+                    <td class="aright"> <span class="link" onclick="change_view('products/{$category->get('Store Key')}/category/{$category->id}',{ 'tab':'category.deal_components'  })">{$category->get('Code')}</td>
+                </tr>
+                {/if}
                 <tr class="top">
                     <td class="label">{t}Customers{/t}</td>
                     <td class="aright"> {$deal->get('Used Customers')}</td>

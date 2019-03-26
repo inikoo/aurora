@@ -54,7 +54,7 @@ class Deal extends DB_Table {
             $sql = sprintf(
                 "SELECT * FROM `Deal Dimension` WHERE `Deal Store Key`=%d AND `Deal Name`=%s", $tag, prepare_mysql($tag2)
             );
-        }else{
+        } else {
             return;
         }
 
@@ -66,7 +66,7 @@ class Deal extends DB_Table {
 
 
         if ($this->data['Deal Remainder Email Campaign Key'] > 0) {
-            $this->remainder_email_campaign = get_object('EmailCampaign',$this->data['Deal Remainder Email Campaign Key']);
+            $this->remainder_email_campaign = get_object('EmailCampaign', $this->data['Deal Remainder Email Campaign Key']);
 
         }
 
@@ -114,8 +114,8 @@ class Deal extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $this->found     = true;
-                $this->found_key = $row['Deal Key'];
+                $this->found            = true;
+                $this->found_key        = $row['Deal Key'];
                 $this->duplicated_field = 'Deal Name';
             }
         } else {
@@ -181,129 +181,57 @@ class Deal extends DB_Table {
         }
     }
 
+    function update_status_from_dates($force = false) {
 
 
-    function update_field_switcher($field, $value, $options = '', $metadata = '') {
+        if ($this->data['Deal Expiration Date'] != '' and strtotime($this->data['Deal Expiration Date'].' +0:00') <= strtotime('now +0:00')) {
+            $this->fast_update(
+                array(
+                    'Deal Status' => 'Finish'
+                )
+            );
 
-
-        switch ($field) {
-
-            case 'Deal Component Allowance Label':
-                //used for bulk discounts campaign
-                $deal_components        = $this->get_deal_components('objects');
-                $deal_component         = array_pop($deal_components);
-                $deal_component->editor = $this->editor;
-                $deal_component->update(array('Deal Component Allowance Label' => $value), $options);
-                $this->get_data('id', $this->id);
-
-                break;
-
-            case 'Deal Component Allowance Percentage':
-
-                //used for bulk discounts campaign
-
-
-                $value = floatval($value) / 100;
-
-                $deal_components        = $this->get_deal_components('objects');
-                $deal_component         = array_pop($deal_components);
-                $deal_component->editor = $this->editor;
-                $deal_component->update(array('Deal Component Allowance' => $value), $options);
-                $this->get_data('id', $this->id);
-                break;
-            case 'Deal Terms':
-
-                $this->update_field($field, $value, $options);
-
-
-                $this->update_term_allowances();
-
-                $components = $this->get_deal_components('objects', 'All');
-
-                foreach ($components as $component) {
-
-
-                    $component->editor = $this->editor;
-                    $component->update(array('Deal Component Terms' => $value), $options);
-
-                }
-
-
-                break;
-
-            case 'Deal Term Label':
-                $this->update_field($field, $value, $options);
-
-                $sql = sprintf('UPDATE `Deal Component Dimension` SET `Deal Component Term Label`=%s WHERE `Deal Component Deal Key`=%d  ', prepare_mysql($value), $this->id);
-                $this->db->exec($sql);
-
-                $this->update_websites();
-
-
-                break;
-            case('Deal Begin Date'):
-                $this->update_begin_date($value, $options);
-                break;
-            case('Deal Expiration Date'):
-                $this->update_expiration_date($value, $options);
-                break;
-            case 'Deal Status':
-
-                $this->update_status($value);
-                break;
-            default:
-                $base_data = $this->base_data();
-
-                if (array_key_exists($field, $base_data)) {
-                    $this->update_field($field, $value, $options);
-                }
-        }
-    }
-
-    function get_deal_components($type = 'keys', $options = 'Active') {
-
-        $deal_components = array();
-
-
-        if ($options == 'Active') {
-
-            $where = ' and `Deal Component Status`="Active"';
-
-        }elseif ($options == 'Suspended') {
-
-            $where = ' and `Deal Component Status`="Suspended"';
-
-        } else {
-            $where = '';
-        }
-
-
-        $sql = sprintf(
-            "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Deal Key`=%d  $where", $this->id
-        );
-
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                if ($type == 'objects') {
-                    $deal_components[$row['Deal Component Key']] = get_object('DealComponent', $row['Deal Component Key']);
-                } else {
-                    $deal_components[$row['Deal Component Key']] = $row['Deal Component Key'];
-                }
+            if ($this->data['Deal Voucher Key']) {
+                $voucher         = get_object('Voucher', $this->data['Deal Voucher Key']);
+                $voucher->editor = $this->editor;
+                $voucher->fast_update(
+                    array(
+                        'Voucher Status' => 'Finish'
+                    )
+                );
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+
+            return;
         }
 
 
-        return $deal_components;
+        if (!$force and $this->data['Deal Status'] == 'Suspended') {
+            return;
+        }
+
+        if (strtotime($this->data['Deal Begin Date'].' +0:00') > strtotime('now +0:00')) {
+
+            $this->fast_update(
+                array(
+                    'Deal Status' => 'Waiting'
+                )
+            );
+
+        }
+
+
+        if (strtotime($this->data['Deal Begin Date'].' +0:00') <= strtotime('now +0:00')) {
+            $this->fast_update(
+                array(
+                    'Deal Status' => 'Active'
+                )
+            );
+
+        }
+
+
     }
 
     function update_term_allowances() {
@@ -312,7 +240,7 @@ class Deal extends DB_Table {
         $this->fast_update(
 
             array(
-                'Deal Term Allowances Label'=>'<span class="term">'.$this->get_formatted_terms().'</span> <i class="fa fa-arrow-right"></i> <span class="allowance">'.$this->get_formatted_allowances().'</span>'
+                'Deal Term Allowances Label' => '<span class="term">'.$this->get_formatted_terms().'</span> <i class="fa fa-arrow-right"></i> <span class="allowance">'.$this->get_formatted_allowances().'</span>'
             )
 
 
@@ -324,18 +252,17 @@ class Deal extends DB_Table {
         $terms = '';
 
 
-
         switch ($this->data['Deal Terms Type']) {
 
             case 'Voucher AND Amount':
 
-                $store=get_object('Store',$this->data['Deal Store Key']);
+                $store = get_object('Store', $this->data['Deal Store Key']);
 
-               // $voucher=get_object('Voucher',$this->data['Deal Voucher Key']);
+                // $voucher=get_object('Voucher',$this->data['Deal Voucher Key']);
 
-                $_terms=json_decode($this->get('Deal Terms'),true);
+                $_terms = json_decode($this->get('Deal Terms'), true);
 
-                $terms = '<span style="border:1px solid ;padding: 1px 10px">'.$_terms['voucher'].'</span> <span style="opacity: .8">'.money($_terms['amount'],$store->get('Store Currency Code')).'</span>';
+                $terms = '<span style="border:1px solid ;padding: 1px 10px">'.$_terms['voucher'].'</span> <span style="opacity: .8">'.money($_terms['amount'], $store->get('Store Currency Code')).'</span>';
 
 
                 break;
@@ -352,7 +279,7 @@ class Deal extends DB_Table {
 
                 if (count($component) > 0) {
                     $component = array_pop($component);
-                    $terms=$component->get_formatted_terms();
+                    $terms     = $component->get_formatted_terms();
 
                     /*
 
@@ -402,8 +329,6 @@ class Deal extends DB_Table {
                 break;
 
         }
-
-
 
 
         return $terms;
@@ -581,6 +506,51 @@ class Deal extends DB_Table {
 
     }
 
+    function get_deal_components($type = 'keys', $options = 'Active') {
+
+        $deal_components = array();
+
+
+        if ($options == 'Active') {
+
+            $where = ' and `Deal Component Status`="Active"';
+
+        } elseif ($options == 'Suspended') {
+
+            $where = ' and `Deal Component Status`="Suspended"';
+
+        } else {
+            $where = '';
+        }
+
+
+        $sql = sprintf(
+            "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Deal Key`=%d  $where", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                if ($type == 'objects') {
+                    $deal_components[$row['Deal Component Key']] = get_object('DealComponent', $row['Deal Component Key']);
+                } else {
+                    $deal_components[$row['Deal Component Key']] = $row['Deal Component Key'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $deal_components;
+    }
+
     function get_formatted_allowances() {
 
         $allowances = '';
@@ -633,13 +603,90 @@ class Deal extends DB_Table {
 
     }
 
+    function update_field_switcher($field, $value, $options = '', $metadata = '') {
+
+
+        switch ($field) {
+
+            case 'Deal Component Allowance Label':
+                //used for bulk discounts campaign
+                $deal_components        = $this->get_deal_components('objects');
+                $deal_component         = array_pop($deal_components);
+                $deal_component->editor = $this->editor;
+                $deal_component->update(array('Deal Component Allowance Label' => $value), $options);
+                $this->get_data('id', $this->id);
+
+                break;
+
+            case 'Deal Component Allowance Percentage':
+
+                //used for bulk discounts campaign
+
+
+                $value = floatval($value) / 100;
+
+                $deal_components        = $this->get_deal_components('objects');
+                $deal_component         = array_pop($deal_components);
+                $deal_component->editor = $this->editor;
+                $deal_component->update(array('Deal Component Allowance' => $value), $options);
+                $this->get_data('id', $this->id);
+                break;
+            case 'Deal Terms':
+
+                $this->update_field($field, $value, $options);
+
+
+                $this->update_term_allowances();
+
+                $components = $this->get_deal_components('objects', 'All');
+
+                foreach ($components as $component) {
+
+
+                    $component->editor = $this->editor;
+                    $component->update(array('Deal Component Terms' => $value), $options);
+
+                }
+
+
+                break;
+
+            case 'Deal Term Label':
+                $this->update_field($field, $value, $options);
+
+                $sql = sprintf('UPDATE `Deal Component Dimension` SET `Deal Component Term Label`=%s WHERE `Deal Component Deal Key`=%d  ', prepare_mysql($value), $this->id);
+                $this->db->exec($sql);
+
+                $this->update_websites();
+
+
+                break;
+            case('Deal Begin Date'):
+                $this->update_begin_date($value, $options);
+                break;
+            case('Deal Expiration Date'):
+                $this->update_expiration_date($value, $options);
+                break;
+            case 'Deal Status':
+
+                $this->update_status($value);
+                break;
+            default:
+                $base_data = $this->base_data();
+
+                if (array_key_exists($field, $base_data)) {
+                    $this->update_field($field, $value, $options);
+                }
+        }
+    }
+
     function update_websites() {
 
         $webpage_keys = array();
-        $products = array();
-        $families    = array();
-        $departments = array();
-        $sql         = sprintf(
+        $products     = array();
+        $families     = array();
+        $departments  = array();
+        $sql          = sprintf(
             'select `Deal Component Trigger Key`,`Category Scope` from  `Deal Component Dimension`  left join `Category Dimension` on (`Deal Component Trigger Key`=`Category Key`)   where `Deal Component Deal Key`=%d  and `Deal Component Trigger`="Category"  ',
             $this->id
         );
@@ -793,9 +840,9 @@ class Deal extends DB_Table {
 
         $this->update_metadata = array(
             'class_html' => array(
-                'Duration'          => $this->get('Duration'),
+                'Duration'    => $this->get('Duration'),
                 'Status_Icon' => $this->get('Status Icon'),
-                'Status' => $this->get('Status')
+                'Status'      => $this->get('Status')
 
 
             )
@@ -845,9 +892,9 @@ class Deal extends DB_Table {
 
         $this->update_metadata = array(
             'class_html' => array(
-                'Duration'          => $this->get('Duration'),
+                'Duration'    => $this->get('Duration'),
                 'Status_Icon' => $this->get('Status Icon'),
-                'Status' => $this->get('Status')
+                'Status'      => $this->get('Status')
 
 
             )
@@ -856,6 +903,31 @@ class Deal extends DB_Table {
 
     }
 
+    function update_status($value = '') {
+
+
+        if ($value == 'Suspended') {
+
+
+            $this->update_field('Deal Status', $value);
+
+
+        } else {
+
+
+            $this->update_status_from_dates($force = true);
+
+
+        }
+
+
+        foreach ($this->get_deal_components('objects', 'all') as $component) {
+
+
+            //  $component->update(array('Deal Component Status' => $value), 'no_history');
+        }
+
+    }
 
     function update_allowance_label() {
 
@@ -883,16 +955,14 @@ class Deal extends DB_Table {
         $data['Deal Component Store Key']    = $this->data['Deal Store Key'];
         $data['Deal Component Campaign Key'] = $this->data['Deal Campaign Key'];
         $data['Deal Component Begin Date']   = gmdate('Y-m-d H:i:s');
-        $data['Deal Component Icon']       = $campaign->get('Deal Campaign Icon');
+        $data['Deal Component Icon']         = $campaign->get('Deal Campaign Icon');
 
-        $data['Deal Component Status']       = $this->data['Deal Status'];
+        $data['Deal Component Status'] = $this->data['Deal Status'];
 
-        if(empty($data['Deal Component Name Label'])){
+        if (empty($data['Deal Component Name Label'])) {
 
             $data['Deal Component Name Label'] = $this->get('Deal Name');
         }
-
-
 
 
         $hereditary_fields = array(
@@ -968,9 +1038,7 @@ class Deal extends DB_Table {
 
     }
 
-
     function suspend() {
-
 
 
         $this->update_status('Suspended');
@@ -986,85 +1054,12 @@ class Deal extends DB_Table {
         $this->update_status();
 
 
-
-
         foreach ($this->get_deal_components('objects', 'all') as $component) {
-
 
 
             $component->update_status();
         }
     }
-
-
-    function update_status($value = '') {
-
-
-
-        if ($value == 'Suspended') {
-
-
-            $this->update_field('Deal Status', $value);
-
-
-        } else {
-
-
-            $this->update_status_from_dates($force = true);
-
-
-        }
-
-
-        foreach ($this->get_deal_components('objects', 'all') as $component) {
-
-
-          //  $component->update(array('Deal Component Status' => $value), 'no_history');
-        }
-
-    }
-    function update_status_from_dates($force = false) {
-
-
-        if ($this->data['Deal Expiration Date'] != '' and strtotime($this->data['Deal Expiration Date'].' +0:00') <= strtotime('now +0:00')) {
-            $this->fast_update(array(
-                'Deal Status'=> 'Finish'));
-
-            if ($this->data['Deal Voucher Key']) {
-                $voucher = get_object('Voucher',$this->data['Deal Voucher Key']);
-                $voucher->editor=$this->editor;
-                $voucher->fast_update(array(
-                                       'Voucher Status'=> 'Finish'));
-
-
-            }
-
-            return;
-        }
-
-
-        if (!$force and $this->data['Deal Status'] == 'Suspended') {
-            return;
-        }
-
-        if (strtotime($this->data['Deal Begin Date'].' +0:00') >strtotime('now +0:00')) {
-
-            $this->fast_update(array(
-                                   'Deal Status'=> 'Waiting'));
-
-        }
-
-
-        if (strtotime($this->data['Deal Begin Date'].' +0:00') <= strtotime('now +0:00')) {
-            $this->fast_update(array(
-                                   'Deal Status'=> 'Active'));
-
-        }
-
-
-    }
-
-
 
     function get_to_date() {
         if ($this->data['Deal Expiration Date'] == '') {
