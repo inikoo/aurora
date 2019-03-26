@@ -575,6 +575,18 @@ $part_fields[] = array(
             'required'        => false,
             'type'            => 'value'
         ),
+        array(
+            'id'   => 'Part_HTSUS_Code',
+            'edit' => ($edit ? 'numeric' : ''),
+
+            'value'           => $object->get('Part HTSUS Code'),
+            'formatted_value' => $object->get('HTSUS Code'),
+            'label'           => '<span title="Harmonized Tariff Schedule of the United States Code ">HTS US <img src="/art/flags/us.gif"/></span>',
+            'invalid_msg'     => get_invalid_message('string'),
+            'required'        => false,
+            'type'            => 'value'
+
+        ),
 
     )
 
