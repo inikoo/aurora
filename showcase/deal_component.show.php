@@ -18,6 +18,21 @@ function get_deal_component_showcase($data, $smarty) {
         return "";
     }
 
+    $deal=get_object('Deal',$deal_component->get('Deal Key'));
+    $campaign = get_object('DealCampaign', $deal->get('Deal Campaign Key'));
+
+    switch ($campaign->get('Deal Campaign Code')){
+        case 'CA':
+            $category=get_object('Category',$deal->get('Deal Trigger Key'));
+            $smarty->assign('category', $category);
+
+            break;
+    }
+
+
+
+    $smarty->assign('campaign', $campaign);
+
 
     $smarty->assign('deal_component', $deal_component);
 
