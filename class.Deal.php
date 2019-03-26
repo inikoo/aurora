@@ -262,7 +262,19 @@ class Deal extends DB_Table {
 
                 $_terms = json_decode($this->get('Deal Terms'), true);
 
-                $terms = '<span style="border:1px solid ;padding: 1px 10px">'.$_terms['voucher'].'</span> <span style="opacity: .8">'.money($_terms['amount'], $store->get('Store Currency Code')).'</span>';
+                if (!$_terms) {
+                    $tmp = preg_split('/\;/',$this->get('Deal Terms'));
+                    $_terms=array(
+                        'voucher'=>$tmp[0],
+                        'amount'=>';'.$tmp[1].';'.$tmp[2],
+                    );
+                }
+
+
+                $amount_data = preg_split('/\;/', $_terms['amount']);
+
+
+                $terms = '<span style="border:1px solid ;padding: 1px 10px">'.$_terms['voucher'].'</span> <span style="opacity: .8">'.money($amount_data[1], $store->get('Store Currency Code')).'</span>';
 
 
                 break;
