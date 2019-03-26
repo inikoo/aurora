@@ -19,7 +19,7 @@
             <span style="padding-top: 0px;margin-top: 0px"><span class=" padding_right_10 Status_Icon">{$deal_component->get('Status Icon')}</span> <span class="Duration" >{$deal_component->get('Duration')}</span> </span>
         </div>
 
-        <h1 style="margin: 10px 0px 20px 0px">
+        <h1 style="margin: 20px 0px">
 
             <span class="term">{$deal_component->get_formatted_terms()}</span> <i class="fa fa-arrow-right"></i> <span class="allowance">{$deal_component->get_formatted_allowances()} </span></h1>
 
@@ -32,7 +32,12 @@
 
 
         <table border=0 style="width: 100%">
-
+            {if $campaign->get('Deal Campaign Code')=='CA'}
+                <tr class="top">
+                    <td class="label">{t}Category{/t}</td>
+                    <td class="aright"> <span class="link" onclick="change_view('products/{$category->get('Store Key')}/category/{$category->id}',{ 'tab':'category.deal_components'  })">{$category->get('Code')}</td>
+                </tr>
+            {/if}
 
             <tr class="top">
                 <td class="label">{t}Customers{/t}</td>
