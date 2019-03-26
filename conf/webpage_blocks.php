@@ -87,14 +87,14 @@ function get_webpage_blocks($theme = '') {
 
 
 
-        'banner'    => array(
+/*        'banner'    => array(
             'type'   => 'banner',
             'label'  => _('Banner'),
             'icon'   => 'fa-presentation',
             'show'   => 1,
             'height' => 250,
             'src'    => ''
-        ),
+        ),*/
 
         'telephone' => array(
             'type'       => 'telephone',

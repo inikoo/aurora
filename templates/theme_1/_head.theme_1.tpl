@@ -46,6 +46,7 @@
     <link href="/css/editor_v1/plugins/draggable.css" rel="stylesheet">
 
     <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js"></script>
+    <script src="js/libs/master_slider/banner.js"></script>
 
 
     <script src="/js/libs/sweetalert.min.js?v2a"></script>
@@ -469,8 +470,29 @@
             font-size: 16px;
         }
         {/if}
+        .bannerl-009-spin img {
+            animation-name: bannerl-009-spin;
+            animation-duration: 1.6s;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+        }
 
+        @keyframes bannerl-009-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
 
+        .bannerb051 .i { position:absolute; cursor:pointer;}
+        .bannerb051 .i .b { fill:#fff; fill-opacity:0.5; }
+        .bannerb051 .i:hover .b { fill-opacity:.7; }
+        .bannerb051 .iav .b { fill-opacity: 1; }
+        .bannerb051 .i.idn { opacity:.3; }
+
+        .bannera051 { display:block; position:absolute; cursor:pointer; }
+        .bannera051 .a { fill:none; stroke:#fff; stroke-width:360; stroke-miterlimit:10; }
+        .bannera051:hover { opacity:.8; }
+        .bannera051.bannera051dn { opacity:.5; }
+        .bannera051.bannera051ds { opacity:.3; pointer-events:none; }
     </style>
 
 
