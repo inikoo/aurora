@@ -826,8 +826,8 @@ class Order extends DB_Table {
 
 
                     break;
-
                 case 'InProcess':
+                case 'Delivery_Note_deleted':
 
 
                     if ($this->data['Order State'] == 'Cancelled' or $this->data['Order State'] == 'Dispatched') {
@@ -838,16 +838,28 @@ class Order extends DB_Table {
 
                     }
 
-
-                    $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Submitted by Customer Date', $date, 'no_history');
-                    $this->update_field('Order Date', $date, 'no_history');
-
-
-                    $history_data = array(
-                        'History Abstract' => _('Order submited'),
-                        'History Details'  => '',
+                    $this->fast_update(
+                        array(
+                            'Order State'                      => 'InProcess',
+                            'Order Submitted by Customer Date' => $date,
+                            'Order Date'                       => $date
+                        )
                     );
+
+
+                    if ($value == 'InProcess') {
+                        $history_data = array(
+                            'History Abstract' => _('Order submited'),
+                            'History Details'  => '',
+                        );
+                    } else {
+                        $history_data = array(
+                            'History Abstract' => _('Delivery note deleted'),
+                            'History Details'  => '',
+                        );
+                    }
+
+
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
 
                     $operations = array(
@@ -945,6 +957,7 @@ class Order extends DB_Table {
 
                     break;
 
+
                 case 'Delivery Note Cancelled':
 
 
@@ -1027,7 +1040,8 @@ class Order extends DB_Table {
                     }
 
 
-                    $data_dn                                              = array(
+                    $data_dn = array(
+                        'editor'                      => $this->editor,
                         'Delivery Note Warehouse Key' => $warehouse_key,
                         'Delivery Note Date Created'  => $date,
                         'Delivery Note Date'          => $date,
@@ -1061,7 +1075,6 @@ class Order extends DB_Table {
                         'Delivery Note Address Postal Label'         => $this->data['Order Delivery Address Postal Label'],
                         'Delivery Note Show in Warehouse Orders'     => $store->get('Store Show in Warehouse Orders')
                     );
-                    $this->data['Delivery Note Show in Warehouse Orders'] = $store->data['Store Show in Warehouse Orders'];
 
 
                     $delivery_note = new DeliveryNote('create', $data_dn, $this);
@@ -1255,8 +1268,8 @@ class Order extends DB_Table {
                     }
 
 
-                    $dn = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
-
+                    $dn         = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
+                    $dn->editor = $this->editor;
                     $dn->fast_update(
                         array(
                             'Delivery Note Invoiced'                    => 'No',
@@ -1293,8 +1306,8 @@ class Order extends DB_Table {
 
                     $invoice = $this->create_invoice($date);
 
-                    $dn = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
-
+                    $dn         = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
+                    $dn->editor = $this->editor;
 
                     $dn->update(
                         array(
@@ -1445,8 +1458,8 @@ class Order extends DB_Table {
 
                     $invoice = $this->create_invoice($date);
 
-                    $dn = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
-
+                    $dn         = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
+                    $dn->editor = $this->editor;
 
                     $dn->update(
                         array(
@@ -2936,7 +2949,8 @@ class Order extends DB_Table {
         $replacement_public_id = $this->get_replacement_public_id($this->data['Order Public ID'].$store->data['Store Replacement Suffix']);
 
 
-        $data_dn                                              = array(
+        $data_dn = array(
+            'editor'                      => $this->editor,
             'Delivery Note Warehouse Key' => $warehouse_key,
             'Delivery Note Date Created'  => $date,
             'Delivery Note Date'          => $date,
@@ -2970,11 +2984,10 @@ class Order extends DB_Table {
             'Delivery Note Address Postal Label'         => $this->data['Order Delivery Address Postal Label'],
             'Delivery Note Show in Warehouse Orders'     => $store->get('Store Show in Warehouse Orders')
         );
-        $this->data['Delivery Note Show in Warehouse Orders'] = $store->data['Store Show in Warehouse Orders'];
 
 
         // print_r($data_dn);
-        $replacement = new DeliveryNote('create replacement', $data_dn, $this, $transactions);
+        $replacement = new DeliveryNote('create replacement', $data_dn, $transactions);
 
         $this->fast_update(array('Order Replacement State' => 'InWarehouse'));
 

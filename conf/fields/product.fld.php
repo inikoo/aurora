@@ -406,11 +406,7 @@ $product_fields = array(
                 'render'          => ($new ? false : true),
                 'value'           => $object->get('Product Tariff Code'),
                 'formatted_value' => $object->get('Tariff Code'),
-                'label'           => ucfirst(
-                        $object->get_field_label('Product Tariff Code')
-                    ).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._(
-                            'Linked to part value'
-                        ).'"></i>' : ''),
+                'label'           => ucfirst($object->get_field_label('Product Tariff Code')).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._('Linked to part value').'"></i>' : ''),
                 'invalid_msg'     => get_invalid_message('string'),
                 'required'        => false,
                 'type'            => 'value'
@@ -430,6 +426,18 @@ $product_fields = array(
                 'invalid_msg'     => get_invalid_message('string'),
                 'required'        => false,
                 'type'            => 'value'
+            ),
+            array(
+                'id'              => 'Product_HTSUS_Code',
+                'edit'            => ($part_edit ? 'numeric' : ''),
+                'render'          => ($new ? false : true),
+                'value'           => $object->get('Product HTSUS Code'),
+                'formatted_value' => $object->get('HTSUS Code'),
+                'label'           => '<span title="Harmonized Tariff Schedule of the United States Code ">HTS US <img src="/art/flags/us.gif"/></span> '.($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._('Linked to part value').'"></i>' : ''),
+                'invalid_msg'     => get_invalid_message('string'),
+                'required'        => false,
+                'type'            => 'value'
+
             ),
 
         )

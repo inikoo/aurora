@@ -1909,14 +1909,14 @@ function invoice_items($_data, $db, $user) {
             ($factor * $data['Order Transaction Amount']), $data['Invoice Currency Code']
         );
 
-        /*
+
         $tax    = money(
             ($data['Invoice Transaction Item Tax Amount']), $data['Invoice Currency Code']
         );
         $amount = money(
             ($data['Invoice Transaction Gross Amount'] - $data['Invoice Transaction Total Discount Amount'] + $data['Invoice Transaction Item Tax Amount']), $data['Invoice Currency Code']
         );
-*/
+
 
         $discount = ($data['Invoice Transaction Total Discount Amount'] == 0
             ? ''
@@ -1929,16 +1929,21 @@ function invoice_items($_data, $db, $user) {
         $price    = $data['Product History Price'];
         $currency = $data['Product Currency'];
 
-        $desc = '';
+        $description = '';
         if ($units > 1) {
-            $desc = number($units).'x ';
+            $description = number($units).'x ';
         }
-        $desc .= ' '.$name;
+        $description .= ' '.$name;
+
+
+        $price=money($price, $currency, $_locale);
+
+        /*
+
         if ($price > 0) {
-            $desc .= ' <br>'._('Price').': '.money($price, $currency, $_locale).'';
+            $description .= ' <br>'._('Price').': '.money($price, $currency, $_locale).'';
         }
 
-        $description = $desc;
 
 
         if ($data['Product RRP'] != 0) {
@@ -1947,16 +1952,20 @@ function invoice_items($_data, $db, $user) {
                 );
         }
 
-
+*/
         if ($discount != '') {
             $description .= ' '._('Discount').':'.$discount;
         }
+
+        /*
 
         if ($type == 'Invoice') {
             if ($print_tariff_code and $data['Product Tariff Code'] != '') {
                 $description .= '<br>'._('Tariff Code').': '.$data['Product Tariff Code'];
             }
         }
+
+        */
 
         if ($type == 'Invoice') {
             $quantity = number($data['Delivery Note Quantity']);
@@ -1972,9 +1981,11 @@ function invoice_items($_data, $db, $user) {
             'code'        => sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $data['Store Key'], $data['Product ID'], $data['Product History Code']),
             'description' => $description,
             'quantity'    => $quantity,
+            'price'         => $price,
+
             'net'         => $net,
-            'tax'         => $net,
-            'amount'      => $net,
+            'tax'         => $tax,
+            'amount'      => $amount,
 
 
         );

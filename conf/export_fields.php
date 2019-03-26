@@ -714,6 +714,16 @@ $export_fields = array(
             'label'   => _('Tariff code'),
             'checked' => 1
         ),
+        array(
+            'name'    => '`Part Duty Rate`',
+            'label'   => _('Duty rate'),
+            'checked' => 0
+        ),
+        array(
+            'name'    => '`Part HTSUS Code`',
+            'label'   => 'HTS US',
+            'checked' => 1
+        ),
 
     ),
     'part_categories' => array(
@@ -1120,6 +1130,11 @@ $export_fields = array(
         array(
             'name'    => '`Product Duty Rate`',
             'label'   => _('Duty rate'),
+            'checked' => 0
+        ),
+        array(
+            'name'    => '`Product HTSUS Code`',
+            'label'   => 'HTS US',
             'checked' => 0
         ),
         array(

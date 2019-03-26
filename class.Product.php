@@ -1084,7 +1084,9 @@ class Product extends Asset {
             case 'Product Tariff Code':
                 $label = _('tariff code');
                 break;
-
+            case 'Product HTSUS Code':
+                $label = 'HTS US';
+                break;
             case 'Product Duty Rate':
                 $label = _('duty rate');
                 break;
@@ -2679,6 +2681,23 @@ class Product extends Asset {
 
                 if (!preg_match('/from_part/', $options) and count($this->get_parts()) == 1) {
 
+                    $part = array_values($this->get_parts('objects'))[0];
+                    $part->update(
+                        array(
+                            preg_replace('/^Product/', 'Part', $field) => $value
+                        ), $options
+                    );
+
+                    $this->get_data('id', $this->id);
+                    $this->updated = $part->updated;
+                    return;
+
+                }
+                $this->update_field($field, $value, $options);
+                break;
+            case('Product HTSUS Code'):
+
+                if (!preg_match('/from_part/', $options) and count($this->get_parts()) == 1) {
 
                     $part = array_values($this->get_parts('objects'))[0];
                     $part->update(
@@ -2689,27 +2708,10 @@ class Product extends Asset {
 
                     $this->get_data('id', $this->id);
                     $this->updated = $part->updated;
-
                     return;
 
                 }
-
-                /*
-                                if ($value == '') {
-                                    $tariff_code_valid = '';
-                                } else {
-                                    include_once 'utils/validate_tariff_code.php';
-                                    $tariff_code_valid = validate_tariff_code(
-                                        $value, $this->db
-                                    );
-                                }
-                */
-
                 $this->update_field($field, $value, $options);
-
-                //$this->update_field('Product Tariff Code Valid', $tariff_code_valid, 'no_history');
-
-
                 break;
 
             case 'Product Unit Weight':
