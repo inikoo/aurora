@@ -24,14 +24,13 @@
 <div id="block_{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if} " style="Width:100%;" h="{$data.height}" h_mobile="{$height_mobile}"  src_mobile="{$src_mobile}"  w="1240"  >*}
 
 
-<div id="banner_1" style="position:relative;margin:0 auto;top:0px;left:0px;width:980px;height:380px;overflow:hidden;visibility:hidden;">
-    <!-- Loading Screen -->
+<div id="banner_1" style="position:relative;height:330px;overflow:hidden;visibility:hidden;">
     <div data-u="loading" class="bannerl-009-spin" style="position:absolute;top:0px;left:0px;width:100%;height:100%;text-align:center;background-color:rgba(0,0,0,0.7);">
         <img style="margin-top:-19px;position:relative;top:50%;width:38px;height:38px;" src="art/sliders/spin.svg" />
     </div>
-    <div data-u="slides" style="cursor:default;position:relative;top:0px;left:0px;width:980px;height:380px;overflow:hidden;">
+    <div data-u="slides" style="cursor:default;position:relative;top:0px;left:0px;width:1240px;height:330px;overflow:hidden;">
         <div>
-            <img data-u="image" src="art/sliders/blue.jpg" />
+            <img data-u="image" src="art/sliders/blue.jpg"/>
         </div>
         <div>
             <img data-u="image" src="art/sliders/green.jpg" />
@@ -40,15 +39,13 @@
             <img data-u="image" src="art/sliders/red.jpg" />
         </div>
     </div>
-    <!-- Bullet Navigator -->
     <div data-u="navigator" class="bannerb051" style="position:absolute;bottom:12px;right:12px;" data-autocenter="1" data-scale="0.5" data-scale-bottom="0.75">
         <div data-u="prototype" class="i" style="width:16px;height:16px;">
-            <svg viewbox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;">
+            <svg  viewbox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;">
                 <circle class="b" cx="8000" cy="8000" r="5800"></circle>
             </svg>
         </div>
     </div>
-    <!-- Arrow Navigator -->
     <div data-u="arrowleft" class="bannera051" style="width:55px;height:55px;top:0px;left:25px;" data-autocenter="2" data-scale="0.75" data-scale-left="0.75">
         <svg viewbox="0 0 16000 16000" style="position:absolute;top:0;left:0;width:100%;height:100%;">
             <polyline class="a" points="11040,1920 4960,8000 11040,14080 "></polyline>
@@ -62,4 +59,5 @@
 </div>
 <script type="text/javascript">banner_1_slider_init();</script>
 
-</div>
+{*
+</div>*}
