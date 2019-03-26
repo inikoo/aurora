@@ -19,7 +19,22 @@ function get_deal_showcase($data, $smarty) {
     }
 
 
-   $deal->update_term_allowances();
+    //$deal->update_term_allowances();
+
+
+    $campaign = get_object('DealCampaign', $deal->get('Deal Campaign Key'));
+
+    switch ($campaign->get('Deal Campaign Code')){
+        case 'CA':
+            $category=get_object('Category',$deal->get('Deal Trigger Key'));
+            $smarty->assign('category', $category);
+
+            break;
+    }
+
+
+
+    $smarty->assign('campaign', $campaign);
 
 
 

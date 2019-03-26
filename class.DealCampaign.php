@@ -477,6 +477,7 @@ class DealCampaign extends DB_Table {
 
         $data['Deal Campaign Key'] = $this->id;
         $data['Deal Store Key']    = $this->data['Deal Campaign Store Key'];
+        $data['Deal Icon']         = $this->get('Deal Campaign Icon');
 
 
         $data['editor'] = $this->editor;
@@ -569,10 +570,10 @@ class DealCampaign extends DB_Table {
                     $deal->fast_update(
                         array(
                             'Deal Voucher Key' => $voucher->id,
-                            'Deal Terms'        => json_encode(
+                            'Deal Terms'       => json_encode(
                                 array(
                                     'voucher' => $voucher->get('Voucher Code'),
-                                    'amount' => $deal->get('Deal Terms')
+                                    'amount'  => $deal->get('Deal Terms')
 
                                 )
                             )
@@ -643,190 +644,6 @@ class DealCampaign extends DB_Table {
 
 
         return $deal;
-    }
-
-    function update_number_of_deals() {
-        $number_deals           = 0;
-        $number_current_deals   = 0;
-        $number_deal_components = 0;
-
-        $number_active_deal_components    = 0;
-        $number_suspended_deal_components = 0;
-        $number_waiting_deal_components   = 0;
-        $number_finish_deal_components    = 0;
-
-        $sql = sprintf("SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d  AND `Deal Status`='Active'  ", $this->id);
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_current_deals = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-        $sql = sprintf("SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d ", $this->id);
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_deals = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $sql = "SELECT count(*) AS num ,`Deal Component Status` FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=?  group by `Deal Component Status`  ";
-
-
-        $stmt = $this->db->prepare($sql);
-        if ($stmt->execute(
-            array(
-                $this->id
-            )
-        )) {
-            while ($row = $stmt->fetch()) {
-                switch ($row['Deal Component Status']) {
-                    case 'Active':
-                        $number_active_deal_components = $row['num'];
-                        break;
-                    case 'Suspended':
-                        $number_suspended_deal_components = $row['num'];
-                        break;
-                    case 'Waiting':
-                        $number_waiting_deal_components = $row['num'];
-                        break;
-                    case 'Finish':
-                        $number_finish_deal_components = $row['num'];
-                        break;
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit();
-        }
-
-        $sql = sprintf("SELECT count(*) AS num FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=%d ", $this->id);
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_deal_components = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $this->fast_update(
-            array(
-                'Deal Campaign Number Deals'                     => $number_deals,
-                'Deal Campaign Number Current Deals'             => $number_current_deals,
-                'Deal Campaign Number Deal Components'           => $number_deal_components,
-                'Deal Campaign Number Active Deal Components'    => $number_active_deal_components,
-                'Deal Campaign Number Suspended Deal Components' => $number_suspended_deal_components,
-                'Deal Campaign Number Waiting Deal Components'   => $number_waiting_deal_components,
-                'Deal Campaign Number Finish Deal Components'    => $number_finish_deal_components
-
-            )
-        );
-
-    }
-
-
-    function update_usage() {
-
-        $applied_orders    = 0;
-        $applied_customers = 0;
-        $used_orders       = 0;
-        $used_customers    = 0;
-
-        $sql = sprintf(
-            "SELECT count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order Deal Bridge` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) WHERE B.`Deal Campaign Key`=%d AND `Applied`='Yes' AND `Order State`!='Cancelled' ",
-            $this->id
-
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $applied_orders    = $row['orders'];
-                $applied_customers = $row['customers'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $sql = sprintf(
-            "SELECT count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order Deal Bridge` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) WHERE B.`Deal Campaign Key`=%d AND `Used`='Yes' AND `Order State`!='Cancelled' ",
-            $this->id
-
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $used_orders    = $row['orders'];
-                $used_customers = $row['customers'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $this->fast_update(
-            array(
-                'Deal Campaign Total Acc Applied Orders'    => $applied_orders,
-                'Deal Campaign Total Acc Applied Customers' => $applied_customers,
-                'Deal Campaign Total Acc Used Orders'       => $used_orders,
-                'Deal Campaign Total Acc Used Customers'    => $used_customers
-
-
-            ), 'no_history'
-        );
-
-
-        //$store = new Store($this->get('Deal Campaign Store Key'));
-        //$store->update_campaings_data();
-        //$store->update_deals_data();
-
-
-    }
-
-    function delete() {
-
-        if ($this->get('Deal Campaign Number Current Deals') > 0 and $this->data['Deal Campaign Status'] != 'Waiting') {
-            $this->msg = "can't be delete";
-
-            return;
-        }
-
-
-        $sql = sprintf(
-            "DELETE FROM `Deal Campaign Dimension` WHERE `Deal Campaign Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-
-        $sql = sprintf(
-            "DELETE FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-
-        $sql = sprintf(
-            "DELETE FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-
-
     }
 
     function get($key = '') {
@@ -952,6 +769,189 @@ class DealCampaign extends DB_Table {
         }
 
         return false;
+    }
+
+    function update_number_of_deals() {
+        $number_deals           = 0;
+        $number_current_deals   = 0;
+        $number_deal_components = 0;
+
+        $number_active_deal_components    = 0;
+        $number_suspended_deal_components = 0;
+        $number_waiting_deal_components   = 0;
+        $number_finish_deal_components    = 0;
+
+        $sql = sprintf("SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d  AND `Deal Status`='Active'  ", $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_current_deals = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $sql = sprintf("SELECT count(*) AS num FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d ", $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_deals = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $sql = "SELECT count(*) AS num ,`Deal Component Status` FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=?  group by `Deal Component Status`  ";
+
+
+        $stmt = $this->db->prepare($sql);
+        if ($stmt->execute(
+            array(
+                $this->id
+            )
+        )) {
+            while ($row = $stmt->fetch()) {
+                switch ($row['Deal Component Status']) {
+                    case 'Active':
+                        $number_active_deal_components = $row['num'];
+                        break;
+                    case 'Suspended':
+                        $number_suspended_deal_components = $row['num'];
+                        break;
+                    case 'Waiting':
+                        $number_waiting_deal_components = $row['num'];
+                        break;
+                    case 'Finish':
+                        $number_finish_deal_components = $row['num'];
+                        break;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit();
+        }
+
+        $sql = sprintf("SELECT count(*) AS num FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=%d ", $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_deal_components = $row['num'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $this->fast_update(
+            array(
+                'Deal Campaign Number Deals'                     => $number_deals,
+                'Deal Campaign Number Current Deals'             => $number_current_deals,
+                'Deal Campaign Number Deal Components'           => $number_deal_components,
+                'Deal Campaign Number Active Deal Components'    => $number_active_deal_components,
+                'Deal Campaign Number Suspended Deal Components' => $number_suspended_deal_components,
+                'Deal Campaign Number Waiting Deal Components'   => $number_waiting_deal_components,
+                'Deal Campaign Number Finish Deal Components'    => $number_finish_deal_components
+
+            )
+        );
+
+    }
+
+    function update_usage() {
+
+        $applied_orders    = 0;
+        $applied_customers = 0;
+        $used_orders       = 0;
+        $used_customers    = 0;
+
+        $sql = sprintf(
+            "SELECT count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order Deal Bridge` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) WHERE B.`Deal Campaign Key`=%d AND `Applied`='Yes' AND `Order State`!='Cancelled' ",
+            $this->id
+
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $applied_orders    = $row['orders'];
+                $applied_customers = $row['customers'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order Deal Bridge` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) WHERE B.`Deal Campaign Key`=%d AND `Used`='Yes' AND `Order State`!='Cancelled' ",
+            $this->id
+
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $used_orders    = $row['orders'];
+                $used_customers = $row['customers'];
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $this->fast_update(
+            array(
+                'Deal Campaign Total Acc Applied Orders'    => $applied_orders,
+                'Deal Campaign Total Acc Applied Customers' => $applied_customers,
+                'Deal Campaign Total Acc Used Orders'       => $used_orders,
+                'Deal Campaign Total Acc Used Customers'    => $used_customers
+
+
+            ), 'no_history'
+        );
+
+
+        //$store = new Store($this->get('Deal Campaign Store Key'));
+        //$store->update_campaings_data();
+        //$store->update_deals_data();
+
+
+    }
+
+    function delete() {
+
+        if ($this->get('Deal Campaign Number Current Deals') > 0 and $this->data['Deal Campaign Status'] != 'Waiting') {
+            $this->msg = "can't be delete";
+
+            return;
+        }
+
+
+        $sql = sprintf(
+            "DELETE FROM `Deal Campaign Dimension` WHERE `Deal Campaign Key`=%d", $this->id
+        );
+        $this->db->exec($sql);
+
+        $sql = sprintf(
+            "DELETE FROM `Deal Dimension` WHERE `Deal Campaign Key`=%d", $this->id
+        );
+        $this->db->exec($sql);
+
+        $sql = sprintf(
+            "DELETE FROM `Deal Component Dimension` WHERE `Deal Component Campaign Key`=%d", $this->id
+        );
+        $this->db->exec($sql);
+
+
     }
 
     function get_field_label($field) {
