@@ -301,12 +301,23 @@ $export_edit_template_fields = array(
             'default_value' => '',
             'show_for_new'  => true,
             'required'      => false,
+            'header'        => 'HTSUS',
+            'name'          => 'Part Part HTSUS Code',
+            'label'         => 'HTS US',
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
             'header'        => 'UN number',
             'name'          => 'Part Part UN Number',
             'label'         => _('UN number'),
             'checked'       => 0,
             'cell_type'     => 'string'
         ),
+
         array(
             'default_value' => '',
             'show_for_new'  => true,
@@ -536,6 +547,16 @@ $export_edit_template_fields = array(
             'header'        => 'Duty rate',
             'name'          => 'Part Duty Rate',
             'label'         => _('Duty rate'),
+            'checked'       => 0,
+            'cell_type'     => 'string'
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'HTSUS',
+            'name'          => 'Part HTSUS Code',
+            'label'         => 'HTSUS',
             'checked'       => 0,
             'cell_type'     => 'string'
         ),
