@@ -1400,20 +1400,27 @@ h2.dashboard{
   }
 }
 
-.app_theme_red #top_bar, .app_theme_red #app_leftmenu li {
+.app_theme_red #top_bar,
+.app_theme_red #app_leftmenu li,
+.app_theme_red .dashboard table .main_title,
+.app_theme_red .dashboard table .main_title .widget_types .widget.selected,
+.app_theme_red .dashboard table .main_title .widget_types .widget.selected:hover {
   background: #611919; }
-
 .app_theme_red #app_leftmenu, .app_theme_red #app_leftmenu #top_info, .app_theme_red #app_leftmenu li:hover {
   background: #8a3d3d; }
-
-.app_theme_green #top_bar, .app_theme_green #app_leftmenu li {
+.app_theme_green #top_bar,
+.app_theme_green #app_leftmenu li,
+.app_theme_green .dashboard table .main_title,
+.app_theme_green .dashboard table .main_title .widget_types .widget.selected,
+.app_theme_green .dashboard table .main_title .widget_types .widget.selected:hover {
   background: #035003; }
-
 .app_theme_green #app_leftmenu, .app_theme_green #app_leftmenu #top_info, .app_theme_green #app_leftmenu li:hover {
   background: #356f55; }
-
-.app_theme_blue #top_bar, .app_theme_blue #app_leftmenu li {
+.app_theme_blue #top_bar,
+.app_theme_blue #app_leftmenu li,
+.app_theme_blue .dashboard table .main_title,
+.app_theme_blue .dashboard table .main_title .widget_types .widget.selected,
+.app_theme_blue .dashboard table .main_title .widget_types .widget.selected:hover {
   background: #0d1875; }
-
 .app_theme_blue #app_leftmenu, .app_theme_blue #app_leftmenu #top_info, .app_theme_blue #app_leftmenu li:hover {
   background: #424fbd; }

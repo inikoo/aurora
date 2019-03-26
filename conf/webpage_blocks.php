@@ -85,6 +85,17 @@ function get_webpage_blocks($theme = '') {
             'src'    => 'cdn.bannersnack.com/banners/bxmldll37/embed/index.html?userId=30149291&t=1499779573'
         ),
 
+
+
+/*        'banner'    => array(
+            'type'   => 'banner',
+            'label'  => _('Banner'),
+            'icon'   => 'fa-presentation',
+            'show'   => 1,
+            'height' => 250,
+            'src'    => ''
+        ),*/
+
         'telephone' => array(
             'type'       => 'telephone',
             'label'      => _('Phone'),
