@@ -2322,6 +2322,27 @@ class Part extends Asset {
                 $this->updated = $updated;
 
                 break;
+            case('Part HTSUS Code'):
+
+
+                $this->update_field($field, $value, $options);
+                $updated = $this->updated;
+
+
+                foreach ($this->get_products('objects') as $product) {
+
+                    if (count($product->get_parts()) == 1) {
+                        $product->editor = $this->editor;
+                        $product->update(
+                            array('Product HTSUS Code' => $this->get('Part HTSUS Code')), $options.' from_part'
+                        );
+                    }
+
+                }
+
+                $this->updated = $updated;
+
+                break;
             case 'Part SKO Barcode':
 
 
@@ -4599,6 +4620,9 @@ class Part extends Asset {
             case 'Part Delivery Day':
                 $label = _('average delivery days');
                 break;
+            case 'Part HTSUS Code':
+                $label = 'HTSUS';
+                break;
 
             default:
                 $label = $field;
@@ -4711,7 +4735,9 @@ class Part extends Asset {
 
                 $product->fast_update(
                     array(
-                        'Product Tariff Code'                   => $this->get('Part Tariff Code'),
+                        'Product Tariff Code' => $this->get('Part Tariff Code'),
+                        'Product HTSUS Code'  => $this->get('Part HTSUS Code'),
+
                         'Product Duty Rate'                     => $this->get('Part Duty Rate'),
                         'Product Origin Country Code'           => $this->get('Part Origin Country Code'),
                         'Product UN Number'                     => $this->get('Part UN Number'),

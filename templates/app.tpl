@@ -18,7 +18,7 @@
     {/if}
     <script src="/js/aurora_libs.min.js?v190319"></script>
 
-    <script src="/js/aurora.min.js?v190319"></script>
+    <script src="/js/aurora.min.js?v190325"></script>
 
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 

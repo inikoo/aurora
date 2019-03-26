@@ -19,7 +19,7 @@ class DeliveryNote extends DB_Table {
 
     var $update_stock = true;
 
-    function __construct($arg1 = false, $arg2 = false, $arg3 = false, $arg4 = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
 
         global $db;
@@ -39,20 +39,19 @@ class DeliveryNote extends DB_Table {
 
             return;
         }
-        if ($arg1 == 'create replacement') {
-            $this->create_replacement($arg2, $arg3, $arg4);
+
+        if ($arg1 == 'create') {
+            $this->create($arg2, $arg3);
 
             return;
-        }
-        if (preg_match('/create|new/i', $arg1)) {
-            $this->create($arg2, $arg3, $arg4);
+        } else {
+            if ($arg1 == 'create replacement') {
+                $this->create_replacement($arg2, $arg3);
 
-            return;
+                return;
+            }
         }
-        //    if(preg_match('/find/i',$arg1)){
-        //  $this->find($arg2,$arg1);
-        //  return;
-        // }
+
         $this->get_data($arg1, $arg2);
     }
 
@@ -91,10 +90,13 @@ class DeliveryNote extends DB_Table {
 
     }
 
-    protected function create_replacement($dn_data, $order, $transactions) {
+    protected function create($dn_data, $order) {
 
 
         $base_data = $this->base_data();
+
+        $this->editor = $dn_data['editor'];
+        unset($dn_data['editor']);
 
         foreach ($dn_data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
@@ -102,26 +104,36 @@ class DeliveryNote extends DB_Table {
             }
         }
 
-        $keys   = '(';
-        $values = 'values (';
+
+        $sql = sprintf(
+            "INSERT INTO `Delivery Note Dimension` (%s) values (%s)",
+            '`'.join('`,`', array_keys($base_data)).'`',
+            join(',', array_fill(0, count($base_data), '?'))
+        );
+
+
+        $stmt = $this->db->prepare($sql);
+
+        $i = 1;
         foreach ($base_data as $key => $value) {
-            $keys .= "`$key`,";
-            if (preg_match('/xxxxxx/i', $key)) {
-                $values .= prepare_mysql($value, false).",";
-            } else {
-                $values .= prepare_mysql($value).",";
-            }
+            $stmt->bindValue($i, $value);
+            $i++;
         }
 
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
 
+        if ($stmt->execute()) {
 
-        $sql = "insert into `Delivery Note Dimension` $keys  $values";
-
-
-        if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();
+
+
+            $sql = sprintf(
+                'UPDATE `Delivery Note Dimension`  SET  `Delivery Note Metadata V2`=JSON_SET(`Delivery Note Metadata V2`,"$.ver",2)
+                             WHERE `Delivery Note Key`=%d ', $this->id
+            );
+
+
+            $this->db->exec($sql);
+
             $this->get_data('id', $this->id);
 
 
@@ -129,78 +141,83 @@ class DeliveryNote extends DB_Table {
             $distinct_items         = 0;
 
 
-            foreach ($transactions as $transaction_data) {
+            $sql = sprintf(
+                'SELECT `Order Bonus Quantity`,`Product Package Weight`,`Order Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PH  ON (OTF.`Product Key`=PH.`Product Key`)  LEFT JOIN `Product Dimension` P  ON (PH.`Product ID`=P.`Product ID`)     WHERE `Order Key`=%d  AND (`Delivery Note Key` IS NULL OR `Delivery Note Key`=0)',
+                $order->id
+            );
 
-                // print_r($transaction_data);
-
-                if ($transaction_data['type'] == 'itf') {
-
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $estimated_weight       = ($row['Order Quantity'] + $row['Order Bonus Quantity']) * $row['Product Package Weight'];
+                    $total_estimated_weight += $estimated_weight;
+                    $distinct_items++;
                     $sql = sprintf(
-                        'SELECT * FROM `Inventory Transaction Fact` ITF LEFT JOIN `Part Dimension` P  ON (ITF.`Part SKU`=P.`Part SKU`)     WHERE `Inventory Transaction Key`=%d  ', $transaction_data['id']
+                        "UPDATE  `Order Transaction Fact` SET `Estimated Weight`=%f,`Order Last Updated Date`=%s,`Delivery Note ID`=%s,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s WHERE `Order Transaction Fact Key`=%d", $estimated_weight,
+                        prepare_mysql($this->data['Delivery Note Date Created']), prepare_mysql($this->data['Delivery Note ID'])
+
+
+                        , $this->data['Delivery Note Key'], prepare_mysql($this->data['Delivery Note Country 2 Alpha Code']), $row['Order Transaction Fact Key']
+
+                    );
+                    $this->db->exec($sql);
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            $sql = sprintf(
+                'SELECT `Order No Product Transaction Fact Key` FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND (`Delivery Note Key` IS NULL  OR `Delivery Note Key`=0) ', $order->id
+            );
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $sql = sprintf(
+                        "UPDATE  `Order No Product Transaction Fact` SET `Delivery Note Date`=%s,`Delivery Note Key`=%d WHERE `Order No Product Transaction Fact Key`=%d", prepare_mysql($this->data['Delivery Note Date Created']), $this->id,
+                        $row['Order No Product Transaction Fact Key']
+
+                    );
+                    $this->db->exec($sql);
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            $sql = sprintf(
+                'SELECT OTF.`Product Code`,OTF.`Order Quantity`,`No Shipped Due No Authorized`,OTF.`Product ID`,`Product Package Weight`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PH  ON (OTF.`Product Key`=PH.`Product Key`)  LEFT JOIN `Product Dimension` P  ON (PH.`Product ID`=P.`Product ID`)
+		WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Submitted by Customer","In Process")  ', $order->id
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    $this->create_inventory_transaction_fact_item(
+                        $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'] - $row['No Shipped Due No Authorized'], $row['Order Bonus Quantity'], $this->get('Delivery Note Date'), $row['Supplier Metadata']
                     );
 
 
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
-
-
-                            $part         = get_object('part', $row['Part SKU']);
-                            $location_key = $part->get_picking_location_key();
-
-                            $weight   = $transaction_data['amount'] * $part->get('Part Package Weight');
-                            $required = $transaction_data['amount'];
-                            $given    = 0;
-                            list($supplier_key, $supplier_part_key, $supplier_part_historic_key) = $part->get_stock_supplier_data();
-
-
-                            $picking_note = $row['Picking Note'];
-
-                            $sql = sprintf(
-                                "INSERT INTO `Inventory Transaction Fact`  (
-					`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Inventory Transaction Fact Delivery 2 Alpha Code`,`Picking Note`,
-
-					`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,
-
-					`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,
-
-					`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`)
-					VALUES (
-					%s,%s,%s,%s,
-					%f,%s,%s,%d,%s,%d,
-					%s,%s,%.2f,%f,%f,%f,
-
-					%s,%s,%d,%d,%d,%d,%s) ", "'Movement'", "'OIP'", prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']), prepare_mysql($picking_note),
-
-                                $weight, prepare_mysql($this->get('Delivery Note Date')), prepare_mysql($this->get('Delivery Note Date')), $this->id, prepare_mysql($part->id), $location_key,
-
-
-                                0, "'Order In Process'", 0, $required, $given, 0,
-
-
-                                prepare_mysql($this->data['Delivery Note Metadata']), prepare_mysql(''),
-
-                                $supplier_part_key,
-
-                                $supplier_part_historic_key,
-
-                                $supplier_key, $row['Map To Order Transaction Fact Key'], prepare_mysql($row['Map To Order Transaction Fact Metadata'])
-                            );
-
-
-                            //  print $sql;
-
-                            $this->db->exec($sql);
-
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
-
-
                 }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
             }
+
+
+            $history_data = array(
+                'History Abstract' => _('Delivery note created'),
+                'History Details'  => '',
+                'Action'           => 'created'
+            );
+
+            $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
 
             $this->update_totals();
@@ -211,6 +228,143 @@ class DeliveryNote extends DB_Table {
         }
 
         return $this;
+
+
+    }
+
+    function create_inventory_transaction_fact_item($product_id, $map_to_otf_key, $to_sell_quantity, $bonus_qty, $date, $supplier_metadata_array) {
+
+
+        $product = new Product('id', $product_id);
+
+        $part_list = $product->get_parts_data();
+
+        $state = 'Ready to Pick';
+
+        $sql = sprintf(
+            "UPDATE `Order Transaction Fact` SET `Current Dispatching State`=%s WHERE `Order Transaction Fact Key`=%d  ", prepare_mysql($state), $map_to_otf_key
+        );
+        $this->db->exec($sql);
+
+        $part_index = 0;
+
+
+        $multipart_data              = sprintf('<a href="product.php?id=%d">%s</a>', $product->id, $product->data['Product Code']);
+        $multipart_data_multiplicity = count($part_list);
+
+
+        // print_r($part_list);
+
+        foreach ($part_list as $part_data) {
+
+
+            $part = new Part ('sku', $part_data['Part SKU']);
+            if ($part->sku) {
+
+                $required = $part_data['Ratio'] * $to_sell_quantity;
+                $given    = $part_data['Ratio'] * $bonus_qty;
+                $weight   = $part->get('Part Package Weight') * ($required + $given);
+
+
+                $location_key = $part->get_picking_location_key();
+
+                //print_r($supplier_metadata_array);
+
+
+                if ($supplier_metadata_array != '') {
+                    $supplier_metadata = unserialize($supplier_metadata_array);
+                    if (!is_array($supplier_metadata)) {
+                        $supplier_metadata = array();
+                    }
+                } else {
+                    $supplier_metadata = array();
+
+                }
+
+
+                //print "P ".$product->pid."  art:".$part_data['Part SKU']."  p:".$part->sku." \n";
+
+                if (array_key_exists($part->sku, $supplier_metadata) and $supplier_metadata[$part->sku]) {
+                    //print "xxx\n";
+                    //print_r($supplier_metadata[$part->sku]);
+                    //print "-xxx\n";
+
+                    $supplier_part_key          = $supplier_metadata[$part->sku]['supplier_part_key'];
+                    $supplier_part_historic_key = $supplier_metadata[$part->sku]['supplier_part_historic_key'];
+                    $supplier_key               = $supplier_metadata[$part->sku]['supplier_key'];
+
+                } else {
+
+
+                    list($supplier_key, $supplier_part_key, $supplier_part_historic_key) = $part->get_stock_supplier_data();
+
+
+                }
+
+
+                $note = '';
+
+
+                $picking_note = $part_data['Note'];
+
+
+                $sql = sprintf(
+                    "INSERT INTO `Inventory Transaction Fact`  (
+					`Map To Order Transaction Fact Parts Multiplicity`,`Map To Order Transaction Fact XHTML Info`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Inventory Transaction Fact Delivery 2 Alpha Code`,`Picking Note`,
+
+					`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,
+
+					`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,
+
+					`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`)
+					VALUES (
+					%d,%s,%s,%s,%s,%s,
+					%f,%s,%s,%d,%s,%d,
+					%s,%s,%.2f,%f,%f,%f,
+
+					%s,%s,%d,%d,%d,%d,%s) ", $multipart_data_multiplicity, prepare_mysql($multipart_data), "'Movement'", "'OIP'", prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']), prepare_mysql($picking_note),
+
+                    $weight, prepare_mysql($this->get('Delivery Note Date')), prepare_mysql($this->get('Delivery Note Date')), $this->id, prepare_mysql($part_data['Part SKU']), $location_key,
+
+
+                    0, "'Order In Process'", 0, $required, $given, 0,
+
+
+                    prepare_mysql($this->data['Delivery Note Metadata']), prepare_mysql($note),
+
+                    $supplier_part_key,
+
+                    $supplier_part_historic_key,
+
+                    $supplier_key, $map_to_otf_key, prepare_mysql($part_index.';'.$part_data['Ratio'].';0')
+                );
+                $this->db->exec($sql);
+
+
+                //  print $sql;
+
+
+                if ($this->update_stock) {
+
+
+                    //$part_location=new PartLocation($part_data['Part SKU'].'_'.$location_key);
+                    //$part_location->update_stock();
+                }
+                //print "$sql\n";
+
+
+                $part_index++;
+
+            }
+
+            if ($part_index == 0) {
+
+                exit ("\nWarning no part in product ".$product->pid." on $date\n");
+
+            }
+
+
+        }
 
 
     }
@@ -746,10 +900,13 @@ class DeliveryNote extends DB_Table {
 
     }
 
-    protected function create($dn_data, $order) {
+    protected function create_replacement($dn_data, $transactions) {
 
 
         $base_data = $this->base_data();
+
+        $this->editor = $dn_data['editor'];
+        unset($dn_data['editor']);
 
         foreach ($dn_data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
@@ -757,110 +914,99 @@ class DeliveryNote extends DB_Table {
             }
         }
 
-        $keys   = '(';
-        $values = 'values (';
+
+        $sql = sprintf(
+            "INSERT INTO `Delivery Note Dimension` (%s) values (%s)",
+            '`'.join('`,`', array_keys($base_data)).'`',
+            join(',', array_fill(0, count($base_data), '?'))
+        );
+
+
+        $stmt = $this->db->prepare($sql);
+
+        $i = 1;
         foreach ($base_data as $key => $value) {
-            $keys .= "`$key`,";
-            if (preg_match('/xxxxxx/i', $key)) {
-                $values .= prepare_mysql($value, false).",";
-            } else {
-                $values .= prepare_mysql($value).",";
-            }
+            $stmt->bindValue($i, $value);
+            $i++;
         }
 
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
 
+        if ($stmt->execute()) {
 
-        $sql = "insert into `Delivery Note Dimension` $keys  $values";
-
-
-        if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();
-
-
-            $sql = sprintf(
-                'UPDATE `Delivery Note Dimension`  SET  `Delivery Note Metadata V2`=JSON_SET(`Delivery Note Metadata V2`,"$.ver",2)
-                             WHERE `Delivery Note Key`=%d ', $this->id
-            );
-
-
-            $this->db->exec($sql);
-
             $this->get_data('id', $this->id);
 
 
-            $total_estimated_weight = 0;
-            $distinct_items         = 0;
+            foreach ($transactions as $transaction_data) {
 
 
-            $sql = sprintf(
-                'SELECT `Order Bonus Quantity`,`Product Package Weight`,`Order Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PH  ON (OTF.`Product Key`=PH.`Product Key`)  LEFT JOIN `Product Dimension` P  ON (PH.`Product ID`=P.`Product ID`)     WHERE `Order Key`=%d  AND (`Delivery Note Key` IS NULL OR `Delivery Note Key`=0)',
-                $order->id
-            );
+                if ($transaction_data['type'] == 'itf') {
 
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $estimated_weight       = ($row['Order Quantity'] + $row['Order Bonus Quantity']) * $row['Product Package Weight'];
-                    $total_estimated_weight += $estimated_weight;
-                    $distinct_items++;
                     $sql = sprintf(
-                        "UPDATE  `Order Transaction Fact` SET `Estimated Weight`=%f,`Order Last Updated Date`=%s,`Delivery Note ID`=%s,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s WHERE `Order Transaction Fact Key`=%d", $estimated_weight,
-                        prepare_mysql($this->data['Delivery Note Date Created']), prepare_mysql($this->data['Delivery Note ID'])
-
-
-                        , $this->data['Delivery Note Key'], prepare_mysql($this->data['Delivery Note Country 2 Alpha Code']), $row['Order Transaction Fact Key']
-
-                    );
-                    $this->db->exec($sql);
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-
-            $sql = sprintf(
-                'SELECT `Order No Product Transaction Fact Key` FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND (`Delivery Note Key` IS NULL  OR `Delivery Note Key`=0) ', $order->id
-            );
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $sql = sprintf(
-                        "UPDATE  `Order No Product Transaction Fact` SET `Delivery Note Date`=%s,`Delivery Note Key`=%d WHERE `Order No Product Transaction Fact Key`=%d", prepare_mysql($this->data['Delivery Note Date Created']), $this->id,
-                        $row['Order No Product Transaction Fact Key']
-
-                    );
-                    $this->db->exec($sql);
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-
-            $sql = sprintf(
-                'SELECT OTF.`Product Code`,OTF.`Order Quantity`,`No Shipped Due No Authorized`,OTF.`Product ID`,`Product Package Weight`,`Order Quantity`,`Supplier Metadata`,`Order Bonus Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PH  ON (OTF.`Product Key`=PH.`Product Key`)  LEFT JOIN `Product Dimension` P  ON (PH.`Product ID`=P.`Product ID`)
-		WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Submitted by Customer","In Process")  ', $order->id
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-
-
-                    $this->create_inventory_transaction_fact_item(
-                        $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'] - $row['No Shipped Due No Authorized'], $row['Order Bonus Quantity'], $this->get('Delivery Note Date'), $row['Supplier Metadata']
+                        'SELECT * FROM `Inventory Transaction Fact` ITF LEFT JOIN `Part Dimension` P  ON (ITF.`Part SKU`=P.`Part SKU`)     WHERE `Inventory Transaction Key`=%d  ', $transaction_data['id']
                     );
 
 
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+
+
+                            $part         = get_object('part', $row['Part SKU']);
+                            $location_key = $part->get_picking_location_key();
+
+                            $weight   = $transaction_data['amount'] * $part->get('Part Package Weight');
+                            $required = $transaction_data['amount'];
+                            $given    = 0;
+                            list($supplier_key, $supplier_part_key, $supplier_part_historic_key) = $part->get_stock_supplier_data();
+
+
+                            $picking_note = $row['Picking Note'];
+
+                            $sql = sprintf(
+                                "INSERT INTO `Inventory Transaction Fact`  (
+					`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Inventory Transaction Fact Delivery 2 Alpha Code`,`Picking Note`,
+
+					`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,
+
+					`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,
+
+					`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`)
+					VALUES (
+					%s,%s,%s,%s,
+					%f,%s,%s,%d,%s,%d,
+					%s,%s,%.2f,%f,%f,%f,
+
+					%s,%s,%d,%d,%d,%d,%s) ", "'Movement'", "'OIP'", prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']), prepare_mysql($picking_note),
+
+                                $weight, prepare_mysql($this->get('Delivery Note Date')), prepare_mysql($this->get('Delivery Note Date')), $this->id, prepare_mysql($part->id), $location_key,
+
+
+                                0, "'Order In Process'", 0, $required, $given, 0,
+
+
+                                prepare_mysql($this->data['Delivery Note Metadata']), prepare_mysql(''),
+
+                                $supplier_part_key,
+
+                                $supplier_part_historic_key,
+
+                                $supplier_key, $row['Map To Order Transaction Fact Key'], prepare_mysql($row['Map To Order Transaction Fact Metadata'])
+                            );
+
+
+                            //  print $sql;
+
+                            $this->db->exec($sql);
+
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
+                    }
+
+
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
@@ -872,143 +1018,6 @@ class DeliveryNote extends DB_Table {
         }
 
         return $this;
-
-
-    }
-
-    function create_inventory_transaction_fact_item($product_id, $map_to_otf_key, $to_sell_quantity, $bonus_qty, $date, $supplier_metadata_array) {
-
-
-        $product = new Product('id', $product_id);
-
-        $part_list = $product->get_parts_data();
-
-        $state = 'Ready to Pick';
-
-        $sql = sprintf(
-            "UPDATE `Order Transaction Fact` SET `Current Dispatching State`=%s WHERE `Order Transaction Fact Key`=%d  ", prepare_mysql($state), $map_to_otf_key
-        );
-        $this->db->exec($sql);
-
-        $part_index = 0;
-
-
-        $multipart_data              = sprintf('<a href="product.php?id=%d">%s</a>', $product->id, $product->data['Product Code']);
-        $multipart_data_multiplicity = count($part_list);
-
-
-        // print_r($part_list);
-
-        foreach ($part_list as $part_data) {
-
-
-            $part = new Part ('sku', $part_data['Part SKU']);
-            if ($part->sku) {
-
-                $required = $part_data['Ratio'] * $to_sell_quantity;
-                $given    = $part_data['Ratio'] * $bonus_qty;
-                $weight   = $part->get('Part Package Weight') * ($required + $given);
-
-
-                $location_key = $part->get_picking_location_key();
-
-                //print_r($supplier_metadata_array);
-
-
-                if ($supplier_metadata_array != '') {
-                    $supplier_metadata = unserialize($supplier_metadata_array);
-                    if (!is_array($supplier_metadata)) {
-                        $supplier_metadata = array();
-                    }
-                } else {
-                    $supplier_metadata = array();
-
-                }
-
-
-                //print "P ".$product->pid."  art:".$part_data['Part SKU']."  p:".$part->sku." \n";
-
-                if (array_key_exists($part->sku, $supplier_metadata) and $supplier_metadata[$part->sku]) {
-                    //print "xxx\n";
-                    //print_r($supplier_metadata[$part->sku]);
-                    //print "-xxx\n";
-
-                    $supplier_part_key          = $supplier_metadata[$part->sku]['supplier_part_key'];
-                    $supplier_part_historic_key = $supplier_metadata[$part->sku]['supplier_part_historic_key'];
-                    $supplier_key               = $supplier_metadata[$part->sku]['supplier_key'];
-
-                } else {
-
-
-                    list($supplier_key, $supplier_part_key, $supplier_part_historic_key) = $part->get_stock_supplier_data();
-
-
-                }
-
-
-                $note = '';
-
-
-                $picking_note = $part_data['Note'];
-
-
-                $sql = sprintf(
-                    "INSERT INTO `Inventory Transaction Fact`  (
-					`Map To Order Transaction Fact Parts Multiplicity`,`Map To Order Transaction Fact XHTML Info`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Inventory Transaction Fact Delivery 2 Alpha Code`,`Picking Note`,
-
-					`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,
-
-					`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,
-
-					`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`)
-					VALUES (
-					%d,%s,%s,%s,%s,%s,
-					%f,%s,%s,%d,%s,%d,
-					%s,%s,%.2f,%f,%f,%f,
-
-					%s,%s,%d,%d,%d,%d,%s) ", $multipart_data_multiplicity, prepare_mysql($multipart_data), "'Movement'", "'OIP'", prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']), prepare_mysql($picking_note),
-
-                    $weight, prepare_mysql($this->get('Delivery Note Date')), prepare_mysql($this->get('Delivery Note Date')), $this->id, prepare_mysql($part_data['Part SKU']), $location_key,
-
-
-                    0, "'Order In Process'", 0, $required, $given, 0,
-
-
-                    prepare_mysql($this->data['Delivery Note Metadata']), prepare_mysql($note),
-
-                    $supplier_part_key,
-
-                    $supplier_part_historic_key,
-
-                    $supplier_key, $map_to_otf_key, prepare_mysql($part_index.';'.$part_data['Ratio'].';0')
-                );
-                $this->db->exec($sql);
-
-
-                //  print $sql;
-
-
-                if ($this->update_stock) {
-
-
-                    //$part_location=new PartLocation($part_data['Part SKU'].'_'.$location_key);
-                    //$part_location->update_stock();
-                }
-                //print "$sql\n";
-
-
-                $part_index++;
-
-            }
-
-            if ($part_index == 0) {
-
-                exit ("\nWarning no part in product ".$product->pid." on $date\n");
-
-            }
-
-
-        }
 
 
     }
@@ -1132,7 +1141,6 @@ class DeliveryNote extends DB_Table {
                         ),
                     );
                 }
-
 
 
                 break;
@@ -1314,7 +1322,8 @@ class DeliveryNote extends DB_Table {
                 );
 
 
-                $order = get_object('order', $this->data['Delivery Note Order Key']);
+                $order         = get_object('order', $this->data['Delivery Note Order Key']);
+                $order->editor = $this->editor;
                 $order->update_totals();
 
 
@@ -1395,12 +1404,31 @@ class DeliveryNote extends DB_Table {
                         }
                     }
 
+                    $history_data = array(
+                        'History Abstract' => _('Delivery note packed and closed'),
+                        'History Details'  => '',
+                    );
 
-                    $order = get_object('Order', $this->get('Delivery Note Order Key'));
+
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+
+                    $order         = get_object('Order', $this->get('Delivery Note Order Key'));
+                    $order->editor = $this->editor;
                     $order->update(array('Order State' => 'PackedDone'));
                 } else {
-                    $order = get_object('Order', $this->get('Delivery Note Order Key'));
+                    $order         = get_object('Order', $this->get('Delivery Note Order Key'));
+                    $order->editor = $this->editor;
                     $order->update(array('Order Replacement State' => 'PackedDone'));
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Replacement packed and closed'),
+                        'History Details'  => '',
+                    );
+
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
 
                     new_housekeeping_fork(
                         'au_housekeeping', array(
@@ -1498,14 +1526,33 @@ class DeliveryNote extends DB_Table {
                         }
                     }
 
+                    $history_data = array(
+                        'History Abstract' => _('Delivery note opened'),
+                        'History Details'  => '',
+                    );
 
-                    $order = get_object('Order', $this->get('Delivery Note Order Key'));
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+
+                    $order         = get_object('Order', $this->get('Delivery Note Order Key'));
+                    $order->editor = $this->editor;
                     $order->update(array('Order State' => 'Undo PackedDone'));
 
 
                 } else {
-                    $order = get_object('Order', $this->get('Delivery Note Order Key'));
+
+                    $history_data = array(
+                        'History Abstract' => _('Replacement opened'),
+                        'History Details'  => '',
+                    );
+
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+
+                    $order         = get_object('Order', $this->get('Delivery Note Order Key'));
+                    $order->editor = $this->editor;
                     $order->update(array('Order Replacement State' => 'InWarehouse'));
+
 
                     new_housekeeping_fork(
                         'au_housekeeping', array(
@@ -1647,6 +1694,12 @@ class DeliveryNote extends DB_Table {
                     exit;
                 }
 
+                $history_data = array(
+                    'History Abstract' => _('Delivery note approved for dispatch'),
+                    'History Details'  => '',
+                );
+
+                $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
 
                 break;
 
@@ -1669,7 +1722,8 @@ class DeliveryNote extends DB_Table {
                     return;
                 }
 
-                $order = get_object('Order', $this->data['Delivery Note Order Key']);
+                $order         = get_object('Order', $this->data['Delivery Note Order Key']);
+                $order->editor = $this->editor;
 
 
                 if ($order->get('Order Invoice Key')) {
@@ -1686,11 +1740,27 @@ class DeliveryNote extends DB_Table {
 
                 $order->update(array('Order State' => 'un_dispatch'));
 
+                $note = _('Delivery note un dispatched');
+
+
+                if ($metadata['note'] != '') {
+                    $note .= '. '.ucfirst($metadata['note']);
+                }
+
+                $history_data = array(
+                    'History Abstract' => $note,
+                    'History Details'  => '',
+                );
+
+                $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+
                 new_housekeeping_fork(
                     'au_housekeeping', array(
                     'type'              => 'delivery_note_un_dispatched',
-                    'user_key'            => $this->editor['User Key'],
+                    'user_key'          => $this->editor['User Key'],
                     'delivery_note_key' => $this->id,
+                    'note'              => $metadata['note']
 
                 ), $account->get('Account Code')
                 );
@@ -1699,28 +1769,35 @@ class DeliveryNote extends DB_Table {
                 break;
             case 'Dispatched':
 
-                 if ($this->data['Delivery Note Type'] == 'Order') {
-                     if ($this->get('State Index') != 90) {
-                         return;
-                     }
-                 }else{
-                     if (!($this->get('State Index') == 80 or $this->get('State Index') == 90)) {
-                         return;
-                     }
-                 }
-
-
+                if ($this->data['Delivery Note Type'] == 'Order') {
+                    if ($this->get('State Index') != 90) {
+                        return;
+                    }
+                } else {
+                    if (!($this->get('State Index') == 80 or $this->get('State Index') == 90)) {
+                        return;
+                    }
+                }
 
 
                 $this->update_field('Delivery Note Date Dispatched', $date, 'no_history');
                 $this->update_field('Delivery Note Date', $date, 'no_history');
                 $this->update_field('Delivery Note State', $value, 'no_history');
 
-                $order = get_object('Order', $this->data['Delivery Note Order Key']);
-
+                $order         = get_object('Order', $this->data['Delivery Note Order Key']);
+                $order->editor = $this->editor;
                 if ($this->data['Delivery Note Type'] == 'Order') {
 
                     $order->update(array('Order State' => 'Dispatched'), '', array('delivery_note_key' => $this->id));
+
+                    $history_data = array(
+                        'History Abstract' => _('Delivery note dispatched'),
+                        'History Details'  => '',
+                    );
+
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+
                 } else {
                     $order->update(
                         array(
@@ -1733,6 +1810,15 @@ class DeliveryNote extends DB_Table {
                         )
                     );
 
+
+                    $history_data = array(
+                        'History Abstract' => _('Replacement note dispatched'),
+                        'History Details'  => '',
+                    );
+
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+
                     new_housekeeping_fork(
                         'au_housekeeping', array(
                         'type'      => 'order_state_changed',
@@ -1743,10 +1829,11 @@ class DeliveryNote extends DB_Table {
 
                 }
 
+
                 new_housekeeping_fork(
                     'au_housekeeping', array(
                     'type'              => 'delivery_note_dispatched',
-                    'user_key'            => $this->editor['User Key'],
+                    'user_key'          => $this->editor['User Key'],
                     'delivery_note_key' => $this->id,
 
                 ), $account->get('Account Code')
@@ -1761,7 +1848,9 @@ class DeliveryNote extends DB_Table {
 
                 $returned_part_locations = array();
 
-                $order = get_object('Order', $this->data['Delivery Note Order Key']);
+                $order         = get_object('Order', $this->data['Delivery Note Order Key']);
+                $order->editor = $this->editor;
+
                 if ($order->get('Order State') >= 90) {
                     return;
                 }
@@ -1873,7 +1962,25 @@ class DeliveryNote extends DB_Table {
 
                     $order->fast_update(array('Order Replacement State' => 'NA'));
 
+
+                    $history_data = array(
+                        'History Abstract' => _('Replacement cancelled'),
+                        'History Details'  => '',
+                    );
+
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
+
                 } else {
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Delivery note cancelled'),
+                        'History Details'  => '',
+                    );
+
+                    $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
+
 
                     $order->update(array('Order State' => 'Delivery Note Cancelled'));
 
@@ -1891,11 +1998,11 @@ class DeliveryNote extends DB_Table {
 
                 new_housekeeping_fork(
                     'au_housekeeping', array(
-                    'type' => 'delivery_note_cancelled',
-                    'date' => gmdate('Y-m-d', strtotime($date.' +0:00')),
+                    'type'                    => 'delivery_note_cancelled',
+                    'date'                    => gmdate('Y-m-d', strtotime($date.' +0:00')),
                     'returned_part_locations' => $returned_part_locations,
                     'customer_key'            => $this->get('Delivery Note Customer Key'),
-                    'delivery_note_key' => $this->id
+                    'delivery_note_key'       => $this->id
 
                 ), $account->get('Account Code')
                 );
@@ -2487,7 +2594,6 @@ class DeliveryNote extends DB_Table {
         $this->db->exec($sql);
 
 
-
         if (in_array(
             $this->data['Delivery Note Type'], array(
                                                  'Replacement & Shortages',
@@ -2513,7 +2619,7 @@ class DeliveryNote extends DB_Table {
             if ($order->get('Order State') != 'Cancelled') {
                 $order->update(
                     array(
-                        'Order State' => 'InProcess'
+                        'Order State' => 'Delivery_Note_deleted'
                     )
                 );
             }
