@@ -527,6 +527,9 @@ if ($result = $db->query($sql)) {
     }
 }
 
+
+
+
 exit;
 // Here first part of the migration
 
