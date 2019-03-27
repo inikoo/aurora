@@ -706,7 +706,12 @@ $export_fields = array(
         ),
         array(
             'name'    => '`Part SKO Barcode`',
-            'label'   => _('SKO Barcode'),
+            'label'   => _('SKO barcode'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Carton Barcode`',
+            'label'   => _('Carton barcode'),
             'checked' => 1
         ),
         array(
@@ -867,6 +872,12 @@ $export_fields = array(
         array(
             'name'    => '`Part SKO Barcode`',
             'label'   => _('SKO barcode'),
+            'checked' => 1,
+            'type'    => 'text'
+        ),
+        array(
+            'name'    => '`Part Carton Barcode`',
+            'label'   => _('Carton barcode'),
             'checked' => 1,
             'type'    => 'text'
         ),
@@ -1368,6 +1379,12 @@ $export_fields = array(
         array(
             'name'    => '`Part SKO Barcode`',
             'label'   => _('SKO barcode'),
+            'checked' => 1,
+            'type'    => 'text'
+        ),
+        array(
+            'name'    => '`Part Carton Barcode`',
+            'label'   => _('Carton barcode'),
             'checked' => 1,
             'type'    => 'text'
         ),
