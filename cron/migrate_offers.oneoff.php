@@ -528,6 +528,15 @@ if ($result = $db->query($sql)) {
 }
 
 
+$gr_offers=get_object('campaign_code-store_key','OR|'.$store_key);
+
+
+
+$sql = sprintf('update `Deal Component Dimension` set `Deal Component Allowance Target Type`="Items"  where `Deal Component Campaign Key`=%d ',$gr_offers->id);
+$db->exec($sql);
+
+$sql = sprintf('update `Deal Component Dimension` set `Deal Component Allowance Target Type`="No Items"  where `Deal Component Campaign Key`=%d and `Deal Component Allowance Target`="Charge" ',$gr_offers->id);
+$db->exec($sql);
 
 
 exit;
