@@ -541,6 +541,29 @@ class Part extends Asset {
 
     }
 
+    function get_main_supplier_part_key(){
+
+        $main_supplier_part_key=false;
+
+        $sql = 'SELECT `Supplier Part Key` FROM `Supplier Part Dimension` WHERE `Supplier Part Part SKU`=? ';
+        $stmt = $this->db->prepare($sql);
+        if ($stmt->execute(
+            array(
+                $this->id
+            )
+        )) {
+            if ($row = $stmt->fetch()) {
+                $main_supplier_part_key=$row['Supplier Part Key'];
+            }
+        } else {
+            print_r($error_info = $stmt->errorInfo());
+            exit();
+        }
+
+        return $main_supplier_part_key;
+
+    }
+
     function get_supplier_parts($scope = 'keys') {
 
 
@@ -742,6 +765,15 @@ class Part extends Asset {
 
 
                 break;
+
+
+            case 'Units Per Carton':
+
+                return $this->data['Part Units Per Package']*$this->data['Part SKOs per Carton'];
+
+
+                break;
+
 
             case 'SKOs per Carton':
 
@@ -1319,6 +1351,9 @@ class Part extends Asset {
                 } else {
                     return json_decode($this->data['Part Next Deliveries Data'], true);
                 }
+                break;
+            case 'Carton Weight':
+                return weight($this->data['Part Package Weight']*$this->data['Part SKOs per Carton'],'Kg',0);
                 break;
             default:
 

@@ -28,7 +28,7 @@
 
 <div class="asset_container">
 
-    <div class="block picture showcase_component">
+    <div class="block picture showcase_component" style="width: 370px">
 
         <div class="data_container">
             {assign "image_key" $part->get_main_image_key()}
@@ -40,33 +40,67 @@
         <div style="clear:both"></div>
 
         <table id="barcode_data" border="0" class="overview {if $part->get('Part Barcode Number')==''}hide{/if} ">
-            <tr class="main">
-                <td class="label">
-                    <i {if $part->get('Part Barcode Key')} class="fa fa-barcode button" onClick="change_view('inventory/barcode/{$part->get('Part Barcode Key')}')"{else}  class="fa fa-barcode"{/if} ></i>
-                </td>
-                <td><span  class="Part_Barcode_Number  {if $part->get('Part Barcode Key')} link" onClick="change_view('inventory/barcode/{$part->get('Part Barcode Key')}')" {else}"{/if}   >{$part->get('Part Barcode Number')}</span> <span class="error small  Barcode_Number_Error_with_Duplicates_Links">{$part->get('Barcode Number Error with Duplicates Links')}</span></td>
-                <td class="barcode_labels aright ">
+            <tr class=" units_data">
 
-                    <a class="padding_left_10" title="{t}Commercial unit label{/t}" href="/asset_label.php?object=part&key={$part->id}&type=unit"><i class="fa fa-tags "></i></a>
+                <td>
+                    <i class="fal fa-fw fa-stop-circle" title="{t}Unit{/t}" ></i>
+                </td>
+                <td>
+
+                </td>
+
+                <td>
+                    <a  target="_blank"title="{t}Commercial unit label{/t}" href="/asset_label.php?object=part&key={$part->id}&type=unit"><i class="fal fa-barcode-alt fa-fw padding_right_5" ></i></a> <span class="Part_Barcode_Number" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part Barcode Number')==''}<span class="discreet italic">{t}Not set{/t}</span>{else}{$part->get('Part Barcode Number')}{/if}</span>
+                    {if $part->get('Part Barcode Key')}
+                        <i class="discreet_on_hover button fal fa-external-link-square" onClick="change_view('inventory/barcode/{$part->get('Part Barcode Key')}')"></i>
+                    {/if}
+                </td>
+
+
+
+                <td style="text-align: right">
+                    <span class="Unit_Weight">{$part->get('Unit Weight')}</span>
                 </td>
 
             </tr>
-            <tr class="main">
-                <td class="label">
+            <tr class="sko_data">
 
-                        <span style="position:relative;left:-4px;top:2px;font-size:80%" class="fa-stack">
-  <i class="fal fa-square fa-stack-2x very_discreet"></i>
-  <i class="fa fa-barcode fa-stack-1x"></i>
-</span>
-
-
+                <td>
+                    <i class="fal fa-box fa-fw" title="{t}SKO{/t}" ></i>
                 </td>
-                <td class="Part_SKO_Barcode ">{$part->get('Part SKO Barcode')} </td>
-                <td class="barcode_labels aright {if !$part->get('Part Barcode Key')}xhide{/if}">
-                    <a title="{t}Stock keeping unit (Outer){/t}" href="/asset_label.php?object=part&key={$part->id}&type=package"><i class="fa fa-tag "></i></a>
+                <td style="padding-left: 4px">
+                    <span class="discreet" title="{t}Units per SKO{/t}"><i class="fal fa-fwx fa-stop-circle very_discreet" style="font-size: 80%;margin-right: 1px" ></i><i class="fal fa-fws very_discreet fa-times" style="position: relative;top:1px;margin-right: 3px"></i>{$part->get('Units Per Package')}</span>
+                </td>
+
+                <td>
+                    <a target="_blank" title="{t}Stock keeping unit (Outer) label{/t}" href="/asset_label.php?object=part&key={$part->id}&type=package"><i class="fas fa-barcode-alt fa-fw padding_right_5" ></i></a> <span class="Part_SKO_Barcode" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part SKO Barcode')==''}<span class="discreet italic">{t}Not set{/t}</span>{else}{$part->get('Part SKO Barcode')}{/if}</span>
 
                 </td>
 
+                <td style="text-align: right">
+                    <span class="Package_Weight">{$part->get('Package Weight')}</span>
+                </td>
+
+
+
+            </tr>
+            <tr class="carton_data">
+
+                <td>
+                    <i class="fal fa-pallet fa-fw" title="{t}Carton{/t}" ></i>
+                </td>
+                <td style="padding-left: 4px">
+                    <span class="discreet" title="{t}Units per carton{/t}"><i class="fal fa-fwx fa-stop-circle very_discreet" style="font-size: 80%;margin-right: 1px" ></i><i class="fal fa-fws very_discreet fa-times" style="position: relative;top:1px;margin-right: 3px"></i>{$part->get('Units Per Carton')}</span>
+
+                </td>
+                <td>
+                    {if $part->get('Part Number Supplier Parts')==1}<a target="_blank"  title="{t}Carton label{/t}" href="/asset_label.php?object=supplier_part&key={$part->get_main_supplier_part_key()}&type=carton"><i class="far fa-barcode-alt fa-fw padding_right_5" ></i></a>{/if} <span class="Part_Carton_Barcode" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part Carton Barcode')==''}<span class="discreet error italic">{t}Not set{/t}</span>{else}{$part->get('Part Carton Barcode')}{/if}</span>
+
+
+                </td>
+                <td style="text-align: right">
+                    <span class="Carton_Weight">{$part->get('Carton Weight')}</span>
+                </td>
             </tr>
 
         </table>
