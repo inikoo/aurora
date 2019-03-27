@@ -602,6 +602,9 @@ class DealCampaign extends DB_Table {
                     $history_data, true, 'No', 'Changes', $deal->get_object_name(), $deal->id
                 );
 
+                $deal->update_term_allowances();
+
+
                 $account = get_object('Account', 1);
                 require_once 'utils/new_fork.php';
                 new_housekeeping_fork(
