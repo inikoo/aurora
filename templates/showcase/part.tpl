@@ -592,6 +592,9 @@
                 <td style="text-align: right">
                     <span class="Unit_Weight">{$part->get('Unit Weight')}</span>
                 </td>
+                <td style="text-align: right">
+                <span class="Unit_Dimensions">{$part->get('Unit Dimensions')}</span>
+                </td>
 
             </tr>
             <tr class="sko_data">
@@ -612,7 +615,9 @@
                     <span class="Package_Weight">{$part->get('Package Weight')}</span>
                 </td>
 
-
+                <td style="text-align: right">
+                    <span class="Package_Dimensions">{$part->get('Package Dimensions')}</span>
+                </td>
 
             </tr>
             <tr class="carton_data">
@@ -631,6 +636,9 @@
                 </td>
                 <td style="text-align: right">
                     <span class="Carton_Weight">{$part->get('Carton Weight')}</span>
+                </td>
+                <td style="text-align: right">
+                    <span class="Carton_CBM">{$part->get('Carton CBM')}</span>
                 </td>
             </tr>
 
