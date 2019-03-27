@@ -102,7 +102,7 @@
                 <b>{$supplier_part->get('Carton Weight Approx')}</b>
             </td>
             <td  >
-                <b>{$supplier_part->part->get('Origin Country')}</b>
+                <b>{$supplier_part->part->get('Part Origin Country Code')}</b>
             </td>
             <td  >
                 <b> {$account->get('Code')}</b>
@@ -111,12 +111,12 @@
 
 
         <tr>
-            <td colspan="4" style="text-align: center"><img style="max-height: 70px" src="/barcode_asset.php?type=code128&number={$supplier_part->id}">
+            <td colspan="4" style="text-align: center"><img style="max-height: 70px" src="/barcode_asset.php?type=code128&number={$supplier_part->part->get('Part Carton Barcode')}">
             </td>
 
         </tr>
         <tr class="labels" >
-            <td colspan="4" style="padding-top: 2px">{$supplier_part->id}</td>
+            <td colspan="4" style="padding-top: 2px">{$supplier_part->part->get('Part Carton Barcode')}</td>
 
         </tr>
     </table>
