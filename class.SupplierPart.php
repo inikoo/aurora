@@ -1214,11 +1214,15 @@ class SupplierPart extends DB_Table {
                 );
 
                 break;
-
-            case 'SKO Barcode':
+            case 'Unit Barcode':
 
                 return $this->part->get('Barcode');
+            case 'SKO Barcode':
 
+                return $this->part->get('SKO Barcode');
+            case 'Carton Barcode':
+
+                return $this->part->get('Carton Barcode');
             case 'Average Delivery':
 
 

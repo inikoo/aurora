@@ -98,7 +98,15 @@ $export_edit_template_fields = array(
             'checked'       => 0
         ),
 
-
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => false,
+            'header'        => 'Carton Barcode',
+            'name'          => 'Part Carton Barcode',
+            'label'         => _('Part Carton Barcode'),
+            'checked'       => 0
+        ),
 
         array(
             'default_value' => '',
@@ -480,7 +488,16 @@ $export_edit_template_fields = array(
             'required'      => true,
             'header'        => 'Part SKO Barcode',
             'name'          => 'Part SKO Barcode',
-            'label'         => _('SKO Barcode'),
+            'label'         => _('SKO barcode'),
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Part Carton Barcode',
+            'name'          => 'Part Carton Barcode',
+            'label'         => _('Carton barcode'),
             'checked'       => 0
         ),
         array(

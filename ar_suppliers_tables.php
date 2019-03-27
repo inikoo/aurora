@@ -2610,12 +2610,6 @@ function delivery_checking_items($_data, $db, $user, $account) {
             }
             $subtotals .= '</span>';
 
-            /*
-                        $description = $data['Part Package Description'].' ('.number(
-                                $units_per_carton
-                            ).'/'.number($data['Supplier Part Packages Per Carton']).'/C)    '.($data['Part SKO Barcode'] != '' ? '<br><i class="fa fa-barcode" aria-hidden="true"></i> '.$data['Part SKO Barcode'] : '');
-
-                        */
 
             $description = '<div style="font-size:90%" >'.($data['Supplier Part Reference'] != $data['Part Reference'] ? $data['Part Reference'].', ' : '');
 
