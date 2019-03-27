@@ -374,7 +374,7 @@ class DealComponent extends DB_Table {
 
     function get_formatted_allowances() {
 
-
+        $allowance='';
         switch ($this->data['Deal Component Allowance Type']) {
             case 'Percentage Off':
 
@@ -409,6 +409,7 @@ class DealComponent extends DB_Table {
                         $allowance = _('Free charges');
                         break;
                     default:
+                        $allowance = $this->data['Deal Component Allowance Target'];
                         break;
                 }
 
