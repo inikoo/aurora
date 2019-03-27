@@ -26,8 +26,101 @@
         <div style="clear:both">
         </div>
     </div>
-    <div class="block carton_sko_units">
-        <table border="0">
+    <div class="block carton_sko_units" style="width: 540px">
+
+
+        <table border="0" class="overview {if $part->get('Part Barcode Number')==''}hide{/if} ">
+            <tr class=" units_data">
+
+                <td>
+                    <i class="fal fa-fw fa-stop-circle" title="{t}Unit{/t}" ></i>
+                </td>
+                <td>
+
+                </td>
+
+                <td>
+                    <a  target="_blank"title="{t}Commercial unit label{/t}" href="/asset_label.php?object=part&key={$part->id}&type=unit"><i class="fal fa-barcode-alt fa-fw padding_right_5" ></i></a> <span class="Part_Barcode_Number" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part Barcode Number')==''}<span class="discreet italic">{t}Not set{/t}</span>{else}{$part->get('Part Barcode Number')}{/if}</span>
+                    {if $part->get('Part Barcode Key')}
+                        <i class="discreet_on_hover button fal fa-external-link-square" onClick="change_view('inventory/barcode/{$part->get('Part Barcode Key')}')"></i>
+                    {/if}
+                </td>
+
+                <td style="">
+                    <span class="Unit_Dimension">{$supplier_part->get('Unit Dimensions')}</span>
+                </td>
+
+                <td style="text-align: right">
+                    <span class="Unit_Weight">{$part->get('Unit Weight')}</span>
+                </td>
+
+            </tr>
+            <tr class="sko_data">
+
+                <td>
+                    <i class="fal fa-box fa-fw" title="{t}SKO{/t}" ></i>
+                </td>
+                <td style="padding-left: 4px">
+                    <span class="discreet" title="{t}Units per SKO{/t}"><i class="fal fa-fwx fa-stop-circle very_discreet" style="font-size: 80%;margin-right: 1px" ></i><i class="fal fa-fws very_discreet fa-times" style="position: relative;top:1px;margin-right: 3px"></i>{$part->get('Units Per Package')}</span>
+                </td>
+
+                <td>
+                    <a target="_blank" title="{t}Stock keeping unit (Outer) label{/t}" href="/asset_label.php?object=part&key={$part->id}&type=package"><i class="fas fa-barcode-alt fa-fw padding_right_5" ></i></a> <span class="Part_SKO_Barcode" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part SKO Barcode')==''}<span class="discreet italic">{t}Not set{/t}</span>{else}{$part->get('Part SKO Barcode')}{/if}</span>
+
+                </td>
+
+                <td style="">
+                    <span class="SKO_Dimensions">{$supplier_part->get('SKO Dimensions')}</span>
+                </td>
+                <td style="text-align: right">
+                    <span class="Package_Weight">{$part->get('Package Weight')}</span>
+                </td>
+
+
+
+            </tr>
+            <tr class="carton_data">
+
+                <td>
+                    <i class="fal fa-pallet fa-fw" title="{t}Carton{/t}" ></i>
+                </td>
+                {if $supplier_part->get('Supplier Part Units Per Carton')!=$part->get('Units Per Carton')}
+                    {assign "error_units_per_carton" true}
+                {else}
+                    {assign "error_units_per_carton" false}
+
+                {/if}
+
+                <td style="padding-left: 4px" class="">
+                    <span class="discreet {if $error_units_per_carton}error{/if}" title="{t}Units per carton{/t}">
+                        <i class="{if $error_units_per_carton} fas fa-exclamation-circle {else}fal  fa-stop-circle very_discreet{/if}" style="font-size: 80%;margin-right: 1px" ></i><i class="fal  fa-times" style="position: relative;top:1px;margin-right: 3px"></i><span class="Supplier_Part_Units_Per_Carton">{$supplier_part->get('Supplier Part Units Per Carton')}</span></span>
+
+                </td>
+                <td>
+                    <a target="_blank"  title="{t}Carton label{/t}" href="/asset_label.php?object=supplier_part&key={$supplier_part->id}&type=carton"><i class="far fa-barcode-alt fa-fw padding_right_5" ></i></a> <span class="Part_Carton_Barcode" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part Carton Barcode')==''}<span class="discreet error italic">{t}Not set{/t}</span>{else}{$part->get('Part Carton Barcode')}{/if}</span>
+
+
+                </td>
+                <td style="">
+                    <span class="Carton_CBM">{$supplier_part->get('Carton CBM')}</span>
+                </td>
+                <td style="text-align: right">
+                    <span class="Carton_Weight">{$part->get('Carton Weight')}</span>
+                </td>
+            </tr>
+
+        </table>
+
+        <table border="0" class="overview" style="">
+
+
+            <tr class="">
+                <td>{t}Current landed cost{/t}</td>
+                <td class="aright">{$supplier_part->get('Unit Delivered Cost')}</td>
+            </tr>
+        </table>
+
+        <table border="0" class="hide">
             <tr class="carton">
                 <td class=" canvas">
                     <a target="_blank" href="/asset_label.php?object=supplier_part&key={$supplier_part->id}&type=carton">
@@ -109,7 +202,7 @@
     </div>
     <div class="block info">
         <div id="overviews">
-            <div style="margin-bottom: 5px">
+            <div class="hide" style="margin-bottom: 5px">
 
                         <span class="Supplier_Part_Units_Per_Package  "
                               title="{t}Units per package{/t}">{$supplier_part->get('Supplier Part Units Per Package')}</span>
@@ -125,10 +218,7 @@
                     <td><span class="Average_Delivery">{$supplier_part->get('Average Delivery')}</span></td>
                     <td class="aright highlight Status">{$supplier_part->get('Status')} </td>
                 </tr>
-                <tr class="">
-                    <td>{t}Current landed cost{/t}</td>
-                    <td class="aright">{$supplier_part->get('Unit Delivered Cost')}</td>
-                </tr>
+
             </table>
             <div id="part_data" style="padding-top:10px;clear:both">
                 <table border="0" class="overview with_title">
@@ -145,13 +235,15 @@
                 </table>
             </div>
 
+            {assign "next_deliveries" $supplier_part->get_next_deliveries_data()}
 
-            <div id="purchase_orders_data" style="padding-top:10px;clear:both">
+
+            <div  class="{if $next_deliveries|@count==0}hide{/if} " style="padding-top:10px;clear:both">
                 <table border="0" class="overview with_title">
                     <tr class="top">
                         <td colspan="3">{t}Next deliveries{/t}</td>
                     </tr>
-                    {foreach from=$supplier_part->get_next_deliveries_data() item=next_delivery }
+                    {foreach from=$next_deliveries item=next_delivery }
                     <tr class="main ">
                         <td>{$next_delivery.formatted_link}</td>
                         <td>{$next_delivery.formatted_state}</td>

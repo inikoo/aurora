@@ -39,7 +39,7 @@
         </div>
         <div style="clear:both"></div>
 
-        <table id="barcode_data" border="0" class="overview {if $part->get('Part Barcode Number')==''}hide{/if} ">
+        <table border="0" class="overview {if $part->get('Part Barcode Number')==''}hide{/if} ">
             <tr class=" units_data">
 
                 <td>
