@@ -1476,7 +1476,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     $pcard = '';
 
 
-                    $redirect     = 'campaigns/'.$category->get('Store Key').'/'.$campaign->id.'/deal/'.$object->id;
+                    $redirect     = 'campaigns/'.$campaign->get('Store Key').'/'.$campaign->id.'/deal/'.$object->id;
                     $updated_data = array();
 
 

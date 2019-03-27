@@ -269,10 +269,11 @@
                 </div>
                 <div id="undo_submit_operations" class="order_operation {if $order->get('State Index')!=30}hide{/if}">
                     <div class="square_button left" title="{t}Send back to basket{/t}">
-												<span class="fa-stack" onclick="toggle_order_operation_dialog('undo_submit')">
-						<i class="fa fa-paper-plane discreet " aria-hidden="true"></i>
-						<i class="fa fa-ban fa-stack-1x discreet error"></i>
-						</span>
+
+
+                        <i class="fal fa-shopping-basket discreet error button" aria-hidden="true"  onclick="toggle_order_operation_dialog('undo_submit')"></i>
+
+
 
 
                         <table id="undo_submit_dialog" border="0" class="order_operation_dialog hide">
@@ -536,14 +537,41 @@
 
         </table>
 
-        <table border="0" class="totals" style="margin-top:10px">
-            <tr class="total first">
-                <td class="label" colspan="2" style="border-bottom: 1px solid #ddd;">{t}Discounts{/t}</td>
-            </tr>
+        <div  class=" node" style="border-top: 1px solid #ccc">
 
-            <tr class="subtotal Items_Discount_Amount_tr">
-                <td class="label small">{t}Items{/t}</td>
-                <td class="aright"><span class="discreet italic">(<span class=" Items_Discount_Percentage">{$order->get('Items Discount Percentage')}</span>)</span> <span class="padding_left_10 Items_Discount_Amount">{$order->get('Items Discount Amount')}</span></td>
+            <div class="payment_operation hide  ">
+                <div class="square_button left" style="padding:0;margin:0;position:relative;top:0px" title="{t}Close{/t}">
+                    <i class="fa fa-window-close  " aria-hidden="true" onclick="hide_add_deal_to_order()"></i>
+
+                </div>
+            </div>
+            <span class="node_label  ">{t}Discounts{/t}</span>
+
+
+            <div class="payment_operation hide ">
+                <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px" title="{t}Add offers{/t}">
+                    <i class="fa fa-plus  " aria-hidden="true" onclick="show_add_deal_to_order()"></i>
+
+                </div>
+                <div class="square_button right save" style="padding:0;margin:0;position:relative;top:0px" title="{t}Save{/t}">
+                    <i class="fa fa-cloud  " aria-hidden="true" onclick="save_add_deal_to_order()"></i>
+
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <table border="0" class="totals" style="margin-top:0px;border-top:none">
+
+
+
+
+
+            <tr class="subtotal Items_Discount_Amount_tr" style="margin-top:0px;border-top:none">
+                <td class="label small" style="margin-top:0px;border-top:none">{t}Items{/t}</td>
+                <td class="aright" style="margin-top:0px;border-top:none"><span class="discreet italic">(<span class=" Items_Discount_Percentage">{$order->get('Items Discount Percentage')}</span>)</span> <span class="padding_left_10 Items_Discount_Amount">{$order->get('Items Discount Amount')}</span></td>
             </tr>
             <tr class="subtotal Charges_Discount_Amount_tr  {if $order->get('Order Charges Discount Amount')==0}hide{/if} ">
                 <td class="label small">{t}Charges{/t}</td>

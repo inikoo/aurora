@@ -1701,3 +1701,11 @@ function save_new_payment() {
 
 }
 
+
+
+function show_add_offer_to_order() {
+
+
+
+
+}

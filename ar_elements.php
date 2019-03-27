@@ -129,7 +129,9 @@ switch ($tab) {
         get_campaigns_element_numbers($db, $data['parameters'], $user);
         break;
     case 'deals':
-        $data = prepare_values(
+    case 'vouchers':
+
+    $data = prepare_values(
             $_REQUEST, array('parameters' => array('type' => 'json array'))
         );
         get_deals_element_numbers($db, $data['parameters'], $user);
