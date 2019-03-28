@@ -570,7 +570,7 @@
 
 
     <div style="width: 770px">
-        <table border="0" class="overview {if $part->get('Part Barcode Number')==''}hide{/if} ">
+        <table border="0" class="overview  hide">
             <tr class=" units_data">
 
                 <td>
