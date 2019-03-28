@@ -1387,6 +1387,8 @@ class Page extends DB_Table {
         $smarty_web->clearCache(null, $cache_id);
 
 
+
+
         $redis = new Redis();
         if ($redis->connect('127.0.0.1', 6379)) {
 
@@ -5670,6 +5672,28 @@ class Page extends DB_Table {
             $this->new_value = $deleted_page->id;
         }
         $this->deleted = true;
+
+        $account = get_object('Account', 1);
+
+        $redis = new Redis();
+        if ($redis->connect('127.0.0.1', 6379)) {
+
+            $cache_id_prefix='pwc2|'.$account->get('Code').'|'.$this->get('Webpage Website Key').'_';
+
+            $redis->delete($cache_id_prefix.$this->data['Page Code']);
+            $redis->delete($cache_id_prefix.strtolower($this->data['Page Code']));
+            $redis->delete($cache_id_prefix.strtoupper($this->data['Page Code']));
+            $redis->delete($cache_id_prefix.ucfirst($this->data['Page Code']));
+
+            include_once 'utils/string_functions.php';
+            foreach(permutation_letter_case($this->data['Page Code']) as $permutation){
+                $redis->delete($cache_id_prefix.$permutation);
+
+            }
+
+
+
+        }
 
 
     }

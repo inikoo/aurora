@@ -187,7 +187,7 @@ if (is_numeric($webpage_id)) {
 } else {
 
 
-    header("Location: ".((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') ? 'https' : 'http')."://".$_SERVER['SERVER_NAME']."$webpage_id");
+    header("Location: https://".$_SERVER['SERVER_NAME']."$webpage_id");
 
 }
 if (isset($db)) {
