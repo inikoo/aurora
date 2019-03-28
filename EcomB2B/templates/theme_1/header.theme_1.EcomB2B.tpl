@@ -10,7 +10,7 @@
 *}
 
 
-<span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}""></span>
+<span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}"></span>
 
 
 
