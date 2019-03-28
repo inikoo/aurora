@@ -15,7 +15,7 @@
 class Timesheet extends DB_Table {
 
 
-    function Timesheet($arg1 = false, $arg2 = false, $arg3 = false) {
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
         global $db;
 
         $this->db            = $db;
