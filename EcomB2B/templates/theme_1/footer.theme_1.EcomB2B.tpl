@@ -8,15 +8,10 @@
  Version 3
 -->
 *}
-
-
-
 <footer>
-
-
     {foreach from=$footer_data.rows item=row}
-
-        {if $row.type=='main_4'}
+        {if !empty($row.type)}
+            {if $row.type=='main_4'}
             <div class="text_blocks  top_header text_template_4  ">
 
 
@@ -132,9 +127,6 @@
 
             </div>
         {/if}
-
-
+        {/if}
     {/foreach}
-
-
 </footer>
