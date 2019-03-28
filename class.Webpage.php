@@ -38,6 +38,9 @@ class Webpage extends DB_Table {
 
 
     function get_data($key, $tag, $tag2 = false) {
+
+
+
         if ($key == 'id') {
             $sql = sprintf("SELECT * FROM `Webpage Dimension` WHERE `Webpage Key`=%d", $tag);
         } elseif ($key == 'website_code') {
@@ -47,7 +50,6 @@ class Webpage extends DB_Table {
         } else {
             return;
         }
-//print $sql;
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Webpage Key'];

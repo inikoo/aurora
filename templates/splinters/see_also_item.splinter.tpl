@@ -50,7 +50,7 @@
             <div class="flex-item" style="border:none;width:40px"><i style="position: relative;top:-12px;margin-left: 5px" class="fa fa-window-close button close_category_block"></i></div>
         </div>
         <div class="button_container">
-            <div onclick="$(this).closest('.wrap').remove()" class="flex-item full delete button">{t}Delete{/t}</div>
+            <div onclick="$(this).closest('.wrap').remove();$('#save_button',window.parent.document).addClass('save button changed valid')" class="flex-item full delete button">{t}Delete{/t}</div>
         </div>
         <div class="button_container">
             <div class="flex-item full change_category_image button">
@@ -73,7 +73,7 @@
                 <div class="flex-item" style="border:none;width:40px"><i style="position: relative;top:-12px;margin-left: 5px" class="fa fa-window-close button close_category_block"></i></div>
             </div>
             <div class="button_container">
-                <div onclick="$(this).closest('.wrap').remove()" class="flex-item full delete button">{t}Delete{/t}</div>
+                <div onclick="$(this).closest('.wrap').remove();$('#save_button',window.parent.document).addClass('save button changed valid')" class="flex-item full delete button">{t}Delete{/t}</div>
             </div>
             <div class="button_container">
                 <div class="flex-item full change_category_image button">
