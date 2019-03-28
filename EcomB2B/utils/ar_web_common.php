@@ -1,4 +1,8 @@
 <?php
+
+require_once '../vendor/autoload.php';
+require_once 'utils/sentry.php';
+
 date_default_timezone_set('UTC');
 
 if (isset($website_user) and is_object($website_user) and isset($customer) and is_object($customer)
