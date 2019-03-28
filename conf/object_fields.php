@@ -321,7 +321,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
                         $smarty->assign('overwrite_parent_key', $options['store_key']);
 
-                        include 'fields/new_category_deal.fld.php';
+                        include 'fields/new_category_deal_component.fld.php';
 
 
                         break;
