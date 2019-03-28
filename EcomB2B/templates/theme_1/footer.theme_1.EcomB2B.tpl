@@ -8,6 +8,7 @@
  Version 3
 -->
 *}
+{if !empty($footer_data.rows) and  $footer_data.rows|is_array}
 <footer>
     {foreach from=$footer_data.rows item=row}
         {if !empty($row.type)}
@@ -130,3 +131,4 @@
         {/if}
     {/foreach}
 </footer>
+{/if}
