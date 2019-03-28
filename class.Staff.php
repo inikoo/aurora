@@ -2178,7 +2178,7 @@ class Staff extends DB_Table {
                     "DELETE FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d", $row['Image Subject Key']
                 );
                 $this->db->exec($sql);
-                $image = new Image($row['Image Subject Image Key']);
+                $image = get_object('Image',$row['Image Subject Image Key']);
                 $image->delete();
             }
         } else {
