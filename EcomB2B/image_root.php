@@ -12,11 +12,14 @@
 require_once '../vendor/autoload.php';
 require_once 'utils/sentry.php';
 
-if (!isset($_REQUEST['id'])) {
-    $image_key = -1;
+if (empty($_REQUEST['id']) or  !is_numeric($_REQUEST['id'])   or  $_REQUEST['id']<=0 ) {
+    header("HTTP/1.0 404 Not Found");
+    echo "Image not found";
+    exit();
 } else {
     $image_key = $_REQUEST['id'];
 }
+
 
 
 if (isset($_REQUEST['size']) and preg_match('/^large|small|thumbnail|tiny$/', $_REQUEST['size'])) {
@@ -71,6 +74,11 @@ $db = new PDO(
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
+unset($dns_user);
+unset($dns_pwd);
+unset($dns_host);
+unset($dns_db);
+
 
 if ($size_r != '') {
 
@@ -102,16 +110,16 @@ if ($size_r != '') {
 }
 
 
-$sql = sprintf(
-    "SELECT `Image Data`,`Image Thumbnail Data`,`Image Small Data`,`Image Large Data`,`Image File Format`,`Image Filename` FROM `Image Dimension` WHERE `Image Key`=%d", $image_key
-);
+$sql = "SELECT `Image Data`,`Image Thumbnail Data`,`Image Small Data`,`Image Large Data`,`Image File Format`,`Image Filename` FROM `Image Dimension` WHERE `Image Key`=?";
 
 
-if ($result = $db->query($sql)) {
-
-    if ($row = $result->fetch()) {
-
-
+$stmt = $db->prepare($sql);
+if ($stmt->execute(
+    array(
+        $image_key
+    )
+)) {
+    if ($row = $stmt->fetch()) {
         header('Content-type: image/'.$row['Image File Format']);
         header('Content-Disposition: inline; filename='.$row['Image Filename']);
         $seconds_to_cache = 3600 * 24 * 500;
@@ -148,22 +156,17 @@ if ($result = $db->query($sql)) {
         file_put_contents($cache_file.'.'.$row['Image File Format'], $_image);
         $redis->set($image_code, $cache_file.'.'.$row['Image File Format']);
         echo $_image;
-
-
-    } else {
+    } else{
         header("HTTP/1.0 404 Not Found");
         echo "Image not found";
         $db = null;
         exit;
     }
-
-
 } else {
-    print_r($error_info = $db->errorInfo());
-    $db = null;
-    exit;
-
+    //print_r($error_info = $stmt->errorInfo());
+    exit();
 }
+
 
 
 ?>
