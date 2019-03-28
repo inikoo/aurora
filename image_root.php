@@ -11,8 +11,10 @@
 
 include_once 'common.php';
 
-if (!isset($_REQUEST['id'])) {
-    $image_key = -1;
+if (empty($_REQUEST['id']) or  !is_numeric($_REQUEST['id'])   or  $_REQUEST['id']<=0 ) {
+    header("HTTP/1.0 404 Not Found");
+    echo "Image not found";
+    exit();
 } else {
     $image_key = $_REQUEST['id'];
 }
