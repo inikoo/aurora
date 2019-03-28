@@ -1294,7 +1294,7 @@ class Page extends DB_Table {
             case 'Category Products':
                 $category = get_object('Category', $this->data['Page Parent Key']);
                 if ($category->id and $category->get('Category Main Image Key')) {
-                    $_page_image = get_object('Image',category->get('Category Main Image Key'));
+                    $_page_image = get_object('Image',$category->get('Category Main Image Key'));
                     if ($_page_image->id) {
                         $page_image_source = sprintf("images/%07d.%s", $_page_image->data['Image Key'], $_page_image->data['Image File Format']);
                         $image_key         = $_page_image->id;
