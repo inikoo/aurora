@@ -125,11 +125,6 @@ if (isset($is_homepage)) {
 //https://www.awgifts.eu/reset.php?s=ZBTN9OVoYabB&a=OZz-bvClmCKb0h8-QIYgz_UsR5sxz8PCR_rcs2_gFQZO
 
 
-if($webpage_key==''){
-    exit('error no webpage key');
-}
-
-
 $cache_id = $_SESSION['website_key'].'|'.$webpage_key.'|'.($logged_in ? 'in' : 'out');
 
 $template = $theme.'/webpage_blocks.'.$theme.'.'.$website_type.$template_suffix.'.tpl';
@@ -157,6 +152,21 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
 
     $webpage = get_object('Webpage', $webpage_key);
+
+
+    if (!$webpage->id) {
+
+
+        $url = preg_replace('/^\//', '', $_SERVER['REQUEST_URI']);
+        $url = preg_replace('/\?.*$/', '', $url);
+        $url = substr($url, 0, 256);
+
+
+        header("Location: https://".$_SERVER['SERVER_NAME']."/404.php?url=$url");
+        exit;
+
+    }
+
     $website = get_object('Website', $webpage->get('Webpage Website Key'));
 
     $website_settings = $website->settings;
@@ -176,8 +186,6 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
     $account = get_object('Account', 1);
     $smarty->assign('account_code', $account->get('Account Code'));
-
-    $smarty->assign('xxx', $account->get('Account Code'));
 
 
     $smarty->assign('client_tag_google_manager_id', $website->get('Website Google Tag Manager Code'));
