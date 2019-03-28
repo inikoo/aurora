@@ -16,7 +16,7 @@
     </span>
 
 {if $category_data.item_type=='Guest'}
-<span onclick="$(this).closest('.wrap').remove()" class="fa-stack button edit_icon" style="font-size:12.5px;position:absolute;z-index: 1005;right:10px;top:40px;">
+<span onclick="$(this).closest('.wrap').remove();$('#save_button',window.parent.document).addClass('save button changed valid')" class="fa-stack button edit_icon" style="font-size:12.5px;position:absolute;z-index: 1005;right:10px;top:40px;">
         <i style="color:red;" class="fas fa-circle fa-stack-2x "></i>
         <i class="fas fa-trash-alt fa-stack-1x fa-inverse"></i>
     </span>

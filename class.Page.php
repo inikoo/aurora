@@ -115,6 +115,11 @@ class Page extends DB_Table {
             );
         }
 
+
+
+       // print $sql;
+
+
         if ($this->data = $this->db->query($sql)->fetch()) {
 
             $this->id = $this->data['Page Key'];
