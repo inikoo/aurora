@@ -19,40 +19,6 @@ $to_mmddyy   = '';
 
 $object_fields = array();
 
-if($options['parent']=='campaign') {
-
-    $object_fields[] = array(
-        'label'      => _('Category'),
-        'show_title' => true,
-        'fields'     => array(
-
-            array(
-                'id'                       => 'Product_Family_Category_Key',
-                'edit'                     => 'dropdown_select',
-                'scope'                    => 'product_categories',
-                'parent'                   => 'store',
-                'parent_key'               => $store->id,
-                'value'                    => '',
-                'formatted_value'          => '',
-                'stripped_formatted_value' => '',
-                'label'                    => _('Category'),
-                'required'                 => true,
-                'type'                     => 'value'
-
-
-            ),
-
-
-        ),
-
-
-    );
-}
-
-
-
-
-
 
 $object_fields[] = array(
     'label'      => _('Offer'),
@@ -62,9 +28,9 @@ $object_fields[] = array(
 
         array(
             'edit'              => ($edit ? 'string' : ''),
-            'id'                => 'Deal_Name',
+            'id'                => 'Deal_Component_Name_Label',
             'value'             => '',
-            'label'             => ucfirst($object->get_field_label('Deal Name')),
+            'label'             => ucfirst($object->get_field_label('Deal Component Name Label')),
             'invalid_msg'       => get_invalid_message('string'),
             'required'          => true,
             'server_validation' => json_encode(
@@ -236,4 +202,3 @@ $object_fields[] = array(
 );
 
 
-?>
