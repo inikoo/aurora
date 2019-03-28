@@ -91,7 +91,7 @@
 
 
 
-
+            {if !empty($content.blocks) and  $content.blocks|is_array}
             {foreach from=$content.blocks item=$block key=key}
                 {if $block.show}
                     {if $block.type=='basket'}
@@ -187,7 +187,7 @@
 
                 {/if}
             {/foreach}
-
+            {/if}
 
 
 

@@ -75,10 +75,10 @@
             {assign "with_reset_password" false}
             {assign "with_unsubscribe" false}
 
+
+
+            {if !empty($content.blocks) and  $content.blocks|is_array}
             {foreach from=$content.blocks item=$block key=key}
-
-
-
                 {if $block.show}
 
 
@@ -182,10 +182,8 @@
                     {/if}
 
                 {/if}
-
-
-
             {/foreach}
+            {/if}
 
         </div>
 
