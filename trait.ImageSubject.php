@@ -239,7 +239,7 @@ trait ImageSubject {
 
         // ALTER TABLE `Image Subject Bridge` CHANGE `Image Subject Object` `Image Subject Object` ENUM('Webpage','Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category','Staff') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
-        $image = new Image($image_key);
+        $image = get_object('Image',$image_key);
 
         if ($image->id) {
             $subject_key = $this->id;
@@ -645,7 +645,7 @@ trait ImageSubject {
                 $this->update_images_data();
 
 
-                $image         = new Image($row['Image Subject Image Key']);
+                $image         = get_object('Image',$row['Image Subject Image Key']);
                 $image->editor = $this->editor;
 
                 $image->delete();

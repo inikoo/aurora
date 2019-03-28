@@ -1113,7 +1113,7 @@ trait ProductCategory {
                     */
 
 
-                    $image = new image($product->get('product main image key'));
+                    $image = get_object('Image',$product->get('product main image key'));
 
                     $_image_filename = uniqid('tmp_ftc_image_bis_');
 
@@ -1316,7 +1316,7 @@ trait ProductCategory {
 
 
                         $product       = get_object('product', $row['Product ID']);
-                        $image         = new Image($product->get('Product Main Image Key'));
+                        $image         = get_object('Image',$product->get('Product Main Image Key'));
                         $image_375x250 = '';
                         if ($image->id) {
                             $_image_filename = uniqid('tmp_ftc_image_a_');

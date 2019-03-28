@@ -1292,10 +1292,9 @@ class Page extends DB_Table {
         switch ($this->data['Webpage Scope']) {
             case 'Category Categories':
             case 'Category Products':
-                include_once 'class.Category.php';
-                $category = new Category('id', $this->data['Page Parent Key']);
+                $category = get_object('Category', $this->data['Page Parent Key']);
                 if ($category->id and $category->get('Category Main Image Key')) {
-                    $_page_image = new Image($category->get('Category Main Image Key'));
+                    $_page_image = get_object('Image',category->get('Category Main Image Key'));
                     if ($_page_image->id) {
                         $page_image_source = sprintf("images/%07d.%s", $_page_image->data['Image Key'], $_page_image->data['Image File Format']);
                         $image_key         = $_page_image->id;
@@ -5585,7 +5584,7 @@ class Page extends DB_Table {
         $this->db->exec($sql);
 
         foreach ($images as $image_key) {
-            $image = new Image($image_key);
+            $image = get_object('Image',$image_key);
             $image->delete();
             //if (!$image->deleted) {
             //    $image->update_other_size_data();
@@ -8347,8 +8346,7 @@ class Page extends DB_Table {
 
         $old_image_key = $this->data['Page Preview Snapshot Image Key'];
 
-        //   $new_image_key=$old_image_key;
-        //      $image=new Image($image_key);
+
 
 
         $height = $this->data['Page Header Height'] + $this->data['Page Content Height'] + $this->data['Page Footer Height'] + 10;
