@@ -60,7 +60,7 @@
             {assign "with_product" false}
             {assign "with_unsubscribe" false}
 
-
+            {if !empty($content.blocks) and  $content.blocks|is_array}
             {foreach from=$content.blocks item=$block key=key}
                     {if $block.show}
 
@@ -159,9 +159,7 @@
 
                     {/if}
                 {/foreach}
-
-
-
+            {/if}
 
 
             {include file="theme_1/footer.theme_1.EcomB2B.tablet.tpl"}
@@ -177,9 +175,6 @@
 
 
         function getScript(url, success) {
-
-
-
 
             var script = document.createElement('script');
             script.src = url;
@@ -198,24 +193,9 @@
 
 
         getScript('/js/mobile.190304.min.js', function () {
-
-
-
-
-
-
-
             $('#header_search_icon').on("click", function () {
-
                 window.location.href = "search.sys?q=" + encodeURIComponent($('#header_search_input').val());
-
-
             });
-
-
-
-
-
             getScript('/js/tablet.custom.min.js?v=190225', function () {
 
 
