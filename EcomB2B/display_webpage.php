@@ -135,7 +135,7 @@ $cache_id = $_SESSION['website_key'].'|'.$webpage_key.'|'.($logged_in ? 'in' : '
 $template = $theme.'/webpage_blocks.'.$theme.'.'.$website_type.$template_suffix.'.tpl';
 
 $smarty->assign('is_devel', preg_match('/bali|sasi/', gethostname()));
-
+$smarty->assign('cache_id', $cache_id);
 
 
 if (!(isset($is_unsubscribe) or isset($is_reset))) {
@@ -176,6 +176,10 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
     $account = get_object('Account', 1);
     $smarty->assign('account_code', $account->get('Account Code'));
+
+    $smarty->assign('xxx', $account->get('Account Code'));
+
+
     $smarty->assign('client_tag_google_manager_id', $website->get('Website Google Tag Manager Code'));
     $smarty->assign('zendesk_chat_code', $website->get('Website Zendesk Chat Code'));
     $smarty->assign('tawk_chat_code', $website->get('Website Tawk Chat Code'));
