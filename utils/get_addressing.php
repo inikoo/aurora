@@ -201,6 +201,12 @@ function get_address_form_data($country_code, $locale = 'en_GB') {
         case 'emirate':
             $address_labels['administrativeArea']['label'] = _('emirate');
             break;
+        case 'do_si':
+            $address_labels['administrativeArea']['label'] = 'Do Si';
+            break;
+        default:
+            $address_labels['administrativeArea']['label'] = _('Administrative area');
+            break;
     }
 
     switch ($address_labels['locality']['code']) {
@@ -216,6 +222,9 @@ function get_address_form_data($country_code, $locale = 'en_GB') {
             break;
         case 'post_town':
             $address_labels['locality']['label'] = _('post town');
+            break;
+        default:
+            $address_labels['locality']['label'] = _('locality (City)');
             break;
 
     }
@@ -237,6 +246,9 @@ function get_address_form_data($country_code, $locale = 'en_GB') {
             break;
         case 'suburb':
             $address_labels['dependentLocality']['label'] = _('suburb');
+            break;
+        default:
+            $address_labels['dependentLocality']['label'] = _('dependent locality');
             break;
     }
 

@@ -11,7 +11,7 @@
 
 
 if ( preg_match('/bali|sasi/', gethostname()) ) {
-    $_SESSION['website_key'] = 12;
+    $_SESSION['website_key'] = 2;
 } else {
 
     include_once 'utils/general_functions.php';

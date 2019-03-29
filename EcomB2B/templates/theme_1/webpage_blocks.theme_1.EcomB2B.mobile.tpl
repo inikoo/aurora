@@ -287,7 +287,7 @@
             {if $with_basket==1}
             getScript('/js/mobile.logged_in.min.js?v=190227', function () {
                 getScript('/js/mobile.forms.min.js', function () {
-                    getScript('/js/mobile.basket.min.js?v=190225', function () {
+                    getScript('/js/mobile.basket.min.js?v=190229', function () {
                     $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=mobile", function (data) {
 
                         $('#basket').html(data.html)
@@ -479,6 +479,8 @@
                         $.each(data.labels, function(index, value) {
                             $('#'+index).find('input').attr('placeholder',value)
                             $('#'+index).find('b').html(value)
+                            $('#'+index).find('label.label').html(value)
+
 
                         });
 

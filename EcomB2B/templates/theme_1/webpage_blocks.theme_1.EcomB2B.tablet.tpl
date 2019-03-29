@@ -346,7 +346,7 @@
 
                 getScript('/js/mobile.logged_in.min.js?v=190227', function () {
                     getScript('/js/mobile.forms.min.js', function () {
-                        getScript('/js/mobile.basket.min.js?v=190225', function () {
+                        getScript('/js/mobile.basket.min.js?v=190229', function () {
 
 
 
@@ -540,6 +540,7 @@
                         $.each(data.labels, function(index, value) {
                             $('#'+index).find('input').attr('placeholder',value)
                             $('#'+index).find('b').html(value)
+                            $('#'+index).find('label.label').html(value)
 
                         });
 

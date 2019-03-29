@@ -1042,6 +1042,7 @@
             $.each(data.labels, function (index, value) {
                 $('#invoice_' + index).find('input').attr('placeholder', value)
                 $('#invoice_' + index).find('b').html(value)
+                $('#invoice_' + index).find('label.label').html(value)
 
             });
 
@@ -1238,6 +1239,7 @@
             $.each(data.labels, function (index, value) {
                 $('#delivery_' + index).find('input').attr('placeholder', value)
                 $('#delivery_' + index).find('b').html(value)
+                $('#delivery_' + index).find('label.label').html(value)
 
             });
 
