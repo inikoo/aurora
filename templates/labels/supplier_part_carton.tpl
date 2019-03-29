@@ -109,7 +109,7 @@
             </td>
         </tr>
 
-
+        {if $supplier_part->part->get('Part Carton Barcode')!=''}
         <tr>
             <td colspan="4" style="text-align: center"><img style="max-height: 70px" src="/barcode_asset.php?type=code128&number={$supplier_part->part->get('Part Carton Barcode')}">
             </td>
@@ -119,5 +119,7 @@
             <td colspan="4" style="padding-top: 2px">{$supplier_part->part->get('Part Carton Barcode')}</td>
 
         </tr>
+        {/if}
+
     </table>
 </div>
