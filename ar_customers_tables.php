@@ -1902,6 +1902,7 @@ function credit_blockchain($_data, $db, $user,$account) {
 
         foreach ($result as $data) {
 
+
             $note='';
             switch ($data['Credit Transaction Type']){
                 case 'Payment':
@@ -1938,7 +1939,7 @@ function credit_blockchain($_data, $db, $user,$account) {
                     break;
                 case 'Adjust':
                     $type=_('Adjust');
-
+                    $note=$data['History Abstract'];
                     break;
                 default:
                     $type=$data['Credit Transaction Type'];

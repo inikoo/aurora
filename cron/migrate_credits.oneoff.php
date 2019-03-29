@@ -59,9 +59,9 @@ if ($result = $db->query($sql)) {
        // print_r($row);
 //exit;
         $customer->editor = $editor;
-        $customer->set_account_balance_adjust($customer->get('Customer Account Balance'), _('Carry on balance'));
+        $customer->set_account_balance_adjust($customer->get('Customer Account Balance'), 'Carry on balance from old inikoo system');
         $customer->update_account_balance();
-        exit;
+        $customer->update_credit_account_running_balances();
 
     }
 } else {
