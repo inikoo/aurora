@@ -59,18 +59,12 @@ function place_order(element) {
                 $('.order_total').html('')
 
 
-                var i;
-                for (i = 0; i < data.analytics_data.items.length; ++i) {
-                    ga('auTracker.ec:addProduct',data.analytics_data.items[i] );
-                }
-
-                ga('auTracker.ec:setAction', 'purchase', data.analytics_data);
-
-                ga('auTracker.send', 'event', 'Order', 'purchase',data.analytics_data.affiliation, data.analytics_data.gbp_revenue);
-
-
-
-                window.location.replace("thanks.sys?order_key="+data.order_key);
+                var d = new Date();
+                var timestamp=d.getTime()
+                d.setTime(timestamp + 300000);
+                var expires = "expires="+ d.toUTCString();
+                document.cookie = "au_pu_"+ data.order_key+"=" + data.order_key + ";" + expires + ";path=/";
+                window.location.replace("thanks.sys?order_key="+data.order_key+'&t='+timestamp);
 
             } else if (data.state == '400') {
                 button.removeClass('wait')
