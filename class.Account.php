@@ -401,6 +401,9 @@ class Account extends DB_Table {
 
 
                 return number($number);
+            case 'Label Signature':
+                return nl2br($this->data['Account Label Signature']);
+                break;
             case 'Contacts':
             case 'New Contacts':
             case 'Contacts With Orders':
@@ -1501,7 +1504,9 @@ class Account extends DB_Table {
             case 'Account Name':
                 $label = _('organization name');
                 break;
-
+            case 'Account Label Signature':
+                $label = _('label signature');
+                break;
             default:
                 $label = $field;
         }

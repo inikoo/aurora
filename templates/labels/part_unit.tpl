@@ -3,33 +3,46 @@
 </script>
 <div style="">
 
-    <table style="width:100%;font-size:2.0mm;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif" border="0">
-        <tr>
+    <table border=0 style='width:100%;font-size:2.0mm;font-family: Arial, " Helvetica Neue , Helvetica, sans-serif' >
+    <tr>
+        <td style="height:100%;" valign="top">
+            <table border="0" style="height: 100%;">
+                <tr>
+                    <td>
+                        <b>{$part->get('Reference')}</b></td>
+                </tr>
+                <tr>
+                    <td style="border-bottom: 1px solid #000">{$part->get('Recommended Product Unit Name')}</td>
+                </tr>
+                <tr>
+                    <td style="height: 1mm"></td>
+                </tr>
+                <tr>
+                    <td>
+                        {if $part->get('Origin Country')!='' and $part->get('Part Origin Country Code')!=$account->get('Account Country Code')  }
+                            Imported from {$part->get('Origin Country')} by {$account->get('Name')}
+                            <br>
+                        {else}
+                            <span style="">{$account->get('Name')}</span>
+                            <br>
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {$account->get('Label Signature')}
 
-            <td colspan="2" style=" text-align: center;"><b>{$part->get('Reference')}</b> {$part->get('Recommended Product Unit Name')}</td>
-        </tr>
-        <tr>
-            <td style=" text-align: center;width: 25mm;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif">
-                <div style=";font-size:0.5mm;">
-                {if $part->get('Origin Country')!='' and $part->get('Part Origin Country Code')!=$account->get('Account Country Code')  }
-                    Imported from {$part->get('Origin Country')} by
-                {else}
+                    </td>
+                </tr>
+            </table>
 
-                {/if}
-                <span style="">Ancient Wisdom</span><br>
-                Reg. no. 04108870
-                <br>
-                S3 8AL UK
-                <br>
-                All rights reserved
-                </div>
+        </td>
 
-            </td>
-            <td >
+        <td >
+            <barcode code="{$part->get('Part Barcode Number')}"/>
 
-                <img style="height:20mm" src="/barcode_asset.php?number={$part->get('Part Barcode Number')}">
-            </td>
+        </td>
+    </tr>
 
-        </tr>
     </table>
 </div>
