@@ -68,6 +68,30 @@ $object_fields = array(
     ),
 
 
+    array(
+        'label'      => _('Product labels'),
+        'show_title' => true,
+        'fields'     => array(
+
+
+            array(
+                'edit'     => ($edit ? 'textarea' : ''),
+                'id'       => 'Account_Label_Signature',
+                'value'    => $object->get('Account Label Signature'),
+                'formatted_value'    => $object->get('Label Signature'),
+
+                'label'    => ucfirst($object->get_field_label('Account Label Signature')),
+                'required' => false,
+
+                'type' => ''
+
+
+            ),
+
+        )
+    ),
+
+
 );
 
 

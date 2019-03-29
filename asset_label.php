@@ -51,8 +51,12 @@ if($type=='carton'){
     $h = 27;
 }
 
+$smarty->assign('account', $account);
+
 
 if ($object_name == 'part') {
+
+
 
     $smarty->assign('part', $object);
 

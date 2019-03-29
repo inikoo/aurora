@@ -55,9 +55,29 @@
             </td>
 
         </tr>
+
+        {assign var='description' value="{$supplier_part->get('Supplier Part Description')}" }
+        {assign var='materials' value="{$supplier_part->part->get('Materials')}  " }
+
         <tr class="data">
             <td colspan="4">
-                <b>{$supplier_part->get('Supplier Part Description')}</b>
+
+
+                {if ($materials|strip_tags|count_characters)>250}
+
+                {if ($description|count_characters)>80}
+                    <span style="font-size:2mm;">{$description|strip_tags|truncate:200}</span>
+                {elseif ($description|count_characters)>50}
+                    <span style="font-size:2.5mm;">{$description|strip_tags|truncate:75}</span>
+                {elseif ($description|count_characters)>30}
+                    <b style="font-size:3mm;">{$description|strip_tags|truncate:50}</b>
+                {else}
+                    <b>{$description}</b>
+                {/if}
+                {else}
+                    <b>{$description|strip_tags|truncate:120}</b>
+                {/if}
+
 
             </td>
 
@@ -69,9 +89,12 @@
             </td>
 
         </tr>
+
+
         <tr class="data">
             <td colspan="4" style="font-size:2.5mm">
-                {$supplier_part->part->get('Materials')}
+
+                {$materials|strip_tags|truncate:550}
 
             </td>
 
@@ -111,7 +134,8 @@
 
         {if $supplier_part->part->get('Part Carton Barcode')!=''}
         <tr>
-            <td colspan="4" style="text-align: center"><img style="max-height: 70px" src="/barcode_asset.php?type=code128&number={$supplier_part->part->get('Part Carton Barcode')}">
+            <td colspan="4" style="text-align: center"><barcode code="{$supplier_part->part->get('Part Carton Barcode')}" type="C128A" />
+
             </td>
 
         </tr>

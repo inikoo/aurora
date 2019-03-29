@@ -26,7 +26,7 @@
         <div style="clear:both">
         </div>
     </div>
-    <div class="block carton_sko_units hide" style="width: 540px">
+    <div class="block carton_sko_units " style="width: 540px">
 
 
         <table border="0" class="overview {if $part->get('Part Barcode Number')==''}hide{/if} ">
