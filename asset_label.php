@@ -95,6 +95,7 @@ $mpdf = new \Mpdf\Mpdf(
     ]
 );
 
+$mpdf->repackageTTF = false;
 
 $mpdf->SetTitle('Label '.$object->get_name().' '.$object->id);
 $mpdf->SetAuthor('Aurora Systems');
