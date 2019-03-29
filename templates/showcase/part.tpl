@@ -570,7 +570,7 @@
 
 
     <div style="width: 770px">
-        <table border="0" class="overview  hide">
+        <table border="0" class="overview  ">
             <tr class=" units_data">
 
                 <td>
