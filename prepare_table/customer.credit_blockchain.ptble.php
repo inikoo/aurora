@@ -171,7 +171,7 @@ if ($order == 'date') {
 
 
 $fields     =
-    ' `Order Key`,`Order Public ID`,`Order Store Key`,  `Invoice Key`,`Invoice Public ID` ,`Invoice Type`,`Payment Related Payment Transaction ID`,`Payment Related Payment Key`, CTF.`Credit Transaction Key`,`Credit Transaction Type`,`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Payment Key`,`Credit Transaction Running Amount`';
+    '`History Abstract`, `Order Key`,`Order Public ID`,`Order Store Key`,  `Invoice Key`,`Invoice Public ID` ,`Invoice Type`,`Payment Related Payment Transaction ID`,`Payment Related Payment Key`, CTF.`Credit Transaction Key`,`Credit Transaction Type`,`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Payment Key`,`Credit Transaction Running Amount`';
 $sql_totals = "select count(Distinct `Credit Transaction Key`) as num from $table $where";
 
 

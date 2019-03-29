@@ -3646,14 +3646,19 @@ class Customer extends Subject {
 
         $sql = sprintf(
             'INSERT INTO `Credit Transaction Fact` 
-                    (`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`) 
-                    VALUES (%s,%.2f,%s,%f,%d) ', prepare_mysql($date), $amount, prepare_mysql($this->data['Customer Currency Code']), $exchange, $this->id
+                    (`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Type`) 
+                    VALUES (%s,%.2f,%s,%f,%d,"Adjust") ', prepare_mysql($date), $amount, prepare_mysql($this->data['Customer Currency Code']), $exchange, $this->id
 
 
         );
 
         $this->db->exec($sql);
         $credit_key = $this->db->lastInsertId();
+
+        if($credit_key==0){
+            print $sql;
+            exit;
+        }
 
 
         $history_data = array(
