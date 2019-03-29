@@ -94,6 +94,7 @@ $(document).on('change', "#order_invoice_country_select", function(){
         $.each(data.labels, function(index, value) {
             $('#order_invoice_'+index).find('input').attr('placeholder',value)
             $('#order_invoice_'+index).find('b').html(value)
+            $('#order_invoice_'+index).find('label.label').html(value)
 
         });
 
@@ -147,6 +148,7 @@ $(document).on('change', "#order_delivery_country_select", function(){
         $.each(data.labels, function(index, value) {
             $('#order_delivery_'+index).find('input').attr('placeholder',value)
             $('#order_delivery_'+index).find('b').html(value)
+            $('#order_delivery_'+index).find('label.label').html(value)
 
         });
 

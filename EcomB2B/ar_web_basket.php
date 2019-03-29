@@ -614,6 +614,7 @@ function get_basket_html($data, $customer) {
             $invoice_address_format, $invoice_address_labels, $invoice_used_fields, $invoice_hidden_fields, $invoice_required_fields, $invoice_no_required_fields
             ) = get_address_form_data($order->get('Order Invoice Address Country 2 Alpha Code'), $website->get('Website Locale'));
 
+
         $smarty->assign('invoice_address_labels', $invoice_address_labels);
         $smarty->assign('invoice_required_fields', $invoice_required_fields);
         $smarty->assign('invoice_no_required_fields', $invoice_no_required_fields);
