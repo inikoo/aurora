@@ -345,24 +345,43 @@
             {if $with_thanks==1}
             getScript('/js/mobile.logged_in.min.js?v=190227', function () {
 
-                var _args=document.location.href.split("?")[1];
 
-                if(_args!=undefined) {
-                    args = _args.split("=");
-                    if (args[1] != undefined && args[0] == 'order_key') {
-                        $.getJSON("ar_web_thanks.php?tipo=get_thanks_html&order_key="+args[1]+"&device_prefix=mobile", function (data) {
+                var getUrlParameter = function getUrlParameter(sParam) {
+                    var sPageURL = window.location.search.substring(1),
+                        sURLVariables = sPageURL.split('&'),
+                        sParameterName,
+                        i;
 
-                            $('#thanks').html(data.html)
+                    for (i = 0; i < sURLVariables.length; i++) {
+                        sParameterName = sURLVariables[i].split('=');
 
-
-                        })
-
-                    }else{
-                        $('#thanks').html('')
+                        if (sParameterName[0] === sParam) {
+                            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                        }
                     }
+                };
+
+                var order_key=getUrlParameter('order_key');
+                var timestamp=getUrlParameter('t');
+                var timestamp_server=getUrlParameter('ts');
+
+                if(timestamp==undefined){
+                    timestamp='';
+                }
+
+                if(timestamp_server==undefined){
+                    timestamp_server='';
+                }
+
+                if(order_key){
+                    $.getJSON("ar_web_thanks.php?tipo=get_thanks_html&order_key="+order_key+"&device_prefix=mobile&timestamp="+timestamp+"&timestamp_server="+timestamp_server, function (data) {
+                        $('#thanks').html(data.html)
+                    })
                 }else{
                     $('#thanks').html('')
                 }
+
+
 
 
 

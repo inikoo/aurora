@@ -10,6 +10,7 @@
 */
 
 require_once '../vendor/autoload.php';
+require_once 'utils/sentry.php';
 
 
 
@@ -136,9 +137,8 @@ $published_email_template->send($customer,$send_data);
 
 
 
-
-
-header('Location: thanks.sys?order_key='.$order->id);
+setcookie('au_pu_'.$order->id, $order->id, time() + 300, "/");
+header('Location: thanks.sys?order_key='.$order->id+'&ts='.time());
 exit;
 
 ?>

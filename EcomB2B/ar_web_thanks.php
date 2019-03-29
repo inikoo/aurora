@@ -11,6 +11,8 @@
 */
 
 include_once 'ar_web_common_logged_in.php';
+require_once 'utils/currency_functions.php';
+
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
@@ -20,6 +22,9 @@ if (!isset($_REQUEST['tipo'])) {
     echo json_encode($response);
     exit;
 }
+
+$account = get_object('Account', 1);
+
 
 $tipo = $_REQUEST['tipo'];
 
@@ -35,11 +40,19 @@ switch ($tipo) {
                          'order_key'     => array(
                              'type'     => 'string',
                              'optional' => true
+                         ),
+                         'timestamp'     => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
+                         'timestamp_server'     => array(
+                             'type'     => 'string',
+                             'optional' => true
                          )
                      )
         );
 
-        get_thanks_html($data, $customer, $db);
+        get_thanks_html($data, $customer, $db,$account);
 
 
         break;
@@ -47,7 +60,8 @@ switch ($tipo) {
 
 }
 
-function get_thanks_html($data, $customer, $db) {
+function get_thanks_html($data, $customer, $db,$account) {
+
 
 
     $template_suffix = $data['device_prefix'];
@@ -60,7 +74,7 @@ function get_thanks_html($data, $customer, $db) {
     $smarty->addPluginsDir('./smarty_plugins');
 
 
-    $order = get_object('Order', $data['order_key']);
+     $order= get_object('Order', $data['order_key']);
 
     if (!$order->id or $order->get('Order Customer Key') != $customer->id) {
         $response = array(
@@ -114,7 +128,7 @@ function get_thanks_html($data, $customer, $db) {
     $smarty->assign('logged_in', true);
     $smarty->assign('order_key', $order->id);
 
-    $placed_order = get_object('Order', $_REQUEST['order_key']);
+    $placed_order = $order;
 
 
     require_once 'utils/placed_order_functions.php';
@@ -150,6 +164,43 @@ function get_thanks_html($data, $customer, $db) {
         $block['text'] = str_replace('<p></p>', '', $block['text']);
     }
     $smarty->assign('data', $block);
+
+
+    $analytics_items = array();
+    foreach ($items = $order->get_items() as $item) {
+        $analytics_items[] = $item['analytics_data'];
+    }
+
+    $exchange = currency_conversion(
+        $db, $store->get('Store Currency Code'), $account->get('Account Currency Code'), '- 1440 minutes'
+    );
+
+    $analytics_data=json_encode(array(
+        'id'          => $order->get('Public ID'),
+        'affiliation' => $store->get('Name'),
+        'revenue'     => $order->get('Order Total Amount'),
+        'gbp_revenue' => ceil($order->get('Order Total Amount') * $exchange),
+        'tax'         => $order->get('Order Total Tax Amount'),
+        'shipping'    => $order->get('Order Shipping Net Amount'),
+    ));
+
+    $smarty->assign('analytics_items', $analytics_items);
+    $smarty->assign('analytics_data', $analytics_data);
+
+
+
+    if(empty($data['timestamp']) or !is_numeric($data['timestamp']) ){
+        $timestamp=0;
+
+        if(!empty($data['timestamp_server']) and is_numeric($data['timestamp_server']) and  (time()-$data['timestamp_server']<300  and time()-$data['timestamp_server']>=0  )){
+            $smarty->assign('skip_timestamp_check', 'Yes');
+
+        }
+
+    }else{
+        $timestamp=$data['timestamp'];
+    }
+    $smarty->assign('timestamp', $timestamp);
 
 
     $response = array(
