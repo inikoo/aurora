@@ -10,7 +10,6 @@
 *}<!DOCTYPE HTML>
 <html lang="en">
 <head>
-
     {if !isset($is_devel) or !$is_devel  }
 
     {if  $client_tag_google_manager_id!=''}
@@ -41,7 +40,8 @@
             ga('auTracker.set', 'contentGroup1', '{$account_code}');
             {/if}
             ga('auTracker.set', 'contentGroup2', '{$smarty.server.SERVER_NAME}');
-            ga('auTracker.set', 'contentGroup3', '{if $logged_in}Logged in{else}Logged out{/if}');        </script>
+            ga('auTracker.set', 'contentGroup3', '{if $logged_in}Logged in{else}Logged out{/if}');
+        </script>
     {else}
     {literal}
         <script>
@@ -57,10 +57,9 @@
             ga('auTracker.set', 'contentGroup1', '{$account_code}');
             {/if}
             ga('auTracker.set', 'contentGroup2', '{$smarty.server.SERVER_NAME}');
-            ga('auTracker.set', 'contentGroup3', '{if $logged_in}Logged in{else}Logged out{/if}');        </script>
-
+            ga('auTracker.set', 'contentGroup3', '{if $logged_in}Logged in{else}Logged out{/if}');
+        </script>
     {/if}
-
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0" />
@@ -72,10 +71,10 @@
     {if !isset($is_devel) or !$is_devel  }
         <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
         <script>
-            Sentry.init({ dsn: 'https://ca602819cbd14ce99a6d3ab94e1c5f04@sentry.io/1329969',
-                release: "au-web@1.0" });
+            Sentry.init({ dsn: 'https://ca602819cbd14ce99a6d3ab94e1c5f04@sentry.io/1329969', release: "au-web@1.0" });
         </script>
     {/if}
+
     <link rel="stylesheet" type="text/css" href="/css/mobile.min.css?v2.4">
 
     {assign "with_forms" false}
@@ -168,12 +167,15 @@
         {/if}
     {/foreach}
 
+    {if $with_reviews==1}
+        <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js"></script>
+    {/if}
     {if $with_forms==1}
         <link rel="stylesheet" href="css/forms.min.css?v2.0" type="text/css"/>
 
     {/if}
     {if $with_gallery==1}
-    <link rel="stylesheet" href="css/image_gallery.min.css">
+        <link rel="stylesheet" href="css/image_gallery.min.css">
     {/if}
 
     {if $website->get('Website Text Font')!=''  and $logged_in}
@@ -181,14 +183,7 @@
     {/if}
 
 
-    {if $with_reviews==1}
-        <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js"></script>
-
-    {/if}
-    {if $with_basket==1}
-        <script src="https://www.paypalobjects.com/api/checkout.min.js" async></script>
-    {/if}
-    {if $with_checkout==1 }
+    {if $with_basket==1 or  $with_checkout==1}
         <script src="https://www.paypalobjects.com/api/checkout.min.js" async></script>
     {/if}
 
@@ -223,6 +218,10 @@
         }
 
         {/if}
+
+
+
+
 
         {foreach from=$website->mobile_style  item=style  }
         {$style[0]}{ {$style[1]}: {$style[2]}}
@@ -274,7 +273,7 @@
              -weight: 300;
              color: #232323;
              font-weight: 800;
-             font-family: Ubuntu,Helvetica,Arial,sans-serif;
+             font-family: '{$website->get('Website Text Font')}', sans-serif;
              margin-top: 0;
              border: 1px solid #ccc;
              text-align: center;

@@ -259,10 +259,9 @@
         });
 
 
-            getScript('/js/tablet.custom.min.js?v=2', function () {
+            getScript('/js/tablet.custom.min.js?v=190225v2', function () {
 
-
-            {if $with_search==1}
+                {if $with_search==1}
 
 
             var _args=document.location.href.split("?")[1];
@@ -283,8 +282,7 @@
 
 
             {/if}
-
-            {if $with_basket==1}
+                {if $with_basket==1}
             getScript('/js/mobile.logged_in.min.js?v=190227', function () {
                 getScript('/js/mobile.forms.min.js', function () {
                     getScript('/js/mobile.basket.min.js?v=190229', function () {
@@ -342,7 +340,7 @@
             })
 
             {/if}
-            {if $with_thanks==1}
+                {if $with_thanks==1}
             getScript('/js/mobile.logged_in.min.js?v=190227', function () {
 
 
@@ -390,7 +388,7 @@
             })
 
             {/if}
-            {if $with_checkout==1}
+                {if $with_checkout==1}
             getScript('/js/mobile.logged_in.min.js?v=190227', function () {
                 getScript('/js/mobile.forms.min.js', function () {
                     getScript('/js/mobile.checkout.min.js?v=190324v1', function () {
@@ -415,7 +413,7 @@
             })
 
             {/if}
-            {if $with_favourites==1}
+                {if $with_favourites==1}
             getScript('/js/mobile.logged_in.min.js?v=190227', function () {
 
                 $.getJSON("ar_web_favourites.php?tipo=get_favourites_html&device_prefix=mobile", function (data) {
@@ -452,7 +450,7 @@
             })
 
             {/if}
-            {if $with_profile==1}
+                {if $with_profile==1}
             getScript('/js/mobile.forms.min.js', function () {
                 getScript('/js/mobile.profile.min.js', function () {
                 $.getJSON("ar_web_profile.php?tipo=get_profile_html&device_prefix=mobile", function (data) {
@@ -468,8 +466,7 @@
 
             })
             {/if}
-
-            {if $with_register==1}
+                {if $with_register==1}
             getScript('/js/mobile.forms.min.js', function () {
 
 
@@ -760,9 +757,7 @@
             });
 
             {/if}
-
-
-            {if $with_reset_password}
+                {if $with_reset_password}
             getScript('/js/mobile.forms.min.js', function () {
                 $("form").on('submit', function (e) {
 
@@ -872,8 +867,7 @@
             })
 
             {/if}
-
-            {if $with_login==1}
+                {if $with_login==1}
 
             getScript('/js/mobile.forms.min.js', function () {
 
@@ -1118,8 +1112,7 @@
 
             })
             {/if}
-
-            {if $with_gallery==1}
+                {if $with_gallery==1}
 
             getScript('/js/image_gallery.min.js', function () {
                 var $pswp = $('.pswp')[0];
@@ -1149,7 +1142,7 @@
 
 
             {/if}
-            {if $with_iframe==1}
+                {if $with_iframe==1}
 
             $(document).ready(function () {
                 resize_banners();
@@ -1186,11 +1179,7 @@
 
 
             {/if}
-
-
-
-
-            {if $with_blackboard==1}
+                {if $with_blackboard==1}
 
 
             $(".asset_description .show_all").on( 'click',function() {
@@ -1225,8 +1214,7 @@
                 return false;
 
             });{/if}
-
-            {if $logged_in}
+                {if $logged_in}
 
             {if $with_product_order_input==1}
 
@@ -1289,7 +1277,7 @@
 
 
 
-    {if $with_search!=1 and $with_favourites!=1 and $with_basket!=1 and $with_checkout!=1}
+    {if $with_search!=1 and $with_favourites!=1 and $with_basket!=1 and $with_checkout!=1 and $with_thanks!=1}
     ga('auTracker.send', 'pageview');
     {/if}
 
