@@ -41,7 +41,6 @@
             {/if}
             ga('auTracker.set', 'contentGroup2', '{$smarty.server.SERVER_NAME}');
             ga('auTracker.set', 'contentGroup3', '{if $logged_in}Logged in{else}Logged out{/if}');
-
         </script>
     {else}
     {literal}
@@ -72,14 +71,11 @@
     {if !isset($is_devel) or !$is_devel  }
         <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
         <script>
-            Sentry.init({ dsn: 'https://ca602819cbd14ce99a6d3ab94e1c5f04@sentry.io/1329969',
-                release: "au-web@1.0"
-            });
+            Sentry.init({ dsn: 'https://ca602819cbd14ce99a6d3ab94e1c5f04@sentry.io/1329969', release: "au-web@1.0"});
         </script>
     {/if}
 
     <link rel="stylesheet" type="text/css" href="/css/tablet.min.css?v=v181125">
-
 
     {assign "with_forms" false}
     {assign "with_not_found" 0}
@@ -96,14 +92,8 @@
     {assign "with_gallery" false}
     {assign "with_telephone" false}
     {assign "with_product_order_input" false}
-    {assign "with_reviews" false}
-
-
-
-
     {assign "with_order" false}
-
-
+    {assign "with_reviews" false}
 
 
     {foreach from=$content.blocks item=$block }
@@ -136,10 +126,6 @@
                 {else}
                     {assign "with_thanks" 1} {assign "with_order" 1}
                 {/if}
-
-
-
-
             {elseif $block.type=='basket'}
                 {if !$logged_in}
                     {assign "with_not_found" 1}
@@ -162,8 +148,6 @@
                 {assign "with_reset_password" 1}
                 {assign "with_forms" 1}
 
-
-
                 <script src="js/mobile.190304.min.js"></script>
                 <script src="js/mobile.forms.min.js"></script>
                 <script src="js/sweetalert.min.js"></script>
@@ -183,23 +167,18 @@
         {/if}
     {/foreach}
 
-
-
     {if $with_reviews==1}
         <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js"></script>
-
     {/if}
-
     {if $with_forms==1}
         <link rel="stylesheet" href="css/forms.min.css?v2.0" type="text/css"/>
 
     {/if}
-
     {if $with_gallery==1}
         <link rel="stylesheet" href="css/image_gallery.min.css">
     {/if}
 
-    {if $website->get('Website Text Font')!=''}
+    {if $website->get('Website Text Font')!=''  and $logged_in}
         <link href="https://fonts.googleapis.com/css?family={$website->get('Website Text Font')}:400,700" rel="stylesheet">
     {/if}
 
@@ -293,7 +272,7 @@
             font-size: 25px;
             color: #232323;
             font-weight: 800;
-            font-family: Ubuntu,Helvetica,Arial,sans-serif;
+            font-family: '{$website->get('Website Text Font')}', sans-serif;
         }
 
         {/if}

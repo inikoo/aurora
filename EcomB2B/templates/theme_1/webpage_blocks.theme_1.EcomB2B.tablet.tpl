@@ -193,130 +193,30 @@
 
 
         getScript('/js/mobile.190304.min.js', function () {
+
+            {if $website->get('Website Text Font')!=''  and !$logged_in}
+
+            WebFontConfig = {
+                google: { families: [ '{$website->get('Website Text Font')}:400,700' ] }
+            };
+
+            var wf = document.createElement('script');
+            wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+                '://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';
+            wf.type = 'text/javascript';
+            wf.async = 'true';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(wf, s);
+
+            {/if}
+
+
+
+
             $('#header_search_icon').on("click", function () {
                 window.location.href = "search.sys?q=" + encodeURIComponent($('#header_search_input').val());
             });
-            getScript('/js/tablet.custom.min.js?v=190225', function () {
-
-
-
-                {if $with_reset_password==1}
-
-                    getScript('/js/mobile.forms.min.js', function () {
-
-                        $("form").on('submit', function (e) {
-
-                            e.preventDefault();
-                            e.returnValue = false;
-
-                        });
-
-
-                        $("#password_reset_form").validate({
-
-                            submitHandler: function(form)
-                            {
-
-
-                                var button=$('#change_password_button');
-
-                                if(button.hasClass('wait')){
-                                    return;
-                                }
-
-                                button.addClass('wait')
-                                button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
-
-
-
-                                var ajaxData = new FormData();
-
-                                ajaxData.append("tipo", 'update_password')
-                                ajaxData.append("pwd", sha256_digest($('#password').val()))
-
-
-                                $.ajax({
-                                    url: "/ar_web_profile.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-                                    complete: function () {
-                                    }, success: function (data) {
-
-
-
-                                        if (data.state == '200') {
-                                            $('#password_reset_form').addClass('submited')
-
-                                        } else if (data.state == '400') {
-                                            swal("{t}Error{/t}!", data.msg, "error")
-                                        }
-
-                                        button.removeClass('wait')
-                                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
-
-                                    }, error: function () {
-                                        button.removeClass('wait')
-                                        button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
-                                    }
-                                });
-
-
-                            },
-
-                            // Rules for form validation
-                            rules:
-                                {
-
-
-                                    password:
-                                        {
-                                            required: true,
-                                            minlength: 8
-                                        },
-                                    password_confirm:
-                                        {
-                                            required: true,
-                                            minlength: 8,
-                                            equalTo: "#password"
-                                        }
-
-                                },
-
-                            // Messages for form validation
-                            messages:
-                                {
-
-                                    password:
-                                        {
-                                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                                            minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
-
-
-                                        },
-                                    password_confirm:
-                                        {
-                                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
-                                            equalTo: '{if empty($labels._validation_same_password)}{t}Enter the same password as above{/t}{else}{$labels._validation_same_password|escape}{/if}',
-
-                                            minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
-                                        }
-                                },
-
-                            // Do not change code below
-                            errorPlacement: function(error, element)
-                            {
-                                error.insertAfter(element.parent());
-                            }
-                        });
-
-
-
-
-
-                    })
-
-
-                {/if}
-
-
+            getScript('/js/tablet.custom.min.js?v=190225v2', function () {
 
                 {if $with_search==1}
 
@@ -339,7 +239,6 @@
 
 
                 {/if}
-
                 {if $with_basket==1}
 
 
@@ -351,50 +250,50 @@
 
 
 
-                        $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=tablet", function (data) {
+                            $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=tablet", function (data) {
 
-                            $('#basket').html(data.html)
+                                $('#basket').html(data.html)
 
 
-                            if(data.empty){
-                                getScript('/js/tablet.custom.min.js?v=190225', function () {
+                                if(data.empty){
+                                    getScript('/js/tablet.custom.min.js?v=190225', function () {
 
-                                })
-                            }else{
+                                    })
+                                }else{
 
-                                $('.modal-opener').on('click', function()
-                                {
-                                    if( !$('#sky-form-modal-overlay').length )
+                                    $('.modal-opener').on('click', function()
                                     {
-                                        $('body').append('<div id="sky-form-modal-overlay" class="sky-form-modal-overlay"></div>');
-                                    }
+                                        if( !$('#sky-form-modal-overlay').length )
+                                        {
+                                            $('body').append('<div id="sky-form-modal-overlay" class="sky-form-modal-overlay"></div>');
+                                        }
 
-                                    $('#sky-form-modal-overlay').on('click', function()
+                                        $('#sky-form-modal-overlay').on('click', function()
+                                        {
+                                            $('#sky-form-modal-overlay').fadeOut();
+                                            $('.sky-form-modal').fadeOut();
+                                        });
+
+                                        form = $($(this).attr('href'));
+                                        $('#sky-form-modal-overlay').fadeIn();
+                                        form.css('top', '50%').css('left', '50%').css('margin-top', -form.outerHeight()/2).css('margin-left', -form.outerWidth()/2).fadeIn();
+
+                                        return false;
+                                    });
+
+                                    $('.modal-closer').on('click', function()
                                     {
                                         $('#sky-form-modal-overlay').fadeOut();
                                         $('.sky-form-modal').fadeOut();
+
+                                        return false;
                                     });
 
-                                    form = $($(this).attr('href'));
-                                    $('#sky-form-modal-overlay').fadeIn();
-                                    form.css('top', '50%').css('left', '50%').css('margin-top', -form.outerHeight()/2).css('margin-left', -form.outerWidth()/2).fadeIn();
-
-                                    return false;
-                                });
-
-                                $('.modal-closer').on('click', function()
-                                {
-                                    $('#sky-form-modal-overlay').fadeOut();
-                                    $('.sky-form-modal').fadeOut();
-
-                                    return false;
-                                });
-
-                            }
+                                }
 
 
 
-                        })
+                            })
                         })
                     })
                 })
@@ -475,6 +374,8 @@
 
                 {/if}
                 {if $with_favourites==1}
+
+
                 getScript('/js/mobile.logged_in.min.js?v=190227', function () {
 
 
@@ -530,7 +431,6 @@
 
                 })
                 {/if}
-
                 {if $with_register==1}
                 getScript('/js/mobile.forms.min.js', function () {
 
@@ -821,6 +721,121 @@
 });
 
     {/if}
+                {if $with_reset_password==1}
+
+                getScript('/js/mobile.forms.min.js', function () {
+
+                    $("form").on('submit', function (e) {
+
+                        e.preventDefault();
+                        e.returnValue = false;
+
+                    });
+
+
+                    $("#password_reset_form").validate({
+
+                        submitHandler: function(form)
+                                       {
+
+
+                                           var button=$('#change_password_button');
+
+                                           if(button.hasClass('wait')){
+                                               return;
+                                           }
+
+                                           button.addClass('wait')
+                                           button.find('i').removeClass('fa-save').addClass('fa-spinner fa-spin')
+
+
+
+                                           var ajaxData = new FormData();
+
+                                           ajaxData.append("tipo", 'update_password')
+                                           ajaxData.append("pwd", sha256_digest($('#password').val()))
+
+
+                                           $.ajax({
+                                               url: "/ar_web_profile.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                                               complete: function () {
+                                               }, success: function (data) {
+
+
+
+                                                   if (data.state == '200') {
+                                                       $('#password_reset_form').addClass('submited')
+
+                                                   } else if (data.state == '400') {
+                                                       swal("{t}Error{/t}!", data.msg, "error")
+                                                   }
+
+                                                   button.removeClass('wait')
+                                                   button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
+
+                                               }, error: function () {
+                                                   button.removeClass('wait')
+                                                   button.find('i').addClass('fa-save').removeClass('fa-spinner fa-spin')
+                                               }
+                                           });
+
+
+                                       },
+
+                        // Rules for form validation
+                        rules:
+                            {
+
+
+                                password:
+                                    {
+                                        required: true,
+                                        minlength: 8
+                                    },
+                                password_confirm:
+                                    {
+                                        required: true,
+                                        minlength: 8,
+                                        equalTo: "#password"
+                                    }
+
+                            },
+
+                        // Messages for form validation
+                        messages:
+                            {
+
+                                password:
+                                    {
+                                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                                        minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
+
+
+                                    },
+                                password_confirm:
+                                    {
+                                        required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                                        equalTo: '{if empty($labels._validation_same_password)}{t}Enter the same password as above{/t}{else}{$labels._validation_same_password|escape}{/if}',
+
+                                        minlength: '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
+                                    }
+                            },
+
+                        // Do not change code below
+                        errorPlacement: function(error, element)
+                                        {
+                                            error.insertAfter(element.parent());
+                                        }
+                    });
+
+
+
+
+
+                })
+
+
+                {/if}
                 {if $with_login==1}
 
                 getScript('/js/mobile.forms.min.js', function () {
@@ -1065,7 +1080,6 @@
 
                 })
                 {/if}
-
                 {if $with_gallery==1}
 
 
@@ -1097,7 +1111,6 @@
 
 
                 {/if}
-
                 {if $with_iframe==1}
 
                 $(document).ready(function () {
@@ -1126,7 +1139,6 @@
 
 
                 {/if}
-
                 {if $logged_in}
 
                 {if $with_product_order_input==1}
@@ -1192,7 +1204,7 @@
 
 
 
-        {if $with_search!=1 and $with_favourites!=1 and $with_basket!=1 and $with_checkout!=1}
+        {if $with_search!=1 and $with_favourites!=1 and $with_basket!=1 and $with_checkout!=1 and $with_thanks!=1}
         ga('auTracker.send', 'pageview');
         {/if}
 
