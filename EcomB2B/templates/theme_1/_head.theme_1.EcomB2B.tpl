@@ -126,6 +126,9 @@
 
     {assign "with_order" false}
 
+
+
+    {if !empty($content.blocks) and  $content.blocks|is_array}
     {foreach from=$content.blocks item=$block }
         {if $block.show}
 
@@ -209,7 +212,7 @@
         {/if}
         {/if}
     {/foreach}
-
+    {/if}
 
 
     {if $with_reviews==1}

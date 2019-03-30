@@ -95,7 +95,7 @@
     {assign "with_order" false}
     {assign "with_reviews" false}
 
-
+    {if !empty($content.blocks) and  $content.blocks|is_array}
     {foreach from=$content.blocks item=$block }
         {if $block.show}
 
@@ -166,7 +166,7 @@
             {/if}
         {/if}
     {/foreach}
-
+    {/if}
     {if $with_reviews==1}
         <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js"></script>
     {/if}
