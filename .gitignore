@@ -128,3 +128,5 @@ websocket_server/vendor/symfony/routing/Tests/Fixtures/AnnotationFixtures/Requir
 websocket_server/vendor/symfony/routing/Tests/Fixtures/requirements_without_placeholder_name.yml
 ecom/page.php
 cron/tmp.php
+
+*.swp

@@ -40,7 +40,7 @@ $_SESSION['display_device_version']=$display_device_version;
 $_SESSION['detected_device']=$detected_device;
 
 
-$smarty->assign('is_devel', preg_match('/bali|sasi/', gethostname()));
+$smarty->assign('is_devel', preg_match('/bali|sasi|sakoi/', gethostname()));
 
 
 

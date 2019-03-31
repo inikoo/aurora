@@ -273,7 +273,6 @@ class Order extends DB_Table {
                 return percentage($this->data['Order Charges Discount Amount'], $this->data['Order Charges Gross Amount']);
                 break;
             case 'Shipping Discount Percentage':
-
                 return percentage($this->data['Order Shipping Discount Amount'], $this->data['Order Shipping Gross Amount']);
                 break;
             case 'Insurance Discount Percentage':
@@ -368,6 +367,8 @@ class Order extends DB_Table {
                 } else {
                     $type = 'Invoice';
                 }
+
+
 
                 $address_fields = array(
 
@@ -2069,7 +2070,7 @@ class Order extends DB_Table {
     function send_review_invitation() {
 
 
-        if (preg_match('/bali|sasi/', gethostname()) or $this->get('Order Email') == '') {
+        if (preg_match('/bali|sasi|sakoi/', gethostname()) or $this->get('Order Email') == '') {
             return;
         }
 
