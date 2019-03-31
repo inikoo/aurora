@@ -17,9 +17,6 @@ module.exports = function (grunt) {
                     'EcomB2B/js/jquery.hoverIntent.js',
                     'EcomB2B/js/menu.js',
                     'EcomB2B/js/search.js',
-                    'EcomB2B/js/analytics.js',
-
-
                 ], dest: 'EcomB2B/js/desktop.min.js'
             }, pweb_desktop_logged_in: {
                 options: {
@@ -148,7 +145,6 @@ module.exports = function (grunt) {
                    // 'EcomB2B/js/swiper.js',
                   //  'EcomB2B/theme_1/tablet/custom.js',
                     'EcomB2B/js/search.js',
-                    'EcomB2B/js/analytics.js',
                 ], dest: 'EcomB2B/js/mobile.190304.min.js',
 
             }, pweb_tablet_custom: {
