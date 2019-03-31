@@ -40,12 +40,30 @@
             {/literal}
             ga('create', 'UA-100778677-1', 'auto', 'auTracker');
             ga('auTracker.require', 'ec');
+            ga('auTracker.set', 'transport', 'beacon');
             ga('auTracker.set', 'currencyCode', '{$store->get('Store Currency Code')}');
             {if  !empty($account_code)}
             ga('auTracker.set', 'contentGroup1', '{$account_code}');
             {/if}
             ga('auTracker.set', 'contentGroup2', '{$smarty.server.SERVER_NAME}');
             ga('auTracker.set', 'contentGroup3', '{if $logged_in}Logged in{else}Logged out{/if}');
+
+            function onProductClick(element) {
+                ga('auTracker.ec:addProduct', $(element).data('analytics'));
+                ga('auTracker.ec:setAction', 'click', { list: $(element).data('list')});
+                var link = $(element).attr('href')
+                if (navigator.sendBeacon) {
+                    ga('auTracker.send', 'event', 'UX', 'click', $(element).data('list'));
+                    document.location = link;
+                } else {
+                    ga('auTracker.send', 'event', 'UX', 'click', $(element).data('list'), {
+                        hitCallback: function () {
+                            document.location = link;
+                        }
+                    });
+                }
+            }
+
 
         </script>
 
@@ -59,6 +77,7 @@
             {/literal}
             ga('create', 'UA-100778677-3', 'auto', 'auTracker');
             ga('auTracker.require', 'ec');
+            ga('auTracker.set', 'transport', 'beacon');
             ga('auTracker.set', 'currencyCode', '{$store->get('Store Currency Code')}');
             {if  !empty($account_code)}
             ga('auTracker.set', 'contentGroup1', '{$account_code}');
@@ -67,6 +86,21 @@
             ga('auTracker.set', 'contentGroup3', '{if $logged_in}Logged in{else}Logged out{/if}');
 
 
+            function onProductClick(element) {
+                ga('auTracker.ec:addProduct', $(element).data('analytics'));
+                ga('auTracker.ec:setAction', 'click', { list: $(element).data('list')});
+                var link = $(element).attr('href')
+                if (navigator.sendBeacon) {
+                    ga('auTracker.send', 'event', 'UX', 'click', $(element).data('list'));
+                    document.location = link;
+                } else {
+                    ga('auTracker.send', 'event', 'UX', 'click', $(element).data('list'), {
+                        hitCallback: function () {
+                            document.location = link;
+                        }
+                    });
+                }
+            }
 
         </script>
     {/if}
