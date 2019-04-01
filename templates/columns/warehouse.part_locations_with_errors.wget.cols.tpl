@@ -33,6 +33,17 @@ cell: Backgrid.HtmlCell.extend({})
 
 
 },
+
+{
+name: "other_locations",
+label: "{t}Part other locations{/t}",
+editable: false,
+sortType: "toggle",
+
+cell: Backgrid.HtmlCell.extend({})
+
+
+},
 {
 name: "can_pick",
 label: "{t}Can pick{/t}",

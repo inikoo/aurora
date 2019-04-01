@@ -513,7 +513,7 @@ class Warehouse extends DB_Table {
             exit;
         }
 
-        $sql = sprintf('SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) AS errors , count(DISTINCT `Part SKU`) as parts  FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d', $this->id);
+        $sql = sprintf('SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) AS errors , count(DISTINCT `Part SKU`) as parts  FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d  and `Location Key`!=%d  ', $this->id, $this->get('Warehouse Unknown Location Key'));
 
 
         if ($result = $this->db->query($sql)) {
