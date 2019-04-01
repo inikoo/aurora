@@ -37,7 +37,7 @@ $editor = array(
 );
 
 ini_set('memory_limit', '10000M');
-$website_key = 9;
+$website_key = 3;
 
 $where = " and `Webpage Website Key`=$website_key";
 
@@ -1474,149 +1474,156 @@ function migrate_families() {
 
             $images = array();
             $texts  = array();
-            foreach ($content_data['description_block']['blocks'] as $block_id => $block) {
 
-                if ($block['type'] == 'image') {
+            if(isset($content_data['description_block']['blocks'])  and is_array($content_data['description_block']['blocks'])){
+                foreach ($content_data['description_block']['blocks'] as $block_id => $block) {
 
-                    if (preg_match('/id=(\d+)/', $block['image_src'], $matches)) {
-                        $image_key = $matches[1];
+                    if ($block['type'] == 'image') {
+
+                        if (preg_match('/id=(\d+)/', $block['image_src'], $matches)) {
+                            $image_key = $matches[1];
 
 
-                        $sql = sprintf(
-                            "SELECT `Image Key` FROM `Image Dimension` WHERE `Image Key`=%d", $image_key
-                        );
-                        if ($result2 = $db->query($sql)) {
-                            if ($row2 = $result2->fetch()) {
-                                $image_key = $row2['Image Key'];
+                            $sql = sprintf(
+                                "SELECT `Image Key` FROM `Image Dimension` WHERE `Image Key`=%d", $image_key
+                            );
+                            if ($result2 = $db->query($sql)) {
+                                if ($row2 = $result2->fetch()) {
+                                    $image_key = $row2['Image Key'];
+                                } else {
+                                    $image_key = 0;
+                                }
                             } else {
-                                $image_key = 0;
+                                print_r($error_info = $db->errorInfo());
+                                print "$sql\n";
+                                exit;
                             }
+
+
                         } else {
-                            print_r($error_info = $db->errorInfo());
-                            print "$sql\n";
-                            exit;
+                            $image_key = 'other';
                         }
 
+                        if (preg_match('/#'.$block_id.'\{([a-zA-Z0-9.:\s;-]+)/', $css, $matches)) {
+                            // print_r($matches);
+                            $_css = trim($matches[1]);
 
-                    } else {
-                        $image_key = 'other';
-                    }
+                            $_css = preg_replace('/margin-left/', '', $_css);
 
-                    if (preg_match('/#'.$block_id.'\{([a-zA-Z0-9.:\s;-]+)/', $css, $matches)) {
-                        // print_r($matches);
-                        $_css = trim($matches[1]);
+                            if (preg_match('/top\:([0-9.]+)/', $_css, $_matches)) {
+                                $top = $_matches[1];
+                            } else {
+                                $top = 0;
+                            }
+                            if (preg_match('/left\:([0-9.]+)/', $_css, $_matches)) {
+                                $left = $_matches[1];
+                            } else {
+                                $left = 0;
+                            }
+                            if (preg_match('/width\:([0-9.]+)/', $_css, $_matches)) {
+                                $width = $_matches[1];
+                            } else {
+                                $width = 0;
+                            }
+                            if (preg_match('/height\:([0-9.]+)/', $_css, $_matches)) {
+                                $height = $_matches[1];
+                            } else {
+                                $height = 0;
+                            }
 
-                        $_css = preg_replace('/margin-left/', '', $_css);
 
-                        if (preg_match('/top\:([0-9.]+)/', $_css, $_matches)) {
-                            $top = $_matches[1];
                         } else {
-                            $top = 0;
-                        }
-                        if (preg_match('/left\:([0-9.]+)/', $_css, $_matches)) {
-                            $left = $_matches[1];
-                        } else {
-                            $left = 0;
-                        }
-                        if (preg_match('/width\:([0-9.]+)/', $_css, $_matches)) {
-                            $width = $_matches[1];
-                        } else {
-                            $width = 0;
-                        }
-                        if (preg_match('/height\:([0-9.]+)/', $_css, $_matches)) {
-                            $height = $_matches[1];
-                        } else {
+                            $top    = 0;
+                            $left   = 0;
+                            $width  = 0;
                             $height = 0;
+
+                        }
+
+                        //print_r($block);
+
+                        if ($height > 0 and $image_key) {
+                            $images[] = array(
+                                'id'     => $block_id,
+                                'src'    => $block['image_src'],
+                                'title'  => (!empty($block['caption']) ? $block['caption'] : ''),
+                                'top'    => $top,
+                                'left'   => $left_offset + $left,
+                                'width'  => $width,
+                                'height' => $height,
+                            );
+                            if (($height + $top) > $_height) {
+                                $_height = $height + $top;
+                            }
+
                         }
 
 
-                    } else {
-                        $top    = 0;
-                        $left   = 0;
-                        $width  = 0;
-                        $height = 0;
-
-                    }
-
-                    //print_r($block);
-
-                    if ($height > 0 and $image_key) {
-                        $images[] = array(
-                            'id'     => $block_id,
-                            'src'    => $block['image_src'],
-                            'title'  => (!empty($block['caption']) ? $block['caption'] : ''),
-                            'top'    => $top,
-                            'left'   => $left_offset + $left,
-                            'width'  => $width,
-                            'height' => $height,
-                        );
-                        if (($height + $top) > $_height) {
-                            $_height = $height + $top;
-                        }
-
-                    }
+                    } elseif ($block['type'] == 'text') {
 
 
-                } elseif ($block['type'] == 'text') {
+                        if (preg_match('/#'.$block_id.'\{([a-zA-Z0-9.:\s;-]+)/', $css, $matches)) {
+                            // print_r($matches);
+                            $_css = trim($matches[1]);
+
+                            $_css = preg_replace('/margin-left/', '', $_css);
+
+                            if (preg_match('/top\:([0-9.]+)/', $_css, $_matches)) {
+                                $top = $_matches[1];
+                            } else {
+                                $top = 0;
+                            }
+                            if (preg_match('/left\:([0-9.]+)/', $_css, $_matches)) {
+                                $left = $_matches[1];
+                            } else {
+                                $left = 0;
+                            }
+                            if (preg_match('/width\:([0-9.]+)/', $_css, $_matches)) {
+                                $width = $_matches[1];
+                            } else {
+                                $width = 0;
+                            }
+                            if (preg_match('/height\:([0-9.]+)/', $_css, $_matches)) {
+                                $height = $_matches[1];
+                            } else {
+                                $height = 0;
+                            }
 
 
-                    if (preg_match('/#'.$block_id.'\{([a-zA-Z0-9.:\s;-]+)/', $css, $matches)) {
-                        // print_r($matches);
-                        $_css = trim($matches[1]);
-
-                        $_css = preg_replace('/margin-left/', '', $_css);
-
-                        if (preg_match('/top\:([0-9.]+)/', $_css, $_matches)) {
-                            $top = $_matches[1];
                         } else {
-                            $top = 0;
-                        }
-                        if (preg_match('/left\:([0-9.]+)/', $_css, $_matches)) {
-                            $left = $_matches[1];
-                        } else {
-                            $left = 0;
-                        }
-                        if (preg_match('/width\:([0-9.]+)/', $_css, $_matches)) {
-                            $width = $_matches[1];
-                        } else {
-                            $width = 0;
-                        }
-                        if (preg_match('/height\:([0-9.]+)/', $_css, $_matches)) {
-                            $height = $_matches[1];
-                        } else {
+                            $top    = 0;
+                            $left   = 0;
+                            $width  = 0;
                             $height = 0;
+
                         }
 
 
-                    } else {
-                        $top    = 0;
-                        $left   = 0;
-                        $width  = 0;
-                        $height = 0;
-
-                    }
-
-
-                    if ($height > 0) {
-                        $texts[] = array(
-                            'id'     => $block_id,
-                            'text'   => $block['content'],
-                            'top'    => $top,
-                            'left'   => $left_offset + $left,
-                            'width'  => $width,
-                            'height' => $height,
+                        if ($height > 0) {
+                            $texts[] = array(
+                                'id'     => $block_id,
+                                'text'   => $block['content'],
+                                'top'    => $top,
+                                'left'   => $left_offset + $left,
+                                'width'  => $width,
+                                'height' => $height,
 
 
-                        );
-                        if (($height + $top) > $_height) {
-                            $_height = $height + $top;
+                            );
+                            if (($height + $top) > $_height) {
+                                $_height = $height + $top;
+                            }
+
                         }
 
+
                     }
-
-
                 }
             }
+
+
+
+
             $matches = 200;
             if (preg_match('/\#description_block\{ height\:([0-9.]+)px\}/', $css, $matches)) {
 

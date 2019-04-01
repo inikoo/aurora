@@ -42,7 +42,7 @@ $editor = array(
 );
 
 
-$store_key = 8;
+$store_key = 3;
 
 $print_est = false;
 
@@ -56,7 +56,7 @@ if ($result = $db->query($sql)) {
 
         $customer = get_object('Customer', $row['Customer Key']);
 
-       // print_r($row);
+        print_r($row);
 //exit;
         $customer->editor = $editor;
         $customer->set_account_balance_adjust($customer->get('Customer Account Balance'), 'Carry on balance from old inikoo system');

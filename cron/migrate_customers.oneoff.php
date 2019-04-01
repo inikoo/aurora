@@ -35,7 +35,7 @@ $editor = array(
     'Author Name'  => 'Script (migration to aurora)'
 );
 
-$store_key=8;
+$store_key=3;
 
 $print_est = true;
 $sql = sprintf("select count(*) as num FROM `Customer Dimension` O left join `Store Dimension` on (`Store Key`=`Customer Store Key`)  where `Store Key`=%d ",$store_key);

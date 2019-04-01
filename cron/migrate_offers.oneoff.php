@@ -42,15 +42,14 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
-//Second part migration run fist one forst
 
 
-$store_key = 8;
+$store_key = 3;
 
 
 
 $sql = sprintf('SELECT `Store Key` FROM `Store Dimension`  where `Store Key`=%d ', $store_key);
-print $sql;
+//print $sql;
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 

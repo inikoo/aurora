@@ -1448,12 +1448,11 @@ class Customer extends Subject {
         }
 
 
-        $address =
-            $address->withFamilyName($fields['Address Recipient'])->withOrganization($fields['Address Organization'])->withAddressLine1($fields['Address Line 1'])->withAddressLine2(
-                $fields['Address Line 2']
-            )->withSortingCode($fields['Address Sorting Code'])->withPostalCode($fields['Address Postal Code'])->withDependentLocality($fields['Address Dependent Locality'])->withLocality(
-                $fields['Address Locality']
-            )->withAdministrativeArea($fields['Address Administrative Area'])->withCountryCode($fields['Address Country 2 Alpha Code']);
+        $address = $address->withFamilyName($fields['Address Recipient'])->withOrganization($fields['Address Organization'])->withAddressLine1($fields['Address Line 1'])->withAddressLine2(
+            $fields['Address Line 2']
+        )->withSortingCode($fields['Address Sorting Code'])->withPostalCode($fields['Address Postal Code'])->withDependentLocality($fields['Address Dependent Locality'])->withLocality(
+            $fields['Address Locality']
+        )->withAdministrativeArea($fields['Address Administrative Area'])->withCountryCode($fields['Address Country 2 Alpha Code']);
 
         $xhtml_address = $formatter->format($address);
         $xhtml_address = preg_replace('/<br>\s/', "\n", $xhtml_address);
@@ -3218,8 +3217,11 @@ class Customer extends Subject {
     }
 
     function get_formatted_pending_payment_amount_from_account_balance() {
+
+        $store = get_object('Store', $this->data['Customer Store Key']);
+
         return money(
-            $this->get_pending_payment_amount_from_account_balance(), $this->data['Customer Currency Code']
+            $this->get_pending_payment_amount_from_account_balance(), $store->get('Store Currency Code')
         );
     }
 
@@ -3556,39 +3558,67 @@ class Customer extends Subject {
     }
 
 
-    function update_credit_account_running_balances() {
-        $running_balance = 0;
-        $credit_transactions = 0;
+    function set_account_balance_adjust($amount, $note) {
 
-        $sql  = 'SELECT `Credit Transaction Amount`,`Credit Transaction Key`  FROM `Credit Transaction Fact`  WHERE `Credit Transaction Customer Key`=? order by `Credit Transaction Date`,`Credit Transaction Key`    ';
-        $stmt = $this->db->prepare($sql);
-        if ($stmt->execute(
-            array(
-                $this->id
-            )
-        )) {
-            while ($row = $stmt->fetch()) {
+        include_once "utils/currency_functions.php";
 
-                $running_balance += $row['Credit Transaction Amount'];
-                $sql             = 'update `Credit Transaction Fact` set `Credit Transaction Running Amount`=? where `Credit Transaction Key`=?  ';
-                $this->db->prepare($sql)->execute(
-                    array(
-                        $running_balance,
-                        $row['Credit Transaction Key']
-                    )
-                );
-                $credit_transactions++;
-            }
-        } else {
-            print_r($error_info = $stmt > errorInfo());
-            exit();
+        if ($amount == 0) {
+            return;
         }
 
-        $this->fast_update(array('Customer Number Credit Transactions' => $credit_transactions));
+        $account = get_object('Account', $this->db);
+        $store   = get_object('Store', $this->data['Customer Store Key']);
+        $date    = gmdate('Y-m-d H:i:s');
+
+        $exchange = currency_conversion(
+            $this->db, $store->get('Store Currency Code'), $account->get('Account Currency'), '- 180 minutes'
+        );
+
+
+        $sql = sprintf(
+            'INSERT INTO `Credit Transaction Fact` 
+                    (`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Type`) 
+                    VALUES (%s,%.2f,%s,%f,%d,"Adjust") ', prepare_mysql($date), $amount, prepare_mysql($store->get('Store Currency Code')), $exchange, $this->id
+
+
+        );
+
+        $this->db->exec($sql);
+        $credit_key = $this->db->lastInsertId();
+
+        if ($credit_key == 0) {
+            print $sql;
+            exit;
+        }
+
+
+        $history_data = array(
+            'History Abstract' => sprintf(
+                _('Customer account balance adjusted %s'), ($amount > 0 ? '+' : ':').money($amount, $store->get('Store Currency Code')).($note != '' ? ' ('.$note.')' : '')
+            ),
+            'History Details'  => '',
+            'Action'           => 'edited'
+        );
+
+        $history_key = $this->add_subject_history(
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+        );
+
+        $sql = sprintf(
+            'INSERT INTO `Credit Transaction History Bridge` 
+                    (`Credit Transaction History Credit Transaction Key`,`Credit Transaction History History Key`) 
+                    VALUES (%d,%d) ', $credit_key, $history_key
+
+
+        );
+        $this->db->exec($sql);
+
+
+        $this->update_account_balance();
+        $this->update_credit_account_running_balances();
 
 
     }
-
 
     function update_account_balance() {
         $balance = 0;
@@ -3628,68 +3658,38 @@ class Customer extends Subject {
 
     }
 
-    function set_account_balance_adjust($amount, $note) {
+    function update_credit_account_running_balances() {
+        $running_balance     = 0;
+        $credit_transactions = 0;
 
-        include_once "utils/currency_functions.php";
+        $sql  = 'SELECT `Credit Transaction Amount`,`Credit Transaction Key`  FROM `Credit Transaction Fact`  WHERE `Credit Transaction Customer Key`=? order by `Credit Transaction Date`,`Credit Transaction Key`    ';
+        $stmt = $this->db->prepare($sql);
+        if ($stmt->execute(
+            array(
+                $this->id
+            )
+        )) {
+            while ($row = $stmt->fetch()) {
 
-        if ($amount == 0) {
-            return;
+                $running_balance += $row['Credit Transaction Amount'];
+                $sql             = 'update `Credit Transaction Fact` set `Credit Transaction Running Amount`=? where `Credit Transaction Key`=?  ';
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $running_balance,
+                        $row['Credit Transaction Key']
+                    )
+                );
+                $credit_transactions++;
+            }
+        } else {
+            print_r($error_info = $stmt > errorInfo());
+            exit();
         }
 
-        $account = get_object('Account', $this->db);
-        $date    = gmdate('Y-m-d H:i:s');
-
-        $exchange = currency_conversion(
-            $this->db, $this->data['Customer Currency Code'], $account->get('Account Currency'), '- 180 minutes'
-        );
-
-
-        $sql = sprintf(
-            'INSERT INTO `Credit Transaction Fact` 
-                    (`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Type`) 
-                    VALUES (%s,%.2f,%s,%f,%d,"Adjust") ', prepare_mysql($date), $amount, prepare_mysql($this->data['Customer Currency Code']), $exchange, $this->id
-
-
-        );
-
-        $this->db->exec($sql);
-        $credit_key = $this->db->lastInsertId();
-
-        if($credit_key==0){
-            print $sql;
-            exit;
-        }
-
-
-        $history_data = array(
-            'History Abstract' => sprintf(
-                _('Customer account balance adjusted %s'),
-                ($amount > 0 ? '+' : ':').money($amount, $this->data['Customer Currency Code']).($note != '' ? ' ('.$note.')' : '')
-            ),
-            'History Details'  => '',
-            'Action'           => 'edited'
-        );
-
-        $history_key = $this->add_subject_history(
-            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
-        );
-
-        $sql = sprintf(
-            'INSERT INTO `Credit Transaction History Bridge` 
-                    (`Credit Transaction History Credit Transaction Key`,`Credit Transaction History History Key`) 
-                    VALUES (%d,%d) ', $credit_key, $history_key
-
-
-        );
-        $this->db->exec($sql);
-
-
-        $this->update_account_balance();
-        $this->update_credit_account_running_balances();
+        $this->fast_update(array('Customer Number Credit Transactions' => $credit_transactions));
 
 
     }
-
 
     function approve() {
 
