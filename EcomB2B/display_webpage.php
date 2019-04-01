@@ -206,6 +206,12 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     $smarty->assign('logged_in', $logged_in);
 
 
+
+    if ($logged_in) {
+        $smarty->assign('analytics_user_id', strtolower($account->get('Account Code')).'.'.$_SESSION['customer_key']);
+    }
+
+
     $smarty->assign('labels', $website->get('Localised Labels'));
 
 
@@ -292,6 +298,8 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     $smarty->assign('webpage', $webpage);
     $smarty->assign('content', $webpage->get('Content Data'));
     $smarty->assign('settings', $website_settings);
+
+
 
 
     //print $template;
