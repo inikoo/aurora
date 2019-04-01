@@ -29,7 +29,7 @@ if ($parameters['parent'] == 'supplier') {
     $table = "  `Part Location Dimension` PLD  left join `Part Dimension` P on (PLD.`Part SKU`=P.`Part SKU`) left join `Location Dimension` L on (PLD.`Location Key`=L.`Location Key`) ";
 
     $where = sprintf(
-        "where `Location Warehouse Key`=%d and `Quantity On Hand`<0 ", $parameters['parent_key']
+        "where `Location Warehouse Key`=%d and `Quantity On Hand`<0  and PLD.`Location Key`!=1 ", $parameters['parent_key']
     );
 } else {
     exit("parent not found ".$parameters['parent']);
@@ -74,9 +74,11 @@ $sql_totals = "select count(*) as num from $table  $where  ";
 
 $fields
     .= "
-P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,
+P.`Part SKU`,`Part Reference`,`Part Package Description`,`Part Current Stock`,`Part Stock Status`,`Part Days Available Forecast`,`Location Warehouse Key`,
 `Location Code`,PLD.`Location Key`,`Part Location Warehouse Key`,
-`Quantity On Hand`,`Quantity In Process`,`Stock Value`,`Can Pick`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Last Updated`
+`Quantity On Hand`,`Quantity In Process`,`Stock Value`,`Can Pick`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Last Updated`,
+(select Group_CONCAT(concat_ws(\"|\",LL.`Location Warehouse Key`,  LL.`Location Key`,LL.`Location Code`,PL_SL.`Quantity On Hand`) )  from `Part Location Dimension` PL_SL left join `Location Dimension` LL on (LL.`Location Key`=PL_SL.`Location Key`) where PL_SL.`Part SKU`=P.`Part SKU` and PLD.`Location Key`!= PL_SL.`Location Key` and PL_SL.`Location Key`!=1  ) as other_locations
+
 
 ";
 

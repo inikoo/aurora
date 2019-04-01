@@ -714,14 +714,36 @@ function part_locations_with_errors($_data, $db, $user) {
         );
 
 
+        $locations_data = preg_split('/,/', $data['other_locations']);
+
+
+        $other_locations = '<div border=0 style="xwidth:150px">';
+
+        foreach ($locations_data as $raw_location_data) {
+            if ($raw_location_data != '') {
+                $_locations_data = preg_split('/\|/', $raw_location_data);
+
+
+                if ($_locations_data[0] != $data['Location Key']) {
+                    $other_locations .= '<div style="clear:both">';
+                    $other_locations .= '<div style="float:left;min-width:100px;">
+<span class="link"  onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$_locations_data[1].'\')" >'.$_locations_data[2].'</span>
+</div><div style="float:left;min-width:100px;text-align:right">'.number($_locations_data[3]).'</div>';
+                    $other_locations .= '</div>';
+                }
+            }
+        }
+        $other_locations .= '</div>';
+
+
         $table_data[] = array(
 
             'reference' => $reference,
             'location'  => sprintf('<span  class="link" onclick="change_view(\'locations/%d/%d\')">%s</span>', $data['Part Location Warehouse Key'], $data['Location Key'], $data['Location Code']),
 
-
-            'can_pick' => ($data['Can Pick'] == 'Yes' ? _('Yes') : _('No')),
-            'quantity' => '<span class="error">'.number($data['Quantity On Hand']),
+            'other_locations' => $other_locations,
+            'can_pick'        => ($data['Can Pick'] == 'Yes' ? _('Yes') : _('No')),
+            'quantity'        => '<span class="error">'.number($data['Quantity On Hand']),
             '</span>'
 
         );
@@ -1516,8 +1538,7 @@ function return_checking_items($_data, $db, $user, $account) {
 
             $items_qty = sprintf(
                 '<span  id="part_sko_item_%d"  data-barcode_settings=\'{"reference":"%s","description":"%s" ,"image_src":"%s" ,"units":"%s" ,"formatted_units":"%s"   }\'  _checked="%s"   barcode="%s" data-metadata=\'{"qty":%d}\' onClick="copy_qty(this)" class="button part_sko_item"  >%s</span>',
-                $data['Part SKU'], $data['Part Reference'], base64_encode($data['Part Package Description']), $data['Part SKO Image Key'],
-                $data['Supplier Delivery Units'], number($data['Supplier Delivery Units']), $data['Supplier Delivery Checked Units'],
+                $data['Part SKU'], $data['Part Reference'], base64_encode($data['Part Package Description']), $data['Part SKO Image Key'], $data['Supplier Delivery Units'], number($data['Supplier Delivery Units']), $data['Supplier Delivery Checked Units'],
 
 
                 $data['Part SKO Barcode'], $data['Supplier Delivery Units'] / $data['Part Units Per Package'], number($data['Supplier Delivery Units'] / $data['Part Units Per Package'])
@@ -1773,28 +1794,28 @@ function consignments($_data, $db, $user) {
 
             switch ($data['Delivery Note Type']) {
                 case('Order'):
-                    $type = _('Order');
-                    $type_icon='<i class="fa fa-truck " title="'.$type.'"></i>';
+                    $type      = _('Order');
+                    $type_icon = '<i class="fa fa-truck " title="'.$type.'"></i>';
                     break;
                 case('Sample'):
-                    $type = _('Sample');
-                    $type_icon='<i class="fa fa-truck " title="'.$type.'"></i>';
+                    $type      = _('Sample');
+                    $type_icon = '<i class="fa fa-truck " title="'.$type.'"></i>';
 
                     break;
                 case('Donation'):
-                    $type = _('Donation');
-                    $type_icon='<i class="fa fa-truck " title="'.$type.'"></i>';
+                    $type      = _('Donation');
+                    $type_icon = '<i class="fa fa-truck " title="'.$type.'"></i>';
 
                     break;
                 case('Replacement'):
                 case('Replacement & Shortages'):
-                    $type = _('Replacement');
-                $type_icon='<i class="fa fa-truck error" title="'.$type.'"></i>';
+                    $type      = _('Replacement');
+                    $type_icon = '<i class="fa fa-truck error" title="'.$type.'"></i>';
 
-                break;
+                    break;
                 case('Shortages'):
-                    $type = _('Shortages');
-                    $type_icon='<i class="fa fa-truck error" title="'.$type.'"></i>';
+                    $type      = _('Shortages');
+                    $type_icon = '<i class="fa fa-truck error" title="'.$type.'"></i>';
 
                     break;
                 default:
@@ -1830,16 +1851,16 @@ function consignments($_data, $db, $user) {
                 'number'   => sprintf('<span class="link" onclick="change_view(\'delivery_notes/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Key'], $data['Delivery Note ID']),
                 'customer' => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Customer Key'], $data['Delivery Note Customer Name']),
 
-                'date'    => ($data['Delivery Note Date Dispatched']==''?'':strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Dispatched'].' +0:00'))),
-               // 'state'   => $data['Delivery Note XHTML State'],
-                'weight'  => weight($data['Delivery Note Weight']),
-                'parcels' => $parcels,
-                'type'    => $type,
-                'type_icon'    => $type_icon,
+                'date'      => ($data['Delivery Note Date Dispatched'] == '' ? '' : strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Dispatched'].' +0:00'))),
+                // 'state'   => $data['Delivery Note XHTML State'],
+                'weight'    => weight($data['Delivery Note Weight']),
+                'parcels'   => $parcels,
+                'type'      => $type,
+                'type_icon' => $type_icon,
 
-                'state'   => $state,
-                'notes'   => $notes,
-                'tracking'=>$data['Delivery Note Shipper Tracking']
+                'state'    => $state,
+                'notes'    => $notes,
+                'tracking' => $data['Delivery Note Shipper Tracking']
 
             );
         }
@@ -1847,7 +1868,6 @@ function consignments($_data, $db, $user) {
         print_r($error_info = $db->errorInfo());
         exit;
     }
-
 
 
     $response = array(
