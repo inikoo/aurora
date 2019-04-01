@@ -36,7 +36,7 @@ $editor = array(
 );
 
 
-$store_key=8;
+$store_key=3;
 
 $print_est = false;
 

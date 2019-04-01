@@ -2789,75 +2789,82 @@ class Page extends DB_Table {
 
 
                             foreach ($block['sections'] as $section_key => $section) {
-                                foreach ($section['items'] as $item_key => $item) {
 
-                                    if ($item['type'] == 'category') {
-                                        if (empty($item['image_mobile_website'])) {
-                                            $image_mobile_website = $item['image_src'];
-                                            if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                                $image_key = $matches[1];
-
-                                                $image_mobile_website = create_cached_image($image_key, 320, 200);
-
-                                            }
+                                if(isset($section['items']) and is_array($section['items']) ){
 
 
-                                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website'] = $image_mobile_website;
+                                    foreach ($section['items'] as $item_key => $item) {
 
+                                        if ($item['type'] == 'category') {
+                                            if (empty($item['image_mobile_website'])) {
+                                                $image_mobile_website = $item['image_src'];
+                                                if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                                                    $image_key = $matches[1];
 
-                                        }
-
-                                        if (empty($item['image_website'])) {
-                                            $image_website = $item['image_src'];
-                                            if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                                $image_key     = $matches[1];
-                                                $image_website = create_cached_image($image_key, 432, 330, 'fit_highest');
-                                            }
-
-
-                                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website'] = $image_website;
-
-
-                                        }
-                                    } elseif ($item['type'] == 'image') {
-
-                                        if (empty($item['image_website'])) {
-                                            $image_website = $item['image_src'];
-                                            if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                                $image_key = $matches[1];
-                                                $height    = 220;
-                                                switch ($item['size_class']) {
-                                                    case 'panel_1':
-                                                        $width = 226;
-
-                                                        break;
-                                                    case 'panel_2':
-                                                        $width = 470;
-                                                        break;
-                                                    case 'panel_3':
-                                                        $width = 714;
-                                                        break;
-                                                    case 'panel_4':
-                                                        $width = 958;
-                                                        break;
-                                                    case 'panel_5':
-                                                        $width = 1202;
-                                                        break;
+                                                    $image_mobile_website = create_cached_image($image_key, 320, 200);
 
                                                 }
 
-                                                $image_website = create_cached_image($image_key, $width, $height);
+
+                                                $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website'] = $image_mobile_website;
+
+
+                                            }
+
+                                            if (empty($item['image_website'])) {
+                                                $image_website = $item['image_src'];
+                                                if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                                                    $image_key     = $matches[1];
+                                                    $image_website = create_cached_image($image_key, 432, 330, 'fit_highest');
+                                                }
+
+
+                                                $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website'] = $image_website;
+
+
+                                            }
+                                        } elseif ($item['type'] == 'image') {
+
+                                            if (empty($item['image_website'])) {
+                                                $image_website = $item['image_src'];
+                                                if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                                                    $image_key = $matches[1];
+                                                    $height    = 220;
+                                                    switch ($item['size_class']) {
+                                                        case 'panel_1':
+                                                            $width = 226;
+
+                                                            break;
+                                                        case 'panel_2':
+                                                            $width = 470;
+                                                            break;
+                                                        case 'panel_3':
+                                                            $width = 714;
+                                                            break;
+                                                        case 'panel_4':
+                                                            $width = 958;
+                                                            break;
+                                                        case 'panel_5':
+                                                            $width = 1202;
+                                                            break;
+
+                                                    }
+
+                                                    $image_website = create_cached_image($image_key, $width, $height);
+                                                }
+
+
+                                                $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website'] = $image_website;
+
+
                                             }
 
 
-                                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website'] = $image_website;
-
-
                                         }
-
-
                                     }
                                 }
+
+
 
 
                             }
@@ -4925,95 +4932,98 @@ class Page extends DB_Table {
                 $anchor_section_key = $section_key;
             }
 
-            foreach ($section['items'] as $item_key => $item) {
-                if ($item['type'] == 'category') {
+            if(isset($section['items']) and is_array($section['items']) ){
+                foreach ($section['items'] as $item_key => $item) {
+                    if ($item['type'] == 'category') {
 
 
-                    //print $item['category_key'];
-                    //print_r($items_category_key_index);
-                    //exit;
+                        //print $item['category_key'];
+                        //print_r($items_category_key_index);
+                        //exit;
 
-                    if (in_array($item['category_key'], $items_category_key_index)) {
+                        if (in_array($item['category_key'], $items_category_key_index)) {
 
-                        $item_data = $items[$item['category_key']];
-
-
-
-
-
-                        if (preg_match('/id=(\d+)/', $item_data['Category Main Image'], $matches)) {
-
-                            $image_mobile_website=create_cached_image($matches[1], 320, 200);
-                            $image_website = create_cached_image($matches[1], 432, 330, 'fit_highest');
-
-                        }else{
-                            $image_mobile_website= 'art/nopic_mobile.png';
-                            $image_website= $item_data['Category Main Image'];
-
-                        }
-
-
-
-                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Subject';
-                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_key']     = $item_data['Page Key'];
-                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_code']    = $item_data['Webpage Code'];
-                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['category_code']   = $item_data['Category Code'];
-                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['number_products'] = $item_data['Product Category Active Products'];
-                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['link']            = $item_data['Webpage URL'];
-
-                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_src']=$item_data['Category Main Image'];
-                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website']= $image_website;
-
-                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website']= $image_mobile_website;
+                            $item_data = $items[$item['category_key']];
 
 
 
 
-                        unset($items_category_key_index[$item['category_key']]);
-                    } else {
 
-                        if (in_array($item['category_key'], $offline_items_category_key_index)) {
-                            unset($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
+                            if (preg_match('/id=(\d+)/', $item_data['Category Main Image'], $matches)) {
 
+                                $image_mobile_website=create_cached_image($matches[1], 320, 200);
+                                $image_website = create_cached_image($matches[1], 432, 330, 'fit_highest');
+
+                            }else{
+                                $image_mobile_website= 'art/nopic_mobile.png';
+                                $image_website= $item_data['Category Main Image'];
+
+                            }
+
+
+
+                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Subject';
+                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_key']     = $item_data['Page Key'];
+                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_code']    = $item_data['Webpage Code'];
+                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['category_code']   = $item_data['Category Code'];
+                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['number_products'] = $item_data['Product Category Active Products'];
+                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['link']            = $item_data['Webpage URL'];
+
+                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_src']=$item_data['Category Main Image'];
+                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website']= $image_website;
+
+                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website']= $image_mobile_website;
+
+
+
+
+                            unset($items_category_key_index[$item['category_key']]);
                         } else {
 
-                            $sql = sprintf(
-                                "SELECT  `Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Category Main Image Key`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,Cat.`Category Key` 
+                            if (in_array($item['category_key'], $offline_items_category_key_index)) {
+                                unset($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
+
+                            } else {
+
+                                $sql = sprintf(
+                                    "SELECT  `Webpage URL`,`Category Main Image Key`,`Category Main Image`,`Category Label`,`Category Main Image Key`,`Webpage State`,`Product Category Public`,`Webpage State`,`Page Key`,`Webpage Code`,`Product Category Active Products`,`Category Code`,Cat.`Category Key` 
                                   FROM   `Product Category Dimension` P     LEFT JOIN `Category Dimension` Cat ON (Cat.`Category Key`=P.`Product Category Key`) LEFT JOIN `Page Store Dimension` CatWeb ON (CatWeb.`Page Key`=`Product Category Webpage Key`)  
                                   WHERE  `Product Category Key`=%d  AND `Product Category Public`='Yes'  AND `Webpage State` IN ('Online','Ready')    ", $item['category_key']
 
 
-                            );
+                                );
 
-                            if ($result = $this->db->query($sql)) {
-                                if ($row = $result->fetch()) {
-                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Guest';
-                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_key']     = $row['Page Key'];
-                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_code']    = $row['Webpage Code'];
-                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['category_code']   = $row['Category Code'];
-                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['number_products'] = $row['Product Category Active Products'];
-                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['link']            = $row['Webpage URL'];
+                                if ($result = $this->db->query($sql)) {
+                                    if ($row = $result->fetch()) {
+                                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Guest';
+                                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_key']     = $row['Page Key'];
+                                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_code']    = $row['Webpage Code'];
+                                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['category_code']   = $row['Category Code'];
+                                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['number_products'] = $row['Product Category Active Products'];
+                                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['link']            = $row['Webpage URL'];
 
 
+                                    } else {
+                                        unset($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
+                                    }
                                 } else {
-                                    unset($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
+                                    print_r($error_info = $this->db->errorInfo());
+                                    print "$sql\n";
+                                    exit;
                                 }
-                            } else {
-                                print_r($error_info = $this->db->errorInfo());
-                                print "$sql\n";
-                                exit;
+
+
                             }
 
 
                         }
 
-
                     }
 
+
                 }
-
-
             }
+
 
 
         }

@@ -23,7 +23,7 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
-$store_key = 8;
+$store_key = 3;
 
 $account = new Account();
 
