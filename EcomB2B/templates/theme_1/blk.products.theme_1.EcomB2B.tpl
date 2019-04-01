@@ -44,7 +44,7 @@
                             <a href="{$item.link}"
                                data-analytics='{ "id": "{$item.code}", "name": "{$item.name|escape:'quotes'}",{if isset($item.category)} "category": "{$item.category}",{/if}{if isset($item.raw_price)} "price": "{$item.raw_price}",{/if}"list": "Family", "position":{$counter}}'
                                data-list="Products"
-                               onclick="onProductClick(this); return !ga.loaded;"
+                               onclick="go_product(this); return !ga.loaded;"
 
                             ><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
 
@@ -54,7 +54,7 @@
                             <a href="{$item.link}"
                                data-analytics='{ "id": "{$item.code}", "name": "{$item.name|escape:'quotes'}",{if isset($item.category)} "category": "{$item.category}",{/if}{if isset($item.raw_price)} "price": "{$item.raw_price}",{/if}"list": "Family", "position":{$counter}}'
                                data-list="Products"
-                               onclick="onProductClick(this); return !ga.loaded;"
+                               onclick="go_product(this); return !ga.loaded;"
 
                             ><img src="{$item.image_website}"  /></a>
                         </div>

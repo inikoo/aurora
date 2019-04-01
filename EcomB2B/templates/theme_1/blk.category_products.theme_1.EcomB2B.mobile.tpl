@@ -31,7 +31,7 @@
 
                            data-analytics='{ "id": "{$item.code}", "name": "{$item.name|escape:'quotes'}",{if isset($item.category)} "category": "{$item.category}",{/if}{if isset($item.raw_price)} "price": "{$item.raw_price}",{/if}"list": "Family", "position":{$counter}}'
                            data-list="Family"
-                           onclick="onProductClick(this); return !ga.loaded;"
+                           onclick="go_product(this); return !ga.loaded;"
 
                            style="z-index: 10000;"><img src="{$item.image_mobile_website}" alt="{$item.name|escape}"></a>
 
@@ -39,7 +39,7 @@
 
                             data-analytics='{ "id": "{$item.code}", "name": "{$item.name|escape:'quotes'}",{if isset($item.category)} "category": "{$item.category}",{/if}{if isset($item.raw_price)} "price": "{$item.raw_price}",{/if}"list": "Family", "position":{$counter}}'
                             data-list="Family"
-                            onclick="onProductClick(this); return !ga.loaded;"
+                            onclick="go_product(this); return !ga.loaded;"
 
                             style="z-index: 10000;"><i  class="fal fa-external-link"></i></a>
 

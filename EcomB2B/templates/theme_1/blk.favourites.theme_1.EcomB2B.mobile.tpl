@@ -35,7 +35,7 @@
                         <a href="{$item.link}"
                            data-analytics='{ "id": "{$product_data.code}", "name": "{$product_data.name|escape:'quotes'}",{if isset($product_data.category)} "category": "{$product_data.category}",{/if}{if isset($product_data.raw_price)} "price": "{$product_data.raw_price}",{/if}"list": "Family", "position":{$counter}}'
                            data-list="Products"
-                           onclick="onProductClick(this); return !ga.loaded;"
+                           onclick="go_product(this); return !ga.loaded;"
 
                            style="z-index: 10000;"><img src="{$product_data.image_mobile_website}" alt="{$product_data.name|escape}"></a>
 
