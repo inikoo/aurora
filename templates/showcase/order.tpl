@@ -539,27 +539,44 @@
 
         <div  class=" node" style="border-top: 1px solid #ccc">
 
-            <div class="payment_operation hide  ">
-                <div class="square_button left" style="padding:0;margin:0;position:relative;top:0px" title="{t}Close{/t}">
+            <div class="payment_operation   ">
+                <div class="close_add_discounts square_button left " style="padding:0;margin:0;position:relative;top:0px" title="{t}Close{/t}">
                     <i class="fa fa-window-close  " aria-hidden="true" onclick="hide_add_deal_to_order()"></i>
 
                 </div>
             </div>
-            <span class="node_label  ">{t}Discounts{/t}</span>
+            <span class="discounts_label node_label  ">{t}Discounts{/t}</span>
+
+            <input style="float:left;height: 20px;border: none;position: relative;top:1px;width: 232px;" id="add_discount" class="hide " value="" placeholder="{t}Offer code/voucher{/t}">
 
 
-            <div class="payment_operation hide ">
-                <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px" title="{t}Add offers{/t}">
+
+            <div class="payment_operation  ">
+                <div class="open_add_discounts square_button right " style="padding:0;margin:0;position:relative;top:0px" title="{t}Add offer{/t}">
                     <i class="fa fa-plus  " aria-hidden="true" onclick="show_add_deal_to_order()"></i>
 
                 </div>
-                <div class="square_button right save" style="padding:0;margin:0;position:relative;top:0px" title="{t}Save{/t}">
+                <div class="save_add_discounts square_button right save hide" style="padding:0;margin:0;position:relative;top:0px" title="{t}Save{/t}">
                     <i class="fa fa-cloud  " aria-hidden="true" onclick="save_add_deal_to_order()"></i>
 
                 </div>
             </div>
 
 
+
+
+            <div id="add_item_results_container" class="search_results_container " style="width:400px;">
+
+                <table id="add_discount_results" border="0" style="background:white;font-size:90%">
+                    <tr class="hide" style="" id="add_discount_search_result_template" field="" item_key="" item_historic_key=""
+                        formatted_value="" onClick="select_add_discount_option(this)">
+                        <td class="code" style="padding-left:5px;"></td>
+                        <td class="label" style="padding-left:5px;"></td>
+
+                    </tr>
+                </table>
+
+            </div>
         </div>
 
 
@@ -1486,6 +1503,36 @@
 
 
 
+
+    }
+
+
+    function show_add_deal_to_order(){
+        $('.open_add_discounts').addClass('hide')
+        $('.discounts_label').addClass('hide')
+
+        $('.save_add_discounts').removeClass('hide')
+        $('.close_add_discounts').removeClass('hide')
+        $('#add_discount').removeClass('hide').focus()
+        $('#add_item_results_container').removeClass('hide')
+
+
+    }
+
+    function hide_add_deal_to_order(){
+        $('.open_add_discounts').removeClass('hide')
+        $('.discounts_label').removeClass('hide')
+
+        $('.save_add_discounts').addClass('hide')
+        $('.close_add_discounts').addClass('hide')
+        $('#add_discount').addClass('hide').focus()
+        $('#add_item_results_container').addClass('hide')
+
+
+    }
+
+    function save_add_deal_to_order(){
+     console.log('to do')
 
     }
 
