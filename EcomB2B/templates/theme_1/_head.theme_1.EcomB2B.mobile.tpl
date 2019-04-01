@@ -36,6 +36,9 @@
             ga('create', 'UA-100778677-1', 'auto', 'auTracker');
             ga('auTracker.require', 'ec');
             ga('auTracker.set', 'transport', 'beacon');
+            {if !empty($analytics_user_id)}
+            ga('auTracker.set', 'userId', '{$analytics_user_id}');
+            {/if}
             ga('auTracker.set', 'currencyCode', '{$store->get('Store Currency Code')}');
             {if  !empty($account_code)}
             ga('auTracker.set', 'contentGroup1', '{$account_code}');
@@ -69,6 +72,9 @@
             ga('create', 'UA-100778677-3', 'auto', 'auTracker');
             ga('auTracker.require', 'ec');
             ga('auTracker.set', 'transport', 'beacon');
+            {if !empty($analytics_user_id)}
+            ga('auTracker.set', 'userId', '{$analytics_user_id}');
+            {/if}
             ga('auTracker.set', 'currencyCode', '{$store->get('Store Currency Code')}');
             {if  !empty($account_code)}
             ga('auTracker.set', 'contentGroup1', '{$account_code}');
