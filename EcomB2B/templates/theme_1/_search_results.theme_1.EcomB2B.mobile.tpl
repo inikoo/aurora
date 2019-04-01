@@ -63,7 +63,7 @@
                     "position":{$counter}
                     }'
                        data-list="Search"
-                       onclick="onProductClick(this); return !ga.loaded;"
+                       onclick="go_product(this); return !ga.loaded;"
                             {/if}
                        style="color:#555"> <i  class="fa fa-reply fa-flip-horizontal"></i></a>
                 </div>

@@ -42,16 +42,15 @@
             {/if}
             ga('auTracker.set', 'contentGroup2', '{$smarty.server.SERVER_NAME}');
             ga('auTracker.set', 'contentGroup3', '{if $logged_in}Logged in{else}Logged out{/if}');
-
-            function onProductClick(element) {
-                ga('auTracker.ec:addProduct', $(element).data('analytics'));
-                ga('auTracker.ec:setAction', 'click', { list: $(element).data('list')});
-                var link = $(element).attr('href')
+            function go_product(element) {
+                ga('auTracker.ec:addProduct', element.dataset.analytics  );
+                ga('auTracker.ec:setAction', 'click', { list: element.dataset.list});
+                var link = element.getAttribute('href')
                 if (navigator.sendBeacon) {
-                    ga('auTracker.send', 'event', 'UX', 'click', $(element).data('list'));
+                    ga('auTracker.send', 'event', 'UX', 'click', element.dataset.list);
                     document.location = link;
                 } else {
-                    ga('auTracker.send', 'event', 'UX', 'click', $(element).data('list'), {
+                    ga('auTracker.send', 'event', 'UX', 'click', element.dataset.list, {
                         hitCallback: function () {
                             document.location = link;
                         }
@@ -76,17 +75,15 @@
             {/if}
             ga('auTracker.set', 'contentGroup2', '{$smarty.server.SERVER_NAME}');
             ga('auTracker.set', 'contentGroup3', '{if $logged_in}Logged in{else}Logged out{/if}');
-
-
-            function onProductClick(element) {
-                ga('auTracker.ec:addProduct', $(element).data('analytics'));
-                ga('auTracker.ec:setAction', 'click', { list: $(element).data('list')});
-                var link = $(element).attr('href')
+            function go_product(element) {
+                ga('auTracker.ec:addProduct', element.dataset.analytics  );
+                ga('auTracker.ec:setAction', 'click', { list: element.dataset.list});
+                var link = element.getAttribute('href')
                 if (navigator.sendBeacon) {
-                    ga('auTracker.send', 'event', 'UX', 'click', $(element).data('list'));
+                    ga('auTracker.send', 'event', 'UX', 'click', element.dataset.list);
                     document.location = link;
                 } else {
-                    ga('auTracker.send', 'event', 'UX', 'click', $(element).data('list'), {
+                    ga('auTracker.send', 'event', 'UX', 'click', element.dataset.list, {
                         hitCallback: function () {
                             document.location = link;
                         }
