@@ -30,6 +30,7 @@
             {if $item.type=='product'}
 
                 <div class="product_block item"
+
                      data-product_id="{$item.product_id}"
                      data-web_state="{$item.web_state}"
                      data-price="{$item.price}"
@@ -40,9 +41,11 @@
                      data-webpage_code="{$item.webpage_code}"
                      data-webpage_key="{$item.webpage_key}"
                      data-out_of_stock_class="{$item.out_of_stock_class}"
-                     data-out_of_stock_label="{$item.out_of_stock_label}"
+                     data-out_of_stock_label=""
 
                 >
+
+
 
 
                     <div class="panel_txt_control hide">
