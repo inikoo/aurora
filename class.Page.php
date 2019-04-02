@@ -1615,7 +1615,6 @@ class Page extends DB_Table {
 
     function unpublish() {
 
-
         $this->update_state('Offline');
 
 
@@ -1693,6 +1692,7 @@ class Page extends DB_Table {
         $this->update_field('Webpage State', $value, $options);
 
 
+
         if ($old_state != $this->data['Webpage State']) {
 
 
@@ -1736,7 +1736,7 @@ class Page extends DB_Table {
 
             $this->reindex_items();
 
-            if ($this->updated) {
+            if ($this->updated and $this->data['Webpage State'] == 'Online') {
                 $this->publish();
             }
 
