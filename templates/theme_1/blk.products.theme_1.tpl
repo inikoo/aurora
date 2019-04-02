@@ -25,7 +25,6 @@
     <div class="products {if !$data.item_headers}no_items_header{/if}"  data-sort="{$data.sort}" >
     {foreach from=$data.items item=item}
 
-
         <div class="product_wrap wrap type_{$item.type}" data-type="{$item.type}" {if $item.type=='product'} data-sort_code="{$item.sort_code}" data-sort_name="{$item.sort_name}{/if} ">
 
 
@@ -42,9 +41,10 @@
                      data-webpage_code="{$item.webpage_code}"
                      data-webpage_key="{$item.webpage_key}"
                      data-out_of_stock_class="{$item.out_of_stock_class}"
-                     data-out_of_stock_label="{$item.out_of_stock_label}"
+                     data-out_of_stock_label=""   >
 
-                >
+
+
 
 
                     <div class="panel_txt_control hide" >

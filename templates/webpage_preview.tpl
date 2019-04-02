@@ -357,7 +357,7 @@
             'data-webpage_code="'+data.webpage_code+'" '+
             'data-webpage_key="'+data.webpage_key+'" '+
             'data-out_of_stock_class="'+data.out_of_stock_class+'" '+
-            'data-out_of_stock_label="'+data.out_of_stock_label+'" >'+
+            'data-out_of_stock_label=""   >'+
             '<div class="panel_txt_control hide" ><i onclick="close_product_header_text(this)" class="fa fa-window-close button" style="float: right;margin-top:6px" title="{t}Close text edit mode{/t}"></i></div>'+
             '<div class="product_header_text fr-view" ></div>'+
             '<div class="wrap_to_center product_image" >'+
