@@ -565,7 +565,7 @@
 
 
 
-            <div id="add_item_results_container" class="search_results_container " style="width:400px;">
+            <div id="add_discount_results_container" class="search_results_container " style="width:400px;">
 
                 <table id="add_discount_results" border="0" style="background:white;font-size:90%">
                     <tr class="hide" style="" id="add_discount_search_result_template" field="" item_key="" item_historic_key=""
