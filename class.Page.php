@@ -1858,6 +1858,23 @@ class Page extends DB_Table {
 
             $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
             $smarty_web->clearCache(null, $cache_id);
+            $account = get_object('Account', 1);
+
+
+            $redis = new Redis();
+            if ($redis->connect('127.0.0.1', 6379)) {
+
+                $cache_id_prefix='pwc2|'.$account->get('Code').'|'.$this->get('Webpage Website Key').'_';
+
+                $redis->delete($cache_id_prefix.$this->data['Page Code']);
+                $redis->delete($cache_id_prefix.strtolower($this->data['Page Code']));
+                $redis->delete($cache_id_prefix.strtoupper($this->data['Page Code']));
+                $redis->delete($cache_id_prefix.ucfirst($this->data['Page Code']));
+
+
+
+
+            }
 
 
         }
