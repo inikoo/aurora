@@ -41,7 +41,7 @@ $account = new Account();
 
 $sql = "select `Store Code`,`Webpage Code`,`Page Key` from `Page Store Dimension`  left join `Category Dimension` on (`Webpage Scope Key`=`Category Key`)  
 left join `Store Dimension` on (`Webpage Store Key`=`Store Key`)  
-      where `Webpage Website Key`=3 and `Webpage Scope`='Category Products' and `Category Code` is null and `Store Version`=2 ;";
+      where  `Webpage Scope`='Category Products' and `Category Code` is null and `Store Version`=2 ;";
 
 $stmt = $db->prepare($sql);
 if ($stmt->execute()) {
