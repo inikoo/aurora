@@ -59,6 +59,16 @@ $can_update_code =(in_array($object->get('Webpage Scope'),array('Product','Categ
 $can_delete =(in_array($object->get('Webpage Scope'),array('Info')) ? true : false);
 
 
+if($object->get('Webpage Scope')=='Category Products'){
+    $category = get_object('Category', $object->get('Webpage Scope Key'));
+
+    if(!$category->id){
+        $can_delete=true;
+    }
+
+}
+
+
 // This can be deleted if we make impossible  to have this error
 
 

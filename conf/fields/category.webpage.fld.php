@@ -22,6 +22,20 @@ if (isset($options['new']) and $options['new']) {
 }
 
 
+$can_delete=false;
+
+
+if($object->get('Webpage Scope')=='Category Products'){
+    $category = get_object('Category', $object->get('Webpage Scope Key'));
+
+    if(!$category->id){
+        $can_delete=true;
+    }
+
+}
+
+
+
 $subject_render = false;
 
 if ($object->get('Category Subject') == 'Category') {
@@ -343,6 +357,17 @@ $operations = array(
             'type'      => 'operation'
         ),
 
+        array(
+            'id'        => 'delete_website',
+            'render'=>$can_delete,
+            'class'     => 'operation',
+            'value'     => '',
+            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'
+                .$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete webpage")
+                .' <i class="far fa-trash-alt new_button link"></i></span>',
+            'reference' => '',
+            'type'      => 'operation'
+        ),
 
     )
 
