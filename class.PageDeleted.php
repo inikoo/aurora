@@ -14,7 +14,7 @@ class PageDeleted {
 
     var $deleted=true;
 
-    function PageDeleted($a1 = false, $a2 = false) {
+    function __construct($a1 = false, $a2 = false) {
 
         global $db;
         $this->db = $db;
