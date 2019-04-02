@@ -1643,7 +1643,7 @@ class Website extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT `Webpage Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('About','HomepageLogout','Info','ShippingInfo','TandC') AND `Webpage State`='Online'   ", $this->id
+            "SELECT `Webpage Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  NOT IN  ('Category Categories','Category Products','Product') AND `Webpage State`='Online'   ", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
