@@ -533,7 +533,6 @@ class Website extends DB_Table {
                 break;
 
 
-
             default:
 
 
@@ -687,7 +686,6 @@ class Website extends DB_Table {
     function create_system_webpage($data) {
 
 
-
         include_once 'class.Webpage_Type.php';
         include_once 'class.Page.php';
 
@@ -721,8 +719,6 @@ class Website extends DB_Table {
         $webpage_type = new Webpage_Type('website_code', $this->id, $data['Webpage Type']);
 
         unset($data['Webpage Type']);
-
-
 
 
         $page_data = array(
@@ -841,15 +837,14 @@ class Website extends DB_Table {
         include_once 'utils/image_functions.php';
 
 
-        if(!empty($this->settings['favicon'])){
+        if (!empty($this->settings['favicon'])) {
 
-            if (preg_match('/id=(\d+)/',$this->settings['favicon'], $matches)) {
+            if (preg_match('/id=(\d+)/', $this->settings['favicon'], $matches)) {
 
                 $favicon_website = create_cached_image($matches[1], 32, 32, 'fit_highest');
 
-                $this->fast_update(array('Website Settings' => json_encode(array_merge($this->settings, array('favicon_website'=>$favicon_website)))));
+                $this->fast_update(array('Website Settings' => json_encode(array_merge($this->settings, array('favicon_website' => $favicon_website)))));
                 $this->settings = json_decode($this->data['Website Settings'], true);
-
 
 
             }
@@ -1643,7 +1638,10 @@ class Website extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT `Webpage Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  NOT IN  ('Category Categories','Category Products','Product') AND `Webpage State`='Online'   ", $this->id
+            "SELECT `Webpage Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  NOT IN  ('Category Categories','Category Products','Product') AND `Webpage Code` not in 
+                                                          ('in_process.sys','profile.sys','basket.sys','checkout.sys','favourites.sys','home.sys','home_rookie.sys','not_found.sys','offline.sys','reset_pwd.sys','search.sys',
+                                                          'thanks.sys','welcome.sys'
+                                                          )  and   `Webpage State`='Online'   ", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
