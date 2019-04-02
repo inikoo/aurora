@@ -56,7 +56,7 @@ $can_update_code =(in_array($object->get('Webpage Scope'),array('Product','Categ
 
 
 
-$can_delete =(in_array($object->get('Webpage Scope'),array('Info')) ? true : false);
+$can_delete =(in_array($object->get('Webpage Scope'),array('Info','')) ? true : false);
 
 
 if($object->get('Webpage Scope')=='Category Products'){
