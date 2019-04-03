@@ -386,6 +386,9 @@ function delivery_note_fast_track_packing_qty_change(element) {
 
     picked_quantity_components.find('input.fast_track_packing').each(function (i, obj) {
 
+        console.log(obj)
+
+
         if ($(obj).data('location_key') != input.data('location_key')) {
 
             tmp = parseFloat($(obj).val())
