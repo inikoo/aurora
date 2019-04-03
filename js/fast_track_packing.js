@@ -376,7 +376,7 @@ function delivery_note_fast_track_packing_qty_change(element) {
 
 
 
-    console.log('holax')
+    console.log('holaxx')
 
 
     var picked_quantity_components = input.closest('.picked_quantity_components')
@@ -391,12 +391,16 @@ function delivery_note_fast_track_packing_qty_change(element) {
             tmp = parseFloat($(obj).val())
             if (!isNaN(tmp)) {
                 _total_qty += tmp
+                console.log(tmp)
 
             }
 
         }
 
     });
+
+    console.log(qty)
+    console.log(_total_qty)
 
     var total_qty = qty + _total_qty
 
