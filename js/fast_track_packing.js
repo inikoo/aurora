@@ -376,7 +376,7 @@ function delivery_note_fast_track_packing_qty_change(element) {
 
 
 
-    console.log('hola')
+    console.log('holax')
 
 
     var picked_quantity_components = input.closest('.picked_quantity_components')
@@ -400,12 +400,18 @@ function delivery_note_fast_track_packing_qty_change(element) {
 
     var total_qty = qty + _total_qty
 
+    console.log(total_qty)
 
     var pending = picked_quantity_components.data('pending')
 
     if (total_qty > pending) {
 
         qty = pending - _total_qty;
+        console.log(qty)
+        console.log(pending)
+
+        console.log(_total_qty)
+
     }
 
 
@@ -416,7 +422,7 @@ function delivery_note_fast_track_packing_qty_change(element) {
         qty = input.data('max')
     }
 
-
+    console.log(qty)
     //console.log(_icon)
 
     $(element).addClass(_icon)
@@ -456,12 +462,14 @@ function delivery_note_fast_track_packing_qty_change(element) {
         if (!isNaN(tmp)) {
             new_total_qty += tmp
 
+            console.log(tmp)
+
         }
 
 
     });
 
-
+    console.log(pending)
 
     var diff = new_total_qty - pending;
     if (diff < 0) {

@@ -20,6 +20,10 @@
 
     <script src="/js/aurora.min.js?v190325"></script>
 
+    <script src="/js/fast_track_packing.js?v=2"></script>
+
+
+
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 
 
