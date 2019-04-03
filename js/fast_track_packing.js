@@ -376,7 +376,7 @@ function delivery_note_fast_track_packing_qty_change(element) {
 
 
 
-    console.log('holaxxx')
+    console.log('holaxxx '+input.data('location_key'))
 
 
     var picked_quantity_components = input.closest('.picked_quantity_components')
@@ -392,6 +392,8 @@ function delivery_note_fast_track_packing_qty_change(element) {
         if ($(obj).data('location_key') != input.data('location_key')) {
 
             tmp = parseFloat($(obj).val())
+            console.log(tmp)
+
             if (!isNaN(tmp)) {
                 _total_qty += tmp
                 console.log('x '+tmp)
