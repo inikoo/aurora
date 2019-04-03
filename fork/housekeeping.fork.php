@@ -23,6 +23,17 @@ function fork_housekeeping($job) {
     //return true;
     switch ($data['type']) {
 
+        case 'update_currency_exchange':
+
+
+            include_once 'utils/currency_functions.php';
+
+            $exchange=currency_conversion($db,$data['currency_from'],$data['currency_to']);
+
+            print $exchange;
+
+            break;
+
         case 'update_parts_inventory_snapshot_fact':
 
 
