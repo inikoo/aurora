@@ -159,6 +159,11 @@ function get_delivery_note_fast_track_packing_input($total_required,$total_picke
         }
 
 
+        $qty=($quantity_on_location<$total_pending?$quantity_on_location:$total_pending);
+
+        if($qty<0){
+            $qty=0;
+        }
 
         $picked_offline_input .= sprintf(
             ' <span data-settings=\'{"field": "Picked_Offline", "transaction_key":"%s","item_key":"%s" }\' class="picked_quantity %s"  >
@@ -175,8 +180,8 @@ function get_delivery_note_fast_track_packing_input($total_required,$total_picke
             $itf_key, $part_sku,
 
             ($total_pending != 0 && $quantity_on_location >= 1 ? '' : 'hide'),
-            ($quantity_on_location<$total_pending?$quantity_on_location:$total_pending),
-            ($quantity_on_location<$total_pending?$quantity_on_location:$total_pending), $pending_in_location,
+            $qty,
+            $qty, $pending_in_location,
             $total_pending,$quantity_on_location,
             $location_key, $icon_plus_button,  ''
         );
