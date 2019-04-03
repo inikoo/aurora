@@ -35,7 +35,7 @@ $where = "where true";
 
 
 $sql = sprintf(
-    "select `Part Category Key` from `Part Category Dimension`  left join `Category Dimension`  on (`Category Key`=`Part Category Key`)   $where   ",
+    "select `Part Category Key` from `Part Category Dimension`  left join `Category Dimension`  on (`Category Key`=`Part Category Key`)   $where   "
 );
 
 //print "$sql\n";
