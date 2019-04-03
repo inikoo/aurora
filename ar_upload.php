@@ -104,6 +104,7 @@ switch ($tipo) {
                              'type'     => 'string',
                              'optional' => true
                          ),
+
                          'response_type'       => array(
                              'type'     => 'string',
                              'optional' => true

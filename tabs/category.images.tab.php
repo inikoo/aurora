@@ -30,12 +30,13 @@ $parameters = array(
 
 $smarty->assign(
     'upload_file', array(
-        'tipo'       => 'upload_images',
-        'parent'     => $state['object'],
-        'parent_key' => $state['key'],
-        'object'     => 'image',
-        'label'      => _('Upload image')
-    )
+                     'tipo'       => 'upload_images',
+                     'parent'     => $state['object'],
+                     'parent_key' => $state['key'],
+                     'object'     => 'image',
+                     'scope'      => 'Marketing',
+                     'label'      => _('Upload image')
+                 )
 );
 
 

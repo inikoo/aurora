@@ -37,6 +37,7 @@ trait ImageSubject {
         );
 
 
+
         if (isset($raw_data['Image Subject Object Image Scope']) and $raw_data['Image Subject Object Image Scope'] != '') {
 
             if ($this->table_name == 'Page') {
@@ -85,6 +86,9 @@ trait ImageSubject {
                 }
 
             } elseif ($this->table_name == 'Category') {
+
+
+
                 $account = new Account();
                 if ($this->get('Category Scope') == 'Part' and $this->get('Category Root Key') == $account->get('Account Part Family Category Key') and $object_image_scope == 'Marketing') {
 

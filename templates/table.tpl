@@ -668,6 +668,11 @@
             ajaxData.append("parent_key", '{$upload_file.parent_key}')
             ajaxData.append("objects", '{$upload_file.object}')
 
+            {if !empty($upload_file.scope)}
+            ajaxData.append("parent_object_scope", '{$upload_file.scope}')
+            {/if}
+
+
             $.ajax({
                 url: "/ar_upload.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
 
