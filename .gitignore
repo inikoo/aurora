@@ -130,3 +130,4 @@ ecom/page.php
 cron/tmp.php
 
 *.swp
+keyring/currency_exchange_api_keys.php
