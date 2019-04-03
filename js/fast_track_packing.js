@@ -391,6 +391,8 @@ function delivery_note_fast_track_packing_qty_change(element) {
 
         if ($(obj).data('location_key') != input.data('location_key')) {
 
+
+            console.log($(obj).val())
             tmp = parseFloat($(obj).val())
             console.log(tmp)
 
