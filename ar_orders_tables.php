@@ -2137,7 +2137,7 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
         $total_pending = $data['required'];
 
         if ($data['Quantity On Hand'] < $total_pending) {
-            $formatted_diff = min($data['Quantity On Hand'],0)-  $total_pending;
+            $formatted_diff = ($data['Quantity On Hand']<0?0:$data['Quantity On Hand'])-  $total_pending;
             $status_icon    = 'error fa-exclamation-circle';
         } else {
             $formatted_diff = '';
