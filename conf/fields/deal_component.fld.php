@@ -40,7 +40,10 @@ $object_fields[] = array(
 
 );
 
-$object_fields[] = array(
+if($object->get('Deal Component Status')!='Finish') {
+
+
+    $object_fields[] = array(
 
         'label'      => _('Dates'),
         'show_title' => true,
@@ -50,6 +53,7 @@ $object_fields[] = array(
             array(
                 'edit' => ($edit ? 'date' : ''),
                 'time' => '00:00:00',
+                'render'=>($object->get('Deal Component Status')!='Waiting'?false:true),
 
                 'id'              => 'Deal_Component_Begin_Date',
                 'value'           => $object->get('Deal Component Begin Date'),
@@ -72,8 +76,10 @@ $object_fields[] = array(
             ),
         )
 
-);
+    );
 
+
+}
 $operations = array(
     'label'      => _('Operations'),
     'show_title' => true,
