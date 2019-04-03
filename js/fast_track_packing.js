@@ -376,7 +376,7 @@ function delivery_note_fast_track_packing_qty_change(element) {
 
 
 
-    console.log('holaxx')
+    console.log('holaxxx')
 
 
     var picked_quantity_components = input.closest('.picked_quantity_components')
