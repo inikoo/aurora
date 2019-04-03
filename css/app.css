@@ -8282,7 +8282,7 @@ input.input_file {
     color: #FFF; }
 
 .nice-select {
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   background-color: #fff;
   border-radius: 5px;
   border: solid 1px #e8e8e8;
