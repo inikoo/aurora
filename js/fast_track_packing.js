@@ -222,8 +222,12 @@ function show_other_part_locations_for_input_delivery_note_packing(element) {
             tr.find('.picked_quantity_components').html(data.picked_offline_input)
             tr.find('.location_components').html(data.locations)
 
-
+            console.log(qty)
             $('.picked_quantity_components input.fast_track_packing', tr).each(function (i, obj) {
+
+
+                console.log(obj)
+
                 if ($(obj).data('location_key') == location_key) {
                     $(obj).attr('value',qty)
                     $(obj).attr('ovalue',qty)
