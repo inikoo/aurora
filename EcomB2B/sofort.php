@@ -138,7 +138,7 @@ $published_email_template->send($customer,$send_data);
 
 
 setcookie('au_pu_'.$order->id, $order->id, time() + 300, "/");
-header('Location: thanks.sys?order_key='.$order->id+'&ts='.time());
+header('Location: thanks.sys?order_key='.$order->id.'&ts='.time());
 exit;
 
 ?>
