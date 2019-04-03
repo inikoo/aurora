@@ -13,6 +13,7 @@
 function get_customer_showcase($data, $smarty) {
 
 
+
     $customer = $data['_object'];
     if (!$customer->id) {
         return "";

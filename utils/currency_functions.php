@@ -13,6 +13,9 @@
 
 function currency_conversion($db, $currency_from, $currency_to, $update_interval = "-1 hour") {
 
+
+    include_once 'keyring/currency_exchange_api_keys.php';
+
     $currency_from = strtoupper($currency_from);
     $currency_to   = strtoupper($currency_to);
 
@@ -91,20 +94,36 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
             $currency_to, $valid_currencies
         )) {
 
+
+        $api_keys = $currency_exhange_api_keys['apilayer'];
+        shuffle($api_keys);
+        $api_key = reset($api_keys);
+
+
         $contents = json_decode(
             file_get_contents(
                 sprintf(
-                    'http://data.fixer.io/api/latest?access_key=46f6ee57415a369d42c0ea5486de8a53&base=%s&symbols=%s', $currency_from, $currency_to
+                    'http://www.apilayer.net/api/live?access_key=%s&format=1&currencies=%s,%s', $api_key,$currency_from, $currency_to
+
+
                 )
             ), true
         );
 
 
-        if (!empty($contents['rates'][$currency_to])) {
-            $exchange = floatval($contents['rates'][$currency_to]);
+
+        if (!empty($contents['quotes']['USD'.$currency_from]) and !empty($contents['quotes']['USD'.$currency_to])) {
 
 
-            $source = 'fixer.io';
+
+            $usd_cur1 = $contents['quotes']['USD'.$currency_from];
+            $usd_cur2 = $contents['quotes']['USD'.$currency_to];
+            $exchange = $usd_cur2 * (1 / $usd_cur1);
+
+
+
+
+            $source = 'apilayer';
             $ok     = true;
         }
 
@@ -112,23 +131,18 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
     }
 
 
-    if ($ok == false) {
-
-        $api_keys = array(
-            'raul@inikoo.com'      => '8158586024e345b2b798c26ee50b6987',
-            'exchange1@inikoo.com' => '21467cd6ca2847cf9fdbc913e616d6e9',
-            'exchange2@inikoo.com' => 'e328d66fafc94f6391d2a8e4fbab0389',
-            'exchange3@inikoo.com' => '271f126537a84a3f98599e66781f8bed',
-            'exchange4@inikoo.com' => '756b792276ba4c80807a85b031139d7e',
-            'exchange5@inikoo.com' => '4bc72747362a496c971c528fb1b1d219',
+    if ($ok == false or true) {
 
 
-        );
+        $api_keys =  $currency_exhange_api_keys['copenexchange'];
         shuffle($api_keys);
         $api_key = reset($api_keys);
 
         $url  = 'http://openexchangerates.org/api/latest.json?app_id='.$api_key;
+
+
         $data = json_decode(file_get_contents($url), true);
+
 
 
         if (isset($data['rates'][$currency_from]) and isset($data['rates'][$currency_to])) {
@@ -136,7 +150,6 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
             $usd_cur1 = $data['rates'][$currency_from];
             $usd_cur2 = $data['rates'][$currency_to];
             $exchange = $usd_cur2 * (1 / $usd_cur1);
-
 
             $source = 'openexchangerates';
         }
