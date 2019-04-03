@@ -225,9 +225,12 @@ function show_other_part_locations_for_input_delivery_note_packing(element) {
 
             $('.picked_quantity_components input.fast_track_packing', tr).each(function (i, obj) {
                 if ($(obj).data('location_key') == location_key) {
-                    $(obj).val(qty)
+                    $(obj).attr('value',qty)
+                    $(obj).attr('ovalue',qty)
                 } else {
-                    $(obj).val('')
+                    $(obj).attr('value','')
+                    $(obj).attr('ovalue','')
+
                 }
                 //test
             });

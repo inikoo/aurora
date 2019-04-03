@@ -175,7 +175,8 @@ function get_delivery_note_fast_track_packing_input($total_required,$total_picke
             $itf_key, $part_sku,
 
             ($total_pending != 0 && $quantity_on_location >= 1 ? '' : 'hide'),
-            ($quantity_on_location<$total_pending?$quantity_on_location:$total_pending), ($quantity_on_location<$total_pending?$quantity_on_location:$total_pending), $pending_in_location,
+            ($quantity_on_location<$total_pending?$quantity_on_location:$total_pending),
+            ($quantity_on_location<$total_pending?$quantity_on_location:$total_pending), $pending_in_location,
             $total_pending,$quantity_on_location,
             $location_key, $icon_plus_button,  ''
         );
