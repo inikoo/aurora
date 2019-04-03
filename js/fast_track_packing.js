@@ -391,7 +391,7 @@ function delivery_note_fast_track_packing_qty_change(element) {
             tmp = parseFloat($(obj).val())
             if (!isNaN(tmp)) {
                 _total_qty += tmp
-                console.log(tmp)
+                console.log('x '+tmp)
 
             }
 
@@ -399,12 +399,12 @@ function delivery_note_fast_track_packing_qty_change(element) {
 
     });
 
-    console.log(qty)
-    console.log(_total_qty)
+    console.log('qty '+qty)
+    console.log('_total_qty '+_total_qty)
 
     var total_qty = qty + _total_qty
 
-    console.log(total_qty)
+    console.log('total_qty '+total_qty)
 
     var pending = picked_quantity_components.data('pending')
 
