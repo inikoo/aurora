@@ -31,7 +31,6 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
         "SELECT * FROM kbase.`Currency Exchange Dimension` WHERE `Currency Pair`=%s", prepare_mysql($currency_from.$currency_to)
     );
 
-
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
 
@@ -39,12 +38,8 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
             $date2 = gmdate("Y-m-d H:i:s", strtotime('now '.$update_interval));
 
             if (strtotime($date1) > strtotime($date2)) {
-                // $reload = true;
-
-                return $row['Exchange'];
+                           return $row['Exchange'];
             }
-
-
         } else {
             //$reload = true;
             //$in_db  = false;
@@ -56,48 +51,24 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
 
 
     $api_keys = $currency_exhange_api_keys['apilayer'];
-
-
-
     shuffle($api_keys);
     $api_key = reset($api_keys);
-    $contents = json_decode(
-        file_get_contents(
-            sprintf(
-                'http://www.apilayer.net/api/live?access_key=%s&format=1&currencies=%s,%s', $api_key, $currency_from, $currency_to
-
-
-            )
-        ), true
-    );
-
+    $contents = json_decode(file_get_contents(sprintf('http://www.apilayer.net/api/live?access_key=%s&format=1&currencies=%s,%s', $api_key, $currency_from, $currency_to)), true);
 
     if (!empty($contents['quotes']['USD'.$currency_from]) and !empty($contents['quotes']['USD'.$currency_to])) {
-
-
         $usd_cur1 = $contents['quotes']['USD'.$currency_from];
         $usd_cur2 = $contents['quotes']['USD'.$currency_to];
         $exchange = $usd_cur2 * (1 / $usd_cur1);
-
-
         $source = 'apilayer';
         $ok     = true;
     }
 
-
     if ($ok == false) {
-
-
         $api_keys = $currency_exhange_api_keys['copenexchange'];
         shuffle($api_keys);
         $api_key = reset($api_keys);
-
         $url = 'http://openexchangerates.org/api/latest.json?app_id='.$api_key;
-
-
         $data = json_decode(file_get_contents($url), true);
-
-
         if (isset($data['rates'][$currency_from]) and isset($data['rates'][$currency_to])) {
 
             $usd_cur1 = $data['rates'][$currency_from];
@@ -125,49 +96,7 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
     }
 
 
-    /*
 
-    DOnt work for Indonesia/GBP
-
-$exchange=get_currency($currency_from, $currency_to, 1000000)/1000000;
-        if (is_numeric($exchange) and $exchange>0) {
-            $exchange_rate=$exchange;
-
-
-
-
-            $sql=sprintf("insert into kbase.`Currency Exchange Dimension`  (`Currency Pair`,`Exchange`,`Currency Exchange Last Updated`,`Currency Exchange Source`) values (%s,%f,NOW(),'Yahoo')  ON DUPLICATE KEY update `Exchange`=%f,`Currency Exchange Last Updated`=NOW(),`Currency Exchange Source`='Yahoo'",
-                prepare_mysql($currency_from.$currency_to), $exchange_rate, $exchange_rate);
-
-            $db->exec($sql);
-
-
-        }
-
-    DOnt work for Indonesia/GBP
-
-        $url = "http://quote.yahoo.com/d/quotes.csv?s=". $currency_from . $currency_to . "=X&f=l1&e=.csv";
-
-        $handle = fopen($url, "r");
-        $contents = floatval(fread($handle, 2000));
-        fclose($handle);
-
-
-
-        if (is_numeric($contents) and $contents>0) {
-            $exchange_rate=$contents;
-
-
-
-            $sql=sprintf("insert into kbase.`Currency Exchange Dimension`  (`Currency Pair`,`Exchange`,`Currency Exchange Last Updated`,`Currency Exchange Source`) values (%s,%f,NOW(),'Yahoo')  ON DUPLICATE KEY update `Exchange`=%f,`Currency Exchange Last Updated`=NOW(),`Currency Exchange Source`='Yahoo'",
-                prepare_mysql($currency_from.$currency_to), $exchange_rate, $exchange_rate);
-
-            $db->exec($sql);
-
-
-        }
-
-        */
 
 
     return $exchange;
