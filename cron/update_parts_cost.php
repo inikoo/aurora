@@ -12,6 +12,16 @@
 
 require_once 'common.php';
 
+include_once 'utils/new_fork.php';
+
+new_housekeeping_fork(
+    'au_housekeeping', array(
+    'type'                    => 'update_parts_cost'
+), $account->get('Account Code')
+);
+print "forking\n";
+
+exit;
 
 $where     = ' where `Part Status`!="Not In Use"';
 $print_est = true;
@@ -29,6 +39,12 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
+
+
+
+
+exit;
+
 $lap_time0 = date('U');
 $contador  = 0;
 
@@ -40,7 +56,10 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $part = get_object('Part', $row['Part SKU']);
 
-        $part->update_cost();
+
+
+
+        //$part->update_cost();
 
 
         $contador++;
