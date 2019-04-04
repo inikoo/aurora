@@ -84,14 +84,30 @@ if ($result = $db->query($sql)) {
 
         $row['locations'] = array();
 
-        foreach (preg_split('/,/', $row['location_data']) as $location_data) {
-            $row['locations'][] = preg_split('/\:/', $location_data);
+
+        print $row['location_data'];
+
+        if($row['location_data']==''){
+
+        }else{
+            foreach (preg_split('/,/', $row['location_data']) as $location_data) {
+                $row['locations'][] = preg_split('/\:/', $location_data);
+            }
+
+            $can_pick = array_column($row['locations'], 2);
+            $stock    = array_column($row['locations'], 3);
+
+
+            if (count($can_pick) > 0) {
+                array_multisort($can_pick, SORT_DESC, $stock, SORT_DESC, $row['locations']);
+
+
+            }
         }
 
-        $can_pick = array_column($row['locations'], 2);
-        $stock    = array_column($row['locations'], 3);
 
-        array_multisort($can_pick, SORT_DESC, $stock, SORT_DESC, $row['locations']);
+
+
 
 
         $row['description_note'] = '';
@@ -137,26 +153,24 @@ $smarty->assign('formatted_number_of_items', $formatted_number_of_items);
 $smarty->assign('formatted_number_of_picks', $formatted_number_of_picks);
 
 
+$qr_data = sprintf(
+    '%s/delivery_notes/%d?d=%s', $account->get('Account System Public URL'), $delivery_note->id, base64_url_encode(
+    (json_encode(
+        array(
+            'a' => $account->get('Code'),
+            'k' => $delivery_note->id,
+            'c' => gmdate('u')
+        )
+    ))
+)
+);
 
 
-
-
-
-
-$qr_data= sprintf('%s/delivery_notes/%d?d=%s',$account->get('Account System Public URL'),$delivery_note->id,base64_url_encode((json_encode(
-    array(
-        'a'=>$account->get('Code'),
-        'k'=>$delivery_note->id,
-        'c'=>gmdate('u')
-    )))));
-
-
-$qr_data= sprintf('%s/dn/%d?d=%s',$account->get('Account System Public URL'),$delivery_note->id,gmdate('U'));
-
+$qr_data = sprintf('%s/dn/%d?d=%s', $account->get('Account System Public URL'), $delivery_note->id, gmdate('U'));
 
 
 $smarty->assign(
-    'qr_data',$qr_data
+    'qr_data', $qr_data
 );
 
 
