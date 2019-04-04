@@ -758,7 +758,18 @@
 
         </div>
 
-        <div style="margin-bottom: 15px" class="payments {if $order->get('Order Number Items')==0  or $order->get('State Index')<0 }hide{/if}  ">
+        <div style="margin-bottom: 0px" class="payments {if $order->get('Order State')!='InBasket' or $customer->get('Customer Account Balance')==0    }hide{/if}  ">
+            <div  class="payment node  ">
+
+
+                <span class="node_label   ">{$customer->get('Account Balance')} {t}available credit{/t}</span>
+
+
+            </div>
+        </div>
+
+
+        <div style="margin-bottom: 15px" class="payments {if $order->get('Order Number Items')==0  or $order->get('State Index')<0   or ($order->get('Order State')=='InBasket' and empty($payments)  )  }hide{/if}  ">
 
 
             {assign expected_payment $order->get('Expected Payment')}
@@ -806,7 +817,11 @@
         <div style="clear:both"></div>
 
 
-        <table border="0" class="totals" style="width: 100%">
+
+
+
+
+        <table border="0" class="totals {if $order->get('Order State')=='InBasket' and empty($payments) }hide{/if}" style="width: 100%">
 
 
             <tbody id="total_payments" class="{if $order->get('State Index')<0}hide{/if}">
