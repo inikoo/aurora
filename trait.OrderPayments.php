@@ -44,9 +44,12 @@ trait OrderPayments {
 
     function get_payments($scope = 'keys', $filter = '') {
 
+        //'Pending','Completed','Cancelled','Error','Declined'
 
         if ($filter == 'Completed') {
             $where = ' and `Payment Transaction Status`="Completed" ';
+        } elseif ($filter == 'Completed_or_Pending') {
+            $where = ' and (`Payment Transaction Status`="Completed" or `Payment Transaction Status`="Pending" ) ';
         } else {
             $where = '';
         }
