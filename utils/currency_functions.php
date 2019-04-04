@@ -14,7 +14,7 @@
 function currency_conversion($db, $currency_from, $currency_to, $update_interval = "-1 hour") {
 
 
-    include_once 'keyring/currency_exchange_api_keys.php';
+    include 'keyring/currency_exchange_api_keys.php';
 
     $currency_from = strtoupper($currency_from);
     $currency_to   = strtoupper($currency_to);
@@ -55,94 +55,47 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
     }
 
 
-    $valid_currencies = array(
-        'EUR',
-        'AUD',
-        'BGN',
-        'BRL',
-        'CAD',
-        'CHF',
-        'CNY',
-        'CZK',
-        'DKK',
-        'GBP',
-        'HKD',
-        'HRK',
-        'HUF',
-        'IDR',
-        'ILS',
-        'INR',
-        'JPY',
-        'KRW',
-        'MXN',
-        'MYR',
-        'NOK',
-        'NZD',
-        'PHP',
-        'PLN',
-        'RON',
-        'RUB',
-        'SEK',
-        'SGD',
-        'THB',
-        'TRY',
-        'USD',
-        'ZAR'
+    $api_keys = $currency_exhange_api_keys['apilayer'];
+
+
+
+    shuffle($api_keys);
+    $api_key = reset($api_keys);
+    $contents = json_decode(
+        file_get_contents(
+            sprintf(
+                'http://www.apilayer.net/api/live?access_key=%s&format=1&currencies=%s,%s', $api_key, $currency_from, $currency_to
+
+
+            )
+        ), true
     );
 
-    if (in_array($currency_from, $valid_currencies) and in_array(
-            $currency_to, $valid_currencies
-        )) {
+
+    if (!empty($contents['quotes']['USD'.$currency_from]) and !empty($contents['quotes']['USD'.$currency_to])) {
 
 
-        $api_keys = $currency_exhange_api_keys['apilayer'];
-        shuffle($api_keys);
-        $api_key = reset($api_keys);
+        $usd_cur1 = $contents['quotes']['USD'.$currency_from];
+        $usd_cur2 = $contents['quotes']['USD'.$currency_to];
+        $exchange = $usd_cur2 * (1 / $usd_cur1);
 
 
-        $contents = json_decode(
-            file_get_contents(
-                sprintf(
-                    'http://www.apilayer.net/api/live?access_key=%s&format=1&currencies=%s,%s', $api_key,$currency_from, $currency_to
-
-
-                )
-            ), true
-        );
-
-
-
-        if (!empty($contents['quotes']['USD'.$currency_from]) and !empty($contents['quotes']['USD'.$currency_to])) {
-
-
-
-            $usd_cur1 = $contents['quotes']['USD'.$currency_from];
-            $usd_cur2 = $contents['quotes']['USD'.$currency_to];
-            $exchange = $usd_cur2 * (1 / $usd_cur1);
-
-
-
-
-            $source = 'apilayer';
-            $ok     = true;
-        }
-
-
+        $source = 'apilayer';
+        $ok     = true;
     }
 
 
-    if ($ok == false or true) {
+    if ($ok == false) {
 
 
-        $api_keys =  $currency_exhange_api_keys['copenexchange'];
+        $api_keys = $currency_exhange_api_keys['copenexchange'];
         shuffle($api_keys);
         $api_key = reset($api_keys);
 
-        $url  = 'http://openexchangerates.org/api/latest.json?app_id='.$api_key;
+        $url = 'http://openexchangerates.org/api/latest.json?app_id='.$api_key;
 
 
         $data = json_decode(file_get_contents($url), true);
-
 
 
         if (isset($data['rates'][$currency_from]) and isset($data['rates'][$currency_to])) {
