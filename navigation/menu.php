@@ -81,6 +81,8 @@ if ($user->can_view('stores')) {
             'module',
             ''
         );
+
+
     }
 
     /*
@@ -93,6 +95,15 @@ if ($user->can_view('stores')) {
 
 }
 
+
+$nav_menu[] = array(
+    '<i class="button far fa-globe fa-fw"></i>',
+    _('Websites'),
+    'stores',
+    'websites',
+    'module',
+    ''
+);
 
 if ($user->can_view('orders')) {
 
@@ -431,6 +442,7 @@ if ($user->get('User Type') == 'Agent') {
         'module',
         ''
     );
+
     $nav_menu[] = array(
         '<i class="button far fa-user fa-fw"></i>',
         _('My profile'),
