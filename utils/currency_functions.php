@@ -14,7 +14,7 @@
 function currency_conversion($db, $currency_from, $currency_to, $update_interval = "-1 hour") {
 
 
-    include 'keyring/currency_exchange_api_keys.php';
+    require 'keyring/currency_exchange_api_keys.php';
 
     $currency_from = strtoupper($currency_from);
     $currency_to   = strtoupper($currency_to);
