@@ -35,7 +35,7 @@ $editor = array(
     'Author Name'  => 'Script (migration to aurora)'
 );
 
-$store_key=3;
+$store_key=5;
 
 $print_est = true;
 $sql = sprintf("select count(*) as num FROM `Customer Dimension` O left join `Store Dimension` on (`Store Key`=`Customer Store Key`)  where `Store Key`=%d ",$store_key);
@@ -388,7 +388,7 @@ function address_fields($address_key, $recipient, $organization, $default_countr
 
 
         $address_format = get_address_format(
-            ($address->data['Address Country 2 Alpha Code'] == 'XX' ? 'GB' : $address->data['Address Country 2 Alpha Code'])
+            ( ( $address->data['Address Country 2 Alpha Code'] == 'XX' or  $address->data['Address Country 2 Alpha Code'] == ''  )  ? $default_country : $address->data['Address Country 2 Alpha Code'])
         );
 
 
