@@ -238,7 +238,30 @@ class Order extends DB_Table {
 
 
                 break;
+            case 'Expected Payment Amount':
 
+
+                if ($this->data['Order Checkout Block Payment Account Key'] != '' and $this->data['Order To Pay Amount'] != 0) {
+                    $payment_account = get_object('Payment_Account', $this->data['Order Checkout Block Payment Account Key']);
+
+                    switch ($payment_account->get('Payment Account Block')) {
+                        case 'ConD':
+                            return  _('Cash on delivery').' (<b>'.money($this->data['Order To Pay Amount'],$this->data['Order Currency']).'</b>)';
+                            break;
+                        case 'Bank':
+                            return sprintf(_('Waiting for a %s bank transfer'),'<b>'.money($this->data['Order To Pay Amount'],$this->data['Order Currency']).'</b>');
+                            break;
+                        case 'Cash':
+                            return sprintf(_('Will pay %s with cash'),'<b>'.money($this->data['Order To Pay Amount'],$this->data['Order Currency']).'</b>');
+                            break;
+                        default:
+                            break;
+                    }
+
+
+                }
+
+                break;
             case 'Expected Payment':
 
 
