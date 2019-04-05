@@ -212,7 +212,7 @@
                                                                         </td>
                                                                         <td class="alignright" width="20%"
                                                                             style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #aaa; border-top-style: solid; margin: 0; padding: 5px 0;"
-                                                                            align="right" valign="top"> <span>{$order->get('Items Discount Amount')}</span> ({$order->get('Items Discount Percentage')})
+                                                                            align="right" valign="top"> <span>{$order->get('Items Discount Amount')}</span> <br>{$order->get('Items Discount Percentage')}
                                                                         </td>
                                                                     </tr>
 
