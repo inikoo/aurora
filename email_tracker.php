@@ -298,12 +298,12 @@ if ($validator->isValid($sns)) {
 
                     $sql = sprintf('select `Bounced Email Key`,`Bounced Email Bounce Type`,`Bounced Email Count` from `Bounced Email Dimension` where `Bounced Email`=%s  ', prepare_mysql($email_tracking->get('Email Tracking Email')));
                     if ($result3 = $db->query($sql)) {
-                        if ($row3 = $result->fetch()) {
+                        if ($row3 = $result3->fetch()) {
 
                             $bounce_count = $row3['Bounced Email Count'] + 1;
 
                             $sql = sprintf(
-                                'update  `Bounced Email Dimension` set `Bounced Email Bounce Type`=%s,`Bounced Email Status Code`=%s,`Bounced Email Count`=%d  where `Bounced Email Key`=%d ', prepare_mysql($bounce_type), prepare_mysql($bounce_status_code), $bounce_count,
+                                'update  `Bounced Email Dimension` set `Bounced Email Bounce Type`=%s,`Bounced Email Status Code`=%s,`Bounced Email Count`=%d   ,`Bounced Email Source`="AU" where `Bounced Email Key`=%d  ', prepare_mysql($bounce_type), prepare_mysql($bounce_status_code), $bounce_count,
                                 $row3['Bounced Email Key']
                             );
                             $db->exec($sql);
