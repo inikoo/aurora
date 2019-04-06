@@ -1495,7 +1495,7 @@ function skip_step($data) {
 }
 
 
-function get_help($data, $modules, $db, $account, $user, $smarty) {
+function get_help($data, $account, $user, $smarty) {
 
     //print_r($data['state']);
 
