@@ -2409,7 +2409,7 @@ $modules = array(
         )
 
     ),
-    /*
+
 
         'websites'         => array(
             'section'     => 'dashboard',
@@ -2565,12 +2565,7 @@ $modules = array(
 
 
                         ),
-                        'website.details'   => array(
-                            'label' => _(
-                                'Data'
-                            ),
-                            'icon'  => 'database'
-                        ),
+
 
 
                         'website.templates' => array(
@@ -2602,9 +2597,7 @@ $modules = array(
                             'icon'    => 'header',
                             'subtabs' => array(
                                 'website.header.preview' => array(
-                                    'label' => _(
-                                        'Preview'
-                                    ),
+                                    'label' => _('Preview'),
                                     'icon'  => 'eye'
                                 )
 
@@ -2618,9 +2611,7 @@ $modules = array(
                             'icon'    => 'minus',
                             'subtabs' => array(
                                 'website.footer.preview' => array(
-                                    'label' => _(
-                                        'Preview'
-                                    ),
+                                    'label' => _('Preview'),
                                     'icon'  => 'eye'
                                 )
 
@@ -2631,18 +2622,34 @@ $modules = array(
 
                     )
                 ),
+                'analytics' => array(
+                    'type'      => 'navigation',
+                    'label'     => _('Analytics'),
+                    'icon'      => 'analytics',
+                    'reference' => 'website/%d/analytics',
 
+                    'tabs' => array(
+                        'website.analytics'   => array(
+                            'label' => _('Analytics'),
+                            'icon'  => 'analytics'
+                        ),
+                    )
 
+                ),
                 'webpages' => array(
                     'type'      => 'navigation',
                     'label'     => _('Web pages'),
-                    'icon'      => 'files',
+                    'icon'      => 'browser',
                     'reference' => 'webpages/%d',
 
                     'tabs' => array(
                         'website.online_webpages'  => array(
                             'label' => _('Online web pages'),
-                            'icon'  => 'files'
+                            'icon'  => 'browser'
+                        ),
+                        'website.in_process_webpages'  => array(
+                            'label' => _('To be published web pages'),
+                            'icon'  => 'seedling'
                         ),
                         'website.webpage.types'    => array(
                             'label' => _('Web pages by type'),
@@ -2663,6 +2670,64 @@ $modules = array(
 
                 ),
 
+                'header' => array(
+                    'type'      => 'navigation',
+                    'label'     => _('Header'),
+                    'icon'      => 'arrow-alt-to-top',
+                    'reference' => 'website/%d/header',
+
+                    'tabs' => array(
+                        'website.header.preview' => array(
+                            'label' => _('Preview'),
+                            'icon'  => 'eye'
+                        )
+                    )
+
+                ),
+                'menu' => array(
+                    'type'      => 'navigation',
+                    'label'     => _('Menu'),
+                    'icon'      => 'sliders-h',
+                    'reference' => 'website/%d/menu',
+
+                    'tabs' => array(
+                        'website.menu.preview' => array(
+                            'label' => _('Preview'),
+                            'icon'  => 'eye'
+                        )
+                    )
+
+                ),
+                'footer' => array(
+                    'type'      => 'navigation',
+                    'label'     => _('Footer'),
+                    'icon'      => 'arrow-alt-to-bottom',
+                    'reference' => 'website/%d/footer',
+
+                    'tabs' => array(
+                        'website.footer.preview' => array(
+                            'label' => _('Preview'),
+                            'icon'  => 'eye'
+                        )
+                    )
+
+                ),
+
+
+                'settings' => array(
+                    'type'      => 'navigation',
+                    'label'     => _('Settings'),
+                    'icon'      => 'sliders-h',
+                    'reference' => 'website/%d/settings',
+
+                    'tabs' => array(
+                        'website.details'   => array(
+                            'label' => _('Setting'),
+                            'icon'  => 'sliders-h'
+                        ),
+                    )
+
+                ),
 
                 'webpage_type' => array(
                     'type' => 'object',
@@ -2861,7 +2926,7 @@ $modules = array(
         ),
 
 
-        */
+
 
 
     'products'          => array(

@@ -113,11 +113,11 @@ function get_view($db, $smarty, $user, $account, $modules) {
     );
 
 
-    if (isset($data['metadata']['help']) and $data['metadata']['help']) {
-        get_help($data, $modules, $db);
 
-        return;
-    }
+    //if (isset($data['metadata']['help']) and $data['metadata']['help']) {
+    //    get_help($data, $modules, $db);
+    //    return;
+    //}
 
 
     if (isset($data['metadata']['reload']) and $data['metadata']['reload']) {
@@ -137,7 +137,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $state = parse_request($data, $db, $modules, $account, $user);
 
 
-    //$state['current_website']   = $_SESSION['current_website'];
+    $state['current_website']      = $session->get('current_website');
     $state['current_store']      = $session->get('current_website');
     $state['current_warehouse']  = $session->get('current_warehouse');
     $state['current_production'] = (!empty($session->get('current_production')) ? $session->get('current_production') : '');
@@ -273,8 +273,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
             //print_r($state);
             $_parent = get_object($state['parent'], $state['parent_key']);
 
-            if (in_array(
-                $state['module'], array(
+            if (in_array($state['module'], array(
                                     'customers_server',
                                     'orders_server'
                                 )
@@ -311,6 +310,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
     }
     $state['_parent'] = $_parent;
+
 
 
     if ($state['object'] != '') {
@@ -426,7 +426,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
         if ($state['object'] == 'website' and $state['tab'] != 'website.new') {
 
 
-            if (!$state['_parent']->get('Store Website Key')) {
+            if ($state['_parent']=='store' and !$state['_parent']->get('Store Website Key')) {
                 $state = array(
                     'old_state'  => $state,
                     'module'     => 'products',
@@ -1299,6 +1299,8 @@ function get_menu($data, $user, $smarty, $db, $account) {
 
 function get_navigation($user, $smarty, $data, $db, $account) {
 
+
+
     switch ($data['module']) {
 
         case ('dashboard'):
@@ -1476,9 +1478,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('campaign'):
                 case ('campaign_order_recursion'):
                 case ('vouchers'):
-                    return get_campaign_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_campaign_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('campaign.new'):
                     return get_new_campaign_navigation(
@@ -1910,9 +1910,16 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
             require_once 'navigation/websites.nav.php';
 
-
             switch ($data['section']) {
-
+                case 'settings':
+                case 'footer':
+                case 'menu':
+                case 'header':
+                    return get_website_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case 'webpages':
+                    return get_webpages_navigation($data, $smarty, $user, $db, $account);
+                    break;
                 default:
                     return 'View not found';
 
