@@ -1185,11 +1185,10 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     break;
                 }
 
-                $module  = 'products';
+                $module  = 'websites';
                 $section = 'website';
                 $object  = 'website';
                 $key     = $view_path[0];
-
 
                 if (isset($view_path[1])) {
                     if ($view_path[1] == 'webpage') {
@@ -1205,6 +1204,14 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
 
+                    }elseif ($view_path[1] == 'settings') {
+                        $section    = 'settings';
+                    } elseif ($view_path[1] == 'header') {
+                        $section    = 'header';
+                    } elseif ($view_path[1] == 'footer') {
+                        $section    = 'footer';
+                    } elseif ($view_path[1] == 'menu') {
+                        $section    = 'menu';
                     } elseif ($view_path[1] == 'online') {
 
 

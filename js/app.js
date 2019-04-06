@@ -512,6 +512,13 @@ function change_menu_view(module){
                 change_view('stores')
             }
             break;
+        case 'websites':
+            if(state.current_website){
+                change_view('website/'+state.current_website)
+            }else{
+                change_view('websites')
+            }
+            break;
         case 'warehouses':
             if(state.current_warehouse){
                 change_view('warehouse/'+state.current_warehouse+'/dashboard')

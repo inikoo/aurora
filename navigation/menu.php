@@ -85,6 +85,16 @@ if ($user->can_view('stores')) {
 
     }
 
+
+    $nav_menu[] = array(
+        '<i class="button far fa-globe fa-fw"></i>',
+        _('Websites'),
+        'stores',
+        'websites',
+        'module',
+        ''
+    );
+
     /*
     $sections=get_sections('products', $data['parent_key']);
     foreach ($sections as $key=>$section ) {
@@ -96,14 +106,6 @@ if ($user->can_view('stores')) {
 }
 
 
-$nav_menu[] = array(
-    '<i class="button far fa-globe fa-fw"></i>',
-    _('Websites'),
-    'stores',
-    'websites',
-    'module',
-    ''
-);
 
 if ($user->can_view('orders')) {
 
