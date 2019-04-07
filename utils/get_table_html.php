@@ -22,8 +22,6 @@ if (isset($_SESSION['table_state'][$tab])) {
     $table_state = array();
 }
 
-//print_r($table_state);
-
 
 foreach ($default as $key => $value) {
     if ($key == 'rpp_options') {
@@ -77,7 +75,6 @@ if (isset($metadata['parameters'])) {
         }
     }
 }
-
 
 
 if (isset($metadata['element'])) {

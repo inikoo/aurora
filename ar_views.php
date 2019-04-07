@@ -1332,31 +1332,21 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 
             switch ($data['section']) {
-
+                case 'settings':
                 case 'store':
-                    return get_store_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_store_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case 'store.new':
-                    return get_new_store_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_new_store_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case 'products':
-                    return get_products_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_products_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case 'product':
-                    return get_product_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_product_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case 'product.new':
-                    return get_new_product_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_new_product_navigation($data, $smarty, $user, $db, $account);
                     break;
 
                 case 'services':
@@ -1400,7 +1390,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_order_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-
+/*
                 case ('websites'):
 
                     return get_websites_navigation(
@@ -1453,11 +1443,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_user_navigation(
                         $data, $smarty, $user, $db, $account
                     );
+*/
 
                 case ('offers'):
-                    return get_marketing_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_marketing_navigation($data, $smarty, $user, $db, $account);
                     break;
 
                 case ('marketing'):
@@ -1911,14 +1900,17 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             require_once 'navigation/websites.nav.php';
 
             switch ($data['section']) {
+                case 'analytics':
                 case 'settings':
-                case 'footer':
-                case 'menu':
-                case 'header':
+                case 'workshop':
+                case 'web_users':
                     return get_website_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case 'webpages':
                     return get_webpages_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('webpage.new'):
+                    return get_new_webpage_navigation($data, $smarty, $user, $db, $account);
                     break;
                 default:
                     return 'View not found';
@@ -4018,6 +4010,14 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'label'     => _('Store').' <span class="Store_Code id">'.$state['_object']->get('Store Code').'</span>',
                     'icon'      => 'shopping-basket',
                     'reference' => 'store/'.$state['_object']->id
+                );
+
+
+            }if ($state['section'] == 'settings') {
+                $branch[] = array(
+                    'label'     => _('Settings store').' <span class="Store_Code id">'.$state['_object']->get('Store Code').'</span>',
+                    'icon'      => 'sliders-h',
+                   'reference' => 'store/'.$state['_object']->id.'/settings'
                 );
 
 

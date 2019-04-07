@@ -239,30 +239,16 @@ function websites($_data, $db, $user) {
 
         $adata[] = array(
             'id'                            => (integer)$data['Website Key'],
-            'code'                          => sprintf('<span class="link" onclick="change_view(\'store/%d/website\')">%s</span>',$data['Website Store Key'],$data['Website Code']),
-            'name'                          => $data['Website Name'],
-            'url'                           => 'https://'.$data['Website URL'],
-            'users'                         => number(
-                $data['Website Total Acc Users']
-            ),
-            'visitors'                      => number(
-                $data['Website Total Acc Visitors']
-            ),
-            'requests'                      => number(
-                $data['Website Total Acc Requests']
-            ),
-            'sessions'                      => number(
-                $data['Website Total Acc Sessions']
-            ),
-            'pages'                         => number(
-                $data['Website Number WebPages']
-            ),
-            'pages_products'                => number(
-                $data['Website Number WebPages with Products']
-            ),
-            'pages_out_of_stock'            => number(
-                $data['Website Number WebPages with Out of Stock Products']
-            ),
+            'code'                          => sprintf('<span class="link" onclick="change_view(\'website/%d\')">%s</span>',$data['Website Key'],$data['Website Code']),
+            'name'                          => sprintf('<span class="link" onclick="change_view(\'website/%d\')">%s</span>',$data['Website Key'],$data['Website Name']),
+            'url'                           => '<a href="https://'.$data['Website URL'].'" target="_blank"> <i class="fal fa-external-link-alt padding_right_10"></i> </a> '.$data['Website URL'],
+            'users'                         => number($data['Website Total Acc Users']),
+            'visitors'                      => number($data['Website Total Acc Visitors']),
+            'requests'                      => number($data['Website Total Acc Requests']),
+            'sessions'                      => number($data['Website Total Acc Sessions']),
+            'pages'                         => number($data['Website Number WebPages']),
+            'pages_products'                => number($data['Website Number WebPages with Products']),
+            'pages_out_of_stock'            => number($data['Website Number WebPages with Out of Stock Products']),
             'pages_out_of_stock_percentage' => percentage($data['Website Number WebPages with Out of Stock Products'], $data['Website Number WebPages with Products']),
             'products'                      => number($data['Website Number Products']),
             'out_of_stock'                  => number($data['Website Number Out of Stock Products']),
@@ -813,8 +799,13 @@ function webpages_ready($_data, $db, $user) {
 function webpages_online($_data, $db, $user) {
 
     $rtext_label = 'webpage online';
+
+
     include_once 'prepare_table/init.php';
     include_once 'conf/webpage_types.php';
+
+
+
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
@@ -823,6 +814,7 @@ function webpages_online($_data, $db, $user) {
 
     foreach ($db->query($sql) as $data) {
 
+        /*
         if ($data['Webpage State'] == 'Online') {
             $state = '<i class="far fa-globe" aria-hidden="true"></i>';
         } else {
@@ -830,21 +822,21 @@ function webpages_online($_data, $db, $user) {
 
         }
 
-
+*/
 
 
         $type_label=$webpage_types[$data['Webpage Type Code']]['title'];
         $type_icon=$webpage_types[$data['Webpage Type Code']]['icon'];
-        $type=sprintf('<i class="fa fa-fw %s padding_left_10" aria-hidden="true" title="%s" ></i>',$type_icon, $type_label);
+        $type=sprintf('<i class="fa-fw %s padding_left_10" aria-hidden="true" title="%s" ></i>',$type_icon, $type_label);
 
         $adata[] = array(
             'id'      => (integer)$data['Webpage Key'],
-            'code'    => sprintf('<span class="link" onclick="change_view(\'website/%d/online/webpage/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], $data['Webpage Code']),
+            'code'    => sprintf('<span class="link" onclick="change_view(\'website/%d/online/webpage/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], strtolower($data['Webpage Code'])),
             'name'      => $data['Webpage Name'],
 
-            'state'   => $state,
+           // 'state'   => $state,
             'type'    => $type,
-            'version' => number_format($data['Webpage Version'], 1),
+           // 'version' => number_format($data['Webpage Version'], 1),
 
 
         );
@@ -872,6 +864,7 @@ function webpages_offline($_data, $db, $user) {
 
     $rtext_label = 'webpage offline';
     include_once 'prepare_table/init.php';
+    include_once 'conf/webpage_types.php';
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
@@ -880,13 +873,21 @@ function webpages_offline($_data, $db, $user) {
 
     foreach ($db->query($sql) as $data) {
 
+
+        $type_label=$webpage_types[$data['Webpage Type Code']]['title'];
+        $type_icon=$webpage_types[$data['Webpage Type Code']]['icon'];
+        $type=sprintf('<i class="fa-fw %s padding_left_10" aria-hidden="true" title="%s" ></i>',$type_icon, $type_label);
+
+
+        /*
         if ($data['Webpage State'] == 'Online') {
             $state = '<i class="far fa-globe" aria-hidden="true"></i>';
         } else {
             $state = '<i class="far fa-globe very_discreet" aria-hidden="true"></i>';
 
         }
-
+        */
+/*
         switch ($data['Webpage Scope']) {
             case 'Product':
                 $type = sprintf('<i class="fa fa-leaf" aria-hidden="true" title="" ></i>', _('Product'));
@@ -910,13 +911,14 @@ function webpages_offline($_data, $db, $user) {
                 $type = $data['Webpage State'];
                 break;
         }
+*/
 
         $adata[] = array(
             'id'      => (integer)$data['Webpage Key'],
-            'code'    => sprintf('<span class="link" onclick="change_view(\'website/%d/page/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], $data['Webpage Code']),
-            'state'   => $state,
+            'code'    => sprintf('<span class="link" onclick="change_view(\'website/%d/page/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], strtolower($data['Webpage Code'])),
+            'name'      => $data['Webpage Name'],
+
             'type'    => $type,
-            'version' => number_format($data['Webpage Version'], 1),
 
 
         );
