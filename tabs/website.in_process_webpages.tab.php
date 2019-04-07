@@ -26,8 +26,8 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => $state['object'],
-    'parent_key' => $state['key'],
+    'parent'     => $state['parent'],
+    'parent_key' => $state['parent_key'],
 );
 
 
@@ -35,7 +35,7 @@ $table_buttons   = array();
 $table_buttons[] = array(
     'icon'      => 'plus',
     'title'     => _('New Webpage'),
-    'reference' => "website/".$state['key']."/webpage/new"
+    'reference' => "website/".$state['parent_key']."/webpage/new"
 );
 $smarty->assign('table_buttons', $table_buttons);
 

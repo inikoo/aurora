@@ -14,50 +14,50 @@ $webpage_types = array(
     'Prod'             => array(
         'code'  => 'Prod',
         'title' => _('Product'),
-        'icon'=>'fa-leaf'
+        'icon'=>'fab fa-product-hunt'
     ),
     'Info'                => array(
         'code'  => 'Info',
         'title' => _('Info'),
-        'icon'=>'fa-info'
+        'icon'=>'fa fa-info'
     ),
     'Home'                => array(
         'code'  => 'Home',
         'title' => _('Homepage'),
-        'icon'=>'fa-home'
+        'icon'=>'fa fa-home'
     ),
 
     'Ordering'          => array(
         'code'  => 'Ordering',
         'title' => _('Ordering'),
-        'icon'=>'fa-shopping-cart'
+        'icon'=>'fa fa-shopping-cart'
     ),
     'Customer'          => array(
         'code'  => 'Customer',
         'title' => _('Customer operations'),
-        'icon'=>'fa-user'
+        'icon'=>'fa fa-user'
 
     ),
     'Portfolio'          => array(
         'code'  => 'Portfolio',
         'title' => _('Portfolio'),
-        'icon'=>'fa-paw'
+        'icon'=>'fa fa-paw'
 
     ),
     'Cats' => array(
         'code'  => 'Cats',
         'title' => _('Departments'),
-        'icon'=>'fa-tree'
+        'icon'=>'far fa-folder-tree'
     ),
     'Prods'   => array(
         'code'  => 'Prods',
         'title' => _('Families'),
-        'icon'=>'fa-pagelines'
+        'icon'=>'far fa-table'
     ),
     'Sys'          => array(
         'code'  => 'Sys',
         'title' => _('System'),
-        'icon'=>'fa-exclamation-circle'
+        'icon'=>'fa fa-exclamation-circle'
     ),
 );
 
