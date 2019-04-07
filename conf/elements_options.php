@@ -1363,6 +1363,10 @@ $elements_options = array(
                     'label'    => _('Products'),
                     'selected' => true
                 ),
+                'Sys'   => array(
+                    'label'    => _('System'),
+                    'selected' => true
+                ),
                 'Others' => array(
                     'label'    => _('Other'),
                     'selected' => true
@@ -1395,8 +1399,12 @@ $elements_options = array(
                     'label'    => _('Products'),
                     'selected' => true
                 ),
+                'Sys'   => array(
+                    'label'    => _('System'),
+                    'selected' => true
+                ),
                 'Others' => array(
-                    'label'    => _('Other'),
+                    'label'    => _('Info'),
                     'selected' => true
                 ),
 
