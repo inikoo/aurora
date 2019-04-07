@@ -9,7 +9,7 @@
 
 */
 
-$table = '`Page Store Dimension` ';
+$table = '`Page Store Dimension` P left join `Webpage Type Dimension` WTD on (WTD.`Webpage Type Key`=P.`Webpage Type Key`) ';
 
 $where = 'where `Webpage State`="Offline"';
 
@@ -107,7 +107,7 @@ if ($order == 'code') {
 
 $sql_totals = "select count(Distinct `Page Key`) as num from $table  $where  ";
 
-$fields = "`Page Key` as `Webpage Key` ,`Webpage Code`,`Webpage State`,`Webpage Scope`,`Webpage Website Key`,`Webpage Version`";
+$fields = "`Webpage Name`,`Page Key` as `Webpage Key` ,`Webpage Code`,`Webpage State`,`Webpage Scope`,`Webpage Website Key`,`Webpage Type Code`";
 
 /*
 $table = '`Webpage Dimension` N';

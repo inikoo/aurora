@@ -14,6 +14,7 @@ $table = '`Page Store Dimension` P left join `Webpage Type Dimension` WTD on (WT
 
 $where = 'where `Webpage State`="Online"';
 
+
 switch ($parameters['parent']) {
 
     case('website'):
@@ -26,7 +27,7 @@ switch ($parameters['parent']) {
         $where .= sprintf(' and  `Webpage Parent Key`=%d  ', $parameters['parent_key']);
         break;
     default:
-        exit('parent not configured '.$parameters['parent']);
+        exit('parent not configured: '.$parameters['parent']);
 
 }
 

@@ -77,6 +77,10 @@ function get_website_navigation($data, $smarty, $user, $db, $account)
             $title = sprintf(_('Website %s settings'), ' <span class="id">' . $website->get('Code') . '</span>');
             $link = 'settings';
             break;
+        case 'workshop':
+            $title = sprintf(_('Website %s workshop'), ' <span class="id">' . $website->get('Code') . '</span>');
+            $link = 'workshop';
+            break;
         default:
             $title = _('Website') . ' <span class="id">' . $website->get('Code') . '</span>';
             $link = '';
@@ -1663,4 +1667,53 @@ function get_deleted_webpage_navigation($data, $smarty, $user, $db, $account)
 }
 
 
-?>
+function get_new_webpage_navigation($data, $smarty, $user, $db, $account)
+{
+
+    $left_buttons = array();
+
+
+    switch ($data['parent']) {
+        case 'website':
+            $title = sprintf(_('New webpage for %s'), '<span class="id">' . $data['website']->get('Code') . '</span>');
+            $sections = get_sections('websites', $data['parent_key']);
+
+            $left_buttons[] = array(
+                'icon' => 'arrow-up',
+                'title' => _('Website') . ': ' . $data['website']->get('Code'),
+                'reference' => 'webpages/' . $data['website']->id ,
+                'parent' => ''
+            );
+            $sections['website']['selected'] = true;
+            break;
+        default:
+            exit('error in products.nav.php');
+            break;
+    }
+
+
+    $right_buttons = array();
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections' => $sections,
+        'left_buttons' => $left_buttons,
+        'right_buttons' => $right_buttons,
+        'title' => $title,
+        'search' => array(
+            'show' => true,
+            'placeholder' => _('Search website')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+
+}
+
+

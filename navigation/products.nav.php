@@ -17,7 +17,22 @@ function get_store_navigation($data, $smarty, $user, $db, $account) {
 
     $store = $data['_object'];
 
-    $block_view = $data['section'];
+
+    switch ($data['section']){
+        case 'settings':
+            $link='/settings';
+            $section='settings';
+            $title = sprintf(_('Settings for store %s'),' <span class="Store_Code id">'.$store->get('Code').'</span>');
+
+            break;
+        default:
+            $link='';
+            $section='store';
+            $title = _('Store').' <span class="Store_Code id">'.$store->get('Code').'</span>';
+
+
+    }
+
 
 
     $left_buttons = array();
@@ -58,7 +73,7 @@ function get_store_navigation($data, $smarty, $user, $db, $account) {
         $left_buttons[] = array(
             'icon'      => 'arrow-left',
             'title'     => $prev_title,
-            'reference' => 'store/'.$prev_key
+            'reference' => 'store/'.$prev_key.$link
         );
         $left_buttons[] = array(
             'icon'      => 'arrow-up',
@@ -69,20 +84,19 @@ function get_store_navigation($data, $smarty, $user, $db, $account) {
         $left_buttons[] = array(
             'icon'      => 'arrow-right',
             'title'     => $next_title,
-            'reference' => 'store/'.$next_key
+            'reference' => 'store/'.$next_key.$link
         );
     }
 
 
     $right_buttons = array();
     $sections      = get_sections('products', $store->id);
-    $_section      = 'store';
+    $_section      = $section;
     if (isset($sections[$_section])) {
         $sections[$_section]['selected'] = true;
     }
 
 
-    $title = _('Store').' <span class="Store_Code id">'.$store->get('Code').'</span>';
     if (!in_array($data['key'], $user->stores)) {
         $title = ' <i class="fa fa-lock padding_right_10"></i>'.$title;
     }
@@ -2277,56 +2291,6 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     $html = $smarty->fetch('navigation.tpl');
 
     return $html;
-
-}
-
-
-function get_new_webpage_navigation($data, $smarty, $user, $db, $account) {
-
-    $left_buttons = array();
-
-
-    switch ($data['parent']) {
-        case 'website':
-            $title                           = sprintf(_('New webpage for %s'), '<span class="id">'.$data['website']->get('Code').'</span>');
-            $sections                        = get_sections(
-                'products', $data['parent_key']
-            );
-            $left_buttons[]                  = array(
-                'icon'      => 'arrow-up',
-                'title'     => _('Website').': '.$data['website']->get('Code'),
-                'reference' => 'store/'.$data['store']->id.'/website',
-                'parent'    => ''
-            );
-            $sections['website']['selected'] = true;
-            break;
-        default:
-            exit('error in products.nav.php');
-            break;
-    }
-
-
-    $right_buttons = array();
-
-
-    $_content = array(
-        'sections_class' => '',
-        'sections'       => $sections,
-        'left_buttons'   => $left_buttons,
-        'right_buttons'  => $right_buttons,
-        'title'          => $title,
-        'search'         => array(
-            'show'        => true,
-            'placeholder' => _('Search website')
-        )
-
-    );
-    $smarty->assign('_content', $_content);
-
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
-
 
 }
 

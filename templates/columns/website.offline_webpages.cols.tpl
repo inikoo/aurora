@@ -9,14 +9,14 @@ cell: "string"
 
 
 {
-name: "state",
+name: "type",
 label:'',
-html_label: '<i class="fa fa-adjust discreet" aria-hidden="true"></i>',
+html_label: '{t}Type{/t}',
 editable: false,
-title: '{t}Online state{/t}',
+title: '{t}Web page group{/t}',
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
-className: "width_20"
+className: ""
 }),
 headerCell: HeaderHtmlCell,
 
@@ -31,29 +31,17 @@ editable: false,
 cell: Backgrid.HtmlCell.extend({ })
 },
 
+
 {
-name: "type",
-label:'',
-html_label: '<i class="fa fa-envira discreet" aria-hidden="true"></i>',
+name: "name",
+label: "{t}Name{/t}",
 editable: false,
-title: '{t}Online state{/t}',
 sortType: "toggle",
-cell: Backgrid.HtmlCell.extend({
-className: "width_4s0"
-}),
-headerCell: HeaderHtmlCell,
+{if $sort_key=='name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
-}
-
-, {
-name: "version",
-label:"Version",
-editable: false,
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='version'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ })
-}, {
+},
+ {
 name: "users",
 label:"{t}Users{/t}",
 editable: false,

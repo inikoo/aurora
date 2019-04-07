@@ -29,7 +29,8 @@ editable: false,
 defaultOrder:1,
 sortType: "toggle",
 {if $sort_key=='url'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: "uri"
+cell: Backgrid.HtmlCell.extend({
+} )
 }, {
 name: "users",
 label:"{t}Users{/t}",
