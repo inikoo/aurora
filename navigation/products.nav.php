@@ -90,6 +90,20 @@ function get_store_navigation($data, $smarty, $user, $db, $account) {
 
 
     $right_buttons = array();
+
+    foreach($store->get_websites('data') as $website_data){
+
+        $right_buttons[]
+            = array(
+            'icon'  => 'globe',
+            'title' => $website_data['Website Name'],
+            'click'=>"change_view('/website/".$website_data['Website Key']."')",
+            'pre_text'=> $website_data['Website Code'],
+            'class'=>'text'
+        );
+
+    }
+
     $sections      = get_sections('products', $store->id);
     $_section      = $section;
     if (isset($sections[$_section])) {

@@ -3807,33 +3807,29 @@ class Store extends DB_Table {
 
     }
 
-    function get_websites($scope = 'keys') {
-
-
-        if ($scope == 'objects') {
-            include_once 'class.Website.php';
-        }
-
-        $sql = sprintf(
-            "SELECT  `Website Key` FROM `Website Dimension` WHERE `Website Store Key`=%d ", $this->id
-        );
-
+    function get_websites($scope = 'keys')
+    {
         $websites = array();
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
+        if ($scope == 'data') {
+            $fields='`Website Key`,`Website Code`,`Website Name`,`Website Type`';
+        }else{
+            $fields='`Website Key`';
+        }
 
+        $stmt = $this->db->prepare("SELECT $fields FROM `Website Dimension` WHERE `Website Store Key`=?");
+        if ($stmt->execute(array(
+            $this->id
+        ))) {
+            while ($row = $stmt->fetch()) {
                 if ($scope == 'objects') {
-                    $websites[$row['Website Key']] = new Website($row['Website Key']);
+                    $websites[$row['Website Key']] = get_object('Website', $row['Website Key']);
+                } elseif ($scope == 'data') {
+                    $websites[$row['Website Key']] = $row;
                 } else {
                     $websites[$row['Website Key']] = $row['Website Key'];
                 }
-
-
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
