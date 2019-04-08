@@ -47,8 +47,8 @@ $stmt = $db->prepare($sql);
 if ($stmt->execute()) {
     while ($row = $stmt->fetch()) {
         print_r($row);
-        $page = get_object('Webpage', $row['Page Key']);
-        $page->editor=$editor;
+        $page         = get_object('Webpage', $row['Page Key']);
+        $page->editor = $editor;
         $page->delete();
     }
 } else {

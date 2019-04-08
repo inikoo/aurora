@@ -31,7 +31,7 @@ $editor = array(
 
 $account = new Account();
 
-$store_key = 3;
+$store_key = 5;
 
 $sql = 'select count(*) as num  from `Order Transaction Fact` where `Store Key`=? and `Order Transaction Type`="Resend"  ';
 $stmt = $db->prepare($sql);

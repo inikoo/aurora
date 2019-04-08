@@ -1002,7 +1002,7 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
                                 case 'authorized':
                                 case 'submitted_for_settlement':
 
-                                    if ($data['amount'] != $payment - get('Payment Transaction Amount')) {
+                                    if ($data['amount'] != $payment->get('Payment Transaction Amount')) {
                                         $response = array(
                                             'state' => 400,
                                             'msg'   => sprintf(_("Transaction still not settled, can't do partial refunds"))

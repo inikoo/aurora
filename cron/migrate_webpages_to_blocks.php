@@ -37,7 +37,7 @@ $editor = array(
 );
 
 ini_set('memory_limit', '10000M');
-$website_key = 3;
+$website_key = 5;
 
 $where = " and `Webpage Website Key`=$website_key";
 
@@ -1208,7 +1208,7 @@ function migrate_products() {
 
 
             $webpage = get_object('Webpage', $row3['Page Key']);
-
+            print $webpage->get('Webpage Code')."\n";
 
             $content = '';
 
@@ -1446,7 +1446,7 @@ function migrate_families() {
 
             $webpage = get_object('Webpage', $row3['Page Key']);
 
-
+            print $webpage->get('Webpage Code')."\n";
             $_content_data = $webpage->get('Content Data');
 
 
@@ -2075,6 +2075,9 @@ function migrate_departments() {
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $webpage = get_object('Webpage', $row['Page Key']);
+
+
+            print $webpage->get('Webpage Code')."\n";
 
 
             $_content_data = $webpage->get('Content Data');
