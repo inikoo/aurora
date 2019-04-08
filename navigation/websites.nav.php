@@ -67,28 +67,71 @@ function get_website_navigation($data, $smarty, $user, $db, $account)
 
 
     $website = $data['_object'];
+    $store = $data['store'];
 
 
     $sections_class = '';
 
 
+
     switch ($data['section']) {
+        case 'web_users':
+            $title = sprintf(_('Website %s registered users'), ' <span class="id">' . $website->get('Code') . '</span>');
+            $link = 'settings';
+            $right_buttons = array(
+                array(
+                    'icon'  => 'users',
+                    'title' => sprintf(_('Customers %s'),$store->get('Name')),
+                    'click'=>"change_view('/customers/".$store->id."')",
+                    'pre_text'=> $store->get('Code'),
+                    'class'=>'text'
+                )
+            );
+
+            break;
         case 'settings':
             $title = sprintf(_('Website %s settings'), ' <span class="id">' . $website->get('Code') . '</span>');
             $link = 'settings';
+            $right_buttons = array(
+                array(
+                    'icon'  => 'store-alt',
+                    'title' => $store->get('Name'),
+                    'click'=>"change_view('/store/".$store->id."/settings')",
+                    'pre_text'=> $store->get('Code'),
+                    'class'=>'text'
+                )
+            );
             break;
         case 'workshop':
             $title = sprintf(_('Website %s workshop'), ' <span class="id">' . $website->get('Code') . '</span>');
             $link = 'workshop';
+            $right_buttons = array(
+                array(
+                    'icon'  => 'store-alt',
+                    'title' => $store->get('Name'),
+                    'click'=>"change_view('/store/".$store->id."')",
+                    'pre_text'=> $store->get('Code'),
+                    'class'=>'text'
+                )
+            );
             break;
         default:
             $title = _('Website') . ' <span class="id">' . $website->get('Code') . '</span>';
             $link = '';
+            $right_buttons = array(
+                array(
+                    'icon'  => 'store-alt',
+                    'title' => $store->get('Name'),
+                    'click'=>"change_view('/store/".$store->id."')",
+                    'pre_text'=> $store->get('Code'),
+                    'class'=>'text'
+                )
+            );
     }
 
 
     $left_buttons = array();
-    $right_buttons = array();
+
 
 
     if ($user->websites > 1) {
@@ -187,14 +230,34 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account)
     $right_buttons = array();
 
 
+
+    switch ($object->get('Webpage State')){
+        case 'Online':
+            $icon='<i class="far fa-browser success" title="'._('Online webpage').'"></i>';
+            break;
+        case 'Offline':
+            $icon='<i class="fa fa-browser discreet error" title="'._('Offline webpage').'"></i>';
+            break;
+        case 'InProcess':
+            $icon='<i class="fal fa-browser " title="'._('Webpage in construction').'"></i>';
+            break;
+        default:
+            $icon='<i class="fa fa-browser" title="'._('Webpage ready').'"></i>';
+            break;
+
+    }
+
+    $title = $icon.' <span class="id Webpage_Code">' . strtolower($object->get('Code')) . '</span>';
+
+
+
+
     if (preg_match('/online/', $data['request'])) {
         $request_prefix = 'online/';
         switch ($data['parent']) {
 
             case 'website':
                 $tab = 'website.online_webpages';
-                $_section = 'websites';
-                $title = _('Webpage') . ' <span class="id Webpage_Code">' . $object->get('Code') . '</span>';
                 break;
 
         }
@@ -210,8 +273,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account)
 
             case 'website':
                 $tab = 'website.in_process_webpages';
-                $_section = 'websites';
-                $title = _('Webpage') . ' <span class="id Webpage_Code">' . $object->get('Code') . '</span>';
+
                 break;
 
         }
@@ -225,8 +287,6 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account)
 
             case 'website':
                 $tab = 'website.ready_webpages';
-                $_section = 'websites';
-                $title = _('Webpage') . ' <span class="id Webpage_Code">' . $object->get('Code') . '</span>';
                 break;
 
         }
@@ -238,8 +298,6 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account)
 
             case 'website':
                 $tab = 'website.webpages';
-                $_section = 'websites';
-                $title = _('Webpage') . ' <span class="id Webpage_Code">' . $object->get('Code') . '</span>';
                 break;
 
         }
@@ -285,120 +343,105 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account)
     $next_title = '';
     $prev_key = 0;
     $next_key = 0;
-    $sql = trim($sql_totals . " $wheref");
 
 
-    // print $sql;
-
-    if ($result2 = $db->query($sql)) {
-        if ($row2 = $result2->fetch()) {
-            if ($row2['num'] > 1) {
-
-
-                $sql = sprintf(
-                    "select `Webpage Code` object_name,`Page Key` as object_key from %s %s %s
+    $sql = sprintf(
+        "select `Webpage Code` object_name,`Page Key` as object_key from %s %s %s
 	                and ($_order_field < %s OR ($_order_field = %s AND `Page Key` < %d))  order by $_order_field desc , `Page Key` desc limit 1", $table, $where, $wheref,
 
-                    prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
-                );
+        prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+    );
 
 
-                if ($result = $db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $prev_key = $row['object_key'];
-                        $prev_title = _("Web page") . ' ' . $row['object_name'];
-                    }
-                } else {
-                    print $sql;
-                    print_r($error_info = $db->errorInfo());
-                    exit;
-                }
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $prev_key = $row['object_key'];
+            $prev_title = _("Web page") . ' ' . $row['object_name'];
+        }
+    } else {
+        print $sql;
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
 
 
-                $sql = sprintf(
-                    "select `Webpage Code` object_name,`Page Key` as object_key from %s %s %s
+    $sql = sprintf(
+        "select `Webpage Code` object_name,`Page Key` as object_key from %s %s %s
 	                and ($_order_field  > %s OR ($_order_field  = %s AND `Page Key` > %d))  order by $_order_field   , `Page Key`  limit 1", $table, $where, $wheref,
-                    prepare_mysql($_order_field_value),
-                    prepare_mysql($_order_field_value), $object->id
-                );
+        prepare_mysql($_order_field_value),
+        prepare_mysql($_order_field_value), $object->id
+    );
 
 
-                if ($result = $db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $next_key = $row['object_key'];
-                        $next_title = _("Web page") . ' ' . $row['object_name'];
-                    }
-                } else {
-                    print_r($error_info = $db->errorInfo());
-                    exit;
-                }
-
-
-                if ($order_direction == 'desc') {
-                    $_tmp1 = $prev_key;
-                    $_tmp2 = $prev_title;
-                    $prev_key = $next_key;
-                    $prev_title = $next_title;
-                    $next_key = $_tmp1;
-                    $next_title = $_tmp2;
-                }
-
-
-                switch ($data['parent']) {
-                    case 'website':
-
-
-                        $up_button = array(
-                            'icon' => 'arrow-up',
-                            'title' => _("Website") . ' (' . $data['_parent']->get('Code') . ')',
-                            'reference' => 'store/' . $object->get('Webpage Store Key') . '/website'
-                        );
-
-                        if ($prev_key) {
-                            $left_buttons[] = array(
-                                'icon' => 'arrow-left',
-                                'title' => $prev_title,
-                                'reference' => 'website/' . $data['parent_key'] . '/' . $request_prefix . 'webpage/' . $prev_key
-
-
-                            );
-
-                        } else {
-                            $left_buttons[] = array(
-                                'icon' => 'arrow-left disabled',
-                                'title' => ''
-                            );
-
-                        }
-                        $left_buttons[] = $up_button;
-
-
-                        if ($next_key) {
-                            $left_buttons[] = array(
-                                'icon' => 'arrow-right',
-                                'title' => $next_title,
-                                'reference' => 'website/' . $data['parent_key'] . '/' . $request_prefix . 'webpage/' . $next_key
-                            );
-
-                        } else {
-                            $left_buttons[] = array(
-                                'icon' => 'arrow-right disabled',
-                                'title' => '',
-                                'url' => ''
-                            );
-
-                        }
-
-                        break;
-
-
-                }
-            }
-
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $next_key = $row['object_key'];
+            $next_title = _("Web page") . ' ' . $row['object_name'];
         }
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
+    }
+
+
+    if ($order_direction == 'desc') {
+        $_tmp1 = $prev_key;
+        $_tmp2 = $prev_title;
+        $prev_key = $next_key;
+        $prev_title = $next_title;
+        $next_key = $_tmp1;
+        $next_title = $_tmp2;
+    }
+
+
+    switch ($data['parent']) {
+        case 'website':
+
+
+            $up_button = array(
+                'icon' => 'arrow-up',
+                'title' => _("Website") . ' (' . $data['_parent']->get('Code') . ')',
+                'reference' => 'store/' . $object->get('Webpage Store Key') . '/website'
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon' => 'arrow-left',
+                    'title' => $prev_title,
+                    'reference' => 'website/' . $data['parent_key'] . '/' . $request_prefix . 'webpage/' . $prev_key
+
+
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon' => 'arrow-left disabled',
+                    'title' => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon' => 'arrow-right',
+                    'title' => $next_title,
+                    'reference' => 'website/' . $data['parent_key'] . '/' . $request_prefix . 'webpage/' . $next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon' => 'arrow-right disabled',
+                    'title' => '',
+                    'url' => ''
+                );
+
+            }
+
+            break;
+
+
     }
 
 
@@ -1192,14 +1235,30 @@ function get_webpages_navigation($data, $smarty, $user, $db, $account)
 
 
     $website = $data['website'];
+    $store = $data['store'];
 
 
     $sections_class = '';
     $title = _('Web pages') . ' <span class="id">' . $website->get('Code') . '</span>';
 
     $left_buttons = array();
-    $right_buttons = array();
 
+    $right_buttons = array(
+        array(
+            'icon'  => 'cube',
+            'title' => sprintf(_('Products %s'),$store->get('Name')),
+            'click'=>"change_view('/products/".$store->id."')",
+            'pre_text'=> $store->get('Code'),
+            'class'=>'text'
+        ),
+        array(
+            'icon'  => 'sitemap',
+            'title' => sprintf(_('Product categories %s'),$store->get('Name')),
+            'click'=>"change_view('/products/".$store->id."/categories')",
+            'pre_text'=> $store->get('Code'),
+            'class'=>'text'
+        )
+    );
 
     if ($user->websites > 1) {
 
