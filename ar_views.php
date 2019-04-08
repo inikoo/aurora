@@ -1908,6 +1908,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case 'web_users':
                     return get_website_navigation($data, $smarty, $user, $db, $account);
                     break;
+                case ('webpage'):
+                    return get_webpage_navigation($data, $smarty, $user, $db, $account);
+                    break;
                 case 'webpages':
                     return get_webpages_navigation($data, $smarty, $user, $db, $account);
                     break;
