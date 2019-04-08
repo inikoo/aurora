@@ -8698,6 +8698,13 @@ class Page extends DB_Table {
 
     }
 
+
+
+
+
+
+
+
     function update_up_today_requests() {
         $this->update_requests('Today');
         $this->update_requests('Week To Day');
@@ -10075,6 +10082,139 @@ class Page extends DB_Table {
         }
 
     }
+
+
+    function get_analytics_data($from,$to){
+
+        $analytics_data=array(
+            'pageviews'=>0,
+            'pageviews_registered_users'=>0,
+            'page_value'=>0,
+            'users'=>0,
+            'registered_users'=>0,
+            'sessions'=>0,
+            'sessions_registered_users'=>0,
+            'impressions'=>0,
+            'clicks'=>0,
+            'ctr'=>0,
+            'position'=>0,
+
+
+
+        );
+
+
+        // get the date from google api
+
+        return $analytics_data;
+
+    }
+
+    function update_analytics($interval,$this_period=true,$last_period=true){
+
+        include_once 'utils/date_functions.php';
+        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb,$from_prev_period,$to_prev_period) = calculate_interval_dates($this->db, $interval);
+
+
+
+        if ($this_period) {
+
+            $analytics_data = $this->get_analytics_data($from_date, $to_date);
+
+
+            $data_to_update = array(
+                "Webpage Analytics $db_interval Acc Pageviews" =>$analytics_data['pageviews'],
+                "Webpage Analytics $db_interval Acc RUsers Pageviews" =>$analytics_data['pageviews_registered_users'],
+                "Webpage Analytics $db_interval Acc Page Value"          => round($analytics_data['page_value'], 2),
+                "Webpage Analytics $db_interval Acc Users" =>$analytics_data['users'],
+                "Webpage Analytics $db_interval Acc RUsers" =>$analytics_data['registered_users'],
+                "Webpage Analytics $db_interval Acc Sessions" =>$analytics_data['sessions'],
+                "Webpage Analytics $db_interval Acc RUsers Sessions" =>$analytics_data['sessions_registered_users'],
+                "Webpage Analytics $db_interval Acc SC Impressions" =>$analytics_data['impressions'],
+                "Webpage Analytics $db_interval Acc SC Clicks" =>$analytics_data['clicks'],
+                "Webpage Analytics $db_interval Acc SC CTR" =>$analytics_data['ctr'],
+                "Webpage Analytics $db_interval Acc SC Position" =>$analytics_data['position'],
+
+
+
+            );
+
+
+            $this->fast_update($data_to_update, 'Webpage Analytics Data');
+
+
+
+        }
+
+        if ($from_prev_period and $last_period) {
+
+
+            $analytics_data = $this->get_analytics_data($from_prev_period, $to_prev_period);
+
+            $data_to_update = array(
+                "Webpage Analytics $db_interval Acc Pageviews" =>$analytics_data['pageviews'],
+                "Webpage Analytics $db_interval Acc RUsers Pageviews" =>$analytics_data['pageviews_registered_users'],
+                "Webpage Analytics $db_interval Acc Page Value"          => round($analytics_data['page_value'], 2),
+                "Webpage Analytics $db_interval Acc Users" =>$analytics_data['users'],
+                "Webpage Analytics $db_interval Acc RUsers" =>$analytics_data['registered_users'],
+                "Webpage Analytics $db_interval Acc Sessions" =>$analytics_data['sessions'],
+                "Webpage Analytics $db_interval Acc RUsers Sessions" =>$analytics_data['sessions_registered_users'],
+                "Webpage Analytics $db_interval Acc SC Impressions" =>$analytics_data['impressions'],
+                "Webpage Analytics $db_interval Acc SC Clicks" =>$analytics_data['clicks'],
+                "Webpage Analytics $db_interval Acc SC CTR" =>$analytics_data['ctr'],
+                "Webpage Analytics $db_interval Acc SC Position" =>$analytics_data['position'],
+
+
+
+            );
+
+
+            $this->fast_update($data_to_update, 'Webpage Analytics Data');
+
+
+        }
+
+        /*
+
+        if (in_array(
+            $db_interval, [
+                'Total',
+                'Year To Date',
+                'Quarter To Date',
+                'Week To Date',
+                'Month To Date',
+                'Today'
+            ]
+        )) {
+
+            $this->fast_update(['Store Acc To Day Updated' => gmdate('Y-m-d H:i:s')]);
+
+        } elseif (in_array(
+            $db_interval, [
+                '1 Year',
+                '1 Month',
+                '1 Week',
+                '1 Quarter'
+            ]
+        )) {
+
+            $this->fast_update(['Store Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')]);
+        } elseif (in_array(
+            $db_interval, [
+                'Last Month',
+                'Last Week',
+                'Yesterday',
+                'Last Year'
+            ]
+        )) {
+
+            $this->fast_update(['Store Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')]);
+        }
+*/
+
+    }
+
+
 }
 
-?>
+
