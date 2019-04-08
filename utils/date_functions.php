@@ -620,6 +620,10 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
     $to_1yb        = false;
 
 
+    $from_date_previous_period = false;
+    $to_date_previous_period        = false;
+
+
     switch ($interval) {
 
 
@@ -901,12 +905,16 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             break;
     }
 
+
+
     return array(
         $db_interval,
         $from_date,
         $to_date,
         $from_date_1yb,
-        $to_1yb
+        $to_1yb,
+        $from_date_previous_period,
+        $to_date_previous_period
     );
 
 }
