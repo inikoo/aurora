@@ -69,7 +69,7 @@
         ga('send', 'pageview');
 
         Sentry.init({
-            dsn: 'https://8f17945abb95493692010f7026553f71@sentry.io/1329970'});
+            dsn: 'https://e719d7109ab24a58a977704fed0d7aeb@sentry.io/1433847'});
 
         Sentry.configureScope((scope) => {
             scope
