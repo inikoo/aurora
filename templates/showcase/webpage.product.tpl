@@ -13,13 +13,7 @@
 
 <div class="container" style="min-height:200px;padding:5px 20px">
 
-    <div class="name_and_categories">
-
-        <h4 class="Webpage_URL">{$webpage->get('Webpage URL')}</h4>
-
-
-    </div>
-
+    
 
 
     <div class="asset_container">
