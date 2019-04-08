@@ -28,7 +28,7 @@ $editor = array(
 // and `Customer Key`=103576'
 
 
-$store_key=3;
+$store_key=5;
 
 $store    = get_object('store', $store_key);
 

@@ -131,21 +131,13 @@
                                                                 {$order->get('Date')}
                                                             </td>
                                                         </tr>
-                                                        {if $order->get('Items Discount Percentage')!=0}
 
-                                                        <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                                            <td style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 5px 0;" valign="top">
-                                                                {t}Discounts{/t}: <b>{$order->get('Items Discount Amount')}</b> ({$order->get('Items Discount Percentage')})
-
-                                                            </td>
-                                                        </tr>
-                                                        {/if}
 
                                                         {if $order->get('Expected Payment')!=''}
 
                                                             <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                                                                 <td style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 5px 0;" valign="top">
-                                                                    {$order->get('Expected Payment')}
+                                                                    {$order->get('Expected Payment Amount')}
                                                                 </td>
                                                             </tr>
                                                         {/if}
@@ -158,7 +150,7 @@
                                                                 <td style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 5px 0;" valign="top">
                                                                     {foreach from=$payments item=payment}
 
-                                                                        {if $payment->payment_account->get('Payment Account Block')=='Accounts'  }{t}Credit{/t}{else}{$payment->get('Payment Account Code')}{/if}   {$payment->get('Transaction Amount')} <br/>
+                                                                        {if $payment->payment_account->get('Payment Account Block')=='Accounts'  }{t}Credit{/t}{else}{$payment->get('Payment Account Code')}{/if}   <b>{$payment->get('Transaction Amount')}</b> <br/>
                                                                     {/foreach}
 
                                                         {/if}
@@ -196,6 +188,35 @@
                                                                             </td>
                                                                         </tr>
                                                                     {/foreach}
+
+
+
+                                                                    {if $order->get('Items Discount Percentage')!=0}
+                                                                        <tr class="subtotal" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+
+                                                                            <td class="alignright" colspan="3"
+                                                                                style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #aaa; border-top-style: solid; margin: 0; padding: 5px 0;"
+                                                                                align="right" valign="top">{t}Items Gross{/t}
+                                                                            </td>
+                                                                            <td class="alignright" width="20%"
+                                                                                style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #aaa; border-top-style: solid; margin: 0; padding: 5px 0;"
+                                                                                align="right" valign="top">{$order->get('Items Gross Amount')}
+                                                                            </td>
+                                                                        </tr>
+
+                                                                    <tr class="subtotal" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+
+                                                                        <td class="alignright" colspan="3"
+                                                                            style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #aaa; border-top-style: solid; margin: 0; padding: 5px 0;"
+                                                                            align="right" valign="top">{t}Discounts{/t}
+                                                                        </td>
+                                                                        <td class="alignright" width="20%"
+                                                                            style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #aaa; border-top-style: solid; margin: 0; padding: 5px 0;"
+                                                                            align="right" valign="top"> <span>{$order->get('Items Discount Amount')}</span> <br>{$order->get('Items Discount Percentage')}
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    {/if}
 
 
                                                                     <tr class="subtotal" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">

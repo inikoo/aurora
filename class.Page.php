@@ -4945,7 +4945,7 @@ class Page extends DB_Table {
 
         foreach ($block['sections'] as $section_key => $section) {
 
-            if ($section['type'] == 'anchor') {
+            if (isset($section['type']) and $section['type'] == 'anchor') {
                 $anchor_section_key = $section_key;
             }
 

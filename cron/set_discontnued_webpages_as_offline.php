@@ -39,7 +39,7 @@ $editor = array(
     'Author Alias' => 'Script (set discontinued products webpages offline)',
 );
 
-$contador=0;
+$contador = 0;
 
 $sql = "select `Store Code`,`Webpage Code`,`Page Key` from `Page Store Dimension`  left join `Category Dimension` on (`Webpage Scope Key`=`Category Key`)  
 left join `Store Dimension` on (`Webpage Store Key`=`Store Key`)  
@@ -49,32 +49,29 @@ $stmt = $db->prepare($sql);
 if ($stmt->execute()) {
     while ($row = $stmt->fetch()) {
 
-        $page = get_object('Webpage', $row['Page Key']);
-        $page->editor = $editor;
-        $category = get_object('Category', $page->get('Webpage Scope Key'));
+        $page             = get_object('Webpage', $row['Page Key']);
+        $page->editor     = $editor;
+        $category         = get_object('Category', $page->get('Webpage Scope Key'));
         $category->editor = $editor;
         $category->update_product_category_products_data();
 
         $category->get_products_subcategories_status_numbers();
 
 
-
-
-        if($category->get('Product Category Public')=='No'){
+        if ($category->get('Product Category Public') == 'No') {
             $contador++;
             $page->unpublish();
             print "$contador ".$row['Store Code'].' '.$row['Webpage Code']." no_public \n";
 
 
-        }else{
-            if($category->get('Category Scope')=='Product'){
+        } else {
+            if ($category->get('Category Scope') == 'Product') {
 
-                if( (gmdate('U')-strtotime($category->get('Product Category Valid From')))>3600*24*14  ){
-                    if( $category->get('Product Category Status')=='Discontinued'  and $category->get('Product Category In Process Products')==0 and $category->get('Product Category Active Products')==0){
+                if ((gmdate('U') - strtotime($category->get('Product Category Valid From'))) > 3600 * 24 * 14) {
+                    if ($category->get('Product Category Status') == 'Discontinued' and $category->get('Product Category In Process Products') == 0 and $category->get('Product Category Active Products') == 0) {
                         $contador++;
 
                         $page->unpublish();
-
 
 
                         print "$contador ".$row['Store Code'].' '.$row['Webpage Code']." x\n";
@@ -86,16 +83,8 @@ if ($stmt->execute()) {
                 }
 
 
-
-
-
             }
         }
-
-
-
-
-
 
 
     }

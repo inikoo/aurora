@@ -136,7 +136,7 @@
 </table>
 <br>
 
-<div style="float:left;height:75px;border:0.2mm  solid #000;margin-bottom:20px;padding:10px;width: 143.5mm;">
+<div style="float:left;height:150px;border:0.2mm  solid #000;margin-bottom:20px;padding:10px;width: 143.5mm;">
 	{assign expected_payment $order->get('Expected Payment')}
 	{if $expected_payment!=''}<div style="font-size: 7pt;font-family: sans-serif;">{$expected_payment}</div>{/if}
 	<span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Notes{/t}:</span>
@@ -152,11 +152,11 @@
 <table class="items" width="100%" style="font-size: 8pt; border-collapse: collapse;" cellpadding="8">
 	<thead>
 	<tr>
+		<td align="left" width="16%">{t}Locations{/t}</td>
 
 		<td align="center" width="10%">{t}Reference{/t}</td>
 		<td align="left">{t}SKO description{/t}</td>
 
-		<td align="left" width="16%">{t}Locations{/t}</td>
 		<td align="center" width="7%">{t}Picks{/t}</td>
 
 		<td align="left" width="18%">{t}Notes{/t}</td>
@@ -165,9 +165,6 @@
 	<tbody>
 	{foreach from=$transactions item=transaction name=products}
 		<tr class="{if $smarty.foreach.products.last}last{/if} {if $smarty.foreach.products.iteration is even} even{/if} ">
-
-			<td align="center">{$transaction.reference}</td>
-			<td align="left">{$transaction.description}</td>
 			<td align="left" style="padding: 0px">
 				<table border="0" style="width:100%; border-spacing:0; border-collapse:collapse;">
 					{foreach from=$transaction.locations item=locations name=locations}
@@ -180,6 +177,9 @@
 					{/foreach}
 				</table>
 			</td>
+			<td align="center">{$transaction.reference}</td>
+			<td align="left">{$transaction.description}</td>
+
 			<td align="center" >{$transaction.qty}</td>
 			<td align="left" style="font-size: 6pt;">
 				{if $transaction.un_number>1}<span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;">&nbsp;{$transaction.un_number|strip_tags}&nbsp;</span> {/if}
