@@ -166,7 +166,7 @@
                             <img src="{$sub_column.image}" alt="" class=""/>
                         {/if}
                         <div>
-                            {$sub_column.text}
+                            {if isset($sub_column.text)}{$sub_column.text}{/if}
                         </div>
                     </div>
                 {elseif $sub_column.type=='image'}
