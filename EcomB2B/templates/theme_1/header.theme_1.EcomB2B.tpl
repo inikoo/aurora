@@ -160,13 +160,15 @@
                     </div>
                 {elseif $sub_column.type=='text'}
                     <div class="text">
+                        {if isset($sub_column.image)}
                         {if  $sub_column.url!=''}
                             <a href="{$sub_column.url}"><img style="width: 100%" src="{$sub_column.image}" alt="" class=""/></a>
                         {else}
                             <img src="{$sub_column.image}" alt="" class=""/>
                         {/if}
+                        {/if}
                         <div>
-                            {$sub_column.text}
+                            {if isset($sub_column.text)}{$sub_column.text}{/if}
                         </div>
                     </div>
                 {elseif $sub_column.type=='image'}
