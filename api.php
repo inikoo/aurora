@@ -24,7 +24,7 @@ require_once 'vendor/autoload.php';
 
 if ( !preg_match('/bali|sasi|sakoi/', gethostname()) ) {
 
-    $sentry_client = new Raven_Client('https://ece368725b6440adb9dcd83517454636@sentry.io/1353529');
+    $sentry_client = new Raven_Client('https://99566f104c5e4e178fd3931399d93371@sentry.io/1433858');
     $sentry_client->install();
 
 }
