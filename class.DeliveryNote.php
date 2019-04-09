@@ -1377,15 +1377,9 @@ class DeliveryNote extends DB_Table {
                             // todo make get  `Order Transaction Amount` and do it properly to have exact cents
 
                             $otf = $row['Map To Order Transaction Fact Key'];
+                            $sql = 'UPDATE `Order Transaction Fact`  SET  `Order Transaction Metadata`=JSON_SET(`Order Transaction Metadata`,\'$.ota_bk\',`Order Transaction Amount`) WHERE `Order Transaction Fact Key`=? ';
+                            $this->db->prepare($sql)->execute([$otf]);
 
-
-                            $sql = sprintf(
-                                'UPDATE `Delivery Note Dimension`  SET  `Order Transaction Metadata`=JSON_SET(`Order Transaction Metadata`,"$.ota_bk",`Order Transaction Amount`)
-                             WHERE `Order Transaction Fact Key`=%d ', $otf
-                            );
-
-
-                            $this->db->exec($sql);
 
 
                             $sql = sprintf(
@@ -1452,7 +1446,7 @@ class DeliveryNote extends DB_Table {
 
                 $operations = array(
                     'undo_packed_done_operations',
-                    'cancel_operations',
+
 
                 );
 
@@ -1495,10 +1489,11 @@ class DeliveryNote extends DB_Table {
 
 
                     $sql = sprintf(
-                        'SELECT `Order Transaction Out of Stock Amount`,`Packed`,`Required`,`Given`, `Out of Stock`,`No Authorized`,`Not Found`,`No Picked Other`,  `Map To Order Transaction Fact Key` ,`Order Transaction Metadata`
-                          FROM `Inventory Transaction Fact` left join `Order Transaction Fact`  on (`Map To Order Transaction Fact Key`=`Order Transaction Key`) WHERE  `Delivery Note Key`=%d ', $this->id
+                        'SELECT `Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Order Transaction Out of Stock Amount`,`Packed`,`Required`,`Given`, `Out of Stock`,`No Authorized`,`Not Found`,`No Picked Other`,  `Map To Order Transaction Fact Key` ,`Order Transaction Metadata`
+                          FROM `Inventory Transaction Fact` ITF left join `Order Transaction Fact`  on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`) WHERE  ITF.`Delivery Note Key`=%d ', $this->id
                     );
 
+                    //print "$sql\n";
 
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
@@ -1506,21 +1501,19 @@ class DeliveryNote extends DB_Table {
 
                             $metadata = json_decode($row['Order Transaction Metadata'], true);
 
+                            if(isset($metadata['ota_bk'])){
+                                $order_transaction_amount_backup=$metadata['ota_bk'];
+                            }else{
+                                $order_transaction_amount_backup=$row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'];
+                            }
 
                             $otf = $row['Map To Order Transaction Fact Key'];
 
 
-                            $sql = sprintf(
-                                'UPDATE `Order Transaction Fact`  SET 
-                            `Delivery Note Quantity`=0 ,
-                             `No Shipped Due Out of Stock`=0,
-                            `Order Transaction Out of Stock Amount`=0 ,
-                               `Order Transaction Amount`=%d
-                             WHERE `Order Transaction Fact Key`=%d ', $metadata['ota_bk'].$otf
-                            );
+                            $sql = 'UPDATE `Order Transaction Fact` SET `Delivery Note Quantity`=0 ,`No Shipped Due Out of Stock`=0,`Order Transaction Out of Stock Amount`=0 ,`Order Transaction Amount`=? WHERE `Order Transaction Fact Key`=? ';
+                            $this->db->prepare($sql)->execute([$order_transaction_amount_backup,$otf]);
 
 
-                            $this->db->exec($sql);
 
 
                         }
@@ -1536,6 +1529,7 @@ class DeliveryNote extends DB_Table {
 
                     $order         = get_object('Order', $this->get('Delivery Note Order Key'));
                     $order->editor = $this->editor;
+                    $order->update_totals();
                     $order->update(array('Order State' => 'Undo PackedDone'));
 
 
@@ -1842,6 +1836,16 @@ class DeliveryNote extends DB_Table {
                 break;
             case 'Cancelled':
 
+                if ($this->get('State Index') >=80) {
+                    $this->error = true;
+                    $this->msg   = 'Delivery note can not be cancelled if id closed or dispatched';
+
+                    return;
+                }
+
+
+
+
 
                 // todo before cancel the picked stock has to go some cleaver way back to locations, (making fork update_cancelled_delivery_note_products_sales_data section in delivery_note_cancelled fork obsolete? )
 
@@ -2036,7 +2040,6 @@ class DeliveryNote extends DB_Table {
                 'Delivery_Note_Dispatched_Approved_Datetime'  => '&nbsp;'.$this->get('Dispatched Approved Datetime').'&nbsp;',
                 'Delivery_Note_Dispatched_Datetime'           => '&nbsp;'.$this->get('Dispatched Datetime').'&nbsp;',
                 'Items_Cost'                                  => $this->get('Items Cost'),
-                'Delivery_Note_State'                         => $this->get('State')
 
 
             ),

@@ -2080,16 +2080,10 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 
     $sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction  limit $start_from,$number_results";
 
+
+
     $adata = array();
     foreach ($db->query($sql) as $data) {
-
-
-        $description = $data['Part Package Description'];
-
-
-        if ($data['Part UN Number']) {
-            $description .= ' <span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;padding:0px;font-size:90%">'.$data['Part UN Number'].'</span>';
-        }
 
 
         $pending = $data['required'];
@@ -2097,6 +2091,25 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 
         $available = $data['required'] - $data['cant_pick'];
 
+        if($data['Location Key']==1){
+
+            $data['Quantity On Hand']-=$data['Part Current On Hand Stock'];
+            $data['Part Current On Hand Stock']=0;
+            $available=0;
+            $data['Part Distinct Locations']= $data['Part Distinct Locations']-1;
+            $data['pl_ok']='';
+        }
+
+
+        $description = $data['Part Distinct Locations'];
+
+
+        if ($data['Part UN Number']) {
+            $description .= ' <span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;padding:0px;font-size:90%">'.$data['Part UN Number'].'</span>';
+        }
+
+
+        $description=$data['Part Current On Hand Stock'];
 
         if ($data['required'] != $available) {
             $_quantity = '<span class="strikethrough  discreet">'.number($data['required']).'</span> <span class="error discreet item_quantity_fast_track_packing button  "  qty="'.$available.'" >'.number($available).'</error>';
@@ -2108,6 +2121,7 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
         $quantity = '<div class="quantity_components">'.$_quantity.'</div>';
 
         $location = '<div class="location_components" style="margin-top: 2px">'.get_delivery_note_fast_track_packing_item_location(
+                ($data['pl_ok']==''?'No':'Yes'),
                 $pending,
                 $data['Quantity On Hand'],
                 $data['Date Picked'],
@@ -2136,6 +2150,8 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 
         $total_pending = $data['required'];
 
+
+
         if ($data['Quantity On Hand'] < $total_pending) {
             $formatted_diff = ($data['Quantity On Hand']<0?0:$data['Quantity On Hand'])-  $total_pending;
             $status_icon    = 'error fa-exclamation-circle';
@@ -2153,6 +2169,7 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 
 
         $picked_offline_input = '<div class="picked_quantity_components" data-pending="'.$pending.'">'.get_delivery_note_fast_track_packing_input(
+                ($data['pl_ok']==''?'No':'Yes'),
                 $data['required'],
                 0,
                 0,

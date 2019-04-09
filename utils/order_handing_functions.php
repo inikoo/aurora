@@ -129,7 +129,7 @@ function get_picked_offline_input($total_required,$total_picked,$picked_in_locat
 
 
 
-function get_delivery_note_fast_track_packing_input($total_required,$total_picked,$picked_in_location,$pending_in_location, $quantity_on_location, $itf_key, $part_sku,  $part_stock,$location_key) {
+function get_delivery_note_fast_track_packing_input($part_location_exist,$total_required,$total_picked,$picked_in_location,$pending_in_location, $quantity_on_location, $itf_key, $part_sku,  $part_stock,$location_key) {
 
     if($total_picked==0){
 
@@ -144,7 +144,7 @@ function get_delivery_note_fast_track_packing_input($total_required,$total_picke
                 <input class="cant_pick width_50" style="text-align: center;background-color:%s"  value="%s" readonly >
                 <i  class="fa  %s fa-fw  warning  invisible  " aria-hidden="true"/>
             </span>',
-            ($quantity_on_location <=0 ? 'hide' : 'hide'),
+            ($part_location_exist=='Yes'? 'hide' : ''),
 
             ($part_stock < 1 ? 'fa-ban' : 'fa-ban'),
 
@@ -179,7 +179,7 @@ function get_delivery_note_fast_track_packing_input($total_required,$total_picke
 
             $itf_key, $part_sku,
 
-            ($total_pending != 0 && $quantity_on_location >= 1 ? '' : ''),
+            ($part_location_exist=='Yes'? '' : 'hide'),
             $qty,
             $qty, $pending_in_location,
             $total_pending,$quantity_on_location,
@@ -311,6 +311,7 @@ function get_item_location(
 
 
 function get_delivery_note_fast_track_packing_item_location(
+    $part_location_exist,
     $pending, $quantity_on_location, $date_picked,
     $location_key, $location_code,
     $part_stock,$part_distinct_locations, $part_sku,
@@ -364,14 +365,24 @@ function get_delivery_note_fast_track_packing_item_location(
     }
 
 
-    if ($location_code == '') {
-        $location_code = '<span style="font-style: italic">'._('No location').'!</span>';
+
+    if ($location_code == '' or $location_key==1) {
+        $location_code = '<span class="error italic">'._('No location').'!</span>';
+        $location = sprintf('<i class="fa fa-fw  fa-exclamation-circle error" title="%s"></i> ',sprintf(_('There is no location associated with this part')));
+
+    }else{
+
+        if($part_location_exist=='No') {
+            $location = sprintf('<i class="fa fa-fw fa-exclamation-circle error" title="%s"></i> ', sprintf(_('Location %s is not associated with this part'), $location_code));
+
+        }
+
     }
 
     $location .= sprintf(
-        '<span class="%s location button"   data-available="%f"  location_key = "%d" >%s </span >', ($pending > 0 ? 'discreet' : ''), $quantity_on_location, $location_key, $location_code
+        '<span class="%s %s location button "   data-available="%f"  location_key = "%d" >%s </span >', ($part_location_exist=='Yes'  ? '' : 'error '), ($pending > 0 ? 'discreet' : ''), $quantity_on_location, $location_key, $location_code
     );
-    if ($part_distinct_locations > 1) {
+    if ($part_distinct_locations > 1 or ($part_location_exist=='No' and $part_distinct_locations > 0  )) {
         $location .= ' <i class="fa fa-bars button padding_left_5 discreet_on_hover " data-metadata=\'{ "part_sku":"'.$part_sku.'","otf_key":"'.$itf_key.'","delivery_note_key":"'.$delivery_note_key.'"}\' onclick="show_other_part_locations_for_input_delivery_note_packing(this)"  title="'._('Other locations').'" ></i>';
     }
 
