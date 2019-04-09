@@ -15,6 +15,8 @@ include_once 'class.DB_Table.php';
 
 class Deal extends DB_Table {
 
+    /** @var PDO  */
+    var $db;
 
     function __construct($a1, $a2 = false, $a3 = false) {
 
@@ -139,29 +141,30 @@ class Deal extends DB_Table {
     }
 
 
-    function create($data) {
-
-        $keys   = '';
-        $values = '';
+    function create($data)
+    {
 
 
-        foreach ($data as $key => $value) {
-            $keys .= "`$key`,";
-
-            $values .= prepare_mysql($value).",";
-
-        }
-        $keys   = preg_replace('/,$/', '', $keys);
-        $values = preg_replace('/,$/', '', $values);
-
-
-        // print_r($data);
         $sql = sprintf(
-            "INSERT INTO `Deal Dimension` (%s) VALUES (%s)", $keys, $values
+            "INSERT INTO `Location Dimension` (%s) values (%s)",
+            '`' . join('`,`', array_keys($data)) . '`',
+            join(',', array_fill(0, count($data), '?'))
         );
-        //print "$sql\n";
-        if ($this->db->exec($sql)) {
+
+
+        $stmt = $this->db->prepare($sql);
+
+        $i = 1;
+        foreach ($data as $key => $value) {
+            $stmt->bindValue($i, $value);
+            $i++;
+        }
+
+
+        if ($stmt->execute()) {
             $this->id = $this->db->lastInsertId();
+
+
             $this->get_data('id', $this->id);
             $this->new = true;
 
@@ -349,7 +352,7 @@ class Deal extends DB_Table {
     function get($key = '') {
 
         if (!$this->id) {
-            return;
+            return '';
         }
 
         switch ($key) {
@@ -791,7 +794,7 @@ class Deal extends DB_Table {
 
         }
 
-
+        /** @var Smarty  */
         $smarty_web               = new Smarty();
         $smarty_web->template_dir = 'EcomB2B/templates';
         $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
