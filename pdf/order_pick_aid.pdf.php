@@ -85,7 +85,7 @@ if ($result = $db->query($sql)) {
         $row['locations'] = array();
 
 
-        print $row['location_data'];
+       // print $row['location_data'];
 
         if($row['location_data']==''){
 

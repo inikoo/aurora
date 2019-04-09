@@ -620,6 +620,10 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
     $to_1yb        = false;
 
 
+    $from_date_previous_period = false;
+    $to_date_previous_period   = false;
+
+
     switch ($interval) {
 
 
@@ -632,6 +636,9 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
 
             $from_date_1yb = false;
             $to_1yb        = false;
+
+            $from_date_previous_period = false;
+            $to_date_previous_period   = false;
             break;
 
         case 'Last Month':
@@ -643,6 +650,8 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             $from_date_1yb = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
             $to_1yb        = date('Y-m-t H:i:s', strtotime("$to_date -1 year"));
 
+            $from_date_previous_period = date('Y-m-d 00:00:00', strtotime("first day of -2 month"));
+            $to_date_previous_period = date('Y-m-d 23:59:59', strtotime("last day of -2 month"));
 
             //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
 
@@ -679,6 +688,10 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
                 'Y-m-d H:i:s', strtotime("$from_date -1 year")
             );
             $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
+
+            $from_date_previous_period = date('Y-m-d 00:00:00', strtotime("monday -2 week"));
+            $to_date_previous_period = date('Y-m-d 23:59:59', strtotime("sunday -2 weeks"));
+
             break;
 
         case 'Yesterday':
@@ -689,6 +702,9 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
 
             $from_date_1yb = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
             $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
+
+            $from_date_previous_period = date('Y-m-d 00:00:00', strtotime("today -2 day"));
+            $to_date_previous_period = date('Y-m-d 23:59:59', strtotime("today -2 day"));
             break;
 
         case 'Week To Day':
@@ -739,6 +755,8 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             $from_date_1yb = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
             $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date  -1 year"));
 
+            $from_date_previous_period = date('Y-m-d 00:00:00', strtotime("monday last weeks"));
+            $to_date_previous_period = date('Y-m-d 23:59:59', strtotime("today last weeks"));
 
             break;
         case 'Today':
@@ -749,6 +767,9 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
 
             $from_date_1yb = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
             $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date  -1 year"));
+
+            $from_date_previous_period = date('Y-m-d 00:00:00', strtotime("yesterday"));
+            $to_date_previous_period = date('Y-m-d 23:59:59', strtotime("yesterday"));
             break;
 
         case 'Quarter To Day':
@@ -762,6 +783,10 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             $dates         = get_previous_quarters_dates(4);
             $from_date_1yb = $dates['start'];
             $to_1yb        = $dates['end'];
+
+            $dates         = get_previous_quarters_dates(1);
+            $from_date_previous_period = $dates['start'];
+            $to_date_previous_period   = $dates['end'];
             break;
         case 'Month To Day':
         case 'Month To Date':
@@ -771,6 +796,8 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             $to_date       = gmdate('Y-m-d 23:59:59');
             $from_date_1yb = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
             $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
+            $from_date_previous_period = date('Y-m-d 00:00:00', strtotime("first day of -1 month"));
+            $to_date_previous_period   = date('Y-m-d 23:59:59', strtotime("today -1 month"));
             break;
         case 'Year To Day':
         case 'Year To Date':
@@ -780,6 +807,8 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             $to_date       = gmdate('Y-m-d 23:59:59');
             $from_date_1yb = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
             $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
+            $from_date_previous_period = date('Y-01-01 00:00:00', strtotime("-2 year"));
+            $to_date_previous_period   = date('Y-m-d 23:59:59', strtotime("today -2 year"));
             //print "$interval\t\t $from_date\t\t $to_date\t\t $from_date_1yb\t\t $to_1yb\n";
             break;
         case '3 Year':
@@ -789,15 +818,19 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             $from_date     = date('Y-m-d H:i:s', strtotime("$to_date -3 year"));
             $from_date_1yb = false;
             $to_1yb        = false;
+            $from_date_previous_period = false;
+            $to_date_previous_period   = false;
             break;
         case '1 Year':
         case '1y':
         case 'year':
             $db_interval   = '1 Year';
             $to_date       = gmdate('Y-m-d 00:00:00');
-            $from_date     = date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
+            $from_date     = date('Y-m-d 23:59:59', strtotime("$to_date -1 year"));
             $from_date_1yb = date('Y-m-d H:i:s', strtotime("$from_date -1 year"));
-            $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
+            $to_1yb        = date('Y-m-d 23:59:59', strtotime("$to_date -1 year"));
+            $from_date_previous_period = date('Y-m-d H:i:s', strtotime("$from_date -2 year"));
+            $to_date_previous_period   = date('Y-m-d 23:59:59', strtotime("$to_date -2 year"));
             break;
         case '6 Month':
             $db_interval   = '6 Month';
@@ -809,6 +842,8 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
                 'Y-m-d H:i:s', strtotime("$from_date -1 year")
             );
             $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
+            $from_date_previous_period = date('Y-m-d H:i:s', strtotime("today -1 year"));
+            $to_date_previous_period   = date('Y-m-d H:i:s', strtotime("$to_date -6 months"));
             break;
         case '1 Quarter':
         case '1q':
@@ -821,6 +856,8 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
                 'Y-m-d H:i:s', strtotime("$from_date -1 year")
             );
             $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
+            $from_date_previous_period = date('Y-m-d H:i:s', strtotime("today -3 months"));
+            $to_date_previous_period   = date('Y-m-d H:i:s', strtotime("today -6 months"));
             break;
         case '1 Month':
         case '1m':
@@ -833,6 +870,8 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
                 'Y-m-d H:i:s', strtotime("$from_date -1 year")
             );
             $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
+            $from_date_previous_period = date('Y-m-d H:i:s', strtotime("today -1 months"));
+            $to_date_previous_period   = date('Y-m-d H:i:s', strtotime("today -2 months"));
             break;
         case '10 Day':
         case '10d':
@@ -843,6 +882,8 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
                 'Y-m-d H:i:s', strtotime("$from_date -1 year")
             );
             $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
+            $from_date_previous_period = date('Y-m-d H:i:s', strtotime("today -20 day"));
+            $to_date_previous_period   = date('Y-m-d 23:59:59', strtotime("today -11 day"));
             break;
         case '1 Week':
         case '1w':
@@ -853,6 +894,8 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
                 'Y-m-d H:i:s', strtotime("$from_date -1 year")
             );
             $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
+            $from_date_previous_period = date('Y-m-d H:i:s', strtotime("today -2 week"));
+            $to_date_previous_period   = date('Y-m-d 23:59:59', strtotime("yesterday -1 week"));
             break;
         case '1 Day':
         case '1d':
@@ -863,6 +906,8 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
                 'Y-m-d H:i:s', strtotime("$from_date -1 year")
             );
             $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
+            $from_date_previous_period = date('Y-m-d H:i:s', strtotime("today -2 day"));
+            $to_date_previous_period   = date('Y-m-d H:i:s', strtotime("yesterday"));
             break;
         case '1 Hour':
         case '1h':
@@ -872,6 +917,8 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
                 'Y-m-d H:i:s', strtotime("$from_date -1 year")
             );
             $to_1yb        = date('Y-m-d H:i:s', strtotime("now -1 year"));
+            $from_date_previous_period = date('Y-m-d H:i:s', strtotime("now -2 hour"));
+            $to_date_previous_period   = date('Y-m-d H:i:s', strtotime("now -1 hour"));
             break;
         case 'interval':
             $db_interval = '';
@@ -882,6 +929,8 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
                 'Y-m-d H:i:s', strtotime("$from_date -1 year")
             );
             $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
+            $from_date_previous_period = date('Y-m-d 00:00:00', strtotime("$from_date -1 day"));
+            $to_date_previous_period   = date('Y-m-d 23:59:59', strtotime("$to_date -1 day"));
             break;
         case 'date':
             $db_interval = '';
@@ -892,6 +941,8 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
                 'Y-m-d H:i:s', strtotime("$from_date -1 year")
             );
             $to_1yb        = date('Y-m-d H:i:s', strtotime("$to_date -1 year"));
+            $from_date_previous_period = date('Y-m-d 00:00:00', strtotime("$from_date -1 day"));
+            $to_date_previous_period   = date('Y-m-d 23:59:59', strtotime("$to_date -1 day"));
             break;
 
 
@@ -901,12 +952,16 @@ function calculate_interval_dates($db, $interval, $from = '', $to = '') {
             break;
     }
 
+
+
     return array(
         $db_interval,
         $from_date,
         $to_date,
         $from_date_1yb,
-        $to_1yb
+        $to_1yb,
+        $from_date_previous_period,
+        $to_date_previous_period
     );
 
 }

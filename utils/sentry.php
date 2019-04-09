@@ -13,7 +13,7 @@
 
 if ( !preg_match('/bali|sasi|sakoi/', gethostname()) ) {
 
-    $sentry_client = new Raven_Client('https://7c38fecb8a274f7e93cb0488ad22ca10@sentry.io/1319834');
+    $sentry_client = new Raven_Client('https://d16cc2751a024c0da7ad661e75f27814@sentry.io/1433833');
     $sentry_client->install();
 
 }
