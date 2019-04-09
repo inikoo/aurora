@@ -144,7 +144,7 @@ function get_delivery_note_fast_track_packing_input($total_required,$total_picke
                 <input class="cant_pick width_50" style="text-align: center;background-color:%s"  value="%s" readonly >
                 <i  class="fa  %s fa-fw  warning  invisible  " aria-hidden="true"/>
             </span>',
-            ($quantity_on_location <=0 ? '' : 'hide'),
+            ($quantity_on_location <=0 ? 'hide' : 'hide'),
 
             ($part_stock < 1 ? 'fa-ban' : 'fa-ban'),
 
@@ -179,7 +179,7 @@ function get_delivery_note_fast_track_packing_input($total_required,$total_picke
 
             $itf_key, $part_sku,
 
-            ($total_pending != 0 && $quantity_on_location >= 1 ? '' : 'hide'),
+            ($total_pending != 0 && $quantity_on_location >= 1 ? '' : ''),
             $qty,
             $qty, $pending_in_location,
             $total_pending,$quantity_on_location,
