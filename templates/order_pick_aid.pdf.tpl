@@ -152,35 +152,41 @@
 <table class="items" width="100%" style="font-size: 8pt; border-collapse: collapse;" cellpadding="8">
 	<thead>
 	<tr>
-		<td align="left" width="16%">{t}Locations{/t}</td>
-
+		<td align="left" width="14%">{t}Location{/t}</td>
 		<td align="center" width="10%">{t}Reference{/t}</td>
+		<td align="left" width="12%">{t}Alt Locations{/t}</td>
 		<td align="left">{t}SKO description{/t}</td>
-
-		<td align="center" width="7%">{t}Picks{/t}</td>
-
+		<td align="center" width="7%">SKOs</td>
 		<td align="left" width="18%">{t}Notes{/t}</td>
 	</tr>
 	</thead>
 	<tbody>
 	{foreach from=$transactions item=transaction name=products}
 		<tr class="{if $smarty.foreach.products.last}last{/if} {if $smarty.foreach.products.iteration is even} even{/if} ">
+			<td style="padding: 0px">
+				<table border="0" style="width:100%; border-spacing:0; border-collapse:collapse;">
+						<tr>
+
+							<td style="padding-left:10px;border:none;padding-top:8px"><b>{$transaction.location}</b></td>
+							<td style="border:none;font-style: italic;padding-top:8px;text-align:right;padding-right: 10px"><span >{$transaction.stock_in_picking}</span></td>
+						</tr>
+				</table>
+			</td>
+			<td align="center"><b>{$transaction.reference}</b></td>
+
 			<td align="left" style="padding: 0px">
 				<table border="0" style="width:100%; border-spacing:0; border-collapse:collapse;">
 					{foreach from=$transaction.locations item=locations name=locations}
 						<tr>
-							<td style="width:2mm;border:none;{if $smarty.foreach.locations.first}{else}border-top:.1mm solid #b0b0b0;{/if}padding-left: 10px">{if $locations[2]=='Yes' }&#9733;{/if}</td>
 
-							<td style="border:none;{if $smarty.foreach.locations.first}{else}border-top:.1mm solid #b0b0b0{/if}">{if $locations[2]=='Yes' }<b>{$locations[1]}</b>{else}{$locations[1]}{/if}</td>
-							<td style="border:none;{if $smarty.foreach.locations.first}{else}border-top:.1mm solid #b0b0b0;{/if}text-align:right;padding-right: 10px">{$locations[3]}</td>
+							<td style="padding-left:10px;border:none;{if $smarty.foreach.locations.first}padding-top:8px;{else}border-top:.1mm solid #b0b0b0{/if}">{if $locations[2]=='Yes' }<b>{$locations[1]}</b>{else}{$locations[1]}{/if}</td>
+							<td style="border:none;font-style: italic;{if $smarty.foreach.locations.first}padding-top:8px;{else}border-top:.1mm solid #b0b0b0;{/if}text-align:right;padding-right: 10px">{$locations[3]}</td>
 						</tr>
 					{/foreach}
 				</table>
 			</td>
-			<td align="center">{$transaction.reference}</td>
 			<td align="left">{$transaction.description}</td>
-
-			<td align="center" >{$transaction.qty}</td>
+			<td align="center" ><b>{$transaction.qty}</b></td>
 			<td align="left" style="font-size: 6pt;">
 				{if $transaction.un_number>1}<span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;">&nbsp;{$transaction.un_number|strip_tags}&nbsp;</span> {/if}
 				{if $transaction.part_packing_group!='None'}PG <b>{$transaction.part_packing_group}</b> {/if}
