@@ -2109,7 +2109,7 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
         }
 
 
-        $description=$data['Part Current On Hand Stock'];
+        //$description=$data['Part Current On Hand Stock'];
 
         if ($data['required'] != $available) {
             $_quantity = '<span class="strikethrough  discreet">'.number($data['required']).'</span> <span class="error discreet item_quantity_fast_track_packing button  "  qty="'.$available.'" >'.number($available).'</error>';
