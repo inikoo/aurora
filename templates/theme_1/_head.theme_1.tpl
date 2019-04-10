@@ -44,6 +44,7 @@
     <link href="/css/editor_v1/plugins/table.css" rel="stylesheet">
     <link href="/css/editor_v1/plugins/video.css" rel="stylesheet">
     <link href="/css/editor_v1/plugins/draggable.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js"></script>
     <script src="js/libs/master_slider/banner.js"></script>
