@@ -247,6 +247,10 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                                 $store = get_object('Store', $options['store_key']);;
                                 include 'fields/new_voucher.fld.php';
                                 break;
+                            case 'FO':
+                                $store = get_object('Store', $options['store_key']);;
+                                include 'fields/new_first_order_offer.fld.php';
+                                break;
                             case 'CA':
                                 $store = get_object('Store', $options['store_key']);;
                                 include 'fields/new_category_deal.fld.php';
