@@ -548,7 +548,7 @@ module.exports = function (grunt) {
     grunt.registerTask('default', ['sass']);
 
     grunt.registerTask('app', ['clean:app', 'imagemin', 'sass', 'concat', 'uglify', 'cssmin', 'copy:app']);
-    grunt.registerTask('fork', ['clean:fork', 'copy:fork_stones', 'copy:fork']);
+    grunt.registerTask('fork', [ 'copy:fork_stones', 'copy:fork']);
     grunt.registerTask('qfork', ['copy:fork']);
 
     grunt.registerTask('ws', ['clean:websocket','copy:websocket', 'copy:websocket_stones']);
@@ -576,7 +576,7 @@ module.exports = function (grunt) {
         'uglify:pweb_desktop_checkout',
         'uglify:pweb_desktop_image_gallery'
     ]);
-    grunt.registerTask('deploy_fork_stones', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_external_libs']);
+    grunt.registerTask('deploy_fork_stones', [ 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_external_libs']);
     grunt.registerTask('deploy_fork_composer', [ 'copy:fork', 'ssh_deploy:fork_composer']);
 
     grunt.registerTask('deploy_qfork', ['copy:fork', 'ssh_deploy:fork']);
