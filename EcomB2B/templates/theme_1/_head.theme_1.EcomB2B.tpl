@@ -142,6 +142,10 @@
     {/if}
     <link rel="canonical" href="{$webpage->get('URL')}"/>
 
+    {if $logged_in or isset($is_unsubscribe) }
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    {/if}
+
 
     <link rel="stylesheet" href="css/desktop.min.css?v181125" type="text/css"/>
 
@@ -231,9 +235,7 @@
             {assign "with_forms" 1}
 
 
-
-            <script src="js/desktop.min.js?v201902"></script>
-
+            <script src="js/desktop.in.min.js?20190409"></script>
             <script src="js/desktop.forms.min.js"></script>
             <script src="js/sweetalert.min.js"></script>
 

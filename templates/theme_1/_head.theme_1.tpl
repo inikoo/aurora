@@ -117,7 +117,7 @@
     <link rel="stylesheet" href="/css/webpage_preview/webpage_preview.css?v20180422v1" type="text/css"/>
 
 
-    <script src="EcomB2B/js/desktop.min.js"></script>
+    <script src="EcomB2B/js/desktop.in.min.js"></script>
 
 
     <script src="js/libs/jquery-ui.js"></script>
