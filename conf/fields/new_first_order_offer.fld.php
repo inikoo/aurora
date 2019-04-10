@@ -24,7 +24,7 @@ $options_trigger = array(
 
 $options_offer_type = array(
     'Percentage_Off' => _('Order'),
-    'Get_item_free'  => _('Product'),
+    'Get_Item_Free'  => _('Product'),
     'Category'       => _('Product category'),
     'Customer'       => _('Customer')
 
@@ -49,7 +49,6 @@ $object_fields[] = array(
             'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
             'type'              => 'value'
         ),
-
 
 
     ),
@@ -118,12 +117,12 @@ $object_fields[] = array(
             'value'    => '',
             'custom'   => '
 <div class="button_radio_options">
-<span id="Deal_Type_Percentage_Off_field" field_type="button_radio_options" field="Deal_Type_Percentage_Off" onclick="toggle_voucher_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Percentage off').'</span>
-<span id="Deal_Type_Amount_Off_field" field_type="button_radio_options" field="Deal_Type_Amount_Off" onclick="toggle_voucher_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Amount off').'</span>
-<span id="Deal_Type_Get_item_free_field" field_type="button_radio_options" field="Deal_Type_Get_item_free" onclick="toggle_voucher_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(
+<span id="Deal_Type_Percentage_Off_field" field_type="button_radio_options" field="Deal_Type_Percentage_Off" onclick="toggle_first_order_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Percentage off').'</span>
+<span id="Deal_Type_Amount_Off_field" field_type="button_radio_options" field="Deal_Type_Amount_Off" onclick="toggle_first_order_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Amount off').'</span>
+<span id="Deal_Type_Get_Item_Free_field" field_type="button_radio_options" field="Deal_Type_Get_Item_Free" onclick="toggle_first_order_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(
                     _('Get product free'), '<span>2</span>', 1
                 ).'</span>
-<span id="Deal_Type_Shipping_Off_field" field_type="button_radio_options" field="Deal_Type_Shipping_Off" onclick="toggle_voucher_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Discounted shipping').'  </span>
+<span id="Deal_Type_Shipping_Off_field" field_type="button_radio_options" field="Deal_Type_Shipping_Off" onclick="toggle_first_order_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Discounted shipping').'  </span>
 </div>
 ',
             'label'    => _('Choose offer'),
@@ -146,22 +145,22 @@ $object_fields[] = array(
         ),
 
         array(
-            'id'     => 'Amount_Off',
-            'render' => false,
+            'id'          => 'Amount_Off',
+            'render'      => false,
             //'class'  => 'Deal_Type',
-            'edit'   => 'amount',
-            'value'  => '',
+            'edit'        => 'amount',
+            'value'       => '',
             'placeholder' => _('Amount'),
 
-           // 'custom'   => '<input id="Amount_Off_field" field_type="input_with_field" field="Amount_Off" value="" class="value input_field" style="margin-left:5px;width:90px"  placeholder="'._('Amount').'" />',
-            'label'    => _('Amount off'),
-            'required' => false,
-            'type'     => 'value'
+            // 'custom'   => '<input id="Amount_Off_field" field_type="input_with_field" field="Amount_Off" value="" class="value input_field" style="margin-left:5px;width:90px"  placeholder="'._('Amount').'" />',
+            'label'       => _('Amount off'),
+            'required'    => false,
+            'type'        => 'value'
         ),
 
         array(
-            'id'                       => 'Get_item_free_Product',
-            'render' => false,
+            'id'                       => 'Get_Item_Free_Product',
+            'render'                   => false,
             'edit'                     => 'dropdown_select',
             'scope'                    => 'products',
             'parent'                   => 'store',
@@ -171,23 +170,28 @@ $object_fields[] = array(
             'stripped_formatted_value' => '',
             'label'                    => _('Product'),
             'required'                 => true,
+            'placeholder'              => _('Product code'),
             'type'                     => 'value'
 
 
         ),
 
+
+
+
         array(
-            'id'     => 'Get_item_free_Quantity',
+            'id'     => 'Get_Item_Free_Quantity',
             'render' => false,
 
 
             'edit'  => 'smallint_unsigned',
             'value' => '',
 
-            'custom'   => '<input id="Get_item_free_Quantity_field" field_type="input_with_field" field="Get_item_free_Quantity" value="1" class="value input_field" style="margin-left:5px;width:60px"  placeholder="'._('Qty').'" />',
-            'label'    => '',
-            'required' => false,
-            'type'     => 'value'
+            'custom'      => '<input id="Get_Item_Free_Quantity_field" field_type="input_with_field" field="Get_Item_Free_Quantity" value="1" class="value input_field" style="margin-left:5px;width:60px"  placeholder="'._('Qty').'" />',
+            'label'       => '',
+            'required'    => false,
+            'placeholder' => _('Quantity'),
+            'type'        => 'value'
         ),
 
     ),
