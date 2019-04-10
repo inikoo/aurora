@@ -146,7 +146,7 @@ class Deal extends DB_Table {
 
 
         $sql = sprintf(
-            "INSERT INTO `Location Dimension` (%s) values (%s)",
+            "INSERT INTO `Deal Dimension` (%s) values (%s)",
             '`' . join('`,`', array_keys($data)) . '`',
             join(',', array_fill(0, count($data), '?'))
         );
