@@ -15,7 +15,7 @@ include_once 'class.DB_Table.php';
 
 class Deal extends DB_Table {
 
-    /** @var PDO  */
+    /** @var PDO */
     var $db;
 
     function __construct($a1, $a2 = false, $a3 = false) {
@@ -141,14 +141,11 @@ class Deal extends DB_Table {
     }
 
 
-    function create($data)
-    {
+    function create($data) {
 
 
         $sql = sprintf(
-            "INSERT INTO `Deal Dimension` (%s) values (%s)",
-            '`' . join('`,`', array_keys($data)) . '`',
-            join(',', array_fill(0, count($data), '?'))
+            "INSERT INTO `Deal Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($data)).'`', join(',', array_fill(0, count($data), '?'))
         );
 
 
@@ -254,7 +251,7 @@ class Deal extends DB_Table {
 
         $terms = '';
 
-
+        //print $this->data['Deal Terms Type'];
         switch ($this->data['Deal Terms Type']) {
 
             case 'Voucher AND Amount':
@@ -266,10 +263,10 @@ class Deal extends DB_Table {
                 $_terms = json_decode($this->get('Deal Terms'), true);
 
                 if (!$_terms) {
-                    $tmp = preg_split('/\;/',$this->get('Deal Terms'));
-                    $_terms=array(
-                        'voucher'=>$tmp[0],
-                        'amount'=>';'.$tmp[1].';'.$tmp[2],
+                    $tmp    = preg_split('/\;/', $this->get('Deal Terms'));
+                    $_terms = array(
+                        'voucher' => $tmp[0],
+                        'amount'  => ';'.$tmp[1].';'.$tmp[2],
                     );
                 }
 
@@ -284,9 +281,26 @@ class Deal extends DB_Table {
 
             case 'Order Interval':
                 $terms = sprintf('last order within %d days', $this->get('Deal Terms'));
+                break;
+            case 'Amount AND Order Number':
+                $store = get_object('Store', $this->data['Deal Store Key']);
 
+                list($order_number, $amount) = preg_split('/\;/', $this->get('Deal Terms'));
+
+                $nf = new NumberFormatter('en_GB', NumberFormatter::ORDINAL);
+
+
+                if ($amount == 0) {
+                    $terms = $nf->format($order_number).' order';
+                } else {
+                    $terms = sprintf('%s order <span style="opacity: .8">%s</span>', $nf->format($order_number), money($amount, $store->get('Store Currency Code')));
+                }
+
+
+                //print $this->get('Deal Terms');
 
                 break;
+
 
             case 'Category Quantity Ordered':
 
@@ -794,7 +808,7 @@ class Deal extends DB_Table {
 
         }
 
-        /** @var Smarty  */
+        /** @var Smarty */
         $smarty_web               = new Smarty();
         $smarty_web->template_dir = 'EcomB2B/templates';
         $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
