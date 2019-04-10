@@ -460,6 +460,76 @@ if ($result = $db->query($sql)) {
 
 
 
+
+$sql = sprintf('SELECT `Deal Component Key`,`Deal Component Deal Key`,`Deal Component Campaign Key` FROM `Deal Component Dimension` where `Deal Component Store Key`=%d    ', $store_key);
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+        //  print_r($row);
+
+
+        $deal           = get_object('Deal', $row['Deal Component Deal Key']);
+        $deal_component = get_object('DealComponent', $row['Deal Component Key']);
+        $deal_campaign  = get_object('DealCampaign', $row['Deal Component Campaign Key']);
+
+
+
+
+        if ($deal_component->get('Deal Component Allowance Target') == 'Family') {
+
+
+            $sql = sprintf('select * from `Product Family Dimension` where `Product Family Key`=%d', $deal_component->get('Deal Component Allowance Target Key'));
+
+
+            $stmt = $db->prepare($sql);
+            if ($stmt->execute()) {
+                while ($row = $stmt->fetch()) {
+
+
+
+                    $category = new Category('root_key_code', $store->get('Store Family Category Key'), $row['Product Family Code']);
+
+
+                    if ($category->id) {
+
+
+
+                        $deal_component->fast_update(
+                            array(
+                                'Deal Component Allowance Target'=>'Category',
+                                'Deal Component Allowance Target Key'=>$category->id,
+
+                            )
+                        );
+
+
+
+
+
+
+
+                    } else {
+                        print $row['Product Family Code'].' '.$store->get('Code')." not found\n";
+                    }
+
+
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                exit();
+            }
+
+
+
+        }
+
+
+    }
+}
+
+
+
 $sql = sprintf('SELECT `Deal Key`,`Deal Campaign Key` FROM `Deal Dimension` where `Deal Store Key`=%d ', $store_key);
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
