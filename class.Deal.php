@@ -285,16 +285,29 @@ class Deal extends DB_Table {
             case 'Amount AND Order Number':
                 $store = get_object('Store', $this->data['Deal Store Key']);
 
-                list($order_number, $amount) = preg_split('/\;/', $this->get('Deal Terms'));
+                $deal_terms_data = preg_split('/\;/', $this->get('Deal Terms'));
 
-                $nf = new NumberFormatter('en_GB', NumberFormatter::ORDINAL);
+                if(is_array($deal_terms_data) and count($deal_terms_data)==3){
+
+                    $order_number=$deal_terms_data[0];
+                    $amount=$deal_terms_data[1];
 
 
-                if ($amount == 0) {
-                    $terms = $nf->format($order_number).' order';
-                } else {
-                    $terms = sprintf('%s order <span style="opacity: .8">%s</span>', $nf->format($order_number), money($amount, $store->get('Store Currency Code')));
+                    $nf = new NumberFormatter('en_GB', NumberFormatter::ORDINAL);
+
+
+                    if ($amount == 0) {
+                        $terms = $nf->format($order_number).' order';
+                    } else {
+                        $terms = sprintf('%s order <span style="opacity: .8">%s</span>', $nf->format($order_number), money($amount, $store->get('Store Currency Code')));
+                    }
+                }else{
+                    $terms='Error';
                 }
+
+
+
+
 
 
                 //print $this->get('Deal Terms');
