@@ -414,6 +414,11 @@ class data_entry_picking_aid {
             $itf_indexed_data = array();
             $total_qty        = 0;
             foreach ($_transaction as $transaction) {
+
+                if($transaction['qty']==''){
+                    $transaction['qty']=0;
+                }
+
                 $total_qty += $transaction['qty'];
                 if ($transaction['itf_key'] != '') {
                     $itf_indexed_data[$transaction['itf_key']] = $transaction;
