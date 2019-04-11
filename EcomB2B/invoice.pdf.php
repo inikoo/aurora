@@ -242,9 +242,10 @@ if ($result = $db->query($sql)) {
 
         if ($row['Product Origin Country Code'] != '' and $print_origin) {
 
+
             $_country = new Country('code', $row['Product Origin Country Code']);
 
-            if ($_country->get('Country 2 Alpha Code') != 'XX') {
+            if ($_country->id and $_country->get('Country 2 Alpha Code') != 'XX') {
                 try {
                     $country     = $countryRepository->get($_country->get('Country 2 Alpha Code'));
                     $description .= ' <br>'._('Origin').': '.$country->getName().' ('.$country->getThreeLetterCode().')';
