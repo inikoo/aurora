@@ -444,8 +444,7 @@ class data_entry_picking_aid {
                     $part_transactions[$row['Inventory Transaction Key']]              = $row;
                     $part_transactions[$row['Inventory Transaction Key']]['_required'] = $_required;
 
-
-                    if (isset($itf_indexed_data[$row['Inventory Transaction Key']]['qty'])) {
+                    if (isset($itf_indexed_data[$row['Inventory Transaction Key']]['qty'])  and is_numeric($itf_indexed_data[$row['Inventory Transaction Key']]['qty'])   ) {
                         $_diff = $itf_indexed_data[$row['Inventory Transaction Key']]['qty'] - $_required;
                     } else {
                         $_diff = -$_required;
