@@ -30,7 +30,7 @@ include_once 'ar_web_common_logged_in.php';
 
 $account = get_object('Account', 1);
 
-$smarty               = new Smarty();
+$smarty = new Smarty();
 $smarty->setTemplateDir('templates');
 $smarty->setCompileDir('server_files/smarty/templates_c');
 $smarty->setCacheDir('server_files/smarty/cache');
@@ -244,14 +244,13 @@ if ($result = $db->query($sql)) {
 
             $_country = new Country('code', $row['Product Origin Country Code']);
 
-            if($_country->get('Country 2 Alpha Code')!='XX'){
-                $description .= ' <br>'._('Origin').': '.$_country->get('Country 2 Alpha Code');
-              // try {
-              //     $country = $countryRepository->get($_country->get('Country 2 Alpha Code'));
-              //     $description .= ' <br>'._('Origin').': '.$country->getName().' ('.$country->getThreeLetterCode().')';
-              // }catch (Exception $e) {
-              //     $description .= ' <br>'._('Origin').': '.$_country->get('Country 2 Alpha Code');
-              // }
+            if ($_country->get('Country 2 Alpha Code') != 'XX') {
+                try {
+                    $country     = $countryRepository->get($_country->get('Country 2 Alpha Code'));
+                    $description .= ' <br>'._('Origin').': '.$country->getName().' ('.$country->getThreeLetterCode().')';
+                } catch (Exception $e) {
+                    $description .= ' <br>'._('Origin').': '.$_country->get('Country 2 Alpha Code');
+                }
 
 
             }
@@ -426,7 +425,7 @@ if ($result = $db->query($sql)) {
         );
 
         $row['Discount'] = '';
-        $row['Qty'] = '';
+        $row['Qty']      = '';
         $transactions[]  = $row;
     }
 } else {
