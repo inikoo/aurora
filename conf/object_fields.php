@@ -289,6 +289,9 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     case 'VL':
                         include 'fields/bulk_deal.fld.php';
                         break;
+                    case 'FO':
+                        include 'fields/first_order_offer.fld.php';
+                        break;
                     default:
 
                         include 'fields/deal.fld.php';

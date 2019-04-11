@@ -893,7 +893,20 @@ class Deal extends DB_Table {
 
     }
 
-    function update_expiration_date($value, $options) {
+    function finish(){
+
+        if ($this->data['Deal Status'] == 'Finish') {
+            $this->error = true;
+            $this->msg   = 'Deal already finished';
+            return;
+        }
+
+        $this->update_expiration_date(gmdate('Y-m-d H:i:s'));
+
+    }
+
+
+    function update_expiration_date($value, $options='') {
 
         /*
         if ($this->data['Deal Status'] == 'Finish') {
