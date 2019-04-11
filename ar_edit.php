@@ -1018,6 +1018,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
         case 'Deal':
 
+            include_once 'utils/parse_deal_data.php';
 
             switch ($data['parent']) {
                 case 'category':
@@ -1176,6 +1177,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                     );
 
+
+                    //print_r($data);
 
                     switch ($campaign->get('Code')) {
                         case 'VO':
@@ -1415,7 +1418,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                 );
 
 
-                            } elseif ($data['fields_data']['Deal Type Percentage Off']) {
+                            }
+                            elseif ($data['fields_data']['Deal Type Percentage Off']) {
 
 
                                 if (preg_match('/\%\s*$/', $data['fields_data']['Percentage'])) {
@@ -1465,70 +1469,34 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                 );
 
 
-                            } elseif ($data['fields_data']['Deal Type Get Item Free']) {
+                            }
+                            elseif ($data['fields_data']['Deal Type Get Item Free']) {
 
-                                $product = get_object('Product', $data['fields_data']['Get Item Free Product']);
-                                if (!$product->id) {
-                                    $response = array(
-                                        'state' => 400,
-                                        'resp'  => 'Product not found'
-                                    );
-                                    echo json_encode($response);
+
+                                list($success,$result)=parse_deal_free_item($data,$deal_new_data,$store);
+
+                                if($success){
+                                    list($deal_new_data, $new_component_data)=$result;
+                                }else{
+                                    echo json_encode($result);
                                     exit;
                                 }
 
-                                if ($store->id != $product->get('Store Key')) {
-                                    $response = array(
-                                        'state' => 400,
-                                        'resp'  => 'Product and store don not match'
-                                    );
-                                    echo json_encode($response);
+                            }elseif($data['fields_data']['Deal Type Amount Off']){
+                                list($success,$result)=parse_deal_amount_off($data,$deal_new_data,$store);
+                                if($success){
+                                    list($deal_new_data, $new_component_data)=$result;
+                                }else{
+                                    echo json_encode($result);
                                     exit;
                                 }
-
-                                $qty = $data['fields_data']['Get Item Free Quantity'];
-
-
-                                if ($qty == '' or $qty == 0) {
-                                    $response = array(
-                                        'state' => 400,
-                                        'resp'  => _("Free items quantity can't be zero")
-                                    );
-                                    echo json_encode($response);
-                                    exit;
-                                }
-
-
-                                if (!is_numeric($qty) or $qty <= 0) {
-                                    $response = array(
-                                        'state' => 400,
-                                        'resp'  => _("Invalid free items quantity")
-                                    );
-                                    echo json_encode($response);
-                                    exit;
-                                }
-
-
-                                if ($qty == 1) {
-                                    $deal_new_data['Deal Allowance Label'] = sprintf(_('Get one %s free'), $product->get('Code'));
-                                } else {
-                                    $deal_new_data['Deal Allowance Label'] = sprintf(_('Get %s %s free'), $qty, $product->get('Code'));
-                                }
-
-
-                                $new_component_data = array(
-                                    'Deal Component Name Label' => $data['fields_data']['Deal Name'],
-                                    'Deal Component Term Label' => $deal_new_data['Deal Allowance Label'],
-                                    'Deal Component Allowance Label'        => $deal_new_data['Deal Allowance Label'],
-                                    'Deal Component Allowance Type'         => 'Get Free',
-                                    'Deal Component Allowance Target'       => 'Order',
-                                    'Deal Component Allowance Target Type'  => 'Items',
-                                    'Deal Component Allowance Target Key'   => '',
-                                    'Deal Component Allowance Target Label' => '',
-                                    'Deal Component Allowance'              => $product->id.';'.$qty
+                            }else{
+                                $response = array(
+                                    'state' => 400,
+                                    'resp'  => 'Error no allowance type'
                                 );
-
-
+                                echo json_encode($response);
+                                exit;
                             }
 
                             break;
@@ -1542,7 +1510,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             exit;
                     }
 
-
+                    //print_r($deal_new_data);
+                    //print_r($new_component_data);
+                    //exit;
 
 
                     $object = $campaign->create_deal($deal_new_data, $new_component_data);
