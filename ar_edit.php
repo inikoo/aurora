@@ -891,6 +891,9 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
         case 'suspend':
             $request = $object->suspend();
             break;
+        case 'finish':
+            $request = $object->finish();
+            break;
         case 'activate':
             $request = $object->activate();
             break;

@@ -18,7 +18,7 @@
     {/if}
     <script src="/js/aurora_libs.min.js?v190319"></script>
 
-    <script src="/js/aurora.min.js?v190325"></script>
+    <script src="/js/aurora.min.js?v190411"></script>
 
     <script src="/js/fast_track_packing.js?v=8"></script>
 

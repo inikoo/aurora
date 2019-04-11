@@ -2076,6 +2076,12 @@ function suspend_object(element) {
 function activate_object(element) {
     save_object_operation('activate', element)
 }
+
+
+function finish_object(element) {
+    save_object_operation('finish', element)
+}
+
 function suspend_parent_object(element) {
     save_object_operation('suspend_parent', element)
 }
