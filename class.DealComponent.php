@@ -148,6 +148,7 @@ class DealComponent extends DB_Table {
         if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();
             $this->get_data('id', $this->id);
+            $this->update_deal_component_term_allowances();
 
             if ($this->data['Deal Component Status'] == 'Active') {
                 $this->update_deal_component_assets();
@@ -372,9 +373,23 @@ class DealComponent extends DB_Table {
         return false;
     }
 
+
+    function update_deal_component_term_allowances() {
+
+
+        $this->fast_update(
+
+            array(
+                'Deal Component Term Allowances Label' => '<span class="term">'.$this->get_formatted_terms().'</span> <i class="fa fa-arrow-right"></i> <span class="allowance">'.$this->get_formatted_allowances().'</span>'
+            )
+
+
+        );
+    }
+
     function get_formatted_allowances() {
 
-        $allowance='';
+
         switch ($this->data['Deal Component Allowance Type']) {
             case 'Percentage Off':
 
@@ -415,6 +430,11 @@ class DealComponent extends DB_Table {
 
 
                 break;
+            case 'Amount Off':
+                $store     = get_object('Store', $this->get('Store Key'));
+                $allowance = sprintf(_('%s off'), money($this->data['Deal Component Allowance'], $store->get('Store Currency Code')));
+
+                break;
             default:
                 $allowance = $this->data['Deal Component Allowance'];
 
@@ -451,16 +471,67 @@ class DealComponent extends DB_Table {
 
                 break;
             case 'Category For Every Quantity Ordered':
-
-
                 $terms = sprintf('%s, buy %d', $this->get('Deal Component Allowance Target Label'), $this->data['Deal Component Terms']);
-
 
                 break;
             case 'Category For Every Quantity Any Product Ordered':
 
+                if ($this->data['Deal Component Terms'] == 1) {
+                    $terms = sprintf('%s (Mix & match)',$this->get('Deal Component Allowance Target Label'));
 
-                $terms = sprintf('%s (Mix & match), buy %d ', $this->get('Deal Component Allowance Target Label'), $this->data['Deal Component Terms']);
+                } else {
+                    $terms = sprintf('%s (Mix & match), for every %d ', $this->get('Deal Component Allowance Target Label'), $this->data['Deal Component Terms']);
+                }
+
+                break;
+            case 'Amount AND Order Number':
+                $store = get_object('Store', $this->data['Deal Component Store Key']);
+
+                $deal_terms_data = preg_split('/\;/', $this->get('Deal Component Terms'));
+
+                if (is_array($deal_terms_data) and count($deal_terms_data) == 3) {
+
+                    $order_number = $deal_terms_data[0];
+                    $amount       = $deal_terms_data[1];
+
+
+                    $nf = new NumberFormatter('en_GB', NumberFormatter::ORDINAL);
+
+
+                    if ($amount == 0) {
+                        $terms = $nf->format($order_number).' order';
+                    } else {
+                        $terms = sprintf('%s order <span style="opacity: .8"> %s<i class="fal fa-arrow-from-bottom"></i></span>', $nf->format($order_number), money($amount, $store->get('Store Currency Code')));
+                    }
+                } else {
+                    $terms = 'Error';
+                }
+
+
+                //print $this->get('Deal Terms');
+
+                break;
+
+            case 'Voucher AND Amount':
+
+                $store = get_object('Store', $this->data['Deal Component Store Key']);
+
+
+                $_terms = json_decode($this->get('Deal Component Terms'), true);
+
+                if (!$_terms) {
+                    $tmp    = preg_split('/\;/', $this->get('Deal Component Terms'));
+                    $_terms = array(
+                        'voucher' => $tmp[0],
+                        'amount'  => ';'.$tmp[1].';'.$tmp[2],
+                    );
+                }
+
+
+                $amount_data = preg_split('/\;/', $_terms['amount']);
+
+
+                $terms = '<span style="border:1px solid ;padding: 1px 10px">'.$_terms['voucher'].'</span> <span style="opacity: .8">'.money($amount_data[1], $store->get('Store Currency Code')).'</span>';
 
 
                 break;
@@ -505,12 +576,11 @@ class DealComponent extends DB_Table {
 
 
                             break;
-            */
-            case 'Deal Component Term Label':
-                $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
-                $deal->editor = $this->editor;
-                $deal->update(array('Deal Term Label' => $value));
-                break;
+            */ case 'Deal Component Term Label':
+            $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
+            $deal->editor = $this->editor;
+            $deal->update(array('Deal Term Label' => $value));
+            break;
             case 'Deal Terms':
                 $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
                 $deal->editor = $this->editor;
@@ -543,7 +613,7 @@ class DealComponent extends DB_Table {
                 $this->update_field($field, $value, $options);
                 $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
                 $deal->editor = $this->editor;
-                $deal->update_term_allowances();
+                $deal->update_deal_term_allowances();
 
                 break;
 
@@ -644,27 +714,21 @@ class DealComponent extends DB_Table {
         $sql = $this->get_eligible_basket_orders_sql();
 
 
-
-        $counter=0;
+        $counter = 0;
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
 
-                if($counter<100){
-                    $operation='update_order_in_basket';
-                }else{
-                    $operation='update_order_in_basket_low_priority';
+                if ($counter < 100) {
+                    $operation = 'update_order_in_basket';
+                } else {
+                    $operation = 'update_order_in_basket_low_priority';
 
                 }
 
                 $sql = sprintf(
                     'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
-                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
-                    prepare_mysql($date),
-                    prepare_mysql($date),
-                    prepare_mysql($operation),
-                    $row['Order Key'],
-                    prepare_mysql($date)
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql($operation), $row['Order Key'], prepare_mysql($date)
 
                 );
                 $this->db->exec($sql);
@@ -674,8 +738,6 @@ class DealComponent extends DB_Table {
         }
 
 
-
-
     }
 
     function get_eligible_basket_orders_sql() {
@@ -683,7 +745,10 @@ class DealComponent extends DB_Table {
         switch ($this->data['Deal Component Trigger']) {
             // todo get only the orders affected by the deal
             default:
-                $sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Version`=2 and `Store Key`=%d order by `Order Last Updated Date` desc ", $this->data['Deal Component Store Key']);
+                $sql = sprintf(
+                    "SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Version`=2 and `Store Key`=%d order by `Order Last Updated Date` desc ",
+                    $this->data['Deal Component Store Key']
+                );
 
         }
 
@@ -697,10 +762,10 @@ class DealComponent extends DB_Table {
 
         $families    = array();
         $departments = array();
-        $products=array();
+        $products    = array();
 
 
-        $sql         = sprintf(
+        $sql = sprintf(
             'select `Deal Component Trigger Key`,`Category Scope` from  `Deal Component Dimension`  left join `Category Dimension` on (`Deal Component Trigger Key`=`Category Key`)   where `Deal Component Key`=%d  and `Deal Component Trigger`="Category"  ', $this->id
         );
         if ($result = $this->db->query($sql)) {
@@ -966,9 +1031,6 @@ class DealComponent extends DB_Table {
         $this->update_status('Suspended');
 
 
-
-
-
     }
 
 
@@ -979,17 +1041,15 @@ class DealComponent extends DB_Table {
 
     function suspend_parent() {
 
-        $deal=get_object('Deal',$this->get('Deal Component Deal Key'));
+        $deal = get_object('Deal', $this->get('Deal Component Deal Key'));
         $deal->suspend();
-
-
 
 
     }
 
 
     function activate_parent() {
-        $deal=get_object('Deal',$this->get('Deal Component Deal Key'));
+        $deal = get_object('Deal', $this->get('Deal Component Deal Key'));
 
 
         $deal->activate();
