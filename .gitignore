@@ -689,3 +689,7 @@ node_modules/wrappy/
 node_modules/ws/
 node_modules/xtend/
 node_modules/yauzl/
+
+utils/api.secret.json
+
+utils/api.include.php
