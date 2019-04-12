@@ -116,13 +116,12 @@ if (isset($is_homepage)) {
     }
     $smarty->assign('selector', (isset($_REQUEST['s']) ? $_REQUEST['s'] : ''));
     $smarty->assign('authenticator', (isset($_REQUEST['a']) ? $_REQUEST['a'] : ''));
-
     $smarty->assign('unsubscribe_customer_key', $unsubscribe_customer_key);
+    $smarty->assign('is_unsubscribe', true);
 
 
 }
 
-//https://www.awgifts.eu/reset.php?s=ZBTN9OVoYabB&a=OZz-bvClmCKb0h8-QIYgz_UsR5sxz8PCR_rcs2_gFQZO
 
 
 $cache_id = $_SESSION['website_key'].'|'.$webpage_key.'|'.($logged_in ? 'in' : 'out');

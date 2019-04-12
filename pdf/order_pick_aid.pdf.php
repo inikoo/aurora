@@ -60,10 +60,10 @@ $transactions = array();
 $sql = sprintf(
     "SELECT  Part.`Part Current On Hand Stock` AS total_stock, PLD.`Quantity On Hand` AS stock_in_picking,`Part Current Stock`,`Part Reference` AS reference,`Picking Note` AS notes,ITF.`Part SKU`,`Part Package Description` AS description,
 (`Required`+`Given`) AS qty,`Location Code` AS location ,
-        IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=Part.`Part SKU`   
-          
-          
-          )   ,'') as location_data,
+        IFNULL((select GROUP_CONCAT(LD.`Location Key`,':',LD.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') 
+        from `Part Location Dimension` PLD  left join `Location Dimension` LD on (LD.`Location Key`=PLD.`Location Key`) 
+        where PLD.`Part SKU`=Part.`Part SKU`  and PLD.`Location Key`!=L.`Location Key` 
+        )   ,'') as location_data,
 
 `Part UN Number` AS un_number,
 `Part Packing Group` AS part_packing_group
@@ -81,7 +81,6 @@ if ($result = $db->query($sql)) {
         $total_stock      = $row['total_stock'];
 
         $row['stock'] = sprintf("[<b>%d</b>,%d]", $stock_in_picking, $total_stock);
-
         $row['locations'] = array();
 
 
@@ -145,9 +144,9 @@ if ($result = $db->query($sql)) {
 $formatted_number_of_items = '<b>'.number($number_of_items).'</b> '.ngettext(
         'item', 'items', $number_of_items
     );
-$formatted_number_of_picks = '<b>'.number($number_of_picks).'</b> '.ngettext(
-        'pick', 'picks', $number_of_picks
-    );
+$formatted_number_of_picks = '<i>'.number($number_of_picks).' '.ngettext(
+        'SKO', 'SKOs', $number_of_picks
+    ).'</i>';
 
 $smarty->assign('formatted_number_of_items', $formatted_number_of_items);
 $smarty->assign('formatted_number_of_picks', $formatted_number_of_picks);

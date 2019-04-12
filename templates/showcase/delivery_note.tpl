@@ -190,14 +190,14 @@
                     </div>
                 </div>
                 <div id="cancel_operations"
-                     class="order_operation {if $delivery_note->get('Delivery Note Number Picked Items')==0  or  $delivery_note->get('State Index')<0 or  $delivery_note->get('State Index')>=90  }hide{/if}">
+                     class="order_operation {if $delivery_note->get('Delivery Note Number Picked Items')==0  or  $delivery_note->get('State Index')<0 or  $delivery_note->get('State Index')>=80  }hide{/if}">
                     <div class="square_button left" title="{t}Cancel{/t}">
                         <i class="fa fa-minus-circle error " aria-hidden="true" onclick="toggle_order_operation_dialog('cancel')"></i>
                         <table id="cancel_dialog" border="0" class="order_operation_dialog hide">
                             <tr class="top">
                                 <td colspan="2">{t}Cancel delivery note{/t}</td>
                             </tr>
-                            <tr class="changed">
+                            <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('cancel')"></i></td>
                                 <td class="aright"><span data-data='{  "field": "Delivery Note State","value": "Cancelled","dialog_name":"cancel"}' id="cancel_save_buttons" class="error save button"
 
@@ -210,7 +210,7 @@
 
                 <div id="undo_packed_done_operations" class="order_operation {if $delivery_note->get('State Index')!=80}hide{/if}">
                     <div class="square_button left" title="{t}Open boxes{/t}" >
-						<i class="far fa-box-open    "  aria-hidden="true" onclick="toggle_order_operation_dialog('undo_packed_done')"></i>
+						<i class="fal fa-box-open  error discreet "  aria-hidden="true" onclick="toggle_order_operation_dialog('undo_packed_done')"></i>
 
 
 

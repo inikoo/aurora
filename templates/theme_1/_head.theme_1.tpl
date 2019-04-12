@@ -44,6 +44,7 @@
     <link href="/css/editor_v1/plugins/table.css" rel="stylesheet">
     <link href="/css/editor_v1/plugins/video.css" rel="stylesheet">
     <link href="/css/editor_v1/plugins/draggable.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js"></script>
     <script src="js/libs/master_slider/banner.js"></script>
@@ -117,7 +118,7 @@
     <link rel="stylesheet" href="/css/webpage_preview/webpage_preview.css?v20180422v1" type="text/css"/>
 
 
-    <script src="EcomB2B/js/desktop.min.js"></script>
+    <script src="EcomB2B/js/desktop.in.min.js"></script>
 
 
     <script src="js/libs/jquery-ui.js"></script>
