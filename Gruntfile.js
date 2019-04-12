@@ -7,7 +7,17 @@ module.exports = function (grunt) {
             fork: ["../fork/*", "!../fork/keyring/**", "!../fork/server_files/**"],
         },
         uglify: {
-            pweb_desktop: {
+            pweb_common_desktop_logged_in: {
+                options: {
+                    sourceMap: true,
+                },
+
+                src: [
+                    'EcomB2B/js/jquery.hoverIntent.js',
+                    'EcomB2B/js/menu.js',
+                    'EcomB2B/js/search.js',
+                ], dest: 'EcomB2B/js/desktop.in.min.js'
+            },pweb_common_desktop_logged_out: {
                 options: {
                     sourceMap: true,
                 },
@@ -17,7 +27,7 @@ module.exports = function (grunt) {
                     'EcomB2B/js/jquery.hoverIntent.js',
                     'EcomB2B/js/menu.js',
                     'EcomB2B/js/search.js',
-                ], dest: 'EcomB2B/js/desktop.min.js'
+                ], dest: 'EcomB2B/js/desktop.out.min.js'
             }, pweb_desktop_logged_in: {
                 options: {
 
@@ -141,9 +151,7 @@ module.exports = function (grunt) {
                 },
                 src: [
                     'EcomB2B/theme_1/local/jquery.js',
-                    'EcomB2B/theme_1/tablet/plugins.js',
-                   // 'EcomB2B/js/swiper.js',
-                  //  'EcomB2B/theme_1/tablet/custom.js',
+                    'EcomB2B/theme_1/tablet/plugins.js', ,
                     'EcomB2B/js/search.js',
                 ], dest: 'EcomB2B/js/mobile.190304.min.js',
 
@@ -540,7 +548,7 @@ module.exports = function (grunt) {
     grunt.registerTask('default', ['sass']);
 
     grunt.registerTask('app', ['clean:app', 'imagemin', 'sass', 'concat', 'uglify', 'cssmin', 'copy:app']);
-    grunt.registerTask('fork', ['clean:fork', 'copy:fork_stones', 'copy:fork']);
+    grunt.registerTask('fork', [ 'copy:fork_stones', 'copy:fork']);
     grunt.registerTask('qfork', ['copy:fork']);
 
     grunt.registerTask('ws', ['clean:websocket','copy:websocket', 'copy:websocket_stones']);
@@ -559,7 +567,8 @@ module.exports = function (grunt) {
         'uglify:pweb_mobile_checkout',
         'uglify:pweb_tablet',
         'uglify:pweb_tablet_custom',
-        'uglify:pweb_desktop',
+        'uglify:pweb_common_desktop_logged_in',
+        'uglify:pweb_common_desktop_logged_out',
         'uglify:pweb_desktop_logged_in',
         'uglify:pweb_desktop_forms',
         'uglify:pweb_desktop_profile',
@@ -567,7 +576,7 @@ module.exports = function (grunt) {
         'uglify:pweb_desktop_checkout',
         'uglify:pweb_desktop_image_gallery'
     ]);
-    grunt.registerTask('deploy_fork_stones', ['clean:fork', 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_external_libs']);
+    grunt.registerTask('deploy_fork_stones', [ 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_external_libs']);
     grunt.registerTask('deploy_fork_composer', [ 'copy:fork', 'ssh_deploy:fork_composer']);
 
     grunt.registerTask('deploy_qfork', ['copy:fork', 'ssh_deploy:fork']);

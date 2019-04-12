@@ -219,8 +219,7 @@
             head.appendChild(script);
         }
 
-        getScript('/js/desktop.min.js?v=190225', function () {
-
+        getScript('/js/desktop.{if $logged_in}in{else}out{/if}.min.js?v=190410', function () {
 
 
             {if $website->get('Website Text Font')!=''  and !$logged_in}
@@ -1166,9 +1165,14 @@
             {/if}
             {if $logged_in}
                 {if $with_product_order_input==1}
-                $.getJSON("ar_web_customer_products.php?tipo=category_products&webpage_key={$webpage->id}", function (data) {
 
-                // console.log(data)
+
+
+
+
+                $.getJSON("ar_web_customer_products.php?loc=with_product_order_input&tipo=category_products&webpage_key={$webpage->id}",
+                    function (data) {
+
 
 
                 $('.order_row i').removeClass('hide')

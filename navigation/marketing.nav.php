@@ -16,7 +16,9 @@ function get_new_deal_navigation($data, $smarty, $user, $db) {
 
     $left_buttons  = array();
     $right_buttons = array();
-    $sections      = get_sections('products', $data['parent_key']);
+
+
+    $sections      = get_sections('products', $data['store']->id);
 
 
     $sections['offers']['selected'] = true;

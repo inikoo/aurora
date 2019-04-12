@@ -12,13 +12,19 @@
 
 class data_entry_picking_aid {
 
+    /** @var PDO */
     private $db;
-    private $editor, $account;
+    private $editor;
+    /** @var Account */
+    private $account;
     private $data;
     private $level;
     private $dn;
-    private $picker, $packer, $shipper;
-
+    /** @var Staff */
+    private $picker;
+    /** @var Staff */
+    private $packer;
+    private $shipper;
 
     function __construct($data, $editor, $db, $account) {
         $this->db      = $db;
@@ -108,10 +114,7 @@ class data_entry_picking_aid {
 
 
         if ($this->level >= 10) {
-            if (
-                !is_numeric($this->data['fields']['Delivery Note Number Parcels']) or
-                $this->data['fields']['Delivery Note Number Parcels'] < 0
-            ) {
+            if (!is_numeric($this->data['fields']['Delivery Note Number Parcels']) or $this->data['fields']['Delivery Note Number Parcels'] < 0) {
 
                 $response = array(
                     'state' => 400,
@@ -125,11 +128,7 @@ class data_entry_picking_aid {
 
             }
         } else {
-            if (!(
-                (is_numeric($this->data['fields']['Delivery Note Number Parcels']) and
-                    $this->data['fields']['Delivery Note Number Parcels'] >= 0) or $this->data['fields']['Delivery Note Number Parcels'] == ''
-            )
-            ) {
+            if (!((is_numeric($this->data['fields']['Delivery Note Number Parcels']) and $this->data['fields']['Delivery Note Number Parcels'] >= 0) or $this->data['fields']['Delivery Note Number Parcels'] == '')) {
 
                 $response = array(
                     'state' => 400,
@@ -227,7 +226,6 @@ class data_entry_picking_aid {
 
 
             foreach ($_transaction as $transaction) {
-                // print_r($transaction);
 
 
                 if ($transaction['itf_key'] > 0) {
@@ -265,7 +263,7 @@ class data_entry_picking_aid {
                     );
                 }
 
-                if ($transaction['qty'] <0) {
+                if ($transaction['qty'] < 0) {
 
                     $response = array(
                         'state' => 400,
@@ -283,19 +281,6 @@ class data_entry_picking_aid {
 
         }
 
-
-        if (count($missing_itf_keys) > 0) {
-            $response = array(
-                'state' => 400,
-                'msg'   => 'missing itf keys'
-            );
-
-            return array(
-                'valid'    => false,
-                'response' => $response
-            );
-
-        }
 
         if (count($extra_itf_keys) > 0) {
             $response = array(
@@ -361,10 +346,7 @@ class data_entry_picking_aid {
         );
 
 
-        if (!empty($this->data['fields']['Delivery Note Weight']) and
-            is_numeric($this->data['fields']['Delivery Note Weight']) and
-            $this->data['fields']['Delivery Note Weight'] > 0
-        ) {
+        if (!empty($this->data['fields']['Delivery Note Weight']) and is_numeric($this->data['fields']['Delivery Note Weight']) and $this->data['fields']['Delivery Note Weight'] > 0) {
             $this->dn->fast_update(
                 array(
                     'Delivery Note Weight'        => $this->data['fields']['Delivery Note Weight'],
@@ -381,10 +363,7 @@ class data_entry_picking_aid {
         }
 
 
-        if (!empty($this->data['fields']['Delivery Note Number Parcels']) and
-            is_numeric($this->data['fields']['Delivery Note Number Parcels']) and
-            $this->data['fields']['Delivery Note Number Parcels'] > 0
-        ) {
+        if (!empty($this->data['fields']['Delivery Note Number Parcels']) and is_numeric($this->data['fields']['Delivery Note Number Parcels']) and $this->data['fields']['Delivery Note Number Parcels'] > 0) {
             $this->dn->fast_update(
                 array(
                     'Delivery Note Number Parcels' => $this->data['fields']['Delivery Note Number Parcels'],
@@ -435,6 +414,11 @@ class data_entry_picking_aid {
             $itf_indexed_data = array();
             $total_qty        = 0;
             foreach ($_transaction as $transaction) {
+
+                if($transaction['qty']==''){
+                    $transaction['qty']=0;
+                }
+
                 $total_qty += $transaction['qty'];
                 if ($transaction['itf_key'] != '') {
                     $itf_indexed_data[$transaction['itf_key']] = $transaction;
@@ -465,9 +449,11 @@ class data_entry_picking_aid {
                     $part_transactions[$row['Inventory Transaction Key']]              = $row;
                     $part_transactions[$row['Inventory Transaction Key']]['_required'] = $_required;
 
-
-                    $_diff = $itf_indexed_data[$row['Inventory Transaction Key']]['qty'] - $_required;
-
+                    if (isset($itf_indexed_data[$row['Inventory Transaction Key']]['qty'])  and is_numeric($itf_indexed_data[$row['Inventory Transaction Key']]['qty'])   ) {
+                        $_diff = $itf_indexed_data[$row['Inventory Transaction Key']]['qty'] - $_required;
+                    } else {
+                        $_diff = -$_required;
+                    }
 
                     $part_transactions[$row['Inventory Transaction Key']]['_diff'] = $_diff;
 
@@ -480,7 +466,7 @@ class data_entry_picking_aid {
 
 
                         $original_diff = $_diff;
-                      //  $original_qty  = $row['Required'] + $row['Given'];
+                        //  $original_qty  = $row['Required'] + $row['Given'];
 
                         $_diff = abs($_diff);
                         $tmp   = min($row['Required'], $_diff);
@@ -509,35 +495,34 @@ class data_entry_picking_aid {
                         );
 
 
-                    //    if ($original_qty > abs($original_diff)) {
+                        //    if ($original_qty > abs($original_diff)) {
 
-                            $sql = 'update  `Inventory Transaction Fact` set `Required`=`Required`-? ,`Given`=`Given`-? where `Inventory Transaction Key`=? ';
-
-
-                            $stmt = $this->db->prepare($sql);
-                            if (!$stmt) {
-                                print_r($this->db->errorInfo());
-                            }
+                        $sql = 'update  `Inventory Transaction Fact` set `Required`=`Required`-? ,`Given`=`Given`-? where `Inventory Transaction Key`=? ';
 
 
-
-                            if (!$stmt->execute(
-                                [
-                                    $_required,
-                                    $_given,
-                                    $row['Inventory Transaction Key']
-                                ]
-                            )) {
-                                print_r($stmt->errorInfo());
-                            }
+                        $stmt = $this->db->prepare($sql);
+                        if (!$stmt) {
+                            print_r($this->db->errorInfo());
+                        }
 
 
-                       // } else {
-                       //     $sql = 'delete from  `Inventory Transaction Fact` WHERE  `Inventory Transaction Key` =?';
-                       //     $stmt = $this->db->prepare($sql);
-                       //     $stmt->bindParam(1, $row['Inventory Transaction Key']);
-                       //     $stmt->execute();
-                       // }
+                        if (!$stmt->execute(
+                            [
+                                $_required,
+                                $_given,
+                                $row['Inventory Transaction Key']
+                            ]
+                        )) {
+                            print_r($stmt->errorInfo());
+                        }
+
+
+                        // } else {
+                        //     $sql = 'delete from  `Inventory Transaction Fact` WHERE  `Inventory Transaction Key` =?';
+                        //     $stmt = $this->db->prepare($sql);
+                        //     $stmt->bindParam(1, $row['Inventory Transaction Key']);
+                        //     $stmt->execute();
+                        // }
 
 
                     }
@@ -579,7 +564,9 @@ class data_entry_picking_aid {
                         } elseif ($otf_map['qty'] < $qty) {
 
                             //  print '==b==';
-                            $itf_key = $this->create_itf($part_sku, $transaction['location_key'], $otf_map['required'], $otf_map['given'], $otf_map['otf_map'], $otf_map['otf_map_metadata']);
+                            //$itf_key = $this->create_itf($part_sku, $transaction['location_key'], $otf_map['required'], $otf_map['given'], $otf_map['otf_map'], $otf_map['otf_map_metadata']);
+
+                            $this->create_itf($part_sku, $transaction['location_key'], $otf_map['required'], $otf_map['given'], $otf_map['otf_map'], $otf_map['otf_map_metadata']);
                             unset($otf_maps[$_key]);
                             //$this->data['items'][$part_sku][$index_transaction]['itf_key'] = $itf_key;
 
@@ -600,11 +587,12 @@ class data_entry_picking_aid {
 
                             // $qty = $qty - $taken_off_given;
 
-                            $itf_key                                                       = $this->create_itf($part_sku, $transaction['location_key'], $taken_off_required, $taken_off_given, $otf_map['otf_map'], $otf_map['otf_map_metadata']);
-                            $otf_maps[$_key]['required']                                   = $otf_maps[$_key]['required'] - $_required;
-                            $otf_maps[$_key]['given']                                      = $otf_maps[$_key]['given'] - $_given;
-                            $otf_maps[$_key]['qty']                                        = $otf_maps[$_key]['required'] + $otf_maps[$_key]['given'];
-                            $otf_maps[$_key]['diff']                                       = $otf_maps[$_key]['diff'] + $taken_off_required + $taken_off_given;
+                            $itf_key                     = $this->create_itf($part_sku, $transaction['location_key'], $taken_off_required, $taken_off_given, $otf_map['otf_map'], $otf_map['otf_map_metadata']);
+                            $otf_maps[$_key]['required'] = $otf_maps[$_key]['required'] - $_required;
+                            $otf_maps[$_key]['given']    = $otf_maps[$_key]['given'] - $_given;
+                            $otf_maps[$_key]['qty']      = $otf_maps[$_key]['required'] + $otf_maps[$_key]['given'];
+                            $otf_maps[$_key]['diff']     = $otf_maps[$_key]['diff'] + $taken_off_required + $taken_off_given;
+
                             $this->data['items'][$part_sku][$index_transaction]['itf_key'] = $itf_key;
 
 
@@ -620,9 +608,6 @@ class data_entry_picking_aid {
                     }
 
 
-                } else {
-
-
                 }
             }
 
@@ -633,7 +618,6 @@ class data_entry_picking_aid {
 
 
                     $sql = 'update  `Inventory Transaction Fact` set `Required`=`Required`+? ,`Given`=`Given`+? where `Inventory Transaction Key`=? ';
-
 
 
                     $stmt = $this->db->prepare($sql);
@@ -653,7 +637,6 @@ class data_entry_picking_aid {
                     }
 
 
-
                 }
             }
 
@@ -671,37 +654,46 @@ class data_entry_picking_aid {
 
         $weight = $part->get('Part Package Weight') * ($required + $given);
 
-        $sql = sprintf(
-            "INSERT INTO `Inventory Transaction Fact`  (
+
+        $sql = "INSERT INTO `Inventory Transaction Fact`  (
 					`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Inventory Transaction Fact Delivery 2 Alpha Code`,`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,
 
 					`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,
 
 					`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`)
 					VALUES (
-					%s,%s,%s,
-					%f,%s,%s,%d,%s,%d,
-					%s,%s,%.2f,%f,%f,%f,
-
-					%s,%s,%d,%d,%d,%d,%s) ", "'Movement'", "'OIP'", prepare_mysql($this->dn->get('Delivery Note Address Country 2 Alpha Code')),
-
-            $weight, prepare_mysql($this->dn->get('Delivery Note Date')), prepare_mysql($this->dn->get('Delivery Note Date')), $this->dn->id, prepare_mysql($part_sku), $location_key,
-
-
-            0, "'Order In Process'", 0, $required, $given, 0,
-
-
-            prepare_mysql($this->dn->data['Delivery Note Metadata']), prepare_mysql(''),
-
-            $supplier_part_key,
-
-            $supplier_part_historic_key,
-
-            $supplier_key, $map_to_otf_key, prepare_mysql($map_to_otf_metadata)
+					?,?,?,
+					?,?,?,?,?,?,
+					?,?,?,?,?,?,
+                    ?,?,?,?,?,?,?
+					) ";
+        $this->db->prepare($sql)->execute(
+            [
+                'Movement',
+                'OIP',
+                $this->dn->get('Delivery Note Address Country 2 Alpha Code'),
+                $weight,
+                $this->dn->get('Delivery Note Date'),
+                $this->dn->get('Delivery Note Date'),
+                $this->dn->id,
+                $part_sku,
+                $location_key,
+                0,
+                'Order In Process',
+                0,
+                $required,
+                $given,
+                0,
+                $this->dn->data['Delivery Note Metadata'],
+                '',
+                $supplier_part_key,
+                $supplier_part_historic_key,
+                $supplier_key,
+                $map_to_otf_key,
+                $map_to_otf_metadata
+            ]
         );
 
-
-        $this->db->exec($sql);
 
         return $this->db->lastInsertId();
 
@@ -711,14 +703,9 @@ class data_entry_picking_aid {
         include_once 'utils/new_fork.php';
 
 
-
-
-
-
         foreach ($this->data['items'] as $part_sku => $_transaction) {
 
             foreach ($_transaction as $transaction) {
-
 
 
                 if ($transaction['itf_key'] != '') {
@@ -765,25 +752,37 @@ class data_entry_picking_aid {
                             }
 
 
-                            $sql = sprintf(
-                                'UPDATE  `Inventory Transaction Fact`  SET  
-                                  `Date Picked`=%s ,`Date Packed`=%s ,`Date`=%s ,`Location Key`=%d ,`Inventory Transaction Type`=%s ,`Inventory Transaction Section`=%s ,
-                                  `Inventory Transaction Quantity`=%f, `Inventory Transaction Amount`=%.3f,`Inventory Transaction Weight`=%f,
-                                  `Picked`=%f,`Packed`=%f,`Out of Stock`=%f,`Out of Stock Tag`=%s,
-                                  `Picker Key`=%d,`Packer Key`=%d,`Inventory Transaction State`=%s
-                                  
-                                  
-                                  WHERE `Inventory Transaction Key`=%d ',
+                            $sql = 'UPDATE  `Inventory Transaction Fact`  SET  
+                                  `Date Picked`=? ,`Date Packed`=?,`Date`=? ,`Location Key`=? ,`Inventory Transaction Type`=? ,`Inventory Transaction Section`=? ,
+                                  `Inventory Transaction Quantity`=?, `Inventory Transaction Amount`=?,`Inventory Transaction Weight`=?,
+                                  `Picked`=?,`Packed`=?,`Out of Stock`=?,`Out of Stock Tag`=?,
+                                  `Picker Key`=?,`Packer Key`=?,`Inventory Transaction State`=? WHERE `Inventory Transaction Key`=? ';
 
-                                prepare_mysql($date_picked), prepare_mysql($date_packed), prepare_mysql($date), $transaction['location_key'], prepare_mysql($transaction_type), prepare_mysql($transaction_section), $qty, $cost, $weight, $transaction['qty'],
-                                $transaction['qty'],
-                                $out_of_stock, prepare_mysql($out_of_stock_tag), $this->dn->get('Delivery Note Assigned Picker Key'), $this->dn->get('Delivery Note Assigned Packer Key'), prepare_mysql($state), $transaction['itf_key']
+
+                            $this->db->prepare($sql)->execute(
+                                [
+                                    $date_picked,
+                                    $date_packed,
+                                    $date,
+                                    $transaction['location_key'],
+                                    $transaction_type,
+                                    $transaction_section,
+                                    $qty,
+                                    $cost,
+                                    $weight,
+                                    $transaction['qty'],
+                                    $transaction['qty'],
+                                    $out_of_stock,
+                                    $out_of_stock_tag,
+                                    $this->dn->get('Delivery Note Assigned Picker Key'),
+                                    $this->dn->get('Delivery Note Assigned Packer Key'),
+                                    $state,
+                                    $transaction['itf_key']
+
+                                ]
                             );
 
-
-
-
-                            $this->dn->db->exec($sql);
+                            $this->db->exec($sql);
 
                             $cost = 0;
 
@@ -840,30 +839,23 @@ class data_entry_picking_aid {
                 'Delivery Note Date Finish Picking' => $date,
                 'Delivery Note Date Date'           => $date
             )
-
         );
 
-
         $this->dn->update_state('Packed');
-
 
         if ($this->level >= 10) {
             $this->dn->update_state('Packed Done');
         }
 
 
-        if ($this->level >= 20 and $this->dn->get('Delivery Note Type')=='Order') {
+        if ($this->level >= 20 and $this->dn->get('Delivery Note Type') == 'Order') {
             $order         = get_object('order', $this->data['order_key']);
             $order->editor = $this->editor;
             $order->update_state('Approved');
-
             $this->dn->get_data('id', $this->dn->id);
-
         }
         if ($this->level >= 30) {
             $this->dn->update_state('Dispatched');
-
-
         }
 
     }

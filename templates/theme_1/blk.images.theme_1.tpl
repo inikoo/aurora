@@ -49,12 +49,18 @@
     <div class="blk_images "  template="{if empty($data.template)}1{else}{$data.template}{/if}"  >
     {foreach from=$data.images item=image}
         <span class=" image">
+               {if !empty($image.src)}
         <figure>
-            <img class="button"  data-width="{$image.width}" src="{$image.src}" alt="{$image.title}" link="{if isset($image.link)}{$image.link}{else}{/if}" display_class="{$image.caption_class}">
-            <figcaption contenteditable="true" class="{$image.caption_class}" >{$image.caption}</figcaption>
+            <img class="button"  data-width="{$image.width}" src="{$image.src}"  {if !empty($image.title)} alt="{$image.title}"title="{$image.title}"{/if} link="{if isset($image.link)}{$image.link}{else}{/if}" display_class="{if !empty($image.caption_class)}{$image.caption_class}{/if}">
+            <figcaption contenteditable="true"  {if !empty($image.caption_class)}class="{$image.caption_class}"{/if} >{if !empty($image.caption)}{$image.caption}{/if}</figcaption>
         </figure>
+            {/if}
     </span>
+
     {/foreach}
+
+
+
     </div>
 {/if}
 

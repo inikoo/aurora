@@ -100,9 +100,7 @@ $product_fields = array(
                 'options'         => $options_status,
                 'value'           => htmlspecialchars($object->get('Product Status')),
                 'formatted_value' => $object->get('Status'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Product Status')
-                ),
+                'label'           => ucfirst($object->get_field_label('Product Status')),
                 'required'        => ($new ? false : true),
                 'type'            => 'skip'
             ),
@@ -114,9 +112,7 @@ $product_fields = array(
                 'options'         => $options_web_configuration,
                 'value'           => htmlspecialchars($object->get('Product Web Configuration')),
                 'formatted_value' => $object->get('Web Configuration'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Web Configuration')
-                ),
+                'label'           => ucfirst($object->get_field_label('Web Configuration')),
                 'required'        => ($new ? false : true),
                 'type'            => 'skip'
             ),
