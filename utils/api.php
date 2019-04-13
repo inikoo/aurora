@@ -133,7 +133,7 @@ function dbReportInsert($rows,$responseSearch,$responseQuery,$range,$apiCallId,$
         $sessions = $values[3];
 
         $sql .= "INSERT IGNORE INTO `Google Webpage`(`Google Webpage URL`, `Google Webpage Website`, `Google Webpage Original Path`, `Google Webpage Canonical Path`) VALUES ('https://".$hostname.$pagePath."' ,'$hostname' ,'$pagePath' ,'$path');
-            INSERT INTO `Google Data`(`Google API Call Key`, `Google Webpage Key`, `Google $range Page Value`, `Google $range Pageviews`, `Google $range Sessions`, `Google $range Users`) VALUES ('$apiCallId',(SELECT `Google Webpage Key` FROM `Google Webpage` WHERE `Google Webpage URL` = 'https://".$hostname.$pagePath."') ,'$pageValue' ,'$pageviews' ,'$sessions' ,'$users') ON DUPLICATE KEY UPDATE `Google $range Page Value` = '$pageValue', `Google $range Pageviews` = '$pageviews', `Google $range Sessions` = '$sessions', `Google $range Users` = '$users' ;";
+            INSERT INTO `Google Webpage Data`(`Google API Call Key`, `Google Webpage Key`, `Google Webpage $range Page Value`, `Google Webpage $range Pageviews`, `Google Webpage $range Sessions`, `Google Webpage $range Users`) VALUES ('$apiCallId',(SELECT `Google Webpage Key` FROM `Google Webpage` WHERE `Google Webpage URL` = 'https://".$hostname.$pagePath."') ,'$pageValue' ,'$pageviews' ,'$sessions' ,'$users') ON DUPLICATE KEY UPDATE `Google Webpage $range Page Value` = '$pageValue', `Google Webpage $range Pageviews` = '$pageviews', `Google Webpage $range Sessions` = '$sessions', `Google Webpage $range Users` = '$users' ;";
     }
     foreach ($responseSearch as $r) {
         $hostname = parse_url($r->keys[0], PHP_URL_HOST);
@@ -142,7 +142,7 @@ function dbReportInsert($rows,$responseSearch,$responseQuery,$range,$apiCallId,$
         $fragment = parse_url($r->keys[0], PHP_URL_FRAGMENT) !== null ? '#' . parse_url($r->keys[0], PHP_URL_FRAGMENT) : '';
 
         $sql .= "INSERT IGNORE INTO `Google Webpage`(`Google Webpage URL`, `Google Webpage Website`, `Google Webpage Original Path`, `Google Webpage Canonical Path`) VALUES ('".$r->keys[0]."' ,'$hostname' ,'".$path.$query.$fragment."' ,'$path');
-            INSERT INTO `Google Data`(`Google API Call Key`, `Google Webpage Key`, `Google $range SC Clicks`, `Google $range SC CTR`, `Google $range SC Impressions`, `Google $range SC Position`) VALUES ('$apiCallId',(SELECT `Google Webpage Key` FROM `Google Webpage` WHERE `Google Webpage URL` = '".$r->keys[0]."'),'$r->clicks' ,'$r->ctr' ,'$r->impressions' , '$r->position') ON DUPLICATE KEY UPDATE `Google $range SC Clicks` = '$r->clicks', `Google $range SC CTR` = '$r->ctr', `Google $range SC Impressions` = '$r->impressions', `Google $range SC Position` = '$r->position' ;";
+            INSERT INTO `Google Webpage Data`(`Google API Call Key`, `Google Webpage Key`, `Google Webpage $range Clicks`, `Google Webpage $range CTR`, `Google Webpage $range Impressions`, `Google Webpage $range Position`) VALUES ('$apiCallId',(SELECT `Google Webpage Key` FROM `Google Webpage` WHERE `Google Webpage URL` = '".$r->keys[0]."'),'$r->clicks' ,'$r->ctr' ,'$r->impressions' , '$r->position') ON DUPLICATE KEY UPDATE `Google Webpage $range Clicks` = '$r->clicks', `Google Webpage $range CTR` = '$r->ctr', `Google Webpage $range Impressions` = '$r->impressions', `Google Webpage $range Position` = '$r->position' ;";
     }
     foreach ($responseQuery as $q) {
         $hostname = parse_url($q->keys[0], PHP_URL_HOST);
@@ -150,11 +150,12 @@ function dbReportInsert($rows,$responseSearch,$responseQuery,$range,$apiCallId,$
         $query = parse_url($q->keys[0], PHP_URL_QUERY) !== null ? '?' . parse_url($q->keys[0], PHP_URL_QUERY) : '';
         $fragment = parse_url($q->keys[0], PHP_URL_FRAGMENT) !== null ? '#' . parse_url($q->keys[0], PHP_URL_FRAGMENT) : '';
 
-        $sql .= "INSERT IGNORE INTO `Google Webpage`(`Google Webpage URL`, `Google Webpage Website`, `Google Webpage Original Path`, `Google Webpage Canonical Path`) VALUES ('".$q->keys[0]."' ,'$hostname' ,'".$path.$query.$fragment."' ,'$path');
-            INSERT INTO `Google Query Data` (`Google API Call Key`, `Google Webpage Key`, `Google Query`, `Google $range Clicks`, `Google $range CTR`, `Google $range Impressions`, `Google $range Position`) VALUES ('$apiCallId',(SELECT `Google Webpage Key` FROM `Google Webpage` WHERE `Google Webpage URL` = '".$q->keys[0]."'),'".$q->keys[1]."','$q->clicks' ,'$q->ctr' ,'$q->impressions' , '$q->position') ON DUPLICATE KEY UPDATE `Google $range Clicks` = '$q->clicks', `Google $range CTR` = '$q->ctr', `Google $range Impressions` = '$q->impressions', `Google $range Position` = '$q->position';";
+        $sql .= "INSERT IGNORE INTO `Google Webpage`(`Google Webpage URL`, `Google Webpage Website`, `Google Webpage Original Path`, `Google Webpage Canonical Path`) VALUES ('".$r->keys[0]."' ,'$hostname' ,'".$path.$query.$fragment."' ,'$path');
+            INSERT IGNORE INTO `Google Query`(`Google Query`) VALUES ('".$q->keys[1]."');
+            INSERT INTO `Google Query Data` (`Google API Call Key`, `Google Webpage Key`, `Google Query Key`, `Google Query $range Clicks`, `Google Query $range CTR`, `Google Query $range Impressions`, `Google Query $range Position`) VALUES ('$apiCallId',(SELECT `Google Webpage Key` FROM `Google Webpage` WHERE `Google Webpage URL` = '".$q->keys[0]."'),(SELECT `Google Query Key` FROM `Google Query` WHERE `Google Query` = '".$q->keys[1]."'),'$q->clicks' ,'$q->ctr' ,'$q->impressions' , '$q->position') ON DUPLICATE KEY UPDATE `Google Query $range Clicks` = '$q->clicks', `Google Query $range CTR` = '$q->ctr', `Google Query $range Impressions` = '$q->impressions', `Google Query $range Position` = '$q->position';";
     }
     if ($conn->multi_query($sql) === TRUE) {
-        echo "Google Analytics and Search Console data updated successfully" . "\n";
+        echo "Google Analytics and Search Console data updated successfully"  .  "\n";
     } else {
         echo "Error: " . "\n" . $sql . "\n" . $conn->error . "\n";
     }
@@ -179,7 +180,7 @@ function dbDailyInsert($rowsDaily,$responseDailySearch,$apiCallId,$parameter)
         $sessions = $values[3];
 
         $sql .= "INSERT IGNORE INTO `Google Webpage`(`Google Webpage URL`, `Google Webpage Website`, `Google Webpage Original Path`, `Google Webpage Canonical Path`) VALUES ('https://".$hostname.$pagePath."' ,'$hostname' ,'$pagePath' ,'$path');
-            INSERT INTO `Google Time Series`(`Google API Call Key`, `Google Webpage Key`, `Google Time Series Date`, `Google Time Series Page Value`, `Google Time Series Pageviews`, `Google Time Series Sessions`, `Google Time Series Users`) VALUES ('$apiCallId',(SELECT `Google Webpage Key` FROM `Google Webpage` WHERE `Google Webpage URL` = 'https://".$hostname.$pagePath."') ,'".$parameter->daily["fromDate"]."' ,'$pageValue' ,'$pageviews' ,'$sessions' ,'$users') ON DUPLICATE KEY UPDATE `Google Time Series Page Value` = '$pageValue', `Google Time Series Pageviews` = '$pageviews', `Google Time Series Sessions` = '$sessions', `Google Time Series Users` = '$users' ;";
+            INSERT INTO `Google Time Series Data`(`Google API Call Key`, `Google Webpage Key`, `Google Time Series Date`, `Google Time Series Page Value`, `Google Time Series Pageviews`, `Google Time Series Sessions`, `Google Time Series Users`) VALUES ('$apiCallId',(SELECT `Google Webpage Key` FROM `Google Webpage` WHERE `Google Webpage URL` = 'https://".$hostname.$pagePath."') ,'".$parameter->daily["fromDate"]."' ,'$pageValue' ,'$pageviews' ,'$sessions' ,'$users') ON DUPLICATE KEY UPDATE `Google Time Series Page Value` = '$pageValue', `Google Time Series Pageviews` = '$pageviews', `Google Time Series Sessions` = '$sessions', `Google Time Series Users` = '$users' ;";
     }
     foreach ($responseDailySearch as $rq) {
         $hostname = parse_url($rq->keys[0], PHP_URL_HOST);
@@ -188,7 +189,7 @@ function dbDailyInsert($rowsDaily,$responseDailySearch,$apiCallId,$parameter)
         $fragment = parse_url($rq->keys[0], PHP_URL_FRAGMENT) !== null ? '#' . parse_url($rq->keys[0], PHP_URL_FRAGMENT) : '';
 
         $sql .= "INSERT IGNORE INTO `Google Webpage`(`Google Webpage URL`, `Google Webpage Website`, `Google Webpage Original Path`, `Google Webpage Canonical Path`) VALUES ('".$rq->keys[0]."' ,'$hostname' ,'".$path.$query.$fragment."' ,'$path');
-            INSERT INTO `Google Time Series`(`Google API Call Key`, `Google Webpage Key`, `Google Time Series Date`, `Google Time Series Clicks`, `Google Time Series CTR`, `Google Time Series Impressions`, `Google Time Series Position`) VALUES ('$apiCallId',(SELECT `Google Webpage Key` FROM `Google Webpage` WHERE `Google Webpage URL` = '".$rq->keys[0]."') ,'".$parameter->daily["fromDate"]."' ,'$rq->clicks' ,'$rq->ctr' ,'$rq->impressions' , '$rq->position') ON DUPLICATE KEY UPDATE `Google Time Series Clicks` = '$rq->clicks', `Google Time Series CTR` = '$rq->ctr', `Google Time Series Impressions` = '$rq->impressions', `Google Time Series Position` = '$rq->position' ;";
+            INSERT INTO `Google Time Series Data`(`Google API Call Key`, `Google Webpage Key`, `Google Time Series Date`, `Google Time Series Clicks`, `Google Time Series CTR`, `Google Time Series Impressions`, `Google Time Series Position`) VALUES ('$apiCallId',(SELECT `Google Webpage Key` FROM `Google Webpage` WHERE `Google Webpage URL` = '".$rq->keys[0]."') ,'".$parameter->daily["fromDate"]."' ,'$rq->clicks' ,'$rq->ctr' ,'$rq->impressions' , '$rq->position') ON DUPLICATE KEY UPDATE `Google Time Series Clicks` = '$rq->clicks', `Google Time Series CTR` = '$rq->ctr', `Google Time Series Impressions` = '$rq->impressions', `Google Time Series Position` = '$rq->position' ;";
     }
     if ($dbconn->multi_query($sql) === TRUE) {
         echo "Google Analytics and Search Console Daily data updated successfully" . "\n";
@@ -200,20 +201,20 @@ function dbDailyInsert($rowsDaily,$responseDailySearch,$apiCallId,$parameter)
 
 $link = new mysqli($apiInclude->dbServername, $apiInclude->dbUsername, $apiInclude->dbPassword, $apiInclude->dbName);
 
-$executionSqlStart = "INSERT INTO `Google API Call Dimension` (`Google API Call Start Date`, `Google API Call ID`) VALUES ('".date("Y-m-d  H:i:s",time())."','{}');";
+$executionSqlStart = "INSERT INTO `Google API Call Dimension` (`Google API Call Start Date`, `Google API Call Details`) VALUES ('".date("Y-m-d  H:i:s",time())."','{}');";
 mysqli_query($link, $executionSqlStart);
 $apiCallId = mysqli_insert_id($link);
 echo "Start Time :".date("Y-m-d  H:i:s",time()). "\n";
 echo "API Call ID :".$apiCallId. "\n";
 foreach ($apiInclude->property as $k => $pa){
-    $DateDailySqlUpdate = "UPDATE google.`Google API Call Dimension` SET `Google API Call ID` = JSON_INSERT(`Google API Call ID` ,'$.\"".$apiInclude->daily["fromDate"].":".$apiInclude->daily["toDate"]."\"' ,JSON_ARRAY()) WHERE `Google API Call Key` = '$apiCallId';";
+    $DateDailySqlUpdate = "UPDATE `Google API Call Dimension` SET `Google API Call Details` = JSON_INSERT(`Google API Call Details` ,'$.\"".$apiInclude->daily["fromDate"].":".$apiInclude->daily["toDate"]."\"' ,JSON_ARRAY()) WHERE `Google API Call Key` = '$apiCallId';";
     mysqli_query($link, $DateDailySqlUpdate);
 
     $analytics = initializeAnalytics($apiInclude->key);
     $webmastersService = initializeSearch($apiInclude->key);
     foreach ($apiInclude->dateRange as $range =>$dateRange){
 
-        $DateSqlUpdate = "UPDATE google.`Google API Call Dimension` SET `Google API Call ID` = JSON_INSERT(`Google API Call ID` ,'$.\"".$dateRange["fromDate"].":".$dateRange["toDate"]."\"' ,JSON_ARRAY()) WHERE `Google API Call Key` = '$apiCallId';";
+        $DateSqlUpdate = "UPDATE `Google API Call Dimension` SET `Google API Call Details` = JSON_INSERT(`Google API Call Details` ,'$.\"".$dateRange["fromDate"].":".$dateRange["toDate"]."\"' ,JSON_ARRAY()) WHERE `Google API Call Key` = '$apiCallId';";
         mysqli_query($link, $DateSqlUpdate);
 
         $response = getReport($analytics,$apiInclude->viewId,$pa,$dateRange);
@@ -228,7 +229,7 @@ foreach ($apiInclude->property as $k => $pa){
 
         dbReportInsert($rows,$responseSearch,$responseQuery,$range,$apiCallId,$apiInclude);
 
-        $CountSqlUpdate = "UPDATE google.`Google API Call Dimension` SET `Google API Call ID` = JSON_INSERT(`Google API Call ID` ,'$.\"".$dateRange["fromDate"].":".$dateRange["toDate"]."\"[9999]' ,JSON_OBJECT('ga$k',JSON_OBJECT('rows','$gaRowCount','token','$gaToken'),'sc$k',JSON_OBJECT('rows','$scRowCount'),'sq$k',JSON_OBJECT('rows','$sqRowCount'))) WHERE `Google API Call Key` = '$apiCallId';";
+        $CountSqlUpdate = "UPDATE `Google API Call Dimension` SET `Google API Call Details` = JSON_INSERT(`Google API Call Details` ,'$.\"".$dateRange["fromDate"].":".$dateRange["toDate"]."\"[9999]' ,JSON_OBJECT('ga$k',JSON_OBJECT('rows','$gaRowCount','token','$gaToken'),'sc$k',JSON_OBJECT('rows','$scRowCount'),'sq$k',JSON_OBJECT('rows','$sqRowCount'))) WHERE `Google API Call Key` = '$apiCallId';";
         mysqli_query($link, $CountSqlUpdate);
     }
     $responseDaily = getReport($analytics,$apiInclude->viewId,$pa,$apiInclude->daily);
@@ -241,7 +242,7 @@ foreach ($apiInclude->property as $k => $pa){
 
     dbDailyInsert($rowsDaily,$responseDailySearch,$apiCallId,$apiInclude);
 
-    $executionSqlUpdate = "UPDATE google.`Google API Call Dimension` SET `Google API Call ID` = JSON_INSERT(`Google API Call ID` ,'$.\"".$apiInclude->daily["fromDate"].":".$apiInclude->daily["toDate"]."\"[9999]' ,JSON_OBJECT('gd$k',JSON_OBJECT('rows','$gaDailyRowCount','token','$gaDailyToken'),'sd$k',JSON_OBJECT('rows','$scDailyRowCount'))) WHERE `Google API Call Key` = '$apiCallId';";
+    $executionSqlUpdate = "UPDATE `Google API Call Dimension` SET `Google API Call Details` = JSON_INSERT(`Google API Call Details` ,'$.\"".$apiInclude->daily["fromDate"].":".$apiInclude->daily["toDate"]."\"[9999]' ,JSON_OBJECT('gd$k',JSON_OBJECT('rows','$gaDailyRowCount','token','$gaDailyToken'),'sd$k',JSON_OBJECT('rows','$scDailyRowCount'))) WHERE `Google API Call Key` = '$apiCallId';";
     mysqli_query($link, $executionSqlUpdate);
 }
 $executionSqlEnd = "UPDATE `Google API Call Dimension` SET `Google API Call End Date` = '".date("Y-m-d  H:i:s",time())."' WHERE `Google API Call Key` = '$apiCallId';";
