@@ -233,7 +233,15 @@ function update_item($_data, $customer, $order, $editor, $db) {
         }
 
 
+        if ($order->get('Order Deal Amount Off') == 0) {
+            $hide[] = 'Deal_Amount_Off_tr';
+        } else {
+            $show[] = 'Deal_Amount_Off_tr';
+        }
+
+
         $class_html = array(
+            'Deal_Amount_Off'         => $order->get('Deal Amount Off'),
             'order_items_gross'       => $order->get('Items Gross Amount'),
             'order_items_discount'    => $order->get('Basket Items Discount Amount'),
             'order_items_net'         => $order->get('Items Net Amount'),
@@ -248,7 +256,6 @@ function update_item($_data, $customer, $order, $editor, $db) {
             'ordered_products_number' => $order->get('Products'),
             'order_amount'            => ((!empty($website->settings['Info Bar Basket Amount Type']) and $website->settings['Info Bar Basket Amount Type'] == 'items_net') ? $order->get('Items Net Amount') : $order->get('Total'))
         );
-
 
 
         $response = array(
@@ -269,9 +276,6 @@ function update_item($_data, $customer, $order, $editor, $db) {
             ),
 
 
-
-
-
             'to_charge'      => $transaction_data['to_charge'],
             'discounts_data' => $discounts_data,
             'discounts'      => ($order->data['Order Items Discount Amount'] != 0 ? true : false),
@@ -279,8 +283,8 @@ function update_item($_data, $customer, $order, $editor, $db) {
 
             'order_empty' => ($order->get('Products') == 0 ? true : false),
             'analytics'   => array(
-                'action'       => ($transaction_data['delta_qty'] > 0 ? 'add' : ($transaction_data['delta_qty'] < 0 ? 'remove' :   '')),
-                'event'       => ($transaction_data['delta_qty'] > 0 ? 'Add to cart' : ($transaction_data['delta_qty'] < 0 ? 'Remove from cart' :   '')),
+                'action' => ($transaction_data['delta_qty'] > 0 ? 'add' : ($transaction_data['delta_qty'] < 0 ? 'remove' : '')),
+                'event'  => ($transaction_data['delta_qty'] > 0 ? 'Add to cart' : ($transaction_data['delta_qty'] < 0 ? 'Remove from cart' : '')),
 
                 'product_data' => array(
                     'id'       => $product->get('Code'),
