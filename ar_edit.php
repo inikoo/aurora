@@ -1395,7 +1395,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             $deal_new_data['Deal Terms Type'] = 'Amount AND Order Number';
                             $deal_new_data['Deal Term Label']=sprintf(_('1st order & +%s'), money($data['fields_data']['Trigger Extra Amount Net'], $store->get('Store Currency Code')));
 
-                            $deal_new_data['Deal Terms'] = '1;'.$data['fields_data']['Trigger Extra Amount Net'].';Order Items Gross Amount';
+                            $deal_new_data['Deal Terms'] = $data['fields_data']['Trigger Extra Amount Net'].';Order Items Gross Amount;1';
 
 
                             if ($data['fields_data']['Deal Type Shipping Off']) {
