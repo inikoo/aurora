@@ -292,8 +292,8 @@ class Deal extends DB_Table {
 
                 if(is_array($deal_terms_data) and count($deal_terms_data)==3){
 
-                    $order_number=$deal_terms_data[0];
-                    $amount=$deal_terms_data[1];
+                    $amount       = $deal_terms_data[1];
+                    $order_number = $deal_terms_data[2];
 
 
                     $nf = new NumberFormatter('en_GB', NumberFormatter::ORDINAL);

@@ -260,9 +260,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
             $history_abstract = '';
             if ($delta_qty > 0) {
                 $history_abstract = sprintf(
-                    _('%1$s %2$s added'),
-                    $delta_qty,
-                    sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $product->get('Store Key'), $product->id, $product->get('Product Code'))
+                    _('%1$s %2$s added'), $delta_qty, sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $product->get('Store Key'), $product->id, $product->get('Product Code'))
                 );
             } elseif ($delta_qty < 0) {
 
@@ -408,21 +406,26 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
 
 
             if ($this->get('Order Charges Discount Amount') == 0) {
-
-
                 $hide[] = 'Charges_Discount_Amount_tr';
             } else {
-
                 $show[] = 'Charges_Discount_Amount_tr';
+            }
+
+
+            if ($this->get('Order Deal Amount Off') == 0) {
+                $hide[] = 'Deal_Amount_Off_tr';
+            } else {
+                $show[] = 'Deal_Amount_Off_tr';
             }
 
             $this->update_metadata = array(
 
                 'class_html'   => array(
-                    'Order_State'      => $this->get('State'),
-                    'Items_Net_Amount' => $this->get('Items Net Amount'),
-
+                    'Order_State'                   => $this->get('State'),
+                    'Items_Net_Amount'              => $this->get('Items Net Amount'),
                     'Items_Discount_Amount'         => $this->get('Items Discount Amount'),
+                    'Deal_Amount_Off'               => $this->get('Deal Amount Off'),
+                    'Items_Gross_Amount'            => $this->get('Items Gross Amount'),
                     'Items_Discount_Percentage'     => $this->get('Items Discount Percentage'),
                     'Shipping_Net_Amount'           => $this->get('Shipping Net Amount'),
                     'Charges_Net_Amount'            => $this->get('Charges Net Amount'),
@@ -433,12 +436,13 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                     'To_Pay_Amount'                 => $this->get('To Pay Amount'),
                     'Payments_Amount'               => $this->get('Payments Amount'),
 
-                    'Profit_Amount'                 => $this->get('Profit Amount'),
-                    'Order_Margin'                  => $this->get('Margin'),
-                    'Order_Number_items'            => $this->get('Number Items'),
-                    'Order_Number_Items_with_Deals' => $this->get('Number Items with Deals'),
-                    'Charges_Discount_Amount'       => $this->get('Charges Discount Amount'),
-                    'Charges_Discount_Percentage'   => $this->get('Charges Discount Percentage')
+                    'Profit_Amount'                  => $this->get('Profit Amount'),
+                    'Order_Margin'                   => $this->get('Margin'),
+                    'Order_Number_items'             => $this->get('Number Items'),
+                    'Order_Number_Items_with_Deals'  => $this->get('Number Items with Deals'),
+                    'Charges_Discount_Amount'        => $this->get('Charges Discount Amount'),
+                    'Charges_Discount_Percentage'    => $this->get('Charges Discount Percentage'),
+                    'Amount_Off_Discount_Percentage' => $this->get('Amount Off Percentage')
 
                 ),
                 'hide'         => $hide,
@@ -600,11 +604,7 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
                         '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'>
                         <i  class="fa minus fa-minus fa-fw like_button "  style="visibility:hidden;cursor:pointer" aria-hidden="true"></i>
                         <input readonly class=" width_50 " style="text-align: center" value="%s" ovalue="%s"> 
-                        <i  class="fa plus  fa-plus fa-fw like_button "  style="visibility:hidden;ccursor:pointer" aria-hidden="true"></i></span>',
-                        $row['Order Transaction Fact Key'],
-                        $row['Product ID'],
-                        $row['Product Key'],
-                        $row['Order Quantity'] + 0,
+                        <i  class="fa plus  fa-plus fa-fw like_button "  style="visibility:hidden;ccursor:pointer" aria-hidden="true"></i></span>', $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0,
                         $row['Order Quantity'] + 0
                     );
 
@@ -613,11 +613,7 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
                         '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'>
                         <i onClick="save_item_qty_change(this)" class="fa minus fa-minus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i>
                         <input class="order_qty width_50 " style="text-align: center" value="%s" ovalue="%s"> 
-                        <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i></span>',
-                        $row['Order Transaction Fact Key'],
-                        $row['Product ID'],
-                        $row['Product Key'],
-                        $row['Order Quantity'] + 0,
+                        <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i></span>', $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0,
                         $row['Order Quantity'] + 0
                     );
                     $out_of_stock_info = '';

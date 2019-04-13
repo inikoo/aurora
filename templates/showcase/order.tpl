@@ -594,9 +594,9 @@
                 <td class="label small">{t}Charges{/t}</td>
                 <td class="aright"><span class="discreet italic">(<span class=" Charges_Discount_Percentage">{$order->get('Charges Discount Percentage')}</span>)</span> <span class="padding_left_10 Charges_Discount_Amount">{$order->get('Charges Discount Amount')}</span></td>
             </tr>
-            <tr class="subtotal Charges_Discount_Amount_tr  {if $order->get('Order Deal Amount Off')==0}hide{/if} ">
+            <tr class="subtotal Deal_Amount_Off_tr  {if $order->get('Order Deal Amount Off')==0}hide{/if} ">
                 <td class="label small">{t}Amount off{/t}</td>
-                <td class="aright"><span class="discreet italic">(<span class=" Amount_Off_Discount_Percentage">{$order->get('Amount Off Percentage')}</span>)</span> <span class="padding_left_10 Charges_Discount_Amount">{$order->get('Amount Off')}</span></td>
+                <td class="aright"><span class="discreet italic">(<span class=" Amount_Off_Discount_Percentage">{$order->get('Amount Off Percentage')}</span>)</span> <span class="padding_left_10 Deal_Amount_Off">{$order->get('Amount Off')}</span></td>
             </tr>
         </table>
 
@@ -857,8 +857,11 @@
 
             <tr>
                 <td class="label">{t}Items{/t}</td>
-                <td class="aright Items_Net_Amount">{$order->get('Items Net Amount')}</td>
+                <td class="aright "><span class="{if $order->get('Order Items Net Amount')==0}hide{/if} Items_Gross_Amount strikethrough">{$order->get('Items Gross Amount')}</span> <span class="Items_Net_Amount">{$order->get('Items Net Amount')}</span></td>
             </tr>
+
+
+
 
             <tr>
                 <td class="label" id="Charges_Net_Amount_label">{t}Charges{/t}</td>

@@ -56,7 +56,6 @@ trait OrderDiscountOperations {
 
         */
 
-        // print_r($this->allowance);
         $this->get_allowances_from_order_trigger();
         $this->get_allowances_from_category_trigger();
         $this->get_allowances_from_product_trigger();
@@ -65,7 +64,6 @@ trait OrderDiscountOperations {
 
          //print_r($this->deals);
 
-          //print_r($this->allowance);
 
         $this->apply_items_discounts();
 
@@ -108,7 +106,6 @@ trait OrderDiscountOperations {
 
         foreach ($deals_component_data as $deal_component_data) {
 
-
             $this->test_deal_terms($deal_component_data);
 
 
@@ -130,6 +127,8 @@ trait OrderDiscountOperations {
             print "$sql\n";
             exit;
         }
+
+
 
 
         foreach ($deals_component_data as $deal_component_data) {
@@ -340,6 +339,8 @@ trait OrderDiscountOperations {
                 break;
             case('Amount AND Order Interval'):
 
+
+
                 $terms         = preg_split(
                     '/;/', $deal_component_data['Deal Component Terms']
                 );
@@ -352,7 +353,8 @@ trait OrderDiscountOperations {
 
 
                 $deal_component_data['Deal Component Terms'];
-                //print_r($terms);
+
+                print $this->data[$amount_type];
 
                 if ($this->data[$amount_type] >= $amount_term) {
                     $amount_term_ok = true;
@@ -395,7 +397,6 @@ trait OrderDiscountOperations {
 
                 $terms = preg_split('/;/', $deal_component_data['Deal Component Terms']);
 
-
                 $amount_term = $terms[0];
                 $amount_type = $terms[1];
 
@@ -404,10 +405,14 @@ trait OrderDiscountOperations {
                 $order_number_term_ok = false;
                 $amount_term_ok       = false;
 
+
+
                 if ($this->data[$amount_type] >= $amount_term) {
                     $amount_term_ok = true;
 
                 }
+
+
 
 
                 if ($amount_term_ok) {
@@ -417,8 +422,10 @@ trait OrderDiscountOperations {
                         "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND  `Order State` NOT IN ('Cancelled') ", $this->data['Order Customer Key'], $this->id
                     );
 
+
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
+
                             if ($row['num'] == $order_number_term) {
                                 $order_number_term_ok = true;
                             }
@@ -435,9 +442,7 @@ trait OrderDiscountOperations {
                 if ($amount_term_ok and $order_number_term_ok) {
 
 
-                    $this->create_allowances_from_deal_component_data(
-                        $deal_component_data
-                    );
+                    $this->create_allowances_from_deal_component_data($deal_component_data);
                 }
 
 
@@ -1712,6 +1717,9 @@ trait OrderDiscountOperations {
         $this->get_allowances_from_customer_trigger($no_items = true);
         $this->get_allowances_from_pinned_deal_components($no_items = true);
 
+
+
+
         $this->apply_no_items_discounts();
 
     }
@@ -1785,7 +1793,6 @@ trait OrderDiscountOperations {
 
 
                         $this->amount_off_allowance_data = $allowance_data;
-
 
                         break;
                     case 'Charge':
@@ -1893,9 +1900,19 @@ trait OrderDiscountOperations {
         }
 
 
+
+
         $this->fast_update(
             array('Order Deal Amount Off' => $this->amount_off_allowance_data['Amount Off'])
         );
+
+        if($this->amount_off_allowance_data['Amount Off']>0){
+            $this->fast_update_json_field('Order Metadata','amount_off',json_encode($this->amount_off_allowance_data));
+
+        }else{
+
+            $this->fast_remove_key_from_json_field('Order Metadata','amount_off');
+        }
 
 
         // print_r($current_OTDBs_to_delete);
