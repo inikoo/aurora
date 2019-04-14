@@ -313,6 +313,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
             $this->update_charges($dn_key, false);
             $this->update_discounts_no_items();
             $this->update_deal_bridge();
+
             $new_used_deals=$this->get_used_deals();
 
 
