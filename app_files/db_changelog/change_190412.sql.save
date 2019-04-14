@@ -1,2 +1,0 @@
-ALTER TABLE `Order Dimension` ADD `Order Metadata` JSON NULL DEFAULT NULL AFTER `Order Payment Metadata`;
-update `Order Dimension` set `Order Metadta`='{}' where `Order Metadata` is NULL; 
