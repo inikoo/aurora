@@ -311,6 +311,26 @@ function fork_housekeeping($job) {
 
             break;
 
+        case 'update_deals_usage':
+
+
+            foreach ($data['deal_components'] as $deal_component_key) {
+                $deal_component = get_object('DealComponent',$deal_component_key);
+                $deal_component->update_usage();
+            }
+
+            foreach ($data['deals'] as $deal_key) {
+                $deal = get_object('Deal',$deal_key);
+                $deal->update_usage();
+            }
+
+            foreach ($data['campaigns'] as $campaign_key) {
+                $campaign = get_object('DealCampaign',$campaign_key);
+                $campaign->update_usage();
+            }
+
+            break;
+
         case 'payment_created':
         case 'payment_updated':
 
@@ -374,7 +394,7 @@ function fork_housekeeping($job) {
         case 'order_items_changed':
             $order = get_object('Order', $data['order_key']);
 
-            $order->update_deals_usage();
+
 
             $account = get_object('Account', '');
             $store   = get_object('Store', $order->get('Store Key'));
@@ -531,7 +551,36 @@ function fork_housekeeping($job) {
             $store->update_orders();
             $account->update_orders();
 
-            $order->update_deals_usage();
+            $deals     = array();
+            $campaigns = array();
+            $sql       = sprintf(
+                "SELECT `Deal Component Key`,`Deal Key`,`Deal Campaign Key` FROM  `Order Deal Bridge` WHERE `Order Key`=%d", $order->id
+            );
+
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $component = get_object('DealComponent',$row['Deal Component Key']);
+                    $component->update_usage();
+                    $deals[$row['Deal Key']]              = $row['Deal Key'];
+                    $campaigns[$row['Deal Campaign Key']] = $row['Deal Campaign Key'];
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            foreach ($deals as $deal_key) {
+                $deal = get_object('Deal',$deal_key);
+                $deal->update_usage();
+            }
+
+            foreach ($campaigns as $campaign_key) {
+                $campaign = get_object('DealCampaign',$campaign_key);
+                $campaign->update_usage();
+            }
 
 
             break;

@@ -1685,91 +1685,7 @@ class Order extends DB_Table {
         $this->db->exec($sql);
 
 
-        /*
 
-
-        if (!isset($_SESSION ['lang'])) {
-            $lang = 0;
-        } else {
-            $lang = $_SESSION ['lang'];
-        }
-
-        switch ($lang) {
-            default :
-                $note = sprintf(
-                    'Order <a href="order.php?id=%d">%s</a> (Cancelled)', $this->data['Order Key'], $this->data['Order Public ID']
-                );
-                if ($this->editor['Author Alias'] != '' and $this->editor['Author Key']) {
-                    $details = sprintf(
-                        _('%s cancel (%s) order %s'),
-
-                        sprintf(
-                            '<a href="staff.php?id=%d">%s</a>', $this->editor['Author Key'], $this->editor['Author Alias']
-                        ),
-
-                        sprintf(
-                            '<a href="customer.php?id=%d">%s</a>', $this->data['Order Customer Key'], $this->data['Order Customer Name']
-                        ), sprintf(
-                            '<a href="order.php?id=%d">%s</a>', $this->data['Order Key'], $this->data['Order Public ID']
-                        )
-                    );
-                } elseif ($this->editor['Author Alias'] == 'System Cron' and !$this->editor['Author Key']) {
-                    $details = sprintf(
-                        _('A cron job cancel (%s) order %s'), sprintf(
-                        '<a href="customer.php?id=%d">%s</a>', $this->data['Order Customer Key'], $this->data['Order Customer Name']
-                    ), sprintf(
-                            '<a href="order.php?id=%d">%s</a>', $this->data['Order Key'], $this->data['Order Public ID']
-                        )
-                    );
-
-                } else {
-                    $details = sprintf(
-                        _('Someone cancel (%s) order %s'), sprintf(
-                        '<a href="customer.php?id=%d">%s</a>', $this->data['Order Customer Key'], $this->data['Order Customer Name']
-                    ), sprintf(
-                            '<a href="order.php?id=%d">%s</a>', $this->data['Order Key'], $this->data['Order Public ID']
-                        )
-                    );
-                }
-
-
-                if ($this->data['Order Cancel Note'] != '') {
-                    $details .= '<div> Note: '.$this->data['Order Cancel Note'].'</div>';
-                }
-
-
-        }
-
-        if ($this->editor['Author Alias'] == 'System Cron' and !$this->editor['Author Key']) {
-            $subject     = 'System';
-            $subject_key = 0;
-        } else {
-            $subject     = 'Staff';
-            $subject_key = $this->editor['Author Key'];
-
-        }
-
-        $history_data = array(
-            'Date'              => $this->data['Order Cancelled Date'],
-            'Subject'           => $subject,
-            'Subject Key'       => $subject_key,
-            'Direct Object'     => 'Order',
-            'Direct Object Key' => $this->data['Order Key'],
-            'History Details'   => $details,
-            'History Abstract'  => $note,
-            'Metadata'          => 'Cancelled'
-
-        );
-
-
-        $history_key = $this->add_subject_history($history_data);
-
-
-
-
-
-
-        */
 
 
         $history_data = array(
@@ -1818,7 +1734,38 @@ class Order extends DB_Table {
             $store->update_orders();
             $account->update_orders();
 
-            $this->update_deals_usage();
+            $deals     = array();
+            $campaigns = array();
+            $sql       = sprintf(
+                "SELECT `Deal Component Key`,`Deal Key`,`Deal Campaign Key` FROM  `Order Deal Bridge` WHERE `Order Key`=%d", $this->id
+            );
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $component = get_object('DealComponent',$row['Deal Component Key']);
+                    $component->update_usage();
+                    $deals[$row['Deal Key']]              = $row['Deal Key'];
+                    $campaigns[$row['Deal Campaign Key']] = $row['Deal Campaign Key'];
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            foreach ($deals as $deal_key) {
+                $deal = get_object('Deal',$deal_key);
+                $deal->update_usage();
+            }
+
+            foreach ($campaigns as $campaign_key) {
+                $campaign = get_object('DealCampaign',$campaign_key);
+                $campaign->update_usage();
+            }
+
+
         }
 
 
@@ -1826,45 +1773,7 @@ class Order extends DB_Table {
 
     }
 
-    function update_deals_usage() {
 
-        include_once 'class.DealCampaign.php';
-        include_once 'class.DealComponent.php';
-
-
-        $deals     = array();
-        $campaigns = array();
-        $sql       = sprintf(
-            "SELECT `Deal Component Key`,`Deal Key`,`Deal Campaign Key` FROM  `Order Deal Bridge` WHERE `Order Key`=%d", $this->id
-        );
-        // exit("$sql\n");
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $component = new DealComponent($row['Deal Component Key']);
-                $component->update_usage();
-                $deals[$row['Deal Key']]              = $row['Deal Key'];
-                $campaigns[$row['Deal Campaign Key']] = $row['Deal Campaign Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        foreach ($deals as $deal_key) {
-            $deal = new Deal($deal_key);
-            $deal->update_usage();
-        }
-
-        foreach ($campaigns as $campaign_key) {
-            $campaign = new DealCampaign($campaign_key);
-            $campaign->update_usage();
-        }
-
-    }
 
     function create_invoice($date) {
 
@@ -1897,7 +1806,7 @@ class Order extends DB_Table {
             $this->db->exec($sql);
             $public_id = $this->db->lastInsertId();
 
-            include_once 'class.Account.php';
+           $account=get_object('Account',1);
             $invoice_public_id = sprintf(
                 $account->data['Account Invoice Public ID Format'], $public_id
             );
@@ -2448,7 +2357,7 @@ class Order extends DB_Table {
 
             $this->update_deal_bridge();
 
-            $this->update_deals_usage();
+
 
             $this->update_totals();
 
