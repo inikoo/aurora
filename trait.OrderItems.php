@@ -15,6 +15,7 @@ trait OrderItems {
 
     function update_item($data) {
 
+        $account = get_object('Account', '');
 
         $gross = 0;
 
@@ -301,6 +302,10 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
         if (!$this->skip_update_after_individual_transaction) {
 
 
+            $old_used_deals=$this->get_used_deals();
+
+
+
             $this->update_totals();
             $this->update_discounts_items();
             $this->update_totals();
@@ -308,8 +313,36 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
             $this->update_charges($dn_key, false);
             $this->update_discounts_no_items();
             $this->update_deal_bridge();
+            $new_used_deals=$this->get_used_deals();
 
 
+            $intersect = array_intersect($old_used_deals[0], $new_used_deals[0]);
+            $campaigns_diff =array_merge(array_diff($old_used_deals[0], $intersect), array_diff($new_used_deals[0], $intersect));
+            
+            $intersect = array_intersect($old_used_deals[1], $new_used_deals[1]);
+            $deal_diff =array_merge(array_diff($old_used_deals[1], $intersect), array_diff($new_used_deals[1], $intersect));
+            
+            $intersect = array_intersect($old_used_deals[2], $new_used_deals[2]);
+            $deal_components_diff =array_merge(array_diff($old_used_deals[2], $intersect), array_diff($new_used_deals[2], $intersect));
+
+
+
+            if(count($campaigns_diff)>0 or count($deal_diff)>0  or count($deal_components_diff)>0 ){
+                $account = get_object('Account', '');
+
+                require_once 'utils/new_fork.php';
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'      => 'update_deals_usage',
+                    'campaigns' => $campaigns_diff,
+                    'deals' => $deal_diff,
+                    'deal_components' => $deal_components_diff,
+
+
+                ), $account->get('Account Code'), $this->db
+                );
+            }
+            
             $this->update_totals();
 
 
@@ -483,7 +516,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                 ).'</span> <span class="'.($gross_discounts == 0 ? 'hide' : '').'">'.money($gross_discounts, $this->data['Order Currency']).'</span></span>';
 
 
-            $account = get_object('Account', '');
+
 
             require_once 'utils/new_fork.php';
             new_housekeeping_fork(
