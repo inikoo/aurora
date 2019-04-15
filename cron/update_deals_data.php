@@ -23,7 +23,41 @@ if ($result = $db->query($sql)) {
         $deal_campaign = get_object('DealCampaign', $row['Deal Campaign Key']);
 
         $deal_campaign->update_number_of_deals();
+        $deal_campaign->update_usage();
 
+    }
+
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
+
+$sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension`  ");
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+        $deal = get_object('Deal', $row['Deal Key']);
+
+        $deal->update_number_components();
+        $deal->update_usage();
+
+    }
+
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
+
+
+$sql = sprintf("SELECT `Deal Component Key` FROM `Deal Component Dimension`  ");
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+        $deal_component = get_object('DealComponent', $row['Deal Component Key']);
+
+        $deal_component->update_usage();
 
     }
 
