@@ -1,6 +1,6 @@
 <?php
 
-include_once __DIR__ . '/api.include.php';
+include_once __DIR__ . '../keyring/api.include.php';
 
 function initializeAnalytics($key) {
 
