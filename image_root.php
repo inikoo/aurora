@@ -103,8 +103,6 @@ $sql = sprintf(
 if ($result = $db->query($sql)) {
 
     if ($row = $result->fetch()) {
-
-
         header('Content-type: image/'.$row['Image File Format']);
         header('Content-Disposition: inline; filename='.$row['Image Filename']);
         $seconds_to_cache = 3600 * 24 * 500;

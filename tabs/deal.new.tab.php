@@ -39,6 +39,11 @@ switch ($state['_parent']->get('Code')){
         $smarty->assign('js_code', 'js/injections/voucher.new.'.(_DEVEL ? '' : 'min.').'js');
 
         break;
+    case 'FO':
+        $smarty->assign('js_code', 'js/injections/deal_first_order.new.'.(_DEVEL ? '' : 'min.').'js');
+
+        break;
+
     default:
         $smarty->assign('js_code', 'js/injections/deal.new.'.(_DEVEL ? '' : 'min.').'js');
 

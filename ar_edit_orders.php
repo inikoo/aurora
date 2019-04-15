@@ -1561,20 +1561,25 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
 
     $itf_data = array();
     $sql      = sprintf(
-        'SELECT `Location Key`, sum(`Required`+`Given`) AS required ,group_concat(`Inventory Transaction Key`) as itf_keys FROM `Inventory Transaction Fact` ITF   WHERE   `Delivery Note Key`=%d  and  ITF.`Part SKU`=%d  group by `Location Key` ',
+        'SELECT PL.`Location Key` as pl_ok  ,ITF.`Location Key`, sum(`Required`+`Given`) AS required ,group_concat(`Inventory Transaction Key`) as itf_keys 
+        FROM `Inventory Transaction Fact` ITF    LEFT JOIN  `Part Location Dimension` PL ON  (ITF.`Location Key`=PL.`Location Key` and ITF.`Part SKU`=PL.`Part SKU`)
+        WHERE   `Delivery Note Key`=%d  and  ITF.`Part SKU`=%d  group by `Location Key` ',
         $data['metadata']['delivery_note_key'],
         $data['metadata']['part_sku']
     );
 
+
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
+
 
 
             $itf_data[$row['Location Key']] = array(
                 'required' => $row['required'],
                 'picked'   => 0,
                 'pending'  => $row['required'],
-                'itf_keys' => $row['itf_keys']
+                'itf_keys' => $row['itf_keys'],
+                'pl_ok'=>$row['pl_ok']
             );
 
 
@@ -1587,11 +1592,14 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
     }
 
 
+
     $part = get_object('part', $data['metadata']['part_sku']);
     foreach ($part->get_locations('part_location_object', '', true) as $part_location) {
 
 
         $locations .= '<div style="height: 32px">'.get_delivery_note_fast_track_packing_item_location(
+
+                'Yes',
                 $total_required - $total_picked,
                 $part_location->get('Quantity On Hand'),
                 $date,
@@ -1605,6 +1613,7 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
             ).'</div>';
 
         $picked_offline_input .= '<div style="margin-bottom: 4px">'.get_delivery_note_fast_track_packing_input(
+                'Yes',
                 $total_required,
                 $total_picked,
                 (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),

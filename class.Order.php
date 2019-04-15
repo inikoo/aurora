@@ -28,17 +28,14 @@ class Order extends DB_Table {
 
     use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, OrderCalculateTotals, OrderBasketOperations, OrderTax;
 
-    //Public $data = array ();
-    // Public $items = array ();
-    // Public $status_names = array ();
-    // Public $id = false;
-    // Public $tipo;
-    // Public $staus = 'new';
 
     var $amount_off_allowance_data = false;
     var $ghost_order = false;
     var $update_stock = true;
     var $skip_update_after_individual_transaction = false;
+
+    /** @var PDO  */
+    var $db;
 
     function __construct($arg1 = false, $arg2 = false) {
 
