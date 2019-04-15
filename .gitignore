@@ -133,6 +133,8 @@ cron/tmp.php
 keyring/currency_exchange_api_keys.php
 cron/read_madmimi_suppresion_lists.php
 
-utils/api.secret.json
+keyring/api.secret.json
 
-utils/api.include.php
+keyring/api.google.include.php
+
+utils/api.log.php
