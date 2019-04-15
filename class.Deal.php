@@ -956,11 +956,9 @@ class Deal extends DB_Table {
         }
 
 
-        foreach ($this->get_deal_components('objects', 'all') as $component) {
-
-
+        //foreach ($this->get_deal_components('objects', 'all') as $component) {
             //  $component->update(array('Deal Component Status' => $value), 'no_history');
-        }
+        //}
 
     }
 
