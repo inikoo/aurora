@@ -3,7 +3,7 @@
 
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 8 March 2019 at 12:29:11 GMT+8, Kuala Lumpur, Malaysia
+ Created: Thu 11 April  2019 12:01:29 MYT, Kuala Lumpur, Malaysia
 
  Copyright (c) 2019, Inikoo
 
@@ -128,8 +128,6 @@ if($object->get('Deal Status')!='Finish') {
 }
 
 
-
-
 if( $object->get('Deal Status')!='Finish'){
     $operations = array(
         'label'      => _('Operations'),
@@ -190,3 +188,6 @@ if( $object->get('Deal Status')!='Finish'){
     );
     $object_fields[] = $operations;
 }
+
+
+

@@ -42,7 +42,7 @@ if ($result = $db->query($sql)) {
 
         $deal->update_usage();
         $deal->update_number_components();
-        $deal->update_term_allowances();
+        $deal->update_deal_term_allowances();
 
 
         $deal->update_status_from_dates(false);

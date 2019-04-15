@@ -97,10 +97,18 @@
                             <td class="text-right order_items_discount">{$order->get('Basket Items Discount Amount')}</td>
                         </tr>
                         <tr>
-                            <td>{if isset($labels._items_net) and $labels._items_net!=''}{$labels._items_net}{else}{t}Items Net{/t}{/if}</td>
+                            <td>{if !empty($labels._items_net)}{$labels._items_net}{else}{t}Items Net{/t}{/if}</td>
 
                             <td class="text-right order_items_net">{$order->get('Items Net Amount')}</td>
                         </tr>
+
+
+                        <tr class="Deal_Amount_Off_tr  {if $order->get('Order Deal Amount Off')==0}hide{/if}">
+                            <td>{if !empty($labels._amout_off)}{$labels._amout_off}{else}{t}Amount off{/t}{/if}</td>
+                            <td class="aright Deal_Amount_Off">{$order->get('Deal Amount Off')}</td>
+                        </tr>
+
+
                         <tr class="order_charges_container {if $order->get('Order Charges Net Amount')==0 }very_discreet{/if}">
                             <td><i class="button order_charges_info fa fa-info-circle padding_right_5 info {if $order->get('Order Charges Net Amount')==0 }hide{/if}"    style="color: #007fff;" onclick="show_charges_info()" ></i>  {if !empty($labels._items_charges)}{$labels._items_charges}{else}{t}Charges{/t}{/if}</td>
 
@@ -111,6 +119,11 @@
 
                             <td class="text-right order_shipping">{if $order->get('Shipping Net Amount')=='TBC'}<i class="fa error fa-exclamation-circle" title="" aria-hidden="true"></i> <small>{if !empty($labels._we_will_contact_you)}{$labels._we_will_contact_you}{else}{t}We will contact you{/t}{/if}</small>{else}{$order->get('Shipping Net Amount')}    {/if}  </td>
                         </tr>
+
+
+
+
+
                         <tr>
                             <td>{if isset($labels._total_net) and $labels._total_net!=''}{$labels._total_net}{else}{t}Total Net{/t}{/if}</td>
 

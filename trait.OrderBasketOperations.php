@@ -186,25 +186,27 @@ trait OrderBasketOperations {
         $this->data['Order Items Discount Amount'] = 0;
 
 
+        $this->data['Order Metadata'] = '{}';
 
-        $keys   = '(';
-        $values = 'values (';
+
+
+
+        $sql = sprintf(
+            "INSERT INTO `Order Dimension` (%s) values (%s)",
+            '`'.join('`,`', array_keys($this->data)).'`',
+            join(',', array_fill(0, count($this->data), '?'))
+        );
+
+        $stmt = $this->db->prepare($sql);
+
+        $i = 1;
         foreach ($this->data as $key => $value) {
-            $keys .= "`$key`,";
-            if (preg_match('/xxxxxx/i', $key)) {
-                $values .= prepare_mysql($value, false).",";
-            } else {
-                $values .= prepare_mysql($value).",";
-            }
+            $stmt->bindValue($i, $value);
+            $i++;
         }
 
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
 
-
-        $sql = "insert into `Order Dimension` $keys  $values";
-
-        if ($this->db->exec($sql)) {
+        if ($stmt->execute()) {
             $this->id = $this->db->lastInsertId();
 
 
