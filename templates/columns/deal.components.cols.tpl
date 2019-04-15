@@ -54,7 +54,7 @@ name: "description",
 label: "{t}Description{/t}",
 editable: false,
 
-sortType: "toggle",
+sortable: false,
 cell: Backgrid.HtmlCell.extend({
 
 }),

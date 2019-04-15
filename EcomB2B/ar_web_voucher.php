@@ -74,7 +74,7 @@ function update_voucher($_data, $customer, $order, $editor, $db) {
                     $order->id,
                 ]
             );
-
+            $old_used_deals=$order->get_used_deals();
             $order->update_discounts_items();
             $order->update_totals();
             $order->update_shipping();
@@ -82,6 +82,33 @@ function update_voucher($_data, $customer, $order, $editor, $db) {
             $order->update_discounts_no_items();
             $order->update_deal_bridge();
 
+            $new_used_deals=$order->get_used_deals();
+            $intersect = array_intersect($old_used_deals[0], $new_used_deals[0]);
+            $campaigns_diff =array_merge(array_diff($old_used_deals[0], $intersect), array_diff($new_used_deals[0], $intersect));
+
+            $intersect = array_intersect($old_used_deals[1], $new_used_deals[1]);
+            $deal_diff =array_merge(array_diff($old_used_deals[1], $intersect), array_diff($new_used_deals[1], $intersect));
+
+            $intersect = array_intersect($old_used_deals[2], $new_used_deals[2]);
+            $deal_components_diff =array_merge(array_diff($old_used_deals[2], $intersect), array_diff($new_used_deals[2], $intersect));
+
+
+
+            if(count($campaigns_diff)>0 or count($deal_diff)>0  or count($deal_components_diff)>0 ){
+                $account = get_object('Account', '');
+
+                require_once 'utils/new_fork.php';
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'      => 'update_deals_usage',
+                    'campaigns' => $campaigns_diff,
+                    'deals' => $deal_diff,
+                    'deal_components' => $deal_components_diff,
+
+
+                ), $account->get('Account Code'), $db
+                );
+            }
 
             $order->update_totals();
 
@@ -147,7 +174,7 @@ function update_voucher($_data, $customer, $order, $editor, $db) {
                     ]
                 );
 
-
+                $old_used_deals=$order->get_used_deals();
                 $order->update_discounts_items();
                 $order->update_totals();
                 $order->update_shipping();
@@ -155,6 +182,33 @@ function update_voucher($_data, $customer, $order, $editor, $db) {
                 $order->update_discounts_no_items();
                 $order->update_deal_bridge();
 
+                $new_used_deals=$order->get_used_deals();
+                $intersect = array_intersect($old_used_deals[0], $new_used_deals[0]);
+                $campaigns_diff =array_merge(array_diff($old_used_deals[0], $intersect), array_diff($new_used_deals[0], $intersect));
+
+                $intersect = array_intersect($old_used_deals[1], $new_used_deals[1]);
+                $deal_diff =array_merge(array_diff($old_used_deals[1], $intersect), array_diff($new_used_deals[1], $intersect));
+
+                $intersect = array_intersect($old_used_deals[2], $new_used_deals[2]);
+                $deal_components_diff =array_merge(array_diff($old_used_deals[2], $intersect), array_diff($new_used_deals[2], $intersect));
+
+
+
+                if(count($campaigns_diff)>0 or count($deal_diff)>0  or count($deal_components_diff)>0 ){
+                    $account = get_object('Account', '');
+
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'      => 'update_deals_usage',
+                        'campaigns' => $campaigns_diff,
+                        'deals' => $deal_diff,
+                        'deal_components' => $deal_components_diff,
+
+
+                    ), $account->get('Account Code'), $db
+                    );
+                }
 
                 $order->update_totals();
 

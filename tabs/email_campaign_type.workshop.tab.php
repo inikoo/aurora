@@ -54,8 +54,8 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
         $merge_tags = ",{ name: '"._('Reset password URL')."',value: '[Reset_Password_URL]'}";
 
     } elseif ($email_template->get('Email Template Role') == 'Order Confirmation') {
-        $merge_tags     = ",{ name: '"._('Order number')."',value: '[Order Number]'},{ name: '"._('Order Amount')."',value: '[Order Amount]'}";
-        $merge_contents = "{ name: '"._('Payment information')."',value: '[Pay Info]'},{ name: '"._('Order')."',value: '[Order]'}";
+        $merge_tags     = ",{ name: '"._('Order number')."',value: '[Order Number]'},{ name: '"._('Order Amount')."',value: '[Order Amount]'},{ name: '"._('Invoice address')."',value: '[Invoice Address]'},{ name: '"._('Delivery address')."',value: '[Delivery Address]'}";
+        $merge_contents = "{ name: '"._('Payment information')."',value: '[Pay Info]'},{ name: '"._('Order items')."',value: '[Order]'},{ name: '"._("Customer note")."',value: '[Customer Note]'}";
 
     } elseif ($email_template->get('Email Template Role') == 'OOS Notification') {
         $merge_tags = ",{ name: '"._('Back in stock products')."',value: '[Products]'}";

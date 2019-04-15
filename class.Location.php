@@ -102,9 +102,6 @@ class Location extends DB_Table {
             join(',', array_fill(0, count($this->data), '?'))
         );
 
-
-
-
         $stmt = $this->db->prepare($sql);
 
         $i = 1;
