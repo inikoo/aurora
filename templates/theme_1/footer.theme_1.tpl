@@ -336,7 +336,7 @@
 
             <div id="block_text_stem_cell" class="hide">
 
-                <div class="footer_block about_us" style="position: relative">
+                <div class="footer_block about_us ui-sortable-handle"  data-type="text" style="position: relative">
 
 
                     <i class="far fa-hand-rock editing hide handle" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
@@ -356,7 +356,7 @@
 
 
             <div id="block_links_stem_cell" class="hide">
-                <div class="footer_block " style="position: relative">
+                <div class="footer_block ui-sortable-handle"  data-type="links" style="position: relative">
 
                     <i class="far fa-hand-rock editing hide handle" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
                     <i onclick="open_block_type_options(this,'block_type_1','text')" class="fa fa-recycle editing  button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:40px"></i>
@@ -382,7 +382,7 @@
             <div id="block_nothing_stem_cell" class="hide">
 
 
-                <div class="footer_block" style="position: relative">
+                <div class="footer_block ui-sortable-handle"  data-type="nothing" style="position: relative">
                     <i class="far fa-hand-rock editing hide handle" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
                     <i onclick="open_block_type_options(this,'block_type_1','nothing')" class="fa fa-recycle editing  button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:0px"></i>
 
@@ -391,7 +391,7 @@
             </div>
             <div id="block_low_nothing_stem_cell" class="hide">
 
-                <i class="far fa-hand-rock editing hide handle" aria-hidden="true" ></i>
+                <i class="far fa-hand-rock editing hide handle" aria-hidden="true" style="position: relative"></i>
                 <i onclick="open_block_type_options(this,'block_type_2','block_type_2')" class="fa fa-recycle editing  button recycler"  ></i>
 
 
@@ -402,7 +402,7 @@
             <div id="block_items_stem_cell" class="hide">
 
 
-                <div class="footer_block" style="position: relative">
+                <div class="footer_block ui-sortable-handle"  data-type="address" style="position: relative">
 
                     <i class="far fa-hand-rock editing hide handle" aria-hidden="true" style="position:absolute;top:-5px;left:30px"></i>
                     <i onclick="open_block_type_options(this,'block_type_1','text')" class="fa fa-recycle editing  button recycler" aria-hidden="true" style="position:absolute;top:-23px;left:20px"></i>
@@ -550,7 +550,7 @@
 
                             {elseif $column.type=='nothing'}
 
-                                    <div class="footer_block {if $smarty.foreach.copyright_info.last}last{/if}"  data-type="nothing" >
+                                    <div class="footer_block {if $smarty.foreach.copyright_info.last}last{/if}"  data-type="nothing" style="position: relative">
                                         <i class="far fa-hand-rock editing hide handle" aria-hidden="true" ></i>
                                         <i onclick="open_block_type_options(this,'block_type_2','{$column.type}')" class="fa fa-recycle editing hide button recycler" aria-hidden="true" ></i>
 
@@ -686,20 +686,31 @@
             function change_block_type(element) {
 
 
-                var block_type = $(element).closest('.block_type')
+                var block_type = $(element).closest('.block_type');
 
-                console.log(element)
+                console.log($(element))
 
-              / $('#' + block_type.attr('block_id')).data('type',$(element).data('type'))
+               //$('#' + block_type.attr('block_id')).data('type',$(element).data('type'))
 
                 if ($(element).hasClass('type_text')) {
                     $('#' + block_type.attr('block_id')).replaceWith($('#block_text_stem_cell').html())
                 } else if ($(element).hasClass('type_low_text')) {
                     $('#' + block_type.attr('block_id')).html($('#block_low_text_stem_cell').html())
+                    $('#' + block_type.attr('block_id')).data('type','low_text')
+                    $('#' + block_type.attr('block_id')).attr('data-type','low_text')
                 } else if ($(element).hasClass('type_social_links')) {
                     $('#' + block_type.attr('block_id')).html($('#block_social_links_stem_cell').html())
+                    $('#' + block_type.attr('block_id')).data('type','social_links')
+                    $('#' + block_type.attr('block_id')).attr('data-type','social_links')
+
+
+
                 } else if ($(element).hasClass('type_copyright_bundle')) {
                     $('#' + block_type.attr('block_id')).html($('#block_copyright_bundle_stem_cell').html())
+
+                    $('#' + block_type.attr('block_id')).data('type','copyright_bundle')
+                    $('#' + block_type.attr('block_id')).attr('data-type','copyright_bundle')
+
                 } else if ($(element).hasClass('type_links')) {
                     $('#' + block_type.attr('block_id')).replaceWith($('#block_links_stem_cell').html())
                 } else if ($(element).hasClass('type_address')) {
@@ -714,6 +725,8 @@
                     $('#' + block_type.attr('block_id')).replaceWith($('#block_nothing_stem_cell').html())
                 } else if ($(element).hasClass('type_low_nothing')) {
                     $('#' + block_type.attr('block_id')).html($('#block_low_nothing_stem_cell').html())
+                    $('#' + block_type.attr('block_id')).data('type','nothing')
+                    $('#' + block_type.attr('block_id')).attr('data-type','nothing')
                 }
 
 
@@ -1179,6 +1192,8 @@
 
                         $('.footer_block', obj).each(function (i, obj2) {
 
+                            console.log($(obj2))
+
                             switch ($(obj2).data('type')) {
 
                                 case 'address':
@@ -1270,7 +1285,7 @@
 
                             switch ($(obj2).data('type')) {
 
-                                case 'text':
+                                case 'low_text':
                                     cols_copyright.push({
                                         'type': 'text', 'text': $(obj2).find('.lower_footer_text').html()
                                     })
