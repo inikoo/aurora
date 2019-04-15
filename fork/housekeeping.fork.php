@@ -219,10 +219,10 @@ function fork_housekeeping($job) {
 
 
                     default:
-                       // $sql = sprintf(
-                       //     'SELECT `Order Key`  FROM `Order Dimension` where  `Current Dispatching State`="In Process"  group by `Order Key`',
-                       //     $deal->get('Deal Trigger Key')
-                       // );
+                        $sql = sprintf(
+                            'SELECT `Order Key`  FROM `Order Dimension` where  `Order State`="InBasket"  and `Order Store Key`=%d ',
+                            $deal->get('Deal Store Key')
+                        );
                         break;
                 }
 
