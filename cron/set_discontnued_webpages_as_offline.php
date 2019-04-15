@@ -81,8 +81,6 @@ if ($stmt->execute()) {
 
                     }
                 }
-
-
             }
         }
 

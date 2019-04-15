@@ -37,7 +37,7 @@ $editor = array(
 );
 
 ini_set('memory_limit', '10000M');
-$website_key = 5;
+$website_key = 1;
 
 $where = " and `Webpage Website Key`=$website_key";
 
@@ -45,11 +45,11 @@ $sql = sprintf('update `Website Dimension` set `Website Theme`="theme_1"  where 
 $db->exec($sql);
 
 migrate_departments();
-print "departments done\n";
+//print "departments done\n";
 migrate_families();
-print "families done\n";
+//print "families done\n";
 
-migrate_products();
+//migrate_products();
 
 
 
@@ -1435,7 +1435,7 @@ function migrate_families() {
 
 
     $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE `Webpage Template Filename`="products_showcase"  %s ', $where);
-    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="products_showcase" and `Webpage Website Key`=%d ', $website_key);
+    $sql = sprintf('SELECT `Webpage Scope Key`,`Page Key`,`Webpage Website Key` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="products_showcase" and `Webpage Website Key`=%d order by `Webpage Code`', $website_key);
 
 
     if ($result = $db->query($sql)) {
@@ -1719,7 +1719,7 @@ function migrate_families() {
                 foreach ($content_data['panels'] as $panel_index => $panel_data) {
                     if ($panel_data['type'] == 'code' and $panel_data['content'] == '') {
                     } else {
-                        if ($panel_data['type'] == 'code' and $panel_data['size'] == '2x') {
+                        if ($panel_data['type'] == 'code' and ( $panel_data['size'] == '2x' or $panel_data['size'] == '3x')  ) {
                             // suspect video
 
                             if (preg_match('/youtube\.com\/embed\/([0-9a-z]+)/i', $panel_data['content'], $matches)) {
@@ -2068,8 +2068,10 @@ function migrate_departments() {
 
     $left_offset = 158;
 
+
+
     $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="categories_showcase"   %s ', $where);
-    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="categories_showcase"  and  `Webpage Website Key`=%d ', $website_key);
+    $sql = sprintf('SELECT `Page Key`,`Page Store Key` ,`Page Store Section`,`Page Parent Code` FROM `Page Store Dimension` WHERE  `Webpage Template Filename`="categories_showcase"  and  `Webpage Website Key`=%d order by `Webpage Code` ', $website_key);
 
 
     if ($result = $db->query($sql)) {

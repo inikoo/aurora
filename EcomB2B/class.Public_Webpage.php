@@ -272,7 +272,7 @@ class Public_Webpage {
                     case 'Category Products':
                         $deals=array();
                         $sql = sprintf(
-                            "SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Component Name Label`,`Deal Component Term Label`,`Deal Component Allowance Label` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d AND `Deal Component Status`='Active'",
+                            "SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Component Name Label`,`Deal Component Term Label`,`Deal Component Allowance Label` FROM `Deal Component Dimension`   left join `Deal Campaign Dimension` on (`Deal Component Campaign Key`=`Deal Campaign Key`)    WHERE `Deal Campaign Code`!='CU' and `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d AND `Deal Component Status`='Active'",
                             $this->data['Webpage Scope Key']
                         );
 
@@ -324,7 +324,7 @@ class Public_Webpage {
 
                         if(count($categories)>0){
                             $sql = sprintf(
-                                "SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Component Name Label`,`Deal Component Term Label`,`Deal Component Allowance Label` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) AND `Deal Component Status`='Active'",
+                                "SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Component Name Label`,`Deal Component Term Label`,`Deal Component Allowance Label` FROM `Deal Component Dimension`  left join `Deal Campaign Dimension` on (`Deal Component Campaign Key`=`Deal Campaign Key`)  WHERE `Deal Campaign Code`!='CU' and  `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) AND `Deal Component Status`='Active'",
                                 join($categories,',')
                             );
 

@@ -1918,7 +1918,7 @@ trait ProductCategory {
 
 
         $sql = sprintf(
-            "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d $where", $this->id
+            "SELECT `Deal Component Key` FROM `Deal Component Dimension`  left join `Deal Campaign Dimension` on (`Deal Component Campaign Key`=`Deal Campaign Key`)   WHERE  `Deal Campaign Code`!='CU' and  `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d $where", $this->id
         );
 
         if ($result = $this->db->query($sql)) {

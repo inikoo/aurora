@@ -3,15 +3,16 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 15 February 2017 at 12:19:26 GMT+8, Cyberjaya, Malaysia
- Copyright (c) 2016, Inikoo
+ Created:Mon 15 April  2019 22:11:59 MYT, Kuala Lumpur Malaysia
+ Copyright (c) 2019, Inikoo
 
  Version 3
 
 */
 
 require_once 'common.php';
-include_once 'nano_services/migrate_order.ns.php';
+
+require_once 'class.Customer.php';
 
 
 $editor = array(
@@ -23,12 +24,15 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
-$store_key = 1;
-
-$account = new Account();
-
 $print_est = true;
-$sql       = sprintf("select count(*) as num FROM `Order Dimension` O left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where `Store Key`=%d ", $store_key);
+
+print date('l jS \of F Y h:i:s A')."\n";
+
+
+$where = 'where `Store Version`>1 and `Customer Key`=1020';
+$where = 'where `Store Version`>1';
+
+$sql = sprintf("select count(*) as num from `Customer Dimension` left join `Store Dimension` on (`Store Key`=`Customer Store Key`) $where");
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -43,15 +47,19 @@ if ($result = $db->query($sql)) {
 $lap_time0 = date('U');
 $contador  = 0;
 
-$sql = sprintf('SELECT `Order Key` FROM `Order Dimension` O left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where  `Order Key`=%d order by O.`Order Key` desc ', 2339791);
 
-$sql = sprintf('SELECT `Order Key` FROM `Order Dimension` O left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where  `Store Key`=%d order by O.`Order Key` desc ', $store_key);
+$sql = sprintf(
+    "select `Customer Key` from `Customer Dimension`  left join `Store Dimension` on (`Store Key`=`Customer Store Key`)  $where order by `Customer Key` desc "
+);
+
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
+        $customer = new Customer('id', $row['Customer Key']);
 
 
-        $order = (new migrate_order($db))->migrate($row['Order Key']);
+        $customer->update_account_balance();
+        $customer->update_credit_account_running_balances();
 
         $contador++;
         $lap_time1 = date('U');
@@ -62,15 +70,10 @@ if ($result = $db->query($sql)) {
                 )."m  ($contador/$total) \r";
         }
 
-
     }
-
 
 } else {
     print_r($error_info = $db->errorInfo());
-    print $sql;
     exit;
 }
 
-
-?>

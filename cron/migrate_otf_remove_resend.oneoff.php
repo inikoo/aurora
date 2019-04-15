@@ -31,28 +31,36 @@ $editor = array(
 
 $account = new Account();
 
-$store_key = 5;
+$store_key = 1;
 
-$sql = 'select count(*) as num  from `Order Transaction Fact` where `Store Key`=? and `Order Transaction Type`="Resend"  ';
-$stmt = $db->prepare($sql);
-if ($stmt->execute(
-    array(
-        $store_key
-    )
-)) {
-    if ($row = $stmt->fetch()) {
-        print $row['num']."\n";
-    } else {
 
-    }
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit();
-}
 
 $counter=0;
 
 foreach (range(0, 500) as $number) {
+
+
+    $sql = 'select count(*) as num  from `Order Transaction Fact` where `Store Key`=? and `Order Transaction Type`="Resend"  ';
+    $stmt = $db->prepare($sql);
+    if ($stmt->execute(
+        array(
+            $store_key
+        )
+    )) {
+        if ($row = $stmt->fetch()) {
+            print $row['num']."\n";
+
+            if($row['num']==0){
+                exit;
+            }
+
+        } else {
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit();
+    }
 
 
     $sql = 'select * from `Order Transaction Fact` where `Store Key`=? and `Order Transaction Type`="Resend" LIMIT 10000  ';
