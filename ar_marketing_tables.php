@@ -439,7 +439,7 @@ function components($_data, $db, $user) {
                 'id'          => (integer)$data['Deal Component Key'],
                 'status'      => $status,
                 'name'        => $data['Deal Component Name Label'],
-                'description' => $data['Deal Component Term Label'].' <i class="fa fa-arrow-right"></i> '.$data['Deal Component Allowance Label'],
+                'description' => $data['Deal Component Term Allowances Label'],
                 'from'        => $from,
                 'to'          => $to,
                 'target'      => $target,

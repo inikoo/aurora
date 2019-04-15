@@ -373,11 +373,13 @@ function send_test_email($data, $smarty) {
 
 
     $placeholders = array(
-        '[Greetings]'     => 'Dear John Smith',
-        '[Name,Company]'  => 'John Smith, Acme Inc.',
-        '[Customer Name]' => 'Acme Inc.',
-        '[Name]'          => 'John Smith',
-
+        '[Greetings]'          => 'Dear John Smith',
+        '[Name,Company]'       => 'John Smith, Acme Inc.',
+        '[Customer Name]'      => 'Acme Inc.',
+        '[Name]'               => 'John Smith',
+        '[Customer Note]'      => 'Urgent order, please delivery ASAP',
+        '[Invoice Address]'    => '44 Simpson Shores<br/>Marystad<br/>CF23 0EL<br/>UK',
+        '[Delivery Address]'   => '6 Emma Locks<br/>Port Oscar<br/>GU1 2PB<br/>UK',
         '[Order Number]'       => '434534',
         '[Order Amount]'       => '£54.00',
         '[Order Date]'         => strftime("%a, %e %b %Y", strtotime('now -11 days')),
@@ -404,7 +406,7 @@ function send_test_email($data, $smarty) {
 
         $placeholders['[Tracking Number]'] = substr(md5(date('U')), 16);
 
-        $placeholders['[Tracking URL]'] = 'http://example.com/';
+        $placeholders['[Tracking URL]'] = 'https://example.com/';
 
 
     }
@@ -632,7 +634,7 @@ function publish_email_template($data, $editor, $smarty, $db) {
     $publish_email_template = $email_template->publish();
 
     if ($publish_email_template->id) {
-        if ($email_template->get('Email Template Scope') == 'Mailshot' or $email_template->get('Email Template Scope') == 'EmailCampaign' ) {
+        if ($email_template->get('Email Template Scope') == 'Mailshot' or $email_template->get('Email Template Scope') == 'EmailCampaign') {
 
             $email_campaign         = get_object('EmailCampaign', $email_template->get('Email Template Scope Key'));
             $email_campaign->editor = $editor;
@@ -792,7 +794,7 @@ function select_blueprint($data, $editor, $db) {
 
     //  print $scope->get_object_name();
 
-   // $update_metadata = array();
+    // $update_metadata = array();
 
 
     if ($data['scope'] == 'Mailshot') {
@@ -819,11 +821,9 @@ function select_blueprint($data, $editor, $db) {
             $email_template->fast_update(
                 array(
                     'Email Template Selecting Blueprints' => 'No',
-                    'Email Template Editing Checksum' => $checksum,
+                    'Email Template Editing Checksum'     => $checksum,
                 )
             );
-
-
 
 
         } else {
@@ -1456,11 +1456,7 @@ function clone_sent_mailshot($data, $editor, $db) {
                 )
             );
             $checksum = md5(
-                ($email_template->get('Email Template Type') == 'Text'
-                    ?
-                    ''
-                    :
-                    $email_template->get('Email Template Editing JSON')).'|'.$email_template->get('Email Template Text').'|'.$email_template->get('Email Template Subject')
+                ($email_template->get('Email Template Type') == 'Text' ? '' : $email_template->get('Email Template Editing JSON')).'|'.$email_template->get('Email Template Text').'|'.$email_template->get('Email Template Subject')
             );
 
 
@@ -1765,12 +1761,9 @@ function use_template($data, $editor, $db) {
         } else {
 
 
-
-
-
-            $text    ='';
-            $subject =$blueprint->get('Name');
-            $name    =$blueprint->get('Role');
+            $text    = '';
+            $subject = $blueprint->get('Name');
+            $name    = $blueprint->get('Role');
 
 
             $email_template_data = array(
@@ -1785,7 +1778,6 @@ function use_template($data, $editor, $db) {
 
                 'Email Template Editing JSON' => $blueprint_json
             );
-
 
 
             $email_template = new Email_Template('find', $email_template_data, 'create');
@@ -1877,60 +1869,57 @@ function use_template($data, $editor, $db) {
         }
 
 
-    }
+    } elseif ($scope->get_object_name() == 'Email Template') {
+        /*
+
+                if ($scope->id) {
+                    $email_template = $scope;
+                    $email_template->update(
+                        array(
+                            'Email Template Editing JSON' => $blueprint_json,
+                            'Email Template Type'         => 'HTML'
+                        ), 'no_history'
+                    );
+                    $checksum = md5(
+                        ($email_template->get('Email Template Type') == 'Text' ? '' : $email_template->get('Email Template Editing JSON')).'|'.$email_template->get('Email Template Text').'|'.$email_template->get(
+                            'Email Template Subject'
+                        )
+                    );
 
 
-    elseif ($scope->get_object_name() == 'Email Template') {
-/*
+                    $email_template->update(
+                        array(
+                            'Email Template Editing Checksum' => $checksum,
+                        ), 'no_history'
+                    );
 
-        if ($scope->id) {
-            $email_template = $scope;
-            $email_template->update(
-                array(
-                    'Email Template Editing JSON' => $blueprint_json,
-                    'Email Template Type'         => 'HTML'
-                ), 'no_history'
-            );
-            $checksum = md5(
-                ($email_template->get('Email Template Type') == 'Text' ? '' : $email_template->get('Email Template Editing JSON')).'|'.$email_template->get('Email Template Text').'|'.$email_template->get(
-                    'Email Template Subject'
-                )
-            );
+                } else {
+
+                    $text    = (isset($email_templates_data[$data['role']]['text']) ? $email_templates_data[$data['role']]['text'] : '');
+                    $subject = (isset($email_templates_data[$data['role']]['subject']) ? $email_templates_data[$data['role']]['subject'] : $data['role']);
+                    $name    = (isset($email_templates_data[$data['role']]['name']) ? $email_templates_data[$data['role']]['name'] : $data['role']);
 
 
-            $email_template->update(
-                array(
-                    'Email Template Editing Checksum' => $checksum,
-                ), 'no_history'
-            );
-
-        } else {
-
-            $text    = (isset($email_templates_data[$data['role']]['text']) ? $email_templates_data[$data['role']]['text'] : '');
-            $subject = (isset($email_templates_data[$data['role']]['subject']) ? $email_templates_data[$data['role']]['subject'] : $data['role']);
-            $name    = (isset($email_templates_data[$data['role']]['name']) ? $email_templates_data[$data['role']]['name'] : $data['role']);
+                    $email_template_data = array(
+                        'Email Template Name'      => $name,
+                        'Email Template Role Type' => 'Transactional',
+                        'Email Template Role'      => $data['role'],
+                        'Email Template Scope'     => $data['scope'],
+                        'Email Template Scope Key' => $data['scope_key'],
+                        'Email Template Text'      => $text,
+                        'Email Template Subject'   => $subject,
 
 
-            $email_template_data = array(
-                'Email Template Name'      => $name,
-                'Email Template Role Type' => 'Transactional',
-                'Email Template Role'      => $data['role'],
-                'Email Template Scope'     => $data['scope'],
-                'Email Template Scope Key' => $data['scope_key'],
-                'Email Template Text'      => $text,
-                'Email Template Subject'   => $subject,
+                        'Email Template Editing JSON' => $blueprint_json
+                    );
 
 
-                'Email Template Editing JSON' => $blueprint_json
-            );
+                    new Email_Template('find', $email_template_data, 'create');
 
 
-            new Email_Template('find', $email_template_data, 'create');
+                }
 
-
-        }
-
-*/
+        */
     } else {
 
 

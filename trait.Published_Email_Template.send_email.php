@@ -504,6 +504,24 @@ trait Send_Email {
                 $this->placeholders['[Order Number]'] = $this->order->get('Public ID');
                 $this->placeholders['[Order Amount]'] = $this->order->get('Total');
                 $this->placeholders['[Order Date]']   = $this->order->get('Date');
+
+                if($this->order->get('Order For Collection')=='Yes'){
+                    $this->placeholders['[Delivery Address]']   = _('For collection');
+                }else{
+                    $this->placeholders['[Delivery Address]']   = $this->order->get('Order Delivery Address Formatted');
+
+                }
+
+                $this->placeholders['[Invoice Address]']   = $this->order->get('Order Invoice Address Formatted');
+
+                if(trim($this->order->get('Order Customer Message'))==''){
+                    $this->placeholders['[Customer Note]']   = '';
+                }else{
+                    $this->placeholders['[Customer Note]']   = '<span>'._('Note').':</span><br/><div>'.$this->order->get('Order Customer Message').'</div>';
+
+                }
+
+
                 $this->placeholders['[Pay Info]']     = $data['Pay Info'];
                 $this->placeholders['[Order]']        = $data['Order Info'];
                 break;

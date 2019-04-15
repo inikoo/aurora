@@ -416,7 +416,10 @@ class Public_Order extends DBW_Table {
                 }
 
                 break;
-
+            case('Deal Amount Off'):
+                return money(
+                    -1 * $this->data['Order Deal Amount Off'], $this->currency_code
+                );
             case 'Products':
                 return number($this->data['Order Number Items']);
                 break;

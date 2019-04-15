@@ -1735,11 +1735,22 @@ function order_items($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
 
-        if (is_numeric($data['Product Availability'])) {
-            $stock = number($data['Product Availability']);
-        } else {
-            $stock = '?';
+
+
+
+        if($data['Product Availability State']=='OnDemand'){
+            $stock  =_('On demand');
+
+        }else{
+
+            if (is_numeric($data['Product Availability'])) {
+                $stock = number($data['Product Availability']);
+            } else {
+                $stock = '?';
+            }
         }
+
+
 
 
         if ($data['Deal Info'] != '') {

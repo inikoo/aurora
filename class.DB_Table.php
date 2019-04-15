@@ -791,6 +791,30 @@ abstract class DB_Table extends stdClass {
 
     }
 
+    public function fast_remove_key_from_json_field($field, $key, $table_full_name = '') {
+
+
+        if ($table_full_name == '') {
+            $table_full_name = $this->table_name.' Dimension';
+        }
+
+        $key_field = $this->table_name." Key";
+
+        $sql = sprintf(
+            "UPDATE `%s` SET `%s`= JSON_REMOVE(`%s`,'$.%s') WHERE `%s`=?",
+            addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
+        );
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(1, $this->id);
+        $stmt->execute();
+
+        $this->get_data('id', $this->id);
+
+
+    }
+
     function set_editor($raw_data) {
         if (isset($raw_data['editor'])) {
             foreach ($raw_data['editor'] as $key => $value) {

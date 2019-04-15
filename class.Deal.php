@@ -15,7 +15,7 @@ include_once 'class.DB_Table.php';
 
 class Deal extends DB_Table {
 
-    /** @var PDO  */
+    /** @var PDO */
     var $db;
 
     function __construct($a1, $a2 = false, $a3 = false) {
@@ -141,14 +141,11 @@ class Deal extends DB_Table {
     }
 
 
-    function create($data)
-    {
+    function create($data) {
 
 
         $sql = sprintf(
-            "INSERT INTO `Deal Dimension` (%s) values (%s)",
-            '`' . join('`,`', array_keys($data)) . '`',
-            join(',', array_fill(0, count($data), '?'))
+            "INSERT INTO `Deal Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($data)).'`', join(',', array_fill(0, count($data), '?'))
         );
 
 
@@ -171,7 +168,7 @@ class Deal extends DB_Table {
 
             $this->update_status_from_dates();
 
-            $this->update_term_allowances();
+            $this->update_deal_term_allowances();
 
 
             $store = get_object('Store', $this->data['Deal Store Key']);
@@ -237,7 +234,7 @@ class Deal extends DB_Table {
 
     }
 
-    function update_term_allowances() {
+    function update_deal_term_allowances() {
 
 
         $this->fast_update(
@@ -254,8 +251,71 @@ class Deal extends DB_Table {
 
         $terms = '';
 
-
+        //print $this->data['Deal Terms Type'];
         switch ($this->data['Deal Terms Type']) {
+            case 'Order Interval':
+                $terms = sprintf('last order within %d days', $this->get('Deal Terms'));
+                break;
+            case 'Category Quantity Ordered':
+                $category=get_object('Category',$this->data['Deal Trigger Key']);
+                if ($this->data['Deal Terms'] == 1) {
+                    $terms = $category->get('Code');
+                } else {
+                    $terms = sprintf('order %d or more %s', $this->data['Deal Terms'], $category->get('Code'));
+                }
+                break;
+            case 'Category For Every Quantity Ordered':
+                $category=get_object('Category',$this->data['Deal Trigger Key']);
+                $terms = sprintf('%s, buy %d', $category->get('Code'), $this->data['Deal Terms']);
+                break;
+            case 'Category For Every Quantity Any Product Ordered':
+                $category=get_object('Category',$this->data['Deal Trigger Key']);
+
+                if( $this->data['Deal Terms']==1){
+                    $terms = sprintf('%s (Mix & match)', $category->get('Code'));
+
+                }else{
+                    $terms = sprintf('%s (Mix & match), for every %d ', $category->get('Code'), $this->data['Deal Terms']);
+
+                }
+
+
+                break;
+
+
+
+
+            case 'Amount AND Order Number':
+                $store = get_object('Store', $this->data['Deal Store Key']);
+
+                $deal_terms_data = preg_split('/\;/', $this->get('Deal Terms'));
+
+                if(is_array($deal_terms_data) and count($deal_terms_data)==3){
+
+                    $amount       = $deal_terms_data[1];
+                    $order_number = $deal_terms_data[2];
+
+
+                    $nf = new NumberFormatter('en_GB', NumberFormatter::ORDINAL);
+
+
+                    if ($amount == 0) {
+                        $terms = $nf->format($order_number).' order';
+                    } else {
+                        $terms = sprintf('%s order <span style="opacity: .8"> %s<i class="fal fa-arrow-from-bottom"></i></span>', $nf->format($order_number), money($amount, $store->get('Store Currency Code')));
+                    }
+                }else{
+                    $terms='Error';
+                }
+
+
+
+
+
+
+                //print $this->get('Deal Terms');
+
+                break;
 
             case 'Voucher AND Amount':
 
@@ -266,10 +326,10 @@ class Deal extends DB_Table {
                 $_terms = json_decode($this->get('Deal Terms'), true);
 
                 if (!$_terms) {
-                    $tmp = preg_split('/\;/',$this->get('Deal Terms'));
-                    $_terms=array(
-                        'voucher'=>$tmp[0],
-                        'amount'=>';'.$tmp[1].';'.$tmp[2],
+                    $tmp    = preg_split('/\;/', $this->get('Deal Terms'));
+                    $_terms = array(
+                        'voucher' => $tmp[0],
+                        'amount'  => ';'.$tmp[1].';'.$tmp[2],
                     );
                 }
 
@@ -282,66 +342,8 @@ class Deal extends DB_Table {
 
                 break;
 
-            case 'Order Interval':
-                $terms = sprintf('last order within %d days', $this->get('Deal Terms'));
+            break;
 
-
-                break;
-
-            case 'Category Quantity Ordered':
-
-                $component = $this->get_deal_components('objects');
-
-                if (count($component) > 0) {
-                    $component = array_pop($component);
-                    $terms     = $component->get_formatted_terms();
-
-                    /*
-
-                    if ($this->data['Deal Terms'] == 1) {
-                        $terms = sprintf('order %d', $component->get('Deal Component Allowance Target Label'));
-
-                    } else {
-                        $terms = sprintf('order %d or more %s', $this->data['Deal Terms'], $component->get('Deal Component Allowance Target Label'));
-
-                    }
-*/
-
-                } else {
-                    $terms = '';
-                }
-
-
-                break;
-            case 'Category For Every Quantity Ordered':
-
-                $component = $this->get_deal_components('objects');
-
-                if (count($component) > 0) {
-                    $component = array_pop($component);
-
-
-                    $terms = sprintf('%s products, buy %d', $component->get('Deal Component Allowance Target Label'), $this->data['Deal Terms']);
-                } else {
-                    $terms = '';
-                }
-
-
-                break;
-            case 'Category For Every Quantity Any Product Ordered':
-
-                $component = $this->get_deal_components('objects');
-
-                if (count($component) > 0) {
-                    $component = array_pop($component);
-
-
-                    $terms = sprintf('%s (Mix & match), buy %d ', $component->get('Deal Component Allowance Target Label'), $this->data['Deal Terms']);
-                } else {
-                    $terms = '';
-                }
-
-                break;
 
         }
 
@@ -581,6 +583,11 @@ class Deal extends DB_Table {
 
 
                     switch ($row['Deal Component Allowance Type']) {
+                        case 'Amount Off':
+                            $store=get_object('Store',$this->get('Store Key'));
+                            $allowances .= ', '.sprintf(_('%s off'), money($row['Deal Component Allowance'], $store->get('Store Currency Code')));
+
+                            break;
                         case 'Percentage Off':
                             $allowances .= ', '.sprintf(_('%s off'), percentage($row['Deal Component Allowance'], 1, 0));
 
@@ -651,7 +658,7 @@ class Deal extends DB_Table {
                 $this->update_field($field, $value, $options);
 
 
-                $this->update_term_allowances();
+                $this->update_deal_term_allowances();
 
                 $components = $this->get_deal_components('objects', 'All');
 
@@ -794,7 +801,7 @@ class Deal extends DB_Table {
 
         }
 
-        /** @var Smarty  */
+        /** @var Smarty */
         $smarty_web               = new Smarty();
         $smarty_web->template_dir = 'EcomB2B/templates';
         $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
@@ -866,7 +873,20 @@ class Deal extends DB_Table {
 
     }
 
-    function update_expiration_date($value, $options) {
+    function finish(){
+
+        if ($this->data['Deal Status'] == 'Finish') {
+            $this->error = true;
+            $this->msg   = 'Deal already finished';
+            return;
+        }
+
+        $this->update_expiration_date(gmdate('Y-m-d H:i:s'));
+
+    }
+
+
+    function update_expiration_date($value, $options='') {
 
         /*
         if ($this->data['Deal Status'] == 'Finish') {
@@ -936,11 +956,9 @@ class Deal extends DB_Table {
         }
 
 
-        foreach ($this->get_deal_components('objects', 'all') as $component) {
-
-
+        //foreach ($this->get_deal_components('objects', 'all') as $component) {
             //  $component->update(array('Deal Component Status' => $value), 'no_history');
-        }
+        //}
 
     }
 
@@ -1001,7 +1019,7 @@ class Deal extends DB_Table {
         $deal_component = new DealComponent('find create', $data);
         //$deal_component->update_status($this->data['Deal Status']);
         $this->update_number_components();
-        $this->update_term_allowances();
+        $this->update_deal_term_allowances();
 
         $deal_component->update_target_bridge();
 
