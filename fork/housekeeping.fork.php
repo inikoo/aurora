@@ -221,17 +221,84 @@ function fork_housekeeping($job) {
 
 
                                 $order = get_object('Order', $row['Order Key']);
+                                $old_used_deals = $order->get_used_deals();
                                 $order->update_totals();
 
                                 $order->update_discounts_items();
-
+                                $order->update_totals();
 
                                 $order->update_shipping(false, false);
                                 $order->update_charges(false, false);
                                 $order->update_discounts_no_items();
                                 $order->update_deal_bridge();
 
+                                $new_used_deals = $order->get_used_deals();
 
+
+                                $intersect      = array_intersect($old_used_deals[0], $new_used_deals[0]);
+                                $campaigns_diff = array_merge(array_diff($old_used_deals[0], $intersect), array_diff($new_used_deals[0], $intersect));
+
+                                $intersect = array_intersect($old_used_deals[1], $new_used_deals[1]);
+                                $deal_diff = array_merge(array_diff($old_used_deals[1], $intersect), array_diff($new_used_deals[1], $intersect));
+
+                                $intersect            = array_intersect($old_used_deals[2], $new_used_deals[2]);
+                                $deal_components_diff = array_merge(array_diff($old_used_deals[2], $intersect), array_diff($new_used_deals[2], $intersect));
+
+                                $date = gmdate('Y-m-d H:i:s');
+
+                                foreach ($campaigns_diff as $campaign_key) {
+
+                                    if($campaign_key>0){
+                                        $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+                                        print "$sql\n";
+                                        $db->prepare($sql)->execute(
+                                            [
+                                                $date,
+                                                $date,
+                                                'deal_campaign',
+                                                $campaign_key,
+                                                $date,
+
+                                            ]
+                                        );
+                                    }
+
+                                }
+
+                                foreach ($deal_diff as $deal_key) {
+                                    if($deal_key>0) {
+                                        $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+                                        $db->prepare($sql)->execute(
+                                            [
+                                                $date,
+                                                $date,
+                                                'deal',
+                                                $deal_key,
+                                                $date,
+
+                                            ]
+                                        );
+                                    }
+                                }
+
+                                foreach ($deal_components_diff as $deal_component_key) {
+                                    if($deal_component_key>0) {
+                                        $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+                                        $db->prepare($sql)->execute(
+                                            [
+                                                $date,
+                                                $date,
+                                                'deal_component',
+                                                $deal_component_key,
+                                                $date,
+
+                                            ]
+                                        );
+                                    }
+                                }
                                 $order->update_totals();
                             }
                         } else {
@@ -281,16 +348,84 @@ function fork_housekeeping($job) {
 
                             //print_r($row);
                             $order = get_object('Order', $row['Order Key']);
+
+                            $old_used_deals = $order->get_used_deals();
                             $order->update_totals();
 
                             $order->update_discounts_items();
-
+                            $order->update_totals();
 
                             $order->update_shipping(false, false);
                             $order->update_charges(false, false);
                             $order->update_discounts_no_items();
                             $order->update_deal_bridge();
+                            $new_used_deals = $order->get_used_deals();
 
+
+                            $intersect      = array_intersect($old_used_deals[0], $new_used_deals[0]);
+                            $campaigns_diff = array_merge(array_diff($old_used_deals[0], $intersect), array_diff($new_used_deals[0], $intersect));
+
+                            $intersect = array_intersect($old_used_deals[1], $new_used_deals[1]);
+                            $deal_diff = array_merge(array_diff($old_used_deals[1], $intersect), array_diff($new_used_deals[1], $intersect));
+
+                            $intersect            = array_intersect($old_used_deals[2], $new_used_deals[2]);
+                            $deal_components_diff = array_merge(array_diff($old_used_deals[2], $intersect), array_diff($new_used_deals[2], $intersect));
+
+                            $date = gmdate('Y-m-d H:i:s');
+
+                            foreach ($campaigns_diff as $campaign_key) {
+
+                                if($campaign_key>0){
+                                    $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+                                    print "$sql\n";
+                                    $db->prepare($sql)->execute(
+                                        [
+                                            $date,
+                                            $date,
+                                            'deal_campaign',
+                                            $campaign_key,
+                                            $date,
+
+                                        ]
+                                    );
+                                }
+
+                            }
+
+                            foreach ($deal_diff as $deal_key) {
+                                if($deal_key>0) {
+                                    $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+                                    $db->prepare($sql)->execute(
+                                        [
+                                            $date,
+                                            $date,
+                                            'deal',
+                                            $deal_key,
+                                            $date,
+
+                                        ]
+                                    );
+                                }
+                            }
+
+                            foreach ($deal_components_diff as $deal_component_key) {
+                                if($deal_component_key>0) {
+                                    $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+                                    $db->prepare($sql)->execute(
+                                        [
+                                            $date,
+                                            $date,
+                                            'deal_component',
+                                            $deal_component_key,
+                                            $date,
+
+                                        ]
+                                    );
+                                }
+                            }
 
                             $order->update_totals();
                         }
@@ -308,6 +443,26 @@ function fork_housekeeping($job) {
 
 
             //exit;
+
+            break;
+
+        case 'update_deals_usage':
+
+
+            foreach ($data['deal_components'] as $deal_component_key) {
+                $deal_component = get_object('DealComponent',$deal_component_key);
+                $deal_component->update_usage();
+            }
+
+            foreach ($data['deals'] as $deal_key) {
+                $deal = get_object('Deal',$deal_key);
+                $deal->update_usage();
+            }
+
+            foreach ($data['campaigns'] as $campaign_key) {
+                $campaign = get_object('DealCampaign',$campaign_key);
+                $campaign->update_usage();
+            }
 
             break;
 
@@ -374,7 +529,7 @@ function fork_housekeeping($job) {
         case 'order_items_changed':
             $order = get_object('Order', $data['order_key']);
 
-            $order->update_deals_usage();
+
 
             $account = get_object('Account', '');
             $store   = get_object('Store', $order->get('Store Key'));
@@ -531,7 +686,36 @@ function fork_housekeeping($job) {
             $store->update_orders();
             $account->update_orders();
 
-            $order->update_deals_usage();
+            $deals     = array();
+            $campaigns = array();
+            $sql       = sprintf(
+                "SELECT `Deal Component Key`,`Deal Key`,`Deal Campaign Key` FROM  `Order Deal Bridge` WHERE `Order Key`=%d", $order->id
+            );
+
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $component = get_object('DealComponent',$row['Deal Component Key']);
+                    $component->update_usage();
+                    $deals[$row['Deal Key']]              = $row['Deal Key'];
+                    $campaigns[$row['Deal Campaign Key']] = $row['Deal Campaign Key'];
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+            foreach ($deals as $deal_key) {
+                $deal = get_object('Deal',$deal_key);
+                $deal->update_usage();
+            }
+
+            foreach ($campaigns as $campaign_key) {
+                $campaign = get_object('DealCampaign',$campaign_key);
+                $campaign->update_usage();
+            }
 
 
             break;
@@ -2042,6 +2226,7 @@ function fork_housekeeping($job) {
                     $db->exec($sql);
 
                     $order = get_object('Order', $row['Order Key']);
+                    $old_used_deals = $order->get_used_deals();
 
 
                     $order->update_number_products();
@@ -2054,6 +2239,76 @@ function fork_housekeeping($job) {
                     $order->update_discounts_no_items($row['Delivery Note Key']);
                     $order->update_deal_bridge();
                     $order->update_totals();
+
+
+                    $new_used_deals = $order->get_used_deals();
+
+
+                    $intersect      = array_intersect($old_used_deals[0], $new_used_deals[0]);
+                    $campaigns_diff = array_merge(array_diff($old_used_deals[0], $intersect), array_diff($new_used_deals[0], $intersect));
+
+                    $intersect = array_intersect($old_used_deals[1], $new_used_deals[1]);
+                    $deal_diff = array_merge(array_diff($old_used_deals[1], $intersect), array_diff($new_used_deals[1], $intersect));
+
+                    $intersect            = array_intersect($old_used_deals[2], $new_used_deals[2]);
+                    $deal_components_diff = array_merge(array_diff($old_used_deals[2], $intersect), array_diff($new_used_deals[2], $intersect));
+
+                    $date = gmdate('Y-m-d H:i:s');
+
+                    foreach ($campaigns_diff as $campaign_key) {
+
+                        if($campaign_key>0){
+                            $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+                            print "$sql\n";
+                            $db->prepare($sql)->execute(
+                                [
+                                    $date,
+                                    $date,
+                                    'deal_campaign',
+                                    $campaign_key,
+                                    $date,
+
+                                ]
+                            );
+                        }
+
+                    }
+
+                    foreach ($deal_diff as $deal_key) {
+                        if($deal_key>0) {
+                            $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+                            $db->prepare($sql)->execute(
+                                [
+                                    $date,
+                                    $date,
+                                    'deal',
+                                    $deal_key,
+                                    $date,
+
+                                ]
+                            );
+                        }
+                    }
+
+                    foreach ($deal_components_diff as $deal_component_key) {
+                        if($deal_component_key>0) {
+                            $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+                            $db->prepare($sql)->execute(
+                                [
+                                    $date,
+                                    $date,
+                                    'deal_component',
+                                    $deal_component_key,
+                                    $date,
+
+                                ]
+                            );
+                        }
+                    }
+
                     $order->update_number_products();
                 }
 

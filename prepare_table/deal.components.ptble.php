@@ -56,12 +56,12 @@ if ($order == 'target') {
 } elseif ($order == 'to') {
     $order = '`Deal Component Expiration Date`';
 } elseif ($order == 'description') {
-    $order = '`Deal Term Allowances Label`';
+    $order = '`Deal Component Term Allowances Label`';
 } else {
     $order = '`Deal Key`';
 }
 $table  = '`Deal Component Dimension` DCD left join `Deal Dimension` D on (`Deal Component Deal Key`=`Deal Key`)  left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) ';
-$fields = "`Deal Component Key`,`Deal Component Begin Date`,`Deal Component Expiration Date`,`Deal Component Status`,`Deal Key`,`Deal Name`,`Deal Term Allowances Label`,`Deal Store Key`,D.`Deal Campaign Key`,`Deal Status`,`Deal Begin Date`,`Deal Expiration Date`,
+$fields = "`Deal Component Term Allowances Label`,`Deal Component Key`,`Deal Component Begin Date`,`Deal Component Expiration Date`,`Deal Component Status`,`Deal Key`,`Deal Name`,`Deal Term Allowances Label`,`Deal Store Key`,D.`Deal Campaign Key`,`Deal Status`,`Deal Begin Date`,`Deal Expiration Date`,
 `Deal Total Acc Used Orders`,`Deal Total Acc Used Customers`,`Deal Component Total Acc Used Orders`,`Deal Component Total Acc Used Customers`,`Deal Component Name Label`,`Deal Component Term Label`,`Deal Component Allowance Label`,
 `Deal Component Allowance Target Label`,`Deal Component Allowance Target`,`Deal Component Allowance Target Key`,`Deal Component Store Key`,`Deal Component Allowance Type`,`Deal Component Allowance`
 ";

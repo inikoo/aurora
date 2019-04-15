@@ -2,7 +2,7 @@
     <div style="float:left;width:600px">
 
         <div>
-            <span style="padding-top: 0px;margin-top: 0px"><span class=" padding_right_10 Status_Icon">{$deal->get('Status Icon')}</span> <span class="Duration" >{$deal->get('Duration')}</span> </span>
+            <span style="padding-top: 0px;margin-top: 0px"><span class=" padding_right_10 Status_Icon">{$deal->get('Status Icon')}</span> <span class="Duration" >{$deal->get('Duration')}</span> </span>  <b class="strong">{$deal->get('Status')}</b>
         </div>
             <h1 style="margin: 20px 0px">{$deal->get('Deal Term Allowances Label')}</h1>
 

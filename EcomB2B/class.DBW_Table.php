@@ -141,6 +141,56 @@ abstract class DBW_Table extends stdClass {
     }
 
 
+
+    public function fast_update_json_field($field, $key, $value, $table_full_name = '') {
+
+
+        if ($table_full_name == '') {
+            $table_full_name = $this->table_name.' Dimension';
+        }
+
+        $key_field = $this->table_name." Key";
+
+        $sql = sprintf(
+            "UPDATE `%s` SET `%s`= JSON_SET(`%s`,'$.%s',?) WHERE `%s`=?",
+            addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
+        );
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(1, $value);
+        $stmt->bindParam(2, $this->id);
+        $stmt->execute();
+
+        $this->get_data('id', $this->id);
+
+
+    }
+
+    public function fast_remove_key_from_json_field($field, $key, $table_full_name = '') {
+
+
+        if ($table_full_name == '') {
+            $table_full_name = $this->table_name.' Dimension';
+        }
+
+        $key_field = $this->table_name." Key";
+
+        $sql = sprintf(
+            "UPDATE `%s` SET `%s`= JSON_REMOVE(`%s`,'$.%s') WHERE `%s`=?",
+            addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
+        );
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(1, $this->id);
+        $stmt->execute();
+
+        $this->get_data('id', $this->id);
+
+
+    }
+
     protected function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
