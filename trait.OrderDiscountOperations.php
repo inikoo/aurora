@@ -348,7 +348,7 @@ trait OrderDiscountOperations {
 
                 $deal_component_data['Deal Component Terms'];
 
-                print $this->data[$amount_type];
+               // print $this->data[$amount_type];
 
                 if ($this->data[$amount_type] >= $amount_term) {
                     $amount_term_ok = true;
@@ -386,10 +386,14 @@ trait OrderDiscountOperations {
 
                     $this->create_allowances_from_deal_component_data($deal_component_data);
                 }
+
+                break;
             case('Amount AND Order Number'):
 
 
                 $terms = preg_split('/;/', $deal_component_data['Deal Component Terms']);
+
+               // print_r($deal_component_data);
 
                 $amount_term = $terms[0];
                 $amount_type = $terms[1];
