@@ -42,7 +42,7 @@ $editor = array(
 );
 
 
-$store_key = 5;
+$store_key = 1;
 
 $print_est = false;
 
@@ -71,4 +71,4 @@ if ($result = $db->query($sql)) {
 }
 
 
-?>
+

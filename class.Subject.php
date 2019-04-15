@@ -703,6 +703,7 @@ class Subject extends DB_Table {
                 $value = preg_replace('/\s/', '', $value);
                 if ($value == '+') {
                     $value = '';
+                    $formatted_value = '';
                 }
                 if ($value != '') {
 
@@ -731,6 +732,7 @@ class Subject extends DB_Table {
                     } catch (\libphonenumber\NumberParseException $e) {
                         $this->error = true;
                         $this->msg   = 'Error 1234';
+                        $formatted_value ='';
                     }
 
                 } else {

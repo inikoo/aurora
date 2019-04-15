@@ -25,7 +25,7 @@ $editor = array(
 
 
 
-$sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension`  left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where    `Website Key`=5  ');
+$sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension`  left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where    `Website Key`=1  ');
 if ($result=$db->query($sql)) {
     foreach ($result as $row) {
 
@@ -52,7 +52,7 @@ print $webpage->get('Code')."\n";
 
 
 
-$sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension` left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where     `Website Key`=5  ');
+$sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension` left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  where     `Website Key`=1  ');
 if ($result=$db->query($sql)) {
     foreach ($result as $row) {
 

@@ -28,13 +28,40 @@ $editor = array(
 // and `Customer Key`=103576'
 
 
-$store_key=5;
+$store_key=1;
+
+
+//$where=' and `Customer Key`  <=40000 ';
+//$where=' and `Customer Key`  >40000  and `Customer Key`  <=100000  ';
+$where=' and `Customer Key`  >100000  and `Customer Key`  <=200000  ';
+
+//$where=' and `Customer Key`  >200000 ';
+
 
 $store    = get_object('store', $store_key);
 
 $website = get_object('website', $store->get('Store Website Key'));
 
-$sql = sprintf('select `Customer Key`,`Customer Store Key`from `Customer Dimension` where `Customer Store Key`=%d ',$store->id);
+$print_est = true;
+$sql = sprintf("select count(*) as num FROM `Customer Dimension` O left join `Store Dimension` on (`Store Key`=`Customer Store Key`)  where `Store Key`=%d  $where",$store_key);
+if ($result = $db->query($sql)) {
+    if ($row = $result->fetch()) {
+        $total = $row['num'];
+    } else {
+        $total = 0;
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
+
+$lap_time0 = date('U');
+$contador  = 0;
+
+
+
+
+$sql = sprintf('select `Customer Key`,`Customer Store Key`from `Customer Dimension` where `Customer Store Key`=%d '.$where,$store->id);
 if ($result2 = $db->query($sql)) {
     foreach ($result2 as $row2) {
 
@@ -86,9 +113,21 @@ if ($result2 = $db->query($sql)) {
             $website_user = $website->create_user($user_data);
 
 
+            $contador++;
+            $lap_time1 = date('U');
+
+            if ($print_est) {
+                print 'P   '.percentage($contador, $total, 3)."  lap time ".sprintf("%.4f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
+                        "%.4f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 60
+                    )."m  ($contador/$total) \r";
+            }
+
+
+
+
         } else {
 
-            print "Customer ".$customer->id.' '.$website->get('Code')." no email  \n";
+           // print "Customer ".$customer->id.' '.$website->get('Code')." no email  \n";
 
         }
 
