@@ -438,6 +438,8 @@ class Subject extends DB_Table {
 
             if ($type == 'Contact') {
 
+                $this->fast_update(array($this->table_name.' Main Plain Postal Code'=>preg_replace('/\s|\n|\r/','',$this->get($this->table_name.' Contact Address Postal Code'))));
+
 
                 $location = $this->get('Contact Address Locality');
                 if ($location == '') {
