@@ -1127,13 +1127,9 @@
 
                     $('.iframe').each(function (i, obj) {
 
-                        console.log($(this))
-                        console.log($(this).width() )
-
-                        console.log( $(this).data('h'))
-                        $(this).css({
-                            height: $(this).width() * $(this).data('h') / $(this).data('w')
-                        })
+                        $(this).css({ height: $(this).width() * $(this).data('h') / $(this).data('w')})
+                        $(this).find('iframe').css({ height:$(this).height(),width:$(this).width()})
+                        $(this).find('iframe').attr( 'src', $(this).data('src'));
                     });
                 }
 
