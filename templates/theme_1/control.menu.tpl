@@ -133,13 +133,13 @@
                         <li class="column_label"  key="{$sub_column_key}" ><i class="far fa-hand-rock handle" style="margin-right:10px" aria-hidden="true"></i>
 
                             {if $sub_column.type=='departments'}
-                                <span class="column_type_label">{t}Departments{/t}</span> <span class="page button">{$sub_column.page}</span>
+                                <span class="column_type_label">{t}Departments{/t}</span> <span class="page button">{if isset($sub_column.page_label)}{$sub_column.page_label}{/if}</span>
                             {elseif $sub_column.type=='families'}
-                                <span class="column_type_label">{t}Families{/t}</span> <span class="page button">{$sub_column.page}</span>
+                                <span class="column_type_label">{t}Families{/t}</span> <span class="page button">{if isset($sub_column.page_label)}{$sub_column.page_label}{/if}</span>
                             {elseif $sub_column.type=='web_departments'}
-                                <span class="column_type_label">{t}Special departments{/t}</span> <span class="page button">{$sub_column.page}</span>
+                                <span class="column_type_label">{t}Special departments{/t}</span> <span class="page button">{if isset($sub_column.page_label)}{$sub_column.page_label}{/if}</span>
                             {elseif $sub_column.type=='web_families'}
-                                <span class="column_type_label"> {t}Special families{/t}</span> <span  class="page button">{$sub_column.page}</span>
+                                <span class="column_type_label"> {t}Special families{/t}</span> <span  class="page button">{if isset($sub_column.page_label)}{$sub_column.page_label}{/if}</span>
                             {elseif $sub_column.type=='items'}
                                 <span class="column_type_label">{t}Items{/t}</span>
                              {elseif $sub_column.type=='text'}
