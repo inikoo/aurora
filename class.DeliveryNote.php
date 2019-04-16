@@ -641,13 +641,17 @@ class DeliveryNote extends DB_Table {
 
                 return strftime("%e %b %y", strtotime($this->data['Delivery Note '.$key].' +0:00'));
                 break;
+            case 'Order Datetime Placed':
+
+                return strftime("%e %b %y %H:%M %Z", strtotime($this->data['Delivery Note Order Date Placed'].' +0:00'));
+                break;
             case('Date'):
 
                 return strftime("%e %b %y", strtotime($this->data['Delivery Note Date'].' +0:00'));
 
                 break;
             case('Creation Date'):
-                return strftime("%e %b %y %H:%M", strtotime($this->data['Delivery Note Date Created'].' +0:00'));
+                return strftime("%e %b %y %H:%M %Z", strtotime($this->data['Delivery Note Date Created'].' +0:00'));
                 break;
             case('Start Picking Datetime'):
             case('Finish Picking Datetime'):
