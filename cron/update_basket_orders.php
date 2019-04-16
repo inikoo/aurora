@@ -32,14 +32,14 @@ if ($result = $db->query($sql)) {
 $lap_time0 = date('U');
 $contador  = 0;
 
-$sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Version`=2   order by `Order Date`");
+$sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Version`=2   order by `Order Date` desc");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
 
         $order = get_object('order', $row['Order Key']);
 
-        // print $order->id.' '.$order->get('Public ID')."\n";
+      //  print $order->id.' '.$order->get('Order Date')."\n";
 
 
         $order->fast_update(
