@@ -879,7 +879,7 @@ trait OrderDiscountOperations {
                                 if ($product_pid) {
 
                                     $sql = sprintf(
-                                        "SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Main Type`='Sale' AND `Product Category Key`=%d AND `Product ID`=%d", $category_key, $product_pid
+                                        "SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Main Type`='Sale' AND `Product Family Category Key`=%d AND `Product ID`=%d", $category_key, $product_pid
                                     );
 
 
@@ -929,12 +929,12 @@ trait OrderDiscountOperations {
 
 
                         $sql = sprintf(
-                            "SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Main Type`='Sale' AND `Product Category Key`=%d AND `Product ID`=%d", $category_key, $product_pid
+                            "SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Main Type`='Sale' AND `Product Family Category Key`=%d AND `Product ID`=%d", $category_key, $product_pid
                         );
 
-                        if ($result = $this->db->query($sql)) {
-                            if ($row = $result->fetch()) {
-                                if ($row2['num'] == 0) {
+                        if ($result_2 = $this->db->query($sql)) {
+                            if ($row_2 = $result_2->fetch()) {
+                                if ($row_2['num'] == 0) {
                                     $product_pid = 0;
                                 }
                             }
@@ -957,13 +957,13 @@ trait OrderDiscountOperations {
                                 $this->allowance[$allowance_index][$product_pid]['Get Free'] += $get_free_allowance[0];
                             } else {
 
-                                $product = new Product('id', $product_pid);
+                                $product = get_object( 'Product', $product_pid);
 
 
                                 $this->allowance[$allowance_index][$product_pid] = array(
                                     'Product ID'           => $product->id,
                                     'Product Key'          => $product->historic_id,
-                                    'Product Category Key' => $product->data['Product Category Key'],
+                                    'Product Category Key' => $product->get('Product Family Category Key'),
                                     'Get Free'             => $get_free_allowance[0],
                                     'Deal Campaign Key'    => $deal_component_data['Deal Component Campaign Key'],
                                     'Deal Component Key'   => $deal_component_data['Deal Component Key'],
@@ -2308,7 +2308,7 @@ trait OrderDiscountOperations {
 
                     $category_key = $row['Deal Component Allowance Target Key'];
                     $sql          = sprintf(
-                        "SELECT `Product Category Key`,`Product Current Key`,`Product Code`,`Product ID`,`Product Name` FROM `Product Dimension` WHERE `Product Main Type`='Sale' AND `Product Category Key`=%d ORDER BY `Product Code File As`", $category_key
+                        "SELECT `Product Family Category Key`,`Product Current Key`,`Product Code`,`Product ID`,`Product Name` FROM `Product Dimension` WHERE `Product Main Type`='Sale' AND `Product Category Key`=%d ORDER BY `Product Code File As`", $category_key
 
                     );
 
@@ -2320,7 +2320,7 @@ trait OrderDiscountOperations {
 
                             'pid'          => $row2['Product ID'],
                             'product_key'  => $row2['Product Current Key'],
-                            'category_key' => $row2['Product Category Key'],
+                            'category_key' => $row2['Product Family Category Key'],
                             'code'         => $row2['Product Code'],
                             'name'         => $row2['Product Name'],
                             'selected'     => ($row2['Product ID'] == $row['Bonus Product ID'] ? true : false),
@@ -2339,7 +2339,7 @@ trait OrderDiscountOperations {
 
                     $product_pid = $row['Deal Component Allowance Target Key'];
                     $sql         = sprintf(
-                        "SELECT `Product Category Key`,`Product Current Key`,`Product Code`,`Product ID`,`Product Name` FROM `Product Dimension` WHERE  `Product ID`=%d ", $product_pid
+                        "SELECT `Product FamilyCategory Key`,`Product Current Key`,`Product Code`,`Product ID`,`Product Name` FROM `Product Dimension` WHERE  `Product ID`=%d ", $product_pid
 
                     );
 
@@ -2351,7 +2351,7 @@ trait OrderDiscountOperations {
                             'item' => array(
                                 'pid'          => $row2['Product ID'],
                                 'product_key'  => $row2['Product Current Key'],
-                                'category_key' => $row2['Product Category Key'],
+                                'category_key' => $row2['Product Family Category Key'],
                                 'code'         => $row2['Product Code'],
                                 'name'         => $row2['Product Name'],
                                 'deal_info'    => $row['Deal Info'],
