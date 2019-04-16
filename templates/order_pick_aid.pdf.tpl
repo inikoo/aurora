@@ -84,9 +84,9 @@
 (C{"%05d"|sprintf:$delivery_note->get('Delivery Note Customer Key')})  {$delivery_note->get('Delivery Note Customer Name')}<br /></td>
 <td width="50%" style="text-align: right;">
 {if $delivery_note->get('Delivery Note Order Date Placed')}
-<div style="text-align: right">{t}Order date{/t}: {$delivery_note->get('Order Date Placed')}</div>
+<div style="text-align: right">{t}Order date{/t}: {$delivery_note->get('Order Datetime Placed')}</div>
 {/if}
-<div style="text-align: right">{t}Delivery note date{/t}: {$delivery_note->get('Date Created')}</div>
+<div style="text-align: right">{t}Delivery note date{/t}: {$delivery_note->get('Creation Date')}</div>
 </td>
 </tr></table>
 </htmlpageheader>

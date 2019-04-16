@@ -895,15 +895,23 @@ class Order extends DB_Table {
                     $this->fast_update(
                         array(
                             'Order State'                      => 'InProcess',
-                            'Order Submitted by Customer Date' => $date,
                             'Order Date'                       => $date
                         )
                     );
 
 
                     if ($value == 'InProcess') {
+
+
+                        $this->fast_update(
+                            array(
+                                'Order Submitted by Customer Date' => $date,
+                            )
+                        );
+
+
                         $history_data = array(
-                            'History Abstract' => _('Order submited'),
+                            'History Abstract' => _('Order submitted'),
                             'History Details'  => '',
                         );
                     } else {
