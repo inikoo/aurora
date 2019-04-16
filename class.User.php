@@ -2160,7 +2160,6 @@ class User extends DB_Table {
             //print_r($rights);
         }
 
-
         //print "****";
 
         $sql = sprintf(
