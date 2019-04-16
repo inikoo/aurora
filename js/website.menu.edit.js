@@ -508,7 +508,7 @@ function save_header() {
 
 
     console.log(menu)
-    //return;
+    return;
 
     var ajaxData = new FormData();
 
