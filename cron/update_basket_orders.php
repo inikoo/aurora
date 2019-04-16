@@ -90,7 +90,7 @@ if ($result = $db->query($sql)) {
             if($campaign_key>0){
                 $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
                       ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
-                print "$sql\n";
+                //print "$sql\n";
                 $db->prepare($sql)->execute(
                     [
                         $date,
