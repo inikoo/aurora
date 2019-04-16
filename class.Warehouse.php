@@ -2005,6 +2005,7 @@ class Warehouse extends DB_Table {
             "SELECT `Shipper Key`,`Shipper Code`,`Shipper Name` from `Shipper Dimension` %s ORDER BY `Shipper Code` ", $where
         );
 
+
         $shippers = array();
 
 
