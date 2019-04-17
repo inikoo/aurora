@@ -27,11 +27,11 @@
 
                         <span id="delivery_label" class="{if $order->get('Order For Collection')=='Yes'}hide{/if}">
                         <i id="_delivery_address_icon" class="fa fa-fw fa-truck   " aria-hidden="true"></i>
-                        <span id="_delivery_address_label"  >{if isset($labels._delivery_address_label) and $labels._delivery_address_label!=''}{$labels._delivery_address_label}{else}{t}Delivery Address:{/t}{/if}</span>
+                        <span id="_delivery_address_label"  >{if !empty($labels._delivery_address_label) }{$labels._delivery_address_label}{else}{t}Delivery Address:{/t}{/if}</span>
                         </span>
                         <span  id="collection_label" class="{if $order->get('Order For Collection')=='No'}hide{/if} "">
                         <i id="_delivery_address_icon" class="fa fa-fw fa-hand-rock   aria-hidden="true"></i>
-                        <span id="_delivery_address_label"  >{if isset($labels._for_collecion_label) and $labels._for_collecion_label!=''}{$labels._for_collecion_label}{else}{t}To be collected at:{/t}{/if}</span>
+                        <span id="_delivery_address_label"  >{if !empty($labels._for_collecion_label) }{$labels._for_collecion_label}{else}{t}To be collected at:{/t}{/if}</span>
 
                         </span>
                         <a href="#order_delivery_address_form" class="modal-opener"><i class="fa fa-fw fa-pencil padding_left_5 discreet_on_hover like_button" aria-hidden="true"></i></a>
@@ -46,7 +46,7 @@
                 <div class="one-half last-column">
                     <h5 style="position: relative;left:-10px;;font-size: 90%;font-weight: 800;color: #333">
                         <i id="_invoice_address_icon" class="fa fa-fw fa-dollar-sign" aria-hidden="true"></i>
-                        <span id="_invoice_address_label"  >{if isset($labels._invoice_address_label) and $labels._invoice_address_label!=''}{$labels._invoice_address_label}{else}{t}Invoice Address{/t}{/if}</span>
+                        <span id="_invoice_address_label"  >{if !empty($labels._invoice_address_label) }{$labels._invoice_address_label}{else}{t}Invoice Address{/t}{/if}</span>
 
                         <a href="#order_invoice_address_form" class="modal-opener"><i class="fa fa-fw fa-pencil padding_left_5 discreet_on_hover like_button" aria-hidden="true"></i></a>
 
@@ -66,17 +66,17 @@
 
                         <tbody>
                         <tr class="order_items_gross_container  {if $order->get('Order Items Discount Amount')==0 }hide{/if}">
-                            <td>{if isset($labels._items_gross) and $labels._items_gross!=''}{$labels._items_gross}{else}{t}Items Gross{/t}{/if}</td>
+                            <td>{if !empty($labels._items_gross) }{$labels._items_gross}{else}{t}Items Gross{/t}{/if}</td>
 
                             <td class=" text-right order_items_gross ">{$order->get('Items Gross Amount')}</td>
                         </tr>
                         <tr class="order_items_discount_container last_items {if $order->get('Order Items Discount Amount')==0 }hide{/if}">
-                            <td>{if isset($labels._items_discounts) and $labels._items_discounts!=''}{$labels._items_discounts}{else}{t}Items Discounts{/t}{/if}</td>
+                            <td>{if !empty($labels._items_discounts) }{$labels._items_discounts}{else}{t}Items Discounts{/t}{/if}</td>
 
                             <td class="text-right order_items_discount">{$order->get('Basket Items Discount Amount')}</td>
                         </tr>
                         <tr>
-                            <td>{if isset($labels._items_net) and $labels._items_net!=''}{$labels._items_net}{else}{t}Items Net{/t}{/if}</td>
+                            <td>{if !empty($labels._items_net) }{$labels._items_net}{else}{t}Items Net{/t}{/if}</td>
 
                             <td class="text-right order_items_net">{$order->get('Items Net Amount')}</td>
                         </tr>
@@ -96,38 +96,38 @@
 
 
                         <tr class="last_items">
-                            <td>{if isset($labels._items_shipping) and $labels._items_shipping!=''}{$labels._items_shipping}{else}{t}Shipping{/t}{/if}</td>
+                            <td>{if !empty($labels._items_shipping) }{$labels._items_shipping}{else}{t}Shipping{/t}{/if}</td>
                             <td class="text-right order_shipping">{if $order->get('Shipping Net Amount')=='TBC'}<i class="fa error fa-exclamation-circle" title="" aria-hidden="true"></i> <small>{if !empty($labels._we_will_contact_you)}{$labels._we_will_contact_you}{else}{t}We will contact you{/t}{/if}</small>{else}{$order->get('Shipping Net Amount')}{/if}</td>
 
                         </tr>
                         <tr class="net">
-                            <td>{if isset($labels._total_net) and $labels._total_net!=''}{$labels._total_net}{else}{t}Total Net{/t}{/if}</td>
+                            <td>{if !empty($labels._total_net) }{$labels._total_net}{else}{t}Total Net{/t}{/if}</td>
 
                             <td class="text-right order_net">{$order->get('Total Net Amount')}</td>
                         </tr>
                         <tr class="tax ">
-                            <td>{if isset($labels._total_tax) and $labels._total_tax!=''}{$labels._total_tax}{else}{t}Tax{/t}{/if}</td>
+                            <td>{if !empty($labels._total_tax) }{$labels._total_tax}{else}{t}Tax{/t}{/if}</td>
 
                             <td class="text-right order_tax">{$order->get('Total Tax Amount')}</td>
                         </tr>
                         <tr class="total">
-                            <td>{if isset($labels._total) and $labels._total!=''}{$labels._total}{else}{t}Total{/t}{/if}</td>
+                            <td>{if !empty($labels._total) }{$labels._total}{else}{t}Total{/t}{/if}</td>
 
                             <td class="text-right order_total">{$order->get('Total')}</td>
                         </tr>
 
                         <tr class="payments_amount_tr {if $order->get('Order Payments Amount')==0}hide{/if}" >
-                            <td>{if isset($labels._order_paid_amount) and $labels._order_paid_amount!=''}{$labels._order_paid_amount}{else}{t}Paid{/t}{/if}</td>
+                            <td>{if !empty($labels._order_paid_amount) }{$labels._order_paid_amount}{else}{t}Paid{/t}{/if}</td>
 
                             <td class="text-right payments_amount">{$order->get('Basket Payments Amount')}</td>
                         </tr>
                         <tr class="available_credit_amount_tr tax  {if $order->get('Order Available Credit Amount')==0}hide{/if}" >
-                            <td>{if isset($labels._order_available_credit_amount) and $labels._order_available_credit_amount!=''}{$labels._order_available_credit_amount}{else}{t}Credit{/t}{/if}</td>
+                            <td>{if !empty($labels._order_available_credit_amount) }{$labels._order_available_credit_amount}{else}{t}Credit{/t}{/if}</td>
 
                             <td class="text-right available_credit_amount ">{$order->get('Available Credit Amount')}</td>
                         </tr>
                         <tr class="to_pay_amount_tr total {if $order->get('Order Payments Amount')==0 and $order->get('Order Available Credit Amount')==0 }hide{/if} " >
-                            <td>{if isset($labels._order_to_pay_amount) and $_order_to_pay_amoount._total!=''}{$labels._order_to_pay_amoount}{else}{t}To pay{/t}{/if}</td>
+                            <td>{if !empty($labels._order_to_pay_amount) }{$labels._order_to_pay_amoount}{else}{t}To pay{/t}{/if}</td>
 
                             <td class="text-right to_pay_amount">{$order->get('Basket To Pay Amount')}</td>
                         </tr>
@@ -259,7 +259,7 @@
 
 <div style="z-index: 3001" class="address_form" >
     <form id="order_delivery_address_form" class="sky-form sky-form-modal">
-        <header id="_title">{if isset($labels._delivery_address_label) and $labels._delivery_address_label!=''}{$labels._delivery_address_label}{else}{t}Delivery Address{/t}{/if}</header>
+        <header id="_title">{if !empty($labels._delivery_address_label) }{$labels._delivery_address_label}{else}{t}Delivery Address{/t}{/if}</header>
 
         <fieldset  class="{if $store->get('Store Can Collect')=='No'}hide{/if} "  >
 
@@ -391,14 +391,14 @@
 
 
         <footer>
-            <button type="submit" class="button "  id="save_order_delivery_address_button" >{if isset($labels._save) and $labels._save!=''}{$labels._save}{else}{t}Save{/t}{/if}  <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i> </button>
-            <a href="#" class="button button-secondary modal-closer">{if isset($labels._close) and $labels._close!=''}{$labels._close}{else}{t}Close{/t}{/if}</a>
+            <button type="submit" class="button "  id="save_order_delivery_address_button" >{if !empty($labels._save) }{$labels._save}{else}{t}Save{/t}{/if}  <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i> </button>
+            <a href="#" class="button button-secondary modal-closer">{if !empty($labels._close) }{$labels._close}{else}{t}Close{/t}{/if}</a>
         </footer>
     </form>
 </div>
 <div style="z-index: 3001" class="address_form" >
     <form id="order_invoice_address_form" class="sky-form sky-form-modal">
-        <header id="_title">{if isset($labels._invoice_address_label) and $labels._invoice_address_label!=''}{$labels._invoice_address_label}{else}{t}invoice Address{/t}{/if}</header>
+        <header id="_title">{if !empty($labels._invoice_address_label)}{$labels._invoice_address_label}{else}{t}invoice Address{/t}{/if}</header>
 
 
 
@@ -471,10 +471,10 @@
             <div id="order_invoice_locality" class="row {if 'locality'|in_array:$invoice_used_address_fields}{else}hide{/if}">
                 <section class="col col-6 " >
                     <label class="input">
-                        <label class="label">{if isset($labels["locality_`$invoice_address_labels.locality.code`"]) and $labels["locality_`$invoice_address_labels.locality.code`"]!=''}{$labels["locality_`$invoice_address_labels.locality.code`"]}{else}{$invoice_address_labels.locality.label}{/if}</label>
+                        <label class="label">{if !empty($labels["locality_`$invoice_address_labels.locality.code`"]) }{$labels["locality_`$invoice_address_labels.locality.code`"]}{else}{$invoice_address_labels.locality.label}{/if}</label>
 
-                        <input value="{$order->get('Order invoice Address Locality')}"  type="text" name="locality" class="{if 'locality'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if isset($labels["locality_`$invoice_address_labels.locality.code`"]) and $labels["locality_`$invoice_address_labels.locality.code`"]!=''}{$labels["locality_`$invoice_address_labels.locality.code`"]}{else}{$invoice_address_labels.locality.label}{/if}">
-                        <b class="tooltip tooltip-bottom-right">{if isset($labels["locality_`$invoice_address_labels.locality.code`"]) and $labels["locality_`$invoice_address_labels.locality.code`"]!=''}{$labels["locality_`$invoice_address_labels.locality.code`"]}{else}{$invoice_address_labels.locality.label}{/if}</b>
+                        <input value="{$order->get('Order invoice Address Locality')}"  type="text" name="locality" class="{if 'locality'|in_array:$invoice_used_address_fields}{else}ignore{/if}" placeholder="{if !empty($labels["locality_`$invoice_address_labels.locality.code`"]) }{$labels["locality_`$invoice_address_labels.locality.code`"]}{else}{$invoice_address_labels.locality.label}{/if}">
+                        <b class="tooltip tooltip-bottom-right">{if !empty($labels["locality_`$invoice_address_labels.locality.code`"]) }{$labels["locality_`$invoice_address_labels.locality.code`"]}{else}{$invoice_address_labels.locality.label}{/if}</b>
                     </label>
                 </section>
 
@@ -517,8 +517,8 @@
 
 
         <footer>
-            <button type="submit" class="button "  id="save_order_invoice_address_button" >{if isset($labels._save) and $labels._save!=''}{$labels._save}{else}{t}Save{/t}{/if}  <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i>  </button>
-            <a href="#" class="button button-secondary modal-closer">{if isset($labels._close) and $labels._close!=''}{$labels._close}{else}{t}Close{/t}{/if}</a>
+            <button type="submit" class="button "  id="save_order_invoice_address_button" >{if !empty($labels._save) }{$labels._save}{else}{t}Save{/t}{/if}  <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i>  </button>
+            <a href="#" class="button button-secondary modal-closer">{if !empty($labels._close) }{$labels._close}{else}{t}Close{/t}{/if}</a>
         </footer>
     </form>
 </div>
