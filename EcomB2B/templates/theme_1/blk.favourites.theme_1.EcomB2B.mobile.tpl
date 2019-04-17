@@ -32,7 +32,7 @@
                     <span class="sub_wrap" style="">
 
 
-                        <a href="{$item.link}"
+                        <a href="{$product_data.link}"
                            data-analytics='{ "id": "{$product_data.code}", "name": "{$product_data.name|escape:'quotes'}",{if isset($product_data.category)} "category": "{$product_data.category}",{/if}{if isset($product_data.raw_price)} "price": "{$product_data.raw_price}",{/if}"list": "Family", "position":{$counter}}'
                            data-list="Products"
                            onclick="go_product(this); return !ga.loaded;"
