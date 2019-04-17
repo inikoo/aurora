@@ -101,37 +101,37 @@
 
 
                 <tr class="last_items">
-                    <td>{if isset($labels._items_shipping) and $labels._items_shipping!=''}{$labels._items_shipping}{else}{t}Shipping{/t}{/if}</td>
+                    <td>{if !empty($labels._items_shipping)}{$labels._items_shipping}{else}{t}Shipping{/t}{/if}</td>
                     <td class="text-right order_shipping">{if $order->get('Shipping Net Amount')=='TBC'}<i class="fa error fa-exclamation-circle" title="" aria-hidden="true"></i> <small>{if !empty($labels._we_will_contact_you)}{$labels._we_will_contact_you}{else}{t}We will contact you{/t}{/if}</small>{else}{$order->get('Shipping Net Amount')}{/if}</td>
 
                 </tr>
                 <tr class="net">
-                    <td>{if isset($labels._total_net) and $labels._total_net!=''}{$labels._total_net}{else}{t}Total Net{/t}{/if}</td>
+                    <td>{if !empty($labels._total_net) }{$labels._total_net}{else}{t}Total Net{/t}{/if}</td>
 
                     <td class="text-right order_net">{$order->get('Total Net Amount')}</td>
                 </tr>
                 <tr class="tax">
-                    <td>{if isset($labels._total_tax) and $labels._total_tax!=''}{$labels._total_tax}{else}{t}Tax{/t}{/if}</td>
+                    <td>{if !empty($labels._total_tax) }{$labels._total_tax}{else}{t}Tax{/t}{/if}</td>
 
                     <td class="text-right order_tax">{$order->get('Total Tax Amount')}</td>
                 </tr>
                 <tr class="total">
-                    <td>{if isset($labels._total) and $labels._total!=''}{$labels._total}{else}{t}Total{/t}{/if}</td>
+                    <td>{if !empty($labels._total) }{$labels._total}{else}{t}Total{/t}{/if}</td>
 
                     <td class="text-right order_total">{$order->get('Total')}</td>
                 </tr>
                 <tr class="payments_amount_tr {if $order->get('Order Payments Amount')==0}hide{/if}" >
-                    <td>{if isset($labels._order_paid_amount) and $labels._order_paid_amount!=''}{$labels._order_paid_amount}{else}{t}Paid{/t}{/if}</td>
+                    <td>{if !empty($labels._order_paid_amount) }{$labels._order_paid_amount}{else}{t}Paid{/t}{/if}</td>
 
                     <td class="text-right payments_amount">{$order->get('Payments Amount')}</td>
                 </tr>
                 <tr class="available_credit_amount_tr tax {if $order->get('Order Available Credit Amount')==0}hide{/if}" >
-                    <td>{if isset($labels._order_available_credit_amount) and $labels._order_available_credit_amount!=''}{$labels._order_available_credit_amount}{else}{t}Credit{/t}{/if}</td>
+                    <td>{if !empty($labels._order_available_credit_amount) }{$labels._order_available_credit_amount}{else}{t}Credit{/t}{/if}</td>
 
                     <td class="text-right available_credit_amount ">{$order->get('Available Credit Amount')}</td>
                 </tr>
                 <tr class="to_pay_amount_tr total {if $order->get('Order Payments Amount')==0 and $order->get('Order Available Credit Amount')==0 }hide{/if}" >
-                    <td>{if isset($labels._order_to_pay_amount) and $_order_to_pay_amoount._total!=''}{$labels._order_to_pay_amoount}{else}{t}To pay{/t}{/if}</td>
+                    <td>{if !empty($labels._order_to_pay_amount) }{$labels._order_to_pay_amoount}{else}{t}To pay{/t}{/if}</td>
 
                     <td class="text-right to_pay_amount">{$order->get('Basket To Pay Amount')}</td>
                 </tr>
