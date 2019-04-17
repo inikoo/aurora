@@ -475,6 +475,8 @@ class Invoice extends DB_Table {
     }
 
 
+
+
     function update_payments_totals() {
 
 
@@ -502,19 +504,7 @@ class Invoice extends DB_Table {
 
         $to_pay = round($this->data['Invoice Total Amount'] - $payments, 2);
 
-        /*
-                print_r(
-                    array(
 
-                        'Invoice Payments Amount'       => $payments,
-                        'Invoice To Pay Amount'         => $to_pay,
-                        'Invoice Has Been Paid In Full' => ($to_pay == 0 ? 'Yes' : 'No'),
-                        'Invoice Paid'                  => ($to_pay == 0 ? 'Yes' : ($payments == 0 ? 'No' : 'Partially')),
-
-                    )
-
-                );
-        */
         $this->fast_update(
             array(
 
