@@ -1058,11 +1058,7 @@ class Customer extends Subject {
                     $website_user->update(array('Website User Password Hash' => password_hash(hash('sha256', $value), PASSWORD_DEFAULT, array('cost' => 12))), 'no_history');
                 }
 
-                // todo: remove after migration finished
 
-
-                $sql = sprintf('UPDATE `User Dimension` SET `User Password`=%s WHERE `User Type`="Customer" AND `User Parent Key`=%d  ', prepare_mysql(hash('sha256', $value)), $this->id);
-                $this->db->exec($sql);
 
 
                 break;
