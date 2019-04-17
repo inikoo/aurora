@@ -140,7 +140,7 @@
                             <td class="text-right order_total">{$order->get('Total')}</td>
                         </tr>
                         <tr class="payments_amount_tr {if $order->get('Order Payments Amount')==0}hide{/if}" >
-                            <td>{if !empty($labels._order_paid_amount) a}{$labels._order_paid_amount}{else}{t}Paid{/t}{/if}</td>
+                            <td>{if !empty($labels._order_paid_amount) }{$labels._order_paid_amount}{else}{t}Paid{/t}{/if}</td>
 
                             <td class="text-right payments_amount">{$order->get('Basket Payments Amount')}</td>
                         </tr>
@@ -518,7 +518,7 @@
 
 
         <footer>
-            <button type="submit" class="button "  id="save_order_invoice_address_button" >{if !empty($labels._save) a}{$labels._save}{else}{t}Save{/t}{/if}  <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i>  </button>
+            <button type="submit" class="button "  id="save_order_invoice_address_button" >{if !empty($labels._save) }{$labels._save}{else}{t}Save{/t}{/if}  <i  class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i>  </button>
             <a href="#" class="button button-secondary modal-closer">{if !empty($labels._close) }{$labels._close}{else}{t}Close{/t}{/if}</a>
         </footer>
     </form>
