@@ -44,7 +44,14 @@ if ($result2 = $db->query($sql)) {
             )) {
                 if ($row = $stmt->fetch()) {
 
+
+                    $customer->update(array('Customer Website User Key' => $row['Website User Key']), 'no_history');
+                    print $customer->id.' '.$customer->get('Customer Main Plain Email')." adding missing wu \n";
+
+
                 } else {
+
+                    /*
 
                     print $customer->id.' '.$customer->get('Customer Main Plain Email')."\n";
 
@@ -80,8 +87,10 @@ if ($result2 = $db->query($sql)) {
                             'editor'           => $editor
                         ), $account->get('Account Code')
                         );
-                    }
 
+
+                    }
+*/
 
                 }
             } else {
