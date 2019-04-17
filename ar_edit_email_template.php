@@ -360,10 +360,24 @@ function send_test_email($data, $smarty) {
     }
 
 
-    $client = SesClient::factory(
+
+    //'eu-west-1
+    $ses_clients   = array();
+    $ses_clients[] = SesClient::factory(
         array(
             'version'     => 'latest',
-            'region'      => 'eu-west-1',
+            'region'      => 'us-east-1',
+            'credentials' => [
+                'key'    => AWS_ACCESS_KEY_ID,
+                'secret' => AWS_SECRET_ACCESS_KEY,
+            ],
+        )
+    );
+
+    $ses_clients[] = SesClient::factory(
+        array(
+            'version'     => 'latest',
+            'region'      => 'us-east-1',
             'credentials' => [
                 'key'    => AWS_ACCESS_KEY_ID,
                 'secret' => AWS_SECRET_ACCESS_KEY,
@@ -491,9 +505,19 @@ function send_test_email($data, $smarty) {
     }, $request['Message']['Body']['Html']['Data']
     );
 
+    //print_r($ses_clients);
+
+    //print array_rand($ses_clients);
+
 
     try {
-        $result    = $client->sendEmail($request);
+
+
+
+
+        $ses_client = $ses_clients[array_rand($ses_clients)];
+
+        $result    = $ses_client->sendEmail($request);
         $messageId = $result->get('MessageId');
         $response  = array(
             'state'           => 200,
