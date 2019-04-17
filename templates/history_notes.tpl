@@ -24,10 +24,11 @@
         if ($('#edit_history_note_dialog').hasClass('hide')) {
 
 
-            $('#edit_history_note_dialog').removeClass('hide')
-            $('#history_note_value').focus()
+
 
             if (anchor == 'show_history_note_dialog') {
+
+
 
                 $('#note_type').addClass('fa-check-square').removeClass('fa-square')
 
@@ -39,8 +40,10 @@
                     'left': position.left - $('#edit_history_note_dialog').width() - $('#' + anchor).width(),
                     'top': position.top
                 })
-                $('#edit_history_note_dialog').attr('history_key', '')
 
+                $('#edit_history_note_dialog').attr('history_key', '')
+                $('#edit_history_note_dialog').removeClass('hide')
+                $('#history_note_value').focus()
             } else {
 
                 var position = anchor.closest('td.html-cell').position();
@@ -51,6 +54,11 @@
 
                 $('#history_note_value').val($('#history_note_' + anchor.attr('history_key')).text())
                 $('#edit_history_note_dialog').attr('history_key', anchor.attr('history_key'))
+
+
+                $('#edit_history_note_dialog').removeClass('hide')
+                $('#history_note_value').focus()
+
             }
 
 
