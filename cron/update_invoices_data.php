@@ -17,9 +17,6 @@ require_once 'utils/date_functions.php';
 
 
 
-require_once 'class.Store.php';
-require_once 'class.Invoice.php';
-
 
 $editor = array(
     'Author Name'  => '',
@@ -39,11 +36,11 @@ $account = new Account();
 
 
 
-$sql = sprintf("SELECT `Invoice Key` FROM `Invoice Dimension`");
+$sql = sprintf("SELECT `Invoice Key` FROM `Invoice Dimension` left join `Store Dimension` on (`Store Key`=`Invoice Store Key`) where `Store Version`=2 ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-        $invoice = new Invoice('id', $row['Invoice Key']);
-
+        $invoice = get_object('Invoice', $row['Invoice Key']);
+        $invoice->update_payments_totals();
         $invoice->update_billing_region();
         $invoice->categorize();
       //  exit;
@@ -54,4 +51,4 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
-?>
+
