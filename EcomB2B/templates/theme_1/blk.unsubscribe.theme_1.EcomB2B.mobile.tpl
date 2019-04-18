@@ -50,20 +50,23 @@
             </footer>
 
 
+
+
+
             <div class="message error">
 
 
                 <i class="fa fa-exclamation"></i>
 
                 {if $logged_in}
-                    <span id="unsubscribe_error_msg"  class=" {if $unsubscribe_customer_key!=''}hide{/if}">{$data.labels._unsubscribe_error_logged_in_msg}</span>
+                    <span id="unsubscribe_error_msg"  class=" {if $unsubscribe_customer_key!=''}hide{/if}">{if !empty($data.labels._unsubscribe_error_logged_in_msg)}{$data.labels._unsubscribe_error_logged_in_msg}{else}{t}Please, go to your profile and unsubscribe{/t}{/if}</span>
                     <br>
-                    <a href="/profile.sys" class="{if $unsubscribe_customer_key!=''}hide{/if}">{$data.labels._unsubscribe_error_profile_link}</a>
+                    <a href="/profile.sys" class="{if $unsubscribe_customer_key!=''}hide{/if}">{if !empty($data.labels._unsubscribe_error_profile_link)}{$data.labels._unsubscribe_error_profile_link}{else}{t}Profile{/t}{/if}</a>
 
                 {else}
-                <span id="unsubscribe_error_msg"  class=" {if $unsubscribe_customer_key!=''}hide{/if}">{$data.labels._unsubscribe_error_msg}</span>
-                <br>
-                <a href="/login.sys?fp" class="{if $unsubscribe_customer_key!=''}hide{/if}">{$data.labels._unsubscribe_error_login_link}</a>
+                    <span id="unsubscribe_error_msg"  class=" {if $unsubscribe_customer_key!=''}hide{/if}">{if !empty($data.labels._unsubscribe_error_msg)}{$data.labels._unsubscribe_error_msg}{else}{t}Please log in to unsubscribe{/t}{/if}</span>
+                    <br>
+                    <a href="/login.sys?fp" class="{if $unsubscribe_customer_key!=''}hide{/if}">{if !empty($data.labels._unsubscribe_error_login_link)}{$data.labels._unsubscribe_error_login_link}{else}{t}Log in{/t}{/if}</a>
                 {/if}
 
             </div>
