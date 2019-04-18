@@ -9,9 +9,9 @@
 -->
 *}
 
-{if !empty($data.src)}
+{if !empty($data.src_mobile)}
     <div style="clear:both"></div>
-    <div class="{$data.type} _block  " style="-webkit-overflow-scrolling: touch;overflow-y: scroll;Width:100%;height:{$data.height}px"  data-src="https://{$data.src}"  data-h="{$data.height}" data-w="1240"  >
+    <div class="{$data.type} _block  " style="-webkit-overflow-scrolling: touch;overflow-y: scroll;Width:100%;height:{$data.height_mobile}px"  data-src="https://{$data.src_mobile}"  data-h="{$data.height_mobile}" data-w="420"  >
 
         <iframe class="block_iframe" frameborder="0" scrolling="no" style="width:100%;height: 100%;border: 0px;overflow:hidden" src=""   allowfullscreen ></iframe>
 
