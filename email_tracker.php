@@ -19,6 +19,10 @@ use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
 
 
+$sentry_client = new Raven_Client('https://d16cc2751a024c0da7ad661e75f27814@sentry.io/1433833');
+$sentry_client->install();
+
+
 if ('POST' !== $_SERVER['REQUEST_METHOD']) {
     http_response_code(405);
     die;
