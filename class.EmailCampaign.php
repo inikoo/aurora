@@ -446,6 +446,14 @@ class EmailCampaign extends DB_Table {
 
                 break;
 
+
+            case 'Delivered':
+            case 'Open':
+            case 'Clicked':
+            case 'Sent':
+                return number($this->data[$this->table_name.' '.$key]);
+                break;
+
             default:
                 if (isset($this->data[$key])) {
                     return $this->data[$key];
