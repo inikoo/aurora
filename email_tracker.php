@@ -56,10 +56,13 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
 $account = get_object('Account', 1);
-$locale = $account->get('Locale').'.UTF-8';
+
+$_locale = $account->get('Account Locale').'.UTF-8';
 
 
-set_locale($locale);
+set_locale($_locale);
+
+$locale=$_locale;
 
 
 $sns       = Message::fromRawPostData();
@@ -300,9 +303,9 @@ if ($validator->isValid($sns)) {
 
 
 
-               $__sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'ecent key',$event_key );
+               //$__sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'ecent key',$event_key );
 
-                $db->exec($__sql);
+               // $db->exec($__sql);
 
 
                 $email_tracking = get_object('email_tracking', $row['Email Tracking Key']);
@@ -432,8 +435,7 @@ if ($validator->isValid($sns)) {
 
 
 
-                $_sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'hey', $email_tracking->get('Email Tracking Email Mailshot Key'));
-                $db->exec($_sql);
+
 
 
                 if ($email_tracking->get('Email Tracking Email Template Type Key') > 0) {
@@ -503,6 +505,9 @@ if ($validator->isValid($sns)) {
 
 
                 if (isset($email_campaign)) {
+
+
+
                     $socket->send(
                         json_encode(
                             array(
@@ -518,12 +523,12 @@ if ($validator->isValid($sns)) {
 
                                         'update_metadata' => array(
                                             'class_html' => array(
-                                               // 'Sent_Emails_Info'    => $email_campaign->get('Sent Emails Info'),
-                                                'Email_Campaign_Sent' => $email_campaign->get('Sent'),
+                                               'Sent_Emails_Info'    => $email_campaign->get('Sent Emails Info'),
+                                                '_Email_Campaign_Sent' => $email_campaign->get('Sent'),
                                                 'Email_Campaign_Bounces_Percentage'=>$email_campaign->get('Bounces Percentage'),
                                                'Email_Campaign_Hard_Bounces_Percentage'=>$email_campaign->get('Hard Bounces Percentage'),
                                                'Email_Campaign_Soft_Bounces_Percentage'=>$email_campaign->get('Soft Bounces Percentage'),
-                                                'Email_Campaign_Delivered'=>$email_campaign->get('Delivered'),
+                                                '_Email_Campaign_Delivered'=>$email_campaign->get('Delivered'),
                                                 'Email_Campaign_Open'=>$email_campaign->get('Open'),
                                                 'Email_Campaign_Clicked'=>$email_campaign->get('Clicked'),
 
@@ -570,8 +575,8 @@ if ($validator->isValid($sns)) {
                     );
 
 
-                    $_sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'xxxxxx', 'hola hola send');
-                    $db->exec($_sql);
+                   // $_sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'xxxxxx', 'hola hola send');
+                   // $db->exec($_sql);
 
 
                 }
