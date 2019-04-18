@@ -180,9 +180,10 @@ trait Send_Email {
 
         $request['Message']['Body']['Html']['Data'] = $this->get_email_html($email_tracking, $recipient, $data, $smarty, $localised_labels);
 
-//eu-west-1
+
         if (!isset($this->ses_clients)) {
             $this->ses_clients=array();
+            /*
             $this->ses_clients[] = SesClient::factory(
                 array(
                     'version'     => 'latest',
@@ -193,23 +194,28 @@ trait Send_Email {
                     ],
                 )
             );
+            */
             $this->ses_clients[] = SesClient::factory(
                 array(
                     'version'     => 'latest',
-                    'region'      => 'us-east-1',
+                    'region'      => 'eu-west-1',
                     'credentials' => [
                         'key'    => AWS_ACCESS_KEY_ID,
                         'secret' => AWS_SECRET_ACCESS_KEY,
                     ],
                 )
             );
+
         }
 
 
         try {
 
 
-            $ses_client=$this->ses_clients[array_rand($this->ses_clients)];
+
+            //$ses_client=$this->ses_clients[(rand(0,3)==0?0:1)];
+
+            $ses_client=$this->ses_clients[0];
 
             $result = $ses_client->sendEmail($request);
 
