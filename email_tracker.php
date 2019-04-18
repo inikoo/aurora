@@ -10,6 +10,8 @@
 */
 
 require 'vendor/autoload.php';
+require_once 'utils/sentry.php';
+
 require_once 'utils/parse_user_agent.php';
 require_once 'utils/natural_language.php';
 require_once 'utils/parse_email_status_codes.php';
@@ -19,8 +21,6 @@ use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
 
 
-$sentry_client = new Raven_Client('https://d16cc2751a024c0da7ad661e75f27814@sentry.io/1433833');
-$sentry_client->install();
 
 
 if ('POST' !== $_SERVER['REQUEST_METHOD']) {
