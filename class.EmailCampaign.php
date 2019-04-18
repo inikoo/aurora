@@ -1063,7 +1063,7 @@ class EmailCampaign extends DB_Table {
                 $this->update_metadata['hide'] = array('estimated_recipients_pre_sent');
                 $this->update_metadata['show'] = array('estimated_recipients_post_sent');
 
-                $this->update_metadata['class_html']['Sent_Emails_Info'] = $this->get('Sent Emails Info');
+                $this->update_metadata['class_html']['_Sent_Emails_Info'] = $this->get('Sent Emails Info');
 
 
                 break;

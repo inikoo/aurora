@@ -523,7 +523,7 @@ if ($validator->isValid($sns)) {
 
                                         'update_metadata' => array(
                                             'class_html' => array(
-                                               'Sent_Emails_Info'    => $email_campaign->get('Sent Emails Info'),
+                                               '_Sent_Emails_Info'    => $email_campaign->get('Sent Emails Info'),
                                                 '_Email_Campaign_Sent' => $email_campaign->get('Sent'),
                                                 'Email_Campaign_Bounces_Percentage'=>$email_campaign->get('Bounces Percentage'),
                                                'Email_Campaign_Hard_Bounces_Percentage'=>$email_campaign->get('Hard Bounces Percentage'),
