@@ -351,17 +351,17 @@ if ($validator->isValid($sns)) {
                                 $customer         = get_object('Customer', $row2['Customer Key']);
                                 $customer->editor = $editor;
 
-                                if ($bounce_type == 'Hard Bounce' or ($bounce_type == 'Soft Bounce' and $bounce_count > 1)) {
+                                if ($bounce_type == 'Hard Bounce' or ($bounce_type == 'Soft Bounce' and $bounce_count > 9)) {
 
                                     if ($customer->get('Customer Send Newsletter') == 'Yes' or $customer->get('Customer Send Email Marketing') == 'Yes') {
 
 
-                                        $customer->unsubscribe(_('Unsubscribed to newsletter and marketing emails because email bounced').', '.$unsubscribe_note);
+                                        $customer->unsubscribe(_('Unsubscribed to newsletter and marketing emails because email soft bounced several times').', '.$unsubscribe_note);
 
                                     }
 
                                     $customer->fast_update(array('Customer Email State' => 'Error'));
-                                    print "Customer x ".$customer->get('Store Key')."  ".$customer->id."\n";
+                                    //print "Customer x ".$customer->get('Store Key')."  ".$customer->id."\n";
                                     //exit;
                                 } else {
                                     $customer->fast_update(array('Customer Email State' => 'Warning'));
@@ -375,7 +375,7 @@ if ($validator->isValid($sns)) {
                                     $customer->add_subject_history(
                                         $history_data, true, 'No', 'Changes', $customer->get_object_name(), $customer->id
                                     );
-                                    print "Customer ".$customer->get('Store Key')."  ".$customer->id."\n";
+                                    //print "Customer ".$customer->get('Store Key')."  ".$customer->id."\n";
                                     //exit;
 
                                 }
@@ -499,19 +499,29 @@ if ($validator->isValid($sns)) {
                         json_encode(
                             array(
                                 'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+
+
+
+
                                 'objects' => array(
                                     array(
-                                        'object' => 'email_campaign',
+                                        'object' => 'mailshot',
                                         'key'    => $email_campaign->id,
 
                                         'update_metadata' => array(
                                             'class_html' => array(
-                                                'Sent_Emails_Info'    => $email_campaign->get('Sent Emails Info'),
+                                               // 'Sent_Emails_Info'    => $email_campaign->get('Sent Emails Info'),
                                                 'Email_Campaign_Sent' => $email_campaign->get('Sent'),
                                                 'Email_Campaign_Bounces_Percentage'=>$email_campaign->get('Bounces Percentage'),
+                                               'Email_Campaign_Hard_Bounces_Percentage'=>$email_campaign->get('Hard Bounces Percentage'),
+                                               'Email_Campaign_Soft_Bounces_Percentage'=>$email_campaign->get('Soft Bounces Percentage'),
                                                 'Email_Campaign_Delivered'=>$email_campaign->get('Delivered'),
                                                 'Email_Campaign_Open'=>$email_campaign->get('Open'),
                                                 'Email_Campaign_Clicked'=>$email_campaign->get('Clicked'),
+
+
+
+
 
                                             )
                                         )
