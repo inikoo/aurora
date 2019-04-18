@@ -88,7 +88,6 @@ if(empty($state['metadata']['dn_key'])){
 
         );
 
-
         $smarty->assign('table_buttons', $table_buttons);
 
         $smarty->assign('table_top_template', 'input_picking_sheet.tpl');

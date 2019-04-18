@@ -270,7 +270,7 @@ module.exports = function (grunt) {
                     'js/part_locations.stock_check.js',
                     'js/part_locations.move_stock.js',
                     'js/picking_and_packing.js',
-                    // 'js/fast_track_packing.js',
+                    'js/fast_track_packing.js',
                     'js/sticky_notes.js',
                     'js/app.js'
 
