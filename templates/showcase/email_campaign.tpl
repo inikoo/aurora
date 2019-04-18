@@ -347,7 +347,7 @@
             <div style="display:flex" class=" sent_email_data">
                 <div>
                     <label>{t}Sent{/t}</label>
-                    <div class="Email_Campaign_Sent">{$email_campaign->get('Sent')}</div>
+                    <div class="_Email_Campaign_Sent">{$email_campaign->get('Sent')}</div>
                 </div>
                 <div class="hide">
                     <label>{t}Bounces{/t}</label>
@@ -363,7 +363,7 @@
                 </div>
                 <div>
                     <label>{t}Delivered{/t}</label>
-                    <div class="Email_Campaign_Delivered">{$email_campaign->get('Delivered')}</div>
+                    <div class="_Email_Campaign_Delivered">{$email_campaign->get('Delivered')}</div>
                 </div>
                 <div>
                     <label> {t}Opened{/t}</label>
