@@ -292,9 +292,9 @@ if ($validator->isValid($sns)) {
 
 
 
-               // $__sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'ecent key',$event_key );
+               $__sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'ecent key',$event_key );
 
-                //$db->exec($__sql);
+                $db->exec($__sql);
 
 
                 $email_tracking = get_object('email_tracking', $row['Email Tracking Key']);
@@ -423,6 +423,11 @@ if ($validator->isValid($sns)) {
                 }
 
 
+
+                $_sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'hey', $email_tracking->get('Email Tracking Email Mailshot Key'));
+                $db->exec($_sql);
+
+
                 if ($email_tracking->get('Email Tracking Email Template Type Key') > 0) {
                     $email_template_type = get_object('email_template_type', $email_tracking->get('Email Tracking Email Template Type Key'));
                     $email_template_type->update_sent_emails_totals();
@@ -447,8 +452,6 @@ if ($validator->isValid($sns)) {
                 }
 
 
-                //$_sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $sql, 'xx');
-                //$db->exec($_sql);
 
 
                 $context = new ZMQContext();
@@ -547,6 +550,11 @@ if ($validator->isValid($sns)) {
                             )
                         )
                     );
+
+
+                    $_sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'xxxxxx', 'hola hola send');
+                    $db->exec($_sql);
+
 
                 }
 
