@@ -15,6 +15,7 @@ require_once 'utils/sentry.php';
 require_once 'utils/parse_user_agent.php';
 require_once 'utils/natural_language.php';
 require_once 'utils/parse_email_status_codes.php';
+require_once 'utils/i18n.php';
 
 
 use Aws\Sns\Message;
@@ -52,6 +53,13 @@ $db = new PDO(
     "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+
+$account = get_object('Account', 1);
+$locale = $account->get('Locale').'.UTF-8';
+
+
+set_locale($locale);
 
 
 $sns       = Message::fromRawPostData();
@@ -457,7 +465,7 @@ if ($validator->isValid($sns)) {
                 $context = new ZMQContext();
                 $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
                 $socket->connect("tcp://localhost:5555");
-                $account = get_object('Account', 1);
+
 
 
                 switch ($email_tracking->get('Email Tracking State')) {
