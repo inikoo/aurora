@@ -129,7 +129,7 @@
             </div>
 
             <div class="estimated_recipients_post_sent   {if $email_campaign->get('State Index')<50}hide{/if}">
-                <span class="Sent_Emails_Info">{$email_campaign->get('Sent Emails Info')}</span>
+                <span class="_Sent_Emails_Info">{$email_campaign->get('Sent Emails Info')}</span>
             </div>
 
             <div style="clear:both"></div>

@@ -164,6 +164,9 @@ if (isset($user)) {
 } else {
     $locale = $account->get('Locale').'.UTF-8';
 }
+
+
+
 $smarty->assign('locale', $locale);
 
 set_locale($locale);
