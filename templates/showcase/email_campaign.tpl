@@ -349,17 +349,17 @@
                     <label>{t}Sent{/t}</label>
                     <div class="Email_Campaign_Sent">{$email_campaign->get('Sent')}</div>
                 </div>
-                <div >
+                <div class="hide">
                     <label>{t}Bounces{/t}</label>
-                    <div class="Email_Campaign_Bounces_Percentage">{$email_campaign->get('Bounces Percentage')}</div>
+                    <div  class="Email_Campaign_Bounces_Percentage">{$email_campaign->get('Bounces Percentage')}</div>
                 </div>
-                <div class="hide">
-                    <label>{t}Hard bounce{/t}</label>
-                    <div class="Email_Campaign_Hard_Bounce">{$email_campaign->get('Hard Bounces')}</div>
+                <div class="">
+                    <label>{t}Hard bounces{/t}</label>
+                    <div title="{$email_campaign->get('Hard Bounces')}" class="Email_Campaign_Hard_Bounces_Percentage">{$email_campaign->get('Hard Bounces Percentage')}</div>
                 </div>
-                <div class="hide">
-                    <label>{t}Soft bounce{/t}</label>
-                    <div class="Email_Campaign_Soft_Bounce">{$email_campaign->get('Soft Bounces')}</div>
+                <div class="">
+                    <label>{t}Soft bounces{/t}</label>
+                    <div title="{$email_campaign->get('Soft Bounces')}" class="Email_Campaign_Soft_Bounces_Percentage">{$email_campaign->get('Soft Bounces Percentage')}</div>
                 </div>
                 <div>
                     <label>{t}Delivered{/t}</label>
