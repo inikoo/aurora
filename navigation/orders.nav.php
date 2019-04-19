@@ -639,6 +639,9 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     $left_buttons  = array();
     $right_buttons = array();
 
+    $label_arrow_up='';
+
+  //  print_r($data);
 
     $search_placeholder = _('Search orders');
 
@@ -657,8 +660,55 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
         case 'store':
 
             $tab = 'orders';
+            $_section = 'dashboard';
 
-            $_section = 'orders';
+            if(!empty($data['extra'])){
+
+                switch ($data['extra']){
+                    case 'submitted_not_paid':
+                        $tab = 'orders.in_process.not_paid';
+                        $label_arrow_up=_('Submitted (not paid)');
+                        break;
+                    case 'submitted':
+                        $tab = 'orders.in_process.paid';
+                        $label_arrow_up=_('Submitted (paid)');
+                        break;
+                    case 'website':
+                        $tab = 'orders.website';
+                        $label_arrow_up=_('In basket');
+                        break;
+                    case 'in_warehouse':
+                        $tab = 'orders.in_warehouse_no_alerts';
+                        $label_arrow_up=_('In warehouse');
+
+                        break;
+                    case 'in_warehouse_with_alerts':
+                        $tab = 'orders.in_warehouse_with_alerts';
+                        $label_arrow_up=_('In warehouse').' ('._('with alerts').')';
+
+                        break;
+
+                    case 'packed_done':
+                        $tab = 'orders.packed_done';
+                        $label_arrow_up=_('Packed & closed');
+
+                        break;
+                    case 'approved':
+                        $tab = 'orders.approved';
+                        $label_arrow_up=_('Invoiced');
+
+                        break;
+                    case 'dispatched_today':
+                        $tab = 'orders.dispatched_today';
+                        $label_arrow_up=_('Dispatched today');
+
+                        break;
+                }
+
+            }
+
+
+
             break;
         case 'delivery_note':
             $tab      = 'delivery_note.orders';
@@ -698,6 +748,12 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     $order              = preg_replace('/^.*\.`/', '', $order);
     $order              = preg_replace('/^`/', '', $order);
     $order              = preg_replace('/`$/', '', $order);
+
+
+    if($order=='DATEDIFF(NOW(), `Order Submitted by Customer Date`)'){
+        $order='Waiting days';
+    }
+
     $_order_field_value = $object->get($order);
 
 
@@ -705,27 +761,30 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     $next_title = '';
     $prev_key   = 0;
     $next_key   = 0;
-    $sql        = trim($sql_totals." $wheref");
+
 
 
     $sql = sprintf(
-        "select `Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND O.`Order Key` < %d))  order by $_order_field desc , O.`Order Key` desc limit 1",
+        "select $_order_field,`Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
+	                and ( $_order_field < %s OR ($_order_field = %s AND O.`Order Key` < %d))  order by $_order_field desc , O.`Order Key` desc limit 1",
 
         prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
     );
 
+   // print $sql;
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
+
+
             $prev_key   = $row['object_key'];
-            $prev_title = _("Order").' '.$row['object_name'].' ('.$row['object_key'].')';
+            $prev_title = _("Order").' '.$row['object_name'];
+
         }
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
     }
-
 
     $sql = sprintf(
         "select `Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
@@ -734,15 +793,17 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
+
+
             $next_key   = $row['object_key'];
-            $next_title = _("Order").' '.$row['object_name'].' ('.$row['object_key'].')';
+            $next_title = _("Order").' '.$row['object_name'];
 
         }
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
     }
-    //  print "$sql ";
+
 
     if ($order_direction == 'desc') {
         $_tmp1      = $prev_key;
@@ -814,46 +875,96 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
         $store = new Store($data['parent_key']);
 
 
-        $up_button = array(
-            'icon'      => 'arrow-up',
-            'title'     => _("Orders").' ('.$store->get('Store Code').')',
-            'reference' => 'orders/'.$data['parent_key']
-        );
+        if(!empty($data['extra'])){
 
 
-        if ($prev_key) {
-            $left_buttons[] = array(
-                'icon'      => 'arrow-left',
-                'title'     => $prev_title,
-                'reference' => 'orders/'.$data['parent_key'].'/'.$prev_key
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => $label_arrow_up.' ('.$store->get('Store Code').')',
+                'reference' => 'orders/'.$store->id.'/dashboard/'.$data['extra']
+            );
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'orders/'.$data['parent_key'].'/dashboard/'.$data['extra'].'/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'orders/'.$data['parent_key'].'/dashboard/'.$data['extra'].'/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+        }else{
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Orders").' ('.$store->get('Store Code').')',
+                'reference' => 'orders/'.$data['parent_key']
             );
 
-        } else {
-            $left_buttons[] = array(
-                'icon'  => 'arrow-left disabled',
-                'title' => '',
-                'url'   => ''
-            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'orders/'.$data['parent_key'].'/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'orders/'.$data['parent_key'].'/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
 
         }
-        $left_buttons[] = $up_button;
 
 
-        if ($next_key) {
-            $left_buttons[] = array(
-                'icon'      => 'arrow-right',
-                'title'     => $next_title,
-                'reference' => 'orders/'.$data['parent_key'].'/'.$next_key
-            );
 
-        } else {
-            $left_buttons[] = array(
-                'icon'  => 'arrow-right disabled',
-                'title' => '',
-                'url'   => ''
-            );
 
-        }
 
 
         $sections = get_sections('orders', $object->get('Order Store Key'));

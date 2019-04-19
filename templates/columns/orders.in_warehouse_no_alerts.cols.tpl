@@ -44,20 +44,19 @@ label: "{t}Customer{/t}",
 sortType: "toggle",
 editable: false,
 cell: Backgrid.HtmlCell.extend({})
-}, {
-name: "dispatch_state",
-label: "{t}Status{/t}",
-renderable:false,
+},
+{
+name: "waiting_time",
+label: "{t}Waiting days{/t}",
 editable: false,
+defaultOrder:1,
 sortType: "toggle",
-cell: "html"
-}, {
-name: "payment_state",
-label: "{t}Payment{/t}",
-editable: false,
-sortType: "toggle",
-cell: "html"
-}, {
+{if $sort_key=='waiting_time'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
+{
 name: "total_amount",
 label: "{t}Total{/t}",
 editable: false,

@@ -217,10 +217,10 @@ function orders_in_process_not_paid($_data, $db, $user) {
 
         $adata[] = array(
             'id'        => (integer)$data['Order Key'],
-            'checked'   => sprintf('<i class="fa fa-square fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
+            'checked'   => sprintf('<i class="far fa-square fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
             'store_key' => (integer)$data['Order Store Key'],
             'public_id' => sprintf(
-                '<span class="link"  onclick="change_view(\'/orders/%s/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+                '<span class="link"  onclick="change_view(\'/orders/%s/dashboard/submitted_not_paid/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
             ),
             'date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
@@ -260,14 +260,35 @@ function orders_in_process_paid($_data, $db, $user) {
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    //   print $sql;
+    //print $sql;
     foreach ($db->query($sql) as $data) {
 
 
-        $payment_state = get_order_formatted_payment_state($data);
+        //$payment_state = get_order_formatted_payment_state($data);
+        $payments='';
 
 
-        include_once 'class.Order.php';
+        if($data['payments']!=''){
+            foreach(preg_split('/,/',$data['payments']) as $payment_data){
+                $payment_data=preg_split('/\|/',$payment_data);
+                //print_r($payment_data);
+
+                if($payment_data[1]=='Accounts'){
+                    $payment_name=_('Credit');
+                }else{
+                    $payment_name=$payment_data[0];
+                }
+
+                $payments.=$payment_name.', ';
+            }
+        }
+
+
+        $payments=preg_replace('/, $/','',$payments);
+
+
+
+       // include_once 'class.Order.php';
 
         $operations = '<div id="operations'.$data['Order Key'].'">';
         $class      = 'right';
@@ -293,16 +314,18 @@ function orders_in_process_paid($_data, $db, $user) {
 
         $adata[] = array(
             'id'             => (integer)$data['Order Key'],
-            'checked'        => sprintf('<i class="fa fa-square fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
+            'checked'        => sprintf('<i class="far fa-square fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
             'store_key'      => (integer)$data['Order Store Key'],
             'public_id'      => sprintf(
-                '<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+                '<span class="link"  onclick="change_view(\'orders/%s/dashboard/submitted/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+
+
             ),
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
             'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
-            'payment_state'  => $payment_state,
+            'payments'  =>  $payments,
             'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
             'actions'        => $operations
 
@@ -486,7 +509,7 @@ function orders_in_warehouse_no_alerts($_data, $db, $user) {
             'checked'        => sprintf('<i class="fa fa-square fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
             'store_key'      => (integer)$data['Order Store Key'],
             'public_id'      => sprintf(
-                '<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+                '<span class="link"  onclick="change_view(\'orders/%s/dashboard/in_warehouse/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
             ),
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
@@ -495,7 +518,9 @@ function orders_in_warehouse_no_alerts($_data, $db, $user) {
             'payment_state'  => $payment_state,
             'total_amount'   => $total_amount,
             'actions'        => $operations,
-            'deliveries'     => $deliveries
+            'deliveries'     => $deliveries,
+            'waiting_time'    => number($data['waiting_time'])
+
 
 
         );
@@ -572,7 +597,9 @@ function orders_in_warehouse_with_alerts($_data, $db, $user) {
             'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
             'payment_state'  => $payment_state,
             'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
-            'actions'        => $operations
+            'actions'        => $operations,
+            'waiting_time'    => number($data['waiting_time'])
+
 
 
         );
@@ -605,7 +632,7 @@ function orders_packed_done($_data, $db, $user) {
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    //   print $sql;
+
     foreach ($db->query($sql) as $data) {
 
         $payment_state = get_order_formatted_payment_state($data);
@@ -638,10 +665,10 @@ function orders_packed_done($_data, $db, $user) {
 
         $adata[] = array(
             'id'             => (integer)$data['Order Key'],
-            'checked'        => sprintf('<i class="fa fa-square fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
+            'checked'        => sprintf('<i class="far fa-square fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
             'store_key'      => (integer)$data['Order Store Key'],
             'public_id'      => sprintf(
-                '<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+                '<span class="link"  onclick="change_view(\'orders/%s/dashboard/packed_done/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
             ),
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
@@ -714,10 +741,10 @@ function orders_approved($_data, $db, $user) {
 
         $adata[] = array(
             'id'             => (integer)$data['Order Key'],
-            'checked'        => sprintf('<i class="fa fa-square fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
+            'checked'        => sprintf('<i class="far fa-square fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
             'store_key'      => (integer)$data['Order Store Key'],
             'public_id'      => sprintf(
-                '<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+                '<span class="link"  onclick="change_view(\'orders/%s/dashboard/approved/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
             ),
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
@@ -792,7 +819,7 @@ function orders_dispatched_today($_data, $db, $user) {
             'checked'        => sprintf('<i class="fa fa-square fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
             'store_key'      => (integer)$data['Order Store Key'],
             'public_id'      => sprintf(
-                '<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+                '<span class="link"  onclick="change_view(\'orders/%s/dashboard/dispatched_today/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
             ),
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
@@ -821,153 +848,6 @@ function orders_dispatched_today($_data, $db, $user) {
     echo json_encode($response);
 }
 
-
-function orders_in_process_old($_data, $db, $user) {
-    $rtext_label = 'order';
-
-
-    include_once 'prepare_table/init.php';
-
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
-
-    //   print $sql;
-    foreach ($db->query($sql) as $data) {
-
-        $payment_state = get_order_formatted_payment_state($data);
-
-
-        include_once 'class.Order.php';
-
-        $operations = '<div id="operations'.$data['Order Key'].'">';
-        $class      = 'right';
-
-
-        if ($data['Order State'] == 'InProcess') {
-            $operations .= '<div class="buttons small '.$class.'">';
-            $operations .= sprintf(
-                "<i class=\"fa fa-minus-circle error padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'], $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
-            );
-
-            $operations .= sprintf(
-                "<i id=\"send_to_warehouse_button_%d\" class=\"%s fa fa-hand-lizard fa-flip-horizontal button edit \" onClick=\"create_delivery_note_from_list(this,%d)\" title='%s'></i>", $data['Order Key'], ($data['Order Number Items'] == 0 ? 'disabled' : ''),
-                $data['Order Key'], _('Send for picking')
-            );
-
-            //$operations.=sprintf("<button onClick=\"location.href='order.php?id=%d&referral=store_pending_orders'\"><img style='height:12px;width:12px' src='art/icons/cart_edit.png'> %s</button>",$data['Order Key'],_('Edit Order'));
-
-            $operations .= '</div>';
-
-        } elseif ($data['Order State'] == 'InBasket') {
-            $operations .= '<div class="buttons small '.$class.'">';
-
-
-            $operations .= sprintf(
-                "<i class=\"fa fa-minus-circle error padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'], $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
-            );
-
-            if ($data['Order Number Items'] > 0) {
-
-                $operations .= sprintf(
-                    "<i id=\"send_to_warehouse_button_%d\" class=\"%s fa fa-hand-lizard fa-flip-horizontal button edit \" onClick=\"create_delivery_note_from_list(this,%d)\" title='%s'></i>", $data['Order Key'], ($data['Order Number Items'] == 0 ? 'disabled' : ''),
-                    $data['Order Key'], _('Send for picking')
-                );
-            }
-
-
-            $operations .= '</div>';
-
-        } elseif (in_array(
-            $data['Order State'], array(
-                                    'InWarehouse',
-
-                                )
-        )) {
-
-            $operations .= '<div class="buttons small '.$class.'">';
-
-
-            $operations .= sprintf(
-                "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'], $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
-            );
-
-            foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
-                $operations .= sprintf(
-                    "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>", $data['Order Store Key'], $delivery_note_data
-
-                );
-            }
-
-
-            $operations .= '</div>';
-
-        } elseif ($data['Order State'] == 'PackedDone') {
-
-            $operations .= '<div class="buttons small '.$class.'">';
-            if ($data['Order Invoiced'] == 'No') {
-                $operations .= '<button  onClick="create_invoice(this,'.$data['Order Key'].')"><img id="create_invoice_img_'.$data['Order Key'].'" style="height:12px;width:12px" src="/art/icons/money.png"> '._('Create Invoice')."</button>";;
-            } else {
-                $operations .= '<button  onClick="approve_dispatching(this,'.$data['Order Key'].')"><img id="approve_dispatching_img_'.$data['Order Key'].'" style="height:12px;width:12px" src="/art/icons/package_green.png"> '._('Approve Dispatching')."</button>";;
-
-
-            }
-            $operations .= '</div>';
-
-        } elseif ($data['Order State'] == 'Approved') {
-            $operations .= '<div class="buttons small '.$class.'">';
-            $order      = new Order($data['Order Key']);
-            $dns        = $order->get_delivery_notes_objects();
-            if (count($dns) == 1) {
-                foreach ($dns as $dn) {
-
-                    $operations .= '<button  onClick="set_as_dispatched('.$dn->data['Delivery Note Key'].','.$user->get_staff_key().',\'order\',\''.$data['Order Key'].'\')" ><img id="set_as_dispatched_img_'.$dn->data['Delivery Note Key']
-                        .'" src="/art/icons/lorry_go.png" alt=""> '._(
-                            'Mark as Dispatched'
-                        )."</button>";
-                }
-            }
-
-            $operations .= '</div>';
-
-        }
-
-
-        $operations .= '</div>';
-
-
-        $adata[] = array(
-            'id'             => (integer)$data['Order Key'],
-            'checked'        => sprintf('<i class="fa fa-square fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
-            'store_key'      => (integer)$data['Order Store Key'],
-            'public_id'      => $data['Order Public ID'],
-            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
-            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
-            'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
-            'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
-            'payment_state'  => $payment_state,
-            'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
-            'actions'        => $operations
-
-
-        );
-
-    }
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
-}
-
-
 function orders_in_website($_data, $db, $user) {
     $rtext_label = 'order in basket';
 
@@ -984,7 +864,11 @@ function orders_in_website($_data, $db, $user) {
         $adata[] = array(
             'id'           => (integer)$data['Order Key'],
             'checked'      => sprintf('<i class="fa fa-square fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
-            'public_id'    => sprintf('<span class="link" onClick="change_view(\'orders/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']),
+            'public_id'    => sprintf('
+            <span class="link" onClick="change_view(\'orders/%d/dashboard/website/%d\')">%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+
+
+            ),
             'date'         => strftime("%e %b %Y", strtotime($data['Order Created Date'].' +0:00')),
             'last_updated' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'     => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),

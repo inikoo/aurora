@@ -22,12 +22,12 @@ renderable: false
 {
 name: "checked",
 label:'',
-html_label: '<i class="fa fa-square" style="margin-left:3.5px" aria-hidden="true"></i>',
+html_label: '',
 headerCell: HeaderHtmlCell,
 editable: false,
-sortType: "toggle",
+sortable: false,
 cell: Backgrid.HtmlCell.extend({
-className: "width_20"
+className: "width_30"
 })
 
 
@@ -57,18 +57,6 @@ sortType: "toggle",
 editable: false,
 cell: Backgrid.HtmlCell.extend({})
 }, {
-name: "dispatch_state",
-label: "{t}Status{/t}",
-editable: false,
-sortType: "toggle",
-cell: "html"
-}, {
-name: "payment_state",
-label: "{t}Payment{/t}",
-editable: false,
-sortType: "toggle",
-cell: "html"
-}, {
 name: "total_amount",
 label: "{t}Total{/t}",
 editable: false,
@@ -77,15 +65,7 @@ sortType: "toggle",
 {if $sort_key=='total_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-},
-{
-name: "actions",
-label: "{t}Actions{/t}",
-sortable: false,
-editable: false,
-cell: Backgrid.HtmlCell.extend({})
 }
-
 
 ]
 
