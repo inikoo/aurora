@@ -1033,7 +1033,7 @@ $modules = array(
             'dashboard' => array(
                 'type'      => 'navigation',
                 'label'     => _('Control panel'),
-                'icon'      => 'angle-double-right',
+                'icon'      => 'stream',
                 'reference' => 'orders/%d/dashboard',
                 'tabs'      => array(
                     'orders.dashboard' => array('label' => _('Dashboard'))
@@ -1467,7 +1467,7 @@ $modules = array(
             'dashboard' => array(
                 'type'      => 'navigation',
                 'label'     => _('Control panel'),
-                'icon'      => 'angle-double-right',
+                'icon'      => 'stream',
                 'reference' => 'orders/all/dashboard',
                 'tabs'      => array(
                     'orders_server.dashboard' => array('label' => _('Dashboard'))

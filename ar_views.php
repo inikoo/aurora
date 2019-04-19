@@ -4105,10 +4105,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                     if ($user->get_number_stores() > 1) {
                         $branch[] = array(
-                            'label'     => _('Orders').' ('._(
-                                    'All stores'
-                                ).')',
-                            'icon'      => 'bars',
+                            'label'     => _('Orders').' ('._('All stores').')',
+                            'icon'      => 'indent',
                             'reference' => 'orders/all'
                         );
                     }
@@ -4220,10 +4218,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                     if ($user->get_number_stores() > 1) {
                         $branch[] = array(
-                            'label'     => _('Orders').' ('._(
-                                    'All stores'
-                                ).')',
-                            'icon'      => 'bars',
+                            'label'     => _('Orders').' ('._('All stores').')',
+                            'icon'      => 'indent',
                             'reference' => 'orders/all'
                         );
                     }
@@ -5996,7 +5992,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             $state['current_store'] = 0;
             $branch[]               = array(
                 'label'     => '',
-                'icon'      => 'bars',
+                'icon'      => 'indent',
                 'reference' => 'receipts'
             );
 
@@ -6059,7 +6055,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             $state['current_store'] = 0;
             $branch[]               = array(
                 'label'     => '',
-                'icon'      => 'bars',
+                'icon'      => 'indent',
                 'reference' => 'receipts'
             );
 
@@ -6093,7 +6089,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             $state['current_store'] = $state['store']->id;
             $branch[]               = array(
                 'label'     => '',
-                'icon'      => 'bars',
+                'icon'      => 'indent',
                 'reference' => 'receipts'
             );
             switch ($state['section']) {
@@ -6103,14 +6099,14 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     if ($user->get_number_stores() > 1) {
                         $branch[] = array(
                             'label'     => '('._('All stores').')',
-                            'icon'      => '',
+                            'icon'      => 'stream',
                             'reference' => 'orders/all/dashboard'
                         );
                     }
 
                     $branch[] = array(
-                        'label'     => _('Orders control panel').' '.$state['store']->data['Store Code'],
-                        'icon'      => '',
+                        'label'     => $state['store']->data['Store Code'],
+                        'icon'      => 'stream',
                         'reference' => ''
                     );
 
@@ -6141,7 +6137,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     if ($user->get_number_stores() > 1) {
                         $branch[] = array(
                             'label' => _('Payments').' ('._('All stores').')',
-                            'icon'  => 'bars',
+                            'icon'  => 'indent',
                             'url'   => 'payments/all'
                         );
                     }
@@ -6188,7 +6184,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                                     'label'     => _(
                                         'Customers (All stores)'
                                     ),
-                                    'icon'      => 'bars',
+                                    'icon'      => 'indent',
                                     'reference' => 'customers/all'
                                 );
 
@@ -6219,11 +6215,68 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     } else {
 
 
-                        $branch[] = array(
-                            'label'     => _('Orders').' '.$state['store']->data['Store Code'],
-                            'icon'      => '',
-                            'reference' => 'orders/'.$state['store']->id
-                        );
+                        if ($user->get_number_stores() > 1) {
+                            $branch[] = array(
+                                'label'     => '('._('All stores').')',
+                                'icon'      => 'stream',
+                                'reference' => 'orders/all/dashboard'
+                            );
+                        }
+
+
+                        if(!empty($state['extra'])){
+
+                            switch ($state['extra']){
+                                case 'submitted_not_paid':
+                                    $label=_('Submitted (not paid)');
+                                    break;
+                                case 'submitted':
+                                    $label=_('Submitted (paid)');
+                                    break;
+                                case 'website':
+                                    $label=_('In basket');
+                                    break;
+                                case 'in_warehouse':
+                                    $label=_('In warehouse');
+
+                                    break;
+                                case 'in_warehouse_with_alerts':
+                                    $label=_('In warehouse').' ('._('with alerts').')';
+
+                                    break;
+
+                                case 'packed_done':
+                                    $label=_('Packed & closed');
+
+                                    break;
+                                case 'approved':
+                                    $label=_('Invoiced');
+
+                                    break;
+                                case 'dispatched_today':
+                                    $label=_('Dispatched today');
+
+                                    break;
+                                default:
+                                    $label='';
+                            }
+
+                            $branch[] = array(
+                                'label'     => $label.' <span class="id">'.$state['store']->data['Store Code'].'</span>',
+                                'icon'      => 'stream',
+                                'reference' => 'orders/'.$state['store']->id.'/dashboard/'.$state['extra']
+                            );
+
+                        }else{
+                            $branch[] = array(
+                                'label'     => _('Orders').' '.$state['store']->data['Store Code'],
+                                'icon'      => '',
+                                'reference' => 'orders/'.$state['store']->id
+                            );
+                        }
+
+
+
 
 
                     }
@@ -6270,10 +6323,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
                                 $branch[] = array(
-                                    'label'     => _(
-                                        'Customers (All stores)'
-                                    ),
-                                    'icon'      => 'bars',
+                                    'label'     => _('Customers (All stores)'),
+                                    'icon'      => 'indent',
                                     'reference' => 'customers/all'
                                 );
 
@@ -6504,7 +6555,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             $state['current_store'] = $state['store']->id;
             $branch[]               = array(
                 'label'     => '',
-                'icon'      => 'bars',
+                'icon'      => 'indent',
                 'reference' => 'receipts'
             );
 
@@ -8950,7 +9001,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             if ($state['section'] == 'orders_index') {
                 $branch[] = array(
                     'label'     => _("Order's index"),
-                    'icon'      => 'bars',
+                    'icon'      => 'indent',
                     'reference' => ''
                 );
                 break;

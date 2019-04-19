@@ -585,8 +585,7 @@
 
 
 
-
-            <tr class="subtotal Items_Discount_Amount_tr" style="margin-top:0px;border-top:none">
+            <tr class="subtotal Items_Discount_Amount_tr  {if $order->get('Order Items Discount Amount')==0}hide{/if}" style="margin-top:0px;border-top:none">
                 <td class="label small" style="margin-top:0px;border-top:none">{t}Items{/t}</td>
                 <td class="aright" style="margin-top:0px;border-top:none"><span class="discreet italic">(<span class=" Items_Discount_Percentage">{$order->get('Items Discount Percentage')}</span>)</span> <span class="padding_left_10 Items_Discount_Amount">{$order->get('Items Discount Amount')}</span></td>
             </tr>
@@ -857,7 +856,7 @@
 
             <tr>
                 <td class="label">{t}Items{/t}</td>
-                <td class="aright "><span class="{if $order->get('Order Items Net Amount')==0}hide{/if} Items_Gross_Amount strikethrough">{$order->get('Items Gross Amount')}</span> <span class="Items_Net_Amount">{$order->get('Items Net Amount')}</span></td>
+                <td class="aright "><span class="{if $order->get('Order Items Discount Amount')==0}hide{/if} Items_Gross_Amount strikethrough">{$order->get('Items Gross Amount')}</span> <span class="Items_Net_Amount">{$order->get('Items Net Amount')}</span></td>
             </tr>
 
 

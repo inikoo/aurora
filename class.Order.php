@@ -307,6 +307,14 @@ class Order extends DB_Table {
 
                 return money($this->data['Order Deal Amount Off'], $this->data['Order Currency']);
                 break;
+
+            case 'Waiting days':
+
+
+
+                return floor((gmdate('U')-strtotime($this->data['Order Submitted by Customer Date'].' +0:00'))/3600/24);
+
+                break;
             case 'Currency Code':
 
                 return $this->data['Order Currency'];

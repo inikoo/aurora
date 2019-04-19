@@ -18,7 +18,7 @@ $wheref   = '';
 $currency = '';
 
 
-$where = 'where `Order State`="PackedDone" or `Order Replacement State`="PackedDone"  ';
+$where = 'where  (`Order State`="PackedDone" or `Order Replacement State`="PackedDone" ) ';
 $table = '`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
 
 
@@ -52,6 +52,9 @@ if ($parameters['parent'] == 'store') {
         }
     }
 }
+
+
+
 
 
 if (isset($parameters['elements_type'])) {
@@ -201,8 +204,3 @@ $fields
     ';
 
 $sql_totals = "select count(Distinct O.`Order Key`) as num from $table $where";
-//$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-//print $sql;
-
-
-?>

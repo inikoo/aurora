@@ -176,7 +176,6 @@ if (($parameters['f_field'] == 'customer') and $f_value != '') {
 $_order = $order;
 $_dir   = $order_direction;
 
-
 if ($order == 'public_id') {
     $order = '`Order File As`';
 } elseif ($order == 'last_date' or $order == 'date') {
@@ -189,13 +188,16 @@ if ($order == 'public_id') {
     $order = 'O.`Order Payment State`';
 } elseif ($order == 'total_amount') {
     $order = 'O.`Order Total Amount`';
+}else if ($order == 'waiting_time') {
+    $order = 'DATEDIFF(NOW(), `Order Submitted by Customer Date`)';
 } else {
     $order = 'O.`Order Key`';
 }
 
 $fields
     = '`Order Replacement State`,`Order Invoiced`,`Order Number Items`,`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Balance Total Amount`,`Order Payment State`,`Order State`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount`,
-     (select group_concat(concat_ws("|",`Delivery Note Key`,`Delivery Note ID`)) from `Delivery Note Dimension` where `Delivery Note Order Key`=O.`Order Key` and `Delivery Note State` in ("Ready to be Picked","Picking","Picked","Packing","Packed")   ) as delivery_notes
+     (select group_concat(concat_ws("|",`Delivery Note Key`,`Delivery Note ID`)) from `Delivery Note Dimension` where `Delivery Note Order Key`=O.`Order Key` and `Delivery Note State` in ("Ready to be Picked","Picking","Picked","Packing","Packed")   ) as delivery_notes,
+     DATEDIFF(NOW(), `Order Submitted by Customer Date`) as waiting_time
     
     
     ';
