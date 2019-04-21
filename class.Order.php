@@ -2211,6 +2211,7 @@ class Order extends DB_Table {
 
                 $items[] = array(
                     'code'              => $row['Product Code'],
+                    'product_id'        =>$row['Product ID'],
                     'description'       => $row['Product History Units Per Case'].'x '.$row['Product History Name'],
                     'deal_info'         => $deal_info,
                     'out_of_stock_info' => $out_of_stock_info,

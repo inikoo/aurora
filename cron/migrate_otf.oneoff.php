@@ -31,14 +31,14 @@ $editor = array(
 
 $account = new Account();
 
-$store_key = 1;
+$store_key = '9,10,12,16';
 
 
 
 
-$sql = sprintf('update `Order Transaction Fact` set  `Order Transaction Gross Amount`=`Invoice Transaction Gross Amount` , `Order Transaction Total Discount Amount`=`Invoice Transaction Total Discount Amount` where `Store Key`=%d  and  `Invoice Key` is not null   ',$store_key);
+$sql = sprintf('update `Order Transaction Fact` set  `Order Transaction Gross Amount`=`Invoice Transaction Gross Amount` , `Order Transaction Total Discount Amount`=`Invoice Transaction Total Discount Amount` where `Store Key` in (%s)  and  `Invoice Key` is not null   ',$store_key);
 $db->exec($sql);
-$sql = sprintf('update `Order Transaction Fact` set `Order Transaction Amount`=`Order Transaction Gross Amount`+`Order Transaction Total Discount Amount` where `Store Key`=%d  and  `Invoice Key` is not null   ',$store_key);
+$sql = sprintf('update `Order Transaction Fact` set `Order Transaction Amount`=`Order Transaction Gross Amount`+`Order Transaction Total Discount Amount` where `Store Key` in (%s)  and  `Invoice Key` is not null   ',$store_key);
 $db->exec($sql);
 
 

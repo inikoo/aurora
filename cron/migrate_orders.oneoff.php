@@ -23,12 +23,12 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
-$store_key = 1;
+$store_keys='9,10,12,16';
 
 $account = new Account();
 
 $print_est = true;
-$sql       = sprintf("select count(*) as num FROM `Order Dimension` O left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where `Store Key`=%d ", $store_key);
+$sql       = sprintf("select count(*) as num FROM `Order Dimension` O left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where `Store Key` in (%s) ", $store_keys);
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -45,7 +45,7 @@ $contador  = 0;
 
 $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` O left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where  `Order Key`=%d order by O.`Order Key` desc ', 2339791);
 
-$sql = sprintf('SELECT `Order Key` FROM `Order Dimension` O left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where  `Store Key`=%d order by O.`Order Key` desc ', $store_key);
+$sql = sprintf('SELECT `Order Key` FROM `Order Dimension` O left join `Store Dimension` on (`Store Key`=`Order Store Key`)  where  `Store Key` in (%s) order by O.`Order Key` desc ', $store_keys);
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {

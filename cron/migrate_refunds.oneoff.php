@@ -36,11 +36,11 @@ $editor = array(
 );
 
 
-$store_key=1;
+$store_keys='9,10,12,16';
 
 $print_est = false;
 
-$sql = sprintf("select count(*) as num FROM `Invoice Dimension` O left join `Store Dimension` on (`Store Key`=`Invoice Store Key`)  where `Store key`=%d and `Invoice Type`='Refund' ",$store_key);
+$sql = sprintf("select count(*) as num FROM `Invoice Dimension` O left join `Store Dimension` on (`Store Key`=`Invoice Store Key`)  where `Store key` in (%s) and `Invoice Type`='Refund' ",$store_keys);
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -57,7 +57,7 @@ $contador  = 0;
 
 
 $sql = sprintf('SELECT `Invoice Key` FROM `Invoice Dimension`  where `Invoice Key`=1913501 order by `Invoice Key` desc ');
-$sql = sprintf('SELECT `Invoice Key` FROM `Invoice Dimension` left join `Store Dimension` on (`Store Key`=`Invoice Store Key`)  where `Store key`=%d  and `Invoice Type`="Refund" order by `Invoice Key` desc ',$store_key);
+$sql = sprintf('SELECT `Invoice Key` FROM `Invoice Dimension` left join `Store Dimension` on (`Store Key`=`Invoice Store Key`)  where `Store key` in (%s)  and `Invoice Type`="Refund" order by `Invoice Key` desc ',$store_keys);
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {

@@ -35,10 +35,11 @@ $editor = array(
     'Author Name'  => 'Script (migration to aurora)'
 );
 
-$store_key=1;
+//12,9,10
+$store_keys='9,10,12,16';
 
 
-$sql = sprintf('update `Store Dimension` set `Store Version`=2  where `Store Key`=%d', $store_key);
+$sql = sprintf('update `Store Dimension` set `Store Version`=2  where `Store Key` in (%s)', $store_keys);
 $db->exec($sql);
 
 
@@ -46,11 +47,12 @@ $db->exec($sql);
 $where=' and `Customer Key`  <=40000 ';
 $where=' and `Customer Key`  >40000  and `Customer Key`  <=100000  ';
 $where=' and `Customer Key`  >100000  and `Customer Key`  <=200000  ';
-
 $where=' and `Customer Key`  >200000 ';
 
+$where='';
+
 $print_est = true;
-$sql = sprintf("select count(*) as num FROM `Customer Dimension` O left join `Store Dimension` on (`Store Key`=`Customer Store Key`)  where `Store Key`=%d  $where",$store_key);
+$sql = sprintf("select count(*) as num FROM `Customer Dimension` O left join `Store Dimension` on (`Store Key`=`Customer Store Key`)  where `Store Key` in (%s)  $where",$store_keys);
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -69,7 +71,7 @@ $contador  = 0;
 $sql = sprintf(
     'SELECT `Customer Key` FROM `Customer Dimension` WHERE `Customer Key`=338310 ORDER BY `Customer Key` DESC '
 );
-$sql = sprintf('SELECT `Customer Key` FROM `Customer Dimension`  left join `Store Dimension` on (`Store Key`=`Customer Store Key`) where `Store Key`=%d  '.$where.'  ORDER BY `Customer Key` DESC ',$store_key);
+$sql = sprintf('SELECT `Customer Key` FROM `Customer Dimension`  left join `Store Dimension` on (`Store Key`=`Customer Store Key`) where `Store Key` in (%s)  '.$where.'  ORDER BY `Customer Key` DESC ',$store_keys);
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
