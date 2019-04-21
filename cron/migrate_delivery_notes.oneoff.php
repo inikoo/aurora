@@ -33,11 +33,11 @@ $editor = array(
 );
 
 
-$store_key=1;
+$store_keys='9,10,12,16';
 
 $print_est = true;
 
-$sql = sprintf("select count(*) as num FROM `Delivery Note Dimension` O left join `Store Dimension` on (`Store Key`=`Delivery Note Store Key`)  where `Store Key`=%d ",$store_key);
+$sql = sprintf("select count(*) as num FROM `Delivery Note Dimension` O left join `Store Dimension` on (`Store Key`=`Delivery Note Store Key`)  where `Store Key` in (%s) ",$store_keys);
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -52,7 +52,7 @@ if ($result = $db->query($sql)) {
 $lap_time0 = date('U');
 $contador  = 0;
 
-$sql = sprintf('SELECT `Delivery Note Key` FROM `Delivery Note Dimension`  left join `Store Dimension` on (`Store Key`=`Delivery Note Store Key`) where `Store Key`=%d  order by `Delivery Note Key` desc ',$store_key);
+$sql = sprintf('SELECT `Delivery Note Key` FROM `Delivery Note Dimension`  left join `Store Dimension` on (`Store Key`=`Delivery Note Store Key`) where `Store Key` in (%s)  order by `Delivery Note Key` desc ',$store_keys);
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
