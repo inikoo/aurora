@@ -362,6 +362,20 @@ class data_entry_picking_aid {
             );
         }
 
+        if (!empty($this->data['fields']['Delivery Note Parcel Type']) and  in_array($this->data['fields']['Delivery Note Parcel Type'],array('Box','Pallet','Envelope','Small Parcel','Other','None')) ) {
+            $this->dn->fast_update(
+                array(
+                    'Delivery Note Parcel Type' => $this->data['fields']['Delivery Note Parcel Type'],
+                )
+            );
+        } else {
+            $this->dn->fast_update(
+                array(
+                    'Delivery Note Parcel Type' => 'Other'
+                )
+            );
+        }
+
 
         if (!empty($this->data['fields']['Delivery Note Number Parcels']) and is_numeric($this->data['fields']['Delivery Note Number Parcels']) and $this->data['fields']['Delivery Note Number Parcels'] > 0) {
             $this->dn->fast_update(

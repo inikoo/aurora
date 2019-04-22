@@ -330,10 +330,26 @@
 
 
             <tr>
-                <td class="aleft" style="width: 80px">{t}Parcels{/t}:</td>
+                <td class="aleft" style="width: 80px">
+
+                    <div style="position: relative;left:-8px;" >
+                        <input id="set_parcel_type" data-field="Delivery Note Parcel Type"  type="hidden" class="selected_parcel_type input_field" value="{if $delivery_note->get('Delivery Note Parcel Type')!=''}{$delivery_note->get('Delivery Note Parcel Type')}{else}Box{/if}">
+                        <select class="parcel_types_options small" style="width: 200px">
+                            <option value="Box" {if $delivery_note->get('Delivery Note Parcel Type')=='Box' or   $delivery_note->get('Delivery Note Parcel Type')==''}selected="selected"{/if} >{t}Boxes{/t}</option>
+                            <option value="Pallet" {if $delivery_note->get('Delivery Note Parcel Type')=='Pallet'}selected="selected"{/if} >{t}Pallets{/t}</option>
+                            <option value="Envelope" {if $delivery_note->get('Delivery Note Parcel Type')=='Envelope'}selected="selected"{/if} >{t}Envelopes{/t}</option>
+                            <option value="Small Parcel" {if $delivery_note->get('Delivery Note Parcel Type')=='Small Parcel'}selected="selected"{/if} >{t}Small parcels{/t}</option>
+
+
+
+                        </select>
+                        <div class="clear:both"></div>
+                    </div>
+
+                </td>
                 <td class="">
                     <input id="number_parcel_field" style="width:75px" value="{$delivery_note->get('Delivery Note Number Parcels')}" ovalue="{$delivery_note->get('Delivery Note Number Parcels')}"
-                           placeholder="{t}number{/t}"> <i onCLick="save_number_parcels(this)" class="fa fa-plus button" aria-hidden="true"></i>
+                           placeholder="{t}number{/t}"> <i onCLick="save_number_parcels(this)" class="fa fa-cloud button hide" aria-hidden="true"></i>
 
                 </td>
                 <td class="aright"> {t}Weight{/t}:</td>
@@ -685,6 +701,32 @@
 
     })
 
+
+    $(document).on('input propertychange', '#number_parcel_field', function () {
+
+
+
+        if ($(this).val() != $(this).attr('ovalue')) {
+            $(this).closest('td').find('i').removeClass('hide')
+        } else {
+            $(this).closest('td').find('i').addClass('hide')
+
+        }
+
+        var validation = validate_number($(this).val(), 0, 1000)
+
+        if (validation) {
+
+            $(this).closest('td').find('i').addClass('error').removeClass('valid save changed')
+
+        } else {
+            $(this).closest('td').find('i').removeClass('error').addClass('valid save changed')
+        }
+
+
+    })
+
+
     $(document).on('input propertychange', '#tracking_field', function () {
 
 
@@ -711,18 +753,59 @@
         show_fast_track_packing($('#show_fast_track_packing_button'))
     })
 
-    $(document).on('input propertychange', '#number_parcel_field', function () {
+
+   $('.parcel_types_options').niceSelect();
+
+    $( ".parcel_types_options" ).on('change',
+        function() {
+
+            var value=$( ".parcel_types_options option:selected" ).val();
 
 
-        if ($(this).val() != $(this).attr('ovalue')) {
-            $(this).next(i).addClass('fa-cloud').removeClass('fa-plus')
-        } else {
-            $(this).next(i).removeClass('fa-cloud').addClass('fa-plus')
 
-        }
+            var request = '/ar_edit.php?tipo=edit_field&object=DeliveryNote&key=' + $('#delivery_note').attr('dn_key') + '&field=Delivery_Note_Parcel_Type&value=' + value + '&metadata={}';
+            console.log(request)
 
-    })
+            var form_data = new FormData();
 
+            form_data.append("tipo", 'edit_field')
+            form_data.append("field", 'Delivery_Note_Parcel_Type')
+            form_data.append("object", 'DeliveryNote')
+            form_data.append("key", $('#delivery_note').attr('dn_key'))
+            form_data.append("value", value)
+            var request = $.ajax({
+
+                url: "/ar_edit.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
+
+            })
+
+
+            request.done(function (data) {
+                if (data.state == 200) {
+
+                    for (var key in data.update_metadata.class_html) {
+                        $('.' + key).html(data.update_metadata.class_html[key])
+                    }
+
+
+
+                } else if (data.state == 400) {
+                    sweetAlert(data.msg);
+                }
+
+            })
+
+
+            request.fail(function (jqXHR, textStatus) {
+                console.log(textStatus)
+
+                console.log(jqXHR.responseText)
+
+
+            });
+
+
+        });
 
 
 
