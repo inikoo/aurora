@@ -10,7 +10,7 @@
 */
 
 
-if ( preg_match('/bali|sasi|sakoi/', gethostname()) ) {
+if ( preg_match('/bali|sasi|sakoi|geko/', gethostname()) ) {
     $_SESSION['website_key'] = 1;
 } else {
 

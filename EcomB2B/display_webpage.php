@@ -128,7 +128,7 @@ $cache_id = $_SESSION['website_key'].'|'.$webpage_key.'|'.($logged_in ? 'in' : '
 
 $template = $theme.'/webpage_blocks.'.$theme.'.'.$website_type.$template_suffix.'.tpl';
 
-$smarty->assign('is_devel', preg_match('/bali|sasi|sakoi/', gethostname()));
+$smarty->assign('is_devel', preg_match('/bali|sasi|sakoi|geko/', gethostname()));
 $smarty->assign('cache_id', $cache_id);
 
 

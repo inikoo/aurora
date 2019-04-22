@@ -15,7 +15,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 require_once 'vendor/autoload.php';
 
 
-if (!preg_match('/bali|sasi|sakoi/', gethostname())) {
+if (!preg_match('/bali|sasi|sakoi|geko/', gethostname())) {
 
 
     $sentry_client = new Raven_Client('https://4d2a1ddba83a4fb896275d4e50ec066d@sentry.io/1433843');
