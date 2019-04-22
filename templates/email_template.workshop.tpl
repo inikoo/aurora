@@ -138,17 +138,17 @@
         {if isset($special_links)}{$special_links}{/if}
     ];
 
-
     var beeConfig = {
         uid: 'CmsUserName', // [mandatory] identifies the set of resources to load
         container: 'email_template_html_container', // [mandatory] the id of div element that contains BEE Plugin
-        //autosave: 15, // [optional, default:false] in seconds, allowed min-value: 15
+        autosave: 15, // [optional, default:false] in seconds, allowed min-value: 15
         //language: 'en-US', // [optional, default:'en-US'] if language is not supported the default language is loaded (value must follow ISO 639-1  format)
         specialLinks: specialLinks, // [optional, default:[]] Array of Object to specify special links
         mergeTags: mergeTags, // [optional, default:[]] Array of Object to specify special merge Tags
         mergeContents: mergeContents, // [optional, default:[]] Array of Object to specify merge content
-        //preventClose: false, // [optional, default:false] if true an alert is shown before browser closure
+        preventClose: false, // [optional, default:false] if true an alert is shown before browser closure
         onSave: save_email_template,
+        onAutoSave: auto_save_email_template,
         onSaveAsTemplate: open_save_as_blueprint_dialog,
         onSend: open_send_test_email_dialog, //onError: function(errorMessage) { /* Implements function to handle error messages */ } // [optional]
     };
