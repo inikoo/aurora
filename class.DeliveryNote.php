@@ -773,15 +773,17 @@ class DeliveryNote extends DB_Table {
 
                 switch ($this->data['Delivery Note Parcel Type']) {
                     case('Box'):
-                        $parcel_type = sprintf('<i class="fa fa-archive" title="%s" aria-hidden="true"></i>\'', ngettext('box', 'boxes', $this->data['Delivery Note Number Parcels']));
+                        $parcel_type = sprintf('<i class="fal fa-archive" title="%s" aria-hidden="true"></i>\'', ngettext('box', 'boxes', $this->data['Delivery Note Number Parcels']));
                         break;
                     case('Pallet'):
-                        $parcel_type = sprintf('<i class="fa fa-calendar  fa-flip-vertical" title="%s" aria-hidden="true"></i>', ngettext('pallet', 'pallets', $this->data['Delivery Note Number Parcels']));
+                        $parcel_type = sprintf('<i class="fal fa-pallet" title="%s" aria-hidden="true"></i>', ngettext('pallet', 'pallets', $this->data['Delivery Note Number Parcels']));
                         break;
                     case('Envelope'):
-                        $parcel_type = sprintf('<i class="fa fa-envelope" title="%s" aria-hidden="true"></i>\'', ngettext('envelope', 'envelopes', $this->data['Delivery Note Number Parcels']));
-
-
+                        $parcel_type = sprintf('<i class="fal fa-envelope" title="%s" aria-hidden="true"></i>\'', ngettext('envelope', 'envelopes', $this->data['Delivery Note Number Parcels']));
+                        break;
+                    case('Small Parcel'):
+                        $parcel_type = sprintf('<i class="fal fa-hand-holding-box" title="%s" aria-hidden="true"></i>\'', ngettext('small parcel', 'small parcels', $this->data['Delivery Note Number Parcels']));
+                        break;
                         break;
 
 
@@ -1171,6 +1173,7 @@ class DeliveryNote extends DB_Table {
                 break;
 
             case 'Delivery Note Parcel Type':
+            case 'Delivery Note Number Parcels':
 
                 $this->update_field($field, $value, $options);
                 $this->update_metadata = array(
