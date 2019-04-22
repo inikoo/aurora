@@ -174,6 +174,8 @@ class Order extends DB_Table {
                 $this->new_value = html_entity_decode($this->new_value);
                 break;
 
+
+
             default:
                 $base_data = $this->base_data();
 
@@ -704,6 +706,30 @@ class Order extends DB_Table {
                 } else {
                     return json_decode($this->data['Order Pinned Deal Components'], true);
                 }
+
+                break;
+            case 'Available Credit Amount':
+
+                if ($this->data['Order Total Amount'] > $this->data['Order Available Credit Amount']) {
+                    return money(-1 * $this->data['Order Available Credit Amount'], $this->data['Order Currency']);
+
+                } else {
+                    return money(-1 * $this->data['Order Total Amount'], $this->data['Order Currency']);
+                }
+
+
+                break;
+            case 'Basket To Pay Amount':
+
+
+                if ($this->data['Order To Pay Amount']> $this->data['Order Available Credit Amount']) {
+                    return money($this->data['Order To Pay Amount'] - $this->data['Order Available Credit Amount'], $this->data['Order Currency']);
+
+                } else {
+                    return money(0, $this->data['Order Currency']);
+
+                }
+
 
                 break;
 
