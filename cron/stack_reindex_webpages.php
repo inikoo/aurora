@@ -32,7 +32,7 @@ $editor = array(
 );
 
 
-$sql = sprintf("SELECT count(*) AS num FROM `Stack Dimension`  where `Stack Operation`='reindex_webpage'");
+$sql = sprintf("SELECT count(*) AS num FROM `Stack Dimension`  where `Stack Operation`='reindex_webpage' limit 5000");
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -52,7 +52,7 @@ $contador = 0;
 
 
 $sql = sprintf(
-    "SELECT `Stack Key`,`Stack Object Key` FROM `Stack Dimension`  where `Stack Operation`='reindex_webpage' ORDER BY RAND()"
+    "SELECT `Stack Key`,`Stack Object Key` FROM `Stack Dimension`  where `Stack Operation`='reindex_webpage' ORDER BY RAND() limit 5000"
 );
 
 if ($result = $db->query($sql)) {
