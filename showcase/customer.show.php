@@ -21,8 +21,8 @@ function get_customer_showcase($data, $smarty) {
 
     $store = get_object('Store', $customer->get('Store Key'));
     //if ($store->get('Store Version') == 2) {
-       // $customer->update_account_balance();
-        //$customer->update_credit_account_running_balances();
+        $customer->update_account_balance();
+        $customer->update_credit_account_running_balances();
 
     //}
     //$customer->update_orders();
