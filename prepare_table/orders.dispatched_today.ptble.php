@@ -18,7 +18,7 @@ $wheref   = '';
 $currency = '';
 
 
-$where =sprintf( 'where (`Order State`="Dispatched" and `Order Dispatched Date`>%s ) or (`Order Replacement State`="Dispatched" and `Order Post Transactions Dispatched Date`>%s ) ',
+$where =sprintf( 'where ((`Order State`="Dispatched" and `Order Dispatched Date`>%s ) or (`Order Replacement State`="Dispatched" and `Order Post Transactions Dispatched Date`>%s )) ',
                  prepare_mysql(gmdate('Y-m-d 00:00:00')),  prepare_mysql(gmdate('Y-m-d 00:00:00'))
 
 );
@@ -26,26 +26,22 @@ $table = '`Order Dimension` O left join `Payment Account Dimension` P on (P.`Pay
 
 
 if ($parameters['parent'] == 'store') {
-    if (is_numeric($parameters['parent_key']) and in_array(
-            $parameters['parent_key'], $user->stores
-        )
-    ) {
+    if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'], $user->stores)) {
         $where .= sprintf(' and  `Order Store Key`=%d ', $parameters['parent_key']);
         if (!isset($store)) {
-            include_once 'class.Store.php';
-            $store = new Store($parameters['parent_key']);
+            $store = get_object('Store', $parameters['parent_key']);
         }
         $currency = $store->data['Store Currency Code'];
+        $home_country = $store->get('Store Home Country Code 2 Alpha');
+
     } else {
         $where .= sprintf(' and  false');
     }
 
 
 } elseif ($parameters['parent'] == 'account') {
-    if (is_numeric($parameters['parent_key']) and in_array(
-            $parameters['parent_key'], $user->stores
-        )
-    ) {
+    if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'], $user->stores)) {
+        $home_country = $account->get('Account Country 2 Alpha Code');
 
         if (count($user->stores) == 0) {
             $where .= ' and false';
@@ -63,7 +59,31 @@ if (isset($parameters['elements_type'])) {
 
     switch ($parameters['elements_type']) {
 
+        case('location'):
+            $_elements            = '';
+            $num_elements_checked = 0;
+            foreach (
+                $parameters['elements']['location']['items'] as $_key => $_value
+            ) {
+                $_value = $_value['selected'];
+                if ($_value) {
+                    $num_elements_checked++;
+                    $_elements .= $_key;
+                }
+            }
 
+            if ($_elements == '') {
+                $where .= ' and false';
+            } elseif ($num_elements_checked == 2) {
+
+            } else {
+                if ($_elements == "Export") {
+                    $where .= sprintf('and `Order Invoice Address Country 2 Alpha Code`!=%s', prepare_mysql($home_country));
+                } else {
+                    $where .= sprintf('and `Order Invoice Address Country 2 Alpha Code`=%s', prepare_mysql($home_country));
+                }
+            }
+            break;
         case('state'):
             $_elements            = '';
             $num_elements_checked = 0;

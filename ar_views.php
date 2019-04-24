@@ -1754,7 +1754,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
-
+                case ('order'):
+                    return get_order_navigation($data, $smarty, $user, $db, $account);
+                    break;
 
                 case ('mailshot'):
                     return get_abandoned_card_email_navigation(
