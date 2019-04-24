@@ -5,24 +5,27 @@ const iPad = devices[ 'iPad' ];
 const argv = require('minimist')(process.argv.slice(2));
 const url = argv.url;
 const pageKey = argv.pageKey;
+var fs = require('fs');
+var dir = './screenshots';
+if (!fs.existsSync(dir)){ fs.mkdirSync(dir); }
 
 async function run() {
     let browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
     let page = await browser.newPage();
     await page.setViewport({ width: 1920, height: 1080 });
     await page.goto(url , {waitUntil: 'domcontentloaded'});
-    await page.screenshot({ path: `./cron/images/${pageKey}F.jpg`, type: 'jpeg', fullPage: true});
-    await page.screenshot({ path: `./cron/images/${pageKey}D.jpg`, type: 'jpeg'});
+    await page.screenshot({ path: `./cron/screenshots/${pageKey}F.jpg`, type: 'jpeg', fullPage: true});
+    await page.screenshot({ path: `./cron/screenshots/${pageKey}D.jpg`, type: 'jpeg'});
     await page.close();
     let pageM = await browser.newPage();
     await pageM.emulate(iPhone);
     await pageM.goto(url, {waitUntil: 'domcontentloaded'});
-    await pageM.screenshot({ path: `./cron/images/${pageKey}M.jpg`, type: 'jpeg' });
+    await pageM.screenshot({ path: `./cron/screenshots/${pageKey}M.jpg`, type: 'jpeg' });
     await pageM.close();
     let pageT = await browser.newPage();
     await pageT.emulate(iPad);
     await pageT.goto(url, {waitUntil: 'domcontentloaded'});
-    await pageT.screenshot({ path: `./cron/images/${pageKey}T.jpg`, type: 'jpeg'});
+    await pageT.screenshot({ path: `./cron/screenshots/${pageKey}T.jpg`, type: 'jpeg'});
     await pageT.close();
     await browser.close();
 }
