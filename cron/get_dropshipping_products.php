@@ -91,7 +91,7 @@ if ($result = $db->query($sql)) {
         $sql = sprintf("SELECT * FROM `drop`.`catalog_product_entity_varchar` WHERE  `entity_id` =%d  AND attribute_id=%d ", $row['entity_id'], getMagentoAttNumber('relate', 4));
         if ($result2 = $db->query($sql)) {
             if ($row2 = $result2->fetch()) {
-                $parts_per_product = $row2['value'];
+                $parts_per_product = floatval($row2['value']);
 
                 if (!is_numeric($parts_per_product) or $parts_per_product <= 0) {
                     print_r($row);
