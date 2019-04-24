@@ -63,6 +63,8 @@ trait OrderItems {
         $delta_qty = $quantity;
 
 
+
+
         if (!in_array(
             $this->data['Order State'], array(
                                           'InProcess',
@@ -73,6 +75,7 @@ trait OrderItems {
         )) {
             return array(
                 'updated' => false,
+                'why'=>'Order State:'.$this->data['Order State']
 
             );
         }
@@ -103,6 +106,8 @@ trait OrderItems {
         );
 
 
+
+
         if ($dn_key) {
             $sql .= sprintf(' and `Delivery Note Key`=%d', $dn_key);
         }
@@ -110,6 +115,8 @@ trait OrderItems {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
+
 
 
                 $otf_key = $row['Order Transaction Fact Key'];
@@ -134,6 +141,8 @@ trait OrderItems {
 
 
                 if ($total_quantity == 0) {
+
+
 
                     $this->delete_transaction(
                         $row['Order Transaction Fact Key']
@@ -224,6 +233,7 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
                         prepare_mysql($data['Current Dispatching State']), prepare_mysql($data['Current Payment State']), prepare_mysql($this->data['Order Customer Key']), prepare_mysql($this->data['Order Key']), prepare_mysql($this->data['Order Public ID']), $quantity,
                         $gross, 0, $gross, prepare_mysql($data['Metadata'], false), prepare_mysql($this->data['Order Store Key']), $product->data['Product Units Per Case'], prepare_mysql($dn_key), $cost
                     );
+
 
 
                     $this->db->exec($sql);

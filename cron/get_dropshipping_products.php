@@ -11,33 +11,8 @@ require_once 'class.Product.php';
 require_once 'class.Part.php';
 
 
-
-$con_drop = @mysql_connect($dns_host, $dns_user, $dns_pwd);
-if (!$con_drop) {
-    print "Error can not connect with dropshipping database server\n";
-    exit;
-}
-$db2 = @mysql_select_db("drop", $con_drop);
-if (!$db2) {
-    print "Error can not access the database in drop \n";
-    exit;
-}
-
-$con = @mysql_connect($dns_host, $dns_user, $dns_pwd);
-
-if (!$con) {
-    print "Error can not connect with database server\n";
-    exit;
-}
-//$dns_db='dw_avant';
-$db = @mysql_select_db("dw", $con);
-if (!$db) {
-    print "Error can not access the database\n";
-    exit;
-}
-
-$db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';"));
-$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+$db_drop = new PDO("mysql:host=$dns_host;dbname=drop;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';"));
+$db_drop->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
 $editor = array(
@@ -56,213 +31,307 @@ $department_bridge = array();
 $family_bridge     = array();
 
 
-$sql = "SELECT * FROM `drop`.`catalog_product_entity` WHERE sku IS NOT NULL AND sku NOT IN ('EO-')   ";
-$res = mysql_query($sql, $con_drop);
-while ($row = mysql_fetch_assoc($res)) {
+$sql = "SELECT * FROM `drop`.`catalog_product_entity` WHERE sku IS NOT NULL AND sku NOT IN ('EO-')  order by sku ";
 
-    $store_code    = $store->data['Store Code'];
-    $order_data_id = $row['entity_id'];
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
 
-    $sql   = sprintf(
-        "SELECT * FROM `Product Import Metadata` WHERE `Metadata`=%s AND `Import Date`>=%s", prepare_mysql($store_code.$order_data_id), prepare_mysql($row['updated_at'])
+        $store_code    = $store->data['Store Code'];
+        $order_data_id = $row['entity_id'];
 
-    );
-    $resxx = mysql_query($sql);
-    if ($rowxx = mysql_fetch_assoc($resxx)) {
+        $sql = sprintf(
+            "SELECT * FROM `Product Import Metadata` WHERE `Metadata`=%s AND `Import Date`>=%s", prepare_mysql($store_code.$order_data_id), prepare_mysql($row['updated_at'])
 
-        continue;
-    }
+        );
 
-
-    $code = $row['sku'];
-
-
-    $sql  = sprintf("SELECT * FROM `drop`.`catalog_product_entity_varchar` WHERE  `entity_id` =%d  AND attribute_id=%d ", $row['entity_id'], getMagentoAttNumber($con_drop, 'name', 4));
-    $res2 = mysql_query($sql, $con_drop);
-    if ($row2 = mysql_fetch_assoc($res2)) {
-        $name = $row2['value'];
-    } else {
-        exit("error no name associated\n");
-    }
-
-    $sql  = sprintf("SELECT * FROM `drop`.`catalog_product_entity_varchar` WHERE  `entity_id` =%d  AND attribute_id=%d ", $row['entity_id'], getMagentoAttNumber($con_drop, 'awsku', 4));
-    $res2 = mysql_query($sql, $con_drop);
-    if ($row2 = mysql_fetch_assoc($res2)) {
-        $sku = $row2['value'];
-    } else {
-        //print $row['entity_id']." $code error no sku associated \n";
-        exit("error no sku associated\n");
-    }
-
-    $sql  = sprintf("SELECT * FROM `drop`.`catalog_product_entity_varchar` WHERE  `entity_id` =%d  AND attribute_id=%d ", $row['entity_id'], getMagentoAttNumber($con_drop, 'relate', 4));
-    $res2 = mysql_query($sql, $con_drop);
-    if ($row2 = mysql_fetch_assoc($res2)) {
-        //print_r($row2);
-        $parts_per_product = floatval($row2['value']);
-    } else {
-        exit("error no part_relation associated\n");
-    }
-
-
-    if (!is_numeric($parts_per_product) or $parts_per_product <= 0) {
-        print_r($row);
-        print_r($row2);
-        exit("wrong parts per product\n");
-    }
-
-
-    if ($parts_per_product == '') {
-        print "$sku $parts_per_product\n";
-    }
-
-    $sql  = sprintf("SELECT * FROM `drop`.`catalog_product_entity_text` WHERE  `entity_id` =%d  AND attribute_id=%d ", $row['entity_id'], getMagentoAttNumber($con_drop, 'description', 4));
-    $res2 = mysql_query($sql, $con_drop);
-    if ($row2 = mysql_fetch_assoc($res2)) {
-        $description = $row2['value'];
-    } else {
-        exit("error no description associated\n");
-    }
-
-    $sql  = sprintf("SELECT * FROM `drop`.`catalog_product_entity_decimal` WHERE  `entity_id` =%d  AND attribute_id=%d ", $row['entity_id'], getMagentoAttNumber($con_drop, 'price', 4));
-    $res2 = mysql_query($sql, $con_drop);
-    if ($row2 = mysql_fetch_assoc($res2)) {
-        $price = $row2['value'];
-    } else {
-        exit("error no description associated\n");
-    }
-
-    $sql  = sprintf("SELECT * FROM `drop`.`catalog_product_entity_decimal` WHERE  `entity_id` =%d  AND attribute_id=%d ", $row['entity_id'], getMagentoAttNumber($con_drop, 'weight', 4));
-    $res2 = mysql_query($sql, $con_drop);
-    if ($row2 = mysql_fetch_assoc($res2)) {
-        $weight = $row2['value'];
-    } else {
-        exit("error no description associated\n");
-    }
-
-    $sql  = sprintf("SELECT * FROM `drop`.`catalog_category_product` WHERE  `product_id` =%d   ", $row['entity_id']);
-    $res2 = mysql_query($sql, $con_drop);
-    if ($row2 = mysql_fetch_assoc($res2)) {
-
-      // print_r($row2);
-
-
-        $sql  = sprintf("SELECT * FROM `drop`.`catalog_category_entity_varchar` WHERE  `entity_id` =%d  AND attribute_id=%d ", $row2['category_id'], getMagentoAttNumber($con_drop, 'name', 3));
-        $res2 = mysql_query($sql, $con_drop);
-        if ($row2 = mysql_fetch_assoc($res2)) {
-
-
-            $category_code = preg_replace('/\s/i', '', $row2['value']);
-            $category_code = preg_replace('/\'/i', '', $category_code);
-            $category_code = preg_replace('/\&/i', '', $category_code);
-            $category_code = substr($category_code, 0, 5);
-
-
+        if ($resxx = $db->query($sql)) {
+            if ($rowxx = $resxx->fetch()) {
+                //  continue;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
-    }
+
+        $code = $row['sku'];
+
+        print "$code\n";
 
 
-    //print_r($family_bridge);
-    $weight = $weight / 1000;
-    //$weight=500;
-    //print_r($family);
-    //exit;
-    //print $family->data['Product Family Code']."\n";
-    $editor['Date'] = $row['created_at'];
+        $sql = sprintf("SELECT * FROM `drop`.`catalog_product_entity_varchar` WHERE  `entity_id` =%d  AND attribute_id=%d ", $row['entity_id'], getMagentoAttNumber('name', 4));
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch()) {
+                $name = $row2['value'];
+            } else {
+                exit("error no name associated\n");
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
 
 
-    $part = new Part('sku', $sku);
-
-    if(!$part->sku){
-
-        print '** Error SKU not found '.$code."  $sku  \n";
-        continue;
-    }
-
-
-    $product_data = array(
-
-
-        'Product Code'            => $code,
-        'Product CPNP Number'     => '',
-        'Product Parts'           => json_encode(
-           array( array(
-                'Key'      => '',
-                'Part SKU' => $part->sku,
-                'Ratio'    => $parts_per_product,
-                'Note'     => '',
-            )
-           )
-        ),
-        'Family Category Code'    => $category_code,
-        'Product Label in Family' => '',
-        'Product Units Per Case'  => 1,
-        'Product Unit Label'      => 'piece',
-        'Product Price'           => $price,
-        'Product Name'            => $name,
-        'Product Unit RRP'        => '',
-        'Product Unit Weight'     => $weight,
-        'Product Description'     => $description,
-        'editor'                  => $editor,
-    );
+        $sql = sprintf("SELECT * FROM `drop`.`catalog_product_entity_varchar` WHERE  `entity_id` =%d  AND attribute_id=%d ", $row['entity_id'], getMagentoAttNumber('awsku', 4));
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch()) {
+                $sku = $row2['value'];
+            } else {
+                exit("error no sku associated\n");
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
 
 
+        $sql = sprintf("SELECT * FROM `drop`.`catalog_product_entity_varchar` WHERE  `entity_id` =%d  AND attribute_id=%d ", $row['entity_id'], getMagentoAttNumber('relate', 4));
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch()) {
+                $parts_per_product = $row2['value'];
+            } else {
+                exit("error no part_relation associated\n");
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
 
 
-    $product = $store->create_product($product_data);
+        if (!is_numeric($parts_per_product) or $parts_per_product <= 0) {
+            print_r($row);
+            print_r($row2);
+            exit("wrong parts per product\n");
+        }
 
 
-    if($store->error){
+        if ($parts_per_product == '') {
+            print "$sku $parts_per_product\n";
+        }
+
+        $sql = sprintf("SELECT * FROM `drop`.`catalog_product_entity_text` WHERE  `entity_id` =%d  AND attribute_id=%d ", $row['entity_id'], getMagentoAttNumber('description', 4));
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch()) {
+                $description = $row2['value'];
+            } else {
+                exit("error no description associated\n");
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
 
 
-        if( $store->error_code=='duplicate_product_code_reference'){
-            $sql = sprintf(
-                "INSERT INTO `Product Import Metadata` ( `Metadata`, `Import Date`) VALUES (%s,%s) ON DUPLICATE KEY UPDATE
+        $sql = sprintf("SELECT * FROM `drop`.`catalog_product_entity_decimal` WHERE  `entity_id` =%d  AND attribute_id=%d ", $row['entity_id'], getMagentoAttNumber('price', 4));
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch()) {
+                $price = $row2['value'];
+            } else {
+                exit("error no price associated\n");
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $sql = sprintf("SELECT * FROM `drop`.`catalog_product_entity_decimal` WHERE  `entity_id` =%d  AND attribute_id=%d ", $row['entity_id'], getMagentoAttNumber('weight', 4));
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch()) {
+                $weight = $row2['value'];
+            } else {
+                exit("error no weight associated\n");
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $sql = sprintf("SELECT * FROM `drop`.`catalog_category_product` WHERE  `product_id` =%d   ", $row['entity_id']);
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch()) {
+
+                $sql = sprintf("SELECT * FROM `drop`.`catalog_category_entity_varchar` WHERE  `entity_id` =%d  AND attribute_id=%d ", $row2['category_id'], getMagentoAttNumber('name', 3));
+
+
+                if ($result3 = $db->query($sql)) {
+                    if ($row3 = $result3->fetch()) {
+                        $category_code = preg_replace('/\s/i', '', $row3['value']);
+                        $category_code = preg_replace('/\'/i', '', $category_code);
+                        $category_code = preg_replace('/\&/i', '', $category_code);
+                        $category_code = substr($category_code, 0, 5);
+
+                    }
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        //print_r($family_bridge);
+        $weight = $weight / 1000;
+        //$weight=500;
+        //print_r($family);
+        //exit;
+        //print $family->data['Product Family Code']."\n";
+        $editor['Date'] = $row['created_at'];
+
+
+        $part = new Part('sku', $sku);
+
+        if (!$part->sku) {
+
+            print '** Error SKU not found '.$code."  $sku  \n";
+            continue;
+        }
+
+
+        $product_data = array(
+
+
+            'Product Code'            => $code,
+            'Product CPNP Number'     => '',
+            'Product Parts'           => json_encode(
+                array(
+                    array(
+                        'Key'      => '',
+                        'Part SKU' => $part->sku,
+                        'Ratio'    => $parts_per_product,
+                        'Note'     => '',
+                    )
+                )
+            ),
+            'Family Category Code'    => $category_code,
+            'Product Label in Family' => '',
+            'Product Units Per Case'  => 1,
+            'Product Unit Label'      => 'piece',
+            'Product Price'           => $price,
+            'Product Name'            => $name,
+            'Product Unit RRP'        => '',
+            'Product Unit Weight'     => $weight,
+            'Product Description'     => $description,
+            'editor'                  => $editor,
+        );
+
+
+        $product = $store->create_product($product_data);
+
+
+        if ($store->error) {
+
+
+            if ($store->error_code == 'duplicate_product_code_reference') {
+
+
+                $sql = sprintf(
+                    "SELECT `Product ID` FROM `Product Dimension` WHERE  `Product Store Key`=%s AND `Product Code`=%s  AND `Product Status`!='Discontinued'  ", $store->id, prepare_mysql($product_data['Product Code'])
+                );
+
+
+                if ($resultxxx = $db->query($sql)) {
+                    if ($rowxxx = $resultxxx->fetch()) {
+
+                        $product = get_object('Product', $rowxxx['Product ID']);
+
+
+                        $product->editor = $product_data['editor'];
+                        unset($product_data['editor']);
+                        $product->update_part_list($product_data['Product Parts']);
+                        $product->update(
+                            array(
+                                'Product Price'       => $price,
+                                'Product Name'        => $name,
+                                'Product Unit Weight' => $weight,
+                                'Product Description' => $description,
+
+
+                            )
+                        );
+
+                        $product->fast_update(
+                            array(
+                                'Product Status' => 'Active',
+
+
+                            )
+                        );
+
+                        $product->update_status_from_parts();
+
+                        $sql = sprintf(
+                            "INSERT INTO `Product Import Metadata` ( `Metadata`, `Import Date`) VALUES (%s,%s) ON DUPLICATE KEY UPDATE
 		`Import Date`=%s", prepare_mysql($store_code.$order_data_id), prepare_mysql($row['updated_at']), prepare_mysql($row['updated_at'])
-            );
-            mysql_query($sql);
-        }else{
-            print $store->msg."\n";
-            print $store->error_code."\n";
+                        );
+                        $db->exec($sql);
+
+                    }
+                } else {
+                    print_r($error_info = $db->errorInfo());
+                    exit;
+                }
 
 
-        }
+            } else {
+                print $store->msg."\n";
+                print $store->error_code."\n";
 
 
-    }else {
+            }
 
 
-        if ($product->id) {
+        } else {
 
-            $sql = sprintf(
-                "INSERT INTO `Product Import Metadata` ( `Metadata`, `Import Date`) VALUES (%s,%s) ON DUPLICATE KEY UPDATE
+
+            if ($product->id) {
+
+                $sql = sprintf(
+                    "INSERT INTO `Product Import Metadata` ( `Metadata`, `Import Date`) VALUES (%s,%s) ON DUPLICATE KEY UPDATE
 		`Import Date`=%s", prepare_mysql($store_code.$order_data_id), prepare_mysql($row['updated_at']), prepare_mysql($row['updated_at'])
-            );
-             mysql_query($sql);
+                );
+                $db->exec($sql);
+            }
+
         }
+
 
     }
-
-
-
-
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
 }
 
 
-function getMagentoAttNumber($dbh, $attribute_code, $entity_type_id) {
+function getMagentoAttNumber($attribute_code, $entity_type_id) {
 
-    global $con_drop;
-    $Att_Got = '';
-    $sql     = "SELECT `attribute_id` FROM `drop`.`eav_attribute` WHERE `attribute_code` LIKE '".$attribute_code."' AND `entity_type_id` =".$entity_type_id."  ";
-    $res     = mysql_query($sql, $con_drop);
-    if ($row = mysql_fetch_assoc($res)) {
+    global $db;
 
+    $sql = "SELECT `attribute_id` FROM `drop`.`eav_attribute` WHERE `attribute_code` LIKE '".$attribute_code."' AND `entity_type_id` =".$entity_type_id."  ";
 
-        $Att_Got = $row['attribute_id'];
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $Att_Got = $row['attribute_id'];
+        }
     } else {
-        print $sql."\n";
-
-        echo mysql_errno($con_drop).": ".mysql_error($con_drop)."\n";
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
         exit;
     }
 
