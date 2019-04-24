@@ -7,7 +7,6 @@
 {assign payments $order->get_payments('objects','Completed')}
 
 
-
 <div class="sticky_notes">
 
 
@@ -244,7 +243,7 @@
 
     <div class="block " style="align-items: stretch;flex: 1;padding-top: 0px">
         <div class="state" style="height:30px;">
-            <div id="back_operations" class="{if $store->get('Store Version')<2}hide{/if}">
+            <div id="back_operations" >
 
                 <div id="cancel_operations" class="order_operation {if $order->get('State Index')<0 or  $order->get('State Index')>=40 }hide{/if}">
                     <div class="square_button left" title="{t}Cancel{/t}">
@@ -308,7 +307,7 @@
                 </div>
             </div>
             <span style="float:left;padding-left:10px;padding-top:5px" class="Order_State"> {$order->get('State')} </span>
-            <div id="forward_operations" class="{if $store->get('Store Version')<2}hide{/if}">
+            <div id="forward_operations" >
 
 
 
@@ -369,8 +368,7 @@
 
                 </div>
 
-
-                <div id="create_refund_operations" class="order_operation {if {$order->get('State Index')}<100  }hide{/if}">
+                <div id="create_refund_operations" class="order_operation {if $order->get('State Index')<100  }hide{/if}">
                     <div class="square_button right  " title="{t}Create refund{/t}">
                         <i class="fal fa-file-alt error " aria-hidden="true" onclick="toggle_order_operation_dialog('create_refund')"></i>
                         <table id="create_refund_dialog" border="0" class="order_operation_dialog hide" style="color:#777">
@@ -789,7 +787,7 @@
                 <span class="node_label very_discreet italic">{t}Payments{/t}</span>
 
 
-                <div class="payment_operation {if $order->get('Order To Pay Amount')<=0  or  $store->get('Store Version')<2  }hide{/if}  ">
+                <div class="payment_operation {if $order->get('Order To Pay Amount')<=0   }hide{/if}  ">
                     <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px" title="{t}add payment{/t}">
                         <i class="fa fa-plus  " aria-hidden="true" onclick="show_add_payment_to_order()"></i>
 

@@ -2,41 +2,11 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 
-include_once 'dropshipping_common_functions.php';
-
 
 require_once 'common.php';
 include 'class.Customer.php';
 require_once 'class.Country.php';
 require_once 'utils/get_addressing.php';
-
-
-$con_drop = @mysql_connect($dns_host, $dns_user, $dns_pwd);
-if (!$con_drop) {
-    print "Error can not connect with dropshipping database server\n";
-    exit;
-}
-$db2 = @mysql_select_db("drop", $con_drop);
-if (!$db2) {
-    print "Error can not access the database in drop \n";
-    exit;
-}
-
-$con = @mysql_connect($dns_host, $dns_user, $dns_pwd);
-
-if (!$con) {
-    print "Error can not connect with database server\n";
-    exit;
-}
-//$dns_db='dw_avant';
-$db = @mysql_select_db("dw", $con);
-if (!$db) {
-    print "Error can not access the database\n";
-    exit;
-}
-
-$db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';"));
-$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
 $editor = array(
@@ -54,332 +24,402 @@ $editor = array(
 
 $store = get_object('Store', 9);
 
-$sql = "SELECT * FROM `drop`.`customer_entity` where email='matt.priest@scldirect.co.uk' ";
-$sql = "SELECT * FROM `drop`.`customer_entity` limit 1500,1";
+
+
+$sql = sprintf("SELECT * FROM `drop`.`sales_flat_order` where updated_at>'%s' ", date('Y-m-d H:i:s', strtotime('-2 month')));
+
 $sql = "SELECT * FROM `drop`.`customer_entity` ";
+
+
+
+
 //$sql= "SELECT * FROM `drop`.`customer_entity` where entity_id=488 ";
 
-$res = mysql_query($sql, $con_drop);
-while ($row = mysql_fetch_assoc($res)) {
-    $store_code    = $store->data['Store Code'];
-    $order_data_id = $row['entity_id'];
 
-    $sql   = sprintf(
-        "select * from `Customer Import Metadata` where `Metadata`=%s and `Import Date`>=%s", prepare_mysql($store_code.$order_data_id), prepare_mysql($row['updated_at'])
-
-    );
-    $resxx = mysql_query($sql, $con);
-    if ($rowxx = mysql_fetch_assoc($resxx)) {
-
-        // todo jusst comented for debug
-        continue;
-    }
-
-    //print $row['entity_id']."\n";
-
-    $email      = $row['email'];
-    $name       = '';
-    $tel        = '';
-    $fax        = '';
-    $mob        = '';
-    $company    = '';
-    $www        = '';
-    $tax_number = '';
-    $mobile     = '';
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
 
 
-    $address1    = '';
-    $address2    = '';
-    $town        = '';
-    $postcode    = '';
-    $country_div = '';
-    $country     = 'UNK';
 
-    $sql = sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop, 'company_name', 1), $row['entity_id']);
-    //print "$sql\n";
-    $res3 = mysql_query($sql, $con_drop);
-    while ($row3 = mysql_fetch_assoc($res3)) {
-        if ($row3['value'] != '') {
-            $company = $row3['value'];
+        $store_code    = $store->data['Store Code'];
+        $order_data_id = $row['entity_id'];
+
+        $sql = sprintf(
+            "select * from `Customer Import Metadata` where `Metadata`=%s and `Import Date`>=%s", prepare_mysql($store_code.$order_data_id), prepare_mysql($row['updated_at'])
+
+        );
+
+        if ($resxx = $db->query($sql)) {
+            if ($rowxx = $resxx->fetch()) {
+                 continue;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-    }
 
-    $sql = sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop, 'taxvat', 1), $row['entity_id']);
-    //print "$sql\n";
-    $res3 = mysql_query($sql, $con_drop);
-    while ($row3 = mysql_fetch_assoc($res3)) {
-        if ($row3['value'] != '') {
-            $tax_number = $row3['value'];
+        //print $row['entity_id']."\n";
+
+        $email      = $row['email'];
+        $name       = '';
+        $tel        = '';
+        $fax        = '';
+        $mob        = '';
+        $company    = '';
+        $www        = '';
+        $tax_number = '';
+        $mobile     = '';
+
+
+        $address1    = '';
+        $address2    = '';
+        $town        = '';
+        $postcode    = '';
+        $country_div = '';
+        $country     = 'GBR';
+
+        $sql = sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber('company_name', 1), $row['entity_id']);
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch()) {
+                $company = $row2['value'];
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-    }
-    $sql  = sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop, 'prefix', 1), $row['entity_id']);
-    $res3 = mysql_query($sql, $con_drop);
-    while ($row3 = mysql_fetch_assoc($res3)) {
-        if ($row3['value'] != '') {
-            $name .= ' '.$row3['value'];
+
+
+        $sql = sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber('taxvat', 1), $row['entity_id']);
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch()) {
+                $tax_number = $row2['value'];
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-    }
-    $sql  = sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop, 'prefix', 1), $row['entity_id']);
-    $res3 = mysql_query($sql, $con_drop);
-    while ($row3 = mysql_fetch_assoc($res3)) {
-        if ($row3['value'] != '') {
-            $name .= ' '.$row3['value'];
+
+
+        $sql = sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber('prefix', 1), $row['entity_id']);
+
+        if ($result3 = $db->query($sql)) {
+            foreach ($result3 as $row3) {
+                if ($row3['value'] != '') {
+                    $name .= ' '.$row3['value'];
+                }
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-    }
-    $sql  = sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop, 'middlename', 1), $row['entity_id']);
-    $res3 = mysql_query($sql, $con_drop);
-    while ($row3 = mysql_fetch_assoc($res3)) {
-        if ($row3['value'] != '') {
-            $name .= ' '.$row3['value'];
+
+
+        $sql = sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber('middlename', 1), $row['entity_id']);
+
+        if ($result3 = $db->query($sql)) {
+            foreach ($result3 as $row3) {
+                if ($row3['value'] != '') {
+                    $name .= ' '.$row3['value'];
+                }
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-    }
-    $sql  = sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop, 'lastname', 1), $row['entity_id']);
-    $res3 = mysql_query($sql, $con_drop);
-    while ($row3 = mysql_fetch_assoc($res3)) {
-        if ($row3['value'] != '') {
-            $name .= ' '.$row3['value'];
+        $sql = sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber('lastname', 1), $row['entity_id']);
+
+        if ($result3 = $db->query($sql)) {
+            foreach ($result3 as $row3) {
+                if ($row3['value'] != '') {
+                    $name .= ' '.$row3['value'];
+                }
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-    }
-    $sql  = sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop, 'suffix', 1), $row['entity_id']);
-    $res3 = mysql_query($sql, $con_drop);
-    while ($row3 = mysql_fetch_assoc($res3)) {
-        if ($row3['value'] != '') {
-            $name .= ' '.$row3['value'];
+        $sql = sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber('suffix', 1), $row['entity_id']);
+
+        if ($result3 = $db->query($sql)) {
+            foreach ($result3 as $row3) {
+                if ($row3['value'] != '') {
+                    $name .= ' '.$row3['value'];
+                }
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-    }
-
-    $name = _trim($name);
 
 
-    $sql  = sprintf(
-        "SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop, 'telephone', 12), $row['entity_id']
-    );    // telephone type ID 1 is missing from new DB ??? this might not be right phone number and other one no longer in the database....
-    $res3 = mysql_query($sql, $con_drop);
-    while ($row3 = mysql_fetch_assoc($res3)) {
-        if ($row3['value'] != '') {
-            $tel = $row3['value'];
+        $name = _trim($name);
+
+
+        $sql = sprintf(
+            "SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber('telephone', 12), $row['entity_id']
+        );    // telephone type ID 1 is missing from new DB ??? this might not be right phone number and other one no longer in the database....
+
+        if ($result3 = $db->query($sql)) {
+            foreach ($result3 as $row3) {
+                if ($row3['value'] != '') {
+                    $tel = $row3['value'];
+                }
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-    }
-    $sql  = sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop, 'mobile', 1), $row['entity_id']);
-    $res3 = mysql_query($sql, $con_drop);
-    while ($row3 = mysql_fetch_assoc($res3)) {
-        if ($row3['value'] != '') {
-            $mob = $row3['value'];
+
+        $sql = sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber('mobile', 1), $row['entity_id']);
+
+
+        if ($result3 = $db->query($sql)) {
+            foreach ($result3 as $row3) {
+                if ($row3['value'] != '') {
+                    $mob = $row3['value'];
+                }
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-    }
 
-    $sql  = sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber($con_drop, 'website_url', 1), $row['entity_id']);
-    $res3 = mysql_query($sql, $con_drop);
-    while ($row3 = mysql_fetch_assoc($res3)) {
-        if ($row3['value'] != '') {
-            $www = $row3['value'];
+
+        $sql = sprintf("SELECT * FROM `drop`.`customer_entity_varchar` WHERE `attribute_id` = %d AND `entity_id` =%d", getMagentoAttNumber('website_url', 1), $row['entity_id']);
+
+        if ($result3 = $db->query($sql)) {
+            foreach ($result3 as $row3) {
+                if ($row3['value'] != '') {
+                    $www = $row3['value'];
+                }
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-    }
 
-    $sql  = sprintf("SELECT * FROM `drop`.`customer_address_entity` WHERE  `parent_id` =%d", $row['entity_id']);
-    $res2 = mysql_query($sql, $con_drop);
+        $sql = sprintf("SELECT * FROM `drop`.`customer_address_entity` WHERE  `parent_id` =%d", $row['entity_id']);
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch()) {
+                list($address1, $address2, $town, $postcode, $country_div, $country) = get_address($row2['entity_id']);
 
-    if ($row2 = mysql_fetch_assoc($res2)) {
-
-
-        list($address1, $address2, $town, $postcode, $country_div, $country) = get_address($row2['entity_id']);
-
-    }
-
-
-    $country = new Country('find', $country);
-
-
-    list($tipo_customer, $company_name, $contact_name) = parse_company_person($company, $name);
-
-    $customer_data = array(
-        "Customer Type"                            => $tipo_customer,
-        'Customer First Contacted Date'            => $row['created_at'],
-        "Customer Store Key"                       => $store->id,
-        "Customer Old ID"                          => $row['entity_id'],
-        "Customer Name"                            => $company_name,
-        "Customer Main Contact Name"               => $contact_name,
-        "Customer Tax Number"                      => $tax_number,
-        "Customer Website"                         => $www,
-        "Customer Main Plain Email"                => $email,
-        "Customer Main Plain Telephone"            => $tel,
-        "Customer Main Plain FAX"                  => $fax,
-        "Customer Main Plain Mobile"               => $mob,
-        "Customer Address Line 1"                  => $address1,
-        "Customer Address Line 2"                  => $address2,
-        "Customer Address Line 3"                  => '',
-        "Customer Address Town"                    => $town,
-        "Customer Address Postal Code"             => $postcode,
-        "Customer Address Country Name"            => $country->data['Country Name'],
-        "Customer Address Country Code"            => $country->data['Country Code'],
-        "Customer Address Country 2 Alpha Code"    => $country->data['Country 2 Alpha Code'],
-        "Customer Address Town Second Division"    => '',
-        "Customer Address Town First Division"     => $country_div,
-        "Customer Address Country First Division"  => '',
-        "Customer Address Country Second Division" => '',
-        "Customer Address Country Third Division"  => '',
-        "Customer Address Country Forth Division"  => '',
-        "Customer Address Country Fifth Division"  => ''
-
-    );
-
-
-    $editor['Date'] = $row['created_at'];
-    if ($customer_data['Customer Address Country Code'] == '') {
-        $customer_data['Customer Address Country Code']         = 'GBR';
-        $customer_data['Customer Address Country 2 Alpha Code'] = 'GB';
-    }
-
-    $customer_data['editor'] = $editor;
-    //$customer_data['Customer Main Plain Telephone']='0114 321 8600';
-    //print_r($customer_data);
-    //continue;
-
-    $_customer_key = 0;
-    $sql           = sprintf("select `Customer Key` from `Customer Dimension` where `Customer Old ID`=%s and `Customer Store Key`=%d", $row['entity_id'], $store->id);
-
-    if ($result__ = $db->query($sql)) {
-        if ($row__ = $result__->fetch()) {
-            $_customer_key = $row__['Customer Key'];
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-    } else {
-        print_r($error_info = $store->db->errorInfo());
-        exit;
-    }
-
-    $customer = get_object('Customer', $_customer_key);
 
 
-    if ($customer->id) {
-
-        print $customer->id."\n";
+        $country = new Country('find', $country);
 
 
-        $update_address_data = array();
+        list($tipo_customer, $company_name, $contact_name) = parse_company_person($company, $name);
 
-        $update_address_data['id']          = $customer->data['Customer Main Address Key'];
-        $update_address_data['subject']     = 'Customer';
-        $update_address_data['subject_key'] = $customer->id;
+        $customer_data = array(
+            "Customer Type"                            => $tipo_customer,
+            'Customer First Contacted Date'            => $row['created_at'],
+            "Customer Store Key"                       => $store->id,
+            "Customer Old ID"                          => $row['entity_id'],
+            "Customer Name"                            => $company_name,
+            "Customer Main Contact Name"               => $contact_name,
+            "Customer Tax Number"                      => $tax_number,
+            "Customer Website"                         => $www,
+            "Customer Main Plain Email"                => $email,
+            "Customer Main Plain Telephone"            => $tel,
+            "Customer Main Plain FAX"                  => $fax,
+            "Customer Main Plain Mobile"               => $mob,
+            "Customer Address Line 1"                  => $address1,
+            "Customer Address Line 2"                  => $address2,
+            "Customer Address Line 3"                  => '',
+            "Customer Address Town"                    => $town,
+            "Customer Address Postal Code"             => $postcode,
+            "Customer Address Country Name"            => $country->data['Country Name'],
+            "Customer Address Country Code"            => $country->data['Country Code'],
+            "Customer Address Country 2 Alpha Code"    => $country->data['Country 2 Alpha Code'],
+            "Customer Address Town Second Division"    => '',
+            "Customer Address Town First Division"     => $country_div,
+            "Customer Address Country First Division"  => '',
+            "Customer Address Country Second Division" => '',
+            "Customer Address Country Third Division"  => '',
+            "Customer Address Country Forth Division"  => '',
+            "Customer Address Country Fifth Division"  => ''
 
-        //  $customer_data['Customer Address Line 3']='sss';
-
-        $update_address_data['value'] = array(
-            'country_code'        => $customer_data['Customer Address Country Code'],
-            'country_2alpha_code' => $customer_data['Customer Address Country 2 Alpha Code'],
-
-            'country_d1'  => $customer_data['Customer Address Country First Division'],
-            'country_d2'  => $customer_data['Customer Address Country Second Division'],
-            'town'        => $customer_data['Customer Address Town'],
-            'town_d1'     => $customer_data['Customer Address Town First Division'],
-            'town_d2'     => $customer_data['Customer Address Town Second Division'],
-            'postal_code' => $customer_data['Customer Address Postal Code'],
-            'street'      => $customer_data['Customer Address Line 3'],
-            'internal'    => $customer_data['Customer Address Line 2'],
-            'building'    => $customer_data['Customer Address Line 1'],
-            'contact'     => '',
-            //$customer_data['Customer Main Contact Name'],
-            'use_contact' => '',
-            'telephone'   => $customer_data['Customer Main Plain Telephone'],
-            'use_tel'     => '',
-            'key'         => $customer->data['Customer Main Address Key']
         );
 
 
-        $recipient    = $customer_data['Customer Main Contact Name'];
-        $organization = $customer_data['Customer Name'];
+        $editor['Date'] = $row['created_at'];
+        if ($customer_data['Customer Address Country Code'] == '') {
+            $customer_data['Customer Address Country Code']         = 'GBR';
+            $customer_data['Customer Address Country 2 Alpha Code'] = 'GB';
+        }
 
-
-        $address_fields = address_fields($update_address_data['value'], $recipient, $organization, 'GB');
-        $customer->update_address('Contact', $address_fields, 'no_history');
-
-
-//print_r($customer_data);
-
-  //      print_r($address_fields);
-
-
-        $customer->update_field_switcher('Customer Name', $customer_data['Customer Name']);
-        $customer->update_field_switcher('Customer Main Contact Name', $customer_data['Customer Main Contact Name']);
-        $customer->update_field_switcher('Customer Main Plain Email', $customer_data['Customer Main Plain Email']);
-        $customer->update_field_switcher('Customer Website', $customer_data['Customer Website']);
-        $customer->update_field_switcher('Customer Tax Number', $customer_data['Customer Tax Number']);
-
-        $customer->update_field_switcher('Customer Main Plain Telephone', $customer_data['Customer Main Plain Telephone']);
-        $customer->update_field_switcher('Customer Main Plain Mobile', $customer_data['Customer Main Plain Mobile']);
-        $customer->update_field_switcher('Customer Main Plain FAX', $customer_data['Customer Main Plain FAX']);
-
-
-
-    } else {
-
+        $customer_data['editor'] = $editor;
+        //$customer_data['Customer Main Plain Telephone']='0114 321 8600';
         //print_r($customer_data);
+        //continue;
 
-        $data=array();
-        $data['editor']             = $editor;
-        $data['Customer Store Key'] = $store->id;
+        $_customer_key = 0;
+        $sql           = sprintf("select `Customer Key` from `Customer Dimension` where `Customer Old ID`=%s and `Customer Store Key`=%d", $row['entity_id'], $store->id);
 
+        if ($result__ = $db->query($sql)) {
+            if ($row__ = $result__->fetch()) {
+                $_customer_key = $row__['Customer Key'];
+            }
+        } else {
+            print_r($error_info = $store->db->errorInfo());
+            exit;
+        }
 
-        $data['Customer Billing Address Link']  = 'Contact';
-        $data['Customer Delivery Address Link'] = 'Billing';
-
-        $data['Customer Tax Number'] = $customer_data['Customer Tax Number'];
-        $data['Customer Website'] = $customer_data['Customer Website'];
-
-
-        $data['Customer Main Plain Email'] = $customer_data['Customer Main Plain Email'];
-        $data['Customer Main Plain Telephone'] = $customer_data['Customer Main Plain Telephone'];
-        $data['Customer Main Plain FAX'] = $customer_data['Customer Main Plain FAX'];
-        $data['Customer Main Plain Mobile'] = $customer_data['Customer Main Plain Mobile'];
-
-        $data['Customer First Contacted Date'] = $customer_data['Customer First Contacted Date'];
-        $data['Customer Type'] = $customer_data['Customer Type'];
-        $data['Customer First Contacted Date'] = $customer_data['Customer First Contacted Date'];
-        $data['Customer Name'] = $customer_data['Customer Name'];
-        $data['Customer Main Contact Name'] = $customer_data['Customer Main Contact Name'];
-        $data['Customer Old ID'] = $customer_data['Customer Old ID'];
+        $customer = get_object('Customer', $_customer_key);
 
 
-        $update_address_data['value'] = array(
-            'country_code'        => $customer_data['Customer Address Country Code'],
-            'country_2alpha_code' => $customer_data['Customer Address Country 2 Alpha Code'],
+        if ($customer->id) {
 
-            'country_d1'  => $customer_data['Customer Address Country First Division'],
-            'country_d2'  => $customer_data['Customer Address Country Second Division'],
-            'town'        => $customer_data['Customer Address Town'],
-            'town_d1'     => $customer_data['Customer Address Town First Division'],
-            'town_d2'     => $customer_data['Customer Address Town Second Division'],
-            'postal_code' => $customer_data['Customer Address Postal Code'],
-            'street'      => $customer_data['Customer Address Line 3'],
-            'internal'    => $customer_data['Customer Address Line 2'],
-            'building'    => $customer_data['Customer Address Line 1'],
-            'contact'     => '',
-            'use_contact' => '',
-            'telephone'   => $customer_data['Customer Main Plain Telephone'],
-            'use_tel'     => '',
+            print 'Updating '.$customer->id."  ".$customer->get('Name')." \n";
+
+
+            $update_address_data = array();
+
+            $update_address_data['id']          = $customer->data['Customer Main Address Key'];
+            $update_address_data['subject']     = 'Customer';
+            $update_address_data['subject_key'] = $customer->id;
+
+            //  $customer_data['Customer Address Line 3']='sss';
+
+            $update_address_data['value'] = array(
+                'country_code'        => $customer_data['Customer Address Country Code'],
+                'country_2alpha_code' => $customer_data['Customer Address Country 2 Alpha Code'],
+
+                'country_d1'  => $customer_data['Customer Address Country First Division'],
+                'country_d2'  => $customer_data['Customer Address Country Second Division'],
+                'town'        => $customer_data['Customer Address Town'],
+                'town_d1'     => $customer_data['Customer Address Town First Division'],
+                'town_d2'     => $customer_data['Customer Address Town Second Division'],
+                'postal_code' => $customer_data['Customer Address Postal Code'],
+                'street'      => $customer_data['Customer Address Line 3'],
+                'internal'    => $customer_data['Customer Address Line 2'],
+                'building'    => $customer_data['Customer Address Line 1'],
+                'contact'     => '',
+                //$customer_data['Customer Main Contact Name'],
+                'use_contact' => '',
+                'telephone'   => $customer_data['Customer Main Plain Telephone'],
+                'use_tel'     => '',
+                'key'         => $customer->data['Customer Main Address Key']
+            );
+
+
+            $recipient    = $customer_data['Customer Main Contact Name'];
+            $organization = $customer_data['Customer Name'];
+
+
+            $address_fields = address_fields($update_address_data['value'], $recipient, $organization, 'GB');
+            $customer->update_address('Contact', $address_fields, 'no_history');
+
+
+            //print_r($customer_data);
+
+            //      print_r($address_fields);
+
+
+            $customer->update_field_switcher('Customer Name', $customer_data['Customer Name']);
+            $customer->update_field_switcher('Customer Main Contact Name', $customer_data['Customer Main Contact Name']);
+            $customer->update_field_switcher('Customer Main Plain Email', $customer_data['Customer Main Plain Email']);
+            $customer->update_field_switcher('Customer Website', $customer_data['Customer Website']);
+            $customer->update_field_switcher('Customer Tax Number', $customer_data['Customer Tax Number']);
+
+            $customer->update_field_switcher('Customer Main Plain Telephone', $customer_data['Customer Main Plain Telephone']);
+            $customer->update_field_switcher('Customer Main Plain Mobile', $customer_data['Customer Main Plain Mobile']);
+            $customer->update_field_switcher('Customer Main Plain FAX', $customer_data['Customer Main Plain FAX']);
+
+
+        } else {
+
+            //print_r($customer_data);
+
+            $data                       = array();
+            $data['editor']             = $editor;
+            $data['Customer Store Key'] = $store->id;
+
+
+            $data['Customer Billing Address Link']  = 'Contact';
+            $data['Customer Delivery Address Link'] = 'Billing';
+
+            $data['Customer Tax Number'] = $customer_data['Customer Tax Number'];
+            $data['Customer Website']    = $customer_data['Customer Website'];
+
+
+            $data['Customer Main Plain Email']     = $customer_data['Customer Main Plain Email'];
+            $data['Customer Main Plain Telephone'] = $customer_data['Customer Main Plain Telephone'];
+            $data['Customer Main Plain FAX']       = $customer_data['Customer Main Plain FAX'];
+            $data['Customer Main Plain Mobile']    = $customer_data['Customer Main Plain Mobile'];
+
+            $data['Customer First Contacted Date'] = $customer_data['Customer First Contacted Date'];
+            $data['Customer Type']                 = $customer_data['Customer Type'];
+            $data['Customer First Contacted Date'] = $customer_data['Customer First Contacted Date'];
+            $data['Customer Name']                 = $customer_data['Customer Name'];
+            $data['Customer Main Contact Name']    = $customer_data['Customer Main Contact Name'];
+            $data['Customer Old ID']               = $customer_data['Customer Old ID'];
+
+
+            $update_address_data['value'] = array(
+                'country_code'        => $customer_data['Customer Address Country Code'],
+                'country_2alpha_code' => $customer_data['Customer Address Country 2 Alpha Code'],
+
+                'country_d1'  => $customer_data['Customer Address Country First Division'],
+                'country_d2'  => $customer_data['Customer Address Country Second Division'],
+                'town'        => $customer_data['Customer Address Town'],
+                'town_d1'     => $customer_data['Customer Address Town First Division'],
+                'town_d2'     => $customer_data['Customer Address Town Second Division'],
+                'postal_code' => $customer_data['Customer Address Postal Code'],
+                'street'      => $customer_data['Customer Address Line 3'],
+                'internal'    => $customer_data['Customer Address Line 2'],
+                'building'    => $customer_data['Customer Address Line 1'],
+                'contact'     => '',
+                'use_contact' => '',
+                'telephone'   => $customer_data['Customer Main Plain Telephone'],
+                'use_tel'     => '',
+            );
+
+
+            $recipient    = $customer_data['Customer Main Contact Name'];
+            $organization = $customer_data['Customer Name'];
+
+
+            $address_fields = address_fields($update_address_data['value'], $recipient, $organization, 'GB');
+
+
+            $customer = new Customer('new', $data, $address_fields);
+
+            print 'New customer '.$customer->id."  ".$customer->get('Name')." \n";
+
+
+
+        }
+
+
+        $sql = sprintf(
+            "INSERT INTO `Customer Import Metadata` ( `Metadata`, `Import Date`) VALUES (%s,%s) ON DUPLICATE KEY UPDATE
+		`Import Date`=%s", prepare_mysql($store_code.$order_data_id), prepare_mysql($row['updated_at']), prepare_mysql($row['updated_at'])
         );
 
-
-        $recipient    = $customer_data['Customer Main Contact Name'];
-        $organization = $customer_data['Customer Name'];
-
-
-        $address_fields = address_fields($update_address_data['value'], $recipient, $organization, 'GB');
-
-
-
-        $customer         = new Customer('new', $data, $address_fields);
-
+        $db->exec($sql);
 
     }
-
-
-    $sql = sprintf(
-        "INSERT INTO `Customer Import Metadata` ( `Metadata`, `Import Date`) VALUES (%s,%s) ON DUPLICATE KEY UPDATE
-		`Import Date`=%s", prepare_mysql($store_code.$order_data_id), prepare_mysql($row['updated_at']), prepare_mysql($row['updated_at'])
-    );
-
-    mysql_query($sql, $con);
-
+} else {
+    print_r($error_info = $db->errorInfo());
+    print "$sql\n";
+    exit;
 }
 
 
@@ -617,6 +657,7 @@ function parse_company_person($posible_company_name, $posible_contact_name) {
         $tipo_customer = 'Person';
 
     }
+
     /*
     printf("Name: %s  ; Company: %s  \n is company a person %f is company a company %f\n is paerson a comapny %f  is person a person%f  \n$tipo_customer,\nName: $contact_name\nCompany:$company_name\n",
         $posible_contact_name,
@@ -631,6 +672,7 @@ function parse_company_person($posible_company_name, $posible_contact_name) {
 
     );
     */
+
     return array(
         $tipo_customer,
         $company_name,
@@ -677,12 +719,16 @@ function is_person($name) {
     if ($probability > 1) {
         $probability = 1;
     }
+
     return $probability;
 
 }
 
 
 function is_company($name, $locale = 'en_GB') {
+
+    global $db;
+
 
     $name = _trim($name);
     //global $person_prefix;
@@ -736,9 +782,14 @@ function is_company($name, $locale = 'en_GB') {
         $has_sal    = false;
         $saludation = preg_replace('/\./', '', $components[0]);
         $sql        = sprintf('select `Salutation Key` from kbase.`Salutation Dimension` where `Salutation`=%s  ', prepare_mysql($saludation));
-        $res        = mysql_query($sql);
-        if ($row = mysql_fetch_array($res)) {
-            $probability *= 0.9;
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $probability *= 0.9;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
@@ -749,15 +800,30 @@ function is_company($name, $locale = 'en_GB') {
         $name_ok    = false;
         $surname_ok = false;
         $sql        = sprintf('select `First Name Key` from kbase.`First Name Dimension` where `First Name`=%s  ', prepare_mysql($components[0]));
-        $res        = mysql_query($sql);
-        if ($row = mysql_fetch_array($res)) {
-            $name_ok = true;
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $name_ok = true;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
         $sql = sprintf('select `Surname Key` from kbase.`Surname Dimension` where `Surname`=%s  ', prepare_mysql($components[1]));
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_array($res)) {
-            $surname_ok = true;
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $surname_ok = true;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
+
         if ($surname_ok and $name_ok) {
             $probability *= 0.75;
         }
@@ -778,15 +844,33 @@ function is_company($name, $locale = 'en_GB') {
         $name_ok    = false;
         $surname_ok = false;
         $sql        = sprintf('select `First Name Key` from kbase.`First Name Dimension` where `First Name`=%s  ', prepare_mysql($components[0]));
-        $res        = mysql_query($sql);
-        if ($row = mysql_fetch_array($res)) {
-            $name_ok = true;
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $name_ok = true;
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
+
         $sql = sprintf('select `Surname Key` from kbase.`Surname Dimension` where `Surname`=%s  ', prepare_mysql($components[2]));
-        $res = mysql_query($sql);
-        if ($row = mysql_fetch_array($res)) {
-            $surname_ok = true;
+
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $surname_ok = true;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
+
+
         if ($surname_ok and $name_ok) {
             $probability *= 0.75;
         }
@@ -820,3 +904,76 @@ function trim_value(&$value) {
 }
 
 
+function getMagentoAttNumber($attribute_code, $entity_type_id) {
+
+    global $db;
+
+    $sql = "SELECT `attribute_id` FROM `drop`.`eav_attribute` WHERE `attribute_code` LIKE '".$attribute_code."' AND `entity_type_id` =".$entity_type_id."  ";
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $Att_Got = $row['attribute_id'];
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    return $Att_Got;
+
+}
+
+
+
+
+
+function get_address($address_id) {
+
+    global $db;
+
+    $address1='';
+    $address2='';
+    $town='';
+    $postcode='';
+    $country_div='';
+    $country='';
+
+    $sql=sprintf("SELECT * FROM `drop`.`sales_flat_order_address` WHERE `entity_id` =%d",$address_id);
+
+    if ($result=$db->query($sql)) {
+        if ($row3 = $result->fetch()) {
+            $town=$row3['city'];
+            $postcode=$row3['postcode'];
+
+            $array = preg_split('/$\R?^/m', $row3['street']);
+
+            if (count($array)==2) {
+                $address1=$array[0];
+                $address2=$array[1];
+
+            }else {
+                $address1=$row3['street'];
+
+            }
+
+            $country=$row3['country_id'];
+
+            if($country=='GB'){
+                $country='United Kingdom';
+            }
+
+            $country_div=$row3['region'];
+    	}
+    }else {
+    	print_r($error_info=$db->errorInfo());
+    	print "$sql\n";
+    	exit;
+    }
+
+
+
+    return array($address1,$address2,$town,$postcode,$country_div,$country);
+
+}

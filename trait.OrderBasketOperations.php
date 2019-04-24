@@ -35,7 +35,7 @@ trait OrderBasketOperations {
 
 
         $this->data['Order Type'] = $data['Order Type'];
-        if (isset($data['Order Date'])) {
+        if (!empty($data['Order Date'])) {
             $this->data['Order Date'] = $data['Order Date'];
 
         } else {

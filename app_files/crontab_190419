@@ -77,7 +77,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 #0 23 * * * inikoo sh -c "cd aw.au/cron/;php5.6 fix_amount_in.php"
 #0 19 * * * inikoo sh -c "cd aw.au/cron/;php5.6 fix_amount_in_bis.php"
 #0 12 * * * inikoo sh -c "cd aw.au/cron/;php5.6 fix_amount_in_bis.php"
-$0 15 * * * inikoo sh -c "cd aw.au/cron/;php5.6 fix_amount_in_bis.php"
+#0 15 * * * inikoo sh -c "cd aw.au/cron/;php5.6 fix_amount_in_bis.php"
 
 
 

@@ -395,10 +395,19 @@ class data_entry_picking_aid {
     }
 
 
-    function process_transactions() {
+    function process_transactions($options='{}') {
+
+
+        $options = json_decode($options,true);
+        if (!empty($options['date'])) {
+            $date = $options['date'];
+        } else {
+            $date = gmdate('Y-m-d H:i:s');
+        }
+
         $this->clean_transactions();
         $this->recreate_itfs();
-        $this->pack_transactions();
+        $this->pack_transactions($date);
     }
 
     function clean_transactions() {
@@ -713,7 +722,7 @@ class data_entry_picking_aid {
 
     }
 
-    function pack_transactions() {
+    function pack_transactions($date) {
         include_once 'utils/new_fork.php';
 
 
@@ -728,7 +737,7 @@ class data_entry_picking_aid {
                     if ($result = $this->dn->db->query($sql)) {
                         if ($row = $result->fetch()) {
 
-                            $date = gmdate('Y-m-d H:i:s');
+
 
 
                             if ($transaction['qty'] == '') {
@@ -844,10 +853,14 @@ class data_entry_picking_aid {
 
     }
 
-    function finish_packing() {
+    function finish_packing($options='{}') {
 
-        $date = gmdate('Y-m-d H:i:s');
-
+        $options = json_decode($options,true);
+        if (!empty($options['date'])) {
+            $date = $options['date'];
+        } else {
+            $date = gmdate('Y-m-d H:i:s');
+        }
         $this->dn->fast_update(
             array(
                 'Delivery Note Date Finish Picking' => $date,
@@ -855,21 +868,21 @@ class data_entry_picking_aid {
             )
         );
 
-        $this->dn->update_state('Packed');
+        $this->dn->update_state('Packed',json_encode(array('date'=>$date)));
 
         if ($this->level >= 10) {
-            $this->dn->update_state('Packed Done');
+            $this->dn->update_state('Packed Done',json_encode(array('date'=>$date)));
         }
 
 
         if ($this->level >= 20 and $this->dn->get('Delivery Note Type') == 'Order') {
             $order         = get_object('order', $this->data['order_key']);
             $order->editor = $this->editor;
-            $order->update_state('Approved');
+            $order->update_state('Approved',json_encode(array('date'=>$date)));
             $this->dn->get_data('id', $this->dn->id);
         }
         if ($this->level >= 30) {
-            $this->dn->update_state('Dispatched');
+            $this->dn->update_state('Dispatched',json_encode(array('date'=>$date)));
         }
 
     }

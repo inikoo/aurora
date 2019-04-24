@@ -120,7 +120,7 @@ class Invoice extends DB_Table {
 
         include_once 'utils/new_fork.php';
 
-        $date = gmdate('Y-m-d H:i:s');
+        $date = $invoice_data['Invoice Date'];
 
         include_once 'utils/currency_functions.php';
 

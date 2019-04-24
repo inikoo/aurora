@@ -146,6 +146,9 @@ class DeliveryNote extends DB_Table {
                 $order->id
             );
 
+
+
+
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
                     $estimated_weight       = ($row['Order Quantity'] + $row['Order Bonus Quantity']) * $row['Product Package Weight'];
@@ -1211,13 +1214,17 @@ class DeliveryNote extends DB_Table {
         }
     }
 
-    function update_state($value, $options = '', $metadata = array()) {
+    function update_state($value, $options = '{}', $metadata = array()) {
 
         include_once 'utils/new_fork.php';
 
 
-        $date = gmdate('Y-m-d H:i:s');
-
+        $options = json_decode($options,true);
+        if (!empty($options['date'])) {
+            $date = $options['date'];
+        } else {
+            $date = gmdate('Y-m-d H:i:s');
+        }
         $account = get_object('Account', 1);
 
 
@@ -1416,7 +1423,9 @@ class DeliveryNote extends DB_Table {
 
                     $order         = get_object('Order', $this->get('Delivery Note Order Key'));
                     $order->editor = $this->editor;
-                    $order->update(array('Order State' => 'PackedDone'));
+
+                    $order->update_state('PackedDone',json_encode(array('date'=>$date)));
+
                 } else {
                     $order         = get_object('Order', $this->get('Delivery Note Order Key'));
                     $order->editor = $this->editor;
@@ -1789,7 +1798,10 @@ class DeliveryNote extends DB_Table {
                 $order->editor = $this->editor;
                 if ($this->data['Delivery Note Type'] == 'Order') {
 
-                    $order->update(array('Order State' => 'Dispatched'), '', array('delivery_note_key' => $this->id));
+
+                    $order->update_state('Dispatched',json_encode(array('date'=>$date)),array('delivery_note_key' => $this->id));
+
+
 
                     $history_data = array(
                         'History Abstract' => _('Delivery note dispatched'),
@@ -1995,12 +2007,12 @@ class DeliveryNote extends DB_Table {
 
                     $order->update(array('Order State' => 'Delivery Note Cancelled'));
 
-                    $date = $this->data['Delivery Note Date Start Picking'];
-                    if ($date == '') {
-                        $date = $this->data['Delivery Note Date Created'];
+                    $_date = $this->data['Delivery Note Date Start Picking'];
+                    if ($_date == '') {
+                        $_date = $this->data['Delivery Note Date Created'];
                     }
-                    if ($date == '') {
-                        $date = gmdate('Y-m-d H:i:s');
+                    if ($_date == '') {
+                        $_date =$date;
 
 
                     }
@@ -2010,7 +2022,7 @@ class DeliveryNote extends DB_Table {
                 new_housekeeping_fork(
                     'au_housekeeping', array(
                     'type'                    => 'delivery_note_cancelled',
-                    'date'                    => gmdate('Y-m-d', strtotime($date.' +0:00')),
+                    'date'                    => gmdate('Y-m-d', strtotime($_date.' +0:00')),
                     'returned_part_locations' => $returned_part_locations,
                     'customer_key'            => $this->get('Delivery Note Customer Key'),
                     'delivery_note_key'       => $this->id

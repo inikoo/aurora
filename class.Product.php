@@ -1271,6 +1271,7 @@ class Product extends Asset {
 
         $part_objects = $this->get_parts('objects');
 
+
         foreach ($part_objects as $part) {
             if ($part->get('Part Status') == 'Discontinuing') {
                 $status = 'Discontinuing';
@@ -1299,7 +1300,6 @@ class Product extends Asset {
 
 
         }
-
 
         $this->update_availability();
 

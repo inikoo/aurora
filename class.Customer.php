@@ -904,7 +904,7 @@ class Customer extends Subject {
     }
 
 
-    function create_order() {
+    function create_order($options='{}') {
 
         global $account;
 
@@ -918,6 +918,11 @@ class Customer extends Subject {
 
         );
 
+        $options = json_decode($options,true);
+
+        if (!empty($options['date'])) {
+            $order_data['Order Date'] = $options['date'];
+        }
 
         $order_data['Order Customer Key']          = $this->id;
         $order_data['Order Customer Name']         = $this->data['Customer Name'];
@@ -980,6 +985,8 @@ class Customer extends Subject {
         $order_data['Order Currency']                 = $store->get('Store Currency Code');
         $order_data['Order Show in Warehouse Orders'] = $store->get('Store Show in Warehouse Orders');
         $order_data['public_id_format']               = $store->get('Store Order Public ID Format');
+
+
 
 
         $order = new Order('new', $order_data);
