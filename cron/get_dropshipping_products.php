@@ -46,7 +46,7 @@ if ($result = $db->query($sql)) {
 
         if ($resxx = $db->query($sql)) {
             if ($rowxx = $resxx->fetch()) {
-                //  continue;
+                continue;
             }
         } else {
             print_r($error_info = $db->errorInfo());
