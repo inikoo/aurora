@@ -46,7 +46,7 @@ if ($result = $db->query($sql)) {
 
         if ($resxx = $db->query($sql)) {
             if ($rowxx = $resxx->fetch()) {
-                continue;
+               // continue;
             }
         } else {
             print_r($error_info = $db->errorInfo());
@@ -92,6 +92,13 @@ if ($result = $db->query($sql)) {
         if ($result2 = $db->query($sql)) {
             if ($row2 = $result2->fetch()) {
                 $parts_per_product = $row2['value'];
+
+                if (!is_numeric($parts_per_product) or $parts_per_product <= 0) {
+                    print_r($row);
+                    print_r($row2);
+                    exit("wrong parts per product  ->$parts_per_product<- \n");
+                }
+
             } else {
                 exit("error no part_relation associated\n");
             }
@@ -102,16 +109,9 @@ if ($result = $db->query($sql)) {
         }
 
 
-        if (!is_numeric($parts_per_product) or $parts_per_product <= 0) {
-            print_r($row);
-            print_r($row2);
-            exit("wrong parts per product\n");
-        }
 
 
-        if ($parts_per_product == '') {
-            print "$sku $parts_per_product\n";
-        }
+
 
         $sql = sprintf("SELECT * FROM `drop`.`catalog_product_entity_text` WHERE  `entity_id` =%d  AND attribute_id=%d ", $row['entity_id'], getMagentoAttNumber('description', 4));
         if ($result2 = $db->query($sql)) {
