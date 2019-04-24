@@ -57,7 +57,7 @@ if ($result = $db->query($sql)) {
 
         $code = $row['sku'];
 
-        print "$code\n";
+        //print "$code\n";
 
 
         $sql = sprintf("SELECT * FROM `drop`.`catalog_product_entity_varchar` WHERE  `entity_id` =%d  AND attribute_id=%d ", $row['entity_id'], getMagentoAttNumber('name', 4));
