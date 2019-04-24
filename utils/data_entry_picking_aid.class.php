@@ -237,11 +237,11 @@ class data_entry_picking_aid {
                 }
 
 
-                if ($transaction['location_key'] <= 0) {
+                if ($transaction['location_key'] <= 0 and  $transaction['qty']>0  ) {
 
                     $response = array(
                         'state' => 400,
-                        'msg'   => 'transaction with wrong location'
+                        'msg'   => 'ohh no, transaction with wrong location again !!! :('
                     );
 
                     return array(
