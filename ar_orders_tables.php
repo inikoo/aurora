@@ -41,10 +41,10 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
     case 'orders_in_process_not_paid':
-        orders_in_process_not_paid(get_table_parameters(), $db, $user);
+        orders_in_process_not_paid(get_table_parameters(), $db, $user, $account);
         break;
     case 'orders_in_process_paid':
-        orders_in_process_paid(get_table_parameters(), $db, $user);
+        orders_in_process_paid(get_table_parameters(), $db, $user, $account);
         break;
     case 'orders_in_process':
         orders_in_process(get_table_parameters(), $db, $user);
@@ -54,19 +54,19 @@ switch ($tipo) {
         orders_in_warehouse(get_table_parameters(), $db, $user);
         break;
     case 'orders_in_warehouse_no_alerts':
-        orders_in_warehouse_no_alerts(get_table_parameters(), $db, $user);
+        orders_in_warehouse_no_alerts(get_table_parameters(), $db, $user, $account);
         break;
     case 'orders_in_warehouse_with_alerts':
-        orders_in_warehouse_with_alerts(get_table_parameters(), $db, $user);
+        orders_in_warehouse_with_alerts(get_table_parameters(), $db, $user, $account);
         break;
     case 'orders_packed_done':
-        orders_packed_done(get_table_parameters(), $db, $user);
+        orders_packed_done(get_table_parameters(), $db, $user, $account);
         break;
     case 'orders_approved':
-        orders_approved(get_table_parameters(), $db, $user);
+        orders_approved(get_table_parameters(), $db, $user, $account);
         break;
     case 'orders_dispatched_today':
-        orders_dispatched_today(get_table_parameters(), $db, $user);
+        orders_dispatched_today(get_table_parameters(), $db, $user, $account);
         break;
 
     case 'archived_orders':
@@ -146,7 +146,7 @@ switch ($tipo) {
         break;
 
     case 'orders_in_website':
-        orders_in_website(get_table_parameters(), $db, $user);
+        orders_in_website(get_table_parameters(), $db, $user, $account);
         break;
     case 'orders_in_website_mailshots':
         orders_in_website_mailshots(get_table_parameters(), $db, $user);
@@ -177,7 +177,7 @@ switch ($tipo) {
 }
 
 
-function orders_in_process_not_paid($_data, $db, $user) {
+function orders_in_process_not_paid($_data, $db, $user, $account) {
     $rtext_label = 'order submitted not paid';
 
 
@@ -251,7 +251,7 @@ function orders_in_process_not_paid($_data, $db, $user) {
 }
 
 
-function orders_in_process_paid($_data, $db, $user) {
+function orders_in_process_paid($_data, $db, $user, $account) {
     $rtext_label = 'order submitted paid';
 
 
@@ -265,30 +265,29 @@ function orders_in_process_paid($_data, $db, $user) {
 
 
         //$payment_state = get_order_formatted_payment_state($data);
-        $payments='';
+        $payments = '';
 
 
-        if($data['payments']!=''){
-            foreach(preg_split('/,/',$data['payments']) as $payment_data){
-                $payment_data=preg_split('/\|/',$payment_data);
+        if ($data['payments'] != '') {
+            foreach (preg_split('/,/', $data['payments']) as $payment_data) {
+                $payment_data = preg_split('/\|/', $payment_data);
                 //print_r($payment_data);
 
-                if($payment_data[1]=='Accounts'){
-                    $payment_name=_('Credit');
-                }else{
-                    $payment_name=$payment_data[0];
+                if ($payment_data[1] == 'Accounts') {
+                    $payment_name = _('Credit');
+                } else {
+                    $payment_name = $payment_data[0];
                 }
 
-                $payments.=$payment_name.', ';
+                $payments .= $payment_name.', ';
             }
         }
 
 
-        $payments=preg_replace('/, $/','',$payments);
+        $payments = preg_replace('/, $/', '', $payments);
 
 
-
-       // include_once 'class.Order.php';
+        // include_once 'class.Order.php';
 
         $operations = '<div id="operations'.$data['Order Key'].'">';
         $class      = 'right';
@@ -325,7 +324,7 @@ function orders_in_process_paid($_data, $db, $user) {
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
             'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
-            'payments'  =>  $payments,
+            'payments'       => $payments,
             'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
             'actions'        => $operations
 
@@ -425,7 +424,7 @@ function orders_in_warehouse($_data, $db, $user) {
 }
 
 
-function orders_in_warehouse_no_alerts($_data, $db, $user) {
+function orders_in_warehouse_no_alerts($_data, $db, $user, $account) {
     $rtext_label = 'order warehouse';
 
 
@@ -519,8 +518,7 @@ function orders_in_warehouse_no_alerts($_data, $db, $user) {
             'total_amount'   => $total_amount,
             'actions'        => $operations,
             'deliveries'     => $deliveries,
-            'waiting_time'    => number($data['waiting_time'])
-
+            'waiting_time'   => number($data['waiting_time'])
 
 
         );
@@ -542,7 +540,7 @@ function orders_in_warehouse_no_alerts($_data, $db, $user) {
 }
 
 
-function orders_in_warehouse_with_alerts($_data, $db, $user) {
+function orders_in_warehouse_with_alerts($_data, $db, $user, $account) {
     $rtext_label = 'order warehouse with alerts';
 
 
@@ -598,8 +596,7 @@ function orders_in_warehouse_with_alerts($_data, $db, $user) {
             'payment_state'  => $payment_state,
             'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
             'actions'        => $operations,
-            'waiting_time'    => number($data['waiting_time'])
-
+            'waiting_time'   => number($data['waiting_time'])
 
 
         );
@@ -621,7 +618,7 @@ function orders_in_warehouse_with_alerts($_data, $db, $user) {
 }
 
 
-function orders_packed_done($_data, $db, $user) {
+function orders_packed_done($_data, $db, $user, $account) {
 
 
     $rtext_label = 'order packed done';
@@ -698,7 +695,7 @@ function orders_packed_done($_data, $db, $user) {
 }
 
 
-function orders_approved($_data, $db, $user) {
+function orders_approved($_data, $db, $user, $account) {
     $rtext_label = 'order approved';
 
 
@@ -774,7 +771,7 @@ function orders_approved($_data, $db, $user) {
 }
 
 
-function orders_dispatched_today($_data, $db, $user) {
+function orders_dispatched_today($_data, $db, $user, $account) {
     $rtext_label = 'order dispatched today';
 
 
@@ -848,7 +845,7 @@ function orders_dispatched_today($_data, $db, $user) {
     echo json_encode($response);
 }
 
-function orders_in_website($_data, $db, $user) {
+function orders_in_website($_data, $db, $user, $account) {
     $rtext_label = 'order in basket';
 
 
@@ -864,8 +861,9 @@ function orders_in_website($_data, $db, $user) {
         $adata[] = array(
             'id'           => (integer)$data['Order Key'],
             'checked'      => sprintf('<i class="fa fa-square fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
-            'public_id'    => sprintf('
-            <span class="link" onClick="change_view(\'orders/%d/dashboard/website/%d\')">%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+            'public_id'    => sprintf(
+                '
+            <span class="link" onClick="change_view(\'orders/%s/dashboard/website/%d\')">%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
 
 
             ),
@@ -2051,7 +2049,7 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
             $effective_stock = ($data['Quantity On Hand'] < 0 ? 0 : $data['Quantity On Hand']);
             $formatted_diff  = $effective_stock - $total_pending;
 
-            $no_picked_qty=$total_pending - $effective_stock;
+            $no_picked_qty = $total_pending - $effective_stock;
             if ($total_pending > 0) {
                 $no_picked_amount += ($data['Order Transaction Amount'] * $no_picked_qty / $total_pending);
 
@@ -2064,13 +2062,14 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 
         } else {
             $formatted_diff = '';
-            $no_picked_qty=0;
+            $no_picked_qty  = 0;
             $status_icon    = 'success  fa-check-circle';
         }
 
 
         $picked_offline_status = sprintf(
-            '<span class="picked_offline_status_notes error" data-value_per_qty="%.4f"  data-no_picked_qty="%.2f" >%s</span> <i  class="picked_offline_status  fa %s " ></i>',($total_pending==0?0:$data['Order Transaction Amount']/$total_pending), $no_picked_qty,$formatted_diff, $status_icon
+            '<span class="picked_offline_status_notes error" data-value_per_qty="%.4f"  data-no_picked_qty="%.2f" >%s</span> <i  class="picked_offline_status  fa %s " ></i>', ($total_pending == 0 ? 0 : $data['Order Transaction Amount'] / $total_pending), $no_picked_qty,
+            $formatted_diff, $status_icon
         );
 
 
@@ -2100,9 +2099,12 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 
 
     if ($total_number_items > 0) {
-        $rtext .= '<span data-currency="'.$currency_code.'" data-total_items="'.$total_number_items.'"  data-total_items_amount="'.$total_amount.'"    class="not_picked_info small '.($no_picked_number_items==0?'hide':'').' padding_left_10 error"><i class="fa fa-exclamation-circle"></i> '._('not fully picked').': <span class="items_with_problems ">'.$no_picked_number_items
-            .'</span> <span class="strong  percentage_items_with_problems">('.percentage($no_picked_number_items, $total_number_items).')</span>
-        <span class=padding_left_10> <span class=""><span class="items_with_problems_amount">'.money($no_picked_amount, $currency_code).'</span> <span class="strong percentage_items_with_problems_amount">('.percentage($no_picked_amount,$total_amount).')</span></span></span></span>';
+        $rtext .= '<span data-currency="'.$currency_code.'" data-total_items="'.$total_number_items.'"  data-total_items_amount="'.$total_amount.'"    class="not_picked_info small '.($no_picked_number_items == 0 ? 'hide' : '')
+            .' padding_left_10 error"><i class="fa fa-exclamation-circle"></i> '._('not fully picked').': <span class="items_with_problems ">'.$no_picked_number_items.'</span> <span class="strong  percentage_items_with_problems">('.percentage(
+                $no_picked_number_items, $total_number_items
+            ).')</span>
+        <span class=padding_left_10> <span class=""><span class="items_with_problems_amount">'.money($no_picked_amount, $currency_code).'</span> <span class="strong percentage_items_with_problems_amount">('.percentage($no_picked_amount, $total_amount)
+            .')</span></span></span></span>';
 
     }
 

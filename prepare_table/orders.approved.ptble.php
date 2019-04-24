@@ -23,31 +23,24 @@ $table = '`Order Dimension` O left join `Payment Account Dimension` P on (P.`Pay
 
 
 if ($parameters['parent'] == 'store') {
-    if (is_numeric($parameters['parent_key']) and in_array(
-            $parameters['parent_key'], $user->stores
-        )
-    ) {
+    if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'], $user->stores)) {
         $where .= sprintf(' and  `Order Store Key`=%d ', $parameters['parent_key']);
         if (!isset($store)) {
-            include_once 'class.Store.php';
-            $store = new Store($parameters['parent_key']);
+            $store = get_object('Store', $parameters['parent_key']);
         }
         $currency = $store->data['Store Currency Code'];
+        $home_country = $store->get('Store Home Country Code 2 Alpha');
     } else {
         $where .= sprintf(' and  false');
     }
 
 
 } elseif ($parameters['parent'] == 'account') {
-    if (is_numeric($parameters['parent_key']) and in_array(
-            $parameters['parent_key'], $user->stores
-        )
-    ) {
-
+    $home_country = $account->get('Account Country 2 Alpha Code');
+    if (is_numeric($parameters['parent_key']) and in_array($parameters['parent_key'], $user->stores)) {
         if (count($user->stores) == 0) {
             $where .= ' and false';
         } else {
-
             $where .= sprintf('and  `Order Store Key` in (%s)  ', join(',', $user->stores));
         }
     }

@@ -652,6 +652,51 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             $_section = 'orders';
             $sections = get_sections('orders_server');
 
+            if(!empty($data['extra'])){
+
+                switch ($data['extra']){
+                    case 'submitted_not_paid':
+                        $tab = 'orders.in_process.not_paid';
+                        $label_arrow_up=_('Submitted (not paid)');
+                        break;
+                    case 'submitted':
+                        $tab = 'orders.in_process.paid';
+                        $label_arrow_up=_('Submitted (paid)');
+                        break;
+                    case 'website':
+                        $tab = 'orders.website';
+                        $label_arrow_up=_('In basket');
+                        break;
+                    case 'in_warehouse':
+                        $tab = 'orders.in_warehouse_no_alerts';
+                        $label_arrow_up=_('In warehouse');
+
+                        break;
+                    case 'in_warehouse_with_alerts':
+                        $tab = 'orders.in_warehouse_with_alerts';
+                        $label_arrow_up=_('In warehouse').' ('._('with alerts').')';
+
+                        break;
+
+                    case 'packed_done':
+                        $tab = 'orders.packed_done';
+                        $label_arrow_up=_('Packed & closed');
+
+                        break;
+                    case 'approved':
+                        $tab = 'orders.approved';
+                        $label_arrow_up=_('Invoiced');
+
+                        break;
+                    case 'dispatched_today':
+                        $tab = 'orders.dispatched_today';
+                        $label_arrow_up=_('Dispatched today');
+
+                        break;
+                }
+
+            }
+
             break;
         case 'customer':
             $tab      = 'customer.orders';
@@ -1077,48 +1122,92 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     } elseif ($data['parent'] == 'account') {
 
 
-        $account = get_object('Account', 1);
+        if(!empty($data['extra'])){
 
 
-        $up_button = array(
-            'icon'      => 'arrow-up',
-            'title'     => _("Orders").' ('._('All stores').')',
-            'reference' => 'orders/all'
-        );
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => $label_arrow_up.' ('._('All').')',
+                'reference' => 'orders/all/dashboard/'.$data['extra']
+            );
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'orders/all/dashboard/'.$data['extra'].'/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
 
 
-        if ($prev_key) {
-            $left_buttons[] = array(
-                'icon'      => 'arrow-left',
-                'title'     => $prev_title,
-                'reference' => 'orders/all/'.$prev_key
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'orders/all/dashboard/'.$data['extra'].'/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+        }else {
+
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Orders").' ('._('All stores').')',
+                'reference' => 'orders/all'
             );
 
-        } else {
-            $left_buttons[] = array(
-                'icon'  => 'arrow-left disabled',
-                'title' => '',
-                'url'   => ''
-            );
 
-        }
-        $left_buttons[] = $up_button;
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'orders/all/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
 
 
-        if ($next_key) {
-            $left_buttons[] = array(
-                'icon'      => 'arrow-right',
-                'title'     => $next_title,
-                'reference' => 'orders/all/'.$next_key
-            );
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'orders/all/'.$next_key
+                );
 
-        } else {
-            $left_buttons[] = array(
-                'icon'  => 'arrow-right disabled',
-                'title' => '',
-                'url'   => ''
-            );
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
 
+            }
         }
 
         //    print $data['parent'];

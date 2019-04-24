@@ -462,28 +462,21 @@ $elements_options = array(
     ),
 
 
-    'orders_pending' => array(
+    'orders_in_control_panel' => array(
 
-        'state' => array(
-            'label' => _('state'),
+        'location' => array(
+            'label' => _('Location'),
             'items' => array(
 
-                'InProcess'   => array(
-                    'label'    => _('Submitted'),
+                'Domestic'   => array(
+                    'label'    => _('Domestic'),
                     'selected' => true
                 ),
-                'InWarehouse' => array(
-                    'label'    => _('In warehouse'),
+                'Export' => array(
+                    'label'    => _('Export'),
                     'selected' => true
                 ),
-                'PackedDone'  => array(
-                    'label'    => _('Packed'),
-                    'selected' => true
-                ),
-                'Approved'    => array(
-                    'label'    => _('Approved'),
-                    'selected' => true
-                ),
+
 
             )
         ),
