@@ -89,18 +89,6 @@ if ($order == 'name') {
 $sql_totals
     = "select count(Distinct U.`User Key`) as num from $table  $where  ";
 
-//print $sql_totals;
-
-/*
-$fields
-    = "`User Failed Login Count`,`User Last Failed Login`,`User Last Login`,`User Login Count`,`User Alias`,`User Handle`,`User Password Recovery Email`,`User Type`,`User Parent Key`,
-	(select GROUP_CONCAT(S.`Store Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB  left join `Store Dimension` S on (URSB.`Scope Key`=S.`Store Key`) where URSB.`User Key`=U.`User Key` and `Scope`='Store' ) as Stores,
-	(select GROUP_CONCAT(S.`Warehouse Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB left join `Warehouse Dimension` S on (URSB.`Scope Key`=S.`Warehouse Key`) where URSB.`User Key`=U.`User Key`and `Scope`='Warehouse'  ) as Warehouses ,
-	(select GROUP_CONCAT(S.`Site Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB left join `Site Dimension` S on (URSB.`Scope Key`=S.`Site Key`)  where URSB.`User Key`=U.`User Key`and `Scope`='Website'  ) as Sites ,
-
-	(select GROUP_CONCAT(S.`User Group Name` SEPARATOR ', ') from `User Group User Bridge` URSB left join `User Group Dimension` S on (URSB.`User Group Key`=S.`User Group Key`)   where URSB.`User Key`=U.`User Key` ) as Groups,`User Key`,`User Active`
-";
-*/
 
 
 $fields
