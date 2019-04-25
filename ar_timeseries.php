@@ -217,28 +217,20 @@ function asset_sales($db, $data, $account) {
 
         case 'product':
 
-            // todo remove this after migration
             $product    = get_object('Product', $data['parent_key']);
-            $store      = get_object('Store', $product->get('Product Store Key'));
 
 
             $where  = sprintf("where   `Invoice Key` is not null  and `Product ID`=%d", $data['parent_key']);
             $table  = "`Order Transaction Fact` TR ";
             $group = 'group by `Date`';
 
-            if ($store->get('Store Version') == 1) {
-                $fields = "`Invoice Date` as `Date`,
-sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as `Sales`,
-count(distinct `Invoice Key`) as `Volume`,
-count(distinct `Customer Key`) as customers
-";
-            } else {
+
                 $fields = "`Invoice Date` as `Date`,
 sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as `Sales`,
 count(distinct `Invoice Key`) as `Volume`,
 count(distinct `Customer Key`) as customers
 ";
-            }
+
 
 
             break;

@@ -67,23 +67,11 @@ $sql_totals = "select count(Distinct C.`Customer Key`) as num from $table  $wher
 
 
 
-//todo remove this after migration
 include_once 'utils/object_functions.php';
 $product=get_object('Product',$parameters['parent_key']);
 $store=get_object('store',$product->get('Store Key'));
 
-if($store->get('Store Version')==1){ //todo Checked OK
 
-
-    $fields='C.`Customer Key`,`Customer Name`,`Customer Location`,`Customer Type by Activity`,`Customer Store Key`,count(Distinct `Order Key`) as orders,`Store Currency Code`,
-sum(if(`Invoice Type`="Invoice",1,0)) as invoices,sum(if(`Invoice Type`="Refund",1,0)) as refunds,
-     sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,
-sum(`Delivery Note Quantity`) as qty 
-  
-  ';
-
-
-}else{
 
     $fields='C.`Customer Key`,`Customer Name`,`Customer Location`,`Customer Type by Activity`,`Customer Store Key`,count(Distinct `Order Key`) as orders,`Store Currency Code`,
 sum(if(`Invoice Type`="Invoice",1,0)) as invoices,sum(if(`Invoice Type`="Refund",1,0)) as refunds,
@@ -92,9 +80,3 @@ sum(if(`Invoice Type`="Invoice",1,0)) as invoices,sum(if(`Invoice Type`="Refund"
   
   ';
 
-}
-
-
-
-//print "$sql_totals\n";
-?>

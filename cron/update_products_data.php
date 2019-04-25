@@ -45,7 +45,7 @@ update_products_next_shipment_date($db);
 function update_products_next_shipment_date($db) {
 
     $sql = sprintf(
-        "SELECT `Product ID` FROM `Product Dimension` left join `Store Dimension` on (`Store Key`=`Product Store Key`) where `Store Version`=2  "
+        "SELECT `Product ID` FROM `Product Dimension` left join `Store Dimension` on (`Store Key`=`Product Store Key`)  "
     );
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {

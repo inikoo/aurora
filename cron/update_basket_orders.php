@@ -17,7 +17,7 @@ require_once 'utils/order_functions.php';
 $print_est = true;
 
 
-$sql = sprintf("SELECT count(*) as num FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Version`=2 ");
+$sql = sprintf("SELECT count(*) as num FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Type`!='External' ");
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -32,7 +32,7 @@ if ($result = $db->query($sql)) {
 $lap_time0 = date('U');
 $contador  = 0;
 
-$sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Version`=2   order by `Order Date` desc");
+$sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Type`!='External'   order by `Order Date` desc");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 

@@ -2901,15 +2901,11 @@ class Page extends DB_Table {
                 $this->update_field('Page Store Content Data', $value, $options);
                 $this->update_store_search();
 
-                // Todo remove after migration
                 if ($this->get('Webpage Scope') == 'Category Categories' and $this->get('Webpage Template Filename') != 'category_categories') {
 
-                    include_once 'class.Website.php';
-                    $website = new Website($this->get('Webpage Website Key'));
 
-                    if ($website->get('Website Theme') == 'theme_1') {
                         $this->update_category_webpage_index();
-                    }
+
                 }
 
 

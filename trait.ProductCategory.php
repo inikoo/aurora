@@ -248,24 +248,12 @@ trait ProductCategory {
 
         if ($timeseries->get('Timeseries Scope') == 'Sales') {
 
-            // todo quick hack before migration is done
-
-            $store = get_object('Store', $this->get('Category Store Key'));
-
-
-            if ($store->get('Store Version') == 1) {
-
-                $sql = sprintf(
-                    "SELECT count(DISTINCT `Invoice Key`)  AS invoices,count(DISTINCT `Customer Key`)  AS customers, ifnull(sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`),0) net,ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`),0) dc_net FROM `Order Transaction Fact` WHERE `Product ID` IN (%s)  AND `Invoice Key`>0 AND  `Invoice Date`>=%s  AND   `Invoice Date`<=%s  ",
-                    $product_ids, prepare_mysql($date_frequency_period['from']), prepare_mysql($date_frequency_period['to'])
-                );
-            } else {
 
                 $sql = sprintf(
                     "SELECT count(DISTINCT `Invoice Key`)  AS invoices,count(DISTINCT `Customer Key`)  AS customers, round(ifnull(sum(`Order Transaction Amount`),0),2) AS net , 	round(ifnull(sum((`Order Transaction Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net FROM `Order Transaction Fact` WHERE `Product ID` IN (%s)  AND `Invoice Key`>0 AND  `Invoice Date`>=%s  AND   `Invoice Date`<=%s  ",
                     $product_ids, prepare_mysql($date_frequency_period['from']), prepare_mysql($date_frequency_period['to'])
                 );
-            }
+
             //print "$sql\n";
 
             if ($result = $this->db->query($sql)) {
@@ -464,30 +452,6 @@ trait ProductCategory {
         if ($product_ids != '' and $this->get('Category Branch Type') != 'Root') {
 
 
-            // todo quick hack before migration is done
-            $store = get_object('Store', $this->get('Category Store Key'));
-
-
-            if ($store->get('Store Version') == 1) {
-
-
-                $sql = sprintf(
-                    "SELECT
-		ifnull(count(DISTINCT `Customer Key`),0) AS customers,
-		ifnull(count(DISTINCT `Invoice Key`),0) AS invoices,
-		round(ifnull(sum( `Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` +(  `Cost Supplier`/`Invoice Currency Exchange Rate`)  ),0),2) AS profit,
-		round(ifnull(sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`),0),2) AS net ,
-		round(ifnull(sum(`Shipped Quantity`),0),1) AS delivered,
-		round(ifnull(sum(`Order Quantity`),0),1) AS ordered,
-		round(ifnull(sum(`Invoice Quantity`),0),1) AS invoiced,
-		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net,
-		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Cost Supplier`)*`Invoice Currency Exchange Rate`),0),2) AS dc_profit
-		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE    `Invoice Key` IS NOT NULL  AND  `Product ID` IN (%s) %s %s ", $product_ids, ($from_date ? sprintf('and `Invoice Date`>=%s', prepare_mysql($from_date)) : ''),
-                    ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
-
-                );
-
-            } else {
                 $sql = sprintf(
                     "SELECT
 		ifnull(count(DISTINCT `Customer Key`),0) AS customers,
@@ -503,7 +467,7 @@ trait ProductCategory {
                     ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
 
                 );
-            }
+
 
 
             //print "$sql\n";

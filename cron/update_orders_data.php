@@ -38,7 +38,7 @@ $account = new Account();
 $account->update_orders();
 
 
-$sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Store Version`=2  ");
+$sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`)   ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $order = get_object('Order', $row['Order Key']);
