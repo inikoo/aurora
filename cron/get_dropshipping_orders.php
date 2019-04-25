@@ -59,8 +59,6 @@ if ($result = $db->query($sql)) {
             print "$sql\n";
             exit;
         }
-
-
         if (!in_array(
             $row['state'], array(
                              'canceled',

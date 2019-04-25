@@ -318,20 +318,6 @@ if (($parameters['f_field'] == 'customer') and $f_value != '') {
     $wheref = " and  `Order Invoiced Balance Total Amount`<=".$f_value."    ";
 } elseif ($parameters['f_field'] == 'minvalue' and is_numeric($f_value)) {
     $wheref = " and  `Order Invoiced Balance Total Amount`>=".$f_value."    ";
-} elseif ($parameters['f_field'] == 'country' and $f_value != '') {
-    if ($f_value == 'UNK') {
-        $wheref    = " and  `Order Main Country Code`='".$f_value."'    ";
-        $find_data = ' '._('a unknown country');
-    } else {
-        include once('class.Address.php');
-        $f_value = Address::parse_country($f_value);
-        if ($f_value != 'UNK') {
-            $wheref    = " and  `Order Main Country Code`='".$f_value."'    ";
-            $country   = new Country('code', $f_value);
-            $find_data = ' '.$country->data['Country Name'].' <img style="vertical-align: text-bottom;position:relative;bottom:2px" src="art/flags/'.strtolower($country->data['Country 2 Alpha Code'])
-                .'.gif" alt="'.$country->data['Country Code'].'"/>';
-        }
-    }
 }
 
 
