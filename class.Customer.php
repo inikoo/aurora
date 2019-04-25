@@ -19,8 +19,7 @@ include_once 'class.Attachment.php';
 
 class Customer extends Subject {
     var $contact_data = false;
-    var $ship_to = array();
-    var $billing_to = array();
+
     var $fuzzy = false;
     var $tax_number_read = false;
     var $warning_messages = array();
