@@ -183,30 +183,6 @@ class Public_Product {
                 break;
 
 
-            case 'Reminder Key':
-
-
-                $sql = sprintf(
-                    "SELECT `Email Site Reminder Key` FROM `Email Site Reminder Dimension` WHERE `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d AND `User Key`=%d AND `Email Site Reminder In Process`='Yes' ", $this->id, $arg1
-
-                );
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $reminder_key = $row['Email Site Reminder Key'];
-                    } else {
-                        $reminder_key = 0;
-
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-
-                return $reminder_key;
-                break;
 
             case 'Favourite Key':
 
