@@ -211,7 +211,7 @@
     {foreach from=$transactions item=transaction name=products}
         <tr class="{if $smarty.foreach.products.last}last{/if}">
             <td style="width:14%;text-align:left">{$transaction['Product Code']}</td>
-            <td style="text-align:left">{$transaction['Product XHTML Short Description']}</td>
+            <td style="text-align:left">{$transaction['Description']}</td>
             <td style="width:10%;text-align:right">{$transaction['Discount']}</td>
 
             <td style="width:11%;text-align:right">{$transaction['Qty']}</td>
@@ -228,7 +228,7 @@
     {foreach from=$transactions_out_of_stock item=transaction name=products}
         <tr class="{if $smarty.foreach.products.last}last{/if}">
             <td style="width:14%;text-align:left">{$transaction['Product Code']}</td>
-            <td style="text-align:left">{$transaction['Product XHTML Short Description']}</td>
+            <td style="text-align:left">{$transaction['Description']}</td>
             <td colspan="2" style="width:16%;text-align:right"><span>{t}Out of Stock{/t}</span> {$transaction['Quantity']}</td>
             <td style="width:10%;text-align:right">{$transaction['Amount']}</td>
         </tr>
