@@ -163,12 +163,12 @@ if ($invoice->data['Invoice Type'] == 'Invoice') {
 
 $transactions = array();
 
-    $sql = sprintf(
-        "SELECT  `Product Barcode Number`,`Product Origin Country Code`,`Delivery Note Quantity` as Qty, `Order Transaction Amount` as Amount, `Product Unit Weight`,`Invoice Currency Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
+$sql = sprintf(
+    "SELECT  `Product Barcode Number`,`Product Origin Country Code`,`Delivery Note Quantity` as Qty, `Order Transaction Amount` as Amount, `Product Unit Weight`,`Invoice Currency Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
 `Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code`
  FROM `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN
   `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=%d  and `Current Dispatching State`   and (`Order Transaction Amount`!=0 or `Delivery Note Quantity`!=0)  ORDER BY `Product Code`", $invoice->id
-    );
+);
 
 //print $sql;exit;
 
@@ -181,17 +181,11 @@ if ($result = $db->query($sql)) {
             ($row['Amount']), $row['Order Currency Code']
         );
 
-        if ($invoice->get('Invoice Version') == 2) {
-            $discount = ($row['Order Transaction Total Discount Amount'] == 0
-                ? ''
-                : percentage(
-                    $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'], 0
-                ));
-
-        } else {
-            $discount = ($row['Invoice Transaction Total Discount Amount'] == 0 ? '' : percentage($row['Invoice Transaction Total Discount Amount'], $row['Invoice Transaction Gross Amount'], 0));
-
-        }
+        $discount = ($row['Order Transaction Total Discount Amount'] == 0
+            ? ''
+            : percentage(
+                $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'], 0
+            ));
 
 
         $units    = $row['Product Units Per Case'];
@@ -225,8 +219,7 @@ if ($result = $db->query($sql)) {
             $_country = new Country('code', $row['Product Origin Country Code']);
 
 
-
-            if ($_country->id and $_country->get('Country 2 Alpha Code') != 'XX' ) {
+            if ($_country->id and $_country->get('Country 2 Alpha Code') != 'XX') {
                 try {
                     $country     = $countryRepository->get($_country->get('Country 2 Alpha Code'));
                     $description .= ' <br>'._('Origin').': '.$country->getName().' ('.$country->getThreeLetterCode().')';
@@ -276,11 +269,11 @@ if ($invoice->data['Invoice Net Amount Off']) {
     $total = $net + $tax;
 
 
-    $row['Product Code']                    = _('Amount Off');
-    $row['Description'] = '';
-    $row['Net']                             = money($net, $invoice->get('Currency Code'));
-    $row['Tax']                             = money($tax, $invoice->get('Currency Code'));
-    $row['Amount']                          = money($total, $invoice->get('Currency Code'));
+    $row['Product Code'] = _('Amount Off');
+    $row['Description']  = '';
+    $row['Net']          = money($net, $invoice->get('Currency Code'));
+    $row['Tax']          = money($tax, $invoice->get('Currency Code'));
+    $row['Amount']       = money($total, $invoice->get('Currency Code'));
 
     $row['Discount']            = '';
     $transactions_no_products[] = $row;
@@ -330,11 +323,11 @@ if ($result = $db->query($sql)) {
         }
         $transactions_no_products[] = array(
 
-            'Product Code'                    => $code,
-            'Description' => $row['Transaction Description'],
-            'Invoice Quantity'                => '',
-            'Net'                             => money($row['Transaction Invoice Net Amount'], $row['Currency Code']),
-            'Tax'                             => money($row['Transaction Invoice Tax Amount'], $row['Currency Code']),
+            'Product Code'     => $code,
+            'Description'      => $row['Transaction Description'],
+            'Invoice Quantity' => '',
+            'Net'              => money($row['Transaction Invoice Net Amount'], $row['Currency Code']),
+            'Tax'              => money($row['Transaction Invoice Tax Amount'], $row['Currency Code']),
 
             'Amount' => money($row['Transaction Invoice Net Amount'] + $row['Transaction Invoice Tax Amount'], $row['Currency Code'])
         );
@@ -396,11 +389,11 @@ $sql = sprintf(
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-        $row['Product Code']                    = _('Credit');
-        $row['Description'] = $row['Transaction Description'];
-        $row['Net']                             = money($row['Transaction Refund Net Amount'], $row['Currency Code']);
-        $row['Tax']                             = money($row['Transaction Refund Tax Amount'], $row['Currency Code']);
-        $row['Amount']                          = money(($row['Transaction Refund Net Amount'] + $row['Transaction Refund Tax Amount']), $row['Currency Code']);
+        $row['Product Code'] = _('Credit');
+        $row['Description']  = $row['Transaction Description'];
+        $row['Net']          = money($row['Transaction Refund Net Amount'], $row['Currency Code']);
+        $row['Tax']          = money($row['Transaction Refund Tax Amount'], $row['Currency Code']);
+        $row['Amount']       = money(($row['Transaction Refund Net Amount'] + $row['Transaction Refund Tax Amount']), $row['Currency Code']);
 
         $row['Discount'] = '';
         $row['Qty']      = '';
@@ -418,7 +411,7 @@ if ($result = $db->query($sql)) {
 $transactions_out_of_stock = array();
 $sql                       = sprintf(
     "SELECT (`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`+`No Shipped Due Other`) AS qty,`Product RRP`,
-`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,
+`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Product Origin Country Code`,`Product Unit Weight`,
 `Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,P.`Product ID`,O.`Product Code` ,`Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`
 FROM `Order Transaction Fact` O
  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`)
@@ -433,7 +426,6 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $row['Amount']   = '';
         $row['Discount'] = '';
-
 
 
         $units    = $row['Product Units Per Case'];
@@ -467,8 +459,7 @@ if ($result = $db->query($sql)) {
             $_country = new Country('code', $row['Product Origin Country Code']);
 
 
-
-            if ($_country->id and $_country->get('Country 2 Alpha Code') != 'XX' ) {
+            if ($_country->id and $_country->get('Country 2 Alpha Code') != 'XX') {
                 try {
                     $country     = $countryRepository->get($_country->get('Country 2 Alpha Code'));
                     $description .= ' <br>'._('Origin').': '.$country->getName().' ('.$country->getThreeLetterCode().')';
@@ -494,8 +485,7 @@ if ($result = $db->query($sql)) {
         $row['Description'] = $description;
 
 
-
-        $row['Quantity']             = '<span >('.number($row['qty'],3).')</span>';
+        $row['Quantity']             = '<span >('.number($row['qty'], 3).')</span>';
         $transactions_out_of_stock[] = $row;
 
     }
@@ -555,9 +545,9 @@ if ($invoice->data['Invoice Type'] == 'CreditNote') {
 
 
             }
-            $row['Product Code']                    = $code;
-            $row['Description'] = $row['Transaction Description'];
-            $row['Amount']                          = money($row['Transaction Invoice Net Amount'], $row['Currency Code']);
+            $row['Product Code'] = $code;
+            $row['Description']  = $row['Transaction Description'];
+            $row['Amount']       = money($row['Transaction Invoice Net Amount'], $row['Currency Code']);
 
             $row['Discount'] = '';
             $row['Qty']      = '';

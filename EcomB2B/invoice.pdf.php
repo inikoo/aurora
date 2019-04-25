@@ -67,6 +67,13 @@ if (!empty($_REQUEST['commodity'])) {
     $print_tariff_code = false;
 }
 
+
+if (!empty($_REQUEST['barcode'])) {
+    $print_barcode = true;
+} else {
+    $print_barcode = false;
+}
+
 if (!empty($_REQUEST['rrp'])) {
     $print_rrp = true;
 } else {
@@ -194,17 +201,12 @@ if ($result = $db->query($sql)) {
             ($row['Amount']), $row['Order Currency Code']
         );
 
-        if ($invoice->get('Invoice Version') == 2) {
             $discount = ($row['Order Transaction Total Discount Amount'] == 0
                 ? ''
                 : percentage(
                     $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'], 0
                 ));
 
-        } else {
-            $discount = ($row['Invoice Transaction Total Discount Amount'] == 0 ? '' : percentage($row['Invoice Transaction Total Discount Amount'], $row['Invoice Transaction Gross Amount'], 0));
-
-        }
 
 
         $units    = $row['Product Units Per Case'];
@@ -431,8 +433,7 @@ if ($result = $db->query($sql)) {
 $transactions_out_of_stock = array();
 $sql                       = sprintf(
     "SELECT (`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`+`No Shipped Due Other`) AS qty,`Product RRP`,
-`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,
-`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,P.`Product ID`,O.`Product Code` ,`Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`
+`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code` ,`Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`,`Product Origin Country Code`,`Product Unit Weight`
 FROM `Order Transaction Fact` O
  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`)
  LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`)
