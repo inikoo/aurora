@@ -1952,12 +1952,27 @@ class Order extends DB_Table {
 
     }
 
-    function get_invoices($scope = 'keys') {
+    function get_invoices($scope = 'keys',$options='') {
 
 
         $invoices = array();
+
+
+        switch ($options){
+            case 'refunds_only':
+                $where=" and `Invoice Type`='Refund'";
+                break;
+            case 'invoices_only':
+                $where=" and `Invoice Type`='Refund'";
+                break;
+            default:
+                $where='';
+
+        }
+
+
         $sql      = sprintf(
-            "SELECT `Invoice Key` FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d  ", $this->id
+            "SELECT `Invoice Key` FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d  %s ", $this->id,$where
         );
 
         if ($result = $this->db->query($sql)) {

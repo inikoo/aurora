@@ -41,11 +41,7 @@ $sql = sprintf("SELECT * FROM `drop`.`sales_flat_order` where updated_at>'%s' ",
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
-
         $shipping_net = 0;
-
-        //print_r($row);
-
         $store_code    = $store->data['Store Code'];
         $order_data_id = $row['entity_id'];
 
@@ -56,7 +52,7 @@ if ($result = $db->query($sql)) {
 
         if ($resxx = $db->query($sql)) {
             if ($rowxx = $resxx->fetch()) {
-                //  continue;
+                  continue;
             }
         } else {
             print_r($error_info = $db->errorInfo());
@@ -86,7 +82,7 @@ if ($result = $db->query($sql)) {
 
         if ($result_aaa = $db->query($sql)) {
             if ($row_aa = $result_aaa->fetch()) {
-                print 'Update '.$row['increment_id'].' '.$row['updated_at']." ".$row['state']." \n";
+
                 if ($row['state'] == 'processing') {
                     $sql = sprintf(
                         "INSERT INTO `Order Import Metadata` ( `Metadata`,`Name`, `Import Date`) VALUES (%s,%s,%s) ON DUPLICATE KEY UPDATE
@@ -120,6 +116,9 @@ if ($result = $db->query($sql)) {
                     );
 
                     $db->exec($sql);
+
+                    print 'Cancelled '.$row['increment_id'].' '.$row['updated_at']." ".$row['state']." \n";
+
                     continue;
                 }
 
@@ -142,12 +141,20 @@ if ($result = $db->query($sql)) {
 
                             $msg = "Order ".$order->id." ".$order->get('Public ID')." need to be fixed manually\n";
 
+
+                            $sql = sprintf(
+                                "delete from `Order Import Metadata` where `Metadata`=%s  ", prepare_mysql($store_code.$order_data_id)
+                            );
+
+                            $db->exec($sql);
+
                             print $msg;
 
 
                             continue;
 
                         }
+                        print 'Updating '.$row['increment_id'].' '.$row['updated_at']." ".$row['state']." \n";
 
 
                         if ($order->get('State Index') == 40) {
@@ -329,7 +336,17 @@ if ($result = $db->query($sql)) {
 
                 }
 
-                if ($row['state'] == 'closed') {
+                if ($row['state'] == 'closed'    ) {
+
+
+                    if(count($order->get_invoices('keys','refunds_only'))>0){
+                        continue;
+                    }
+
+
+
+
+
 
                     list($date_order, $date_invoiced, $date_refunded, $history) = get_history($row['entity_id']);
 
