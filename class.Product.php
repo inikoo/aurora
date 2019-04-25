@@ -3232,20 +3232,8 @@ class Product extends Asset {
 
                 break;
 
-            case 'Direct Product Family Category Key':
 
-                $this->update_field(
-                    'Product Family Category Key', $value, 'no_history'
-                );
 
-                break;
-            case 'Direct Product Department Category Key':
-
-                $this->update_field(
-                    'Product Department Category Key', $value, 'no_history'
-                );
-
-                break;
             case 'Product Family Category Key':
 
 
