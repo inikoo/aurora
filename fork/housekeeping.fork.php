@@ -2641,7 +2641,7 @@ function fork_housekeeping($job) {
 
         case 'update_deals_status_from_dates':
 
-            $sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension`  left join `Store Dimension` on (`Deal Store Key`=`Store Key`) where `Store Version`=2 and `Deal Expiration Date` is not null  and `Deal Status` not in ('Finished')");
+            $sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension`  left join `Store Dimension` on (`Deal Store Key`=`Store Key`) where `Deal Expiration Date` is not null  and `Deal Status` not in ('Finished')");
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
 

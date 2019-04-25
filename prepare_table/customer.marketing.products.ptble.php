@@ -72,18 +72,6 @@ $sql_totals
 $customer=get_object('Customer',$parameters['parent_key']);
 $store=get_object('store',$customer->get('Store Key'));
 
-if($store->get('Store Version')==1){
-
-    $fields
-        = "P.`Product ID`,P.`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,S.`Store Key`,`Product RRP`,`Product Unit Label`,`Store Currency Code`,`Customer Key`,
-    `Store Name`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,P.`Product Status`,`Product Units Per Case`,
- 
-    sum(if(`Invoice Type`='Invoice',1,0)) as invoices,
-     sum(if(`Invoice Type`='Refund',1,0)) as refunds,
-   sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,
-sum(`Delivery Note Quantity`) as qty 
-";
-}else{
 
     $fields
         = "P.`Product ID`,P.`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,S.`Store Key`,`Product RRP`,`Product Unit Label`,`Customer Key`,
@@ -95,7 +83,7 @@ sum(`Delivery Note Quantity`) as qty
      sum(`Order Quantity`) as qty 
 
 ";
-}
+
 
 
 $sql

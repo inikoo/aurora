@@ -26,9 +26,8 @@ function get_order_showcase($data, $smarty, $user, $db) {
     $order = $data['_object'];
     $store = get_object('store', $order->get('Store Key'));
 
-    if($store->get('Store Version')==2){
-        $order->update_order_payments();
-    }
+    $order->update_order_payments();
+
 
 
     $smarty->assign('order', $order);

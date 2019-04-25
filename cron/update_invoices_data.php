@@ -36,7 +36,7 @@ $account = new Account();
 
 
 
-$sql = sprintf("SELECT `Invoice Key` FROM `Invoice Dimension` left join `Store Dimension` on (`Store Key`=`Invoice Store Key`) where `Store Version`=2 ");
+$sql = sprintf("SELECT `Invoice Key` FROM `Invoice Dimension` left join `Store Dimension` on (`Store Key`=`Invoice Store Key`) ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $invoice = get_object('Invoice', $row['Invoice Key']);
