@@ -35,70 +35,7 @@ class Public_Webpage {
     function get_data($tipo, $tag, $tag2 = false) {
 
         if ($tipo == 'scope') {
-            /*
-                        // Todo (Migration)
-                        if ($tag == 'Category') {
 
-
-                            $sql = sprintf('SELECT `Category Root Key` ,`Category Scope`, `Category Store Key` ,`Category Code` FROM `Category Dimension` WHERE `Category Key`=%d ', $tag2);
-                            if ($result = $this->db->query($sql)) {
-                                if ($row = $result->fetch()) {
-                                    include_once('class.Store.php');
-                                    $store = new Store($row['Category Store Key']);
-
-
-                                    if ($row['Category Root Key'] == $store->get('Store Family Category Key')) {
-
-
-                                        $sql = sprintf(
-                                            "SELECT `Product Family Key` FROM `Product Family Dimension` WHERE `Product Family Store Key`=%d AND `Product Family Code`=%s", $row['Category Store Key'],
-                                            prepare_mysql($row['Category Code'])
-                                        );
-
-
-                                        if ($result2 = $this->db->query($sql)) {
-                                            if ($row2 = $result2->fetch()) {
-                                                $tag  = 'Family';
-                                                $tag2 = $row2['Product Family Key'];
-                                            }
-                                        }
-
-
-                                    } elseif ($row['Category Root Key'] == $store->get('Store Department Category Key')) {
-
-
-                                        $sql = sprintf(
-                                            "SELECT `Product Department Key` FROM `Product Department Dimension` WHERE `Product Department Store Key`=%d AND `Product Department Code`=%s",
-                                            $row['Category Store Key'], prepare_mysql($row['Category Code'])
-                                        );
-
-
-                                        if ($result2 = $this->db->query($sql)) {
-                                            if ($row2 = $result2->fetch()) {
-                                                $tag  = 'Department';
-                                                $tag2 = $row2['Product Department Key'];
-                                            }
-                                        }
-
-
-                                    }
-
-
-                                }
-                            } else {
-                                print_r($error_info = $this->db->errorInfo());
-                                print "$sql\n";
-                                exit;
-                            }
-
-                        }
-
-
-                        $sql = sprintf(
-                            'SELECT *FROM `Page Store Dimension`  PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Page Store Section Type`=%s  AND  `Page Parent Key`=%d ',
-                            prepare_mysql($tag), $tag2
-                        );
-            */
 
 
             $sql = sprintf(
