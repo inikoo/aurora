@@ -269,8 +269,8 @@
             if(_args!=undefined){
                 args=_args.split("=");
                 if(args[1]!=undefined && args[0]=='q'){
-                    $('#search_input').val( args[1])
 
+                    $('#search_input').val( decodeURI(args[1]))
                 }
 
             }
