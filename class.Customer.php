@@ -15,7 +15,6 @@
 */
 include_once 'class.Subject.php';
 include_once 'class.Order.php';
-//include_once 'class.Address.php';
 include_once 'class.Attachment.php';
 
 class Customer extends Subject {
