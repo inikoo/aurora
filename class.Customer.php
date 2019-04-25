@@ -168,19 +168,6 @@ class Customer extends Subject {
         $raw_data['Customer Sticky Note']          = '';
 
 
-        /*
-        //todo remove this in the DB after migration
-        unset($this->data['Customer Main Country Key']);
-        unset($this->data['Customer Main Delivery Address Country Key']);
-        unset($this->data['Customer Main Billing Address Country Key']);
-        unset($this->data['Customer Last Ship To Key']);
-        unset($this->data['Customer Active Ship To Records']);
-        unset($this->data['Customer Total Ship To Records']);
-        unset($this->data['Customer Last Billing To Key']);
-        unset($this->data['Customer Active Billing To Records']);
-        unset($this->data['Customer Total Billing To Records']);
-        unset($this->data['Customer Company Key']);
-*/
 
 
         $keys   = '';

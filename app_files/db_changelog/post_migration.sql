@@ -9,3 +9,5 @@ ALTER TABLE `User Log Dimension` CHANGE `Site Key` `Site Key` SMALLINT(5) UNSIGN
 
 
 ALTER TABLE `User Log Dimension` DROP `Site Key`, DROP `Remember Cookie`;
+// back up `User Dimension`
+delete from `User Dimension` where `User Type`='Customer';
