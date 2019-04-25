@@ -541,11 +541,11 @@ class Part extends Asset {
 
     }
 
-    function get_main_supplier_part_key(){
+    function get_main_supplier_part_key() {
 
-        $main_supplier_part_key=false;
+        $main_supplier_part_key = false;
 
-        $sql = 'SELECT `Supplier Part Key` FROM `Supplier Part Dimension` WHERE `Supplier Part Part SKU`=? ';
+        $sql  = 'SELECT `Supplier Part Key` FROM `Supplier Part Dimension` WHERE `Supplier Part Part SKU`=? ';
         $stmt = $this->db->prepare($sql);
         if ($stmt->execute(
             array(
@@ -553,7 +553,7 @@ class Part extends Asset {
             )
         )) {
             if ($row = $stmt->fetch()) {
-                $main_supplier_part_key=$row['Supplier Part Key'];
+                $main_supplier_part_key = $row['Supplier Part Key'];
             }
         } else {
             print_r($error_info = $stmt->errorInfo());
@@ -769,7 +769,7 @@ class Part extends Asset {
 
             case 'Units Per Carton':
 
-                return $this->data['Part Units Per Package']*$this->data['Part SKOs per Carton'];
+                return $this->data['Part Units Per Package'] * $this->data['Part SKOs per Carton'];
 
 
                 break;
@@ -1353,7 +1353,7 @@ class Part extends Asset {
                 }
                 break;
             case 'Carton Weight':
-                return weight($this->data['Part Package Weight']*$this->data['Part SKOs per Carton'],'Kg',0);
+                return weight($this->data['Part Package Weight'] * $this->data['Part SKOs per Carton'], 'Kg', 0);
                 break;
             default:
 
@@ -1864,15 +1864,14 @@ class Part extends Asset {
 				$this->msg=_('Unit recommended price missing');
 				return;
 			}
-*/
-                if ($value != '' and (!is_numeric($value) or $value < 0)) {
-                    $this->error = true;
-                    $this->msg   = sprintf(
-                        _('Invalid unit recommended price (%s)'), $value
-                    );
+*/ if ($value != '' and (!is_numeric($value) or $value < 0)) {
+                $this->error = true;
+                $this->msg   = sprintf(
+                    _('Invalid unit recommended price (%s)'), $value
+                );
 
-                    return;
-                }
+                return;
+            }
                 $this->update_field('Part Unit Price', $value, $options);
                 if ($this->data['Part Commercial Value'] == '') {
                     $this->update_margin();
@@ -1902,15 +1901,14 @@ class Part extends Asset {
 				$this->msg=_('Unit recommended price missing');
 				return;
 			}
-*/
-                if ($value != '' and (!is_numeric($value) or $value < 0)) {
-                    $this->error = true;
-                    $this->msg   = sprintf(
-                        _('Invalid unit recommended RRP (%s)'), $value
-                    );
+*/ if ($value != '' and (!is_numeric($value) or $value < 0)) {
+                $this->error = true;
+                $this->msg   = sprintf(
+                    _('Invalid unit recommended RRP (%s)'), $value
+                );
 
-                    return;
-                }
+                return;
+            }
 
 
                 $this->update_field('Part Unit RRP', $value, $options);
@@ -2078,8 +2076,7 @@ class Part extends Asset {
                 $materials_to_update = array();
 
                 $sql = sprintf(
-                    'SELECT `Material Key` FROM `Part Material Bridge` WHERE `Part SKU`=%d',
-                    $this->id
+                    'SELECT `Material Key` FROM `Part Material Bridge` WHERE `Part SKU`=%d', $this->id
                 );
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
@@ -2184,8 +2181,7 @@ class Part extends Asset {
 
 
                             break;
-            */
-            case 'Part Package Dimensions':
+            */ case 'Part Package Dimensions':
             case 'Part Unit Dimensions':
 
 
@@ -3019,8 +3015,7 @@ class Part extends Asset {
                 print "b* $old_stock_on_hand   ** ".$this->data['Part Current On Hand Stock']."  \n"   ;
         */
 
-        if ($old_value != $this->data['Part Current Value'] or $old_stock_in_progress != $this->data['Part Current Stock In Process'] or $old_stock_picked != $this->data['Part Current Stock Picked']
-            or $old_stock_on_hand != $this->data['Part Current On Hand Stock']
+        if ($old_value != $this->data['Part Current Value'] or $old_stock_in_progress != $this->data['Part Current Stock In Process'] or $old_stock_picked != $this->data['Part Current Stock Picked'] or $old_stock_on_hand != $this->data['Part Current On Hand Stock']
 
         ) {
 
@@ -4971,28 +4966,15 @@ class Part extends Asset {
                     $invoiced = 0;
 
 
-                    // todo quick hack before migration is done
-                    $store = get_object('Store', $product->get('Product Store Key'));
+                    $sql = sprintf(
+                        "SELECT round(ifnull(sum(`Delivery Note Quantity`),0),1) AS invoiced FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` >0 AND  `Product ID`=%d %s %s ", $product->id, ($from_date ? sprintf(
+                        'and `Invoice Date`>=%s', prepare_mysql($from_date)
+                    ) : ''), ($to_date ? sprintf(
+                        'and `Invoice Date`<%s', prepare_mysql($to_date)
+                    ) : '')
 
-                    if ($store->get('Store Version') == 1) {
-                        $sql = sprintf(
-                            "SELECT round(ifnull(sum(`Invoice Quantity`),0),1) AS invoiced FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` IS NOT NULL AND  `Product ID`=%d %s %s ", $product->id, ($from_date ? sprintf(
-                            'and `Invoice Date`>=%s', prepare_mysql($from_date)
-                        ) : ''), ($to_date ? sprintf(
-                            'and `Invoice Date`<%s', prepare_mysql($to_date)
-                        ) : '')
+                    );
 
-                        );
-                    } else {
-                        $sql = sprintf(
-                            "SELECT round(ifnull(sum(`Delivery Note Quantity`),0),1) AS invoiced FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` >0 AND  `Product ID`=%d %s %s ", $product->id, ($from_date ? sprintf(
-                            'and `Invoice Date`>=%s', prepare_mysql($from_date)
-                        ) : ''), ($to_date ? sprintf(
-                            'and `Invoice Date`<%s', prepare_mysql($to_date)
-                        ) : '')
-
-                        );
-                    }
 
                     // print "$sql\n";
 
