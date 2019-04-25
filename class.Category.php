@@ -290,18 +290,12 @@ class Category extends DB_Table {
             $data['Category Label'] = $data['Category Code'];
         }
 
-        //print_r($data);
 
-        // $data=array('`Category Code`'=>$data['Category Code']);
 
+        //todo  Move stuff from class.Node.php to here
         $nodes = new Nodes('`Category Dimension`');
-
-
         $nodes->add_new($data['Category Parent Key'], $data);
-
-
         $node_id = $nodes->id;
-
         unset($nodes);
 
 

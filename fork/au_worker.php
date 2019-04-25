@@ -69,7 +69,6 @@ $worker->addFunction("au_housekeeping", "fork_housekeeping");
 $worker->addFunction("au_asset_sales", "fork_asset_sales");
 $worker->addFunction("au_time_series", "fork_time_series");
 $worker->addFunction("au_calculate_sales", "fork_calculate_sales");
-$worker->addFunction("au_migration", "fork_migration");
 
 
 $db      = false;
