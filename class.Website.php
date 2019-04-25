@@ -1086,23 +1086,6 @@ class Website extends DB_Table {
         }
 
 
-        //-- to delete
-
-        $sql = sprintf('SELECT `Site Default Header Key`,`Site Default Footer Key` FROM `Site Dimension` WHERE `Site Key`=%d', $this->id);
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $header_key = $row['Site Default Header Key'];
-                $footer_key = $row['Site Default Footer Key'];
-            } else {
-                $header_key = 0;
-                $footer_key = 0;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-        //
 
 
         $page_code = $this->get_unique_code($category->get('Code'), 'Webpage');
@@ -1169,9 +1152,7 @@ class Website extends DB_Table {
             'Page Title'                             => $category->get('Label'),
             'Page Short Title'                       => $category->get('Label'),
             'Page Store Title'                       => $category->get('Label'),
-            'Page Header Key'                        => $header_key,
-            'Page Footer Key'                        => $footer_key,
-            //-------------------
+
             'editor'                                 => $this->editor,
 
         );
@@ -1294,8 +1275,6 @@ class Website extends DB_Table {
         include_once 'class.Product.php';
 
 
-        //include_once 'class.Site.php';
-        // $site = new Site($this->id);
 
 
         $sql = sprintf(
@@ -1327,23 +1306,6 @@ class Website extends DB_Table {
         $page_code = $this->get_unique_code($product->get('Code'), 'Webpage');
 
 
-        //-- to delete
-
-        $sql = sprintf('SELECT `Site Default Header Key`,`Site Default Footer Key` FROM `Site Dimension` WHERE `Site Key`=%d', $this->id);
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $header_key = $row['Site Default Header Key'];
-                $footer_key = $row['Site Default Footer Key'];
-            } else {
-                $header_key = 0;
-                $footer_key = 0;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-        //
 
 
         $webpage_type = new Webpage_Type('website_code', $this->id, 'Prod');
@@ -1395,9 +1357,7 @@ class Website extends DB_Table {
             'Page Title'                             => $product->get('Name'),
             'Page Short Title'                       => $product->get('Name'),
             'Page Store Title'                       => $product->get('Name'),
-            'Page Header Key'                        => $header_key,
-            'Page Footer Key'                        => $footer_key,
-            //-------------------
+
 
             'editor' => $this->editor
 
@@ -1679,55 +1639,6 @@ class Website extends DB_Table {
 
 
         $this->update_field('Website Sitemap Last Update', gmdate("Y-m-d H:i:s"), 'no_history');
-
-
-    }
-
-    function ping_sitemap() {
-
-        $sitemap           = 'https://'.$this->get('Website URL').'/sitemap_index.xml.php';
-        $engines           = array();
-        $engines['Google'] = array(
-            'host' => 'www.google.com',
-            'path' => '/webmasters/tools/ping?sitemap='.urlencode($sitemap)
-        );
-        $engines['Bing']   = array(
-            'host' => 'www.bing.com',
-            'path' => '/webmaster/ping.aspx?siteMap='.urlencode($sitemap)
-        );
-        $engines['Ask']    = array(
-            'host' => 'submissions.ask.com',
-            'path' => '/ping?sitemap='.urlencode($sitemap)
-        );
-        foreach ($engines as $engine_code => $data) {
-
-            $host = $data['host'];
-            $path = $data['path'];
-            if ($fp = fsockopen($host, 80)) {
-                $send = "HEAD $path HTTP/1.1\r\n";
-                $send .= "HOST: $host\r\n";
-                $send .= "CONNECTION: Close\r\n\r\n";
-                fwrite($fp, $send);
-                $http_response = fgets($fp, 128);
-                fclose($fp);
-                list($response, $code) = explode(' ', $http_response);
-                $date = gmdate("Y-m-d H:i:s");
-                if ($code -= 200) {
-                    $msg = "OK";
-                } else {
-                    $msg = "{$host} ping was unsuccessful.<br />Code: {$code}<br />Response: {$response}";
-                }
-
-
-                //$this->data['Site Sitemap Last Ping '.$engine_code]   = $date;
-                //$this->data['Site Sitemap '.$engine_code.' Response'] = $msg;
-                //$sql = sprintf(
-                //    "update `Site Dimension` set `Site Sitemap Last Ping $engine_code`=%s, `Site Sitemap $engine_code Response`=%s where `Site Key`=%d", prepare_mysql($date), prepare_mysql($msg),
-                //    $this->id
-                //);
-                //mysql_query($sql);
-            }
-        }
 
 
     }

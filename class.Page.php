@@ -1444,14 +1444,6 @@ class Page extends DB_Table {
                 $this->msg                   = _('Site flag changed');
                 $this->updated               = true;
 
-                /*
-                $site = new Site($this->data['Page Site Key']);
-                $site->update_page_flag_number($this->data['Site Flag Key']);
-                if ($old_key) {
-                    $site->update_page_flag_number($old_key);
-
-                }
-                */
             } else {
                 $this->error = true;
                 $this->msg   = 'flag key not found';

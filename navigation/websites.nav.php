@@ -626,7 +626,6 @@ function get_page_version_navigation($data, $smarty, $user, $db, $account) {
 function get_user_navigation($data, $smarty, $user, $db, $account) {
 
 
-    global $smarty;
 
     $object        = $data['_object'];
     $left_buttons  = array();
@@ -794,9 +793,8 @@ function get_user_navigation($data, $smarty, $user, $db, $account) {
 
         } elseif ($data['parent'] == 'page') {
 
-            $page = new Page($data['parent_key']);
+            $page = get('Webpage',$data['parent_key']);
 
-            $website = new Site($page->get('Page Site Key'));
 
             $up_button = array(
                 'icon'      => 'arrow-up',

@@ -114,12 +114,11 @@ foreach ($db->query($sql) as $row) {
 }
 
 
-
 $options_Websites = array();
-$sql              = sprintf('SELECT `Site Key` AS `key` ,`Site Name`,`Site Code` FROM `Site Dimension`  ');
+$sql              = sprintf('SELECT `Website Key` AS `key` ,`Website Name`,`Website Code` FROM `Website Dimension`  ');
 foreach ($db->query($sql) as $row) {
     $options_Websites[$row['key']] = array(
-        'label'    => $row['Site Code'],
+        'label'    => $row['Website Code'],
         'selected' => false
     );
 }
