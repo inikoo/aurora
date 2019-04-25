@@ -233,6 +233,10 @@ if ($result = $db->query($sql)) {
 
         $product = $store->create_product($product_data);
 
+        if($store->new_product){
+            print "New ".$product->get('Product Code')."\n";
+        }
+
 
         if ($store->error) {
 
@@ -274,6 +278,10 @@ if ($result = $db->query($sql)) {
                         );
 
                         $product->update_status_from_parts();
+
+
+                        print "Updating ".$product->get('Product Code')."\n";
+
 
                         $sql = sprintf(
                             "INSERT INTO `Product Import Metadata` ( `Metadata`, `Import Date`) VALUES (%s,%s) ON DUPLICATE KEY UPDATE
