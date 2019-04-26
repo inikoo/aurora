@@ -320,34 +320,6 @@ if ($result = $db->query($sql)) {
 
 
 $transactions_out_of_stock = array();
-$sql                       = sprintf(
-    "SELECT `Product History XHTML Short Description`,(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`+`No Shipped Due Other`) AS qty,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Quantity`,`Order Currency Code`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` FROM `Order Transaction Fact` O
- LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`)
- LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`)
-
-  WHERE `Order Key`=%d AND (`No Shipped Due Out of Stock`>0  OR  `No Shipped Due No Authorized`>0 OR `No Shipped Due Not Found`>0 OR `No Shipped Due Other` )  ORDER BY `Product Code`", $order->id
-);
-//print $sql;exit;
-
-
-if ($result = $db->query($sql)) {
-    foreach ($result as $row) {
-        $row['Amount']   = '';
-        $row['Discount'] = '';
-
-        if ($row['Product RRP'] != 0) {
-            $row['Product XHTML Short Description'] = $row['Product History XHTML Short Description'].'<br>'._('RRP').': '.money($row['Product RRP'], $row['Order Currency Code']);
-        }
-
-        $row['Quantity']             = '<span >('.$row['qty'].')</span>';
-        $transactions_out_of_stock[] = $row;
-
-    }
-} else {
-    print_r($error_info = $db->errorInfo());
-    print "$sql\n";
-    exit;
-}
 
 
 $smarty->assign(

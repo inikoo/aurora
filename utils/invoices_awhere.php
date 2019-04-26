@@ -330,4 +330,124 @@ function invoices_awhere($awhere) {
 }
 
 
-?>
+function orders_awhere($awhere) {
+    // $awhere=preg_replace('/\\\"/','"',$awhere);
+
+
+    $where_data = array(
+        //'product_ordered1'=>'∀',
+        'geo_constraints'          => '',
+        'product_not_ordered1'     => '',
+        'product_not_received1'    => '',
+        'billing_geo_constraints'  => '',
+        'delivery_geo_constraints' => '',
+        'dont_have'                => array(),
+        'have'                     => array(),
+        'allow'                    => array(),
+        'dont_allow'               => array(),
+        'categories'               => '',
+        'product_ordered_or_from'  => '',
+        'product_ordered_or_to'    => '',
+        'order_created_from'       => '',
+        'order_created_to'         => '',
+        'product_ordered_or'       => '',
+        'store_key'                => false
+    );
+
+    //  $awhere=json_decode($awhere,TRUE);
+
+
+    foreach ($awhere as $key => $item) {
+        $where_data[$key] = $item;
+    }
+
+    $where = 'where true';
+    $table = '`Order Dimension` O ';
+
+    $use_product = false;
+    //$use_categories =false;
+    $use_otf = false;
+
+    $wr          = array();
+    $country     = array();
+    $city        = array();
+    $postal_code = array();
+
+
+    $where_billing_geo_constraints = '';
+    print $where_data['billing_geo_constraints'];
+    $pattern_wr      = array(
+        "/^wr\(/",
+        "/\)/"
+    );
+    $pattern_city    = array(
+        "/^t\(/",
+        "/\)/"
+    );
+    $pattern_pc      = array(
+        "/^pc\(/",
+        "/\)/"
+    );
+    $pattern_country = '';
+
+    $temp = explode(",", $where_data['billing_geo_constraints']);
+    foreach ($temp as $key => $value) {
+        if (preg_match('/^wr\(/', $value)) {
+            $wr[] = preg_replace($pattern_wr, '', $value);
+        } else {
+            if (preg_match('/^t\(/', $value)) {
+                $city[] = preg_replace($pattern_city, '', $value);
+            } else {
+                if (preg_match('/^pc\(/', $value)) {
+                    $postal_code[] = preg_replace($pattern_pc, '', $value);
+                } else {
+                    $country[] = $value;
+                }
+            }
+        }
+    }
+
+    if ($where_data['billing_geo_constraints'] != '') {
+        $where_billing_geo_constraints = sprintf(
+            " and `Order Billing To Country 2 Alpha Code`='%s'", $where_data['billing_geo_constraints']
+        );
+    }
+
+    $where_delivery_geo_constraints = '';
+    if ($where_data['delivery_geo_constraints'] != '') {
+        $where_delivery_geo_constraints = sprintf(
+            " and `Order Ship To Country Code`='%s'", $where_data['delivery_geo_constraints']
+        );
+    }
+
+    if ($where_data['product_ordered_or'] == '') {
+        $where_data['product_ordered_or'] = '∀';
+    }
+
+    if ($where_data['product_ordered_or'] != '') {
+        if ($where_data['product_ordered_or'] != '∀') {
+            $use_otf                = true;
+            $where_product_ordered1 = true;
+            //list($where_product_ordered1,$use_product)=extract_product_groups($where_data['product_ordered_or'],$where_data['store_key']);
+        } else {
+            $where_product_ordered1 = 'true';
+        }
+    } else {
+        $where_product_ordered1 = 'false';
+    }
+    //print $where_product_ordered1;
+
+
+    $date_interval_order_created = prepare_mysql_dates(
+        $where_data['order_created_from'], $where_data['order_created_to'], '`Order Date`', 'only_dates'
+    );
+
+    $where = 'where (  '.$where_product_ordered1.$date_interval_order_created['mysql'].") $where_billing_geo_constraints $where_delivery_geo_constraints";
+
+    return array(
+        $where,
+        $table
+    );
+
+
+}

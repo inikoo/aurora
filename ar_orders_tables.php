@@ -1771,13 +1771,8 @@ function invoice_items($_data, $db, $user) {
 
     $invoice = get_object('Invoice', $_data['parameters']['parent_key']);
     $type    = $invoice->get('Invoice Type');
-    if (in_array(
-        $invoice->data['Invoice Delivery Country Code'], get_countries_EC_Fiscal_VAT_area($db)
-    )) {
-        $print_tariff_code = false;
-    } else {
-        $print_tariff_code = true;
-    }
+
+
 
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -1794,23 +1789,24 @@ function invoice_items($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
         $net = money(
-            ($factor * $data['Order Transaction Amount']), $data['Invoice Currency Code']
+            ($factor * $data['Order Transaction Amount']), $data['Order Currency Code']
         );
 
 
         $tax    = money(
-            ($data['Invoice Transaction Item Tax Amount']), $data['Invoice Currency Code']
+            ($data['Order Transaction Amount']*$data['Transaction Tax Rate']), $data['Order Currency Code']
         );
         $amount = money(
-            ($data['Invoice Transaction Gross Amount'] - $data['Invoice Transaction Total Discount Amount'] + $data['Invoice Transaction Item Tax Amount']), $data['Invoice Currency Code']
+            ( $data['Order Transaction Amount'] + ($data['Order Transaction Amount']*$data['Transaction Tax Rate']))  , $data['Order Currency Code']
         );
 
 
-        $discount = ($data['Invoice Transaction Total Discount Amount'] == 0
+        $discount = ($data['Order Transaction Total Discount Amount'] == 0
             ? ''
             : percentage(
-                $data['Invoice Transaction Total Discount Amount'], $data['Invoice Transaction Gross Amount'], 0
+                $data['Order Transaction Total Discount Amount'], $data['Order Transaction Gross Amount'], 0
             ));
+
 
         $units    = $data['Product Units Per Case'];
         $name     = $data['Product History Name'];
@@ -1826,34 +1822,12 @@ function invoice_items($_data, $db, $user) {
 
         $price = money($price, $currency, $_locale);
 
-        /*
-
-        if ($price > 0) {
-            $description .= ' <br>'._('Price').': '.money($price, $currency, $_locale).'';
-        }
-
-
-
-        if ($data['Product RRP'] != 0) {
-            $description .= ', '._('RRP').': '.money(
-                    $data['Product RRP'], $data['Invoice Currency Code']
-                );
-        }
-
-*/
+      
         if ($discount != '') {
             $description .= ' '._('Discount').':'.$discount;
         }
 
-        /*
-
-        if ($type == 'Invoice') {
-            if ($print_tariff_code and $data['Product Tariff Code'] != '') {
-                $description .= '<br>'._('Tariff Code').': '.$data['Product Tariff Code'];
-            }
-        }
-
-        */
+       
 
         if ($type == 'Invoice') {
             $quantity = number($data['Delivery Note Quantity']);

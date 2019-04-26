@@ -164,7 +164,7 @@ if ($invoice->data['Invoice Type'] == 'Invoice') {
 $transactions = array();
 
 $sql = sprintf(
-    "SELECT  `Product Barcode Number`,`Product Origin Country Code`,`Delivery Note Quantity` as Qty, `Order Transaction Amount` as Amount, `Product Unit Weight`,`Invoice Currency Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
+    "SELECT  `Product Barcode Number`,`Product Origin Country Code`,`Delivery Note Quantity` as Qty, `Order Transaction Amount` as Amount, `Product Unit Weight`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
 `Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code`
  FROM `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN
   `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=%d  and `Current Dispatching State`   and (`Order Transaction Amount`!=0 or `Delivery Note Quantity`!=0)  ORDER BY `Product Code`", $invoice->id
@@ -325,7 +325,6 @@ if ($result = $db->query($sql)) {
 
             'Product Code'     => $code,
             'Description'      => $row['Transaction Description'],
-            'Invoice Quantity' => '',
             'Net'              => money($row['Transaction Invoice Net Amount'], $row['Currency Code']),
             'Tax'              => money($row['Transaction Invoice Tax Amount'], $row['Currency Code']),
 
@@ -338,48 +337,6 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
-
-/*
-$sql = sprintf(
-    "SELECT `Product History XHTML Short Description`,`Invoice Transaction Net Refund Items`,`Invoice Transaction Tax Refund Items`,`Refund Quantity`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` 
-FROM `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Refund Key`=%d ORDER BY `Product Code`",
-    $invoice->id
-);
-//print $sql;exit;
-
-if ($result = $db->query($sql)) {
-    foreach ($result as $row) {
-
-        $row['Amount'] = money(
-            ($row['Invoice Transaction Net Refund Items']), $row['Invoice Currency Code']
-        );
-        if ($row['Invoice Transaction Net Refund Items'] == 0) {
-            $row['Amount'] .= '<br><span style="font-size:80%">'._('Tax').': '.money(
-                    ($row['Invoice Transaction Tax Refund Items']), $row['Invoice Currency Code']
-                ).'</span>';
-        }
-
-
-        $row['Discount'] = '';
-        $row['Qty']      = $row['Refund Quantity'];
-        if ($row['Product RRP'] != 0) {
-            $row['Product XHTML Short Description'] = $row['Product History XHTML Short Description'].'<br>'._('RRP').': '.money($row['Product RRP'], $row['Invoice Currency Code']);
-        }
-
-        if ($print_tariff_code and $row['Product Tariff Code'] != '') {
-            $row['Product XHTML Short Description'] = $row['Product History XHTML Short Description'].'<br>'._(
-                    'Tariff Code'
-                ).': '.$row['Product Tariff Code'];
-        }
-
-        $transactions[] = $row;
-    }
-} else {
-    print_r($error_info = $db->errorInfo());
-    print "$sql\n";
-    exit;
-}
-*/
 
 
 $sql = sprintf(
@@ -410,14 +367,13 @@ if ($result = $db->query($sql)) {
 
 $transactions_out_of_stock = array();
 $sql                       = sprintf(
-    "SELECT (`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`+`No Shipped Due Other`) AS qty,`Product RRP`,
-`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Product Origin Country Code`,`Product Unit Weight`,
-`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,P.`Product ID`,O.`Product Code` ,`Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`
+    "SELECT (`No Shipped Due Out of Stock`) AS qty,`Product RRP`,
+`Product Tariff Code`,`Product Tariff Code`,`Product Origin Country Code`,`Product Unit Weight`,P.`Product ID`,O.`Product Code` ,`Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`
 FROM `Order Transaction Fact` O
  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`)
  LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`)
 
-  WHERE    `Invoice Key`=%d   and `Order Transaction Type` not in ('Resend')  AND (`No Shipped Due Out of Stock`>0  OR  `No Shipped Due No Authorized`>0 OR `No Shipped Due Not Found`>0 OR `No Shipped Due Other` )  ORDER BY `Product Code`", $invoice->id
+  WHERE    `Invoice Key`=%d   and `Order Transaction Type` not in ('Resend')  AND (`No Shipped Due Out of Stock`>0   )  ORDER BY `Product Code`", $invoice->id
 );
 //print $sql;exit;
 

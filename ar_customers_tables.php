@@ -1036,7 +1036,7 @@ function asset_customers($_data, $db, $user) {
                                   $data['last_invoice']." +00:00"
                               )
                 );
-                $invoiced_amount   = money($data['invoiced_amount'], $data['Invoice Currency Code']);
+                $invoiced_amount   = money($data['invoiced_amount'], $data['Order Currency Code']);
             }
 
 
@@ -1074,7 +1074,7 @@ function asset_customers($_data, $db, $user) {
                 'activity'        => $activity,
                 'invoiced_amount' => $invoiced_amount,
                 'favourited'      => '<span class="'.(!$data['favourited'] ? 'super_discreet' : '').'">'.number($data['favourited']).'</span>',
-                'basket_amount'   => ($data['basket_amount'] == 0 ? '' : money($data['basket_amount'], $data['Invoice Currency Code']))
+                'basket_amount'   => ($data['basket_amount'] == 0 ? '' : money($data['basket_amount'], $data['Order Currency Code']))
 
 
             );
