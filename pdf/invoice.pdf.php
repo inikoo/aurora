@@ -372,7 +372,7 @@ FROM `Order Transaction Fact` O
  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`)
  LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`)
 
-  WHERE    `Invoice Key`=%d   and  AND (`No Shipped Due Out of Stock`>0   )  ORDER BY `Product Code`", $invoice->id
+  WHERE    `Invoice Key`=%d   and   (`No Shipped Due Out of Stock`>0   )  ORDER BY `Product Code`", $invoice->id
 );
 //print $sql;exit;
 
