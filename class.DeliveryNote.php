@@ -2583,8 +2583,7 @@ class DeliveryNote extends DB_Table {
             $this->db->exec($sql);
 
 
-            $sql = sprintf("DELETE FROM `Order Transaction Fact` WHERE `Delivery Note Key`=%d AND `Order Transaction Type`='Resend'", $this->id);
-            $this->db->exec($sql);
+
 
 
             $order->fast_update(array('Order Replacement State' => 'NA'));
