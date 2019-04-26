@@ -10,9 +10,8 @@
  Version 2.0
 */
 
-// todo remove `Order Transaction Type` not in ("Resend")  used for Stores Version, replacements  `Order Transaction Type`='Resend' should be deleted as in version 2
 
-$where  = sprintf(' where O.`Invoice Key`=%d AND  `Order Transaction Type` not in ("Resend")  ', $parameters['parent_key']);
+$where  = sprintf(' where O.`Invoice Key`=%d   ', $parameters['parent_key']);
 $wheref = '';
 if ($parameters['f_field'] == 'code' and $f_value != '') {
     $wheref .= " and O.`Product Code` like '".addslashes($f_value)."%'";
@@ -42,11 +41,11 @@ $sql_totals
 
 $fields
     = "`Store Key`,
-O.`Order Transaction Fact Key`,`Product Currency`,`Product History Price`,`Product History Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code`
+O.`Order Transaction Fact Key`,`Product Currency`,`Product History Price`,`Product History Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code`,
+`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,`Order Currency Code`
 
 ";
 
 // $sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 //print $sql;
 
-?>
