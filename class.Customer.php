@@ -3374,7 +3374,7 @@ class Customer extends Subject {
 
 
         $sql = sprintf(
-            "SELECT `Product ID`, count(DISTINCT `Invoice Key`) invoices ,max(`Invoice Date`) AS date FROM `Order Transaction Fact`  WHERE     `Invoice Key`>0 AND (`Delivery Note Quantity`-`Refund Quantity`)>0  AND  `Customer Key`=%d  GROUP BY `Product ID` ", $this->id
+            "SELECT `Product ID`, count(DISTINCT `Invoice Key`) invoices ,max(`Invoice Date`) AS date FROM `Order Transaction Fact`  WHERE     `Invoice Key`>0 AND (`Delivery Note Quantity`)>0  AND  `Customer Key`=%d  GROUP BY `Product ID` ", $this->id
         );
 
 
@@ -3385,7 +3385,7 @@ class Customer extends Subject {
                 if ($row['invoices'] > 1) {
 
                     $sql = sprintf(
-                        "SELECT `Invoice Date` FROM `Order Transaction Fact`  WHERE  `Invoice Key`>0 AND (`Delivery Note Quantity`-`Refund Quantity`)>0  AND   `Customer Key`=%d AND `Product ID`=%d  GROUP BY `Invoice Key` ORDER BY `Invoice Date` LIMIT  1,1   ",
+                        "SELECT `Invoice Date` FROM `Order Transaction Fact`  WHERE  `Invoice Key`>0 AND (`Delivery Note Quantity`)>0  AND   `Customer Key`=%d AND `Product ID`=%d  GROUP BY `Invoice Key` ORDER BY `Invoice Date` LIMIT  1,1   ",
                         $this->id, $row['Product ID']
                     );
 
