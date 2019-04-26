@@ -838,8 +838,7 @@ function intrastat_totals($db, $user, $account) {
 
     }
 
-    if ($account->get('Account Code') == 'AWEU') {
-        $sql = "select 
+    $sql = "select 
 count(distinct OTF.`Product ID`) as products,
 count(distinct OTF.`Order Key`) as orders,
 
@@ -851,22 +850,6 @@ sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
  
    $where
   ";
-
-    } else {
-        $sql = "select 
-count(distinct OTF.`Product ID`) as products,
-count(distinct OTF.`Order Key`) as orders,
-
-	sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`)) as amount, 
-	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight 
-	
- from  `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join `Delivery Note Dimension` DN  on (OTF.`Delivery Note Key`=DN.`Delivery Note Key`)  left join `Invoice Dimension` I  on (OTF.`Invoice Key`=I.`Invoice Key`) 
- 
- 
-   $where
-  ";
-
-    }
 
 
     if ($result = $db->query($sql)) {
@@ -974,10 +957,7 @@ function intrastat_orders_totals($db, $user, $account) {
     }
 
 
-    if ($account->get('Account Code') == 'AWEU') {
-
-
-        $sql = "select 
+    $sql = "select 
 count(distinct OTF.`Product ID`) as products,
 
 sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
@@ -988,24 +968,6 @@ sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
  
    $where
   ";
-
-
-    } else {
-
-        $sql = "select 
-count(distinct OTF.`Product ID`) as products,
-
-	sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`)) as amount, 
-	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight 
-	
- from  `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join `Delivery Note Dimension` DN  on (OTF.`Delivery Note Key`=DN.`Delivery Note Key`)  left join `Invoice Dimension` I  on (OTF.`Invoice Key`=I.`Invoice Key`) 
- 
- 
-   $where
-  ";
-
-
-    }
 
 
     if ($result = $db->query($sql)) {
@@ -1111,9 +1073,7 @@ function intrastat_products_totals($db, $user, $account) {
     }
 
 
-    if ($account->get('Account Code') == 'AWEU') {
-
-        $sql = "select 
+    $sql = "select 
 count(distinct OTF.`Order Key`) as orders,
 
 sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
@@ -1124,24 +1084,6 @@ sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
  
    $where
   ";
-
-    } else {
-
-
-        $sql = "select 
-count(distinct OTF.`Order Key`) as orders,
-
-	sum(`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`)) as amount, 
-	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight 
-	
- from  `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join `Delivery Note Dimension` DN  on (OTF.`Delivery Note Key`=DN.`Delivery Note Key`)  left join `Invoice Dimension` I  on (OTF.`Invoice Key`=I.`Invoice Key`) 
- 
- 
-   $where
-  ";
-
-
-    }
 
 
     if ($result = $db->query($sql)) {
@@ -1264,13 +1206,13 @@ function intrastat_orders($_data, $db, $user, $account) {
             $adata[] = array(
 
 
-                'number'   => sprintf('<span class="link" onClick="change_view(\'orders/%s/%s\')" >%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']),
-                'customer' => sprintf('<span class="link" onClick="change_view(\'customers/%s/%s\')" >%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
-                'date'     => strftime("%e %b %Y", strtotime($data['Delivery Note Date'].' +0:00')),
-                'amount'   => money($data['amount'], $data['Order Currency Code']),
-                'amount_ac'   => money($data['amount_ac'], $account->get('Currency Code')),
-                'weight'   => weight($data['weight'], 'Kg', 2, false, true),
-                'products' => $data['products']
+                'number'    => sprintf('<span class="link" onClick="change_view(\'orders/%s/%s\')" >%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']),
+                'customer'  => sprintf('<span class="link" onClick="change_view(\'customers/%s/%s\')" >%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
+                'date'      => strftime("%e %b %Y", strtotime($data['Delivery Note Date'].' +0:00')),
+                'amount'    => money($data['amount'], $data['Order Currency Code']),
+                'amount_ac' => money($data['amount_ac'], $account->get('Currency Code')),
+                'weight'    => weight($data['weight'], 'Kg', 2, false, true),
+                'products'  => $data['products']
 
             );
 
@@ -1394,20 +1336,20 @@ function sales_representatives($_data, $db, $user, $account) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
             $_adata[$data['User Key']] = array(
-                'name'     => sprintf('<span class="link" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.customers\'} ,  )">%s</span>', $data['Sales Representative Key'], $data['User Alias']),
-                'refunds'  => sprintf(
+                'name'      => sprintf('<span class="link" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.customers\'} ,  )">%s</span>', $data['Sales Representative Key'], $data['User Alias']),
+                'refunds'   => sprintf(
                     '<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}}  }  )">%s</span>',
                     $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], 0
                 ),
-                'invoices' => sprintf(
+                'invoices'  => sprintf(
                     '<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}}  )">%s</span>',
                     $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], 0
                 ),
-                'sales'    => sprintf(
+                'sales'     => sprintf(
                     '<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}}}  )">%s</span>',
                     $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], money(0, $account->get('Account Currency'))
                 ),
-                'customers'    => sprintf(
+                'customers' => sprintf(
                     '<span class="link very_discreet" onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices_group_by_customer\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\'} }  )">%s</span>',
                     $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], 0
                 ),
@@ -1433,24 +1375,23 @@ function sales_representatives($_data, $db, $user, $account) {
 
             //        print_r($data);
 
-            $_adata[$data['User Key']]['invoices']  = sprintf(
+            $_adata[$data['User Key']]['invoices'] = sprintf(
                 '<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:\'\'}}  }  )">%s</span>',
                 $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], number($data['invoices'])
             );
-            $_adata[$data['User Key']]['refunds']   = sprintf(
+            $_adata[$data['User Key']]['refunds']  = sprintf(
                 '<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}}  }  )">%s</span>',
                 $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], number($data['refunds'])
             );
-            $_adata[$data['User Key']]['sales']     = sprintf(
+            $_adata[$data['User Key']]['sales']    = sprintf(
                 '<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices\' , parameters:{ period:\'%s\',from:\'%s\',to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}}  }  )">%s</span>',
                 $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], money($data['sales'], $account->get('Account Currency'))
             );
 
-            $_adata[$data['User Key']]['customers']     = sprintf(
-                '<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices_group_by_customer\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\'} }  )">%s</span>',
-                $data['Sales Representative Key'], $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], number($data['customers'])
+            $_adata[$data['User Key']]['customers'] = sprintf(
+                '<span class="link " onclick="change_view(\'report/sales_representatives/%d\',{ tab:\'sales_representative.invoices_group_by_customer\',  parameters:{ period:\'%s\',from:\'%s\',to:\'%s\'} }  )">%s</span>', $data['Sales Representative Key'],
+                $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], number($data['customers'])
             );
-
 
 
             //  'name'                              => $data['Staff Name'],
@@ -1895,12 +1836,9 @@ function sales($_data, $db, $user, $account) {
     $sql = "select $fields from $table $where $where_dates $wheref $group_by  limit $start_from,$number_results";
 
 
-
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
-
-
 
 
             $adata[$data['Store Code']] = array(
@@ -1908,8 +1846,14 @@ function sales($_data, $db, $user, $account) {
                 'store_code' => $data['Store Code'],
                 'store'      => $data['Store Name'],
                 'store_raw'  => $data['Store Name'],
-                'invoices'   => sprintf('<span class="link" onclick="change_view(\'invoices/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Refund:\'\',Invoice:1}} } )" >%s</span>',$data['Store Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['invoices'])),
-                'refunds'   => sprintf('<span class="link" onclick="change_view(\'invoices/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}} } )" >%s</span>',$data['Store Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['refunds'])),
+                'invoices'   => sprintf(
+                    '<span class="link" onclick="change_view(\'invoices/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Refund:\'\',Invoice:1}} } )" >%s</span>', $data['Store Key'], $_data['parameters']['period'],
+                    $_data['parameters']['from'], $_data['parameters']['to'], number($data['invoices'])
+                ),
+                'refunds'    => sprintf(
+                    '<span class="link" onclick="change_view(\'invoices/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}} } )" >%s</span>', $data['Store Key'], $_data['parameters']['period'],
+                    $_data['parameters']['from'], $_data['parameters']['to'], number($data['refunds'])
+                ),
                 'customers'  => number($data['customers']),
 
                 'invoices_raw'  => $data['invoices'],
@@ -2301,11 +2245,17 @@ function sales_invoice_category($_data, $db, $user, $account) {
                 'category_raw'  => $data['Category Label'],
 
 
-                'invoices'   => sprintf('<span class="link" onclick="change_view(\'invoices/all/category/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Refund:\'\',Invoice:1}} } )" >%s</span>',$data['Category Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['invoices'])),
-                'refunds'   => sprintf('<span class="link" onclick="change_view(\'invoices/all/category/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}} } )" >%s</span>',$data['Category Key'],$_data['parameters']['period'],$_data['parameters']['from'],$_data['parameters']['to'],number($data['refunds'])),
+                'invoices' => sprintf(
+                    '<span class="link" onclick="change_view(\'invoices/all/category/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Refund:\'\',Invoice:1}} } )" >%s</span>', $data['Category Key'],
+                    $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], number($data['invoices'])
+                ),
+                'refunds'  => sprintf(
+                    '<span class="link" onclick="change_view(\'invoices/all/category/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}} } )" >%s</span>', $data['Category Key'],
+                    $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], number($data['refunds'])
+                ),
 
 
-                'customers'     => number($data['customers']),
+                'customers' => number($data['customers']),
 
                 'invoices_raw'  => $data['invoices'],
                 'refunds_raw'   => $data['refunds'],
@@ -2396,7 +2346,8 @@ function sales_invoice_category($_data, $db, $user, $account) {
 
             $adata[$data['Category Key']]['refunds_amount_delta_1yb'] =
                 sprintf('<span title="%s">%s %s</span>', $refund_amount_1yb, delta($adata[$data['Category Key']]['refunds_amount_raw'], $data['refunds_amount']), delta_icon($adata[$data['Category Key']]['refunds_amount_raw'], $data['refunds_amount']));
-            $adata[$data['Category Key']]['revenue_delta_1yb']        = sprintf('<span title="%s">%s %s</span>', $revenue_1yb, delta($adata[$data['Category Key']]['revenue_raw'], $data['revenue']), delta_icon($adata[$data['Category Key']]['revenue_raw'], $data['revenue']));
+            $adata[$data['Category Key']]['revenue_delta_1yb']        =
+                sprintf('<span title="%s">%s %s</span>', $revenue_1yb, delta($adata[$data['Category Key']]['revenue_raw'], $data['revenue']), delta_icon($adata[$data['Category Key']]['revenue_raw'], $data['revenue']));
 
             $adata[$data['Category Key']]['profit_delta_1yb'] = sprintf('<span title="%s">%s %s</span>', $profit_1yb, delta($adata[$data['Category Key']]['profit_raw'], $data['profit']), delta_icon($adata[$data['Category Key']]['profit_raw'], $data['profit']));
 

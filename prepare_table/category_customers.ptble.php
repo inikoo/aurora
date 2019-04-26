@@ -125,7 +125,7 @@ $sql_totals = "select count(Distinct C.`Customer Key`) as num from $table  $wher
 
 $fields = " C.`Customer Key`,`Customer Name`,`Customer First Contacted Date`,`Customer Type by Activity`,`Customer Store Key`,`Customer Location` ,
   max(`Invoice Date`)    as last_invoice, count(distinct `Invoice Key`) as invoices,
-  sum(if(`Invoice Key`>0, `Order Transaction Amount`,0)) as invoiced_amount,`Invoice Currency Code`,
+  sum(if(`Invoice Key`>0, `Order Transaction Amount`,0)) as invoiced_amount,`Order Currency Code`,
   
    sum(if(`Current Dispatching State`='In Process', `Order Transaction Amount`,0)) as basket_amount, ($fav) as favourited
    
