@@ -27,9 +27,14 @@ ALTER TABLE `Order Transaction Fact` ADD `OTF Category Family Key` MEDIUMINT UNS
  ADD INDEX (`OTF Category Department Key`);
 
 
+php update_products_department_category_key.php
+php migrate_otf_family_and_departmetns_to_cat.php
+php fix_missing_categories.php
+
+
 
 ALTER TABLE `Order Transaction Fact`
-  DROP `Invoice Transaction Gross Amount`,
+DROP `Invoice Transaction Gross Amount`,
   DROP `Invoice Transaction Total Discount Amount`,
   DROP `Invoice Transaction Item Tax Amount`,
   DROP `Invoice Transaction Shipping Amount`,
@@ -56,8 +61,8 @@ ALTER TABLE `Order Transaction Fact`
   DROP `Invoice Transaction Tax Adjust`,
   DROP `Shipped Quantity`,
   Drop `Current Autorized to Sell Quantity`,
-
-
+  DROP `Estimated Dispatched Weight`,
+DROP `Weight`,
   Drop `Current Manufacturing Quantity`,
   Drop `Current On Shelf Quantity`,
   Drop `Current On Box Quantity`,
@@ -91,61 +96,7 @@ ALTER TABLE `Order Transaction Fact`
   Drop `Multipart Partically No Picked`,
   Drop `Refund Method`,
 
-DROP `Order Public ID`,
-DROP `Delivery Note ID`,
-DROP `Estimated Dispatched Weight`,
-DROP `Weight`,
-DROP `Estimated Volume`,
-DROP `Volume`,
-DROP `Sales Rep Key`,
-DROP `Warehouse Key`,
-DROP `Picker Key`,
-DROP `Packer Key`,
-DROP `Shipper Key`,
-DROP `Invoice Quantity`,
-DROP `Refund Quantity`,
-DROP `Payment Method`,
-DROP `Cost Storing`,
-DROP `Cost Handing`,
-DROP `Cost Shipping`,
-DROP `Backlog to Shipping Lag`,
-DROP `Metadata`,
-DROP `Refund Metadata`,
-DROP `Supplier Metadata`,
-DROP `Invoice Public ID`,
-DROP `Delivery Note ID`,
-DROP `Estimated Weight`,
-DROP `Estimated Dispatched Weight`,
-DROP `Weight`,
-DROP `Estimated Volume`,
-DROP `Volume`,
-DROP `Sales Rep Key`,
-DROP `Warehouse Key`,
-DROP `Picker Key`,
-DROP `Packer Key`,
-DROP `Shipper Key`,
-DROP `Invoice Quantity`,
-DROP `Refund Quantity`,
-DROP `Payment Method`,
-DROP `Cost Storing`,
-DROP `Cost Handing`,
-DROP `Cost Shipping`,
-DROP `Backlog to Shipping Lag`,
-DROP `Metadata`,
-DROP `Refund Metadata`,
-DROP `Supplier Metadata`,
-DROP `No Shipped Due No Authorized`,
-DROP `No Shipped Due Not Found`,
-DROP `No Shipped Due Other`,
-drop `Transaction Notes`,
-
-  DROP `Invoice Currency Code`;
+ DROP `Order Public ID`,DROP `Estimated Volume`,DROP `Volume`,DROP `Sales Rep Key`,DROP `Warehouse Key`,DROP `Picker Key`,DROP `Packer Key`,DROP `Shipper Key`,DROP `Invoice Quantity`,DROP `Refund Quantity`,DROP `Payment Method`,DROP `Cost Storing`,DROP `Cost Handing`,DROP `Cost Shipping`,DROP `Backlog to Shipping Lag`,DROP `Metadata`,DROP `Refund Metadata`,DROP `Supplier Metadata`,DROP `Invoice Public ID`,DROP `Delivery Note ID`,DROP `Estimated Dispatched Weight`,DROP `Weight`,DROP `Estimated Volume`,DROP `Volume`,DROP `Sales Rep Key`,DROP `Warehouse Key`,DROP `Picker Key`,DROP `Packer Key`,DROP `Shipper Key`,DROP `Invoice Quantity`,DROP `Refund Quantity`,DROP `Payment Method`,DROP `Cost Storing`,DROP `Cost Handing`,DROP `Cost Shipping`,DROP `Backlog to Shipping Lag`,DROP `Metadata`,DROP `Refund Metadata`,DROP `Supplier Metadata`,DROP `No Shipped Due No Authorized`,DROP `No Shipped Due Not Found`,DROP `No Shipped Due Other`,drop `Transaction Notes`, DROP `Invoice Currency Code`;
 
 
-ALTER TABLE `Order Transaction Fact`
-DROP `No Shipped Due No Authorized`,
-DROP `No Shipped Due Not Found`,
-DROP `No Shipped Due Other`,
-drop `Transaction Notes`,
 
-DROP `Invoice Public ID`;
