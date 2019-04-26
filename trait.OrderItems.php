@@ -218,15 +218,16 @@ trait OrderItems {
                     $cost             = round($total_quantity * $product->get('Product Cost'), 4);
 
                     $sql = sprintf(
-                        "INSERT INTO `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Order Last Updated Date`,
+                        "INSERT INTO `Order Transaction Fact` ( `OTF Category Department Key`,`OTF Category Family Key`,  `Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Order Last Updated Date`,
 			`Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
 			`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Quantity`,
 			`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Store Key`,`Units Per Case`,`Delivery Note Key`,`Cost Supplier`,`Order Transaction Metadata`)
-VALUES (%f,%s,%f,%s,%s,%s,%s,%s,
+VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
 	%d,%d,%s,%d,%d,
 	%s,%s,%s,%s,%s,
 	%.2f,%.2f,%.2f,%s,%f,%s,%.4f,'{}')   ",
 
+                        prepare_mysql($product->get('Product Department Category Key')),prepare_mysql($product->get('Product Department Category Key')),
                         $bonus_quantity, prepare_mysql($order_type), $tax_rate, prepare_mysql($tax_code), prepare_mysql($this->data['Order Currency']),  $estimated_weight, prepare_mysql(gmdate('Y-m-d H:i:s')),
 
                         prepare_mysql(gmdate('Y-m-d H:i:s')), $product->historic_id, $product->data['Product ID'], prepare_mysql($product->data['Product Code']), $product->data['Product Family Key'], $product->data['Product Main Department Key'],
