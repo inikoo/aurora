@@ -16,37 +16,7 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 
     $where_type     = '';
     $where_interval = '';
-} //print $where_interval;exit;
-elseif ($parameters['parent'] == 'list') {
-    $sql = sprintf(
-        "SELECT * FROM `List Dimension` WHERE `List Key`=%d", $parameters['parent_key']
-    );
-
-    $res = mysql_query($sql);
-    if ($dn_list_data = mysql_fetch_assoc($res)) {
-        $awhere = false;
-        if ($dn_list_data['List Type'] == 'Static') {
-            $table
-                        = '`List Delivery Note Bridge` DB left join `Delivery Note Dimension` D  on (DB.`Delivery Note Key`=D.`Delivery Note Key`)';
-            $where_type = sprintf(
-                ' and `List Key`=%d ', $parameters['parent_key']
-            );
-
-        } else {
-            $tmp = preg_replace('/\\\"/', '"', $dn_list_data['List Metadata']);
-            $tmp = preg_replace('/\\\\\"/', '"', $tmp);
-            $tmp = preg_replace('/\'/', "\'", $tmp);
-
-            $raw_data = json_decode($tmp, true);
-
-            $raw_data['store_key'] = $store;
-            list($where, $table) = dn_awhere($raw_data);
-        }
-
-    } else {
-        exit("error");
-    }
-} elseif ($parameters['parent'] == 'store') {
+}  elseif ($parameters['parent'] == 'store') {
     if (is_numeric($parameters['parent_key']) and in_array(
             $parameters['parent_key'], $user->stores
         )

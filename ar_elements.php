@@ -1940,39 +1940,6 @@ function get_invoices_element_numbers($db, $parameters) {
 
         $store_key = $category->data['Category Store Key'];
 
-    } elseif ($parameters['parent'] == 'list') {
-        $sql = sprintf(
-            "SELECT * FROM `List Dimension` WHERE `List Key`=%d", $parameters['parent_key']
-        );
-
-        $res = mysql_query($sql);
-        if ($list_data = mysql_fetch_assoc($res)) {
-            $parameters['awhere'] = false;
-            $store_key            = $list_data['List Parent Key'];
-            if ($list_data['List Type'] == 'Static') {
-                $table      = '`List Invoice Bridge` OB left join `Invoice Dimension` I  on (OB.`Invoice Key`=I.`Invoice Key`)';
-                $where_type = sprintf(
-                    ' and `List Key`=%d ', $parameters['parent_key']
-                );
-
-            } else {// Dynamic by DEFAULT
-
-
-                $tmp = preg_replace('/\\\"/', '"', $list_data['List Metadata']);
-                $tmp = preg_replace('/\\\\\"/', '"', $tmp);
-                $tmp = preg_replace('/\'/', "\'", $tmp);
-
-                $raw_data = json_decode($tmp, true);
-
-                //$raw_data['store_key']=$store;
-                list($where, $table) = invoices_awhere($raw_data);
-
-
-            }
-
-        } else {
-            exit("error");
-        }
     } elseif ($parameters['parent'] == 'store') {
         if (is_numeric($parameters['parent_key']) and in_array(
                 $parameters['parent_key'], $user->stores

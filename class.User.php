@@ -2387,37 +2387,6 @@ class User extends DB_Table {
 
 
 
-    function update_table_export_field($table_key, $fields) {
-
-
-        $sql = sprintf(
-            "SELECT `Table Key` FROM `Table User Export Fields`  WHERE `Table Key`=%d AND `User Key`=%d", $table_key, $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-
-                $sql = sprintf(
-                    "UPDATE `Table User Export Fields`   SET `Fields`=%s WHERE `Table Key`=%d AND `User Key`=%d", prepare_mysql($fields), $table_key, $this->id
-                );
-                $this->db->exec($sql);
-
-            } else {
-                $sql = sprintf(
-                    "INSERT INTO `Table User Export Fields` VALUES (%d,%d,%s) ", $table_key, $this->id, prepare_mysql($fields)
-                );
-
-                $this->db->exec($sql);
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
 
     function get_tab_defaults($tab) {
 

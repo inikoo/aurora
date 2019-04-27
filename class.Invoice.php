@@ -1350,11 +1350,8 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         $sql = sprintf("DELETE FROM `Invoice Sales Representative Bridge`  WHERE   `Invoice Key`=%d", $this->id);
         $this->db->exec($sql);
 
-        $sql = sprintf("DELETE FROM `Invoice Processed By Bridge`  WHERE   `Invoice Key`=%d", $this->id);
-        $this->db->exec($sql);
 
-        $sql = sprintf("DELETE FROM `Invoice Charged By Bridge`  WHERE   `Invoice Key`=%d", $this->id);
-        $this->db->exec($sql);
+
 
         $sql = sprintf("DELETE FROM `Invoice Tax Dimension` WHERE `Invoice Key`=%d", $this->id);
         $this->db->exec($sql);

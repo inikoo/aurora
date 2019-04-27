@@ -4158,46 +4158,7 @@ class Part extends Asset {
 
     }
 
-    /*
-    function get_products_data($with_objects = false) {
 
-        include_once 'class.Product.php';
-
-        $sql           = sprintf(
-            "SELECT `Linked Fields`,`Store Product Key`,`Parts Per Product`,`Note` FROM `Store Product Part Bridge` WHERE `Part SKU`=%d ", $this->id
-        );
-
-
-        $products_data = array();
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $product_data = $row;
-                if ($product_data['Linked Fields'] == '') {
-                    $product_data['Linked Fields']        = array();
-                    $product_data['Number Linked Fields'] = 0;
-                } else {
-                    $product_data['Linked Fields']        = json_decode(
-                        $row['Linked Fields'], true
-                    );
-                    $product_data['Number Linked Fields'] = count(
-                        $product_data['Linked Fields']
-                    );
-                }
-                if ($with_objects) {
-                    $product_data['Product'] = new Product(
-                        'id', $row['Store Product Key']
-                    );
-                }
-                $products_data[] = $product_data;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        return $products_data;
-    }
-*/
 
     function get_current_formatted_value_at_cost() {
         //return number($this->data['Part Current Value'],2);

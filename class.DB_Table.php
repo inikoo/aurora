@@ -175,52 +175,7 @@ abstract class DB_Table extends stdClass {
             }
         }
 
-        if (preg_match('/^custom_field_part/i', $field)) {
-            $field1 = preg_replace('/^custom_field_part_/', '', $field);
-            //$sql=sprintf("select %s as value from `Part Custom Field Dimension` where `Part SKU`=%d", $field1, $table_key);
-        } elseif (preg_match('/^custom_field_customer/i', $field)) {
-            $field1 = preg_replace('/^custom_field_customer_/', '', $field);
-            $sql    = sprintf(
-                "SELECT `Custom Field Key` FROM `Custom Field Dimension` WHERE `Custom Field Name`=%s", prepare_mysql($field1)
-            );
 
-            $field_key = 'Error';
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $field_key = $r['Custom Field Key'];
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
-
-
-            //$sql=sprintf("select `%s` as value from `Customer Custom Field Dimension` where `Customer Key`=%d", $field_key, $table_key);
-        }
-
-        /*
-        else {
-
-            $sql=sprintf("select `%s` as value from `%s` where `%s`=%d ",
-                addslashes($field),
-                addslashes($table_full_name),
-                addslashes($key_field),
-                $table_key
-
-            );
-        }
-
-        if ($result=$this->db->query($sql)) {
-
-            if ($row = $result->fetch()) {
-                $old_value=$row['value'];
-            }
-        }else {
-            print_r($error_info=$this->db->errorInfo());
-            exit($sql);
-
-        }
-    */
         $old_formatted_value = $this->get($formatted_field);
 
 
@@ -752,7 +707,6 @@ abstract class DB_Table extends stdClass {
             }
 
 
-
             $stmt->bindParam(1, $value);
             $stmt->bindParam(2, $this->id);
 
@@ -776,8 +730,7 @@ abstract class DB_Table extends stdClass {
         $key_field = $this->table_name." Key";
 
         $sql = sprintf(
-            "UPDATE `%s` SET `%s`= JSON_SET(`%s`,'$.%s',?) WHERE `%s`=?",
-            addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
+            "UPDATE `%s` SET `%s`= JSON_SET(`%s`,'$.%s',?) WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
         );
 
 
@@ -801,8 +754,7 @@ abstract class DB_Table extends stdClass {
         $key_field = $this->table_name." Key";
 
         $sql = sprintf(
-            "UPDATE `%s` SET `%s`= JSON_REMOVE(`%s`,'$.%s') WHERE `%s`=?",
-            addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
+            "UPDATE `%s` SET `%s`= JSON_REMOVE(`%s`,'$.%s') WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
         );
 
 
@@ -909,4 +861,3 @@ abstract class DB_Table extends stdClass {
 }
 
 
-?>
