@@ -453,17 +453,6 @@ function product_awhere($awhere) {
     $where .= $date_interval_from['mysql'].$date_interval_to['mysql'];
 
 
-    /*
-
-    $where_billing_geo_constraints='';
-    if ($where_data['billing_geo_constraints']!='') {
-        $where_billing_geo_constraints=sprintf(" and `Order Billing To Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
-    }
-
-
-    */
-
-    //print $table. $where; exit;
 
     return array(
         $where,

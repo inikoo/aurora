@@ -359,10 +359,7 @@ if ($order == 'name') {
     $order = '`Customer Main Country First Division`';
 } elseif ($order == 'country') {
     $order = '`Customer Main Country`';
-}
-//  elseif($order=='ship_address')
-//  $order='`customer main ship to header`';
-elseif ($order == 'ship_town') {
+} elseif ($order == 'ship_town') {
     $order = '`Customer Main Delivery Address Town`';
 } elseif ($order == 'ship_postcode') {
     $order = '`Customer Main Delivery Address Postal Code`';
