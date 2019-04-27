@@ -40,13 +40,12 @@ abstract class DBW_Table extends stdClass {
     protected $ignore_fields = array();
 
 
-
-    public function fast_update($data, $table_full_name = false,$options='') {
+    public function fast_update($data, $table_full_name = false, $options = '') {
 
         if ($options == 'no_null') {
             $null_if_empty = false;
 
-        }else{
+        } else {
             $null_if_empty = true;
 
         }
@@ -55,9 +54,6 @@ abstract class DBW_Table extends stdClass {
         if ($table_full_name == '') {
             $table_full_name = $this->table_name.' Dimension';
         }
-
-
-
 
 
         if ($table_full_name == 'Part Dimension' or $table_full_name == 'Part Data') {
@@ -70,7 +66,7 @@ abstract class DBW_Table extends stdClass {
         } elseif ($table_full_name == 'Page Store Dimension') {
             $key_field = 'Page Key';
 
-        }elseif ($table_full_name == 'Product Category Data' or   $table_full_name == 'Product Category DC Data'  or  $table_full_name == 'Product Category Dimension') {
+        } elseif ($table_full_name == 'Product Category Data' or $table_full_name == 'Product Category DC Data' or $table_full_name == 'Product Category Dimension') {
             $key_field = 'Product Category Key';
 
         } else {
@@ -80,8 +76,6 @@ abstract class DBW_Table extends stdClass {
 
 
         foreach ($data as $field => $value) {
-
-
 
 
             $sql = sprintf(
@@ -97,7 +91,6 @@ abstract class DBW_Table extends stdClass {
 
 
     }
-
 
 
     public function update($data, $options = '', $metadata = '') {
@@ -141,7 +134,6 @@ abstract class DBW_Table extends stdClass {
     }
 
 
-
     public function fast_update_json_field($field, $key, $value, $table_full_name = '') {
 
 
@@ -152,8 +144,7 @@ abstract class DBW_Table extends stdClass {
         $key_field = $this->table_name." Key";
 
         $sql = sprintf(
-            "UPDATE `%s` SET `%s`= JSON_SET(`%s`,'$.%s',?) WHERE `%s`=?",
-            addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
+            "UPDATE `%s` SET `%s`= JSON_SET(`%s`,'$.%s',?) WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
         );
 
 
@@ -177,8 +168,7 @@ abstract class DBW_Table extends stdClass {
         $key_field = $this->table_name." Key";
 
         $sql = sprintf(
-            "UPDATE `%s` SET `%s`= JSON_REMOVE(`%s`,'$.%s') WHERE `%s`=?",
-            addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
+            "UPDATE `%s` SET `%s`= JSON_REMOVE(`%s`,'$.%s') WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
         );
 
 
@@ -197,10 +187,10 @@ abstract class DBW_Table extends stdClass {
         $base_data = $this->base_data();
 
 
-       if (array_key_exists($field, $base_data)) {
+        if (array_key_exists($field, $base_data)) {
 
             if ($value != $this->data[$field]) {
-                $this->update_field($field, $value, $options,$metadata );
+                $this->update_field($field, $value, $options, $metadata);
 
             }
         }
@@ -247,14 +237,11 @@ abstract class DBW_Table extends stdClass {
     function add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $table_name, $table_key, $update_history_records_data = true) {
 
 
-
         $history_key = $this->add_table_history($history_data, $force_save, '', '', $table_name, $table_key);
 
         $sql = sprintf(
             "INSERT INTO `%s History Bridge` VALUES (%d,%d,%s,'No',%s)", $table_name, $table_key, $history_key, prepare_mysql($deletable), prepare_mysql($type)
         );
-
-
 
 
         $this->db->exec($sql);
@@ -329,74 +316,12 @@ abstract class DBW_Table extends stdClass {
         $key_field = $table_name." Key";
 
 
-        if (preg_match('/^custom_field_part/i', $field)) {
-            $field1 = preg_replace('/^custom_field_part_/', '', $field);
-            //$sql=sprintf("select %s as value from `Part Custom Field Dimension` where `Part SKU`=%d", $field1, $table_key);
-        } elseif (preg_match('/^custom_field_customer/i', $field)) {
-            $field1 = preg_replace('/^custom_field_customer_/', '', $field);
-            $sql    = sprintf(
-                "SELECT `Custom Field Key` FROM `Custom Field Dimension` WHERE `Custom Field Name`=%s", prepare_mysql($field1)
-            );
-
-            $field_key = 'Error';
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $field_key = $r['Custom Field Key'];
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
-
-
-            //$sql=sprintf("select `%s` as value from `Customer Custom Field Dimension` where `Customer Key`=%d", $field_key, $table_key);
-        }
-
-        /*
-        else {
-
-            $sql=sprintf("select `%s` as value from `%s` where `%s`=%d ",
-                addslashes($field),
-                addslashes($table_full_name),
-                addslashes($key_field),
-                $table_key
-
-            );
-        }
-
-        if ($result=$this->db->query($sql)) {
-
-            if ($row = $result->fetch()) {
-                $old_value=$row['value'];
-            }
-        }else {
-            print_r($error_info=$this->db->errorInfo());
-            exit($sql);
-
-        }
-*/
         $old_formatted_value = $this->get($formatted_field);
 
 
-        if (preg_match('/^custom_field_customer/i', $field)) {
-            if (is_string($value)) {
-                $sql = sprintf(
-                    "UPDATE `Customer Custom Field Dimension` SET `%s`='%s' WHERE `Customer Key`=%d", $r['Custom Field Key'], $value, $table_key
-                );
-            } else {
-                $sql = sprintf(
-                    "UPDATE `Customer Custom Field Dimension` SET `%s`='%d' WHERE `Customer Key`=%d", $r['Custom Field Key'], $value, $table_key
-                );
-            }
-
-
-        } else {
-            $sql = sprintf(
-                "UPDATE `%s` SET `%s`=%s WHERE `%s`=%d", addslashes($table_full_name), addslashes($field), prepare_mysql($value, $null_if_empty), addslashes($key_field), $table_key
-            );
-
-
-        }
+        $sql = sprintf(
+            "UPDATE `%s` SET `%s`=%s WHERE `%s`=%d", addslashes($table_full_name), addslashes($field), prepare_mysql($value, $null_if_empty), addslashes($key_field), $table_key
+        );
 
 
         $update_op = $this->db->prepare($sql);
@@ -405,7 +330,7 @@ abstract class DBW_Table extends stdClass {
 
         $affected = $update_op->rowCount();
 
-       // print "$sql $affected  \n";
+        // print "$sql $affected  \n";
 
 
         if ($affected == 0) {
@@ -431,8 +356,7 @@ abstract class DBW_Table extends stdClass {
 
 
             if (preg_match(
-                    '/deal|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i',
-                    $table_name
+                    '/deal|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i', $table_name
                 ) and !$this->new and $save_history) {
 
 
@@ -628,9 +552,9 @@ abstract class DBW_Table extends stdClass {
 
         $sql = sprintf(
             "INSERT INTO `History Dimension` (`Author Name`,`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`,`Metadata`) VALUES (%s,%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s)",
-            prepare_mysql($data['Author Name']), prepare_mysql($data['Date']), prepare_mysql($data['Subject']), $data['Subject Key'], prepare_mysql($data['Action']),
-            prepare_mysql($data['Direct Object']), $data['Direct Object Key'], prepare_mysql($data['Preposition'], false), prepare_mysql($data['Indirect Object'], false), $data['Indirect Object Key'],
-            prepare_mysql($data['History Abstract']), prepare_mysql($data['History Details']), $data['User Key'], prepare_mysql($data['Deep']), prepare_mysql($data['Metadata'])
+            prepare_mysql($data['Author Name']), prepare_mysql($data['Date']), prepare_mysql($data['Subject']), $data['Subject Key'], prepare_mysql($data['Action']), prepare_mysql($data['Direct Object']), $data['Direct Object Key'],
+            prepare_mysql($data['Preposition'], false), prepare_mysql($data['Indirect Object'], false), $data['Indirect Object Key'], prepare_mysql($data['History Abstract']), prepare_mysql($data['History Details']), $data['User Key'], prepare_mysql($data['Deep']),
+            prepare_mysql($data['Metadata'])
         );
 
         //    print "$sql\n";
@@ -716,7 +640,7 @@ abstract class DBW_Table extends stdClass {
             "UPDATE `".$this->get_object_name()." Dimension` SET `".$this->get_object_name()." Number History Records`=%d WHERE `".$this->get_object_name()." Key`=%d", $number, $this->id
         );
 
-       // print $sql;
+        // print $sql;
 
         $this->db->exec($sql);
 
@@ -727,8 +651,6 @@ abstract class DBW_Table extends stdClass {
         return $this->table_name;
 
     }
-
-
 
 
 }
