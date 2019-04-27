@@ -1664,7 +1664,6 @@ class Order extends DB_Table {
 
     function cancel($note = '', $fork = true) {
 
-
         if ($this->data['Order State'] == 'Dispatched') {
             $this->error = true;
             $this->msg   = _('Order can not be cancelled, because has already been dispatched');
@@ -1688,6 +1687,8 @@ class Order extends DB_Table {
             return false;
 
         }
+
+
 
 
         $date = gmdate('Y-m-d H:i:s');
@@ -1717,28 +1718,27 @@ class Order extends DB_Table {
         );
 
         $sql = sprintf(
-            "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order Payment State`=%s,`Order State`=%s,
-				`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s
-				,`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order To Pay Amount`=%.2f,`Order Items Cost`=0
-				WHERE `Order Key`=%d"//     ,$no_shipped
-            , prepare_mysql($this->data['Order Cancelled Date']), prepare_mysql($this->data['Order Payment State']), prepare_mysql($this->data['Order State']), prepare_mysql(
-                $this->data['Order Current XHTML Dispatch State']
-            ), prepare_mysql($this->data['Order Current XHTML Payment State']), prepare_mysql($this->data['Order Cancel Note']), $this->data['Order To Pay Amount'],
+            "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order Payment State`=%s,`Order State`='NA',`Order To Pay Amount`=%.2f,`Order Cancel Note`=%s,
+				`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order Items Cost`=0,
+				`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0
+				WHERE `Order Key`=%d",
+            prepare_mysql($this->data['Order Cancelled Date']),  prepare_mysql($this->data['Order State']), $this->data['Order To Pay Amount'],prepare_mysql($this->data['Order Cancel Note']),
 
             $this->id
         );
-        //print $sql;
+
+
         $this->db->exec($sql);
 
 
         $sql = sprintf(
-            "UPDATE `Order Transaction Fact` SET  `Delivery Note Key`=NULL,  `Delivery Note ID`=NULL,`Invoice Key`=NULL, `Invoice Public ID`=NULL,`Picker Key`=NULL,`Picker Key`=NULL, `Consolidated`='Yes',`Current Dispatching State`=%s ,`Cost Supplier`=0  WHERE `Order Key`=%d ",
+            "UPDATE `Order Transaction Fact` SET  `Delivery Note Key`=NULL,`Invoice Key`=NULL, `Consolidated`='Yes',`Current Dispatching State`=%s ,`Cost Supplier`=0  WHERE `Order Key`=%d ",
             prepare_mysql('Cancelled'), $this->id
         );
         $this->db->exec($sql);
 
         $sql = sprintf(
-            "UPDATE `Order Transaction Fact` SET   `Estimated Dispatched Weight`=0,`Delivery Note Quantity`=0, `No Shipped Due Out of Stock`=0,`Order Out of Stock Lost Amount`=0 WHERE `Order Key`=%d ",
+            "UPDATE `Order Transaction Fact` SET  `Delivery Note Quantity`=0, `No Shipped Due Out of Stock`=0,`Order Out of Stock Lost Amount`=0 WHERE `Order Key`=%d ",
 
             $this->id
         );
