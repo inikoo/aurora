@@ -100,3 +100,4 @@ DROP `Weight`,
 
 
 
+ALTER TABLE `Order Dimension` DROP `Order Class`, drop `Order Checkout Submitted Payment Date`,drop `Order Checkout Completed Payment Date`,drop `Order Dimension.Order XHTML Invoices`,drop `Order Store Code`,drop `Order XHTML Delivery Notes`,drop `Order Current XHTML Post Dispatch State`;

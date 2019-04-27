@@ -509,15 +509,6 @@ function dn_awhere($awhere) {
         .$date_interval_dispatched_approved['mysql'].$date_interval_delivery_note['mysql'];
 
 
-    $where_billing_geo_constraints = '';
-    if ($where_data['billing_geo_constraints'] != '') {
-        $where_billing_geo_constraints = sprintf(
-            " and `Order Billing To Country 2 Alpha Code`='%s'", $where_data['billing_geo_constraints']
-        );
-    }
-
-
-    //print $table. $where; exit;
 
     return array(
         $where,

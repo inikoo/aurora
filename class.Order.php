@@ -1701,11 +1701,7 @@ class Order extends DB_Table {
 
         $this->data['Order State'] = 'Cancelled';
 
-        $this->data['Order Current XHTML Dispatch State']              = _('Cancelled');
-        $this->data['Order Current XHTML Payment State']               = _('Order cancelled');
-        $this->data['Order XHTML Invoices']                            = '';
-        $this->data['Order XHTML Delivery Notes']                      = '';
-        $this->data['Order Invoiced Balance Total Amount']             = 0;
+
         $this->data['Order Invoiced Balance Net Amount']               = 0;
         $this->data['Order Invoiced Balance Tax Amount']               = 0;
         $this->data['Order Invoiced Outstanding Balance Total Amount'] = 0;
@@ -1721,9 +1717,8 @@ class Order extends DB_Table {
         );
 
         $sql = sprintf(
-            "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order Payment State`=%s,`Order State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,
-				`Order XHTML Invoices`='',`Order XHTML Delivery Notes`=''
-				,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s
+            "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order Payment State`=%s,`Order State`=%s,
+				`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s
 				,`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order To Pay Amount`=%.2f,`Order Items Cost`=0
 				WHERE `Order Key`=%d"//     ,$no_shipped
             , prepare_mysql($this->data['Order Cancelled Date']), prepare_mysql($this->data['Order Payment State']), prepare_mysql($this->data['Order State']), prepare_mysql(
@@ -2273,37 +2268,9 @@ class Order extends DB_Table {
 
     function update_full_search() {
 
-        $first_full_search  = $this->data['Order Public ID'].' '.$this->data['Order Customer Name'].' '.strftime(
-                "%d %b %B %Y", strtotime($this->data['Order Date'])
-            );
-        $second_full_search = strip_tags(
-                preg_replace(
-                    '/\<br\/\>/', ' ', $this->data['Order XHTML Ship Tos']
-                )
-            ).' '.$this->data['Order Customer Contact Name'];
-        $img                = '';
+        //todo  use elastic search
 
 
-        $amount = ' '.money($this->data['Order Total Amount'], $this->data['Order Currency']);
-
-        $show_description = $this->data['Order Customer Name'].' ('.strftime(
-                "%e %b %Y", strtotime($this->data['Order Date'])
-            ).') '.$this->data['Order Current XHTML Payment State'].$amount;
-
-        $description1 = '<b><a href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a></b>';
-        $description  = '<table ><tr style="border:none;"><td  class="col1"'.$description1.'</td><td class="col2">'.$show_description.'</td></tr></table>';
-
-
-        $sql = sprintf(
-            "INSERT INTO `Search Full Text Dimension` (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`) VALUES  (%s,'Order',%d,%s,%s,%s,%s,%s) ON DUPLICATE KEY
-		UPDATE `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s", $this->data['Order Store Key'], $this->id, prepare_mysql($first_full_search),
-            prepare_mysql($second_full_search, false), prepare_mysql($this->data['Order Public ID'], false), prepare_mysql($description, false), prepare_mysql($img, false), prepare_mysql($first_full_search), prepare_mysql($second_full_search, false),
-            prepare_mysql($this->data['Order Public ID'], false), prepare_mysql($description, false)
-
-
-            , prepare_mysql($img, false)
-        );
-        $this->db->exec($sql);
 
 
     }
