@@ -1,12 +1,12 @@
 const puppeteer = require('puppeteer');
 const devices = require('puppeteer/DeviceDescriptors');
-const iPhone = devices[ 'iPhone 4' ];
-const iPad = devices[ 'iPad' ];
+const iPhone = devices['iPhone 4'];
+const iPad = devices['iPad'];
 const argv = require('minimist')(process.argv.slice(2));
 const url = argv.url;
 const pageKey = argv.pageKey;
 var fs = require('fs');
-var dir = './screenshots';
+var dir = './cron/screenshots';
 if (!fs.existsSync(dir)){ fs.mkdirSync(dir); }
 
 async function run() {
