@@ -87,18 +87,34 @@ DROP `Weight`,
  Drop `Packing Finished Date`,
  Drop `Picking Factor`,
  Drop `Packing Factor`,
- Drop `Paid Factor`,
- Drop `Picked Quantity`,
- Drop `Customer Message`,
- Drop `Order Source Type`,
- Drop `Source Type`,
- Drop `Refund Key`,
-  Drop `Multipart Partically No Picked`,
-  Drop `Refund Method`,
+ Drop `Paid Factor`;
 
- DROP `Order Public ID`,DROP `Estimated Volume`,DROP `Volume`,DROP `Sales Rep Key`,DROP `Warehouse Key`,DROP `Picker Key`,DROP `Packer Key`,DROP `Shipper Key`,DROP `Invoice Quantity`,DROP `Refund Quantity`,DROP `Payment Method`,DROP `Cost Storing`,DROP `Cost Handing`,DROP `Cost Shipping`,DROP `Backlog to Shipping Lag`,DROP `Metadata`,DROP `Refund Metadata`,DROP `Supplier Metadata`,DROP `Invoice Public ID`,DROP `Delivery Note ID`,DROP `Estimated Dispatched Weight`,DROP `Weight`,DROP `Estimated Volume`,DROP `Volume`,DROP `Sales Rep Key`,DROP `Warehouse Key`,DROP `Picker Key`,DROP `Packer Key`,DROP `Shipper Key`,DROP `Invoice Quantity`,DROP `Refund Quantity`,DROP `Payment Method`,DROP `Cost Storing`,DROP `Cost Handing`,DROP `Cost Shipping`,DROP `Backlog to Shipping Lag`,DROP `Metadata`,DROP `Refund Metadata`,DROP `Supplier Metadata`,DROP `No Shipped Due No Authorized`,DROP `No Shipped Due Not Found`,DROP `No Shipped Due Other`,drop `Transaction Notes`, DROP `Invoice Currency Code`;
+ALTER TABLE `Order Transaction Fact` Drop `Picked Quantity`,Drop `Customer Message`,Drop `Order Source Type`,Drop `Source Type`,Drop `Refund Key`,  Drop `Multipart Partically No Picked`,  Drop `Refund Method`, DROP `Order Public ID`;
+
+ALTER TABLE DROP `Estimated Volume`,DROP `Volume`,DROP `Sales Rep Key`,DROP `Warehouse Key`,DROP `Picker Key`,DROP `Packer Key`,DROP `Shipper Key`,DROP `Invoice Quantity`,DROP `Refund Quantity`,DROP `Payment Method`,DROP `Cost Storing`,DROP `Cost Handing`,DROP `Cost Shipping`,DROP `Backlog to Shipping Lag`,DROP `Metadata`,DROP `Refund Metadata`,DROP `Supplier Metadata`,DROP `Invoice Public ID`,DROP `Delivery Note ID`,DROP `No Shipped Due No Authorized`,DROP `No Shipped Due Not Found`,DROP `No Shipped Due Other`,drop `Transaction Notes`, DROP `Invoice Currency Code`;
 
 
 
 ALTER TABLE `Order Dimension` DROP `Order Class`, drop `Order Checkout Submitted Payment Date`,drop `Order Checkout Completed Payment Date`,drop `Order XHTML Invoices`,drop `Order Store Code`,drop `Order XHTML Delivery Notes`,drop `Order Current XHTML Post Dispatch State`;
 ALTER TABLE `Order Dimension` DROP `Order Ship To Key To Deliver`, DROP `Order XHTML Ship Tos`, DROP `Order Ship To Country 2 Alpha Code`, DROP `Order Ship To World Region Code`, DROP `Order Ship To Town`, DROP `Order Ship To Postal Code`, DROP `Order Billing To Key To Bill`, DROP `Order XHTML Billing Tos`, DROP `Order Billing To Keys`, DROP `Order Billing To Country Code`, DROP `Order Billing To World Region Code`, DROP `Order Billing To Town`, DROP `Order Billing To Postal Code`;
+
+Drop table `Campaign`;
+Drop table `Campaign`;
+Drop table `Campaign`;
+Drop table `Campaign`;
+
+Drop this tables:
+;
+
+
+DROP TABLE `Billing To Dimension`, `Shipping Notices Fact`, `Ship to Contact Dimension`, `Ship To Dimension`;
+
+Drop table `Campaign Deal Schema`, `Comment Dimension`;
+
+DROP TABLE `Organization Dimension`,`Company Area Department Bridge`, `Company Area Dimension`, `Company Department Dimension`, `Company Department Position Bridge`, `Company Position Dimension`, `Company Position Staff Bridge`;
+
+DROP TABLE `Address Bridge`, `Address Telecom Bridge`, `Company Bridge`, `Company Dimension`, `Company Old ID Bridge`, `Company Web Site Bridge`, `Contact Bridge`, `Contact Dimension`, `Contract Terms Dimension`, `Email Bridge`, `Email Dimension`, `Telecom Bridge`, `Telecom Dimension`;
+
+DROP TABLE `Email Campaign Content Bridge`, `Email Campaign Mailing List`, `Email Campaign Objective Dimension`, `Email Campaign Objective Link Bridge`, `Email Content Dimension`, `Email Content Paragraph Dimension`, `Email Credentials Dimension`, `Email Credentials Scope Bridge`, `Email Credentials Scope Mailbox`, `Email Credentials Site Bridge`, `Email Credentials Store Bridge`, `Email Credentials User Bridge`, `Email Link Click Fact`, `Email Link Dimension`, `Email Queue Attachement Dimension`, `Email Queue Dimension`, `Email Read Dimension`, `Email Send Dimension`, `Email Send Read Fact`, `Email Template Color Scheme Dimension`, `Email Template Header Image Dimension`, `Email Template Historic Color Scheme Dimension`, `Email Template Postcard Dimension`;
+
+Drop table `Page URL Dimension`,`Search Full Text Dimension`,`Page Store Search Query Dimension`,`Visitor Session Dimension`,`Visitor Dimension`;

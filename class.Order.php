@@ -2266,14 +2266,6 @@ class Order extends DB_Table {
 
     }
 
-    function update_full_search() {
-
-        //todo  use elastic search
-
-
-
-
-    }
 
     function update_customer_history() {
         $customer = new Customer ($this->data['Order Customer Key']);

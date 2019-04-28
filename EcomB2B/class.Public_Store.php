@@ -317,9 +317,7 @@ class Public_Store {
                 ), $account->get('Account Code')
                 );
 
-                //$customer->update_full_search();
-                //$customer->update_location_type();
-                // $store->update_customers_data();
+
 
 
             } else {

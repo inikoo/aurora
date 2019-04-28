@@ -243,8 +243,6 @@ class Customer extends Subject {
         }
 
 
-        //$this->update_full_search();
-        // $this->update_location_type();
 
     }
 
@@ -773,57 +771,6 @@ class Customer extends Subject {
 
     }
 
-    function update_full_search() {
-
-
-        $address_plain      = strip_tags($this->get('Contact Address'));
-        $first_full_search  = $this->data['Customer Name'].' '.$this->data['Customer Name'].' '.$address_plain.' '.$this->data['Customer Main Contact Name'].' '.$this->data['Customer Main Plain Email'];
-        $second_full_search = '';
-
-
-        //   $description = '';
-
-        if ($this->data['Customer Company Name'] != '') {
-            $name = '<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formatted_id().')<br/>'.$this->data['Customer Main Contact Name'];
-        } else {
-            $name = '<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formatted_id().')';
-
-        }
-        $name .= '<br/>'._('Orders').':<b>'.number(
-                $this->data['Customer Orders']
-            ).'</b>';
-
-
-        $_address = $this->data['Customer Main Plain Email'];
-
-        if ($this->data['Customer Preferred Contact Number Formatted Number'] != '') {
-            $_address .= '<br/>T: '.$this->data['Customer Preferred Contact Number Formatted Number'];
-        }
-        $_address .= '<br/>'.$this->data['Customer Main Location'];
-        if ($this->data['Customer Main Postal Code']) {
-            $_address .= ', '.$this->data['Customer Main Postal Code'];
-        }
-        $_address = preg_replace('/^\<br\/\>/', '', $_address);
-
-        $description = '<table ><tr style="border:none;"><td class="col1">'.$name.'</td><td class="col2">'.$_address.'</td></tr></table>';
-
-        //$sql=sprintf("select `Search Full Text Key` from `Search Full Text Dimension` where `Store Key`=%d,`Subject`='Customer',`Subject Key`=%d",
-        //
-        //,$this->data['Customer Store Key']
-        // ,$this->id
-        //);
-
-
-        $sql = sprintf(
-            "INSERT INTO `Search Full Text Dimension`  (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`)
-                     VALUES  (%s,%s,%d,%s,%s,%s,%s,%s) ON DUPLICATE KEY
-                     UPDATE `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s", $this->data['Customer Store Key'], prepare_mysql('Customer'), $this->id,
-            prepare_mysql($first_full_search), prepare_mysql($second_full_search), prepare_mysql($this->data['Customer Name']), prepare_mysql($description), "''", prepare_mysql($first_full_search), prepare_mysql($second_full_search),
-            prepare_mysql($this->data['Customer Name']), prepare_mysql($description), "''"
-        );
-        //print $sql;
-        $this->db->exec($sql);
-    }
 
     function update_location_type() {
 
@@ -2865,10 +2812,7 @@ class Customer extends Subject {
             "DELETE FROM `Customer Send Post` WHERE `Customer Key`=%d", $this->id
         );
         $this->db->exec($sql);
-        $sql = sprintf(
-            "DELETE FROM `Search Full Text Dimension` WHERE `Subject`='Customer' AND `Subject Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
+
         $sql = sprintf(
             "DELETE FROM `Category Bridge` WHERE `Subject`='Customer' AND `Subject Key`=%d", $this->id
         );
