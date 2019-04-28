@@ -662,7 +662,6 @@ function fork_housekeeping($job) {
 
 
             $store->update_orders();
-            $order->update_full_search();
 
             $account = get_object('Account', '');
             $account->update_orders();
@@ -841,7 +840,6 @@ function fork_housekeeping($job) {
             }
 
 
-            $customer->update_full_search();
             $customer->update_location_type();
             $store->update_customers_data();
 

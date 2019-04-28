@@ -221,9 +221,6 @@ class Prospect extends Subject {
         }
 
 
-        //$this->update_full_search();
-        // $this->update_location_type();
-
     }
 
     function get($key, $arg1 = false) {
