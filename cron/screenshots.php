@@ -3,7 +3,7 @@
 require_once 'common.php';
 
 try {
-    $stmt = $db->prepare("SELECT `Page Key`,`Webpage URL` FROM sk.`Page Store Dimension` LIMIT 1000");
+    $stmt = $db->prepare("SELECT `Page Key`,`Webpage URL` FROM sk.`Page Store Dimension`");
     $stmt->execute();
 
 
