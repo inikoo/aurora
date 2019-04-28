@@ -691,11 +691,13 @@ node_modules/xtend/
 node_modules/yauzl/
 
 utils/api.secret.json
+
 keyring/api.secret.json
 
 keyring/api.google.include.php
 
 cron/screenshots/*
+
 
 cron/testapi.php
 
@@ -707,3 +709,4 @@ package-lock.json
 
 =0.4.0
 =
+
