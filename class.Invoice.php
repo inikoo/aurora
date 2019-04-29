@@ -1117,7 +1117,6 @@ class Invoice extends DB_Table {
 
 
                 if (isset($categorize_invoices_functions[$row['Invoice Category Function Code']])) {
-
                     if ($categorize_invoices_functions[$row['Invoice Category Function Code']]($this->data, $row['Invoice Category Function Argument'])) {
                         $category_key = $row['Invoice Category Key'];
                         break;
@@ -1134,7 +1133,6 @@ class Invoice extends DB_Table {
         }
 
 
-         // print "Cat $category_key\n";
 
         if ($category_key) {
             $category                    = get_object('Category',$category_key);

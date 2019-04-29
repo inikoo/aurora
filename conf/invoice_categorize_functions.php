@@ -55,7 +55,7 @@ function get_categorize_invoices_functions() {
 
     $categorize_invoices_functions['country'] = function ($data, $aux) {
 
-        $aux=json_decode($aux,true);
+
 
         if ($data["Invoice Address Country 2 Alpha Code"] ==$aux) {
             return true;
@@ -65,7 +65,6 @@ function get_categorize_invoices_functions() {
     };
     $categorize_invoices_functions['not_in_country'] = function ($data, $aux) {
 
-        $aux=json_decode($aux,true);
 
         if ($data["Invoice Address Country 2 Alpha Code"] !=$aux) {
             return true;
@@ -76,7 +75,6 @@ function get_categorize_invoices_functions() {
 
     $categorize_invoices_functions['store'] = function ($data, $aux) {
 
-        $aux=json_decode($aux,true);
 
         if ($data["Invoice Store Key"] ==$aux) {
             return true;
