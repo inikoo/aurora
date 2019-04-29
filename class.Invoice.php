@@ -184,7 +184,7 @@ class Invoice extends DB_Table {
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
 
-                            if ($transaction['amount'] > 0 and $transaction['amount'] <= ($row['Order Transaction Amount'] )) {
+                            if ($transaction['amount'] > 0 and $transaction['amount'] <= ($row['Order Transaction Amount'])) {
                                 $amount = -1.0 * $transaction['amount'];
 
                                 $sql = sprintf(
@@ -199,8 +199,7 @@ class Invoice extends DB_Table {
                                         
                                         
                                 ) ', prepare_mysql($date), prepare_mysql($date), prepare_mysql($date), prepare_mysql('Refund'), $this->data['Invoice Order Key'], $this->id, $row['Product Key'], $row['Product ID'], $row['Store Key'], $row['Customer Key'], $amount,
-                                    $amount, $row['Transaction Tax Rate'], prepare_mysql($row['Transaction Tax Code']), prepare_mysql($row['Order Currency Code']), $base_data['Invoice Currency Exchange'],
-                                    prepare_mysql($row['Product Code'])
+                                    $amount, $row['Transaction Tax Rate'], prepare_mysql($row['Transaction Tax Code']), prepare_mysql($row['Order Currency Code']), $base_data['Invoice Currency Exchange'], prepare_mysql($row['Product Code'])
                                 );
 
 
@@ -475,8 +474,6 @@ class Invoice extends DB_Table {
     }
 
 
-
-
     function update_payments_totals() {
 
 
@@ -511,7 +508,7 @@ class Invoice extends DB_Table {
                 'Invoice Payments Amount'       => $payments,
                 'Invoice To Pay Amount'         => $to_pay,
                 'Invoice Has Been Paid In Full' => ($to_pay == 0 ? 'Yes' : 'No'),
-                'Invoice Paid'                  => ($to_pay <=0 ? 'Yes' : ($payments == 0 ? 'No' : 'Partially')),
+                'Invoice Paid'                  => ($to_pay <= 0 ? 'Yes' : ($payments == 0 ? 'No' : 'Partially')),
 
             )
         );
@@ -1101,93 +1098,56 @@ class Invoice extends DB_Table {
     }
 
 
-    // this function has to go after retire excel
 
     function categorize($skip_update_sales = false) {
 
         $category_key = 0;
 
 
-        // Todo remove after migration
+        include_once 'conf/invoice_categorize_functions.php';
+
+        $categorize_invoices_functions = get_categorize_invoices_functions();
+
+        $sql = sprintf(
+            "SELECT `Invoice Category Key`,`Invoice Category Function Code`,`Invoice Category Function Argument` FROM `Invoice Category Dimension` WHERE `Invoice Category Function Code` is not null ORDER BY `Invoice Category Function Order` desc "
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
 
 
-        $store = get_object('Store', $this->get('Invoice Store Key'));
+                if (isset($categorize_invoices_functions[$row['Invoice Category Function Code']])) {
 
-
-        if ($store->get('Store Version') == 1) {
-
-            $sql = sprintf(
-                "SELECT * FROM `Category Dimension` WHERE `Category Subject`='Invoice' AND `Category Store Key`=%d ORDER BY `Category Function Order`, `Category Key` ", $this->data['Invoice Store Key']
-            );
-            // print $sql;
-            $function_code = '';
-
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    if ($row['Category Function'] != '') {
-                        $function_code .= sprintf(
-                            "%s return %d;", $row['Category Function'], $row['Category Key']
-                        );
+                    if ($categorize_invoices_functions[$row['Invoice Category Function Code']]($this->data, $row['Invoice Category Function Argument'])) {
+                        $category_key = $row['Invoice Category Key'];
+                        break;
                     }
+
+
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
+
             }
-
-
-            $function_code .= "return 0;";
-            //print $function_code."\n";exit;
-            $new_function = create_function('$data', $function_code);
-
-            // $this->data['Invoice Customer Level Type'];
-
-            $category_key = $new_function($this->data);
         } else {
-
-            include 'conf/invoice_categorize_functions.php';
-            $sql = sprintf(
-                "SELECT `Invoice Category Key`,`Invoice Category Function Code`,`Invoice Category Function Argument` FROM `Invoice Category Dimension` WHERE `Invoice Category Function Code` is not null ORDER BY `Invoice Category Function Order` desc "
-            );
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-
-
-                    if (isset($categorize_invoices_functions[$row['Invoice Category Function Code']])) {
-
-                        if ($categorize_invoices_functions[$row['Invoice Category Function Code']]($this->data, $row['Invoice Category Function Argument'])) {
-                            $category_key = $row['Invoice Category Key'];
-                            break;
-                        }
-
-
-                    }
-
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
-        //   print "Cat $category_key\n";
+         // print "Cat $category_key\n";
 
         if ($category_key) {
-            $category                    = new Category($category_key);
+            $category                    = get_object('Category',$category_key);
             $category->skip_update_sales = $skip_update_sales;
 
 
             if ($category->id) {
                 $category->associate_subject($this->id);
-                $this->update_field_switcher(
-                    'Invoice Category Key', $category->id, 'no_history'
+                $this->fast_update(
+                    array(
+                        'Invoice Category Key'=> $category->id
+                    )
+
                 );
             }
         }
@@ -1265,8 +1225,7 @@ class Invoice extends DB_Table {
         $items_data = array();
 
 
-        $sql =
-            "SELECT `Invoice Date`,
+        $sql = "SELECT `Invoice Date`,
 O.`Order Transaction Fact Key`,`Order Currency Code`,`Product History Price`,`Product History Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Product History Name`,`Product History Price`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`
 `Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code`
 
@@ -1349,8 +1308,6 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
         $sql = sprintf("DELETE FROM `Invoice Sales Representative Bridge`  WHERE   `Invoice Key`=%d", $this->id);
         $this->db->exec($sql);
-
-
 
 
         $sql = sprintf("DELETE FROM `Invoice Tax Dimension` WHERE `Invoice Key`=%d", $this->id);

@@ -3,6 +3,9 @@ keyring/nano.key.php
 .sass-cache/
 *.csv
 
+img/db
+img/cache
+
 web/
 wcpcache/
 cron/tmp/

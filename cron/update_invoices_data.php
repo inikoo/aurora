@@ -36,12 +36,12 @@ $account = new Account();
 
 
 
-$sql = sprintf("SELECT `Invoice Key` FROM `Invoice Dimension` left join `Store Dimension` on (`Store Key`=`Invoice Store Key`) ");
+$sql = sprintf("SELECT `Invoice Key` FROM `Invoice Dimension` left join `Store Dimension` on (`Store Key`=`Invoice Store Key`)  where  `Invoice Category Key` is null ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $invoice = get_object('Invoice', $row['Invoice Key']);
-        $invoice->update_payments_totals();
-        $invoice->update_billing_region();
+        //$invoice->update_payments_totals();
+        //$invoice->update_billing_region();
         $invoice->categorize();
       //  exit;
     }
