@@ -21,10 +21,10 @@ $_product = array(
         'product.customers' => 'product.customers',
         'product.customers.favored' => 'product.customers',
         'product.back_to_stock_notification_request.customers' => 'product.customers',
-        'product.webpage.settings' => 'product.webpage',
-        'webpage.preview' => 'product.webpage',
+        //'product.webpage.settings' => 'product.webpage',
+        //'webpage.preview' => 'product.webpage',
         //  'product.webpage.analytics'      => 'product.webpage',
-        'product.webpage.logbook' => 'product.webpage',
+        //'product.webpage.logbook' => 'product.webpage',
 
     ),
 
@@ -34,6 +34,13 @@ $_product = array(
             'icon' => 'database',
             'title' => _('Details')
         ),
+
+        'product.webpages' => array(
+            'label' => _('Webpages'),
+            'icon' => 'globe',
+            'title' => _('Webpages')
+        ),
+        /*
         'product.webpage' => array(
             'label' => _('Website'),
             'icon' => 'globe',
@@ -58,7 +65,7 @@ $_product = array(
 
             )
         ),
-
+*/
         'product.history' => array(
             'label' => _('History, notes'),
             'icon' => 'sticky-note'

@@ -144,3 +144,5 @@ keyring/api.google.include.php
 cron/screenshots/*
 
 cron/testapi.php
+
+node_modules/*

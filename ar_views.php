@@ -801,7 +801,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
     list($state, $response['tabs']) = get_tabs($state, $db, $account, $modules, $user, $smarty, $requested_tab);// todo only calculate when is subtabs in the section
 
 
-    //  print_r($state);
 
 
     if ($state['object'] != ''
