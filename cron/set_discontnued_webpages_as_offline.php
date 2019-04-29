@@ -43,7 +43,7 @@ $contador = 0;
 
 $sql = "select `Store Code`,`Webpage Code`,`Page Key` from `Page Store Dimension`  left join `Category Dimension` on (`Webpage Scope Key`=`Category Key`)  
 left join `Store Dimension` on (`Webpage Store Key`=`Store Key`)  
-      where  `Webpage Scope`='Category Products' and `Webpage State`='Online' and `Store Version`=2   ;";
+      where  `Webpage Scope`='Category Products' and `Webpage State`='Online'   ;";
 
 $stmt = $db->prepare($sql);
 if ($stmt->execute()) {
@@ -81,8 +81,6 @@ if ($stmt->execute()) {
 
                     }
                 }
-
-
             }
         }
 

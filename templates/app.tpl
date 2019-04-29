@@ -9,7 +9,7 @@
     <link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon"/>
 
 
-    <link href="/css/au_app.min.css?v=190319v2" rel="stylesheet">
+    <link href="/css/au_app.min.css?v=190319v3" rel="stylesheet">
 
 
     {if !$is_devel}
@@ -18,11 +18,7 @@
     {/if}
     <script src="/js/aurora_libs.min.js?v190319"></script>
 
-    <script src="/js/aurora.min.js?v190411"></script>
-
-    <script src="/js/fast_track_packing.js?v=8"></script>
-
-
+    <script src="/js/aurora.min.js?v190422v4"></script>
 
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 

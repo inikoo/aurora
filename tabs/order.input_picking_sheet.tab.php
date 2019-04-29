@@ -74,8 +74,6 @@ if(empty($state['metadata']['dn_key'])){
         $warehouse = get_object('warehouse', $delivery_note->get('Delivery Note Warehouse Key'));
         $shippers = $warehouse->get_shippers('data', 'Active');
 
-
-
         $smarty->assign('shippers', $shippers);
         $smarty->assign('number_shippers', count($shippers));
 
@@ -89,7 +87,6 @@ if(empty($state['metadata']['dn_key'])){
 
 
         );
-
 
         $smarty->assign('table_buttons', $table_buttons);
 

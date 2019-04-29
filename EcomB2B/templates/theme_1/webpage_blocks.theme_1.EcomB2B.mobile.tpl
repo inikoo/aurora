@@ -269,8 +269,8 @@
             if(_args!=undefined){
                 args=_args.split("=");
                 if(args[1]!=undefined && args[0]=='q'){
-                    $('#search_input').val( args[1])
 
+                    $('#search_input').val( decodeURI(args[1]))
                 }
 
             }
@@ -1158,21 +1158,9 @@
 
                 $('.iframe').each(function (i, obj) {
 
-                 //  alert($(this).height())
-
-
                     $(this).css({ height: $(this).width() * $(this).data('h') / $(this).data('w')})
-                    //$(this).css({ height: 100})
-
-                   // console.log($(this).data('src'))
-
-
                     $(this).find('iframe').css({ height:$(this).height(),width:$(this).width()})
-
-
                     $(this).find('iframe').attr( 'src', $(this).data('src'));
-
-                  //  alert($(this).height())
 
                 });
             }

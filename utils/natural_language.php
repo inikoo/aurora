@@ -3,6 +3,7 @@
 function seconds_to_natural_string($seconds, $short = false) {
 
 
+
     if ($seconds == 0) {
         return '';
     }
@@ -19,6 +20,7 @@ function seconds_to_natural_string($seconds, $short = false) {
     }elseif ($seconds < 5400) {
 
         if ($short) {
+
             return sprintf(_('%sm'), floor($seconds/60));
         } else {
             return sprintf("%d %s", $seconds/60, ngettext("minute", "minutes", $seconds/60));
@@ -28,7 +30,7 @@ function seconds_to_natural_string($seconds, $short = false) {
     }elseif ($seconds < 86400) {
 
         if ($short) {
-            return sprintf(_('%sm'), floor($seconds/3600));
+            return sprintf(_('%sh'), floor($seconds/3600));
         } else {
             return sprintf("%d %s", $seconds/3600, ngettext("hour", "hours", $seconds/3600));
 

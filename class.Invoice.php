@@ -120,7 +120,7 @@ class Invoice extends DB_Table {
 
         include_once 'utils/new_fork.php';
 
-        $date = gmdate('Y-m-d H:i:s');
+        $date = $invoice_data['Invoice Date'];
 
         include_once 'utils/currency_functions.php';
 
@@ -184,22 +184,22 @@ class Invoice extends DB_Table {
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
 
-                            if ($transaction['amount'] > 0 and $transaction['amount'] <= ($row['Order Transaction Amount'] - $row['Invoice Transaction Net Refund Amount'])) {
+                            if ($transaction['amount'] > 0 and $transaction['amount'] <= ($row['Order Transaction Amount'] )) {
                                 $amount = -1.0 * $transaction['amount'];
 
                                 $sql = sprintf(
                                     'INSERT INTO  `Order Transaction Fact` (`Order Date`,`Order Last Updated Date`,`Invoice Date`,`Order Transaction Type`,`Order Key`,`Invoice Key`,
 
                                 `Product Key`,`Product ID`,`Store Key`,`Customer Key`,
-                                `Order Transaction Gross Amount`,`Order Transaction Amount`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Invoice Currency Code`,`Invoice Currency Exchange Rate`,
+                                `Order Transaction Gross Amount`,`Order Transaction Amount`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Invoice Currency Exchange Rate`,
                                 `Product Code`
                                 ) VALUES (%s,%s,%s,%s,%d,%d,
                                         %d,%d,%d,%d,
-                                        %.2f, %.2f,%f,%s,%s,%s,%f,%s
+                                        %.2f, %.2f,%f,%s,%s,%f,%s
                                         
                                         
                                 ) ', prepare_mysql($date), prepare_mysql($date), prepare_mysql($date), prepare_mysql('Refund'), $this->data['Invoice Order Key'], $this->id, $row['Product Key'], $row['Product ID'], $row['Store Key'], $row['Customer Key'], $amount,
-                                    $amount, $row['Transaction Tax Rate'], prepare_mysql($row['Transaction Tax Code']), prepare_mysql($row['Order Currency Code']), prepare_mysql($row['Invoice Currency Code']), $base_data['Invoice Currency Exchange'],
+                                    $amount, $row['Transaction Tax Rate'], prepare_mysql($row['Transaction Tax Code']), prepare_mysql($row['Order Currency Code']), $base_data['Invoice Currency Exchange'],
                                     prepare_mysql($row['Product Code'])
                                 );
 
@@ -475,6 +475,8 @@ class Invoice extends DB_Table {
     }
 
 
+
+
     function update_payments_totals() {
 
 
@@ -502,19 +504,7 @@ class Invoice extends DB_Table {
 
         $to_pay = round($this->data['Invoice Total Amount'] - $payments, 2);
 
-        /*
-                print_r(
-                    array(
 
-                        'Invoice Payments Amount'       => $payments,
-                        'Invoice To Pay Amount'         => $to_pay,
-                        'Invoice Has Been Paid In Full' => ($to_pay == 0 ? 'Yes' : 'No'),
-                        'Invoice Paid'                  => ($to_pay == 0 ? 'Yes' : ($payments == 0 ? 'No' : 'Partially')),
-
-                    )
-
-                );
-        */
         $this->fast_update(
             array(
 
@@ -1277,7 +1267,8 @@ class Invoice extends DB_Table {
 
         $sql =
             "SELECT `Invoice Date`,
-O.`Order Transaction Fact Key`,`Product Currency`,`Product History Price`,`Product History Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code`
+O.`Order Transaction Fact Key`,`Order Currency Code`,`Product History Price`,`Product History Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Product History Name`,`Product History Price`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`
+`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code`
 
 
 FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=?";
@@ -1294,16 +1285,16 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
                 $dates[$row['Invoice Date']]  = 1;
 
 
-                $discount = ($row['Invoice Transaction Total Discount Amount'] == 0
+                $discount = ($row['Order Transaction Total Discount Amount'] == 0
                     ? ''
                     : percentage(
-                        $row['Invoice Transaction Total Discount Amount'], $row['Invoice Transaction Gross Amount'], 0
+                        $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'], 0
                     ));
 
                 $units    = $row['Product Units Per Case'];
                 $name     = $row['Product History Name'];
                 $price    = $row['Product History Price'];
-                $currency = $row['Product Currency'];
+                $currency = $row['Order Currency Code'];
 
                 $desc = '';
                 if ($units > 1) {
@@ -1321,7 +1312,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
                 }
 
                 if ($row['Product RRP'] != 0) {
-                    $description .= ' <br>'._('RRP').': '.money($row['Product RRP'], $row['Invoice Currency Code']);
+                    $description .= ' <br>'._('RRP').': '.money($row['Product RRP'], $row['Order Currency Code']);
                 }
 
                 if ($row['Product Tariff Code'] != '') {
@@ -1343,7 +1334,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
                     'code'        => $row['Product Code'],
                     'description' => $description,
                     'quantity'    => $quantity,
-                    'net'         => money($factor * $row['Order Transaction Amount'], $row['Invoice Currency Code'])
+                    'net'         => money($factor * $row['Order Transaction Amount'], $row['Order Currency Code'])
                 );
             }
         } else {
@@ -1359,11 +1350,8 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         $sql = sprintf("DELETE FROM `Invoice Sales Representative Bridge`  WHERE   `Invoice Key`=%d", $this->id);
         $this->db->exec($sql);
 
-        $sql = sprintf("DELETE FROM `Invoice Processed By Bridge`  WHERE   `Invoice Key`=%d", $this->id);
-        $this->db->exec($sql);
 
-        $sql = sprintf("DELETE FROM `Invoice Charged By Bridge`  WHERE   `Invoice Key`=%d", $this->id);
-        $this->db->exec($sql);
+
 
         $sql = sprintf("DELETE FROM `Invoice Tax Dimension` WHERE `Invoice Key`=%d", $this->id);
         $this->db->exec($sql);

@@ -129,7 +129,7 @@
             </div>
 
             <div class="estimated_recipients_post_sent   {if $email_campaign->get('State Index')<50}hide{/if}">
-                <span class="Sent_Emails_Info">{$email_campaign->get('Sent Emails Info')}</span>
+                <span class="_Sent_Emails_Info">{$email_campaign->get('Sent Emails Info')}</span>
             </div>
 
             <div style="clear:both"></div>
@@ -347,23 +347,23 @@
             <div style="display:flex" class=" sent_email_data">
                 <div>
                     <label>{t}Sent{/t}</label>
-                    <div class="Email_Campaign_Sent">{$email_campaign->get('Sent')}</div>
+                    <div class="_Email_Campaign_Sent">{$email_campaign->get('Sent')}</div>
                 </div>
-                <div >
+                <div class="hide">
                     <label>{t}Bounces{/t}</label>
-                    <div class="Email_Campaign_Bounces_Percentage">{$email_campaign->get('Bounces Percentage')}</div>
+                    <div  class="Email_Campaign_Bounces_Percentage">{$email_campaign->get('Bounces Percentage')}</div>
                 </div>
-                <div class="hide">
-                    <label>{t}Hard bounce{/t}</label>
-                    <div class="Email_Campaign_Hard_Bounce">{$email_campaign->get('Hard Bounces')}</div>
+                <div class="">
+                    <label>{t}Hard bounces{/t}</label>
+                    <div title="{$email_campaign->get('Hard Bounces')}" class="Email_Campaign_Hard_Bounces_Percentage">{$email_campaign->get('Hard Bounces Percentage')}</div>
                 </div>
-                <div class="hide">
-                    <label>{t}Soft bounce{/t}</label>
-                    <div class="Email_Campaign_Soft_Bounce">{$email_campaign->get('Soft Bounces')}</div>
+                <div class="">
+                    <label>{t}Soft bounces{/t}</label>
+                    <div title="{$email_campaign->get('Soft Bounces')}" class="Email_Campaign_Soft_Bounces_Percentage">{$email_campaign->get('Soft Bounces Percentage')}</div>
                 </div>
                 <div>
                     <label>{t}Delivered{/t}</label>
-                    <div class="Email_Campaign_Delivered">{$email_campaign->get('Delivered')}</div>
+                    <div class="_Email_Campaign_Delivered">{$email_campaign->get('Delivered')}</div>
                 </div>
                 <div>
                     <label> {t}Opened{/t}</label>

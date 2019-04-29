@@ -60,7 +60,11 @@ $user_groups = array(
             'CD',
             'SV',
             'WV',
-            'PV'
+            'PV',
+            'OV',
+            'OE',
+            'OC',
+            'OD'
 
         ),
         'Stores_Scope'=>true,

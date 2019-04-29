@@ -252,7 +252,7 @@
                             } else {
                                 $('div.main_image').removeClass('hide')
                                 $('form.main_image').addClass('hide')
-                                $('div.main_image img').attr('src', '/image_root.php?id=' + data.main_image_key + '&size=small')
+                                $('div.main_image img').attr('src', '/image.php?id=' + data.main_image_key + '&s=270x270')
 
 
                             }
@@ -703,7 +703,7 @@
                             } else {
                                 $('div.main_image').removeClass('hide')
                                 $('form.main_image').addClass('hide')
-                                $('div.main_image img').attr('src', '/image_root.php?id=' + data.main_image_key + '&size=small')
+                                $('div.main_image img').attr('src', '/image.php?id=' + data.main_image_key + '&s=270x270')
 
 
                             }

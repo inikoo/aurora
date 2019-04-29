@@ -92,44 +92,7 @@ class WebAuth {
         }
 
 
-        /*
 
-        $customer = new Customer($this->user_parent_key);
-        $details  = '
-			   <div class="table">
-				<div class="field tr"><div>'._('Time').':</div><div>'.strftime(
-                "%c %Z", strtotime($date.' +00:00')
-            ).'</div></div>
-				<div class="field tr"><div>'._('IP Address').':</div><div>'.$ip.'</div></div>
-				<div class="field tr"><div>'._('User Agent').':</div><div>'.(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '').'</div></div>
-				</div>';
-
-        switch ($authentication_type) {
-            case('master_key'):
-                $note = _('Logged in from reset password email');
-                break;
-            default:
-                $note = _('Logged in');
-        }
-
-        if ($remember_me) {
-            $note .= ', '._('remember me cookie set');
-        }
-
-        $history_data = array(
-            'Date'            => $date,
-            'Site Key'        => $website_key,
-            'Note'            => $note,
-            'Details'         => $details,
-            'Action'          => 'login',
-            'Indirect Object' => '',
-            'User Key'        => $web_user_key
-        );
-
-        $customer->add_history_login($history_data);
-        $customer->update_web_data();
-
-        */
 
         return $website_user_log_key;
 
@@ -433,51 +396,6 @@ class WebAuth {
             $this->db->exec($sql);
 
 
-            if ($customer_key) {
-
-
-                /*
-
-                $customer = new Customer($customer_key);
-                switch ($main_reason) {
-                    case('password'):
-                        $formatted_reason = _('wrong password');
-                        break;
-                    case('masterkey_used'):
-                        $formatted_reason = _('reset password link already used');
-                        break;
-                    case('masterkey_expired'):
-                        $formatted_reason = _('reset password link expired');
-                        break;
-                    default:
-                        $formatted_reason =$main_reason;
-                }
-
-                $details = '
-				<div class="table">
-				<tr><td style="width:120px">'._('Time').':</div><div>'.strftime("%c", strtotime($date.' +00:00')).'</div></div>
-				<div class="field tr"><div>'._('Handle').':</div><div>'.$handle.'</div></div>
-				<div class="field tr"><div>'._('IP Address').':</div><div>'.$ip.'</div></div>
-			    <div class="field tr"><div>'._('User Agent').':</div><div>'.(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '').'</div></div>
-				</div>';
-
-                $history_data = array(
-                    'Date'            => $date,
-                    'Site Key'        =>$website_key,
-                    'Note'            => _('Failed Login')." ($formatted_reason) ip:".$ip,
-                    'Details'         => $details,
-                    'Action'          => 'fail_login',
-                    'Preposition'     => 'because',
-                    'Indirect Object' => $main_reason,
-                    'User Key'        => $website_user_key
-                );
-
-                $customer->add_history_login($history_data);
-                $customer->update_web_data();
-
-                */
-
-            }
 
 
         }

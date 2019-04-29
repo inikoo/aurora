@@ -56,19 +56,7 @@ label: "{t}Customer{/t}",
 sortType: "toggle",
 editable: false,
 cell: Backgrid.HtmlCell.extend({})
-}, {
-name: "dispatch_state",
-label: "{t}Status{/t}",
-editable: false,
-sortType: "toggle",
-cell: "html"
-}, {
-name: "payment_state",
-label: "{t}Payment{/t}",
-editable: false,
-sortType: "toggle",
-cell: "html"
-}, {
+},{
 name: "total_amount",
 label: "{t}Total{/t}",
 editable: false,

@@ -93,6 +93,22 @@ switch ($tipo) {
         );
         publish_email_template($data, $editor, $smarty, $db);
         break;
+
+    case 'auto_save_email_template':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'subject'            => array('type' => 'string'),
+                         'json'               => array('type' => 'string'),
+                         'text'               => array('type' => 'string'),
+                         'html'               => array('type' => 'html'),
+                         'email_template_key' => array('type' => 'key'),
+
+
+                     )
+        );
+        auto_save_email_template($data, $editor, $smarty, $db);
+        break;
+
     case 'save_email_template_text_part':
         $data = prepare_values(
             $_REQUEST, array(
@@ -360,7 +376,21 @@ function send_test_email($data, $smarty) {
     }
 
 
-    $client = SesClient::factory(
+
+    $ses_clients   = array();
+    /*
+    $ses_clients[] = SesClient::factory(
+        array(
+            'version'     => 'latest',
+            'region'      => 'us-east-1',
+            'credentials' => [
+                'key'    => AWS_ACCESS_KEY_ID,
+                'secret' => AWS_SECRET_ACCESS_KEY,
+            ],
+        )
+    );
+        */
+    $ses_clients[] = SesClient::factory(
         array(
             'version'     => 'latest',
             'region'      => 'eu-west-1',
@@ -491,9 +521,19 @@ function send_test_email($data, $smarty) {
     }, $request['Message']['Body']['Html']['Data']
     );
 
+    //print_r($ses_clients);
+
+    //print array_rand($ses_clients);
+
 
     try {
-        $result    = $client->sendEmail($request);
+
+
+
+
+        $ses_client = $ses_clients[0];
+
+        $result    = $ses_client->sendEmail($request);
         $messageId = $result->get('MessageId');
         $response  = array(
             'state'           => 200,
@@ -607,6 +647,53 @@ function save_email_template_text_part($data, $editor, $smarty, $db) {
 
 
 }
+
+
+
+
+
+function auto_save_email_template($data, $editor, $smarty, $db) {
+
+
+    $email_template         = get_object('Email_Template', $data['email_template_key']);
+    $email_template->editor = $editor;
+
+
+    $email_template->fast_update(
+        array(
+            'Email Template Editing JSON'   => $data['json'],
+            'Email Template HTML'           => $data['html'],
+            'Email Template Subject'        => $data['subject'],
+            'Email Template Text'           => $data['text'],
+            'Email Template Last Edited'    => gmdate('Y-m-d H:i:s'),
+            'Email Template Last Edited By' => $editor['Author Key']
+        )
+    );
+
+
+    $checksum = md5(($email_template->get('Email Template Type') == 'Text' ? '' : $email_template->get('Email Template Editing JSON')).'|'.$email_template->get('Email Template Text').'|'.$email_template->get('Email Template Subject'));
+    $email_template->fast_update(array('Email Template Editing Checksum' => $checksum));
+
+
+    $smarty->assign('data', $email_template->get('Published Info'));
+
+    $response = array(
+        'state'               => 200,
+        'email_template_info' => $smarty->fetch('email_template.control.info.tpl'),
+        'published'           => ($email_template->get('Email Template Editing Checksum') == $email_template->get('Email Template Published Checksum') ? true : false)
+
+
+    );
+
+
+    echo json_encode($response);
+
+
+
+}
+
+
+
 
 function publish_email_template($data, $editor, $smarty, $db) {
 

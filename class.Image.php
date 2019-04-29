@@ -14,7 +14,7 @@
 */
 
 
-class Image {
+class Image extends DB_Table{
 
     var $id = false;
     var $im = "";
@@ -26,7 +26,6 @@ class Image {
     var $new = false;
     var $deleted = false;
     var $found_key = 0;
-    var $delete_source_file = false;
 
 
     public $editor = array(
@@ -46,6 +45,10 @@ class Image {
         } else {
             $this->db = $_db;
         }
+
+        $this->table_name    = 'Image';
+        $this->ignore_fields = array('Image Key');
+
 
         $this->tmp_path       = 'server_files/tmp/';
         $this->found          = false;
@@ -200,56 +203,90 @@ class Image {
 
     function create($data) {
 
+//ALTER TABLE `Image Dimension` ADD `Image MIME Type` ENUM('image/jpeg', 'image/png','image/gif','image/x-icon') NULL DEFAULT NULL AFTER `Image Key`, ADD INDEX (`Image MIME Type`);
+
+
 
 
         $tmp_file = $data['upload_data']['tmp_name'];
-        unset($data['upload_data']);
+        //unset($data['upload_data']);
         $data['Image File Size'] = filesize($tmp_file);
 
-        $data['Image File Format'] = $this->guess_file_format($tmp_file);
-        $im                        = $this->get_image_from_file($data['Image File Format'], $tmp_file);
-        if (!$im) {
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+
+        $whitelist_type= array('image/jpeg', 'image/png','image/gif','image/x-icon');
+
+        if (!in_array($file_mime=$finfo->file($tmp_file), $whitelist_type)) {
+            $this->error=true;
+            $this->msg = _("Uploaded file is not an valid image format").' '.$file_mime;
+            return;
+        }
+
+        $data['Image MIME Type'] = $file_mime;
+
+        $size_data = getimagesize($tmp_file);
+
+        if(!$size_data){
+            $this->error=true;
+            $this->msg = _("Error opening the image").', '._('please contact support');
             return;
         }
 
 
-        $data['Image Width']  = imagesx($im);
-        $data['Image Height'] = imagesy($im);
+
+        $data['Image Width'] =$size_data[0];
+        $data['Image Height'] =$size_data[1];
 
 
-        if ($data['Image File Format'] == 'gif' and $this->is_animated_gif($tmp_file)) {
-            $data['Image Data'] = file_get_contents($tmp_file);
-        } else {
-            $data['Image Data'] = $this->get_image_blob($im, $data['Image File Format']);
+        if($data['Image Width']==0 or $data['Image Height']==0){
+            $this->error=true;
+            $this->msg = _("Image is not supported").', '._('please contact support');
+
+            return;
         }
 
 
-
-        $keys   = '(';
-        $values = 'values(';
-        foreach ($data as $key => $value) {
-            $keys .= "`$key`,";
-            if ($key == 'Image Data') {
-                $values .= "'".addslashes($value)."',";
-            } else {
-                $values .= prepare_mysql($value).",";
-            }
+        switch($data['Image MIME Type']) {
+        case 'image/x-icon':
+            $file_extension='ico';
+            break;
+        default:
+            $file_extension=preg_replace('/image\//','',$data['Image MIME Type']);
         }
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
+
+        //print 'img/db/'.$data['Image File Checksum'][0].'/'.$data['Image File Checksum'][1].'/'.$data['Image File Checksum'].'.'.$file_extension;
+
+        rename($tmp_file,'img/db/'.$data['Image File Checksum'][0].'/'.$data['Image File Checksum'][1].'/'.$data['Image File Checksum'].'.'.$file_extension  );
+
+
+
+        $data['Last Modify Date']=gmdate('Y-n-d H:i:s');
+
+        print_r($data);
+        exit;
 
 
 
 
-        $sql    = sprintf(
-            "INSERT INTO `Image Dimension` %s %s", $keys, $values
+        $sql = sprintf(
+            "INSERT INTO `Image Dimension` (%s) values (%s)",
+            '`'.join('`,`', array_keys($this->data)).'`',
+            join(',', array_fill(0, count($this->data), '?'))
         );
 
+        $stmt = $this->db->prepare($sql);
+
+        $i = 1;
+        foreach ($this->data as $key => $value) {
+            $stmt->bindValue($i, $value);
+            $i++;
+        }
 
 
-        if ($this->db->exec($sql)) {
+        if ($stmt->execute()) {
             $this->id = $this->db->lastInsertId();
-            $this->im = $im;
+
+
 
             $this->new = true;
             $this->get_data('id', $this->id);
@@ -265,17 +302,8 @@ class Image {
         }
 
 
-        if ($this->delete_source_file) {
-            unlink($tmp_file);
-        }
 
 
-        $this->create_other_size_data();
-
-        $sql = sprintf(
-            "UPDATE `Image Dimension` SET `Last Modify Date`=NOW() WHERE `Image Key`=%d ", $this->id
-        );
-        $this->db->exec($sql);
 
 
     }

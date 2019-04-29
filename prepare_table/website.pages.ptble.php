@@ -15,7 +15,7 @@ $period_tag = get_interval_db_name($parameters['f_period']);
 $where = 'where true ';
 
 $table
-    = '`Page Store Dimension` PS left join `Page Store Data Dimension` PSD on (PS.`Page Key`=PSD.`Page Key`) left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) left join `Site Dimension` S on (S.`Site Key`=PS.`Page Site Key`) ';
+    = '`Page Store Dimension` PS left join `Page Store Data Dimension` PSD on (PS.`Page Key`=PSD.`Page Key`) left join `Page Dimension` P on (P.`Page Key`=PS.`Page Key`) left join `Website Dimension` S on (S.`Website Key`=PS.`Webpage Website Key`) ';
 
 switch ($parameters['parent']) {
     case('store'):

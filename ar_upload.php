@@ -722,6 +722,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
         );
 
+
         $image = $parent->add_image($image_data, $options);
 
 

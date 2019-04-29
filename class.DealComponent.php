@@ -746,7 +746,7 @@ class DealComponent extends DB_Table {
             // todo get only the orders affected by the deal
             default:
                 $sql = sprintf(
-                    "SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Version`=2 and `Store Key`=%d order by `Order Last Updated Date` desc ",
+                    "SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Key`=%d order by `Order Last Updated Date` desc ",
                     $this->data['Deal Component Store Key']
                 );
 

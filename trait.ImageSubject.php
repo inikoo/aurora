@@ -29,8 +29,7 @@ trait ImageSubject {
             'Image File Size'     => 0,
             'Image File Checksum' => '',
             'Image Filename'      => $raw_data['Image Filename'],
-            'Image File Format'   => '',
-            'Image Data'          => '',
+
 
             'upload_data' => $raw_data['Upload Data'],
             'editor'      => $this->editor
@@ -498,30 +497,8 @@ trait ImageSubject {
         );
 
 
-        //--- Migration -----
 
         if ($this->table_name == 'Category') {
-
-
-            if ($main_image_src == '/art/nopic.png') {
-                $main_image_src = 'art/nopic.png';
-            }
-
-            $main_image_src = preg_replace('/image_root/', 'image', $main_image_src);
-
-            $store = get_object('Store',$this->get('Category Store Key'));
-            if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
-
-
-                $sql = sprintf(
-                    'UPDATE `Product Family Dimension` SET `Product Family Main Image`=%s,`Product Family Main Image Key`=%d WHERE `Product Family Store Key`=%d AND `Product Family Code`=%s',
-
-                    prepare_mysql($main_image_src), $main_image_key, $this->get('Category Store Key'), prepare_mysql($this->get('Category Code'))
-                );
-                $this->db->exec($sql);
-
-
-            }
 
             $this->update_webpages();
 
@@ -535,15 +512,6 @@ trait ImageSubject {
 
         }
 
-        // -------------
-
-        /*
-        $page_keys=$this->get_pages_keys();
-        foreach ($page_keys as $page_key) {
-            $page=new Page($page_key);
-            $page->update_image_key();
-        }
-        */
         $this->updated = true;
 
     }

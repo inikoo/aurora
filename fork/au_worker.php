@@ -15,7 +15,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 require_once 'vendor/autoload.php';
 
 
-if (!preg_match('/bali|sasi|sakoi/', gethostname())) {
+if (!preg_match('/bali|sasi|sakoi|geko/', gethostname())) {
 
 
     $sentry_client = new Raven_Client('https://4d2a1ddba83a4fb896275d4e50ec066d@sentry.io/1433843');
@@ -55,7 +55,6 @@ include 'housekeeping.fork.php';
 include 'asset_sales.fork.php';
 include 'time_series.fork.php';
 include 'calculate_sales.fork.php';
-include 'migrate.fork.php';
 
 
 //$count_number_used = 0;
@@ -70,7 +69,6 @@ $worker->addFunction("au_housekeeping", "fork_housekeeping");
 $worker->addFunction("au_asset_sales", "fork_asset_sales");
 $worker->addFunction("au_time_series", "fork_time_series");
 $worker->addFunction("au_calculate_sales", "fork_calculate_sales");
-$worker->addFunction("au_migration", "fork_migration");
 
 
 $db      = false;

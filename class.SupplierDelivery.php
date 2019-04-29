@@ -796,13 +796,13 @@ class SupplierDelivery extends DB_Table {
         switch ($value) {
             case 'InProcess':
 
-                $this->update_field(
-                    'Supplier Delivery Dispatched Date', '', 'no_history'
+                $this->fast_update(
+                    array(
+                        'Supplier Delivery Dispatched Date'=> '',
+                        'Supplier Delivery State'=> $value,
+                    )
                 );
-                //$this->update_field('Supplier Delivery Estimated Receiving Date', '', 'no_history');
-                $this->update_field(
-                    'Supplier Delivery State', $value, 'no_history'
-                );
+
 
 
                 $sql = sprintf(
@@ -815,6 +815,7 @@ class SupplierDelivery extends DB_Table {
                 );
                 $this->db->exec($sql);
 
+                $this->update_supplier_parts();
 
                 $operations = array(
                     'delete_operations',
@@ -847,6 +848,8 @@ class SupplierDelivery extends DB_Table {
                 );
                 $this->db->exec($sql);
 
+
+                $this->update_supplier_parts();
 
                 $operations = array(
                     'cancel_operations',
@@ -926,6 +929,8 @@ class SupplierDelivery extends DB_Table {
 
                 }
 
+
+                $this->update_supplier_parts();
 
                 break;
             case 'Checked':
@@ -1075,6 +1080,9 @@ class SupplierDelivery extends DB_Table {
                     $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
                 );
                 $operations = array();
+
+                $this->update_supplier_parts();
+
                 break;
 
             default:
@@ -2015,7 +2023,6 @@ class SupplierDelivery extends DB_Table {
 
     function update_supplier_parts() {
 
-        include_once 'class.SupplierPart.php';
 
         $sql = sprintf(
             "SELECT `Supplier Part Key`,`Supplier Delivery Units` FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=%d", $this->id
@@ -2025,8 +2032,12 @@ class SupplierDelivery extends DB_Table {
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-                $supplier_part = new SupplierPart($row['Supplier Part Key']);
-                $supplier_part->update_next_supplier_shippment();
+                $supplier_part         = get_object('SupplierPart', $row['Supplier Part Key']);
+                $supplier_part->editor = $this->editor;
+                if (isset($supplier_part->part)) {
+                    $supplier_part->part->update_next_deliveries_data();
+                }
+
 
 
             }

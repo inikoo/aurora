@@ -408,18 +408,7 @@ $object_fields = array(
 
             ),
 
-            array(
-                'render'          => ($object->settings('data_entry_picking_aid') == 'Yes' ? true : false),
-                'class'           => 'data_entry_picking_aid_defaults',
-                'id'              => 'data_entry_picking_aid_default_number_boxes',
-                'edit'            => ($edit ? 'smallint_unsigned' : ''),
-                'value'           => $object->settings('data_entry_picking_aid_default_number_boxes'),
-                'formatted_value' => $object->get('data entry picking aid default number boxes'),
-                'label'           => _('Default number boxes'),
-                'required'        => false,
-                'type'            => ''
 
-            ),
 
         )
     ),

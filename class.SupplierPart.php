@@ -1937,10 +1937,6 @@ class SupplierPart extends DB_Table {
     }
 
 
-    function update_next_supplier_shippment() {
-
-    }
-
 
     function get_next_deliveries_data() {
 
@@ -2125,4 +2121,3 @@ WHERE POTF.`Supplier Part Key`=%d  AND  POTF.`Supplier Delivery Key` IS NULL AND
 }
 
 
-?>

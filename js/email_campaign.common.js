@@ -454,6 +454,53 @@ function send_test_email() {
 }
 
 
+
+
+function auto_save_email_template(jsonFile, htmlFile) {
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'auto_save_email_template')
+    ajaxData.append("email_template_key", $('#email_template_data').data('email_template_key'))
+    ajaxData.append("json", jsonFile)
+    ajaxData.append("html", htmlFile)
+    ajaxData.append("subject", $("#email_template_subject").val())
+    ajaxData.append("text", $("#email_template_text").val())
+
+
+    $.ajax({
+        url: "/ar_edit_email_template.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+
+                console.log(data)
+
+                $('#email_template_info').html(data.email_template_info)
+                if (data.published) {
+                    $('#publish_email_template_from_text_controls').addClass('super_discreet').removeClass('button')
+                } else {
+                    $('#publish_email_template_from_text_controls').removeClass('super_discreet').addClass('button')
+
+                }
+
+
+
+
+            } else if (data.state == '400') {
+
+            }
+
+
+        }, error: function () {
+
+        }
+    });
+
+}
+
+
 function save_email_template(jsonFile, htmlFile) {
 
 

@@ -67,7 +67,7 @@ if ($result = $db->query($sql)) {
 }
 
 
-$sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension`  left join `Store Dimension` on (`Deal Store Key`=`Store Key`) where `Store Version`=2 and `Deal Expiration Date` is not null  and `Deal Status` not in ('Finished') ");
+$sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension`  left join `Store Dimension` on (`Deal Store Key`=`Store Key`) where  `Deal Expiration Date` is not null  and `Deal Status` not in ('Finished') ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 

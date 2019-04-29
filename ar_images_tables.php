@@ -149,12 +149,12 @@ function images($_data, $db, $user) {
             $adata[] = array(
                 'id'          => (integer)$data['Image Subject Key'],
                 'image'       => sprintf(
-                    '<div class="tint"><img style="max-width:100px;height-width:50px" src="/image_root.php?id=%d&size=small" title="%s" /></div>', $data['Image Key'], $data['Image Filename']
+                    '<div class="tint"><img style="max-width:100px;height-width:50px" src="/image.php?id=%d&s=100x100" title="%s" /></div>', $data['Image Key'], $data['Image Filename']
                 ),
 
                 'preview'       => sprintf(
-                    '<a href="/image_root.php?id=%d&size=original" data-type="image" data-fancybox="group" data-caption="%s">
-                    <img  src="/image_root.php?id=%d&size=small"  style="max-width:100px;height-width:50px"  />
+                    '<a href="/image.php?id=%d&s=700x700" data-type="image" data-fancybox="group" data-caption="%s">
+                    <img  src="/image.php?id=%d&s=50x50"  style="max-width:100px;height-width:50px"  />
                  </a>',
                     $data['Image Key'],   $data['Image Subject Image Caption'],$data['Image Key']
                 ),

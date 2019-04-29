@@ -9,7 +9,7 @@
  
   color: #fff;
   background:
-    url('/{if $image_key}image_root.php?id={$image_key}&thumbnail=small{else}art/nopic.png{/if}') bottom right 15% no-repeat #46B6AC;
+    url('/{if $image_key}image.php?id={$image_key}&s=270x270{else}art/nopic.png{/if}') bottom right 15% no-repeat #46B6AC;
     background-color: #fff;
     background-size:contain;
 }

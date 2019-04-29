@@ -12,6 +12,7 @@
 
 function get_ip_geolocation($ip, $db) {
 
+
     if ($ip == '') {
         return array(
             false,
@@ -28,8 +29,13 @@ function get_ip_geolocation($ip, $db) {
             return $row;
         } else {
 
+            include 'keyring/currency_exchange_api_keys.php';
 
-            $access_key = 'e4300f0065502d1ee1cb6f674cc9d1b5';
+            $api_keys = $ip_geolocation_api_keys['ipstack'];
+
+
+            shuffle($api_keys);
+            $access_key = reset($api_keys);
 
             // Initialize CURL:
             $ch = curl_init('http://api.ipstack.com/'.$ip.'?access_key='.$access_key.'');
@@ -45,12 +51,13 @@ function get_ip_geolocation($ip, $db) {
             //print_r($api_result);
             $location = parse_geolocation_data($api_result);
             $sql      = sprintf(
-                "insert into kbase.`IP Geolocation` (IP,Latitude,Longitude,Location,`Country Code`,`Region Code`,`Region Name`,Town,`Postal Code`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)", prepare_mysql($ip), prepare_mysql($api_result['latitude']), prepare_mysql($api_result['longitude']),
-                prepare_mysql($location,false), prepare_mysql($api_result['country_code']), prepare_mysql($api_result['region_code']), prepare_mysql($api_result['region_name']), prepare_mysql($api_result['city']), prepare_mysql($api_result['zip'])
+                "insert into kbase.`IP Geolocation` (IP,Latitude,Longitude,Location,`Country Code`,`Region Code`,`Region Name`,Town,`Postal Code`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)", prepare_mysql($ip), prepare_mysql($api_result['latitude']),
+                prepare_mysql($api_result['longitude']), prepare_mysql($location, false), prepare_mysql($api_result['country_code']), prepare_mysql($api_result['region_code']), prepare_mysql($api_result['region_name']), prepare_mysql($api_result['city']),
+                prepare_mysql($api_result['zip'])
 
             );
 
-           // print "$sql\n";
+            // print "$sql\n";
 
 
             $db->exec($sql);
@@ -105,7 +112,7 @@ function parse_geolocation_data($api_result) {
                 '<img src="/art/flags/%s.gif" title="%s"> %s', strtolower($country->get('Country 2 Alpha Code')), $country->get('Country Name'), $location
             )
         );
-    } elseif($api_result['country_code']!='') {
+    } elseif ($api_result['country_code'] != '') {
         $location .= ' '.$api_result['country_name'].' ('.$api_result['country_code'].')';
     }
 

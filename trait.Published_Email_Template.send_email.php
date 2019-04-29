@@ -150,7 +150,7 @@ trait Send_Email {
 
         $to_address = $recipient->get('Main Plain Email');
 
-        if (preg_match('/bali|sasi|sakoi/', gethostname())) {
+        if (preg_match('/bali|sasi|sakoi|geko/', gethostname())) {
             $to_address = 'raul@inikoo.com';
         }
 
@@ -181,8 +181,21 @@ trait Send_Email {
         $request['Message']['Body']['Html']['Data'] = $this->get_email_html($email_tracking, $recipient, $data, $smarty, $localised_labels);
 
 
-        if (!isset($this->ses_client)) {
-            $this->ses_client = SesClient::factory(
+        if (!isset($this->ses_clients)) {
+            $this->ses_clients=array();
+            /*
+            $this->ses_clients[] = SesClient::factory(
+                array(
+                    'version'     => 'latest',
+                    'region'      => 'us-east-1',
+                    'credentials' => [
+                        'key'    => AWS_ACCESS_KEY_ID,
+                        'secret' => AWS_SECRET_ACCESS_KEY,
+                    ],
+                )
+            );
+            */
+            $this->ses_clients[] = SesClient::factory(
                 array(
                     'version'     => 'latest',
                     'region'      => 'eu-west-1',
@@ -192,13 +205,19 @@ trait Send_Email {
                     ],
                 )
             );
+
         }
 
 
         try {
 
 
-            $result = $this->ses_client->sendEmail($request);
+
+            //$ses_client=$this->ses_clients[(rand(0,3)==0?0:1)];
+
+            $ses_client=$this->ses_clients[0];
+
+            $result = $ses_client->sendEmail($request);
 
 
             $email_tracking->fast_update(
@@ -355,8 +374,8 @@ trait Send_Email {
 
                                     'update_metadata' => array(
                                         'class_html' => array(
-                                            'Sent_Emails_Info'    => $email_campaign->get('Sent Emails Info'),
-                                            'Email_Campaign_Sent' => $email_campaign->get('Sent'),
+                                            '_Sent_Emails_Info'    => $email_campaign->get('Sent Emails Info'),
+                                            '_Email_Campaign_Sent' => $email_campaign->get('Sent'),
                                         )
                                     )
 

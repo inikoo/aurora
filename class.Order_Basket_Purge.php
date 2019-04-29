@@ -637,7 +637,7 @@ class Order_Basket_Purge extends DB_Table {
                 $this->update_metadata['show'] = array('estimated_orders_post_sent');
 
                 $this->update_metadata['show']                           = array('purged_data');
-                $this->update_metadata['class_html']['Sent_Emails_Info'] = $this->get('Purged Orders Info');
+                $this->update_metadata['class_html']['_Sent_Emails_Info'] = $this->get('Purged Orders Info');
 
 
                 break;

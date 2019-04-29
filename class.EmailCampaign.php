@@ -427,7 +427,32 @@ class EmailCampaign extends DB_Table {
                 return percentage($this->data['Email Campaign Hard Bounces'] + $this->data['Email Campaign Soft Bounces'], $this->data['Email Campaign Sent']);
 
                 break;
+            case 'Hard Bounces Percentage':
 
+                if ($this->data['Email Campaign Sent'] == 0) {
+                    return percentage(0, 1);
+                }
+
+                return percentage($this->data['Email Campaign Hard Bounces'] , $this->data['Email Campaign Sent']);
+
+                break;
+            case 'Soft Bounces Percentage':
+
+                if ($this->data['Email Campaign Sent'] == 0) {
+                    return percentage(0, 1);
+                }
+
+                return percentage( $this->data['Email Campaign Soft Bounces'], $this->data['Email Campaign Sent']);
+
+                break;
+
+
+            case 'Delivered':
+            case 'Open':
+            case 'Clicked':
+            case 'Sent':
+                return number($this->data[$this->table_name.' '.$key]);
+                break;
 
             default:
                 if (isset($this->data[$key])) {
@@ -1038,7 +1063,7 @@ class EmailCampaign extends DB_Table {
                 $this->update_metadata['hide'] = array('estimated_recipients_pre_sent');
                 $this->update_metadata['show'] = array('estimated_recipients_post_sent');
 
-                $this->update_metadata['class_html']['Sent_Emails_Info'] = $this->get('Sent Emails Info');
+                $this->update_metadata['class_html']['_Sent_Emails_Info'] = $this->get('Sent Emails Info');
 
 
                 break;

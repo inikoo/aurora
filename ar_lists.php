@@ -54,7 +54,8 @@ switch ($tipo) {
 function estimate_number_list_items($data, $db, $user, $smarty) {
 
 
-   // print_r($data);
+  // print_r($data);
+  // exit;
     $number_items = 0;
 
     switch ($data['object']) {
@@ -74,8 +75,8 @@ function estimate_number_list_items($data, $db, $user, $smarty) {
 
 
            // print_r($data);
-             //print $sql;
-
+          //   print $sql;
+//exit;
             if ($result = $db->query($sql)) {
                 if ($row = $result->fetch()) {
                     $number_items = $row['num'];

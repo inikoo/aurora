@@ -1290,7 +1290,7 @@ function create_refund($data, $editor, $smarty, $db) {
     $object->editor = $editor;
 
 
-    $refund = $object->create_refund($data['transactions']);
+    $refund = $object->create_refund(gmdate('Y-m-d H:i:s'),$data['transactions']);
 
 
     if ($refund->id) {

@@ -63,6 +63,8 @@ trait OrderItems {
         $delta_qty = $quantity;
 
 
+
+
         if (!in_array(
             $this->data['Order State'], array(
                                           'InProcess',
@@ -73,6 +75,7 @@ trait OrderItems {
         )) {
             return array(
                 'updated' => false,
+                'why'=>'Order State:'.$this->data['Order State']
 
             );
         }
@@ -103,6 +106,8 @@ trait OrderItems {
         );
 
 
+
+
         if ($dn_key) {
             $sql .= sprintf(' and `Delivery Note Key`=%d', $dn_key);
         }
@@ -110,6 +115,8 @@ trait OrderItems {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
+
 
 
                 $otf_key = $row['Order Transaction Fact Key'];
@@ -135,6 +142,8 @@ trait OrderItems {
 
                 if ($total_quantity == 0) {
 
+
+
                     $this->delete_transaction(
                         $row['Order Transaction Fact Key']
                     );
@@ -150,7 +159,7 @@ trait OrderItems {
                     $cost             = round($quantity * $product->get('Product Cost'), 4);
 
                     $sql = sprintf(
-                        "update`Order Transaction Fact` set  `Estimated Weight`=%s,`Order Quantity`=%f,`Order Bonus Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%.2f ,`Order Transaction Total Discount Amount`=%.2f,`Order Transaction Amount`=%.2f,`Current Dispatching State`=%s  ,`Cost Supplier`=%.4f where `Order Transaction Fact Key`=%d ",
+                        "update `Order Transaction Fact` set  `Estimated Weight`=%s,`Order Quantity`=%f,`Order Bonus Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%.2f ,`Order Transaction Total Discount Amount`=%.2f,`Order Transaction Amount`=%.2f,`Current Dispatching State`=%s  ,`Cost Supplier`=%.4f where `Order Transaction Fact Key`=%d ",
                         $estimated_weight, $quantity, $bonus_quantity, prepare_mysql(gmdate('Y-m-d H:i:s')), $gross, 0, $gross, prepare_mysql($data['Current Dispatching State']), $cost, $row['Order Transaction Fact Key']
 
                     );
@@ -209,21 +218,23 @@ trait OrderItems {
                     $cost             = round($total_quantity * $product->get('Product Cost'), 4);
 
                     $sql = sprintf(
-                        "INSERT INTO `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Invoice Currency Code`,`Estimated Weight`,`Order Date`,`Order Last Updated Date`,
+                        "INSERT INTO `Order Transaction Fact` ( `OTF Category Department Key`,`OTF Category Family Key`,  `Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Order Last Updated Date`,
 			`Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
-			`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,
-			`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`,`Delivery Note Key`,`Cost Supplier`,`Order Transaction Metadata`)
-VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
+			`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Quantity`,
+			`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Store Key`,`Units Per Case`,`Delivery Note Key`,`Cost Supplier`,`Order Transaction Metadata`)
+VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
 	%d,%d,%s,%d,%d,
-	%s,%s,%s,%s,%s,%s,
-	%.2f,%.2f,%.2f,%s,%s,%f,'',%s,%.4f,'{}')   ",
+	%s,%s,%s,%s,%s,
+	%.2f,%.2f,%.2f,%s,%f,%s,%.4f,'{}')   ",
 
-                        $bonus_quantity, prepare_mysql($order_type), $tax_rate, prepare_mysql($tax_code), prepare_mysql($this->data['Order Currency']), prepare_mysql($this->data['Order Currency']), $estimated_weight, prepare_mysql(gmdate('Y-m-d H:i:s')),
+                        prepare_mysql($product->get('Product Department Category Key')),prepare_mysql($product->get('Product Department Category Key')),
+                        $bonus_quantity, prepare_mysql($order_type), $tax_rate, prepare_mysql($tax_code), prepare_mysql($this->data['Order Currency']),  $estimated_weight, prepare_mysql(gmdate('Y-m-d H:i:s')),
 
                         prepare_mysql(gmdate('Y-m-d H:i:s')), $product->historic_id, $product->data['Product ID'], prepare_mysql($product->data['Product Code']), $product->data['Product Family Key'], $product->data['Product Main Department Key'],
-                        prepare_mysql($data['Current Dispatching State']), prepare_mysql($data['Current Payment State']), prepare_mysql($this->data['Order Customer Key']), prepare_mysql($this->data['Order Key']), prepare_mysql($this->data['Order Public ID']), $quantity,
-                        $gross, 0, $gross, prepare_mysql($data['Metadata'], false), prepare_mysql($this->data['Order Store Key']), $product->data['Product Units Per Case'], prepare_mysql($dn_key), $cost
+                        prepare_mysql($data['Current Dispatching State']), prepare_mysql($data['Current Payment State']), prepare_mysql($this->data['Order Customer Key']), prepare_mysql($this->data['Order Key']),  $quantity,
+                        $gross, 0, $gross,  prepare_mysql($this->data['Order Store Key']), $product->data['Product Units Per Case'], prepare_mysql($dn_key), $cost
                     );
+
 
 
                     $this->db->exec($sql);
@@ -289,14 +300,6 @@ VALUES (%f,%s,%f,%s,%s,%s,%s,%s,%s,
         }
 
 
-        if (array_key_exists('Supplier Metadata', $data)) {
-
-            $sql = sprintf(
-                "update`Order Transaction Fact` set  `Supplier Metadata`=%s  where `Order Transaction Fact Key`=%d ", prepare_mysql($data['Supplier Metadata']), $otf_key
-
-            );
-            $this->db->exec($sql);
-        }
 
 
         if (!$this->skip_update_after_individual_transaction) {

@@ -354,10 +354,9 @@ class Product extends Asset {
             require_once 'utils/new_fork.php';
 
             $account = get_object('Account', 1);
-            //todo : no need for the version if after migration
 
             $store = get_object('Store', $this->get('Product Store Key'));
-            if ($store->get('Store Version') >= 2) { //todo Checked ok
+            if ($store->get('Store Type') != 'External') {
                 new_housekeeping_fork(
                     'au_housekeeping', array(
                     'type'       => 'product_price_updated',
@@ -1271,6 +1270,7 @@ class Product extends Asset {
 
         $part_objects = $this->get_parts('objects');
 
+
         foreach ($part_objects as $part) {
             if ($part->get('Part Status') == 'Discontinuing') {
                 $status = 'Discontinuing';
@@ -1299,7 +1299,6 @@ class Product extends Asset {
 
 
         }
-
 
         $this->update_availability();
 
@@ -1489,6 +1488,11 @@ class Product extends Asset {
 
     function update_web_state($use_fork = true) {
 
+        $store = get_object('Store', $this->get('Product Store Key'));
+
+        if ($store->get('Store Type') == 'External') {
+            return;
+        }
 
         include_once('class.Category.php');
 
@@ -1588,19 +1592,6 @@ class Product extends Asset {
                 $this->db->exec($sql);
 
             }
-            // todo: remove after migration
-
-            if ($web_availability == 'Yes') {
-                $sql = sprintf(
-                    "UPDATE `Email Site Reminder Dimension` SET `Email Site Reminder State`='Ready' WHERE `Email Site Reminder State`='Waiting' AND `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d ", $this->id
-                );
-
-            } else {
-                $sql = sprintf(
-                    "UPDATE `Email Site Reminder Dimension` SET `Email Site Reminder State`='Waiting' WHERE `Email Site Reminder State`='Ready' AND `Trigger Scope`='Back in Stock' AND `Trigger Scope Key`=%d ", $this->id
-                );
-
-            }
 
             $this->db->exec($sql);
 
@@ -1633,38 +1624,19 @@ class Product extends Asset {
         }
 
 
-        //todo remove this after migration (Store version stuff)
-        $store = get_object('Store', $this->get('Product Store Key'));
-        if ($use_fork or $store->get('Store Version') == 1) { //todo checked ok
+        if ($use_fork) {
             include_once 'utils/new_fork.php';
             $account = new Account($this->db);
 
-            if ($store->get('Store Version') == 1) { //todo checked ok
-                $msg = new_fork(
-                    'housekeeping', array(
-                    'type'       => 'product_web_state',
-                    'product_id' => $this->id,
-                    'wa'         => $web_availability,
-                    'wa_updated' => $web_availability_updated,
-                    'from'       => 'aurora_update_web_state'
 
-                ), $account->get('Account Code'), $this->db
-                );
-
-            } else {
-
-
-                $msg = new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'                     => 'update_web_state_slow_forks',
-                    'web_availability_updated' => $web_availability_updated,
-                    'product_id'               => $this->id,
-                    'editor'                   => $this->editor
-                ), $account->get('Account Code')
-                );
-
-
-            }
+            $msg = new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'                     => 'update_web_state_slow_forks',
+                'web_availability_updated' => $web_availability_updated,
+                'product_id'               => $this->id,
+                'editor'                   => $this->editor
+            ), $account->get('Account Code')
+            );
 
 
         } else {
@@ -1863,12 +1835,7 @@ class Product extends Asset {
             if ($webpage_to_reindex_key > 0) {
                 $sql = sprintf(
                     'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
-                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
-                    prepare_mysql($date),
-                    prepare_mysql($date),
-                    prepare_mysql('reindex_webpage'),
-                    $webpage_to_reindex_key,
-                    prepare_mysql($date)
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('reindex_webpage'), $webpage_to_reindex_key, prepare_mysql($date)
 
                 );
                 $this->db->exec($sql);
@@ -2096,30 +2063,8 @@ class Product extends Asset {
             $sales_data['repeat_customers'] = $this->get_customers_total_data();
         }
 
-        // todo quick hack before migration is done
 
-        $store=get_object('Store',$this->data['Product Store Key']);
 
-        if ($store->get('Store Version') == 1) {
-            $sql = sprintf(
-                "SELECT
-		ifnull(count(DISTINCT `Customer Key`),0) AS customers,
-		ifnull(count(DISTINCT `Invoice Key`),0) AS invoices,
-		round(ifnull(sum( `Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount` +(  `Cost Supplier`/`Invoice Currency Exchange Rate`)  ),0),2) AS profit,
-		round(ifnull(sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`),0),2) AS net ,
-		round(ifnull(sum(`Shipped Quantity`),0),1) AS delivered,
-		round(ifnull(sum(`Order Quantity`),0),1) AS ordered,
-		round(ifnull(sum(`Invoice Quantity`),0),1) AS invoiced,
-		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net,
-		round(ifnull(sum((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Cost Supplier`)*`Invoice Currency Exchange Rate`),0),2) AS dc_profit
-		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` IS NOT NULL AND  `Product ID`=%d %s %s ", $this->id, ($from_date ? sprintf(
-                'and `Invoice Date`>=%s', prepare_mysql($from_date)
-            ) : ''), ($to_date ? sprintf(
-                'and `Invoice Date`<%s', prepare_mysql($to_date)
-            ) : '')
-
-            );
-        } else {
             $sql = sprintf(
                 "SELECT
 		ifnull(count(DISTINCT `Customer Key`),0) AS customers,
@@ -2138,7 +2083,7 @@ class Product extends Asset {
             ) : '')
 
             );
-        }
+
 
         //print "$sql\n";
 
@@ -2426,7 +2371,6 @@ class Product extends Asset {
             foreach ($result as $row) {
 
 
-
                 if (($row['Part Current On Hand Stock'] <= 0 or $row['Part Current On Hand Stock'] == '') and $row['Part Next Shipment Date'] == '') {
                     $next_delivery_time = 0;
 
@@ -2452,9 +2396,8 @@ class Product extends Asset {
             $old_value = $this->data['Product Next Supplier Shipment'];
 
 
-
             $new_value = (!$next_delivery_time ? '' : gmdate('Y-m-d H:i:s', $next_delivery_time));
-            if ($old_value != $new_value ) {
+            if ($old_value != $new_value) {
                 $this->fast_update(
                     array(
                         'Product Next Supplier Shipment' => $new_value
@@ -2690,6 +2633,7 @@ class Product extends Asset {
 
                     $this->get_data('id', $this->id);
                     $this->updated = $part->updated;
+
                     return;
 
                 }
@@ -2708,6 +2652,7 @@ class Product extends Asset {
 
                     $this->get_data('id', $this->id);
                     $this->updated = $part->updated;
+
                     return;
 
                 }
@@ -2752,7 +2697,7 @@ class Product extends Asset {
             case 'Product Unit Dimensions':
 
 
-//                print $field."\n";
+                //                print $field."\n";
 
                 include_once 'utils/parse_natural_language.php';
 
@@ -2796,8 +2741,6 @@ class Product extends Asset {
 
                 $this->update_field($tag.' Dimensions', $dim, $options);
                 $this->fast_update(array('Product Unit XHTML Dimensions' => $this->get('Unit Dimensions')));
-
-
 
 
                 $this->update_webpages();
@@ -3232,20 +3175,7 @@ class Product extends Asset {
 
                 break;
 
-            case 'Direct Product Family Category Key':
 
-                $this->update_field(
-                    'Product Family Category Key', $value, 'no_history'
-                );
-
-                break;
-            case 'Direct Product Department Category Key':
-
-                $this->update_field(
-                    'Product Department Category Key', $value, 'no_history'
-                );
-
-                break;
             case 'Product Family Category Key':
 
 

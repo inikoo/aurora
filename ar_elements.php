@@ -105,12 +105,25 @@ switch ($tab) {
         get_webpages_by_state_element_numbers($db, $data['parameters'], $user, 'InProcess');
         break;
 
-    case 'website.ready_webpages':
-    case 'webpage_type.ready_webpages':
+    case 'webpage_type.in_process_webpages':
 
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
-        get_webpages_by_state_element_numbers($db, $data['parameters'], $user, 'Ready');
+        get_webpages_by_state_element_numbers($db, $data['parameters'], $user, 'InProcess');
         break;
+
+    case 'orders.in_process.paid':
+    case 'orders.in_process.not_paid':
+    case 'orders.in_warehouse_no_alerts':
+    case 'orders.in_warehouse_with_alerts':
+    case 'orders.packed_done':
+    case 'orders.approved':
+    case 'orders.dispatched_today':
+    case 'orders.website':
+
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_orders_control_panel_numbers($tab,$db, $data['parameters'], $user, $account);
+        break;
+
 
     case 'website.nodes':
         $data = prepare_values(
@@ -131,7 +144,7 @@ switch ($tab) {
     case 'deals':
     case 'vouchers':
 
-    $data = prepare_values(
+        $data = prepare_values(
             $_REQUEST, array('parameters' => array('type' => 'json array'))
         );
         get_deals_element_numbers($db, $data['parameters'], $user);
@@ -1927,39 +1940,6 @@ function get_invoices_element_numbers($db, $parameters) {
 
         $store_key = $category->data['Category Store Key'];
 
-    } elseif ($parameters['parent'] == 'list') {
-        $sql = sprintf(
-            "SELECT * FROM `List Dimension` WHERE `List Key`=%d", $parameters['parent_key']
-        );
-
-        $res = mysql_query($sql);
-        if ($list_data = mysql_fetch_assoc($res)) {
-            $parameters['awhere'] = false;
-            $store_key            = $list_data['List Parent Key'];
-            if ($list_data['List Type'] == 'Static') {
-                $table      = '`List Invoice Bridge` OB left join `Invoice Dimension` I  on (OB.`Invoice Key`=I.`Invoice Key`)';
-                $where_type = sprintf(
-                    ' and `List Key`=%d ', $parameters['parent_key']
-                );
-
-            } else {// Dynamic by DEFAULT
-
-
-                $tmp = preg_replace('/\\\"/', '"', $list_data['List Metadata']);
-                $tmp = preg_replace('/\\\\\"/', '"', $tmp);
-                $tmp = preg_replace('/\'/', "\'", $tmp);
-
-                $raw_data = json_decode($tmp, true);
-
-                //$raw_data['store_key']=$store;
-                list($where, $table) = invoices_awhere($raw_data);
-
-
-            }
-
-        } else {
-            exit("error");
-        }
     } elseif ($parameters['parent'] == 'store') {
         if (is_numeric($parameters['parent_key']) and in_array(
                 $parameters['parent_key'], $user->stores
@@ -1967,8 +1947,7 @@ function get_invoices_element_numbers($db, $parameters) {
             $where = sprintf(
                 ' where  `Invoice Store Key`=%d ', $parameters['parent_key']
             );
-            $store    = get_object('Store',$parameters['parent_key']);
-
+            $store = get_object('Store', $parameters['parent_key']);
 
 
             $currency = $store->data['Store Currency Code'];
@@ -3600,4 +3579,130 @@ function get_category_deal_components_element_numbers($db, $data, $user) {
 }
 
 
-?>
+function get_orders_control_panel_numbers($tipo, $db, $data, $user, $account) {
+
+
+    $elements_numbers = array(
+        'location' => array(
+            'Domestic' => 0,
+            'Export'   => 0,
+
+        )
+
+    );
+
+
+    switch ($tipo) {
+        case 'orders.website':
+            $where = 'where `Order State`="InBasket" ';
+            break;
+        case 'orders.in_process.paid':
+            $where = 'where `Order State`="InProcess"  and `Order To Pay Amount`<=0 ';
+            break;
+        case 'orders.in_process.not_paid':
+            $where = 'where `Order State`="InProcess"   and `Order To Pay Amount`>0 ';
+            break;
+        case 'orders.in_warehouse_no_alerts':
+            $where = 'where (`Order State`="InWarehouse" or `Order Replacement State`="InWarehouse"  ) and `Order Delivery Note Alert`!="Yes" ';
+
+            break;
+        case 'orders.in_warehouse_with_alerts':
+            $where = 'where (`Order State`="InWarehouse" or `Order Replacement State`="InWarehouse"  ) and `Order Delivery Note Alert`="Yes" ';
+            break;
+        case 'orders.packed_done':
+            $where = 'where  (`Order State`="PackedDone" or `Order Replacement State`="PackedDone" ) ';
+            break;
+        case 'orders.approved':
+            $where = 'where `Order State`="Approved"  ';
+            break;
+        case 'orders.dispatched_today':
+
+
+            $where =sprintf( 'where ((`Order State`="Dispatched" and `Order Dispatched Date`>%s ) or (`Order Replacement State`="Dispatched" and `Order Post Transactions Dispatched Date`>%s )) ',
+                             prepare_mysql(gmdate('Y-m-d 00:00:00')),  prepare_mysql(gmdate('Y-m-d 00:00:00'))
+
+            );
+            break;
+        default:
+            print $tipo;
+            exit;
+
+    }
+
+
+    if ($data['parent'] == 'store') {
+        if (is_numeric($data['parent_key']) and in_array(
+                $data['parent_key'], $user->stores
+            )) {
+            $where .= sprintf(' and  `Order Store Key`=%d ', $data['parent_key']);
+
+            $store        = get_object('store', $data['parent_key']);
+            $home_country = $store->get('Store Home Country Code 2 Alpha');
+
+        } else {
+            $where .= sprintf(' and  false');
+        }
+
+
+    } elseif ($data['parent'] == 'account') {
+
+        $home_country = $account->get('Account Country 2 Alpha Code');
+
+        if (is_numeric($data['parent_key']) and in_array($data['parent_key'], $user->stores)) {
+
+            if (count($user->stores) == 0) {
+                $where .= ' and false';
+            } else {
+
+                $where .= sprintf('and  `Order Store Key` in (%s)  ', join(',', $user->stores));
+            }
+        }
+    }
+
+
+    $sql = "select count(*) as number from `Order Dimension` O $where and `Order Invoice Address Country 2 Alpha Code`!=? ";
+//print $sql;
+
+
+    $stmt = $db->prepare($sql);
+    if ($stmt->execute(
+        array(
+            $home_country
+        )
+    )) {
+        while ($row = $stmt->fetch()) {
+            $elements_numbers['location']['Export'] = number($row['number']);
+
+        }
+    } else {
+        print_r($error_info = $stmt->errorInfo());
+        exit();
+    }
+
+
+    $sql = "select count(*) as number from `Order Dimension` O $where and `Order Invoice Address Country 2 Alpha Code`=?  ";
+
+
+    $stmt = $db->prepare($sql);
+    if ($stmt->execute(
+        array(
+            $home_country
+        )
+    )) {
+        while ($row = $stmt->fetch()) {
+            $elements_numbers['location']['Domestic'] = number($row['number']);
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit();
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+}

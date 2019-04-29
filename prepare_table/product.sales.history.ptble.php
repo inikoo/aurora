@@ -56,19 +56,13 @@ if ($order == 'date') {
 
 $sql_totals = "select count(Distinct $sql_totals_fields) as num from $table  $where  ";
 
-if ($store->get('Store Version') == 1) {
-    $fields = "`Invoice Date` as `Date`,
-sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as sales,
-count(distinct `Invoice Key`) as invoices,
-count(distinct `Customer Key`) as customers
-";
-} else {
+
     $fields = "`Invoice Date` as `Date`,
 sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as sales,
 count(distinct `Invoice Key`) as invoices,
 count(distinct `Customer Key`) as customers
 ";
-}
+
 
 
 ?>

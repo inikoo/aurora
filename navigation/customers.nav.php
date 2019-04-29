@@ -1333,7 +1333,7 @@ function get_customer_navigation($data, $smarty, $user, $db) {
     //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit customer'), 'url'=>'edit_customer.php?id='.$customer->id);
     //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('History note'), 'id'=>'note');
     //$right_buttons[]=array('icon'=>'paperclip', 'title'=>_('Attachement'), 'id'=>'attach');
-    if ($store->get('Store Version') >= 2) {
+    if ($store->get('Store Type') !='External') {
         $right_buttons[] = array(
             'icon'  => 'shopping-cart',
             'title' => _('New order'),

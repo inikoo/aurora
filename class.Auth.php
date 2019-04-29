@@ -20,7 +20,6 @@ class Auth {
     var $user_key = false;
     var $authentication_type = false;
     var $user_log_key = 0;
-    var $site_key = 0;
     var $handle = '';
     var $remember = false;
     private $status = false;
@@ -60,12 +59,7 @@ class Auth {
                 $this->user_type       = "'Administrator','Staff','Warehouse','Contractor','Supplier','Agent'";
                 $this->where_user_type = " and `User Type` in ('Administrator','Staff','Warehouse','Contractor','Supplier','Agent')";
                 break;
-            case 'website':
-                $this->user_type       = "'Customer'";
-                $this->where_user_type = sprintf(
-                    " and `User Type`='Customer' and `User Site Key`=%d ", $page_key
-                );
-                break;
+
 
         }
 
@@ -184,8 +178,8 @@ class Auth {
         $ip   = ip();
         $date = gmdate('Y-m-d H:i:s');
         $sql  = sprintf(
-            "INSERT INTO `User Log Dimension` (`User Key`,`Session ID`, `IP`, `Start Date`,`Last Visit Date`, `Logout Date`,`Remember Cookie`,`Site Key`) VALUES (%d, %s, %s, %s,%s, %s,%s,%d)",
-            $this->user_key, prepare_mysql(session_id()), prepare_mysql($ip), prepare_mysql($date), prepare_mysql($date), 'NULL', prepare_mysql(($this->remember ? 'Yes' : 'No')), $this->site_key
+            "INSERT INTO `User Log Dimension` (`User Key`,`Session ID`, `IP`, `Start Date`,`Last Visit Date`, `Logout Date`) VALUES (%d, %s, %s, %s,%s, %s)",
+            $this->user_key, prepare_mysql(session_id()), prepare_mysql($ip), prepare_mysql($date), prepare_mysql($date), 'NULL'
         );
 
 

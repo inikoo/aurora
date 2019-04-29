@@ -20,8 +20,8 @@ function get_invoice_showcase($data, $smarty, $user, $db) {
     }
 
 
-    $data['_object']->update_payments_totals();
 
+    $data['_object']->update_payments_totals();
 
     $smarty->assign('invoice', $data['_object']);
 

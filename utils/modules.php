@@ -1031,9 +1031,10 @@ $modules = array(
 
 
             'dashboard' => array(
-                'type' => 'navigation',
-                'label' => _('Control panel'),
-                'icon' => 'angle-double-right',
+
+                'type'      => 'navigation',
+                'label'     => _('Control panel'),
+                'icon'      => 'stream',
                 'reference' => 'orders/%d/dashboard',
                 'tabs' => array(
                     'orders.dashboard' => array('label' => _('Dashboard'))
@@ -1465,9 +1466,10 @@ $modules = array(
             ),
 
             'dashboard' => array(
-                'type' => 'navigation',
-                'label' => _('Control panel'),
-                'icon' => 'angle-double-right',
+
+                'type'      => 'navigation',
+                'label'     => _('Control panel'),
+                'icon'      => 'stream',
                 'reference' => 'orders/all/dashboard',
                 'tabs' => array(
                     'orders_server.dashboard' => array('label' => _('Dashboard'))
@@ -1521,7 +1523,83 @@ $modules = array(
 
 
                 )
-            )
+            ),
+            'order'   => array(
+                'type' => 'object',
+                'tabs' => array(
+
+
+                    'order.items'        => array(
+                        'label' => _(
+                            'Items'
+                        ),
+                        'icon'  => 'bars'
+                    ),
+                    'order.all_products' => array(
+                        'label' => _("All products"),
+                        'icon'  => 'th-list'
+                    ),
+
+                    'order.customer_history' => array(
+                        'label' => _('Customer notes/history'),
+                        'icon'  => 'user-tag'
+                    ),
+
+
+                    'order.payments' => array(
+                        'label' => _('Payments'),
+                        'icon'  => 'dollar-sign'
+                    ),
+
+
+                    'order.history'        => array(
+                        'label' => '',
+                        'title' => _('History'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+                    'order.delivery_notes' => array(
+                        'label' => '',
+                        'title' => _('Delivery notes'),
+                        'icon'  => 'truck',
+                        'class' => 'right icon_only'
+                    ),
+                    'order.invoices'       => array(
+                        'label' => '',
+                        'title' => _('Invoices'),
+                        'icon'  => 'file-alt',
+                        'class' => 'right icon_only'
+                    ),
+                    'order.deals'          => array(
+                        'label' => '',
+                        'title' => _('Discounts'),
+                        'icon'  => 'tag',
+                        'class' => 'right icon_only'
+                    ),
+
+                    'order.sent_emails' => array(
+                        'title' => _('Sent emails'),
+                        'label' => '',
+                        'icon'  => 'envelope',
+                        'class' => 'right icon_only'
+                    ),
+                    'order.details'     => array(
+                        'label' => '',
+                        'title' => _('Data'),
+                        'icon'  => 'database',
+                        'class' => 'right icon_only'
+                    ),
+
+                    'order.input_picking_sheet' => array(
+                        'label' => _('Picking/Packing data entry'),
+                        'icon'  => 'keyboard',
+                        'class' => 'hide'
+                    ),
+
+
+                )
+
+            ),
 
         )
 

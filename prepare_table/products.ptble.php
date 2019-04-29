@@ -42,44 +42,7 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 
 
 switch ($parameters['parent']) {
-    case('list'):
 
-        $sql = sprintf(
-            "SELECT * FROM `List Dimension` WHERE `List Key`=%d", $_REQUEST['parent_key']
-        );
-
-        $res = mysql_query($sql);
-        if ($customer_list_data = mysql_fetch_assoc($res)) {
-            $awhere = false;
-            if ($customer_list_data['List Type'] == 'Static') {
-
-                $table
-                       = '`List Product Bridge` PB left join `Product Dimension` P  on (PB.`Product ID`=P.`Product ID`) left join `Product Data Dimension` PD on (PD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`)';
-                $where = sprintf(
-                    ' where `List Key`=%d ', $_REQUEST['parent_key']
-                );
-
-            } else {// Dynamic by DEFAULT
-
-
-                $tmp = preg_replace(
-                    '/\\\"/', '"', $customer_list_data['List Metadata']
-                );
-                $tmp = preg_replace('/\\\\\"/', '"', $tmp);
-                $tmp = preg_replace('/\'/', "\'", $tmp);
-
-                $raw_data = json_decode($tmp, true);
-
-                $raw_data['store_key'] = $store;
-                list($where, $table) = product_awhere($raw_data);
-                $where = 'where true'.$where;
-            }
-
-        } else {
-            exit("error");
-        }
-
-        break;
     case('stores'):
     case('account'):
         $where = sprintf(
@@ -585,17 +548,6 @@ function product_awhere($awhere) {
     $where .= $date_interval_from['mysql'].$date_interval_to['mysql'];
 
 
-    /*
-
-    $where_billing_geo_constraints='';
-    if ($where_data['billing_geo_constraints']!='') {
-        $where_billing_geo_constraints=sprintf(" and `Order Billing To Country 2 Alpha Code`='%s'",$where_data['billing_geo_constraints']);
-    }
-
-
-    */
-
-    //print $table. $where; exit;
 
     return array(
         $where,
@@ -604,4 +556,3 @@ function product_awhere($awhere) {
 }
 
 
-?>

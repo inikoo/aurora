@@ -34,12 +34,12 @@ cell: "string"
 {
 name: "checked",
 label:'',
-html_label: '<i class="fa fa-square" style="margin-left:3.5px" aria-hidden="true"></i>',
+html_label: '',
 headerCell: HeaderHtmlCell,
 editable: false,
-sortType: "toggle",
+sortable: false,
 cell: Backgrid.HtmlCell.extend({
-className: "width_20"
+className: "width_30 align_center"
 })
 
 
@@ -68,12 +68,6 @@ label: "{t}Customer{/t}",
 sortType: "toggle",
 editable: false,
 cell: Backgrid.HtmlCell.extend({})
-}, {
-name: "dispatch_state",
-label: "{t}Status{/t}",
-editable: false,
-sortType: "toggle",
-cell: "html"
 }, {
 name: "payment_state",
 label: "{t}Payment{/t}",

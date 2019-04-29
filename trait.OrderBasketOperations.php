@@ -35,7 +35,7 @@ trait OrderBasketOperations {
 
 
         $this->data['Order Type'] = $data['Order Type'];
-        if (isset($data['Order Date'])) {
+        if (!empty($data['Order Date'])) {
             $this->data['Order Date'] = $data['Order Date'];
 
         } else {
@@ -277,7 +277,7 @@ trait OrderBasketOperations {
 		`Date`,`Order Transaction Key`,`Site Key`,`Store Key`,`Customer Key`,`Order Key`,`Page Key`,`Product ID`,`Quantity Delta`,`Quantity`,`Net Amount Delta`,`Net Amount`,`Page Store Section Type`)
 	VALUE (%s,%s,%d,%d,%d,%d,%d,%d,
 		%f,%f,%.2f,%.2f,%s
-		) ", prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($data['otf_key']), $this->data['Order Site Key'], $this->data['Order Store Key'], $this->data['Order Customer Key'], $this->id,
+		) ", prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($data['otf_key']), $this->data['Order Website Key'], $this->data['Order Store Key'], $this->data['Order Customer Key'], $this->id,
             $data['Webpage Key'], $data['Product ID'], $data['Quantity Delta'], $data['Quantity'], $data['Net Amount Delta'], $data['Net Amount'], prepare_mysql($data['Page Store Section Type'])
 
 
