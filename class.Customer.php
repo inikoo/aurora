@@ -15,13 +15,11 @@
 */
 include_once 'class.Subject.php';
 include_once 'class.Order.php';
-//include_once 'class.Address.php';
 include_once 'class.Attachment.php';
 
 class Customer extends Subject {
     var $contact_data = false;
-    var $ship_to = array();
-    var $billing_to = array();
+
     var $fuzzy = false;
     var $tax_number_read = false;
     var $warning_messages = array();
@@ -169,19 +167,6 @@ class Customer extends Subject {
         $raw_data['Customer Sticky Note']          = '';
 
 
-        /*
-        //todo remove this in the DB after migration
-        unset($this->data['Customer Main Country Key']);
-        unset($this->data['Customer Main Delivery Address Country Key']);
-        unset($this->data['Customer Main Billing Address Country Key']);
-        unset($this->data['Customer Last Ship To Key']);
-        unset($this->data['Customer Active Ship To Records']);
-        unset($this->data['Customer Total Ship To Records']);
-        unset($this->data['Customer Last Billing To Key']);
-        unset($this->data['Customer Active Billing To Records']);
-        unset($this->data['Customer Total Billing To Records']);
-        unset($this->data['Customer Company Key']);
-*/
 
 
         $keys   = '';
@@ -258,8 +243,6 @@ class Customer extends Subject {
         }
 
 
-        //$this->update_full_search();
-        // $this->update_location_type();
 
     }
 
@@ -788,57 +771,6 @@ class Customer extends Subject {
 
     }
 
-    function update_full_search() {
-
-
-        $address_plain      = strip_tags($this->get('Contact Address'));
-        $first_full_search  = $this->data['Customer Name'].' '.$this->data['Customer Name'].' '.$address_plain.' '.$this->data['Customer Main Contact Name'].' '.$this->data['Customer Main Plain Email'];
-        $second_full_search = '';
-
-
-        //   $description = '';
-
-        if ($this->data['Customer Company Name'] != '') {
-            $name = '<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formatted_id().')<br/>'.$this->data['Customer Main Contact Name'];
-        } else {
-            $name = '<b>'.$this->data['Customer Name'].'</b> (Id:'.$this->get_formatted_id().')';
-
-        }
-        $name .= '<br/>'._('Orders').':<b>'.number(
-                $this->data['Customer Orders']
-            ).'</b>';
-
-
-        $_address = $this->data['Customer Main Plain Email'];
-
-        if ($this->data['Customer Preferred Contact Number Formatted Number'] != '') {
-            $_address .= '<br/>T: '.$this->data['Customer Preferred Contact Number Formatted Number'];
-        }
-        $_address .= '<br/>'.$this->data['Customer Main Location'];
-        if ($this->data['Customer Main Postal Code']) {
-            $_address .= ', '.$this->data['Customer Main Postal Code'];
-        }
-        $_address = preg_replace('/^\<br\/\>/', '', $_address);
-
-        $description = '<table ><tr style="border:none;"><td class="col1">'.$name.'</td><td class="col2">'.$_address.'</td></tr></table>';
-
-        //$sql=sprintf("select `Search Full Text Key` from `Search Full Text Dimension` where `Store Key`=%d,`Subject`='Customer',`Subject Key`=%d",
-        //
-        //,$this->data['Customer Store Key']
-        // ,$this->id
-        //);
-
-
-        $sql = sprintf(
-            "INSERT INTO `Search Full Text Dimension`  (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`)
-                     VALUES  (%s,%s,%d,%s,%s,%s,%s,%s) ON DUPLICATE KEY
-                     UPDATE `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s", $this->data['Customer Store Key'], prepare_mysql('Customer'), $this->id,
-            prepare_mysql($first_full_search), prepare_mysql($second_full_search), prepare_mysql($this->data['Customer Name']), prepare_mysql($description), "''", prepare_mysql($first_full_search), prepare_mysql($second_full_search),
-            prepare_mysql($this->data['Customer Name']), prepare_mysql($description), "''"
-        );
-        //print $sql;
-        $this->db->exec($sql);
-    }
 
     function update_location_type() {
 
@@ -904,7 +836,7 @@ class Customer extends Subject {
     }
 
 
-    function create_order() {
+    function create_order($options='{}') {
 
         global $account;
 
@@ -918,6 +850,11 @@ class Customer extends Subject {
 
         );
 
+        $options = json_decode($options,true);
+
+        if (!empty($options['date'])) {
+            $order_data['Order Date'] = $options['date'];
+        }
 
         $order_data['Order Customer Key']          = $this->id;
         $order_data['Order Customer Name']         = $this->data['Customer Name'];
@@ -980,6 +917,8 @@ class Customer extends Subject {
         $order_data['Order Currency']                 = $store->get('Store Currency Code');
         $order_data['Order Show in Warehouse Orders'] = $store->get('Store Show in Warehouse Orders');
         $order_data['public_id_format']               = $store->get('Store Order Public ID Format');
+
+
 
 
         $order = new Order('new', $order_data);
@@ -1058,11 +997,7 @@ class Customer extends Subject {
                     $website_user->update(array('Website User Password Hash' => password_hash(hash('sha256', $value), PASSWORD_DEFAULT, array('cost' => 12))), 'no_history');
                 }
 
-                // todo: remove after migration finished
 
-
-                $sql = sprintf('UPDATE `User Dimension` SET `User Password`=%s WHERE `User Type`="Customer" AND `User Parent Key`=%d  ', prepare_mysql(hash('sha256', $value)), $this->id);
-                $this->db->exec($sql);
 
 
                 break;
@@ -2166,87 +2101,7 @@ class Customer extends Subject {
 
     }
 
-    function add_history_order_suspended($order) {
-
-
-        date_default_timezone_set(TIMEZONE);
-        $tz_date         = strftime(
-            "%e %b %Y %H:%M %Z", strtotime($order->data ['Order Suspended Date']." +00:00")
-        );
-        $tz_date_created = strftime(
-            "%e %b %Y %H:%M %Z", strtotime($order->data ['Order Date']." +00:00")
-        );
-
-        date_default_timezone_set('GMT');
-
-        if (!isset($_SESSION ['lang'])) {
-            $lang = 0;
-        } else {
-            $lang = $_SESSION ['lang'];
-        }
-
-        switch ($lang) {
-            default :
-                $note = sprintf(
-                    'Order <a href="order.php?id=%d">%s</a> (Suspended)', $order->data ['Order Key'], $order->data ['Order Public ID']
-                );
-                if ($this->editor['Author Alias'] != '' and $this->editor['Author Key']) {
-                    $details = sprintf(
-                        '<a href="staff.php?id=%d&took_order">%s</a> suspended %s (<a href="customer.php?id=%d">%s</a>) order <a href="order.php?id=%d">%s</a>  on %s', $this->editor['Author Key'], $this->editor['Author Alias'], $this->get('Customer Name'), $this->id,
-                        $this->get('Formatted ID'), $order->data ['Order Key'], $order->data ['Order Public ID'], $tz_date
-                    );
-                } else {
-                    $details = sprintf(
-                        '%s (<a href="customer.php?id=%d">%s</a>)  order <a href="order.php?id=%d">%s</a>  has been suspended on %s',
-
-                        $this->get('Customer Name'), $this->id, $this->get('Formatted ID'), $order->data ['Order Key'], $order->data ['Order Public ID'], $tz_date
-                    );
-
-                }
-                if ($order->data ['Order Suspend Note'] != '') {
-                    $details .= '<div> Note: '.$order->data ['Order Suspend Note'].'</div>';
-                }
-
-
-        }
-        $history_data = array(
-            'Date'              => $order->data ['Order Suspended Date'],
-            'Subject'           => 'Customer',
-            'Subject Key'       => $this->id,
-            'Direct Object'     => 'Order',
-            'Direct Object Key' => $order->data ['Order Key'],
-            'History Details'   => $details,
-            'History Abstract'  => $note,
-            'Metadata'          => 'Suspended'
-
-        );
-
-        $sql = sprintf(
-            "UPDATE `History Dimension` SET `Deep`=2 WHERE `Subject`='Customer' AND `Subject Key`=%d  AND `Direct Object`='Order' AND `Direct Object Key`=%d ", $this->id, $order->id
-        );
-        $this->db->exec($sql);
-        $history_key = $order->add_history($history_data);
-        $sql         = sprintf(
-            "INSERT INTO `Customer History Bridge` VALUES (%d,%d,'No','No','Orders')", $this->id, $history_key
-        );
-        $this->db->exec($sql);
-
-
-        switch ($lang) {
-            default :
-                $note_created = sprintf(
-                    '%s <a href="order.php?id=%d">%s</a> (Created)', _('Order'), $order->data ['Order Key'], $order->data ['Order Public ID']
-                );
-
-        }
-        $sql = sprintf(
-            "UPDATE `History Dimension` SET `History Abstract`=%s WHERE `Subject`='Customer' AND `Subject Key`=%d  AND `Direct Object`='Order' AND `Direct Object Key`=%d AND `Metadata`='Process'", prepare_mysql($note_created), $this->id, $order->id
-        );
-        $this->db->exec($sql);
-
-    }
-
-    function add_history_post_order_in_warehouse($dn) {
+   function add_history_post_order_in_warehouse($dn) {
 
 
         date_default_timezone_set(TIMEZONE);
@@ -2957,10 +2812,7 @@ class Customer extends Subject {
             "DELETE FROM `Customer Send Post` WHERE `Customer Key`=%d", $this->id
         );
         $this->db->exec($sql);
-        $sql = sprintf(
-            "DELETE FROM `Search Full Text Dimension` WHERE `Subject`='Customer' AND `Subject Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
+
         $sql = sprintf(
             "DELETE FROM `Category Bridge` WHERE `Subject`='Customer' AND `Subject Key`=%d", $this->id
         );
@@ -3386,7 +3238,7 @@ class Customer extends Subject {
 
 
         $sql = sprintf(
-            "SELECT `Product ID`, count(DISTINCT `Invoice Key`) invoices ,max(`Invoice Date`) AS date FROM `Order Transaction Fact`  WHERE     `Invoice Key`>0 AND (`Delivery Note Quantity`-`Refund Quantity`)>0  AND  `Customer Key`=%d  GROUP BY `Product ID` ", $this->id
+            "SELECT `Product ID`, count(DISTINCT `Invoice Key`) invoices ,max(`Invoice Date`) AS date FROM `Order Transaction Fact`  WHERE     `Invoice Key`>0 AND (`Delivery Note Quantity`)>0  AND  `Customer Key`=%d  GROUP BY `Product ID` ", $this->id
         );
 
 
@@ -3397,7 +3249,7 @@ class Customer extends Subject {
                 if ($row['invoices'] > 1) {
 
                     $sql = sprintf(
-                        "SELECT `Invoice Date` FROM `Order Transaction Fact`  WHERE  `Invoice Key`>0 AND (`Delivery Note Quantity`-`Refund Quantity`)>0  AND   `Customer Key`=%d AND `Product ID`=%d  GROUP BY `Invoice Key` ORDER BY `Invoice Date` LIMIT  1,1   ",
+                        "SELECT `Invoice Date` FROM `Order Transaction Fact`  WHERE  `Invoice Key`>0 AND (`Delivery Note Quantity`)>0  AND   `Customer Key`=%d AND `Product ID`=%d  GROUP BY `Invoice Key` ORDER BY `Invoice Date` LIMIT  1,1   ",
                         $this->id, $row['Product ID']
                     );
 

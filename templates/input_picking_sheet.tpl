@@ -212,7 +212,22 @@
         </td>
         <td class="label" style="width: 1%" >
 
-            <label>{t}Parcels{/t}</label>
+
+            <div >
+                <input id="set_parcel_type" data-field="Delivery Note Parcel Type"  type="hidden" class="selected_parcel_type input_field" value="{if $store->settings('data_entry_picking_aid_default_parcel_type')!=''}{$store->settings('data_entry_picking_aid_default_parcel_type')}{else}Box{/if}">
+                <select class="parcel_types_options small" style="width: 200px">
+                    <option value="Box" {if $store->settings('data_entry_picking_aid_default_parcel_type')=='Box' or $store->settings('data_entry_picking_aid_default_parcel_type')==''}selected="selected"{/if} >{t}Boxes{/t}</option>
+                    <option value="Pallet" {if $store->settings('data_entry_picking_aid_default_parcel_type')=='Pallet'}selected="selected"{/if} >{t}Pallets{/t}</option>
+                    <option value="Envelope" {if $store->settings('data_entry_picking_aid_default_parcel_type')=='Envelope'}selected="selected"{/if} >{t}Envelope{/t}</option>
+                    <option value="Small Parcel" {if $store->settings('data_entry_picking_aid_default_parcel_type')=='Small Parcel'}selected="selected"{/if} >{t}Small parcel{/t}</option>
+
+
+
+                </select>
+                <div class="clear:both"></div>
+            </div>
+
+
 
         </td>
         <td style="" >
@@ -229,7 +244,9 @@
 
 
 </table>
-    <div style="clear: both"></div>
+    <div style="clear: both">
+
+    </div>
 </div>
 
 
@@ -254,6 +271,19 @@
             validate_data_entry_picking_aid()
 
     });
+
+    $('.parcel_types_options').niceSelect();
+
+    $( ".parcel_types_options" ).on('change',
+        function() {
+
+            var value=$( ".parcel_types_options option:selected" ).val();
+            $('.selected_parcel_type').val(value)
+
+
+            validate_data_entry_picking_aid()
+
+        });
 
 
     var check_list = {

@@ -69,7 +69,7 @@ class Public_Store {
 
     }
 
-    function get_categories($type = 'families', $pages = '1-10', $output = 'data') {
+    function get_categories($type = 'families', $pages = '0-10', $output = 'data') {
 
         $categories = array();
 
@@ -317,9 +317,7 @@ class Public_Store {
                 ), $account->get('Account Code')
                 );
 
-                //$customer->update_full_search();
-                //$customer->update_location_type();
-                // $store->update_customers_data();
+
 
 
             } else {

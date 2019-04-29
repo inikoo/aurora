@@ -448,6 +448,8 @@ $tab_defaults = array(
         'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'number',
+        'elements_type' => 'location',
+        'elements'      => $elements_options['orders_in_control_panel'],
 
 
     ),
@@ -481,7 +483,8 @@ $tab_defaults = array(
         'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'number',
-
+        'elements_type' => 'location',
+        'elements'      => $elements_options['orders_in_control_panel'],
 
     ),
     'orders.in_process.paid'     => array(
@@ -491,31 +494,12 @@ $tab_defaults = array(
         'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'number',
-
-
-    ),
-    'orders.in_process'          => array(
-        'view'        => 'overview',
-        'sort_key'    => 'id',
-        'sort_order'  => 1,
-        'rpp'         => 500,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'number',
-
-        'elements_type' => 'state',
-        'elements'      => $elements_options['orders_pending'],
-        //  'export_fields' => $export_fields['orders_pending']
+        'elements_type' => 'location',
+        'elements'      => $elements_options['orders_in_control_panel'],
 
     ),
 
-    'orders.in_warehouse'             => array(
-        'view'        => 'overview',
-        'sort_key'    => 'id',
-        'sort_order'  => 1,
-        'rpp'         => 500,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'number',
-    ),
+
     'orders.in_warehouse_no_alerts'   => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
@@ -523,6 +507,8 @@ $tab_defaults = array(
         'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'number',
+        'elements_type' => 'location',
+        'elements'      => $elements_options['orders_in_control_panel'],
     ),
     'orders.in_warehouse_with_alerts' => array(
         'view'        => 'overview',
@@ -531,6 +517,8 @@ $tab_defaults = array(
         'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'number',
+        'elements_type' => 'location',
+        'elements'      => $elements_options['orders_in_control_panel'],
     ),
 
     'orders.packed_done' => array(
@@ -540,6 +528,8 @@ $tab_defaults = array(
         'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'number',
+        'elements_type' => 'location',
+        'elements'      => $elements_options['orders_in_control_panel'],
     ),
 
 
@@ -550,6 +540,8 @@ $tab_defaults = array(
         'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'number',
+        'elements_type' => 'location',
+        'elements'      => $elements_options['orders_in_control_panel'],
     ),
 
 
@@ -560,6 +552,8 @@ $tab_defaults = array(
         'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'number',
+        'elements_type' => 'location',
+        'elements'      => $elements_options['orders_in_control_panel'],
     ),
 
     'orders' => array(

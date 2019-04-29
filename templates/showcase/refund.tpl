@@ -256,7 +256,7 @@
                         button " style="border:1px solid #ccc;padding:10px
                         5px;margin-bottom:2px">{t}Customer credit{/t} </div>
                             {else}
-                                <div class="button payment_button   {if $payment_account->get('Payment Account Block')=='ConD'}hide{/if} " onclick="select_payment_account(this)    "
+                                <div class="button payment_button    " onclick="select_payment_account(this)    "
                                      data-settings='{ "payment_account_key":"{$payment_account->id}", "max_amount":"" , "payment_method":"{$payment_account->get('Default Payment Method')}", "block":"{$payment_account->get('Payment Account Block')}" }'
                                      class="new_payment_payment_account_button unselectable
                         button {if $payment_account->get('Payment Account Block')=='Accounts' and $customer->get('Customer Account Balance')<=0  }hide{/if}" style="border:1px solid #ccc;padding:10px

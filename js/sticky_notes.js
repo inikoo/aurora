@@ -43,11 +43,9 @@ $('#header').find('.'+ scope).removeClass('hide')
 
 $(document).on('click', '.copy_to_delivery_note_sticky_note', function (evt) {
 
-    console.log('xxx')
 
     var note = $(this).closest('.sticky_note_container').find('.sticky_note').html()
 
-    console.log(note)
 
     var delivery_note_div = $(this).closest('.sticky_notes').find('.delivery_note_sticky_note .sticky_note')
 
@@ -112,6 +110,8 @@ function save_sticky_note(scope){
     request.done(function (data) {
 
         if (data.state == 200) {
+
+            $(element).find('.save').removeClass('fa-cloud').addClass('fa-check')
 
         } else if (data.state == 400) {
             sweetAlert(data.msg);

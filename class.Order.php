@@ -34,7 +34,7 @@ class Order extends DB_Table {
     var $update_stock = true;
     var $skip_update_after_individual_transaction = false;
 
-    /** @var PDO  */
+    /** @var PDO */
     var $db;
 
     function __construct($arg1 = false, $arg2 = false) {
@@ -120,10 +120,8 @@ class Order extends DB_Table {
                                 <a class="pdf_link %s" target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
                                </span>
                                 <div class="order_operation data_entry_delivery_note %s"><div class="square_button right" title="%s"><i class="fa fa-keyboard" aria-hidden="true" onclick="data_entry_delivery_note(%s)"></i></div></div>
-                               </div>', $dn->id, 'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State'),
-                        _('Picking sheet'), ($dn->get('State Index') != 10 ? 'hide' : ''), $dn->id,
-                        ($dn->get('State Index') < 90 ? 'hide' : ''), $dn->id,
-                        (($dn->get('State Index') != 10 or $store->settings('data_entry_picking_aid') != 'Yes') ? 'hide' : ''), _('Input picking sheet data'), $dn->id
+                               </div>', $dn->id, 'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State'), _('Picking sheet'), ($dn->get('State Index') != 10 ? 'hide' : ''), $dn->id,
+                        ($dn->get('State Index') < 90 ? 'hide' : ''), $dn->id, (($dn->get('State Index') != 10 or $store->settings('data_entry_picking_aid') != 'Yes') ? 'hide' : ''), _('Input picking sheet data'), $dn->id
 
                     );
 
@@ -173,6 +171,7 @@ class Order extends DB_Table {
                 $this->update_field('Order '.$field, $value, 'no_null');
                 $this->new_value = html_entity_decode($this->new_value);
                 break;
+
 
             default:
                 $base_data = $this->base_data();
@@ -243,13 +242,13 @@ class Order extends DB_Table {
 
                     switch ($payment_account->get('Payment Account Block')) {
                         case 'ConD':
-                            return  _('Cash on delivery').' (<b>'.money($this->data['Order To Pay Amount'],$this->data['Order Currency']).'</b>)';
+                            return _('Cash on delivery').' (<b>'.money($this->data['Order To Pay Amount'], $this->data['Order Currency']).'</b>)';
                             break;
                         case 'Bank':
-                            return sprintf(_('Waiting for a %s bank transfer'),'<b>'.money($this->data['Order To Pay Amount'],$this->data['Order Currency']).'</b>');
+                            return sprintf(_('Waiting for a %s bank transfer'), '<b>'.money($this->data['Order To Pay Amount'], $this->data['Order Currency']).'</b>');
                             break;
                         case 'Cash':
-                            return sprintf(_('Will pay %s with cash'),'<b>'.money($this->data['Order To Pay Amount'],$this->data['Order Currency']).'</b>');
+                            return sprintf(_('Will pay %s with cash'), '<b>'.money($this->data['Order To Pay Amount'], $this->data['Order Currency']).'</b>');
                             break;
                         default:
                             break;
@@ -306,6 +305,13 @@ class Order extends DB_Table {
             case 'Amount Off':
 
                 return money($this->data['Order Deal Amount Off'], $this->data['Order Currency']);
+                break;
+
+            case 'Waiting days':
+
+
+                return floor((gmdate('U') - strtotime($this->data['Order Submitted by Customer Date'].' +0:00')) / 3600 / 24);
+
                 break;
             case 'Currency Code':
 
@@ -387,7 +393,6 @@ class Order extends DB_Table {
                 } else {
                     $type = 'Invoice';
                 }
-
 
 
                 $address_fields = array(
@@ -698,6 +703,30 @@ class Order extends DB_Table {
                 }
 
                 break;
+            case 'Available Credit Amount':
+
+                if ($this->data['Order Total Amount'] > $this->data['Order Available Credit Amount']) {
+                    return money(-1 * $this->data['Order Available Credit Amount'], $this->data['Order Currency']);
+
+                } else {
+                    return money(-1 * $this->data['Order Total Amount'], $this->data['Order Currency']);
+                }
+
+
+                break;
+            case 'Basket To Pay Amount':
+
+
+                if ($this->data['Order To Pay Amount'] > $this->data['Order Available Credit Amount']) {
+                    return money($this->data['Order To Pay Amount'] - $this->data['Order Available Credit Amount'], $this->data['Order Currency']);
+
+                } else {
+                    return money(0, $this->data['Order Currency']);
+
+                }
+
+
+                break;
 
 
         }
@@ -745,14 +774,19 @@ class Order extends DB_Table {
 
     }
 
-    function update_state($value, $options = '', $metadata = array()) {
+    function update_state($value, $options = '{}', $metadata = array()) {
 
         include_once 'utils/new_fork.php';
 
         $store = get_object('Store', $this->data['Order Store Key']);
 
+        $options = json_decode($options, true);
+        if (!empty($options['date'])) {
+            $date = $options['date'];
+        } else {
+            $date = gmdate('Y-m-d H:i:s');
+        }
 
-        $date = gmdate('Y-m-d H:i:s');
 
         $account = get_object('Account', 1);
 
@@ -836,7 +870,7 @@ class Order extends DB_Table {
 
                     $this->db->exec($sql);
 
-                    $old_used_deals=$this->get_used_deals();
+                    $old_used_deals = $this->get_used_deals();
 
                     $this->update_totals();
                     $this->update_discounts_items();
@@ -846,29 +880,28 @@ class Order extends DB_Table {
                     $this->update_discounts_no_items();
                     $this->update_deal_bridge();
 
-                    $new_used_deals=$this->get_used_deals();
+                    $new_used_deals = $this->get_used_deals();
 
 
-                    $intersect = array_intersect($old_used_deals[0], $new_used_deals[0]);
-                    $campaigns_diff =array_merge(array_diff($old_used_deals[0], $intersect), array_diff($new_used_deals[0], $intersect));
+                    $intersect      = array_intersect($old_used_deals[0], $new_used_deals[0]);
+                    $campaigns_diff = array_merge(array_diff($old_used_deals[0], $intersect), array_diff($new_used_deals[0], $intersect));
 
                     $intersect = array_intersect($old_used_deals[1], $new_used_deals[1]);
-                    $deal_diff =array_merge(array_diff($old_used_deals[1], $intersect), array_diff($new_used_deals[1], $intersect));
+                    $deal_diff = array_merge(array_diff($old_used_deals[1], $intersect), array_diff($new_used_deals[1], $intersect));
 
-                    $intersect = array_intersect($old_used_deals[2], $new_used_deals[2]);
-                    $deal_components_diff =array_merge(array_diff($old_used_deals[2], $intersect), array_diff($new_used_deals[2], $intersect));
+                    $intersect            = array_intersect($old_used_deals[2], $new_used_deals[2]);
+                    $deal_components_diff = array_merge(array_diff($old_used_deals[2], $intersect), array_diff($new_used_deals[2], $intersect));
 
 
-
-                    if(count($campaigns_diff)>0 or count($deal_diff)>0  or count($deal_components_diff)>0 ){
+                    if (count($campaigns_diff) > 0 or count($deal_diff) > 0 or count($deal_components_diff) > 0) {
                         $account = get_object('Account', '');
 
                         require_once 'utils/new_fork.php';
                         new_housekeeping_fork(
                             'au_housekeeping', array(
-                            'type'      => 'update_deals_usage',
-                            'campaigns' => $campaigns_diff,
-                            'deals' => $deal_diff,
+                            'type'            => 'update_deals_usage',
+                            'campaigns'       => $campaigns_diff,
+                            'deals'           => $deal_diff,
                             'deal_components' => $deal_components_diff,
 
 
@@ -894,16 +927,24 @@ class Order extends DB_Table {
 
                     $this->fast_update(
                         array(
-                            'Order State'                      => 'InProcess',
-                            'Order Submitted by Customer Date' => $date,
-                            'Order Date'                       => $date
+                            'Order State' => 'InProcess',
+                            'Order Date'  => $date
                         )
                     );
 
 
                     if ($value == 'InProcess') {
+
+
+                        $this->fast_update(
+                            array(
+                                'Order Submitted by Customer Date' => $date,
+                            )
+                        );
+
+
                         $history_data = array(
-                            'History Abstract' => _('Order submited'),
+                            'History Abstract' => _('Order submitted'),
                             'History Details'  => '',
                         );
                     } else {
@@ -972,8 +1013,7 @@ class Order extends DB_Table {
 
                     if ($deal_components != '') {
                         $sql = sprintf(
-                            "select * from `Deal Component Dimension` left join `Deal Dimension` D on (D.`Deal Key`=`Deal Component Deal Key`)  where `Deal Component Key` in (%s)",
-                            $deal_components
+                            "select * from `Deal Component Dimension` left join `Deal Dimension` D on (D.`Deal Key`=`Deal Component Deal Key`)  where `Deal Component Key` in (%s)", $deal_components
                         );
 
 
@@ -991,13 +1031,11 @@ class Order extends DB_Table {
 
 
                     $sql = sprintf(
-                        "UPDATE `Order Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ",
-                        $this->id
+                        "UPDATE `Order Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ", $this->id
                     );
                     $this->db->exec($sql);
                     $sql = sprintf(
-                        "UPDATE `Order No Product Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ",
-                        $this->id
+                        "UPDATE `Order No Product Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ", $this->id
                     );
 
                     $this->db->exec($sql);
@@ -1363,14 +1401,16 @@ class Order extends DB_Table {
                     $dn         = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
                     $dn->editor = $this->editor;
 
-                    $dn->update(
+                    $dn->fast_update(
                         array(
                             'Delivery Note Invoiced'                    => 'Yes',
                             'Delivery Note Invoiced Net DC Amount'      => $invoice->get('Invoice Total Net Amount') * $invoice->get('Invoice Currency Exchange'),
                             'Delivery Note Invoiced Shipping DC Amount' => $invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'),
-                            'Delivery Note State'                       => 'Approved',
                         )
                     );
+
+
+                    $dn->update_state('Approved', json_encode(array('date' => $date)));
 
 
                     $this->update_field('Order Invoiced Date', $date, 'no_history');
@@ -1562,10 +1602,8 @@ class Order extends DB_Table {
                                 <a class="pdf_link %s" target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
                                </span>
                                 <div class="order_operation data_entry_delivery_note %s"><div class="square_button right" title="%s"><i class="fa fa-keyboard" aria-hidden="true" onclick="data_entry_delivery_note(%s)"></i></div></div>
-                               </div>', $dn->id, 'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State'),
-                _('Picking sheet'), ($dn->get('State Index') != 10 ? 'hide' : ''), $dn->id,
-                ($dn->get('State Index') < 90 ? 'hide' : ''), $dn->id,
-                (($dn->get('State Index') != 10 or $store->settings('data_entry_picking_aid') != 'Yes') ? 'hide' : ''), _('Input picking sheet data'), $dn->id
+                               </div>', $dn->id, 'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State'), _('Picking sheet'), ($dn->get('State Index') != 10 ? 'hide' : ''), $dn->id,
+                ($dn->get('State Index') < 90 ? 'hide' : ''), $dn->id, (($dn->get('State Index') != 10 or $store->settings('data_entry_picking_aid') != 'Yes') ? 'hide' : ''), _('Input picking sheet data'), $dn->id
 
             );
 
@@ -1626,7 +1664,6 @@ class Order extends DB_Table {
 
     function cancel($note = '', $fork = true) {
 
-
         if ($this->data['Order State'] == 'Dispatched') {
             $this->error = true;
             $this->msg   = _('Order can not be cancelled, because has already been dispatched');
@@ -1652,6 +1689,8 @@ class Order extends DB_Table {
         }
 
 
+
+
         $date = gmdate('Y-m-d H:i:s');
 
         $this->data['Order Cancelled Date'] = $date;
@@ -1663,11 +1702,7 @@ class Order extends DB_Table {
 
         $this->data['Order State'] = 'Cancelled';
 
-        $this->data['Order Current XHTML Dispatch State']              = _('Cancelled');
-        $this->data['Order Current XHTML Payment State']               = _('Order cancelled');
-        $this->data['Order XHTML Invoices']                            = '';
-        $this->data['Order XHTML Delivery Notes']                      = '';
-        $this->data['Order Invoiced Balance Total Amount']             = 0;
+
         $this->data['Order Invoiced Balance Net Amount']               = 0;
         $this->data['Order Invoiced Balance Tax Amount']               = 0;
         $this->data['Order Invoiced Outstanding Balance Total Amount'] = 0;
@@ -1683,29 +1718,27 @@ class Order extends DB_Table {
         );
 
         $sql = sprintf(
-            "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order Payment State`=%s,`Order State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,
-				`Order XHTML Invoices`='',`Order XHTML Delivery Notes`=''
-				,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s
-				,`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order To Pay Amount`=%.2f,`Order Items Cost`=0
-				WHERE `Order Key`=%d"//     ,$no_shipped
-            , prepare_mysql($this->data['Order Cancelled Date']), prepare_mysql($this->data['Order Payment State']), prepare_mysql($this->data['Order State']), prepare_mysql(
-                $this->data['Order Current XHTML Dispatch State']
-            ), prepare_mysql($this->data['Order Current XHTML Payment State']), prepare_mysql($this->data['Order Cancel Note']), $this->data['Order To Pay Amount'],
+            "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order Payment State`=%s,`Order State`='NA',`Order To Pay Amount`=%.2f,`Order Cancel Note`=%s,
+				`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order Items Cost`=0,
+				`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0
+				WHERE `Order Key`=%d",
+            prepare_mysql($this->data['Order Cancelled Date']),  prepare_mysql($this->data['Order State']), $this->data['Order To Pay Amount'],prepare_mysql($this->data['Order Cancel Note']),
 
             $this->id
         );
-        //print $sql;
+
+
         $this->db->exec($sql);
 
 
         $sql = sprintf(
-            "UPDATE `Order Transaction Fact` SET  `Delivery Note Key`=NULL,  `Delivery Note ID`=NULL,`Invoice Key`=NULL, `Invoice Public ID`=NULL,`Picker Key`=NULL,`Picker Key`=NULL, `Consolidated`='Yes',`Current Dispatching State`=%s ,`Cost Supplier`=0  WHERE `Order Key`=%d ",
+            "UPDATE `Order Transaction Fact` SET  `Delivery Note Key`=NULL,`Invoice Key`=NULL, `Consolidated`='Yes',`Current Dispatching State`=%s ,`Cost Supplier`=0  WHERE `Order Key`=%d ",
             prepare_mysql('Cancelled'), $this->id
         );
         $this->db->exec($sql);
 
         $sql = sprintf(
-            "UPDATE `Order Transaction Fact` SET  `Picking Factor`=0,  `Picking Factor`=0,`Picked Quantity`=0, `Estimated Dispatched Weight`=0,`Delivery Note Quantity`=0,`Shipped Quantity`=0, `No Shipped Due Out of Stock`=0,`No Shipped Due No Authorized`=0,`No Shipped Due Not Found`=0,`No Shipped Due Other`=0,`Order Out of Stock Lost Amount`=0,`Invoice Quantity`=0 WHERE `Order Key`=%d ",
+            "UPDATE `Order Transaction Fact` SET  `Delivery Note Quantity`=0, `No Shipped Due Out of Stock`=0,`Order Out of Stock Lost Amount`=0 WHERE `Order Key`=%d ",
 
             $this->id
         );
@@ -1716,9 +1749,6 @@ class Order extends DB_Table {
             "UPDATE `Order No Product Transaction Fact` SET `Delivery Note Date`=NULL,`Delivery Note Key`=NULL,`State`=%s ,`Consolidated`='Yes' WHERE `Order Key`=%d ", prepare_mysql('Cancelled'), $this->id
         );
         $this->db->exec($sql);
-
-
-
 
 
         $history_data = array(
@@ -1776,7 +1806,7 @@ class Order extends DB_Table {
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
-                    $component = get_object('DealComponent',$row['Deal Component Key']);
+                    $component = get_object('DealComponent', $row['Deal Component Key']);
                     $component->update_usage();
                     $deals[$row['Deal Key']]              = $row['Deal Key'];
                     $campaigns[$row['Deal Campaign Key']] = $row['Deal Campaign Key'];
@@ -1789,12 +1819,12 @@ class Order extends DB_Table {
 
 
             foreach ($deals as $deal_key) {
-                $deal = get_object('Deal',$deal_key);
+                $deal = get_object('Deal', $deal_key);
                 $deal->update_usage();
             }
 
             foreach ($campaigns as $campaign_key) {
-                $campaign = get_object('DealCampaign',$campaign_key);
+                $campaign = get_object('DealCampaign', $campaign_key);
                 $campaign->update_usage();
             }
 
@@ -1805,7 +1835,6 @@ class Order extends DB_Table {
         return true;
 
     }
-
 
 
     function create_invoice($date) {
@@ -1839,7 +1868,7 @@ class Order extends DB_Table {
             $this->db->exec($sql);
             $public_id = $this->db->lastInsertId();
 
-           $account=get_object('Account',1);
+            $account           = get_object('Account', 1);
             $invoice_public_id = sprintf(
                 $account->data['Account Invoice Public ID Format'], $public_id
             );
@@ -1897,7 +1926,7 @@ class Order extends DB_Table {
             'Invoice Items Discount Amount' => $this->data['Order Items Discount Amount'],
 
             'Invoice Items Net Amount'          => $this->data['Order Items Net Amount'],
-            'Invoice Items Out of Stock Amount' => $this->data['Order Items Out of Stock Amount'],
+            'Invoice Items Out of Stock Amount' => ($this->data['Order Items Out of Stock Amount']==''?0:$this->data['Order Items Out of Stock Amount']),
             'Invoice Shipping Net Amount'       => $this->data['Order Shipping Net Amount'],
             'Invoice Charges Net Amount'        => $this->data['Order Charges Net Amount'],
             'Invoice Insurance Net Amount'      => $this->data['Order Insurance Net Amount'],
@@ -1918,12 +1947,27 @@ class Order extends DB_Table {
 
     }
 
-    function get_invoices($scope = 'keys') {
+    function get_invoices($scope = 'keys',$options='') {
 
 
         $invoices = array();
+
+
+        switch ($options){
+            case 'refunds_only':
+                $where=" and `Invoice Type`='Refund'";
+                break;
+            case 'invoices_only':
+                $where=" and `Invoice Type`='Refund'";
+                break;
+            default:
+                $where='';
+
+        }
+
+
         $sql      = sprintf(
-            "SELECT `Invoice Key` FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d  ", $this->id
+            "SELECT `Invoice Key` FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d  %s ", $this->id,$where
         );
 
         if ($result = $this->db->query($sql)) {
@@ -2032,7 +2076,7 @@ class Order extends DB_Table {
     function send_review_invitation() {
 
 
-        if (preg_match('/bali|sasi|sakoi/', gethostname()) or $this->get('Order Email') == '') {
+        if (preg_match('/bali|sasi|sakoi|geko/', gethostname()) or $this->get('Order Email') == '') {
             return;
         }
 
@@ -2194,16 +2238,18 @@ class Order extends DB_Table {
 
 
                 $items[] = array(
-                    'code'              => $row['Product Code'],
-                    'description'       => $row['Product History Units Per Case'].'x '.$row['Product History Name'],
-                    'deal_info'         => $deal_info,
-                    'out_of_stock_info' => $out_of_stock_info,
-                    'qty'               => $qty,
-                    'edit_qty'          => $edit_quantity,
-                    'amount'            => '<span class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>',
-                    'webpage_url'       => $row['Webpage URL'],
-                    'image'             => $row['Product Main Image'],
-                    'webpage_state'     => $row['Webpage State']
+                    'code'                 => $row['Product Code'],
+                    'product_id'           => $row['Product ID'],
+                    'product_historic_key' => $row['Product Key'],
+                    'description'          => $row['Product History Units Per Case'].'x '.$row['Product History Name'],
+                    'deal_info'            => $deal_info,
+                    'out_of_stock_info'    => $out_of_stock_info,
+                    'qty'                  => $qty,
+                    'edit_qty'             => $edit_quantity,
+                    'amount'               => '<span class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>',
+                    'webpage_url'          => $row['Webpage URL'],
+                    'image'                => $row['Product Main Image'],
+                    'webpage_state'        => $row['Webpage State']
 
                 );
 
@@ -2220,42 +2266,6 @@ class Order extends DB_Table {
 
     }
 
-    function update_full_search() {
-
-        $first_full_search  = $this->data['Order Public ID'].' '.$this->data['Order Customer Name'].' '.strftime(
-                "%d %b %B %Y", strtotime($this->data['Order Date'])
-            );
-        $second_full_search = strip_tags(
-                preg_replace(
-                    '/\<br\/\>/', ' ', $this->data['Order XHTML Ship Tos']
-                )
-            ).' '.$this->data['Order Customer Contact Name'];
-        $img                = '';
-
-
-        $amount = ' '.money($this->data['Order Total Amount'], $this->data['Order Currency']);
-
-        $show_description = $this->data['Order Customer Name'].' ('.strftime(
-                "%e %b %Y", strtotime($this->data['Order Date'])
-            ).') '.$this->data['Order Current XHTML Payment State'].$amount;
-
-        $description1 = '<b><a href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a></b>';
-        $description  = '<table ><tr style="border:none;"><td  class="col1"'.$description1.'</td><td class="col2">'.$show_description.'</td></tr></table>';
-
-
-        $sql = sprintf(
-            "INSERT INTO `Search Full Text Dimension` (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`) VALUES  (%s,'Order',%d,%s,%s,%s,%s,%s) ON DUPLICATE KEY
-		UPDATE `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s", $this->data['Order Store Key'], $this->id, prepare_mysql($first_full_search),
-            prepare_mysql($second_full_search, false), prepare_mysql($this->data['Order Public ID'], false), prepare_mysql($description, false), prepare_mysql($img, false), prepare_mysql($first_full_search), prepare_mysql($second_full_search, false),
-            prepare_mysql($this->data['Order Public ID'], false), prepare_mysql($description, false)
-
-
-            , prepare_mysql($img, false)
-        );
-        $this->db->exec($sql);
-
-
-    }
 
     function update_customer_history() {
         $customer = new Customer ($this->data['Order Customer Key']);
@@ -2375,7 +2385,7 @@ class Order extends DB_Table {
         if ($affected_rows) {
             $dn_key = 0;
 
-            $old_used_deals=$this->get_used_deals();
+            $old_used_deals = $this->get_used_deals();
 
 
             $this->update_number_products();
@@ -2393,35 +2403,33 @@ class Order extends DB_Table {
             $this->update_deal_bridge();
 
 
-
             $this->update_totals();
 
 
             $this->update_number_products();
 
-            $new_used_deals=$this->get_used_deals();
+            $new_used_deals = $this->get_used_deals();
 
 
-            $intersect = array_intersect($old_used_deals[0], $new_used_deals[0]);
-            $campaigns_diff =array_merge(array_diff($old_used_deals[0], $intersect), array_diff($new_used_deals[0], $intersect));
+            $intersect      = array_intersect($old_used_deals[0], $new_used_deals[0]);
+            $campaigns_diff = array_merge(array_diff($old_used_deals[0], $intersect), array_diff($new_used_deals[0], $intersect));
 
             $intersect = array_intersect($old_used_deals[1], $new_used_deals[1]);
-            $deal_diff =array_merge(array_diff($old_used_deals[1], $intersect), array_diff($new_used_deals[1], $intersect));
+            $deal_diff = array_merge(array_diff($old_used_deals[1], $intersect), array_diff($new_used_deals[1], $intersect));
 
-            $intersect = array_intersect($old_used_deals[2], $new_used_deals[2]);
-            $deal_components_diff =array_merge(array_diff($old_used_deals[2], $intersect), array_diff($new_used_deals[2], $intersect));
+            $intersect            = array_intersect($old_used_deals[2], $new_used_deals[2]);
+            $deal_components_diff = array_merge(array_diff($old_used_deals[2], $intersect), array_diff($new_used_deals[2], $intersect));
 
 
-
-            if(count($campaigns_diff)>0 or count($deal_diff)>0  or count($deal_components_diff)>0 ){
+            if (count($campaigns_diff) > 0 or count($deal_diff) > 0 or count($deal_components_diff) > 0) {
                 $account = get_object('Account', '');
 
                 require_once 'utils/new_fork.php';
                 new_housekeeping_fork(
                     'au_housekeeping', array(
-                    'type'      => 'update_deals_usage',
-                    'campaigns' => $campaigns_diff,
-                    'deals' => $deal_diff,
+                    'type'            => 'update_deals_usage',
+                    'campaigns'       => $campaigns_diff,
+                    'deals'           => $deal_diff,
                     'deal_components' => $deal_components_diff,
 
 
@@ -2667,9 +2675,8 @@ class Order extends DB_Table {
 
     }
 
-    function create_refund($transactions) {
+    function create_refund($date, $transactions) {
 
-        $date = gmdate('Y-m-d H:i:s');
 
         $store = get_object('Store', ($this->data['Order Store Key']));
 
@@ -3120,8 +3127,7 @@ class Order extends DB_Table {
 					 %d,'No',%s
 					 )", $row['Inventory Transaction Key'], $part->id, prepare_mysql($account->get('Account Currency Code')), prepare_mysql($date), prepare_mysql('Dispatched'),
 
-                                    $unit_qty, $amount, $extra_amount, $cbm, $weight,
-                                    $this->editor['User Key'], prepare_mysql($date), $delivery->id, prepare_mysql($date)
+                                    $unit_qty, $amount, $extra_amount, $cbm, $weight, $this->editor['User Key'], prepare_mysql($date), $delivery->id, prepare_mysql($date)
 
 
                                 );

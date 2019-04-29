@@ -118,7 +118,7 @@
 
                                     $('#main_image').removeClass('hide')
                                     $('#add_image_form').addClass('hide')
-                                    $('#main_image img').attr("src", '/image_root.php?id=' + data.main_image_key + '&amp;size=small')
+                                    $('#main_image img').attr("src", '/image.php?id=' + data.main_image_key + '&amp;s=270x270')
 
                                     var imagetabReg = /\.images$/
                                     if (imagetabReg.test(state.tab)) {

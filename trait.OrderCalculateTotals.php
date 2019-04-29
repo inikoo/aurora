@@ -339,21 +339,68 @@ trait OrderCalculateTotals {
 
         $this->update_payment_state();
 
-        //  $this->update_order_discount_totals();
-
     }
 
 
-    function update_order_discount_totals() {
+    /**
+     *
+     * To be used only for fixing errors in payments (e.g. migration)
+     */
+    function update_order_payments() {
 
+
+        $total=$this->get('Order Total Amount');
+        $payments = 0;
+
+        $sql = sprintf(
+            'SELECT sum(`Payment Transaction Amount`) AS amount  FROM `Order Payment Bridge` B LEFT JOIN `Payment Dimension` P  ON (B.`Payment Key`=P.`Payment Key`) WHERE `Order Key`=%d AND `Payment Transaction Status`="Completed" ', $this->id
+        );
+
+        // print $sql;
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $payments = round($row['amount'], 2);
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $total_refunds = 0;
+
+        $sql = sprintf('SELECT sum(`Invoice Total Amount`) AS amount FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d AND `Invoice Type`="Refund"  ', $this->id);
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $total_refunds = round($row['amount'], 2);
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+        $total_balance = $total + $total_refunds;
 
         $this->fast_update(
             array(
-                'Order Number Items with Deals' => $number_with_deals,
+
+
+                'Order Payments Amount'      => $payments,
+                'Order To Pay Amount'        => round($total_balance - $payments, 2),
+                'Order Total Refunds'        => $total_refunds,
+                'Order Total Balance'        => $total_balance,
 
 
             )
         );
+
+        $this->update_payment_state();
+
+
     }
 
 

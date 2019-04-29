@@ -41,7 +41,7 @@
         <div style="height: 240px;"  class="data_container">
 
             <div style="width: 240px;height: 240px;" id="main_image" class="wraptocenter main_image ">
-                <img style="max-width: 240px;max-height: 240px;" src="/{if $image_key}image_root.php?id={$image_key}&amp;size=small{else}art/nopic.png{/if}"> </span>
+                <img style="max-width: 240px;max-height: 240px;" src="/{if $image_key}image.php?id={$image_key}&amp;s=240x240{else}art/nopic.png{/if}"> </span>
             </div>
 
         </div>

@@ -133,13 +133,13 @@
                         <li class="column_label"  key="{$sub_column_key}" ><i class="far fa-hand-rock handle" style="margin-right:10px" aria-hidden="true"></i>
 
                             {if $sub_column.type=='departments'}
-                                <span class="column_type_label">{t}Departments{/t}</span> <span class="page button">{$sub_column.page}</span>
+                                <span class="column_type_label">{t}Departments{/t}</span> <span class="page button">{if isset($sub_column.page_label)}{$sub_column.page_label}{/if}</span>
                             {elseif $sub_column.type=='families'}
-                                <span class="column_type_label">{t}Families{/t}</span> <span class="page button">{$sub_column.page}</span>
+                                <span class="column_type_label">{t}Families{/t}</span> <span class="page button">{if isset($sub_column.page_label)}{$sub_column.page_label}{/if}</span>
                             {elseif $sub_column.type=='web_departments'}
-                                <span class="column_type_label">{t}Special departments{/t}</span> <span class="page button">{$sub_column.page}</span>
+                                <span class="column_type_label">{t}Special departments{/t}</span> <span class="page button">{if isset($sub_column.page_label)}{$sub_column.page_label}{/if}</span>
                             {elseif $sub_column.type=='web_families'}
-                                <span class="column_type_label"> {t}Special families{/t}</span> <span  class="page button">{$sub_column.page}</span>
+                                <span class="column_type_label"> {t}Special families{/t}</span> <span  class="page button">{if isset($sub_column.page_label)}{$sub_column.page_label}{/if}</span>
                             {elseif $sub_column.type=='items'}
                                 <span class="column_type_label">{t}Items{/t}</span>
                              {elseif $sub_column.type=='text'}
@@ -430,7 +430,7 @@
                             $('#website_left_menu_background_mobile').attr('src',data.image_src);
 
                             $('#preview_mobile').contents().find('.sidebar-header-image.bg-1').css('background-image','url('+data.image_src+')');
-                            $('#preview_mobile').contents().find('.sidebar-header-image.bg-1').attr('background-image','url(/image_root.php?id='+data.img_key+')')
+                            $('#preview_mobile').contents().find('.sidebar-header-image.bg-1').attr('background-image','url(/image.php?id='+data.img_key+')')
 
 
                             break;
@@ -439,7 +439,7 @@
                             $('#left_menu_logo_mobile').attr('src',data.image_src);
 
                             $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo').css('background-image','url('+data.image_src+')');
-                            $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo').attr('background-image','url(/image_root.php?id='+data.img_key+')')
+                            $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo').attr('background-image','url(/image.php?id='+data.img_key+')')
 
                             break;
 

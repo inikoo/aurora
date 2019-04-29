@@ -69,17 +69,7 @@ $sql_totals
 $customer=get_object('Customer',$parameters['parent_key']);
 $store=get_object('store',$customer->get('Store Key'));
 
-if($store->get('Store Version')==1){
 
-    $fields
-        = "C.`Category Key`,C.`Category Label`,`Store Currency Code`,`Store Code`,S.`Store Key`,`Customer Key`,`Category Code`,
-    `Store Name`,
-    sum(if(`Invoice Type`='Invoice',1,0)) as invoices,
-     sum(if(`Invoice Type`='Refund',1,0)) as refunds,
-   sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,
-count(Distinct P.`Product ID`) as products 
-";
-}else{
 
     $fields
         = "C.`Category Key`,C.`Category Label`,`Store Currency Code`,`Store Code`,S.`Store Key`,`Customer Key`,`Category Code`,
@@ -92,7 +82,7 @@ count(Distinct P.`Product ID`) as products
 
 
 ";
-}
+
 
 
 $sql

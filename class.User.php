@@ -87,16 +87,9 @@ class User extends DB_Table {
             }
         }
 
-        if ($data['User Type'] == 'Customer') {
-            $where_site = sprintf(
-                " and `User Site Key`=%d", $data['User Site Key']
-            );
-        } else {
-            $where_site = '';
-        }
 
         $sql = sprintf(
-            "SELECT `User Key` FROM `User Dimension` WHERE `User Type`=%s AND `User Handle`=%s %s", prepare_mysql($data['User Type']), prepare_mysql($data['User Handle']), $where_site
+            "SELECT `User Key` FROM `User Dimension` WHERE `User Type`=%s AND `User Handle`=%s ", prepare_mysql($data['User Type']), prepare_mysql($data['User Handle'])
         );
 
 
@@ -110,38 +103,6 @@ class User extends DB_Table {
             exit;
         }
 
-
-        if (!$this->found and $data['User Type'] == 'Customer') {
-            $sql = sprintf(
-                "SELECT `User Key`,`User Site Key` FROM `User Dimension` WHERE `User Type`='Customer' AND  `User Active`='No' AND `User Parent Key`=%d AND `User Inactive Note`=%s ",
-                $data['User Parent Key'], prepare_mysql($data['User Handle'])
-            );
-
-
-            if ($result2 = $this->db->query($sql)) {
-                if ($row2 = $result2->fetch()) {
-
-
-                    if ($this->reactivate(
-                        $row2['User Key'], $data['User Handle'], $row2['User Site Key']
-                    )
-                    ) {
-
-
-                        $this->found     = true;
-                        $this->found_key = $row2['User Key'];
-
-                    }
-
-
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
-
-
-        }
 
 
         if ($this->found) {
@@ -157,40 +118,7 @@ class User extends DB_Table {
 
     }
 
-    function reactivate($user_key, $handle, $site_key) {
 
-
-        $num_handles = 0;
-        $sql         = sprintf(
-            "SELECT count(*) AS num_handles  FROM `User Dimension` WHERE `User Type`='Customer' AND `User Site Key`=%d AND   `User Handle`=%s", $site_key, prepare_mysql($handle)
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $num_handles = $row['num_handles'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        if (!$num_handles) {
-
-            $sql = sprintf(
-                "UPDATE `User Dimension` SET `User Handle`=%s,`User Inactive Note`='', `User Active`='Yes' WHERE `User Key`=%d  ",
-
-                prepare_mysql($handle), $user_key
-            );
-            $this->db->exec($sql);
-
-            return true;
-        } else {
-            return false;
-
-        }
-
-    }
 
     function get_data($key, $data, $data2 = 'Staff') {
         global $_group;
@@ -296,16 +224,10 @@ class User extends DB_Table {
             return;
         }
 
-        if ($base_data['User Type'] == 'Customer') {
-            $where_site = sprintf(
-                " and `User Site Key`=%d", $base_data['User Site Key']
-            );
-        } else {
-            $where_site = '';
-        }
+
 
         $sql = sprintf(
-            "SELECT count(*) AS numh  FROM `User Dimension` WHERE `User Type`=%s AND `User Handle`=%s %s", prepare_mysql($base_data['User Type']), prepare_mysql($base_data['User Handle']), $where_site
+            "SELECT count(*) AS numh  FROM `User Dimension` WHERE `User Type`=%s AND `User Handle`=%s ", prepare_mysql($base_data['User Type']), prepare_mysql($base_data['User Handle'])
         );
 
         if ($result = $this->db->query($sql)) {
@@ -348,12 +270,7 @@ class User extends DB_Table {
 
 
         }
-        if ($base_data['User Type'] == 'Customer') {
-            $sql = sprintf(
-                "UPDATE `Store Dimension` SET `Store Total Users`=`Store Total Users`+1 WHERE `Store Key`=%d", $base_data['User Site Key']
-            );
-            $this->db->exec($sql);
-        }
+
         if ($base_data['User Type'] == 'Administrator') {
             $base_data['User Alias'] = _('Administrator');
         }
@@ -1963,28 +1880,6 @@ class User extends DB_Table {
         return $staff_name;
     }
 
-    function get_customer_name() {
-        $customer_name = '';
-        $customer_key  = $this->get_customer_key();
-        if ($customer_key) {
-            $customer      = new Customer($customer_key);
-            $customer_name = $customer->data['Customer Name'];
-        }
-
-        return $customer_name;
-    }
-
-    function get_customer_key() {
-        $customer_key = 0;
-        if ($this->data['User Type'] == 'Customer') {
-            $customer_key = $this->data['User Parent Key'];
-        } else {
-            $customer_key = 0;
-        }
-
-        return $customer_key;
-    }
-
     function get_number_suppliers() {
         return count($this->suppliers);
     }
@@ -2159,7 +2054,6 @@ class User extends DB_Table {
             $rights = array_merge($rights, $user_groups[$group_key]['Rights']);
             //print_r($rights);
         }
-
 
         //print "****";
 
@@ -2490,96 +2384,9 @@ class User extends DB_Table {
         return $image;
     }
 
-    function deactivate() {
-
-        if ($this->data['User Active'] == 'No') {
-            return;
-        }
-
-        switch ($this->data['User Type']) {
-            case 'Customer';
-
-                $sql = sprintf(
-                    "UPDATE `User Dimension` SET `User Handle`=%s,`User Inactive Note`=%s, `User Active`='No' WHERE `User Key`=%d  ", prepare_mysql($this->id),
-                    prepare_mysql($this->data['User Handle']), $this->id
-                );
-                $this->db->exec($sql);
-                $this->data['User Active']        = 'No';
-                $this->data['User Inactive Note'] = $this->data['User Handle'];
-                $this->data['User Handle']        = $this->id;
-                break;
-        }
-
-    }
-
-    function update_request_data() {
-        switch ($this->data['User Type']) {
-            case 'Customer';
-
-                $number_requests = 0;
-                $number_sessions = 0;
-                $last_request    = '';
-
-                $sql = sprintf(
-                    "SELECT count(*) AS num_request, count(DISTINCT `User Session Key`) AS num_sessions , max(`Date`) AS date FROM `User Request Dimension` WHERE  `User Key`=%d", $this->id
-                );
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $number_requests = $row['num_request'];
-                        $number_sessions = $row['num_sessions'];
-                        $last_request    = $row['date'];
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
-                }
 
 
-                $sql = sprintf(
-                    "UPDATE `User Dimension` SET `User Requests Count`=%d,`User Sessions Count`=%d, `User Last Request`=%s WHERE `User Key`=%d  ", $number_requests, $number_sessions,
-                    prepare_mysql($last_request),
 
-                    $this->id
-                );
-                $this->db->exec($sql);
-                break;
-        }
-
-
-    }
-
-    function update_table_export_field($table_key, $fields) {
-
-
-        $sql = sprintf(
-            "SELECT `Table Key` FROM `Table User Export Fields`  WHERE `Table Key`=%d AND `User Key`=%d", $table_key, $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-
-                $sql = sprintf(
-                    "UPDATE `Table User Export Fields`   SET `Fields`=%s WHERE `Table Key`=%d AND `User Key`=%d", prepare_mysql($fields), $table_key, $this->id
-                );
-                $this->db->exec($sql);
-
-            } else {
-                $sql = sprintf(
-                    "INSERT INTO `Table User Export Fields` VALUES (%d,%d,%s) ", $table_key, $this->id, prepare_mysql($fields)
-                );
-
-                $this->db->exec($sql);
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
 
     function get_tab_defaults($tab) {
 
@@ -2663,7 +2470,6 @@ class User extends DB_Table {
             $dashboard_items[] = 'pending_orders_and_customers';
             $dashboard_items[] = 'inventory_warehouse';
             $dashboard_items[] = 'sales_overview';
-           // $dashboard_items[] = 'customers';
 
 
         } else {

@@ -969,17 +969,11 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
 
             if (count($error_messages) > 0) {
 
-                $msg = '<ul>';
-                foreach ($error_messages as $error_message) {
-                    $msg .= '<li>'.$error_message.'</li>';
-                }
-                $msg .= '</ul>';
 
                 $private_message = join(', ', $error_private_messages);
             } else {
 
 
-                $msg = _('There was a problem processing your credit card; please double check your payment information and try again').'. ('.$result->transaction->id.')';
 
                 if ($result->transaction->status == 'processor_declined') {
 
@@ -993,6 +987,7 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
                 }
 
             }
+            $msg = _('There was a problem processing your credit card; please double check your payment information and try again');
 
 
             $payment_metadata = '';
@@ -1059,7 +1054,7 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
     } catch (Exception $e) {
 
 
-        $msg = _('There was a problem processing your credit card; please double check your payment information and try again').'.';
+        $msg = _('There was a problem processing your credit card; please double check your payment information and try again');
 
         $response = array(
 

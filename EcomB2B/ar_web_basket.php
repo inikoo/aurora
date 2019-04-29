@@ -108,7 +108,7 @@ function update_item($_data, $customer, $order, $editor, $db) {
 
         $order = create_order($editor, $customer);
 
-        $order->update(array('Order Website Key' => $website->id), 'no_history');
+        $order->fast_update(array('Order Website Key' => $website->id));
         $_SESSION['order_key'] = $order->id;
 
     }

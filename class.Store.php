@@ -4418,7 +4418,7 @@ class Store extends DB_Table {
 
         $number_sites = 0;
         $sql          = sprintf(
-            "SELECT count(*) AS number_sites FROM `Site Dimension` WHERE `Site Store Key`=%d ", $this->id
+            "SELECT count(*) AS number_sites FROM `Website Dimension` WHERE `Website Store Key`=%d ", $this->id
         );
 
         if ($result = $this->db->query($sql)) {

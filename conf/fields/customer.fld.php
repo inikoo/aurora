@@ -69,7 +69,7 @@ if (isset($options['new']) and $options['new']) {
 $edit = true;
 
 
-$_edit = ($store->get('Store Version') == 2 ? true : false);
+$_edit = ($store->get('Store Type') != 'External' ? true : false);
 
 
 if ($new) {

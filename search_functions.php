@@ -1597,12 +1597,12 @@ function search_customers($db, $account, $user, $data) {
     $postal_code_candidates = array();
 
 
-    //$q_postal_code = preg_replace('/[^a-z^A-Z^\d]/', '', $q);
+    $q_postal_code = preg_replace('/[^a-z^A-Z^\d]/', '', $q);
 
-    $q_postal_code = $q;
+   // $q_postal_code = $q;
     if (strlen($q_postal_code) > 2) {
         $sql = sprintf(
-            "select `Customer Key`,`Customer Contact Address Postal Code` from `Customer Dimension`where true $where_store and  `Customer Contact Address Postal Code` like '%s%%' limit 150", addslashes($q_postal_code)
+            "select `Customer Key`,`Customer Contact Address Postal Code` from `Customer Dimension`where true $where_store and  `Customer Main Plain Postal Code` like '%s%%' limit 50", addslashes($q_postal_code)
         );
 
         if ($result = $db->query($sql)) {

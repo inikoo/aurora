@@ -2171,6 +2171,17 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 if (isset($view_path[1])) {
                                     $extra = $view_path[1];
+
+                                    if (isset($view_path[2])) {
+
+                                        if(is_numeric($view_path[2])){
+                                            $section    = 'order';
+                                            $object     = 'order';
+                                            $key = $view_path[2];
+                                        }
+
+                                    }
+
                                 }
                                 if (isset($view_path[2])) {
                                     $extra_tab = $view_path[2];
@@ -2203,7 +2214,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
 
-                    } elseif (is_numeric($arg1)) {
+                    }
+                    elseif (is_numeric($arg1)) {
 
 
                         $section    = 'orders';
@@ -2218,6 +2230,17 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 if (isset($view_path[1])) {
 
                                     $extra = $view_path[1];
+
+
+                                    if (isset($view_path[2])) {
+
+                                        if(is_numeric($view_path[2])){
+                                            $section    = 'order';
+                                            $object     = 'order';
+                                            $key = $view_path[2];
+                                        }
+
+                                    }
 
                                 }
 

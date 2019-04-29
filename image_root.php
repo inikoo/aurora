@@ -44,7 +44,15 @@ $cache_file = 'image_cache/'.$image_key.'_'.$size.($size_r!=''?'_'.$size_r:'');
 $image_code = 'auAWi'.$image_key.'_'.$size.($size_r!=''?'_'.$size_r:'');
 
 
-if ($redis->exists($image_code)) {
+
+print $image_code;
+
+exit;
+
+
+
+
+if ($redis->exists($image_code) and false) {
 
 
     $image_filename = $redis->get($image_code);
@@ -66,8 +74,22 @@ if ($redis->exists($image_code)) {
     }
 }
 
+print_r($size);
+
+print_r($size_r);
+
+
 
 if ($size_r != '') {
+
+
+
+
+
+
+
+
+
 
     include_once 'class.Image.php';
     $image = new Image($image_key);

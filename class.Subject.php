@@ -438,6 +438,8 @@ class Subject extends DB_Table {
 
             if ($type == 'Contact') {
 
+                $this->fast_update(array($this->table_name.' Main Plain Postal Code'=>preg_replace('/\s|\n|\r/','',$this->get($this->table_name.' Contact Address Postal Code'))));
+
 
                 $location = $this->get('Contact Address Locality');
                 if ($location == '') {
@@ -594,9 +596,9 @@ class Subject extends DB_Table {
 
             // print $type;
 
-            //todo remove after migration
+
             $store = get_object('Store', $this->get('Store Key'));
-            if ($store->get('Store Version') == 2) { //todo Checked ok
+            if ($store->get('Store Type') != 'External') {
                 if ($type == 'Invoice') {
                     $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
                     // print "$sql\n";
@@ -703,6 +705,7 @@ class Subject extends DB_Table {
                 $value = preg_replace('/\s/', '', $value);
                 if ($value == '+') {
                     $value = '';
+                    $formatted_value = '';
                 }
                 if ($value != '') {
 
@@ -731,6 +734,7 @@ class Subject extends DB_Table {
                     } catch (\libphonenumber\NumberParseException $e) {
                         $this->error = true;
                         $this->msg   = 'Error 1234';
+                        $formatted_value ='';
                     }
 
                 } else {

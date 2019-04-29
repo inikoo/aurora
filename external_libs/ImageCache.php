@@ -251,7 +251,7 @@ class ImageCache {
 
 
         if (!$image_type) {
-            $this->error('The file you supplied isn\'t a valid image.');
+            $this->error('The file you supplied isn\'t a valid image. '.$this->image_src);
         }
         $this->file_mime_type = image_type_to_mime_type($image_type);
         $this->file_extension = image_type_to_extension($image_type, false);

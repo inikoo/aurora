@@ -496,8 +496,11 @@ function fork_housekeeping($job) {
 
             break;
 
+        /*
+        case 'update_orders_in_basket_data':
 
-        case 'update_orders_in_basket_data': // remove after migration
+
+            // remove after migration
             $store   = get_object('Store', $data['store_key']);
             $account = get_object('Account', '');
             $store->update_orders_in_basket_data();
@@ -532,6 +535,8 @@ function fork_housekeeping($job) {
             );
 
             break;
+        */
+
         case 'order_items_changed':
             $order = get_object('Order', $data['order_key']);
 
@@ -657,7 +662,6 @@ function fork_housekeeping($job) {
 
 
             $store->update_orders();
-            $order->update_full_search();
 
             $account = get_object('Account', '');
             $account->update_orders();
@@ -783,9 +787,10 @@ function fork_housekeeping($job) {
 
 
             break;
-
+        /*
         case 'customer_created_migration':
-            //todo  delete when migrate
+
+
 
             $customer = get_object('Customer', $data['customer_key']);
 
@@ -817,9 +822,8 @@ function fork_housekeeping($job) {
                 }
             }
             break;
-
+        */
         case 'customer_created':
-
 
             $customer     = get_object('Customer', $data['customer_key']);
             $store        = get_object('Store', $customer->get('Customer Store Key'));
@@ -836,7 +840,6 @@ function fork_housekeeping($job) {
             }
 
 
-            $customer->update_full_search();
             $customer->update_location_type();
             $store->update_customers_data();
 
@@ -898,28 +901,9 @@ function fork_housekeeping($job) {
 
         case 'full_after_part_stock_update':
 
-            // return true;
+            return true;
 
-            //
-
-            /*
-                        $editor = array(
-
-
-                            'Author Type'  => '',
-                            'Author Key'   => '',
-                            'User Key'     => 0,
-                            'Date'         => gmdate('Y-m-d H:i:s'),
-                            'Subject'=>'System',
-                            'Subject Key'=>0,
-                            'Author Name'=>'System (Stock change)',
-                            'Author Alias' => 'System (Stock change)',
-                            'v'=>3
-
-            'email_tacking_ses','product_web_state_legacy','update_part_products_availability','part_stock_in_paid_orders','full_after_part_stock_update_legacy'
-
-                        );
-                        */
+           /*
 
             $date = gmdate('Y-m-d H:i:s');
             $sql  = sprintf(
@@ -934,37 +918,7 @@ function fork_housekeeping($job) {
             );
             $db->exec($sql);
 
-            return true;
-
-            // todo remove after migration
-            // for use in pre migration inikoo
-
-            $part = get_object('Part', $data['part_sku']);
-
-            if (isset($data['editor'])) {
-                $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
-                $part->editor           = $data['editor'];
-            } else {
-                $part->editor = $editor;
-            }
-
-            $part->activate();
-            $part->discontinue_trigger();
-
-
-            $part->update_available_forecast();
-            $part->update_stock_status();
-
-            foreach ($part->get_products('objects') as $product) {
-                if (isset($data['editor'])) {
-                    $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
-                    $product->editor        = $data['editor'];
-                } else {
-                    $product->editor = $editor;
-                }
-                $product->fork = true;
-                $product->update_availability(true);
-            }
+            */
 
             break;
 
@@ -2685,7 +2639,7 @@ function fork_housekeeping($job) {
 
         case 'update_deals_status_from_dates':
 
-            $sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension`  left join `Store Dimension` on (`Deal Store Key`=`Store Key`) where `Store Version`=2 and `Deal Expiration Date` is not null  and `Deal Status` not in ('Finished')");
+            $sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension`  left join `Store Dimension` on (`Deal Store Key`=`Store Key`) where `Deal Expiration Date` is not null  and `Deal Status` not in ('Finished')");
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
 

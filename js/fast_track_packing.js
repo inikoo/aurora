@@ -147,22 +147,25 @@ function fast_track_packing_qty_changed(input_element){
 
     var diff = new_total_qty - pending;
 
-    console.log(pending)
+   // console.log(pending)
 
     console.log(diff)
 
+
     if (diff < 0) {
-        status_notes.html(parseFloat(diff.toFixed(4)))
+        status_notes.html(parseFloat(diff.toFixed(4))).data('no_picked_qty',-diff)
+
+
         status_icon.addClass('error fa-exclamation-circle').removeClass('success  fa-check-circle')
     } else if (diff > 0) {
-        status_notes.html('+' + parseFloat(diff.toFixed(4)))
+        status_notes.html('+' + parseFloat(diff.toFixed(4))).data('no_picked_qty',0)
 
         status_icon.addClass('error fa-exclamation-circle').removeClass('success  fa-check-circle')
 
     } else {
 
 
-        status_notes.html('')
+        status_notes.html('').data('no_picked_qty',0)
         status_icon.removeClass('error fa-exclamation-circle').addClass('success  fa-check-circle')
 
     }
@@ -170,6 +173,7 @@ function fast_track_packing_qty_changed(input_element){
 
 
     validate_data_entry_picking_aid()
+    update_no_picked_info()
 }
 
 
@@ -385,7 +389,7 @@ function delivery_note_fast_track_packing_qty_change(element) {
 
 
 
-    console.log('holaxxx '+input.data('location_key'))
+   // console.log('holaxxx '+input.data('location_key'))
 
 
     var picked_quantity_components = input.closest('.picked_quantity_components')
@@ -415,34 +419,34 @@ function delivery_note_fast_track_packing_qty_change(element) {
 
     });
 
-    console.log('qty '+qty)
-    console.log('_total_qty '+_total_qty)
+    //console.log('qty '+qty)
+    //console.log('_total_qty '+_total_qty)
 
     var total_qty = qty + _total_qty
 
-    console.log('total_qty '+total_qty)
+    //console.log('total_qty '+total_qty)
 
     var pending = picked_quantity_components.data('pending')
 
     if (total_qty > pending) {
 
         qty = pending - _total_qty;
-        console.log(qty)
-        console.log(pending)
+        //console.log(qty)
+        //console.log(pending)
 
-        console.log(_total_qty)
+        //console.log(_total_qty)
 
     }
 
 
     if (qty > input.data('max')) {
 
-        console.log('maxout')
+      //  console.log('maxout')
 
         qty = input.data('max')
     }
 
-    console.log(qty)
+    //console.log(qty)
     //console.log(_icon)
 
     $(element).addClass(_icon)
@@ -471,7 +475,6 @@ function delivery_note_fast_track_packing_qty_change(element) {
     $(element).closest('span').find('i.plus').removeClass('fa-spinner fa-spin  error fa-exclamation-circle').addClass('fa-plus').prop('title', labels.add)
     $(element).closest('span').find('i.minus').removeClass('fa-spinner fa-spin invisible fa-undo very_discreet').addClass('fa-minus').prop('title', labels.remove)
 
-
     var new_total_qty = 0
 
 
@@ -489,29 +492,82 @@ function delivery_note_fast_track_packing_qty_change(element) {
 
     });
 
-    console.log(pending)
+    //console.log(pending)
 
     var diff = new_total_qty - pending;
     if (diff < 0) {
-        status_notes.html(parseFloat(diff.toFixed(4)))
+        status_notes.html(parseFloat(diff.toFixed(4))).data('no_picked_qty',-diff)
         status_icon.addClass('error fa-exclamation-circle').removeClass('success  fa-check-circle')
     } else if (diff > 0) {
-        status_notes.html('+' + parseFloat(diff.toFixed(4)))
+        status_notes.html('+' + parseFloat(diff.toFixed(4))).data('no_picked_qty',0)
 
         status_icon.addClass('error fa-exclamation-circle').removeClass('success  fa-check-circle')
 
     } else {
 
 
-        status_notes.html('')
+        status_notes.html('').data('no_picked_qty',0)
         status_icon.removeClass('error fa-exclamation-circle').addClass('success  fa-check-circle')
 
     }
 
     validate_data_entry_picking_aid()
 
+    update_no_picked_info()
+
+
 }
 
+function update_no_picked_info(){
+
+
+    var info_block=$('.not_picked_info')
+
+    var no_picked_number_items=0
+    var no_picked_amount=0;
+
+    $('i.picked_offline_status').each(function (i, obj) {
+
+
+
+        if (!$(obj).hasClass('fa-check-circle')) {
+            no_picked_number_items++;
+        }
+    });
+
+    $('.picked_offline_status_notes').each(function (i, obj) {
+
+
+        no_picked_amount+=$(obj).data('no_picked_qty')*$(obj).data('value_per_qty')
+
+
+
+    });
+
+
+
+
+
+   // console.log(no_picked_number_items)
+
+
+    if(no_picked_number_items>0){
+        info_block.removeClass('hide')
+    }else{
+        info_block.addClass('hide')
+    }
+
+    info_block.find('.items_with_problems').html(no_picked_number_items)
+    info_block.find('.percentage_items_with_problems').html('('+Number(no_picked_number_items/info_block.data('total_items')).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:1})+')')
+
+
+    info_block.find('.items_with_problems_amount').html(Number(no_picked_amount).toLocaleString(undefined,{style: 'currency', currency:info_block.data('currency')}))
+    info_block.find('.percentage_items_with_problems_amount').html('('+Number(no_picked_amount/info_block.data('total_items_amount')).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:1})+')')
+
+
+
+
+}
 
 function select_dropdown_handler_for_fast_track_packing(type, element) {
 

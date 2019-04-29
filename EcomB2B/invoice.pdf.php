@@ -50,6 +50,10 @@ $store    = get_object('Store', $invoice->get('Invoice Store Key'));
 $customer = get_object('Customer', $invoice->get('Invoice Customer Key'));
 
 
+
+
+
+
 if (!empty($_REQUEST['locale'])) {
     $_locale = $_REQUEST['locale'];
 } else {
@@ -61,6 +65,13 @@ if (!empty($_REQUEST['commodity'])) {
     $print_tariff_code = true;
 } else {
     $print_tariff_code = false;
+}
+
+
+if (!empty($_REQUEST['barcode'])) {
+    $print_barcode = true;
+} else {
+    $print_barcode = false;
 }
 
 if (!empty($_REQUEST['rrp'])) {
@@ -172,23 +183,12 @@ if ($invoice->data['Invoice Type'] == 'Invoice') {
 
 $transactions = array();
 
-if ($invoice->get('Invoice Version') == 2) {
-    $sql = sprintf(
-        "SELECT  `Product Origin Country Code`,`Delivery Note Quantity` as Qty, `Order Transaction Amount` as Amount, `Product Unit Weight`,`Invoice Currency Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
-`Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code`
+$sql = sprintf(
+    "SELECT  `Product Barcode Number`,`Product Origin Country Code`,`Delivery Note Quantity` as Qty, `Order Transaction Amount` as Amount, `Product Unit Weight`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
+`Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code`
  FROM `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN
   `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=%d  and `Current Dispatching State`   and (`Order Transaction Amount`!=0 or `Delivery Note Quantity`!=0)  ORDER BY `Product Code`", $invoice->id
-    );
-} else {
-
-    $sql = sprintf(
-        "SELECT `Product Origin Country Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Quantity` as Qty, (`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Item Tax Amount`) as Amount, `Product Unit Weight`,`Invoice Currency Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
-`Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code`
- FROM `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN
-  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=%d  and `Current Dispatching State` not in ('Out of Stock in Basket')  and ((`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Item Tax Amount`)!=0 or `Invoice Quantity`!=0)  ORDER BY `Product Code`",
-        $invoice->id
-    );
-}
+);
 
 //print $sql;exit;
 
@@ -201,17 +201,12 @@ if ($result = $db->query($sql)) {
             ($row['Amount']), $row['Order Currency Code']
         );
 
-        if ($invoice->get('Invoice Version') == 2) {
             $discount = ($row['Order Transaction Total Discount Amount'] == 0
                 ? ''
                 : percentage(
-                    $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'] - floatval($row['Order Transaction Out of Stock Amount']), 0
+                    $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'], 0
                 ));
 
-        } else {
-            $discount = ($row['Invoice Transaction Total Discount Amount'] == 0 ? '' : percentage($row['Invoice Transaction Total Discount Amount'], $row['Invoice Transaction Gross Amount'], 0));
-
-        }
 
 
         $units    = $row['Product Units Per Case'];
@@ -242,10 +237,11 @@ if ($result = $db->query($sql)) {
 
         if ($row['Product Origin Country Code'] != '' and $print_origin) {
 
-
             $_country = new Country('code', $row['Product Origin Country Code']);
 
-            if ($_country->id and $_country->get('Country 2 Alpha Code') != 'XX') {
+
+
+            if ($_country->id and $_country->get('Country 2 Alpha Code') != 'XX' ) {
                 try {
                     $country     = $countryRepository->get($_country->get('Country 2 Alpha Code'));
                     $description .= ' <br>'._('Origin').': '.$country->getName().' ('.$country->getThreeLetterCode().')';
@@ -256,14 +252,19 @@ if ($result = $db->query($sql)) {
 
             }
 
+
         }
 
         if ($print_tariff_code and $row['Product Tariff Code'] != '') {
             $description .= '<br>'._('Tariff Code').': '.$row['Product Tariff Code'];
         }
 
+        if ($print_barcode and $row['Product Barcode Number'] != '') {
+            $description .= '<br>'._('Barcode').': '.$row['Product Barcode Number'];
+        }
 
-        $row['Product XHTML Short Description'] = $description;
+
+        $row['Description'] = $description;
 
         $row['Discount'] = $discount;
 
@@ -291,7 +292,7 @@ if ($invoice->data['Invoice Net Amount Off']) {
 
 
     $row['Product Code']                    = _('Amount Off');
-    $row['Product XHTML Short Description'] = '';
+    $row['Description'] = '';
     $row['Net']                             = money($net, $invoice->get('Currency Code'));
     $row['Tax']                             = money($tax, $invoice->get('Currency Code'));
     $row['Amount']                          = money($total, $invoice->get('Currency Code'));
@@ -345,18 +346,11 @@ if ($result = $db->query($sql)) {
         $transactions_no_products[] = array(
 
             'Product Code'                    => $code,
-            'Product XHTML Short Description' => $row['Transaction Description'],
-            'Invoice Quantity'                => '',
-            'Net'                             => money(
-                $row['Transaction Invoice Net Amount'], $row['Currency Code']
-            ),
-            'Tax'                             => money(
-                $row['Transaction Invoice Tax Amount'], $row['Currency Code']
-            ),
+            'Description' => $row['Transaction Description'],
+            'Net'                             => money($row['Transaction Invoice Net Amount'], $row['Currency Code']),
+            'Tax'                             => money($row['Transaction Invoice Tax Amount'], $row['Currency Code']),
 
-            'Amount' => money(
-                $row['Transaction Invoice Net Amount'] + $row['Transaction Invoice Tax Amount'], $row['Currency Code']
-            )
+            'Amount' => money($row['Transaction Invoice Net Amount'] + $row['Transaction Invoice Tax Amount'], $row['Currency Code'])
         );
     }
 } else {
@@ -365,45 +359,6 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
-
-$sql = sprintf(
-    "SELECT `Product History XHTML Short Description`,`Invoice Transaction Net Refund Items`,`Invoice Transaction Tax Refund Items`,`Refund Quantity`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` FROM `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Refund Key`=%d ORDER BY `Product Code`",
-    $invoice->id
-);
-//print $sql;exit;
-
-if ($result = $db->query($sql)) {
-    foreach ($result as $row) {
-
-        $row['Amount'] = money(
-            ($row['Invoice Transaction Net Refund Items']), $row['Invoice Currency Code']
-        );
-        if ($row['Invoice Transaction Net Refund Items'] == 0) {
-            $row['Amount'] .= '<br><span style="font-size:80%">'._('Tax').': '.money(
-                    ($row['Invoice Transaction Tax Refund Items']), $row['Invoice Currency Code']
-                ).'</span>';
-        }
-
-
-        $row['Discount'] = '';
-        $row['Qty']      = $row['Refund Quantity'];
-        if ($row['Product RRP'] != 0) {
-            $row['Product XHTML Short Description'] = $row['Product History XHTML Short Description'].'<br>'._('RRP').': '.money($row['Product RRP'], $row['Invoice Currency Code']);
-        }
-
-        if ($print_tariff_code and $row['Product Tariff Code'] != '') {
-            $row['Product XHTML Short Description'] = $row['Product History XHTML Short Description'].'<br>'._(
-                    'Tariff Code'
-                ).': '.$row['Product Tariff Code'];
-        }
-
-        $transactions[] = $row;
-    }
-} else {
-    print_r($error_info = $db->errorInfo());
-    print "$sql\n";
-    exit;
-}
 
 
 $sql = sprintf(
@@ -414,16 +369,10 @@ $sql = sprintf(
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $row['Product Code']                    = _('Credit');
-        $row['Product XHTML Short Description'] = $row['Transaction Description'];
-        $row['Net']                             = money(
-            ($row['Transaction Refund Net Amount']), $row['Currency Code']
-        );
-        $row['Tax']                             = money(
-            ($row['Transaction Refund Tax Amount']), $row['Currency Code']
-        );
-        $row['Amount']                          = money(
-            ($row['Transaction Refund Net Amount'] + $row['Transaction Refund Tax Amount']), $row['Currency Code']
-        );
+        $row['Description'] = $row['Transaction Description'];
+        $row['Net']                             = money($row['Transaction Refund Net Amount'], $row['Currency Code']);
+        $row['Tax']                             = money($row['Transaction Refund Tax Amount'], $row['Currency Code']);
+        $row['Amount']                          = money(($row['Transaction Refund Net Amount'] + $row['Transaction Refund Tax Amount']), $row['Currency Code']);
 
         $row['Discount'] = '';
         $row['Qty']      = '';
@@ -436,16 +385,16 @@ if ($result = $db->query($sql)) {
 }
 
 
-// todo remove `Order Transaction Type` not in ("Resend")  used for Stores Version, replacements  `Order Transaction Type`='Resend' should be deleted as in version 2
-
 
 $transactions_out_of_stock = array();
 $sql                       = sprintf(
-    "SELECT `Product History XHTML Short Description`,(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`+`No Shipped Due Other`) AS qty,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code` FROM `Order Transaction Fact` O
+    "SELECT (`No Shipped Due Out of Stock`) AS qty,`Product RRP`,
+`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code` ,`Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`,`Product Origin Country Code`,`Product Unit Weight`
+FROM `Order Transaction Fact` O
  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`)
  LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`)
 
-  WHERE `Invoice Key`=%d AND  `Order Transaction Type` not in ('Resend')  and (`No Shipped Due Out of Stock`>0  OR  `No Shipped Due No Authorized`>0 OR `No Shipped Due Not Found`>0 OR `No Shipped Due Other` )  ORDER BY `Product Code`", $invoice->id
+  WHERE    `Invoice Key`=%d   and   AND (`No Shipped Due Out of Stock`>0  )  ORDER BY `Product Code`", $invoice->id
 );
 //print $sql;exit;
 
@@ -455,11 +404,68 @@ if ($result = $db->query($sql)) {
         $row['Amount']   = '';
         $row['Discount'] = '';
 
-        if ($row['Product RRP'] != 0) {
-            $row['Product XHTML Short Description'] = $row['Product History XHTML Short Description'].'<br>'._('RRP').': '.money($row['Product RRP'], $row['Invoice Currency Code']);
+
+
+        $units    = $row['Product Units Per Case'];
+        $name     = $row['Product History Name'];
+        $price    = $row['Product History Price'];
+        $currency = $row['Product Currency'];
+
+
+        $desc = '';
+        if ($units > 1) {
+            $desc = number($units).'x ';
+        }
+        $desc .= ' '.$name;
+        if ($price > 0) {
+            $desc .= ' ('.money($price, $currency, $_locale).')';
         }
 
-        $row['Quantity']             = '<span >('.$row['qty'].')</span>';
+        $description = $desc;
+
+
+        if ($row['Product RRP'] != 0 and $print_rrp) {
+            $description .= ' <br>'._('RRP').': '.money($row['Product RRP'], $row['Product Currency']);
+        }
+
+        if ($row['Product Unit Weight'] != 0 and $print_weight) {
+            $description .= ' <br>'._('Weight').': '.weight($row['Product Unit Weight'] * $row['Product Units Per Case']);
+        }
+
+        if ($row['Product Origin Country Code'] != '' and $print_origin) {
+
+            $_country = new Country('code', $row['Product Origin Country Code']);
+
+
+
+            if ($_country->id and $_country->get('Country 2 Alpha Code') != 'XX' ) {
+                try {
+                    $country     = $countryRepository->get($_country->get('Country 2 Alpha Code'));
+                    $description .= ' <br>'._('Origin').': '.$country->getName().' ('.$country->getThreeLetterCode().')';
+                } catch (Exception $e) {
+                    $description .= ' <br>'._('Origin').': '.$_country->get('Country 2 Alpha Code');
+                }
+
+
+            }
+
+
+        }
+
+        if ($print_tariff_code and $row['Product Tariff Code'] != '') {
+            $description .= '<br>'._('Tariff Code').': '.$row['Product Tariff Code'];
+        }
+
+        if ($print_barcode and $row['Product Barcode Number'] != '') {
+            $description .= '<br>'._('Barcode').': '.$row['Product Barcode Number'];
+        }
+
+
+        $row['Description'] = $description;
+
+
+
+        $row['Quantity']             = '<span >('.number($row['qty'],3).')</span>';
         $transactions_out_of_stock[] = $row;
 
     }
@@ -520,11 +526,11 @@ if ($invoice->data['Invoice Type'] == 'CreditNote') {
 
             }
             $row['Product Code']                    = $code;
-            $row['Product XHTML Short Description'] = $row['Transaction Description'];
+            $row['Description'] = $row['Transaction Description'];
             $row['Amount']                          = money($row['Transaction Invoice Net Amount'], $row['Currency Code']);
 
-            $row['Qty']      = '';
             $row['Discount'] = '';
+            $row['Qty']      = '';
             $transactions[]  = $row;
         }
     } else {
@@ -625,6 +631,7 @@ if ($account->get('Account Country Code') == 'SVK') {
 
 }
 
+
 $smarty->assign('extra_comments', $extra_comments);
 
 //if ($account->data['Apply Tax Method'] == 'Per Item') {
@@ -635,10 +642,8 @@ $html = $smarty->fetch('invoice.pdf.tpl');
 
 //}
 
+$html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');
 
 $mpdf->WriteHTML($html);
 //$mpdf->WriteHTML('<pagebreak resetpagenum="1" pagenumstyle="1" suppress="off" />');
 $mpdf->Output();
-
-
-?>

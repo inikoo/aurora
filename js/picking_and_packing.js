@@ -192,7 +192,10 @@ function save_number_parcels(element) {
         $(element).removeClass('fa-spinner fa-spin')
         if (data.state == 200) {
             input.attr('ovalue', data.value)
-            icon.removeClass('fa-cloud').addClass('fa-plus')
+            icon.addClass('hide')
+            for (var key in data.update_metadata.class_html) {
+                $('.' + key).html(data.update_metadata.class_html[key])
+            }
         } else if (data.state == 400) {
             sweetAlert(data.msg);
             input.val(input.attr('ovalue'))
@@ -253,6 +256,9 @@ function save_delivery_note_weight(element) {
         if (data.state == 200) {
             input.attr('ovalue', data.value)
             icon.addClass('hide')
+            for (var key in data.update_metadata.class_html) {
+                $('.' + key).html(data.update_metadata.class_html[key])
+            }
         } else if (data.state == 400) {
             sweetAlert(data.msg);
             input.val(input.attr('ovalue'))

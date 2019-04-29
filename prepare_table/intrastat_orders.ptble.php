@@ -124,22 +124,10 @@ $sql_totals = "";
 
 
     $fields = "OTF.`Order Key`,O.`Order Public ID`,`Order Customer Name`,`Delivery Note Date`,`Order Store Key`,`Order Customer Key`,`Order Currency Code`,
-sum(   
-if(`Store Version`=2,  
-`Order Transaction Amount`*`Invoice Currency Exchange Rate` , 
-`Invoice Currency Exchange Rate`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`)
- )
- ) as amount_ac,
- 
- sum(   
-if(`Store Version`=2,  
-`Order Transaction Amount` , 
-(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`+`Invoice Transaction Insurance Amount`)
- )
- ) as amount,
- 
- 
-	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight ,
+    
+   sum(   `Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount_ac,
+sum (`Order Transaction Amount`) as amount,
+sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight ,
 	group_concat(P.`Product Code` SEPARATOR ', ') as products
 
 ";
@@ -153,4 +141,4 @@ if(`Store Version`=2,
 
 
 
-?>
+

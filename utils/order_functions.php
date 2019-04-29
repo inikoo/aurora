@@ -144,6 +144,9 @@ function get_orders_operations($row, $user) {
 
 function get_order_formatted_dispatch_state($state,$replacement_state, $order_key) {
     switch ($state) {
+        case 'InProcess':
+            $dispatch_state = _('Submitted');
+            break;
         case 'In Process by Customer':
             $dispatch_state = _('In Website');
             break;

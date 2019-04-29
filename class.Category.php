@@ -290,18 +290,12 @@ class Category extends DB_Table {
             $data['Category Label'] = $data['Category Code'];
         }
 
-        //print_r($data);
 
-        // $data=array('`Category Code`'=>$data['Category Code']);
 
+        //todo  Move stuff from class.Node.php to here
         $nodes = new Nodes('`Category Dimension`');
-
-
         $nodes->add_new($data['Category Parent Key'], $data);
-
-
         $node_id = $nodes->id;
-
         unset($nodes);
 
 
@@ -1628,7 +1622,6 @@ class Category extends DB_Table {
             */
 
             //  print_r($subcategory);
-            //-----Migration ---
 
             if ($this->get('Category Scope') == 'Product') {
 
@@ -1639,42 +1632,6 @@ class Category extends DB_Table {
                 if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
 
 
-                    if (function_exists('mysql_query') and $store->get('Store Version') == 1) {
-                        $code = $subcategory->get('Category Code');
-
-
-                        include_once 'class.Family.php';
-                        include_once 'class.Department.php';
-
-
-                        $sql = sprintf('SELECT `Product Department Key` FROM `Product Department Dimension` WHERE `Product Department Store Key`=%s ', $store->id);
-
-                        $dept_key = 0;
-                        if ($result = $this->db->query($sql)) {
-                            if ($row = $result->fetch()) {
-                                $dept_key = $row['Product Department Key'];
-                            }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            exit;
-                        }
-
-
-                        $fam_data = array(
-
-                            'Product Family Code'                   => $code,
-                            'Product Family Name'                   => $code,
-                            'Product Family Main Department Key'    => $dept_key,
-                            'Product Family Store Key'              => $store->id,
-                            'Product Family Special Characteristic' => $code
-                        );
-
-                        //print_r($fam_data);
-
-
-                        $family = new Family('find', $fam_data, 'create');
-
-                    }
 
                     $account = get_object('Account', 1);
 
@@ -1705,12 +1662,7 @@ class Category extends DB_Table {
                 $subcategory->update_product_category_products_data();
 
 
-                //    if ($subcategory->get('Product Category Public') == 'Yes') {
-                //      foreach ($store->get_websites('objects') as $website) {
-                //        $website->create_category_webpage($subcategory->id);
-                //  }
 
-                // }
 
 
             }
@@ -2022,51 +1974,21 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                     $product = new Product($subject_key);
 
-                    $abstract = sprintf(
-                        _('Product %s disassociated from category %s'), $product->get('Code'), $this->get('Code')
-                    );
+                    $abstract = sprintf(_('Product %s disassociated from category %s'), $product->get('Code'), $this->get('Code'));
                     $details  = '';
 
 
-                    //  Migration  ----
 
                     $store = get_object('Store',$this->get('Category Store Key'));
                     if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
 
 
-                        $sql = sprintf(
-                            "SELECT * FROM `Product Family Dimension` WHERE `Product Family Store Key`=%d AND `Product Family Code`=%s", $this->get('Category Store Key'), prepare_mysql($this->get('Category Code'))
-                        );
-
-
-                        if ($result = $this->db->query($sql)) {
-                            if ($row = $result->fetch()) {
-
-                                $sql = sprintf(
-                                    "update `Product Dimension`set `Product Family Key`=0, `Product Family Code`='', `Product Family Name`='',`Product Main Department Key`=0,
-                     `Product Main Department Code`='',
-                     `Product Main Department Name`=''
-                     where `Product ID`=%d",
-
-                                    $subject_key
-                                );
-
-
-                                //print $sql;
-                                $this->db->exec($sql);
-
-
-                            }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            exit;
-                        }
 
 
                         if (!preg_match('/skip_direct_update/', $options)) {
                             $product->update(
                                 array(
-                                    'Direct Product Family Category Key' => ''
+                                    'Product Family Category Key' => ''
                                 ), 'no_history'
                             );
                         }
@@ -2074,74 +1996,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                     }
 
-                    if ($this->get('Category Root Key') == $store->get('Store Department Category Key')) {
-
-                        // DEpartment
-
-
-                        $sql = sprintf(
-                            "SELECT * FROM `Product Department Dimension` WHERE `Product Department Store Key`=%d AND `Product Department Code`=%s", $this->get('Category Store Key'), prepare_mysql($this->get('Category Code'))
-                        );
-
-
-                        if ($result = $this->db->query($sql)) {
-                            if ($department = $result->fetch()) {
-                                $department_key = $department['Product Department Key'];
-                            } else {
-                                $department_key = false;
-                            }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            exit;
-                        }
-
-
-                        $family = new Category($subject_key);
-
-
-                        $sql = sprintf(
-                            "SELECT * FROM `Product Family Dimension` WHERE `Product Family Store Key`=%d AND `Product Family Code`=%s", $family->get('Category Store Key'), prepare_mysql($family->get('Category Code'))
-                        );
-
-
-                        if ($result = $this->db->query($sql)) {
-                            if ($family = $result->fetch()) {
-                                $family_key = $department['Product Department Key'];
-                            } else {
-                                $family_key = false;
-                            }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            exit;
-                        }
-
-
-                        if ($family_key and $department_key) {
-
-
-                            $sql = sprintf(
-                                "UPDATE `Product Family Dimension` SET `Product Family Main Department Key`=0, `Product Family Main Department Code`='', `Product Family Main Department Name`='' WHERE `Product Family Key`=%d",
-
-                                $family_key
-                            );
-
-
-                            $this->db->exec($sql);
-
-                            $sql = sprintf(
-                                "UPDATE `Product Dimension` SET `Product Main Department Key`=0, `Product Main Department Code`='', `Product Main Department Name`='' WHERE `Product Family Key`=%d",
-
-                                $family_key
-                            );
-                            $this->db->exec($sql);
-
-                        }
-
-
-                    }
-
-
-                    //--------
 
 
                     break;
@@ -2506,16 +2360,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
             if ($field == 'Category Code') {
 
-                // Migration -----
-                if ($field == 'Category Code') {
 
-                    $sql = sprintf(
-                        'UPDATE `Product Family Dimension` SET `Product Family Code`=%s WHERE `Product Family Store Key`=%d AND `Product Family Code`=%s', prepare_mysql($value), $this->get('Category Store Key'), prepare_mysql($this->get('Category Code'))
-                    );
-                    $this->db->exec($sql);
-
-                }
-                //-----------
 
 
                 $this->update_field($field, $value, $options);
@@ -2545,14 +2390,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 }
 
 
-                // todo remove after Migration -----
 
-
-                $sql = sprintf(
-                    'UPDATE `Product Family Dimension` SET `Product Family Name`=%s WHERE `Product Family Store Key`=%d AND `Product Family Code`=%s', prepare_mysql($value), $this->get('Category Store Key'), prepare_mysql($this->get('Category Code'))
-                );
-                $this->db->exec($sql);
-                //-------------
 
 
             } elseif ($value != $this->data[$field]) {
@@ -2716,21 +2554,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         $field, $value, $options, 'Product Category', 'Product Category Dimension', $this->id
                     );
 
-
-                    // Migration -----
-                    if ($this->get('Category Subject') == 'Product') {
-
-                        $sql = sprintf(
-                            'UPDATE `Product Family Dimension` SET `Product Family Description`=%s WHERE `Product Family Store Key`=%d AND `Product Family Code`=%s', prepare_mysql($value), $this->get('Category Store Key'), prepare_mysql($this->get('Category Code'))
-                        );
-
-                        //print $sql;
-                        $this->db->exec($sql);
-
-                    }
-
-
-                    //-----------
 
 
                     break;
@@ -3316,48 +3139,15 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                         if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
 
-                            // Migration -----
-
-                            $sql = sprintf(
-                                "SELECT * FROM `Product Family Dimension` WHERE `Product Family Store Key`=%d AND `Product Family Code`=%s", $this->get('Category Store Key'), prepare_mysql($this->get('Category Code'))
-                            );
 
 
-                            if ($result = $this->db->query($sql)) {
-                                if ($row = $result->fetch()) {
-
-                                    $sql = sprintf(
-                                        "update `Product Dimension`set `Product Family Key`=%d, `Product Family Code`=%s, `Product Family Name`=%s,`Product Main Department Key`=%d,`Product Main Department Code`=%s, `Product Main Department Name`=%s   where `Product ID`=%d",
-                                        $row['Product Family Key'], prepare_mysql(
-                                            $row['Product Family Code']
-                                        ), prepare_mysql(
-                                            $row['Product Family Name']
-                                        ), $row['Product Family Main Department Key'], prepare_mysql(
-                                            $row['Product Family Main Department Code']
-                                        ), prepare_mysql(
-                                            $row['Product Family Main Department Name']
-                                        ), $subject_key
-                                    );
-
-                                    $this->db->exec($sql);
-
-                                }
-                            } else {
-                                print_r($error_info = $this->db->errorInfo());
-                                print $sql;
-                                exit;
-                            }
 
 
-                            //   if($product->)
-
-
-                            // Migration -----
 
                             if (!preg_match('/skip_direct_update/', $options)) {
                                 $product->update(
                                     array(
-                                        'Direct Product Family Category Key' => $this->id
+                                        'Product Family Category Key' => $this->id
                                     ), 'no_history'
                                 );
                             }
@@ -3368,76 +3158,21 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         if ($this->get('Category Root Key') == $store->get('Store Department Category Key')) {
 
 
-                            $sql = sprintf(
-                                "SELECT * FROM `Product Department Dimension` WHERE `Product Department Store Key`=%d AND `Product Department Code`=%s", $this->get('Category Store Key'), prepare_mysql($this->get('Category Code'))
-                            );
-
-                            //print $sql;
-                            if ($result = $this->db->query($sql)) {
-                                if ($department = $result->fetch()) {
-                                    $department_key  = $department['Product Department Key'];
-                                    $department_code = $department['Product Department Code'];
-                                    $department_name = $department['Product Department Name'];
-                                } else {
-                                    $department_key = false;
-                                }
-                            } else {
-                                print_r($error_info = $this->db->errorInfo());
-                                exit;
-                            }
 
 
-                            $family         = get_object('Category', $subject_key);
-                            $family->editor = $this->editor;
-
-                            $sql = sprintf(
-                                "SELECT * FROM `Product Family Dimension` WHERE `Product Family Store Key`=%d AND `Product Family Code`=%s", $family->get('Category Store Key'), prepare_mysql($family->get('Category Code'))
-                            );
-                            //print $sql;
 
 
-                            if ($result = $this->db->query($sql)) {
-                                if ($family = $result->fetch()) {
-                                    $family_key = $family['Product Family Key'];
-                                } else {
-                                    $family_key = false;
-                                }
-                            } else {
-                                print_r($error_info = $this->db->errorInfo());
-                                exit;
-                            }
 
-                            //print "** $family_key $department_key **";
-                            if ($family_key and $department_key) {
-
-
-                                $sql = sprintf(
-                                    "UPDATE `Product Family Dimension` SET `Product Family Main Department Key`=%d, `Product Family Main Department Code`=%s, `Product Family Main Department Name`=%s WHERE `Product Family Key`=%d", $department_key,
-                                    prepare_mysql($department_code), prepare_mysql($department_name), $family_key
-                                );
-
-
-                                $this->db->exec($sql);
-
-                                $sql = sprintf(
-                                    "UPDATE `Product Dimension` SET `Product Main Department Key`=%d, `Product Main Department Code`=%s, `Product Main Department Name`=%s WHERE `Product Family Key`=%d", $department_key, prepare_mysql($department_code),
-                                    prepare_mysql($department_name), $family_key
-                                );
-                                $this->db->exec($sql);
-
-
-                                if (!preg_match(
-                                    '/skip_direct_update/', $options
-                                )) {
+                                if (!preg_match('/skip_direct_update/', $options)) {
                                     $product->update(
                                         array(
-                                            'Direct Product Department Category Key' => $this->id
+                                            'Product Department Category Key' => $this->id
                                         ), 'no_history'
                                     );
                                 }
 
 
-                            }
+
 
 
                         }

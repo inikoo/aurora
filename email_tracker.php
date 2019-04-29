@@ -10,13 +10,18 @@
 */
 
 require 'vendor/autoload.php';
+require_once 'utils/sentry.php';
+
 require_once 'utils/parse_user_agent.php';
 require_once 'utils/natural_language.php';
 require_once 'utils/parse_email_status_codes.php';
+require_once 'utils/i18n.php';
 
 
 use Aws\Sns\Message;
 use Aws\Sns\MessageValidator;
+
+
 
 
 if ('POST' !== $_SERVER['REQUEST_METHOD']) {
@@ -48,6 +53,16 @@ $db = new PDO(
     "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+
+$account = get_object('Account', 1);
+
+$_locale = $account->get('Account Locale').'.UTF-8';
+
+
+set_locale($_locale);
+
+$locale=$_locale;
 
 
 $sns       = Message::fromRawPostData();
@@ -90,7 +105,7 @@ if ($validator->isValid($sns)) {
 
         //$sql = sprintf('insert into atest2  (`date`,`data`) values (NOW(),"%s")  ', addslashes($sns['MessageId']));
 
-        //$db->exec($sql);
+        //db->exec($sql);
 
 
         $message = json_decode($sns['Message'], true);
@@ -275,12 +290,22 @@ if ($validator->isValid($sns)) {
 
 
                 $sql = sprintf(
-                    'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`,`Email Tracking Event Message ID`,`Email Tracking Event Note`,`Email Tracking Delivery Status Code`) 
-                  values (%d,%s,%s,%s,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data)), prepare_mysql($sns_id), prepare_mysql($note), prepare_mysql($status_code)
-
-                );
+                    'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`,`Email Tracking Event Data`,`Email Tracking Event Message ID`,`Email Tracking Event Note`,`Email Tracking Event Status Code`) 
+                  values (%d,%s,%s,%s,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data)), prepare_mysql($sns_id), prepare_mysql($note), prepare_mysql($status_code));
                 $db->exec($sql);
                 $event_key = $db->lastInsertId();
+
+               // $__sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'aaa',$sql );
+
+                // $db->exec($__sql);
+
+
+
+
+
+               //$__sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'ecent key',$event_key );
+
+               // $db->exec($__sql);
 
 
                 $email_tracking = get_object('email_tracking', $row['Email Tracking Key']);
@@ -337,17 +362,17 @@ if ($validator->isValid($sns)) {
                                 $customer         = get_object('Customer', $row2['Customer Key']);
                                 $customer->editor = $editor;
 
-                                if ($bounce_type == 'Hard Bounce' or ($bounce_type == 'Soft Bounce' and $bounce_count > 1)) {
+                                if ($bounce_type == 'Hard Bounce' or ($bounce_type == 'Soft Bounce' and $bounce_count > 9)) {
 
                                     if ($customer->get('Customer Send Newsletter') == 'Yes' or $customer->get('Customer Send Email Marketing') == 'Yes') {
 
 
-                                        $customer->unsubscribe(_('Unsubscribed to newsletter and marketing emails because email bounced').', '.$unsubscribe_note);
+                                        $customer->unsubscribe(_('Unsubscribed to newsletter and marketing emails because email soft bounced several times').', '.$unsubscribe_note);
 
                                     }
 
                                     $customer->fast_update(array('Customer Email State' => 'Error'));
-                                    print "Customer x ".$customer->get('Store Key')."  ".$customer->id."\n";
+                                    //print "Customer x ".$customer->get('Store Key')."  ".$customer->id."\n";
                                     //exit;
                                 } else {
                                     $customer->fast_update(array('Customer Email State' => 'Warning'));
@@ -361,7 +386,7 @@ if ($validator->isValid($sns)) {
                                     $customer->add_subject_history(
                                         $history_data, true, 'No', 'Changes', $customer->get_object_name(), $customer->id
                                     );
-                                    print "Customer ".$customer->get('Store Key')."  ".$customer->id."\n";
+                                    //print "Customer ".$customer->get('Store Key')."  ".$customer->id."\n";
                                     //exit;
 
                                 }
@@ -409,6 +434,10 @@ if ($validator->isValid($sns)) {
                 }
 
 
+
+
+
+
                 if ($email_tracking->get('Email Tracking Email Template Type Key') > 0) {
                     $email_template_type = get_object('email_template_type', $email_tracking->get('Email Tracking Email Template Type Key'));
                     $email_template_type->update_sent_emails_totals();
@@ -433,14 +462,12 @@ if ($validator->isValid($sns)) {
                 }
 
 
-                //$_sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $sql, 'xx');
-                //$db->exec($_sql);
 
 
                 $context = new ZMQContext();
                 $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
                 $socket->connect("tcp://localhost:5555");
-                $account = get_object('Account', 1);
+
 
 
                 switch ($email_tracking->get('Email Tracking State')) {
@@ -478,23 +505,36 @@ if ($validator->isValid($sns)) {
 
 
                 if (isset($email_campaign)) {
+
+
+
                     $socket->send(
                         json_encode(
                             array(
                                 'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+
+
+
+
                                 'objects' => array(
                                     array(
-                                        'object' => 'email_campaign',
+                                        'object' => 'mailshot',
                                         'key'    => $email_campaign->id,
 
                                         'update_metadata' => array(
                                             'class_html' => array(
-                                                'Sent_Emails_Info'    => $email_campaign->get('Sent Emails Info'),
-                                                'Email_Campaign_Sent' => $email_campaign->get('Sent'),
+                                               '_Sent_Emails_Info'    => $email_campaign->get('Sent Emails Info'),
+                                                '_Email_Campaign_Sent' => $email_campaign->get('Sent'),
                                                 'Email_Campaign_Bounces_Percentage'=>$email_campaign->get('Bounces Percentage'),
-                                                'Email_Campaign_Delivered'=>$email_campaign->get('Delivered'),
+                                               'Email_Campaign_Hard_Bounces_Percentage'=>$email_campaign->get('Hard Bounces Percentage'),
+                                               'Email_Campaign_Soft_Bounces_Percentage'=>$email_campaign->get('Soft Bounces Percentage'),
+                                                '_Email_Campaign_Delivered'=>$email_campaign->get('Delivered'),
                                                 'Email_Campaign_Open'=>$email_campaign->get('Open'),
                                                 'Email_Campaign_Clicked'=>$email_campaign->get('Clicked'),
+
+
+
+
 
                                             )
                                         )
@@ -534,6 +574,11 @@ if ($validator->isValid($sns)) {
                         )
                     );
 
+
+                   // $_sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'xxxxxx', 'hola hola send');
+                   // $db->exec($_sql);
+
+
                 }
 
 
@@ -564,4 +609,4 @@ if ($validator->isValid($sns)) {
 }
 
 
-?>
+

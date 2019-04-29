@@ -18,9 +18,6 @@ require_once 'utils/date_functions.php';
 
 
 
-require_once 'class.Store.php';
-require_once 'class.Order.php';
-
 
 $editor = array(
     'Author Name'  => '',
@@ -41,12 +38,12 @@ $account = new Account();
 $account->update_orders();
 
 
-$sql = sprintf("SELECT `Order Key` FROM `Order Dimension`");
+$sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`)   ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-        $order = new Order('id', $row['Order Key']);
+        $order = get_object('Order', $row['Order Key']);
 
-        $order->update_totals();
+        $order->update_order_payments();
 
     }
 
@@ -55,4 +52,4 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
-?>
+

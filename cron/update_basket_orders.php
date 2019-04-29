@@ -17,7 +17,7 @@ require_once 'utils/order_functions.php';
 $print_est = true;
 
 
-$sql = sprintf("SELECT count(*) as num FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Version`=2 ");
+$sql = sprintf("SELECT count(*) as num FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Type`!='External' ");
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -32,14 +32,14 @@ if ($result = $db->query($sql)) {
 $lap_time0 = date('U');
 $contador  = 0;
 
-$sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Version`=2   order by `Order Date`");
+$sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Type`!='External'   order by `Order Date` desc");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
 
         $order = get_object('order', $row['Order Key']);
 
-        // print $order->id.' '.$order->get('Public ID')."\n";
+      //  print $order->id.' '.$order->get('Order Date')."\n";
 
 
         $order->fast_update(
@@ -90,7 +90,7 @@ if ($result = $db->query($sql)) {
             if($campaign_key>0){
                 $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
                       ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
-                print "$sql\n";
+                //print "$sql\n";
                 $db->prepare($sql)->execute(
                     [
                         $date,

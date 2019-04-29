@@ -400,6 +400,7 @@ function save_header() {
 
                         console.log(obj2)
                         column.page = $(obj2).attr('_page')
+                        column.page_label = $(obj2).attr('_page_label')
 
 
                     } else if (type == 'items') {
@@ -756,8 +757,8 @@ function change_column(type, key, subkey) {
         var page = '0-10'
         var page_label = '1-10'
 
-        ul.attr('page', page)
-        ul.attr('page_label', page_label)
+        ul.attr('_page', page)
+        ul.attr('_page_label', page_label)
 
         $.getJSON("ar_products.php?tipo=store_categories&key="+$('#webpage_data').data('store_key')+"&type=" + type + "&page=" + page, function (data) {
 
@@ -794,6 +795,8 @@ function edit_catalogue_paginator(page, page_label, key, subkey) {
 
 
     submenu.attr('_page', page)
+    submenu.attr('_page_label', page_label)
+
     //submenu.data('page_label', page_label)
 
 
