@@ -1319,7 +1319,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     break;
                 }
 
-                $module  = 'products';
+                $module  = 'websites';
                 $section = 'webpage';
                 $object  = 'webpage';
                 $parent  = 'website';
