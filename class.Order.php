@@ -1689,8 +1689,6 @@ class Order extends DB_Table {
         }
 
 
-
-
         $date = gmdate('Y-m-d H:i:s');
 
         $this->data['Order Cancelled Date'] = $date;
@@ -1721,8 +1719,7 @@ class Order extends DB_Table {
             "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order Payment State`=%s,`Order State`='NA',`Order To Pay Amount`=%.2f,`Order Cancel Note`=%s,
 				`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order Items Cost`=0,
 				`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0
-				WHERE `Order Key`=%d",
-            prepare_mysql($this->data['Order Cancelled Date']),  prepare_mysql($this->data['Order State']), $this->data['Order To Pay Amount'],prepare_mysql($this->data['Order Cancel Note']),
+				WHERE `Order Key`=%d", prepare_mysql($this->data['Order Cancelled Date']), prepare_mysql($this->data['Order State']), $this->data['Order To Pay Amount'], prepare_mysql($this->data['Order Cancel Note']),
 
             $this->id
         );
@@ -1732,8 +1729,7 @@ class Order extends DB_Table {
 
 
         $sql = sprintf(
-            "UPDATE `Order Transaction Fact` SET  `Delivery Note Key`=NULL,`Invoice Key`=NULL, `Consolidated`='Yes',`Current Dispatching State`=%s ,`Cost Supplier`=0  WHERE `Order Key`=%d ",
-            prepare_mysql('Cancelled'), $this->id
+            "UPDATE `Order Transaction Fact` SET  `Delivery Note Key`=NULL,`Invoice Key`=NULL, `Consolidated`='Yes',`Current Dispatching State`=%s ,`Cost Supplier`=0  WHERE `Order Key`=%d ", prepare_mysql('Cancelled'), $this->id
         );
         $this->db->exec($sql);
 
@@ -1840,7 +1836,8 @@ class Order extends DB_Table {
     function create_invoice($date) {
 
 
-        $store = get_object('Store', $this->data['Order Store Key']);
+        $store    = get_object('Store', $this->data['Order Store Key']);
+        $customer = get_object('Invoice', $this->data['Order Customer Key']);
 
 
         if ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
@@ -1926,7 +1923,7 @@ class Order extends DB_Table {
             'Invoice Items Discount Amount' => $this->data['Order Items Discount Amount'],
 
             'Invoice Items Net Amount'          => $this->data['Order Items Net Amount'],
-            'Invoice Items Out of Stock Amount' => ($this->data['Order Items Out of Stock Amount']==''?0:$this->data['Order Items Out of Stock Amount']),
+            'Invoice Items Out of Stock Amount' => ($this->data['Order Items Out of Stock Amount'] == '' ? 0 : $this->data['Order Items Out of Stock Amount']),
             'Invoice Shipping Net Amount'       => $this->data['Order Shipping Net Amount'],
             'Invoice Charges Net Amount'        => $this->data['Order Charges Net Amount'],
             'Invoice Insurance Net Amount'      => $this->data['Order Insurance Net Amount'],
@@ -1936,6 +1933,7 @@ class Order extends DB_Table {
             'Invoice To Pay Amount'             => $this->data['Order To Pay Amount'],
             'Invoice Total Amount'              => $this->data['Order Total Amount'],
             'Invoice Currency'                  => $this->data['Order Currency'],
+            'Invoice Customer Level Type'       => $customer->data['Customer Level Currency'],
 
 
         );
@@ -1947,27 +1945,27 @@ class Order extends DB_Table {
 
     }
 
-    function get_invoices($scope = 'keys',$options='') {
+    function get_invoices($scope = 'keys', $options = '') {
 
 
         $invoices = array();
 
 
-        switch ($options){
+        switch ($options) {
             case 'refunds_only':
-                $where=" and `Invoice Type`='Refund'";
+                $where = " and `Invoice Type`='Refund'";
                 break;
             case 'invoices_only':
-                $where=" and `Invoice Type`='Refund'";
+                $where = " and `Invoice Type`='Refund'";
                 break;
             default:
-                $where='';
+                $where = '';
 
         }
 
 
-        $sql      = sprintf(
-            "SELECT `Invoice Key` FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d  %s ", $this->id,$where
+        $sql = sprintf(
+            "SELECT `Invoice Key` FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d  %s ", $this->id, $where
         );
 
         if ($result = $this->db->query($sql)) {
