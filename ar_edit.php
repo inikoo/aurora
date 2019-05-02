@@ -2058,8 +2058,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $object = get_object('Order', $order_key);
             }
 
+
             if (!(isset($object) and $object->id)) {
-                $object = $parent->create_order($data['fields_data']);
+                $object = $parent->create_order(json_encode($data['fields_data']));
             }
 
 

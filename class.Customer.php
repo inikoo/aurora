@@ -850,6 +850,7 @@ class Customer extends Subject {
 
         );
 
+
         $options = json_decode($options,true);
 
         if (!empty($options['date'])) {
