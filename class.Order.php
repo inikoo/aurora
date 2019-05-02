@@ -2719,6 +2719,8 @@ class Order extends DB_Table {
     function create_refund($date, $transactions) {
 
 
+        include_once 'class.Invoice.php';
+
         $store = get_object('Store', ($this->data['Order Store Key']));
 
 
