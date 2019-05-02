@@ -298,7 +298,7 @@ $export_fields = array(
 
     'invoices'                     => array(
         array(
-            'name'    => '`Invoice Title`',
+            'name'    => '`Invoice Type`',
             'label'   => _('Type'),
             'checked' => 1
         ),

@@ -70,7 +70,7 @@ DROP `Weight`,
   Drop `Billing To Key`,
   Drop `Ship to Key`,
   Drop `Customer Return Quantity`,
-  Drop `Billing To 2 Alpha Country Code`,
+/  Drop `Billing To 2 Alpha Country Code`,
   Drop `Manufacturing Facility Key`,
 
   Drop `Release to Manufacturing Date`,
@@ -99,4 +99,6 @@ DROP `Weight`,
  DROP `Order Public ID`,DROP `Estimated Volume`,DROP `Volume`,DROP `Sales Rep Key`,DROP `Warehouse Key`,DROP `Picker Key`,DROP `Packer Key`,DROP `Shipper Key`,DROP `Invoice Quantity`,DROP `Refund Quantity`,DROP `Payment Method`,DROP `Cost Storing`,DROP `Cost Handing`,DROP `Cost Shipping`,DROP `Backlog to Shipping Lag`,DROP `Metadata`,DROP `Refund Metadata`,DROP `Supplier Metadata`,DROP `Invoice Public ID`,DROP `Delivery Note ID`,DROP `Estimated Dispatched Weight`,DROP `Weight`,DROP `Estimated Volume`,DROP `Volume`,DROP `Sales Rep Key`,DROP `Warehouse Key`,DROP `Picker Key`,DROP `Packer Key`,DROP `Shipper Key`,DROP `Invoice Quantity`,DROP `Refund Quantity`,DROP `Payment Method`,DROP `Cost Storing`,DROP `Cost Handing`,DROP `Cost Shipping`,DROP `Backlog to Shipping Lag`,DROP `Metadata`,DROP `Refund Metadata`,DROP `Supplier Metadata`,DROP `No Shipped Due No Authorized`,DROP `No Shipped Due Not Found`,DROP `No Shipped Due Other`,drop `Transaction Notes`, DROP `Invoice Currency Code`;
 
 
+ALTER TABLE `Invoice Dimension` DROP `Invoice Payment Account Code`, DROP `Invoice Has Been Paid In Full`, DROP `Invoice Billing Country 2 Alpha Code`, DROP `Invoice Delivery Country 2 Alpha Code`, DROP `Invoice Taxable`,DROP `Invoice For Partner`, DROP `Invoice For`, DROP `Invoice Dispatching Lag`, DROP `Invoice Tax Shipping Code`, DROP `Invoice Tax Charges Code`, DROP `Invoice Billing World Region Code`, DROP `Invoice Billing Country Code`, DROP `Invoice Billing Town`, DROP `Invoice Billing Postal Code`,DROP `Invoice Title`, DROP `Invoice XHTML Orders`, DROP `Invoice XHTML Delivery Notes`, DROP `Invoice XHTML Store`, DROP `Invoice Store Code`, DROP `Invoice XHTML Sales Representative`, DROP `Invoice XHTML Processed By`, DROP `Invoice XHTML Charged By`, DROP `Invoice Bonus Amount Value`, DROP `Invoice Refund Items Net Amount`, DROP `Invoice Refund Shipping Net Amount`, DROP `Invoice Refund Charges Net Amount`, DROP `Invoice Refund Unknown Net Amount`, DROP `Invoice Refund Items Tax Amount`, DROP `Invoice Refund Shipping Tax Amount`, DROP `Invoice Refund Charges Tax Amount`, DROP `Invoice Refund Unknown Tax Amount`, DROP `Invoice Outstanding Net Balance`, DROP `Invoice Outstanding Tax Balance`, DROP `Invoice Outstanding Total Amount`, DROP `Invoice Payment Key`, DROP `Invoice XHTML Address`, DROP `Invoice Billing To Key`, DROP `Invoice Delivery World Region Code`, DROP `Invoice Delivery Country Code`, DROP `Invoice Delivery Town`, DROP `Invoice Delivery Postal Code`, DROP `Invoice Version`;
 
+ALTER TABLE `Invoice Dimension` CHANGE `Invoice Customer Sevices Note` `Invoice Message` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;

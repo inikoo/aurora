@@ -1892,8 +1892,7 @@ class Order extends DB_Table {
             'Invoice Store Key'                     => $this->data['Order Store Key'],
             'Invoice Customer Key'                  => $this->data['Order Customer Key'],
             'Invoice Tax Code'                      => $this->data['Order Tax Code'],
-            'Invoice Tax Shipping Code'             => $this->data['Order Tax Code'],
-            'Invoice Tax Charges Code'              => $this->data['Order Tax Code'],
+
             'Invoice Metadata'                      => $this->data['Order Original Metadata'],
             'Invoice Tax Number'                    => $this->data['Order Tax Number'],
             'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
@@ -1925,7 +1924,6 @@ class Order extends DB_Table {
 
             'Invoice Tax Liability Date' => $this->data['Order Packed Done Date'],
 
-            'Invoice Main Source Type' => $this->data['Order Main Source Type'],
 
             'Invoice Items Gross Amount'    => $this->data['Order Items Gross Amount'],
             'Invoice Items Discount Amount' => $this->data['Order Items Discount Amount'],
@@ -2863,8 +2861,7 @@ class Order extends DB_Table {
             'Invoice Store Key'                     => $this->data['Order Store Key'],
             'Invoice Customer Key'                  => $this->data['Order Customer Key'],
             'Invoice Tax Code'                      => $this->data['Order Tax Code'],
-            'Invoice Tax Shipping Code'             => $this->data['Order Tax Code'],
-            'Invoice Tax Charges Code'              => $this->data['Order Tax Code'],
+
             'Invoice Metadata'                      => $this->data['Order Original Metadata'],
             'Invoice Tax Number'                    => $this->data['Order Tax Number'],
             'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
@@ -2896,7 +2893,6 @@ class Order extends DB_Table {
 
             'Invoice Tax Liability Date' => $date,
 
-            'Invoice Main Source Type' => '',
 
             'Invoice Items Gross Amount'        => 0,
             'Invoice Items Discount Amount'     => 0,

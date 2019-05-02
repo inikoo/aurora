@@ -1874,26 +1874,9 @@ function deleted_invoice_items($_data, $db, $user) {
     global $_locale;// fix this locale stuff
 
     $rtext_label = 'item';
-    include_once 'utils/geography_functions.php';
-
-
     $invoice = get_object('Invoice_Deleted', $_data['parameters']['parent_key']);
-    $type    = $invoice->get('Invoice Type');
-    if (in_array(
-        $invoice->data['Invoice Delivery Country Code'], get_countries_EC_Fiscal_VAT_area($db)
-    )) {
-        $print_tariff_code = false;
-    } else {
-        $print_tariff_code = true;
-    }
 
-    // print $sql;
 
-    if ($type == 'Invoice') {
-        $factor = 1;
-    } else {
-        $factor = -1;
-    }
 
     $adata   = array();
     $counter = 0;
