@@ -69,6 +69,12 @@
 		#order_pick_aid_data td.label{border-bottom: 0.1mm solid #000000}
 		#order_pick_aid_data td.to_fill{border-bottom: 0.1mm solid #000000;}
 
+		.hide{display: none}
+
+		.address_label{font-size: 7pt; color: #555555; font-family: sans-serif;}
+
+		.address_value{font-size:12px;}
+
 		{/literal}
 	</style>
 
@@ -81,7 +87,11 @@
 <td width="50%" style="color:#000;"><span style="font-weight: bold; font-size: 14pt;">{t}Order Pick Aid{/t} {$delivery_note->get('Delivery Note ID')}</span><br />
 
 
-(C{"%05d"|sprintf:$delivery_note->get('Delivery Note Customer Key')})  {$delivery_note->get('Delivery Note Customer Name')}<br /></td>
+(C{"%05d"|sprintf:$delivery_note->get('Delivery Note Customer Key')})  {$delivery_note->get('Delivery Note Customer Name')}<br />
+</td>
+
+
+
 <td width="50%" style="text-align: right;">
 {if $delivery_note->get('Delivery Note Order Date Placed')}
 <div style="text-align: right">{t}Order date{/t}: {$delivery_note->get('Order Datetime Placed')}</div>
@@ -101,9 +111,42 @@
 
 <table width="100%" style="font-family: sans-serif;" cellpadding="10">
 	<tr>
-		<td width="45%" style="border: 0.1mm solid #888888;"><span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Delivery Address{/t}:</span><br />
-			<br />
-			{$delivery_note->get('Delivery Note Address Postal Label')|nl2br} </td>
+		<td width="45%" style="border: 0.1mm solid #888888;">
+			<div >
+				{if $customer->get('Customer Preferred Contact Number')=='Mobile'}
+					<div  class=" {if !$customer->get('Customer Main Plain Mobile')}hide{/if}">
+						<span class="address_label">{t}Mobile{/t}</span> <span class="address_value"  >{$customer->get('Main XHTML Mobile')}</span>
+					</div>
+					<div class=" {if !$customer->get('Customer Main Plain Telephone')}hide{/if}">
+						<span class="address_label">{t}Phone{/t}</span>  <span class="address_value">{$customer->get('Main XHTML Telephone')}</span>
+					</div>
+				{else}
+
+
+					<div class="data_field {if !$customer->get('Customer Main Plain Telephone')}hide{/if}">
+						<span class="address_label">{t}Phone{/t}</span> <span class="address_value">{$customer->get('Main XHTML Telephone')}</span>
+					</div class="data_field {if !$customer->get('Customer Main Plain Telephone')}hide{/if}">
+					<div class="data_field {if !$customer->get('Customer Main Plain Mobile')}hide{/if}">
+						<span class="address_label">{t}Mobile{/t}</span> <span class="address_value" >{$customer->get('Main XHTML Mobile')}</span>
+					</div>
+				{/if}
+
+			</div>
+
+
+			<div class="data_field small {if $customer->get('Customer Main Plain Email')==''}hide{/if}" style="margin-top:5px">
+
+				<span class="address_label">{t}Email{/t}</span>  <span class="address_value">{$customer->get('Customer Main Plain Email')}</span>
+
+			</div>
+
+			<div style="height: 5px;border:0px solid red;font-size: 5px">&nbsp;</div>
+
+			<div style="margin-top: 10px;padding-top: 10px;">
+			<span class="address_label">{t}Delivery Address{/t}:</span><br />
+			</div>
+			<div class="address_value">{$delivery_note->get('Delivery Note Address Postal Label')|nl2br}</div>
+		</td>
 		<td width="10%">&nbsp;</td>
 		<td width="45%" style="border: 0.1mm solid #888888;font-size:9pt">
 			<table id="order_pick_aid_data" cellspacing="0" cellpadding="0">

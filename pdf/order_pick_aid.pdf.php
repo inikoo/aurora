@@ -50,6 +50,7 @@ $mpdf->SetAuthor($store->data['Store Name']);
 
 $smarty->assign('store', $store);
 $smarty->assign('order', $order);
+$smarty->assign('customer', $customer);
 
 $smarty->assign('delivery_note', $delivery_note);
 
