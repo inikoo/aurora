@@ -521,14 +521,14 @@ function sales_overview($_data, $db, $user, $account) {
                     'value'        => number(
                         $row['invoices']
                     ),
-                    'request'      => "invoices/all/category/".$row['Category Key']
+                    'request'      => "invoices/category/".$row['Category Key']
                 );
                 $data['orders_overview_refunds_'.$row['record_key']]  = array(
                     'special_type' => 'refund',
                     'value'        => number(
                         $row['refunds']
                     ),
-                    'request'      => "invoices/all/category/".$row['Category Key']
+                    'request'      => "invoices/category/".$row['Category Key']
                 );
 
 

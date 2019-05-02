@@ -10,7 +10,15 @@
  Version 3.0
 */
 
-$can_delete=true;
+
+if($options['Category Scope']=='Invoice'){
+    $can_delete=false;
+
+}else{
+    $can_delete=true;
+
+}
+
 
 if (isset($options['new']) and $options['new']) {
     $new = true;
@@ -159,7 +167,7 @@ switch ($options['Category Scope']) {
 
 
         break;
-    default:
+
 
 
     case 'Part':

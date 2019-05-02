@@ -10,7 +10,7 @@
 */
 
 $tab     = 'invoices';
-$ar_file = 'ar_orders_tables.php';
+$ar_file = 'ar_accounting_tables.php';
 $tipo    = 'invoices';
 
 $default = $user->get_tab_defaults($tab);

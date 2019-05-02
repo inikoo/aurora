@@ -353,14 +353,14 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type,$sub_
                     'label' => $row['Category Label'],
                     'title' => $row['Category Label'],
                     'short_label' => $row['Category Label'],
-                    'view'  => 'invoices/all/category/'.$row['Category Key'],
+                    'view'  => 'invoices/category/'.$row['Category Key'],
                     'representatives_link_label'=>($row['Category Code']=='VIPs'?'<i onclick="change_view(\'report/sales_representatives\', { parameters:{ period:\''.$period.'\'}} )"  class="far button fa-chart-line fa-fw"></i>':''),
                 ),
 
 
                 'invoices' => array(
                     'value' => number($row['invoices']),
-                    'view'  => 'invoices/all/category/'.$row['Category Key']
+                    'view'  => 'invoices/category/'.$row['Category Key']
                 ),
 
                 'invoices_1yb'   => number($row['invoices_1yb']),
@@ -378,7 +378,7 @@ function get_dashboard_sales_overview($db, $account, $user, $smarty, $type,$sub_
 
                 'refunds' => array(
                     'value' => number($row['refunds']),
-                    'view'  => 'invoices/all/category/'.$row['Category Key']
+                    'view'  => 'invoices/category/'.$row['Category Key']
                 ),
 
                 'refunds_1yb'   => number($row['refunds_1yb']),

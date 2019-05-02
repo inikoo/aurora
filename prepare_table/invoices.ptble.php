@@ -8,6 +8,7 @@ $group_by   = '';
 $currency = '';
 
 
+
 if (isset($parameters['excluded_stores']) and is_array(
         $parameters['excluded_stores']
     ) and count($parameters['excluded_stores']) > 0
