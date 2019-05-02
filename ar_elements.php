@@ -2022,7 +2022,7 @@ function get_invoices_element_numbers($db, $parameters) {
     } elseif ($parameters['parent'] == 'billingregion_taxcategory.invoices') {
 
         $fields = '`Store Code`,`Store Name`,`Country Name`,';
-        $table  = '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`) ';
+        $table  = '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Address Country 2 Alpha Code`=C.`Country 2 Alpha Code`) ';
 
         $parents = preg_split('/_/', $parameters['parent_key']);
         $where   = sprintf(
@@ -2032,7 +2032,7 @@ function get_invoices_element_numbers($db, $parameters) {
 
     } elseif ($parameters['parent'] == 'billingregion_taxcategory.refunds') {
 
-        $table = '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`) ';
+        $table = '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Address Country 2 Alpha Code`=C.`Country 2 Alpha Code`) ';
 
         $parents = preg_split('/_/', $parameters['parent_key']);
         $where   = sprintf(
@@ -2755,7 +2755,7 @@ function get_ec_sales_list_elements($db, $parameters, $account) {
 
     $table = '`Invoice Dimension`';
 
-    $group_by = 'group by `Invoice Tax Number`,`Invoice Billing Country 2 Alpha Code`,`Invoice Customer Key`';
+    $group_by = 'group by `Invoice Tax Number`,`Invoice Address Country 2 Alpha Code`,`Invoice Customer Key`';
 
 
     $sql = sprintf(

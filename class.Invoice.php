@@ -433,7 +433,7 @@ class Invoice extends DB_Table {
             }
             $this->fast_update(
                 array(
-                    'Invoice Version'      => 2,
+
                     'Invoice Total Profit' => $profit
                 )
             );
@@ -507,7 +507,6 @@ class Invoice extends DB_Table {
 
                 'Invoice Payments Amount'       => $payments,
                 'Invoice To Pay Amount'         => $to_pay,
-                'Invoice Has Been Paid In Full' => ($to_pay == 0 ? 'Yes' : 'No'),
                 'Invoice Paid'                  => ($to_pay <= 0 ? 'Yes' : ($payments == 0 ? 'No' : 'Partially')),
 
             )
@@ -1054,7 +1053,7 @@ class Invoice extends DB_Table {
             }
             $this->fast_update(
                 array(
-                    'Invoice Version'      => 2,
+
                     'Invoice Total Profit' => $profit
                 )
             );
@@ -1225,7 +1224,7 @@ class Invoice extends DB_Table {
 
         $sql = "SELECT `Invoice Date`,
 O.`Order Transaction Fact Key`,`Order Currency Code`,`Product History Price`,`Product History Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Product History Name`,`Product History Price`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`
-`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code`
+`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`
 
 
 FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=?";

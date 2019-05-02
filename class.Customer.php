@@ -2180,11 +2180,7 @@ class Customer extends Subject {
             default :
 
 
-                $note    = $refund->data['Invoice XHTML Orders'].' '._(
-                        'refunded for'
-                    ).' '.money(
-                        -1 * $refund->data['Invoice Total Amount'], $refund->data['Invoice Currency']
-                    );
+                $note    = _('Refunded for').' '.money(-1 * $refund->data['Invoice Total Amount'], $refund->data['Invoice Currency']);
                 $details = _('Date refunded').": $tz_date";
 
 

@@ -28,6 +28,7 @@ $redirect_to_login = array(
 );
 include_once 'ar_web_common_logged_in.php';
 
+
 $account = get_object('Account', 1);
 
 $smarty = new Smarty();
@@ -48,8 +49,6 @@ if ($invoice->get('Invoice Customer Key') != $customer->id) {
 
 $store    = get_object('Store', $invoice->get('Invoice Store Key'));
 $customer = get_object('Customer', $invoice->get('Invoice Customer Key'));
-
-
 
 
 
@@ -121,6 +120,7 @@ if ($order->id) {
 
 }
 
+$smarty->assign('customer', $customer);
 
 $smarty->assign('number_orders', $number_orders);
 $smarty->assign('number_dns', $number_dns);

@@ -104,6 +104,7 @@ if ($order->id) {
     }
 
 }
+$smarty->assign('customer', $customer);
 
 
 $smarty->assign('number_orders', $number_orders);
