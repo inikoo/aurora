@@ -1401,7 +1401,11 @@ function try_to_pay(element) {
     var object_data = $('#object_showcase div.order').data("object")
 
 
-    //console.log($(element).attr('amount'))
+    console.log($(element).attr('amount'))
+
+
+    console.log(object_data.order_type)
+
 
     if ($(element).attr('amount') > 0  ||  object_data.order_type=='Refund'   ) {
 
@@ -1422,10 +1426,25 @@ function try_to_pay(element) {
 
 
 
+    }else if ($(element).attr('amount') < 0  &&  object_data.order_type=='Order'   ) {
+
+        return;
+
+        if ($('#add_credit').hasClass('hide')) {
+            console.log('caca')
+            show_create_credit(element)
+
+
+        }
+
+
+
+
+
     } else if ($(element).attr('amount') < 0) {
 
 
-       // if ($('#payment_refund_amount').is(':visible')) {
+       if ($('#payment_refund_amount').is(':visible')) {
 
             var amount=Math.abs($(element).attr('amount'))
 
@@ -1441,12 +1460,47 @@ function try_to_pay(element) {
 
             $('#payment_refund_amount').val(amount)
             validate_refund_form()
-       // }
+        }else{
+
+
+
+       }
 
         //payment_refund_amount
 
     }
 
+
+}
+
+
+function show_create_credit(element) {
+
+
+    if ($('#add_credit').hasClass('hide')) {
+
+        var object_data = $('#object_showcase div.order').data("object")
+        if(object_data.object=='invoice') {
+            change_tab('invoice.payments', {'add_payment': 1})
+        }else{
+            change_tab('order.payments', {'add_payment': 1})
+
+        }
+
+console.log($(element).attr('amount'))
+
+
+        $('#tabs').addClass('hide')
+
+
+        $('#new_credit_amount').val($(element).attr('absolute_amount'))
+
+        $('#add_credit').removeClass('hide')
+
+
+        // $('#delivery_number').val('').focus()
+
+    }
 
 }
 

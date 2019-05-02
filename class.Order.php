@@ -545,7 +545,14 @@ class Order extends DB_Table {
                 );
                 break;
 
-
+            case('To Pay Amount Absolute'):
+                return money(
+                    abs($this->data['Order To Pay Amount']), $this->data['Order Currency']
+                );
+                break;
+            case('Order To Pay Amount Absolute'):
+                return abs($this->data['Order To Pay Amount']);
+                break;
             case('Shipping And Handing Net Amount'):
                 return money($this->data['Order Shipping Net Amount'] + $this->data['Order Charges Net Amount']);
                 break;

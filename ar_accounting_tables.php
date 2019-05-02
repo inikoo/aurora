@@ -303,7 +303,7 @@ function payments($_data, $db, $user) {
                     $status = _('Completed');
 
 
-                    if ($data['Payment Account Block'] == 'Accounts') {
+                    if ($data['Payment Account Block'] == 'Accountsx') {
                         $operations = sprintf(
                             '<span class="operations">
                                 <i class="far fa-trash-alt button %s " title="%s"   onClick="cancel_payment(this,%d)"  ></i>
@@ -314,13 +314,14 @@ function payments($_data, $db, $user) {
 
                             $data['Payment Key']
                         );
+
                     } else {
 
 
                         $operations = sprintf(
                             '<span class="operations">
                             <i class="far fa-trash-alt button %s %s" aria-hidden="true" title="%s"    onClick="cancel_payment(this,%d)"  ></i>
-                            <i class="fa fa-share fa-flip-horizontal button %s" data-settings=\'{"reference":"%s","amount_formatted":"%s","amount":"%s","can_refund_online":"%s","parent":"%s","parent_key":"%s"}\'   aria-hidden="true" title="'._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d)"  ></i>
+                            <i class="fa fa-share fa-flip-horizontal button %s" data-settings=\'{"reference":"%s","amount_formatted":"%s","amount":"%s","can_refund_online":"%s","parent":"%s","parent_key":"%s"}\'   aria-hidden="true" title="'._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d,\'%s\')"  ></i>
 
                             </span>',
                             ($data['Payment Submit Type'] != 'Manual' ? 'hide' : ''),
@@ -333,7 +334,8 @@ function payments($_data, $db, $user) {
 
                             htmlspecialchars($data['Payment Transaction ID']), money($refundable_amount, $data['Payment Currency Code']), $refundable_amount, (($data['Payment Account Block'] == 'BTree' or $data['Payment Account Block'] == 'BTreePaypal') ? true : false),
                             $parent->get_object_name(), $parent->id,
-                            $data['Payment Key']
+                            $data['Payment Key'],
+                            $data['Payment Account Block']
                         );
                     }
 
