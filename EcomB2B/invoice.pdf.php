@@ -144,6 +144,7 @@ $mpdf = new \Mpdf\Mpdf(
 );
 
 
+
 //$mpdf->useOnlyCoreFonts = true;    // false is default
 $mpdf->SetTitle(_('Invoice').' '.$invoice->data['Invoice Public ID']);
 $mpdf->SetAuthor($store->data['Store Name']);
@@ -179,6 +180,7 @@ if ($invoice->data['Invoice Type'] == 'Invoice') {
     $smarty->assign('label_title', _('Refund'));
     $smarty->assign('label_title_no', _('Refund No.'));
 }
+
 
 
 $transactions = array();
@@ -276,6 +278,7 @@ if ($result = $db->query($sql)) {
     print "$sql\n";
     exit;
 }
+
 
 
 $transactions_no_products = array();
@@ -394,7 +397,7 @@ FROM `Order Transaction Fact` O
  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`)
  LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`)
 
-  WHERE    `Invoice Key`=%d   and   AND (`No Shipped Due Out of Stock`>0  )  ORDER BY `Product Code`", $invoice->id
+  WHERE    `Invoice Key`=%d   AND (`No Shipped Due Out of Stock`>0  )  ORDER BY `Product Code`", $invoice->id
 );
 //print $sql;exit;
 
