@@ -1974,7 +1974,7 @@ function search_orders($db, $account, $user, $data) {
                     $state = _('Cancelled');
                     break;
                 default:
-                    $state = $this->data['Order State'];
+                    $state = $data['Order State'];
             }
 
             $details = '<span >'.$row['Order Customer Name'].'</span> <span class="discreet">('.$state.')</span>';

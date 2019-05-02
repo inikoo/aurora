@@ -264,11 +264,16 @@ function orders_in_process_paid($_data, $db, $user, $account) {
     foreach ($db->query($sql) as $data) {
 
 
+        //print_r($data);
+
         //$payment_state = get_order_formatted_payment_state($data);
         $payments = '';
 
 
         if ($data['payments'] != '') {
+
+
+
             foreach (preg_split('/,/', $data['payments']) as $payment_data) {
                 $payment_data = preg_split('/\|/', $payment_data);
                 //print_r($payment_data);
