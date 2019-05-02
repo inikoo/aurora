@@ -15,7 +15,7 @@ function copy_max_refundable_amount() {
 
 }
 
-function open_refund_dialog(element, payment_key) {
+function open_refund_dialog(element, payment_key,payment_block) {
 
 
     var settings = $(element).data('settings')
@@ -45,6 +45,15 @@ function open_refund_dialog(element, payment_key) {
     $('#payment_refund_dialog .payment_refundable_amount').html(settings.amount_formatted)
     $('#payment_refund_max_amount').val(settings.amount)
     $('#payment_refund_payment_key').val(payment_key)
+
+
+    if(payment_block=='Accounts'){
+        $('.select_refund').addClass('hide')
+
+    }else{
+        $('.select_refund').removeClass('hide')
+
+    }
 
     if (settings.can_refund_online) {
         $('#payment_refund_dialog .refund_submit_type').removeClass('hide')

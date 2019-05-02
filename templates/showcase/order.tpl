@@ -826,9 +826,9 @@
                 <td class="label">{t}Paid{/t}</td>
                 <td class="aright Payments_Amount">{$order->get('Payments Amount')}</td>
             </tr>
-            <tr class="total  Order_To_Pay_Amount {if $order->get('Order To Pay Amount')==0    }hide{/if} button" amount="{$order->get('Order To Pay Amount')}" onclick="try_to_pay(this)">
-                <td class="label">{t}To pay{/t}</td>
-                <td class="aright To_Pay_Amount   ">{$order->get('To Pay Amount')}</td>
+            <tr class="total  Order_To_Pay_Amount {if $order->get('Order To Pay Amount')==0    }hide{/if} button"  absolute_amount="{$order->get('Order To Pay Amount Absolute')}" amount="{$order->get('Order To Pay Amount')}" onclick="try_to_pay(this)">
+                <td class="label">{if $order->get('Order To Pay Amount')>0}{t}To pay{/t}{else}To credit / refund{/if}</td>
+                <td class="aright To_Pay_Amount_Absolute   ">{$order->get('To Pay Amount Absolute')}</td>
             </tr>
             <tr class="total success  Order_Paid {if $order->get('Order To Pay Amount')!=0   or $order->get('Order Total Amount')==0  }hide{/if}">
 
@@ -978,6 +978,56 @@
         </table>
     </div>
 </div>
+
+<div id="add_credit" class="table_new_fields hide">
+
+    <div style="align-items: stretch;flex: 1;padding:10px 20px;border-bottom: 1px solid #ccc;position: relative">
+
+        <i style="position:absolute;top:10px;" class="fa fa-window-close fa-flip-horizontal button" aria-hidden="true" onclick="close_add_payment_to_order()"></i>
+
+        <table border="0" style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
+            <tr>
+                <td style="width: 400px">
+                <td>
+
+
+
+                        {foreach from=$store->get_payment_accounts('objects','Active') item=payment_account}
+
+                            {if $payment_account->get('Payment Account Block')=='Accounts'}
+
+
+                                <input type="hidden" id="new_credit_payment_account_key" value="{$payment_account->id}"">
+                                <input type="hidden" id="new_credit_payment_method" value="{$payment_account->get('Default Payment Method')}">
+
+                            {/if}
+
+
+
+                        {/foreach}
+
+
+
+
+
+
+                <td class="payment_fields " style="padding-left:30px;width: 400px">
+                    <table>
+                        <tr>
+                            <td> {t}Amount to be credited{/t}</td>
+                            <td style="padding-left:20px"><input class="new_payment_field" id="new_credit_amount" placeholder="{t}Amount{/t}"></td>
+                        </tr>
+
+                    </table>
+                </td>
+
+                <td id="save_new_credit" class="buttons save" onclick="save_new_credit()"><span>{t}Save{/t}</span> <i class=" fa fa-cloud " aria-hidden="true"></i></td>
+            </tr>
+
+        </table>
+    </div>
+</div>
+
 
 <script>
 
