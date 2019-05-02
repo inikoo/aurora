@@ -31,7 +31,7 @@ $object_fields = array(
         'show_title' => true,
         'fields'     => array(
 
-
+/*
             array(
                 'id'    => 'Order_Customer_Name',
                 'edit'            => ($edit ? 'string' : ''),
@@ -59,6 +59,9 @@ $object_fields = array(
                 'invalid_msg'       => get_invalid_message('email'),
                 'required'          => false,
             ),
+
+*/
+
             array(
                 'id'              => 'Order_Tax_Number',
                 'edit'            => ($edit ? 'string' : ''),

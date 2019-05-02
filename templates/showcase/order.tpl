@@ -189,33 +189,32 @@
 
             <div class="data_field small  " style="margin-top:5px">
 
-            <span id="display_telephones"></span> {if $customer->get('Customer Preferred Contact Number')=='Mobile'}
+            <span id="display_telephones"></span>
+                {if $customer->get('Customer Preferred Contact Number')=='Mobile'}
                 <div id="Customer_Main_Plain_Mobile_display"
                      class="data_field {if !$customer->get('Customer Main Plain Mobile')}hide{/if}">
-                    <i class="fa fa-fw fa-mobile"></i> <span
-                            class="Customer_Main_Plain_Mobile">{$customer->get('Main XHTML Mobile')}</span>
+                    <i class="fal fa-fw fa-mobile"></i> <span class="Customer_Main_Plain_Mobile">{$customer->get('Main XHTML Mobile')}</span>
                 </div>
                 <div id="Customer_Main_Plain_Telephone_display"
                      class="data_field {if !$customer->get('Customer Main Plain Telephone')}hide{/if}">
-                    <i class="fa fa-fw fa-phone"></i> <span
-                            class="Customer_Main_Plain_Telephone">{$customer->get('Main XHTML Telephone')}</span>
+                    <i class="fal fa-fw fa-phone"></i> <span class="Customer_Main_Plain_Telephone">{$customer->get('Main XHTML Telephone')}</span>
                 </div>
-            {else}
+                {else}
                 <div id="Customer_Main_Plain_Telephone_display"
                      class="data_field {if !$customer->get('Customer Main Plain Telephone')}hide{/if}">
                     <i title="Telephone" class="fa fa-fw fa-phone"></i> <span  class="Customer_Main_Plain_Telephone">{$customer->get('Main XHTML Telephone')}</span>
                 </div>
                 <div id="Customer_Main_Plain_Mobile_display"
                      class="data_field {if !$customer->get('Customer Main Plain Mobile')}hide{/if}">
-                    <i title="Mobile" class="fa fa-fw fa-mobile"></i> <span
+                    <i title="Mobile" class="fal fa-fw fa-mobile"></i> <span
                             class="Customer_Main_Plain_Mobile">{$customer->get('Main XHTML Mobile')}</span>
                 </div>
-            {/if}
+                {/if}
             </div>
 
             <div class="data_field small {if $customer->get('Customer Main Plain Email')==''}hide{/if}" style="margin-top:5px">
                 <div class="">
-                    <i class="fa fa-envelope fa-fw" title="{t}Email{/t}"></i> {if $customer->get('Customer Main Plain Email')!=''}{mailto address=$customer->get('Customer Main Plain Email')}{/if}
+                    <i class="fal fa-envelope fa-fw" title="{t}Email{/t}"></i> {if $customer->get('Customer Main Plain Email')!=''}{mailto address=$customer->get('Customer Main Plain Email')}{/if}
                 </div>
             </div>
 
