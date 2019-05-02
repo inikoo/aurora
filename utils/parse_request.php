@@ -2442,7 +2442,18 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         if (isset($view_path[1])) {
                             if ($view_path[1] == 'all') {
                                 $section      = 'invoices';
+
                                 $_data['tab'] = 'invoices.categories';
+
+                            }elseif (is_numeric($view_path[1]) ) {
+                                $section      = 'category';
+
+
+                                $object     = 'category';
+                                $key     = $view_path[1];
+
+                               // $_data['tab'] = 'category.invoices';
+
 
                             }
 

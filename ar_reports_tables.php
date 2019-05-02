@@ -2246,11 +2246,11 @@ function sales_invoice_category($_data, $db, $user, $account) {
 
 
                 'invoices' => sprintf(
-                    '<span class="link" onclick="change_view(\'invoices/all/category/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Refund:\'\',Invoice:1}} } )" >%s</span>', $data['Category Key'],
+                    '<span class="link" onclick="change_view(\'invoices/category/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Refund:\'\',Invoice:1}} } )" >%s</span>', $data['Category Key'],
                     $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], number($data['invoices'])
                 ),
                 'refunds'  => sprintf(
-                    '<span class="link" onclick="change_view(\'invoices/all/category/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}} } )" >%s</span>', $data['Category Key'],
+                    '<span class="link" onclick="change_view(\'invoices/category/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}} } )" >%s</span>', $data['Category Key'],
                     $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], number($data['refunds'])
                 ),
 

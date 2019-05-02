@@ -1881,6 +1881,8 @@ function get_invoices_category_server_navigation($data, $smarty, $user, $db, $ac
 
     $sections = get_sections('accounting_server', 'all');
 
+
+
     $sections_class = '';
 
     if ($data['_object']->get('Category Branch Type') == 'Root') {
@@ -1891,7 +1893,7 @@ function get_invoices_category_server_navigation($data, $smarty, $user, $db, $ac
         $up_button = array(
             'icon'      => 'arrow-up',
             'title'     => _("Invoice's categories"),
-            'reference' => 'invoices/all/categories'
+            'reference' => 'invoices/category/all'
         );
 
 
@@ -1906,7 +1908,7 @@ function get_invoices_category_server_navigation($data, $smarty, $user, $db, $ac
     // $up_button=array('icon'=>'arrow-up', 'title'=>_("Order's index"), 'reference'=>'account/orders');
 
 
-    $sections['categories']['selected'] = true;
+    $sections['invoices']['selected'] = true;
 
 
     $_content = array(

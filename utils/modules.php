@@ -2109,6 +2109,9 @@ $modules = array(
 
             ),
 
+
+
+
             'payments' => array(
                 'type'      => 'navigation',
                 'label'     => _('Payments').' ('._('All').')',
@@ -2169,10 +2172,8 @@ $modules = array(
                         'title' => _('Details')
                     ),
 
-                    'category.subjects'   => array('label' => _('Invoices')),
-                    'category.categories' => array(
-                        'label' => _('Categories')
-                    ),
+                    'category.invoices'   => array('label' => _('Invoices')),
+
                     'category.history'    => array(
                         'title' => _('History'),
                         'label' => '',

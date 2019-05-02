@@ -309,8 +309,7 @@ function payments($_data, $db, $user) {
                                 <i class="far fa-trash-alt button %s " title="%s"   onClick="cancel_payment(this,%d)"  ></i>
                              </span>',
 
-                            ($data['Payment Order Key'] == '' ? 'hide' : ''),
-                            _('Remove credit'),
+                            ($data['Payment Order Key'] == '' ? 'hide' : ''), _('Remove credit'),
 
                             $data['Payment Key']
                         );
@@ -323,19 +322,14 @@ function payments($_data, $db, $user) {
                             <i class="far fa-trash-alt button %s %s" aria-hidden="true" title="%s"    onClick="cancel_payment(this,%d)"  ></i>
                             <i class="fa fa-share fa-flip-horizontal button %s" data-settings=\'{"reference":"%s","amount_formatted":"%s","amount":"%s","can_refund_online":"%s","parent":"%s","parent_key":"%s"}\'   aria-hidden="true" title="'._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d,\'%s\')"  ></i>
 
-                            </span>',
-                            ($data['Payment Submit Type'] != 'Manual' ? 'hide' : ''),
-                            ($data['Payment Order Key'] == '' ? 'hide' : ''),
-                            $_remove_label,
+                            </span>', ($data['Payment Submit Type'] != 'Manual' ? 'hide' : ''), ($data['Payment Order Key'] == '' ? 'hide' : ''), $_remove_label,
 
                             $data['Payment Key'],
 
                             (($data['Payment Type'] == 'Payment' and $refundable_amount > 0) ? '' : 'hide'),
 
                             htmlspecialchars($data['Payment Transaction ID']), money($refundable_amount, $data['Payment Currency Code']), $refundable_amount, (($data['Payment Account Block'] == 'BTree' or $data['Payment Account Block'] == 'BTreePaypal') ? true : false),
-                            $parent->get_object_name(), $parent->id,
-                            $data['Payment Key'],
-                            $data['Payment Account Block']
+                            $parent->get_object_name(), $parent->id, $data['Payment Key'], $data['Payment Account Block']
                         );
                     }
 
@@ -378,7 +372,7 @@ function payments($_data, $db, $user) {
             $refunds = preg_replace('/^, /', '', $refunds);
 
 
-            if ($data['Payment Account Block'] == 'Accounts'  or  $data['Payment Method'] == 'Account' ) {
+            if ($data['Payment Account Block'] == 'Accounts' or $data['Payment Method'] == 'Account') {
                 $account = _('Customer credits');
 
             } else {
@@ -780,8 +774,13 @@ function invoice_categories($_data, $db, $user, $account) {
     $rtext_label = 'category';
     include_once 'prepare_table/init.php';
 
+
+    if (empty($_data['parameters']['f_period'])) {
+        $_data['parameters']['f_period'] = 'Total';
+    }
+
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    // print $sql;
+
     $adata = array();
 
     $total_refunds            = 0;
@@ -819,12 +818,12 @@ function invoice_categories($_data, $db, $user, $account) {
             $adata[] = array(
                 'id'          => (integer)$data['Category Key'],
                 'code'        => sprintf(
-                    '<span class="link" onclick="change_view(\'category/%d\', { tab:\'category.subjects\', parameters:{ period:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}} })" >%s</span>', $data['Category Key'],
+                    '<span class="link" onclick="change_view(\'invoices/category/%d\', { tab:\'category.invoices\', parameters:{ period:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}} })" >%s</span>', $data['Category Key'],
                     $_data['parameters']['f_period'], $data['Category Code']
                 ),
                 'label'       => $data['Category Label'],
                 'refunds'     => sprintf(
-                    '<span class="link %s"  onclick="change_view(\'category/%d\', { tab:\'category.subjects\', parameters:{ period:\'%s\',elements_type:\'type\' } ,element:{ type:{ Refund:1,Invoice:\'\'}} })"  >%s</span>',
+                    '<span class="link %s"  onclick="change_view(\'category/%d\', { tab:\'category.invoices\', parameters:{ period:\'%s\',elements_type:\'type\' } ,element:{ type:{ Refund:1,Invoice:\'\'}} })"  >%s</span>',
 
                     ($data['refunds'] == 0 ? 'very_discreet' : ''), $data['Category Key'], $_data['parameters']['f_period'], number($data['refunds'])
                 ),
