@@ -1425,7 +1425,7 @@ function try_to_pay(element) {
     } else if ($(element).attr('amount') < 0) {
 
 
-        if ($('#payment_refund_amount').is(':visible')) {
+       // if ($('#payment_refund_amount').is(':visible')) {
 
             var amount=Math.abs($(element).attr('amount'))
 
@@ -1441,7 +1441,7 @@ function try_to_pay(element) {
 
             $('#payment_refund_amount').val(amount)
             validate_refund_form()
-        }
+       // }
 
         //payment_refund_amount
 
