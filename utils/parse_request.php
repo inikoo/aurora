@@ -5155,7 +5155,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 $module  = 'users';
                 $section = 'users';
 
-
                 if (isset($view_path[0])) {
 
                     if ($view_path[0] == 'staff') {
@@ -5180,9 +5179,39 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
                     } elseif (is_numeric($view_path[0])) {
 
+
+
                         $section = 'user';
                         $object  = 'user';
                         $key     = $view_path[0];
+
+                        if (isset($view_path[1])) {
+
+                            if ($view_path[1] == 'api_key') {
+
+                                $parent     = 'user';
+                                $parent_key = $key;
+                                $section    = 'user.api_key';
+                                $object     = 'api_key';
+
+
+                                if (isset($view_path[2])) {
+
+                                    if ($view_path[2] == 'new') {
+
+                                        $section    = 'user.api_key.new';
+
+                                    }elseif(is_numeric($view_path[2])){
+                                        $key = $view_path[2];
+
+                                    }
+                                }
+
+                            }
+
+                        }
+
+
 
                     }
                 }
