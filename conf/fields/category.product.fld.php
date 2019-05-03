@@ -60,7 +60,7 @@ $category_product_fields = array(
                 'parent'                   => 'website',
                 'parent_key'               => ($new
                     ?: $object->webpage->get(
-                        'Page Site Key'
+                        'Page Website Key'
                     )),
                 'value'                    => htmlspecialchars(
                     $object->webpage->get('Page Found In Page Key')
