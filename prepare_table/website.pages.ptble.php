@@ -25,7 +25,7 @@ switch ($parameters['parent']) {
         break;
     case('Website'):
         $where .= sprintf(
-            ' and PS.`Page Site Key`=%d', $parameters['parent_key']
+            ' and PS.`Webpage Website Key`=%d', $parameters['parent_key']
         );
         break;
     case('department'):

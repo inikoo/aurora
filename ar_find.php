@@ -3261,10 +3261,10 @@ function find_category_webpages($db, $account, $memcache_ip, $data, $smarty) {
 
     switch ($data['parent']) {
         case 'website':
-            $where = sprintf(' and `Page Site Key`=%d', $data['parent_key']);
+            $where = sprintf(' and `Webpage Website Key`=%d', $data['parent_key']);
             break;
         case 'store':
-            $where = sprintf(' and `Page Store Key`=%d', $data['parent_key']);
+            $where = sprintf(' and `Webpage Store Key`=%d', $data['parent_key']);
             break;
         default:
 

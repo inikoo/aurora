@@ -170,11 +170,7 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 
     $where .= sprintf(' and  F.`Customer Favourite Product Product ID`=%d ', $parameters['parent_key']);
 
-    // if (in_array($parameters['parent_key'], $user->websites)) {
-    //     $where .= sprintf(' and  `Site Key`=%d ', $parameters['parent_key']);
-    // } else {
-    //     $where .= ' and false';
-    // }
+
 
     $group_by = 'group by F.`Customer Favourite Product Customer Key`';
 

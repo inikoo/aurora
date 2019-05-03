@@ -10,13 +10,6 @@
 */
 
 
-
-
-
-
-//$where_interval_working_hours='';
-
-
 $where = " where true   ";
 
 
