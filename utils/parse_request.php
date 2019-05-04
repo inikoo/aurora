@@ -2322,6 +2322,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                                 $parent     = 'store';
                                                 $parent_key = $arg1;
                                                 $section    = 'refund.new';
+
                                             }
 
 

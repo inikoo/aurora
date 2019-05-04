@@ -189,7 +189,7 @@
         </tr>
 
         <tr class="subtotal">
-            <td class="label">{t}Tax{/t}</td>
+            <td class="label">{t}Tax{/t} {if $order->get('Order Total Tax Amount')>0} <span onclick="refund_tax_only()" class="small show_refund_tax_only very_discreet_on_hover button">(Refund tax only)</span>{else}<span class="show_refund_tax_only"></span>{/if} </td>
             <td class="aright Total_Tax_Amount">{$order->get('Total Tax Amount')}</td>
         </tr>
 
@@ -209,7 +209,7 @@
     <div style="clear:both"></div>
 </div>
     <div class="block " style="align-items: stretch;flex: 1;">
-        <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
+        <div class="state create_net_and_tax_refund" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
             <div id="back_operations">
 
             </div>
@@ -219,6 +219,26 @@
                 <div id="create_refund_operations" class="order_operation {if {$order->get('State Index')}<100  }hide{/if}">
                     <div  class="square_button right  " title="{t}Create refund{/t}">
                         <i class="fa fa-cloud save   open_create_refund_dialog_button" aria-hidden="true" onclick="create_refund(this)"></i>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+
+
+        <div class="state hide create_tax_only_refund  " style="height:30px;margin-bottom:10px;position:relative;top:-5px">
+            <div id="back_operations">
+
+            </div>
+            <span style="float:left;padding-left:10px;padding-top:5px" class="Order_State"> {t}Create tax only refund{/t} </span>
+            <div >
+
+                <div i class="order_operation {if {$order->get('State Index')}<100  }hide{/if}">
+                    <div  class="square_button right  " title="{t}Create tax only refund{/t}">
+                        <i class="fa fa-cloud save   open_create_refund_dialog_button" aria-hidden="true" onclick="create_tax_only_refund(this)"></i>
 
                     </div>
                 </div>
@@ -323,3 +343,9 @@
         </table>
     </div>
 </div>
+
+<script type="text/javascript" src="/js/injections/refund.new.js"></script>
+
+<script>
+    close_refund_tax_only()
+</script>

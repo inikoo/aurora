@@ -107,6 +107,9 @@ switch ($tipo) {
     case 'refund.new.items':
         refund_new_items(get_table_parameters(), $db, $user);
         break;
+    case 'refund.new.items_tax':
+        refund_new_items_tax(get_table_parameters(), $db, $user,$account);
+        break;
     case 'replacement.new.items':
         replacement_new_items(get_table_parameters(), $db, $user);
         break;
@@ -122,7 +125,10 @@ switch ($tipo) {
 
         invoice_items(get_table_parameters(), $db, $user);
         break;
+    case 'refund.items_tax_only':
 
+        refund_items_tax_only(get_table_parameters(), $db, $user);
+        break;
     case 'deleted_invoice.items':
     case 'deleted_refund.items':
 
@@ -271,7 +277,6 @@ function orders_in_process_paid($_data, $db, $user, $account) {
 
 
         if ($data['payments'] != '') {
-
 
 
             foreach (preg_split('/,/', $data['payments']) as $payment_data) {
@@ -1763,6 +1768,94 @@ function order_items($_data, $db, $user) {
     echo json_encode($response);
 }
 
+function refund_items_tax_only($_data, $db, $user) {
+
+
+    $rtext_label = 'item';
+
+    include_once 'prepare_table/init.php';
+
+
+    $sql = sprintf(
+        "SELECT  `Tax Category Code`,`Order No Product Transaction Metadata`,`Currency Code` ,`Transaction Description`,`Order No Product Transaction Fact Key` FROM `Order No Product Transaction Fact` WHERE `Invoice Key`=%d  ", $_data['parameters']['parent_key']
+    );
+
+
+    $adata = array();
+    foreach ($db->query($sql) as $data) {
+
+
+        $tax = 0;
+
+        if ($data['Order No Product Transaction Metadata'] != '') {
+            if ($metadata = json_decode($data['Order No Product Transaction Metadata'], true)) {
+                if (isset($metadata['TORA'])) {
+                    $tax = $metadata['TORA'];
+                }
+            }
+        }
+        $tax = money($tax, $data['Currency Code']);
+
+        $description = $data['Transaction Description'];
+        $adata[] = array(
+            'id'          => (integer)$data['Order No Product Transaction Fact Key'],
+            'code'        => '',
+            'description' => $description,
+            'tax' => $tax,
+        );
+
+    }
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+
+    foreach ($db->query($sql) as $data) {
+
+
+        $tax = 0;
+
+        if ($data['Order Transaction Metadata'] != '') {
+            if ($metadata = json_decode($data['Order Transaction Metadata'], true)) {
+                if (isset($metadata['TORA'])) {
+                    $tax = $metadata['TORA'];
+                }
+            }
+        }
+        $tax = money($tax, $data['Order Currency Code']);
+        $units    = $data['Product Units Per Case'];
+        $name     = $data['Product History Name'];
+
+        $description = '';
+        if ($units > 1) {
+            $description = number($units).'x ';
+        }
+        $description .= ' '.$name;
+
+        $adata[] = array(
+            'id'          => (integer)$data['Order Transaction Fact Key'],
+            'code'        => sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $data['Store Key'], $data['Product ID'], $data['Product History Code']),
+            'description' => $description,
+            'tax' => $tax,
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 function invoice_items($_data, $db, $user) {
 
@@ -1776,8 +1869,6 @@ function invoice_items($_data, $db, $user) {
 
     $invoice = get_object('Invoice', $_data['parameters']['parent_key']);
     $type    = $invoice->get('Invoice Type');
-
-
 
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -1799,10 +1890,10 @@ function invoice_items($_data, $db, $user) {
 
 
         $tax    = money(
-            ($data['Order Transaction Amount']*$data['Transaction Tax Rate']), $data['Order Currency Code']
+            ($data['Order Transaction Amount'] * $data['Transaction Tax Rate']), $data['Order Currency Code']
         );
         $amount = money(
-            ( $data['Order Transaction Amount'] + ($data['Order Transaction Amount']*$data['Transaction Tax Rate']))  , $data['Order Currency Code']
+            ($data['Order Transaction Amount'] + ($data['Order Transaction Amount'] * $data['Transaction Tax Rate'])), $data['Order Currency Code']
         );
 
 
@@ -1827,12 +1918,11 @@ function invoice_items($_data, $db, $user) {
 
         $price = money($price, $currency, $_locale);
 
-      
+
         if ($discount != '') {
             $description .= ' '._('Discount').':'.$discount;
         }
 
-       
 
         if ($type == 'Invoice') {
             $quantity = number($data['Delivery Note Quantity']);
@@ -1879,8 +1969,7 @@ function deleted_invoice_items($_data, $db, $user) {
     global $_locale;// fix this locale stuff
 
     $rtext_label = 'item';
-    $invoice = get_object('Invoice_Deleted', $_data['parameters']['parent_key']);
-
+    $invoice     = get_object('Invoice_Deleted', $_data['parameters']['parent_key']);
 
 
     $adata   = array();
@@ -2615,6 +2704,226 @@ function refund_new_items($_data, $db, $user) {
         }
 
     }
+
+    $rtext = sprintf(
+        ngettext('%s charged transaction', '%s charged transactions', $items), number($items)
+    );
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function refund_new_items_tax($_data, $db, $user,$account) {
+
+    global $_locale;// fix this locale stuff
+
+    $rtext_label = 'item';
+
+    include_once 'prepare_table/init.php';
+
+
+    $customer_order = get_object('Order', $_data['parameters']['parent_key']);
+
+
+    $items = 0;
+
+    $bigger_tax_item = 0;
+
+    $bigger_tax = 0;
+
+    $adata     = array();
+    $total_tax = 0;
+
+    $sql = sprintf(
+        "SELECT *,`Order No Product Transaction Fact Key`,`Transaction Description`,`Transaction Net Amount`,`Transaction Type` ,`Currency Code` ,`Tax Category Rate` FROM `Order No Product Transaction Fact` ONPTF  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=ONPTF.`Tax Category Code` and `Tax Category Country Code`=%s)  WHERE `Order Key`=%d ",
+        prepare_mysql($account->get('Account Country Code')),$_data['parameters']['parent_key']
+
+    );
+
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+
+
+            $amount = round($row['Transaction Net Amount'] * $row['Tax Category Rate'], 2);
+            $total_tax += $amount;
+            if ($amount > 0) {
+
+
+                if ($bigger_tax < $amount) {
+                    $bigger_tax_item = $items;
+                    $bigger_tax      = $amount;
+                }
+                $items++;
+
+            }
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    foreach ($db->query($sql) as $data) {
+
+
+        if ($data['Order Transaction Amount'] > 0) {
+
+
+            $tax       = round($data['Transaction Tax Rate'] * $data['Order Transaction Amount'], 2);
+            $total_tax += $tax;
+
+
+            if ($bigger_tax < $tax) {
+                $bigger_tax_item = $items;
+                $bigger_tax      = $tax;
+            }
+            $items++;
+        }
+
+    }
+
+
+    $diff = round($customer_order->get('Order Total Tax Amount') - $total_tax, 2);
+
+
+    $items = 0;
+
+
+    $adata     = array();
+    $total_tax = 0;
+
+    $sql = sprintf(
+        "SELECT *,`Order No Product Transaction Fact Key`,`Transaction Description`,`Transaction Net Amount`,`Transaction Type` ,`Currency Code` ,`Tax Category Rate` FROM `Order No Product Transaction Fact` ONPTF  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=ONPTF.`Tax Category Code` and `Tax Category Country Code`=%s)  WHERE `Order Key`=%d ",
+        prepare_mysql($account->get('Account Country Code')),$_data['parameters']['parent_key']
+    );
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+
+            $amount = round($row['Transaction Net Amount'] * $row['Tax Category Rate'], 2);
+
+
+
+
+            if ($diff != 0 and $items == $bigger_tax_item) {
+               $amount = $amount + $diff;
+            }
+
+
+            if ($amount > 0) {
+
+                $refund_tax = sprintf('<input class="new_refund_item_tax %s" style="width: 80px" transaction_type="onptf_tax" transaction_id="%d"  max="%f"  />', ($amount <= 0 ? 'hide' : ''), $row['Order No Product Transaction Fact Key'], $amount);
+
+                $total_tax += $amount;
+
+                $adata[] = array(
+
+                    'id'          => 'onptf_'.$row['Order No Product Transaction Fact Key'],
+                    'code'        => '',
+                    'description' => $row['Transaction Description'],
+                    'quantity'    => '',
+                    'refund_tax'  => $refund_tax,
+
+                    'tax' => sprintf('<span class="new_refund_order_item_tax button "  amount="%f">%s</span>', $amount, money($amount, $row['Currency Code'])),
+
+
+                );
+
+
+                $items++;
+            }
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    foreach ($db->query($sql) as $data) {
+
+
+        if ($data['Order Transaction Amount'] > 0) {
+
+            $units    = $data['Product Units Per Case'];
+            $name     = $data['Product History Name'];
+            $price    = $data['Product History Price'];
+            $currency = $data['Product Currency'];
+
+
+            $description = '';
+            if ($units > 1) {
+                $description = number($units).'x ';
+            }
+            $description .= ' '.$name;
+            if ($price > 0) {
+                $description .= ' ('.money($price, $currency, $_locale).')';
+            }
+
+
+            $tax = round($data['Transaction Tax Rate'] * $data['Order Transaction Amount'], 2);
+
+
+            if ($diff != 0 and $items == $bigger_tax_item) {
+               $tax = $tax + $diff;
+            }
+
+
+            $quantity = sprintf(
+                    '<span class="new_refund_tax_ordered_quantity button"  refunded_qty="0" unit_amount="%f"  max_qty="%f" max_amount="%f"   >', ($data['Order Quantity'] > 0 ? $tax / $data['Order Quantity'] : 0), $tax, $data['Order Quantity']
+                ).number($data['Order Quantity']).'</span>';
+
+
+            $refund_tax = sprintf(
+                '<input class="new_refund_item_tax %s item" style="width: 80px"  transaction_type="otf_tax" transaction_id="%d"  max="%f"  />', ($tax <= 0 ? 'hide' : ''), $data['Order Transaction Fact Key'], $tax
+            );
+
+            $adata[] = array(
+
+                'id'          => (integer)$data['Order Transaction Fact Key'],
+                'product_pid' => (integer)$data['Product ID'],
+                'code'        => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product Code']),
+                'description' => $description,
+                'quantity'    => $quantity,
+                'refund_tax'  => $refund_tax,
+
+                'tax' => sprintf('<span class="new_refund_order_item_tax button  " amount="%f" >%s</span>', $tax, money($tax, $data['Order Currency Code'])),
+
+
+            );
+
+            $items++;
+
+
+        }
+
+    }
+
 
     $rtext = sprintf(
         ngettext('%s charged transaction', '%s charged transactions', $items), number($items)

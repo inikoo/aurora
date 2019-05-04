@@ -31,7 +31,6 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 
-
 switch ($tipo) {
 
     case 'data_entry_picking_aid':
@@ -94,7 +93,18 @@ switch ($tipo) {
         );
 
         create_refund($data, $editor, $smarty, $db, $account, $user);
+        break;
+    case 'create_refund_tax_only':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key'          => array('type' => 'key'),
+                         'transactions' => array('type' => 'json array'),
 
+
+                     )
+        );
+
+        create_refund_tax_only($data, $editor, $smarty, $db, $account, $user);
 
         break;
 
@@ -352,16 +362,14 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
     }
 
 
-    if($data['parent']=='production_part'){
+    if ($data['parent'] == 'production_part') {
         $transaction_data = $parent->update_bill_of_materials($data);
 
 
-    }else{
+    } else {
         $transaction_data = $parent->update_item($data);
 
     }
-
-
 
 
     $discounts_data = array();
@@ -1290,7 +1298,38 @@ function create_refund($data, $editor, $smarty, $db) {
     $object->editor = $editor;
 
 
-    $refund = $object->create_refund(gmdate('Y-m-d H:i:s'),$data['transactions']);
+    $refund = $object->create_refund(gmdate('Y-m-d H:i:s'), $data['transactions']);
+
+
+    if ($refund->id) {
+        $response = array(
+            'state'      => 200,
+            'refund_key' => $refund->id,
+            'order_key'  => $refund->get('Invoice Order Key'),
+            'store_key'  => $refund->get('Store Key')
+
+        );
+    } else {
+        $response = array(
+            'state' => 400,
+            'msg'   => $object->msg
+        );
+    }
+
+
+    echo json_encode($response);
+
+}
+
+
+function create_refund_tax_only($data, $editor, $smarty, $db) {
+
+
+    $object         = get_object('order', $data['key']);
+    $object->editor = $editor;
+
+
+    $refund = $object->create_refund(gmdate('Y-m-d H:i:s'), $data['transactions'], true);
 
 
     if ($refund->id) {
@@ -1563,9 +1602,7 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
     $sql      = sprintf(
         'SELECT PL.`Location Key` as pl_ok  ,ITF.`Location Key`, sum(`Required`+`Given`) AS required ,group_concat(`Inventory Transaction Key`) as itf_keys 
         FROM `Inventory Transaction Fact` ITF    LEFT JOIN  `Part Location Dimension` PL ON  (ITF.`Location Key`=PL.`Location Key` and ITF.`Part SKU`=PL.`Part SKU`)
-        WHERE   `Delivery Note Key`=%d  and  ITF.`Part SKU`=%d  group by `Location Key` ',
-        $data['metadata']['delivery_note_key'],
-        $data['metadata']['part_sku']
+        WHERE   `Delivery Note Key`=%d  and  ITF.`Part SKU`=%d  group by `Location Key` ', $data['metadata']['delivery_note_key'], $data['metadata']['part_sku']
     );
 
 
@@ -1573,13 +1610,12 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
         foreach ($result as $row) {
 
 
-
             $itf_data[$row['Location Key']] = array(
                 'required' => $row['required'],
                 'picked'   => 0,
                 'pending'  => $row['required'],
                 'itf_keys' => $row['itf_keys'],
-                'pl_ok'=>$row['pl_ok']
+                'pl_ok'    => $row['pl_ok']
             );
 
 
@@ -1592,38 +1628,21 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
     }
 
 
-
     $part = get_object('part', $data['metadata']['part_sku']);
     foreach ($part->get_locations('part_location_object', '', true) as $part_location) {
 
 
         $locations .= '<div style="height: 32px">'.get_delivery_note_fast_track_packing_item_location(
 
-                'Yes',
-                $total_required - $total_picked,
-                $part_location->get('Quantity On Hand'),
-                $date,
-                $part_location->location->id,
-                $part_location->location->get('Code'),
-                $part_location->part->get('Part Current On Hand Stock'),
-                1,
-                $part_location->part->sku,
-                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
-                $data['metadata']['delivery_note_key']
+                'Yes', $total_required - $total_picked, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock'), 1, $part_location->part->sku,
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $data['metadata']['delivery_note_key']
             ).'</div>';
 
         $picked_offline_input .= '<div style="margin-bottom: 4px">'.get_delivery_note_fast_track_packing_input(
-                'Yes',
-                $total_required,
-                $total_picked,
-                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),
-                ($part_location->get('Can Pick') == 'Yes' ? (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['pending'] : 0) : 0),
-                $part_location->get('Quantity On Hand'),
+                'Yes', $total_required, $total_picked, (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),
+                ($part_location->get('Can Pick') == 'Yes' ? (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['pending'] : 0) : 0), $part_location->get('Quantity On Hand'),
 
-                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
-                $part_location->part->sku,
-                $part_location->part->get('Part Current On Hand Stock'),
-                $part_location->location->id
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $part_location->part->sku, $part_location->part->get('Part Current On Hand Stock'), $part_location->location->id
             ).'</div>';
 
     }
@@ -1655,8 +1674,7 @@ function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $a
     $itf_data = array();
     $sql      = sprintf(
         'SELECT `Location Key`,sum(`Picked`) as picked,  sum(`Required`+`Given`) AS required ,group_concat(`Inventory Transaction Key`) as itf_keys FROM `Inventory Transaction Fact` ITF   WHERE   `Delivery Note Key`=%d  and  ITF.`Part SKU`=%d  group by `Location Key` ',
-        $data['metadata']['delivery_note_key'],
-        $data['metadata']['part_sku']
+        $data['metadata']['delivery_note_key'], $data['metadata']['part_sku']
     );
 
     if ($result = $db->query($sql)) {
@@ -1691,30 +1709,15 @@ function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $a
         // $itf_key,$delivery_note_key ) {
 
         $locations .= '<div style="height: 32px">'.get_item_location(
-                $total_required - $total_picked,
-                $part_location->get('Quantity On Hand'),
-                $date,
-                $part_location->location->id,
-                $part_location->location->get('Code'),
-                $part_location->part->get('Part Current On Hand Stock'),
-                $part_location->part->get('Part SKO Barcode'),
-                1,
-                $part_location->part->sku,
-                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
-                $data['metadata']['delivery_note_key']
+                $total_required - $total_picked, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock'), $part_location->part->get('Part SKO Barcode'),
+                1, $part_location->part->sku, (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $data['metadata']['delivery_note_key']
             ).'</div>';
         //function get_picked_offline_input($total_required,$total_picked,$picked_in_location, $quantity_on_location, $itf_key, $part_sku,  $part_stock) {
         $picked_offline_input .= '<div style="margin-bottom: 4px">'.get_picked_offline_input(
-                $total_required,
-                $total_picked,
-                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),
-                ($part_location->get('Can Pick') == 'Yes' ? (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['pending'] : 0) : 0),
-                $part_location->get('Quantity On Hand'),
+                $total_required, $total_picked, (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),
+                ($part_location->get('Can Pick') == 'Yes' ? (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['pending'] : 0) : 0), $part_location->get('Quantity On Hand'),
 
-                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
-                $part_location->part->sku,
-                $part_location->part->get('Part Current On Hand Stock'),
-                $part_location->location->id
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $part_location->part->sku, $part_location->part->get('Part Current On Hand Stock'), $part_location->location->id
             ).'</div>';
 
     }
@@ -1733,7 +1736,6 @@ function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $a
 
 
 function data_entry_picking_aid($data, $editor, $smarty, $db, $account) {
-
 
 
     include_once 'utils/data_entry_picking_aid.class.php';

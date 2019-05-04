@@ -177,8 +177,16 @@ if ($invoice->data['Invoice Type'] == 'Invoice') {
     $smarty->assign('label_title_no', _('Credit Note No.'));
 
 } else {
-    $smarty->assign('label_title', _('Refund'));
-    $smarty->assign('label_title_no', _('Refund No.'));
+
+    if($invoice->get('Invoice Tax Type')=='Tax_Only') {
+        $smarty->assign('label_title', _('Tax Refund'));
+        $smarty->assign('label_title_no', _('Tax Refund No.'));
+    }else{
+        $smarty->assign('label_title', _('Refund'));
+        $smarty->assign('label_title_no', _('Refund No.'));
+    }
+
+
 }
 
 

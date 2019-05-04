@@ -1890,15 +1890,15 @@ class Order extends DB_Table {
 
 
         $data_invoice = array(
-            'editor'                                => $this->editor,
-            'Invoice Date'                          => $date,
-            'Invoice Type'                          => 'Invoice',
-            'Invoice Public ID'                     => $invoice_public_id,
-            'Invoice File As'                       => $file_as,
-            'Invoice Order Key'                     => $this->id,
-            'Invoice Store Key'                     => $this->data['Order Store Key'],
-            'Invoice Customer Key'                  => $this->data['Order Customer Key'],
-            'Invoice Tax Code'                      => $this->data['Order Tax Code'],
+            'editor'               => $this->editor,
+            'Invoice Date'         => $date,
+            'Invoice Type'         => 'Invoice',
+            'Invoice Public ID'    => $invoice_public_id,
+            'Invoice File As'      => $file_as,
+            'Invoice Order Key'    => $this->id,
+            'Invoice Store Key'    => $this->data['Order Store Key'],
+            'Invoice Customer Key' => $this->data['Order Customer Key'],
+            'Invoice Tax Code'     => $this->data['Order Tax Code'],
 
             'Invoice Metadata'                      => $this->data['Order Original Metadata'],
             'Invoice Tax Number'                    => $this->data['Order Tax Number'],
@@ -1936,7 +1936,7 @@ class Order extends DB_Table {
             'Invoice Items Discount Amount' => $this->data['Order Items Discount Amount'],
 
             'Invoice Items Net Amount'          => $this->data['Order Items Net Amount'],
-            'Invoice Items Out of Stock Amount' => ($this->data['Order Items Out of Stock Amount']==''?0:$this->data['Order Items Out of Stock Amount']),
+            'Invoice Items Out of Stock Amount' => ($this->data['Order Items Out of Stock Amount'] == '' ? 0 : $this->data['Order Items Out of Stock Amount']),
             'Invoice Shipping Net Amount'       => $this->data['Order Shipping Net Amount'],
             'Invoice Charges Net Amount'        => $this->data['Order Charges Net Amount'],
             'Invoice Insurance Net Amount'      => $this->data['Order Insurance Net Amount'],
@@ -1957,27 +1957,27 @@ class Order extends DB_Table {
 
     }
 
-    function get_invoices($scope = 'keys',$options='') {
+    function get_invoices($scope = 'keys', $options = '') {
 
 
         $invoices = array();
 
 
-        switch ($options){
+        switch ($options) {
             case 'refunds_only':
-                $where=" and `Invoice Type`='Refund'";
+                $where = " and `Invoice Type`='Refund'";
                 break;
             case 'invoices_only':
-                $where=" and `Invoice Type`='Refund'";
+                $where = " and `Invoice Type`='Refund'";
                 break;
             default:
-                $where='';
+                $where = '';
 
         }
 
 
-        $sql      = sprintf(
-            "SELECT `Invoice Key` FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d  %s ", $this->id,$where
+        $sql = sprintf(
+            "SELECT `Invoice Key` FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d  %s ", $this->id, $where
         );
 
         if ($result = $this->db->query($sql)) {
@@ -2721,7 +2721,7 @@ class Order extends DB_Table {
 
     }
 
-    function create_refund($date, $transactions) {
+    function create_refund($date, $transactions, $tax_only = false) {
 
 
         include_once 'class.Invoice.php';
@@ -2732,7 +2732,11 @@ class Order extends DB_Table {
         $invoice_public_id = '';
 
 
+
         if ($store->data['Store Refund Public ID Method'] == 'Same Invoice ID') {
+
+
+
 
             foreach ($this->get_invoices('objects') as $_invoice) {
                 if ($_invoice->data['Invoice Type'] == 'Invoice') {
@@ -2743,7 +2747,6 @@ class Order extends DB_Table {
 
             if ($invoice_public_id == '') {
                 //Next Invoice ID
-
 
                 if ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
 
@@ -2788,6 +2791,8 @@ class Order extends DB_Table {
 
 
         } elseif ($store->data['Store Refund Public ID Method'] == 'Account Wide Own Index') {
+
+
             include_once 'class.Account.php';
             $account = new Account();
             $sql     = sprintf(
@@ -2800,6 +2805,7 @@ class Order extends DB_Table {
 
 
         } elseif ($store->data['Store Refund Public ID Method'] == 'Store Own Index') {
+
 
             $sql = sprintf(
                 "UPDATE `Store Dimension` SET `Store Invoice Last Refund Public ID` = LAST_INSERT_ID(`Store Invoice Last Refund Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
@@ -2851,23 +2857,26 @@ class Order extends DB_Table {
 
         }
 
+
+
+
         if ($invoice_public_id != '') {
-            $invoice_public_id = $this->get_refund_public_id(
-                $invoice_public_id.$store->data['Store Refund Suffix']
-            );
+            $invoice_public_id = $this->get_refund_public_id($invoice_public_id.$store->data['Store Refund Suffix']);
         }
 
 
+
+
         $refund_data = array(
-            'editor'                                => $this->editor,
-            'Invoice Date'                          => $date,
-            'Invoice Type'                          => 'Refund',
-            'Invoice Public ID'                     => $invoice_public_id,
-            'Invoice File As'                       => $invoice_public_id,
-            'Invoice Order Key'                     => $this->id,
-            'Invoice Store Key'                     => $this->data['Order Store Key'],
-            'Invoice Customer Key'                  => $this->data['Order Customer Key'],
-            'Invoice Tax Code'                      => $this->data['Order Tax Code'],
+            'editor'               => $this->editor,
+            'Invoice Date'         => $date,
+            'Invoice Type'         => 'Refund',
+            'Invoice Public ID'    => $invoice_public_id,
+            'Invoice File As'      => $invoice_public_id,
+            'Invoice Order Key'    => $this->id,
+            'Invoice Store Key'    => $this->data['Order Store Key'],
+            'Invoice Customer Key' => $this->data['Order Customer Key'],
+            'Invoice Tax Code'     => $this->data['Order Tax Code'],
 
             'Invoice Metadata'                      => $this->data['Order Original Metadata'],
             'Invoice Tax Number'                    => $this->data['Order Tax Number'],
@@ -2896,27 +2905,25 @@ class Order extends DB_Table {
             'Invoice Address Formatted'             => $this->data['Order Invoice Address Formatted'],
             'Invoice Address Postal Label'          => $this->data['Order Invoice Address Postal Label'],
             'Invoice Registration Number'           => $this->data['Order Registration Number'],
-
-
-            'Invoice Tax Liability Date' => $date,
-
-
-            'Invoice Items Gross Amount'        => 0,
-            'Invoice Items Discount Amount'     => 0,
-            'Invoice Items Net Amount'          => 0,
-            'Invoice Items Out of Stock Amount' => 0,
-            'Invoice Shipping Net Amount'       => 0,
-            'Invoice Charges Net Amount'        => 0,
-            'Invoice Insurance Net Amount'      => 0,
-            'Invoice Total Net Amount'          => 0,
-            'Invoice Total Tax Amount'          => 0,
-            'Invoice Payments Amount'           => 0,
-            'Invoice To Pay Amount'             => 0,
-            'Invoice Total Amount'              => 0,
-            'Invoice Currency'                  => $this->data['Order Currency'],
+            'Invoice Tax Type'                      => ($tax_only ? 'Tax_Only' : 'Normal'),
+            'Invoice Tax Liability Date'            => $date,
+            'Invoice Items Gross Amount'            => 0,
+            'Invoice Items Discount Amount'         => 0,
+            'Invoice Items Net Amount'              => 0,
+            'Invoice Items Out of Stock Amount'     => 0,
+            'Invoice Shipping Net Amount'           => 0,
+            'Invoice Charges Net Amount'            => 0,
+            'Invoice Insurance Net Amount'          => 0,
+            'Invoice Total Net Amount'              => 0,
+            'Invoice Total Tax Amount'              => 0,
+            'Invoice Payments Amount'               => 0,
+            'Invoice To Pay Amount'                 => 0,
+            'Invoice Total Amount'                  => 0,
+            'Invoice Currency'                      => $this->data['Order Currency'],
 
 
         );
+
 
 
         $refund = new Invoice('create refund', $refund_data, $transactions);
@@ -2929,6 +2936,8 @@ class Order extends DB_Table {
         $sql = sprintf(
             "SELECT `Invoice Public ID` FROM `Invoice Dimension` WHERE `Invoice Store Key`=%d AND `Invoice Public ID`=%s ", $this->data['Order Store Key'], prepare_mysql($refund_id.$suffix_counter)
         );
+
+
 
 
         if ($result = $this->db->query($sql)) {
