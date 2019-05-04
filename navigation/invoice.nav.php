@@ -401,7 +401,15 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
     }
 
     if ($object->get('Invoice Type') == 'Refund') {
-        $title = _('Refund').' <span class="id Invoice_Public_ID">'.$object->get('Invoice Public ID').'</span>';
+
+        if($object->get('Invoice Tax Type')=='Tax_Only'){
+            $title = _('Tax refund').' <span class="id Invoice_Public_ID">'.$object->get('Invoice Public ID').'</span>';
+
+        }else{
+            $title = _('Refund').' <span class="id Invoice_Public_ID">'.$object->get('Invoice Public ID').'</span>';
+
+        }
+
 
     } else {
         $title = _('Invoice').' <span class="id Invoice_Public_ID">'.$object->get('Invoice Public ID').'</span>';

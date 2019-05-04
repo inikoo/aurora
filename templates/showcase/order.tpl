@@ -377,7 +377,7 @@
 
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('create_refund')"></i></td>
-                                <td class="aright"><span id="create_refund_save_buttons" class="valid save button" onclick="change_view('orders/{$order->get('Store Key')}/{$order->id}/refund/new')"><span
+                                <td class="aright"><span id="create_refund_save_buttons" class="valid save button" onclick="change_view('orders/{$order->get('Store Key')}/{$order->id}/refund/new',{ tab:'refund.new.items'})"><span
                                                 class="label">{t}Next{/t}</span> <i class="fa fa-arrow-right fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
                         </table>

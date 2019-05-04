@@ -675,25 +675,25 @@ $modules = array(
                         )
                     ),
 
-                    'customer.insights'    => array(
+                    'customer.insights'          => array(
                         'label' => _('Insights'),
                         'icon'  => 'graduation-cap'
                     ),
-                    'customer.sent_emails' => array(
+                    'customer.sent_emails'       => array(
                         'label' => _('Sent emails'),
                         'icon'  => 'paper-plane'
                     ),
-                    'customer.history'     => array(
+                    'customer.history'           => array(
                         'label' => _('History, notes'),
                         'icon'  => 'sticky-note'
                     ),
-                    'customer.orders'      => array(
+                    'customer.orders'            => array(
                         'label' => _('Orders'),
                         'icon'  => 'shopping-cart'
 
                     ),
-                    'customer.invoices'    => array('label' => _('Invoices')),
-                    'customer.marketing'   => array(
+                    'customer.invoices'          => array('label' => _('Invoices')),
+                    'customer.marketing'         => array(
                         'label'   => _('Interests'),
                         'title'   => _("Customer's interests"),
                         'subtabs' => array(
@@ -726,11 +726,11 @@ $modules = array(
                         )
 
                     ),
-                    'customer.discounts'   => array(
+                    'customer.discounts'         => array(
                         'label' => _('Discounts'),
                         'icon'  => 'tags'
                     ),
-                    'customer.credit_blockchain'   => array(
+                    'customer.credit_blockchain' => array(
                         'label' => _('Credits blockchain'),
                         'icon'  => 'code-commit'
                     ),
@@ -1132,12 +1132,12 @@ $modules = array(
             'invoice' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'invoice.details'  => array(
+                    'invoice.details' => array(
                         'label' => _('Properties/Operations'),
                         'icon'  => 'database'
                     ),
 
-                    'invoice.items'    => array(
+                    'invoice.items' => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
@@ -1274,13 +1274,14 @@ $modules = array(
                 'tabs' => array(
 
 
-                    'refund.new.items' => array(
-                        'label' => _(
-                            'Items'
-                        ),
+                    'refund.new.items'     => array(
+                        'label' => _('Transactions'),
+                        'icon'  => 'bars'
+                    ),
+                    'refund.new.items_tax' => array(
+                        'label' => 'Transactions (Tax only)',
                         'icon'  => 'bars'
                     )
-
 
                 )
 
@@ -1522,7 +1523,7 @@ $modules = array(
 
                 )
             ),
-            'order'   => array(
+            'order'    => array(
                 'type' => 'object',
                 'tabs' => array(
 
@@ -2110,8 +2111,6 @@ $modules = array(
             ),
 
 
-
-
             'payments' => array(
                 'type'      => 'navigation',
                 'label'     => _('Payments').' ('._('All').')',
@@ -2172,9 +2171,9 @@ $modules = array(
                         'title' => _('Details')
                     ),
 
-                    'category.invoices'   => array('label' => _('Invoices')),
+                    'category.invoices' => array('label' => _('Invoices')),
 
-                    'category.history'    => array(
+                    'category.history' => array(
                         'title' => _('History'),
                         'label' => '',
                         'icon'  => 'road',
@@ -2281,12 +2280,12 @@ $modules = array(
             'invoice' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'invoice.details'  => array(
+                    'invoice.details' => array(
                         'label' => _('Properties/Operations'),
                         'icon'  => 'database'
                     ),
 
-                    'invoice.items'    => array(
+                    'invoice.items' => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
@@ -2307,8 +2306,6 @@ $modules = array(
                 )
 
             ),
-
-
 
 
         ),
@@ -2340,7 +2337,7 @@ $modules = array(
                 'type' => 'object',
                 'tabs' => array(
 
-                    'invoice.items'    => array(
+                    'invoice.items' => array(
                         'label' => _('Items'),
                         'icon'  => 'bars'
                     ),
@@ -2355,7 +2352,7 @@ $modules = array(
                         'icon'  => 'database'
                     ),
 
-                    'invoice.history'  => array(
+                    'invoice.history' => array(
                         'label' => '',
                         'title' => _('History'),
                         'icon'  => 'road',
@@ -3746,7 +3743,6 @@ $modules = array(
             ),
 
 
-
             'campaign' => array(
                 'type'  => 'object',
                 'title' => _("Offer category"),
@@ -3844,7 +3840,7 @@ $modules = array(
                             'field'  => 'Number History Records'
                         ),
                     ),
-                    'campaign.details'   => array(
+                    'campaign.details'                    => array(
                         'class' => 'right icon_only',
                         'label' => '',
                         'icon'  => 'sliders-h',
@@ -4329,7 +4325,7 @@ $modules = array(
                         'icon'  => 'sliders-h',
                         'title' => _('Settings')
                     ),
-                    'shipping_zone_schema.zones'    => array(
+                    'shipping_zone_schema.zones'   => array(
                         'label' => _('Zones'),
                         'icon'  => 'layer-group',
 
@@ -4369,7 +4365,7 @@ $modules = array(
 
                 )
             ),
-            'shipping_zone' => array(
+            'shipping_zone'        => array(
                 'type' => 'object',
 
 

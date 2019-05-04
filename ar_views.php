@@ -2966,7 +2966,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab = '') {
 
 
-    if (preg_match('/\_edit$/', $data['tab'])) {
+
+
+    if (preg_match('/\_edit$/', $data['tab']) or $data['section']=='refund.new' ) {
         return array(
             $data,
             ''

@@ -2612,7 +2612,7 @@ function get_refund_new_navigation($data, $smarty, $user, $db, $account) {
 
 
     $left_buttons[] = array(
-        'icon'      => 'arrow-left',
+        'html_icon'      => '<i class="fas fa-window-close" style="font-size: 20px;position:relative;top:3px"></i>',
         'title'     => _('Return to order'),
         'reference' => 'orders/'.$data['_object']->get('Store Key').'/'.$data['_object']->id
     );
@@ -2624,7 +2624,7 @@ function get_refund_new_navigation($data, $smarty, $user, $db, $account) {
         $sections[$data['section']]['selected'] = true;
     }
 
-    $title = sprintf(_("New refund for order %s"), '<span class="button" onclick="change_view(\'orders/'.$data['_object']->get('Store Key').'/'.$data['_object']->id.'\')">'.$data['_object']->get('Public ID').'</span>');
+    $title = sprintf(_("New refund %s for order %s"), '<span class="hide title_tax_only">('._('Tax only').')</span>',  '<span class="button id" onclick="change_view(\'orders/'.$data['_object']->get('Store Key').'/'.$data['_object']->id.'\')">'.$data['_object']->get('Public ID').'</span>');
 
     $_content = array(
         'sections_class' => '',
