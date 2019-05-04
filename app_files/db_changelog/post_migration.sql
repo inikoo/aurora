@@ -106,3 +106,8 @@ ALTER TABLE `Invoice Dimension` CHANGE `Invoice Customer Sevices Note` `Invoice 
 ALTER TABLE `Page State Timeline` CHANGE `Site Key` `Website Key` MEDIUMINT(8) UNSIGNED NOT NULL;
 ALTER TABLE `Page Store Deleted Dimension` CHANGE `Site Key` `Website Key` MEDIUMINT(8) UNSIGNED NOT NULL;
 
+DROP TABLE `Site Content Word Dimension`, `Site Deleted Dimension`, `Site External File Bridge`, `Site Flag Dimension`, `Site Header Image Dimension`, `Site Image Bridge`;
+
+
+
+
