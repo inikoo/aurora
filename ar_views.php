@@ -3077,7 +3077,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 break;
 
             case 'ComposingEmail':
-
+            case 'Stopped':
                 $email_template = get_object('Email_Template', $data['_object']->get('Email Campaign Email Template Key'));
 
 
@@ -3142,9 +3142,13 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
 
                 }
-                $_content['tabs']['mailshot.published_email']['class'] = 'hide';
 
-                $_content['tabs']['mailshot.sent_emails']['class'] = 'hide';
+                if($data['_object']->get('Email Campaign State')=='Stopped'){
+                    $_content['tabs']['mailshot.published_email']['class'] = 'hide';
+                    $_content['tabs']['mailshot.sent_emails']['class'] = 'hide';
+                }
+
+
                 /*
 
                 $_content['tabs']['mailshot.email_blueprints']['class'] = 'hide';
@@ -3170,7 +3174,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 break;
             case 'Sent':
             case 'Sending':
-            case 'Stopped':
+
 
 
                 $_content['tabs']['mailshot.email_blueprints']['class'] = 'hide';

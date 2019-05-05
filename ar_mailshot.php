@@ -33,20 +33,27 @@ switch ($tipo) {
     case 'send_mailshot':
         $data = prepare_values(
             $_REQUEST, array(
-                         'key'   => array('type' => 'key')
+                         'key' => array('type' => 'key')
                      )
         );
-        send_mailshot($data,$account,$editor,$db);
+        send_mailshot($data, $account, $editor, $db);
         break;
     case 'resume_mailshot':
         $data = prepare_values(
             $_REQUEST, array(
-                         'key'   => array('type' => 'key')
+                         'key' => array('type' => 'key')
                      )
         );
-        resume_mailshot($data,$account,$editor,$db);
+        resume_mailshot($data, $account, $editor, $db);
         break;
-
+    case 'stop_mailshot':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key' => array('type' => 'key')
+                     )
+        );
+        stop_mailshot($data, $account, $editor, $db);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -58,104 +65,46 @@ switch ($tipo) {
 }
 
 
-function send_mailshot($data,$account,$editor,$db) {
+function send_mailshot($data, $account, $editor, $db) {
 
 
-    $mailshot =  get_object('Email_Campaign',$data['key']);
+    $mailshot = get_object('Email_Campaign', $data['key']);
 
-    if($mailshot->get('Email Campaign State')=='Ready'){
-
-
-       $mailshot->update_state('Sending');
-
-
-
-
-        include_once 'utils/new_fork.php';
-
-
-
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'                    => 'send_mailshot',
-            'mailshot_key' => $mailshot->id,
-
-        ), $account->get('Account Code')
-        );
-
-
-
-//print_r($mailshot);
-
-        $response = array(
-            'state' => 200,
-           // 'msg'=> $msg,
-            'update_metadata'=>$mailshot->get_update_metadata()
-
-
-        );
-        echo json_encode($response);
-        exit;
-
-    }else{
-
-        $response = array(
-            'state' => 400,
-            'msg'=> 'Email Campaign State '.$mailshot->get('Email Campaign State')
-        );
-        echo json_encode($response);
-        exit;
-
-    }
-}
-
-
-
-
-function resume_mailshot($data,$account,$editor,$db) {
-
-
-    $mailshot =  get_object('Email_Campaign',$data['key']);
-
-    if($mailshot->get('Email Campaign State')=='Stopped'){
+    if ($mailshot->get('Email Campaign State') == 'Ready') {
 
 
         $mailshot->update_state('Sending');
 
 
-
-
         include_once 'utils/new_fork.php';
-
 
 
         new_housekeeping_fork(
             'au_housekeeping', array(
-            'type'                    => 'resume_mailshot',
+            'type'         => 'send_mailshot',
             'mailshot_key' => $mailshot->id,
 
         ), $account->get('Account Code')
         );
 
 
-
-
+        //print_r($mailshot);
 
         $response = array(
-            'state' => 200,
-           // 'msg'=> $msg,
-            'update_metadata'=>$mailshot->get_update_metadata()
+            'state'           => 200,
+            // 'msg'=> $msg,
+            'update_metadata' => $mailshot->get_update_metadata()
 
 
         );
         echo json_encode($response);
         exit;
 
-    }else{
+    } else {
 
         $response = array(
             'state' => 400,
-            'msg'=> 'Email Campaign state '.$mailshot->get('Email Campaign State')
+            'msg'   => 'Email Campaign State '.$mailshot->get('Email Campaign State')
         );
         echo json_encode($response);
         exit;
@@ -164,5 +113,73 @@ function resume_mailshot($data,$account,$editor,$db) {
 }
 
 
+function resume_mailshot($data, $account, $editor, $db) {
 
-?>
+
+    $mailshot = get_object('Email_Campaign', $data['key']);
+
+    if ($mailshot->get('Email Campaign State') == 'Stopped') {
+
+
+        $mailshot->update_state('Sending');
+
+
+        include_once 'utils/new_fork.php';
+
+
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'         => 'resume_mailshot',
+            'mailshot_key' => $mailshot->id,
+
+        ), $account->get('Account Code')
+        );
+
+
+        $response = array(
+            'state'           => 200,
+            // 'msg'=> $msg,
+            'update_metadata' => $mailshot->get_update_metadata()
+
+
+        );
+        echo json_encode($response);
+        exit;
+
+    } else {
+
+        $response = array(
+            'state' => 400,
+            'msg'   => 'Email Campaign state '.$mailshot->get('Email Campaign State')
+        );
+        echo json_encode($response);
+        exit;
+
+    }
+}
+
+
+function stop_mailshot($data, $account, $editor, $db) {
+
+
+    $mailshot = get_object('Email_Campaign', $data['key']);
+
+    $mailshot->update_state('Stopped');
+    $response = array(
+        'state'           => 200,
+        // 'msg'=> $msg,
+        'update_metadata' => $mailshot->get_update_metadata()
+
+
+    );
+    echo json_encode($response);
+    exit;
+
+
+}
+
+
+
+
+
+
