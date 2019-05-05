@@ -172,6 +172,72 @@ function resume_mailshot(element) {
 
 }
 
+function stop_mailshot(element) {
+
+    $(element).find('i').removeClass('fa-play').addClass('fa-spinner fa-spin')
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'stop_mailshot')
+    ajaxData.append("key", $('#email_campaign').data('email_campaign_key'))
+
+
+    $.ajax({
+        url: "/ar_mailshot.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+
+                $('#mailshot\\.workshop').removeClass('hide')
+                change_tab('mailshot.workshop')
+
+
+                for (var key in data.update_metadata.class_html) {
+                    $('.' + key).html(data.update_metadata.class_html[key])
+                }
+
+
+                $('.email_campaign_operation').addClass('hide')
+
+                console.log(data.update_metadata.operations)
+
+                for (var key in data.update_metadata.operations) {
+                    $('#' + data.update_metadata.operations[key]).removeClass('hide')
+                }
+
+                $('#stopped_node').removeClass('hide')
+
+
+                $('.timeline .li').removeClass('complete')
+
+                $('#setup_mail_list_node').addClass('complete')
+                $('#composed_email_node').addClass('complete')
+                $('#scheduled_node').addClass('complete')
+                $('#sending_node').addClass('complete')
+
+
+            } else if (data.state == '400') {
+                swal({
+                    title: data.title, text: data.msg, confirmButtonText: "OK"
+                });
+            }
+
+
+        }, error: function () {
+
+        }
+    });
+
+
+
+}
+
+
+
+
+
+
 function save_email_campaign_operation(element) {
 
     var data = $(element).data("data")

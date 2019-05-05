@@ -186,7 +186,7 @@
                     <div id="stop_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=50   }hide{/if}">
                         <div class="square_button left  " title="{t}Stop sending emails{/t}">
                             <i class="fa  fa-stop button error" id="stop_save_buttons" aria-hidden="true" data-data='{  "field": "Email Campaign State","value": "Stopped","dialog_name":"stop"}'
-                               onclick="save_email_campaign_operation(this)"></i>
+                               onclick="stop_mailshot(this)"></i>
 
                         </div>
                     </div>
@@ -198,6 +198,8 @@
 
                         </div>
                     </div>
+
+
 
 
                 </div>
@@ -361,9 +363,9 @@
                     <label>{t}Soft bounces{/t}</label>
                     <div title="{$email_campaign->get('Soft Bounces')}" class="Email_Campaign_Soft_Bounces_Percentage">{$email_campaign->get('Soft Bounces Percentage')}</div>
                 </div>
-                <div>
+                <div class="hide">
                     <label>{t}Delivered{/t}</label>
-                    <div class="_Email_Campaign_Delivered">{$email_campaign->get('Delivered')}</div>
+                    <div class="Email_Campaign_Delivered">{$email_campaign->get('Delivered')}</div>
                 </div>
                 <div>
                     <label> {t}Opened{/t}</label>
@@ -383,27 +385,38 @@
     <div class="order sent_email_data {if $email_campaign->get('State Index')!=100}hide{/if}">
         <div>
             <label>{t}Sent{/t}</label>
-            <div class="Email_Campaign_Sent">{$email_campaign->get('Sent')}</div>
+            <div><span class="Email_Campaign_Sent">{$email_campaign->get('Sent')}</span></div>
         </div>
         <div>
             <label>{t}Hard bounce{/t}</label>
-            <div class="Email_Campaign_Hard_Bounce">{$email_campaign->get('Hard Bounces')}</div>
+            <div ><span class="Email_Campaign_Hard_Bounce">{$email_campaign->get('Hard Bounces')}</span> <span class="padding_left_10 Email_Campaign_Hard_Bounces_Percentage">{$email_campaign->get('Hard Bounces Percentage')}</span></div>
         </div>
         <div>
             <label>{t}Soft bounce{/t}</label>
-            <div class="Email_Campaign_Soft_Bounce">{$email_campaign->get('Soft Bounces')}</div>
+            <div ><span class="Email_Campaign_Soft_Bounce">{$email_campaign->get('Soft Bounces')}</span> <span class="padding_left_10 Email_Campaign_Soft_Bounces_Percentage">{$email_campaign->get('Soft Bounces Percentage')}</span></div>
+        </div>
+        <div class="hide">
+            <label>{t}Delivered{/t}</label>
+            <div ><span class="Email_Campaign_Delivered">{$email_campaign->get('Delivered')}</span> <span class="padding_left_10 Email_Campaign_Delivered_Percentage">{$email_campaign->get('Delivered Percentage')}</span></div>
+
         </div>
         <div>
-            <label>{t}Delivered{/t}</label>
-            <div class="Email_Campaign_Delivered">{$email_campaign->get('Delivered')}</div>
+            <label>{t}Spam{/t}</label>
+            <div ><span class="Email_Campaign_Spams">{$email_campaign->get('Spams')}</span> <span class="padding_left_10 Email_Campaign_Spams_Percentage">{$email_campaign->get('Spams Percentage')}</span></div>
         </div>
         <div>
             <label> {t}Opened{/t}</label>
-            <div class="Email_Campaign_Open">{$email_campaign->get('Open')}</div>
+            <div ><span class="Email_Campaign_Open">{$email_campaign->get('Open')}</span> <span class="padding_left_10 Email_Campaign_Open_Percentage">{$email_campaign->get('Open Percentage')}</span></div>
+
         </div>
         <div>
             <label>{t}Clicked{/t}</label>
-            <div class="Email_Campaign_Clicked">{$email_campaign->get('Clicked')}</div>
+            <div ><span class="Email_Campaign_Clicked">{$email_campaign->get('Clicked')}</span> <span class="padding_left_10 Email_Campaign_Clicked_Percentage">{$email_campaign->get('Clicked Percentage')}</span></div>
+        </div>
+
+        <div>
+            <label>{t}Unsubscribed{/t}</label>
+            <div ><span class="Email_Campaign_Unsubscribed">{$email_campaign->get('Unsubscribed')}</span> <span class="padding_left_10 Email_Campaign_Unsubscribed_Percentage">{$email_campaign->get('Unsubscribed Percentage')}</span></div>
         </div>
     </div>
 

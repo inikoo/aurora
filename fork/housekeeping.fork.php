@@ -11,7 +11,6 @@
 function fork_housekeeping($job) {
 
 
-    //print "fork_housekeeping  original skypping\n";
 
     if (!$_data = get_fork_metadata($job)) {
         return true;
@@ -1287,20 +1286,81 @@ function fork_housekeeping($job) {
             $poll = get_object('Customer_Poll_Query', $poll_option->get('Customer Poll Query Option Query Key'));
             $poll->update_answers();
             break;
+
+
         case 'update_sent_emails_data':
+
+            if (!empty($data['email_mailshot_key'])) {
+
+                $context = new ZMQContext();
+                $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+                $socket->connect("tcp://localhost:5555");
+
+                $email_campaign = get_object('email_campaign', $data['email_mailshot_key']);
+                $email_campaign->update_sent_emails_totals();
+
+                $socket->send(
+                    json_encode(
+                        array(
+                            'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+                            'objects' => array(
+                                array(
+                                    'object' => 'mailshot',
+                                    'key'    => $email_campaign->id,
+
+                                    'update_metadata' => array(
+                                        'class_html' => array(
+                                            '_Sent_Emails_Info'    => $email_campaign->get('Sent Emails Info'),
+                                            '_Email_Campaign_Sent' => $email_campaign->get('Sent'),
+                                        )
+                                    )
+
+                                )
+
+                            ),
+
+                            'tabs' => array(
+
+                                array(
+                                    'tab'        => 'email_campaign_type.mailshots',
+                                    'parent'     => 'store',
+                                    'parent_key' => $email_campaign->get('Email Campaign Store Key'),
+                                    'cell'       => array(
+                                        'date_'.$email_campaign->id  => strftime("%a, %e %b %Y %R", strtotime($email_campaign->get('Email Campaign Last Updated Date')." +00:00")),
+                                        'state_'.$email_campaign->id => $email_campaign->get('State'),
+                                        'sent_'.$email_campaign->id  => $email_campaign->get('Sent')
+                                    )
+
+
+                                ),
+
+                            ),
+
+
+                        )
+                    )
+                );
+
+            }
 
             if (!empty($data['email_template_key'])) {
                 $email_template = get_object('email_template', $data['email_template_key']);
                 $email_template->update_sent_emails_totals();
+
+
+
+
             }
             if (!empty($data['email_template_type_key'])) {
                 $email_template_type = get_object('email_template_type', $data['email_template_type_key']);
                 $email_template_type->update_sent_emails_totals();
+
             }
-            if (!empty($data['email_mailshot_key'])) {
-                $email_campaign = get_object('email_campaign', $data['email_mailshot_key']);
-                $email_campaign->update_sent_emails_totals();
-            }
+
+
+
+
+
 
 
             break;
@@ -1328,13 +1388,53 @@ function fork_housekeeping($job) {
             $socket->connect("tcp://localhost:5555");
 
 
-            $email_campaign = get_object('email_campaign', $data['mailshot_key']);
+            $mailshot = get_object('mailshot', $data['mailshot_key']);
 
 
-            if ($email_campaign->id) {
-                $email_campaign->socket = $socket;
+            if ($mailshot->id) {
+                $mailshot->socket = $socket;
 
-                $email_campaign->resume_mailshot();
+
+                $sql=sprintf('select `Email Tracking Thread` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=%d  and `Email Tracking State`="Ready" group by `Email Tracking Thread`  ',
+
+                             $mailshot->id
+                    );
+
+
+                $max_thread=1;
+                if ($result=$db->query($sql)) {
+                		foreach ($result as $row) {
+
+
+                            $client = new GearmanClient();
+                            $fork_metadata = json_encode(
+                                array(
+                                    'code' => addslashes($account->get('Code')),
+                                    'data' =>array(
+                                        'mailshot'=>$mailshot->id,
+                                        'thread'=>$row['Email Tracking Thread'],
+                                    )
+                                )
+                            );
+                            $client->addServer('127.0.0.1');
+                            $client->doBackground('au_send_mailshot', $fork_metadata);
+
+                            if($row['Email Tracking Thread']>=$max_thread){
+                                $max_thread=$row['Email Tracking Thread']+1;
+                            }
+
+
+                		}
+                }else {
+                		print_r($error_info=$db->errorInfo());
+                		print "$sql\n";
+                		exit;
+                }
+
+
+
+
+                $mailshot->send_mailshot($max_thread);
             }
             break;
 

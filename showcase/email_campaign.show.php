@@ -26,6 +26,8 @@ function get_email_campaign_showcase($data, $smarty, $user, $db) {
 
     //$email_campaign->update_sent_emails_totals();
 
+
+
     $smarty->assign('email_campaign', $email_campaign);
 
     $smarty->assign('store', get_object('store', $email_campaign->get('Store Key')));

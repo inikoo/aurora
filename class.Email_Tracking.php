@@ -109,8 +109,14 @@ class Email_Tracking extends DB_Table {
                                                            'Sent to SES'
                                                        )
                 )) {
-                    $this->update_field('Email Tracking State', 'Sent', 'no_history');
-                    $this->update_field('Email Tracking Sent Date', gmdate('Y-m-d H:i:s'), 'no_history');
+                    $this->fast_update(
+                        array(
+                            'Email Tracking State'=>'Sent',
+                            'Email Tracking Sent Date'=>gmdate('Y-m-d H:i:s')
+                        )
+                    );
+
+
 
                 }
 
@@ -126,7 +132,13 @@ class Email_Tracking extends DB_Table {
                                                            'Sent'
                                                        )
                 )) {
-                    $this->update_field('Email Tracking State', 'Delivered', 'no_history');
+
+                    $this->fast_update(
+                        array(
+                            'Email Tracking State'=>'Delivered',
+                        )
+                    );
+
 
                 }
 
@@ -148,7 +160,13 @@ class Email_Tracking extends DB_Table {
                 )) {
 
                     if ($this->data['Email Tracking First Read Date'] == '') {
-                        $this->update_field('Email Tracking First Read Date', gmdate('Y-m-d H:i:s'), 'no_history');
+
+                        $this->fast_update(
+                            array(
+                                'Email Tracking First Read Date'=>gmdate('Y-m-d H:i:s'),
+                            )
+                        );
+
 
                     }
 
