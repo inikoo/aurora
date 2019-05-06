@@ -736,8 +736,8 @@ class Order extends DB_Table {
                 break;
             case 'Order Basket To Pay Amount':
 
-                if ($this->data['Order To Pay Amount']> $this->data['Order Available Credit Amount']) {
-                    return $this->data['Order To Pay Amount'] - $this->data['Order Available Credit Amount'] ;
+                if ($this->data['Order To Pay Amount'] > $this->data['Order Available Credit Amount']) {
+                    return $this->data['Order To Pay Amount'] - $this->data['Order Available Credit Amount'];
                 } else {
                     return 0;
 
@@ -800,6 +800,7 @@ class Order extends DB_Table {
         $options = json_decode($options, true);
         if (!empty($options['date'])) {
             $date = $options['date'];
+
         } else {
             $date = gmdate('Y-m-d H:i:s');
         }
@@ -1540,7 +1541,12 @@ class Order extends DB_Table {
                     $customer = get_object('Customer', $this->data['Order Customer Key']);
 
 
-                    $customer->fast_update(array('Customer Last Dispatched Order Key' => $this->id));
+                    $customer->fast_update(
+                        array(
+                            'Customer Last Dispatched Order Key'  => $this->id,
+                            'Customer Last Dispatched Order Date' => date('Y-m-d', strtotime($date))
+                        )
+                    );
 
 
                     new_housekeeping_fork(
@@ -1862,7 +1868,6 @@ class Order extends DB_Table {
     function create_invoice($date) {
 
 
-
         $store = get_object('Store', $this->data['Order Store Key']);
 
 
@@ -1880,7 +1885,7 @@ class Order extends DB_Table {
             $invoice_public_id = sprintf(
                 $store->data['Store Invoice Public ID Format'], $public_id
             );
-            $file_as=get_file_as($invoice_public_id);
+            $file_as           = get_file_as($invoice_public_id);
 
         } else {
 
@@ -1895,7 +1900,7 @@ class Order extends DB_Table {
                 $account->data['Account Invoice Public ID Format'], $public_id
             );
 
-            $file_as=get_file_as($invoice_public_id);
+            $file_as = get_file_as($invoice_public_id);
         }
 
 
@@ -1959,9 +1964,6 @@ class Order extends DB_Table {
 
 
         );
-
-
-
 
 
         $invoice = new Invoice ('create', $data_invoice);
@@ -2745,10 +2747,7 @@ class Order extends DB_Table {
         $invoice_public_id = '';
 
 
-
         if ($store->data['Store Refund Public ID Method'] == 'Same Invoice ID') {
-
-
 
 
             foreach ($this->get_invoices('objects') as $_invoice) {
@@ -2787,7 +2786,6 @@ class Order extends DB_Table {
                     );
 
 
-
                 } else {
 
                     $sql = sprintf(
@@ -2808,13 +2806,11 @@ class Order extends DB_Table {
             }
 
 
-
             if ($invoice_public_id != '') {
                 $invoice_public_id = $this->get_refund_public_id($invoice_public_id.$store->data['Store Refund Suffix']);
             }
 
-        }
-        elseif ($store->data['Store Refund Public ID Method'] == 'Account Wide Own Index') {
+        } elseif ($store->data['Store Refund Public ID Method'] == 'Account Wide Own Index') {
 
 
             include_once 'class.Account.php';
@@ -2853,8 +2849,7 @@ class Order extends DB_Table {
                     $store->data['Store Invoice Public ID Format'], $this->db->lastInsertId()
                 );
 
-            }
-            elseif ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
+            } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
 
                 $sql = sprintf(
                     "UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
@@ -2865,8 +2860,7 @@ class Order extends DB_Table {
                 );
 
 
-            }
-            else {
+            } else {
 
                 $sql = sprintf(
                     "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1"
@@ -2884,13 +2878,7 @@ class Order extends DB_Table {
         }
 
 
-
-
-
-
-        $file_as=get_file_as($invoice_public_id);
-
-
+        $file_as = get_file_as($invoice_public_id);
 
 
         $refund_data = array(
@@ -2951,7 +2939,6 @@ class Order extends DB_Table {
         );
 
 
-
         $refund = new Invoice('create refund', $refund_data, $transactions);
 
 
@@ -2962,8 +2949,6 @@ class Order extends DB_Table {
         $sql = sprintf(
             "SELECT `Invoice Public ID` FROM `Invoice Dimension` WHERE `Invoice Store Key`=%d AND `Invoice Public ID`=%s ", $this->data['Order Store Key'], prepare_mysql($refund_id.$suffix_counter)
         );
-
-
 
 
         if ($result = $this->db->query($sql)) {
@@ -3269,7 +3254,6 @@ class Order extends DB_Table {
 
 
     }
-
 
 
 }

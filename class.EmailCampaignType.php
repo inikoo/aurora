@@ -693,7 +693,7 @@ class EmailCampaignType extends DB_Table {
 
 
                 $sql = sprintf(
-                    'select count( distinct `Customer Key`)  as num from `Customer Dimension`    left join `Order Dimension` on (`Customer Last Dispatched Order Key`=`Order Key`) where `Customer Store Key`=%d and  `Customer Send Email Marketing`=\'Yes\' and  `Customer Last Dispatched Order Key` is NOT NULL and Date(`Order Dispatched Date`)=%s  ',
+                    'select count( distinct `Customer Key`)  as num from `Customer Dimension`    left join `Order Dimension` on (`Customer Last Dispatched Order Key`=`Order Key`) where `Customer Store Key`=%d and  `Customer Send Email Marketing`=\'Yes\' and  `Customer Last Dispatched Order Date`=%s  ',
                     $this->get('Store Key'), prepare_mysql($date)
                 );
 

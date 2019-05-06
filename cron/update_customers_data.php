@@ -57,13 +57,13 @@ if ($result = $db->query($sql)) {
         $customer = new Customer('id', $row['Customer Key']);
 
 
-        $customer->update_orders();
+       // $customer->update_orders();
         $customer->update_last_dispatched_order_key();
-        $customer->update_invoices();
-        $customer->update_payments();
-        $customer->update_activity();
-        $customer->update_account_balance();
-        $customer->update_credit_account_running_balances();
+        //$customer->update_invoices();
+        //$customer->update_payments();
+        //$customer->update_activity();
+        //$customer->update_account_balance();
+        //$customer->update_credit_account_running_balances();
 
         $contador++;
         $lap_time1 = date('U');

@@ -582,7 +582,7 @@ class EmailCampaign extends DB_Table {
 
 
                     $sql = sprintf(
-                        'select count(*)  as num  from `Customer Dimension`    left join `Order Dimension` on (`Customer Last Dispatched Order Key`=`Order Key`) where `Customer Store Key`=%d and  `Customer Send Email Marketing`=\'Yes\' and  `Customer Last Dispatched Order Key` is NOT NULL and Date(`Order Dispatched Date`)=%s ',
+                        'select count(*)  as num  from `Customer Dimension`    left join `Order Dimension` on (`Customer Last Dispatched Order Key`=`Order Key`) where `Customer Store Key`=%d and  `Customer Send Email Marketing`=\'Yes\' and  `Customer Last Dispatched Order Date`=%s ',
                         $this->data['Email Campaign Store Key'], prepare_mysql($date)
                     );
 
@@ -1446,7 +1446,7 @@ class EmailCampaign extends DB_Table {
 
 
                 $sql = sprintf(
-                    'select `Customer Key` ,`Customer Main Plain Email` from `Customer Dimension`    left join `Order Dimension` on (`Customer Last Dispatched Order Key`=`Order Key`) where `Customer Store Key`=%d and  `Customer Send Email Marketing`=\'Yes\' and  `Customer Last Dispatched Order Key` is NOT NULL and Date(`Order Dispatched Date`)=%s ',
+                    'select `Customer Key` ,`Customer Main Plain Email` from `Customer Dimension`    left join `Order Dimension` on (`Customer Last Dispatched Order Key`=`Order Key`) where `Customer Store Key`=%d and  `Customer Send Email Marketing`=\'Yes\' and   `Customer Last Dispatched Order Date`=%s ',
                     $this->data['Email Campaign Store Key'], prepare_mysql($date)
                 );
 
