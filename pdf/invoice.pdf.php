@@ -155,8 +155,15 @@ if ($invoice->data['Invoice Type'] == 'Invoice') {
 } elseif ($invoice->data['Invoice Type'] == 'CreditNote') {
     $smarty->assign('label_title', _('Credit Note'));
     $smarty->assign('label_title_no', _('Credit Note No.'));
+    $original_invoice=get_object('Invoice',$order->get('Order Invoice Key'));
+    $smarty->assign('original_invoice', $original_invoice);
 
 } else {
+
+
+    $original_invoice=get_object('Invoice',$order->get('Order Invoice Key'));
+    $smarty->assign('original_invoice', $original_invoice);
+
 
     if($invoice->get('Invoice Tax Type')=='Tax_Only') {
         $smarty->assign('label_title', _('Tax Refund'));

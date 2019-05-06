@@ -143,6 +143,11 @@
                 <div style="text-align: right">
                     {t}Order Number{/t}: <b>{$order->get('Order Public ID')}</b>
                 </div>
+                {if $invoice->get('Invoice Type')!='Invoice'}
+                <div style="text-align: right">
+                    {t}Invoice Number{/t}: <b>{$original_invoice->get('Invoice Public ID')}</b>
+                </div>
+                {/if}
             {/if} </td>
     </tr>
 </table>

@@ -729,7 +729,42 @@ class Store extends DB_Table {
                 return $this->smarty->fetch('mixed_recipients.edit.tpl');
 
                 break;
+            case 'Next Invoice Public ID Method':
 
+                switch ($this->data['Store Next Invoice Public ID Method']){
+                    case 'Order ID':
+                        return _('Same as order');
+                        break;
+                    case 'Invoice Public ID':
+                        return _('Own consecutive number');
+                        break;
+                    case 'Account Wide Invoice Public ID':
+                        return _('Own consecutive number (shared all stores)');
+                        break;
+                }
+
+
+                break;
+
+            case 'Refund Public ID Method':
+
+                switch ($this->data['Store Refund Public ID Method']){
+                    case 'Same Invoice ID'  :
+                        return _('Same as invoice');
+                        break;
+                    case 'Next Invoice ID'  :
+                        return _('Next consecutive invoice number');
+                        break;
+                    case 'Store Own Index':
+                        return _('Own consecutive number');
+                        break;
+                    case 'Account Wide Own Index':
+                        return _('Own consecutive number (shared all stores)');
+                        break;
+                }
+
+
+                break;
 
         }
 
@@ -3153,9 +3188,23 @@ class Store extends DB_Table {
             case 'Store Order Public ID Format':
                 $label = _("order number format");
                 break;
-
             case 'Store Order Last Order ID':
                 $label = _("last incremental order number");
+                break;
+            case 'Store Next Invoice Public ID Method':
+                $label = _("Invoice number");
+                break;
+            case 'Store Invoice Public ID Format':
+                $label = _("invoice number format");
+                break;
+            case 'Store Invoice Last Invoice Public ID':
+                $label = _("last incremental invoice number");
+                break;
+            case 'Store Invoice Last Refund Public ID':
+                $label = _("last incremental refund number");
+                break;
+            case 'Store Next Refund Public ID Method':
+                $label = _("Refund number");
                 break;
 
             default:
@@ -4101,6 +4150,9 @@ class Store extends DB_Table {
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
+
+
+
         switch ($field) {
 
 
@@ -4199,6 +4251,68 @@ class Store extends DB_Table {
                     $this->msg   = _("Value can't be empty");
                 }
                 $this->update_field($field, $value, $options);
+                break;
+
+            case 'Store Next Invoice Public ID Method':
+
+                $this->update_field($field, $value);
+
+
+                if($value=='Order ID'){
+                    $this->update_field('Store Refund Public ID Method', 'Same Invoice ID');
+
+                }
+
+
+
+                $this->other_fields_updated = array(
+                    'Store_Invoice_Public_ID_Format' => array(
+                        'field'           => 'Store_Invoice_Public_ID_Format',
+                        'render'          => ($this->get('Store Next Invoice Public ID Method')=='Invoice Public ID'?true:false),
+
+                    ),
+                    'Store_Invoice_Last_Invoice_Public_ID'   => array(
+                        'field'           => 'Store_Invoice_Last_Invoice_Public_ID',
+                        'render'          => ($this->get('Store Next Invoice Public ID Method')=='Invoice Public ID'?true:false),
+                    ),
+
+
+                    'Store_Refund_Public_ID_Format' => array(
+                        'field'           => 'Store_Refund_Public_ID_Format',
+                        'render'          => ($this->get('Store Next Invoice Public ID Method')=='Same Invoice ID'?false:true),
+
+                    ),
+                    'Store_Invoice_Last_Refund_Public_ID'   => array(
+                        'field'           => 'Store_Invoice_Last_Refund_Public_ID',
+                        'render'          => ($this->get('Store Next Invoice Public ID Method')=='Same Invoice ID'?false:true),
+                    ),
+
+                );
+
+
+                break;
+
+            case 'Store Refund Public ID Method':
+
+                $this->update_field($field, $value);
+
+
+                $this->other_fields_updated = array(
+
+
+                    'Store_Refund_Public_ID_Format' => array(
+                        'field'           => 'Store_Refund_Public_ID_Format',
+                        'render'          => ( ($this->get('Store Next Invoice Public ID Method')=='Same Invoice ID' or $this->get('Store Refund Public ID Method')!='Store Own Index' )?false:true),
+
+                    ),
+                    'Store_Invoice_Last_Refund_Public_ID'   => array(
+                        'field'           => 'Store_Invoice_Last_Refund_Public_ID',
+                        'render'          => (($this->get('Store Next Invoice Public ID Method')=='Same Invoice ID' or $this->get('Store Refund Public ID Method')!='Store Own Index')?false:true),
+                    ),
+
+                );
+
+
                 break;
 
 
