@@ -734,6 +734,16 @@ class Order extends DB_Table {
 
 
                 break;
+            case 'Order Basket To Pay Amount':
+
+                if ($this->data['Order To Pay Amount']> $this->data['Order Available Credit Amount']) {
+                    return $this->data['Order To Pay Amount'] - $this->data['Order Available Credit Amount'] ;
+                } else {
+                    return 0;
+
+                }
+
+                break;
 
 
         }

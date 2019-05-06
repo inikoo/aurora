@@ -3488,6 +3488,22 @@ class Customer extends Subject {
 
         $this->fast_update(array('Customer Account Balance' => $balance));
 
+
+        $sql=sprintf('update `Order Dimension`  set `Order Available Credit Amount`=:credit where `Order Customer Key`=:key  ');
+
+        $stmt = $this->db->prepare($sql);
+
+
+        $credit=$this->get('Customer Account Balance');
+
+        $stmt->bindParam(':credit', $credit);
+
+        $stmt->bindParam(':key', $this->id , PDO::PARAM_INT);
+
+        $stmt->execute();
+
+
+        /*
         $sql = sprintf('select `Order Key` from `Order Dimension` where `Order Customer Key`=%d ', $this->id);
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
@@ -3503,6 +3519,8 @@ class Customer extends Subject {
             print "$sql\n";
             exit;
         }
+
+        */
 
 
     }
