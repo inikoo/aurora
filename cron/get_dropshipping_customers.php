@@ -291,7 +291,6 @@ if ($result = $db->query($sql)) {
 
             $update_address_data = array();
 
-            $update_address_data['id']          = $customer->data['Customer Main Address Key'];
             $update_address_data['subject']     = 'Customer';
             $update_address_data['subject_key'] = $customer->id;
 
@@ -315,7 +314,6 @@ if ($result = $db->query($sql)) {
                 'use_contact' => '',
                 'telephone'   => $customer_data['Customer Main Plain Telephone'],
                 'use_tel'     => '',
-                'key'         => $customer->data['Customer Main Address Key']
             );
 
 

@@ -145,7 +145,6 @@ class Public_Customer extends DBW_Table {
                 $key, array(
                         'Customer First Contacted Date',
                         'Customer Lost Date',
-                        'Customer Last Invoiced Dispatched Date',
                         'Customer First Invoiced Order Date',
                         'Customer Last Invoiced Order Date',
                         'Customer Tax Number Validation Date',

@@ -1441,12 +1441,7 @@ function fork_housekeeping($job) {
 
         case 'create_and_send_mailshot':
 
-            //$sql = 'truncate `Email Tracking Email Copy`; ';
-            //$db->exec($sql);
-            //$sql = 'truncate `Email Campaign Dimension`; ';
-            //$db->exec($sql);
-            //$sql = 'delete from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`>0; ';
-            //$db->exec($sql);
+
             $email_template_type = get_object('email_template_type', $data['email_template_type_key']);
             $email_campaign      = $email_template_type->create_mailshot();
 

@@ -177,7 +177,6 @@ class Customer extends Subject {
                 $key, array(
                         'Customer First Contacted Date',
                         'Customer Lost Date',
-                        'Customer Last Invoiced Dispatched Date',
                         'Customer First Invoiced Order Date',
                         'Customer Last Invoiced Order Date',
                         'Customer Tax Number Validation Date',
