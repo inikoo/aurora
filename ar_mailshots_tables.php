@@ -688,6 +688,7 @@ function gr_reminder_next_recipients($_data, $db, $user) {
 
 
     //print $sql;
+    //exit;
     //'Ready','Send to SES','Rejected by SES','Send','Read','Hard Bounce','Soft Bounce','Spam','Delivered','Opened','Clicked','Error'
 
 

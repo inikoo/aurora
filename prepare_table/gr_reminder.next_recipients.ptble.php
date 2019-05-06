@@ -60,13 +60,6 @@ $sql_totals = "select count(distinct `Customer Key`) as num from $table  $where 
 
 //print $sql_totals;
 
-$fields
-            = "`Customer Store Key`,`Customer Name`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Dispatched Date`
-            
-            ";
+$fields = "`Customer Store Key`,`Customer Name`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Dispatched Date`";
 
 
-
-
-
-?>

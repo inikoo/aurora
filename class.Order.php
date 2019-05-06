@@ -1852,6 +1852,7 @@ class Order extends DB_Table {
     function create_invoice($date) {
 
 
+
         $store = get_object('Store', $this->data['Order Store Key']);
 
 
@@ -1869,8 +1870,7 @@ class Order extends DB_Table {
             $invoice_public_id = sprintf(
                 $store->data['Store Invoice Public ID Format'], $public_id
             );
-
-            //todo file as
+            $file_as=get_file_as($invoice_public_id);
 
         } else {
 
@@ -1885,7 +1885,7 @@ class Order extends DB_Table {
                 $account->data['Account Invoice Public ID Format'], $public_id
             );
 
-            //todo file as
+            $file_as=get_file_as($invoice_public_id);
         }
 
 
@@ -1949,6 +1949,9 @@ class Order extends DB_Table {
 
 
         );
+
+
+
 
 
         $invoice = new Invoice ('create', $data_invoice);
@@ -2741,6 +2744,8 @@ class Order extends DB_Table {
             foreach ($this->get_invoices('objects') as $_invoice) {
                 if ($_invoice->data['Invoice Type'] == 'Invoice') {
                     $invoice_public_id = $_invoice->data['Invoice Public ID'];
+
+
                 }
             }
 
@@ -2760,6 +2765,7 @@ class Order extends DB_Table {
                         $store->data['Store Invoice Public ID Format'], $this->db->lastInsertId()
                     );
 
+
                 } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
 
                     $sql = sprintf(
@@ -2769,6 +2775,7 @@ class Order extends DB_Table {
                     $invoice_public_id = sprintf(
                         $store->data['Store Order Public ID Format'], $this->db->lastInsertId()
                     );
+
 
 
                 } else {
@@ -2784,13 +2791,20 @@ class Order extends DB_Table {
                         $account->data['Account Invoice Public ID Format'], $public_id
                     );
 
+
                 }
 
 
             }
 
 
-        } elseif ($store->data['Store Refund Public ID Method'] == 'Account Wide Own Index') {
+
+            if ($invoice_public_id != '') {
+                $invoice_public_id = $this->get_refund_public_id($invoice_public_id.$store->data['Store Refund Suffix']);
+            }
+
+        }
+        elseif ($store->data['Store Refund Public ID Method'] == 'Account Wide Own Index') {
 
 
             include_once 'class.Account.php';
@@ -2829,7 +2843,8 @@ class Order extends DB_Table {
                     $store->data['Store Invoice Public ID Format'], $this->db->lastInsertId()
                 );
 
-            } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
+            }
+            elseif ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
 
                 $sql = sprintf(
                     "UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
@@ -2840,7 +2855,8 @@ class Order extends DB_Table {
                 );
 
 
-            } else {
+            }
+            else {
 
                 $sql = sprintf(
                     "UPDATE `Account Dimension` SET `Account Invoice Last Invoice Public ID` = LAST_INSERT_ID(`Account Invoice Last Invoice Public ID` + 1) WHERE `Account Key`=1"
@@ -2860,9 +2876,9 @@ class Order extends DB_Table {
 
 
 
-        if ($invoice_public_id != '') {
-            $invoice_public_id = $this->get_refund_public_id($invoice_public_id.$store->data['Store Refund Suffix']);
-        }
+
+
+        $file_as=get_file_as($invoice_public_id);
 
 
 
@@ -2872,7 +2888,7 @@ class Order extends DB_Table {
             'Invoice Date'         => $date,
             'Invoice Type'         => 'Refund',
             'Invoice Public ID'    => $invoice_public_id,
-            'Invoice File As'      => $invoice_public_id,
+            'Invoice File As'      => $file_as,
             'Invoice Order Key'    => $this->id,
             'Invoice Store Key'    => $this->data['Order Store Key'],
             'Invoice Customer Key' => $this->data['Order Customer Key'],
@@ -3245,7 +3261,8 @@ class Order extends DB_Table {
     }
 
 
+
 }
 
 
-?>
+

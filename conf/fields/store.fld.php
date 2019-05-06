@@ -41,6 +41,25 @@ $options_locale = array(
 asort($options_locale);
 
 
+//'Order ID','Invoice Public ID','Account Wide Invoice Public ID'
+$options_next_invoice_number = array(
+    'Order ID'          => _('Same as order'),
+    'Invoice Public ID' => _('Own consecutive number'),
+    //  'Account Wide Invoice Public ID'  => _('Own consecutive number (shared all stores)'),
+
+);
+
+//'Same Invoice ID','Next Invoice ID','Account Wide Own Index','Store Own Index'
+$options_next_refund_number = array(
+    'Same Invoice ID'          => _('Same as invoice'),
+    'Next Invoice ID' => _('Next consecutive invoice number'),
+    'Store Own Index' => _('Own consecutive number'),
+    //  'Account Wide Own Index'  => _('Own consecutive number (shared all stores)'),
+
+
+);
+
+
 $options_timezones = array();
 foreach (DateTimeZone::listIdentifiers() as $timezone) {
     $options_timezones[preg_replace('/\//', '_', $timezone)] = $timezone;
@@ -279,7 +298,7 @@ $object_fields = array(
 
 
     array(
-        'label'      => _('Orders'),
+        'label'      => _('Order numbering'),
         'show_title' => true,
         'fields'     => array(
 
@@ -308,6 +327,95 @@ $object_fields = array(
 
             ),
 
+            array(
+                'edit'            => ($edit ? 'option' : ''),
+                'options'         => $options_next_invoice_number,
+                'id'              => 'Store_Next_Invoice_Public_ID_Method',
+                'value'           => $object->get('Store Next Invoice Public ID Method'),
+                'formatted_value' => $object->get('Next Invoice Public ID Method'),
+                'label'           => ucfirst($object->get_field_label('Store Next Invoice Public ID Method')),
+                'required'        => true,
+
+                'type' => 'value'
+
+
+            ),
+
+            array(
+                'edit'     => ($edit ? 'string' : ''),
+                'id'       => 'Store_Invoice_Public_ID_Format',
+                'render'   => ($object->get('Store Next Invoice Public ID Method')=='Invoice Public ID'?true:false),
+                'value'    => $object->get('Store Invoice Public ID Format'),
+
+                'label'    => ucfirst($object->get_field_label('Store Invoice Public ID Format')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new invoices')
+                    .'" ></i>',
+                'required' => true,
+
+                'type' => 'value'
+
+
+            ),
+
+            array(
+                'edit'     => ($edit ? 'numeric' : ''),
+                'id'       => 'Store_Invoice_Last_Invoice_Public_ID',
+                'value'    => $object->get('Store Invoice Last Invoice Public ID'),
+                'render'   => ($object->get('Store Next Invoice Public ID Method')=='Invoice Public ID'?true:false),
+                'label'    => ucfirst($object->get_field_label('Store Invoice Last Invoice Public ID')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new invoices')
+                    .'" ></i>',
+                'required' => true,
+
+                'type' => 'value'
+
+
+            ),
+
+
+            array(
+                'edit'            => ($edit ? 'option' : ''),
+                'options'         => $options_next_refund_number,
+                'render'   => ($object->get('Store Next Invoice Public ID Method')=='Invoice Public ID'?true:false),
+
+                'id'              => 'Store_Refund_Public_ID_Method',
+                'value'           => $object->get('Store Refund Public ID Method'),
+                'formatted_value' => $object->get('Refund Public ID Method'),
+                'label'           => ucfirst($object->get_field_label('Store Next Refund Public ID Method')),
+                'required'        => true,
+
+                'type' => 'value'
+
+
+            ),
+
+            array(
+                'edit'     => ($edit ? 'string' : ''),
+                'id'       => 'Store_Refund_Public_ID_Format',
+                'render'          => ( ($object->get('Store Next Invoice Public ID Method')=='Same Invoice ID' or $object->get('Store Refund Public ID Method')!='Store Own Index' )?false:true),
+                'value'    => $object->get('Store Refund Public ID Format'),
+
+                'label'    => ucfirst($object->get_field_label('Store Refund Public ID Format')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new refunds')
+                    .'" ></i>',
+                'required' => true,
+
+                'type' => 'value'
+
+
+            ),
+
+            array(
+                'edit'     => ($edit ? 'numeric' : ''),
+                'id'       => 'Store_Invoice_Last_Refund_Public_ID',
+                'value'    => $object->get('Store Invoice Last Refund Public ID'),
+                'render'          => ( ($object->get('Store Next Invoice Public ID Method')=='Same Invoice ID' or $object->get('Store Refund Public ID Method')!='Store Own Index' )?false:true),
+                'label'    => ucfirst($object->get_field_label('Store Invoice Last Refund Public ID')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new refunds')
+                    .'" ></i>',
+                'required' => true,
+
+                'type' => 'value'
+
+
+            ),
+
 
         )
     ),
@@ -324,8 +432,7 @@ $object_fields = array(
                 'id'              => 'Store_Allow_Data_Entry_Picking_Aid',
                 'value'           => $object->settings('data_entry_picking_aid'),
                 'formatted_value' => '<span class="button" onclick="toggle_allow_data_entry_picking_aid(this)"  field="data_entry_picking_aid"  style="margin-right:40px"><i class=" fa fa-fw '.($object->settings('data_entry_picking_aid') == 'Yes' ? 'fa-toggle-on'
-                        : 'fa-toggle-off')
-                    .'" aria-hidden="true"></i> <span class="'.($object->settings('data_entry_picking_aid') == 'Yes' ? '' : 'discreet').'">'._('Allow').'</span></span>  
+                        : 'fa-toggle-off').'" aria-hidden="true"></i> <span class="'.($object->settings('data_entry_picking_aid') == 'Yes' ? '' : 'discreet').'">'._('Allow').'</span></span>  
                     
                     ',
 
@@ -407,7 +514,6 @@ $object_fields = array(
                 'type'            => ''
 
             ),
-
 
 
         )
@@ -520,8 +626,7 @@ if (!$new) {
                 'class'     => 'operation',
                 'value'     => '',
                 'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'.($object->get('Store Contacts') > 0 ? _('Close store') : _("Delete store"))
-                    .' <i class="far fa-trash-alt new_button link"></i></span>',
+                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'.($object->get('Store Contacts') > 0 ? _('Close store') : _("Delete store")).' <i class="far fa-trash-alt new_button link"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),
