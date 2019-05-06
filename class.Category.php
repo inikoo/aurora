@@ -1963,7 +1963,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     $abstract = _('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> '._('disassociated with category').sprintf(
                             ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
                         );
-                    $details  = _('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> ('.$customer->data['Customer Main Location'].') '._(
+                    $details  = _('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a>  '._(
                             'associated with category'
                         ).sprintf(
                             ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
@@ -3114,7 +3114,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         $abstract = _('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> '._('associated with category').sprintf(
                                 ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
                             );
-                        $details  = _('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> ('.$customer->data['Customer Main Location'].') '._(
+                        $details  = _('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a>  '._(
                                 'associated with category'
                             ).sprintf(
                                 ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']

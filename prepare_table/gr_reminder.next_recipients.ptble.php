@@ -58,7 +58,7 @@ $table = '`Customer Dimension`   left join `Order Dimension` on (`Customer Last 
 
 $sql_totals = "select count(distinct `Customer Key`) as num from $table  $where  ";
 
-//print $sql_totals;
+print $sql_totals;
 
 $fields = "`Customer Store Key`,`Customer Name`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Dispatched Date`";
 
