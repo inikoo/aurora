@@ -34,14 +34,7 @@ class Customer extends Subject {
         $this->table_name    = 'Customer';
         $this->ignore_fields = array(
             'Customer Key',
-            'Customer Has More Orders Than',
-            'Customer Has More  Invoices Than',
-            'Customer Has Better Balance Than',
-            'Customer Older Than',
-            'Customer Orders Position',
-            'Customer Invoices Position',
-            'Customer Balance Position',
-            'Customer Profit Position',
+
             'Customer Order Interval',
             'Customer Order Interval STD',
             'Customer Orders Top Percentage',
@@ -167,8 +160,6 @@ class Customer extends Subject {
         $raw_data['Customer Sticky Note']          = '';
 
 
-
-
         $keys   = '';
         $values = '';
         foreach ($raw_data as $key => $value) {
@@ -240,7 +231,6 @@ class Customer extends Subject {
             $this->error = true;
             $this->msg   = 'Error inserting customer record';
         }
-
 
 
     }
@@ -493,9 +483,6 @@ class Customer extends Subject {
                 break;
 
 
-            case('Tax Code'):
-                return $this->data['Customer Tax Category Code'];
-                break;
             case 'Web Login Password':
                 return '<i class="fa fa-asterisk" aria-hidden="true"></i><i class="fa fa-asterisk" aria-hidden="true"></i><i class="fa fa-asterisk" aria-hidden="true"></i><i class="fa fa-asterisk" aria-hidden="true"></i><i class="fa fa-asterisk" aria-hidden="true"></i>
 ';
@@ -835,7 +822,7 @@ class Customer extends Subject {
     }
 
 
-    function create_order($options='{}') {
+    function create_order($options = '{}') {
 
         global $account;
 
@@ -850,7 +837,7 @@ class Customer extends Subject {
         );
 
 
-        $options = json_decode($options,true);
+        $options = json_decode($options, true);
 
         if (!empty($options['date'])) {
             $order_data['Order Date'] = $options['date'];
@@ -917,8 +904,6 @@ class Customer extends Subject {
         $order_data['Order Currency']                 = $store->get('Store Currency Code');
         $order_data['Order Show in Warehouse Orders'] = $store->get('Store Show in Warehouse Orders');
         $order_data['public_id_format']               = $store->get('Store Order Public ID Format');
-
-
 
 
         $order = new Order('new', $order_data);
@@ -996,8 +981,6 @@ class Customer extends Subject {
 
                     $website_user->update(array('Website User Password Hash' => password_hash(hash('sha256', $value), PASSWORD_DEFAULT, array('cost' => 12))), 'no_history');
                 }
-
-
 
 
                 break;
@@ -2101,7 +2084,7 @@ class Customer extends Subject {
 
     }
 
-   function add_history_post_order_in_warehouse($dn) {
+    function add_history_post_order_in_warehouse($dn) {
 
 
         date_default_timezone_set(TIMEZONE);
@@ -2567,7 +2550,6 @@ class Customer extends Subject {
 
             'Customer Invoiced Net Amount' => $invoiced_net_amount,
             'Customer Refunded Net Amount' => $refunded_net_amount,
-            'Customer Net Amount'          => $invoiced_net_amount + $refunded_net_amount,
 
             'Customer Number Invoices' => $customer_invoices,
             'Customer Number Refunds'  => $customer_refunds,
@@ -2878,36 +2860,6 @@ class Customer extends Subject {
 
     }
 
-    function update_web_data() {
-
-        $failed_logins = 0;
-        $logins        = 0;
-        $requests      = 0;
-
-        $sql = sprintf(
-            "SELECT sum(`User Login Count`) AS logins, sum(`User Failed Login Count`) AS failed_logins, sum(`User Requests Count`) AS requests  FROM `User Dimension` WHERE `User Type`='Customer' AND `User Parent Key`=%d", $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $failed_logins = $row['failed_logins'];
-                $logins        = $row['logins'];
-                $requests      = $row['requests'];
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
-
-
-        $sql = sprintf(
-            "UPDATE `Customer Dimension` SET `Customer Number Web Logins`=%d , `Customer Number Web Failed Logins`=%d, `Customer Number Web Requests`=%d WHERE `Customer Key`=%d", $logins, $failed_logins, $requests, $this->id
-        );
-        //print "$sql\n";
-        $this->db->exec($sql);
-
-    }
 
     function get_category_data() {
 
@@ -3245,8 +3197,8 @@ class Customer extends Subject {
                 if ($row['invoices'] > 1) {
 
                     $sql = sprintf(
-                        "SELECT `Invoice Date` FROM `Order Transaction Fact`  WHERE  `Invoice Key`>0 AND (`Delivery Note Quantity`)>0  AND   `Customer Key`=%d AND `Product ID`=%d  GROUP BY `Invoice Key` ORDER BY `Invoice Date` LIMIT  1,1   ",
-                        $this->id, $row['Product ID']
+                        "SELECT `Invoice Date` FROM `Order Transaction Fact`  WHERE  `Invoice Key`>0 AND (`Delivery Note Quantity`)>0  AND   `Customer Key`=%d AND `Product ID`=%d  GROUP BY `Invoice Key` ORDER BY `Invoice Date` LIMIT  1,1   ", $this->id,
+                        $row['Product ID']
                     );
 
 
@@ -3488,16 +3440,16 @@ class Customer extends Subject {
         $this->fast_update(array('Customer Account Balance' => $balance));
 
 
-        $sql=sprintf('update `Order Dimension`  set `Order Available Credit Amount`=:credit where `Order Customer Key`=:key  ');
+        $sql = sprintf('update `Order Dimension`  set `Order Available Credit Amount`=:credit where `Order Customer Key`=:key  ');
 
         $stmt = $this->db->prepare($sql);
 
 
-        $credit=$this->get('Customer Account Balance');
+        $credit = $this->get('Customer Account Balance');
 
         $stmt->bindParam(':credit', $credit);
 
-        $stmt->bindParam(':key', $this->id , PDO::PARAM_INT);
+        $stmt->bindParam(':key', $this->id, PDO::PARAM_INT);
 
         $stmt->execute();
 
@@ -3572,13 +3524,15 @@ class Customer extends Subject {
     function update_last_dispatched_order_key() {
 
         $order_key = '';
+        $date      = '';
         $sql       = sprintf(
-            "SELECT `Order Key` from `Order Dimension` WHERE `Order Customer Key`=%d  AND `Order State`='Dispatched' order by `Order Dispatched Date` desc limit 1 ", $this->id
+            "SELECT `Order Key`,Date(`Order Dispatched Date`) as dispatched_date from `Order Dimension` WHERE `Order Customer Key`=%d  AND `Order State`='Dispatched' order by `Order Dispatched Date` desc limit 1 ", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $order_key = $row['Order Key'];
+                $date      = $row['dispatched_date'];
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -3586,7 +3540,12 @@ class Customer extends Subject {
             exit;
         }
 
-        $this->fast_update(array('Customer Last Dispatched Order Key' => $order_key));
+        $this->fast_update(
+            array(
+                'Customer Last Dispatched Order Key'  => $order_key,
+                'Customer Last Dispatched Order Date' => $date
+            )
+        );
 
 
     }
