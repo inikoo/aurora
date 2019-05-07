@@ -1602,16 +1602,16 @@ function search_customers($db, $account, $user, $data) {
    // $q_postal_code = $q;
     if (strlen($q_postal_code) > 2) {
         $sql = sprintf(
-            "select `Customer Key`,`Customer Contact Address Postal Code` from `Customer Dimension`where true $where_store and  `Customer Main Plain Postal Code` like '%s%%' limit 50", addslashes($q_postal_code)
+            "select `Customer Key`,`Customer Contact Address Postal Code`,`Customer Main Plain Postal Code` from `Customer Dimension`where true $where_store and  `Customer Main Plain Postal Code` like '%s%%' limit 50", addslashes($q_postal_code)
         );
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
-                if ($row['Customer Contact Address Postal Code'] == $q_postal_code) {
+                if ($row['Customer Main Plain Postal Code'] == $q_postal_code) {
                     $candidates[$row['Customer Key']] = 50;
                 } else {
-                    $len_name                         = strlen($row['Customer Contact Address Postal Code']);
+                    $len_name                         = strlen($row['Customer Main Plain Postal Code']);
                     $len_q                            = strlen($q_postal_code);
                     $factor                           = $len_q / $len_name;
                     $candidates[$row['Customer Key']] = 20 * $factor;
@@ -1974,7 +1974,7 @@ function search_orders($db, $account, $user, $data) {
                     $state = _('Cancelled');
                     break;
                 default:
-                    $state = $data['Order State'];
+                    $state = $row['Order State'];
             }
 
             $details = '<span >'.$row['Order Customer Name'].'</span> <span class="discreet">('.$state.')</span>';
