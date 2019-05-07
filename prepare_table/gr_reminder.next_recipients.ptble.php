@@ -34,8 +34,6 @@ $where = sprintf("where `Customer Store Key`=%d and  `Customer Send Email Market
     );
 
 
-
-
 $group='';
 
 $wheref = '';

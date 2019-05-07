@@ -1768,7 +1768,7 @@ function search_customers($db, $account, $user, $data) {
 
 
     $sql = sprintf(
-        "SELECT `Store Code`,`Customer Store Key`, `Customer Main XHTML Telephone`,`Customer Main Postal Code`,`Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Main Location`,`Customer Tax Number` FROM `Customer Dimension` LEFT JOIN `Store Dimension` ON (`Customer Store Key`=`Store Key`) WHERE `Customer Key` IN (%s)",
+        "SELECT `Store Code`,`Customer Store Key`, `Customer Main XHTML Telephone`,`Customer Main Plain Postal Code`,`Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Main Location`,`Customer Tax Number` FROM `Customer Dimension` LEFT JOIN `Store Dimension` ON (`Customer Store Key`=`Store Key`) WHERE `Customer Key` IN (%s)",
         $customer_keys
     );
 
@@ -1800,7 +1800,7 @@ function search_customers($db, $account, $user, $data) {
 
         $address=$row['Customer Main Plain Email'];
         $address.='<br/>'.$row['Customer Main Location'];
-        if ($row['Customer Main Postal Code'])$address.=', '.$row['Customer Main Postal Code'];
+        if ($row['Customer Main Plain Postal Code'])$address.=', '.$row['Customer Main Plain Postal Code'];
         $address=preg_replace('/^\<br\/\>/', '', $address);
         */
             $results[$row['Customer Key']] = array(

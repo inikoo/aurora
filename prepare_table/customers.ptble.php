@@ -288,7 +288,7 @@ if (($parameters['f_field'] == 'name') and $f_value != '') {
 
 
 } elseif (($parameters['f_field'] == 'postcode') and $f_value != '') {
-    $wheref = "  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
+    $wheref = "  and  `Customer Main Plain Postal Code` like '%".addslashes($f_value)."%'";
 } elseif ($parameters['f_field'] == 'id') {
     $wheref .= " and  `Customer Key` like '".addslashes(
             preg_replace('/\s*|\,|\./', '', $f_value)
