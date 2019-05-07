@@ -193,10 +193,51 @@
 
 
 
+                    {assign "voucher_code" $order->get_voucher_code()}
+
+
+
+
 
                     <section >
 
-                        <div class="row"   style="display:none"  >
+                        <div class="row"  id="voucher"  style="">
+                            <section class="col col-6" style="margin-bottom: 0;margin-left:15px">
+
+                                    {t}Voucher{/t}
+
+                            </section>
+                            <section class="col col-6">
+                                <label class="input">
+                                    <i class="icon-append fa fa-tag"></i>
+                                    <input type="text" name="voucher_code" id="voucher_code"  value="{$voucher_code}"  data-old_value="{$voucher_code}" placeholder="{$data._voucher}">
+                                </label>
+                            </section>
+                            <section class="col col-6">
+                                <button  style="margin:0px;display: none" type="submit" class="button "
+                                         data-add_label="{if empty($data._voucher_label)}{t}Add Voucher{/t}{else}{$data._voucher_label}{/if}"
+                                         data-update_label="{if empty($data._change_voucher_label)}{t}Update Voucher{/t}{else}{$data._change_voucher_label}{/if}"
+                                         data-remove_label="{if empty($data._remove_voucher_label)}{t}Remove Voucher{/t}{else}{$data._remove_voucher_label}{/if}"
+                                >
+                                    <span>
+                                    {if $voucher_code==''}
+                                        {if empty($data._voucher_label)}{t}Add Voucher{/t}{else}{$data._voucher_label}{/if}
+                                    {else}
+                                        {if empty($data._change_voucher_label)}{t}Update Voucher{/t}{else}{$data._change_voucher_label}{/if}
+                                    {/if}</span> <i style="margin-left: 5px" class=" fa fa-fw {if $voucher_code==''}fa-plus{else}fa-sync-alt{/if}"></i> </button>
+
+                            </section>
+                        </div>
+
+
+
+
+                    </section>
+
+
+                    <section style="display:none" >
+
+                        <div class="row"    >
                             <section class="col col-6">
                                 <label class="input">
                                     <i class="icon-append fa fa-tag"></i>
@@ -214,6 +255,12 @@
 
                     </section>
 
+
+                    <section class="col col-6" style="margin-bottom: 0">
+
+                        {$data._special_instructions}
+
+                    </section>
 
                     <section style="border: none">
                                 <label class="textarea">
@@ -539,6 +586,111 @@
         // do things
     });
 
+
+
+    $(document).on('input propertychange,change', '#voucher_code', function (evt) {
+
+
+        var button = $('#voucher .button')
+
+        button.css({ 'display': 'block'})
+
+        if ($(this).data('old_value') != '') {
+            if ($(this).val() == '') {
+                button.find('span').html(button.data('remove_label'))
+                button.find('i').addClass('fa-trash-alt').removeClass('fa-sync-alt fa-plus')
+            } else {
+                button.find('span').html(button.data('update_label'))
+                button.find('i').addClass('fa-sync-alt').removeClass('fa-trash-alt fa-plus')
+
+            }
+        }
+
+
+    });
+
+    $(document).on('click', "#voucher .button", function(ev){
+
+
+
+        var button=$(this)
+
+
+        if( button.hasClass('wait')){
+            return;
+        }
+
+        button.addClass('wait')
+        button.find('i').addClass('fa-spin fa-spinner')
+
+        var input=$(this).closest('div').find('input')
+
+        var voucher=input.val()
+
+
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'update_voucher')
+        ajaxData.append("voucher",voucher)
+
+
+
+
+
+        $.ajax({
+            url: "/ar_web_voucher.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+            complete: function () {
+            }, success: function (data) {
+
+
+                if (data.state == '200') {
+
+
+                    switch (data.action) {
+                        case 'deleted':
+
+                            button.find('span').html(button.data('add_label'))
+                            button.find('i').addClass('fa-plus').removeClass('fa-trash-alt fa-sync-alt')
+                            input.val('').data('old_value','')
+                            button.css({ 'display': 'none'})
+                            location.reload();
+                            break;
+                        case 'add':
+
+                            button.find('span').html(button.data('update_label'))
+                            button.find('i').addClass('fa-sync-alt').removeClass('fa-trash-alt fa-plus')
+                            button.css({ 'display': 'block'})
+                            location.reload();
+                            break;
+                    }
+
+
+                    for (var key in data.metadata.class_html) {
+
+
+                        $('.' + key).html(data.metadata.class_html[key])
+                    }
+
+
+
+
+
+
+                } else if (data.state == '400') {
+                    swal("{t}Error{/t}!", data.msg, "error")
+                }
+
+
+                button.removeClass('wait')
+                button.find('i').removeClass('fa-spinner fa-spin')
+            }, error: function () {
+                button.removeClass('wait')
+                button.find('i').removeClass('fa-spinner fa-spin')
+            }
+        });
+
+    });
 
 
 
