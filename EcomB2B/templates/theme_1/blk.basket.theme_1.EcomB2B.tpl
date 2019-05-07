@@ -187,9 +187,14 @@
 
 
                     {assign "voucher_code" $order->get_voucher_code()}
+
+
+
+
+
                     <section >
 
-                        <div class="row"  id="voucher"  style="display: none;">
+                        <div class="row"  id="voucher"  >
                             <section class="col col-6">
                                 <label class="input">
                                     <i class="icon-append fa fa-tag"></i>
