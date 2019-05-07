@@ -25,10 +25,18 @@ switch ($parameters['parent']) {
 
 
 
+        if( $parameters['email_template_type_code']=='Marketing'  or $parameters['email_template_type_code']=='Newsletter'){
+            $where = sprintf(
+                " where  `Email Campaign Type Code` in ('Marketing','Newsletter')"
+            );
+        }else{
+            $where = sprintf(
+                " where  `Email Campaign Type Code`=%s", prepare_mysql($parameters['email_template_type_code'])
+            );
+        }
 
-        $where = sprintf(
-            " where  `Email Campaign Type Code`=%s", prepare_mysql($parameters['email_template_type_code'])
-        );
+
+
 
         break;
     case 'EmailCampaignType':
