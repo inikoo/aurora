@@ -269,6 +269,7 @@ class Public_Customer extends DBW_Table {
 
             if ($type == 'Contact') {
 
+                $this->fast_update(array('Customer Main Plain Postal Code'=>preg_replace('/\s|\n|\r/','',$this->data['Customer Contact Address Postal Code'])));
 
                 $location = $this->get('Contact Address Locality');
                 if ($location == '') {
