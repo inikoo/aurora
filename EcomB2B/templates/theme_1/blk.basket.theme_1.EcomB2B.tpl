@@ -194,7 +194,7 @@
 
                     <section >
 
-                        <div class="row"  id="voucher"  >
+                        <div class="row"  id="voucher"  style="">
                             <section class="col col-6">
                                 <label class="input">
                                     <i class="icon-append fa fa-tag"></i>
@@ -202,7 +202,11 @@
                                 </label>
                             </section>
                             <section class="col col-6">
-                                <button  style="margin:0px;{if $voucher_code!=''}display: none{/if}" type="submit" class="button "   data-add_label="{if empty($data._voucher_label)}{t}Add Voucher{/t}{else}{$data._voucher_label}{/if}"  data-update_label="{if empty($data._change_voucher_label)}{t}Update Voucher{/t}{else}{$data._change_voucher_label}{/if}" data-remove_label="{if empty($data._remove_voucher_label)}{t}Remove Voucher{/t}{else}{$data._remove_voucher_label}{/if}"  >
+                                <button  style="margin:0px;display: none" type="submit" class="button "
+                                         data-add_label="{if empty($data._voucher_label)}{t}Add Voucher{/t}{else}{$data._voucher_label}{/if}"
+                                         data-update_label="{if empty($data._change_voucher_label)}{t}Update Voucher{/t}{else}{$data._change_voucher_label}{/if}"
+                                         data-remove_label="{if empty($data._remove_voucher_label)}{t}Remove Voucher{/t}{else}{$data._remove_voucher_label}{/if}"
+                                >
                                     <span>
                                     {if $voucher_code==''}
                                         {if empty($data._voucher_label)}{t}Add Voucher{/t}{else}{$data._voucher_label}{/if}
@@ -610,13 +614,15 @@
                             button.find('span').html(button.data('add_label'))
                             button.find('i').addClass('fa-plus').removeClass('fa-trash-alt fa-sync-alt')
                             input.val('').data('old_value','')
+                            button.css({ 'display': 'none'})
+                            location.reload();
                             break;
                         case 'add':
 
                             button.find('span').html(button.data('update_label'))
                             button.find('i').addClass('fa-sync-alt').removeClass('fa-trash-alt fa-plus')
                             button.css({ 'display': 'block'})
-
+                            location.reload();
                             break;
                     }
 
@@ -626,6 +632,7 @@
 
                         $('.' + key).html(data.metadata.class_html[key])
                     }
+
 
 
 
