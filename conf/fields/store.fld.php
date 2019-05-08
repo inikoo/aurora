@@ -51,7 +51,7 @@ $options_next_invoice_number = array(
 
 //'Same Invoice ID','Next Invoice ID','Account Wide Own Index','Store Own Index'
 $options_next_refund_number = array(
-    'Same Invoice ID'          => _('Same as invoice'),
+    'Same Invoice ID' => _('Same as invoice'),
     'Next Invoice ID' => _('Next consecutive invoice number'),
     'Store Own Index' => _('Own consecutive number'),
     //  'Account Wide Own Index'  => _('Own consecutive number (shared all stores)'),
@@ -266,16 +266,18 @@ $object_fields = array(
     array(
         'label'      => _('Collection'),
         'show_title' => true,
+        'class'      =>  ($new ? 'hide' : true),
         'fields'     => array(
 
             array(
                 'id'              => 'Store_Can_Collect',
                 'edit'            => ($edit ? 'option' : ''),
+                'render'          => ($new ? false : true),
                 'options'         => $options_yes_no,
                 'value'           => $object->get('Store Can Collect'),
                 'formatted_value' => $object->get('Can Collect'),
                 'label'           => _('Accept orders for collection'),
-                'type'            => 'value'
+                'type'            => ''
             ),
             array(
                 'id'              => 'Store_Collect_Address',
@@ -299,36 +301,44 @@ $object_fields = array(
 
     array(
         'label'      => _('Order numbering'),
+        'class'      =>  ($new ? 'hide' : ''),
+
         'show_title' => true,
         'fields'     => array(
 
 
             array(
                 'edit'     => ($edit ? 'string' : ''),
+                'render'      =>  ($new ? false : true),
+
                 'id'       => 'Store_Order_Public_ID_Format',
                 'value'    => $object->get('Store Order Public ID Format'),
                 'label'    => ucfirst($object->get_field_label('Store Order Public ID Format')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new orders').'" ></i>',
                 'required' => true,
 
-                'type' => 'value'
+                'type' => ''
 
 
             ),
 
             array(
                 'edit'     => ($edit ? 'numeric' : ''),
+                'render'      =>  ($new ? false : true),
+
                 'id'       => 'Store_Order_Last_Order_ID',
                 'value'    => $object->get('Store Order Last Order ID'),
                 'label'    => ucfirst($object->get_field_label('Store Order Last Order ID')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new orders').'" ></i>',
                 'required' => true,
 
-                'type' => 'value'
+                'type' => ''
 
 
             ),
 
             array(
                 'edit'            => ($edit ? 'option' : ''),
+                'render'      =>  ($new ? false : true),
+
                 'options'         => $options_next_invoice_number,
                 'id'              => 'Store_Next_Invoice_Public_ID_Method',
                 'value'           => $object->get('Store Next Invoice Public ID Method'),
@@ -336,22 +346,22 @@ $object_fields = array(
                 'label'           => ucfirst($object->get_field_label('Store Next Invoice Public ID Method')),
                 'required'        => true,
 
-                'type' => 'value'
+                'type' => ''
 
 
             ),
 
             array(
-                'edit'     => ($edit ? 'string' : ''),
-                'id'       => 'Store_Invoice_Public_ID_Format',
-                'render'   => ($object->get('Store Next Invoice Public ID Method')=='Invoice Public ID'?true:false),
-                'value'    => $object->get('Store Invoice Public ID Format'),
+                'edit'   => ($edit ? 'string' : ''),
+                'id'     => 'Store_Invoice_Public_ID_Format',
+                'render' =>  ($new ? false :($object->get('Store Next Invoice Public ID Method') == 'Invoice Public ID' ? true : false)),
+                'value'  => $object->get('Store Invoice Public ID Format'),
 
                 'label'    => ucfirst($object->get_field_label('Store Invoice Public ID Format')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new invoices')
                     .'" ></i>',
                 'required' => true,
 
-                'type' => 'value'
+                'type' => ''
 
 
             ),
@@ -360,21 +370,25 @@ $object_fields = array(
                 'edit'     => ($edit ? 'numeric' : ''),
                 'id'       => 'Store_Invoice_Last_Invoice_Public_ID',
                 'value'    => $object->get('Store Invoice Last Invoice Public ID'),
-                'render'   => ($object->get('Store Next Invoice Public ID Method')=='Invoice Public ID'?true:false),
+                'render'   =>
+                    ($new ? false :
+                    ($object->get('Store Next Invoice Public ID Method') == 'Invoice Public ID' ? true : false)),
                 'label'    => ucfirst($object->get_field_label('Store Invoice Last Invoice Public ID')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new invoices')
                     .'" ></i>',
                 'required' => true,
 
-                'type' => 'value'
+                'type' => ''
 
 
             ),
 
 
             array(
-                'edit'            => ($edit ? 'option' : ''),
-                'options'         => $options_next_refund_number,
-                'render'   => ($object->get('Store Next Invoice Public ID Method')=='Invoice Public ID'?true:false),
+                'edit'    => ($edit ? 'option' : ''),
+                'options' => $options_next_refund_number,
+                'render'  =>
+                    ($new ? false :
+                    ($object->get('Store Next Invoice Public ID Method') == 'Invoice Public ID' ? true : false)),
 
                 'id'              => 'Store_Refund_Public_ID_Method',
                 'value'           => $object->get('Store Refund Public ID Method'),
@@ -382,22 +396,22 @@ $object_fields = array(
                 'label'           => ucfirst($object->get_field_label('Store Next Refund Public ID Method')),
                 'required'        => true,
 
-                'type' => 'value'
+                'type' => ''
 
 
             ),
 
             array(
-                'edit'     => ($edit ? 'string' : ''),
-                'id'       => 'Store_Refund_Public_ID_Format',
-                'render'          => ( ($object->get('Store Next Invoice Public ID Method')=='Same Invoice ID' or $object->get('Store Refund Public ID Method')!='Store Own Index' )?false:true),
-                'value'    => $object->get('Store Refund Public ID Format'),
+                'edit'   => ($edit ? 'string' : ''),
+                'id'     => 'Store_Refund_Public_ID_Format',
+                'render' => ($new ? false :
+                    (($object->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' or $object->get('Store Refund Public ID Method') != 'Store Own Index') ? false : true)),
+                'value'  => $object->get('Store Refund Public ID Format'),
 
-                'label'    => ucfirst($object->get_field_label('Store Refund Public ID Format')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new refunds')
-                    .'" ></i>',
+                'label'    => ucfirst($object->get_field_label('Store Refund Public ID Format')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new refunds').'" ></i>',
                 'required' => true,
 
-                'type' => 'value'
+                'type' => ''
 
 
             ),
@@ -406,12 +420,13 @@ $object_fields = array(
                 'edit'     => ($edit ? 'numeric' : ''),
                 'id'       => 'Store_Invoice_Last_Refund_Public_ID',
                 'value'    => $object->get('Store Invoice Last Refund Public ID'),
-                'render'          => ( ($object->get('Store Next Invoice Public ID Method')=='Same Invoice ID' or $object->get('Store Refund Public ID Method')!='Store Own Index' )?false:true),
+                'render'   => ($new ? false :
+                    (($object->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' or $object->get('Store Refund Public ID Method') != 'Store Own Index') ? false : true)),
                 'label'    => ucfirst($object->get_field_label('Store Invoice Last Refund Public ID')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new refunds')
                     .'" ></i>',
                 'required' => true,
 
-                'type' => 'value'
+                'type' => ''
 
 
             ),
@@ -424,11 +439,15 @@ $object_fields = array(
     array(
         'label'      => _('Data entry of paper picking aid').' <i class="fa fa-keyboard padding_left_5" style="font-size: 110%;position: relative;top:.5px"></i>',
         'show_title' => true,
+        'class'      =>  ($new ? 'hide' : ''),
+
         'fields'     => array(
 
 
             array(
                 'edit'            => 'no_icon',
+                'render'      =>  ($new ? false : true),
+
                 'id'              => 'Store_Allow_Data_Entry_Picking_Aid',
                 'value'           => $object->settings('data_entry_picking_aid'),
                 'formatted_value' => '<span class="button" onclick="toggle_allow_data_entry_picking_aid(this)"  field="data_entry_picking_aid"  style="margin-right:40px"><i class=" fa fa-fw '.($object->settings('data_entry_picking_aid') == 'Yes' ? 'fa-toggle-on'
@@ -522,11 +541,14 @@ $object_fields = array(
 
     array(
         'label'      => _('Signatures'),
+        'class'      =>  ($new ? 'hide' : ''),
         'show_title' => true,
         'fields'     => array(
 
             array(
                 'edit'     => ($edit ? 'textarea' : ''),
+                'render'      =>  ($new ? false : true),
+
                 'id'       => 'Store_Email_Template_Signature',
                 'value'    => $object->get('Store Email Template Signature'),
                 'label'    => ucfirst($object->get_field_label('Store Email Template Signature')),
@@ -539,6 +561,8 @@ $object_fields = array(
 
             array(
                 'edit'     => ($edit ? 'textarea' : ''),
+                'render'      =>  ($new ? false : true),
+
                 'id'       => 'Store_Invoice_Message',
                 'value'    => $object->get('Store Invoice Message'),
                 'label'    => ucfirst($object->get_field_label('Store Invoice Message')),
@@ -550,6 +574,8 @@ $object_fields = array(
             ),
             array(
                 'edit'     => ($edit ? 'textarea' : ''),
+                'render'      =>  ($new ? false : true),
+
                 'id'       => 'Store_Proforma_Message',
                 'value'    => $object->get('Store Proforma Message'),
                 'label'    => ucfirst($object->get_field_label('Store Proforma Message')),
@@ -567,11 +593,14 @@ $object_fields = array(
     array(
         'label'      => _('Notifications'),
         'show_title' => true,
+        'class'      =>  ($new ? 'hide' : ''),
         'fields'     => array(
 
 
             array(
                 'id'              => 'Store_Notification_New_Order_Recipients',
+                'render'      =>  ($new ? false : true),
+
                 'edit'            => 'mixed_recipients',
                 'value'           => '',
                 'formatted_value' => $object->get('Notification New Order Recipients'),
@@ -581,6 +610,8 @@ $object_fields = array(
             ),
             array(
                 'id'              => 'Store_Notification_New_Customer_Recipients',
+                'render'      =>  ($new ? false : true),
+
                 'edit'            => 'mixed_recipients',
                 'value'           => '',
                 'formatted_value' => $object->get('Notification New Customer Recipients'),
@@ -590,6 +621,8 @@ $object_fields = array(
             ),
             array(
                 'id'              => 'Store_Notification_Invoice_Deleted_Recipients',
+                'render'      =>  ($new ? false : true),
+
                 'edit'            => 'mixed_recipients',
                 'value'           => '',
                 'formatted_value' => $object->get('Notification Invoice Deleted Recipients'),
@@ -599,6 +632,8 @@ $object_fields = array(
             ),
             array(
                 'id'              => 'Store_Notification_Delivery_Note_Undispatched_Recipients',
+                'render'      =>  ($new ? false : true),
+
                 'edit'            => 'mixed_recipients',
                 'value'           => '',
                 'formatted_value' => $object->get('Notification Delivery Note Undispatched Recipients'),
@@ -610,6 +645,35 @@ $object_fields = array(
 
         )
     ),
+
+
+    array(
+        'label'      => _('Product labels'),
+        'show_title' => true,
+        'class'      =>  ($new ? 'hide' : ''),
+
+        'fields'     => array(
+
+
+            array(
+                'edit'            => ($edit ? 'textarea' : ''),
+                'render'      =>  ($new ? false : true),
+
+                'id'              => 'Store_Label_Signature',
+                'value'           => $object->get('Store Label Signature'),
+                'formatted_value' => $object->get('Label Signature'),
+
+                'label'    => ucfirst($object->get_field_label('Store Label Signature')),
+                'required' => false,
+
+                'type' => ''
+
+
+            ),
+
+        )
+    ),
+
 );
 
 

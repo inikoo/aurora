@@ -30,6 +30,7 @@ $options_basket_amount = array(
 $object_fields = array(
     array(
         'label'      => _('Id'),
+        'class'      =>  ($new ? 'hide' : ''),
         'show_title' => true,
         'fields'     => array(
 
@@ -80,6 +81,8 @@ $object_fields = array(
                 array(
                     'id'              => 'Website_Settings_Info_Bar_Basket_Amount_Type',
                     'edit'            => ($edit ? 'option' : ''),
+                    'render'      =>  ($new ? false : true),
+
                     'options'         => $options_basket_amount,
                     'value'           => ($object->get('Website Settings Info Bar Basket Amount Type')==''?'total':$object->get('Website Settings Info Bar Basket Amount Type')),
                     'formatted_value' => ($object->get('Website Settings Info Bar Basket Amount Type')==''?_('Total'):$object->get('Settings Info Bar Basket Amount Type')),

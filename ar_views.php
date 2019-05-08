@@ -317,6 +317,8 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
 
         if ($state['object'] == 'website' and $state['parent'] == 'store') {
+
+
             $state['key'] = $state['_parent']->get('Store Website Key');
         }
         if ($state['object'] == 'campaign' and !is_numeric($state['key'])) {
@@ -327,15 +329,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
         }
 
         if (!isset($_object)) {
-
-
-
-
             $_object = get_object($state['object'], $state['key']);
-
-
-
-
         }
 
 
@@ -1320,6 +1314,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
+                case 'store.new':
+                    return get_new_store_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
 
             }
             break;
@@ -1336,11 +1335,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
-                case 'store.new':
-                    return get_new_store_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
+
                 case 'products':
                     return get_products_navigation(
                         $data, $smarty, $user, $db, $account

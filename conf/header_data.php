@@ -42,7 +42,7 @@ function get_default_header_data($template) {
                         'type'        => 'three_columns',
                         'show'        => true,
                         'label'       => _('Catalogue'),
-                        'icon'        => 'fa-th-large',
+                        'icon'        => 'far fa-th-large',
                         'sub_columns' => array(
                             array(
                                 'type'       => 'departments',
@@ -73,7 +73,7 @@ function get_default_header_data($template) {
                         'type'        => 'three_columns',
                         'show'        => true,
                         'label'       => _('Info pages'),
-                        'icon'        => 'fa-info-circle',
+                        'icon'        => 'far fa-info-circle',
                         'sub_columns' => array(
                             array(
                                 'type'  => 'items',
@@ -81,22 +81,22 @@ function get_default_header_data($template) {
                                 'items' => array(
                                     array(
                                         'label' => _('Homepage'),
-                                        'icon'  => 'fa-home',
+                                        'icon'  => 'far fa-home',
                                         'url'   => ''
                                     ),
                                     array(
                                         'label' => _('About us'),
-                                        'icon'  => 'fa-smile',
+                                        'icon'  => 'far fa-smile',
                                         'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Contact'),
-                                        'icon'  => 'fa-phone',
+                                        'icon'  => 'far fa-phone',
                                         'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Terms & Conditions'),
-                                        'icon'  => 'fa-file-alt',
+                                        'icon'  => 'far fa-file-alt',
                                         'url'   => ''
                                     )
                                 )
@@ -108,22 +108,22 @@ function get_default_header_data($template) {
                                 'items' => array(
                                     array(
                                         'label' => _('Catalogue'),
-                                        'icon'  => 'fa-th-large',
+                                        'icon'  => 'far fa-th-large',
                                         'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Search'),
-                                        'icon'  => 'fa-search',
+                                        'icon'  => 'far fa-search',
                                         'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Delivery'),
-                                        'icon'  => 'fa-truck',
+                                        'icon'  => 'far fa-truck',
                                         'url'   => ''
                                     ),
                                     array(
                                         'label' => _('FAQ'),
-                                        'icon'  => 'fa-question',
+                                        'icon'  => 'far fa-question',
                                         'url'   => ''
                                     ),
 
@@ -133,7 +133,7 @@ function get_default_header_data($template) {
                             array(
                                 'type'  => 'text',
                                 'title' => _('About Website'),
-                                'image' => '',
+                                'image' => 'https://via.placeholder.com/400x160.png',
                                 'url'   => '',
                                 'text'  => 'There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.'
 
@@ -147,7 +147,7 @@ function get_default_header_data($template) {
                         'type'        => 'three_columns',
                         'show'        => true,
                         'label'       => _('Offers'),
-                        'icon'        => 'fa-tag',
+                        'icon'        => 'far fa-tag',
                         'sub_columns' => array(
                             array(
                                 'type'  => 'items',
@@ -155,22 +155,22 @@ function get_default_header_data($template) {
                                 'items' => array(
                                     array(
                                         'label' => _('Link to offer 1'),
-                                        'icon'  => 'fa-tag',
+                                        'icon'  => 'far fa-tag',
                                         'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Link to offer 2'),
-                                        'icon'  => 'fa-tag',
+                                        'icon'  => 'far fa-tag',
                                         'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Link to offer 3'),
-                                        'icon'  => 'fa-tag',
+                                        'icon'  => 'far fa-tag',
                                         'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Link to offer 4'),
-                                        'icon'  => 'fa-tag',
+                                        'icon'  => 'far fa-tag',
                                         'url'   => ''
                                     )
                                 )
@@ -181,7 +181,7 @@ function get_default_header_data($template) {
                                 'type' => 'image',
 
                                 'title' => _('Big offer A'),
-                                'image' => '',
+                                'image' => 'https://via.placeholder.com/400x350.png',
                                 'url'   => '',
 
 
@@ -190,7 +190,7 @@ function get_default_header_data($template) {
                             array(
                                 'type'  => 'text',
                                 'title' => _('Big offer B'),
-                                'image' => '',
+                                'image' =>  'https://via.placeholder.com/400x200.png',
                                 'url'   => '',
                                 'text'  => 'There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.'
 
@@ -204,14 +204,14 @@ function get_default_header_data($template) {
                         'type'        => 'three_columns',
                         'show'        => true,
                         'label'       => _('Inspiration'),
-                        'icon'        => 'fa-lightbulb',
+                        'icon'        => 'far fa-lightbulb',
                         'sub_columns' => array(
 
 
                             array(
                                 'type'  => 'image',
                                 'title' => _('Big Idea A'),
-                                'image' => '',
+                                'image' => 'https://via.placeholder.com/400x350.png',
                                 'url'   => '',
 
 
@@ -220,7 +220,7 @@ function get_default_header_data($template) {
                             array(
                                 'type'  => 'text',
                                 'title' => _('Big Idea B'),
-                                'image' => '',
+                                'image' =>  'https://via.placeholder.com/400x200.png',
                                 'url'   => '',
                                 'text'  => 'There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.'
 
@@ -232,42 +232,42 @@ function get_default_header_data($template) {
                                 'items' => array(
                                     array(
                                         'label' => _('List of bright ideas'),
-                                        'icon'  => 'fa-bolt',
+                                        'icon'  => 'far fa-bolt',
                                         'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Warm welcoming stuff'),
-                                        'icon'  => 'fa-sun',
+                                        'icon'  => 'far fa-sun',
                                         'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Eco friendly lifestyle'),
-                                        'icon'  => 'fa-leaf',
+                                        'icon'  => 'far fa-leaf',
                                         'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Rocket science inspiration'),
-                                        'icon'  => 'fa-rocket',
+                                        'icon'  => 'far fa-rocket',
                                         'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Link 1'),
-                                        'icon'  => 'fa-bolt',
+                                        'icon'  => 'far fa-bolt',
                                         'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Link 2'),
-                                        'icon'  => 'fa-tree',
+                                        'icon'  => 'far fa-tree',
                                         'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Link 3'),
-                                        'icon'  => 'fa-thumbs-up',
+                                        'icon'  => 'far fa-thumbs-up',
                                         'url'   => ''
                                     ),
                                     array(
                                         'label' => _('Link 4'),
-                                        'icon'  => 'fa-paper-plane',
+                                        'icon'  => 'far fa-paper-plane',
                                         'url'   => ''
                                     )
                                 )
@@ -360,4 +360,4 @@ function get_default_header_data($template) {
 
 }
 
-?>
+

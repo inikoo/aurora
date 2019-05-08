@@ -127,41 +127,54 @@ class WebsiteHeader extends DB_Table {
     }
 
     function create($data) {
+
+
+
         $this->new = false;
         $base_data = $this->base_data();
 
+
         foreach ($data as $key => $value) {
-            if (array_key_exists($key, $base_data)) {
+            if (array_key_exists($key, $data)) {
                 $base_data[$key] = _trim($value);
             }
         }
 
-        $keys   = '(';
-        $values = 'values(';
-        foreach ($base_data as $key => $value) {
-            $keys .= "`$key`,";
-            //   if (preg_match('/^()$/i', $key))
-            //    $values.=prepare_mysql($value, false).",";
-            //   else
-            $values .= prepare_mysql($value).",";
-        }
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
-        $sql    = sprintf(
-            "INSERT INTO `Website Header Dimension` %s %s", $keys, $values
+
+        $sql = sprintf(
+            "INSERT INTO `Website Header Dimension` (%s) values (%s)",
+            '`'.join('`,`', array_keys($base_data)).'`',
+            join(',', array_fill(0, count($base_data), '?'))
         );
-        //print "=======  $sql\"";
-        if ($this->db->exec($sql)) {
-            $this->id  = $this->db->lastInsertId();
+
+
+
+        $stmt = $this->db->prepare($sql);
+
+        $i = 1;
+        foreach ($base_data as $key => $value) {
+            $stmt->bindValue($i, $value);
+            $i++;
+        }
+
+
+        if ($stmt->execute()) {
+            $this->id = $this->db->lastInsertId();
+
+
+
             $this->msg = _("Website header created");
             $this->get_data('id', $this->id);
+
+            $this->reset();
             $this->new = true;
 
 
             return;
         } else {
             $this->msg = "Error can not create website Header";
-            print $sql;
+            print_r($stmt->errorInfo());
+
             exit;
         }
     }
