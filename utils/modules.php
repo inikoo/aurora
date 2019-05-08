@@ -2967,7 +2967,9 @@ $modules = array(
                     'store.shipping_zones_schemas' => 'store.shipping_zones',
 
                     'user_notifications'             => 'store.notifications',
-                    'store.notifications_recipients' => 'store.notifications'
+                    'store.notifications_recipients' => 'store.notifications',
+                    'localization.materials' => 'store.localization',
+                    'localization.website'   => 'store.localization'
 
                 ),
 
@@ -3046,6 +3048,23 @@ $modules = array(
                             'store.notifications_recipients' => array(
                                 'label' => _('Recipients'),
                                 'icon'  => 'ear ',
+                            ),
+
+
+                        ),
+                    ),
+                    'store.localization' => array(
+                        'label'   => _('Localization'),
+                        'icon'    => 'language',
+                        'subtabs' => array(
+
+                            'localization.materials' => array(
+                                'label' => _('Materials/Ingredients'),
+                                'icon'  => 'puzzle-piece',
+                            ),
+                            'localization.website'   => array(
+                                'label' => _('Website'),
+                                'icon'  => 'globe',
                             ),
 
 

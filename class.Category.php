@@ -1395,7 +1395,7 @@ class Category extends DB_Table {
                 break;
             case('Product'):
 
-                $sql = sprintf("SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Store Key`=%d AND `Product Record Type`='Normal'", $this->data['Category Store Key']);
+                $sql = sprintf("SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Store Key`=%d ", $this->data['Category Store Key']);
                 break;
 
             default:
