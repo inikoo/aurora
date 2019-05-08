@@ -1909,6 +1909,29 @@ function search_orders($db, $account, $user, $data) {
         exit;
     }
 
+    $sql = sprintf(
+        "select `Order Key`,`Order Customer Purchase Order ID` from `Order Dimension` where true $where_store and `Order Customer Purchase Order ID` like '%s%%'  order by `Order Key` desc limit 10 ", $q
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            if ($row['Order Customer Purchase Order ID'] == $q) {
+                $candidates[$row['Order Key']] = 30;
+            } else {
+
+                $len_name                      = strlen($row['Order Customer Purchase Order IDD']);
+                $len_q                         = strlen($q);
+                $factor                        = $len_q / $len_name;
+                $candidates[$row['Order Key']] = 18 * $factor;
+            }
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
 
     arsort($candidates);
 
@@ -1941,7 +1964,7 @@ function search_orders($db, $account, $user, $data) {
     $order_keys = preg_replace('/^,/', '', $order_keys);
 
     $sql = sprintf(
-        "SELECT `Order Key`,`Store Code`,`Order Store Key`,`Order Public ID`,`Order State`,`Order Customer Name` FROM `Order Dimension` LEFT JOIN `Store Dimension` ON (`Order Store Key`=`Store Key`) WHERE `Order Key` IN (%s)", $order_keys
+        "SELECT `Order Key`,`Store Code`,`Order Customer Purchase Order ID`,`Order Store Key`,`Order Public ID`,`Order State`,`Order Customer Name` FROM `Order Dimension` LEFT JOIN `Store Dimension` ON (`Order Store Key`=`Store Key`) WHERE `Order Key` IN (%s)", $order_keys
     );
 
     if ($result = $db->query($sql)) {
@@ -1977,7 +2000,13 @@ function search_orders($db, $account, $user, $data) {
                     $state = $row['Order State'];
             }
 
-            $details = '<span >'.$row['Order Customer Name'].'</span> <span class="discreet">('.$state.')</span>';
+
+
+                $details = ($row['Order Customer Purchase Order ID']!=''?'('.$row['Order Customer Purchase Order ID'].') ':'').'<span >'.$row['Order Customer Name'].'</span> <span class="discreet">('.$state.')</span>';
+
+
+
+
 
             if ($data['scope'] != 'store') {
                 $details = '<span style="float:left;min-width:40px">'.$row['Store Code'].'</span>'.$details;
@@ -1988,7 +2017,6 @@ function search_orders($db, $account, $user, $data) {
                 'store'   => $row['Store Code'],
                 'label'   => highlightkeyword(sprintf('%s', $row['Order Public ID']), $queries),
                 'details' => $details,
-                //highlightkeyword($details, $queries),
                 'view'    => sprintf(
                     'orders/%d/%d', $row['Order Store Key'], $row['Order Key']
                 )
@@ -2001,6 +2029,8 @@ function search_orders($db, $account, $user, $data) {
         print_r($error_info = $db->errorInfo());
         exit;
     }
+
+
 
 
     $results_data = array(

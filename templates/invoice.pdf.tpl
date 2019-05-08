@@ -148,6 +148,11 @@
                     {t}Invoice Number{/t}: <b>{$original_invoice->get('Invoice Public ID')}</b>
                 </div>
                 {/if}
+                {if $order->get('Order Customer Purchase Order ID')!=''}
+                    <div style="text-align: right">
+                        {t}Customer's Purchase Order Number{/t}: <b>{$order->get('Order Customer Purchase Order ID')}</b>
+                    </div>
+                {/if}
             {/if} </td>
     </tr>
 </table>

@@ -166,7 +166,18 @@ class Order extends DB_Table {
                 $this->auto_account_payments($value, $options);
                 break;
 
+            case('Order Customer Purchase Order ID'):
+                $this->update_field('Order Customer Purchase Order ID',$value);
 
+
+                if($value==''){
+                    $this->update_metadata['hide'] = array('Order_Customer_Purchase_Order_ID_container');
+
+                }else{
+                    $this->update_metadata['show'] = array('Order_Customer_Purchase_Order_ID_container');
+                }
+
+                break;
             case('Sticky Note'):
                 $this->update_field('Order '.$field, $value, 'no_null');
                 $this->new_value = html_entity_decode($this->new_value);
@@ -3254,6 +3265,31 @@ class Order extends DB_Table {
 
     }
 
+
+    function get_field_label($field) {
+
+        switch ($field){
+            case 'Order Customer Purchase Order ID':
+                return _("customer's purchase order number");
+                break;
+            case 'Order Tax Number':
+                return _("tax number");
+                break;
+            case 'Order Tax Number Valid':
+                return _("tax number valid");
+                break;
+            case 'Order Delivery Address':
+                return _("delivery address");
+                break;
+            case 'Order Invoice Address':
+                return _("invoice address");
+                break;
+            default:
+                return $field;
+
+        }
+
+    }
 
 }
 
