@@ -190,6 +190,7 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     $smarty->assign('client_tag_google_manager_id', $website->get('Website Google Tag Manager Code'));
     $smarty->assign('zendesk_chat_code', $website->get('Website Zendesk Chat Code'));
     $smarty->assign('tawk_chat_code', $website->get('Website Tawk Chat Code'));
+    $smarty->assign('sumo_code', $website->get('Website Sumo Code'));
 
 
     date_default_timezone_set($store->get('Store Timezone'));

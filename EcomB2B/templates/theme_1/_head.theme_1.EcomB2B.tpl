@@ -305,6 +305,14 @@
 
 
 
+    {if !isset($is_devel) or !$is_devel  }
+        {if  !empty($sumo_code)}
+            <script async>(function(s,u,m,o,j,v){
+                    j=u.createElement(m);v=u.getElementsByTagName(m)[0];j.async=1;j.src=o;j.dataset.sumoSiteId=‘{$sumo_code}’;v.parentNode.insertBefore(j,v)})(window,document,‘script’,‘//load.sumo.com/’);</script>
+
+        {/if}
+    {/if}
+
 
 
 
