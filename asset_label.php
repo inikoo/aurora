@@ -24,7 +24,7 @@ $key         = $_REQUEST['key'];
 $type        = $_REQUEST['type'];
 
 
-if (!in_array($object_name, array('part','supplier_part'))) {
+if (!in_array($object_name, array('part','supplier_part','product'))) {
     exit('error 1');
 }
 
@@ -32,7 +32,9 @@ if (!in_array(
     $type, array(
              'package',
              'unit',
-             'carton'
+             'carton',
+             'unit_barcode',
+             'unit_ingredients'
          )
 )
 ) {
@@ -54,17 +56,40 @@ if($type=='carton'){
 $smarty->assign('account', $account);
 
 
-if ($object_name == 'part') {
+if ($object_name == 'product') {
+    $store=get_object('Store',$object->get('Store Key'));
+
+
+    if (!empty($_REQUEST['locale'])) {
+        $_locale = $_REQUEST['locale'];
+    } else {
+        $_locale = $store->get('Store Locale');
+
+    }
 
 
 
+
+    putenv('LC_ALL='.$_locale.'.UTF-8');
+    setlocale(LC_ALL, $_locale.'.UTF-8');
+    bindtextdomain("inikoo", "./locales");
+    textdomain("inikoo");
+
+
+
+
+    $smarty->assign('store', $store);
+
+    $smarty->assign('product', $object);
+
+
+    $template='labels/product_'.$type.'.tpl';
+
+
+
+}elseif ($object_name == 'part') {
     $smarty->assign('part', $object);
-
-
     $template='labels/part_'.$type.'.tpl';
-
-
-
 }elseif ($object_name == 'supplier_part') {
     $account=get_object('Account',1);
     $smarty->assign('account', $account);
