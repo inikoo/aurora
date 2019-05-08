@@ -327,6 +327,17 @@ class Website extends DB_Table {
                 ), 'no_history'
             );
 
+            require_once 'conf/website_styles.php';
+
+
+            $this->fast_update(
+                array(
+                    'Website Style' => json_encode($website_styles)
+                )
+            );
+
+
+
 
             return;
         } else {
@@ -621,6 +632,7 @@ class Website extends DB_Table {
         $data['Website Header Code'] = $this->get_unique_code($data['Website Header Code'], 'Header');
 
         $data['Website Header Website Key'] = $this->id;
+
 
 
         $header = new WebsiteHeader('find', $data, 'create');

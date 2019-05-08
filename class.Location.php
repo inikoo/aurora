@@ -55,6 +55,8 @@ class Location extends DB_Table {
 
 
         $this->data = $this->base_data();
+
+
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $this->data)) {
                 $this->data[$key] = _trim($value);

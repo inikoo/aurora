@@ -3062,19 +3062,6 @@ $modules = array(
                 )
             ),
 
-            'store.new' => array(
-                'type'  => 'new_object',
-                'title' => _('New store'),
-                'tabs'  => array(
-                    'store.new' => array(
-                        'label' => _(
-                            'New store'
-                        )
-                    ),
-
-                )
-
-            ),
 
 
             'services' => array(
@@ -3373,7 +3360,7 @@ $modules = array(
                 )
             ),
 
-            /*
+
 
             'website.new' => array(
                 'type' => 'new_object',
@@ -3387,7 +3374,7 @@ $modules = array(
                 )
 
             ),
-*/
+
 
             'webpage.new' => array(
                 'type'  => 'new_object',
@@ -4498,6 +4485,20 @@ $modules = array(
 
                 )
             ),
+            'store.new' => array(
+                'type'  => 'new_object',
+                'title' => _('New store'),
+                'tabs'  => array(
+                    'store.new' => array(
+                        'label' => _(
+                            'New store'
+                        )
+                    ),
+
+                )
+
+            ),
+
 
         )
     ),

@@ -164,31 +164,32 @@ class Store extends DB_Table {
         $this->new = false;
         $base_data = $this->base_data();
 
+
+        $data['Store Properties'] = '{}';
+        $data['Store Settings']   = '{}';
+
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
                 $base_data[$key] = _trim($value);
             }
         }
 
-        $keys   = '(';
-        $values = 'values (';
+
+        $sql = sprintf(
+            "INSERT INTO `Store Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
+        );
+
+        $stmt = $this->db->prepare($sql);
+
+
+        $i = 1;
         foreach ($base_data as $key => $value) {
-            $keys .= "`$key`,";
-            if (preg_match(
-                '/Store Email|Store Telephone|Store Telephone|Slogan|URL|Fax|Sticky Note|Store VAT Number/i', $key
-            )) {
-                $values .= prepare_mysql($value, false).",";
-            } else {
-                $values .= prepare_mysql($value).",";
-            }
+            $stmt->bindValue($i, $value);
+            $i++;
         }
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
 
 
-        $sql = "insert into `Store Dimension` $keys  $values";
-
-        if ($this->db->exec($sql)) {
+        if ($stmt->execute()) {
             $this->id = $this->db->lastInsertId();
 
 
@@ -296,16 +297,23 @@ class Store extends DB_Table {
 
             $order_recursion_campaign_data = array(
                 'Deal Campaign Name'       => 'Order recursion incentive',
+                'Deal Campaign Icon'       => '<i class="far fa-repeat-1"></i>',
+                'Deal Campaign Code'       => 'OR',
                 'Deal Campaign Valid From' => gmdate('Y-m-d'),
                 'Deal Campaign Valid To'   => '',
 
 
             );
 
+
             $order_recursion_campaign = $this->create_campaign($order_recursion_campaign_data);
 
+
             $bulk_discounts_campaign_data = array(
-                'Deal Campaign Name'       => 'Bulk discount',
+                'Deal Campaign Name' => 'Bulk discount',
+                'Deal Campaign Icon' => '<i class="far fa-ball-pile"></i>',
+
+                'Deal Campaign Code'       => 'VL',
                 'Deal Campaign Valid From' => gmdate('Y-m-d'),
                 'Deal Campaign Valid To'   => '',
 
@@ -315,6 +323,8 @@ class Store extends DB_Table {
 
 
             $first_order_incentive_campaign_data = array(
+                'Deal Campaign Code'       => 'FO',
+                'Deal Campaign Icon'       => '<i class="far fa-trophy-alt"></i>',
                 'Deal Campaign Name'       => 'First order incentive',
                 'Deal Campaign Valid From' => gmdate('Y-m-d'),
                 'Deal Campaign Valid To'   => '',
@@ -336,8 +346,59 @@ class Store extends DB_Table {
             );
 
 
-            // todo create Email email Campaign Type
-            // // update `Email Campaign Type Dimension` set `Email Campaign Type Status`='Active' where `Email Campaign Type Code` in ('Newsletter','Marketing','AbandonedCart','Invite Mailshot','Invite');
+            $campaign_data = array(
+                'Deal Campaign Code' => 'CU',
+                'Deal Campaign Icon' => '<i class="far fa-user-crown"></i>',
+
+                'Deal Campaign Name'       => 'Customers offers',
+                'Deal Campaign Valid From' => gmdate('Y-m-d'),
+                'Deal Campaign Valid To'   => '',
+            );
+            $this->create_campaign($campaign_data);
+
+            $campaign_data = array(
+                'Deal Campaign Code'       => 'CA',
+                'Deal Campaign Icon'       => '<i class="far fa-bullseye-arrow"></i>',
+
+                'Deal Campaign Name'       => 'Family offers',
+                'Deal Campaign Valid From' => gmdate('Y-m-d'),
+                'Deal Campaign Valid To'   => '',
+            );
+            $this->create_campaign($campaign_data);
+
+            $campaign_data = array(
+                'Deal Campaign Code'       => 'PO',
+                'Deal Campaign Icon'       => '<i class="far fa-crosshairs"></i>',
+                'Deal Campaign Name'       => 'Product offers',
+                'Deal Campaign Valid From' => gmdate('Y-m-d'),
+                'Deal Campaign Valid To'   => '',
+            );
+            $this->create_campaign($campaign_data);
+
+            $campaign_data = array(
+                'Deal Campaign Code' => 'SO',
+                'Deal Campaign Name' => 'Store offers',
+                'Deal Campaign Icon' => '<i class="far fa-badge-percent"></i>',
+
+                'Deal Campaign Valid From' => gmdate('Y-m-d'),
+                'Deal Campaign Valid To'   => '',
+            );
+            $this->create_campaign($campaign_data);
+
+            $campaign_data = array(
+                'Deal Campaign Code' => 'VO',
+                'Deal Campaign Icon' => '<i class="far fa-money-bill-wave"></i>',
+
+                'Deal Campaign Name'       => 'Vouchers',
+                'Deal Campaign Valid From' => gmdate('Y-m-d'),
+                'Deal Campaign Valid To'   => '',
+            );
+            $this->create_campaign($campaign_data);
+
+
+            include_once 'utils/create_email_templates.php';
+
+            create_email_templates($this->db, $this);
 
 
             $history_data = array(
@@ -355,9 +416,18 @@ class Store extends DB_Table {
             $account = new Account();
             $account->add_account_history($history_key);
 
+
+
+
+
+
             return;
         } else {
-            print $sql;
+
+
+            print_r($stmt->errorInfo());
+
+
             exit;
             $this->msg = _("Error can not create store");
 
@@ -469,6 +539,9 @@ class Store extends DB_Table {
                 );
 
                 return json_encode($address_fields);
+                break;
+            case 'Label Signature':
+                return nl2br($this->data['Store Label Signature']);
                 break;
             case 'Collect Address':
 
@@ -731,7 +804,7 @@ class Store extends DB_Table {
                 break;
             case 'Next Invoice Public ID Method':
 
-                switch ($this->data['Store Next Invoice Public ID Method']){
+                switch ($this->data['Store Next Invoice Public ID Method']) {
                     case 'Order ID':
                         return _('Same as order');
                         break;
@@ -748,7 +821,7 @@ class Store extends DB_Table {
 
             case 'Refund Public ID Method':
 
-                switch ($this->data['Store Refund Public ID Method']){
+                switch ($this->data['Store Refund Public ID Method']) {
                     case 'Same Invoice ID'  :
                         return _('Same as invoice');
                         break;
@@ -1331,11 +1404,10 @@ class Store extends DB_Table {
         foreach ($recipients_data['external_emails'] as $external_email) {
             $recipients[$external_email] = new email_recipient(
 
-                0,
-                array(
-                    'object_name'      => 'external_email',
-                    'Main Plain Email' => $external_email
-                )
+                0, array(
+                     'object_name'      => 'external_email',
+                     'Main Plain Email' => $external_email
+                 )
 
             );
         }
@@ -1345,12 +1417,11 @@ class Store extends DB_Table {
             if ($user->get('User Active') == 'Yes' and $user->get('User Password Recovery Email') != '') {
                 $recipients[$user->get('User Password Recovery Email')] = new email_recipient(
 
-                    $user->id,
-                    array(
-                        'object_name'      => 'User',
-                        'Main Plain Email' => $user->get('User Password Recovery Email'),
-                        'Name'             => $user->get('Alias'),
-                    )
+                    $user->id, array(
+                                 'object_name'      => 'User',
+                                 'Main Plain Email' => $user->get('User Password Recovery Email'),
+                                 'Name'             => $user->get('Alias'),
+                             )
 
                 );
 
@@ -4110,7 +4181,10 @@ class Store extends DB_Table {
                 $this->new_object = true;
 
 
-                $this->update_field_switcher('Store Website Key', $this->id, 'no_history');
+                $this->fast_update(
+                    array(
+                    'Store Website Key'=> $website->id)
+                );
 
 
                 $this->update_websites_data();
@@ -4149,8 +4223,6 @@ class Store extends DB_Table {
     }
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
-
-
 
 
         switch ($field) {
@@ -4258,33 +4330,32 @@ class Store extends DB_Table {
                 $this->update_field($field, $value);
 
 
-                if($value=='Order ID'){
+                if ($value == 'Order ID') {
                     $this->update_field('Store Refund Public ID Method', 'Same Invoice ID');
 
                 }
 
 
-
                 $this->other_fields_updated = array(
-                    'Store_Invoice_Public_ID_Format' => array(
-                        'field'           => 'Store_Invoice_Public_ID_Format',
-                        'render'          => ($this->get('Store Next Invoice Public ID Method')=='Invoice Public ID'?true:false),
+                    'Store_Invoice_Public_ID_Format'       => array(
+                        'field'  => 'Store_Invoice_Public_ID_Format',
+                        'render' => ($this->get('Store Next Invoice Public ID Method') == 'Invoice Public ID' ? true : false),
 
                     ),
-                    'Store_Invoice_Last_Invoice_Public_ID'   => array(
-                        'field'           => 'Store_Invoice_Last_Invoice_Public_ID',
-                        'render'          => ($this->get('Store Next Invoice Public ID Method')=='Invoice Public ID'?true:false),
+                    'Store_Invoice_Last_Invoice_Public_ID' => array(
+                        'field'  => 'Store_Invoice_Last_Invoice_Public_ID',
+                        'render' => ($this->get('Store Next Invoice Public ID Method') == 'Invoice Public ID' ? true : false),
                     ),
 
 
-                    'Store_Refund_Public_ID_Format' => array(
-                        'field'           => 'Store_Refund_Public_ID_Format',
-                        'render'          => ($this->get('Store Next Invoice Public ID Method')=='Same Invoice ID'?false:true),
+                    'Store_Refund_Public_ID_Format'       => array(
+                        'field'  => 'Store_Refund_Public_ID_Format',
+                        'render' => ($this->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' ? false : true),
 
                     ),
-                    'Store_Invoice_Last_Refund_Public_ID'   => array(
-                        'field'           => 'Store_Invoice_Last_Refund_Public_ID',
-                        'render'          => ($this->get('Store Next Invoice Public ID Method')=='Same Invoice ID'?false:true),
+                    'Store_Invoice_Last_Refund_Public_ID' => array(
+                        'field'  => 'Store_Invoice_Last_Refund_Public_ID',
+                        'render' => ($this->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' ? false : true),
                     ),
 
                 );
@@ -4300,14 +4371,14 @@ class Store extends DB_Table {
                 $this->other_fields_updated = array(
 
 
-                    'Store_Refund_Public_ID_Format' => array(
-                        'field'           => 'Store_Refund_Public_ID_Format',
-                        'render'          => ( ($this->get('Store Next Invoice Public ID Method')=='Same Invoice ID' or $this->get('Store Refund Public ID Method')!='Store Own Index' )?false:true),
+                    'Store_Refund_Public_ID_Format'       => array(
+                        'field'  => 'Store_Refund_Public_ID_Format',
+                        'render' => (($this->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' or $this->get('Store Refund Public ID Method') != 'Store Own Index') ? false : true),
 
                     ),
-                    'Store_Invoice_Last_Refund_Public_ID'   => array(
-                        'field'           => 'Store_Invoice_Last_Refund_Public_ID',
-                        'render'          => (($this->get('Store Next Invoice Public ID Method')=='Same Invoice ID' or $this->get('Store Refund Public ID Method')!='Store Own Index')?false:true),
+                    'Store_Invoice_Last_Refund_Public_ID' => array(
+                        'field'  => 'Store_Invoice_Last_Refund_Public_ID',
+                        'render' => (($this->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' or $this->get('Store Refund Public ID Method') != 'Store Own Index') ? false : true),
                     ),
 
                 );

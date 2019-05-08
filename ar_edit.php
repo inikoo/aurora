@@ -1923,13 +1923,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
         case 'Website':
 
 
-            exit('Websites cant be created here');
 
             include_once 'class.Website.php';
 
 
-            ////TODO clear this after migration
-            // exit('Cant create website ony after migration');
 
             $data['fields_data']['user'] = $user;
 
@@ -3178,12 +3175,12 @@ function edit_image($account, $db, $user, $editor, $data, $smarty) {
                         );
 
 
-                        if ($result = $this->db->query($sql)) {
+                        if ($result = $db->query($sql)) {
                             foreach ($result as $row) {
 
                                 $product         = get_object('Product', $row['Product ID']);
-                                $product->editor = $this->editor;
-                                $product->link_image($image->id, $object_image_scope);
+                                $product->editor = $editor;
+                                $product->link_image($row['Image Subject Image Key'], $data['value']);
 
                             }
 

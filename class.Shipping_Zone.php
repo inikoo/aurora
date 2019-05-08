@@ -148,21 +148,35 @@ class Shipping_Zone extends DB_Table {
 
         $data['Shipping Zone Creation Date'] = gmdate('Y-m-d H:i:s');
 
-        $keys   = '(';
-        $values = 'values(';
+
+        $data['Shipping Zone Territories'] = '{}';
+
+
         foreach ($data as $key => $value) {
-            $keys   .= "`$key`,";
-            $values .= prepare_mysql($value).",";
+            if (array_key_exists($key, $data)) {
+                $data[$key] = _trim($value);
+            }
         }
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
-        $sql    = sprintf(
-            "INSERT INTO `Shipping Zone Dimension` %s %s", $keys, $values
+
+
+
+        $sql = sprintf(
+            "INSERT INTO `Shipping Zone Dimension` (%s) values (%s)",
+            '`'.join('`,`', array_keys($data)).'`',
+            join(',', array_fill(0, count($data), '?'))
         );
 
+        $stmt = $this->db->prepare($sql);
 
 
-        if ($this->db->exec($sql)) {
+        $i = 1;
+        foreach ($data as $key => $value) {
+            $stmt->bindValue($i, $value);
+            $i++;
+        }
+
+
+        if ($stmt->execute()) {
             $this->id = $this->db->lastInsertId();
             $this->new=true;
             $this->get_data('id', $this->id);
@@ -179,6 +193,10 @@ class Shipping_Zone extends DB_Table {
 
 
         } else {
+
+            print_r($stmt->errorInfo());
+
+
             print "Error can not create shipping zone  $sql\n";
             exit;
 

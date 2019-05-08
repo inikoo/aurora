@@ -158,7 +158,7 @@ class Shipping_Zone_Schema extends DB_Table {
 
         $stmt = $this->db->prepare($sql);
         $i = 1;
-        foreach ($this->data as $key => $value) {
+        foreach ($data as $key => $value) {
             $stmt->bindValue($i, $value);
             $i++;
         }
@@ -188,6 +188,8 @@ class Shipping_Zone_Schema extends DB_Table {
 
 
         } else {
+            print_r($stmt->errorInfo());
+
             print "Error can not create shipping zone schema:  $sql\n";
             exit;
 

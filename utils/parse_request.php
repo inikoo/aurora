@@ -234,6 +234,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
                     } elseif ($view_path[0] == 'new') {
+                        $module     = 'products_server';
                         $section = 'store.new';
                         $object  = '';
 

@@ -12,8 +12,7 @@
 
 
 
-   // $html='<div style="padding:20px">'.sprintf(_("Store don't have website, set it up %s"),'<span class="marked_link" onClick="change_view(\'/store/'.$state['store']->id.'/website/new\')" >'._('here').'</span>').'</div>';
- $html='<div style="padding:20px">'._("Store don't have website").'</div>';
+$html='<div style="padding:20px">'.sprintf(_("Store don't have website, set it up %s"),'<span class="marked_link" onClick="change_view(\'/store/'.$state['store']->id.'/website/new\')" >'._('here').'</span>').'</div>';
 
 
 return;
