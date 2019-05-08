@@ -1713,6 +1713,8 @@ class Order extends DB_Table {
         }
 
 
+
+
         $date = gmdate('Y-m-d H:i:s');
 
         $this->data['Order Cancelled Date'] = $date;
@@ -1744,18 +1746,15 @@ class Order extends DB_Table {
         );
 
         $sql = sprintf(
-            "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order Payment State`=%s,`Order State`=%s,`Order Current XHTML Dispatch State`=%s,`Order Current XHTML Payment State`=%s,
-				`Order XHTML Invoices`='',`Order XHTML Delivery Notes`=''
-				,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s
+            "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order Payment State`=%s,`Order State`=%s,`Order Current XHTML Payment State`=%s,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s
 				,`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order To Pay Amount`=%.2f,`Order Items Cost`=0
 				WHERE `Order Key`=%d"//     ,$no_shipped
-            , prepare_mysql($this->data['Order Cancelled Date']), prepare_mysql($this->data['Order Payment State']), prepare_mysql($this->data['Order State']), prepare_mysql(
-                $this->data['Order Current XHTML Dispatch State']
-            ), prepare_mysql($this->data['Order Current XHTML Payment State']), prepare_mysql($this->data['Order Cancel Note']), $this->data['Order To Pay Amount'],
+            , prepare_mysql($this->data['Order Cancelled Date']), prepare_mysql($this->data['Order Payment State']), prepare_mysql($this->data['Order State']), prepare_mysql($this->data['Order Current XHTML Payment State']), prepare_mysql($this->data['Order Cancel Note']), $this->data['Order To Pay Amount'],
 
             $this->id
         );
-        //print $sql;
+
+
         $this->db->exec($sql);
 
 
