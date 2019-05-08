@@ -1238,6 +1238,9 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
 
     $title = _('Order').' <span class="id">'.$object->get('Order Public ID').'</span>';
 
+    $title.='<span title="'._("Customer's purchase order number").'" class="padding_left_10 Order_Customer_Purchase_Order_ID_container '.($object->get('Customer Purchase Order ID')==''?'hide':'').'   ">(<span class="Order_Customer_Purchase_Order_ID">'.$object->get('Customer Purchase Order ID').'</span>)</span>';
+
+
 
     $_content = array(
         'sections_class' => '',
