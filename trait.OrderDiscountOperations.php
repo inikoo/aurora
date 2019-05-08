@@ -859,7 +859,7 @@ trait OrderDiscountOperations {
                                 $product_code = $row['Preference Metadata'];
 
                                 $sql = sprintf(
-                                    "SELECT `Product ID` FROM `Product Dimension` WHERE `Product Store Key`=%s AND `Product Code`=%s AND `Product Main Type`='Sale'", $this->data['Order Store Key'], prepare_mysql($product_code)
+                                    "SELECT `Product ID` FROM `Product Dimension` WHERE `Product Store Key`=%s AND `Product Code`=%s AND `Product Status` in ('Active','Discontinuing')   ", $this->data['Order Store Key'], prepare_mysql($product_code)
                                 );
 
 
@@ -879,7 +879,7 @@ trait OrderDiscountOperations {
                                 if ($product_pid) {
 
                                     $sql = sprintf(
-                                        "SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Main Type`='Sale' AND `Product Family Category Key`=%d AND `Product ID`=%d", $category_key, $product_pid
+                                        "SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Status` in ('Active','Discontinuing') AND `Product Family Category Key`=%d AND `Product ID`=%d", $category_key, $product_pid
                                     );
 
 
@@ -903,7 +903,7 @@ trait OrderDiscountOperations {
                                 }
                             } else {
                                 $sql = sprintf(
-                                    "SELECT `Product ID` FROM `Product Dimension` WHERE `Product Store Key`=%s AND `Product Code`=%s AND `Product Main Type`='Sale'", $this->data['Order Store Key'], prepare_mysql($get_free_allowance[1])
+                                    "SELECT `Product ID` FROM `Product Dimension` WHERE `Product Store Key`=%s AND `Product Code`=%s AND `Product Status` in ('Active','Discontinuing')", $this->data['Order Store Key'], prepare_mysql($get_free_allowance[1])
                                 );
 
 
@@ -929,7 +929,7 @@ trait OrderDiscountOperations {
 
 
                         $sql = sprintf(
-                            "SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Main Type`='Sale' AND `Product Family Category Key`=%d AND `Product ID`=%d", $category_key, $product_pid
+                            "SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Status` in ('Active','Discontinuing') AND `Product Family Category Key`=%d AND `Product ID`=%d", $category_key, $product_pid
                         );
 
                         if ($result_2 = $this->db->query($sql)) {
@@ -2120,7 +2120,7 @@ trait OrderDiscountOperations {
         $deal_info = '';
 
         $sql = sprintf(
-            'SELECT `Order Transaction Amount`,OTF.`Product ID`,`Product XHTML Short Description`,`Order Quantity`,`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` FROM  `Order Transaction Fact` OTF LEFT JOIN `Product Dimension` P ON  (P.`Product ID`=OTF.`Product ID`) WHERE `Order Transaction Fact Key`=%d ',
+            'SELECT `Order Transaction Amount`,OTF.`Product ID`,`Product Name`,`Order Quantity`,`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` FROM  `Order Transaction Fact` OTF LEFT JOIN `Product Dimension` P ON  (P.`Product ID`=OTF.`Product ID`) WHERE `Order Transaction Fact Key`=%d ',
             $otf_key
         );
 
@@ -2132,7 +2132,7 @@ trait OrderDiscountOperations {
                     $return_data = array(
                         'updated'             => true,
                         'otf_key'             => $otf_key,
-                        'description'         => $row['Product XHTML Short Description'].' <span class="deal_info">'.$deal_info.'</span>',
+                        'description'         => $row['Product Name'].' <span class="deal_info">'.$deal_info.'</span>',
                         'discount_percentage' => percentage(
                             $discount_amount, $row['Order Transaction Gross Amount'], $fixed = 1, $error_txt = 'NA', $psign = ''
                         ),
@@ -2308,7 +2308,7 @@ trait OrderDiscountOperations {
 
                     $category_key = $row['Deal Component Allowance Target Key'];
                     $sql          = sprintf(
-                        "SELECT `Product Family Category Key`,`Product Current Key`,`Product Code`,`Product ID`,`Product Name` FROM `Product Dimension` WHERE `Product Main Type`='Sale' AND `Product Category Key`=%d ORDER BY `Product Code File As`", $category_key
+                        "SELECT `Product Family Category Key`,`Product Current Key`,`Product Code`,`Product ID`,`Product Name` FROM `Product Dimension` WHERE `Product Status` in ('Active','Discontinuing') AND `Product Category Key`=%d ORDER BY `Product Code File As`", $category_key
 
                     );
 

@@ -219,7 +219,7 @@ trait OrderItems {
 
                     $sql = sprintf(
                         "INSERT INTO `Order Transaction Fact` ( `OTF Category Department Key`,`OTF Category Family Key`,  `Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Order Last Updated Date`,
-			`Product Key`,`Product ID`,`Product Code`,`Product Family Key`,`Product Department Key`,
+			`Product Key`,`Product ID`,`Product Code`,`Product Family Category Key`,`Product Department Key`,
 			`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Quantity`,
 			`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Store Key`,`Units Per Case`,`Delivery Note Key`,`Cost Supplier`,`Order Transaction Metadata`)
 VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
@@ -230,7 +230,7 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
                         prepare_mysql($product->get('Product Department Category Key')),prepare_mysql($product->get('Product Department Category Key')),
                         $bonus_quantity, prepare_mysql($order_type), $tax_rate, prepare_mysql($tax_code), prepare_mysql($this->data['Order Currency']),  $estimated_weight, prepare_mysql(gmdate('Y-m-d H:i:s')),
 
-                        prepare_mysql(gmdate('Y-m-d H:i:s')), $product->historic_id, $product->data['Product ID'], prepare_mysql($product->data['Product Code']), $product->data['Product Family Key'], $product->data['Product Main Department Key'],
+                        prepare_mysql(gmdate('Y-m-d H:i:s')), $product->historic_id, $product->data['Product ID'], prepare_mysql($product->data['Product Code']), $product->data['Product Family Category Key'], $product->data['Product Department Category Key'],
                         prepare_mysql($data['Current Dispatching State']), prepare_mysql($data['Current Payment State']), prepare_mysql($this->data['Order Customer Key']), prepare_mysql($this->data['Order Key']),  $quantity,
                         $gross, 0, $gross,  prepare_mysql($this->data['Order Store Key']), $product->data['Product Units Per Case'], prepare_mysql($dn_key), $cost
                     );

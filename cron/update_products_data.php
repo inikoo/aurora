@@ -102,7 +102,6 @@ function update_products_data($db) {
             $product->fast_update(array('Product Published Webpage Description' => $web_text));
 
 
-            // $product->update(array('Product Parts Data'=>json_encode($product->get_parts_data())),'no_history');
 
         }
 

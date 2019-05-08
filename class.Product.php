@@ -207,10 +207,6 @@ class Product extends Asset {
         );
 
 
-        $this->data['Product Stage']             = 'New';
-        $this->data['Product Sales Type']        = 'Public Sale';
-        $this->data['Product Availability Type'] = 'Normal';
-        $this->data['Product Main Type']         = 'Sale';
 
         if ($this->data['Product Packing Group'] == '') {
             $this->data['Product Packing Group'] = 'None';
@@ -227,8 +223,6 @@ class Product extends Asset {
             $keys .= ",`".$key."`";
             if (in_array(
                 $key, array(
-                        'Product Special Characteristic Component A',
-                        'Product Special Characteristic Component B',
                         'Product XHTML Next Supplier Shipment',
                     )
             )) {
@@ -1237,32 +1231,6 @@ class Product extends Asset {
     }
 
 
-    function update_pages_numbers() {
-
-        $number_pages = 0;
-
-        $sql = sprintf(
-            'SELECT count(DISTINCT `Page Key`) AS num FROM `Page Product Dimension`  WHERE `Product ID`=%d', $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_pages = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        $this->update(
-            array(
-                'Product Number Web Pages' => $number_pages,
-
-
-            ), 'no_history'
-        );
-
-    }
 
     function update_status_from_parts() {
 
@@ -1579,7 +1547,7 @@ class Product extends Asset {
 
             $sql = sprintf(
                 "INSERT INTO `Product Availability Timeline`  (`Product ID`,`Store Key`,`Department Key`,`Family Key`,`User Key`,`Date`,`Availability`,`Web State`) VALUES (%d,%d,%d,%d,%d,%s,%s,%s) ", $this->id, $this->data['Product Store Key'],
-                $this->data['Product Main Department Key'], $this->data['Product Family Category Key'], $user_key, prepare_mysql($new_date_formatted), prepare_mysql($web_availability), prepare_mysql($web_state)
+                $this->data['Product Department Category Key'], $this->data['Product Family Category Key'], $user_key, prepare_mysql($new_date_formatted), prepare_mysql($web_availability), prepare_mysql($web_state)
 
             );
             $this->db->exec($sql);
@@ -3454,7 +3422,6 @@ class Product extends Asset {
         $this->update_part_numbers();
 
 
-        $this->fast_update(array('Product Parts Data' => json_encode($this->get_parts_data())));
         $this->fast_update(array('Product XHTML Parts' => $this->get('Parts')));
 
 
@@ -3950,13 +3917,13 @@ class Product extends Asset {
         switch ($type) {
             case 'Same Family':
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Category Key`=%d order by `Product Total Acc Customers` desc  ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Status` in ('Active','Discontinuing') and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Category Key`=%d order by `Product Total Acc Customers` desc  ",
                     $this->data['Product Store Key'], $this->data['Product Family Category Key']
                 );
                 break;
             case 'Exclude Same Family':
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Category Key`!=%d order by `Product Total Acc Customers` desc  ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Status` in ('Active','Discontinuing') and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Category Key`!=%d order by `Product Total Acc Customers` desc  ",
                     $this->data['Product Store Key'], $this->data['Product Family Category Key']
                 );
 
@@ -3965,7 +3932,7 @@ class Product extends Asset {
             case 'Same Department':
 
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Status` in ('Active','Discontinuing') and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
                     $this->data['Product Store Key'], $limit
                 );
 
@@ -3974,7 +3941,7 @@ class Product extends Asset {
             default:
 
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Status` in ('Active','Discontinuing') and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
                     $this->data['Product Store Key'], $limit
                 );
 

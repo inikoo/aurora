@@ -168,7 +168,7 @@ div.inline { float:left; }
 			{foreach from=$transactions item=transaction name=products} 
 			<tr class="{if $smarty.foreach.products.last}last{/if}">
 				<td style="width:8%;text-align:left">{$transaction['Product Code']}</td>
-				<td style="text-align:left">{$transaction['Product XHTML Short Description']}</td>
+				<td style="text-align:left">{$transaction['Product Description']}</td>
 				<td style="width:8%;text-align:right">{$transaction['Discount']}</td>
 				
 				<td style="width:8%;text-align:right">{$transaction['Order Quantity']}</td>

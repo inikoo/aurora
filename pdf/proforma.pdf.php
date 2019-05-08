@@ -126,7 +126,7 @@ $smarty->assign('label_title_no', _('Proforma No.'));
 $transactions = array();
 $sql          = sprintf(
     "SELECT `Product Origin Country Code`,`Product Unit Weight`,`Order Transaction Amount`,`Order Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
-`Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,`Product XHTML Short Description`,P.`Product ID`,O.`Product Code`
+`Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product History XHTML Short Description`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code`
  FROM `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN
   `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Order Key`=%d ORDER BY `Product Code`", $order->id
 );
@@ -193,7 +193,7 @@ if ($result = $db->query($sql)) {
             $description .= '<br>'._('Tariff Code').': '.$row['Product Tariff Code'];
         }
 
-        $row['Product XHTML Short Description'] = $description;
+        $row['Product Description'] = $description;
 
         $row['Discount'] = $discount;
 
@@ -221,7 +221,7 @@ if ($order->data['Order Deal Amount Off']) {
 
 
     $row['Product Code']                    = _('Amount Off');
-    $row['Product XHTML Short Description'] = '';
+    $row['Product Description'] = '';
     $row['Net']                             = money($net, $order->get('Currency Code'));
     $row['Tax']                             = money($tax,  $order->get('Currency Code'));
     $row['Amount']                          = money($total, $order->get('Currency Code'));
@@ -275,7 +275,7 @@ if ($result = $db->query($sql)) {
         $transactions_no_products[] = array(
 
             'Product Code'                    => $code,
-            'Product XHTML Short Description' => $row['Transaction Description'],
+            'Product Description' => $row['Transaction Description'],
             'Order Quantity'                  => '',
             'Net'                             => money($row['Transaction Net Amount'], $row['Currency Code']),
             'Tax'                             => money($row['Transaction Tax Amount'], $row['Currency Code']),
@@ -298,7 +298,7 @@ $sql = sprintf(
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $row['Product Code']                    = _('Credit');
-        $row['Product XHTML Short Description'] = $row['Transaction Description'];
+        $row['Product Description'] = $row['Transaction Description'];
         $row['Net']                             = money(
             ($row['Transaction Refund Net Amount']), $row['Currency Code']
         );
@@ -372,7 +372,7 @@ if ($order->data['Order Type'] == 'CreditNote') {
 
             }
             $row['Product Code']                    = $code;
-            $row['Product XHTML Short Description'] = $row['Transaction Description'];
+            $row['Product Description'] = $row['Transaction Description'];
             $row['Amount']                          = money(
                 ($row['Transaction Order Net Amount']), $row['Currency Code']
             );
