@@ -112,7 +112,7 @@ $invoice_header = "";
 foreach ($invoice_header_data as $header_item) {
     $invoice_header .= $header_item."\t";
 }
-$invoice_header .= "\n";
+$invoice_header .= "\r\n";
 
 
 $text.= $invoice_header;
@@ -141,7 +141,7 @@ $invoice_row = "";
 foreach ($row_data as $column) {
     $invoice_row .= $column."\t";
 }
-$invoice_row .= "\n";
+$invoice_row .= "\r\n";
 $text.=  $invoice_row;
 
 $row_data = array(
@@ -163,7 +163,7 @@ $invoice_row = "";
 foreach ($row_data as $column) {
     $invoice_row .= $column."\t";
 }
-$invoice_row .= "\n";
+$invoice_row .= "\r\n";
 $text.=  $invoice_row;
 
 
@@ -185,7 +185,7 @@ if($invoice->get('Invoice Shipping Net Amount')!=0){
     foreach ($row_data as $column) {
         $invoice_row .= $column."\t";
     }
-    $invoice_row .= "\n";
+    $invoice_row .= "\r\n";
     $text.=  $invoice_row;
 
 }
@@ -209,7 +209,7 @@ if($invoice->get('Invoice Charges Net Amount')!=0){
     foreach ($row_data as $column) {
         $invoice_row .= $column."\t";
     }
-    $invoice_row .= "\n";
+    $invoice_row .= "\r\n";
     $text.=  $invoice_row;
 
 }
@@ -233,7 +233,7 @@ if($invoice->get('Invoice Total Tax Amount')!=0){
     foreach ($row_data as $column) {
         $invoice_row .= $column."\t";
     }
-    $invoice_row .= "\n";
+    $invoice_row .= "\r\n";
     $text.=  $invoice_row;
 
 }
