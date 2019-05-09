@@ -69,7 +69,7 @@ if ($account->get('Account Country 2 Alpha Code') == $invoice->get('Invoice Addr
     $invoice_alpha_code = 'zOF';
 }
 
-$text = "R00\tT00\n";
+$text = "R00\tT00\r\n";
 
 $invoice_header_data = array(
     'R01',
