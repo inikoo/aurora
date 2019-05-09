@@ -131,7 +131,7 @@ $invoice_header_data = array(
     '',
     '/',
     0,
-    '',
+    '', '',
     0
 
 );
