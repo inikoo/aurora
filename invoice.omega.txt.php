@@ -69,7 +69,7 @@ if ($account->get('Account Country 2 Alpha Code') == $invoice->get('Invoice Addr
     $invoice_alpha_code = 'zOF';
 }
 
-$text = "R00\tT01\r\n";
+$text = "R00\tT00\r\n";
 
 $invoice_header_data = array(
     'R01',
@@ -104,7 +104,7 @@ $invoice_header .= "\r\n";
 
 $text .= $invoice_header;
 
-/*
+
 $row_data = array(
     'R02',
     0,
@@ -127,31 +127,17 @@ foreach ($row_data as $column) {
     $invoice_row .= $column."\t";
 }
 $invoice_row .= "\r\n";
-$text        .= $invoice_row;
+//$text        .= $invoice_row;
 
 $row_data = array(
     'R02',
-    0,
-    '',
-    '',
-    604,
-    $invoice_numeric_code_total,
-    $invoice->get('Invoice Items Net Amount'),
-    round($invoice->get('Invoice Items Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
     'Items '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
-    '3',
-    '',
-    'X',
-    '(Nedefinované)',
-    'X',
-    '(Nedefinované)',
-    'X',
-    '(Nedefinované)',
-    'X',
-    '(Nedefinované)',
-    '','','','','',
-    'X',
-    '','','',0,0
+    1,
+    'Ks',
+    round($invoice->get('Invoice Items Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
+    'V'
+
+
 );
 
 
@@ -166,27 +152,12 @@ $text        .= $invoice_row;
 if ($invoice->get('Invoice Shipping Net Amount') != 0) {
     $row_data = array(
         'R02',
-        0,
-        '',
-        '',
-        604,
-        $invoice_numeric_code_shipping,
-        $invoice->get('Invoice Shipping Net Amount'),
-        round($invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
         'Shipping '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
-        '3',
-        '',
-        'X',
-        '(Nedefinované)',
-        'X',
-        '(Nedefinované)',
-        'X',
-        '(Nedefinované)',
-        'X',
-        '(Nedefinované)',
-        '','','','','',
-        'A1',
-        '','','',0,0
+        1,
+        'Ks',
+        round($invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
+        'V'
+
     );
 
     $invoice_row = "";
@@ -202,27 +173,13 @@ if ($invoice->get('Invoice Shipping Net Amount') != 0) {
 if ($invoice->get('Invoice Charges Net Amount') != 0) {
     $row_data = array(
         'R02',
-        0,
-        '',
-        '',
-        604,
-        $invoice_numeric_code_charges,
-        $invoice->get('Invoice Charges Net Amount'),
-        round($invoice->get('Invoice Charges Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
         'Charges '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
-        '3',
-        '',
-        'X',
-        '(Nedefinované)',
-        'X',
-        '(Nedefinované)',
-        'X',
-        '(Nedefinované)',
-        'X',
-        '(Nedefinované)',
-        '','','','','',
-        'A1',
-        '','','',0,0
+        1,
+        'Ks',
+        round($invoice->get('Invoice Charges Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
+        'V'
+
+
     );
 
     $invoice_row = "";
@@ -235,42 +192,7 @@ if ($invoice->get('Invoice Charges Net Amount') != 0) {
 }
 
 
-if ($invoice->get('Invoice Total Tax Amount') != 0) {
-    $row_data = array(
-        'R02',
-        0,
-        '',
-        '',
-        343,
-        220,
-        $invoice->get('Invoice Total Tax Amount'),
-        round($invoice->get('Invoice Total Tax Amount') * $invoice->get('Invoice Currency Exchange'), 2),
-        'Tax '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
-        '4',
-        '',
-        'X',
-        '(Nedefinované)',
-        'X',
-        '(Nedefinované)',
-        'X',
-        '(Nedefinované)',
-        'X',
-        '(Nedefinované)',
-        '','','','','',
-        'A1',
-        '','','',0,0
-    );
 
-    $invoice_row = "";
-    foreach ($row_data as $column) {
-        $invoice_row .= $column."\t";
-    }
-    $invoice_row .= "\r\n";
-    $text        .= $invoice_row;
-
-}
-
-*/
 $text = mb_convert_encoding($text, 'iso-8859-2', 'auto');
 
 header("Content-type: text/plain");
