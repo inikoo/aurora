@@ -56,8 +56,16 @@ $smarty->assign('number_dns', $number_dns);
 if ($account->get('Account Country 2 Alpha Code') == $invoice->get('Invoice Address Country 2 Alpha Code')) {
     $invoice_numeric_code = 100;
     $invoice_alpha_code   = 'OF';
+    $invoice_numeric_code_total = 100;
+    $invoice_numeric_code_shipping = 101;
+    $invoice_numeric_code_charges = 102;
+
 } else {
-    $invoice_numeric_code = 100;
+    $invoice_numeric_code = 300;
+    $invoice_numeric_code_total = 200;
+    $invoice_numeric_code_shipping = 201;
+    $invoice_numeric_code_charges = 202;
+
     $invoice_alpha_code   = 'zOF';
 }
 
@@ -73,7 +81,7 @@ $invoice_header_data = array(
     $invoice->get('Invoice Public ID'),
     $invoice->get('Invoice Customer Name'),
     $invoice->get('Invoice Registration Number'),
-    $invoice->get('Invoice Tax Number'),
+    preg_replace('/^[^a-zA-Z]*/','',$invoice->get('Invoice Tax Number')),
     date('d.m.Y',strtotime($invoice->get_date('Invoice Date'))),
     '',
     date('d.m.Y',strtotime($invoice->get_date('Invoice Tax Liability Date'))),
@@ -142,12 +150,14 @@ $row_data = array(
     '',
     '',
     604,
-    200,
+    $invoice_numeric_code_total,
     $invoice->get('Invoice Items Net Amount'),
     round($invoice->get('Invoice Items Net Amount')* $invoice->get('Invoice Currency Exchange'),2),
     'Items '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
     '3',
 );
+
+
 
 $invoice_row = "";
 foreach ($row_data as $column) {
@@ -164,7 +174,7 @@ if($invoice->get('Invoice Shipping Net Amount')!=0){
         '',
         '',
         604,
-        201,
+        $invoice_numeric_code_shipping,
         $invoice->get('Invoice Shipping Net Amount'),
         round($invoice->get('Invoice Shipping Net Amount')* $invoice->get('Invoice Currency Exchange'),2),
         'Shipping '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
@@ -188,7 +198,7 @@ if($invoice->get('Invoice Charges Net Amount')!=0){
         '',
         '',
         604,
-        202,
+        $invoice_numeric_code_charges,
         $invoice->get('Invoice Charges Net Amount'),
         round($invoice->get('Invoice Charges Net Amount')* $invoice->get('Invoice Currency Exchange'),2),
         'Charges '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
