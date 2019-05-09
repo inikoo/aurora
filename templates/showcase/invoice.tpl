@@ -280,7 +280,7 @@
 
     function export_omega(){
 
-        window.open('/invoice.omega2.txt.php?id={$invoice->id}', '_blank')
+        window.open('/invoice.omega.txt.php?id={$invoice->id}', '_blank')
     }
 
 </script>
