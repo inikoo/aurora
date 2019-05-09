@@ -69,70 +69,29 @@ if ($account->get('Account Country 2 Alpha Code') == $invoice->get('Invoice Addr
     $invoice_alpha_code = 'zOF';
 }
 
-$text = "R00\tT00\r\n";
+$text = "R00\tT01\r\n";
 
 $invoice_header_data = array(
     'R01',
-    $invoice_numeric_code,
-    $invoice_alpha_code,
-    $invoice_alpha_code,
-
-    $order->get('Order Public ID'),
     $invoice->get('Invoice Public ID'),
     $invoice->get('Invoice Customer Name'),
     $invoice->get('Invoice Registration Number'),
-    preg_replace('/^[^0-9]*/', '', $invoice->get('Invoice Tax Number')),
-    date('d.m.Y', strtotime($invoice->get_date('Invoice Date'))),
-    '',
     date('d.m.Y', strtotime($invoice->get_date('Invoice Tax Liability Date'))),
-    date('d.m.Y', strtotime($order->get_date('Order Date'))),
-    date('d.m.Y', strtotime($order->get_date('Order Date'))),
-    $invoice->get('Invoice Currency'),
-    1,
-    $invoice->get('Invoice Currency Exchange'),
-    0,
-    round($invoice->get('Invoice Total Amount') * $invoice->get('Invoice Currency Exchange'), 2),
-    $invoice->get('Invoice Total Amount'),
-    10,
-    20,
-    '0.000',
+    date('d.m.Y', strtotime($invoice->get_date('Invoice Tax Liability Date'))),
+    date('d.m.Y', strtotime($invoice->get_date('Invoice Tax Liability Date'))),
+    '0.00',
     $invoice->get('Invoice Items Net Amount') + $invoice->get('Invoice Shipping Net Amount') + $invoice->get('Invoice Charges Net Amount'),
-    '0.000',
-    '0.000',
-    '0.000',
-    ($invoice->get('Invoice Total Tax Amount') == 0 ? '' : $invoice->get('Invoice Total Tax Amount')),
-    ($invoice->get('Invoice Total Tax Amount') == 0 ? '' : '0.000'),
-    'Tomášková Andrea',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '1374',
-    '',
-    date('H:i:s'),
-    '',
-    'Total '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
+    '0.00',
+    '0.00',
     0,
-    '',
-    '',
-    '',
-    0,
-    0,
-    'EJA',
-    'José António Erika',
-    $store->get('Code'),
-    0,
-    $store->get('Code'),
-    'Tomášková Andrea',
-    $invoice->get('Invoice Public ID'),
-    '',
-    '',
-    '/',
-    0,
-    '', '',
+    20,
+    '0.00',
+    $invoice->get('Invoice Total Tax Amount'),
+    $invoice->get('Invoice Total Amount'),
     0
+
+
+
 
 );
 
@@ -145,7 +104,7 @@ $invoice_header .= "\r\n";
 
 $text .= $invoice_header;
 
-
+/*
 $row_data = array(
     'R02',
     0,
@@ -311,7 +270,7 @@ if ($invoice->get('Invoice Total Tax Amount') != 0) {
 
 }
 
-
+*/
 $text = mb_convert_encoding($text, 'iso-8859-2', 'auto');
 
 header("Content-type: text/plain");
