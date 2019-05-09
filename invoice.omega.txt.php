@@ -81,7 +81,7 @@ $invoice_header_data = array(
     $invoice->get('Invoice Public ID'),
     $invoice->get('Invoice Customer Name'),
     $invoice->get('Invoice Registration Number'),
-    preg_replace('/^[^a-zA-Z]*/','',$invoice->get('Invoice Tax Number')),
+    preg_replace('/^[^0-9]*/','',$invoice->get('Invoice Tax Number')),
     date('d.m.Y',strtotime($invoice->get_date('Invoice Date'))),
     '',
     date('d.m.Y',strtotime($invoice->get_date('Invoice Tax Liability Date'))),
