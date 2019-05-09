@@ -181,6 +181,18 @@ $row_data = array(
     round($invoice->get('Invoice Items Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
     'Items '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
     '3',
+    '',
+    'X',
+    '(Nedefinované)',
+    'X',
+    '(Nedefinované)',
+    'X',
+    '(Nedefinované)',
+    'X',
+    '(Nedefinované)',
+    '','','','','',
+    'X',
+    '','','',0,0
 );
 
 
@@ -204,6 +216,18 @@ if ($invoice->get('Invoice Shipping Net Amount') != 0) {
         round($invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
         'Shipping '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
         '3',
+        '',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        '','','','','',
+        'A!',
+        '','','',0,0
     );
 
     $invoice_row = "";
@@ -228,6 +252,18 @@ if ($invoice->get('Invoice Charges Net Amount') != 0) {
         round($invoice->get('Invoice Charges Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
         'Charges '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
         '3',
+        '',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        '','','','','',
+        'A!',
+        '','','',0,0
     );
 
     $invoice_row = "";
@@ -252,6 +288,18 @@ if ($invoice->get('Invoice Total Tax Amount') != 0) {
         round($invoice->get('Invoice Total Tax Amount') * $invoice->get('Invoice Currency Exchange'), 2),
         'Tax '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
         '4',
+        '',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        '','','','','',
+        'A!',
+        '','','',0,0
     );
 
     $invoice_row = "";
