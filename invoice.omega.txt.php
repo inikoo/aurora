@@ -73,25 +73,66 @@ $text = "R00\tT00\r\n";
 
 $invoice_header_data = array(
     'R01',
+    $invoice_numeric_code,
+    $invoice_alpha_code,
+    $invoice_alpha_code,
+
+    $order->get('Order Public ID'),
     $invoice->get('Invoice Public ID'),
     $invoice->get('Invoice Customer Name'),
     $invoice->get('Invoice Registration Number'),
+    preg_replace('/^[^0-9]*/', '', $invoice->get('Invoice Tax Number')),
+    date('d.m.Y', strtotime($invoice->get_date('Invoice Date'))),
+    '',
     date('d.m.Y', strtotime($invoice->get_date('Invoice Tax Liability Date'))),
-    date('d.m.Y', strtotime($invoice->get_date('Invoice Tax Liability Date'))),
-    date('d.m.Y', strtotime($invoice->get_date('Invoice Tax Liability Date'))),
-    '0.00',
-    $invoice->get('Invoice Items Net Amount') + $invoice->get('Invoice Shipping Net Amount') + $invoice->get('Invoice Charges Net Amount'),
-    '0.00',
-    '0.00',
+    date('d.m.Y', strtotime($order->get_date('Order Date'))),
+    date('d.m.Y', strtotime($order->get_date('Order Date'))),
+    $invoice->get('Invoice Currency'),
+    1,
+    $invoice->get('Invoice Currency Exchange'),
     0,
-    20,
-    '0.00',
-    $invoice->get('Invoice Total Tax Amount'),
+    round($invoice->get('Invoice Total Amount') * $invoice->get('Invoice Currency Exchange'), 2),
     $invoice->get('Invoice Total Amount'),
+    10,
+    20,
+    '0.000',
+    $invoice->get('Invoice Items Net Amount') + $invoice->get('Invoice Shipping Net Amount') + $invoice->get('Invoice Charges Net Amount'),
+    '0.000',
+    '0.000',
+    '0.000',
+    ($invoice->get('Invoice Total Tax Amount') == 0 ? '' : $invoice->get('Invoice Total Tax Amount')),
+    ($invoice->get('Invoice Total Tax Amount') == 0 ? '' : '0.000'),
+    'Tomášková Andrea',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '1374',
+    '',
+    date('H:i:s'),
+    '',
+    'Total '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
+    0,
+    '',
+    '',
+    '',
+    0,
+    0,
+    'EJA',
+    'José António Erika',
+    $store->get('Code'),
+    0,
+    $store->get('Code'),
+    'Tomášková Andrea',
+    $invoice->get('Invoice Public ID'),
+    '',
+    '',
+    '/',
+    0,
+    '', '',
     0
-
-
-
 
 );
 
@@ -127,17 +168,31 @@ foreach ($row_data as $column) {
     $invoice_row .= $column."\t";
 }
 $invoice_row .= "\r\n";
-//$text        .= $invoice_row;
+$text        .= $invoice_row;
 
 $row_data = array(
     'R02',
-    'Items '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
-    1,
-    'Ks',
+    0,
+    '',
+    '',
+    604,
+    $invoice_numeric_code_total,
+    $invoice->get('Invoice Items Net Amount'),
     round($invoice->get('Invoice Items Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
-    'V'
-
-
+    'Items '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
+    '3',
+    '',
+    'X',
+    '(Nedefinované)',
+    'X',
+    '(Nedefinované)',
+    'X',
+    '(Nedefinované)',
+    'X',
+    '(Nedefinované)',
+    '','','','','',
+    'X',
+    '','','',0,0
 );
 
 
@@ -152,12 +207,27 @@ $text        .= $invoice_row;
 if ($invoice->get('Invoice Shipping Net Amount') != 0) {
     $row_data = array(
         'R02',
-        'Shipping '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
-        1,
-        'Ks',
+        0,
+        '',
+        '',
+        604,
+        $invoice_numeric_code_shipping,
+        $invoice->get('Invoice Shipping Net Amount'),
         round($invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
-        'V'
-
+        'Shipping '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
+        '3',
+        '',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        '','','','','',
+        'A1',
+        '','','',0,0
     );
 
     $invoice_row = "";
@@ -173,13 +243,27 @@ if ($invoice->get('Invoice Shipping Net Amount') != 0) {
 if ($invoice->get('Invoice Charges Net Amount') != 0) {
     $row_data = array(
         'R02',
-        'Charges '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
-        1,
-        'Ks',
+        0,
+        '',
+        '',
+        604,
+        $invoice_numeric_code_charges,
+        $invoice->get('Invoice Charges Net Amount'),
         round($invoice->get('Invoice Charges Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
-        'V'
-
-
+        'Charges '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
+        '3',
+        '',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        '','','','','',
+        'A1',
+        '','','',0,0
     );
 
     $invoice_row = "";
@@ -191,6 +275,41 @@ if ($invoice->get('Invoice Charges Net Amount') != 0) {
 
 }
 
+
+if ($invoice->get('Invoice Total Tax Amount') != 0) {
+    $row_data = array(
+        'R02',
+        0,
+        '',
+        '',
+        343,
+        220,
+        $invoice->get('Invoice Total Tax Amount'),
+        round($invoice->get('Invoice Total Tax Amount') * $invoice->get('Invoice Currency Exchange'), 2),
+        'Tax '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
+        '4',
+        '',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        'X',
+        '(Nedefinované)',
+        '','','','','',
+        'A1',
+        '','','',0,0
+    );
+
+    $invoice_row = "";
+    foreach ($row_data as $column) {
+        $invoice_row .= $column."\t";
+    }
+    $invoice_row .= "\r\n";
+    $text        .= $invoice_row;
+
+}
 
 
 $text = mb_convert_encoding($text, 'iso-8859-2', 'auto');
