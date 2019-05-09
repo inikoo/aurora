@@ -313,9 +313,10 @@
     </div>
     <div id="show_export_dialog" class="left square_button  {if !isset($export_fields)}hide{/if}  " title="{t}Export{/t}">
         <i onclick="show_export_dialog_left_button(this)" class="fa fa-download fa-fw"></i>
-
     </div>
-
+    <div id="show_export_dialog" class="left square_button  {if !isset($export_omega)}hide{/if}  " title="{t}Export for Omega accountancy software{/t}">
+        <i onclick="export_omega(this)" class="fa fa-omega fa-fw"></i>
+    </div>
     <div  style="position:absolute" class="export_dialog_container  ">
 
 
