@@ -230,6 +230,8 @@
                                 </td>
 
                             </tr>
+
+
                         </table>
 
 
@@ -237,6 +239,17 @@
 
                 </td>
             </tr>
+
+
+
+            {if isset($export_omega)}
+                <tr class="state " >
+                    <td>
+                        <span  class=" button" onclick="export_omega()"><i class="fa fa-omega"></i> Omega export</span>
+                    </td>
+
+                </tr>
+            {/if}
 
         </table>
 
@@ -262,6 +275,12 @@
         $('.pdf_invoice_dialog').removeClass('hide').offset({
             top: $(anchor_y).offset().top-1, left: $(anchor_x).offset().left-10
         })
+    }
+
+
+    function export_omega(){
+
+        window.open('/invoice.omega.txt.php?id={$invoice->id}', '_blank')
     }
 
 </script>

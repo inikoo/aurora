@@ -41,6 +41,12 @@ function get_invoice_showcase($data, $smarty, $user, $db) {
 
     $invoice = $data['_object'];
 
+
+    if($account->get('Account Country 2 Alpha Code')=='SK'){
+        $smarty->assign('export_omega',true);
+
+    }
+
     $tax_data = array();
     $sql      = sprintf(
         "SELECT `Tax Category Name`,`Tax Category Rate`,`Tax Amount`  FROM  `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Tax Code`)  WHERE B.`Invoice Key`=%d  AND `Tax Category Country Code`=%s  ", $invoice->id,
