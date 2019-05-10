@@ -331,6 +331,11 @@
                                 </td>
 
                             </tr>
+                            <tr data-field='parts' class="button pdf_option" onclick="check_field_value(this)">
+                                <td>
+                                    <i class="far fa-square  margin_right_10"></i> <span class="discreet">{t}Parts{/t}</span>
+                                </td>
+                            </tr>
                             <tr data-field='commodity' class="button pdf_option" onclick="check_field_value(this)">
                                 <td>
                                     <i class="far {if $pdf_with_commodity}fa-check-square{else}fa-square{/if} margin_right_10"></i> <span {if !$pdf_with_commodity}class="discreet"{/if}>{t}Commodity codes{/t}</span>
@@ -347,6 +352,7 @@
                                     <i class="far fa-square  margin_right_10"></i> <span class="discreet">{t}Country of origin{/t}</span>
                                 </td>
                             </tr>
+
                             <tr data-field='locale' class="button pdf_option {if !$pdf_show_locale_option}hide{/if}" onclick="check_field_value(this)">
                                 <td>
                                     <i class="far fa-square margin_right_10" data-value="en_GB"></i> <span class="discreet">{t}English{/t}</span>
@@ -715,6 +721,11 @@
                         <i class="far {if $pdf_with_rrp}fa-check-square{else}fa-square{/if} margin_right_10"></i> <span {if !$pdf_with_rrp}class="discreet"{/if}>{t}Recommended retail prices{/t}</span>
                     </td>
 
+                </tr>
+                <tr data-field='parts' class="button pdf_option" onclick="check_field_value(this)">
+                    <td>
+                        <i class="far fa-square  margin_right_10"></i> <span class="discreet">{t}Parts{/t}</span>
+                    </td>
                 </tr>
                 <tr data-field='commodity' class="button pdf_option" onclick="check_field_value(this)">
                     <td>

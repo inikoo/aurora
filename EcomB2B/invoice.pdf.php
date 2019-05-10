@@ -73,6 +73,14 @@ if (!empty($_REQUEST['barcode'])) {
     $print_barcode = false;
 }
 
+
+if (!empty($_REQUEST['parts'])) {
+    $parts = true;
+} else {
+    $parts = false;
+}
+
+
 if (!empty($_REQUEST['rrp'])) {
     $print_rrp = true;
 } else {
