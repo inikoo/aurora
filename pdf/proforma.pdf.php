@@ -41,9 +41,15 @@ $customer = get_object('Customer', $order->get('Order Customer Key'));
 
 if(!empty($_REQUEST['locale'])){
     $_locale=$_REQUEST['locale'];
-}else{
-    $_locale=$store->get('Store Locale');
+}else {
+    $_locale = $store->get('Store Locale');
+}
 
+
+if (!empty($_REQUEST['parts'])) {
+    $parts = true;
+} else {
+    $parts = false;
 }
 
 if(!empty($_REQUEST['commodity'])){
@@ -192,6 +198,27 @@ if ($result = $db->query($sql)) {
         if ($print_tariff_code and $row['Product Tariff Code'] != '') {
             $description .= '<br>'._('Tariff Code').': '.$row['Product Tariff Code'];
         }
+
+        if ($parts) {
+            $product=get_object('Product',$row['Product ID']);
+
+
+            $parts_data=$product->get_parts_data();
+
+            $parts='';
+            if(count($parts_data)>0){
+                $description .= '<br>';
+
+                foreach($parts_data as $part_data){
+                    $parts.=', '.$part_data['Units'].'x '.$part_data['Part Name'];
+                }
+
+                $description.=preg_replace('/\, /','',$parts);
+            }
+
+
+        }
+
 
         $row['Product Description'] = $description;
 

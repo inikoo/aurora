@@ -57,6 +57,13 @@ if (!empty($_REQUEST['barcode'])) {
     $print_barcode = false;
 }
 
+
+if (!empty($_REQUEST['parts'])) {
+    $parts = true;
+} else {
+    $parts = false;
+}
+
 if (!empty($_REQUEST['rrp'])) {
     $print_rrp = true;
 } else {
@@ -179,12 +186,17 @@ if ($invoice->data['Invoice Type'] == 'Invoice') {
 
 $transactions = array();
 
-$sql = sprintf(
-    "SELECT  `Product Barcode Number`,`Product Origin Country Code`,`Delivery Note Quantity` as Qty, `Order Transaction Amount` as Amount, `Product Unit Weight`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
+
+    $sql = sprintf(
+        "SELECT  `Product Barcode Number`,`Product Origin Country Code`,`Delivery Note Quantity` as Qty, `Order Transaction Amount` as Amount, `Product Unit Weight`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
 `Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code`
- FROM `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN
-  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=%d  and `Current Dispatching State`   and (`Order Transaction Amount`!=0 or `Delivery Note Quantity`!=0)  ORDER BY `Product Code`", $invoice->id
-);
+ FROM 
+ `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) 
+ 
+ WHERE `Invoice Key`=%d  and `Current Dispatching State`   and (`Order Transaction Amount`!=0 or `Delivery Note Quantity`!=0)  ORDER BY `Product Code`", $invoice->id
+    );
+
+
 
 //print $sql;exit;
 
@@ -257,6 +269,26 @@ if ($result = $db->query($sql)) {
             $description .= '<br>'._('Barcode').': '.$row['Product Barcode Number'];
         }
 
+        if ($parts) {
+            $product=get_object('Product',$row['Product ID']);
+
+
+            $parts_data=$product->get_parts_data();
+
+            $parts='';
+            if(count($parts_data)>0){
+                $description .= '<br>';
+
+                foreach($parts_data as $part_data){
+                    $parts.=', '.$part_data['Units'].'x '.$part_data['Part Name'];
+                }
+
+                $description.=preg_replace('/\, /','',$parts);
+            }
+
+
+        }
+
 
         $row['Description'] = $description;
 
@@ -270,7 +302,6 @@ if ($result = $db->query($sql)) {
     print "$sql\n";
     exit;
 }
-
 
 $transactions_no_products = array();
 

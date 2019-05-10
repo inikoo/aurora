@@ -207,7 +207,6 @@ class Product extends Asset {
         );
 
 
-
         if ($this->data['Product Packing Group'] == '') {
             $this->data['Product Packing Group'] = 'None';
         }
@@ -950,7 +949,7 @@ class Product extends Asset {
         include_once 'class.Part.php';
 
         $sql = sprintf(
-            "SELECT `Part Reference`,`Product Part Key`,`Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` 
+            "SELECT `Part Reference`,`Product Part Key`,`Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` ,`Part Recommended Product Unit Name`,`Part Units`
               FROM `Product Part Bridge` LEFT JOIN `Part Dimension` ON (`Part SKU`=`Product Part Part SKU`)  WHERE `Product Part Product ID`=%d ", $this->id
         );
 
@@ -961,12 +960,16 @@ class Product extends Asset {
 
 
                 $part_data = array(
-                    'Key'            => $row['Product Part Key'],
-                    'Ratio'          => $row['Product Part Ratio'],
-                    'Note'           => $row['Product Part Note'],
-                    'Part SKU'       => $row['Product Part Part SKU'],
-                    'Part Reference' => $row['Part Reference'],
-                );
+                    'Key'                   => $row['Product Part Key'],
+                    'Ratio'                 => $row['Product Part Ratio'],
+                    'Note'                  => $row['Product Part Note'],
+                    'Part SKU'              => $row['Product Part Part SKU'],
+                    'Part Reference'        => $row['Part Reference'],
+                    'Part Name' => $row['Part Recommended Product Unit Name'],
+                    'Part Units'            => $row['Part Units'],
+                    'Units'                 => floatval($row['Part Units']) * floatval($row['Product Part Ratio'])
+
+            );
 
 
                 if ($row['Product Part Linked Fields'] == '') {
@@ -1229,7 +1232,6 @@ class Product extends Asset {
         return $linked_fields_data;
 
     }
-
 
 
     function update_status_from_parts() {
@@ -2032,9 +2034,8 @@ class Product extends Asset {
         }
 
 
-
-            $sql = sprintf(
-                "SELECT
+        $sql = sprintf(
+            "SELECT
 		ifnull(count(DISTINCT `Customer Key`),0) AS customers,
 		ifnull(count(DISTINCT `Invoice Key`),0) AS invoices,
 		round(ifnull(sum( `Order Transaction Amount` +(  `Cost Supplier`/`Invoice Currency Exchange Rate`)  ),0),2) AS profit,
@@ -2045,12 +2046,12 @@ class Product extends Asset {
 		round(ifnull(sum((`Order Transaction Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net,
 		round(ifnull(sum((`Order Transaction Amount`+`Cost Supplier`)*`Invoice Currency Exchange Rate`),0),2) AS dc_profit
 		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` >0 AND  `Product ID`=%d %s %s ", $this->id, ($from_date ? sprintf(
-                'and `Invoice Date`>=%s', prepare_mysql($from_date)
-            ) : ''), ($to_date ? sprintf(
-                'and `Invoice Date`<%s', prepare_mysql($to_date)
-            ) : '')
+            'and `Invoice Date`>=%s', prepare_mysql($from_date)
+        ) : ''), ($to_date ? sprintf(
+            'and `Invoice Date`<%s', prepare_mysql($to_date)
+        ) : '')
 
-            );
+        );
 
 
         //print "$sql\n";
