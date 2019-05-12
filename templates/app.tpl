@@ -10,16 +10,16 @@
     <link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon"/>
 
 
-    <link href="/assets/au_app.min.css?v=190319v4" rel="stylesheet">
+    <link href="/assets/au_app.min.css?v=190319v5" rel="stylesheet">
 
 
     {if !$is_devel}
         <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
         <script src="https://wchat.freshchat.com/js/widget.js"></script>
     {/if}
-    <script src="/assets/aurora_libs.min.js?v190319"></script>
+    <script src="/assets/aurora_libs.min.js?v190319v2"></script>
 
-    <script src="/assets/aurora.min.js?v190507"></script>
+    <script src="/assets/aurora.min.js?v190507v2"></script>
 
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 
