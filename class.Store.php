@@ -721,7 +721,13 @@ class Store extends DB_Table {
                 }
 
                 break;
-
+            case 'send invoice attachment in delivery confirmation':
+                if($this->settings(preg_replace('/\s/', '_', $key))=='Yes'){
+                    return _('Yes');
+                }else{
+                    return _('No');
+                }
+                break;
             case 'data entry picking aid default picker':
             case 'data entry picking aid default packer':
 
@@ -4243,6 +4249,13 @@ class Store extends DB_Table {
             case 'data entry picking aid default packer':
             case 'data entry picking aid default shipper':
             case 'data entry picking aid default number boxes':
+            case 'invoice show rrp':
+            case 'invoice show parts':
+            case 'invoice show tariff codes':
+            case 'invoice show barcode':
+            case 'invoice show weight':
+            case 'invoice show origin':
+            case 'send invoice attachment in delivery confirmation':
 
                 $this->fast_update_json_field('Store Settings', preg_replace('/\s/', '_', $field), $value);
 

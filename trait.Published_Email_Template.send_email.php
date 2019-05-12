@@ -158,31 +158,116 @@ trait Send_Email {
             $to_address = 'raul@inikoo.com';
         }
 
-
-        $request                               = array();
-        $request['Source']                     = $_source;
-        $request['Destination']['ToAddresses'] = array($to_address);
-        $request['ConfigurationSetName']       = $this->account->get('Account Code');
-
-
-        $request['Message']['Subject']['Data'] = $this->get_email_subject();
-
-
-        if ($request['Message']['Subject']['Data'] == '') {
-
-            $this->error = true;
-            $this->msg   = _('Empty email subject');
-
-            return false;
-
+        if ($this->email_template_type->get('Email Campaign Type Code') == 'Delivery Confirmation' and $this->store->settings('send_invoice_attachment_in_delivery_confirmation') == 'Yes' and !empty($this->invoice_pdf)) {
+            $send_raw = true;
+        } else {
+            $send_raw = false;
         }
 
-        $request['Message']['Body']['Text']['Data'] = $this->get_email_plain_text();
+        $subject   = $this->get_email_subject();
+        $html_part = $this->get_email_html($email_tracking, $recipient, $data, $smarty, $localised_labels);
+        $text_part = $this->get_email_plain_text();
+
+        if ($send_raw) {
 
 
-        // if ($this->get('Published Email Template HTML') != '') {
+            $filename = $this->placeholders['[Invoice Number]'];
 
-        $request['Message']['Body']['Html']['Data'] = $this->get_email_html($email_tracking, $recipient, $data, $smarty, $localised_labels);
+            if ($filename == '') {
+                $filename = 'invoice';
+            }
+
+
+            $filename .= '.pdf';
+
+            $message = "To: ".$to_address."\n";
+            $message .= "From: ".$_source."\n";
+
+
+            $separator_multipart = md5($this->id.time());
+
+
+            $message .= "Subject: ".'=?utf-8?B?'.base64_encode($subject).'?='."\n";
+            $message .= "MIME-Version: 1.0\n";
+
+            $message .= 'Content-Type: multipart/mixed; boundary="'.$separator_multipart.'"';
+
+            $message .= "\n\n";
+            $message .= "--$separator_multipart\n";
+
+            if ($text_part != '') {
+
+                $message .= 'Content-Type: multipart/alternative; boundary="sub_'.$separator_multipart."\"\n\n";
+
+                $message .= '--sub_'.$separator_multipart."\n";
+                $message .= 'Content-Type: text/plain; charset=utf-8'."\n";
+                $message .= 'Content-Transfer-Encoding: quoted-printable'."\n";
+                $message .= "\n".$text_part."\n\n";
+
+                $message .= '--sub_'.$separator_multipart."\n";
+                $message .= 'Content-Type: text/html; charset=utf-8'."\n";
+                $message .= 'Content-Transfer-Encoding: quoted-printable'."\n";
+                $message .= "\n".$html_part."\n";
+
+                //$message .= "\n".'<p>hello</p>'."\n\n";
+
+                $message .= '--sub_'.$separator_multipart.'--'."\n\n";
+
+
+            } else {
+                $message .= 'Content-Type: text/html; charset=utf-8'."\n";
+                //  $message .= "Content-Transfer-Encoding: 7bit\n";
+                //$message .= "Content-Type-Encoding: base64\n";
+
+                $message .= "Content-Disposition: inline\n";
+                $message .= "\n";
+                $message .= $html_part;
+                //$message .= '<p>hello</p>';
+                $message .= "\n\n";
+            }
+
+
+            $message .= "--$separator_multipart\n";
+            $message .= 'Content-Type: application/pdf; name="'.$filename.'"';
+            $message .= "\n";
+            $message .= 'Content-Disposition: attachment; filename="'.$filename.'"'."\n";
+            $message .= "Content-Transfer-Encoding: base64\n";
+
+            $message .= "\n";
+            $message .= chunk_split(base64_encode($this->invoice_pdf));
+            //$message .= base64_encode('hello');
+            $message .= "\n\n";
+            $message .= "--$separator_multipart--\n";
+
+
+            $request = [
+                'Source'               => $_source,
+                'Destinations'         => array($to_address),
+                'ConfigurationSetName' => $this->account->get('Account Code'),
+                'RawMessage'           => [
+                    'Data' => $message
+                ]
+            ];
+
+
+        } else {
+            $request                               = array();
+            $request['Source']                     = $_source;
+            $request['Destination']['ToAddresses'] = array($to_address);
+            $request['ConfigurationSetName']       = $this->account->get('Account Code');
+
+
+            $request['Message']['Subject']['Data'] = '=?utf-8?B?'.base64_encode($subject).'?=';
+            if ($request['Message']['Subject']['Data'] == '') {
+                $this->error = true;
+                $this->msg   = _('Empty email subject');
+
+                return false;
+            }
+            $request['Message']['Body']['Text']['Data'] = $text_part;
+            $request['Message']['Body']['Html']['Data'] = $html_part;
+
+        }
 
 
         if (!isset($this->ses_clients)) {
@@ -221,9 +306,21 @@ trait Send_Email {
             //$ses_client = $this->ses_clients[0];
 
 
-            $result = $ses_client->sendEmail($request);
+            if ($send_raw) {
+
+                //  print "sened A\n";
+                $result = $ses_client->sendRawEmail($request);
+
+            } else {
+                // print "sened B\n";
+                $result = $ses_client->sendEmail($request);
+
+            }
 
 
+            //            print_r($result);
+
+            // exit('xx');
             $email_tracking->fast_update(
                 array(
                     "Email Tracking SES Id" => $result->get('MessageId'),
@@ -231,6 +328,7 @@ trait Send_Email {
 
                 )
             );
+
 
             /*
 
@@ -242,8 +340,7 @@ trait Send_Email {
 
                             )
                         );
-            */
-            //usleep(100000);
+            */ //usleep(100000);
 
             //    sleep(1);
 
@@ -273,8 +370,8 @@ trait Send_Email {
             )) {
 
                 $sql = sprintf(
-                    'insert into `Email Tracking Email Copy` (`Email Tracking Email Copy Key`,`Email Tracking Email Copy Subject`,`Email Tracking Email Copy Body`) values (%d,%s,%s)  ', $email_tracking->id, prepare_mysql($request['Message']['Subject']['Data']),
-                    (isset($request['Message']['Body']['Html']['Data']) ? prepare_mysql($request['Message']['Body']['Html']['Data']) : prepare_mysql($request['Message']['Body']['Text']['Data'])
+                    'insert into `Email Tracking Email Copy` (`Email Tracking Email Copy Key`,`Email Tracking Email Copy Subject`,`Email Tracking Email Copy Body`) values (%d,%s,%s)  ', $email_tracking->id, prepare_mysql($subject),
+                    (isset($html_part) ? prepare_mysql($html_part) : prepare_mysql($text_part)
 
 
                     )
@@ -293,10 +390,10 @@ trait Send_Email {
 
         } catch (AwsException $e) {
 
-            // echo $e->getAwsRequestId() . "\n";
-            //    echo $e->getAwsErrorType() . "\n";
-            //    echo $e->getAwsErrorCode() . "\n";
-
+            //echo $e->getAwsRequestId()."\n";
+            //echo $e->getAwsErrorType()."\n";
+            //echo $e->getAwsErrorCode()."\n";
+            //echo $e->getAwsErrorMessage();
             if ($e->getAwsErrorCode() == 'Throttling') {
                 usleep(47620);
 
@@ -489,6 +586,55 @@ trait Send_Email {
                     $this->placeholders['[Tracking URL]'] = '';
 
                 }
+
+
+                if ($this->order->get('Order Invoice Key')) {
+                    $invoice = get_object('Invoice', $this->order->get('Order Invoice Key'));
+                    if ($invoice->id) {
+
+
+                        $this->placeholders['[Invoice Number]'] = $invoice->get('Invoice Public ID');
+
+                        $auth_data = json_encode(
+                            array(
+                                'auth_token' => array(
+                                    'logged_in'      => true,
+                                    'user_key'       => 0,
+                                    'logged_in_page' => 0
+                                )
+                            )
+                        );
+
+                        $sak = safeEncrypt($auth_data, md5('82$je&4WN1g2B^{|bRbcEdx!Nz$OAZDI3ZkNs[cm9Q1)8buaLN'.SKEY));
+
+                        $invoice_settings = '';
+                        if ($this->store->settings('invoice_show_rrp') == 'Yes') {
+                            $invoice_settings .= '&rrp=1';
+                        }
+                        if ($this->store->settings('invoice_show_parts') == 'Yes') {
+                            $invoice_settings .= '&parts=1';
+                        }
+                        if ($this->store->settings('invoice_show_tariff_codes') == 'Yes') {
+                            $invoice_settings .= '&commodity=1';
+                        }
+                        if ($this->store->settings('invoice_show_barcode') == 'Yes') {
+                            $invoice_settings .= '&barcode=1';
+                        }
+                        if ($this->store->settings('invoice_show_weight') == 'Yes') {
+                            $invoice_settings .= '&weight=1';
+                        }
+                        if ($this->store->settings('invoice_show_origin') == 'Yes') {
+                            $invoice_settings .= '&origin=1';
+                        }
+
+                        $this->invoice_pdf = file_get_contents('http://au.geko/pdf/invoice.pdf.php?id='.$this->order->get('Order Invoice Key').$invoice_settings.'&sak='.$sak);
+
+
+                    }
+
+                }
+
+
                 break;
             case 'New Customer':
 
@@ -555,6 +701,11 @@ trait Send_Email {
                 $subject = $this->get('Published Email Template Subject');
 
         }
+
+        if ($subject == '') {
+            $subject = 'hello';
+        }
+
 
         return $subject;
     }
@@ -638,7 +789,7 @@ trait Send_Email {
         }
 
 
-        return $text;
+        return trim($text);
 
     }
 

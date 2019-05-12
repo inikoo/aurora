@@ -18,7 +18,36 @@ require_once __DIR__.'/../vendor/autoload.php';
 use CommerceGuys\Addressing\Country\CountryRepository;
 
 
+
+if(isset($_REQUEST['sak'])){
+
+    include 'keyring/key.php';
+    include_once 'utils/general_functions.php';
+
+    $key = md5('82$je&4WN1g2B^{|bRbcEdx!Nz$OAZDI3ZkNs[cm9Q1)8buaLN'.SKEY);
+
+//    print "msg: ".$_REQUEST['sak']."\n";
+
+  //  print "key: $key\n";
+
+    $auth_data = json_decode(safeDecrypt(urldecode($_REQUEST['sak']), $key),true);
+
+
+
+    if( !(isset($auth_data['auth_token']['logged_in']) and  $auth_data['auth_token']['logged_in']) ){
+        unset($auth_data);
+
+    }
+
+
+
+}
+
 require_once 'common.php';
+
+
+
+
 
 require_once 'utils/object_functions.php';
 
@@ -666,8 +695,9 @@ $html = $smarty->fetch('invoice.pdf.tpl');
 
 $html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');
 
+
+
 $mpdf->WriteHTML($html);
-//$mpdf->WriteHTML('<pagebreak resetpagenum="1" pagenumstyle="1" suppress="off" />');
 $mpdf->Output();
 
 

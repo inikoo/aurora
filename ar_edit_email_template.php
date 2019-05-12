@@ -702,6 +702,8 @@ function publish_email_template($data, $editor, $smarty, $db) {
     $email_template->editor = $editor;
 
 
+
+
     $email_template->fast_update(
         array(
             'Email Template Editing JSON'   => $data['json'],
@@ -712,6 +714,7 @@ function publish_email_template($data, $editor, $smarty, $db) {
             'Email Template Last Edited By' => $editor['Author Key']
         )
     );
+
 
 
     $checksum = md5(($email_template->get('Email Template Type') == 'Text' ? '' : $email_template->get('Email Template Editing JSON')).'|'.$email_template->get('Email Template Text').'|'.$email_template->get('Email Template Subject'));
