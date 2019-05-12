@@ -4066,7 +4066,7 @@ class Store extends DB_Table {
 
     }
 
-    function create_email_campaign($data) {
+    function create_mailshot($data) {
 
 
         $email_template_type         = get_object('Email_Template_Type', $data['Email Campaign Type'].'|'.$this->id, 'code_store');
