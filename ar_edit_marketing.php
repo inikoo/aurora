@@ -53,7 +53,7 @@ switch ($tipo) {
                          'deal_component_key' => array('type' => 'key'),
                          'allowance'          => array('type' => 'string'),
                          'description'        => array('type' => 'string'),
-                         'name'        => array('type' => 'string')
+                         'name'               => array('type' => 'string')
 
 
                      )
@@ -107,6 +107,17 @@ switch ($tipo) {
 
         set_mailing_list($account, $db, $user, $editor, $data, $smarty);
         break;
+    case 'create_new_wave_newsletter':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key'    => array('type' => 'key'),
+                         'object' => array('type' => 'string'),
+
+
+                     )
+        );
+        create_new_wave_newsletter($account, $db, $user, $editor, $data, $smarty);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -115,6 +126,32 @@ switch ($tipo) {
         echo json_encode($response);
         exit;
         break;
+}
+
+
+function create_new_wave_newsletter($account, $db, $user, $editor, $data, $smarty) {
+
+    print_r($data);
+
+    $parent_mailshot = get_object('Mailshot', $data['key']);
+
+    $store = get_object('Store', $parent_mailshot->get('Email Campaign Store Key'));
+
+    $mailshot = $store->create_mailshot(
+        array(
+            'Email Campaign Type' => 'Newsletter',
+            'Email Campaign Name'=>$parent_mailshot->get('Email Campaign Name').' ('._('2nd wave').')'
+        )
+    );
+
+    $response = array(
+        'state'  => 200,
+
+        'mailshot_key' => $mailshot->id
+    );
+    echo json_encode($response);
+
+
 }
 
 
