@@ -266,7 +266,7 @@ $object_fields = array(
     array(
         'label'      => _('Collection'),
         'show_title' => true,
-        'class'      =>  ($new ? 'hide' : true),
+        'class'      =>  ($new ? 'hide' :''),
         'fields'     => array(
 
             array(
@@ -538,6 +538,53 @@ $object_fields = array(
         )
     ),
 
+
+
+    array(
+        'label'      => _('PDF Invoices'),
+        'show_title' => true,
+        'class'      =>  ($new ? 'hide' :''),
+        'fields'     => array(
+
+            array(
+                'edit'            => 'no_icon',
+                'id'              => 'Store_Allow_Data_Entry_Picking_Aid_Settings',
+                'class'           => 'data_entry_picking_aid_defaults',
+                'render'          => ($object->settings('data_entry_picking_aid') == 'Yes' ? true : false),
+                'value'           => '',
+                'formatted_value' => '
+                    <div style="line-height: 20px">
+                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_rrp"  ><i class=" far fa-fw '.($object->settings('invoice_show_rrp')=='Yes'?'fa-check-square':'fa-square').'" ></i> '._('Recommended retail prices').'</span>  <br>
+             
+                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_parts"  ><i class=" far fa-fw '.($object->settings('invoice_show_parts')=='Yes'?'fa-check-square':'fa-square').'" ></i> '._('Parts').' </span>  <br>
+                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_tariff_codes"><i class=" far fa-fw '.($object->settings('invoice_show_tariff_codes')=='Yes'?'fa-check-square':'fa-square').'" ></i> '._('Commodity codes').' </span>  <br>
+                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_barcode"  ><i class=" far fa-fw '.($object->settings('invoice_show_barcode')=='Yes'?'fa-check-square':'fa-square').'" ></i> '._('Product barcode').' </span>  <br>
+                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_weight"  ><i class=" far fa-fw '.($object->settings('invoice_show_weight')=='Yes'?'fa-check-square':'fa-square').'" ></i> '._('Weight').' </span>  <br>
+                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_origin"  > <i class=" far fa-fw '.($object->settings('invoice_show_origin')=='Yes'?'fa-check-square':'fa-square').'" ></i> '._('Country of origin').'</span>  <br>
+                    </div>
+                    ',
+
+                'label'    => _('Display').':',
+                'required' => true,
+
+                'type' => ''
+
+
+            ),
+            array(
+                'id'              => 'send_invoice_attachment_in_delivery_confirmation',
+                'edit'            => ($edit ? 'option' : ''),
+                'render'          => ($new ? false : true),
+                'options'         => $options_yes_no,
+                'value'           => $object->settings('send_invoice_attachment_in_delivery_confirmation'),
+                'formatted_value' => $object->get('send invoice attachment in delivery confirmation'),
+                'label'           => sprintf(_('Send %s in delivery conformation email'),'<i class="fal fa-paperclip"></i>'),
+                'type'            => ''
+            ),
+
+
+        )
+    ),
 
     array(
         'label'      => _('Signatures'),
