@@ -240,7 +240,7 @@ module.exports = function (grunt) {
 
 
 
-], dest: 'js/aurora_libs.min.js',
+], dest: 'assets/aurora_libs.min.js',
 
             }, aurora: {
                 options: {
@@ -277,7 +277,7 @@ module.exports = function (grunt) {
 
 
 
-                ], dest: 'js/aurora.min.js',
+                ], dest: 'assets/aurora.min.js',
 
             }
 
@@ -373,7 +373,7 @@ module.exports = function (grunt) {
 
             au: {
                 files: {
-                    'css/au_app.min.css':
+                    'assets/au_app.min.css':
                         [
                             'css/jquery-ui.css',
                             'css/fontawesome-all.css',
