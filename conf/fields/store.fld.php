@@ -587,6 +587,27 @@ $object_fields = array(
     ),
 
     array(
+        'label'      => _('PDF Delivery notes'),
+        'show_title' => true,
+        'class'      =>  ($new ? 'hide' :''),
+        'fields'     => array(
+
+            array(
+                'id'              => 'send_dn_attachment_in_delivery_confirmation',
+                'edit'            => ($edit ? 'option' : ''),
+                'render'          => ($new ? false : true),
+                'options'         => $options_yes_no,
+                'value'           => $object->settings('send_dn_attachment_in_delivery_confirmation'),
+                'formatted_value' => $object->get('send dn attachment in delivery confirmation'),
+                'label'           => sprintf(_('Send %s in delivery conformation email'),'<i class="fal fa-paperclip"></i>'),
+                'type'            => ''
+            ),
+
+
+        )
+    ),
+
+    array(
         'label'      => _('Signatures'),
         'class'      =>  ($new ? 'hide' : ''),
         'show_title' => true,

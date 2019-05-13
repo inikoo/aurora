@@ -722,7 +722,9 @@ class Store extends DB_Table {
 
                 break;
             case 'send invoice attachment in delivery confirmation':
-                if($this->settings(preg_replace('/\s/', '_', $key))=='Yes'){
+            case 'send dn attachment in delivery confirmation':
+
+            if($this->settings(preg_replace('/\s/', '_', $key))=='Yes'){
                     return _('Yes');
                 }else{
                     return _('No');
@@ -4256,6 +4258,7 @@ class Store extends DB_Table {
             case 'invoice show weight':
             case 'invoice show origin':
             case 'send invoice attachment in delivery confirmation':
+            case 'send dn attachment in delivery confirmation':
 
                 $this->fast_update_json_field('Store Settings', preg_replace('/\s/', '_', $field), $value);
 
