@@ -71,7 +71,6 @@ trait Send_Email {
 
             );
 
-
             $email_tracking = new Email_Tracking('new', $email_tracking_data);
         } else {
             $email_tracking = $data['Email_Tracking'];
@@ -335,6 +334,8 @@ trait Send_Email {
 
 
             if ($send_raw) {
+
+               // print_r($request);
 
 
                 //  print "sened A\n";
@@ -620,7 +621,7 @@ trait Send_Email {
 
 
                 $aurora_url= $this->account->get('Account System Public URL');
-                $aurora_url='http://au.geko';
+                //$aurora_url='http://au.geko';
 
                 if ($this->order->get('Order Invoice Key')) {
                     $invoice = get_object('Invoice', $this->order->get('Order Invoice Key'));
