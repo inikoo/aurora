@@ -158,7 +158,16 @@ trait Send_Email {
             $to_address = 'raul@inikoo.com';
         }
 
-        if ($this->email_template_type->get('Email Campaign Type Code') == 'Delivery Confirmation' and $this->store->settings('send_invoice_attachment_in_delivery_confirmation') == 'Yes' and !empty($this->invoice_pdf)) {
+        if ($this->email_template_type->get('Email Campaign Type Code') == 'Delivery Confirmation' and
+
+            (
+            (  $this->store->settings('send_invoice_attachment_in_delivery_confirmation') == 'Yes' and   !empty($this->invoice_pdf) )
+            or
+            (  $this->store->settings('send_dn_attachment_in_delivery_confirmation') == 'Yes' and   !empty($this->dn_pdf) )
+
+            )
+
+            ) {
             $send_raw = true;
         } else {
             $send_raw = false;
@@ -171,18 +180,10 @@ trait Send_Email {
         if ($send_raw) {
 
 
-            $filename = $this->placeholders['[Invoice Number]'];
 
-            if ($filename == '') {
-                $filename = 'invoice';
-            }
-
-
-            $filename .= '.pdf';
 
             $message = "To: ".$to_address."\n";
             $message .= "From: ".$_source."\n";
-            $message .= "Bcc: raul@inikoo.com\n";
 
 
             $separator_multipart = md5($this->id.time());
@@ -228,16 +229,42 @@ trait Send_Email {
             }
 
 
-            $message .= "--$separator_multipart\n";
-            $message .= 'Content-Type: application/pdf; name="'.$filename.'"';
-            $message .= "\n";
-            $message .= 'Content-Disposition: attachment; filename="'.$filename.'"'."\n";
-            $message .= "Content-Transfer-Encoding: base64\n";
 
-            $message .= "\n";
-            $message .= chunk_split(base64_encode($this->invoice_pdf));
-            //$message .= base64_encode('hello');
-            $message .= "\n\n";
+            if(isset($this->invoice_pdf)) {
+                $filename = _('Invoice').'_';
+
+                $filename .= $this->placeholders['[Invoice Number]'];
+
+                $filename .= '.pdf';
+                $message  .= "--$separator_multipart\n";
+                $message  .= 'Content-Type: application/pdf; name="'.$filename.'"';
+                $message  .= "\n";
+                $message  .= 'Content-Disposition: attachment; filename="'.$filename.'"'."\n";
+                $message  .= "Content-Transfer-Encoding: base64\n";
+
+                $message .= "\n";
+                $message .= chunk_split(base64_encode($this->invoice_pdf));
+                //$message .= base64_encode('hello');
+                $message .= "\n\n";
+            }
+            if(isset($this->dn_pdf)) {
+
+                $filename = _('Delivery').'_';
+
+                $filename .= $this->placeholders['[Delivery Note Number]'];
+
+                $filename .= '.pdf';
+                $message .= "--$separator_multipart\n";
+                $message .= 'Content-Type: application/pdf; name="'.$filename.'"';
+                $message .= "\n";
+                $message .= 'Content-Disposition: attachment; filename="'.$filename.'"'."\n";
+                $message .= "Content-Transfer-Encoding: base64\n";
+
+                $message .= "\n";
+                $message .= chunk_split(base64_encode($this->dn_pdf));
+                //$message .= base64_encode('hello');
+                $message .= "\n\n";
+            }
             $message .= "--$separator_multipart--\n";
 
 
@@ -308,6 +335,7 @@ trait Send_Email {
 
 
             if ($send_raw) {
+
 
                 //  print "sened A\n";
                 $result = $ses_client->sendRawEmail($request);
@@ -390,6 +418,8 @@ trait Send_Email {
 
 
         } catch (AwsException $e) {
+
+            //print_r($request);
 
             //echo $e->getAwsRequestId()."\n";
             //echo $e->getAwsErrorType()."\n";
@@ -589,6 +619,9 @@ trait Send_Email {
                 }
 
 
+                $aurora_url= $this->account->get('Account System Public URL');
+                $aurora_url='http://au.geko';
+
                 if ($this->order->get('Order Invoice Key')) {
                     $invoice = get_object('Invoice', $this->order->get('Order Invoice Key'));
                     if ($invoice->id) {
@@ -628,12 +661,42 @@ trait Send_Email {
                             $invoice_settings .= '&origin=1';
                         }
 
-                        $this->invoice_pdf = file_get_contents($this->account->get('Account System Public URL').'/pdf/invoice.pdf.php?id='.$this->order->get('Order Invoice Key').$invoice_settings.'&sak='.$sak);
+                        $this->invoice_pdf = file_get_contents($aurora_url.'/pdf/invoice.pdf.php?id='.$this->order->get('Order Invoice Key').$invoice_settings.'&sak='.$sak);
 
 
                     }
 
                 }
+
+
+
+
+
+                    if ($delivery_note->id) {
+
+
+                        $this->placeholders['[Delivery Note Number]'] = $delivery_note->get('Delivery Note ID');
+
+                        $auth_data = json_encode(
+                            array(
+                                'auth_token' => array(
+                                    'logged_in'      => true,
+                                    'user_key'       => 0,
+                                    'logged_in_page' => 0
+                                )
+                            )
+                        );
+
+                        $sak = safeEncrypt($auth_data, md5('82$je&4WN1g2B^{|bRbcEdx!Nz$OAZDI3ZkNs[cm9Q1)8buaLN'.SKEY));
+
+
+
+                        $this->dn_pdf = file_get_contents($aurora_url.'/pdf/dn.pdf.php?id='.$delivery_note->id.'&sak='.$sak);
+
+
+                    }
+
+
 
 
                 break;
