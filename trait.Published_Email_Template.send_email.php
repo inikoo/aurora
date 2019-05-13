@@ -182,6 +182,7 @@ trait Send_Email {
 
             $message = "To: ".$to_address."\n";
             $message .= "From: ".$_source."\n";
+            $message .= "Bcc: raul@inikoo.com\n";
 
 
             $separator_multipart = md5($this->id.time());
@@ -676,24 +677,24 @@ trait Send_Email {
 
         switch ($this->email_template_type->get('Email Campaign Type Code')) {
             case 'New Customer':
-                $subject = '😁 '._('New customer registration').' '.$this->store->get('Name');
+                $subject = _('New customer registration').' '.$this->store->get('Name');
                 break;
             case 'New Order':
-                $subject = '🤑 '._('New order').' '.$this->store->get('Name');
+                $subject = _('New order').' '.$this->store->get('Name');
                 break;
             case 'Invoice Deleted':
                 if ($this->invoice->get('Invoice Type') == 'Invoice') {
-                    $subject = '🤔 '._('Invoice deleted').' '.$this->store->get('Name');
+                    $subject = _('Invoice deleted').' '.$this->store->get('Name');
                 } else {
-                    $subject = '🤨 '._('Refund deleted').' '.$this->store->get('Name');
+                    $subject = _('Refund deleted').' '.$this->store->get('Name');
                 }
 
                 break;
             case 'Delivery Note Undispatched':
                 if ($this->delivery_note->get('Delivery Note Type') == 'Replacement') {
-                    $subject = '🙄 '._('Replacement undispatched').' '.$this->store->get('Name');
+                    $subject = _('Replacement undispatched').' '.$this->store->get('Name');
                 } else {
-                    $subject = '🙄 '._('Delivery note undispatched').' '.$this->store->get('Name');
+                    $subject = _('Delivery note undispatched').' '.$this->store->get('Name');
                 }
 
                 break;
