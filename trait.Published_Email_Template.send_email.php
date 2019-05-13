@@ -628,7 +628,7 @@ trait Send_Email {
                             $invoice_settings .= '&origin=1';
                         }
 
-                        $this->invoice_pdf = file_get_contents('http://au.geko/pdf/invoice.pdf.php?id='.$this->order->get('Order Invoice Key').$invoice_settings.'&sak='.$sak);
+                        $this->invoice_pdf = file_get_contents($this->account->get('Account System Public URL').'/pdf/invoice.pdf.php?id='.$this->order->get('Order Invoice Key').$invoice_settings.'&sak='.$sak);
 
 
                     }
