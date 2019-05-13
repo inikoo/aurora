@@ -60,6 +60,8 @@ class EmailCampaign extends DB_Table {
         if ($this->data = $this->db->query($sql)->fetch()) {
 
             $this->id = $this->data['Email Campaign Key'];
+            $this->metadata   = ($this->data['Email Campaign Metadata']==''?array():json_decode($this->data['Email Campaign Metadata'], true));
+
         }
 
 
@@ -728,6 +730,12 @@ class EmailCampaign extends DB_Table {
             case 'Email Campaign State':
 
                 $this->update_state($value);
+                break;
+
+            case 'second wave':
+
+                $this->fast_update_json_field('Store Metadata', preg_replace('/\s/', '_', $field), $value);
+
                 break;
 
             case 'Metadata':
@@ -1618,6 +1626,11 @@ class EmailCampaign extends DB_Table {
         );
 
 
+    }
+
+
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
     }
 
 

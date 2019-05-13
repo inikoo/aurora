@@ -131,7 +131,6 @@ switch ($tipo) {
 
 function create_new_wave_newsletter($account, $db, $user, $editor, $data, $smarty) {
 
-    print_r($data);
 
     $parent_mailshot = get_object('Mailshot', $data['key']);
 
@@ -140,7 +139,10 @@ function create_new_wave_newsletter($account, $db, $user, $editor, $data, $smart
     $mailshot = $store->create_mailshot(
         array(
             'Email Campaign Type' => 'Newsletter',
-            'Email Campaign Name'=>$parent_mailshot->get('Email Campaign Name').' ('._('2nd wave').')'
+            'Email Campaign Name'=>$parent_mailshot->get('Email Campaign Name').' ('._('2nd wave').')',
+            'Email Campaign Metadata'=>json_encode(
+                array('second_wave_parent'=>$parent_mailshot->id)
+            )
         )
     );
 
@@ -149,6 +151,10 @@ function create_new_wave_newsletter($account, $db, $user, $editor, $data, $smart
 
         'mailshot_key' => $mailshot->id
     );
+
+
+
+
     echo json_encode($response);
 
 
