@@ -177,8 +177,5 @@ $smarty->assign(
 $html = $smarty->fetch('order_pick_aid.pdf.tpl');
 
 $mpdf->WriteHTML($html);
+$mpdf->Output($delivery_note->get('Delivery Note ID').'_picking.pdf', 'I');
 
-
-$mpdf->Output();
-
-?>

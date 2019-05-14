@@ -159,14 +159,11 @@ trait Send_Email {
 
         if ($this->email_template_type->get('Email Campaign Type Code') == 'Delivery Confirmation' and
 
-            (
-            (  $this->store->settings('send_invoice_attachment_in_delivery_confirmation') == 'Yes' and   !empty($this->invoice_pdf) )
-            or
-            (  $this->store->settings('send_dn_attachment_in_delivery_confirmation') == 'Yes' and   !empty($this->dn_pdf) )
+            (($this->store->settings('send_invoice_attachment_in_delivery_confirmation') == 'Yes' and !empty($this->invoice_pdf)) or ($this->store->settings('send_dn_attachment_in_delivery_confirmation') == 'Yes' and !empty($this->dn_pdf))
 
             )
 
-            ) {
+        ) {
             $send_raw = true;
         } else {
             $send_raw = false;
@@ -177,8 +174,6 @@ trait Send_Email {
         $text_part = $this->get_email_plain_text();
 
         if ($send_raw) {
-
-
 
 
             $message = "To: ".$to_address."\n";
@@ -228,8 +223,7 @@ trait Send_Email {
             }
 
 
-
-            if(isset($this->invoice_pdf)) {
+            if (isset($this->invoice_pdf)) {
                 $filename = _('Invoice').'_';
 
                 $filename .= $this->placeholders['[Invoice Number]'];
@@ -246,13 +240,12 @@ trait Send_Email {
                 //$message .= base64_encode('hello');
                 $message .= "\n\n";
             }
-            if(isset($this->dn_pdf)) {
+            if (isset($this->dn_pdf)) {
 
-                $filename = _('Delivery').'_';
 
-                $filename .= $this->placeholders['[Delivery Note Number]'];
+                $filename = $this->placeholders['[Delivery Note Number]'].'_delivery.pdf';
 
-                $filename .= '.pdf';
+
                 $message .= "--$separator_multipart\n";
                 $message .= 'Content-Type: application/pdf; name="'.$filename.'"';
                 $message .= "\n";
@@ -335,7 +328,7 @@ trait Send_Email {
 
             if ($send_raw) {
 
-               // print_r($request);
+                // print_r($request);
 
 
                 //  print "sened A\n";
@@ -620,7 +613,7 @@ trait Send_Email {
                 }
 
 
-                $aurora_url= $this->account->get('Account System Public URL');
+                $aurora_url = $this->account->get('Account System Public URL');
                 //$aurora_url='http://au.geko';
 
                 if ($this->order->get('Order Invoice Key')) {
@@ -670,34 +663,28 @@ trait Send_Email {
                 }
 
 
+                if ($delivery_note->id) {
 
 
+                    $this->placeholders['[Delivery Note Number]'] = $delivery_note->get('Delivery Note ID');
 
-                    if ($delivery_note->id) {
-
-
-                        $this->placeholders['[Delivery Note Number]'] = $delivery_note->get('Delivery Note ID');
-
-                        $auth_data = json_encode(
-                            array(
-                                'auth_token' => array(
-                                    'logged_in'      => true,
-                                    'user_key'       => 0,
-                                    'logged_in_page' => 0
-                                )
+                    $auth_data = json_encode(
+                        array(
+                            'auth_token' => array(
+                                'logged_in'      => true,
+                                'user_key'       => 0,
+                                'logged_in_page' => 0
                             )
-                        );
+                        )
+                    );
 
-                        $sak = safeEncrypt($auth_data, md5('82$je&4WN1g2B^{|bRbcEdx!Nz$OAZDI3ZkNs[cm9Q1)8buaLN'.SKEY));
-
-
-
-                        $this->dn_pdf = file_get_contents($aurora_url.'/pdf/dn.pdf.php?id='.$delivery_note->id.'&sak='.$sak);
+                    $sak = safeEncrypt($auth_data, md5('82$je&4WN1g2B^{|bRbcEdx!Nz$OAZDI3ZkNs[cm9Q1)8buaLN'.SKEY));
 
 
-                    }
+                    $this->dn_pdf = file_get_contents($aurora_url.'/pdf/dn.pdf.php?id='.$delivery_note->id.'&sak='.$sak);
 
 
+                }
 
 
                 break;

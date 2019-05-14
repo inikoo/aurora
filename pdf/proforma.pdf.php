@@ -447,8 +447,7 @@ $html = $smarty->fetch('proforma.pdf.tpl');
 
 
 $mpdf->WriteHTML($html);
-//$mpdf->WriteHTML('<pagebreak resetpagenum="1" pagenumstyle="1" suppress="off" />');
-$mpdf->Output();
+
+$mpdf->Output($order->get('Public ID').'_proforma.pdf', 'I');
 
 
-?>

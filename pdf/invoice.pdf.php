@@ -687,7 +687,9 @@ $html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');
 
 
 $mpdf->WriteHTML($html);
-$mpdf->Output();
+
+$mpdf->Output($invoice->get('Public ID').'.pdf', 'I');
+
 
 
 

@@ -192,7 +192,5 @@ $html = $smarty->fetch('supplier.order.pdf.tpl');
 
 
 $mpdf->WriteHTML($html);
-$mpdf->Output();
+$mpdf->Output($purchase_order->get('Public ID').'.pdf', 'I');
 
-
-?>

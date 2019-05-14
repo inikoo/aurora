@@ -179,7 +179,6 @@ $html = $smarty->fetch('dn.pdf.tpl');
 
 $mpdf->WriteHTML($html);
 
+$mpdf->Output($delivery_note->get('Delivery Note ID').'_delivery_.pdf', 'I');
 
-$mpdf->Output();
 
-?> 

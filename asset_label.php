@@ -69,7 +69,6 @@ if ($object_name == 'product') {
 
 
 
-
     putenv('LC_ALL='.$_locale.'.UTF-8');
     setlocale(LC_ALL, $_locale.'.UTF-8');
     bindtextdomain("inikoo", "./locales");
@@ -82,6 +81,12 @@ if ($object_name == 'product') {
 
     $smarty->assign('product', $object);
 
+    $filename=$object->get('Code');
+
+    if($type=='ingredients'){
+        $filename.='_'.$type;
+    }
+
 
     $template='labels/product_'.$type.'.tpl';
 
@@ -90,10 +95,20 @@ if ($object_name == 'product') {
 }elseif ($object_name == 'part') {
     $smarty->assign('part', $object);
     $template='labels/part_'.$type.'.tpl';
+
+    $filename=$object->get('Reference');
+    if($type=='package'){
+        $filename.='_'.$type;
+    }
+
+
 }elseif ($object_name == 'supplier_part') {
     $account=get_object('Account',1);
     $smarty->assign('account', $account);
     $smarty->assign('supplier_part', $object);
+
+
+    $filename=$object->get('Reference').'_carton';
 
     $template='labels/supplier_part_'.$type.'.tpl';
 }
@@ -132,18 +147,5 @@ $html = $smarty->fetch($template);
 
 $mpdf->WriteHTML($html);
 
-$mpdf->Output();
+$mpdf->Output($filename.'.pdf', 'I');
 
-
-
-
-
-
-
-
-
-
-
-
-
-?>
