@@ -1920,7 +1920,7 @@ function search_orders($db, $account, $user, $data) {
                 $candidates[$row['Order Key']] = 30;
             } else {
 
-                $len_name                      = strlen($row['Order Customer Purchase Order IDD']);
+                $len_name                      = strlen($row['Order Customer Purchase Order ID']);
                 $len_q                         = strlen($q);
                 $factor                        = $len_q / $len_name;
                 $candidates[$row['Order Key']] = 18 * $factor;
