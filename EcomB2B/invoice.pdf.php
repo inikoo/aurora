@@ -667,5 +667,6 @@ $html = $smarty->fetch('invoice.pdf.tpl');
 $html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');
 
 $mpdf->WriteHTML($html);
-//$mpdf->WriteHTML('<pagebreak resetpagenum="1" pagenumstyle="1" suppress="off" />');
-$mpdf->Output();
+$mpdf->Output($invoice->get('Public ID').'.pdf', 'I');
+
+
