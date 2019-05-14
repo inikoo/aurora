@@ -810,9 +810,9 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
 
 
     $sql = sprintf(
-        "select $_order_field,`Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
+        "select $_order_field,`Order Public ID` object_name,O.`Order Key` as object_key from %s
 	                and ( $_order_field < %s OR ($_order_field = %s AND O.`Order Key` < %d))  order by $_order_field desc , O.`Order Key` desc limit 1",
-
+        "$table $where $wheref",
         prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
     );
 
@@ -832,8 +832,10 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     }
 
     $sql = sprintf(
-        "select `Order Public ID` object_name,O.`Order Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Order Key` > %d))  order by $_order_field   , O.`Order Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+        "select `Order Public ID` object_name,O.`Order Key` as object_key from %s
+	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Order Key` > %d))  order by $_order_field   , O.`Order Key`  limit 1",
+        "$table $where $wheref",
+        prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
     );
 
     if ($result = $db->query($sql)) {
