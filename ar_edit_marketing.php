@@ -134,11 +134,10 @@ function create_new_wave_newsletter($account, $db, $user, $editor, $data, $smart
 
     $parent_mailshot = get_object('Mailshot', $data['key']);
 
-    $store = get_object('Store', $parent_mailshot->get('Email Campaign Store Key'));
+    $email_template_type = get_object('EmailCampaignType', $parent_mailshot->get('Email Campaign Email Template Type Key'));
 
-    $mailshot = $store->create_mailshot(
+    $mailshot = $email_template_type->create_mailshot(
         array(
-            'Email Campaign Type' => 'Newsletter',
             'Email Campaign Name'=>$parent_mailshot->get('Email Campaign Name').' ('._('2nd wave').')',
             'Email Campaign Metadata'=>json_encode(
                 array('second_wave_parent'=>$parent_mailshot->id)
@@ -148,11 +147,13 @@ function create_new_wave_newsletter($account, $db, $user, $editor, $data, $smart
 
     $response = array(
         'state'  => 200,
-
+        'store_key' => $mailshot->get('Email Campaign Store Key'),
+        'email_template_type_key' => $mailshot->get('Email Campaign Email Template Type Key'),
         'mailshot_key' => $mailshot->id
     );
 
-
+    $parent_mailshot->fast_update_json_field('Email Campaign Metadata', 'second_wave_key
+    ', $mailshot->id);
 
 
     echo json_encode($response);
