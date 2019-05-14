@@ -17,11 +17,32 @@
         </li>
 
 
+        <li id="production_node"
+            class="li   {if $order->get('State Index')>=60}hide{/if}  {if $order->get('State Index')>=70 and $order->get('Max State Index')>=70   }complete{elseif $order->get('Max State Index')>=70 }semi_complete{/if}">
+            <div class="label">
+                <span class="state ">
+                                        <span class="state ">{t}Manufacturing{/t} <span></i></span></span>
+                </span>
+            </div>
+            <div class="timestamp">
+
+                <span class="Purchase_Order_Estimated_Production_Date ">
+                    {if $order->get('Estimated Production Formatted Date')==''}<span title="{t}No estimated production date{/t}"><i class="very_discreet far fa-exclamation-circle" ></i> <span class="very_discreet  italic">{$no_production_date_label}</span> </span>{else}{$order->get('Estimated Production Formatted Date')}{/if}
+                </span>
 
 
-        <li id="dispatched_node"
-            class="li  {if $order->get('State Index')>=70 and $order->get('Max State Index')>=70   }complete{elseif $order->get('Max State Index')>=70 }semi_complete{/if}">
-            <div class="label">&#160;
+
+            </div>
+            <div class="industry">
+            </div>
+        </li>
+
+
+        <li id="delivery_node"
+            class="li  {if $order->get('State Index')<60}hide{/if}   {if $order->get('State Index')>=70 and $order->get('Max State Index')>=70   }complete{elseif $order->get('Max State Index')>=70 }semi_complete{/if}">
+            <div class="label">
+                <span class="state ">&nbsp;
+                </span>
             </div>
             <div class="timestamp">
                 <span class="">&nbsp;
@@ -58,7 +79,8 @@
                     <span class="state ">{t}Estimated delivery date{/t} <span></i></span></span>
                 </div>
                 <div class="timestamp">
-                    <span class="Purchase_Order_Estimated_Receiving_Date">&nbsp;{if $order->get('Estimated Receiving Date')==''}<i class="error fa fa-exclamation-circle" ></i> <span class="error discreet italic">{t}No estimated delivery date{/t}</span> {else}{$order->get('Estimated Receiving Date')}{/if} &nbsp;</span>
+                    <span class="Purchase_Order_Estimated_Receiving_Date">&nbsp;
+                        {if $order->get('Estimated Receiving Formatted Date')==''}<span class="error" title="{t}No estimated delivery date{/t}"><i class=" fa fa-exclamation-circle" ></i> <span class="error discreet italic">{t}No estimated delivery{/t}</span> {else}{$order->get('Estimated Receiving Formatted Date')}{/if} &nbsp;</span>
                 </div>
                 <div class="dot">
                 </div>
@@ -310,6 +332,22 @@
 
 
         <table border="0" >
+
+
+            <tr class="processing_times  {if  $order->get('State Index') >= 10 }hide{/if} " style="    border-bottom: 1px solid #ccc;">
+                <td style="width:50%;text-align: center;padding: 10px;xheight: 35px;line-height: 18px">
+                    <span class="discreet">{t}Production time{/t}</span><br>{$parent->get('Production Time')}
+
+
+                </td>
+                <td style="width:50%;text-align: center;padding: 0px;;xheight: 35px;line-height: 18px" >
+                    <span class="discreet">{t}Delivery time{/t}</span><br>{$parent->get('Delivery Time')}
+
+
+
+                </td>
+            </tr>
+
 
             <tr class="pdf_purchase_order_container  {if  $order->get('State Index') < 20 }hide{/if} " style="    border-bottom: 1px solid #ccc;">
                 <td style="text-align: center;padding: 0px" colspan="2">

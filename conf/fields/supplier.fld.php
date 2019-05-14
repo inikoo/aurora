@@ -129,6 +129,27 @@ $object_fields = array(
 
         )
     ),
+
+
+
+     array(
+        'label'      => _('Our Id in Supplier records'),
+        'show_title' => false,
+        'fields'     => array(
+            array(
+                'id'   => 'Supplier_Account_Number',
+                'edit' => ($edit ? 'string' : ''),
+
+                'value'           => $object->get('Supplier Account Number'),
+                'formatted_value' => $object->get('Account Number'),
+                'label'           => ucfirst($object->get_field_label('Supplier Account Number')),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+        )),
+
+
+
     array(
         'label'      => _('Email'),
         'show_title' => false,
@@ -346,7 +367,7 @@ $object_fields = array(
 if ($object->get('Supplier Type') != 'Archived') {
 
     $object_fields[] = array(
-        'label'      => _("Supplier's parts defaults"),
+        'label'      => _("Supplier's parts settings"),
         'show_title' => false,
         'fields'     => array(
             array(
@@ -356,21 +377,79 @@ if ($object->get('Supplier Type') != 'Archived') {
                 'options'         => $options_yn,
                 'value'           => $object->get('Supplier On Demand'),
                 'formatted_value' => $object->get('On Demand'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Supplier On Demand')
+                'label'           => ucfirst($object->get_field_label('Supplier On Demand')),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+
+
+            array(
+                'id'                       => 'Supplier_Products_Origin_Country_Code',
+                'edit'                     => ($edit ? 'country_select' : ''),
+                'options'                  => get_countries($db),
+                'scope'                    => 'countries',
+                'value'                    => ($new
+                    ? $options['country_origin']
+                    : htmlspecialchars(
+                        $object->get('Supplier Products Origin Country Code')
+                    )),
+                'formatted_value'          => ($new ? $options['country_origin'] : $object->get('Products Origin Country Code')),
+                'stripped_formatted_value' => ($new ? $options['country_origin'] : $object->get('Products Origin Country Code')),
+                'label'                    => ucfirst(
+                    $object->get_field_label('Part Origin Country Code')
                 ),
+                'required'                 => false,
+                'type'                     => 'value',
+
+            ),
+
+        )
+    );
+    $object_fields[] = array(
+        'label'      => _("Waiting times"),
+        'show_title' => false,
+        'fields'     => array(
+
+            array(
+                'id'              => 'Supplier_Average_Production_Days',
+                'edit'            => 'mediumint_unsigned',
+                'value'           => $object->get('Supplier Average Production Days'),
+                'formatted_value' => $object->get('Average Production Days'),
+                'label'           => ucfirst($object->get_field_label('Supplier Average Production Days')),
                 'required'        => false,
                 'type'            => 'value'
             ),
             array(
                 'id'              => 'Supplier_Average_Delivery_Days',
                 'edit'            => 'mediumint_unsigned',
-                'value'           => $object->get(
-                    'Supplier Average Delivery Days'
-                ),
+                'value'           => $object->get('Supplier Average Delivery Days'),
                 'formatted_value' => $object->get('Average Delivery Days'),
+                'label'           => ucfirst($object->get_field_label('Supplier Average Delivery Days')),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+
+
+        )
+    );
+
+    $object_fields[] = array(
+        'label'      => _('Payment'),
+        'show_title' => false,
+        'fields'     => array(
+            array(
+                'id'   => 'Supplier_Default_Incoterm',
+                'edit' => ($edit ? 'option' : ''),
+
+                'options'         => $options_incoterms,
+                'value'           => ($new
+                    ? 'No'
+                    : $object->get(
+                        'Supplier Default Incoterm'
+                    )),
+                'formatted_value' => ($new ? _('Not set') : $object->get('Default Incoterm')),
                 'label'           => ucfirst(
-                    $object->get_field_label('Supplier Average Delivery Days')
+                    $object->get_field_label('Supplier Default Incoterm')
                 ),
                 'required'        => false,
                 'type'            => 'value'
@@ -394,72 +473,28 @@ if ($object->get('Supplier Type') != 'Archived') {
                 'type'            => 'value'
             ),
             array(
-                'id'                       => 'Supplier_Products_Origin_Country_Code',
-                'edit'                     => ($edit ? 'country_select' : ''),
-                'options'                  => get_countries($db),
-                'scope'                    => 'countries',
-                'value'                    => ($new
-                    ? $options['country_origin']
-                    : htmlspecialchars(
-                        $object->get('Supplier Products Origin Country Code')
-                    )),
-                'formatted_value'          => ($new ? $options['country_origin'] : $object->get('Products Origin Country Code')),
-                'stripped_formatted_value' => ($new ? $options['country_origin'] : $object->get('Products Origin Country Code')),
-                'label'                    => ucfirst(
-                    $object->get_field_label('Part Origin Country Code')
-                ),
-                'required'                 => false,
-                'type'                     => 'value',
-
+                'id'              => 'payment_terms',
+                'edit'            => ($edit ? 'string' : ''),
+                'value'           => htmlspecialchars($object->get('payment terms')),
+                'formatted_value' => $object->get('payment terms'),
+                'label'           => ucfirst($object->get_field_label('payment terms')),
+                'required'        => false,
+                'type'            => 'value'
             ),
-
         )
     );
 
 
-    if ($options['parent'] != 'agent') {
 
+    if ($options['parent'] != 'agent') {
         $object_fields[] = array(
-            'label'      => _('Purchase order settings'),
+            'label'      => _('Delivery'),
             'show_title' => false,
             'fields'     => array(
 
 
-                array(
-                    'id'   => 'Supplier_Account_Number',
-                    'edit' => ($edit ? 'string' : ''),
 
-                    'value'           => $object->get(
-                        'Supplier Account Number'
-                    ),
-                    'formatted_value' => $object->get('Account Number'),
-                    'label'           => ucfirst(
-                        $object->get_field_label('Supplier Account Number')
-                    ),
-                    'required'        => false,
-                    'type'            => 'value'
-                ),
-                array(
-                    'id'   => 'Supplier_Default_Incoterm',
-                    'edit' => ($edit ? 'option' : ''),
 
-                    'options'         => $options_incoterms,
-                    'value'           => ($new
-                        ? 'No'
-                        : $object->get(
-                            'Supplier Default Incoterm'
-                        )),
-                    'formatted_value' => ($new
-                        ? _('No')
-                        : $object->get(
-                            'Default Incoterm'
-                        )),
-                    'label'           => ucfirst(
-                        $object->get_field_label('Supplier Default Incoterm')
-                    ),
-                    'required'        => false,
-                    'type'            => 'value'
-                ),
                 array(
                     'id'   => 'Supplier_Default_Port_of_Export',
                     'edit' => ($edit ? 'string' : ''),
@@ -492,6 +527,17 @@ if ($object->get('Supplier Type') != 'Archived') {
                     'required'        => false,
                     'type'            => 'value'
                 ),
+
+            )
+        );
+        $object_fields[] = array(
+            'label'      => _('Terms and conditions'),
+            'show_title' => false,
+            'fields'     => array(
+
+
+
+
                 array(
                     'id'              => 'Supplier_Default_PO_Terms_and_Conditions',
                     'edit'            => ($edit ? 'editor' : ''),
@@ -571,6 +617,18 @@ if ($object->get('Supplier Type') != 'Archived') {
                     'required'        => false,
                     'type'            => 'value'
                 ),
+
+
+            )
+        );
+
+        $object_fields[] = array(
+            'label'      => _('Purchase order settings'),
+            'show_title' => false,
+            'fields'     => array(
+
+
+
 
                 array(
                     'id'              => 'Supplier_Skip_Inputting',

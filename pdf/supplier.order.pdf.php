@@ -123,10 +123,11 @@ if ($result = $db->query($sql)) {
         $items_qty=preg_replace('/\|\s$/','',$items_qty);
 
 
-        $description = $data['Supplier Part Description'].' @'.money(
-                $data['Supplier Part Historic Unit Cost'], $purchase_order->get('Purchase Order Currency Code')
-            );
+        $description = $data['Supplier Part Description'];
         $description .= '<span style="font-style: italic;font-size:90%">';
+
+
+
         if ($data['Part Units Per Package'] > 1) {
             $description .= '<br>'.sprintf(
                     _("packed in %d's"), $data['Part Units Per Package']
@@ -143,7 +144,7 @@ if ($result = $db->query($sql)) {
                 );
 
 
-        } else {
+        } elseif($units_per_carton>1) {
 
             $description .= '<br>'.sprintf(
                     ngettext(
@@ -159,9 +160,15 @@ if ($result = $db->query($sql)) {
         $amount = money($data['Purchase Order Submitted Units'] * $data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'));
 
 
+
+        $reference=$data['Supplier Part Reference'];
+        if($data['Supplier Part Reference']!=$data['Part Reference']){
+            $reference.='<br>'.$data['Part Reference'];
+        }
+
         $adata[] = array(
 
-            'reference'   => $data['Supplier Part Reference'],
+            'reference'   => $reference,
             'description' => $description,
             'ordered'     => $items_qty,
             'unit_cost'   => $unit_cost,

@@ -80,7 +80,7 @@
 
   }
 
-  .truck {
+  .truck,.industry {
     padding: 0px 40px;
     display: flex;
     justify-content: center;
@@ -92,7 +92,7 @@
   }
 
   &.with_time {
-    .dot, .truck {
+    .dot, .truck,.industry {
       padding: 0px 50px;
     }
 
@@ -101,6 +101,26 @@
   .truck:after {
     font-family: "Font Awesome 5 Pro";
     content: "\f0d1";
+
+    width: 20px;
+    height: 10px;
+    color: #aaa;
+    background-color: $color_background;
+    // border-radius: 15px;
+    border: 0px solid red;
+    padding-left: 6px;
+    padding-top: 5px;
+    position: absolute;
+    top: -12px;
+    left: 100%;
+    transition: all 200ms ease-in;
+    z-index: 10;
+  }
+
+
+  .industry:after {
+    font-family: "Font Awesome 5 Pro";
+    content: "\f275";
 
     width: 20px;
     height: 10px;
@@ -149,11 +169,11 @@
     z-index: 10;
   }
 
-  .li.complete .dot, .li.complete .truck {
+  .li.complete .dot, .li.complete .truck , .li.complete .industry {
     border-top: 2px solid #66DC71;
   }
 
-  .li.semi_complete .dot, .li.semi_complete .truck {
+  .li.semi_complete .dot, .li.semi_complete .truck, .li.semi_complete .indistry {
     border-top: 2px dashed #66DC71;
   }
 
@@ -170,7 +190,7 @@
   }
 
 
-  .li.complete .truck:after,.li.semi_complete .truck:after {
+  .li.complete .truck:after,.li.semi_complete .truck:after,.li.semi_complete .industry:after {
     color: #777;
     transition: all 200ms ease-in;
   }
@@ -179,7 +199,7 @@
     color: #888;
   }
 
-  .li.cancelled .dot, .li.cancelled .truck {
+  .li.cancelled .dot, .li.cancelled .truck, .li.cancelled .industry {
     border-top: 2px solid $color_error;
   }
   .li.cancelled .dot:after {

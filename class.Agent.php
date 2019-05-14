@@ -69,6 +69,14 @@ class Agent extends SubjectSupplier {
         }
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Agent Key'];
+
+            if ($this->data['Agent Metadata'] == '') {
+                $this->metadata = array();
+            } else {
+                $this->metadata = json_decode(
+                    $this->data['Agent Metadata'], true
+                );
+            }
         }
 
     }
@@ -186,7 +194,7 @@ class Agent extends SubjectSupplier {
             );
         }
 
-
+        $this->data['Agent Metadata'] = '{}';
         $this->data['Agent Valid From'] = gmdate('Y-m-d H:i:s');
 
 
@@ -316,7 +324,10 @@ class Agent extends SubjectSupplier {
 
 
         switch ($field) {
+            case 'payment terms':
+                $this->fast_update_json_field('Agent Metadata', preg_replace('/\s/', '_', $field), $value);
 
+                break;
             case 'Agent Contact Address':
 
 
@@ -802,7 +813,10 @@ class Agent extends SubjectSupplier {
     }
 
 
+
+
+
 }
 
 
-?>
+

@@ -570,14 +570,14 @@ class EmailCampaignType extends DB_Table {
     }
 
 
-    function create_mailshot() {
+    function create_mailshot($data=false) {
 
 
         if ($this->get_estimated_recipients() > 0 or $this->data['Email Campaign Type Code'] == 'create_mailshot' or $this->data['Email Campaign Type Code'] == 'Marketing') {
             include_once 'class.EmailCampaign.php';
             $email_campaign_data = array(
                 'Email Campaign Store Key'               => $this->data['Email Campaign Type Store Key'],
-                'Email Campaign Name'                    => date('Y.m.d'),
+                'Email Campaign Name'                    => (!empty($data['mail Campaign Name'])?$data['mail Campaign Name']:date('Y.m.d')),
                 'Email Campaign Type'                    => $this->data['Email Campaign Type Code'],
                 'Email Campaign Email Template Type Key' => $this->id,
                 'editor'                                 => $this->editor
@@ -608,10 +608,13 @@ class EmailCampaignType extends DB_Table {
                     )
                 );
 
-            } elseif ($this->data['Email Campaign Type Code'] == 'Marketing') {
-
-
             }
+
+            if(!empty($data['Email Campaign Metadata'])){
+                $email_campaign_data['Email Campaign Metadata']= $data['Email Campaign Metadata'];
+            }
+
+
             $email_campaign = new EmailCampaign('create', $email_campaign_data);
 
             return $email_campaign;
