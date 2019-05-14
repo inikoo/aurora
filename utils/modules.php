@@ -8194,7 +8194,7 @@ $modules = array(
                 'type'  => 'object',
                 'label' => _('Fire'),
                 'icon'  => 'file',
-                'id'    => 'not_found',
+                'id'    => 'fire',
 
                 'tabs' => array(
                     'fire' => array(),

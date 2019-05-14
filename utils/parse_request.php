@@ -5795,6 +5795,11 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     }
 
 
+    if($section=='not_found'){
+        $module  = 'utils';
+    }
+
+
     // print_r($_data);
 
     list($tab, $subtab) = parse_tabs($module, $section, $_data, $modules);
