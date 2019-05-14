@@ -109,7 +109,7 @@
                     <div>
                         {t}Cancelled{/t}: <b>{$purchase_order->get('Cancelled Date')}</b>
                     </div>
-                {else if $purchase_order->get('Purchase Order State')=='InProcess' }
+                {elseif $purchase_order->get('Purchase Order State')=='InProcess' }
                     <div>
                         <b class="error">{t}Preview only, not submitted yet!{/t}</b>
                     </div>
@@ -159,7 +159,8 @@
                 style="color:#000;text-align: center">{t}Page{/t} {literal}{PAGENO}{/literal} {t}of{/t} {literal}{nbpg}{/literal}</td>
             <td width="34%" style="text-align: right;">
                 <small>
-                    {if $purchase_order->get('Purchase Order Main Buyer Name')!=''}{$purchase_order->get('Purchase Order Main Buyer Name')}
+                    {if $purchase_order->get('Purchase Order Main Buyer Name')!=''}
+                    {t}Submitted by{/t} {$purchase_order->get('Purchase Order Main Buyer Name')}
                         <br>
                     {/if}
                     {if $purchase_order->get('Warehouse Telephone')!=''}{$purchase_order->get('Warehouse Telephone')}

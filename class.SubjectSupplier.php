@@ -35,7 +35,7 @@ class SubjectSupplier extends Subject {
             'Purchase Order Parent Address'      => $this->get('Contact Address Formatted'),
 
             'Purchase Order Currency Code'  => $this->get('Default Currency Code'),
-            'Purchase Order Incoterm'       => $this->get('Default Incoterm'),
+            'Purchase Order Incoterm'       => $this->get($this->table_name.' Default Incoterm'),
             'Purchase Order Port of Import' => $this->get('Default Port of Import'),
             'Purchase Order Port of Export' => $this->get('Default Port of Export'),
 

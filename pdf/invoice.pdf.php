@@ -686,7 +686,6 @@ $html = $smarty->fetch('invoice.pdf.tpl');
 $html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');
 
 
-
 $mpdf->WriteHTML($html);
 $mpdf->Output();
 
