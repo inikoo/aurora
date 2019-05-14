@@ -189,7 +189,7 @@ $smarty->assign('transactions', $adata);
 
 $html = $smarty->fetch('supplier.order.pdf.tpl');
 
-//print $html;
+
 
 $mpdf->WriteHTML($html);
 $mpdf->Output();
