@@ -432,7 +432,7 @@ if ($result = $db->query($sql)) {
 
 $transactions_out_of_stock = array();
 $sql                       = sprintf(
-    "SELECT (`No Shipped Due Out of Stock`) AS qty,`Product RRP`,
+    "SELECT (`No Shipped Due Out of Stock`) AS qty,`Product RRP`,`Product Barcode Number`,
 `Product Tariff Code`,`Product Tariff Code`,`Product Origin Country Code`,`Product Unit Weight`,P.`Product ID`,O.`Product Code` ,`Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`
 FROM `Order Transaction Fact` O
  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`)
