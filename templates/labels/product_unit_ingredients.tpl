@@ -30,12 +30,14 @@
                         </td>
                     </tr>
                 {/if}
+                {if $store->get('Label Signature')!=''}
                 <tr>
                     <td>
                         {$store->get('Label Signature')}
 
                     </td>
                 </tr>
+                {/if}
             </table>
 
         </td>
