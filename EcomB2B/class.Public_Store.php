@@ -174,6 +174,7 @@ class Public_Store {
             case 'Email':
             case 'Address':
             case 'Home Country Code 2 Alpha':
+            case 'Label Signature':
                 return $this->data['Store '.$key];
                 break;
 
@@ -204,6 +205,7 @@ class Public_Store {
             case 'Store URL':
             case 'Store Address':
             case 'Store Invoice Message':
+
 
 
                 return $this->data[$key];
