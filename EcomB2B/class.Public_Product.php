@@ -168,6 +168,7 @@ class Public_Product {
             case 'Description':
             case 'Current Key':
             case 'Code File As':
+            case 'Store Key':
 
                 return $this->data['Product '.$key];
                 break;
