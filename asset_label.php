@@ -83,8 +83,14 @@ if ($object_name == 'product') {
 
     $filename=$object->get('Code');
 
-    if($type=='ingredients'){
+    if($type=='unit_ingredients'){
         $filename.='_'.$type;
+
+        $title=sprintf(_('%s ingredients'),$object->get('Code'));
+
+    }else{
+        $title=sprintf(_('%s barcode'),$object->get('Code'));
+
     }
 
 
@@ -99,6 +105,11 @@ if ($object_name == 'product') {
     $filename=$object->get('Reference');
     if($type=='package'){
         $filename.='_'.$type;
+        $title=sprintf(_('%s SKO'),$object->get('Code'));
+
+    }else{
+        $title=sprintf(_('%s unit'),$object->get('Code'));
+
     }
 
 
@@ -109,6 +120,8 @@ if ($object_name == 'product') {
 
 
     $filename=$object->get('Reference').'_carton';
+    $title=sprintf(_('%s carton'),$object->get('Code'));
+
 
     $template='labels/supplier_part_'.$type.'.tpl';
 }
@@ -136,8 +149,7 @@ $mpdf = new \Mpdf\Mpdf(
 );
 
 $mpdf->repackageTTF = false;
-
-$mpdf->SetTitle('Label '.$object->get_name().' '.$object->id);
+$mpdf->SetTitle($title);
 $mpdf->SetAuthor('Aurora Systems');
 $smarty->assign('account', $account);
 

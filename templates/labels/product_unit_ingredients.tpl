@@ -21,10 +21,12 @@
                   </td>
                 </tr>
                 {/if}
-                {if $product->get('Product Materials')!=''}
+
+                {assign 'materials' $product->get('Materials') }
+                {if $materials!=''}
                     <tr>
                         <td>
-                            <b>{t}Ingredients/Materials{/t}:</b> {$product->get('Materials')}
+                            <b>{t}Ingredients/Materials{/t}:</b> {$materials}
                         </td>
                     </tr>
                 {/if}
