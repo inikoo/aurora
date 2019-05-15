@@ -39,7 +39,7 @@ if ($result=$db->query($sql)) {
 
         //  print_r(json_decode($webpage->data['Webpage Navigation Data']));
 
-print $webpage->get('Code')."\n";
+        print 'Nav '.$webpage->get('Code')."\n";
 
 
 
@@ -59,6 +59,7 @@ if ($result=$db->query($sql)) {
         $webpage = get_object('Webpage', $row['Page Key']);
 
 
+        print 'Reindex '.$webpage->get('Code')."\n";
 
 
         $webpage->reindex_items();
