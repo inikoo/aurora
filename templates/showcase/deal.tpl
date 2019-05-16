@@ -6,7 +6,9 @@
         </div>
             <h1 style="margin: 20px 0px">{$deal->get('Deal Term Allowances Label')}</h1>
 
-        <div class="offer_text_banner">{$deal->get('Deal Icon')} <span class="name ">{$deal->get('Deal Name Label')}</span> <span class="term Deal_Term_Label">{$deal->get('Deal Term Label')}</span> <span class="allowance Deal_Component_Allowance_Label">{$deal->get('Deal Allowance Label')}</span></div>
+        <div class="offer_text_banner">
+            <span class="name Deal_Name_Label">{$deal->get('Deal Name Label')}</span> <span class="term Deal_Term_Label">{$deal->get('Deal Term Label')}</span> <span class="allowance Deal_Component_Allowance_Label">{$deal->get('Deal Allowance Label')}</span>
+        </div>
 
 
 

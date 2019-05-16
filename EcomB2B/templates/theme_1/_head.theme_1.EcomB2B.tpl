@@ -147,7 +147,7 @@
     {/if}
 
 
-    <link rel="stylesheet" href="css/desktop.min.css?v181125" type="text/css"/>
+    <link rel="stylesheet" href="css/desktop.min.css?v190516v2" type="text/css"/>
 
     {assign "with_forms" false}
     {assign "with_not_found" 0}

@@ -8427,7 +8427,12 @@ input.input_file {
   margin-bottom: 20px;
   line-height: 170%; }
   .offer_text_banner .name {
+    color: #9068be;
     font-weight: bold; }
+  .offer_text_banner .term {
+    color: #9068be; }
+  .offer_text_banner .allowance {
+    color: #686bbe; }
 
 .progress_bar_container {
   width: 120px;

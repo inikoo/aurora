@@ -74,6 +74,13 @@ function change_item_replacement(amount, input) {
     }
 
 
+    if(input.val()>0){
+
+    }else{
+
+    }
+
+
     update_new_replacement_totals()
 
 }

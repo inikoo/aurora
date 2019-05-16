@@ -1178,6 +1178,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     );
 
 
+
+                    //print_r($campaign);
                     //print_r($data);
 
                     switch ($campaign->get('Code')) {
@@ -1202,7 +1204,11 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             if (!empty($data['fields_data']['Deal Type Shipping Off'])) {
 
                                 $deal_new_data['Deal Allowance Label'] = _('Discounted shipping');
-                                $deal_new_data['Deal Terms']           = 1;
+                                if ($deal_new_data['Deal Terms Type'] == 'Voucher AND Amount') {
+                                    $deal_new_data['Deal Terms'] = ';'.$data['fields_data']['Trigger Extra Amount Net'].';Order Items Gross Amount';
+                                } else {
+                                    $deal_new_data['Deal Terms'] = 1;
+                                }
 
 
                                 //'Get Cheapest Free','Amount Off','Percentage Off','Get Free','Get Same Free','Credit','Shipping Off'
@@ -1214,7 +1220,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     'Deal Component Allowance Label'        => _('Discounted shipping'),
                                     'Deal Component Allowance Type'         => 'Shipping Off',
                                     'Deal Component Allowance Target'       => 'Order',
-                                    'Deal Component Allowance Target Type'  => 'Items',
+                                    'Deal Component Allowance Target Type'  => 'No Items',
                                     'Deal Component Allowance Target Key'   => '',
                                     'Deal Component Allowance Target Label' => '',
                                     'Deal Component Allowance'              => 'Shipping Off'
@@ -1277,9 +1283,54 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                 );
 
 
+                            }elseif ($data['fields_data']['Deal Type Get Item Free']) {
+
+                                if ($deal_new_data['Deal Terms Type'] == 'Voucher AND Amount') {
+                                    $deal_new_data['Deal Terms'] = ';'.$data['fields_data']['Trigger Extra Amount Net'].';Order Items Gross Amount';
+                                } else {
+                                    $deal_new_data['Deal Terms'] = 1;
+                                }
+
+                                list($success,$result)=parse_deal_free_item($data,$deal_new_data,$store);
+
+                                if($success){
+                                    list($deal_new_data, $new_component_data)=$result;
+                                    $new_component_data['Deal Component Allowance Target Type']='Items';
+                                }else{
+                                    echo json_encode($result);
+                                    exit;
+                                }
+
                             }
+                            elseif($data['fields_data']['Deal Type Amount Off']){
+
+                                if ($deal_new_data['Deal Terms Type'] == 'Voucher AND Amount') {
+                                    $deal_new_data['Deal Terms'] = ';'.$data['fields_data']['Trigger Extra Amount Net'].';Order Items Gross Amount';
+                                } else {
+                                    $deal_new_data['Deal Terms'] = 1;
+                                }
+
+                                list($success,$result)=parse_deal_amount_off($data,$deal_new_data,$store);
+                                if($success){
+                                    list($deal_new_data, $new_component_data)=$result;
+                                    $new_component_data['Deal Component Allowance Target Type']='No Items';
+                                }else{
+                                    echo json_encode($result);
+                                    exit;
+                                }
+                            }else{
+                            $response = array(
+                                'state' => 400,
+                                'resp'  => 'Error no allowance type'
+                            );
+                            echo json_encode($response);
+                            exit;
+                        }
 
                             break;
+
+
+
                         case 'CA':
 
                             $category      = get_object('Category', $data['fields_data']['Product Family Category Key']);
@@ -1482,7 +1533,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     exit;
                                 }
 
-                            }elseif($data['fields_data']['Deal Type Amount Off']){
+                            }
+                            elseif($data['fields_data']['Deal Type Amount Off']){
                                 list($success,$result)=parse_deal_amount_off($data,$deal_new_data,$store);
                                 if($success){
                                     list($deal_new_data, $new_component_data)=$result;
@@ -1510,10 +1562,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             exit;
                     }
 
+
                     //print_r($deal_new_data);
                     //print_r($new_component_data);
-                    //exit;
-
 
                     $object = $campaign->create_deal($deal_new_data, $new_component_data);
 
