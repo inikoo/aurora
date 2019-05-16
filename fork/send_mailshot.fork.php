@@ -35,8 +35,16 @@ function fork_send_mailshot($job) {
     $smarty->setConfigDir('server_files/smarty/configs');
     $smarty->addPluginsDir('./smarty_plugins');
 
-    $store   = get_object('Store', $mailshot->data['Email Campaign Store Key']);
-    $website = get_object('Website', $store->get('Store Website Key'));
+    $store           = get_object('Store', $mailshot->data['Email Campaign Store Key']);
+    $website         = get_object('Website', $store->get('Store Website Key'));
+
+    if($website->id){
+        $unsubscribe_url = $website->get('Website URL').'/unsubscribe.php';
+
+    }else{
+        $unsubscribe_url = $account->get('Website URL').'/unsubscribe.php';
+
+    }
 
     $email_template_type = get_object('email_template_type', $mailshot->data['Email Campaign Email Template Type Key']);
     $email_template      = get_object('email_template', $mailshot->data['Email Campaign Email Template Key']);
@@ -62,7 +70,7 @@ function fork_send_mailshot($job) {
                 'Email_Template_Type' => $email_template_type,
                 'Email_Template'      => $email_template,
                 'Email_Tracking'      => get_object('Email_Tracking', $row['Email Tracking Key']),
-                'Unsubscribe URL'     => $website->get('Website URL').'/unsubscribe.php'
+                'Unsubscribe URL'     => $unsubscribe_url
             );
 
             if ($mailshot->data['Email Campaign Type'] == 'GR Reminder') {
@@ -235,8 +243,7 @@ function fork_send_mailshot($job) {
                                     'key'    => $mailshot->id,
 
                                     'update_metadata' => $mailshot->get_update_metadata(),
-                                    'v'=>1
-
+                                    'v'               => 1
 
 
                                 )
@@ -284,7 +291,6 @@ function fork_send_mailshot($job) {
         print "$sql\n";
         exit;
     }
-
 
 
     /*

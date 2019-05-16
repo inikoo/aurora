@@ -151,7 +151,7 @@ module.exports = function (grunt) {
                 },
                 src: [
                     'EcomB2B/theme_1/local/jquery.js',
-                    'EcomB2B/theme_1/tablet/plugins.js', ,
+                    'EcomB2B/theme_1/tablet/plugins.js',
                     'EcomB2B/js/search.js',
                 ], dest: 'EcomB2B/js/mobile.190304.min.js',
 

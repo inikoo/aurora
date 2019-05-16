@@ -62,8 +62,6 @@ trait OrderDiscountOperations {
         $this->get_allowances_from_customer_trigger();
         $this->get_allowances_from_pinned_deal_components();
 
-        //print_r($this->deals);
-
 
         $this->apply_items_discounts();
 
@@ -2504,8 +2502,7 @@ trait OrderDiscountOperations {
 
         foreach ($vouchers_data as $voucher_data) {
 
-
-            $voucher_formatted_info .= '<div>'._('Voucher').' <span style="border:1px solid #ccc;padding:2px 5px">'.$voucher_data['Voucher Code'].'</span></div>';
+            $voucher_formatted_info .= '<div ><span class="voucher_code" >'.$voucher_data['Voucher Code'].'</span> <span class="deal_name">'.$voucher_data['Deal Name Label'].'</span>  <span class="deal_term">'.$voucher_data['Deal Term Label'].'</span>  <span class="deal_allowance">'.$voucher_data['Deal Allowance Label'].'</span>   </div>';
         };
 
         return $voucher_formatted_info;
@@ -2517,7 +2514,7 @@ trait OrderDiscountOperations {
 
 
         if ($scope == 'data') {
-            $sql = "SELECT V.`Voucher Key`,`Voucher Code` FROM `Voucher Order Bridge` B  left join `Voucher Dimension` V on (V.`Voucher Key`=B.`Voucher Key`) WHERE `Order Key`=?  ";
+            $sql = "SELECT V.`Voucher Key`,`Voucher Code`,`Deal Name Label`,`Deal Term Label`,`Deal Allowance Label` FROM `Voucher Order Bridge` B  left join `Voucher Dimension` V on (V.`Voucher Key`=B.`Voucher Key`) left join `Deal Dimension` D on (D.`Deal Key`=B.`Deal Key`)  WHERE `Order Key`=?  ";
 
         } else {
             $sql = "SELECT `Voucher Key` FROM `Voucher Order Bridge` WHERE `Order Key`=?  ";

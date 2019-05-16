@@ -325,6 +325,8 @@ class Deal extends DB_Table {
 
                 $_terms = json_decode($this->get('Deal Terms'), true);
 
+
+
                 if (!$_terms) {
                     $tmp    = preg_split('/\;/', $this->get('Deal Terms'));
                     $_terms = array(

@@ -1237,6 +1237,22 @@ section.product_tabs input[type=radio]:checked + label + div {
   z-index: 100;
   position: relative; }
 
+.deal_name {
+  color: #9068be;
+  font-weight: bold; }
+
+.deal_term {
+  color: #9068be; }
+
+.deal_allowance {
+  color: #686bbe; }
+
+.voucher_code {
+  border: 1px solid #ccc;
+  padding: 2px 5px;
+  margin-right: 5px;
+  color: #9068be; }
+
 .discounts {
   width: 100%;
   display: flex; }
