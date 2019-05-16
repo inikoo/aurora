@@ -23,7 +23,7 @@ $editor = array(
     'Date'         => gmdate('Y-m-d H:i:s'),
     'Subject'      => 'System',
     'Subject Key'  => 0,
-    'Author Name'  => 'System (Migration from inikoo)',
+    'Author Name'  => 'System',
     'Author Alias' => 'System (Fix missing dimensions from part)',
 
 
