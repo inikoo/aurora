@@ -239,6 +239,9 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
         case 'Deal':
 
             if (isset($options['new'])) {
+
+
+
                 switch ($options['parent']) {
                     case 'campaign':
 

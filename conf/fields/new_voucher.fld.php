@@ -72,7 +72,16 @@ $object_fields[] = array(
             'invalid_msg'       => get_invalid_message('string'),
             'required'          => false,
             'placeholder'       => _('Voucher code'),
-            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
+            'server_validation' => json_encode(array(
+                'tipo' => 'check_for_duplicates',
+                'parent'     => 'store',
+                'parent_key' => $options['parent_object']->get('Store Key'),
+
+
+                                               )
+
+
+                ),
             'type'              => 'value'
         ),
 
