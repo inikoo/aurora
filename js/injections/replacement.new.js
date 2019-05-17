@@ -250,6 +250,8 @@ function close_feedback(){
         $(scope_element).find('i').addClass('fa-square').removeClass('fa-check-square')
     })
 
+    validate_feedback()
+
 }
 
 
