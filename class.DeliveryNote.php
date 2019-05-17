@@ -910,7 +910,9 @@ class DeliveryNote extends DB_Table {
             $this->get_data('id', $this->id);
 
 
-            foreach ($transactions as $transaction_data) {
+            $feedback = array();
+
+            foreach ($transactions as $tansaction_key => $transaction_data) {
 
 
                 if ($transaction_data['type'] == 'itf') {
@@ -971,6 +973,14 @@ class DeliveryNote extends DB_Table {
 
                             $this->db->exec($sql);
 
+                            $replacement_itf = $this->db->lastInsertId();
+
+
+                            $_feedback        = $transaction_data['feedback'];
+                            $_feedback['itf'] = $replacement_itf;
+                            $feedback[]       = $_feedback;
+
+
                         }
                     } else {
                         print_r($error_info = $this->db->errorInfo());
@@ -981,6 +991,23 @@ class DeliveryNote extends DB_Table {
 
                 }
             }
+
+            $account = get_object('Account', 1);
+
+
+            require_once 'utils/new_fork.php';
+
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'       => 'feedback',
+                'feedback'   => $feedback,
+                'user_key'   => $this->editor['User Key'],
+                'parent'     => 'Replacement',
+                'parent_key' => $this->id,
+                'store_key' => $this->get('Store Key'),
+                'editor'     => $this->editor
+            ), $account->get('Account Code'), $this->db
+            );
 
 
             $this->update_totals();
@@ -2581,9 +2608,6 @@ class DeliveryNote extends DB_Table {
                 "UPDATE `Order Post Transaction Dimension` SET `State`=%s  WHERE `Delivery Note Key`=%d   ", prepare_mysql('In Process'), $this->id
             );
             $this->db->exec($sql);
-
-
-
 
 
             $order->fast_update(array('Order Replacement State' => 'NA'));

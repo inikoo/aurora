@@ -167,13 +167,13 @@ class Order extends DB_Table {
                 break;
 
             case('Order Customer Purchase Order ID'):
-                $this->update_field('Order Customer Purchase Order ID',$value);
+                $this->update_field('Order Customer Purchase Order ID', $value);
 
 
-                if($value==''){
+                if ($value == '') {
                     $this->update_metadata['hide'] = array('Order_Customer_Purchase_Order_ID_container');
 
-                }else{
+                } else {
                     $this->update_metadata['show'] = array('Order_Customer_Purchase_Order_ID_container');
                 }
 
@@ -1199,7 +1199,7 @@ class Order extends DB_Table {
 
 
                     $delivery_note = new DeliveryNote('create', $data_dn, $this);
-//059-645919
+                    //059-645919
 
                     new_housekeeping_fork(
                         'au_housekeeping', array(
@@ -1724,8 +1724,6 @@ class Order extends DB_Table {
         }
 
 
-
-
         $date = gmdate('Y-m-d H:i:s');
 
         $this->data['Order Cancelled Date'] = $date;
@@ -1760,7 +1758,8 @@ class Order extends DB_Table {
             "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order Payment State`=%s,`Order State`=%s,`Order Current XHTML Payment State`=%s,`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0,`Order Cancel Note`=%s
 				,`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order To Pay Amount`=%.2f,`Order Items Cost`=0
 				WHERE `Order Key`=%d"//     ,$no_shipped
-            , prepare_mysql($this->data['Order Cancelled Date']), prepare_mysql($this->data['Order Payment State']), prepare_mysql($this->data['Order State']), prepare_mysql($this->data['Order Current XHTML Payment State']), prepare_mysql($this->data['Order Cancel Note']), $this->data['Order To Pay Amount'],
+            , prepare_mysql($this->data['Order Cancelled Date']), prepare_mysql($this->data['Order Payment State']), prepare_mysql($this->data['Order State']), prepare_mysql($this->data['Order Current XHTML Payment State']),
+            prepare_mysql($this->data['Order Cancel Note']), $this->data['Order To Pay Amount'],
 
             $this->id
         );
@@ -3072,6 +3071,7 @@ class Order extends DB_Table {
 
 
         require_once 'utils/new_fork.php';
+
         new_housekeeping_fork(
             'au_housekeeping', array(
             'type'      => 'replacement_created',
@@ -3079,6 +3079,9 @@ class Order extends DB_Table {
             'editor'    => $this->editor
         ), $account->get('Account Code'), $this->db
         );
+
+
+
 
 
         return $replacement;
@@ -3268,7 +3271,7 @@ class Order extends DB_Table {
 
     function get_field_label($field) {
 
-        switch ($field){
+        switch ($field) {
             case 'Order Customer Purchase Order ID':
                 return _("customer's purchase order number");
                 break;
