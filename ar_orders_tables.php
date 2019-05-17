@@ -2997,6 +2997,10 @@ function replacement_new_items($_data, $db, $user) {
                 -1 * $data['Inventory Transaction Quantity']
             );
 
+
+            $feedback='<span data-empty_label="'._('Set feedback').'" data-itf="'.$data['Inventory Transaction Key'].'"  id="set_feedback_'.$data['Inventory Transaction Key'].'" class="set_feedback_button button very_discreet_on_hover italic hide padding_right_5">'._('Set feedback').'</span>';
+
+            $description= $data['Part Package Description'].'<div class="hide small discreet" id="feedback_description_'.$data['Inventory Transaction Key'].'"></div>';
             $adata[] = array(
 
                 'id'        => (integer)$data['Inventory Transaction Key'],
@@ -3004,13 +3008,13 @@ function replacement_new_items($_data, $db, $user) {
                 'reference' => sprintf('<span class="link" onclick="change_view(\'/parts/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
 
                 'product_description' => $description,
-                'description'         => $data['Part Package Description'],
+                'description'         =>$description,
                 'quantity'            => $quantity,
                 'refund_net'          => $refund_net,
                 'quantity_order'      => number($data['Order Quantity']),
 
                 'net' => sprintf('<span class="new_refund_order_item_net button  " amount="%f" >%s</span>', $data['Order Transaction Amount'], money($data['Order Transaction Amount'], $data['Order Currency Code'])),
-
+                'feedback'=>$feedback
             );
 
             $items++;

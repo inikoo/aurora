@@ -68,7 +68,8 @@ switch ($tipo) {
         $data = prepare_values(
             $_REQUEST, array(
                          'key'          => array('type' => 'key'),
-                         'transactions' => array('type' => 'json array'),
+                         'transactions' => array('type' => 'json array')
+
                      )
         );
         create_replacement($data, $editor, $smarty, $db, $account, $user);
@@ -1361,6 +1362,7 @@ function create_replacement($data, $editor, $smarty, $db) {
 
 
     $replacement = $object->create_replacement($data['transactions']);
+
 
 
     if ($replacement->id) {

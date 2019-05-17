@@ -83,7 +83,7 @@ class Supplier extends SubjectSupplier {
             $this->id = $this->data['Supplier Key'];
 
 
-            if ($this->data['Supplier Metadata'] == '') {
+            if (empty($this->data['Supplier Metadata'] )) {
                 $this->metadata = array();
             } else {
                 $this->metadata = json_decode(
