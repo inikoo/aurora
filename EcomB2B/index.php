@@ -37,5 +37,3 @@ $is_homepage=true;
 
 include 'display_webpage.php';
 
-
-?>
