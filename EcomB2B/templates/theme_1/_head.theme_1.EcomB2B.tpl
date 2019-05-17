@@ -315,6 +315,29 @@
 
 
 
+    {if !isset($is_devel) or !$is_devel  }
+        {if  !empty($one_signal_id)}
+
+            <link rel="manifest" href='data:application/manifest+json,{ "gcm_sender_id": "{$one_signal_id}", "gcm_sender_id_comment": "Do not change the GCM Sender ID"}' />
+            <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+            <script>
+                var OneSignal = window.OneSignal || [];
+                OneSignal.push(function() {
+                    OneSignal.init({
+                        appId: "{$one_signal_key}",
+                });
+                });
+            </script>
+
+
+        {/if}
+
+    {/if}
+
+
+
+
+
 
     {if $website->get('Website Text Font')!=''  and $logged_in}
         <link href="https://fonts.googleapis.com/css?family={$website->get('Website Text Font')}:400,700" rel="stylesheet">

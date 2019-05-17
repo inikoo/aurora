@@ -193,6 +193,18 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     $smarty->assign('sumo_code', $website->get('Website Sumo Code'));
 
 
+    $one_signal=$website->get('Website One Signal Code');
+
+
+    if($one_signal!=''){
+        $one_signal_data=preg_split('/,/',$one_signal);
+
+        $smarty->assign('one_signal_id', $one_signal_data[0]);
+        $smarty->assign('one_signal_key',$one_signal_data[1]);
+
+
+    }
+
     date_default_timezone_set($store->get('Store Timezone'));
 
 
