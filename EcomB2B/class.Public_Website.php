@@ -210,10 +210,8 @@ class Public_Website {
                     $store->get('Store Department Category Key')
                 );
 
-
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
-
                         switch ($output) {
                             case 'menu':
                                 $categories[] = array(
@@ -224,7 +222,6 @@ class Public_Website {
                                 );
                                 break;
                         }
-
                     }
                 } else {
                     print_r($error_info = $this->db->errorInfo());
@@ -232,12 +229,9 @@ class Public_Website {
                     exit;
                 }
 
-
                 return $categories;
-
                 break;
         }
-
 
     }
 
