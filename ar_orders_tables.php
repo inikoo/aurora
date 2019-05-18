@@ -108,7 +108,7 @@ switch ($tipo) {
         refund_new_items(get_table_parameters(), $db, $user);
         break;
     case 'refund.new.items_tax':
-        refund_new_items_tax(get_table_parameters(), $db, $user,$account);
+        refund_new_items_tax(get_table_parameters(), $db, $user, $account);
         break;
     case 'replacement.new.items':
         replacement_new_items(get_table_parameters(), $db, $user);
@@ -1797,18 +1797,17 @@ function refund_items_tax_only($_data, $db, $user) {
         $tax = money($tax, $data['Currency Code']);
 
         $description = $data['Transaction Description'];
-        $adata[] = array(
+        $adata[]     = array(
             'id'          => (integer)$data['Order No Product Transaction Fact Key'],
             'code'        => '',
             'description' => $description,
-            'tax' => $tax,
+            'tax'         => $tax,
         );
 
     }
 
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
 
 
     foreach ($db->query($sql) as $data) {
@@ -1823,9 +1822,9 @@ function refund_items_tax_only($_data, $db, $user) {
                 }
             }
         }
-        $tax = money($tax, $data['Order Currency Code']);
-        $units    = $data['Product Units Per Case'];
-        $name     = $data['Product History Name'];
+        $tax   = money($tax, $data['Order Currency Code']);
+        $units = $data['Product Units Per Case'];
+        $name  = $data['Product History Name'];
 
         $description = '';
         if ($units > 1) {
@@ -1837,7 +1836,7 @@ function refund_items_tax_only($_data, $db, $user) {
             'id'          => (integer)$data['Order Transaction Fact Key'],
             'code'        => sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $data['Store Key'], $data['Product ID'], $data['Product History Code']),
             'description' => $description,
-            'tax' => $tax,
+            'tax'         => $tax,
         );
 
     }
@@ -2618,7 +2617,6 @@ function refund_new_items($_data, $db, $user) {
 
     $sql = sprintf(
         "SELECT `Order No Product Transaction Fact Key`,`Transaction Description`,`Transaction Net Amount`,`Transaction Type` ,`Currency Code`FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d ", $_data['parameters']['parent_key']
-
     );
 
     if ($result = $db->query($sql)) {
@@ -2630,16 +2628,21 @@ function refund_new_items($_data, $db, $user) {
 
                 $refund_net = sprintf('<input class="new_refund_item %s" style="width: 80px" transaction_type="onptf" transaction_id="%d"  max="%f"  />', ($amount <= 0 ? 'hide' : ''), $row['Order No Product Transaction Fact Key'], $amount);
 
+                $description = $row['Transaction Description'].'<div class="hide small discreet" id="feedback_description_onptf_'.$row['Order No Product Transaction Fact Key'].'"></div>';
+
+                $feedback = '<span data-empty_label="'._('Set feedback').'"  data-type="onptf" data-key="'.$row['Order No Product Transaction Fact Key'].'"  id="set_onptf_feedback_'.$row['Order No Product Transaction Fact Key']
+                    .'" class="set_otf_feedback_button button very_discreet_on_hover italic hide padding_right_5">'._('Set feedback').'</span>';
+
+
                 $adata[] = array(
 
                     'id'          => 'onptf_'.$row['Order No Product Transaction Fact Key'],
                     'code'        => '',
-                    'description' => $row['Transaction Description'],
+                    'description' => $description,
                     'quantity'    => '',
                     'refund_net'  => $refund_net,
-
-                    'net' => sprintf('<span class="new_refund_order_item_net button "  amount="%f">%s</span>', $amount, money($amount, $row['Currency Code'])),
-
+                    'net'         => sprintf('<span class="new_refund_order_item_net button "  amount="%f">%s</span>', $amount, money($amount, $row['Currency Code'])),
+                    'feedback'    => $feedback
 
                 );
                 $items++;
@@ -2686,6 +2689,14 @@ function refund_new_items($_data, $db, $user) {
                 '<input class="new_refund_item %s item" style="width: 80px"  transaction_type="otf" transaction_id="%d"  max="%f"  />', ($data['Order Transaction Amount'] <= 0 ? 'hide' : ''), $data['Order Transaction Fact Key'], $data['Order Transaction Amount']
             );
 
+            $feedback =
+                '<span data-empty_label="'._('Set feedback').'" data-type="otf" data-key="'.$data['Order Transaction Fact Key'].'"  id="set_otf_feedback_'.$data['Order Transaction Fact Key'].'" class="set_otf_feedback_button button very_discreet_on_hover italic hide padding_right_5">'
+                ._('Set feedback').'</span>';
+
+
+            $description = $description.'<div class="hide small discreet" id="feedback_description_otf_'.$data['Order Transaction Amount'].'"></div>';
+
+
             $adata[] = array(
 
                 'id'          => (integer)$data['Order Transaction Fact Key'],
@@ -2694,9 +2705,8 @@ function refund_new_items($_data, $db, $user) {
                 'description' => $description,
                 'quantity'    => $quantity,
                 'refund_net'  => $refund_net,
-
-                'net' => sprintf('<span class="new_refund_order_item_net button  " amount="%f" >%s</span>', $data['Order Transaction Amount'], money($data['Order Transaction Amount'], $data['Order Currency Code'])),
-
+                'net'      => sprintf('<span class="new_refund_order_item_net button  " amount="%f" >%s</span>', $data['Order Transaction Amount'], money($data['Order Transaction Amount'], $data['Order Currency Code'])),
+                'feedback' => $feedback
 
             );
 
@@ -2724,7 +2734,7 @@ function refund_new_items($_data, $db, $user) {
 }
 
 
-function refund_new_items_tax($_data, $db, $user,$account) {
+function refund_new_items_tax($_data, $db, $user, $account) {
 
     global $_locale;// fix this locale stuff
 
@@ -2747,18 +2757,16 @@ function refund_new_items_tax($_data, $db, $user,$account) {
 
     $sql = sprintf(
         "SELECT *,`Order No Product Transaction Fact Key`,`Transaction Description`,`Transaction Net Amount`,`Transaction Type` ,`Currency Code` ,`Tax Category Rate` FROM `Order No Product Transaction Fact` ONPTF  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=ONPTF.`Tax Category Code` and `Tax Category Country Code`=%s)  WHERE `Order Key`=%d ",
-        prepare_mysql($account->get('Account Country Code')),$_data['parameters']['parent_key']
+        prepare_mysql($account->get('Account Country Code')), $_data['parameters']['parent_key']
 
     );
-
 
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
 
-
-            $amount = round($row['Transaction Net Amount'] * $row['Tax Category Rate'], 2);
+            $amount    = round($row['Transaction Net Amount'] * $row['Tax Category Rate'], 2);
             $total_tax += $amount;
             if ($amount > 0) {
 
@@ -2777,8 +2785,6 @@ function refund_new_items_tax($_data, $db, $user,$account) {
         print "$sql\n";
         exit;
     }
-
-
 
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -2814,7 +2820,7 @@ function refund_new_items_tax($_data, $db, $user,$account) {
 
     $sql = sprintf(
         "SELECT *,`Order No Product Transaction Fact Key`,`Transaction Description`,`Transaction Net Amount`,`Transaction Type` ,`Currency Code` ,`Tax Category Rate` FROM `Order No Product Transaction Fact` ONPTF  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=ONPTF.`Tax Category Code` and `Tax Category Country Code`=%s)  WHERE `Order Key`=%d ",
-        prepare_mysql($account->get('Account Country Code')),$_data['parameters']['parent_key']
+        prepare_mysql($account->get('Account Country Code')), $_data['parameters']['parent_key']
     );
 
 
@@ -2825,10 +2831,8 @@ function refund_new_items_tax($_data, $db, $user,$account) {
             $amount = round($row['Transaction Net Amount'] * $row['Tax Category Rate'], 2);
 
 
-
-
             if ($diff != 0 and $items == $bigger_tax_item) {
-               $amount = $amount + $diff;
+                $amount = $amount + $diff;
             }
 
 
@@ -2890,7 +2894,7 @@ function refund_new_items_tax($_data, $db, $user,$account) {
 
 
             if ($diff != 0 and $items == $bigger_tax_item) {
-               $tax = $tax + $diff;
+                $tax = $tax + $diff;
             }
 
 
@@ -2998,23 +3002,25 @@ function replacement_new_items($_data, $db, $user) {
             );
 
 
-            $feedback='<span data-empty_label="'._('Set feedback').'" data-itf="'.$data['Inventory Transaction Key'].'"  id="set_feedback_'.$data['Inventory Transaction Key'].'" class="set_feedback_button button very_discreet_on_hover italic hide padding_right_5">'._('Set feedback').'</span>';
+            $feedback = '<span data-empty_label="'._('Set feedback').'" data-itf="'.$data['Inventory Transaction Key'].'"  id="set_feedback_'.$data['Inventory Transaction Key'].'" class="set_feedback_button button very_discreet_on_hover italic hide padding_right_5">'._(
+                    'Set feedback'
+                ).'</span>';
 
-            $description= $data['Part Package Description'].'<div class="hide small discreet" id="feedback_description_'.$data['Inventory Transaction Key'].'"></div>';
-            $adata[] = array(
+            $description = $data['Part Package Description'].'<div class="hide small discreet" id="feedback_description_'.$data['Inventory Transaction Key'].'"></div>';
+            $adata[]     = array(
 
                 'id'        => (integer)$data['Inventory Transaction Key'],
                 'code'      => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product Code']),
                 'reference' => sprintf('<span class="link" onclick="change_view(\'/parts/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
 
                 'product_description' => $description,
-                'description'         =>$description,
+                'description'         => $description,
                 'quantity'            => $quantity,
                 'refund_net'          => $refund_net,
                 'quantity_order'      => number($data['Order Quantity']),
 
-                'net' => sprintf('<span class="new_refund_order_item_net button  " amount="%f" >%s</span>', $data['Order Transaction Amount'], money($data['Order Transaction Amount'], $data['Order Currency Code'])),
-                'feedback'=>$feedback
+                'net'      => sprintf('<span class="new_refund_order_item_net button  " amount="%f" >%s</span>', $data['Order Transaction Amount'], money($data['Order Transaction Amount'], $data['Order Currency Code'])),
+                'feedback' => $feedback
             );
 
             $items++;

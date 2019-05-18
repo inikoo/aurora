@@ -23,8 +23,7 @@ function fork_housekeeping($job) {
 
         case 'feedback':
 
-
-            //print_r($data);
+            print_r($data);
 
 
             foreach ($data['feedback'] as $feedback) {
@@ -146,6 +145,118 @@ function fork_housekeeping($job) {
 
                         $stmt->execute();
 
+
+                    }
+                    elseif (isset($feedback['otf'])) {
+
+
+
+
+                        $feedback_otf_data = array(
+                            'Feedback OTF Feedback Key' => $feedback_id,
+                            'Feedback OTF Original Key'=>$feedback['original_otf'],
+                            'Feedback OTF Store Key'=>$data['store_key'],
+                            'Feedback OTF Post Operation Key'=>$feedback['otf']
+                        );
+
+
+
+
+
+                        $sql = sprintf(
+                            "INSERT INTO `Feedback OTF Bridge` (%s) values (%s)", '`'.join('`,`', array_keys($feedback_otf_data)).'`', join(',', array_fill(0, count($feedback_otf_data), '?'))
+                        );
+
+                        $stmt = $db->prepare($sql);
+
+                        //  print_r($feedback_otf_data);
+
+                        $i = 1;
+                        foreach ($feedback_otf_data as $key => $value) {
+                            $stmt->bindValue($i, $value);
+                            $i++;
+                        }
+
+                        $stmt->execute();
+
+                        $sql = sprintf(
+                            'select `Inventory Transaction Key` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key`=%d',
+                            $feedback['original_otf']
+                        );
+
+                        if ($result=$db->query($sql)) {
+                        		foreach ($result as $row) {
+
+
+
+
+                                    $feedback_itf_data = array(
+                                        'Feedback ITF Feedback Key' => $feedback_id,
+                                        'Feedback ITF Original Key' => $row['Inventory Transaction Key'],
+                                    );
+
+
+
+                                    $sql = sprintf(
+                                        "INSERT INTO `Feedback ITF Bridge` (%s) values (%s)", '`'.join('`,`', array_keys($feedback_itf_data)).'`', join(',', array_fill(0, count($feedback_itf_data), '?'))
+                                    );
+
+                                    $stmt = $db->prepare($sql);
+
+
+                                    $i = 1;
+                                    foreach ($feedback_itf_data as $key => $value) {
+                                        $stmt->bindValue($i, $value);
+                                        $i++;
+                                    }
+
+                                    $stmt->execute();
+
+                        		}
+                        }else {
+                        		print_r($error_info=$db->errorInfo());
+                        		print "$sql\n";
+                        		exit;
+                        }
+
+
+
+
+
+
+
+                    }
+                    elseif (isset($feedback['onptf'])) {
+
+
+
+
+                        $feedback_otf_data = array(
+                            'Feedback ONPTF Feedback Key' => $feedback_id,
+                            'Feedback ONPTF Original Key'=>$feedback['original_onptf'],
+                            'Feedback ONPTF Store Key'=>$data['store_key'],
+                            'Feedback ONPTF Post Operation Key'=>$feedback['onptf']
+                        );
+
+
+
+
+
+                        $sql = sprintf(
+                            "INSERT INTO `Feedback ONPTF Bridge` (%s) values (%s)", '`'.join('`,`', array_keys($feedback_otf_data)).'`', join(',', array_fill(0, count($feedback_otf_data), '?'))
+                        );
+
+                        $stmt = $db->prepare($sql);
+
+                        //  print_r($feedback_otf_data);
+
+                        $i = 1;
+                        foreach ($feedback_otf_data as $key => $value) {
+                            $stmt->bindValue($i, $value);
+                            $i++;
+                        }
+
+                        $stmt->execute();
 
                     }
 

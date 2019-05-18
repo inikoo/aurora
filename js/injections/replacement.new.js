@@ -98,9 +98,6 @@ function change_item_replacement(amount, input) {
         feedback_element.removeClass('hide')
     }else{
         feedback_element.addClass('hide')
-
-
-
     }
 
 
