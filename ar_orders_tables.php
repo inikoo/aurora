@@ -2694,7 +2694,7 @@ function refund_new_items($_data, $db, $user) {
                 ._('Set feedback').'</span>';
 
 
-            $description = $description.'<div class="hide small discreet" id="feedback_description_otf_'.$data['Order Transaction Amount'].'"></div>';
+            $description = $description.'<div class="hide small discreet" id="feedback_description_otf_'.$data['Order Transaction Fact Key'].'"></div>';
 
 
             $adata[] = array(
