@@ -228,7 +228,3 @@
 
 </div>
 
-<script>
-
-
-</script>
