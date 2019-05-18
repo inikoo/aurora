@@ -319,7 +319,7 @@
         {if  !empty($one_signal_id)}
 
             <link rel="manifest" href='data:application/manifest+json,{ "gcm_sender_id": "{$one_signal_id}", "gcm_sender_id_comment": "Do not change the GCM Sender ID"}' />
-            <script src="OneSignalSDK.js" async=""></script>
+            <script src="OneSignalSDKWorker.js" async=""></script>
             <script>
                 var OneSignal = window.OneSignal || [];
                 OneSignal.push(function() {
