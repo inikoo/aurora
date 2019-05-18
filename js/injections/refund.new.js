@@ -570,7 +570,7 @@ $(document).on('click', '.set_otf_feedback_button', function (e) {
         $('.feedback_otf_form textarea').val(feedback_data.feedback)
 
     }
-
+    validate_otf_feedback()
 
 })
 
