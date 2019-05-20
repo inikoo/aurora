@@ -253,6 +253,16 @@ if ($validator->isValid($sns)) {
 
                         if (isset($event_data['bouncedRecipients'][0]['status'])) {
                             $status_code = $event_data['bouncedRecipients'][0]['status'];
+                        }else{
+
+
+                            $sql = sprintf(
+                                'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $row['Email Tracking Key'], addslashes(json_encode($message))
+
+                            );
+
+                            $db->exec($sql);
+
                         }
 
                         if (isset($event_data['bouncedRecipients'][0]['diagnosticCode'])) {
@@ -355,7 +365,7 @@ if ($validator->isValid($sns)) {
                                 $customer         = get_object('Customer', $row2['Customer Key']);
                                 $customer->editor = $editor;
 
-                                if ($bounce_type == 'Hard Bounce' or ($bounce_type == 'Soft Bounce' and $bounce_count > 9)) {
+                                if ($bounce_type == 'Hard Bounce' or ($bounce_type == 'Soft Bounce' and $bounce_count > 100)) {
 
                                     if ($customer->get('Customer Send Newsletter') == 'Yes' or $customer->get('Customer Send Email Marketing') == 'Yes') {
 
