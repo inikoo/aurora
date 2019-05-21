@@ -959,7 +959,6 @@ class Customer extends Subject {
             $value = _trim($value);
         }
 
-
         if ($this->update_subject_field_switcher($field, $value, $options, $metadata)) {
             return;
         }
@@ -968,6 +967,26 @@ class Customer extends Subject {
         switch ($field) {
 
 
+            case 'Customer Order Sticky Note':
+
+                $this->update_field_switcher($field, $value);
+
+
+                $sql=sprintf("update `Order Dimension` set `Order Sticky Note`=%s where  WHERE `Order State` in  ('InBasket','InProcess')  and `Order Customer Key`=%d ",$value,$this->id);
+                $this->exec($sql);
+
+
+                break;
+            case 'Customer Delivery Sticky Note':
+
+                $this->update_field_switcher($field, $value);
+
+
+                $sql=sprintf("update `Order Dimension` set `Order Delivery Sticky Note`=%s where  WHERE `Order State` in  ('InBasket','InProcess','InWarehouse')  and `Order Customer Key`=%d ",$value,$this->id);
+                $this->exec($sql);
+
+
+                break;
             case 'Customer Web Login Password':
 
 
