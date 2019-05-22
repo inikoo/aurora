@@ -3,7 +3,7 @@
 	<style>
 		{literal}
 		body {font-family: sans-serif;
-			font-size: 10pt;
+			font-size: 8pt;
 		}
 		p {    margin: 0pt;
 		}
@@ -192,15 +192,15 @@
 
 <div style=" clear:both;font-size: 9pt;margin-bottom:2pt">{$formatted_number_of_items}, {$formatted_number_of_picks}</div>
 
-<table class="items" width="100%" style="font-size: 8pt; border-collapse: collapse;" cellpadding="8">
+<table class="items" width="100%" style="font-size: 7pt; border-collapse: collapse;" cellpadding="8">
 	<thead>
 	<tr>
 		<td align="left" width="14%">{t}Location{/t}</td>
-		<td align="center" width="10%">{t}Reference{/t}</td>
-		<td align="left" width="12%">{t}Alt Locations{/t}</td>
+		<td align="center" width="14%">{t}Reference{/t}</td>
+		<td align="left" width="14%">{t}Alt Locations{/t}</td>
 		<td align="left">{t}SKO description{/t}</td>
 		<td align="center" width="7%">SKOs</td>
-		<td align="left" width="18%">{t}Notes{/t}</td>
+		<td align="left" width="16%">{t}Notes{/t}</td>
 	</tr>
 	</thead>
 	<tbody>
@@ -215,7 +215,7 @@
 						</tr>
 				</table>
 			</td>
-			<td align="center"><b>{$transaction.reference}</b></td>
+			<td align="center">{$transaction.reference}</td>
 
 			<td align="left" style="padding: 0px">
 				<table border="0" style="width:100%; border-spacing:0; border-collapse:collapse;">
@@ -229,7 +229,7 @@
 				</table>
 			</td>
 			<td align="left">{$transaction.description}</td>
-			<td align="center" ><b>{$transaction.qty}</b></td>
+			<td align="center" >{$transaction.qty}</td>
 			<td align="left" style="font-size: 6pt;">
 				{if $transaction.un_number>1}<span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;">&nbsp;{$transaction.un_number|strip_tags}&nbsp;</span> {/if}
 				{if $transaction.part_packing_group!='None'}PG <b>{$transaction.part_packing_group}</b> {/if}
