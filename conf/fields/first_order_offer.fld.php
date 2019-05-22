@@ -112,7 +112,7 @@ if($object->get('Deal Status')!='Finish') {
 
             array(
                 'edit' => ($edit ? 'date' : ''),
-                'time' => '00:00:00',
+                'time' => '23:59:59',
 
                 'id'              => 'Deal_Expiration_Date',
                 'value'           => $object->get('Deal Expiration Date'),
