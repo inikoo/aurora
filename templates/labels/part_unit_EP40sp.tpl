@@ -13,7 +13,7 @@
                             <table border="0" style="height: 100%;">
                                 <tr>
                                     <td>
-                                        <b>{$part->get('Reference')}</b>x</td>
+                                        <b>{$part->get('Reference')}</b></td>
                                 </tr>
                                 <tr>
                                     <td style="border-bottom: 1px solid #000">{$part->get('Recommended Product Unit Name')}</td>
@@ -22,12 +22,12 @@
                                     <td style="height: 1mm"></td>
                                 </tr>
                                 <tr>
-                                    <td>
+                                    <td style="font-size: 1.5mm">
                                         {if $part->get('Origin Country')!='' and $part->get('Part Origin Country Code')!=$account->get('Account Country Code')  }
                                             Imported from {$part->get('Origin Country')} by {$account->get('Name')}
                                             <br>
                                         {else}
-                                            <span  style="font-size: 1.5mm">{$account->get('Name')}</span>
+                                            <span  >{$account->get('Name')}</span>
                                             <br>
                                         {/if}
                                     </td>
@@ -42,7 +42,7 @@
                         </td>
 
                         <td >
-                            <barcode height=".75" code="{$part->get('Part Barcode Number')}"/>
+                            <barcode size=".75" code="{$part->get('Part Barcode Number')}"/>
 
                         </td>
                     </tr>
