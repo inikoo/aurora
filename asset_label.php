@@ -34,7 +34,8 @@ if (!in_array(
              'unit',
              'carton',
              'unit_barcode',
-             'unit_ingredients'
+             'unit_ingredients',
+             'unit_EL30'
          )
 )
 ) {
@@ -106,6 +107,13 @@ if ($object_name == 'product') {
     if($type=='package'){
         $filename.='_'.$type;
         $title=sprintf(_('%s SKO'),$object->get('Code'));
+
+    }elseif($type=='unit_EL30'){
+
+        $w = 210;
+        $h = 297;
+
+        $title=sprintf(_('%s unit'),$object->get('Code'));
 
     }else{
         $title=sprintf(_('%s unit'),$object->get('Code'));
