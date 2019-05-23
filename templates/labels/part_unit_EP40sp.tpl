@@ -33,7 +33,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>
+                                    <td style="font-size: 1.5mm">
                                         {$account->get('Label Signature')}
                                     </td>
                                 </tr>
