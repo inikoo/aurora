@@ -585,6 +585,9 @@
                     {if $part->get('Part Barcode Key')}
                         <i class="discreet_on_hover button fal fa-external-link-square" onClick="change_view('inventory/barcode/{$part->get('Part Barcode Key')}')"></i>
                     {/if}
+                    <a  target="_blank"title="{t}Commercial unit label in A4{/t}" href="/asset_label.php?object=part&key={$part->id}&type=unit_EL30"><i class="fal fa-th fa-fw padding_right_5" ></i></a>
+
+
                 </td>
 
 
