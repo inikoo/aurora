@@ -27,7 +27,7 @@
                                             Imported from {$part->get('Origin Country')} by {$account->get('Name')}
                                             <br>
                                         {else}
-                                            <span style="">{$account->get('Name')}</span>
+                                            <span  style="font-size: 1.5mm">{$account->get('Name')}</span>
                                             <br>
                                         {/if}
                                     </td>
