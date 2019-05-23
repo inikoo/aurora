@@ -35,7 +35,11 @@ if (!in_array(
              'carton',
              'unit_barcode',
              'unit_ingredients',
-             'unit_EL30'
+             'unit_EL30',
+             'unit_30UP',
+             'unit_EP40sp',
+
+
          )
 )
 ) {
@@ -108,10 +112,17 @@ if ($object_name == 'product') {
         $filename.='_'.$type;
         $title=sprintf(_('%s SKO'),$object->get('Code'));
 
-    }elseif($type=='unit_EL30'){
+    }elseif($type=='unit_EL30' or $type=='unit_30UP'){
 
         $w = 210;
         $h = 297;
+
+        $title=sprintf(_('%s unit'),$object->get('Code'));
+
+    }elseif($type=='unit_EP40sp' ){
+
+        $h = 210;
+        $w = 297;
 
         $title=sprintf(_('%s unit'),$object->get('Code'));
 
