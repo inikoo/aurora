@@ -324,7 +324,7 @@ function parts($_data, $db, $user, $type, $account) {
 
                     switch ($data['Part Symbol']) {
                         case 'star':
-                            $symbol = '&starf;';
+                            $symbol = '&#9733;';
                             break;
 
                         case 'skull':
@@ -2655,7 +2655,7 @@ function parts_discontinuing($_data, $db, $user, $account) {
 
                     switch ($data['Part Symbol']) {
                         case 'star':
-                            $symbol = '&starf;';
+                            $symbol = '&#9733;';
                             break;
 
                         case 'skull':

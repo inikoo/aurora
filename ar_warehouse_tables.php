@@ -324,7 +324,7 @@ function replenishments($_data, $db, $user) {
 
                 switch ($data['Part Symbol']) {
                     case 'star':
-                        $symbol = '&starf;';
+                        $symbol = '&#9733;';
                         break;
 
                     case 'skull':
