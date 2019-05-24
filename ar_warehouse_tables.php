@@ -325,7 +325,7 @@ function replenishments($_data, $db, $user) {
             'location'              => ($data['Warehouse Flag Key'] ? sprintf(
                     '<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>', strtolower($data['Warehouse Flag Color']), $data['Warehouse Flag Label']
                 ) : '<i class="far fa-flag super_discreet" aria-hidden="true"></i>').' <span class="link" onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$data['Location Key'].'\')">'.$data['Location Code'].'</span>',
-            'part'                  => $reference,
+            'part'                  => $reference.$data['Part Distinct Locations'],
             'other_locations_stock' => $stock,
 
             'quantity'             => number($data['Quantity On Hand']),
