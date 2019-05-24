@@ -748,7 +748,7 @@ class Part extends Asset {
 
                 switch ($this->data['Part Symbol']){
                     case 'star':
-                        return '&starf;';
+                        return '&#9733;';
                         break;
 
                     case 'skull':

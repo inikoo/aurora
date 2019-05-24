@@ -127,7 +127,7 @@ if ($result = $db->query($sql)) {
 
             switch ($row['symbol']){
                 case 'star':
-                    $symbol= '&starf;';
+                    $symbol= '&#9733;';
                     break;
 
                 case 'skull':

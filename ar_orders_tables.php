@@ -2129,10 +2129,49 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
             ).'</div>';
 
 
+
+        $reference=sprintf('<span onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']);
+
+
+        if($data['Part Symbol']!='') {
+            if ($data['Part Symbol'] != '') {
+
+                switch ($data['Part Symbol']) {
+                    case 'star':
+                        $symbol = '&#9733;';
+                        break;
+
+                    case 'skull':
+                        $symbol = '&#9760;';
+                        break;
+                    case 'radioactive':
+                        $symbol = '&#9762;';
+                        break;
+                    case 'peace':
+                        $symbol = '&#9774;';
+                        break;
+                    case 'sad':
+                        $symbol = '&#9785;';
+                        break;
+                    case 'gear':
+                        $symbol = '&#9881;';
+                        break;
+                    case 'love':
+                        $symbol = '&#10084;';
+                        break;
+                    default:
+                        $symbol = '';
+
+                }
+                $reference .= ' '.$symbol;
+            }
+        }
+
+
         $adata[] = array(
             'id' => (integer)$data['Inventory Transaction Key'],
 
-            'reference'   => sprintf('<span onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+            'reference'   => $reference,
             'description' => $description,
             'quantity'    => $quantity,
 
