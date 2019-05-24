@@ -739,6 +739,44 @@ class Part extends Asset {
 
         switch ($key) {
 
+
+            case 'Symbol':
+
+
+
+
+
+                switch ($this->data['Part Symbol']){
+                    case 'star':
+                        return '&starf;';
+                        break;
+
+                    case 'skull':
+                        return '&#9760;';
+                        break;
+                    case 'radioactive':
+                        return '&#9762;';
+                        break;
+                    case 'peace':
+                        return '&#9774;';
+                        break;
+                    case 'sad':
+                        return '&#9785;';
+                        break;
+                    case 'gear':
+                        return '&#9881;';
+                        break;
+                    case 'love':
+                        return '&#10084;';
+                        break;
+
+
+                }
+
+
+
+
+                break;
             case 'made_in_production_data':
 
                 $made_in_production_data = $this->properties($key);
