@@ -59,7 +59,7 @@ $transactions = array();
 
 
 $sql = sprintf(
-    "SELECT  Part.`Part Current On Hand Stock` AS total_stock, PLD.`Quantity On Hand` AS stock_in_picking,`Part Current Stock`,`Part Reference` AS reference,`Picking Note` AS notes,ITF.`Part SKU`,`Part Package Description` AS description,
+    "SELECT  Part.`Part Current On Hand Stock` AS total_stock, PLD.`Quantity On Hand` AS stock_in_picking,`Part Current Stock`,`Part Reference` AS reference,`Part Symbol` AS symbol,`Picking Note` AS notes,ITF.`Part SKU`,`Part Package Description` AS description,
 (`Required`+`Given`) AS qty,`Location Code` AS location ,
         IFNULL((select GROUP_CONCAT(LD.`Location Key`,':',LD.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') 
         from `Part Location Dimension` PLD  left join `Location Dimension` LD on (LD.`Location Key`=PLD.`Location Key`) 
@@ -122,6 +122,44 @@ if ($result = $db->query($sql)) {
 
         $row['description_note'] = '';
         $row['images']           = '';
+
+        if($row['symbol'] !=''){
+
+            switch ($row['symbol']){
+                case 'star':
+                    $symbol= '&starf;';
+                    break;
+
+                case 'skull':
+                    $symbol=  '&#9760;';
+                    break;
+                case 'radioactive':
+                    $symbol=  '&#9762;';
+                    break;
+                case 'peace':
+                    $symbol=  '&#9774;';
+                    break;
+                case 'sad':
+                    $symbol=  '&#9785;';
+                    break;
+                case 'gear':
+                    $symbol=  '&#9881;';
+                    break;
+                case 'love':
+                    $symbol=  '&#10084;';
+                    break;
+                default:
+                    $symbol= '';
+
+            }
+
+
+
+            $row['reference']           .= ' '.$symbol ;
+
+        }
+
+
         $transactions[]          = $row;
     }
 } else {
