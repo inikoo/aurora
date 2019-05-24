@@ -1576,7 +1576,7 @@ class Warehouse extends DB_Table {
  `Part Location Dimension` PL  LEFT JOIN `Part Dimension` P ON (PL.`Part SKU`=P.`Part SKU`) 
  
   WHERE `Can Pick`='Yes' AND `Minimum Quantity`>=0 AND   `Minimum Quantity`>=(`Quantity On Hand`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` ) AND (P.`Part Current On Hand Stock`-`Quantity On Hand`)>=0  AND `Part Location Warehouse Key`=%d
-
+and `Part Distinct Locations`>1 
 ", $this->id
         );
 
