@@ -319,6 +319,41 @@ function replenishments($_data, $db, $user) {
             ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
         );
 
+        if($data['Part Symbol']!='') {
+            if ($data['Part Symbol'] != '') {
+
+                switch ($data['Part Symbol']) {
+                    case 'star':
+                        $symbol = '&starf;';
+                        break;
+
+                    case 'skull':
+                        $symbol = '&#9760;';
+                        break;
+                    case 'radioactive':
+                        $symbol = '&#9762;';
+                        break;
+                    case 'peace':
+                        $symbol = '&#9774;';
+                        break;
+                    case 'sad':
+                        $symbol = '&#9785;';
+                        break;
+                    case 'gear':
+                        $symbol = '&#9881;';
+                        break;
+                    case 'love':
+                        $symbol = '&#10084;';
+                        break;
+                    default:
+                        $symbol = '';
+
+                }
+                $reference .= ' '.$symbol;
+            }
+
+        }
+
 
         $adata[] = array(
             'id'                    => (integer)$data['Location Key'],

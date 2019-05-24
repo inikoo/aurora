@@ -318,6 +318,44 @@ function parts($_data, $db, $user, $type, $account) {
 
 
 
+
+            if($data['Part Symbol']!='') {
+                if ($data['Part Symbol'] != '') {
+
+                    switch ($data['Part Symbol']) {
+                        case 'star':
+                            $symbol = '&starf;';
+                            break;
+
+                        case 'skull':
+                            $symbol = '&#9760;';
+                            break;
+                        case 'radioactive':
+                            $symbol = '&#9762;';
+                            break;
+                        case 'peace':
+                            $symbol = '&#9774;';
+                            break;
+                        case 'sad':
+                            $symbol = '&#9785;';
+                            break;
+                        case 'gear':
+                            $symbol = '&#9881;';
+                            break;
+                        case 'love':
+                            $symbol = '&#10084;';
+                            break;
+                        default:
+                            $symbol = '';
+
+                    }
+                    $reference .= ' '.$symbol;
+                }
+
+            }
+
+
+
             $record_data[] = array(
                 'id'                 => (integer)$data['Part SKU'],
                 'associated'         => $associated,
@@ -2608,6 +2646,44 @@ function parts_discontinuing($_data, $db, $user, $account) {
 
 
             $reference=sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>',$data['Part SKU'],($data['Part Reference']==''?'<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>':$data['Part Reference']));
+
+
+
+
+            if($data['Part Symbol']!='') {
+                if ($data['Part Symbol'] != '') {
+
+                    switch ($data['Part Symbol']) {
+                        case 'star':
+                            $symbol = '&starf;';
+                            break;
+
+                        case 'skull':
+                            $symbol = '&#9760;';
+                            break;
+                        case 'radioactive':
+                            $symbol = '&#9762;';
+                            break;
+                        case 'peace':
+                            $symbol = '&#9774;';
+                            break;
+                        case 'sad':
+                            $symbol = '&#9785;';
+                            break;
+                        case 'gear':
+                            $symbol = '&#9881;';
+                            break;
+                        case 'love':
+                            $symbol = '&#10084;';
+                            break;
+                        default:
+                            $symbol = '';
+
+                    }
+                    $reference .= ' '.$symbol;
+                }
+
+            }
 
 
             $record_data[] = array(
