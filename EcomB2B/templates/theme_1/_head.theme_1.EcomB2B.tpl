@@ -269,7 +269,7 @@
 
     {if !isset($is_devel) or !$is_devel  }
     {if  $zendesk_chat_code!=''}
-        <!--Start of Zendesk Chat Script-->
+
         <script>
             window.$zopim || (function (d, s) {
                 var z = $zopim = function (c) {
@@ -295,7 +295,7 @@
 
 
         </script>
-        <!--End of Zendesk Chat Script-->
+
 
     {/if}
     {/if}
@@ -314,8 +314,8 @@
 
     {if !isset($is_devel) or !$is_devel  }
         {if  !empty($one_signal_id)}
-
             <link rel="manifest" href='data:application/manifest+json,{ "gcm_sender_id": "{$one_signal_id}", "gcm_sender_id_comment": "Do not change the GCM Sender ID"}' />
+
             <script src="OneSignalSDKWorker.js" async=""></script>
             <script>
                 var OneSignal = window.OneSignal || [];
@@ -325,16 +325,9 @@
                 });
                 });
             </script>
-
-
         {/if}
 
     {/if}
-
-
-
-
-
 
     {if $website->get('Website Text Font')!=''  and $logged_in}
         <link href="https://fonts.googleapis.com/css?family={$website->get('Website Text Font')}:400,700" rel="stylesheet">
