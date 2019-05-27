@@ -638,11 +638,24 @@ class DealComponent extends DB_Table {
                 $_terms = json_decode($this->get('Deal Component Terms'), true);
 
                 if (!$_terms) {
-                    $tmp    = preg_split('/\;/', $this->get('Deal Component Terms'));
-                    $_terms = array(
-                        'voucher' => $tmp[0],
-                        'amount'  => ';'.$tmp[1].';'.$tmp[2],
-                    );
+                    $tmp    = preg_split('/\;/', $this->get('Deal Terms'));
+
+
+                    if(count($tmp)!=3){
+
+                        $_terms = array(
+                            'voucher' =>'',
+                            'amount'  =>';0;'
+                        );
+                    }else{
+
+                        $_terms = array(
+                            'voucher' => $tmp[0],
+                            'amount'  => ';'.$tmp[1].';'.$tmp[2],
+                        );
+                    }
+
+
                 }
 
 
