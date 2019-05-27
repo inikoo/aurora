@@ -175,8 +175,7 @@ function edit_campaign_order_recursion_data($account, $db, $user, $editor, $data
     $deal_component->update(
         array(
             'Deal Component Allowance'       => $allowance,
-            'Deal Component Allowance Label' => $data['description'],
-            'Deal Component Name Label'      => $data['name']
+            'Deal Component Allowance Label' => $data['description']
 
         )
 
@@ -197,8 +196,7 @@ function edit_campaign_order_recursion_data($account, $db, $user, $editor, $data
     $response = array(
         'state'              => 200,
         'allowance'          => $allowance,
-        'description'        => $deal_component->get('Deal Component Allowance Label'),
-        'name'               => $deal_component->get('Deal Component Name Label'),
+        'description'        => $deal_component->get('Deal Component Allowance Label')
         'deal_component_key' => $deal_component->id
     );
     echo json_encode($response);
@@ -364,7 +362,6 @@ function edit_bulk_deal_data($account, $db, $user, $editor, $data, $smarty) {
         array(
             'Deal Component Allowance'       => $allowance,
             'Deal Component Allowance Label' => $data['description_allowances'],
-            'Deal Component Term Label'      => $data['description_terms'],
             'Deal Terms'                     => $terms,
 
         )
@@ -372,6 +369,16 @@ function edit_bulk_deal_data($account, $db, $user, $editor, $data, $smarty) {
     );
 
     $deal = get_object('Deal', $deal_component->get('Deal Component Deal Key'));
+
+    $deal->editor=$editor;
+    $deal->update(
+        array(
+            'Deal Term Label'      => $data['description_terms'],
+
+        )
+
+    );
+
 
     if (strlen(strip_tags($deal->get('Deal Term Allowances Label'))) > 75) {
         $description_class = 'super_small';

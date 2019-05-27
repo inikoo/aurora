@@ -164,10 +164,10 @@
                 </div>
 
             </div>
-    {assign "voucher_info" $order->voucher_formatted_info()}
+                 {assign "voucher_info" $order->voucher_formatted_info()}
 
-                <div class="container order basket" style="margin-bottom: 30px">
-                    {include file="theme_1/_order_items.theme_1.tpl" edit=true hide_title=true   items_data=$items_data }
+                <div class="container order basket  basket_order_items " style="margin-bottom: 30px">
+                    {include file="theme_1/_order_items.theme_1.EcomB2B.tpl" edit=true hide_title=true   items_data=$items_data }
 
                     <div style="margin-top:5px">
                         {$voucher_info}

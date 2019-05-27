@@ -45,6 +45,20 @@ switch ($tipo) {
 
         break;
 
+    case 'get_items_html':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'device_prefix' => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         )
+                     )
+        );
+
+        get_items_html($data, $customer);
+
+
+        break;
 
     case 'update_item':
         $data = prepare_values(
@@ -271,7 +285,9 @@ function update_item($_data, $customer, $order, $editor, $db) {
                 'hide'         => $hide,
                 'show'         => $show,
                 'add_class'    => $add_class,
-                'remove_class' => $remove_class
+                'remove_class' => $remove_class,
+                'new_otfs'     => $order->new_otfs,
+                'deleted_otfs' => $order->deleted_otfs,
 
             ),
 
@@ -531,6 +547,42 @@ function get_charges_info($order) {
 
 }
 
+
+
+function get_items_html($data,$customer){
+    $smarty = new Smarty();
+    $smarty->setTemplateDir('templates');
+    $smarty->setCompileDir('server_files/smarty/templates_c');
+    $smarty->setCacheDir('server_files/smarty/cache');
+    $smarty->setConfigDir('server_files/smarty/configs');
+    $smarty->addPluginsDir('./smarty_plugins');
+
+
+    $website = get_object('Website', $_SESSION['website_key']);
+
+    $theme = $website->get('Website Theme');
+
+    $order = get_object('Order', $customer->get_order_in_process_key());
+
+
+
+    $smarty->assign('edit', true);
+    $smarty->assign('hide_title', true);
+    $smarty->assign('items_data', $order->get_items());
+    $smarty->assign('order', $order);
+
+
+    $response = array(
+        'state' => 200,
+        'empty' => false,
+        'html'  => $smarty->fetch($theme.'/_order_items.'.$theme.'.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl')
+    );
+
+    echo json_encode($response);
+
+
+}
+
 function get_basket_html($data, $customer) {
 
 
@@ -607,7 +659,7 @@ function get_basket_html($data, $customer) {
         $response = array(
             'state' => 200,
             'empty' => true,
-            'html'  => $smarty->fetch('theme_1/blk.basket_no_order.'.$theme.'.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
+            'html'  => $smarty->fetch($theme.'/blk.basket_no_order.'.$theme.'.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
         );
 
 
@@ -638,7 +690,7 @@ function get_basket_html($data, $customer) {
         $response = array(
             'state' => 200,
             'empty' => false,
-            'html'  => $smarty->fetch('theme_1/blk.basket.theme_1.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
+            'html'  => $smarty->fetch($theme.'/blk.basket.'.$theme.'.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
         );
     }
 
@@ -647,4 +699,4 @@ function get_basket_html($data, $customer) {
 
 }
 
-?>
+

@@ -592,7 +592,18 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
         $sql = sprintf(
             "DELETE FROM `Order Transaction Fact` WHERE `Order Transaction Fact Key`=%d", $otf_key
         );
-        $this->db->exec($sql);
+
+
+        $del = $this->db->prepare($sql);
+        $del->execute();
+
+
+        if($del->rowCount()){
+            $this->deleted_otfs[]=$otf_key;
+        }
+
+
+
 
 
         $sql = sprintf(

@@ -65,7 +65,7 @@ class Public_DealComponent  {
 
             case('Description'):
             case('Deal Description'):
-                return $this->data['Deal Component Term Label'].' &rArr; '.$this->data['Deal Component Allowance Label'];
+                return $this->data['Deal Component Allowance Label'];
                 break;
         }
 

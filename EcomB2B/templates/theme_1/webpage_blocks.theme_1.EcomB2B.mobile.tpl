@@ -9,7 +9,8 @@
 -->
 *}
 {include file="theme_1/_head.theme_1.EcomB2B.mobile.tpl"}
-<body>{include file="analytics.tpl"}
+<body data-device_prefix="mobile">
+{include file="analytics.tpl"}
 {if $logged_in}
     <span id="ordering_settings" class="hide"  data-website_key="{$website->id}" ></span>
 {/if}

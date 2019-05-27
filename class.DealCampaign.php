@@ -272,20 +272,7 @@ class DealCampaign extends DB_Table {
 
                 break;
 
-            case 'Deal Campaign Name':
 
-                $this->update_field($field, $value, $options);
-
-                $sql = sprintf('UPDATE `Deal Dimension` SET `Deal Name Label`=%s WHERE `Deal Campaign Key`=%d  ', prepare_mysql($value), $this->id);
-                $this->db->exec($sql);
-                $sql = sprintf('UPDATE `Deal Component Dimension` SET `Deal Component Name Label`=%s WHERE `Deal Component Campaign Key`=%d  ', prepare_mysql($value), $this->id);
-                $this->db->exec($sql);
-
-
-                $this->update_websites();
-
-
-                break;
 
 
             default:

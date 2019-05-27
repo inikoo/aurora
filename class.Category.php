@@ -75,6 +75,12 @@ class Category extends DB_Table {
                     "SELECT * FROM `Category Dimension` WHERE `Category Subject`=%s AND `Category Code`=%s ", prepare_mysql($tag), prepare_mysql($tag2)
                 );
                 break;
+            case 'root_key_key':
+                $sql = sprintf(
+                    "SELECT * FROM `Category Dimension` WHERE `Category Root Key`=%d AND `Category Key`=%d ", $tag,$tag2
+                );
+                break;
+
             default:
                 $sql = sprintf(
                     "SELECT * FROM `Category Dimension` WHERE `Category Key`=%d", $tag

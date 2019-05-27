@@ -112,8 +112,6 @@
         </script>
     {/if}
 
-
-
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta charset="utf-8">
     <meta name="keywords" content=""/>

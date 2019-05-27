@@ -548,7 +548,10 @@ function change_table_element(event, item) {
 
 function show_export_dialog_left_button(element) {
 
+
     var export_dialog =$(element).closest('div').next('.export_dialog_container').find('.export_dialog')
+
+
     if (export_dialog.hasClass('hide')) {
         export_dialog.removeClass('hide')
         export_dialog.css('top', $(element).closest('.square_button').height());

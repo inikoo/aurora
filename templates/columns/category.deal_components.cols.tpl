@@ -36,7 +36,7 @@ className: "width_20"
 },
 {
 name: "name",
-label: "{t}Name{/t}",
+label: "{t}Code{/t}",
 editable: false,
 
 sortType: "toggle",

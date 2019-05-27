@@ -1754,6 +1754,44 @@ function order_items($_data, $db, $user) {
 
     }
 
+
+    $sql = sprintf(
+        "select `Charge Key` ,`Charge Name`,`Charge Scope` ,`Charge Store Key`,`Charge Description` ,`Charge Metadata` , (select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`='Charges'  and `Transaction Type Key`=`Charge Key`  limit 1  ) as onptf_key   from `Charge Dimension` where `Charge Store Key`=%d and `Charge Trigger`  = 'Selected by Customer' ",
+        $customer_order->id,$customer_order->get('Order Store Key')
+    );
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+
+
+            $onptf_key=$row['onptf_key'];
+
+            $adata[] = array(
+
+                'id'            => 'Charge_'.$row['Charge Key'],
+                'code'          => sprintf('<span class="link"  onclick="change_view(\'/store/%d/charge/%d\')">%s</span>', $row['Charge Store Key'], $row['Charge Key'], $row['Charge Name']),
+                'description'   => $row['Charge Description'].' ('. money($row['Charge Metadata'], $customer_order->get('Currency Code')).')',
+                'quantity'      => '',
+                'quantity_edit' => '<i onclick="toggle_selected_by_customer_charge(this)"  data-charge_key="'.$row['Charge Key'].'" data-onptf_key="'.$onptf_key.'"   style="margin-right: 20px" class="'.($onptf_key>0?'fa-toggle-on':'fa-toggle-off').' far button "></i>',
+
+                'discounts' => '',
+
+
+                'net' => sprintf('<span  class="  selected_by_customer_charge">%s</span>', ($onptf_key>0? money($row['Charge Metadata'], $customer_order->get('Currency Code')):'') ),
+
+
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
     $response = array(
         'resultset' => array(
             'state'         => 200,
@@ -2129,11 +2167,10 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
             ).'</div>';
 
 
+        $reference = sprintf('<span onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']);
 
-        $reference=sprintf('<span onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']);
 
-
-        if($data['Part Symbol']!='') {
+        if ($data['Part Symbol'] != '') {
             if ($data['Part Symbol'] != '') {
 
                 switch ($data['Part Symbol']) {
@@ -2728,9 +2765,8 @@ function refund_new_items($_data, $db, $user) {
                 '<input class="new_refund_item %s item" style="width: 80px"  transaction_type="otf" transaction_id="%d"  max="%f"  />', ($data['Order Transaction Amount'] <= 0 ? 'hide' : ''), $data['Order Transaction Fact Key'], $data['Order Transaction Amount']
             );
 
-            $feedback =
-                '<span data-empty_label="'._('Set feedback').'" data-type="otf" data-key="'.$data['Order Transaction Fact Key'].'"  id="set_otf_feedback_'.$data['Order Transaction Fact Key'].'" class="set_otf_feedback_button button very_discreet_on_hover italic hide padding_right_5">'
-                ._('Set feedback').'</span>';
+            $feedback = '<span data-empty_label="'._('Set feedback').'" data-type="otf" data-key="'.$data['Order Transaction Fact Key'].'"  id="set_otf_feedback_'.$data['Order Transaction Fact Key']
+                .'" class="set_otf_feedback_button button very_discreet_on_hover italic hide padding_right_5">'._('Set feedback').'</span>';
 
 
             $description = $description.'<div class="hide small discreet" id="feedback_description_otf_'.$data['Order Transaction Fact Key'].'"></div>';
@@ -2744,8 +2780,8 @@ function refund_new_items($_data, $db, $user) {
                 'description' => $description,
                 'quantity'    => $quantity,
                 'refund_net'  => $refund_net,
-                'net'      => sprintf('<span class="new_refund_order_item_net button  " amount="%f" >%s</span>', $data['Order Transaction Amount'], money($data['Order Transaction Amount'], $data['Order Currency Code'])),
-                'feedback' => $feedback
+                'net'         => sprintf('<span class="new_refund_order_item_net button  " amount="%f" >%s</span>', $data['Order Transaction Amount'], money($data['Order Transaction Amount'], $data['Order Currency Code'])),
+                'feedback'    => $feedback
 
             );
 

@@ -134,6 +134,11 @@ trait OrderCalculateTotals {
         $total_tax = 0;
         $data      = array();
 
+
+
+        $base_tax_code='';
+
+
         $sql = sprintf(
             "SELECT  `Transaction Tax Code`,sum(`Order Transaction Amount`) AS net   FROM `Order Transaction Fact` WHERE
 		`Order Key`=%d  AND `Order Transaction Type`='Order' GROUP BY  `Transaction Tax Code`  ", $this->id
@@ -146,12 +151,20 @@ trait OrderCalculateTotals {
             foreach ($result as $row) {
                 $data[$row['Transaction Tax Code']] = $row['net'];
 
+                $base_tax_code=$row['Transaction Tax Code'];//todo <-- this is used for assign the tax code to the amount off and may not work of is different taxt codes
+
+
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
             exit;
         }
+
+        if($this->data['Order Deal Amount Off']!=0){
+            $data[$row['Transaction Tax Code']] -= $this->data['Order Deal Amount Off'];
+        }
+
 
 
         $sql = sprintf(
@@ -164,6 +177,8 @@ trait OrderCalculateTotals {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
+
+
 
                 if (isset($data[$row['Tax Category Code']])) {
                     $data[$row['Tax Category Code']] += $row['net'];
@@ -196,7 +211,11 @@ trait OrderCalculateTotals {
 
         }
 
-        $total_net-=$this->data['Order Deal Amount Off'];
+
+   //     print_r($total_net);
+
+
+
 
         $total = round($total_net + $total_tax, 2);
 

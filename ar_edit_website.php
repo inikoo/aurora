@@ -1901,9 +1901,19 @@ function save_webpage_content($data, $editor, $smarty, $db) {
 
             $deal_component->update(
                 array(
-                    'Deal Component Name Label'      => $deal_component_data['name'],
-                    'Deal Component Term Label'      => $deal_component_data['term'],
+
                     'Deal Component Allowance Label' => $deal_component_data['allowance']
+                )
+            );
+
+
+            $deal=get_object('Deal',$deal_component->get('Deal Key'));
+$deal->editor=$editor;
+
+            $deal->update(
+                array(
+                    'Deal Name Label'      => $deal_component_data['name'],
+                    'Deal Term Label'      => $deal_component_data['term'],
                 )
             );
             //  print_r($deal_component_data);
@@ -2024,22 +2034,31 @@ function save_deal_component_labels($data, $editor) {
     $deal_component         = get_object('Deal Component', $data['key']);
     $deal_component->editor = $editor;
 
-    $update_fields = array();
+    $deal=get_object('deal',$deal_component->get('Deal Key'));
+
+    $deal->editor = $editor;
+
+  //  $update_fields = array();
 
     switch ($data['label']) {
         case 'name':
-            $update_fields = array('Deal Component Name Label' => $data['value']);
+            $update_fields = array('Deal Name Label' => $data['value']);
+            $deal->update($update_fields);
+
             break;
         case 'term':
-            $update_fields = array('Deal Component Term Label' => $data['value']);
+            $update_fields = array('Deal Term Label' => $data['value']);
+            $deal->update($update_fields);
+
             break;
         case 'allowance':
             $update_fields = array('Deal Component Allowance Label' => $data['value']);
+            $deal_component->update($update_fields);
+
             break;
 
     }
 
-    $deal_component->update($update_fields);
 
 
     $response = array(

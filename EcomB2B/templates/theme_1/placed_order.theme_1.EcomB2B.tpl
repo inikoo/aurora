@@ -101,7 +101,7 @@
 
 <div class=" order">
 
-    {include file="theme_1/_order_items.theme_1.tpl" edit=false hide_title=true order=$placed_order items_data=$placed_order->get_items()  }
+    {include file="theme_1/_order_items.theme_1.EcomB2B.tpl" edit=false hide_title=true order=$placed_order items_data=$placed_order->get_items()  }
 
 
 </div>

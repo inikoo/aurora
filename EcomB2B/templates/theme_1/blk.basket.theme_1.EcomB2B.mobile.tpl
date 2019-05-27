@@ -12,18 +12,19 @@
 
 {assign "items_data" $order->get_items()}
 
+
 <div id="block_{$key}"  class="{$data.type} _block  " style="Width:100%;margin-top: 10px" >
 
 
 
 
-    <div class="content">
+    <div class="content" style="padding: 0px 10px">
 
         <h4>{if !empty($labels._order_number_label)}{$labels._order_number_label}{else}{t}Order number{/t}{/if} <span class="order_number">{$order->get('Public ID')}</span></h4>
 
 
                 <div class="one-half">
-                    <h5 style="position: relative;left:-10px;font-size: 90%;font-weight: 800;color: #333">
+                    <h5 style="font-size: 90%;font-weight: 800;color: #333">
 
                         <span id="delivery_label" class="{if $order->get('Order For Collection')=='Yes'}hide{/if}">
                         <i id="_delivery_address_icon" class="fa fa-fw fa-truck   " aria-hidden="true"></i>
@@ -44,7 +45,7 @@
 
                 </div>
                 <div class="one-half last-column">
-                    <h5 style="position: relative;left:-10px;;font-size: 90%;font-weight: 800;color: #333">
+                    <h5 style="position: relative;left:-5px;;font-size: 90%;font-weight: 800;color: #333">
                         <i id="_invoice_address_icon" class="fa fa-fw fa-dollar-sign" aria-hidden="true"></i>
                         <span id="_invoice_address_label"  >{if !empty($labels._invoice_address_label) }{$labels._invoice_address_label}{else}{t}Invoice Address{/t}{/if}</span>
 
@@ -136,55 +137,31 @@
                     </table>
 
 
+        {assign "voucher_info" $order->voucher_formatted_info()}
 
+        <div class="container order basket  basket_order_items " style="margin-bottom: 20px">
+            {include file="theme_1/_order_items.theme_1.EcomB2B.mobile.tpl" edit=true hide_title=true   items_data=$items_data }
 
-                <table class="order_items">
-                    <thead>
-                    <tr >
-                        <th colspan="2" class="text-left padding_left_10">{t}Items{/t}</th>
-
-                    </tr>
-                    </thead>
-                    <tbody>
-
-                    {foreach from=$items_data item="item" }
-
-                        <tr>
-                            <td style="text-align: left">{$item.code_description}
-
-
-                                {if $item.state!='Out of Stock in Basket'}
-
-                                <div class="mobile_ordering"  data-settings='{ "pid":{$item.pid},"basket":true }'>
-                                    <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
-                                    <input  type="number" min="0" value="{$item.qty_raw}" class="needsclick order_qty">
-                                    <i onclick="save_item_qty_change(this)" class="hide ordering_button save fa fa-save fa-fw color-blue-dark"></i>
-                                    <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
-                                </div>
-
-
-                                {/if}
-
-
-                            </td>
-
-
-                            <td class="text-right">{$item.amount}</td>
-                        </tr>
-
-
-                    {/foreach}
-                    </tbody>
-                </table>
-
-
-
+            <div style="margin-top:5px">
+                {$voucher_info}
 
             </div>
 
 
+        </div>
 
-         <div class="container">
+
+
+
+
+
+
+
+
+
+
+
+    <div class="container" >
 
                 <div class="one_half">
 
@@ -199,21 +176,18 @@
 
 
 
-                    <section >
+                    <section s>
 
                         <div class="row"  id="voucher"  style="">
-                            <section class="col col-6" style="margin-bottom: 0;margin-left:15px">
 
-                                    {t}Voucher{/t}
-
-                            </section>
-                            <section class="col col-6">
+                            <section class="col col-6" style="width: 50%;float: left">
                                 <label class="input">
-                                    <i class="icon-append fa fa-tag"></i>
                                     <input type="text" name="voucher_code" id="voucher_code"  value="{$voucher_code}"  data-old_value="{$voucher_code}" placeholder="{$data._voucher}">
+                                    <i class="icon-append fal fa-money-bill-wave"></i>
+
                                 </label>
                             </section>
-                            <section class="col col-6">
+                            <section class="col col-6" style="width: 50%;;float: left">
                                 <button  style="margin:0px;display: none" type="submit" class="button "
                                          data-add_label="{if empty($data._voucher_label)}{t}Add Voucher{/t}{else}{$data._voucher_label}{/if}"
                                          data-update_label="{if empty($data._change_voucher_label)}{t}Update Voucher{/t}{else}{$data._change_voucher_label}{/if}"
@@ -256,16 +230,11 @@
                     </section>
 
 
-                    <section class="col col-6" style="margin-bottom: 0">
-
-                        {$data._special_instructions}
-
-                    </section>
 
                     <section style="border: none">
                                 <label class="textarea">
 
-                                    <textarea id="special_instructions" rows="5" name="comment" placeholder="{$data._special_instructions}">{$order->get('Order Customer Message')}</textarea>
+                                    <textarea id="special_instructions" rows="5" style="height: 60px" name="comment" placeholder="{$data._special_instructions}">{$order->get('Order Customer Message')}</textarea>
                                 </label>
                             </section>
 
@@ -297,7 +266,7 @@
 
             </div>
 
-
+    </div>
 
 
 </div>

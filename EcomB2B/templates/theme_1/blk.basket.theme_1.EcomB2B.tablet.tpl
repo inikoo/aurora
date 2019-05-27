@@ -149,41 +149,18 @@
 
 
 
-                <table class="order_items">
-                    <thead>
-                    <tr >
-                        <th colspan="2" class="text-left padding_left_10">{t}Items{/t}</th>
+        {assign "voucher_info" $order->voucher_formatted_info()}
 
-                    </tr>
-                    </thead>
-                    <tbody>
+        <div class="container order basket  basket_order_items " style="margin-bottom: 20px">
+            {include file="theme_1/_order_items.theme_1.EcomB2B.tablet.tpl" edit=true hide_title=true   items_data=$items_data }
 
-                    {foreach from=$items_data item="item" }
+            <div style="margin-top:5px">
+                {$voucher_info}
 
-                        <tr>
-                            <td style="text-align: left">{$item.code_description}</td>
-                            <td style="min-width: 10em;" >
-
-                                {if $item.state=='Out of Stock in Basket'}
-                                    0
-                                {else}
-                                    <div class="mobile_ordering"  data-settings='{ "pid":{$item.pid},"basket":true }'>
-                                        <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
-                                        <input  type="number" min="0" value="{$item.qty_raw}" class="needsclick order_qty">
-                                        <i onclick="save_item_qty_change(this)" class="hide ordering_button save fa fa-save fa-fw color-blue-dark"></i>
-                                        <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
-                                    </div>
-                                {/if}
-                            </td>
+            </div>
 
 
-                            <td style="min-width: 5em;" class="text-right">{$item.amount}</td>
-                        </tr>
-
-
-                    {/foreach}
-                    </tbody>
-                </table>
+        </div>
 
 
 
@@ -213,8 +190,9 @@
                         <div class="row"  id="voucher"  style="">
                             <section class="col col-6">
                                 <label class="input">
-                                    <i class="icon-append fa fa-tag">x</i>
+
                                     <input type="text" name="voucher_code" id="voucher_code"  value="{$voucher_code}"  data-old_value="{$voucher_code}" placeholder="{$data._voucher}">
+                                    <i class="icon-append fa fa-money-bill-wave"></i>
                                 </label>
                             </section>
                             <section class="col col-6">

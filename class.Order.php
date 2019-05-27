@@ -44,6 +44,10 @@ class Order extends DB_Table {
         $this->db = $db;
 
 
+        $this->deleted_otfs=array();
+        $this->new_otfs=array();
+
+
         $this->table_name      = 'Order';
         $this->ignore_fields   = array('Order Key');
         $this->update_customer = true;
