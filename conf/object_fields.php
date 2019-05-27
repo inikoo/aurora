@@ -245,6 +245,9 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                 switch ($options['parent']) {
                     case 'campaign':
 
+
+
+
                         switch ($options['parent_object']->get('Deal Campaign Code')) {
                             case 'VO':
                                 $store = get_object('Store', $options['store_key']);;
@@ -257,6 +260,14 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                             case 'CA':
                                 $store = get_object('Store', $options['store_key']);;
                                 include 'fields/new_category_deal.fld.php';
+                                break;
+                            case 'CU':
+                                $store = get_object('Store', $options['store_key']);;
+                                include 'fields/new_customers_deal.fld.php';
+                                break;
+                            case 'SO':
+                                $store = get_object('Store', $options['store_key']);;
+                                include 'fields/new_store_deal.fld.php';
                                 break;
                             default:
                                 $store = get_object('Store', $options['store_key']);

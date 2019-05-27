@@ -963,7 +963,6 @@ class Customer extends Subject {
             return;
         }
 
-
         switch ($field) {
 
 

@@ -154,7 +154,7 @@
 
     </div>
     <div class="container order">
-        {include file="theme_1/_order_items.theme_1.tpl" edit=false hide_title=true  items_data=$order->get_items() }
+        {include file="theme_1/_order_items.theme_1.EcomB2B.tpl" edit=false hide_title=true  items_data=$order->get_items() }
     </div>
 </div>
 

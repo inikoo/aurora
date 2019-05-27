@@ -119,3 +119,5 @@ ALTER TABLE `Product Dimension` DROP `Product Package Weight Display`, DROP `Pro
 ALTER TABLE `Product Dimension` DROP `Product Barcode Type`, DROP `Product Barcode Data Source`, DROP `Product Barcode Data`, DROP `Product Short Description`, DROP `Product Package Type`, DROP `Product Package Weight Display Units`, DROP `Product Package XHTML Dimensions`, DROP `Product XHTML Unit Weight`, DROP `Product XHTML Package Dimensions`, DROP `Product XHTML Unit Dimensions`, DROP `Product Unit Container`, DROP `Product XHTML Supplied By`;
 ALTER TABLE `Product Dimension` DROP `Product Info Sheet Attachment Key`, DROP `Product Parts Data`, DROP `Product Part Metadata`;
 ALTER TABLE `Product Dimension` DROP `Product Parts Weight`, DROP `Product XHTML Package Weight`, DROP `Product MSDS Attachment Key`;
+
+ALTER TABLE `Deal Component Dimension` DROP `Deal Component Name Label`,  DROP `Deal Component Term Label`;

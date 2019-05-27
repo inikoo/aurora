@@ -319,6 +319,18 @@ switch ($tipo) {
         set_po_transaction_amount_to_current_cost($data, $editor, $account, $db);
         break;
 
+    case 'toggle_charge':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent_key'        => array('type' => 'key'),
+                         'parent'     => array('type' => 'string'),
+                         'charge_key' => array('type' => 'key'),
+                         'operation'  => array('type' => 'string'),
+
+                     )
+        );
+        toggle_charge($data, $editor, $smarty, $db, $account, $user);
+        break;
 
     default:
         $response = array(
@@ -428,7 +440,14 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
             exit;
         }
 
+        $update_metadata                 = $parent->get_update_metadata();
+        $update_metadata['deleted_otfs'] = $parent->deleted_otfs;
+        $update_metadata['new_otfs']     = $parent->new_otfs;
 
+
+    } else {
+
+        $update_metadata = $parent->get_update_metadata();
     }
 
 
@@ -442,7 +461,7 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
         $response = array(
             'state'            => 200,
             'transaction_data' => $transaction_data,
-            'metadata'         => $parent->get_update_metadata(),
+            'metadata'         => $update_metadata,
             'discounts_data'   => $discounts_data
         );
     }
@@ -579,7 +598,6 @@ function set_charges_value($data, $editor) {
         'to_pay'      => $order->get('Order To Pay Amount'),
         'total'       => $order->get('Order Total Amount'),
         'charges'     => $order->get('Order Charges Net Amount'),
-        'charges'     => $order->get('Order Charges Net Amount'),
 
 
     );
@@ -625,7 +643,6 @@ function set_charges_as_auto($data, $editor) {
         'state_index' => $order->get('State Index'),
         'to_pay'      => $order->get('Order To Pay Amount'),
         'total'       => $order->get('Order Total Amount'),
-        'charges'     => $order->get('Order Charges Net Amount'),
         'charges'     => $order->get('Order Charges Net Amount'),
 
 
@@ -1364,7 +1381,6 @@ function create_replacement($data, $editor, $smarty, $db) {
     $replacement = $object->create_replacement($data['transactions']);
 
 
-
     if ($replacement->id) {
         $response = array(
             'state'           => 200,
@@ -1776,4 +1792,91 @@ function data_entry_picking_aid($data, $editor, $smarty, $db, $account) {
 }
 
 
-?>
+function toggle_charge($data, $editor, $smarty, $db, $account, $user) {
+
+    $order = get_object($data['parent'], $data['parent_key']);
+    if (!$order->id) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'Order not found',
+        );
+
+        echo json_encode($response);
+        exit;
+    }
+
+    $charge = get_object('Charge', $data['charge_key']);
+    if (!$charge->id) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'Charge not found',
+        );
+
+        echo json_encode($response);
+        exit;
+    }
+
+    if ($charge->get('Store Key') != $order->get('Store Key')) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'Charge not in same store as order',
+        );
+
+        echo json_encode($response);
+        exit;
+    }
+
+
+
+
+    if($data['operation']=='add_charge'){
+
+       $transaction_data= $order->add_charge($charge);
+
+
+    }else{
+        $transaction_data=$order->remove_charge($charge);
+
+
+    }
+
+
+    $metadata = array(
+
+        'class_html'  => array(
+            'Order_State'                   => $order->get('State'),
+            'Items_Net_Amount'              => $order->get('Items Net Amount'),
+            'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
+            'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
+            'Total_Net_Amount'              => $order->get('Total Net Amount'),
+            'Total_Tax_Amount'              => $order->get('Total Tax Amount'),
+            'Total_Amount'                  => $order->get('Total Amount'),
+            'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
+            'To_Pay_Amount'                 => $order->get('To Pay Amount'),
+            'Payments_Amount'               => $order->get('Payments Amount'),
+
+
+            'Order_Number_items' => $order->get('Number Items')
+
+        ),
+        //  'operations'    => $operations,
+        'state_index' => $order->get('State Index'),
+        'to_pay'      => $order->get('Order To Pay Amount'),
+        'total'       => $order->get('Order Total Amount'),
+        'charges'     => $order->get('Order Charges Net Amount'),
+
+
+    );
+
+
+    $response = array(
+        'state'    => 200,
+        'metadata' => $metadata,
+        'operation'=>$data['operation'],
+        'transaction_data'=>$transaction_data
+    );
+    echo json_encode($response);
+
+
+
+}

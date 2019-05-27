@@ -38,6 +38,9 @@ class Public_Order extends DBW_Table {
         $this->exchange = 1;
 
 
+        $this->deleted_otfs=array();
+        $this->new_otfs=array();
+
         $this->table_name = 'Order';
 
 
@@ -309,6 +312,8 @@ class Public_Order extends DBW_Table {
 
 
         switch ($key) {
+
+
             case ('State'):
 
 
@@ -461,6 +466,8 @@ class Public_Order extends DBW_Table {
                 } else {
                     return json_decode($this->data['Order Pinned Deal Components'], true);
                 }
+
+
 
             default:
 

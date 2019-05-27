@@ -28,14 +28,17 @@ $object_fields[] = array(
 
         array(
             'edit'              => ($edit ? 'string' : ''),
-            'id'                => 'Deal_Component_Name_Label',
+            'id'                => 'Deal_Name',
             'value'             => '',
-            'label'             => ucfirst($object->get_field_label('Deal Component Name Label')),
+            'label'             => _('Private code'),
             'invalid_msg'       => get_invalid_message('string'),
             'required'          => true,
             'server_validation' => json_encode(
                 array(
-                    'tipo' => 'check_for_duplicates'
+                    'tipo' => 'check_for_duplicates',
+                    'parent'     => 'store',
+                    'parent_key' => $options['store_key'],
+                    'object'     => 'Deal',
                 )
             ),
             'type'              => 'value'

@@ -50,7 +50,7 @@ $options_yes_no = array(
 
 $options_symbols = array(
     ''            => _('None'),
-    'star'        => '&starf; '._('Star'),
+    'star'        => '&#9733; '._('Star'),
     'skull'       => '&#9760; '._('Skull'),
     'radioactive' => '&#9762; '._('Radioactive'),
     'peace'       => '&#9774; '._('Peace'),

@@ -3,7 +3,7 @@
 
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 22 February 2019 at 01:55:32 GMT+8, Kuala Lumpur, Malaysia
+ Created: 25-05-2019 21:49:09 CEST Sheffield UK
 
  Copyright (c) 2018, Inikoo
 
@@ -23,10 +23,10 @@ $options_trigger = array(
 
 
 $options_offer_type = array(
-    'Percentage_Off' => _('Order'),
-    'Get_Item_Free'  => _('Product'),
-    'Category'       => _('Product category'),
-    'Customer'       => _('Customer')
+    'Percentage_Off'   => _('Order'),
+    'Buy_n_get_n_free' => _('Product'),
+    'Category'         => _('Product category'),
+    'Customer'         => _('Customer')
 
 );
 
@@ -43,45 +43,17 @@ $object_fields[] = array(
             'edit'              => ($edit ? 'string' : ''),
             'id'                => 'Deal_Name',
             'value'             => $object->get('Deal Name'),
-            'label'             => _('Promotion name'),
+            'label'             => _('Private code'),
             'invalid_msg'       => get_invalid_message('string'),
             'required'          => true,
-            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
-            'type'              => 'value'
-        ),
-
-        array(
-            'id'   => 'Deal_Voucher_Auto_Code',
-            'edit' => 'custom',
-
-            'class'    => '',
-            'value'    => false,
-            'custom'   => '<span class="button value"  field_type="toggle" onclick="toggle_voucher_auto_code(this)"  field="Deal_Voucher_Auto_Code"  style="margin-right:40px"><i id="toggle_voucher_auto_code_icon" class="Deal_Voucher_Auto_Code_toggle fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span class="discreet">'
-                ._('Automatically generated').'</span></span>',
-            'label'    => _('Voucher code'),
-            'required' => false,
-            'type'     => ''
-        ),
-        array(
-            'edit'  => ($edit ? 'string' : ''),
-            'id'    => 'Deal_Voucher_Code',
-            'class' => 'hide',
-
-            'value'             => '',
-            'label'             => ucfirst($object->get_field_label('Voucher code')).' <i onClick="set_voucher_code_as_auto()" class="fa fa-magic button padding_left_10" title="'._('Automatically generated voucher code').'"></i>',
-            'invalid_msg'       => get_invalid_message('string'),
-            'required'          => false,
-            'placeholder'       => _('Voucher code'),
-            'server_validation' => json_encode(array(
-                'tipo' => 'check_for_duplicates',
-                'parent'     => 'store',
-                'parent_key' => $options['parent_object']->get('Store Key'),
-
-
-                                               )
-
-
-                ),
+            'server_validation' => json_encode(
+                array(
+                    'tipo' => 'check_for_duplicates',
+                    'parent'     => 'store',
+                    'parent_key' => $options['store_key'],
+                    'object'     => 'Deal',
+                )
+            ),
             'type'              => 'value'
         ),
 
@@ -92,10 +64,12 @@ $object_fields[] = array(
 );
 
 
+
 $object_fields[] = array(
     'label'      => _('Terms'),
     'show_title' => true,
     'fields'     => array(
+
 
 
         array(
@@ -135,10 +109,12 @@ $object_fields[] = array(
             'type'        => 'value'
         ),
 
+
     ),
 
 
 );
+
 
 
 $object_fields[] = array(
@@ -152,12 +128,12 @@ $object_fields[] = array(
             'value'    => '',
             'custom'   => '
 <div class="button_radio_options">
-<span id="Deal_Type_Percentage_Off_field" field_type="button_radio_options" field="Deal_Type_Percentage_Off" onclick="toggle_voucher_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Percentage off').'</span>
-<span id="Deal_Type_Amount_Off_field" field_type="button_radio_options" field="Deal_Type_Amount_Off" onclick="toggle_voucher_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Amount off').'</span>
-<span id="Deal_Type_Get_Item_Free_field" field_type="button_radio_options" field="Deal_Type_Get_Item_Free" onclick="toggle_voucher_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(
+<span id="Deal_Type_Percentage_Off_field" field_type="button_radio_options" field="Deal_Type_Percentage_Off" onclick="toggle_deal_store_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Percentage off').'</span>
+<span id="Deal_Type_Amount_Off_field" field_type="button_radio_options" field="Deal_Type_Amount_Off" onclick="toggle_deal_store_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Amount off').'</span>
+<span id="Deal_Type_Get_Item_Free_field" field_type="button_radio_options" field="Deal_Type_Get_Item_Free" onclick="toggle_deal_store_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(
                     _('Get product free'), '<span>2</span>', 1
                 ).'</span>
-<span id="Deal_Type_Shipping_Off_field" field_type="button_radio_options" field="Deal_Type_Shipping_Off" onclick="toggle_voucher_deal_type(this)" class="button hide value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Discounted shipping').'  </span>
+<span id="Deal_Type_Shipping_Off_field" field_type="button_radio_options" field="Deal_Type_Shipping_Off" onclick="toggle_deal_store_deal_type(this)" class="button hide value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Discounted shipping').'  </span>
 </div>
 ',
             'label'    => _('Choose offer'),
@@ -187,7 +163,7 @@ $object_fields[] = array(
             'value'  => '',
             'placeholder' => _('Amount'),
 
-           // 'custom'   => '<input id="Amount_Off_field" field_type="input_with_field" field="Amount_Off" value="" class="value input_field" style="margin-left:5px;width:90px"  placeholder="'._('Amount').'" />',
+            // 'custom'   => '<input id="Amount_Off_field" field_type="input_with_field" field="Amount_Off" value="" class="value input_field" style="margin-left:5px;width:90px"  placeholder="'._('Amount').'" />',
             'label'    => _('Amount off'),
             'required' => false,
             'type'     => 'value'
@@ -218,9 +194,11 @@ $object_fields[] = array(
 
             'edit'  => 'smallint_unsigned',
             'value' => '1',
+            'formatted_value'          => '',
+
             'placeholder'=>_('Quantity'),
 
-           // 'custom'   => '<input id="Get_Item_Free_Quantity_field" field_type="input_with_field" field="Get_Item_Free_Quantity" value="1" class="value input_field" style="margin-left:5px;width:60px"  placeholder="'._('Qty').'" />',
+            // 'custom'   => '<input id="Get_Item_Free_Quantity_field" field_type="input_with_field" field="Get_Item_Free_Quantity" value="1" class="value input_field" style="margin-left:5px;width:60px"  placeholder="'._('Qty').'" />',
             'label'    => _('Quantity'),
             'required' => false,
             'type'     => 'value'
