@@ -209,7 +209,11 @@ class Public_Webpage {
                     case 'Category Products':
                         $deals=array();
                         $sql = sprintf(
-                            "SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Name Label`,`Deal Term Label`,`Deal Component Allowance Label` FROM `Deal Component Dimension`  left join `Deal Dimension` on (`Deal Key`=`Deal Component Deal Key`)  left join `Deal Campaign Dimension` on (`Deal Component Campaign Key`=`Deal Campaign Key`)    WHERE `Deal Campaign Code`!='CU' and `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d AND `Deal Component Status`='Active'",
+                            "SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Name Label`,`Deal Term Label`,`Deal Component Allowance Label` 
+FROM `Deal Component Dimension`  left join 
+`Deal Dimension` on (`Deal Key`=`Deal Component Deal Key`)  left join 
+`Deal Campaign Dimension` Dcam on (`Deal Component Campaign Key`=Dcam.`Deal Campaign Key`)    
+WHERE `Deal Campaign Code`!='CU' and `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d AND `Deal Component Status`='Active'",
                             $this->data['Webpage Scope Key']
                         );
 
@@ -229,6 +233,7 @@ class Public_Webpage {
 
                             }
                         } else {
+                            print "$sql\n";
                             print_r($error_info = $this->db->errorInfo());
                             exit;
                         }
@@ -261,7 +266,9 @@ class Public_Webpage {
 
                         if(count($categories)>0){
                             $sql = sprintf(
-                                "SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Name Label`,`Deal Term Label`,`Deal Component Allowance Label` FROM `Deal Component Dimension`   left join `Deal Dimension` on (`Deal Key`=`Deal Component Deal Key`)  left join `Deal Campaign Dimension` on (`Deal Component Campaign Key`=`Deal Campaign Key`)  WHERE `Deal Campaign Code`!='CU' and  `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) AND `Deal Component Status`='Active'",
+                                "SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Name Label`,`Deal Term Label`,`Deal Component Allowance Label` 
+FROM `Deal Component Dimension`   left join 
+`Deal Dimension` on (`Deal Key`=`Deal Component Deal Key`)  left join `Deal Campaign Dimension` DCam on (`Deal Component Campaign Key`=DCam.`Deal Campaign Key`)  WHERE `Deal Campaign Code`!='CU' and  `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) AND `Deal Component Status`='Active'",
                                 join($categories,',')
                             );
 
