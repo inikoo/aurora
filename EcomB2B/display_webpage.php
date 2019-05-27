@@ -123,7 +123,6 @@ if (isset($is_homepage)) {
 }
 
 
-
 $cache_id = $_SESSION['website_key'].'|'.$webpage_key.'|'.($logged_in ? 'in' : 'out');
 
 $template = $theme.'/webpage_blocks.'.$theme.'.'.$website_type.$template_suffix.'.tpl';
@@ -143,7 +142,9 @@ if (!(isset($is_unsubscribe) or isset($is_reset))) {
 }
 
 
-if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset($is_reset)) {
+if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe)    or isset($is_reset) ) {
+
+
 
     include_once 'utils/public_object_functions.php';
 
@@ -225,7 +226,6 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
 
     $smarty->assign('labels', $website->get('Localised Labels'));
-
 
     $smarty->assign('navigation', $webpage->get('Navigation Data'));
     $smarty->assign('discounts', $webpage->get('Discounts'));
