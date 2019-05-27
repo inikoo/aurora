@@ -809,8 +809,8 @@ class DealComponent extends DB_Table {
             if ($old_value != $value) {
 
                 if (!preg_match('/bali|sasi|sakoi|geko/', gethostname())) {
-                    //$this->update_deal_component_assets();
-                    //$this->update_deal_component_orders_in_basket_after_status_change($old_value, $value);
+                    $this->update_deal_component_assets();
+                    $this->update_deal_component_orders_in_basket_after_status_change($old_value, $value);
                 }
 
 
@@ -840,8 +840,8 @@ class DealComponent extends DB_Table {
         if ($old_value != $value) {
             if (!preg_match('/bali|sasi|sakoi|geko/', gethostname())) {
 
-              //  $this->update_deal_component_assets();
-              //  $this->update_deal_component_orders_in_basket_after_status_change($old_value, $value);
+                $this->update_deal_component_assets();
+                $this->update_deal_component_orders_in_basket_after_status_change($old_value, $value);
             }
 
         }
