@@ -331,10 +331,23 @@ class Deal extends DB_Table {
 
                 if (!$_terms) {
                     $tmp    = preg_split('/\;/', $this->get('Deal Terms'));
-                    $_terms = array(
-                        'voucher' => $tmp[0],
-                        'amount'  => ';'.$tmp[1].';'.$tmp[2],
-                    );
+
+
+                    if(count($tmp)!=3){
+
+                        $_terms = array(
+                            'voucher' =>'',
+                            'amount'  =>';0;'
+                        );
+                    }else{
+
+                        $_terms = array(
+                            'voucher' => $tmp[0],
+                            'amount'  => ';'.$tmp[1].';'.$tmp[2],
+                        );
+                    }
+
+
                 }
 
 
