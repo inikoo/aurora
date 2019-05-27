@@ -21,13 +21,15 @@
             <link href="/css/login.min.css?v=3" rel="stylesheet">
 
         {if $is_devel }
-            <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
-            <script>
-                Sentry.init({
-                    dsn: 'https://e719d7109ab24a58a977704fed0d7aeb@sentry.io/1433847'
 
-                });
+
+            <script src="https://browser.sentry-cdn.com/5.3.0/bundle.min.js" crossorigin="anonymous"></script>
+
+            <script>
+                Sentry.init({ dsn: 'https://8f17945abb95493692010f7026553f71@sentry.io/1329970', release: "au-web@1.0"});
             </script>
+
+
         {/if}
 
             <script src="js/libs/jquery-2.2.1.js"></script>
