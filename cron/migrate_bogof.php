@@ -43,25 +43,19 @@ if ($result = $db->query($sql)) {
         $deal         = get_object('Deal', $row['Deal Key']);
         $deal->editor = $editor;
 
-        if ($deal->get('Deal Status') == 'Suspended') {
-               $deal->finish();
-        } else {
+
+        $store = get_object('Store', $deal->get('Store Key'));
 
 
-            $store = get_object('Store', $deal->get('Store Key'));
+        if ($deal->get('Deal Terms Type') == 'Product Quantity Ordered') {
 
 
-            if ($deal->get('Deal Terms Type') == 'Product Quantity Ordered') {
+
+            if ($deal->get('Deal Status') == 'Suspended') {
+                $deal->finish();
+            }else{
 
 
-                $deal_components = $deal->get_deal_components('keys', 'all');
-
-                foreach ($deal_components as $deal_component_key) {
-
-                    $sql = sprintf('delete from `Deal Component Dimension` where `Deal Component Key`=%d', $deal_component_key);
-                    //  $db->exec($sql);
-
-                }
 
 
                 if ($deal->get('Deal Trigger') == 'Category') {
@@ -83,16 +77,17 @@ if ($result = $db->query($sql)) {
 
 
                 }
-
-
-                //$deal->fast_update(
-                //    'Deal Terms Type'=>''
-                //);
-
-
             }
-        }
 
+
+
+
+
+
+
+        }
     }
+
+
 }
 
