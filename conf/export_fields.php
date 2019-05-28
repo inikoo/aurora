@@ -730,6 +730,32 @@ $export_fields = array(
             'checked' => 1
         ),
 
+
+
+        array(
+            'name'    => '`Part Package Weight`',
+            'label'   => _('SKO weight (Kg)'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Units`',
+            'label'   => _('Units per SKO'),
+            'checked' => 0
+        ),
+        array(
+            'name'    => '`Part Unit Label`',
+            'label'   => _('Unit label'),
+            'checked' => 0
+        ),
+
+        array(
+            'name'    => '`Part Unit Weight`',
+            'label'   => _('Unit weight for marketing (Kg)'),
+            'checked' => 0
+        ),
+
+
+
     ),
     'part_categories' => array(
         array(
