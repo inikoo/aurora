@@ -119,9 +119,8 @@ trait OrderChargesOperations {
         }
 
 
-
-        $net=0;
-        $tax=0;
+        $net = 0;
+        $tax = 0;
 
 
         $sql = sprintf(
@@ -131,21 +130,18 @@ trait OrderChargesOperations {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
-                $net=$row['net'];
-                $tax=$row['tax'];
+                $net = $row['net'];
+                $tax = $row['tax'];
             }
         }
 
 
-
-
         $this->fast_update(
             array(
-                'Order Charges Net Amount'=>$net,
-                'Order Charges Tax Amount'=>$tax
+                'Order Charges Net Amount' => $net,
+                'Order Charges Tax Amount' => $tax
             )
         );
-
 
 
     }
@@ -385,22 +381,11 @@ trait OrderChargesOperations {
 					VALUES (%s,%d,%s,%s,%d,
 					%s,%.2f,%.2f,%s,%.2f,
 					
-					%s,%f,%s)  ",
-                    prepare_mysql('Yes'),
-                    $this->id,
-                    prepare_mysql($this->data['Order Date']),
-                    prepare_mysql('Charges'),
-                    $charge->id,
+					%s,%f,%s)  ", prepare_mysql('Yes'), $this->id, prepare_mysql($this->data['Order Date']), prepare_mysql('Charges'), $charge->id,
 
-                    prepare_mysql($charge->get('Charge Description')),
-                    $charge->get('Charge Metadata'),
-                    $charge->get('Charge Metadata'),
-                    prepare_mysql($this->data['Order Tax Code']),
-                    $tax,
+                    prepare_mysql($charge->get('Charge Description')), $charge->get('Charge Metadata'), $charge->get('Charge Metadata'), prepare_mysql($this->data['Order Tax Code']), $tax,
 
-                    prepare_mysql($this->data['Order Currency']),
-                    $this->data['Order Currency Exchange'],
-                    prepare_mysql($this->data['Order Original Metadata'])
+                    prepare_mysql($this->data['Order Currency']), $this->data['Order Currency Exchange'], prepare_mysql($this->data['Order Original Metadata'])
 
                 );
 
@@ -417,8 +402,25 @@ trait OrderChargesOperations {
             }
         }
 
-        $net=0;
-        $tax=0;
+
+        if ($charge->get('Charge Scope') == 'Premium') {
+            $this->fast_update(
+                array(
+                    'Order Priority Level' => 'PaidPremium'
+                )
+            );
+        }
+        if ($charge->get('Charge Scope') == 'Insurance') {
+            $this->fast_update(
+                array(
+                    'Order Care Level' => 'PaidPremium'
+                )
+            );
+        }
+
+
+        $net = 0;
+        $tax = 0;
 
 
         $sql = sprintf(
@@ -428,24 +430,21 @@ trait OrderChargesOperations {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
-                $net=$row['net'];
-                $tax=$row['tax'];
+                $net = $row['net'];
+                $tax = $row['tax'];
             }
         }
 
 
-
-
         $this->fast_update(
             array(
-                'Order Charges Net Amount'=>$net,
-                'Order Charges Tax Amount'=>$tax
+                'Order Charges Net Amount' => $net,
+                'Order Charges Tax Amount' => $tax
             )
         );
 
 
         $this->update_totals();
-
 
 
         return $transaction_data;
@@ -461,12 +460,27 @@ trait OrderChargesOperations {
         );
 
 
-
         $this->db->exec($sql);
 
 
-        $net=0;
-        $tax=0;
+
+        if ($charge->get('Charge Scope') == 'Premium') {
+            $this->fast_update(
+                array(
+                    'Order Priority Level' => 'Normal'
+                )
+            );
+        }
+        if ($charge->get('Charge Scope') == 'Insurance') {
+            $this->fast_update(
+                array(
+                    'Order Care Level' => 'Normal'
+                )
+            );
+        }
+
+        $net = 0;
+        $tax = 0;
 
 
         $sql = sprintf(
@@ -476,26 +490,24 @@ trait OrderChargesOperations {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
-                $net=$row['net'];
-                $tax=$row['tax'];
+                $net = $row['net'];
+                $tax = $row['tax'];
             }
         }
 
 
-
-
         $this->fast_update(
             array(
-                'Order Charges Net Amount'=>$net,
-                'Order Charges Tax Amount'=>$tax
+                'Order Charges Net Amount' => $net,
+                'Order Charges Tax Amount' => $tax
             )
         );
 
 
         $this->update_totals();
 
-        $transaction_data=array(
-            'amount'=>''
+        $transaction_data = array(
+            'amount' => ''
         );
 
         return $transaction_data;

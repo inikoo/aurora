@@ -26,7 +26,7 @@ function get_order_showcase($data, $smarty, $user, $db) {
     // $order->update_order_payments();
     //$order->update_totals();
 
-    /*
+
         $order->update_totals();
         $order->update_discounts_items();
         $order->update_totals();
@@ -35,7 +35,7 @@ function get_order_showcase($data, $smarty, $user, $db) {
         $order->update_discounts_no_items();
         $order->update_deal_bridge();
 
-    */
+
 
     $smarty->assign('order', $order);
     $smarty->assign('store', $store);

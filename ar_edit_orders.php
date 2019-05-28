@@ -1869,6 +1869,9 @@ function toggle_charge($data, $editor, $smarty, $db, $account, $user) {
     );
 
 
+
+
+
     $response = array(
         'state'    => 200,
         'metadata' => $metadata,

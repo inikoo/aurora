@@ -8680,4 +8680,12 @@ h2.dashboard {
 .app_theme_blue #app_leftmenu, .app_theme_blue #app_leftmenu #top_info, .app_theme_blue #app_leftmenu li:hover {
   background: #424fbd; }
 
+.warning_block {
+  background: repeating-linear-gradient(-55deg, #444, #444 10px, #999900 10px, #999900 20px);
+  color: #FFEFD5;
+  font-weight: 700;
+  font-family: Ubuntu,"Lucida Grande","Lucida Sans Unicode",Verdana,Arial,sans-serif;
+  font-size: 28px;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+
 /*# sourceMappingURL=app.css.map */

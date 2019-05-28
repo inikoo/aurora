@@ -292,9 +292,14 @@ class WebAuth {
         );
 
 
+
+
+
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
+
+                //print_r($row);
 
                 $tests['handle']        = true;
                 $tests['handle_active'] = ($row['Website User Active'] == 'Yes' ? true : false);
@@ -304,6 +309,8 @@ class WebAuth {
                 $website_user_key = $row['Website User Key'];
                 $customer_key     = $row['Website User Customer Key'];
 
+
+              //  print $password;
 
                 //if (password_verify($password, ($row['Website User Password Hash'])) {
                 if ($row['Website User Password'] == $password) {
