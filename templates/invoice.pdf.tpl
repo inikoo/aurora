@@ -375,7 +375,7 @@
         {include file="string:{$invoice->get('Invoice Message')}" }
     </div><br>
 {/if}
-{if $account->get('Account Country 2 Alpha Code')=='SK'  and $invoice->get('Invoice Tax Number')!='' }
+{if $account->get('Account Country 2 Alpha Code')=='SK'  and $invoice->get('Invoice Tax Number')!=''  and $invoice->get('Invoice Address Country 2 Alpha Code')!='SK'   }
     <div style="text-align: center; font-style: italic;">
         {t}Transfer of tax liability{/t}
     </div>
