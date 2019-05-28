@@ -13,7 +13,7 @@
 <div  class="sticky_note_container order_customer_sticky_note {if $order->get('Order Customer Message')==''}hide{/if}"    >
     <i style="top:30px" class="fas fa-clone button fa-fw copy_to_delivery_note_sticky_note" aria-hidden="true"></i>
 
-    <div class="sticky_note" >{$order->get('Order Customer Message')}</div>
+    <div class="sticky_note" >{$order->get('Order Customer Message')|strip_tags}</div>
 </div>
 
 
@@ -241,6 +241,12 @@
     </div>
 
     <div class="block " style="align-items: stretch;flex: 1;padding-top: 0px">
+
+
+        <div class="state warning_block  priority_label  {if $order->get('Order Priority Level')=='Normal' or $order->get('State Index')<=10 or $order->get('State Index')==100  }hide{/if}  " style="height:30px;text-align: center;line-height: 30px">
+            {t}Priority{/t}  <i title="'._('Priority dispatching').'" style="font-size: 25px" class="fas fa-shipping-fast"></i>
+        </div>
+
         <div class="state" style="height:30px;">
             <div id="back_operations" >
 
