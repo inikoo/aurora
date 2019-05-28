@@ -83,9 +83,15 @@ class Customer extends Subject {
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Customer Key'];
+            $this->metadata = json_decode($this->data['Customer Metadata'], true);
+
         }
 
 
+    }
+
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
     }
 
     function find($raw_data, $address_raw_data, $options = '') {
