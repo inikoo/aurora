@@ -133,7 +133,7 @@ class Public_Customer extends DBW_Table {
         $this->editor = $raw_data['editor'];
 
         $this->data['Customer First Contacted Date'] = gmdate('Y-m-d H:i:s');
-
+        $raw_data['Customer Metadata']          = '{}';
 
         $keys   = '';
         $values = '';
