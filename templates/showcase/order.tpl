@@ -379,7 +379,7 @@
 
                 </div>
 
-                <div id="create_refund_operations" class="order_operation {if $order->get('State Index')<100  }hide{/if}">
+                <div id="create_refund_operations" class="order_operation {if !($order->get('State Index')==100   )     }hide{/if}">
                     <div class="square_button right  " title="{t}Create refund{/t}">
                         <i class="fal fa-file-alt error " aria-hidden="true" onclick="toggle_order_operation_dialog('create_refund')"></i>
                         <table id="create_refund_dialog" border="0" class="order_operation_dialog hide" style="color:#777">
@@ -390,6 +390,24 @@
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('create_refund')"></i></td>
                                 <td class="aright"><span id="create_refund_save_buttons" class="valid save button" onclick="change_view('orders/{$order->get('Store Key')}/{$order->id}/refund/new',{ tab:'refund.new.items'})"><span
+                                                class="label">{t}Next{/t}</span> <i class="fa fa-arrow-right fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+
+                <div id="create_credit_note_operations" class="order_operation hide {if !( $order->get('Order To Pay Amount')<=0)       }hide{/if}">
+                    <div class="square_button right  " title="{t}Create credit note{/t}">
+                        <i class="fal money-check-alt " aria-hidden="true" onclick="toggle_order_operation_dialog('create_credit_note')"></i>
+                        <table id="create_credit_note_dialog" border="0" class="order_operation_dialog hide" style="color:#777">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Create credit note{/t}</td>
+                            </tr>
+
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('create_credit_note')"></i></td>
+                                <td class="aright"><span id="create_credit_note_save_buttons" class="valid save button" onclick="change_view('orders/{$order->get('Store Key')}/{$order->id}/credit_note/new',{ tab:'credit_note.new.items'})"><span
                                                 class="label">{t}Next{/t}</span> <i class="fa fa-arrow-right fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
                         </table>

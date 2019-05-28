@@ -2703,6 +2703,16 @@ function refund_new_items($_data, $db, $user) {
     $adata = array();
 
 
+    if($customer_order->get('State Index')==90){
+        $prefil_out_off_stock=true;
+
+    }else{
+        $prefil_out_off_stock=false;
+
+    }
+
+
+
     $sql = sprintf(
         "SELECT `Order No Product Transaction Fact Key`,`Transaction Description`,`Transaction Net Amount`,`Transaction Type` ,`Currency Code`FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d ", $_data['parameters']['parent_key']
     );
@@ -2773,8 +2783,17 @@ function refund_new_items($_data, $db, $user) {
                 ).number($data['Order Quantity']).'</span>';
 
 
+            if($prefil_out_off_stock){
+                $prefilled_value=$data['Order Transaction Out of Stock Amount'];
+
+            }else{
+                $prefilled_value='';
+
+            }
+
             $refund_net = sprintf(
-                '<input class="new_refund_item %s item" style="width: 80px"  transaction_type="otf" transaction_id="%d"  max="%f"  />', ($data['Order Transaction Amount'] <= 0 ? 'hide' : ''), $data['Order Transaction Fact Key'], $data['Order Transaction Amount']
+                '<input class="new_refund_item %s item" style="width: 80px"  transaction_type="otf" transaction_id="%d"  max="%f" value="%s" />',
+                ($data['Order Transaction Amount'] <= 0 ? 'hide' : ''), $data['Order Transaction Fact Key'], $data['Order Transaction Amount'],$prefilled_value
             );
 
             $feedback = '<span data-empty_label="'._('Set feedback').'" data-type="otf" data-key="'.$data['Order Transaction Fact Key'].'"  id="set_otf_feedback_'.$data['Order Transaction Fact Key']
