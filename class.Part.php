@@ -2586,6 +2586,15 @@ class Part extends Asset {
 
                 $this->update_status($value, $options);
                 break;
+
+            case 'Part Symbol':
+
+                if($value=='none'){
+                    $value='';
+                }
+                $this->update_field($field, $value, $options);
+                break;
+
             case('Part Available for Products Configuration'):
                 $this->update_availability_for_products_configuration(
                     $value, $options

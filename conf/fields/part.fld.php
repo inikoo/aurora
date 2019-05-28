@@ -49,7 +49,7 @@ $options_yes_no = array(
 
 
 $options_symbols = array(
-    ''            => _('None'),
+    'none'            => _('None'),
     'star'        => '&#9733; '._('Star'),
     'skull'       => '&#9760; '._('Skull'),
     'radioactive' => '&#9762; '._('Radioactive'),
@@ -93,7 +93,7 @@ if (!($supplier_part_scope or $new)) {
                 'value'           => htmlspecialchars($object->get('Part Symbol')),
                 'formatted_value' => $object->get('Symbol'),
                 'label'           => ucfirst($object->get_field_label('Part Symbol')),
-                'required'        => ($new ? false : true),
+                'required'        => false,
                 'type'            => 'skip'
             ),
         )
