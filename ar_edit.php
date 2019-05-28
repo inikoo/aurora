@@ -1336,7 +1336,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
                             if ($data['fields_data']['Trigger Extra Amount Net'] == 0) {
-                                $deal_new_data['Deal Term Label'] = _('All ordera');
+                                $deal_new_data['Deal Term Label'] = _('All orders');
 
                             } else {
                                 $deal_new_data['Deal Term Label'] = sprintf(_('Orders +%s'), money($data['fields_data']['Trigger Extra Amount Net'], $store->get('Store Currency Code')));
@@ -1346,7 +1346,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             //'Category For Every Quantity Ordered AND Voucher','Category For Every Quantity Ordered','Category For Every Quantity Any Product Ordered AND Voucher','Category For Every Quantity Any Product Ordered','Category Quantity Ordered','Category Quantity Ordered AND Voucher','Department Quantity Ordered','Every Order','Family For Every Quantity Any Product Ordered','Department For Every Quantity Any Product Ordered','Voucher AND Order Interval','Amount AND Order Number','Amount AND Order Interval','Voucher AND Order Number','Voucher AND Amount','Amount','Order Total Net Amount','Order Total Net Amount AND Order Number','Order Total Net Amount AND Shipping Country','Order Total Net Amount AND Order Interval','Order Items Net Amount','Order Items Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Items Net Amount AND Order Interval','Order Total Amount','Order Total Amount AND Order Number','Order Total Amount AND Shipping Country','Order Total Amount AND Order Interval','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Order Number','Shipping Country','Voucher','Department For Every Quantity Ordered','Family For Every Quantity Ordered','Product For Every Quantity Ordered AND Voucher','Product For Every Quantity Ordered'
                             $deal_new_data['Deal Terms Type'] = 'Amount';
 
-                            $deal_new_data['Deal Terms']           = ';'.$data['fields_data']['Trigger Extra Amount Net'].';Order Items Gross Amount';
+                            $deal_new_data['Deal Terms']           = $data['fields_data']['Trigger Extra Amount Net'].';Order Items Gross Amount';
 
                             if (!empty($data['fields_data']['Deal Type Shipping Off'])) {
 
