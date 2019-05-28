@@ -321,6 +321,9 @@ trait OrderDiscountOperations {
                 break;
 
             case('Amount'):
+
+
+
                 $terms       = preg_split(
                     '/;/', $deal_component_data['Deal Component Terms']
                 );
