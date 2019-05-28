@@ -895,6 +895,8 @@
 
     $("#filter").append(serverSideFilter.render().el);
 
+
+
     rows.fetch({
         reset: true, success: function () {
 

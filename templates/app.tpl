@@ -19,7 +19,7 @@
     {/if}
     <script src="/assets/aurora_libs.min.js?v190319v2"></script>
 
-    <script src="/assets/aurora.min.js?v190527"></script>
+    <script src="/assets/aurora.min.js?v190528"></script>
 
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 
