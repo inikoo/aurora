@@ -158,6 +158,7 @@ class Customer extends Subject {
 
         $raw_data['Customer First Contacted Date'] = gmdate('Y-m-d H:i:s');
         $raw_data['Customer Sticky Note']          = '';
+        $raw_data['Customer Metadata']          = '{}';
 
 
         $keys   = '';
