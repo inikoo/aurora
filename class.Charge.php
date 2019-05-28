@@ -16,7 +16,7 @@ include_once('class.DB_Table.php');
 class Charge extends DB_Table {
 
 
-    function Charge($a1, $a2 = false) {
+    function __construct($a1, $a2 = false) {
 
         global $db;
         $this->db = $db;
@@ -232,6 +232,9 @@ class Charge extends DB_Table {
 
     function get($key = '') {
 
+        if(!$this->id){
+            return;
+        }
 
         switch ($key) {
             case 'Amount':

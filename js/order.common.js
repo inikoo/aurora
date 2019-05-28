@@ -1829,10 +1829,19 @@ function  toggle_selected_by_customer_charge(element){
                 if(data.operation=='add_charge' ) {
                      $(element).addClass('fa-toggle-on').removeClass('fa-spinner fa-spin');
                      $(element).closest('tr').find('.selected_by_customer_charge').html(data.transaction_data.amount)
+
+
+                    $('.Order_Priority_Icon').removeClass('hide')
+                    $('.priority_label').removeClass('hide')
+
+
                 }else{
 
                     $(element).addClass('fa-toggle-off').removeClass('fa-spinner fa-spin');
                     $(element).closest('tr').find('.selected_by_customer_charge').html('')
+
+                    $('.Order_Priority_Icon').addClass('hide')
+                    $('.priority_label').addClass('hide')
 
                 }
 

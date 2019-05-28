@@ -2842,10 +2842,31 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 exit;
             }
             break;
+        case 'Charge':
+
+            include_once 'class.Charge.php';
+            
+            switch($data['fields_data']['Charge Type']) {
+            case 'SOC':
+
+
+
+                break;
+            default:
+                break;
+            }
+            
+            
+            $object = $parent->create_charge($data['fields_data']);
+            print_r($data);
+
+            exit;
+
+            break;
         default:
             $response = array(
                 'state' => 400,
-                'msg'   => 'object process not found '.$data['object']
+                'msg'   => 'object process not found: '.$data['object']
 
             );
 

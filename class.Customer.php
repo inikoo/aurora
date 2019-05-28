@@ -992,12 +992,22 @@ class Customer extends Subject {
                 $website_user = get_object('Website_User', $this->get('Customer Website User Key'));
 
 
+
+
+
                 if ($website_user->id) {
                     $website_user->editor = $this->editor;
 
-                    $website_user->update(array('Website User Password' => hash('sha256', $value)), 'no_history');
 
-                    $website_user->update(array('Website User Password Hash' => password_hash(hash('sha256', $value), PASSWORD_DEFAULT, array('cost' => 12))), 'no_history');
+
+
+                    $website_user->fast_update(
+                      array(
+                          'Website User Password' => hash('sha256', $value),
+                          'Website User Password Hash' => password_hash(hash('sha256', $value), PASSWORD_DEFAULT, array('cost' => 12))
+                      )
+                    );
+
                 }
 
 

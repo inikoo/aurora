@@ -157,6 +157,9 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 $parent_key = $key;
                                 if (is_numeric($view_path[2])) {
                                     $key = $view_path[2];
+                                }elseif($view_path[2]=='new'){
+                                    $section = 'charge.new';
+                                    $key=0;
                                 }
                             } elseif ($view_path[1] == 'shipping_zone_schema') {
 

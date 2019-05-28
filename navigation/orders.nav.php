@@ -639,9 +639,9 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     $left_buttons  = array();
     $right_buttons = array();
 
-    $label_arrow_up='';
+    $label_arrow_up = '';
 
-  //  print_r($data);
+    //  print_r($data);
 
     $search_placeholder = _('Search orders');
 
@@ -652,45 +652,45 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             $_section = 'orders';
             $sections = get_sections('orders_server');
 
-            if(!empty($data['extra'])){
+            if (!empty($data['extra'])) {
 
-                switch ($data['extra']){
+                switch ($data['extra']) {
                     case 'submitted_not_paid':
-                        $tab = 'orders.in_process.not_paid';
-                        $label_arrow_up=_('Submitted (not paid)');
+                        $tab            = 'orders.in_process.not_paid';
+                        $label_arrow_up = _('Submitted (not paid)');
                         break;
                     case 'submitted':
-                        $tab = 'orders.in_process.paid';
-                        $label_arrow_up=_('Submitted (paid)');
+                        $tab            = 'orders.in_process.paid';
+                        $label_arrow_up = _('Submitted (paid)');
                         break;
                     case 'website':
-                        $tab = 'orders.website';
-                        $label_arrow_up=_('In basket');
+                        $tab            = 'orders.website';
+                        $label_arrow_up = _('In basket');
                         break;
                     case 'in_warehouse':
-                        $tab = 'orders.in_warehouse_no_alerts';
-                        $label_arrow_up=_('In warehouse');
+                        $tab            = 'orders.in_warehouse_no_alerts';
+                        $label_arrow_up = _('In warehouse');
 
                         break;
                     case 'in_warehouse_with_alerts':
-                        $tab = 'orders.in_warehouse_with_alerts';
-                        $label_arrow_up=_('In warehouse').' ('._('with alerts').')';
+                        $tab            = 'orders.in_warehouse_with_alerts';
+                        $label_arrow_up = _('In warehouse').' ('._('with alerts').')';
 
                         break;
 
                     case 'packed_done':
-                        $tab = 'orders.packed_done';
-                        $label_arrow_up=_('Packed & closed');
+                        $tab            = 'orders.packed_done';
+                        $label_arrow_up = _('Packed & closed');
 
                         break;
                     case 'approved':
-                        $tab = 'orders.approved';
-                        $label_arrow_up=_('Invoiced');
+                        $tab            = 'orders.approved';
+                        $label_arrow_up = _('Invoiced');
 
                         break;
                     case 'dispatched_today':
-                        $tab = 'orders.dispatched_today';
-                        $label_arrow_up=_('Dispatched today');
+                        $tab            = 'orders.dispatched_today';
+                        $label_arrow_up = _('Dispatched today');
 
                         break;
                 }
@@ -704,54 +704,53 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             break;
         case 'store':
 
-            $tab = 'orders';
+            $tab      = 'orders';
             $_section = 'dashboard';
 
-            if(!empty($data['extra'])){
+            if (!empty($data['extra'])) {
 
-                switch ($data['extra']){
+                switch ($data['extra']) {
                     case 'submitted_not_paid':
-                        $tab = 'orders.in_process.not_paid';
-                        $label_arrow_up=_('Submitted (not paid)');
+                        $tab            = 'orders.in_process.not_paid';
+                        $label_arrow_up = _('Submitted (not paid)');
                         break;
                     case 'submitted':
-                        $tab = 'orders.in_process.paid';
-                        $label_arrow_up=_('Submitted (paid)');
+                        $tab            = 'orders.in_process.paid';
+                        $label_arrow_up = _('Submitted (paid)');
                         break;
                     case 'website':
-                        $tab = 'orders.website';
-                        $label_arrow_up=_('In basket');
+                        $tab            = 'orders.website';
+                        $label_arrow_up = _('In basket');
                         break;
                     case 'in_warehouse':
-                        $tab = 'orders.in_warehouse_no_alerts';
-                        $label_arrow_up=_('In warehouse');
+                        $tab            = 'orders.in_warehouse_no_alerts';
+                        $label_arrow_up = _('In warehouse');
 
                         break;
                     case 'in_warehouse_with_alerts':
-                        $tab = 'orders.in_warehouse_with_alerts';
-                        $label_arrow_up=_('In warehouse').' ('._('with alerts').')';
+                        $tab            = 'orders.in_warehouse_with_alerts';
+                        $label_arrow_up = _('In warehouse').' ('._('with alerts').')';
 
                         break;
 
                     case 'packed_done':
-                        $tab = 'orders.packed_done';
-                        $label_arrow_up=_('Packed & closed');
+                        $tab            = 'orders.packed_done';
+                        $label_arrow_up = _('Packed & closed');
 
                         break;
                     case 'approved':
-                        $tab = 'orders.approved';
-                        $label_arrow_up=_('Invoiced');
+                        $tab            = 'orders.approved';
+                        $label_arrow_up = _('Invoiced');
 
                         break;
                     case 'dispatched_today':
-                        $tab = 'orders.dispatched_today';
-                        $label_arrow_up=_('Dispatched today');
+                        $tab            = 'orders.dispatched_today';
+                        $label_arrow_up = _('Dispatched today');
 
                         break;
                 }
 
             }
-
 
 
             break;
@@ -789,14 +788,14 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
 
     include_once 'prepare_table/'.$tab.'.ptble.php';
 
-    $_order_field       = $order;
-    $order              = preg_replace('/^.*\.`/', '', $order);
-    $order              = preg_replace('/^`/', '', $order);
-    $order              = preg_replace('/`$/', '', $order);
+    $_order_field = $order;
+    $order        = preg_replace('/^.*\.`/', '', $order);
+    $order        = preg_replace('/^`/', '', $order);
+    $order        = preg_replace('/`$/', '', $order);
 
 
-    if($order=='DATEDIFF(NOW(), `Order Submitted by Customer Date`)'){
-        $order='Waiting days';
+    if ($order == 'DATEDIFF(NOW(), `Order Submitted by Customer Date`)') {
+        $order = 'Waiting days';
     }
 
     $_order_field_value = $object->get($order);
@@ -808,15 +807,12 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     $next_key   = 0;
 
 
-
     $sql = sprintf(
         "select $_order_field,`Order Public ID` object_name,O.`Order Key` as object_key from %s
-	                and ( $_order_field < %s OR ($_order_field = %s AND O.`Order Key` < %d))  order by $_order_field desc , O.`Order Key` desc limit 1",
-        "$table $where $wheref",
-        prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ( $_order_field < %s OR ($_order_field = %s AND O.`Order Key` < %d))  order by $_order_field desc , O.`Order Key` desc limit 1", "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
     );
 
-   // print $sql;
+    // print $sql;
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
@@ -833,9 +829,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
 
     $sql = sprintf(
         "select `Order Public ID` object_name,O.`Order Key` as object_key from %s
-	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Order Key` > %d))  order by $_order_field   , O.`Order Key`  limit 1",
-        "$table $where $wheref",
-        prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+	                and ($_order_field  > %s OR ($_order_field  = %s AND O.`Order Key` > %d))  order by $_order_field   , O.`Order Key`  limit 1", "$table $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
     );
 
     if ($result = $db->query($sql)) {
@@ -922,7 +916,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
         $store = new Store($data['parent_key']);
 
 
-        if(!empty($data['extra'])){
+        if (!empty($data['extra'])) {
 
 
             $up_button = array(
@@ -965,7 +959,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             }
 
 
-        }else{
+        } else {
             $up_button = array(
                 'icon'      => 'arrow-up',
                 'title'     => _("Orders").' ('.$store->get('Store Code').')',
@@ -1008,10 +1002,6 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             }
 
         }
-
-
-
-
 
 
         $sections = get_sections('orders', $object->get('Order Store Key'));
@@ -1124,7 +1114,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     } elseif ($data['parent'] == 'account') {
 
 
-        if(!empty($data['extra'])){
+        if (!empty($data['extra'])) {
 
 
             $up_button = array(
@@ -1167,7 +1157,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             }
 
 
-        }else {
+        } else {
 
 
             $up_button = array(
@@ -1229,7 +1219,6 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     );
 
 
-
     $right_buttons[] = array(
         'icon'  => 'sticky-note',
         'title' => _('Sticky note'),
@@ -1237,11 +1226,12 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     );
 
 
-
     $title = _('Order').' <span class="id">'.$object->get('Order Public ID').'</span>';
 
-    $title.='<span title="'._("Customer's purchase order number").'" class="padding_left_10 Order_Customer_Purchase_Order_ID_container '.($object->get('Customer Purchase Order ID')==''?'hide':'').'   ">(<span class="Order_Customer_Purchase_Order_ID">'.$object->get('Customer Purchase Order ID').'</span>)</span>';
+    $title .= '<span title="'._("Customer's purchase order number").'" class="padding_left_10 Order_Customer_Purchase_Order_ID_container '.($object->get('Customer Purchase Order ID') == '' ? 'hide' : '').'   ">(<span class="Order_Customer_Purchase_Order_ID">'
+        .$object->get('Customer Purchase Order ID').'</span>)</span>';
 
+    $title .= ' <span class="Order_Priority_Icon '.($object->get('Order Priority Level') == 'Normal' ? 'hide' : '').' "   ><i title="'._('Priority dispatching').'" class=" Priority_Level  far fa-shipping-fast"></i></span>';
 
 
     $_content = array(
@@ -2617,7 +2607,7 @@ function get_refund_new_navigation($data, $smarty, $user, $db, $account) {
 
 
     $left_buttons[] = array(
-        'html_icon'      => '<i class="fas fa-window-close" style="font-size: 20px;position:relative;top:3px"></i>',
+        'html_icon' => '<i class="fas fa-window-close" style="font-size: 20px;position:relative;top:3px"></i>',
         'title'     => _('Return to order'),
         'reference' => 'orders/'.$data['_object']->get('Store Key').'/'.$data['_object']->id
     );
@@ -2629,7 +2619,10 @@ function get_refund_new_navigation($data, $smarty, $user, $db, $account) {
         $sections[$data['section']]['selected'] = true;
     }
 
-    $title = sprintf(_("New refund %s for order %s"), '<span class="hide title_tax_only">('._('Tax only').')</span>',  '<span class="button id" onclick="change_view(\'orders/'.$data['_object']->get('Store Key').'/'.$data['_object']->id.'\')">'.$data['_object']->get('Public ID').'</span>');
+    $title = sprintf(
+        _("New refund %s for order %s"), '<span class="hide title_tax_only">('._('Tax only').')</span>',
+        '<span class="button id" onclick="change_view(\'orders/'.$data['_object']->get('Store Key').'/'.$data['_object']->id.'\')">'.$data['_object']->get('Public ID').'</span>'
+    );
 
     $_content = array(
         'sections_class' => '',
