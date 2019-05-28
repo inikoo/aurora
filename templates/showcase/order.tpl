@@ -13,7 +13,7 @@
 <div  class="sticky_note_container order_customer_sticky_note {if $order->get('Order Customer Message')==''}hide{/if}"    >
     <i style="top:30px" class="fas fa-clone button fa-fw copy_to_delivery_note_sticky_note" aria-hidden="true"></i>
 
-    <div class="sticky_note" >{$order->get('Order Customer Message')|strip_tags}</div>
+    <div class="sticky_note" >{$order->get('Order Customer Message')|strip_tags|escape}</div>
 </div>
 
 
