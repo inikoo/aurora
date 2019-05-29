@@ -738,7 +738,7 @@ $export_fields = array(
             'checked' => 1
         ),
         array(
-            'name'    => '`Part Units`',
+            'name'    => '`Part Units Per Package`',
             'label'   => _('Units per SKO'),
             'checked' => 0
         ),
