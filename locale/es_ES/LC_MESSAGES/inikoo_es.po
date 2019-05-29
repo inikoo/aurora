@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-05-14 01:48+0800\n"
-"PO-Revision-Date: 2019-05-22 10:42+0200\n"
+"PO-Revision-Date: 2019-05-29 09:28+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -18,10 +18,8 @@ msgstr ""
 
 #: EcomB2B/ar_web_basket.php:209 EcomB2B/ar_web_basket.php:372
 #: EcomB2B/ar_web_basket.php:466 conf/fields/website_localization.fld.php:610
-#, fuzzy
-#| msgid "New contact"
 msgid "We will contact you"
-msgstr "Nuevo contacto"
+msgstr "Te concataremos"
 
 #: EcomB2B/ar_web_basket.php:527 EcomB2B/invoice.pdf.php:349
 #: EcomB2B/invoice.pdf.php:531 ar_edit_email_template.php:1384
@@ -1543,7 +1541,7 @@ msgstr "factura"
 
 #: EcomB2B/invoice.pdf.php:181 pdf/invoice.pdf.php:179
 msgid "Invoice No."
-msgstr "Numero Factura"
+msgstr "Número Factura"
 
 #: EcomB2B/invoice.pdf.php:184 ar_accounting_tables.php:712
 #: ar_reports_tables.php:443 pdf/invoice.pdf.php:182
@@ -6653,11 +6651,8 @@ msgid "stores"
 msgstr "tiendas"
 
 #: class.Account.php:1478 class.User.php:1818
-#, fuzzy
-#| msgid "website"
-#| msgid_plural "websites"
 msgid "websites"
-msgstr "sitio web"
+msgstr "sitios web"
 
 #: class.Account.php:1481
 msgid "products"
@@ -7171,8 +7166,6 @@ msgstr "Creado el cliente"
 
 #: class.Customer.php:255 conf/fields/customer.fld.php:29
 #: conf/fields/prospect.fld.php:29
-#, fuzzy
-#| msgid "Same as contact address"
 msgid "Same as invoice address"
 msgstr "Igual que la dirección de contacto"
 
@@ -11721,8 +11714,6 @@ msgid "Customer Id"
 msgstr "ID de cliente"
 
 #: conf/export_fields.php:227
-#, fuzzy
-#| msgid "Payment Method"
 msgid "Payment method"
 msgstr "Forma de pago"
 
@@ -11739,9 +11730,8 @@ msgstr "Moneda"
 
 #: conf/export_fields.php:332
 #, fuzzy
-#| msgid "Choose payment method"
 msgid "Main payment method"
-msgstr "Elija Forma de pago"
+msgstr "Forma de pago"
 
 #: conf/export_fields.php:344
 #, fuzzy
@@ -14205,9 +14195,8 @@ msgstr "Pedido no Facturado"
 #: conf/fields/website_localization.fld.php:247
 #: conf/website_system_webpages.php:455 conf/website_system_webpages.php:569
 #: tabs/email_campaign_type.workshop.tab.php:60
-#, fuzzy
 msgid "Invoice address"
-msgstr "Facturas"
+msgstr "Dirección de facturación"
 
 #: conf/fields/website_localization.fld.php:254
 #: conf/fields/website_localization.fld.php:255
@@ -16089,10 +16078,8 @@ msgid "Deleted refund"
 msgstr "Fecha devolución"
 
 #: navigation/invoice.nav.php:752
-#, fuzzy
-#| msgid "Delete File"
 msgid "Deleted invoice"
-msgstr "Eliminar archivo"
+msgstr "Factura eliminada"
 
 #: navigation/marketing.nav.php:34 navigation/marketing.nav.php:83
 #, php-format
