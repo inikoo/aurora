@@ -25,7 +25,6 @@ function get_order_showcase($data, $smarty, $user, $db) {
 
     // $order->update_order_payments();
     //$order->update_totals();
-
 /*
         $order->update_totals();
         $order->update_discounts_items();

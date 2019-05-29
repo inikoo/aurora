@@ -422,7 +422,7 @@
             {if $with_basket==1}
             getScript('/js/desktop.logged_in.min.js?v=190522', function () {
                 getScript('/js/desktop.forms.min.js', function () {
-                    getScript('/js/desktop.basket.min.js?v=190522', function () {
+                    getScript('/js/desktop.basket.min.js?v=190529', function () {
 
                     $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=", function (data) {
 

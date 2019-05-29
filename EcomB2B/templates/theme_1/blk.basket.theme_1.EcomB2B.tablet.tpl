@@ -13,7 +13,8 @@
 {if isset($data.top_margin)}{assign "top_margin" $data.top_margin}{else}{assign "top_margin" "30"}{/if}
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 {assign "items_data" $order->get_items()}
-
+{assign "interactive_charges_data" $order->get_interactive_charges_data()}
+{assign "interactive_deal_component_data" $order->get_interactive_deal_component_data()}
 
 <div id="block_{$key}"  class="clear content {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
 
@@ -151,9 +152,10 @@
 
         {assign "voucher_info" $order->voucher_formatted_info()}
 
-        <div class="container order basket  basket_order_items " style="margin-bottom: 20px">
+        <div class="container order basket   " style="margin-bottom: 20px">
+            <span class="basket_order_items">
             {include file="theme_1/_order_items.theme_1.EcomB2B.tablet.tpl" edit=true hide_title=true   items_data=$items_data }
-
+            </span>
             <div style="margin-top:5px">
                 {$voucher_info}
 

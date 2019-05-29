@@ -322,7 +322,7 @@ switch ($tipo) {
     case 'toggle_charge':
         $data = prepare_values(
             $_REQUEST, array(
-                         'parent_key'        => array('type' => 'key'),
+                         'parent_key' => array('type' => 'key'),
                          'parent'     => array('type' => 'string'),
                          'charge_key' => array('type' => 'key'),
                          'operation'  => array('type' => 'string'),
@@ -330,6 +330,20 @@ switch ($tipo) {
                      )
         );
         toggle_charge($data, $editor, $smarty, $db, $account, $user);
+        break;
+
+    case 'toggle_deal_component_choose_by_customer':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'order_key'          => array('type' => 'key'),
+                         'deal_component_key' => array('type' => 'key'),
+                         'product_id'         => array('type' => 'key'),
+                         'otdb_key'           => array('type' => 'otdb_key'),
+
+
+                     )
+        );
+        toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, $account, $user);
         break;
 
     default:
@@ -1827,15 +1841,13 @@ function toggle_charge($data, $editor, $smarty, $db, $account, $user) {
     }
 
 
+    if ($data['operation'] == 'add_charge') {
+
+        $transaction_data = $order->add_charge($charge);
 
 
-    if($data['operation']=='add_charge'){
-
-       $transaction_data= $order->add_charge($charge);
-
-
-    }else{
-        $transaction_data=$order->remove_charge($charge);
+    } else {
+        $transaction_data = $order->remove_charge($charge);
 
 
     }
@@ -1869,17 +1881,176 @@ function toggle_charge($data, $editor, $smarty, $db, $account, $user) {
     );
 
 
-
-
-
     $response = array(
-        'state'    => 200,
-        'metadata' => $metadata,
-        'operation'=>$data['operation'],
-        'transaction_data'=>$transaction_data
+        'state'            => 200,
+        'metadata'         => $metadata,
+        'operation'        => $data['operation'],
+        'transaction_data' => $transaction_data
     );
     echo json_encode($response);
 
+
+}
+
+function toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, $account, $user) {
+
+
+    $sql = sprintf('select * from `Order Transaction Deal Bridge` where `Order Transaction Deal Key`=%d ', $data['otdb_key']);
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+
+            if ($row['Product ID'] == $data['product_id']) {
+                $response = array(
+                    'state' => 400,
+                    'msg'   => 'nothing to change'
+                );
+
+                echo json_encode($response);
+                exit;
+            }
+
+
+            $deal_component = get_object('DealComponent', $data['deal_component_key']);
+
+            $allowance_data = json_decode($deal_component->get('Deal Component Allowance'), true);
+
+
+            if (!array_key_exists($data['product_id'], $allowance_data['options'])) {
+
+                $response = array(
+                    'state' => 400,
+                    'msg'   => 'product not in offer'
+                );
+
+                echo json_encode($response);
+                exit;
+            }
+            $order = get_object('Order', $data['order_key']);
+
+            $product = get_object('Product', $data['product_id']);
+
+
+            $customer = get_object('Customer', $order->get('Order Customer Key'));
+            $customer->fast_update_json_field('Customer Metadata', 'DC_'.$deal_component->id, $product->id);
+
+            //  $sql=sprintf('update `Order Transaction Fact` set `Product ID`  ')
+
+
+            $deal = get_object('Deal', $deal_component->get('Deal Component Deal Key'));
+
+
+            $deal_info = sprintf(
+                "%s: %s, %s", ($deal->get('Deal Name Label') == '' ? _('Offer') : $deal->get('Deal Name Label')), (!empty($deal->get('Deal Term Label')) ? $deal->get('Deal Term Label') : ''), $deal_component->get('Deal Component Allowance Label')
+
+            );
+
+
+            $deal_info .= ' <span class="highlight"><i class="fa fa-plus-square padding_left_10"></i> '.sprintf('%d %s', $allowance_data['qty'], $product->get('Code')).'</span>';
+
+
+            $sql = sprintf(
+                'update `Order Transaction Deal Bridge` set `Product ID`=%d,`Product Key`=%d,`Category Key`=%d,`Order Transaction Deal Metadata`=%s,`Deal Info`=%s where `Order Transaction Deal Key`=%d  ', $product->id, $product->get('Product Current Key'),
+                $product->get('Product Family Category Key'), prepare_mysql('{"selected": "'.$product->id.'"}'), prepare_mysql($deal_info), $data['otdb_key']
+            );
+
+            $db->exec($sql);
+
+
+            global $_locale;
+
+
+            if ($product->get('Product Availability State') == 'OnDemand') {
+                $stock = _('On demand');
+
+            } else {
+
+                if (is_numeric($product->get('Product Availability'))) {
+                    $stock = number($product->get('Product Availability'));
+                } else {
+                    $stock = '?';
+                }
+            }
+
+
+            $units    = $product->get('Product Units Per Case');
+            $name     = $product->get('Product Name');
+            $price    = $product->get('Product Price');
+            $currency = $product->get('Product Currency');
+
+
+            $description = '';
+            if ($units > 1) {
+                $description = number($units).'x ';
+            }
+            $description .= ' '.$name;
+            if ($price > 0) {
+                $description .= ' ('.money($price, $currency, $_locale).')';
+            }
+
+
+            $description .= ' <span style="color:#777">['.$stock.']</span> '.$deal_info;
+
+
+            $sql = sprintf(
+                'update `Order Transaction Fact` set `Product ID`=%d,`Product Key`=%d,`Product Code`=%s,`Estimated Weight`=%f,`OTF Category Family Key`=%d,`OTF Category Department Key`=%d  where `Order Transaction Fact Key`=%d  ', $product->id,
+                $product->get('Product Current Key'), prepare_mysql($product->get('Product Code')), $product->get('Product Package Weight'), $product->get('Product Family Category Key'), $product->get('Product Department Category Key'),
+                $row['Order Transaction Fact Key']
+            );
+
+            $db->exec($sql);
+
+
+            $transaction_deal_data = array(
+                'otf_key'     => $row['Order Transaction Fact Key'],
+                'product_id'  => $product->id,
+                'Code'        => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $order->get('Order Store Key'), $product->id, $product->get('Product Code')),
+                'Description' => $description
+
+            );
+
+
+            $metadata = array(
+
+                'class_html'  => array(
+                    'Order_State'                   => $order->get('State'),
+                    'Items_Net_Amount'              => $order->get('Items Net Amount'),
+                    'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
+                    'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
+                    'Total_Net_Amount'              => $order->get('Total Net Amount'),
+                    'Total_Tax_Amount'              => $order->get('Total Tax Amount'),
+                    'Total_Amount'                  => $order->get('Total Amount'),
+                    'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
+                    'To_Pay_Amount'                 => $order->get('To Pay Amount'),
+                    'Payments_Amount'               => $order->get('Payments Amount'),
+
+
+                    'Order_Number_items' => $order->get('Number Items')
+
+                ),
+                //  'operations'    => $operations,
+                'state_index' => $order->get('State Index'),
+                'to_pay'      => $order->get('Order To Pay Amount'),
+                'total'       => $order->get('Order Total Amount'),
+                'charges'     => $order->get('Order Charges Net Amount'),
+
+
+            );
+
+
+            $response = array(
+                'state'                 => 200,
+                'metadata'              => $metadata,
+                'transaction_deal_data' => $transaction_deal_data
+            );
+            echo json_encode($response);
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
 
 
 }

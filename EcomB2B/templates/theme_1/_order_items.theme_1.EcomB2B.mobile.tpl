@@ -20,7 +20,7 @@
     </thead>
     <tbody>
 
-    {foreach from=$items_data item="item" }
+    {foreach from=$items_data item="item" }g
 
         <tr>
             <td style="text-align: left">{$item.code_description}
@@ -46,6 +46,25 @@
         </tr>
 
 
+    {/foreach}
+
+
+
+    {foreach from=$interactive_deal_component_data item="item" }
+
+        <tr>
+
+            <td class="text-right" style="line-height: 35px">{$item.description}</td>
+            <td class="text-right"></td>
+        </tr>
+    {/foreach}
+    {foreach from=$interactive_charges_data item="item" }
+
+        <tr>
+
+            <td  class="text-right">{$item.description}<br>{$item.quantity_edit}</td>
+            <td class="text-right">{$item.net}</td>
+        </tr>
     {/foreach}
     </tbody>
 </table>

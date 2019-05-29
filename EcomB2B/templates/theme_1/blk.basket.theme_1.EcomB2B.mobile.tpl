@@ -11,7 +11,8 @@
 
 
 {assign "items_data" $order->get_items()}
-
+{assign "interactive_charges_data" $order->get_interactive_charges_data()}
+{assign "interactive_deal_component_data" $order->get_interactive_deal_component_data()}
 
 <div id="block_{$key}"  class="{$data.type} _block  " style="Width:100%;margin-top: 10px" >
 
@@ -139,9 +140,10 @@
 
         {assign "voucher_info" $order->voucher_formatted_info()}
 
-        <div class="container order basket  basket_order_items " style="margin-bottom: 20px">
+        <div class="container order basket   " style="margin-bottom: 20px">
+            <span class="basket_order_items">
             {include file="theme_1/_order_items.theme_1.EcomB2B.mobile.tpl" edit=true hide_title=true   items_data=$items_data }
-
+            </span>
             <div style="margin-top:5px">
                 {$voucher_info}
 

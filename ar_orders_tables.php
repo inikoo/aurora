@@ -221,16 +221,16 @@ function orders_in_process_not_paid($_data, $db, $user, $account) {
         $operations .= '</div>';
 
 
-        $public_id=sprintf(
+        $public_id = sprintf(
             '<span class="link"  onclick="change_view(\'/orders/%s/dashboard/submitted_not_paid/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
         );
 
-        if($data['Order Priority Level']!='Normal'){
-            $public_id.=' <i class="fal fa-shipping-fast"></i>';
+        if ($data['Order Priority Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-shipping-fast"></i>';
         }
 
-        if($data['Order Care Level']!='Normal'){
-            $public_id.=' <i class="fal fa-fragile"></i>';
+        if ($data['Order Care Level'] != 'Normal') {
+            $public_id .= ' <i class="fal fa-fragile"></i>';
 
         }
 
@@ -1750,9 +1750,8 @@ function order_items($_data, $db, $user) {
         $adata[] = array(
 
             'id'            => (integer)$data['Order Transaction Fact Key'],
-            'product_pid'   => (integer)$data['Product ID'],
-            'code'          => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product Code']),
-            'description'   => $description,
+            'code'          => sprintf('<span class="item_code"><span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span></span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product Code']),
+            'description'   => '<span class="item_description">'.$description.'</span>',
             'quantity'      => $quantity,
             'quantity_edit' => $quantity_edit,
 
@@ -1769,7 +1768,7 @@ function order_items($_data, $db, $user) {
 
     $sql = sprintf(
         "select `Charge Key` ,`Charge Name`,`Charge Scope` ,`Charge Store Key`,`Charge Description` ,`Charge Metadata` , (select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`='Charges'  and `Transaction Type Key`=`Charge Key`  limit 1  ) as onptf_key   from `Charge Dimension` where `Charge Store Key`=%d and `Charge Trigger`  = 'Selected by Customer' ",
-        $customer_order->id,$customer_order->get('Order Store Key')
+        $customer_order->id, $customer_order->get('Order Store Key')
     );
 
 
@@ -1777,21 +1776,78 @@ function order_items($_data, $db, $user) {
         foreach ($result as $row) {
 
 
-
-            $onptf_key=$row['onptf_key'];
+            $onptf_key = $row['onptf_key'];
 
             $adata[] = array(
 
                 'id'            => 'Charge_'.$row['Charge Key'],
                 'code'          => sprintf('<span class="link"  onclick="change_view(\'/store/%d/charge/%d\')">%s</span>', $row['Charge Store Key'], $row['Charge Key'], $row['Charge Name']),
-                'description'   => $row['Charge Description'].' ('. money($row['Charge Metadata'], $customer_order->get('Currency Code')).')',
+                'description'   => $row['Charge Description'].' ('.money($row['Charge Metadata'], $customer_order->get('Currency Code')).')',
                 'quantity'      => '',
-                'quantity_edit' => '<i onclick="toggle_selected_by_customer_charge(this)"  data-charge_key="'.$row['Charge Key'].'" data-onptf_key="'.$onptf_key.'"   style="margin-right: 20px" class="'.($onptf_key>0?'fa-toggle-on':'fa-toggle-off').' far button "></i>',
+                'quantity_edit' => '<i onclick="toggle_selected_by_customer_charge(this)"  data-charge_key="'.$row['Charge Key'].'" data-onptf_key="'.$onptf_key.'"   style="margin-right: 20px" class="'.($onptf_key > 0 ? 'fa-toggle-on' : 'fa-toggle-off')
+                    .' far button "></i>',
 
                 'discounts' => '',
 
 
-                'net' => sprintf('<span  class="  selected_by_customer_charge">%s</span>', ($onptf_key>0? money($row['Charge Metadata'], $customer_order->get('Currency Code')):'') ),
+                'net' => sprintf('<span  class="  selected_by_customer_charge">%s</span>', ($onptf_key > 0 ? money($row['Charge Metadata'], $customer_order->get('Currency Code')) : '')),
+
+
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $sql = sprintf(
+        "select `Deal Name`,`Order Transaction Deal Key`,`Deal Component Allowance`,DCD.`Deal Component Key` ,`Order Transaction Deal Metadata` from `Order Transaction Deal Bridge` OTDB left join 
+    `Deal Component Dimension` DCD on (DCD.`Deal Component Key`=OTDB.`Deal Component Key`) left join  `Deal Dimension` DD on (DCD.`Deal Component Deal Key`=DD.`Deal Key`) 
+    
+    where `Order Key`=%d and `Deal Component Allowance Type`='Get Free Customer Choose'  ", $customer_order->id
+    );
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+
+            //  print_r($row);
+            $allowances         = json_decode($row['Deal Component Allowance'], true);
+            $selected_allowance = json_decode($row['Order Transaction Deal Metadata'], true);
+
+
+            if (!empty($selected_allowance['selected'])) {
+                $selected = $selected_allowance['selected'];
+            } else {
+                $selected = $allowances['default'];
+            }
+
+            //  print_r($allowances);
+
+            $options = '<span data-selected="'.$selected.'"  data-deal_component_key="'.$row['Deal Component Key'].'"  data-otdb_key="'.$row['Order Transaction Deal Key'].'" class="deal_component_choose_by_customer">';
+            foreach ($allowances['options'] as $product_id => $option) {
+                $options .= '<span onclick="select_deal_component_choose_by_customer(this)" data-product_id="'.$product_id.'" class="deal_component_item deal_component_item_'.$product_id.'   button margin_right_30"><i class="far '.($selected == $product_id
+                        ? 'fa-dot-circle' : 'fa-circle').' "></i> <span  title="'.$option['Description'].'">'.$option['Code'].'</span></span>';
+            }
+
+            $options .= '</span>';
+
+            $adata[] = array(
+
+                'id'            => 'Choose_'.$row['Order Transaction Deal Key'],
+                'code'          => $row['Deal Name'],
+                'description'   => $options,
+                'quantity'      => '',
+                'quantity_edit' => '',
+
+                'discounts' => '',
+
+
+                'net' => ''
 
 
             );
@@ -2703,14 +2759,13 @@ function refund_new_items($_data, $db, $user) {
     $adata = array();
 
 
-    if($customer_order->get('State Index')==90){
-        $prefil_out_off_stock=true;
+    if ($customer_order->get('State Index') == 90) {
+        $prefil_out_off_stock = true;
 
-    }else{
-        $prefil_out_off_stock=false;
+    } else {
+        $prefil_out_off_stock = false;
 
     }
-
 
 
     $sql = sprintf(
@@ -2783,17 +2838,17 @@ function refund_new_items($_data, $db, $user) {
                 ).number($data['Order Quantity']).'</span>';
 
 
-            if($prefil_out_off_stock){
-                $prefilled_value=$data['Order Transaction Out of Stock Amount'];
+            if ($prefil_out_off_stock) {
+                $prefilled_value = $data['Order Transaction Out of Stock Amount'];
 
-            }else{
-                $prefilled_value='';
+            } else {
+                $prefilled_value = '';
 
             }
 
             $refund_net = sprintf(
-                '<input class="new_refund_item %s item" style="width: 80px"  transaction_type="otf" transaction_id="%d"  max="%f" value="%s" />',
-                ($data['Order Transaction Amount'] <= 0 ? 'hide' : ''), $data['Order Transaction Fact Key'], $data['Order Transaction Amount'],$prefilled_value
+                '<input class="new_refund_item %s item" style="width: 80px"  transaction_type="otf" transaction_id="%d"  max="%f" value="%s" />', ($data['Order Transaction Amount'] <= 0 ? 'hide' : ''), $data['Order Transaction Fact Key'],
+                $data['Order Transaction Amount'], $prefilled_value
             );
 
             $feedback = '<span data-empty_label="'._('Set feedback').'" data-type="otf" data-key="'.$data['Order Transaction Fact Key'].'"  id="set_otf_feedback_'.$data['Order Transaction Fact Key']
@@ -2806,7 +2861,6 @@ function refund_new_items($_data, $db, $user) {
             $adata[] = array(
 
                 'id'          => (integer)$data['Order Transaction Fact Key'],
-                'product_pid' => (integer)$data['Product ID'],
                 'code'        => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $customer_order->get('Order Store Key'), $data['Product ID'], $data['Product Code']),
                 'description' => $description,
                 'quantity'    => $quantity,

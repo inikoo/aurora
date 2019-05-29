@@ -180,7 +180,7 @@ function save_item_qty_change(element) {
             for (var key in data.metadata.deleted_otfs) {
                 $('#transaction_item_net_' + data.metadata.deleted_otfs[key]).closest('tr').remove()
             }
-            if(data.metadata.new_otfs.length>0){
+            if(data.metadata.new_otfs.length>0 ||  data.metadata.deleted_otfs.length>0){
 
 
 

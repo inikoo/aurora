@@ -27,8 +27,8 @@
     {foreach from=$items_data item="item" }
 
     <tr>
-        <td>{$item.code}</td>
-        <td>{$item.description}</td>
+        <td class="item_code">{$item.code}</td>
+        <td class="item_description">{$item.description}</td>
         {if $edit }
         <td class="text-right">{if $item.price_raw>0}{$item.edit_qty}{/if}</td>
         {else}
@@ -37,10 +37,29 @@
         {/if}
         <td class="text-right">{$item.amount}</td>
     </tr>
-
-
-
     {/foreach}
+
+
+
+
+    {foreach from=$interactive_deal_component_data item="item" }
+
+        <tr>
+            <td></td>
+            <td colspan=2 class="text-right">{$item.description}</td>
+            <td class="text-right"></td>
+        </tr>
+    {/foreach}
+    {foreach from=$interactive_charges_data item="item" }
+
+        <tr>
+            <td></td>
+            <td  class="text-right">{$item.description}</td>
+            <td  class="text-right">{$item.quantity_edit}</td>
+            <td class="text-right">{$item.net}</td>
+        </tr>
+    {/foreach}
+
     </tbody>
 </table>
 

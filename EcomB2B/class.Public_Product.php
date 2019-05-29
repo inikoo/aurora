@@ -233,7 +233,7 @@ class Public_Product {
             case 'Product Price':
             case 'Product Unit Weight':
             case 'Product Barcode Number':
-
+            case 'Product Code':
                 return $this->data[$key];
 
 
