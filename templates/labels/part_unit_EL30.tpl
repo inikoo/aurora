@@ -13,7 +13,7 @@
                             <table border="0" style="height: 100%;">
                                 <tr>
                                     <td>
-                                        <b>{$part->get('Reference')}</b>x</td>
+                                        <b>{$part->get('Reference')}</b></td>
                                 </tr>
                                 <tr>
                                     <td style="border-bottom: 1px solid #000">{$part->get('Recommended Product Unit Name')}</td>
