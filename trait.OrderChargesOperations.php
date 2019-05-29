@@ -321,32 +321,103 @@ trait OrderChargesOperations {
     function use_calculated_items_charges() {
 
 
-        $this->update_field_switcher('Order Charges Method', 'Calculated', 'no_history');
+        $sql = sprintf(
+            'delete `Order No Product Transaction Fact`  from `Order No Product Transaction Fact`      left join `Charge Dimension` on (`Charge Key`=`Transaction Type Key`) 
+
+       
+        
+        where  `Charge Scope`="Hanging" and  `Transaction Type`="Charges" and `Order Key`=%d  ',
+
+
+            $this->id
+        );
+
+        $this->db->exec($sql);
 
 
         $this->update_charges();
-        $this->updated = true;
         $this->update_totals();
-        $this->new_value = $this->data['Order Charges Net Amount'];
 
     }
 
 
-    function update_charges_amount($value, $dn_key = false) {
+    function update_hanging_charges_amount($value, $dn_key = false) {
         $value = sprintf("%.2f", $value);
 
 
-        $this->update_field_switcher('Order Charges Method', 'Set', 'no_history');
+        $sql = sprintf(
+            'select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact`  left join `Charge Dimension` on (`Charge Key`=`Transaction Type Key`)   where  `Charge Scope`="Hanging" and  `Transaction Type`="Charges" and `Order Key`=%d  ', $this->id
+        );
 
 
-        $this->data['Order Charges Net Amount'] = $value;
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+
+
+                $tax = $value * $this->data['Order Tax Rate'];
+
+
+                $sql = sprintf(
+                    'update `Order No Product Transaction Fact`    set `Order No Product Transaction Pinned`="Yes" ,  `Transaction Gross Amount`=%.2f ,`Transaction Net Amount`=%.2f ,`Transaction Tax Amount`=%.2f where  `Order No Product Transaction Fact Key`=%d  ',
+                    $value, $value, $tax,$row['Order No Product Transaction Fact Key']
+                );
+
+                $this->db->exec($sql);
+
+            }else{
+
+
+                $sql=sprintf('select `Charge Key` from `Charge Dimension`   where  `Charge Scope`="Hanging" and  `Charge Store Key`=%d  ',
+                             $this->get('Store Key')
+                );
+
+
+                if ($result2=$this->db->query($sql)) {
+                    if ($row2 = $result2->fetch()) {
+
+
+
+                        $charge=get_object('Charge',$row2['Charge Key']);
+                        $tax = $charge->get('Charge Metadata') * $this->data['Order Tax Rate'];
+
+                        $sql = sprintf(
+                            "INSERT INTO `Order No Product Transaction Fact` (`Order No Product Transaction Pinned`,`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,
+                        `Transaction Description`,`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,
+                        `Currency Code`,`Currency Exchange`,`Metadata`)
+
+					VALUES (%s,%d,%s,%s,%d,
+					%s,%.2f,%.2f,%s,%.2f,
+					
+					%s,%f,%s)  ", prepare_mysql('Yes'), $this->id, prepare_mysql($this->data['Order Date']), prepare_mysql('Charges'), $charge->id,
+
+                            prepare_mysql($charge->get('Charge Description')), $charge->get('Charge Metadata'), $charge->get('Charge Metadata'), prepare_mysql($this->data['Order Tax Code']), $tax,
+
+                            prepare_mysql($this->data['Order Currency']), $this->data['Order Currency Exchange'], prepare_mysql($this->data['Order Original Metadata'])
+
+                        );
+
+
+                        $this->db->exec($sql);
+
+                    }
+                }
+
+
+
+
+
+            }
+        }
+
+
+
+
         $this->update_charges($dn_key);
 
-        $this->updated   = true;
-        $this->new_value = $value;
 
         $this->update_totals();
-        //$this->apply_payment_from_customer_account();
 
     }
 
@@ -388,6 +459,8 @@ trait OrderChargesOperations {
                     prepare_mysql($this->data['Order Currency']), $this->data['Order Currency Exchange'], prepare_mysql($this->data['Order Original Metadata'])
 
                 );
+
+
 
 
                 $this->db->exec($sql);
@@ -461,7 +534,6 @@ trait OrderChargesOperations {
 
 
         $this->db->exec($sql);
-
 
 
         if ($charge->get('Charge Scope') == 'Premium') {

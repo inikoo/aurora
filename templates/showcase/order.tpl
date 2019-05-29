@@ -897,7 +897,7 @@
             <tr>
                 <td class="label" id="Charges_Net_Amount_label">{t}Charges{/t}</td>
                 <td class="aright "><span id="Charges_Net_Amount_form" class="hide"><i id="set_charges_as_auto" class="fa fa-magic button" onClick="set_charges_as_auto()" aria-hidden="true"></i>  <input
-                                value="{$order->get('Order Charges Net Amount')}" ovalue="{$order->get('Order Charges Net Amount')}" style="width: 100px" id="Charges_Net_Amount_input"> <i id="Charges_Net_Amount_save"
+                                value="{$order->get('Order Hanging Charges Net Amount')}" ovalue="{$order->get('Order Hanging Charges Net Amount')}" style="width: 100px" id="Charges_Net_Amount_input"> <i id="Charges_Net_Amount_save"
                                                                                                                                                                                             class="fa fa-cloud save"
                                                                                                                                                                                             onClick="save_charges_value()"
                                                                                                                                                                                             aria-hidden="true"></i> </span><span
@@ -1367,7 +1367,7 @@
 
         var ajaxData = new FormData();
 
-        ajaxData.append("tipo", 'set_charges_value')
+        ajaxData.append("tipo", 'set_hanging_charges_value')
 
         ajaxData.append("order_key", '{$order->id}')
         ajaxData.append("amount", amount)
