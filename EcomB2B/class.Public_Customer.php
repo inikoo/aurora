@@ -134,6 +134,7 @@ class Public_Customer extends DBW_Table {
 
         $this->data['Customer First Contacted Date'] = gmdate('Y-m-d H:i:s');
 
+        $this->data['Customer Metadata'] ='{}';
 
         $keys   = '';
         $values = '';
@@ -749,6 +750,7 @@ class Public_Customer extends DBW_Table {
                     } catch (\libphonenumber\NumberParseException $e) {
                         $this->error = true;
                         $this->msg   = 'Error 1234';
+                        $formatted_value = '';
                     }
 
                 } else {
@@ -757,6 +759,8 @@ class Public_Customer extends DBW_Table {
 
 
                 $this->update_field($field, $value, 'no_history');
+
+
                 $this->update_field(preg_replace('/Plain/', 'XHTML', $field), $formatted_value, 'no_history');
 
 
