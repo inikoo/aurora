@@ -32,36 +32,13 @@ trait OrderDiscountOperations {
             )
 
         );
-        /*
 
-                $sql = sprintf(
-                    'UPDATE `Order Transaction Fact` SET `Order Transaction Total Discount Amount`=0 , `Order Transaction Amount`=`Order Transaction Gross Amount` WHERE `Order Key`=%d  ', $this->id
-                );
-                $this->db->exec($sql);
-
-
-                // 'In Process by Customer','Submitted by Customer','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Dispatched','Unknown','Packing','Packed','Packed Done','Cancelled','No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Suspended','Cancelled by Customer','Out of Stock in Basket'
-
-                $sql = sprintf(
-                    "DELETE OTDB FROM `Order Transaction Deal Bridge`  OTDB left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=OTDB.`Order Transaction Fact Key`) WHERE OTDB.`Order Key` =%d AND `Deal Component Key`!=0    and  ( `Current Dispatching State`='In Process'  or  (`Current Dispatching State` in ('Submitted by Customer','Ready to Pick') and `Order Transaction Deal Pinned`='No' ) ) ",
-                    $this->id
-                );
-                $sql = sprintf(
-                    "DELETE  FROM `Order Transaction Deal Bridge`  WHERE `Order Key` =%d AND `Deal Component Key`!=0      ", $this->id
-                );
-
-                // print $sql;
-
-                $this->db->exec($sql);
-
-        */
 
         $this->get_allowances_from_order_trigger();
         $this->get_allowances_from_category_trigger();
         $this->get_allowances_from_product_trigger();
         $this->get_allowances_from_customer_trigger();
         $this->get_allowances_from_pinned_deal_components();
-
 
 
         $this->apply_items_discounts();
@@ -140,9 +117,6 @@ trait OrderDiscountOperations {
     }
 
     function test_deal_terms($deal_component_data) {
-
-
-        //print $deal_component_data['Deal Component Terms Type']."\n";
 
 
         switch ($deal_component_data['Deal Component Terms Type']) {
@@ -323,7 +297,6 @@ trait OrderDiscountOperations {
             case('Amount'):
 
 
-
                 $terms       = preg_split(
                     '/;/', $deal_component_data['Deal Component Terms']
                 );
@@ -339,8 +312,6 @@ trait OrderDiscountOperations {
 
                 break;
             case('Amount AND Order Interval'):
-
-
 
 
                 $terms         = preg_split(
@@ -371,8 +342,6 @@ trait OrderDiscountOperations {
                                                                                                                                                                                              .' 00:00:00'
                                                                                                                                                                                          )
                     );
-
-
 
 
                     if ($result = $this->db->query($sql)) {
@@ -856,7 +825,7 @@ trait OrderDiscountOperations {
                     case('Charge'):
 
 
-                        $_allowance_data = json_decode($deal_component_data['Deal Component Allowance'],true);
+                        $_allowance_data = json_decode($deal_component_data['Deal Component Allowance'], true);
 
 
                         $this->allowance['No Item Transaction']['Charge'] = array(
@@ -892,14 +861,8 @@ trait OrderDiscountOperations {
                     case('Category'):
 
 
-
-
-
-
                         $allowance_data = $deal_component_data['Deal Component Allowance'];
 
-
-                        // print_r($deal_component_data);
 
                         $category_key       = $allowance_data['key'];
                         $get_free_allowance = $allowance_data['qty'];
@@ -1043,17 +1006,11 @@ trait OrderDiscountOperations {
                         $allowance_data = json_decode($deal_component_data['Deal Component Allowance'], true);
 
 
-
-
-
-
-
                         $product_pid = $allowance_data['key'];
 
                         $product = get_object($allowance_data['object'], $allowance_data['key']);
 
                         $get_free_allowance = $allowance_data['qty'];
-
 
 
                         if ($deal_component_data['Deal Component Trigger'] == 'Order') {
@@ -1208,6 +1165,66 @@ trait OrderDiscountOperations {
                                 'Deal Key'             => $deal_component_data['Deal Component Deal Key'],
                                 'Deal Info'            => $deal_info.' <span class="highlight"><i class="fa fa-plus-square padding_left_10"></i> '.sprintf('%d %s', $get_free_allowance, $product->get('Code')).'</span>',
                                 'Pinned'               => $pinned
+                            );
+                        }
+
+
+                        break;
+                }
+
+                break;
+
+
+            case('Get Free Customer Choose'):
+
+                switch ($deal_component_data['Deal Component Allowance Target']) {
+
+
+                    case('Product'):
+
+
+                        $allowance_data = json_decode($deal_component_data['Deal Component Allowance'], true);
+
+
+                        $customer = get_object('Customer', $this->get('Order Customer Key'));
+
+
+                        $product_pid = $customer->metadata('DC_'.$deal_component_data['Deal Component Key']);
+
+
+                       // print_r($customer);
+
+                        if (!$product_pid or !array_key_exists($product_pid, $allowance_data['options'])) {
+                            $product_pid = $allowance_data['default'];
+                        }
+
+
+                        $product = get_object($allowance_data['object'], $product_pid);
+
+                        $get_free_allowance = $allowance_data['qty'];
+
+
+                        if ($deal_component_data['Deal Component Trigger'] == 'Order') {
+                            $allowance_index = 'Get Free No Ordered Product';
+                        } else {
+                            $allowance_index = 'Get Free';
+                        }
+
+
+                        if (isset($this->allowance[$allowance_index][$product_pid])) {
+                            $this->allowance[$allowance_index][$product_pid][$allowance_index] += $get_free_allowance;
+                        } else {
+                            $this->allowance[$allowance_index][$product_pid] = array(
+                                'Product ID'           => $product->id,
+                                'Product Key'          => $product->historic_id,
+                                'Product Category Key' => $product->get('Product Family Category Key'),
+                                'Get Free'             => $get_free_allowance,
+                                'Deal Campaign Key'    => $deal_component_data['Deal Component Campaign Key'],
+                                'Deal Component Key'   => $deal_component_data['Deal Component Key'],
+                                'Deal Key'             => $deal_component_data['Deal Component Deal Key'],
+                                'Deal Info'            => $deal_info.' <span class="highlight"><i class="fa fa-plus-square padding_left_10"></i> '.sprintf('%d %s', $get_free_allowance, $product->get('Code')).'</span>',
+                                'Pinned'               => $pinned,
+                                'Metadata'             => json_encode(array('selected' => $product->id))
                             );
                         }
 
@@ -1455,7 +1472,6 @@ trait OrderDiscountOperations {
         $current_free_no_ordered_items_to_delete = array();
 
 
-
         $sql = sprintf('select `Order Transaction Fact Key`,`Deal Component Key`,`Order Transaction Deal Key`,`Amount Discount`,`Bonus Quantity` from `Order Transaction Deal Bridge` where `Order Key`=%d and `Deal Component Key`>0 ', $this->id);
 
         if ($result = $this->db->query($sql)) {
@@ -1520,8 +1536,8 @@ trait OrderDiscountOperations {
 
 
                 $sql = sprintf(
-                    "INSERT INTO `Order Transaction Deal Bridge` (`Order Transaction Fact Key`,`Order Key`,`Product Key`,`Product ID`,`Category Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Bonus Quantity`,`Order Transaction Deal Pinned`) VALUES
-			(%d,%d,%d,%d,%d,%d,%d,%d,%s,%f,%f,0,%s) ON DUPLICATE KEY UPDATE `Deal Info`=%s ,`Amount Discount`=%f ,`Fraction Discount`=%f ,`Order Transaction Deal Pinned`=%s ", $otf_key, $this->id,
+                    "INSERT INTO `Order Transaction Deal Bridge` (`Order Transaction Fact Key`,`Order Key`,`Product Key`,`Product ID`,`Category Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Bonus Quantity`,`Order Transaction Deal Pinned`,`Order Transaction Deal Metadata`) VALUES
+			(%d,%d,%d,%d,%d,%d,%d,%d,%s,%f,%f,0,%s,'{}') ON DUPLICATE KEY UPDATE `Deal Info`=%s ,`Amount Discount`=%f ,`Fraction Discount`=%f ,`Order Transaction Deal Pinned`=%s ", $otf_key, $this->id,
 
                     $allowance_data['Product Key'], $allowance_data['Product ID'], (isset($allowance_data['Category Key']) ? $allowance_data['Category Key'] : 0), $allowance_data['Deal Campaign Key'], $allowance_data['Deal Key'], $allowance_data['Deal Component Key'],
 
@@ -1533,6 +1549,8 @@ trait OrderDiscountOperations {
 
             }
         }
+
+
         if (isset($this->allowance['Get Free'])) {
             foreach ($this->allowance['Get Free'] as $allowance_data) {
 
@@ -1563,8 +1581,8 @@ trait OrderDiscountOperations {
 
 
                         $sql = sprintf(
-                            "INSERT INTO `Order Transaction Deal Bridge` (`Order Transaction Fact Key`,`Order Key`,`Product Key`,`Product ID`,`Category Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Bonus Quantity`,`Order Transaction Deal Pinned`) 
-                          VALUES (%d,%d,%d,%d,%d,%d,%d,%d,%s,%f,%f,%d,%s)  ON DUPLICATE KEY UPDATE `Deal Info`=%s ,`Bonus Quantity`=%d ,`Order Transaction Deal Pinned`=%s", $row['Order Transaction Fact Key'], $this->id, $row['Product Key'], $row['Product ID'],
+                            "INSERT INTO `Order Transaction Deal Bridge` (`Order Transaction Fact Key`,`Order Key`,`Product Key`,`Product ID`,`Category Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Bonus Quantity`,`Order Transaction Deal Pinned`,`Order Transaction Deal Metadata`) 
+                          VALUES (%d,%d,%d,%d,%d,%d,%d,%d,%s,%f,%f,%d,%s,'{}')  ON DUPLICATE KEY UPDATE `Deal Info`=%s ,`Bonus Quantity`=%d ,`Order Transaction Deal Pinned`=%s", $row['Order Transaction Fact Key'], $this->id, $row['Product Key'], $row['Product ID'],
                             $allowance_data['Product Category Key'], $allowance_data['Deal Campaign Key'], $allowance_data['Deal Key'], $allowance_data['Deal Component Key'], prepare_mysql($allowance_data['Deal Info']), $amount_discount, $fraction_discount,
                             $allowance_data['Get Free'], prepare_mysql($pinned), prepare_mysql($allowance_data['Deal Info']), $allowance_data['Get Free'], prepare_mysql($pinned)
                         );
@@ -1650,18 +1668,30 @@ trait OrderDiscountOperations {
                 }
 
 
+               // print_r($allowance_data);
+
+
+                if(!empty($allowance_data['Metadata'])){
+                    $metadata=$allowance_data['Metadata'];
+                }else{
+                    $metadata='{}';
+                }
+
+
                 $sql = sprintf(
-                    "INSERT INTO `Order Transaction Deal Bridge` (`Order Transaction Fact Key`,`Order Key`,`Product Key`,`Product ID`,`Category Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Bonus Quantity`,`Order Transaction Deal Pinned`) 
-                          VALUES (%d,%d,%d,%d,%d,%d,%d,%d,%s,%f,%f,%d,%s)  ON DUPLICATE KEY UPDATE 
+                    "INSERT INTO `Order Transaction Deal Bridge` (`Order Transaction Fact Key`,`Order Key`,`Product Key`,`Product ID`,`Category Key`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Bonus Quantity`,`Order Transaction Deal Pinned`,`Order Transaction Deal Metadata`) 
+                          VALUES (%d,%d,%d,%d,%d,%d,%d,%d,%s,%f,%f,%d,%s,%s)  ON DUPLICATE KEY UPDATE 
                           
                           `Order Transaction Deal Key`=LAST_INSERT_ID(`Order Transaction Deal Key`),
                           
                           `Deal Info`=%s ,`Bonus Quantity`=%d ,`Order Transaction Deal Pinned`=%s", $transaction_data['otf_key'], $this->id, $allowance_data['Product Key'], $allowance_data['Product ID'], $allowance_data['Product Category Key'],
-                    $allowance_data['Deal Campaign Key'], $allowance_data['Deal Key'], $allowance_data['Deal Component Key'], prepare_mysql($allowance_data['Deal Info']), 0, 0, $allowance_data['Get Free'], prepare_mysql($pinned),
+                    $allowance_data['Deal Campaign Key'], $allowance_data['Deal Key'], $allowance_data['Deal Component Key'], prepare_mysql($allowance_data['Deal Info']), 0, 0, $allowance_data['Get Free'], prepare_mysql($pinned),prepare_mysql($metadata),
                     prepare_mysql($allowance_data['Deal Info']), $allowance_data['Get Free'], prepare_mysql($pinned)
                 );
                 $this->db->exec($sql);
 
+
+               // print "$sql\n";
 
                 $inserted_otdk = $this->db->lastInsertId();
 
@@ -1982,12 +2012,8 @@ trait OrderDiscountOperations {
                         //print_r($allowance_data);
 
 
-
-
                         $sql = sprintf(
-                            'SELECT `Order No Product Transaction Fact Key`,`Transaction Gross Amount` FROM  `Order No Product Transaction Fact` OTF  WHERE `Order Key`=%d AND `Transaction Type`=%s  and `Transaction Type Key`=%d ',
-                            $this->id,
-                            prepare_mysql('Charges'),
+                            'SELECT `Order No Product Transaction Fact Key`,`Transaction Gross Amount` FROM  `Order No Product Transaction Fact` OTF  WHERE `Order Key`=%d AND `Transaction Type`=%s  and `Transaction Type Key`=%d ', $this->id, prepare_mysql('Charges'),
                             $allowance_data['Charge Key']
                         );
 
@@ -2366,7 +2392,7 @@ trait OrderDiscountOperations {
                     );
 
                     $sql = sprintf(
-                        "INSERT INTO `Order Transaction Deal Bridge` (`Order Transaction Fact Key`,`Order Key`,`Product Key`,`Product ID`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Bonus Quantity`) VALUES (%d,%d,%d,%d,%d,%d,%d,%s,%f,%f,0)",
+                        "INSERT INTO `Order Transaction Deal Bridge` (`Order Transaction Fact Key`,`Order Key`,`Product Key`,`Product ID`,`Deal Campaign Key`,`Deal Key`,`Deal Component Key`,`Deal Info`,`Amount Discount`,`Fraction Discount`,`Bonus Quantity`,`Order Transaction Deal Metadata`) VALUES (%d,%d,%d,%d,%d,%d,%d,%s,%f,%f,0,'{}')",
                         $row['Order Transaction Fact Key'], $this->id, $row['Product Key'], $row['Product ID'], $deal_campaign_key, $deal_key, $deal_component_key, prepare_mysql($deal_info, false), $discount_amount,
                         ($discount_amount / $row['Order Transaction Gross Amount'])
                     );

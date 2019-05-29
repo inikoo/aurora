@@ -246,7 +246,7 @@
 
                 getScript('/js/mobile.logged_in.min.js?v=190227', function () {
                     getScript('/js/mobile.forms.min.js', function () {
-                        getScript('/js/mobile.basket.min.js?v=190229', function () {
+                        getScript('/js/mobile.basket.min.js?v=190529', function () {
 
 
 

@@ -606,6 +606,7 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
 
     function get_items() {
 
+
         $sql = sprintf(
             'SELECT  `Category Code`,`Product Price`,    (select group_concat(`Deal Info`) from `Order Transaction Deal Bridge` B  where B.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key` ) as deal_info,  `Order State`,`Delivery Note Quantity`,`Current Dispatching State`,`Deal Info`,OTF.`Product ID`,OTF.`Product Key`,OTF.`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
 FROM `Order Transaction Fact` OTF 
@@ -660,7 +661,7 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
 
                 $items[$row['Order Transaction Fact Key']] = array(
                     'code'             => sprintf('<a href="/%s">%s</a>', strtolower($row['Product Code']), $row['Product Code']),
-                    'code_description' => '<b>'.$row['Product Code'].'</b> '.$row['Product History Units Per Case'].'x '.$row['Product History Name'].$deal_info.$out_of_stock_info,
+                    'code_description' => '<b class="item_code">'.$row['Product Code'].'</b> <span class="item_description">'.$row['Product History Units Per Case'].'x '.$row['Product History Name'].$deal_info.'</span>'.$out_of_stock_info,
                     'description'      => $row['Product History Units Per Case'].'x '.$row['Product History Name'].$deal_info.$out_of_stock_info,
                     'price_raw'        => $row['Product Price'],
                     'qty'              => $qty,
@@ -698,4 +699,4 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
 }
 
 
-?>
+

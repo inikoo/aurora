@@ -154,6 +154,10 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Email_Tracking.php";
             $object = new Email_Tracking($key);
             break;
+        case 'charge':
+            require_once "class.Public_Charge.php";
+            $object = new Public_Charge($key);
+            break;
         default:
             exit('need to complete Pub  E1: >'.strtolower($object_name.' '.$load_other_data)."<\n");
             break;
