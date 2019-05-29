@@ -238,10 +238,10 @@ switch ($tipo) {
 
                      )
         );
-        set_charges_as_auto($data, $editor);
+        set_hanging_charges_as_auto($data, $editor);
         break;
 
-    case 'set_charges_value':
+    case 'set_hanging_charges_value':
         $data = prepare_values(
             $_REQUEST, array(
                          'order_key' => array('type' => 'key'),
@@ -249,7 +249,7 @@ switch ($tipo) {
 
                      )
         );
-        set_charges_value($data, $editor);
+        set_hanging_charges_value($data, $editor);
         break;
     case 'edit_item_discount':
         $data = prepare_values(
@@ -579,14 +579,14 @@ function set_shipping_as_auto($data, $editor) {
 }
 
 
-function set_charges_value($data, $editor) {
+function set_hanging_charges_value($data, $editor) {
 
 
     $order         = get_object('order', $data['order_key']);
     $order->editor = $editor;
 
 
-    $order->update_charges_amount($data['amount']);
+    $order->update_hanging_charges_amount($data['amount']);
 
 
     $metadata = array(
@@ -626,7 +626,7 @@ function set_charges_value($data, $editor) {
 
 }
 
-function set_charges_as_auto($data, $editor) {
+function set_hanging_charges_as_auto($data, $editor) {
 
 
     $order         = get_object('order', $data['order_key']);
