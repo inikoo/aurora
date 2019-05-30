@@ -447,7 +447,6 @@ class DealCampaign extends DB_Table {
 
         include_once 'class.Deal.php';
 
-
         if (!array_key_exists('Deal Name', $data) or $data['Deal Name'] == '') {
             $this->error = true;
             $this->msg   = 'error, no deal name';
@@ -473,6 +472,8 @@ class DealCampaign extends DB_Table {
         $deal = new Deal('find create', $data);
 
 
+        //print_r($data);
+
         if ($deal->id) {
             $this->new_object_msg = $deal->msg;
 
@@ -486,7 +487,7 @@ class DealCampaign extends DB_Table {
                 // print_r($data);
 
 
-                if ($data['Voucher']) {
+                if (!empty($data['Voucher'])) {
                     include_once 'class.Voucher.php';
 
 
@@ -570,7 +571,7 @@ class DealCampaign extends DB_Table {
 
                 }
 
-                if ($data['Voucher']) {
+                if (!empty($data['Voucher'])) {
                     $history_abstract = sprintf(_('Offer %s, voucher: %s (%s) created'), $deal->get('Deal Name'), $voucher->get('Voucher Code'), $deal->get('Deal Term Allowances Label'));
 
                 } else {

@@ -166,6 +166,7 @@ switch ($tipo) {
                 break;
             case 'allowance_target':
                 find_allowance_targets($db, $account, $memcache_ip, $user, $data);
+                break;
             case 'customers':
                 find_customers($db, $account, $memcache_ip, $data, $user);
                 break;

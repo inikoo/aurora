@@ -38,17 +38,23 @@ $object_fields[] = array(
     'show_title' => true,
     'fields'     => array(
 
-
         array(
             'edit'              => ($edit ? 'string' : ''),
             'id'                => 'Deal_Name',
             'value'             => $object->get('Deal Name'),
-            'label'             => ucfirst($object->get_field_label('Deal Name')),
+            'label'             => _('Private code'),
             'invalid_msg'       => get_invalid_message('string'),
             'required'          => true,
-            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
+            'server_validation' => json_encode(
+                array(
+                    'tipo' => 'check_for_duplicates',
+                    'parent'     => 'store',
+                    'parent_key' => $options['store_key'],
+                    'object'     => 'Deal',
+                )
+            ),
             'type'              => 'value'
-        )
+        ),
 
 
     ),
@@ -58,58 +64,28 @@ $object_fields[] = array(
 
 
 $object_fields[] = array(
-    'label'      => _('Beneficiary'),
+    'label'      => _('Customer'),
     'show_title' => true,
     'fields'     => array(
 
-        array(
-            'id'              => 'Who',
-            'edit'            => 'no_icon',
-            'value'           => false,
-            'formatted_value' => '
-<div class="button_radio_options">
-<span id="Entitled_To_Anyone_field" field_type="button_radio_options" field="Entitled_To_Anyone" onclick="toggle_new_deal_entitled_to(this)" class="button selected" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Anyone').'</span>
-<span id="Entitled_To_Customer_field" field_type="button_radio_options" field="Entitled_To_Customer" onclick="toggle_new_deal_entitled_to(this)" class="button" style="border:1px solid #ccc;padding:5px;margin:4px">'._('A customer').'</span>
-<span id="Entitled_To_Customer_Category_field" field_type="button_radio_options" field="Entitled_To_Customer_Category" onclick="toggle_new_deal_entitled_to(this)" class="button hide" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Customers in a category').'</span>
-<span id="Entitled_To_Customer_List_field" field_type="button_radio_options" field="Entitled_To_Customer_List" onclick="toggle_new_deal_entitled_to(this)" class="button" style="border:1px solid #ccc;padding:5px;margin:4px">'._("Customers' in a list").'</span>
-</div>
-',
-            'label'           => _('Who is entitled to this offer'),
-            'required'        => false,
-            'type'            => 'value'
-        ),
+
 
         array(
-            'edit'        => 'customer',
-            'class'       => 'hide',
-            'id'          => 'Customer',
-            'value'       => '',
-            'label'       => _('Customer'),
-            'invalid_msg' => get_invalid_message('string'),
-            'required'    => false,
-            'type'        => ''
+            'id'                       => 'Customer_Key',
+            'edit'                     => 'dropdown_select',
+            'scope'                    => 'customers',
+            'parent'                   => 'store',
+            'parent_key'               => $store->id,
+            'value'                    => '',
+            'formatted_value'          => '',
+            'stripped_formatted_value' => '',
+            'label'                    => _('Customer'),
+            'required'                 => true,
+            'type'                     => 'value'
+
+
         ),
-        array(
-            'edit'        => 'no_icon',
-            'class'       => 'xhide',
-            'id'          => '_Customer_Selected',
-            'value'       => '',
-            'formatted_value' =>'',
-            'label'       => _('Customer').' <i onclick="select_other_customer()" class="fa fa-eraser padding_left_5 button" title="'._('Choose other customer').'" ></i>'  ,
-            'invalid_msg' => '',
-            'required'    => false,
-            'type'        => 'value'
-        ),
-        array(
-            'edit'        => 'customer_list',
-            'class'       => 'xhide',
-            'id'          => 'customer_list',
-            'value'       => '',
-            'label'       => _('Customer list'),
-            'invalid_msg' => get_invalid_message('string'),
-            'required'    => false,
-            'type'        => 'value'
-        ),
+
 
 
     ),
@@ -129,10 +105,8 @@ $object_fields[] = array(
             'value'           => false,
             'formatted_value' => '
 <div class="button_radio_options">
-<span id="Trigger_Voucher_field" field_type="button_radio_options" field="Trigger_Voucher" class="button" onclick="toggle_new_deal_trigger(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('Voucher').'</span>  
-<span id="Trigger_Asset_field" field_type="button_radio_options" field="Trigger_Asset" class="button" onclick="toggle_new_deal_trigger(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('Order product/category').'</span> 
-<span id="Trigger_Order_Nth_field" field_type="button_radio_options" field="Trigger_Order_Nth" class="button" onclick="toggle_new_deal_trigger(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('Customer nth order').'</span>
-<span id="Trigger_Any_field" field_type="button_radio_options" field="Trigger_Any" class="button" onclick="toggle_new_deal_trigger(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('All orders').'</span>
+<span id="Trigger_Voucher_field" field_type="button_radio_options" field="Trigger_Voucher" class="button" onclick="toggle_new_deal_trigger(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('All products').'</span>  
+<span id="Trigger_Asset_field" field_type="button_radio_options" field="Trigger_Asset" class="button" onclick="toggle_new_deal_trigger(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('Category').'</span> 
 </div>
 ',
             'label'           => _('When this offer is applied'),
@@ -141,28 +115,7 @@ $object_fields[] = array(
         ),
 
 
-        array(
-            'id'              => 'Deal_Voucher_Type',
-            'edit'            => 'no_icon',
-            'class'           => 'hide',
-            'value'           => false,
-            'formatted_value' => '<span class="button" onclick="toggle_voucher_auto_code(this)"  field="Deal_Voucher_Type"  style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span class="discreet">'._('Automatically generated')
-                .'</span></span>',
-            'label'           => _('Voucher code'),
-            'required'        => false,
-            'type'            => 'value'
-        ),
-        array(
-            'edit'              => ($edit ? 'string' : ''),
-            'id'                => 'Deal_Voucher_Code',
-            'class'             => 'hide',
-            'value'             => '',
-            'label'             => ucfirst($object->get_field_label('Voucher code')).' <i onClick="set_voucher_code_as_auto()" class="fa fa-magic button padding_left_10" title="'._('Automatically generated voucher code').'"></i>',
-            'invalid_msg'       => get_invalid_message('string'),
-            'required'          => false,
-            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
-            'type'              => 'value'
-        ),
+
         array(
             'edit'        => 'asset',
             'class'       => 'hide',
@@ -222,31 +175,6 @@ $object_fields[] = array(
         ),
 
 
-        array(
-            'id'   => 'Deal_Voucher_Auto_Code',
-            'edit' => 'custom',
-
-            'class'    => 'hides',
-            'value'    => false,
-            'custom'   => '<span class="button value"  field_type="toggle" onclick="toggle_voucher_auto_code(this)"  field="Deal_Voucher_Auto_Code"  style="margin-right:40px"><i id="toggle_voucher_auto_code_icon" class="Deal_Voucher_Auto_Code_toggle fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span class="discreet">'
-                ._('Automatically generated').'</span></span>',
-            'label'    => _('Voucher code'),
-            'required' => false,
-            'type'     => ''
-        ),
-        array(
-            'edit'  => ($edit ? 'string' : ''),
-            'id'    => 'Deal_Voucher_Code',
-            'class' => 'hides',
-
-            'value'             => '',
-            'label'             => ucfirst($object->get_field_label('Voucher code')).' <i onClick="set_voucher_code_as_auto()" class="fa fa-magic button padding_left_10" title="'._('Automatically generated voucher code').'"></i>',
-            'invalid_msg'       => get_invalid_message('string'),
-            'required'          => false,
-            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
-            'type'              => 'value'
-        ),
-
 
 
 
@@ -265,15 +193,11 @@ $object_fields[] = array(
         array(
             'id'       => 'Type',
             'edit'     => 'custom',
-            'class'    => 'hidex',
+            'class'    => 'hide',
             'value'    => false,
             'custom'   => '
 <div class="button_radio_options">
 <span id="Deal_Type_Percentage_Off_field" field_type="button_radio_options" field="Deal_Type_Percentage_Off" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Percentage off').'</span>
-<span id="Deal_Type_Buy_n_get_n_free_field" field_type="button_radio_options" field="Deal_Type_Buy_n_get_n_free" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(
-                    _('Buy %s get %s free'), '<span>2</span>', 1
-                ).'</span>
-<span id="Deal_Type_Buy_n_pay_n_field" field_type="button_radio_options" field="Deal_Type_Buy_n_pay_n" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(_("Buy %s cheapest %s free"), 3, 1).' ('._('Mix & match').')  </span>
 </div>
 ',
             'label'    => _('Choose offer'),

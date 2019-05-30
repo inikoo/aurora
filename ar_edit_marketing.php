@@ -138,22 +138,24 @@ function create_new_wave_newsletter($account, $db, $user, $editor, $data, $smart
 
     $mailshot = $email_template_type->create_mailshot(
         array(
-            'Email Campaign Name'=>$parent_mailshot->get('Email Campaign Name').' ('._('2nd wave').')',
-            'Email Campaign Metadata'=>json_encode(
-                array('second_wave_parent'=>$parent_mailshot->id)
+            'Email Campaign Name'     => $parent_mailshot->get('Email Campaign Name').' ('._('2nd wave').')',
+            'Email Campaign Metadata' => json_encode(
+                array('second_wave_parent' => $parent_mailshot->id)
             )
         )
     );
 
     $response = array(
-        'state'  => 200,
-        'store_key' => $mailshot->get('Email Campaign Store Key'),
+        'state'                   => 200,
+        'store_key'               => $mailshot->get('Email Campaign Store Key'),
         'email_template_type_key' => $mailshot->get('Email Campaign Email Template Type Key'),
-        'mailshot_key' => $mailshot->id
+        'mailshot_key'            => $mailshot->id
     );
 
-    $parent_mailshot->fast_update_json_field('Email Campaign Metadata', 'second_wave_key
-    ', $mailshot->id);
+    $parent_mailshot->fast_update_json_field(
+        'Email Campaign Metadata', 'second_wave_key
+    ', $mailshot->id
+    );
 
 
     echo json_encode($response);
@@ -196,7 +198,7 @@ function edit_campaign_order_recursion_data($account, $db, $user, $editor, $data
     $response = array(
         'state'              => 200,
         'allowance'          => $allowance,
-        'description'        => $deal_component->get('Deal Component Allowance Label')
+        'description'        => $deal_component->get('Deal Component Allowance Label'),
         'deal_component_key' => $deal_component->id
     );
     echo json_encode($response);
@@ -265,12 +267,10 @@ function add_target_to_campaign($account, $db, $user, $editor, $data, $smarty) {
     $campaign->editor = $editor;
 
 
-    $store = get_object('Store', $campaign->get('Deal Campaign Store Key'));
-
     $category = get_object('category', $data['target_key']);
 
 
-    if ($store->get('Store Order Recursion Campaign Key') == $campaign->id) {
+    if ($campaign->get('Deal Campaign Code') == 'OR') {
 
 
         $deal = $campaign->get_deals()[0];
@@ -293,7 +293,7 @@ function add_target_to_campaign($account, $db, $user, $editor, $data, $smarty) {
         $deal->add_component($component_data);
 
 
-    } elseif ($store->get('Store Bulk Discounts Campaign Key') == $campaign->id) {
+    } elseif ($campaign->get('Deal Campaign Code') == 'VL') {
 
         $allowance = $data['allowance'] / 100;
 
@@ -302,39 +302,48 @@ function add_target_to_campaign($account, $db, $user, $editor, $data, $smarty) {
         $off       = sprintf(_('%s off'), percentage($allowance, 1, 0));
         $off_ratio = $allowance;
 
-        $deal_data = array(
+        $deal_new_data = array(
             'Deal Name'        => sprintf(_('Bulk discount %s'), $category->get('Code')),
-            //   'Deal Description'                   => "order $qty or more $category_code family products and get $off",
-            // 'Deal Term Allowances'               => "order $qty or more $category_code &#8594; $off",
-            // 'Deal Term Allowances Label'         => "order $qty or more $category_code &#8594; $off",
+            'Deal Name Label'  => _('Volume discount'),
+            'Deal Term Label'  => "order $qty or more",
             'Deal Trigger'     => 'Category',
-            'Deal Icon'        => $campaign->get('Deal Campaign Icon'),
+            'Deal Icon'        => '',
             'Deal Trigger Key' => $category->id,
             'Deal Terms Type'  => 'Category Quantity Ordered',
             'Deal Terms'       => $qty,
+            'Deal Begin Date'  => gmdate('Y-m-d H:i:s')
 
 
         );
 
 
-        $deal = $campaign->create_deal($deal_data);
+        $new_component_data = array(
 
-
-        $component_data = array(
-            //'Deal Component Terms Type'                   => 'Category Quantity Ordered',
-            //'Deal Component Trigger'                      => 'Category',
-            'Deal Component Allowance Type'       => 'Percentage Off',
-            'Deal Component Allowance Target'     => 'Category',
-            'Deal Component Allowance Target Key' => $category->id,
-            'Deal Component Allowance'            => $off_ratio,
-
+            'Deal Component Allowance Type'         => 'Percentage Off',
+            'Deal Component Allowance Target'       => 'Category',
+            'Deal Component Allowance Target Key'   => $category->id,
+            'Deal Component Allowance'              => $off_ratio,
+            'Deal Component Allowance Label'        => $off,
+            'Deal Component Allowance Target Label' => $category->get('Code')
         );
 
-        $component_data['Deal Component Allowance Target Label'] = $category->get('Code');
+        //print_r($deal_new_data);
+        //print_r($new_component_data);
 
-        $deal->add_component($component_data);
+        $object = $campaign->create_deal($deal_new_data, $new_component_data);
+
+        //  print_r($campaign);
 
 
+    } else {
+
+        $response = array(
+            'state' => 400,
+            'msg'   => 'no_valid_campaign'
+
+        );
+        echo json_encode($response);
+        exit;
     }
 
 
@@ -370,10 +379,10 @@ function edit_bulk_deal_data($account, $db, $user, $editor, $data, $smarty) {
 
     $deal = get_object('Deal', $deal_component->get('Deal Component Deal Key'));
 
-    $deal->editor=$editor;
+    $deal->editor = $editor;
     $deal->update(
         array(
-            'Deal Term Label'      => $data['description_terms'],
+            'Deal Term Label' => $data['description_terms'],
 
         )
 
