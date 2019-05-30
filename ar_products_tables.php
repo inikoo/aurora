@@ -1463,13 +1463,21 @@ function charges($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
 
+        if($data['Charge Active']=='Yes'){
+            $status='<i class="fa fa-play success"></i>';
+        }else{
+            $status='<i class="fa fa-pause error"></i>';
+
+        }
+
         $record_data[] = array(
             'id'        => (integer)$data['Charge Key'],
             'code'      => sprintf('<span class="link" onClick="change_view(\'store/%d/charge/%d\')" >%s</span>', $data['Charge Store Key'], $data['Charge Key'], $data['Charge Name']),
             'name'      => sprintf('<span class="link" onClick="change_view(\'store/%d/charge/%d\')" >%s</span>', $data['Charge Store Key'], $data['Charge Key'], $data['Charge Description']),
             'orders'    => number($data['Charge Total Acc Orders']),
             'customers' => number($data['Charge Total Acc Customers']),
-            'amount'    => money($data['Charge Total Acc Amount'], $data['Store Currency Code'])
+            'amount'    => money($data['Charge Total Acc Amount'], $data['Store Currency Code']),
+            'status'=>$status
 
         );
 
