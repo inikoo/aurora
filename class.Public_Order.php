@@ -521,7 +521,9 @@ class Public_Order extends DBW_Table {
         $charges = array();
 
         $sql = sprintf(
-            "select `Charge Key` ,`Charge Name`,`Charge Scope` ,`Charge Store Key`,`Charge Description` ,`Charge Metadata` , (select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`='Charges'  and `Transaction Type Key`=`Charge Key`  limit 1  ) as onptf_key   from `Charge Dimension` where `Charge Store Key`=%d and `Charge Trigger`  = 'Selected by Customer' ",
+            "select `Charge Key` ,`Charge Name`,`Charge Scope` ,`Charge Store Key`,`Charge Description` ,`Charge Metadata` ,
+ (select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`='Charges'  and `Transaction Type Key`=`Charge Key`  limit 1  ) as onptf_key   
+ from `Charge Dimension` where `Charge Store Key`=%d and `Charge Trigger`  = 'Selected by Customer'  and `Charge Active`='Yes'  ",
             $this->id, $this->get('Order Store Key')
         );
 
