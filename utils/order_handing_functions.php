@@ -252,6 +252,7 @@ function get_item_location(
     }
 
 
+
     if ($pending == 0) {
         $picked_time = sprintf(_('Picked: %s'), strftime("%a %e %b %Y %H:%M %Z", strtotime($date_picked.' +0:00')));
         $location    = sprintf('<i class="fa fa-fw fa-check super_discreet %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $picked_time);
@@ -305,6 +306,7 @@ function get_item_location(
     }
 
 
+
     return $location.$part_distinct_locations;
 
 }
@@ -318,6 +320,10 @@ function get_delivery_note_fast_track_packing_item_location(
     $itf_key,$delivery_note_key ) {
 
 
+    //todo remove this it should update_number_locations everything a part location is created / removed
+    $part=get_object('Part',$part_sku);
+    $part->update_number_locations();
+    $part_distinct_locations=$part->get('Part Distinct Locations');
 
     $location_stock_icon_class = 'button ';
     $stock_in_location         = sprintf(_('Stock in location: %s'), $quantity_on_location);
@@ -366,6 +372,8 @@ function get_delivery_note_fast_track_packing_item_location(
 
 
 
+
+
     if ($location_code == '' or $location_key==1) {
         $location_code = '<span class="error italic">'._('No location').'!</span>';
         $location = sprintf('<i class="fa fa-fw  fa-exclamation-circle error" title="%s"></i> ',sprintf(_('There is no location associated with this part')));
@@ -382,9 +390,13 @@ function get_delivery_note_fast_track_packing_item_location(
     $location .= sprintf(
         '<span class="%s %s location button "   data-available="%f"  location_key = "%d" >%s </span >', ($part_location_exist=='Yes'  ? '' : 'error '), ($pending > 0 ? 'discreet' : ''), $quantity_on_location, $location_key, $location_code
     );
+
+
+
     if ($part_distinct_locations > 1 or ($part_location_exist=='No' and $part_distinct_locations > 0  )) {
         $location .= ' <i class="fa fa-bars button padding_left_5 discreet_on_hover " data-metadata=\'{ "part_sku":"'.$part_sku.'","otf_key":"'.$itf_key.'","delivery_note_key":"'.$delivery_note_key.'"}\' onclick="show_other_part_locations_for_input_delivery_note_packing(this)"  title="'._('Other locations').'" ></i>';
     }
+
 
 
     return $location;
@@ -398,4 +410,3 @@ function get_delivery_note_fast_track_packing_item_location(
 
 
 
-?>
