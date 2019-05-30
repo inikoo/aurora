@@ -21,9 +21,43 @@ function fork_housekeeping($job) {
     //return true;
     switch ($data['type']) {
 
+
+        case 'update_basket_orders':
+
+            $date = gmdate('Y-m-d H:i:s');
+
+            $sql = sprintf(
+                "SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Key`=%d order by `Order Last Updated Date` desc ", $data['store_key']
+            );
+
+            $counter = 0;
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+
+                    if ($counter < 100) {
+                        $operation = 'update_order_in_basket';
+                    } else {
+                        $operation = 'update_order_in_basket_low_priority';
+
+                    }
+
+                    $sql = sprintf(
+                        'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql($operation), $row['Order Key'], prepare_mysql($date)
+
+                    );
+                    $db->exec($sql);
+                    $counter++;
+
+                }
+            }
+
+
+        break;
         case 'feedback':
 
-            print_r($data);
+
 
 
             foreach ($data['feedback'] as $feedback) {
