@@ -16,24 +16,30 @@ function get_purchase_order_items_qty($data){
 
     $items_qty = $data['units_qty'].'<span class="small discreet">u.</span> | ';
 
-    if ($data['units_qty'] % $data['Part Units Per Package'] != 0) {
-        $items_qty .='<span class="error">'.number($data['units_qty'] /$data['Part Units Per Package'],3).'<span class="small discreet">sko.</span></span> | ';
 
-    }else{
-        $items_qty .=number($data['units_qty'] /$data['Part Units Per Package'],3).'<span class="small discreet">sko.</span> | ';
+    if($data['Part Units Per Package']!=0  and $data['Supplier Part Packages Per Carton']!=0) {
+
+        if ($data['units_qty'] % $data['Part Units Per Package'] != 0) {
+            $items_qty .= '<span class="error">'.number($data['units_qty'] / $data['Part Units Per Package'], 3).'<span class="small discreet">sko.</span></span> | ';
+
+        } else {
+            $items_qty .= number($data['units_qty'] / $data['Part Units Per Package'], 3).'<span class="small discreet">sko.</span> | ';
+
+        }
+
+        if ($data['units_qty'] % ($data['Part Units Per Package']*$data['Supplier Part Packages Per Carton']) != 0){
+            $items_qty .='<span class="error">'.number($data['units_qty'] /$data['Part Units Per Package']/$data['Supplier Part Packages Per Carton'],3).'<span title="'._('Cartons').'" class="small discreet">C.</span></span>';
+
+        }else{
+            $items_qty .=number($data['units_qty'] /$data['Part Units Per Package']/$data['Supplier Part Packages Per Carton'],3).'<span title="'._('Cartons').'" class="small discreet">C.</span>';
+
+        }
 
     }
 
 
 
 
-    if ($data['units_qty'] % ($data['Part Units Per Package']*$data['Supplier Part Packages Per Carton']) != 0){
-        $items_qty .='<span class="error">'.number($data['units_qty'] /$data['Part Units Per Package']/$data['Supplier Part Packages Per Carton'],3).'<span title="'._('Cartons').'" class="small discreet">C.</span></span>';
-
-    }else{
-        $items_qty .=number($data['units_qty'] /$data['Part Units Per Package']/$data['Supplier Part Packages Per Carton'],3).'<span title="'._('Cartons').'" class="small discreet">C.</span>';
-
-    }
 
     return $items_qty;
 }
