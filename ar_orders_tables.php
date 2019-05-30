@@ -2184,6 +2184,8 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
             ).'</div>';
 
 
+
+
         /*
         if ($data['Picked'] == $data['quantity']) {
             $picked_info = '<i class="fa fa-fw fa-check success" aria-hidden="true"></i>';
@@ -2221,6 +2223,11 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
             $no_picked_qty  = 0;
             $status_icon    = 'success  fa-check-circle';
         }
+
+
+
+
+
 
 
         $picked_offline_status = sprintf(
@@ -2290,6 +2297,8 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
         );
 
     }
+
+
 
 
     if ($total_number_items > 0) {
