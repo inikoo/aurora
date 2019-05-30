@@ -292,7 +292,7 @@ class Charge extends DB_Table {
                 $this->update_field($field, $value, $options);
 
 
-                if($old_value!=$this->get($field)){
+                if( $this->get('Charge Trigger')=='Order' and $old_value!=$this->get($field)){
 
 
                     $account = get_object('Account', $this->db);
