@@ -19,9 +19,9 @@ if (isset($options['new']) and $options['new']) {
 
 
 $options_Charge_Type = array(
-    'SOC' => _('Small order charge'),
+    'SOC'               => _('Small order charge'),
     'Priority_Delivery' => _('Priority delivery'),
-    'Insurance' => _('Insurance')
+    'Insurance'         => _('Insurance')
 );
 
 $options_yn = array(
@@ -39,8 +39,7 @@ if ($new) {
         'show_title' => true,
         'class'      => 'edit_fields',
 
-        'fields'     => array(
-
+        'fields' => array(
 
 
             array(
@@ -59,7 +58,7 @@ if ($new) {
         )
 
     );
-}else{
+} else {
 
 
     $object_fields[] = array(
@@ -86,7 +85,34 @@ if ($new) {
 
     );
 
+
+    $object_fields[] = array(
+        'label'      => _('Amount'),
+        'show_title' => true,
+        'fields'     => array(
+
+
+            array(
+                'edit'            => ($edit ? 'string' : ''),
+
+                'id'              => 'Charge_Metadata',
+                'value'           => $object->get('Charge Metadata'),
+                'formatted_value' => $object->get('Metadata'),
+
+                'label'       => ucfirst($object->get_field_label('Charge Metadata')),
+                'invalid_msg' => get_invalid_message('number'),
+                'required'    => true,
+            ),
+
+
+        )
+
+    );
+
+
+
 }
+
 
 $object_fields[] =
 
@@ -174,6 +200,10 @@ $object_fields[] =
         )
 
     );
+
+
+
+
 
 /*
 
