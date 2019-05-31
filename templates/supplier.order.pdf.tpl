@@ -300,6 +300,6 @@ u. = {t}Units{/t}; pks. = {t}Packs{/t}; C. = {t}Cartons{/t};
 <div>
     {include file="string:{$purchase_order->get('Terms and Conditions')}" }
 </div>
-<br>
+<br><br>.
 </body>
 </html>
