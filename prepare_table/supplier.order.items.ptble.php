@@ -52,7 +52,7 @@ $sql_totals
 
 
 $fields
-    = "`Part Barcode Number`,`Part SKO Barcode`,`Part Materials`,`Supplier Part Status`,`Purchase Order Ordering Units`,`Purchase Order Submitted Units`,`Supplier Delivery Public ID`,`Supplier Delivery Parent`,
+    = "`Part Barcode Number`,`Part SKO Barcode`,`Part Materials`,`Supplier Part Status`,`Purchase Order Ordering Units`,`Purchase Order Submitted Units`,`Supplier Delivery Public ID`,`Supplier Delivery Parent`,`Note to Supplier`,
     `Part Main Image Key`,`Part Barcode Number`,`Purchase Order Transaction State`,
     `Supplier Delivery Units`,POTF.`Supplier Delivery Key`,`Purchase Order Item Index`,`Supplier Part Currency Code`,`Supplier Part Historic Unit Cost`,`Metadata`,`Currency Code`,
 `Purchase Order Transaction Fact Key`,`Purchase Order Submitted Units`,POTF.`Supplier Part Key`,`Supplier Part Reference`,POTF.`Supplier Part Historic Key`,`Purchase Order Net Amount`,

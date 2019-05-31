@@ -94,12 +94,18 @@ $adata = array();
 if ($result = $db->query($sql)) {
     foreach ($result as $data) {
 
+
+        if($data['Part Units Per Package']==0){
+            continue;
+        }
+
+
         $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
 
 
         $items_qty = $data['Purchase Order Submitted Units'].'<span class="small discreet">u.</span> | ';
 
-        if ($data['Part Units Per Package'] != 1) {
+        if ($data['Part Units Per Package'] != 1   ) {
 
             if ($data['Purchase Order Submitted Units'] % $data['Part Units Per Package'] != 0) {
                 $items_qty .= '<span class="error">'.number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'], 3).'<span class="small discreet">sko.</span></span> | ';
@@ -155,7 +161,23 @@ if ($result = $db->query($sql)) {
         }
         $description .= '</span>';
 
-        $unit_cost = money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'));
+
+        if($data['Note to Supplier']!=''){
+
+            $description.='<div><b>'.$data['Note to Supplier'].'</b></div>';
+        }
+
+
+        if(preg_match('/00$/',$data['Supplier Part Unit Cost'])){
+            $unit_cost = money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'));
+
+        }else{
+            $unit_cost = money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'),false,'FOUR_FRACTION_DIGITS');
+
+        }
+
+
+
 
         $amount = money($data['Purchase Order Submitted Units'] * $data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'));
 

@@ -346,6 +346,18 @@ switch ($tipo) {
         toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, $account, $user);
         break;
 
+    case 'update_po_item_note':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'potf_key' => array('type' => 'key'),
+                         'note'     => array('type' => 'string'),
+
+
+                     )
+        );
+        update_po_item_note($data, $editor, $smarty, $db, $account, $user);
+        break;
+
     default:
         $response = array(
             'state' => 405,
@@ -356,6 +368,28 @@ switch ($tipo) {
         break;
 }
 
+
+function update_po_item_note($data, $editor, $smarty, $db, $account, $user) {
+
+
+    $note = trim(strip_tags($data['note']));
+
+    $sql = sprintf(
+        'update  `Purchase Order Transaction Fact` set `Note to Supplier`=%s where `Purchase Order Transaction Fact Key`=%d      ', prepare_mysql($note),
+
+        $data['potf_key']
+    );
+
+
+    $db->exec($sql);
+    $response = array(
+        'state' => 200,
+        'note'=>$note
+    );
+    echo json_encode($response);
+    exit;
+
+}
 
 function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
 
