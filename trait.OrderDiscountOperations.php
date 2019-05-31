@@ -1186,6 +1186,11 @@ trait OrderDiscountOperations {
                         $allowance_data = json_decode($deal_component_data['Deal Component Allowance'], true);
 
 
+
+
+
+
+
                         $customer = get_object('Customer', $this->get('Order Customer Key'));
 
 

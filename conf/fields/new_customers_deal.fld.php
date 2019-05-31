@@ -97,7 +97,30 @@ $object_fields[] = array(
     'label'      => _('Terms'),
     'show_title' => true,
     'fields'     => array(
-
+        array(
+            'id'              => 'Extra_Terms',
+            'edit'            => 'no_icon',
+            'class'           => 'hide',
+            'value'           => false,
+            'formatted_value' => '
+<div class="button_radio_options">
+<span id="Trigger_Voucher_field" field_type="button_radio_options" field="Trigger_Extra_Amount_Net" class="button" onclick="toggle_new_deal_extra_trigger(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('Minimum order').' ('._('Items gross net').')</span>  
+</div>
+',
+            'label'           => _('extra term'),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+        array(
+            'edit'        => ($edit ? 'amount' : ''),
+            'id'          => 'Trigger_Extra_Amount_Net',
+            'class'       => '',
+            'value'       => '0',
+            'label'       => _('Minimum order (items gross net)'),
+            'invalid_msg' => get_invalid_message('amount'),
+            'required'    => false,
+            'type'        => 'value'
+        ),
 
         array(
             'id'              => 'Terms',
@@ -105,8 +128,8 @@ $object_fields[] = array(
             'value'           => false,
             'formatted_value' => '
 <div class="button_radio_options">
-<span id="Trigger_Voucher_field" field_type="button_radio_options" field="Trigger_Voucher" class="button" onclick="toggle_new_deal_trigger(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('All products').'</span>  
-<span id="Trigger_Asset_field" field_type="button_radio_options" field="Trigger_Asset" class="button" onclick="toggle_new_deal_trigger(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('Category').'</span> 
+<span id="All_products" field_type="button_radio_options" field="All_products" class="button" onclick="toggle_customer_term_type(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('All products').'</span>  
+<span id="Product_Category" field_type="button_radio_options" field="Product_Category" class="button" onclick="toggle_customer_term_type(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('Category/Product').'</span> 
 </div>
 ',
             'label'           => _('When this offer is applied'),
@@ -149,30 +172,7 @@ $object_fields[] = array(
             'type'            => 'value'
         ),
 
-        array(
-            'id'              => 'Extra_Terms',
-            'edit'            => 'no_icon',
-            'class'           => 'hide',
-            'value'           => false,
-            'formatted_value' => '
-<div class="button_radio_options">
-<span id="Trigger_Voucher_field" field_type="button_radio_options" field="Trigger_Extra_Amount_Net" class="button" onclick="toggle_new_deal_extra_trigger(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('Minimum order').' ('._('Items net').')</span>  
-</div>
-',
-            'label'           => _('extra term'),
-            'required'        => false,
-            'type'            => 'value'
-        ),
-        array(
-            'edit'        => ($edit ? 'amount' : ''),
-            'id'          => 'Trigger_Extra_Amount_Net',
-            'class'       => 'hide',
-            'value'       => '',
-            'label'       => _('Minimum items net amount'),
-            'invalid_msg' => get_invalid_message('amount'),
-            'required'    => false,
-            'type'        => 'value'
-        ),
+
 
 
 
@@ -209,7 +209,7 @@ $object_fields[] = array(
             'id'    => 'Percentage',
             'class' => 'Deal_Type',
             'edit'  => 'custom',
-            'class' => 'hidec',
+            'class' => 'hide',
             'value' => '%',
 
             'custom'   => '<input id="Percentage_Off_field" field_type="input_with_field" field="Percentage_Off" value="10" class="value valid" style="margin-left:5px;width:30px" /> %',
