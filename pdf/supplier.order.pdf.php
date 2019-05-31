@@ -169,10 +169,10 @@ if ($result = $db->query($sql)) {
 
 
         if(preg_match('/00$/',$data['Supplier Part Unit Cost'])){
-            $unit_cost = money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'),false,'FOUR_FRACTION_DIGITS');
+            $unit_cost = money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'));
 
         }else{
-            $unit_cost = money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'),false,'FOUR_FRACTION_DIGITS');
+            $unit_cost = money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'),'en_US','FOUR_FRACTION_DIGITS');
 
         }
 
