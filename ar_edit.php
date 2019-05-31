@@ -1668,6 +1668,150 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                             break;
 
+
+                        case 'CU':
+                            $deal_new_data['Deal Trigger'] ='Customer';
+
+
+                            $customer=get_object('Customer',$data['fields_data']['Customer Key']);
+
+                            if(!$customer->id){
+                                $response = array(
+                                    'state' => 400,
+                                    'resp'  => 'Customer not found'
+                                );
+                                echo json_encode($response);
+                                exit;
+                            }
+
+                            if($customer->get('Store Key')!=$campaign->get('Store Key')){
+                                $response = array(
+                                    'state' => 400,
+                                    'resp'  => 'Customer wrong store'
+                            );
+                                echo json_encode($response);
+                                exit;
+                            }
+
+                            $deal_new_data['Deal Trigger Key'] =$data['fields_data']['Customer Key'];
+
+
+
+                  //          print_r($data['fields_data']);
+
+                            switch ($data['fields_data']['Terms']){
+                                case 'All_products':
+
+                                    if ($data['fields_data']['Trigger Extra Amount Net'] == 0) {
+                                        $deal_new_data['Deal Term Label'] = _('All orders');
+
+                                    } else {
+                                        $deal_new_data['Deal Term Label'] = sprintf(_('Orders +%s'), money($data['fields_data']['Trigger Extra Amount Net'], $store->get('Store Currency Code')));
+
+                                    }
+
+                                    $deal_new_data['Deal Terms Type'] = 'Amount';
+                                    $deal_new_data['Deal Terms']           = $data['fields_data']['Trigger Extra Amount Net'].';Order Items Gross Amount';
+
+
+
+
+                                    break;
+                                case 'Product_Category':
+
+
+                                    if(preg_match('/^C/',$data['fields_data']['Asset'])){
+
+                                        $category_key=preg_replace('/^C/','',$data['fields_data']['Asset']);
+                                        $category=get_object('Category',$category_key);
+
+                                        if ($data['fields_data']['Trigger Extra Items Amount Net'] == 0) {
+                                            $deal_new_data['Deal Term Label'] = sprintf(_('%s products'), $category->get('Code'));
+
+                                        } else {
+                                            $deal_new_data['Deal Term Label'] = sprintf(_('%s products +%s'), $category->get('Code'),money($data['fields_data']['Trigger Extra Items Amount Net'], $store->get('Store Currency Code')));
+
+                                        }
+
+                                        $deal_new_data['Deal Terms Type'] = 'Category Amount Ordered';
+                                        $deal_new_data['Deal Terms']           =json_encode(
+                                            array(
+                                                'amount'=>$data['fields_data']['Trigger Extra Items Amount Net'],
+                                                'amount_field'=>'Order Items Gross Amount',
+                                                'object'=>'Category',
+                                                'key'=>$category->id
+                                            )
+                                        );
+
+
+
+                                    }
+
+
+                                    break;
+
+                                default:
+                                    $response = array(
+                                        'state' => 400,
+                                        'resp'  => 'Unknown term '.$data['fields_data']['Terms']
+                                    );
+                                    echo json_encode($response);
+                                    exit;
+                                    break;
+                            }
+
+
+                            $data['fields_data']['Percentage Off'].='%';
+
+
+                            if (preg_match('/\%\s*$/', $data['fields_data']['Percentage Off'])) {
+                                $percentage = floatval(preg_replace('/\%\s*$/', '', $data['fields_data']['Percentage Off']));
+                                // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
+                            } else {
+                                $response = array(
+                                    'state' => 400,
+                                    'resp'  => _('Invalid percentage').': '.$data['fields_data']['Percentage Off']
+                                );
+                                echo json_encode($response);
+                                exit;
+                            }
+
+                            if ($percentage < 0 or $percentage > 100) {
+                                $response = array(
+                                    'state' => 400,
+                                    'resp'  => _('Invalid percentage').': '.$data['fields_data']['Percentage Off']
+                                );
+                                echo json_encode($response);
+                                exit;
+                            } elseif ($percentage == 0) {
+                                $response = array(
+                                    'state' => 400,
+                                    'resp'  => _('Percentage off cant be zero')
+                                );
+                                echo json_encode($response);
+                                exit;
+                            }
+
+
+                            $deal_new_data['Deal Allowance Label'] = sprintf(_('%s%% off'), $percentage);
+
+
+                            $new_component_data = array(
+
+
+                                'Deal Component Allowance Label'        => $deal_new_data['Deal Allowance Label'],
+                                'Deal Component Allowance Type'         => 'Percentage Off',
+                                'Deal Component Allowance Target'       => 'Order',
+                                'Deal Component Allowance Target Type'  => 'Items',
+                                'Deal Component Allowance Target Key'   => '',
+                                'Deal Component Allowance Target Label' => '',
+                                'Deal Component Allowance'              => $percentage / 100
+                            );
+
+
+
+                            break;
+
                         default:
                             $response = array(
                                 'state' => 400,
@@ -1680,10 +1824,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                     //print_r($deal_new_data);
                     //print_r($new_component_data);
-
+                    //exit;
                     $object = $campaign->create_deal($deal_new_data, $new_component_data);
 
-                    // print_r($deal);
+                    //print_r($deal);
 
                     $pcard = '';
 

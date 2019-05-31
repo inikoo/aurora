@@ -4013,6 +4013,17 @@ $tab_defaults = array(
         'elements'      => $elements_options['deal_components'],
     ),
 
+    'customer.deals' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'name',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+        'elements_type' => array_keys($elements_options['deals'])[0],
+        'elements'      => $elements_options['deals'],
+    ),
+
 
     'material.parts'              => array(
         'view'          => 'overview',

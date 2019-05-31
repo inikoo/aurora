@@ -726,7 +726,7 @@ $modules = array(
                         )
 
                     ),
-                    'customer.discounts'         => array(
+                    'customer.deals'         => array(
                         'label' => _('Discounts'),
                         'icon'  => 'tags'
                     ),

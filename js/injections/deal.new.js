@@ -534,10 +534,6 @@ function toggle_category_deal_type(element){
 
         }
 
-
-
-
-
     }
     console.log('xx')
     $('#Deal_Component_controls').removeClass('hide')
@@ -558,23 +554,41 @@ function toggle_customer_term_type(element){
     }
 
 
+    $('#Trigger_Extra_Amount_Net').removeClass('hide')
+    $('#Trigger_Extra_Items_Amount_Net').removeClass('hide')
+
+
     console.log($(element).attr('field'))
+
+    $('#Terms').val($(element).attr('field'))
 
     switch ($(element).attr('field')){
         case 'All_products':
             $('#Asset_field').addClass('hide')
+            $('#Trigger_Extra_Amount_Net_field').removeClass('hide')
+            $('#Trigger_Extra_Items_Amount_Net_field').addClass('hide')
+
+
 
             break;
         case 'Product_Category':
 
             $('#Asset_field').removeClass('hide')
+
+            $('#Trigger_Extra_Items_Amount_Net_field').removeClass('hide')
+            $('#Trigger_Extra_Amount_Net_field').addClass('hide')
+
+
+
             break;
         default:
 
     }
 
 
-    $('#Trigger_Extra_Amount_Net').removeClass('hide')
+
+    $('#Allowance_Percentage_field').removeClass('hide')
+
 
     // var form_validation = get_form_validation_state()
     // process_form_validation(form_validation)
