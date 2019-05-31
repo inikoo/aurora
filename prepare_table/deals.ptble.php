@@ -35,10 +35,21 @@ switch ($parameters['parent']) {
         );
 
         break;
+    case('customer'):
+
+
+
+        $where = sprintf(
+            ' where `Deal Trigger`="Customer" and  `Deal Trigger Key`=%d', $parameters['parent_key']
+        );
+
+        break;
 
     default:
         $where = 'where false';
 }
+
+
 
 
 if (isset($parameters['elements_type'])) {

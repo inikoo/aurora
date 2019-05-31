@@ -64,11 +64,37 @@ $object_fields[] = array(
 
 
 $object_fields[] = array(
-    'label'      => _('Customer'),
+    'label'      => _('Terms'),
     'show_title' => true,
     'fields'     => array(
 
 
+        array(
+
+            'id'              => 'Deal_Interval',
+            'edit'            => 'date_interval',
+            'class'           => 'valid',
+            'time'            => array(
+                'From' => '00:00:00',
+                'To'   => '23:59:59'
+            ),
+            'value'           => array(
+                'From' => date('Y-m-d'),
+                'To'   => date('Y-m-d', strtotime('now + 7 days'))
+            ),
+            'formatted_value' => array(
+                'From' => date('d/m/Y'),
+                'To'   => date('d/m/Y', strtotime('now + 7 days'))
+            ),
+            'placeholder'     => array(
+                'From' => _('from'),
+                'To'   => _('until')
+            ),
+            'label'           => _('Duration'),
+            'invalid_msg'     => get_invalid_message('date'),
+            'required'        => true,
+            'type'            => ''
+        ),
 
         array(
             'id'                       => 'Customer_Key',
@@ -97,39 +123,16 @@ $object_fields[] = array(
     'label'      => _('Terms'),
     'show_title' => true,
     'fields'     => array(
-        array(
-            'id'              => 'Extra_Terms',
-            'edit'            => 'no_icon',
-            'class'           => 'hide',
-            'value'           => false,
-            'formatted_value' => '
-<div class="button_radio_options">
-<span id="Trigger_Voucher_field" field_type="button_radio_options" field="Trigger_Extra_Amount_Net" class="button" onclick="toggle_new_deal_extra_trigger(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('Minimum order').' ('._('Items gross net').')</span>  
-</div>
-',
-            'label'           => _('extra term'),
-            'required'        => false,
-            'type'            => 'value'
-        ),
-        array(
-            'edit'        => ($edit ? 'amount' : ''),
-            'id'          => 'Trigger_Extra_Amount_Net',
-            'class'       => '',
-            'value'       => '0',
-            'label'       => _('Minimum order (items gross net)'),
-            'invalid_msg' => get_invalid_message('amount'),
-            'required'    => false,
-            'type'        => 'value'
-        ),
+
 
         array(
             'id'              => 'Terms',
             'edit'            => 'no_icon',
             'value'           => false,
-            'formatted_value' => '
+            'formatted_value' => '<input id="Terms" type="hidden" value="">
 <div class="button_radio_options">
-<span id="All_products" field_type="button_radio_options" field="All_products" class="button" onclick="toggle_customer_term_type(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('All products').'</span>  
-<span id="Product_Category" field_type="button_radio_options" field="Product_Category" class="button" onclick="toggle_customer_term_type(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('Category/Product').'</span> 
+<span  field_type="button_radio_options" field="All_products" class="button" onclick="toggle_customer_term_type(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('All products').'</span>  
+<span  field_type="button_radio_options" field="Product_Category" class="button" onclick="toggle_customer_term_type(this)"  style="border:1px solid #ccc;padding:5px;margin:4px">'._('Category/Product').'</span> 
 </div>
 ',
             'label'           => _('When this offer is applied'),
@@ -149,28 +152,36 @@ $object_fields[] = array(
             'required'    => false,
             'type'        => 'value'
         ),
+
+
+
         array(
-            'edit'        => ($edit ? 'smallint_unsigned' : ''),
-            'id'          => 'Asset_Min_Qty',
+            'edit'        => ($edit ? 'amount' : ''),
+            'id'          => 'Trigger_Extra_Amount_Net',
             'class'       => 'hide',
             'value'       => '',
-            'label'       => _('Minimum outers ordered'),
-            'invalid_msg' => get_invalid_message('smallint_unsigned'),
+            'placeholder'=>_('amount'),
+            'label'       => _('Minimum order (items gross net)'),
+            'invalid_msg' => get_invalid_message('amount'),
             'required'    => false,
             'type'        => 'value'
         ),
 
+
         array(
-            'edit'            => 'no_icon',
-            'class'           => 'hide',
-            'id'              => 'add_extra_term',
-            'value'           => '',
-            'formatted_value' => '<span onClick="show_extra_term()" class="button "><i class="fa fa-plus fa-fw"></i> '._('Add minimum order').'</span>',
-            'label'           => '',
-            'invalid_msg'     => get_invalid_message('string'),
-            'required'        => false,
-            'type'            => 'value'
+            'edit'        => ($edit ? 'amount' : ''),
+            'id'          => 'Trigger_Extra_Items_Amount_Net',
+            'class'       => 'hide',
+            'value'       => '',
+            'placeholder'=>_('amount'),
+
+            'label'       => _('Minimum category/product ordered amount'),
+            'invalid_msg' => get_invalid_message('amount'),
+            'required'    => false,
+            'type'        => 'value'
         ),
+
+
 
 
 
@@ -190,24 +201,11 @@ $object_fields[] = array(
     'class'      => 'deal_type_title hide',
     'fields'     => array(
 
-        array(
-            'id'       => 'Type',
-            'edit'     => 'custom',
-            'class'    => 'hide',
-            'value'    => false,
-            'custom'   => '
-<div class="button_radio_options">
-<span id="Deal_Type_Percentage_Off_field" field_type="button_radio_options" field="Deal_Type_Percentage_Off" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Percentage off').'</span>
-</div>
-',
-            'label'    => _('Choose offer'),
-            'required' => false,
-            'type'     => ''
-        ),
+
 
         array(
-            'id'    => 'Percentage',
-            'class' => 'Deal_Type',
+            'id'    => 'Allowance_Percentage',
+            'class' => 'Allowance_Percentage',
             'edit'  => 'custom',
             'class' => 'hide',
             'value' => '%',

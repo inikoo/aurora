@@ -51,6 +51,8 @@ switch ($tipo) {
     case 'vouchers':
         deals(get_table_parameters(), $db, $user);
         break;
+    case 'customer_deals':
+
     case 'deals':
         deals(get_table_parameters(), $db, $user);
         break;

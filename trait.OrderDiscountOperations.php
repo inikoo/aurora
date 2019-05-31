@@ -421,7 +421,6 @@ trait OrderDiscountOperations {
 
                 break;
 
-
             case('Category Quantity Ordered'):
                 $qty_category = 0;
                 $sql          = sprintf(
@@ -447,6 +446,65 @@ trait OrderDiscountOperations {
                 }
 
 
+                break;
+            case('Category Amount Ordered'):
+
+                $terms_data=json_decode($deal_component_data['Deal Component Terms'],true);
+                $amount = 0;
+                $sql          = sprintf(
+                    'SELECT sum(`Order Transaction Amount`) AS amount  FROM `Order Transaction Fact` OTF   LEFT JOIN `Category Bridge`  ON (`Subject Key`=`Product ID`)    WHERE `Subject`="Product" AND `Order Key`=%d AND `Category Key`=%d ', $this->id,
+                    $terms_data['key']
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        if($row['amount']==''){
+                            $amount = 0;
+                        }else{
+                            $amount = $row['amount'];
+                        }
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+                if ($amount >= $terms_data['amount']) {
+                    $terms_ok                         = true;
+                    $this->deals['Category']['Terms'] = true;
+                    $this->create_allowances_from_deal_component_data($deal_component_data);
+                }
+                break;
+
+            case('Product Amount Ordered'):
+
+                $terms_data=json_decode($deal_component_data['Deal Component Terms'],true);
+                $amount = 0;
+                $sql          = sprintf(
+                    'SELECT sum(`Order Transaction Amount`) AS amount  FROM `Order Transaction Fact` OTF   where `Order Key`=%d AND `Product ID`=%d ', $this->id,
+                    $terms_data['key']
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        if($row['amount']==''){
+                            $amount = 0;
+                        }else{
+                            $amount = $row['amount'];
+                        }
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+                if ($amount >= $terms_data['amount']) {
+                    $terms_ok                         = true;
+                    $this->deals['Category']['Terms'] = true;
+                    $this->create_allowances_from_deal_component_data($deal_component_data);
+                }
                 break;
 
 
@@ -682,6 +740,8 @@ trait OrderDiscountOperations {
     function create_allowances_from_deal_component_data($deal_component_data, $pinned = false) {
 
 
+
+
         if (isset($deal_component_data['Deal Name Label'])) {
 
             $deal_info = sprintf(
@@ -866,6 +926,9 @@ trait OrderDiscountOperations {
 
                         $category_key       = $allowance_data['key'];
                         $get_free_allowance = $allowance_data['qty'];
+
+
+
 
 
                         $sql = sprintf(
@@ -1382,12 +1445,15 @@ trait OrderDiscountOperations {
 
 
         $sql = sprintf(
-            "select * from `Deal Component Dimension` where `Deal Component Trigger`='Customer' and `Deal Component Trigger Key` =%d  and `Deal Component Status`='Active' $where", $this->data['Order Customer Key']
+            "select * from `Deal Component Dimension`  left join `Deal Dimension` D on (D.`Deal Key`=`Deal Component Deal Key`)  where `Deal Component Trigger`='Customer' and `Deal Component Trigger Key` =%d  and `Deal Component Status`='Active' $where", $this->data['Order Customer Key']
         );
 
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
+
+
+
                 $deals_component_data[$row['Deal Component Key']] = $row;
             }
         } else {
@@ -1397,44 +1463,18 @@ trait OrderDiscountOperations {
         }
 
 
-        $sql = sprintf(
-            "select * from `Deal Component Dimension`  left join `Deal Dimension` D on (D.`Deal Key`=`Deal Component Deal Key`)  left join  `List Customer Bridge` on (`List Key`=`Deal Component Trigger Key`) where `Deal Component Trigger`='Customer List' and `Customer Key` =%d  and `Deal Component Status`='Active' $where",
-            $this->data['Order Customer Key']
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $deals_component_data[$row['Deal Component Key']] = $row;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
 
 
         foreach ($deals_component_data as $deal_component_data) {
 
-
-            $this->deals['Customer']['Deal'] = true;
-            if (isset($this->deals['Customer']['Deal Multiplicity'])) {
-                $this->deals['Customer']['Deal Multiplicity']++;
-            } else {
-                $this->deals['Customer']['Deal Multiplicity'] = 1;
-            }
-
-            if (isset($this->deals['Customer']['Terms Multiplicity'])) {
-                $this->deals['Customer']['Terms Multiplicity']++;
-            } else {
-                $this->deals['Customer']['Terms Multiplicity'] = 1;
-            }
 
 
             $this->test_deal_terms($deal_component_data);
 
 
         }
+
+
 
 
     }
