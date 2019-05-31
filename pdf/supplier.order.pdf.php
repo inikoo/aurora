@@ -175,7 +175,7 @@ if ($result = $db->query($sql)) {
             $unit_cost = money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'),false,'FOUR_FRACTION_DIGITS');
 
         }
-
+        $unit_cost=$data['Supplier Part Unit Cost'];
 
 
 
