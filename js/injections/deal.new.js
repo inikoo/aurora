@@ -508,31 +508,54 @@ console.log($('#Customer_Select_value'))
 
 function toggle_category_deal_type(element){
 
+    $('#Trigger_Extra_Items_Amount_Net').removeClass('hide')
+    $('#Amount_Off').removeClass('hide')
+
+
+
     if(!$(element).hasClass('selected')){
         $(element).closest('.button_radio_options').find('.button').removeClass('selected')
         $(element).addClass('selected')
 
 
-        if ($(element).attr('id') == 'Deal_Type_Percentage_Off_field') {
+        $('#Percentage_field').addClass('hide')
+        $('#Buy_n_get_n_free_field').addClass('hide')
+        $('#Buy_n_n_free_field').addClass('hide')
+        $('#Trigger_Extra_Items_Amount_Net_field').addClass('hide')
+        $('#Amount_Off_field').addClass('hide')
+
+        $('#Allowance_Type').val($(element).attr('field'))
+
+
+
+
+
+        if ($(element).attr('field') == 'Deal_Type_Percentage_Off') {
 
             $('#Percentage_field').removeClass('hide')
-            $('#Buy_n_get_n_free_field').addClass('hide')
-            $('#Buy_n_n_free_field').addClass('hide')
 
 
-        } else if ($(element).attr('id') == 'Deal_Type_Buy_n_get_n_free_field') {
+        }else if ($(element).attr('field') == 'Deal_Type_Amount_Off') {
+
+            $('#Trigger_Extra_Items_Amount_Net_field').removeClass('hide')
+            $('#Amount_Off_field').removeClass('hide')
+
+
+
+        } else if ($(element).attr('field') == 'Deal_Type_Buy_n_get_n_free') {
             $('#Percentage_field').addClass('hide')
             $('#Buy_n_get_n_free_field').removeClass('hide')
             $('#Buy_n_n_free_field').addClass('hide')
 
 
-        }else if ($(element).attr('id') == 'Deal_Type_Buy_n_pay_n_field') {
+        }else if ($(element).attr('field') == 'Deal_Type_Buy_n_pay_n') {
             $('#Percentage_field').addClass('hide')
             $('#Buy_n_get_n_free_field').addClass('hide')
             $('#Buy_n_n_free_field').removeClass('hide')
 
 
         }
+
 
     }
     console.log('xx')
