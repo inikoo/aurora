@@ -30,6 +30,39 @@ $editor = array(
 );
 
 
+$sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension` where `Deal Status`='Finish' ");
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+        $deal         = get_object('Deal', $row['Deal Key']);
+        $deal->editor = $editor;
+
+        $campaign=get_object('Campaign',$deal->get('Deal Campaign Key'));
+
+
+        if($campaign->get('Code')!='OR'){
+
+            $sql=sprintf('update `Deal Component Dimension` set `Deal Component Status`="Finish" where `Deal Component Deal Key`=%d ',$deal->id);
+            print $sql."\n";
+
+            $db->exec($sql);
+
+        };
+
+
+
+
+
+    }
+}
+
+
+
+
+
+exit;
+
 $sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension` ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
