@@ -48,8 +48,8 @@
 
     {/foreach}
 
-    {if $edit}
 
+    {if $edit}
     {foreach from=$interactive_deal_component_data item="item" }
 
         <tr>
