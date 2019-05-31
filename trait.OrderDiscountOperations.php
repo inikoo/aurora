@@ -41,6 +41,7 @@ trait OrderDiscountOperations {
         $this->get_allowances_from_pinned_deal_components();
 
 
+
         $this->apply_items_discounts();
 
 
@@ -1509,6 +1510,9 @@ trait OrderDiscountOperations {
 
     function apply_items_discounts() {
 
+        $this->amount_off_allowance_data = '';
+        $this->amount_off_value = 0;
+
 
         $current_OTDBs_to_delete        = array();
         $current_OTF_discounts_to_clear = array();
@@ -1557,6 +1561,37 @@ trait OrderDiscountOperations {
             print "$sql\n";
             exit;
         }
+
+
+        if (isset($this->allowance['No Item Transaction'])) {
+
+            foreach ($this->allowance['No Item Transaction'] as $type => $allowance_data) {
+
+
+                switch ($type) {
+                    case 'Amount Off':
+
+
+
+
+                      if($allowance_data['Amount Off']>0 and $this->amount_off_value<=$allowance_data['Amount Off']){
+                          $this->amount_off_value=$allowance_data['Amount Off'];
+                          $this->amount_off_allowance_data = $allowance_data;
+
+
+                      }
+
+
+
+                        break;
+
+                }
+
+
+            }
+
+        }
+
 
 
         if (isset($this->allowance['Percentage Off'])) {
@@ -1904,6 +1939,21 @@ trait OrderDiscountOperations {
         }
 
 
+
+        $this->fast_update(
+            array('Order Deal Amount Off' => $this->amount_off_value)
+        );
+
+        if ($this->amount_off_value > 0) {
+            $this->fast_update_json_field('Order Metadata', 'amount_off', json_encode($this->amount_off_allowance_data));
+
+        } else {
+
+            $this->fast_remove_key_from_json_field('Order Metadata', 'amount_off');
+        }
+
+
+
         $sql = sprintf(
             "SELECT * FROM `Order Transaction Deal Bridge` WHERE `Order Key`=%d  ", $this->id
         );
@@ -1986,7 +2036,8 @@ trait OrderDiscountOperations {
     function apply_no_items_discounts() {
 
 
-        $this->amount_off_allowance_data = 0;
+        $this->amount_off_value = $this->get('Order Deal Amount Off');
+
 
         $current_OTDBs_to_delete = array();
 
@@ -2050,7 +2101,13 @@ trait OrderDiscountOperations {
                     case 'Amount Off':
 
 
-                        $this->amount_off_allowance_data = $allowance_data;
+                        if($allowance_data['Amount Off']>0 and $this->amount_off_value<=$allowance_data['Amount Off']){
+                            $this->amount_off_value=$allowance_data['Amount Off'];
+                            $this->amount_off_allowance_data = $allowance_data;
+
+
+                        }
+
 
                         break;
                     case 'Charge':
@@ -2150,18 +2207,25 @@ trait OrderDiscountOperations {
 
         }
 
-
         $this->fast_update(
-            array('Order Deal Amount Off' => $this->amount_off_allowance_data['Amount Off'])
-        );
+            array('Order Deal Amount Off' => $this->amount_off_value)
+            );
 
-        if ($this->amount_off_allowance_data['Amount Off'] > 0) {
-            $this->fast_update_json_field('Order Metadata', 'amount_off', json_encode($this->amount_off_allowance_data));
-
-        } else {
-
+        if ($this->amount_off_value ==0) {
             $this->fast_remove_key_from_json_field('Order Metadata', 'amount_off');
+
+
+        }else{
+
+            if ($this->amount_off_allowance_data!='') {
+                $this->fast_update_json_field('Order Metadata', 'amount_off', json_encode($this->amount_off_allowance_data));
+
+            }
+
         }
+
+
+
 
 
         // print_r($current_OTDBs_to_delete);
