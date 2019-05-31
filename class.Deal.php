@@ -251,10 +251,88 @@ class Deal extends DB_Table {
 
         $terms = '';
 
-        // print $this->data['Deal Terms Type'];
+      //   print $this->data['Deal Terms Type'];
         switch ($this->data['Deal Terms Type']) {
 
+
+            case 'Product Amount Ordered':
+
+                if($this->data['Deal Trigger']=='Customer'){
+
+                    $customer=$this->get('Trigger Object');
+
+                    $store=get_object('Store',$customer->get('Store Key'));
+                    $terms='C'.$customer->get('Formatted ID');
+
+
+                    $terms_data=json_decode($this->data['Deal Terms'],true);
+
+
+                    $asset=get_object($terms_data['object'],$terms_data['key']);
+
+                    $terms.=' '.$asset->get('Code');
+
+                    if($terms_data['amount']==0){
+
+                    }else{
+                        $terms.=' +'.money($terms_data['amount'],$store->get('Store Currency Code'));
+                    }
+
+
+                }else{
+
+
+                }
+
+
+                break;
+
+            case 'Category Amount Ordered':
+
+                if($this->data['Deal Trigger']=='Customer'){
+
+                    $customer=$this->get('Trigger Object');
+
+                    $store=get_object('Store',$customer->get('Store Key'));
+                    $terms='C'.$customer->get('Formatted ID');
+
+
+                    $terms_data=json_decode($this->data['Deal Terms'],true);
+
+
+                    $asset=get_object($terms_data['object'],$terms_data['key']);
+
+                    $terms.=' '.$asset->get('Code');
+
+                    if($terms_data['amount']==0){
+
+                    }else{
+                        $terms.=' +'.money($terms_data['amount'],$store->get('Store Currency Code'));
+                    }
+
+
+                }else{
+
+
+                }
+
+
+                break;
+
             case 'Amount':
+
+
+                if($this->data['Deal Trigger']=='Customers'){
+
+                    $customer=$this->get('Trigger Object');
+
+                    $terms=$customer->get('Formatted ID');
+
+
+                }else{
+
+
+                }
 
 
                 break;
@@ -330,16 +408,16 @@ class Deal extends DB_Table {
                 $_terms = json_decode($this->get('Deal Terms'), true);
 
                 if (!$_terms) {
-                    $tmp    = preg_split('/\;/', $this->get('Deal Terms'));
+                    $tmp = preg_split('/\;/', $this->get('Deal Terms'));
 
 
-                    if(count($tmp)!=3){
+                    if (count($tmp) != 3) {
 
                         $_terms = array(
-                            'voucher' =>'',
-                            'amount'  =>';0;'
+                            'voucher' => '',
+                            'amount'  => ';0;'
                         );
-                    }else{
+                    } else {
 
                         $_terms = array(
                             'voucher' => $tmp[0],
@@ -353,38 +431,34 @@ class Deal extends DB_Table {
 
                 $amount_data = preg_split('/\;/', $_terms['amount']);
 
-                if(is_array($amount_data)){
+                if (is_array($amount_data)) {
 
-                    if(count($amount_data)>1){
-                        $amount=$amount_data[1];
-                    }elseif(count($amount_data)==1 ){
-                       if(is_numeric($amount_data[0]) ){
-                           $amount=$amount_data[0];
+                    if (count($amount_data) > 1) {
+                        $amount = $amount_data[1];
+                    } elseif (count($amount_data) == 1) {
+                        if (is_numeric($amount_data[0])) {
+                            $amount = $amount_data[0];
 
-                       }else{
-                           $amount=0;
-                       }
+                        } else {
+                            $amount = 0;
+                        }
 
 
-                    }else{
+                    } else {
                         print_r($amount_data);
 
                     }
 
 
-                }elseif(is_numeric($amount_data)){
-                    $amount=$amount_data;
+                } elseif (is_numeric($amount_data)) {
+                    $amount = $amount_data;
 
-                }else{
-                    $amount=0;
+                } else {
+                    $amount = 0;
                 }
 
 
-
-
                 $terms = '<span style="border:1px solid ;padding: 1px 10px">'.$_terms['voucher'].'</span> <span style="opacity: .8">'.money($amount, $store->get('Store Currency Code')).'</span>';
-
-
 
 
                 break;
@@ -553,6 +627,13 @@ class Deal extends DB_Table {
             case 'Terms Days':
                 return preg_replace("/[^0-9,.]/", "", $this->data['Deal Terms']);
                 break;
+
+            case 'Trigger Object':
+
+
+                return get_object($this->data['Deal Trigger'], $this->data['Deal Trigger Key']);
+                break;
+
             default:
                 if (array_key_exists($key, $this->data)) {
                     return $this->data[$key];
@@ -813,7 +894,6 @@ class Deal extends DB_Table {
                 $this->update_field($field, $value, $options);
 
 
-
                 $this->update_websites();
 
 
@@ -1025,7 +1105,6 @@ class Deal extends DB_Table {
     function update_expiration_date($value, $options = '') {
 
 
-
         $this->update_field('Deal Expiration Date', $value, $options);
         $this->updated = true;
 
@@ -1115,8 +1194,6 @@ class Deal extends DB_Table {
         $data['Deal Component Icon']         = $campaign->get('Deal Campaign Icon');
 
         $data['Deal Component Status'] = $this->data['Deal Status'];
-
-
 
 
         $hereditary_fields = array(
