@@ -146,7 +146,7 @@ function toggle_new_deal_trigger(element){
     console.log($(element).attr('field'))
 
     switch ($(element).attr('field')){
-        case 'Trigger_Voucher':
+        case 'Product_Category':
             set_voucher_code_as_auto()
             $('#Asset_field').addClass('hide')
 
@@ -544,3 +544,41 @@ function toggle_category_deal_type(element){
 
 
 }
+
+
+
+function toggle_customer_term_type(element){
+
+
+
+    if(!$(element).hasClass('selected')){
+
+        $(element).closest('.button_radio_options').find('.button').removeClass('selected')
+        $(element).addClass('selected')
+    }
+
+
+    console.log($(element).attr('field'))
+
+    switch ($(element).attr('field')){
+        case 'All_products':
+            $('#Asset_field').addClass('hide')
+
+            break;
+        case 'Product_Category':
+
+            $('#Asset_field').removeClass('hide')
+            break;
+        default:
+
+    }
+
+
+    $('#Trigger_Extra_Amount_Net').removeClass('hide')
+
+    // var form_validation = get_form_validation_state()
+    // process_form_validation(form_validation)
+
+
+}
+
