@@ -53,7 +53,7 @@
     {/foreach}
 
 
-
+    {if $edit}
     {foreach from=$interactive_deal_component_data item="item" }
 
         <tr>
@@ -71,6 +71,7 @@
             <td class="text-right">{$item.net}</td>
         </tr>
     {/foreach}
+    {/if}
 
     </tbody>
 </table>
