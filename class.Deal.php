@@ -257,31 +257,37 @@ class Deal extends DB_Table {
 
             case 'Product Amount Ordered':
 
+
+
+                $store=get_object('Store',$this->get('Store Key'));
+
                 if($this->data['Deal Trigger']=='Customer'){
 
                     $customer=$this->get('Trigger Object');
 
-                    $store=get_object('Store',$customer->get('Store Key'));
                     $terms='C'.$customer->get('Formatted ID');
 
 
                     $terms_data=json_decode($this->data['Deal Terms'],true);
 
 
-                    $asset=get_object($terms_data['object'],$terms_data['key']);
 
-                    $terms.=' '.$asset->get('Code');
-
-                    if($terms_data['amount']==0){
-
-                    }else{
-                        $terms.=' +'.money($terms_data['amount'],$store->get('Store Currency Code'));
-                    }
 
 
                 }else{
 
+                    $terms='';
+                }
 
+
+                $asset=get_object($terms_data['object'],$terms_data['key']);
+
+                $terms.=' '.$asset->get('Code');
+
+                if($terms_data['amount']==0){
+
+                }else{
+                    $terms.=' +'.money($terms_data['amount'],$store->get('Store Currency Code'));
                 }
 
 
@@ -289,33 +295,36 @@ class Deal extends DB_Table {
 
             case 'Category Amount Ordered':
 
+                $store=get_object('Store',$this->get('Store Key'));
+
                 if($this->data['Deal Trigger']=='Customer'){
 
                     $customer=$this->get('Trigger Object');
 
-                    $store=get_object('Store',$customer->get('Store Key'));
                     $terms='C'.$customer->get('Formatted ID');
 
 
-                    $terms_data=json_decode($this->data['Deal Terms'],true);
-
-
-                    $asset=get_object($terms_data['object'],$terms_data['key']);
-
-                    $terms.=' '.$asset->get('Code');
-
-                    if($terms_data['amount']==0){
-
-                    }else{
-                        $terms.=' +'.money($terms_data['amount'],$store->get('Store Currency Code'));
-                    }
 
 
                 }else{
-
+                    $terms='';
 
                 }
 
+
+
+                $terms_data=json_decode($this->data['Deal Terms'],true);
+
+
+                $asset=get_object($terms_data['object'],$terms_data['key']);
+
+                $terms.=' '.$asset->get('Code');
+
+                if($terms_data['amount']==0){
+
+                }else{
+                    $terms.=' +'.money($terms_data['amount'],$store->get('Store Currency Code'));
+                }
 
                 break;
 
