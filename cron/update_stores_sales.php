@@ -128,6 +128,13 @@ function update_sales($db, $print_est) {
             $category->update_invoice_category_sales('Total');
 
 
+            $category->update_invoice_category_sales('1 Year');
+            $category->update_invoice_category_sales('1 Quarter');
+            $category->update_invoice_category_sales('1 Month');
+            $category->update_invoice_category_sales('1 Week');
+
+
+
             $category->update_invoice_category_sales('Year To Day');
             $category->update_invoice_category_sales('Quarter To Day');
             $category->update_invoice_category_sales('Month To Day');
