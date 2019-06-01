@@ -198,13 +198,12 @@ function get_view($db, $smarty, $user, $account, $modules) {
         case 'website':
 
 
-
             $_parent = get_object('Website', $state['parent_key']);
             $website = $_parent;
             //$state['current_website'] = $_parent->id;
 
 
-            $store                  = get_object('Store',$_parent->get('Website Store Key'));
+            $store                  = get_object('Store', $_parent->get('Website Store Key'));
             $state['current_store'] = $store->id;
 
 
@@ -445,8 +444,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
         if (empty($store) and !empty($state['_parent']) and is_numeric($state['_parent']->get('Store Key'))) {
             $store = get_object('Store', $state['_parent']->get('Store Key'));
         }
-
-
 
 
         if (!$_object->id and $modules[$state['module']]['sections'][$state['section']]['type'] == 'object') {
@@ -798,19 +795,18 @@ function get_view($db, $smarty, $user, $account, $modules) {
     //  print_r($state);
 
 
-    if ($state['object'] != ''
-        and (
-            $modules[$state['module']]['sections'][$state['section']]['type'] == 'object'
-            or
-            isset($modules[$state['module']]['sections'][$state['section']]['showcase']))) {
+    if ($state['object'] != '' and ($modules[$state['module']]['sections'][$state['section']]['type'] == 'object' or isset($modules[$state['module']]['sections'][$state['section']]['showcase']))) {
 
-        if (isset($data['metadata']['reload_showcase']) or !($data['old_state']['module'] == $state['module'] and $data['old_state']['section'] == $state['section'] and $data['old_state']['object'] == $state['object'] and $data['old_state']['key']
-                == $state['key'])) {
+        if (isset($data['metadata']['reload_showcase']) or !($data['old_state']['module'] == $state['module'] and $data['old_state']['section'] == $state['section'] and $data['old_state']['object'] == $state['object'] and $data['old_state']['key'] == $state['key'])) {
 
 
-            $response['object_showcase'] = get_object_showcase(
+            list($response['object_showcase'], $title) = get_object_showcase(
                 (isset($modules[$state['module']]['sections'][$state['section']]['showcase']) ? $modules[$state['module']]['sections'][$state['section']]['showcase'] : $state['object']), $state, $smarty, $user, $db, $account
             );
+
+            if ($title != '') {
+                $state['title'] = $title;
+            }
 
         }
 
@@ -922,8 +918,14 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
  */
 function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 
+
+    $title = '';
+
     if (preg_match('/\_edit$/', $data['tab'])) {
-        return '';
+        return array(
+            '',
+            ''
+        );
     }
 
 
@@ -935,14 +937,19 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         case 'webpage':
             include_once 'showcase/webpage.show.php';
             $html = get_webpage_showcase($data, $smarty, $user, $db);
+            $title = $data['_object']->get('Code');
+
             break;
         case 'page_version':
             include_once 'showcase/webpage_version.show.php';
             $html = get_webpage_version_showcase($data, $smarty, $user, $db);
+
             break;
         case 'website':
             include_once 'showcase/website.show.php';
             $html = get_website_showcase($data, $smarty, $user, $db);
+            $title = $data['_object']->get('Code');
+
             break;
         case 'dashboard':
             $html = '';
@@ -957,7 +964,9 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'purchase_order':
             include_once 'showcase/supplier.order.show.php';
-            $html = get_supplier_order_showcase($data, $smarty, $user, $db);
+            $html  = get_supplier_order_showcase($data, $smarty, $user, $db);
+            $title = $data['_object']->get('Public ID');
+
             break;
         case 'campaign':
             include_once 'showcase/campaign.show.php';
@@ -974,7 +983,9 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         case 'store':
 
             include_once 'showcase/store.show.php';
-            $html = get_store_showcase($data, $smarty, $user, $db);
+            $html  = get_store_showcase($data, $smarty, $user, $db);
+            $title = $data['_object']->get('Name');
+
             break;
         case 'products_special_categories':
             include_once 'showcase/products_special_categories.show.php';
@@ -1003,11 +1014,14 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
                 $html = get_product_showcase($data, $smarty, $user, $db);
             }
 
+            $title = $data['_object']->get('Code');
 
             break;
         case 'part':
             include_once 'showcase/part.show.php';
-            $html = get_part_showcase($data, $smarty, $user, $db);
+            $html  = get_part_showcase($data, $smarty, $user, $db);
+            $title = $data['_object']->get('Reference');
+
             break;
         case 'supplier_part':
             include_once 'showcase/supplier_part.show.php';
@@ -1015,7 +1029,9 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'employee':
             include_once 'showcase/employee.show.php';
-            $html = get_employee_showcase($data, $smarty, $user, $db);
+            $html  = get_employee_showcase($data, $smarty, $user, $db);
+            $title = $data['_object']->get('Name');
+
             break;
         case 'contractor':
             include_once 'showcase/contractor.show.php';
@@ -1023,11 +1039,14 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'customer':
             include_once 'showcase/customer.show.php';
-            $html = get_customer_showcase($data, $smarty, $user, $db);
+            $html  = get_customer_showcase($data, $smarty, $user, $db);
+            $title = 'C'.$data['_object']->get('Formatted ID');
             break;
         case 'supplier':
             include_once 'showcase/supplier.show.php';
-            $html = get_supplier_showcase($data, $smarty, $user, $db);
+            $html  = get_supplier_showcase($data, $smarty, $user, $db);
+            $title = $data['_object']->get('Code');
+
             break;
         case 'agent':
             include_once 'showcase/agent.show.php';
@@ -1035,20 +1054,26 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'order':
             include_once 'showcase/order.show.php';
-            $html = get_order_showcase($data, $smarty, $user, $db);
+            $html  = get_order_showcase($data, $smarty, $user, $db);
+            $title = $data['_object']->get('Public ID');
+
             break;
         case 'invoice':
         case 'refund':
             include_once 'showcase/invoice.show.php';
-            $html = get_invoice_showcase($data, $smarty, $user, $db);
+            $html  = get_invoice_showcase($data, $smarty, $user, $db);
+            $title = $data['_object']->get('Public ID');
             break;
         case 'delivery_note':
             include_once 'showcase/delivery_note.show.php';
-            $html = get_delivery_note_showcase($data, $smarty, $user, $db);
+            $html  = get_delivery_note_showcase($data, $smarty, $user, $db);
+            $title = $data['_object']->get('ID');
             break;
         case 'user':
             include_once 'showcase/user.show.php';
-            $html = get_user_showcase($data, $smarty, $user, $db);
+            $html  = get_user_showcase($data, $smarty, $user, $db);
+            $title = $data['_object']->get('Handle');
+
             break;
         case 'warehouse':
             include_once 'showcase/warehouse.show.php';
@@ -1059,6 +1084,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             } else {
                 $html = get_warehouse_showcase($data, $smarty, $user, $db);
             }
+
+            $title = 'W '.$data['_object']->get('Code');
+
+
             break;
         case 'warehouse_area':
             include_once 'showcase/warehouse_area.show.php';
@@ -1079,6 +1108,8 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             } else {
                 $html = get_location_showcase($data, $smarty, $user, $db);
             }
+            $title = $data['_object']->get('Code');
+
             break;
 
 
@@ -1158,6 +1189,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
                 return '_';
             }
 
+            $title = $data['_object']->get('Code');
 
             break;
         case 'PurchaseOrderItem':
@@ -1175,6 +1207,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
                 include_once 'showcase/supplier.delivery.show.php';
                 $html = get_showcase($data, $smarty, $user, $db);
             }
+            $title = $data['_object']->get('Public ID');
 
 
             break;
@@ -1276,7 +1309,10 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
     }
 
 
-    return $html;
+    return array(
+        $html,
+        $title
+    );
 
 }
 
@@ -2402,6 +2438,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_location_navigation(
                         $data, $smarty, $user, $db, $account
                     );
+
                     break;
                 case ('location.new'):
                     return get_new_location_navigation(
@@ -2961,9 +2998,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab = '') {
 
 
-
-
-    if (preg_match('/\_edit$/', $data['tab']) or $data['section']=='refund.new' ) {
+    if (preg_match('/\_edit$/', $data['tab']) or $data['section'] == 'refund.new') {
         return array(
             $data,
             ''
@@ -2998,12 +3033,11 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     }
 
 
-
     foreach ($tabs as $key => $tab) {
         if (isset($tab['quantity_data'])) {
-            $tabs[$key]['label'] .= sprintf(' <span class=\'discreet %s\'>(%s)</span>',
-                                            preg_replace('/\s/','_',$tab['quantity_data']['field']),
-                                            $data[$tab['quantity_data']['object']]->get($tab['quantity_data']['field']));
+            $tabs[$key]['label'] .= sprintf(
+                ' <span class=\'discreet %s\'>(%s)</span>', preg_replace('/\s/', '_', $tab['quantity_data']['field']), $data[$tab['quantity_data']['object']]->get($tab['quantity_data']['field'])
+            );
         }
 
         if (isset($tab['dynamic_reference'])) {
@@ -3015,9 +3049,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     foreach ($subtabs as $key => $subtab) {
         if (isset($subtab['quantity_data'])) {
             $subtabs[$key]['label'] .= sprintf(
-                ' <span class=\'discreet %s\'>(%s)</span>',
-                preg_replace('/\s/','_',$subtab['quantity_data']['field']),
-                $data[$subtab['quantity_data']['object']]->get($subtab['quantity_data']['field'])
+                ' <span class=\'discreet %s\'>(%s)</span>', preg_replace('/\s/', '_', $subtab['quantity_data']['field']), $data[$subtab['quantity_data']['object']]->get($subtab['quantity_data']['field'])
             );
         }
     }
@@ -3138,9 +3170,9 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
                 }
 
-                if($data['_object']->get('Email Campaign State')=='Stopped'){
+                if ($data['_object']->get('Email Campaign State') == 'Stopped') {
                     $_content['tabs']['mailshot.published_email']['class'] = 'hide';
-                    $_content['tabs']['mailshot.sent_emails']['class'] = 'hide';
+                    $_content['tabs']['mailshot.sent_emails']['class']     = 'hide';
                 }
 
 
@@ -3169,7 +3201,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 break;
             case 'Sent':
             case 'Sending':
-
 
 
                 $_content['tabs']['mailshot.email_blueprints']['class'] = 'hide';
@@ -4642,13 +4673,12 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                     $branch[] = array(
                         'label'     => '<span class="Deal_Campaign_Name">'.$state['_parent']->get('Name').'</span>',
-                        'html_icon'      => $state['_parent']->get('Icon'),
+                        'html_icon' => $state['_parent']->get('Icon'),
                         'reference' => 'offers/'.$state['store']->id.'/'.strtolower($state['_parent']->get('Code'))
                     );
 
 
-
-                    switch ($state['_parent']->get('Code')){
+                    switch ($state['_parent']->get('Code')) {
                         case 'VO':
                             $branch[] = array(
                                 'label'     => _('New voucher'),
@@ -4666,7 +4696,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     }
 
 
-                }else{
+                } else {
 
                     $branch[] = array(
                         'label'     => _('New offer'),
@@ -6227,41 +6257,41 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         }
 
 
-                        if(!empty($state['extra'])){
+                        if (!empty($state['extra'])) {
 
-                            switch ($state['extra']){
+                            switch ($state['extra']) {
                                 case 'submitted_not_paid':
-                                    $label=_('Submitted (not paid)');
+                                    $label = _('Submitted (not paid)');
                                     break;
                                 case 'submitted':
-                                    $label=_('Submitted (paid)');
+                                    $label = _('Submitted (paid)');
                                     break;
                                 case 'website':
-                                    $label=_('In basket');
+                                    $label = _('In basket');
                                     break;
                                 case 'in_warehouse':
-                                    $label=_('In warehouse');
+                                    $label = _('In warehouse');
 
                                     break;
                                 case 'in_warehouse_with_alerts':
-                                    $label=_('In warehouse').' ('._('with alerts').')';
+                                    $label = _('In warehouse').' ('._('with alerts').')';
 
                                     break;
 
                                 case 'packed_done':
-                                    $label=_('Packed & closed');
+                                    $label = _('Packed & closed');
 
                                     break;
                                 case 'approved':
-                                    $label=_('Invoiced');
+                                    $label = _('Invoiced');
 
                                     break;
                                 case 'dispatched_today':
-                                    $label=_('Dispatched today');
+                                    $label = _('Dispatched today');
 
                                     break;
                                 default:
-                                    $label='';
+                                    $label = '';
                             }
 
                             $branch[] = array(
@@ -6270,16 +6300,13 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                                 'reference' => 'orders/'.$state['store']->id.'/dashboard/'.$state['extra']
                             );
 
-                        }else{
+                        } else {
                             $branch[] = array(
                                 'label'     => _('Orders').' '.$state['store']->data['Store Code'],
                                 'icon'      => '',
                                 'reference' => 'orders/'.$state['store']->id
                             );
                         }
-
-
-
 
 
                     }
@@ -9546,12 +9573,11 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 'icon'      => '',
                 'reference' => 'production/all'
             );
-            */
-            $branch[] = array(
-                'label'     => _("Production").' <span class="id Supplier_Code">'.$state['_object']->get('Code').'</span>',
-                'icon'      => 'industry',
-                'reference' => 'production'
-            );
+            */ $branch[] = array(
+            'label'     => _("Production").' <span class="id Supplier_Code">'.$state['_object']->get('Code').'</span>',
+            'icon'      => 'industry',
+            'reference' => 'production'
+        );
 
 
             if ($state['section'] == 'manufacture_tasks') {
