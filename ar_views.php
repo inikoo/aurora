@@ -1026,6 +1026,8 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         case 'supplier_part':
             include_once 'showcase/supplier_part.show.php';
             $html = get_supplier_part_showcase($data, $smarty, $user, $db);
+            $title = $data['_object']->get('Reference');
+
             break;
         case 'employee':
             include_once 'showcase/employee.show.php';
@@ -1036,6 +1038,8 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         case 'contractor':
             include_once 'showcase/contractor.show.php';
             $html = get_contractor_showcase($data, $smarty, $user, $db);
+            $title = $data['_object']->get('Name');
+
             break;
         case 'customer':
             include_once 'showcase/customer.show.php';
