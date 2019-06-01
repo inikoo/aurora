@@ -102,7 +102,6 @@ trait OrderBasketOperations {
         //     $this->data['Order Sales Representative Keys'] = array($this->editor['User Key']);
         // }
 
-        $this->data['Order For'] = 'Customer';
 
         $this->data['Order Customer Message'] = '';
 
