@@ -121,3 +121,4 @@ ALTER TABLE `Product Dimension` DROP `Product Info Sheet Attachment Key`, DROP `
 ALTER TABLE `Product Dimension` DROP `Product Parts Weight`, DROP `Product XHTML Package Weight`, DROP `Product MSDS Attachment Key`;
 
 ALTER TABLE `Deal Component Dimension` DROP `Deal Component Name Label`,  DROP `Deal Component Term Label`;
+ALTER TABLE `Order Dimension` DROP `Order For`;

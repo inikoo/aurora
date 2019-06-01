@@ -535,7 +535,6 @@ if ($result = $db->query($sql)) {
             $data['order id']                      = $row['increment_id'];
             $data['order customer message']        = $row['customer_note'];
             $data['order original data source']    = 'Magento';
-            $data['Order For']                     = 'Customer';
             $data['Order Main Source Type']        = 'Internet';
             $data['Delivery Note Dispatch Method'] = 'Shipped';
             $data['staff sale']                    = 'no';
