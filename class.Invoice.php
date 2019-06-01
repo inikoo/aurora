@@ -889,6 +889,12 @@ class Invoice extends DB_Table {
 
                 break;
 
+            case 'Category Object':
+
+                return get_object('Category',$this->data['Invoice Category Key']);
+                break;
+
+
         }
 
 

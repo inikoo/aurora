@@ -169,10 +169,15 @@
     <div id="dates" class="block dates" >
         <table border="0" class="date_and_state">
             <tr class="date">
-                <td class="button"  onclick="change_view('orders/{$order->get('Order Store Key')}/{$order->id}')" ><i class="fa fa-shopping-cart" aria-hidden="true"></i> {$order->get('Public ID')}</td>
+                <td class="button"  onclick="change_view('orders/{$order->get('Order Store Key')}/{$order->id}')" ><i class="fa fa-shopping-cart padding_right_5" aria-hidden="true"></i> {$order->get('Public ID')}</td>
             </tr>
 
-
+            {assign 'category' $invoice->get('Category Object') }
+            {if $category->id}
+            <tr class="date">
+                <td class="button"  onclick="change_view('invoices/category/{$category->id}')"  ><i class="fal fa-sitemap padding_right_5" ></i> {$category->get('Label')}</td>
+            </tr>
+            {/if}
             <tr class="date">
                 <td title="{$invoice->get('Date')}">{$invoice->get_date('Invoice Date')}</td>
             </tr>

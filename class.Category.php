@@ -341,12 +341,7 @@ class Category extends DB_Table {
             $created_msg = _('Category created');
 
 
-            if ($this->data['Category Scope'] == 'Invoice') {
-                $sql = sprintf(
-                    "INSERT INTO `Invoice Category Dimension` (`Invoice Category Key`,`Invoice Category Store Key`) VALUES (%d,%d)", $this->id, $this->data['Category Store Key']
-                );
-                $this->db->exec($sql);
-            } elseif ($this->data['Category Scope'] == 'Supplier') {
+           if ($this->data['Category Scope'] == 'Supplier') {
                 $sql = sprintf(
                     "INSERT INTO `Supplier Category Dimension` (`Supplier Category Key`,`Supplier Category Valid From`) VALUES (%d,Now())", $this->id
                 );
@@ -1751,6 +1746,19 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 'DELETE FROM `Invoice Category Dimension` WHERE `Category Key`=%d', $this->id
             );
             $this->db->exec($sql);
+
+
+            $sql = sprintf(
+                "DELETE FROM `Invoice Category Data` WHERE `Invoice Category Key`=%d ", $this->id
+
+            );
+            $this->db->exec($sql);
+            $sql = sprintf(
+                "DELETE FROM  `Invoice Category DC Data` WHERE `Invoice Category Key`=%d ", $this->id
+            );
+            $this->db->exec($sql);
+
+
         } elseif ($this->data['Category Scope'] == 'Supplier') {
             $sql = sprintf(
                 'DELETE FROM `Supplier Category Dimension` WHERE `Category Key`=%d', $this->id

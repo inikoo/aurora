@@ -36,6 +36,25 @@ $account = new Account();
 
 
 
+
+$sql = sprintf("SELECT `Invoice Key` FROM `Invoice Dimension`  where  `Invoice Customer Level Type`='Partner'  ");
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $invoice = get_object('Invoice', $row['Invoice Key']);
+        //$invoice->update_payments_totals();
+        //$invoice->update_billing_region();
+        $invoice->categorize();
+        print 'P '.$invoice->get('Public ID')."\n";
+
+        //  exit;
+    }
+
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
+
+
 $sql = sprintf("SELECT `Invoice Key` FROM `Invoice Dimension` left join `Store Dimension` on (`Store Key`=`Invoice Store Key`)  where  `Invoice Date` >='2019-03-01 00:00:00' ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
@@ -43,6 +62,8 @@ if ($result = $db->query($sql)) {
         //$invoice->update_payments_totals();
         //$invoice->update_billing_region();
         $invoice->categorize();
+        print $invoice->get('Public ID')."\n";
+
       //  exit;
     }
 

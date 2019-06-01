@@ -44,8 +44,8 @@ class Order extends DB_Table {
         $this->db = $db;
 
 
-        $this->deleted_otfs=array();
-        $this->new_otfs=array();
+        $this->deleted_otfs = array();
+        $this->new_otfs     = array();
 
 
         $this->table_name      = 'Order';
@@ -762,19 +762,20 @@ class Order extends DB_Table {
 
             case 'Order Hanging Charges Net Amount':
 
-                $amount=0;
-                $sql=sprintf('select sum(`Transaction Net Amount`) as amount from `Order No Product Transaction Fact`  left join `Charge Dimension` on (`Charge Key`=`Transaction Type Key`)   where  `Charge Scope`="Hanging" and  `Transaction Type`="Charges" and `Order Key`=%d  ',
+                $amount = 0;
+                $sql    = sprintf(
+                    'select sum(`Transaction Net Amount`) as amount from `Order No Product Transaction Fact`  left join `Charge Dimension` on (`Charge Key`=`Transaction Type Key`)   where  `Charge Scope`="Hanging" and  `Transaction Type`="Charges" and `Order Key`=%d  ',
                     $this->id
-                    );
+                );
 
-                if ($result=$this->db->query($sql)) {
+                if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
-                        $amount=$row['amount'];
-                	}
-                }else {
-                	print_r($error_info=$this->db->errorInfo());
-                	print "$sql\n";
-                	exit;
+                        $amount = $row['amount'];
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
                 }
 
                 return $amount;
@@ -1958,24 +1959,27 @@ class Order extends DB_Table {
             'Invoice Net Amount Off'                => $this->data['Order Deal Amount Off'],
             'Invoice Customer Contact Name'         => $this->data['Order Customer Contact Name'],
             'Invoice Customer Name'                 => $this->data['Order Customer Name'],
-            'Invoice Sales Representative Key'      => $this->data['Order Sales Representative Key'],
+            'Invoice Customer Level Type'           => $this->data['Order Customer Level Type'],
+
+
+            'Invoice Sales Representative Key'     => $this->data['Order Sales Representative Key'],
 
             //   'Invoice Telephone'                    => $this->data['Order Telephone'],
             //     'Invoice Email'                        => $this->data['Order Email'],
-            'Invoice Address Recipient'             => $this->data['Order Invoice Address Recipient'],
-            'Invoice Address Organization'          => $this->data['Order Invoice Address Organization'],
-            'Invoice Address Line 1'                => $this->data['Order Invoice Address Line 1'],
-            'Invoice Address Line 2'                => $this->data['Order Invoice Address Line 2'],
-            'Invoice Address Sorting Code'          => $this->data['Order Invoice Address Sorting Code'],
-            'Invoice Address Postal Code'           => $this->data['Order Invoice Address Postal Code'],
-            'Invoice Address Dependent Locality'    => $this->data['Order Invoice Address Dependent Locality'],
-            'Invoice Address Locality'              => $this->data['Order Invoice Address Locality'],
-            'Invoice Address Administrative Area'   => $this->data['Order Invoice Address Administrative Area'],
-            'Invoice Address Country 2 Alpha Code'  => $this->data['Order Invoice Address Country 2 Alpha Code'],
-            'Invoice Address Checksum'              => $this->data['Order Invoice Address Checksum'],
-            'Invoice Address Formatted'             => $this->data['Order Invoice Address Formatted'],
-            'Invoice Address Postal Label'          => $this->data['Order Invoice Address Postal Label'],
-            'Invoice Registration Number'           => $this->data['Order Registration Number'],
+            'Invoice Address Recipient'            => $this->data['Order Invoice Address Recipient'],
+            'Invoice Address Organization'         => $this->data['Order Invoice Address Organization'],
+            'Invoice Address Line 1'               => $this->data['Order Invoice Address Line 1'],
+            'Invoice Address Line 2'               => $this->data['Order Invoice Address Line 2'],
+            'Invoice Address Sorting Code'         => $this->data['Order Invoice Address Sorting Code'],
+            'Invoice Address Postal Code'          => $this->data['Order Invoice Address Postal Code'],
+            'Invoice Address Dependent Locality'   => $this->data['Order Invoice Address Dependent Locality'],
+            'Invoice Address Locality'             => $this->data['Order Invoice Address Locality'],
+            'Invoice Address Administrative Area'  => $this->data['Order Invoice Address Administrative Area'],
+            'Invoice Address Country 2 Alpha Code' => $this->data['Order Invoice Address Country 2 Alpha Code'],
+            'Invoice Address Checksum'             => $this->data['Order Invoice Address Checksum'],
+            'Invoice Address Formatted'            => $this->data['Order Invoice Address Formatted'],
+            'Invoice Address Postal Label'         => $this->data['Order Invoice Address Postal Label'],
+            'Invoice Registration Number'          => $this->data['Order Registration Number'],
 
 
             'Invoice Tax Liability Date' => $this->data['Order Packed Done Date'],
@@ -2935,6 +2939,7 @@ class Order extends DB_Table {
             'Invoice Net Amount Off'                => 0,
             'Invoice Customer Contact Name'         => $this->data['Order Customer Contact Name'],
             'Invoice Customer Name'                 => $this->data['Order Customer Name'],
+            'Invoice Customer Level Type'           => $this->data['Order Customer Level Type'],
             'Invoice Sales Representative Key'      => $this->data['Order Sales Representative Key'],
 
             //   'Invoice Telephone'                    => $this->data['Order Telephone'],
@@ -3104,9 +3109,6 @@ class Order extends DB_Table {
             'editor'    => $this->editor
         ), $account->get('Account Code'), $this->db
         );
-
-
-
 
 
         return $replacement;

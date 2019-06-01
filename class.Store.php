@@ -1716,8 +1716,10 @@ class Store extends DB_Table {
             $this->db->exec($sql);
             $sql = sprintf("DELETE FROM `Store DC Data` WHERE `Store Key`=%d ", $this->id);
             $this->db->exec($sql);
-            $sql = sprintf("DELETE FROM `Invoice Category Dimension` WHERE `Invoice Category Store Key`=%d ", $this->id);
-            $this->db->exec($sql);
+
+
+
+
 
 
             $sql = sprintf("SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`='Store' AND `Timeseries Parent Key`=%d ", $this->id);

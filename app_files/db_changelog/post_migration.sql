@@ -122,3 +122,5 @@ ALTER TABLE `Product Dimension` DROP `Product Parts Weight`, DROP `Product XHTML
 
 ALTER TABLE `Deal Component Dimension` DROP `Deal Component Name Label`,  DROP `Deal Component Term Label`;
 ALTER TABLE `Order Dimension` DROP `Order For`;
+ALTER TABLE `Order Dimension` ADD `Order Customer Level Type` ENUM('Normal','VIP','Partner','Staff') NULL DEFAULT 'Normal' AFTER `Order Customer Fiscal Name`, ADD INDEX (`Order Customer Level Type`);
+
