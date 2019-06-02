@@ -35,15 +35,14 @@ print date('l jS \of F Y h:i:s A')."\n";
 
 $account = new Account();
 
-$account->update_orders();
 
 
-$sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`)   ");
+$sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  where `Order Key`=2353168   ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $order = get_object('Order', $row['Order Key']);
-
-        $order->update_order_payments();
+        $order->update_number_replacements();
+       // $order->update_order_payments();
 
     }
 

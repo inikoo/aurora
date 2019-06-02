@@ -656,6 +656,9 @@ abstract class DB_Table extends stdClass {
 
     public function fast_update($data, $table_full_name = false, $options = '') {
 
+
+
+
         if ($options == 'no_null') {
             $null_if_empty = false;
 
@@ -695,16 +698,23 @@ abstract class DB_Table extends stdClass {
         foreach ($data as $field => $value) {
 
 
+
+
             $sql = sprintf(
                 "UPDATE `%s` SET `%s`=? WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($key_field)
             );
 
+
             $stmt = $this->db->prepare($sql);
 
 
-            if ($value == '' and $null_if_empty) {
+            if ($value === '' and $null_if_empty) {
+                print 'Vs'.$value."\n";
+
                 $value = null;
             }
+
+
 
 
             $stmt->bindParam(1, $value);

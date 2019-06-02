@@ -2442,7 +2442,22 @@ class Store extends DB_Table {
             exit;
         }
 
-        //todo include here Orders with replacements in warehouswe
+
+        $orders_with_replacements_no_alerts=0;
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacements In Warehouse without Alerts`>0 ",
+            $this->id
+        );
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $orders_with_replacements_no_alerts  += $row['num'];
+
+            }
+        }
+
+
 
 
 
@@ -2471,14 +2486,30 @@ class Store extends DB_Table {
         }
 
 
-        //todo include here Orders with replacements in warehouswe with alerts
+        $orders_with_replacements_with_alerts=0;
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacements In Warehouse with Alerts`>0 ",
+            $this->id
+        );
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $orders_with_replacements_with_alerts  += $row['num'];
+
+            }
+        }
 
 
 
-        $data['warehouse_no_alerts']['number'] = $data['warehouse']['number'] - $data['warehouse_with_alerts']['number'];
+
+
+        $data['warehouse_no_alerts']['number'] = $data['warehouse']['number'] - $data['warehouse_with_alerts']['number']+$orders_with_replacements_no_alerts;
         $data['warehouse_no_alerts']['amount'] = $data['warehouse']['amount'] - $data['warehouse_with_alerts']['amount'];
 
         $data['warehouse_no_alerts']['dc_amount'] = $data['warehouse']['dc_amount'] - $data['warehouse_with_alerts']['dc_amount'];
+
+
+        $data['warehouse_with_alerts']['number']+=$orders_with_replacements_with_alerts;
 
 
         $data_to_update = array(
@@ -2491,13 +2522,13 @@ class Store extends DB_Table {
             'Store Orders In Warehouse With Alerts Number' => $data['warehouse_with_alerts']['number'],
             'Store Orders In Warehouse With Alerts Amount' => round($data['warehouse_with_alerts']['amount'], 2)
 
-
         );
 
 
         $this->fast_update($data_to_update, 'Store Data');
 
         $data_to_update = array(
+
             'Store DC Orders In Warehouse Amount'             => round($data['warehouse']['dc_amount'], 2),
             'Store DC Orders In Warehouse No Alerts Amount'   => round($data['warehouse_no_alerts']['dc_amount'], 2),
             'Store DC Orders In Warehouse With Alerts Amount' => round($data['warehouse_with_alerts']['dc_amount'], 2)
@@ -2540,7 +2571,18 @@ class Store extends DB_Table {
         }
 
 
-        //todo include here Orders with replacements in warehouse
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacements Packed Done`>0 ",
+            $this->id
+        );
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $data['packed']['number']  += $row['num'];
+
+            }
+        }
 
 
 
@@ -2592,6 +2634,19 @@ class Store extends DB_Table {
         } else {
             print_r($error_info = $this->db->errorInfo());
             exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacements Approved Done`>0 ",
+            $this->id
+        );
+
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $data['approved']['number']  += $row['num'];
+
+            }
         }
 
 
@@ -2698,8 +2753,17 @@ class Store extends DB_Table {
         }
 
 
-        //todo include here Orders with replacements in warehouse
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacements Dispatched Today`>0 ",
+            $this->id
+        );
 
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $data['dispatched_today']['number']    += $row['num'];
+            }
+        }
 
 
 

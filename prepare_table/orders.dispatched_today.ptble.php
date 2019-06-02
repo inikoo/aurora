@@ -18,7 +18,7 @@ $wheref   = '';
 $currency = '';
 
 
-$where =sprintf( 'where ((`Order State`="Dispatched" and `Order Dispatched Date`>%s ) or (`Order Replacement State`="Dispatched" and `Order Post Transactions Dispatched Date`>%s )) ',
+$where =sprintf( 'where ((`Order State`="Dispatched" and `Order Dispatched Date`>%s ) or  `Order Replacements Dispatched Today`>0) ',
                  prepare_mysql(gmdate('Y-m-d 00:00:00')),  prepare_mysql(gmdate('Y-m-d 00:00:00'))
 
 );
