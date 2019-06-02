@@ -781,6 +781,9 @@ class Order extends DB_Table {
                 return $amount;
 
                 break;
+            case 'replacements_in_process':
+                return $this->data['Order Replacements In Warehouse without Alerts'] + $this->data['Order Replacements In Warehouse with Alerts'] + $this->data['Order Replacements Packed Done'] + $this->data['Order Replacements Approved'];
+                break;
 
 
         }
@@ -2573,23 +2576,26 @@ class Order extends DB_Table {
     }
 
 
-
-
     function update_number_replacements() {
 
+        $old_in_warehouse_no_alerts   = $this->get('Order Replacements In Warehouse without Alerts');
+        $old_in_warehouse_with_alerts = $this->get('Order Replacements In Warehouse with Alerts');
+        $old_packed_done              = $this->get('Order Replacements Packed Done');
+        $old_approved                 = $this->get('Order Replacements Approved');
+        $old_dispatched_today         = $this->get('Order Replacements Dispatched Today');
 
-        $in_warehouse          = 0;
-        $in_warehouse_with_alerts           = 0;
-        $packed_done           = 0;
-        $approved          = 0;
-        $dispatched_today    = 0;
+
+        $in_warehouse             = 0;
+        $in_warehouse_with_alerts = 0;
+        $packed_done              = 0;
+        $approved                 = 0;
+        $dispatched_today         = 0;
 
 
         // if($this->id){
 
         $sql = sprintf(
-            'SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  group by `Delivery Note State` ',
-            $this->id
+            'SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  group by `Delivery Note State` ', $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -2597,28 +2603,29 @@ class Order extends DB_Table {
 
                 //'Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Packed Done','Approved','Dispatched','Cancelled','Cancelled to Restock'
 
+                if ($row['num'] > 0) {
+                    switch ($row['Delivery Note State']) {
+                        case 'Ready to be Picked':
+                        case 'Picker Assigned':
+                        case 'Picking':
+                        case 'Picked':
+                        case 'Packing':
+                        case 'Packed':
+
+                            $in_warehouse += $row['num'];
 
 
-                switch ($row['Delivery Note State']){
-                    case 'Ready to be Picked':
-                    case 'Picker Assigned':
-                    case 'Picking':
-                    case 'Picked':
-                    case 'Packing':
-                    case 'Packed':
-                        $in_warehouse+=$row['num'];
-                        break;
+                            break;
 
-                    case 'Packed Done':
-                        $packed_done+=$row['num'];
-                        break;
-                    case 'Approved':
-                        $approved+=$row['num'];
-                        break;
+                        case 'Packed Done':
+                            $packed_done += $row['num'];
+                            break;
+                        case 'Approved':
+                            $approved += $row['num'];
+                            break;
 
+                    }
                 }
-
-
 
             }
         } else {
@@ -2629,29 +2636,25 @@ class Order extends DB_Table {
 
 
         $sql = sprintf(
-            'SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and `Delivery Note Order Alert`="Yes"  group by `Delivery Note State` ',
-            $this->id
+            'SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and `Delivery Note Order Alert`="Yes"  group by `Delivery Note State` ', $this->id
         );
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
+                if ($row['num'] > 0) {
+                    switch ($row['Delivery Note State']) {
+                        case 'Ready to be Picked':
+                        case 'Picker Assigned':
+                        case 'Picking':
+                        case 'Picked':
+                        case 'Packing':
+                        case 'Packed':
+                            $in_warehouse_with_alerts += $row['num'];
+                            break;
 
-
-
-                switch ($row['Delivery Note State']){
-                    case 'Ready to be Picked':
-                    case 'Picker Assigned':
-                    case 'Picking':
-                    case 'Picked':
-                    case 'Packing':
-                    case 'Packed':
-                    $in_warehouse_with_alerts+=$row['num'];
-                        break;
-
+                    }
                 }
-
-
 
             }
         } else {
@@ -2661,24 +2664,21 @@ class Order extends DB_Table {
         }
 
 
-        $in_warehouse_no_alerts=$in_warehouse-$in_warehouse_with_alerts;
-
+        $in_warehouse_no_alerts = $in_warehouse - $in_warehouse_with_alerts;
 
 
         $sql = sprintf(
             "SELECT count(*) AS num FROM `Delivery Note Dimension` 
-            WHERE  `Delivery Note Order Key`=%d  AND   `Delivery Note State` ='Dispatched' AND `Delivery Note Date Dispatched`>=%s ",
-            $this->id, prepare_mysql(gmdate('Y-m-d 00:00:00'))
+            WHERE  `Delivery Note Order Key`=%d  AND   `Delivery Note State` ='Dispatched' AND `Delivery Note Date Dispatched`>=%s ", $this->id, prepare_mysql(gmdate('Y-m-d 00:00:00'))
 
         );
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
-
-                $dispatched_today=$row['num'];
-
-
+                if ($row['num'] > 0) {
+                    $dispatched_today = $row['num'];
+                }
 
             }
         } else {
@@ -2690,19 +2690,34 @@ class Order extends DB_Table {
 
         $this->fast_update(
             array(
-                'Order Replacements In Warehouse without Alerts'  => $in_warehouse_no_alerts,
-                'Order Replacements In Warehouse with Alerts'  => $in_warehouse_with_alerts,
-                'Order Replacements Packed Done' => $packed_done,
-                'Order Replacements Approved' => $approved,
-                'Order Replacements Dispatched Today' => $dispatched_today,
+                'Order Replacements In Warehouse without Alerts' => $in_warehouse_no_alerts,
+                'Order Replacements In Warehouse with Alerts'    => $in_warehouse_with_alerts,
+                'Order Replacements Packed Done'                 => $packed_done,
+                'Order Replacements Approved'                    => $approved,
+                'Order Replacements Dispatched Today'            => $dispatched_today,
 
 
             )
         );
 
+        $store = get_object('Store', $this->get('Store Key'));
+        $store->update_orders_in_warehouse_data();
+
+        if ($old_in_warehouse_no_alerts != $in_warehouse_no_alerts or $old_in_warehouse_with_alerts != $in_warehouse_with_alerts) {
+            $store->update_orders_in_warehouse_data();
+        }
+        if ($old_packed_done != $packed_done) {
+            $store->update_orders_packed_data();
+        }
+        if ($old_approved != $approved) {
+            $store->update_orders_approved_data();
+        }
+        if ($old_dispatched_today != $dispatched_today) {
+            $store->update_orders_dispatched_today();
+        }
+
 
     }
-
 
 
     function update_insurance($dn_key = false) {
@@ -3153,7 +3168,6 @@ class Order extends DB_Table {
         global $session;
 
 
-
         include_once 'utils/new_fork.php';
 
 
@@ -3220,6 +3234,15 @@ class Order extends DB_Table {
 
 
         $this->update_number_replacements();
+
+
+        if ($this->get('replacements_in_process') == 1) {
+            $this->fast_update(
+                array(
+                    'Order Post Transactions Dispatched Date' => $date
+                )
+            );
+        }
 
 
         require_once 'utils/new_fork.php';

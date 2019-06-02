@@ -532,8 +532,8 @@ function orders_in_warehouse_no_alerts($_data, $db, $user, $account) {
             'public_id'      => sprintf(
                 '<span class="link"  onclick="change_view(\'orders/%s/dashboard/in_warehouse/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
             ),
-            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
-            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['submitted_date'].' +0:00')),
+           // 'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
             'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Replacement State'], $data['Order Key']),
             'payment_state'  => $payment_state,
