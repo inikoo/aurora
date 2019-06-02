@@ -11,19 +11,19 @@
 
 <ul class="flex-container" >
 
-    <li id="delivery_note_flow_ready_to_pick" class="flex-item delivery_note_flow  {if $delivery_note_flow=='ready_to_pick'}selected{/if}  " >
+    <li id="delivery_note_flow_ready_to_pick"  data-current_delivery_note_flow="{$delivery_note_flow}" class="flex-item delivery_note_flow  {if $delivery_note_flow=='ready_to_pick'}selected{/if}  " >
 
         <span>{t}Staging area{/t}</span>
         <div class="title">
             <span class="" >
                 <span class="Delivery_Notes_Ready_to_Pick_Number button discreet" title="{t}New delivery notes{/t}" onclick="get_delivery_notes_table('ready_to_pick',{ parent: 'warehouse','parent_key':{$warehouse->id}})">
-                    <i style="font-size: 50%" class="fa fa-seedling fa-fw " aria-hidden="true"></i> {$warehouse->get('Delivery Notes Ready to Pick Number')}
+                    <i style="font-size: 50%" class="fa fa-seedling fa-fw " aria-hidden="true"></i> {$warehouse->get('formatted_ready_to_pick_number')}
                 </span> | </span>
             <span class="Delivery_Notes_Assigned_Number button " title="{t}Delivery note assigned{/t}"
-                  onclick="get_delivery_notes_table('submitted',{ parent: 'warehouse','parent_key':{$warehouse->id}})">{$warehouse->get('Delivery Notes Assigned Number')} <i style="font-size: 50%" class="fa fa-chalkboard-teacher fa-fw" aria-hidden="true"></i> </span>  </div>
+                  onclick="get_delivery_notes_table('assigned',{ parent: 'warehouse','parent_key':{$warehouse->id}})"> {$warehouse->get('formatted_assigned_number')} <i style="font-size: 50%" class="fa fa-chalkboard-teacher fa-fw" aria-hidden="true"></i> </span>  </div>
         <div >
-            <span class=""><span onclick="get_delivery_notes_table('submitted_not_paid',{ parent: 'warehouse','parent_key':{$warehouse->id}})" class="button discreet Delivery_Notes_Ready_to_Pick_Weight" title=""> {$warehouse->get('Delivery Notes Ready to Pick Weight')} </span> | </span>
-            <span  onclick="get_delivery_notes_table('submitted',{ parent: 'warehouse','parent_key':{$warehouse->id}})" class="Delivery_Notes_Assigned_Weight  button " title=""> {$warehouse->get('Delivery Notes Assigned Weight')} </span>
+            <span class=""><span onclick="get_delivery_notes_table('ready_to_pick',{ parent: 'warehouse','parent_key':{$warehouse->id}})" class="button discreet Delivery_Notes_Ready_to_Pick_Weight" title=""> {$warehouse->get('formatted_ready_to_pick_weight')} </span> | </span>
+            <span  onclick="get_delivery_notes_table('assigned',{ parent: 'warehouse','parent_key':{$warehouse->id}})" class="Delivery_Notes_Assigned_Weight  button " title=""> {$warehouse->get('formatted_assigned_weight')} </span>
         </div>
 
 
@@ -106,5 +106,10 @@
 <script>
     var current_delivery_note_flow='';
 
-    get_delivery_notes_table('{$delivery_note_flow}',{ parent: 'warehouse','parent_key':{$warehouse->id}})
+    get_delivery_notes_table('{$delivery_note_flow}',{ parent: 'warehouse','parent_key':{$warehouse->id}},'Yes')
+
+
+
 </script>
+
+

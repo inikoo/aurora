@@ -1804,10 +1804,10 @@ function get_delivery_notes_element_numbers($db, $data, $user) {
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
-            if ($row['element'] == 'Ready to be Picked' or $row['element'] == 'Picker & Packer Assigned' or $row['element'] == 'Picker Assigned' or $row['element'] == 'Packer Assigned') {
+            if ($row['element'] == 'Ready to be Picked' or $row['element'] == 'Picker Assigned' ) {
                 $row['element'] = 'Ready';
             }
-            if ($row['element'] == 'Picking & Packing' or $row['element'] == 'Picking' or $row['element'] == 'Picked' or $row['element'] == 'Packing') {
+            if ($row['element'] == 'Picking' or $row['element'] == 'Picked' or $row['element'] == 'Packing') {
                 $row['element'] = 'Picking';
             }
 
@@ -2147,9 +2147,9 @@ function get_delivery_note_element_numbers($db, $data) {
 
         if ($row['element'] == 'Ready to be Picked') {
             $_element = 'Ready';
-        } elseif ($row['element'] == 'Picking' or $row['element'] == 'Picking & Packing' or $row['element'] == 'Picked' or $row['element'] == 'Picker Assigned' or $row['element'] == 'Picker & Packer Assigned') {
+        } elseif ($row['element'] == 'Picking'  or $row['element'] == 'Picked' or $row['element'] == 'Picker Assigned') {
             $_element = 'Picking';
-        } elseif ($row['element'] == 'Packing' or $row['element'] == 'Packed' or $row['element'] == 'Packer Assigned' or $row['element'] == 'Packed Done') {
+        } elseif ($row['element'] == 'Packing' or $row['element'] == 'Packed' or $row['element'] == 'Packed Done') {
             $_element = 'Packing';
         } elseif ($row['element'] == 'Approved') {
             $_element = 'Done';

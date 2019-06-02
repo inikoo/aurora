@@ -21,6 +21,9 @@
 
     <script src="/assets/aurora.min.js?v190530v2"></script>
 
+    <script src="/js/picking_and_packing.js"></script>
+
+
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 
 

@@ -1028,11 +1028,18 @@ $tab_defaults = array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
-        'rpp'         => 100,
+        'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'number',
+    ),
 
-
+    'delivery_notes.assigned' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'number',
     ),
 
     'orders_index' => array(

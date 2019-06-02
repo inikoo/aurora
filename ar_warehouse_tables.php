@@ -1774,15 +1774,8 @@ function consignments($_data, $db, $user) {
 
             switch ($data['Delivery Note State']) {
 
-                case 'Picker & Packer Assigned':
-                    $state = _('Picker & packer assigned');
-                    break;
-                case 'Picking & Packing':
-                    $state = _('Picking & packing');
-                    break;
-                case 'Packer Assigned':
-                    $state = _('Packer assigned');
-                    break;
+
+
                 case 'Ready to be Picked':
                     $state = _('Waiting');
                     break;

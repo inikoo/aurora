@@ -82,11 +82,7 @@ class Public_Delivery_Note extends DBW_Table {
 
                 switch ($this->data['Delivery Note State']) {
                     case 'Ready to be Picked':
-                    case 'Picker & Packer Assigned':
-                        return 10;
                         break;
-                    case 'Picker Assigned':
-                    case 'Picking & Packing':
                     case 'Picking':
                         return 20;
                         break;
@@ -94,9 +90,7 @@ class Public_Delivery_Note extends DBW_Table {
                     case 'Picked':
                         return 30;
                         break;
-
-                    case 'Packer Assigned':
-                    case 'Packing':
+                        case 'Packing':
                         return 40;
                         break;
                     case 'Packed':
@@ -233,15 +227,6 @@ class Public_Delivery_Note extends DBW_Table {
             case ('State'):
                 switch ($this->data['Delivery Note State']) {
 
-                    case 'Picker & Packer Assigned':
-                        return _('Picker & packer assigned');
-                        break;
-                    case 'Picking & Packing':
-                        return _('Picking & packing');
-                        break;
-                    case 'Packer Assigned':
-                        return _('Packer assigned');
-                        break;
                     case 'Ready to be Picked':
                         return _('Ready to be picked');
                         break;
@@ -283,15 +268,6 @@ class Public_Delivery_Note extends DBW_Table {
             case ('Abbreviated State'):
                 switch ($this->data['Delivery Note State']) {
 
-                    case 'Picker & Packer Assigned':
-                        return _('Picker & packer assigned');
-                        break;
-                    case 'Picking & Packing':
-                        return _('Picking & packing');
-                        break;
-                    case 'Packer Assigned':
-                        return _('Packer assigned');
-                        break;
                     case 'Ready to be Picked':
                         return _('Waiting');
                         break;

@@ -720,6 +720,8 @@ abstract class DB_Table extends stdClass {
 
     }
 
+
+
     public function fast_update_json_field($field, $key, $value, $table_full_name = '') {
 
 

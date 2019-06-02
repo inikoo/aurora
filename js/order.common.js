@@ -1233,7 +1233,7 @@ function save_item_out_of_stock_qty_change(element) {
 
 
 
-function get_orders_table( order_flow, metadata,force) {
+function get_orders_table( order_flow, metadata, force) {
 
     $('.order_flow').removeClass('selected')
     $('.blue').removeClass('blue')
@@ -1331,30 +1331,14 @@ function get_orders_table( order_flow, metadata,force) {
     if($('#order_flow_website').data('current_order_flow')!=order_flow  || force=='Yes' ){
 
         $('#order_flow_website').data('current_order_flow',order_flow)
-            new_url = window.location.pathname.replace(/dashboard.*$/, '') + 'dashboard/' + order_flow
 
-
-            //console.log(new_url)
-
-
+            var new_url = window.location.pathname.replace(/dashboard.*$/, '') + 'dashboard/' + order_flow
             window.top.history.pushState({
                 request: new_url}, null, new_url)
-
-
-
-
-        // history.pushState(null, null, new_url)
-
-        var request = "/ar_views.php?tipo=widget_details&widget=" + widget + '&metadata=' + JSON.stringify(metadata)
-
-        //console.log(request)
-
-        $.getJSON(request, function (data) {
-
-
-            $('#widget_details').html(data.widget_details).removeClass('hide');
-
-        });
+            var request = "/ar_views.php?tipo=widget_details&widget=" + widget + '&metadata=' + JSON.stringify(metadata)
+            $.getJSON(request, function (data) {
+                $('#widget_details').html(data.widget_details).removeClass('hide');
+            });
 
     }
 

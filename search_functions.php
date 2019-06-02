@@ -2188,15 +2188,8 @@ function search_delivery_notes($db, $account, $user, $data) {
 
                 switch ($row['Delivery Note State']) {
 
-                    case 'Picker & Packer Assigned':
-                        $details = _('Picker & packer assigned');
-                        break;
-                    case 'Picking & Packing':
-                        $details = _('Picking & packing');
-                        break;
-                    case 'Packer Assigned':
-                        $details = _('Packer assigned');
-                        break;
+
+
                     case 'Ready to be Picked':
                         $details = _('Ready to be picked');
                         break;
