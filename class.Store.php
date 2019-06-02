@@ -1020,6 +1020,10 @@ class Store extends DB_Table {
         return (isset($this->settings[$key]) ? $this->settings[$key] : '');
     }
 
+    function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
+    }
+
     function create_timeseries($data, $fork_key = 0) {
 
         $data['Timeseries Parent']     = 'Store';
@@ -2178,8 +2182,8 @@ class Store extends DB_Table {
         $sql = "SELECT count(*) AS `Store Total Delivery Notes`,
              sum(IF(`Delivery Note State`='Cancelled'  OR `Delivery Note State`='Cancelled to Restock' ,1,0 )) AS `Store Returned Delivery Notes`,
              sum(IF(`Delivery Note State`='Ready to be Picked' ,1,0 )) AS `Store Ready to Pick Delivery Notes`,
-             sum(IF(`Delivery Note State`='Picking & Packing' OR `Delivery Note State`='Picking' OR `Delivery Note State`='Picker Assigned' OR `Delivery Note State`='' ,1,0 )) AS `Store Picking Delivery Notes`,
-             sum(IF(`Delivery Note State`='Packing' OR `Delivery Note State`='Packer Assigned' OR `Delivery Note State`='Picked' ,1,0 )) AS `Store Packing Delivery Notes`,
+             sum(IF(`Delivery Note State`='Picking' OR `Delivery Note State`='Picker Assigned' OR `Delivery Note State`='' ,1,0 )) AS `Store Picking Delivery Notes`,
+             sum(IF(`Delivery Note State`='Packing' OR `Delivery Note State`='Picked' ,1,0 )) AS `Store Packing Delivery Notes`,
              sum(IF(`Delivery Note State`='Approved' OR `Delivery Note State`='Packed' ,1,0 )) AS `Store Ready to Dispatch Delivery Notes`,
              sum(IF(`Delivery Note State`='Dispatched' ,1,0 )) AS `Store Dispatched Delivery Notes`,
              sum(IF(`Delivery Note Type`='Replacement & Shortages' OR `Delivery Note Type`='Replacement' ,1,0 )) AS `Store Delivery Notes For Replacements`,
@@ -2438,23 +2442,10 @@ class Store extends DB_Table {
             exit;
         }
 
-
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Store Key`=%d  AND  `Order Replacement State` ='InWarehouse' ", $this->id
-        );
+        //todo include here Orders with replacements in warehouswe
 
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
 
-                $data['warehouse']['number'] += $row['num'];
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
 
 
         $sql = sprintf(
@@ -2480,23 +2471,8 @@ class Store extends DB_Table {
         }
 
 
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE    `Order Store Key`=%d   AND  `Order Replacement State` ='InWarehouse' AND `Order Delivery Note Alert`='Yes'  ", $this->id
-        );
+        //todo include here Orders with replacements in warehouswe with alerts
 
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                $data['warehouse_with_alerts']['number'] += $row['num'];
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
 
 
         $data['warehouse_no_alerts']['number'] = $data['warehouse']['number'] - $data['warehouse_with_alerts']['number'];
@@ -2564,23 +2540,8 @@ class Store extends DB_Table {
         }
 
 
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order Replacement State` ='PackedDone'  ", $this->id
-        );
+        //todo include here Orders with replacements in warehouse
 
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                $data['packed']['number'] += $row['num'];
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
 
 
         $data_to_update = array(
@@ -2737,24 +2698,9 @@ class Store extends DB_Table {
         }
 
 
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacement State` ='Dispatched' AND `Order Post Transactions Dispatched Date`>=%s ", $this->id, prepare_mysql(gmdate('Y-m-d 00:00:00'))
-
-        );
+        //todo include here Orders with replacements in warehouse
 
 
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                $data['dispatched_today']['number'] += $row['num'];
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
 
 
         $data_to_update = array(

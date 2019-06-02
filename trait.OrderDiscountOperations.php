@@ -1687,7 +1687,6 @@ trait OrderDiscountOperations {
                 if (in_array(
                     $this->data['Order State'], array(
                                                   'Ready to Pick',
-                                                  'Picking & Packing',
                                                   'Packed',
                                                   'PackedDone',
                                                   'InWarehouse'

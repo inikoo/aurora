@@ -991,6 +991,14 @@ ALTER TABLE `Customer Dimension` ADD `Customer Order Sticky Note` TEXT  CHARACTE
 ALTER TABLE `Location Dimension` ADD `Location Sticky Note` TEXT  CHARACTER SET utf8  COLLATE utf8_general_ci  NULL  ;
 
 
+ALTER TABLE `Order Dimension` ADD `Order Replacements Dispatched Today` SMALLINT UNSIGNED NULL DEFAULT '0' AFTER `Order Care Level`;
+ALTER TABLE `Order Dimension` ADD `Order Replacements Approved` SMALLINT UNSIGNED NULL DEFAULT '0' AFTER `Order Care Level`;
+ALTER TABLE `Order Dimension` ADD `Order Replacements Packed Done` SMALLINT UNSIGNED NULL DEFAULT '0' AFTER `Order Care Level`;
+ALTER TABLE `Order Dimension` ADD `Order Replacements In Warehouse with Alerts` SMALLINT UNSIGNED NULL DEFAULT '0' AFTER `Order Care Level`;
+ALTER TABLE `Order Dimension` ADD `Order Replacements In Warehouse without Alerts` SMALLINT UNSIGNED NULL DEFAULT '0' AFTER `Order Care Level`;
+ALTER TABLE `Warehouse Dimension` ADD `Warehouse Properties` JSON NULL DEFAULT NULL AFTER `Warehouse Max Percentage Part Location Unknown Locations`, ADD `Warehouse Settings` JSON NULL DEFAULT NULL AFTER `Warehouse Properties`;
+update `Warehouse Dimension` set `Warehouse Properties`='{}', `Warehouse Settings`='{}';
+
 ======= fer migration ordering in dw and costa
 
                     ALTER TABLE `Invoice Tax Dimension` ADD `Invoice Tax Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Invoice Tax Key`);

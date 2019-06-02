@@ -714,9 +714,10 @@ function picked_offline_items_qty_change(element) {
 
 }
 
-function get_delivery_notes_table( delivery_note_flow, metadata) {
+function get_delivery_notes_table( delivery_note_flow, metadata, force) {
 
     $('.delivery_note_flow').removeClass('selected')
+    $('.blue').removeClass('blue')
 
 
       console.log(delivery_note_flow)
@@ -724,18 +725,18 @@ function get_delivery_notes_table( delivery_note_flow, metadata) {
     switch (delivery_note_flow){
 
 
-        case 'website':
-            $('#delivery_note_flow_website').addClass('selected')
-            widget='orders.website.wget'
-            $('.Orders_In_Basket_Number').addClass('blue')
-            $('.Orders_In_Basket_Amount').addClass('blue')
+        case 'ready_to_pick':
 
+            $('#delivery_note_flow_ready_to_pick').addClass('selected')
+            widget='delivery_notes.ready_to_pick.wget'
+            $('.Delivery_Notes_Ready_to_Pick_Number').addClass('blue')
+            $('.Delivery_Notes_Ready_to_Pick_Weight').addClass('blue')
             break;
-        case 'website_purges':
-            $('#delivery_note_flow_website').addClass('selected')
-            widget='orders.website.purges.wget'
-            $('.Orders_In_Basket_Number').addClass('blue')
-            $('.Orders_In_Basket_Amount').addClass('blue')
+        case 'assigned':
+            $('#delivery_note_flow_assigned').addClass('selected')
+            widget='delivery_notes.assigned.wget'
+            $('.Delivery_Notes_Assigned_Number').addClass('blue')
+            $('.Delivery_Notes_Assigned_Weight').addClass('blue')
 
             break;
         case 'website_mailshots':
@@ -799,46 +800,32 @@ function get_delivery_notes_table( delivery_note_flow, metadata) {
             break;
 
         default:
-            delivery_note_flow='ready_to_pick'
-
             $('#delivery_note_flow_ready_to_pick').addClass('selected')
             widget='delivery_notes.ready_to_pick.wget'
             $('.Delivery_Notes_Ready_to_Pick_Number').addClass('blue')
             $('.Delivery_Notes_Ready_to_Pick_Weight').addClass('blue')
 
 
-    }
 
-    if(current_delivery_note_flow==''){
-        current_delivery_note_flow=delivery_note_flow
     }
 
 
-    if(current_delivery_note_flow!=delivery_note_flow) {
-        new_url = window.location.pathname.replace(/dashboard.*$/, '') + 'dashboard/' + delivery_note_flow
+    if($('#delivery_note_flow_ready_to_pick').data('current_delivery_note_flow')!=delivery_note_flow  || force=='Yes' ){
 
+        $('#delivery_note_flow_ready_to_pick').data('current_delivery_note_flow',delivery_note_flow)
 
-        //console.log(new_url)
-
-
+        var new_url = window.location.pathname.replace(/pending_delivery_notes.*$/, '') + 'pending_delivery_notes/' + delivery_note_flow
         window.top.history.pushState({
             request: new_url}, null, new_url)
+        var request = "/ar_views.php?tipo=widget_details&widget=" + widget + '&metadata=' + JSON.stringify(metadata)
+        $.getJSON(request, function (data) {
+            $('#widget_details').html(data.widget_details).removeClass('hide');
+        });
+
     }
 
 
 
-    // history.pushState(null, null, new_url)
-
-    var request = "/ar_views.php?tipo=widget_details&widget=" + widget + '&metadata=' + JSON.stringify(metadata)
-
-    //console.log(request)
-
-    $.getJSON(request, function (data) {
-
-
-        $('#widget_details').html(data.widget_details).removeClass('hide');
-
-    });
 
 }
 

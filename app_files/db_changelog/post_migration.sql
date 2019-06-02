@@ -124,3 +124,5 @@ ALTER TABLE `Deal Component Dimension` DROP `Deal Component Name Label`,  DROP `
 ALTER TABLE `Order Dimension` DROP `Order For`;
 ALTER TABLE `Order Dimension` ADD `Order Customer Level Type` ENUM('Normal','VIP','Partner','Staff') NULL DEFAULT 'Normal' AFTER `Order Customer Fiscal Name`, ADD INDEX (`Order Customer Level Type`);
 
+
+ ALTER TABLE `Delivery Note Dimension` CHANGE `Delivery Note State` `Delivery Note State` ENUM('Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Packed Done','Approved','Dispatched','Cancelled','Cancelled to Restock') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Ready to be Picked';

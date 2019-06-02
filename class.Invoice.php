@@ -204,7 +204,7 @@ class Invoice extends DB_Table {
 
 
                                 $this->db->exec($sql);
-                                $refund_otf       =$this->db->lastInsertId();
+                                $refund_otf       = $this->db->lastInsertId();
                                 $_feedback        = $transaction['feedback'];
                                 $_feedback['otf'] = $refund_otf;
                                 $feedback[]       = $_feedback;
@@ -298,7 +298,7 @@ class Invoice extends DB_Table {
 
 
                                 $this->db->exec($sql);
-                                $refund_onptf       =$this->db->lastInsertId();
+                                $refund_onptf       = $this->db->lastInsertId();
                                 $_feedback          = $transaction['feedback'];
                                 $_feedback['onptf'] = $refund_onptf;
                                 $feedback[]         = $_feedback;
@@ -382,7 +382,7 @@ class Invoice extends DB_Table {
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
                     $data[$row['Transaction Tax Code']] = $row['net'];
-                    $item_net += $row['net'];
+                    $item_net                           += $row['net'];
                 }
             } else {
                 print_r($error_info = $this->db->errorInfo());
@@ -891,9 +891,39 @@ class Invoice extends DB_Table {
 
             case 'Category Object':
 
-                return get_object('Category',$this->data['Invoice Category Key']);
+                return get_object('Category', $this->data['Invoice Category Key']);
                 break;
 
+            case 'number_otfs':
+
+                $number_otfs = 0;
+                $sql         = sprintf('select count(*) as num from `Order Transaction Fact` where `Invoice Key`=%d  ', $this->id);
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $number_otfs = $row['num'];
+                    }
+                }
+
+                return $number_otfs;
+                break;
+            case 'number_onptf':
+
+                $number_onptf = 0;
+                $sql          = sprintf('select count(*) as num from `Order No Product Transaction Fact` where `Invoice Key`=%d  ', $this->id);
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $number_onptf = $row['num'];
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+                return $number_onptf;
+                break;
 
         }
 
@@ -1408,7 +1438,7 @@ class Invoice extends DB_Table {
         return strftime("%e %b %Y", strtotime($this->data[$field].' +0:00'));
     }
 
-    function delete($note = '') {
+    function delete($note = '', $fix_mode = false) {
 
         $is_refund = ($this->data['Invoice Type'] == 'Refund' ? true : false);
 
@@ -1666,25 +1696,30 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         );
 
 
-        if (!$is_refund) {
+        if (!$fix_mode) {
 
 
-            $dn = get_object('DeliveryNote', $order->get('Order Delivery Note Key'));
+
+            if (!$is_refund) {
 
 
-            $dn->fast_update(
-                array(
-                    'Delivery Note Invoiced'                    => 'No',
-                    'Delivery Note Invoiced Net DC Amount'      => 0,
-                    'Delivery Note Invoiced Shipping DC Amount' => 0
+                $dn = get_object('DeliveryNote', $order->get('Order Delivery Note Key'));
 
-                )
-            );
 
-            $order->update_state('Invoice Deleted', $options = '', $metadata = array('note' => $note));
-        } else {
+                $dn->fast_update(
+                    array(
+                        'Delivery Note Invoiced'                    => 'No',
+                        'Delivery Note Invoiced Net DC Amount'      => 0,
+                        'Delivery Note Invoiced Shipping DC Amount' => 0
 
-            $order->update_totals();
+                    )
+                );
+
+                $order->update_state('Invoice Deleted', $options = '', $metadata = array('note' => $note));
+            } else {
+
+                $order->update_totals();
+            }
         }
 
         $history_data = array(

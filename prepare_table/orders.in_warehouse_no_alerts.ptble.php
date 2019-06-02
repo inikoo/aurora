@@ -16,6 +16,8 @@ $wheref   = '';
 $currency = '';
 
 
+
+
 $where = 'where (`Order State`="InWarehouse" or `Order Replacement State`="InWarehouse"  ) and `Order Delivery Note Alert`!="Yes" ';
 $table = '`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
 

@@ -415,7 +415,7 @@
                 </div>
 
                 <div id="create_replacement_operations"
-                     class="order_operation {if {$order->get('State Index')}<100  or $order->get('Order Replacement State')=='InWarehouse' or $order->get('Order Replacement State')=='PackedDone'  or $order->get('Order Replacement State')=='Approved'   }hide{/if}">
+                     class="order_operation {if {$order->get('State Index')}<100    }hide{/if}">
                     <div class="square_button right  " title="{t}Create replacement{/t}">
                         <i class="fa fa-truck red " aria-hidden="true" onclick="toggle_order_operation_dialog('create_replacement')"></i>
                         <table id="create_replacement_dialog" border="0" class="order_operation_dialog hide" style="color:#777">

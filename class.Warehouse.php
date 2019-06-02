@@ -62,6 +62,11 @@ class Warehouse extends DB_Table {
                 $this->data = $row;
                 $this->id   = $this->data['Warehouse Key'];
                 $this->code = $this->data['Warehouse Code'];
+
+                $this->properties = json_decode($this->data['Warehouse Properties'], true);
+                $this->settings   = json_decode($this->data['Warehouse Settings'], true);
+
+
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -604,17 +609,36 @@ class Warehouse extends DB_Table {
 
                 return money($this->data['Warehouse '.$key], $account->get('Account Currency Code'));
                 break;
-            case 'Delivery Notes Ready to Pick Weight':
-            case 'Delivery Notes Assigned Weight':
 
-
-                return weight($this->data['Warehouse '.$key]);
-                break;
 
             case 'Address':
 
 
                 return '<div style="line-height: 150%">'.nl2br($this->data['Warehouse Address']).'</div>';
+                break;
+
+            case 'formatted_ready_to_pick_number':
+            case 'formatted_assigned_number':
+
+                return number($this->properties(preg_replace('/^formatted_/','',$key)));
+
+                break;
+
+            case 'formatted_ready_to_pick_weight':
+            case 'formatted_assigned_weight':
+
+
+                $weight=$this->properties(preg_replace('/^formatted_/','',$key));
+
+                if($weight>1000){
+                    return weight($weight/1000,'T',1,true);
+
+                }else{
+                    return weight($weight,'Kg',0,true);
+
+                }
+
+
                 break;
 
             default:
@@ -2077,19 +2101,28 @@ and `Part Distinct Locations`>1
         }
 
 
-        $this->fast_update(
-            array(
-                'Warehouse Delivery Notes Ready to Pick Number' => $ready_to_pick_number,
-                'Warehouse Delivery Notes Ready to Pick Weight' => $ready_to_pick_weight,
-                'Warehouse Delivery Notes Assigned Number'      => $assigned_number,
-                'Warehouse Delivery Notes Assigned Weight'      => $assigned_weight,
-
-            )
-        );
 
 
+        $this->fast_update_json_field('Warehouse Properties','ready_to_pick_number',$ready_to_pick_number);
+        $this->fast_update_json_field('Warehouse Properties','ready_to_pick_weight',$ready_to_pick_weight);
+        $this->fast_update_json_field('Warehouse Properties','assigned_number',$assigned_number);
+        $this->fast_update_json_field('Warehouse Properties','assigned_weight',$assigned_weight);
+
+
+
+
+    }
+
+
+    function settings($key) {
+        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
+    }
+
+
+    function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
     }
 }
 
 
-?>
+

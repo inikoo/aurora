@@ -68,8 +68,7 @@ function get_orders_operations($row, $user) {
                     'Picking',
                     'Picked',
                     'Packing',
-                    'Packed',
-                    'Picking & Packing'
+                    'Packed'
                 )
             )) {
 
@@ -324,35 +323,7 @@ function get_dn_operations($row, $user, $parent = 'order', $parent_key = '') {
 
 
         $operations .= '</div>';
-    } elseif ($row['Delivery Note State'] == 'Packer Assigned') {
-
-        $operations .= '<div class="buttons small '.$class.'">';
-
-
-        $operations .= '<span style="float:left;;margin-left:7px"><img style="height:12px;width:12px" src="/art/icons/user_red.png" title="'._('Packing assigned to')
-            .'"/> <span style="font-weight:bold">'.$row['Delivery Note Assigned Packer Alias'].'</span>';
-        if ($user->can_edit('assign_pp')) {
-            $operations .= ' <img src="/art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
-        }
-
-
-        $operations .= '</span>';
-        if ($row['Delivery Note Assigned Packer Key'] == $user->get_staff_key()) {
-            $operations .= '<button  onClick="start_packing('.$row['Delivery Note Key'].','.$row['Delivery Note Assigned Packer Key'].')"  ><img id="start_packing_img_'.$row['Delivery Note Key']
-                .'" style="height:12px;width:12px" src="/art/icons/briefcase.png"> '._('Start Packing')."</button>";
-        }
-
-
-        if ($user->data['User Type'] != 'Warehouse' and $parent != 'order') {
-
-            $operations .= '<button  style="margin-left:5px" onClick="location.href=\'order_pack_aid.php?id='.$row['Delivery Note Key']
-                .'\'"  ><img style="height:12px;width:12px" src="/art/icons/paste_plain.png"> '._('Packing Aid')."</button>";
-        }
-        $operations .= '</div>';
-
-        // $operations.='<b>'.$row['Delivery Note Assigned Packer Alias'].'</b>   <a  href="order_pack_aid.php?id='.$row['Delivery Note Key'].'"  > '._('pack order')."</a>";
-        //  $operations.=' <img src="/art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
-    } elseif ($row['Delivery Note State'] == 'Picking') {
+    }  elseif ($row['Delivery Note State'] == 'Picking') {
 
         $operations .= '<div class="buttons small '.$class.'">';
 
@@ -423,15 +394,6 @@ function get_dn_operations($row, $user, $parent = 'order', $parent_key = '') {
 
         $operations .= '</div>';
 
-
-    } elseif ($row['Delivery Note State'] == 'Picking & Packing') {
-        if ($user->data['User Type'] != 'Warehouse' and $parent != 'order') {
-            $operations .= '<b>'.$row['Delivery Note Assigned Picker Alias'].'</b>   <a  href="order_pick_aid.php?id='.$row['Delivery Note Key'].'"  > '._('picking order')."</a>";
-            $operations .= ' <img src="/art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')">';
-
-            $operations .= ' | <b>'.$row['Delivery Note Assigned Packer Alias'].'</b>   <a  href="order_pack_aid.php?id='.$row['Delivery Note Key'].'"  > '._('packing order')."</a>";
-            $operations .= ' <img src="/art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
-        }
 
     } elseif ($row['Delivery Note State'] == 'Packed Done') {
 

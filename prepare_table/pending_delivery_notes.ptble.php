@@ -15,7 +15,6 @@ $table    = '`Delivery Note Dimension` D ';
 $wheref   = '';
 $group_by = '';
 
-//'Picker & Packer Assigned','Picking & Packing','Packer Assigned','Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Approved','Dispatched','Cancelled','Cancelled to Restock','Packed Done'
 
 $where = sprintf("where  `Delivery Note Warehouse Key`=%d  and `Delivery Note Pending`='Yes'  ", $parameters['parent_key']);
 
@@ -36,9 +35,9 @@ if (isset($parameters['elements'])) {
                         $_elements .= ",'Ready to be Picked'";
 
                     } elseif ($_key == 'Picking') {
-                        $_elements .= ",'Picking','Picking & Packing','Picked','Picker Assigned','Picker & Packer Assigned'";
+                        $_elements .= ",'Picking','Picked','Picker Assigned'";
                     } elseif ($_key == 'Packing') {
-                        $_elements .= ",'Packing','Packed','Packer Assigned','Packed Done'";
+                        $_elements .= ",'Packing','Packed','Packed Done'";
                     } elseif ($_key == 'Done') {
                         $_elements .= ",'Approved'";
                     } elseif ($_key == 'Send') {
@@ -217,16 +216,7 @@ function dn_awhere($awhere) {
     $state_where = '';
     foreach ($where_data['state'] as $state) {
         switch ($state) {
-            case 'picking_and_packing':
-                $state_where .= sprintf(
-                    " or `Delivery Note State`='Picking & Packing' "
-                );
-                break;
-            case 'packer_assigned':
-                $state_where .= sprintf(
-                    " or `Delivery Note State`='Packer Assigned'  "
-                );
-                break;
+
             case 'ready_to_be_picked':
                 $state_where .= sprintf(
                     " or  `Delivery Note State`='Ready to be Picked'  "
