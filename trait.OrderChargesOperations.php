@@ -24,15 +24,23 @@ trait OrderChargesOperations {
 
 
         $charges_to_delete = array();
+        $charges_to_ignore= array();
 
         $sql = sprintf(
-            'select `Order No Product Transaction Fact Key`  from `Order No Product Transaction Fact`  where `Order Key`=%d and `Transaction Type`="Charges" and `Type`="Order"  and `Order No Product Transaction Pinned`="No"  ', $this->id
+            'select `Order No Product Transaction Fact Key`,`Order No Product Transaction Pinned`  from `Order No Product Transaction Fact`  where `Order Key`=%d and `Transaction Type`="Charges" and `Type`="Order"    ', $this->id
 
 
         );
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                $charges_to_delete[$row['Order No Product Transaction Fact Key']] = $row['Order No Product Transaction Fact Key'];
+                if($row['Order No Product Transaction Pinned']=='Yes'){
+                    $charges_to_ignore[$row['Order No Product Transaction Fact Key']] = $row['Order No Product Transaction Fact Key'];
+
+                }else{
+                    $charges_to_delete[$row['Order No Product Transaction Fact Key']] = $row['Order No Product Transaction Fact Key'];
+
+                }
+
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -65,20 +73,24 @@ trait OrderChargesOperations {
                     if ($row = $result->fetch()) {
 
 
-                        unset($charges_to_delete[$row['Order No Product Transaction Fact Key']]);
+                        if(!in_array($row['Order No Product Transaction Fact Key'],$charges_to_ignore)) {
 
-                        $sql = sprintf(
-                            'update `Order No Product Transaction Fact` set `Transaction Description`=%s ,`Transaction Gross Amount`=%.2f,`Transaction Net Amount`=%.2f,`Tax Category Code`=%s,`Transaction Tax Amount`=%.2f ,
+
+                            unset($charges_to_delete[$row['Order No Product Transaction Fact Key']]);
+
+                            $sql = sprintf(
+                                'update `Order No Product Transaction Fact` set `Transaction Description`=%s ,`Transaction Gross Amount`=%.2f,`Transaction Net Amount`=%.2f,`Tax Category Code`=%s,`Transaction Tax Amount`=%.2f ,
                             `Currency Exchange`=%f,`Metadata`=%s,`Delivery Note Key`=%s
 
                           where `Order No Product Transaction Fact Key`=%d ', prepare_mysql($charge_data['Charge Description']), $charge_data['Charge Net Amount'], $charge_data['Charge Net Amount'], prepare_mysql($this->data['Order Tax Code']), $tax,
-                            $this->data['Order Currency Exchange'], prepare_mysql($this->data['Order Original Metadata']), prepare_mysql($dn_key), $row['Order No Product Transaction Fact Key']
+                                $this->data['Order Currency Exchange'], prepare_mysql($this->data['Order Original Metadata']), prepare_mysql($dn_key), $row['Order No Product Transaction Fact Key']
 
 
-                        );
+                            );
 
 
-                        $this->db->exec($sql);
+                            $this->db->exec($sql);
+                        }
 
 
                     } else {
@@ -346,7 +358,8 @@ trait OrderChargesOperations {
 
 
         $sql = sprintf(
-            'select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact`  left join `Charge Dimension` on (`Charge Key`=`Transaction Type Key`)   where  `Charge Scope`="Hanging" and  `Transaction Type`="Charges" and `Order Key`=%d  ', $this->id
+            'select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact`  left join `Charge Dimension` on (`Charge Key`=`Transaction Type Key`)   
+                where  `Charge Scope`="Hanging" and  `Transaction Type`="Charges" and `Order Key`=%d  ', $this->id
         );
 
 
@@ -363,6 +376,9 @@ trait OrderChargesOperations {
                     'update `Order No Product Transaction Fact`    set `Order No Product Transaction Pinned`="Yes" ,  `Transaction Gross Amount`=%.2f ,`Transaction Net Amount`=%.2f ,`Transaction Tax Amount`=%.2f where  `Order No Product Transaction Fact Key`=%d  ',
                     $value, $value, $tax,$row['Order No Product Transaction Fact Key']
                 );
+
+
+
 
                 $this->db->exec($sql);
 
