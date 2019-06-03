@@ -3239,7 +3239,7 @@ class Order extends DB_Table {
         if ($this->get('replacements_in_process') == 1) {
             $this->fast_update(
                 array(
-                    'Order Post Transactions Dispatched Date' => $date
+                    'Order Replacement Created Date' => $date
                 )
             );
         }
