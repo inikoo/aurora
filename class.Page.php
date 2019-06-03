@@ -4756,7 +4756,7 @@ class Page extends DB_Table {
             return;
         }
 
-        // print_r($content_data);
+      //  print_r($content_data);
 
 
         $sql = sprintf(
@@ -4821,11 +4821,22 @@ class Page extends DB_Table {
                         //print_r($items_category_key_index);
                         //exit;
 
+
+
+
                         if (in_array($item['category_key'], $items_category_key_index)) {
 
                             $item_data = $items[$item['category_key']];
 
 
+
+
+
+/*
+                            print_r($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
+
+
+                            print_r($item_data);
 
 
 
@@ -4842,6 +4853,19 @@ class Page extends DB_Table {
 
 
 
+
+
+
+                          //  print $item_data['Category Main Image']."\n";
+
+
+
+                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_src']=$item_data['Category Main Image'];
+                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website']= $image_website;
+                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website']= $image_mobile_website;
+
+*/
+
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Subject';
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_key']     = $item_data['Page Key'];
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_code']    = $item_data['Webpage Code'];
@@ -4849,12 +4873,9 @@ class Page extends DB_Table {
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['number_products'] = $item_data['Product Category Active Products'];
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['link']            = $item_data['Webpage URL'];
 
-                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_src']=$item_data['Category Main Image'];
-                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website']= $image_website;
-
-                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website']= $image_mobile_website;
 
 
+//print_r($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
 
 
                             unset($items_category_key_index[$item['category_key']]);
