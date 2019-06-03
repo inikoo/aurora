@@ -37,6 +37,25 @@ $account = new Account();
 
 
 
+$sql = sprintf("SELECT `Invoice Key` FROM `Invoice Dimension`   ");
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $invoice = get_object('Invoice', $row['Invoice Key']);
+
+        $invoice->categorize(true);
+
+    }
+
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
+
+
+
+exit;
+
+
 $sql = sprintf("SELECT `Invoice Key` FROM `Invoice Dimension`  where  `Invoice Customer Level Type`='Partner'  ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {

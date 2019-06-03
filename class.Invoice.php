@@ -1335,11 +1335,6 @@ class Invoice extends DB_Table {
             );
 
 
-        } else {
-
-            print "\n".$sql."\n";
-
-            print_r($this->db->errorInfo());
         }
 
 
