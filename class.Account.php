@@ -2415,23 +2415,7 @@ class Account extends DB_Table {
             exit;
         }
 
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE   `Order Replacement State` ='Dispatched' AND `Order Post Transactions Dispatched Date`>=%s ", prepare_mysql(gmdate('Y-m-d 00:00:00'))
-
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $data['dispatched_today']['number'] += $row['num'];
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
+      // todo do same as store
 
 
         $data_to_update = array(

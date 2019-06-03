@@ -709,7 +709,7 @@ abstract class DB_Table extends stdClass {
 
 
             if ($value === '' and $null_if_empty) {
-                print 'Vs'.$value."\n";
+
 
                 $value = null;
             }
