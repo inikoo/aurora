@@ -103,15 +103,13 @@ switch ($_REQUEST['action']) {
 
         $response = array(
             'state' => 'Error',
-            'msg'   => "Action ".$_REQUEST['action'].' not found'
+            'msg'   => "Action ".$_REQUEST['action'].' not found',
+            'msg2'   => 'test'
         );
         echo json_encode($response);
         exit;
 
 
-        //$response = log_api_key_access_failure($db, $api_key_key, 'Fail_Operation', "Action ".$_REQUEST['action'].' not found');
-        echo json_encode($response);
-        exit;
 
 }
 
