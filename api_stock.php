@@ -99,6 +99,82 @@ switch ($_REQUEST['action']) {
         break;
 
 
+    case 'set_part_feedback':
+
+        if (!isset($_REQUEST['part_sku'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part_sku needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        $part = get_object('part', $_REQUEST['part_sku']);
+        $part->editor = $editor;
+
+        if (!$part->id) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part not found ('.$_REQUEST['part_sku'].')  '
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if (empty($_REQUEST['feedback'])) {
+
+
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'feedback needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if (empty($_REQUEST['scope'])) {
+
+
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'scope needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if (!in_array(
+            $_REQUEST['scope'], array(
+                                   'Marketing',
+                                   'Supplier',
+
+                               )
+        )) {
+
+
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'Invalid scope value ('.$_REQUEST['symbol'].')  '
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => ''
+        );
+        echo json_encode($response);
+        exit;
+        break;
+
     default:
 
 
