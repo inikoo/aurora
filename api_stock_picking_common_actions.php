@@ -836,76 +836,7 @@ switch ($_REQUEST['action']) {
         exit;
         break;
 
-    case 'update_part_symbol':
 
-        if (!isset($_REQUEST['part_sku'])) {
-            $response = array(
-                'state' => 'Error',
-                'msg'   => 'part_sku needed'
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-
-        $part = get_object('part', $_REQUEST['part_sku']);
-        $part->editor = $editor;
-
-        if (!$part->id) {
-            $response = array(
-                'state' => 'Error',
-                'msg'   => 'part not found ('.$_REQUEST['part_sku'].')  '
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-
-        if (empty($_REQUEST['symbol'])) {
-
-
-            $response = array(
-                'state' => 'Error',
-                'msg'   => 'symbol needed'
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-        if (!in_array(
-            $_REQUEST['symbol'], array(
-                                   'none',
-                                   'star',
-                                   'skull',
-                                   'radioactive',
-                                   'peace',
-                                   'gear',
-                                   'love'
-                               )
-        )) {
-
-
-            $response = array(
-                'state' => 'Error',
-                'msg'   => 'Invalid symbol value ('.$_REQUEST['symbol'].')  '
-            );
-            echo json_encode($response);
-            exit;
-        }
-
-
-        $part->update(
-            array(
-                'Part Symbol' => $_REQUEST['symbol']
-            )
-        );
-
-        $response = array(
-            'state' => 'OK',
-            'data'  => $part->get('Part Symbol'););
-        echo json_encode($response);
-        exit;
-        break;
 
     default:
 
