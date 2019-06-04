@@ -1933,6 +1933,31 @@ function search_orders($db, $account, $user, $data) {
     }
 
 
+
+    $sql = sprintf(
+        "select `Order Key`,`Invoice Public ID` from `Order Dimension` left join `Invoice Dimension` on (`Invoice Order Key`=`Order Key`)  where true $where_store and `Invoice Public ID` like '%s%%'  order by `Invoice Key` desc limit 10 ", $q
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            if ($row['Invoice Public ID'] == $q) {
+                $candidates[$row['Order Key']] = 10;
+            } else {
+
+                $len_name                      = strlen($row['Invoice Public ID']);
+                $len_q                         = strlen($q);
+                $factor                        = $len_q / $len_name;
+                $candidates[$row['Order Key']] = 9 * $factor;
+            }
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
     arsort($candidates);
 
 
@@ -1964,7 +1989,11 @@ function search_orders($db, $account, $user, $data) {
     $order_keys = preg_replace('/^,/', '', $order_keys);
 
     $sql = sprintf(
-        "SELECT `Order Key`,`Store Code`,`Order Customer Purchase Order ID`,`Order Store Key`,`Order Public ID`,`Order State`,`Order Customer Name` FROM `Order Dimension` LEFT JOIN `Store Dimension` ON (`Order Store Key`=`Store Key`) WHERE `Order Key` IN (%s)", $order_keys
+        "SELECT `Order Key`,`Store Code`,`Order Customer Purchase Order ID`,`Invoice Public ID`,`Order Store Key`,`Order Public ID`,`Order State`,`Order Customer Name` 
+
+            FROM `Order Dimension` LEFT JOIN `Store Dimension` ON (`Order Store Key`=`Store Key`) LEFT JOIN `Invoice Dimension` ON (`Order Invoice Key`=`Invoice Key`) 
+            
+            WHERE `Order Key` IN (%s)", $order_keys
     );
 
     if ($result = $db->query($sql)) {
@@ -2013,9 +2042,16 @@ function search_orders($db, $account, $user, $data) {
             }
 
 
+
+            $label=$row['Order Public ID'];
+            if($row['Invoice Public ID']!='' and $row['Invoice Public ID']!=$row['Order Public ID']){
+                $label.=' ('.$row['Invoice Public ID'].')';
+            }
+
+
             $results[$row['Order Key']] = array(
                 'store'   => $row['Store Code'],
-                'label'   => highlightkeyword(sprintf('%s', $row['Order Public ID']), $queries),
+                'label'   => highlightkeyword($label, $queries),
                 'details' => $details,
                 'view'    => sprintf(
                     'orders/%d/%d', $row['Order Store Key'], $row['Order Key']
@@ -2338,6 +2374,9 @@ function search_invoices($db, $account, $user, $data) {
         $sql = sprintf(
             "select `Invoice Key`,`Invoice Public ID` from `Invoice Dimension` where true $where_store and `Invoice Public ID` like '%s%%'  order by `Invoice Key` desc limit 10 ", $q
         );
+
+
+
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {

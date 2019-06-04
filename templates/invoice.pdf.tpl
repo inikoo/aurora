@@ -150,7 +150,7 @@
                 <div style="text-align: right">
                     {t}Order Date{/t}: <b>{$order->get_date('Order Date')}</b>
                 </div>
-               
+
                 {if $invoice->get('Invoice Type')!='Invoice'}
                 <div style="text-align: right">
                     {t}Invoice Number{/t}: <b>{$original_invoice->get('Invoice Public ID')}</b>
