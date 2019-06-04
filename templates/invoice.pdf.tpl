@@ -94,8 +94,18 @@
                     {$store->get('Store URL')}
                 </div>
             </td>
-            <td style="text-align: right;">{$label_title_no}<br/>
-                <span style="font-weight: bold; font-size: 12pt;">{$invoice->get('Invoice Public ID')}</span></td>
+
+            {if $number_orders==1}
+
+            <td style="text-align: right;">{t}Order Number{/t}<br/>
+
+
+                     <b>{$order->get('Order Public ID')}</b>
+                </td>
+
+            {/if}
+
+
         </tr>
     </table>
 </htmlpageheader>
@@ -124,7 +134,7 @@
     <tr>
         <td>
             <h1>
-                {$label_title}
+                {$label_title} {$invoice->get('Invoice Public ID')}
             </h1>
         </td>
         <td style="text-align: right">
@@ -140,9 +150,7 @@
                 <div style="text-align: right">
                     {t}Order Date{/t}: <b>{$order->get_date('Order Date')}</b>
                 </div>
-                <div style="text-align: right">
-                    {t}Order Number{/t}: <b>{$order->get('Order Public ID')}</b>
-                </div>
+               
                 {if $invoice->get('Invoice Type')!='Invoice'}
                 <div style="text-align: right">
                     {t}Invoice Number{/t}: <b>{$original_invoice->get('Invoice Public ID')}</b>

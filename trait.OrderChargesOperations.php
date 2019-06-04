@@ -72,7 +72,7 @@ trait OrderChargesOperations {
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
 
-                        
+
                         if (!in_array($row['Order No Product Transaction Fact Key'], $charges_to_ignore)) {
 
 
