@@ -1230,7 +1230,23 @@ class Invoice extends DB_Table {
                 exit;
             }
 
-            // print_r($data);
+
+
+            if($this->data['Invoice Net Amount Off']!=0 ){
+
+
+
+                if (isset($data[$this->data['Invoice Tax Code']] )) {
+                    $data[$this->data['Invoice Tax Code']] += $this->data['Invoice Net Amount Off'];
+                } else {
+                    $data[$this->data['Invoice Tax Code']] = $this->data['Invoice Net Amount Off'];
+                }
+
+
+            }
+
+
+
 
             $sql = sprintf(
                 "    INSERT INTO `Invoice Tax Dimension` (`Invoice Key`) VALUES (%d)", $this->id
@@ -1859,7 +1875,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
 
 
-        if($this->data['Invoice Net Amount Off']!=0 or true){
+        if($this->data['Invoice Net Amount Off']!=0 ){
 
 
 
@@ -1872,15 +1888,11 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
         }
 
-
         $sql = sprintf("DELETE FROM `Invoice Tax Bridge` WHERE `Invoice Key`=%d", $this->id);
         $this->db->exec($sql);
 
-
         $sql = sprintf("DELETE FROM `Invoice Tax Dimension` WHERE `Invoice Key`=%d", $this->id);
         $this->db->exec($sql);
-
-
 
         $sql = sprintf(
             "    INSERT INTO `Invoice Tax Dimension` (`Invoice Key`) VALUES (%d)", $this->id
@@ -1894,11 +1906,6 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
 
         foreach ($data as $tax_code => $amount) {
-
-
-
-
-
 
             $tax_category = get_object('Tax_Category', $tax_code);
             $tax          = round($tax_category->get('Tax Category Rate') * $amount, 2);
