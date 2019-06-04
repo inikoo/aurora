@@ -193,22 +193,11 @@ trait OrderChargesOperations {
         }
 
 
-        if ($this->data['Order Charges Method'] == 'Set') {
 
-
-            $charges[] = array(
-                'Charge Net Amount'  => ($this->data['Order Charges Net Amount'] == '' ? 0 : $this->data['Order Charges Net Amount']),
-                'Charge Key'         => 0,
-                'Charge Description' => 'Set'
-            );
-
-            return $charges;
-
-        }
 
 
         $sql = sprintf(
-            "SELECT * FROM `Charge Dimension` WHERE `Charge Trigger`='Order' AND (`Charge Trigger Key`=%d  OR `Charge Trigger Key` IS NULL) AND `Store Key`=%d", $this->id, $this->data['Order Store Key']
+            "SELECT * FROM `Charge Dimension` WHERE `Charge Trigger`='Order' AND (`Charge Trigger Key`=%d  OR `Charge Trigger Key` IS NULL) AND `Store Key`=%d  and `Charge Active`='Yes' ", $this->id, $this->data['Order Store Key']
         );
 
         if ($result = $this->db->query($sql)) {
