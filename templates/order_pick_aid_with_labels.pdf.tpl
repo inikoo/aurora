@@ -83,18 +83,23 @@
 
 
 <htmlpageheader name="myheader">
-<table width="100%"><tr>
-<td width="50%" style="color:#000;"><span style=";">{t}Order Pick Aid{/t} {$delivery_note->get('Delivery Note ID')}</span><br />
+	<table width="100%">
+		<tr>
+			<td width="50%" style="color:#000;">
+				<div style=";">{t}Order Pick Aid{/t} <b>{$delivery_note->get('Delivery Note ID')}</b></div>
+				<div>(C{"%05d"|sprintf:$delivery_note->get('Delivery Note Customer Key')}) {$delivery_note->get('Delivery Note Customer Name')}</div>
+
+			</td>
 
 
-</td>
-
-
-
-<td width="50%" style="text-align: right;">
-
-</td>
-</tr></table>
+			<td width="50%" style="text-align: right;">
+				{if $delivery_note->get('Delivery Note Order Date Placed')}
+					<div style="text-align: right">{t}Order date{/t}: {$delivery_note->get('Order Datetime Placed')}</div>
+				{/if}
+				<div style="text-align: right">{t}Delivery note date{/t}: {$delivery_note->get('Creation Date')}</div>
+			</td>
+		</tr>
+	</table>
 
 </htmlpageheader>
 
@@ -147,45 +152,48 @@
 			<div class="address_value">{$delivery_note->get('Delivery Note Address Postal Label')|nl2br}</div>
 		</td>
 		<td width="10%">&nbsp;</td>
-		<td width="45%" style="border: 0.1mm solid #888888;font-size:9pt">
-			<table id="order_pick_aid_data" cellspacing="0" cellpadding="0">
-				<tr>
-					<td class="label">{t}Picker{/t}:</td>
-					<td class="to_fill"></td>
-				</tr>
-				<tr>
-					<td class="label">{t}Packer{/t}:</td>
-					<td class="to_fill"></td>
-				</tr>
-				<tr>
-					<td class="label">{t}Weight{/t}:</td>
-					<td class="to_fill">{$delivery_note->get('Weight')}</td>
-				</tr>
-				<tr>
-					<td class="label">{t}Parcels{/t}:</td>
-					<td class="to_fill"></td>
-				</tr>
-				<tr>
-					<td class="label">{t}Courier{/t}:</td>
-					<td class="to_fill"></td>
-				</tr>
-				<tr>
-					<td class="label">{t}Consignment{/t}:</td>
-					<td class="to_fill"></td>
-				</tr>
-			</table>
+		<td width="45%" style="border: 0.1mm solid #888888;font-size:9pt"><barcode style="float:left;margin-left: 20px;border:0px solid #ccc" code="{$qr_data}" type="QR" />
+
 	</tr>
 </table>
 <br>
 
-<div style="float:left;height:150px;border:0.2mm  solid #000;margin-bottom:20px;padding:10px;width: 143.5mm;">
+<div style="float:left;height:140px;border:0.2mm  solid #000;margin-bottom:20px;padding:10px;width: 98.5mm;">
 	{assign expected_payment $order->get('Expected Payment')}
 	{if $expected_payment!=''}<div style="font-size: 7pt;font-family: sans-serif;">{$expected_payment}</div>{/if}
 	<span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Notes{/t}:</span>
 	{if $order->get('Order Delivery Sticky Note')!=''}<br> {$order->get('Order Delivery Sticky Note')|nl2br}<br>{/if}
 	<br> {$delivery_note->get('Delivery Note Warehouse Note')|nl2br}<br>
 </div>
-<barcode style="float:left;margin-left: 20px;border:0px solid #ccc" code="{$qr_data}" type="QR" />
+
+<div style="float:left;height:140px;border:0.2mm  solid #000;border-left:none;margin-bottom:20px;padding:10px;width: 70mm;">
+<table id="order_pick_aid_data" cellspacing="0" cellpadding="0">
+	<tr>
+		<td class="label">{t}Picker{/t}:</td>
+		<td class="to_fill"></td>
+	</tr>
+	<tr>
+		<td class="label">{t}Packer{/t}:</td>
+		<td class="to_fill"></td>
+	</tr>
+	<tr>
+		<td class="label">{t}Weight{/t}:</td>
+		<td class="to_fill">{$delivery_note->get('Weight')}</td>
+	</tr>
+	<tr>
+		<td class="label">{t}Parcels{/t}:</td>
+		<td class="to_fill"></td>
+	</tr>
+	<tr>
+		<td class="label">{t}Courier{/t}:</td>
+		<td class="to_fill"></td>
+	</tr>
+	<tr>
+		<td class="label">{t}Consignment{/t}:</td>
+		<td class="to_fill"></td>
+	</tr>
+</table>
+</div>
 
 
 
@@ -239,6 +247,6 @@
 	{/foreach}
 	</tbody>
 </table>
-<br>
+
 </body>
 </html>
