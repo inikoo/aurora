@@ -1863,7 +1863,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
 
 
-            if (isset($data[$row['Tax Category Code']])) {
+            if (isset($data[$this->data['Invoice Tax Code']] )) {
                 $data[$this->data['Invoice Tax Code']] += $this->data['Invoice Net Amount Off'];
             } else {
                 $data[$this->data['Invoice Tax Code']] = $this->data['Invoice Net Amount Off'];
