@@ -20,7 +20,7 @@ function get_invoice_showcase($data, $smarty, $user, $db) {
     }
 
 
-    $data['_object']->update_tax_data();
+    //$data['_object']->update_tax_data();
 
 
 
