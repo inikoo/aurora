@@ -262,6 +262,21 @@ switch ($tipo) {
         disassociate_category($account, $db, $data, $editor);
         break;
 
+    case 'transfer_customer_credit_to':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'customer_key' => array('type' => 'key'),
+                         'amount'  => array('type' => 'amount'),
+                         'payment_account_key'  => array('type' => 'key'),
+                         'reference'  => array('type' => 'string'),
+
+
+                     )
+        );
+        transfer_customer_credit_to($account, $db, $data, $editor);
+        break;
+
+
     default:
         $response = array(
             'state' => 405,
@@ -3603,4 +3618,16 @@ function disassociate_category($account, $db, $data, $editor) {
 }
 
 
-?>
+function transfer_customer_credit_to($account, $db, $user, $editor, $data, $smarty) {
+
+    $customer         = get_object('Customer', $data['customer_key']);
+    $customer->editor = $editor;
+
+
+
+
+    $response = array('state' => 200);
+    echo json_encode($response);
+
+}
+
