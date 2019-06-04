@@ -1810,8 +1810,127 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
     }
 
+    function update_tax_data(){
+
+
+
+        $data = array();
+
+        $sql = sprintf(
+            "SELECT  `Transaction Tax Code`,sum(`Order Transaction Amount`) AS net   FROM `Order Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Transaction Tax Code`  ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $data[$row['Transaction Tax Code']] = $row['net'];
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT  `Tax Category Code`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Tax Category Code`  ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                if (isset($data[$row['Tax Category Code']])) {
+                    $data[$row['Tax Category Code']] += $row['net'];
+                } else {
+                    $data[$row['Tax Category Code']] = $row['net'];
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+
+
+        if($this->data['Invoice Net Amount Off']!=0 or true){
+
+
+
+            if (isset($data[$row['Tax Category Code']])) {
+                $data[$this->data['Invoice Tax Code']] += $this->data['Invoice Net Amount Off'];
+            } else {
+                $data[$this->data['Invoice Tax Code']] = $this->data['Invoice Net Amount Off'];
+            }
+
+
+        }
+
+
+        $sql = sprintf("DELETE FROM `Invoice Tax Bridge` WHERE `Invoice Key`=%d", $this->id);
+        $this->db->exec($sql);
+
+
+        $sql = sprintf("DELETE FROM `Invoice Tax Dimension` WHERE `Invoice Key`=%d", $this->id);
+        $this->db->exec($sql);
+
+
+
+        $sql = sprintf(
+            "    INSERT INTO `Invoice Tax Dimension` (`Invoice Key`) VALUES (%d)", $this->id
+        );
+
+        //print "$sql\n";
+
+        $this->db->exec($sql);
+
+
+
+
+        foreach ($data as $tax_code => $amount) {
+
+
+
+
+
+
+            $tax_category = get_object('Tax_Category', $tax_code);
+            $tax          = round($tax_category->get('Tax Category Rate') * $amount, 2);
+
+            $is_base = 'Yes';
+
+            $sql = sprintf(
+                "    UPDATE `Invoice Tax Dimension` SET `%s`=%.2f WHERE `Invoice Key`=%d", addslashes($tax_code), $tax, $this->id
+            );
+            $this->db->exec($sql);
+            // print "$sql\n";
+            $sql = sprintf(
+                "INSERT INTO `Invoice Tax Bridge` (`Invoice Key`,`Tax Code`,`Tax Amount`,`Tax Base`) VALUES   (%d,%s,%.2f,%s) 
+                ON DUPLICATE KEY UPDATE `Tax Amount`=%.2f, `Tax Base`=%s", $this->id, prepare_mysql($tax_code), $tax, prepare_mysql($is_base), $tax,
+                prepare_mysql($is_base)
+
+            );
+            $this->db->exec($sql);
+            //print "$sql\n";
+
+
+        }
+
+
+
+
+
+
+    }
+
 
 }
 
 
-?>
+
