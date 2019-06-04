@@ -221,8 +221,14 @@ $smarty->assign(
     'qr_data', $qr_data
 );
 
+if(isset($_REQUEST['with_labels'])){
+    $html = $smarty->fetch('order_pick_aid_with_labels.pdf.tpl');
 
-$html = $smarty->fetch('order_pick_aid.pdf.tpl');
+}else{
+    $html = $smarty->fetch('order_pick_aid.pdf.tpl');
+
+}
+
 
 $mpdf->WriteHTML($html);
 $mpdf->Output($delivery_note->get('Delivery Note ID').'_picking.pdf', 'I');

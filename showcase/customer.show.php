@@ -31,6 +31,7 @@ function get_customer_showcase($data, $smarty) {
 
 
     $smarty->assign('customer', $customer);
+    $smarty->assign('store', $data['store']);
 
     return $smarty->fetch('showcase/customer.tpl');
 
