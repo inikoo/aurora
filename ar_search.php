@@ -127,7 +127,7 @@ switch ($tipo) {
             } elseif ($data['state']['module'] == 'accounting_server') {
                 if (in_array(
                     $data['state']['section'], array(
-                                                 'invoices',
+                                                 'invoices','invoice','category'
 
                                              )
                 )) {
@@ -155,7 +155,7 @@ switch ($tipo) {
                 $data['scope_key'] = $data['state']['current_store'];
                 if (in_array(
                     $data['state']['section'], array(
-                                                 'invoices',
+                                                 'invoices','invoice','category'
 
                                              )
                 )) {
