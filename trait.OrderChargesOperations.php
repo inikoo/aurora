@@ -24,7 +24,7 @@ trait OrderChargesOperations {
 
 
         $charges_to_delete = array();
-        $charges_to_ignore= array();
+        $charges_to_ignore = array();
 
         $sql = sprintf(
             'select `Order No Product Transaction Fact Key`,`Order No Product Transaction Pinned`  from `Order No Product Transaction Fact`  where `Order Key`=%d and `Transaction Type`="Charges" and `Type`="Order"    ', $this->id
@@ -33,10 +33,10 @@ trait OrderChargesOperations {
         );
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                if($row['Order No Product Transaction Pinned']=='Yes'){
+                if ($row['Order No Product Transaction Pinned'] == 'Yes') {
                     $charges_to_ignore[$row['Order No Product Transaction Fact Key']] = $row['Order No Product Transaction Fact Key'];
 
-                }else{
+                } else {
                     $charges_to_delete[$row['Order No Product Transaction Fact Key']] = $row['Order No Product Transaction Fact Key'];
 
                 }
@@ -72,8 +72,8 @@ trait OrderChargesOperations {
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
 
-
-                        if(!in_array($row['Order No Product Transaction Fact Key'],$charges_to_ignore)) {
+                        
+                        if (!in_array($row['Order No Product Transaction Fact Key'], $charges_to_ignore)) {
 
 
                             unset($charges_to_delete[$row['Order No Product Transaction Fact Key']]);
@@ -103,7 +103,6 @@ trait OrderChargesOperations {
                             prepare_mysql($this->data['Order Currency']), $this->data['Order Currency Exchange'], prepare_mysql($this->data['Order Original Metadata']), prepare_mysql($dn_key)
 
                         );
-
 
                         $this->db->exec($sql);
                     }
@@ -141,6 +140,7 @@ trait OrderChargesOperations {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
 
                 $net = $row['net'];
                 $tax = $row['tax'];
@@ -191,9 +191,6 @@ trait OrderChargesOperations {
 
             return $charges;
         }
-
-
-
 
 
         $sql = sprintf(
@@ -352,10 +349,8 @@ trait OrderChargesOperations {
         );
 
 
-
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-
 
 
                 $tax = $value * $this->data['Order Tax Rate'];
@@ -363,29 +358,26 @@ trait OrderChargesOperations {
 
                 $sql = sprintf(
                     'update `Order No Product Transaction Fact`    set `Order No Product Transaction Pinned`="Yes" ,  `Transaction Gross Amount`=%.2f ,`Transaction Net Amount`=%.2f ,`Transaction Tax Amount`=%.2f where  `Order No Product Transaction Fact Key`=%d  ',
-                    $value, $value, $tax,$row['Order No Product Transaction Fact Key']
+                    $value, $value, $tax, $row['Order No Product Transaction Fact Key']
                 );
-
-
 
 
                 $this->db->exec($sql);
 
-            }else{
+            } else {
 
 
-                $sql=sprintf('select `Charge Key` from `Charge Dimension`   where  `Charge Scope`="Hanging" and  `Charge Store Key`=%d  ',
-                             $this->get('Store Key')
+                $sql = sprintf(
+                    'select `Charge Key` from `Charge Dimension`   where  `Charge Scope`="Hanging" and  `Charge Store Key`=%d  ', $this->get('Store Key')
                 );
 
 
-                if ($result2=$this->db->query($sql)) {
+                if ($result2 = $this->db->query($sql)) {
                     if ($row2 = $result2->fetch()) {
 
 
-
-                        $charge=get_object('Charge',$row2['Charge Key']);
-                        $tax = $charge->get('Charge Metadata') * $this->data['Order Tax Rate'];
+                        $charge = get_object('Charge', $row2['Charge Key']);
+                        $tax    = $charge->get('Charge Metadata') * $this->data['Order Tax Rate'];
 
                         $sql = sprintf(
                             "INSERT INTO `Order No Product Transaction Fact` (`Order No Product Transaction Pinned`,`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,
@@ -397,7 +389,7 @@ trait OrderChargesOperations {
 					
 					%s,%f,%s)  ", prepare_mysql('Yes'), $this->id, prepare_mysql($this->data['Order Date']), prepare_mysql('Charges'), $charge->id,
 
-                            prepare_mysql($charge->get('Charge Description')), $charge->get('Charge Metadata'), $charge->get('Charge Metadata'), prepare_mysql($this->data['Order Tax Code']), $tax,
+                            prepare_mysql($charge->get('Charge Description')), $value, $value, prepare_mysql($this->data['Order Tax Code']), $tax,
 
                             prepare_mysql($this->data['Order Currency']), $this->data['Order Currency Exchange'], prepare_mysql($this->data['Order Original Metadata'])
 
@@ -410,13 +402,8 @@ trait OrderChargesOperations {
                 }
 
 
-
-
-
             }
         }
-
-
 
 
         $this->update_charges($dn_key);
@@ -464,8 +451,6 @@ trait OrderChargesOperations {
                     prepare_mysql($this->data['Order Currency']), $this->data['Order Currency Exchange'], prepare_mysql($this->data['Order Original Metadata'])
 
                 );
-
-
 
 
                 $this->db->exec($sql);
