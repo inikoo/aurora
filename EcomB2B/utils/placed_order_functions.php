@@ -87,6 +87,16 @@ function get_order_info($order) {
         );
     }
 
+    if ($order->get('Order Deal Amount Off') != 0) {
+        $order_info .= sprintf(
+            '<tr style="border-bottom:1px solid #cccccc">
+		<td colspan=2></td>
+		<td style="text-align:right;padding:5px;vertical-align:top;border-bottom:1px solid #cccccc">%s</td>
+		<td style="padding:5px;vertical-align:top;text-align:right;border-bottom:1px solid #cccccc">%s</td></tr>', _('Amount off'), $order->get('Deal Amount Off')
+
+        );
+    }
+
 
     $order_info .= sprintf(
         '<tr style="border-bottom:1px solid #cccccc">
@@ -231,5 +241,3 @@ function get_pay_info($order, $website, $smarty) {
 
 }
 
-
-?>
