@@ -113,6 +113,7 @@
 <sethtmlpageheader name="myheader" value="on" show-this-page="1" />
 <sethtmlpagefooter name="myfooter" value="on" />
 
+<div style="border:1px solid #000;height: 450mm">
 <table width="100%" style="font-family: sans-serif;" cellpadding="10">
 	<tr>
 		<td width="40%" style="border: 0.1mm solid #888888;">
@@ -156,7 +157,8 @@
 
 	</tr>
 </table>
-<br>
+</div>
+
 
 <div style="float:left;height:140px;border:0.2mm  solid #000;margin-bottom:20px;padding:10px;width: 98.5mm;">
 	{assign expected_payment $order->get('Expected Payment')}
