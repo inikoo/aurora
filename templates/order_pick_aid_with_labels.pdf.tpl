@@ -158,7 +158,7 @@
 </table>
 <br>
 
-<div style="float:left;height:140px;border:0.2mm  solid #000;margin-bottom:20px;padding:10px;width: 98.5mm;">
+<div style="float:left;height:160px;border:0.2mm  solid #000;margin-bottom:20px;padding:10px;width: 98.5mm;">
 	{assign expected_payment $order->get('Expected Payment')}
 	{if $expected_payment!=''}<div style="font-size: 7pt;font-family: sans-serif;">{$expected_payment}</div>{/if}
 	<span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Notes{/t}:</span>
@@ -166,7 +166,7 @@
 	<br> {$delivery_note->get('Delivery Note Warehouse Note')|nl2br}<br>
 </div>
 
-<div style="float:left;height:140px;border:0.2mm  solid #000;border-left:none;margin-bottom:20px;padding:10px;width: 70mm;">
+<div style="float:left;height:160px;border:0.2mm  solid #000;border-left:none;margin-bottom:20px;padding:10px;width: 70mm;">
 <table id="order_pick_aid_data" cellspacing="0" cellpadding="0">
 	<tr>
 		<td class="label">{t}Picker{/t}:</td>
