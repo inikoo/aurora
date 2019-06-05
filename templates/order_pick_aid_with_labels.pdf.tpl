@@ -113,10 +113,11 @@
 <sethtmlpageheader name="myheader" value="on" show-this-page="1" />
 <sethtmlpagefooter name="myfooter" value="on" />
 
-<div style="height: 45mm">
+<div style="height: 45mm;margin-bottom: 2mm">
 <table width="100%" style="font-family: sans-serif;height: 45mm" cellpadding="0">
 	<tr>
-		<td style="width:78mm;height:45mm;border: 0.1mm solid #888888;">
+		<td style="width:78mm;height:45mm;;margin:10mm;padding:15px 10px">
+
 			<div >
 				{if $customer->get('Customer Preferred Contact Number')=='Mobile'}
 					<div  class=" {if !$customer->get('Customer Main Plain Mobile')}hide{/if}">
@@ -151,9 +152,12 @@
 			<span class="address_label">{t}Delivery Address{/t}:</span><br />
 			</div>
 			<div class="address_value">{$delivery_note->get('Delivery Note Address Postal Label')|nl2br}</div>
+			</div>
 		</td>
 		<td style="width:24mm;height:45mm">&nbsp;</td>
-		<td style="width:78mm;height:45mm;border: 0.1mm solid #888888;font-size:9pt"><barcode style="float:left;margin-left: 20px;border:0px solid #ccc" code="{$qr_data}" type="QR" />
+		<td style="width:78mm;height:45mm;font-size:9pt;padding:15px 10px 15px 0px">
+			<barcode style="float:left;margin-left: 20px;border:0px solid #ccc" code="{$qr_data}" type="QR" />
+		</td>
 
 	</tr>
 </table>
