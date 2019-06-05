@@ -169,7 +169,7 @@
 <div style="float:left;height:160px;border:0.2mm  solid #000;border-left:none;margin-bottom:20px;padding:10px;width: 70mm;">
 <table id="order_pick_aid_data" cellspacing="0" cellpadding="0">
 	<tr>
-		<td class="label">{t}Picker{/t}:</td>
+		<td class="label">{t}Picker.{/t}:</td>
 		<td class="to_fill"></td>
 	</tr>
 	<tr>
@@ -195,9 +195,10 @@
 </table>
 </div>
 
-
+<br/>
 
 <div style=" clear:both;font-size: 9pt;margin-bottom:2pt">{$formatted_number_of_items}, {$formatted_number_of_picks}</div>
+
 
 <table class="items" width="100%" style="font-size: 7pt; border-collapse: collapse;" cellpadding="8">
 	<thead>
