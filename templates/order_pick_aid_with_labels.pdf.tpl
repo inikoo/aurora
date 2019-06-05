@@ -115,7 +115,7 @@
 
 <table width="100%" style="font-family: sans-serif;" cellpadding="10">
 	<tr>
-		<td width="45%" style="border: 0.1mm solid #888888;">
+		<td width="40%" style="border: 0.1mm solid #888888;">
 			<div >
 				{if $customer->get('Customer Preferred Contact Number')=='Mobile'}
 					<div  class=" {if !$customer->get('Customer Main Plain Mobile')}hide{/if}">
@@ -151,14 +151,14 @@
 			</div>
 			<div class="address_value">{$delivery_note->get('Delivery Note Address Postal Label')|nl2br}</div>
 		</td>
-		<td width="10%">&nbsp;</td>
+		<td width="15%">&nbsp;</td>
 		<td width="45%" style="border: 0.1mm solid #888888;font-size:9pt"><barcode style="float:left;margin-left: 20px;border:0px solid #ccc" code="{$qr_data}" type="QR" />
 
 	</tr>
 </table>
 <br>
 
-<div style="float:left;height:160px;border:0.2mm  solid #000;margin-bottom:20px;padding:10px;width: 98.5mm;">
+<div style="float:left;height:140px;border:0.2mm  solid #000;margin-bottom:20px;padding:10px;width: 98.5mm;">
 	{assign expected_payment $order->get('Expected Payment')}
 	{if $expected_payment!=''}<div style="font-size: 7pt;font-family: sans-serif;">{$expected_payment}</div>{/if}
 	<span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Notes{/t}:</span>
@@ -166,10 +166,10 @@
 	<br> {$delivery_note->get('Delivery Note Warehouse Note')|nl2br}<br>
 </div>
 
-<div style="float:left;height:160px;border:0.2mm  solid #000;border-left:none;margin-bottom:20px;padding:10px;width: 70mm;">
+<div style="float:left;height:140px;border:0.2mm  solid #000;border-left:none;margin-bottom:20px;padding:10px;width: 70mm;">
 <table id="order_pick_aid_data" cellspacing="0" cellpadding="0">
 	<tr>
-		<td class="label">{t}Picker.{/t}:</td>
+		<td class="label">{t}Picker{/t}:</td>
 		<td class="to_fill"></td>
 	</tr>
 	<tr>
@@ -195,10 +195,9 @@
 </table>
 </div>
 
-<br/>
+
 
 <div style=" clear:both;font-size: 9pt;margin-bottom:2pt">{$formatted_number_of_items}, {$formatted_number_of_picks}</div>
-
 
 <table class="items" width="100%" style="font-size: 7pt; border-collapse: collapse;" cellpadding="8">
 	<thead>
