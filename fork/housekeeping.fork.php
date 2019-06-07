@@ -1518,6 +1518,10 @@ function fork_housekeeping($job) {
             $customer = get_object('Customer', $data['customer_key']);
             $customer->update_invoices();
 
+            $store=get_object('Store',$customer->get('Store Key'));
+            $store->update_invoices();
+
+
             require_once 'conf/timeseries.php';
             require_once 'class.Timeserie.php';
 
@@ -2668,7 +2672,7 @@ function fork_housekeeping($job) {
 
 
             $store = get_object('Store', $data['store_key']);
-
+            $store->update_invoices();
 
             $smarty = new Smarty();
             $base   = '';
