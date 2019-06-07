@@ -54,7 +54,7 @@ if ($result = $db->query($sql)) {
 
     }
 }
-
+exit;
 
 function update_products_next_shipment_date($db) {
 

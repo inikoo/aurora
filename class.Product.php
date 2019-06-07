@@ -1055,10 +1055,10 @@ class Product extends Asset {
                 break;
 
             case 'Product Unit Weight':
-                $label = _('unit weight');
+                $label = _('Weight shown in website');
                 break;
             case 'Product Unit Dimensions':
-                $label = _('unit dimensions');
+                $label = _('Dimensions shown in website');
                 break;
             case 'Product Units Per Case':
                 $label = _('units per outer');
@@ -3427,6 +3427,14 @@ class Product extends Asset {
         $this->fast_update(array('Product XHTML Parts' => $this->get('Parts')));
 
 
+
+        $this->update_metadata = array(
+            'class_html' => array(
+                'Package_Weight' => $this->get('Package Weight'),
+            )
+
+        );
+
         global $account;
 
         require_once 'utils/new_fork.php';
@@ -3446,11 +3454,14 @@ class Product extends Asset {
         $weight = 0;
 
         $sql = sprintf(
-            'SELECT `Part Package Weight`,`Product Part Ratio` AS num FROM `Product Part Bridge`  left join `Part Dimension` on (`Product Part Part SKU`=`Part SKO`)  WHERE `Product Part Product ID`=%d', $this->id
+            'SELECT `Part Package Weight`,`Product Part Ratio` FROM `Product Part Bridge`  left join `Part Dimension` on (`Product Part Part SKU`=`Part SKU`)  WHERE `Product Part Product ID`=%d', $this->id
         );
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
+
+
                 if(is_numeric($row['Part Package Weight']) and $row['Part Package Weight']>0 ){
                     $weight += $row['Part Package Weight']*$row['Product Part Ratio'];
 
