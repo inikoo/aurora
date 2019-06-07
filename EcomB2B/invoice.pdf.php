@@ -205,7 +205,7 @@ if ($invoice->data['Invoice Type'] == 'Invoice') {
 $transactions = array();
 
 $sql = sprintf(
-    "SELECT  `Product Barcode Number`,`Product Origin Country Code`,`Delivery Note Quantity` as Qty, `Order Transaction Amount` as Amount, `Product Unit Weight`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
+    "SELECT  `Product Barcode Number`,`Product Origin Country Code`,`Delivery Note Quantity` as Qty, `Order Transaction Amount` as Amount, `Product Package Weight`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
 `Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code`
  FROM `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN
   `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=%d  and `Current Dispatching State`   and (`Order Transaction Amount`!=0 or `Delivery Note Quantity`!=0)  ORDER BY `Product Code`", $invoice->id
@@ -252,8 +252,8 @@ if ($result = $db->query($sql)) {
             $description .= ' <br>'._('RRP').': '.money($row['Product RRP'], $row['Order Currency Code']);
         }
 
-        if ($row['Product Unit Weight'] != 0 and $print_weight) {
-            $description .= ' <br>'._('Weight').': '.weight($row['Product Unit Weight'] * $row['Product Units Per Case']);
+        if ($row['Product Package Weight'] != 0 and $print_weight) {
+            $description .= ' <br>'._('Weight').': '.weight($row['Product Package Weight'] );
         }
 
         if ($row['Product Origin Country Code'] != '' and $print_origin) {
@@ -411,7 +411,7 @@ if ($result = $db->query($sql)) {
 $transactions_out_of_stock = array();
 $sql                       = sprintf(
     "SELECT (`No Shipped Due Out of Stock`) AS qty,`Product RRP`,
-`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code` ,`Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`,`Product Origin Country Code`,`Product Unit Weight`
+`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code` ,`Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`,`Product Origin Country Code`,`Product Package Weight`
 FROM `Order Transaction Fact` O
  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`)
  LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`)
@@ -450,8 +450,8 @@ if ($result = $db->query($sql)) {
             $description .= ' <br>'._('RRP').': '.money($row['Product RRP'], $row['Product Currency']);
         }
 
-        if ($row['Product Unit Weight'] != 0 and $print_weight) {
-            $description .= ' <br>'._('Weight').': '.weight($row['Product Unit Weight'] * $row['Product Units Per Case']);
+        if ($row['Product Package Weight'] != 0 and $print_weight) {
+            $description .= ' <br>'._('Weight').': '.weight($row['Product Package Weight'] );
         }
 
         if ($row['Product Origin Country Code'] != '' and $print_origin) {

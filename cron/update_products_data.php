@@ -37,9 +37,23 @@ print date('l jS \of F Y h:i:s A')."\n";
 
 //update_products_data($db);
 
-update_products_next_shipment_date($db);
+//update_products_next_shipment_date($db);
 
 
+$sql = sprintf(
+    "SELECT `Product ID` FROM `Product Dimension`  "
+);
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+        $product = new Product($row['Product ID']);
+
+
+        $product->update_weight();
+
+    }
+}
 
 
 function update_products_next_shipment_date($db) {
@@ -71,6 +85,8 @@ function update_products_data($db) {
 
 
             $product = new Product($row['Product ID']);
+
+
             //$product->update_part_numbers();
             //$product->update_order_numbers();
             //$product->update_customers_favored_numbers();
@@ -98,9 +114,7 @@ function update_products_data($db) {
             }
 
 
-
             $product->fast_update(array('Product Published Webpage Description' => $web_text));
-
 
 
         }

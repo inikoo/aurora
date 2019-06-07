@@ -2484,6 +2484,7 @@ function fork_housekeeping($job) {
             $product = get_object('product', $data['product_id']);
 
             $product->update_part_numbers();
+            $product->update_weight();
             $product->update_availability();
             $product->update_cost();
 

@@ -103,7 +103,7 @@ $table =
 $sql_totals = "";
 
 
-$fields = "OTF.`Product ID`,P.`Product Code`,`Product Name`,`Product Store Key`,`Product Units Per Case`,`Product Tariff Code`,`Product Price`,`Order Currency Code`,`Product Unit Weight`,`Store Code`,`Store Name`,
+$fields = "OTF.`Product ID`,P.`Product Code`,`Product Name`,`Product Store Key`,`Product Units Per Case`,`Product Tariff Code`,`Product Price`,`Order Currency Code`,`Product Package Weight`,`Store Code`,`Store Name`,
 sum(`Delivery Note Quantity`*`Product Units Per Case`) as units_send
 ";
 
