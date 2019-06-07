@@ -4503,10 +4503,10 @@ class Part extends Asset {
                 $label = _('SKO dimensions');
                 break;
             case 'Part Unit Weight':
-                $label = _('unit weight');
+                $label = _('Weight shown in website');
                 break;
             case 'Part Unit Dimensions':
-                $label = _('unit dimensions');
+                $label = _('Dimensions shown in website');
                 break;
             case 'Part Tariff Code':
                 $label = _('tariff code');
