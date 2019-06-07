@@ -7638,7 +7638,39 @@ $modules = array(
 
                 )
             ),
+            'profile.api_key'     => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'user.api_key.details'  => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'user.api_key.requests' => array(
+                        'label' => _('Requests'),
+                        'icon'  => 'arrow-circle-right'
+                    ),
+                    'user.api_key.history'  => array(
+                        'label' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
 
+                )
+            ),
+            'profile.deleted_api_key'  => array(
+                'type'     => 'object',
+                'showcase' => 'deleted_api_key',
+                'tabs'     => array(
+
+                    'api_key.history' => array(
+                        'label' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+
+                )
+            ),
 
         )
 
