@@ -322,7 +322,7 @@
                 </td>
 
                 <td style="text-align: right">
-                    <span class="Package_Weight">{$product->get('Outer Weight')}</span>
+                    <span class="Package_Weight">{$product->get('Package Weight')}</span>
                 </td>
 
                 <td style="text-align: right">
