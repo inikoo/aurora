@@ -102,7 +102,7 @@ if ($order == 'number') {
 }elseif ($order == 'amount_ac') {
     $order = 'amount_ac';
 }elseif ($order == 'weight') {
-    $order = 'weight';
+    $order = 'sum(`Delivery Note Quantity`*`Product Package Weight`)';
 }else{
 
     $order='OTF.`Order Key`';

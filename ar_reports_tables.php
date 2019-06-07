@@ -1276,7 +1276,7 @@ function intrastat_products($_data, $db, $user, $account) {
                 'name'       => $data['Product Name'],
                 'units'      => number($data['Product Units Per Case']),
                 'price'      => money($data['Product Price'] / $data['Product Units Per Case'], $data['Order Currency Code']),
-                'weight'     => weight($data['Product Unit Weight'], 'Kg', 3, false, true),
+                'weight'     => weight($data['Product Package Weight']/$data['Product Units Per Case'], 'Kg', 2, false, true),
                 'units_send' => number($data['units_send']),
 
             );

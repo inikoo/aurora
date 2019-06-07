@@ -82,13 +82,20 @@ if ($parameters['f_field'] == 'number' and $f_value != '') {
 $_order = $order;
 $_dir   = $order_direction;
 
-
 if ($order == 'code') {
-    $order = 'Product File As';
+    $order = '`Product Code File As`';
 } elseif ($order == 'name') {
     $order = '`Product Name`';
+} elseif ($order == 'units') {
+    $order = '`Product Units Per Case`';
+} elseif ($order == 'store') {
+    $order = '`Store Code`';
+} elseif ($order == 'price') {
+    $order = '`Product Price`/`Product Units Per Case`';
+} elseif ($order == 'weight') {
+    $order = '`Product Package Weight`';
 } elseif ($order == 'units_send') {
-    $order = 'units_send`';
+    $order = 'sum(`Delivery Note Quantity`*`Product Units Per Case`) ';
 } else {
 
     $order = 'OTF.`Product ID`';
@@ -108,4 +115,3 @@ sum(`Delivery Note Quantity`*`Product Units Per Case`) as units_send
 ";
 
 
-?>

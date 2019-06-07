@@ -3457,20 +3457,26 @@ class Product extends Asset {
             'SELECT `Part Package Weight`,`Product Part Ratio` FROM `Product Part Bridge`  left join `Part Dimension` on (`Product Part Part SKU`=`Part SKU`)  WHERE `Product Part Product ID`=%d', $this->id
         );
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
+
+      //  print $sql;
 
 
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
 
-                if(is_numeric($row['Part Package Weight']) and $row['Part Package Weight']>0 ){
-                    $weight += $row['Part Package Weight']*$row['Product Part Ratio'];
+        		  //  print_r($row);
 
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
+                    if(is_numeric($row['Part Package Weight']) and $row['Part Package Weight']>0 ){
+                        $weight += $row['Part Package Weight']*$row['Product Part Ratio'];
+
+                    }
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
         }
+
 
 
         $this->fast_update(
