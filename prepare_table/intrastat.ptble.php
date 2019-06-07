@@ -136,7 +136,7 @@ if ($order == 'period') {
 } elseif ($order == 'products') {
     $order = 'products';
 } elseif ($order == 'weight') {
-    $order = '`Delivery Note Quantity`*`Product Package Weight`';
+    $order = 'sum(`Delivery Note Quantity`*`Product Package Weight`)';
 } elseif ($order == 'orders') {
     $order = 'orders';
 } else {
