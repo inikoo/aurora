@@ -1262,7 +1262,7 @@ function intrastat_products($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-     
+
 
     if ($result = $db->query($sql)) {
 

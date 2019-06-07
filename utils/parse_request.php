@@ -5117,6 +5117,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         if (isset($view_path[1])) {
 
                             if (is_numeric($view_path[1])) {
+                                $section    = 'profile.api_key';
 
                                 $parent     = 'user';
                                 $parent_key = $key;
