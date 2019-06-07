@@ -135,6 +135,8 @@ if ($order == 'period') {
     $order = 'items';
 } elseif ($order == 'products') {
     $order = 'products';
+} elseif ($order == 'products') {
+    $order = 'products';
 } elseif ($order == 'orders') {
     $order = 'orders';
 } else {
@@ -157,7 +159,7 @@ count(distinct OTF.`Product ID`) as products,
 count(distinct OTF.`Order Key`) as orders,
 
 sum(`Invoice Currency Exchange Rate`*`Order Transaction Amount`) as value,
-	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight ,
+	sum(`Delivery Note Quantity`*`Product Package Weight`) as weight ,
 	LEFT(`Product Tariff Code`,8) as tariff_code, min(`Delivery Note Date`) as min_date , `Delivery Note Date` , `Delivery Note Address Country 2 Alpha Code`,
 	group_concat(DN.`Delivery Note Key`),group_concat(distinct date_format(`Delivery Note Date`,'%y%m')) as monthyear 
 ";

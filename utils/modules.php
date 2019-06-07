@@ -2152,6 +2152,14 @@ $modules = array(
                 'html_icon' => '<i class="fa fa-piggy-bank"></i>',
                 'reference' => 'credits/all',
                 'tabs'      => array(
+
+                    'credits_group_by_store' => array(
+                        'label'     => _('Credits per store'),
+                        'icon'      => 'layer-group',
+                        'reference' => 'credits/per_store'
+                    ),
+
+
                     'account.credits' => array(
                         'label' => _('Credits'),
                         'icon'  => 'university',
