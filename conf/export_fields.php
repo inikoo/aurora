@@ -1125,7 +1125,7 @@ $export_fields = array(
 
         array(
             'name'    => '`Product Unit Weight`',
-            'label'   => _('Unit weight'),
+            'label'   => _('Unit weight (marketing)'),
             'checked' => 1
         ),
 
@@ -1239,7 +1239,7 @@ $export_fields = array(
             'checked' => 1
         ),
         array(
-            'name'    => 'sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`)',
+            'name'    => 'sum(`Delivery Note Quantity`*`Product Package Weight`)',
             'label'   => _('Weight').' (Kg)',
             'checked' => 1
         ),

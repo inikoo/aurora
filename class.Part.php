@@ -2334,6 +2334,12 @@ class Part extends Asset {
                         exit;
                     }
 
+                    foreach ($this->get_products('objects') as $product) {
+                        $product->update_weight();
+
+
+                    }
+
 
                 }
 
@@ -3996,101 +4002,7 @@ class Part extends Asset {
         return $suppliers;
     }
 
-    function update_weight_dimensions_data($field, $value, $type) {
 
-        include_once 'utils/units_functions.php';
-
-        //print "$field $value |";
-
-        $this->update_field($field, $value);
-        $_new_value = $this->new_value;
-        $_updated   = $this->updated;
-
-        $this->updated   = true;
-        $this->new_value = $value;
-        if ($this->updated) {
-
-            if (preg_match('/Package/i', $field)) {
-                $tag = 'Package';
-            } else {
-                $tag = 'Unit';
-            }
-            if ($field != 'Part '.$tag.' '.$type.' Display Units') {
-                $value_in_standard_units = convert_units(
-                    $value, $this->data['Part '.$tag.' '.$type.' Display Units'], ($type == 'Dimensions' ? 'm' : 'Kg')
-                );
-
-
-                $this->update_field(
-                    preg_replace('/\sDisplay$/', '', $field), $value_in_standard_units, 'nohistory'
-                );
-            } elseif ($field == 'Part '.$tag.' Dimensions Display Units') {
-
-                $width_in_standard_units    = convert_units(
-                    $this->data['Part '.$tag.' Dimensions Width Display'], $value, 'm'
-                );
-                $depth_in_standard_units    = convert_units(
-                    $this->data['Part '.$tag.' Dimensions Depth Display'], $value, 'm'
-                );
-                $length_in_standard_units   = convert_units(
-                    $this->data['Part '.$tag.' Dimensions Length Display'], $value, 'm'
-                );
-                $diameter_in_standard_units = convert_units(
-                    $this->data['Part '.$tag.' Dimensions Diameter Display'], $value, 'm'
-                );
-
-
-                $this->update_field(
-                    'Part '.$tag.' Dimensions Width', $width_in_standard_units, 'nohistory'
-                );
-                $this->update_field(
-                    'Part '.$tag.' Dimensions Depth', $depth_in_standard_units, 'nohistory'
-                );
-                $this->update_field(
-                    'Part '.$tag.' Dimensions Length', $length_in_standard_units, 'nohistory'
-                );
-                $this->update_field(
-                    'Part '.$tag.' Dimensions Diameter', $diameter_in_standard_units, 'nohistory'
-                );
-
-
-            }
-
-            //print "x".$this->updated."<<";
-
-
-            //print "x".$this->updated."< $type <";
-            if ($type == 'Dimensions') {
-                include_once 'utils/geometry_functions.php';
-                $volume = get_volume(
-                    $this->data["Part $tag Dimensions Type"], $this->data["Part $tag Dimensions Width"], $this->data["Part $tag Dimensions Depth"], $this->data["Part $tag Dimensions Length"], $this->data["Part $tag Dimensions Diameter"]
-                );
-
-                //print "*** $volume $volume";
-                if (is_numeric($volume) and $volume > 0) {
-
-                    $this->update_field(
-                        'Part '.$tag.' Dimensions Volume', $volume, 'nohistory'
-                    );
-                }
-                $this->update_field(
-                    'Part '.$tag.' XHTML Dimensions', $this->get_xhtml_dimensions($tag), 'nohistory'
-                );
-
-            } else {
-                $this->update_field(
-                    'Part '.$tag.' Weight', convert_units(
-                    $this->data['Part '.$tag.' Weight Display'], $this->data['Part '.$tag.' '.$type.' Display Units'], 'Kg'
-                ), 'nohistory'
-                );
-
-            }
-
-
-            $this->updated   = $_updated;
-            $this->new_value = $_new_value;
-        }
-    }
 
     function get_period($period, $key) {
         return $this->get($period.' '.$key);

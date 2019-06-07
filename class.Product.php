@@ -3422,6 +3422,7 @@ class Product extends Asset {
 
         $this->update_part_numbers();
 
+        $this->update_weight();
 
         $this->fast_update(array('Product XHTML Parts' => $this->get('Parts')));
 
@@ -3435,6 +3436,38 @@ class Product extends Asset {
             'product_id' => $this->id,
             'editor'     => $this->editor
         ), $account->get('Account Code'), $this->db
+        );
+
+
+    }
+
+    function update_weight() {
+
+        $weight = 0;
+
+        $sql = sprintf(
+            'SELECT `Part Package Weight`,`Product Part Ratio` AS num FROM `Product Part Bridge`  left join `Part Dimension` on (`Product Part Part SKU`=`Part SKO`)  WHERE `Product Part Product ID`=%d', $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                if(is_numeric($row['Part Package Weight']) and $row['Part Package Weight']>0 ){
+                    $weight += $row['Part Package Weight']*$row['Product Part Ratio'];
+
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+
+        $this->fast_update(
+            array(
+                'Product Package Weight' => $weight,
+
+
+            )
         );
 
 

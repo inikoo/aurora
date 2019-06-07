@@ -127,7 +127,7 @@ $sql_totals = "";
     
    sum(   `Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount_ac,
 sum(`Order Transaction Amount`) as amount,
-sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight ,
+sum(`Delivery Note Quantity`*`Product Package Weight`) as weight ,
 	group_concat(P.`Product Code` SEPARATOR ', ') as products
 
 ";
