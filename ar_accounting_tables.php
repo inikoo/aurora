@@ -939,8 +939,8 @@ function invoices_per_store($_data, $db, $user, $account) {
 
         foreach ($result as $data) {
 
-            $total_invoices += $data['invoices'];
-            $total_refunds  += $data['refunds'];
+            $total_invoices += $data['Store Invoices'];
+            $total_refunds  += $data['Store Refunds'];
 
 
             $adata[] = array(
@@ -948,8 +948,9 @@ function invoices_per_store($_data, $db, $user, $account) {
                 'access'    => (in_array($data['Store Key'], $user->stores) ? '<i class="fal fa-lock-open very_discreet"></i>' : '<i class="fal fa-lock "></i>'),
                 'code'      => sprintf('<span class="link" onclick="change_view(\'invoices/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
                 'name'      => sprintf('<span class="link" onclick="change_view(\'invoices/%d\')">%s</span>', $data['Store Key'], $data['Store Name']),
-                'invoices'  => sprintf('<span class="link" onclick="change_view(\'invoices/%d\')">%s</span>', $data['Store Key'], number($data['invoices'])),
-                'refunds'   => sprintf('<span class="link" onclick="change_view(\'invoices/%d\')">%s</span>', $data['Store Key'], number($data['refunds'])),
+                'invoices'  => sprintf('<span class="link" onclick="change_view(\'invoices/%d\')">%s</span>', $data['Store Key'], number($data['Store Invoices'])),
+                'refunds'   => sprintf('<span class="link" onclick="change_view(\'invoices/%d\')">%s</span>', $data['Store Key'], number($data['Store Refunds'])),
+                'refund_percentage'   => sprintf('<span >%s</span>', percentage($data['Store Refunds'],($data['Store Refunds']+$data['Store Invoices']))  ),
 
 
             );
@@ -969,6 +970,7 @@ function invoices_per_store($_data, $db, $user, $account) {
 
         'invoices' => number($total_invoices),
         'refunds'  => number($total_refunds),
+        'refund_percentage'  => percentage($total_refunds,($total_refunds+$total_invoices)),
 
 
     );

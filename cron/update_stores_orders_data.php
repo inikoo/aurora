@@ -15,8 +15,6 @@ require_once 'utils/natural_language.php';
 require_once 'utils/date_functions.php';
 
 
-
-
 require_once 'class.Store.php';
 require_once 'class.Category.php';
 
@@ -44,11 +42,12 @@ $sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $store = new Store('id', $row['Store Key']);
+        $store->update_invoices();
+
         $store->update_customers_data();
 
         $store->update_orders();
         $store->update_payments();
-
 
 
     }
@@ -58,4 +57,4 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
-?>
+

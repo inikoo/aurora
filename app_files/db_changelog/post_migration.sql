@@ -126,3 +126,4 @@ ALTER TABLE `Order Dimension` ADD `Order Customer Level Type` ENUM('Normal','VIP
 
 
  ALTER TABLE `Delivery Note Dimension` CHANGE `Delivery Note State` `Delivery Note State` ENUM('Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Packed Done','Approved','Dispatched','Cancelled','Cancelled to Restock') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Ready to be Picked';
+ALTER TABLE `Store Dimension` DROP `Store Invoices`, DROP `Store Refunds`, DROP `Store Paid Invoices`, DROP `Store Partially Paid Invoices`, DROP `Store Paid Refunds`, DROP `Store Partially Paid Refunds`;
