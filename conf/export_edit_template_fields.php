@@ -237,7 +237,7 @@ $export_edit_template_fields = array(
             'required'      => false,
             'header'        => 'Unit weight (kg)',
             'name'          => 'Part Part Unit Weight',
-            'label'         => _('Unit weight'),
+            'label'         => _('Weight shown in website'),
             'checked'       => 0
         ),
         array(
@@ -414,7 +414,7 @@ $export_edit_template_fields = array(
             'required'      => false,
             'header'        => 'Unit weight',
             'name'          => 'Part Unit Weight',
-            'label'         => _('Unit weight'),
+            'label'         => _('Weight shown in website'),
             'checked'       => 0
         ),
         array(

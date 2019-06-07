@@ -750,7 +750,7 @@ $export_fields = array(
 
         array(
             'name'    => '`Part Unit Weight`',
-            'label'   => _('Unit weight for marketing (Kg)'),
+            'label'         => _('Weight shown in website').' (Kg)',
             'checked' => 0
         ),
 
