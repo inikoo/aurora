@@ -19,6 +19,10 @@ function get_user_showcase($data) {
         return "";
     }
 
+
+
+
+
     $smarty->assign('_user', $data['_object']);
 
     return $smarty->fetch('showcase/user.tpl');
