@@ -33,7 +33,36 @@ include_once 'api_stock_picking_common_actions.php';
 
 switch ($_REQUEST['action']) {
 
+    case 'initialize':
 
+        $groups=preg_split('/,/',$user>get('User Groups') );
+
+        $type='Invalid';
+        if(in_array(17,$groups)){
+            $type='Suoervisor';
+        }elseif(in_array(11,$groups)){
+            $type='Worker';
+        }
+
+
+
+        $data=array(
+            'account_code'=>$account->get('Code'),
+            'account_name'=>$account->get('Name'),
+            'locale'=>$account->get('Account Locale'),
+            'worker_user_id'=>$user->id,
+            'worker_alias'=>$user->get('Alias'),
+            'worker_type'=>$type
+
+        );
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $data
+        );
+        echo json_encode($response);
+
+        break;
     case 'get_delivery_note_from_public_id':
 
         if (!isset($_REQUEST['public_id'])) {

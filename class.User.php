@@ -382,9 +382,11 @@ class User extends DB_Table {
                     return json_decode($this->data['User Settings'])->theme;
                 }
                 break;
+
             case 'User Groups':
                 return $this->get_groups();
                 break;
+
             case 'Groups':
                 return $this->get_groups_formatted();
                 break;
@@ -643,6 +645,8 @@ class User extends DB_Table {
 
         return $groups;
     }
+
+
 
     function get_groups_formatted() {
 
