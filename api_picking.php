@@ -35,11 +35,11 @@ switch ($_REQUEST['action']) {
 
     case 'initialize':
 
-        $groups=preg_split('/,/',$user>get('User Groups') );
+        $groups=preg_split('/,/',$user->get('User Groups') );
 
         $type='Invalid';
         if(in_array(17,$groups)){
-            $type='Suoervisor';
+            $type='Supervisor';
         }elseif(in_array(11,$groups)){
             $type='Worker';
         }
