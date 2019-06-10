@@ -7,7 +7,7 @@ $('#table').on('input propertychange', '.sko_weight', function() {
 
     validation = client_validation('numeric_unsigned', false, $(this).val(), '')
 
-    if (validation.class == 'valid') {
+    if (validation.class == 'valid' && $(this).val()!='') {
         icon.addClass('fa-could valid_save button').removeClass('fa-spinner fa-spin error')
     }else{
         icon.addClass('fa-could error').removeClass('fa-spinner fa-spin')
@@ -53,7 +53,7 @@ console.log(request)
     })
 
 
-});
+})
 
 
 
