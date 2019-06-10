@@ -5165,12 +5165,14 @@ class Part extends Asset {
         $weight_status_old=$this->get( 'Part Package Weight Status');
 
         $max_value = 0;
-
-        $sql=sprintf('select avg(`Part Cost`/`Part Package Weight` ) as average ,STD(`Part Cost`/`Part Package Weight`)  as sd from `Part Dimension` where  `Part Status`="In Use" and  `Part Package Weight`>0 and `Part Cost`>0  ');
+        $min_value = 0;
+        $avg_weight=0;
+        $sql=sprintf('select avg(`Part Package Weight` ) as average_kg ,avg(`Part Cost`/`Part Package Weight` ) as average_cost_per_kg ,STD(`Part Cost`/`Part Package Weight`)  as sd_cost_per_kg from `Part Dimension` where  `Part Status`="In Use" and  `Part Package Weight`>0 and `Part Cost`>0  ');
         if ($result=$this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $max_value=$row['average']+$row['sd'];
-
+                $max_value=$row['average_cost_per_kg']+(3*$row['sd_cost_per_kg']);
+                $min_value=$row['average_cost_per_kg']*0.0095;
+                $avg_weight=$row['average_kg'];
         	}
         }
 
@@ -5202,8 +5204,19 @@ class Part extends Asset {
             }
 
 
-            if ($weight_status == 'OK' and $max_value > 0 and $max_value < $this->get('Part Package Weight')) {
+
+            if ($this->get('Part Cost')>0 and  $weight_status == 'OK' and $max_value > 0 and $max_value <  ( $this->get('Part Cost')/ $this->get('Part Package Weight') )   and $avg_weight*0.5> $this->get('Part Package Weight') ) {
+
+
+             //   print $this->get('Reference')." $max_value  ".$this->get('Part Unit Weight')." ".$this->get('Part Cost')."  ".( $this->get('Part Cost')/ $this->get('Part Package Weight') )."    \n";
+
                 $weight_status = 'Underweight Cost';
+
+            }
+
+            if ($this->get('Part Cost')>0 and  $weight_status == 'OK' and $min_value > 0 and     $min_value >( $this->get('Part Cost')/ $this->get('Part Package Weight'))  and $avg_weight*3< $this->get('Part Package Weight') ) {
+                $weight_status = 'Overweight Cost';
+                print $this->get('Reference')." $min_value  ".$this->get('Part Unit Weight')." ".$this->get('Part Cost')."  ".( $this->get('Part Cost')/ $this->get('Part Package Weight') )."    \n";
 
             }
 
