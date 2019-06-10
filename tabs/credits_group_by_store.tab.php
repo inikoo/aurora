@@ -37,6 +37,7 @@ $parameters = array(
 );
 
 
+$smarty->assign('account_currency_code', $account->get('Account Currency'));
 
 $smarty->assign('title', _('credits per store'));
 $smarty->assign('view_position', '<i class=\"fal fa-layer-group\"></i> '._('credits per store'));
@@ -46,4 +47,4 @@ $smarty->assign('view_position', '<i class=\"fal fa-layer-group\"></i> '._('cred
 include('utils/get_table_html.php');
 
 
-?>
+

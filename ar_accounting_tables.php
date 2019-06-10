@@ -716,17 +716,24 @@ function credits_group_by_store($_data, $db, $user, $account) {
                     );
 
                     $mix_currencies       = true;
-                    $total_credits_amount += $exchange * $data['Store Total Acc Credits Amount'];
 
 
+                    $credit_amount_ac=$exchange * $data['Store Total Acc Credits Amount'];
+
+
+
+
+
+                }else{
+                    $credit_amount_ac=0;
                 }
 
 
             } else {
-
-                $total_credits_amount += $data['Store Total Acc Credits Amount'];
+                $credit_amount_ac=$data['Store Total Acc Credits Amount'];
 
             }
+            $total_credits_amount += $credit_amount_ac;
 
 
             $total_payments        += $data['Store Total Acc Payments'];
@@ -734,15 +741,16 @@ function credits_group_by_store($_data, $db, $user, $account) {
             $total_credits         += $data['Store Total Acc Credits'];
 
 
+
+
             $adata[] = array(
                 'store_key'       => $data['Store Key'],
                 'code'            => sprintf('<span class="link" onclick="change_view(\'credits/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
                 'name'            => sprintf('<span class="link" onclick="change_view(\'credits/%d\')">%s</span>', $data['Store Key'], $data['Store Name']),
-                'payments'        => sprintf('<span class=" %s">%s</span>', ($data['Store Total Acc Payments'] == 0 ? 'super_discreet' : ''), number($data['Store Total Acc Payments'])),
-                'payments_amount' => sprintf('<span class=" %s">%s</span>', ($data['Store Total Acc Payments'] == 0 ? 'super_discreet' : ''), money($data['Store Total Acc Payments Amount'], $data['Store Currency Code'])),
 
                 'credits'        => sprintf('<span class=" %s">%s</span>', ($data['Store Total Acc Credits'] == 0 ? 'super_discreet' : ''), number($data['Store Total Acc Credits'])),
                 'credits_amount' => sprintf('<span class=" %s">%s</span>', ($data['Store Total Acc Credits'] == 0 ? 'super_discreet' : ''), money($data['Store Total Acc Credits Amount'], $data['Store Currency Code'])),
+                'credits_amount_dc' => sprintf('<span class=" %s">%s</span>', ($data['Store Total Acc Credits'] == 0 ? 'super_discreet' : ''), money($credit_amount_ac, $account->get('Account Currency'))),
 
 
             );
@@ -760,10 +768,10 @@ function credits_group_by_store($_data, $db, $user, $account) {
         'name'      => '',
         'code'      => _('Total').($filtered > 0 ? ' '.'<i class="fa fa-filter fa-fw"></i>' : ''),
 
-        'payments'        => number($total_payments),
-        'payments_amount' => sprintf('<span class=" %s">%s</span>', ($mix_currencies ? 'italic discreet' : ''), money($total_payments_amount, $account->get('Currency Code'))),
-        'credits'         => number($total_credits),
-        'credits_amount'  => sprintf('<span class=" %s">%s</span>', ($mix_currencies ? 'italic discreet' : ''), money($total_credits_amount, $account->get('Currency Code'))),
+         'credits'         => number($total_credits),
+        'credits_amount_dc'  => sprintf('<span class=" %s">%s</span>', ($mix_currencies ? ' ' : 'hide'), money($total_credits_amount, $account->get('Currency Code'))),
+
+        'credits_amount_dc'  => sprintf('<span class=" %s">%s</span>', ($mix_currencies ? ' ' : ''), money($total_credits_amount, $account->get('Currency Code'))),
 
     );
 

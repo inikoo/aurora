@@ -274,7 +274,7 @@ switch ($tipo) {
 
                      )
         );
-        transfer_customer_credit_to($account, $db, $data, $editor);
+        transfer_customer_credit_to($account, $db, $data, $editor,$user);
         break;
 
 
@@ -3632,10 +3632,104 @@ function disassociate_category($account, $db, $data, $editor) {
 }
 
 
-function transfer_customer_credit_to($account, $db, $user, $editor, $data, $smarty) {
+function transfer_customer_credit_to($account, $db, $data, $editor,$user) {
+
+    include_once 'utils/currency_functions.php';
 
     $customer         = get_object('Customer', $data['customer_key']);
     $customer->editor = $editor;
+
+    $store         = get_object('Store', $customer->get('Store Key'));
+
+    $payment_account         = get_object('PaymentAccount', $data['payment_account_key']);
+    $payment_account->editor = $editor;
+
+    $date=gmdate('Y-m-d H:i:s');
+
+
+    if(!is_numeric($data['amount'])  or $data['amount']<=0  ){
+        $response = array('state' => 400,'msg'=>'invalid amount');
+        echo json_encode($response);
+        exit;
+    }
+
+
+    if($data['amount']>$customer->get('Customer Account Balance') ){
+        $response = array('state' => 400,'msg'=>'amount greater current customer credits');
+        echo json_encode($response);
+        exit;
+    }
+
+
+    $exchange=currency_conversion($db, $store->get('Store Currency Code'), $account->get('Account Currency Code'));
+
+    $payment_data = array(
+        'Payment Store Key'   => $customer->get('Store Key'),
+
+        'Payment Customer Key'                   => $store->id,
+        'Payment Transaction Amount'             => -$data['amount'],
+        'Payment Currency Code'                  => $store->get('Store Currency Code'),
+
+        'Payment Sender Email'                   => $customer->get('Customer Mail Plain Email'),
+        'Payment Sender Card Type'               => '',
+        'Payment Created Date'                   => $date,
+        'Payment Completed Date'                 => $date,
+        'Payment Last Updated Date'              => $date,
+        'Payment Transaction Status'             => 'Completed',
+        'Payment Transaction ID'                 => $data['reference'],
+        'Payment Method'                         => $payment_account->get('Payment Account Type'),
+        'Payment Location'                       => 'Customer',
+        'Payment Metadata'                       => '',
+        'Payment Submit Type'                    => 'Manual',
+        'Payment Currency Exchange Rate'         => $exchange,
+        'Payment User Key'                       => $user->id,
+        'Payment Type'=>'Return'
+
+
+    );
+    $return = $payment_account->create_payment($payment_data);
+
+    $sql = sprintf(
+        'INSERT INTO `Credit Transaction Fact` 
+                    (`Credit Transaction Type`,`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Payment Key`) 
+                    VALUES ("Return",%s,%.2f,%s,%f,%d,%d) ', prepare_mysql($date), -$data['amount'], prepare_mysql($store->get('Store Currency Code')), $exchange,
+        $customer->id, $return->id
+
+
+    );
+
+    $db->exec($sql);
+
+
+    $credit_key = $db->lastInsertId();
+
+
+
+    $history_data = array(
+        'History Abstract' => '<i class="fa fa-reply"  title="'._('Customer credit returned').'" ></i> '.money($data['amount'], $store->get('Store Currency Code')).' <i class="fal fa-sack-dollar"></i>  <span class="link" onclick="change_view(\'payments/'.$store->id.'/'.$return->id.'\')">'.$return->get('Payment Transaction ID').'</span>'.($data['note'] != '' ? ', '.$data['note'] : ''),
+
+        'History Details'  => '',
+        'Action'           => 'edited'
+    );
+
+    $history_key = $customer->add_subject_history(
+        $history_data, true, 'No', 'Changes', $customer->get_object_name(), $customer->id
+    );
+
+    $sql = sprintf(
+        'INSERT INTO `Credit Transaction History Bridge` 
+                    (`Credit Transaction History Credit Transaction Key`,`Credit Transaction History History Key`) 
+                    VALUES (%d,%d) ', $credit_key, $history_key
+
+
+    );
+    $db->exec($sql);
+
+
+
+    $customer->update_account_balance();
+    $customer->update_credit_account_running_balances();
+
 
 
     $response = array('state' => 200);
