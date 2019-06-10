@@ -39,26 +39,38 @@ function get_inventory_alerts( $db, $account, $user, $smarty) {
 
 
 
+    if($account->get('Account Parts with Barcode Number Error')>0) {
+
+        $data = get_widget_data(
+
+            $account->get('Account Parts with Barcode Number Error'), $account->get('Account Parts with Barcode Number'), 0, 0
+
+        );
+
+
+        if ($data['ok']) {
+
+
+            $smarty->assign('data', $data);
+            $html .= '<div class="parts_with_barcode_error">'.$smarty->fetch('dashboard/inventory.parts_with_barcode_errors.dbard.tpl').'</div>';
+        }
+
+    }
 
     $data = get_widget_data(
 
-        $account->get('Account Parts with Barcode Number Error'),
-        $account->get('Account Parts with Barcode Number'),
+        $account->get('Account Active Parts with SKO Invalid Weight'),
+        $all_active,
         0,
         0
 
     );
-
-
-
     if ($data['ok']) {
 
 
         $smarty->assign('data', $data);
-        $html .= '<div class="parts_with_barcode_error">'.$smarty->fetch('dashboard/inventory.parts_with_barcode_errors.dbard.tpl').'</div>';
+        $html .= '<div class="parts_with_weight_error">'.$smarty->fetch('dashboard/inventory.parts_with_weight_errors.dbard.tpl').'</div>';
     }
-
-
 
     return $html;
 

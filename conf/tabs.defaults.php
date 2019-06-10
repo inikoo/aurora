@@ -2553,7 +2553,15 @@ $tab_defaults = array(
         'f_field'     => 'reference',
 
     ),
+    'inventory.parts_weight_errors.wget' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
 
+    ),
     'inventory.parts_barcode_errors.wget' => array(
         'view'          => 'overview',
         'sort_key'      => 'id',

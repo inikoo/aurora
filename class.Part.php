@@ -743,10 +743,7 @@ class Part extends Asset {
             case 'Symbol':
 
 
-
-
-
-                switch ($this->data['Part Symbol']){
+                switch ($this->data['Part Symbol']) {
                     case 'star':
                         return '&#9733;';
                         break;
@@ -772,8 +769,6 @@ class Part extends Asset {
 
 
                 }
-
-
 
 
                 break;
@@ -1887,8 +1882,6 @@ class Part extends Asset {
                 $this->update_field($field, $value, $options);
 
 
-
-
                 break;
             case 'Part Unit Price':
 
@@ -2361,6 +2354,8 @@ class Part extends Asset {
                     }
                 }
 
+                $this->update_weight_status();
+
                 $this->updated = $updated;
                 break;
             case('Part Tariff Code'):
@@ -2595,8 +2590,8 @@ class Part extends Asset {
 
             case 'Part Symbol':
 
-                if($value=='none'){
-                    $value='';
+                if ($value == 'none') {
+                    $value = '';
                 }
                 $this->update_field($field, $value, $options);
                 break;
@@ -4003,7 +3998,6 @@ class Part extends Asset {
     }
 
 
-
     function get_period($period, $key) {
         return $this->get($period.' '.$key);
     }
@@ -4112,7 +4106,6 @@ class Part extends Asset {
         }
 
     }
-
 
 
     function get_current_formatted_value_at_cost() {
@@ -5158,6 +5151,77 @@ class Part extends Asset {
                 )
             );
         }
+
+
+    }
+
+
+    function update_weight_status() {
+
+        $weight_status_old=$this->get( 'Part Package Weight Status');
+
+        $max_value = 0;
+
+        $sql=sprintf('select avg(`Part Cost`/`Part Package Weight` ) as average ,STD(`Part Cost`/`Part Package Weight`)  as sd from `Part Dimension` where `Part Package Weight`>0 and `Part Cost`>0  ');
+        if ($result=$this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $max_value=$row['average']+$row['sd'];
+
+        	}
+        }
+
+
+        $weight_status = 'OK';
+        if ($this->get('Part Package Weight') == '' or $this->get('Part Package Weight') == 0) {
+            $weight_status = 'Missing';
+        } else {
+
+            if ($this->get('Part Package Weight') > 0 and $this->get('Part Unit Weight') > 0) {
+
+
+                $sko_weight_from_unit_weight = $this->get('Part Unit Weight') * $this->get('Part Units Per Package');
+
+
+                if ($sko_weight_from_unit_weight > (1.5 * $this->get('Part Package Weight'))) {
+                    $weight_status = 'Underweight Web';
+
+                    //   print "$sko_weight_from_unit_weight  ".$this->get('Part Unit Weight')." \n";
+
+
+                }
+                if ($sko_weight_from_unit_weight < 0.8 * $this->get('Part Package Weight')) {
+
+
+                    $weight_status = 'Overweight Web';
+
+                }
+            }
+
+
+            if ($weight_status == 'OK' and $max_value > 0 and $max_value < $this->get('Part Package Weight')) {
+                $weight_status = 'Overweight Cost';
+
+            }
+
+        }
+
+
+        //print $weight_status;
+
+
+        $this->fast_update(
+            array(
+                'Part Package Weight Status' => $weight_status,
+            )
+        );
+
+
+        if($weight_status_old!=$weight_status){
+            $account=get_object('Account',1);
+            $account->update_parts_data();
+        }
+
+
 
 
     }
