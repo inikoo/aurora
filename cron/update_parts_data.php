@@ -34,10 +34,13 @@ function update_parts_data($db) {
         foreach ($result as $row) {
             $part = new Part($row['Part SKU']);
 
+
+            $part->update_weight_status();
+
            // $part->update_made_in_production_data();
             //$part->update_number_locations();
             //$part->update_cost();
-            $part->update_next_deliveries_data();
+          //  $part->update_next_deliveries_data();
 
 
             /*

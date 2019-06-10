@@ -32,6 +32,9 @@ switch ($tipo) {
     case 'parts_no_sko_barcode':
         parts_no_sko_barcode(get_table_parameters(), $db, $user, '', $account);
         break;
+    case 'parts_weight_errors':
+        parts_weight_errors(get_table_parameters(), $db, $user, '', $account);
+        break;
     case 'parts_barcode_errors':
         parts_barcode_errors(get_table_parameters(), $db, $user, '', $account);
         break;
@@ -3088,4 +3091,88 @@ function parts_discontinued($_data, $db, $user, $type, $account) {
 }
 
 
-?>
+
+function parts_weight_errors($_data, $db, $user) {
+
+
+    $rtext_label = 'part';
+
+    include_once 'prepare_table/init.php';
+
+    $sql         = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $record_data = array();
+
+    $record_data = array();
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            if ($data['Part Main Image Key'] != 0) {
+                $image = sprintf(
+                    '<img src="/image_root.php?id=%d&r=50x50" style="display: block;
+  max-width:50px;
+  max-height:50px;
+  width: auto;
+  height: auto;">', $data['Part Main Image Key']
+                );
+            } else {
+                $image = '';
+            }
+
+
+
+
+                        switch ($data['Part Package Weight Status']) {
+                            case 'Missing':
+                                $error = '<span class="sko_weight_msg error">'._('Missing weight').'</span>';
+                                break;
+                            case 'Underweight Web':
+                                $error = '<span class="sko_weight_msg error">'._('Underweight compared with web data').'</span>';
+                                break;
+                            case 'Overweight Web':
+                                $error = '<span class="sko_weight_msg error">'._('Overweight compared with web data').'</span>';
+                                break;
+                            case 'Overweight Cost':
+                                $error = '<span class="sko_weight_msg error">'._('Cost/weight high').'</span>';
+                                break;
+                            case 'OK':
+                                $error = '';
+                                break;
+                            default:
+                                $error = '<span class="sko_weight_msg error">'.$data['Part Package Weight Status'].'</span>';
+                        }
+
+
+            $record_data[] = array(
+                'id'          => (integer)$data['Part SKU'],
+                'reference'   => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+               'error'       => $error,
+               'image'      => $image,
+                'description' => $data['Part Package Description'],
+                'weight'     => sprintf(
+                    '<input class="sko_weight" style="width:100px" value="%s" part_sku="%d" > <i class="fa save_sko_weight fa-cloud very_discreet" aria-hidden="true"></i> <span class="weight_msg error" ></span>', $data['Part Package Weight'],
+                    $data['Part SKU']
+                )
+            );
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
