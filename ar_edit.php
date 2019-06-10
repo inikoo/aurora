@@ -265,10 +265,11 @@ switch ($tipo) {
     case 'transfer_customer_credit_to':
         $data = prepare_values(
             $_REQUEST, array(
-                         'customer_key' => array('type' => 'key'),
-                         'amount'  => array('type' => 'amount'),
-                         'payment_account_key'  => array('type' => 'key'),
-                         'reference'  => array('type' => 'string'),
+                         'customer_key'        => array('type' => 'key'),
+                         'amount'              => array('type' => 'amount'),
+                         'payment_account_key' => array('type' => 'key'),
+                         'reference'           => array('type' => 'string'),
+                         'note'                => array('type' => 'string'),
 
 
                      )
@@ -1492,7 +1493,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             );
 
 
-                         //   print_r($data['fields_data']);
+                            //   print_r($data['fields_data']);
 
 
                             switch ($data['fields_data']['Allowance Type']) {
@@ -1568,7 +1569,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                 case 'Deal_Type_Amount_Off':
 
 
-                                    if(!is_numeric($data['fields_data']['Trigger Extra Items Amount Net']) or $data['fields_data']['Trigger Extra Items Amount Net']<=0  ){
+                                    if (!is_numeric($data['fields_data']['Trigger Extra Items Amount Net']) or $data['fields_data']['Trigger Extra Items Amount Net'] <= 0) {
                                         $response = array(
                                             'state' => 400,
                                             'resp'  => 'minimum amount not numeric'
@@ -1578,7 +1579,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                                     }
 
-                                    if(!is_numeric($data['fields_data']['Amount Off'])  or $data['fields_data']['Amount Off']<=0  ){
+                                    if (!is_numeric($data['fields_data']['Amount Off']) or $data['fields_data']['Amount Off'] <= 0) {
                                         $response = array(
                                             'state' => 400,
                                             'resp'  => 'invalid amount off'
@@ -1589,10 +1590,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     }
 
 
-
-
-
-                                    $deal_new_data['Deal Allowance Label'] = sprintf(_('%s off'), money($data['fields_data']['Amount Off'],$store->get('Store Currency Code')));
+                                    $deal_new_data['Deal Allowance Label'] = sprintf(_('%s off'), money($data['fields_data']['Amount Off'], $store->get('Store Currency Code')));
                                     $deal_new_data['Deal Terms Type']      = 'Category Amount Ordered';
 
                                     if ($data['fields_data']['Trigger Extra Items Amount Net'] == 0) {
@@ -1604,7 +1602,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     }
 
 
-                                    $deal_new_data['Deal Terms']      = json_encode(
+                                    $deal_new_data['Deal Terms'] = json_encode(
                                         array(
                                             'amount'       => $data['fields_data']['Trigger Extra Items Amount Net'],
                                             'amount_field' => 'Order Items Gross Amount',
@@ -1614,12 +1612,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     );
 
 
-
-
                                     $new_component_data = array(
 
 
-                                        'Deal Component Allowance Label'        =>sprintf(_('%s off'), money($data['fields_data']['Amount Off'],$store->get('Store Currency Code'))),
+                                        'Deal Component Allowance Label'        => sprintf(_('%s off'), money($data['fields_data']['Amount Off'], $store->get('Store Currency Code'))),
                                         'Deal Component Allowance Type'         => 'Amount Off',
                                         'Deal Component Allowance Target'       => 'Order',
                                         'Deal Component Allowance Target Type'  => 'No Items',
@@ -1631,9 +1627,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     break;
 
                             }
-
-
-
 
 
                             break;
@@ -1922,9 +1915,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     }
 
 
-                   // print_r($deal_new_data);
-                   // print_r($new_component_data);
-                   // exit;
+                    // print_r($deal_new_data);
+                    // print_r($new_component_data);
+                    // exit;
                     $object = $campaign->create_deal($deal_new_data, $new_component_data);
 
                     //print_r($deal);
@@ -3596,8 +3589,15 @@ function regenerate_api($account, $db, $user, $editor, $data, $smarty) {
 
     $response = array(
         'state'  => 200,
-        'qrcode' => $api_key->get('Address').','.$api_key->get('Code').','.$private_key
+        'qrcode' => json_encode(
+            array(
+                'url'    => $api_key->get('Address'),
+                'handle' => $api_key->get('Code'),
+                'secret' => $private_key
 
+
+            )
+        )
     );
     echo json_encode($response);
 
@@ -3622,8 +3622,6 @@ function transfer_customer_credit_to($account, $db, $user, $editor, $data, $smar
 
     $customer         = get_object('Customer', $data['customer_key']);
     $customer->editor = $editor;
-
-
 
 
     $response = array('state' => 200);
