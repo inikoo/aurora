@@ -270,6 +270,9 @@ class Part extends Asset {
 
             $this->validate_barcode();
 
+            $this->update_weight_status();
+
+
         } else {
             print "Error Part can not be created $sql\n";
             $this->msg = 'Error Part can not be created';
@@ -2963,6 +2966,7 @@ class Part extends Asset {
 
             }
 
+            $this->update_weight_status();
 
             include_once 'utils/new_fork.php';
             $account = get_object('Account', 1);
