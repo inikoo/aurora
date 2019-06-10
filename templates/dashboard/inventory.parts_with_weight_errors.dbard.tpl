@@ -2,7 +2,7 @@
      onClick="get_widget_details(this,'inventory.parts_weight_errors.wget',{ parent: 'account','parent_key':1})">
     <div id="parts_weight_errors"
          style="padding-top: 10px;padding-right: 10px;padding-left: 10px;padding-bottom: 10px;"></div>
-    <div style="color:#aaa">{t}Abnormal weight{/t}</div>
+    <div style="color:#aaa">{t}Anomalous weight{/t}</div>
 </div>
 
 <script>
