@@ -193,7 +193,7 @@
 
         <table border="0" style="width:50%;float:right;width:100%;">
             <tr>
-                <td class="strong " style="width: 500px;text-align: right;padding-right: 20px">
+                <td class="strong " style="width: 100px;text-align: right;padding-right: 20px">
                 {t}Transfer credit to{/t}
                 <td>
                 <td></td>
@@ -222,15 +222,19 @@
 
                 </td>
 
-                <td class="payment_fields " style="padding-left:30px;width: 300px">
+                <td class="payment_fields " style="padding-left:30px;width: 500px">
                     <table>
                         <tr>
                             <td> {t}Amount{/t}</td>
-                            <td style="padding-left:20px"><input disabled=true class="transfer_credit_to" id="new_payment_amount" placeholder="{t}Amount{/t}"></td>
+                            <td style="padding-left:20px"><input style="width: 150px;" disabled=true class="transfer_credit_to" id="new_payment_amount" placeholder="{t}Amount{/t}"></td>
                         </tr>
                         <tr>
                             <td>  {t}Reference{/t}</td>
-                            <td style="padding-left:20px"><input disabled=true class="transfer_credit_to" id="new_payment_reference" placeholder="{t}Reference{/t}"></td>
+                            <td style="padding-left:20px"><input style="width: 300px;" disabled=true class="transfer_credit_to" id="new_payment_reference" placeholder="{t}Reference{/t}"></td>
+                        </tr>
+                        <tr>
+                            <td>  {t}Private note{/t}</td>
+                            <td style="padding-left:20px"><textarea style="width: 300px;height: 60px" disabled=true class="transfer_credit_to" id="new_payment_note" ></textarea></td>
                         </tr>
                     </table>
                 </td>
@@ -397,6 +401,8 @@
         //console.log(!validate_number($('#new_payment_amount').val(), 0, 999999999))
         //console.log($('#new_payment_payment_account_key').val() > 0)
 
+        var invalid=false;
+
         var valid_reference=($('#new_payment_reference').val()==''?false:true);
 
 
@@ -407,6 +413,7 @@
 
         if(max_amount!=''){
             var valid_max_amount=(parseFloat(max_amount)<parseFloat($('#new_payment_amount').val())?false:true)
+
 
         }else{
             var valid_max_amount=true;
@@ -421,6 +428,20 @@
 
         }
 
+
+
+        if(valid_max_amount){
+            $('#new_payment_amount').removeClass('invalid');
+
+        }else{
+            $('#new_payment_amount').addClass('invalid');
+            invalid=true
+
+        }
+
+
+        
+
         //console.log(valid_reference)
         //console.log(valid_max_amount)
 
@@ -431,6 +452,15 @@
             $('#save_new_payment').addClass('valid changed')
         } else {
             $('#save_new_payment').removeClass('valid changed')
+        }
+
+
+        if(invalid){
+            $('#save_new_payment').addClass('invalid changed').removeClass('valid')
+
+        }else{
+            $('#save_new_payment').addClass('valid').removeClass('invalid')
+
         }
 
 
@@ -445,7 +475,7 @@
         var object_data = $('#object_showcase div.order').data("object")
 
 
-        if ($('#save_new_payment').hasClass('wait')) {
+        if ($('#save_new_payment').hasClass('wait')   ||  !$('#save_new_payment').hasClass('valid')  ) {
             return;
         }
         $('#save_new_payment').addClass('wait')
@@ -463,6 +493,7 @@
         ajaxData.append("payment_method", $('#new_payment_payment_method').val())
 
         ajaxData.append("reference", $('#new_payment_reference').val())
+        ajaxData.append("note", $('#new_payment_note').val())
 
 
 
@@ -483,82 +514,15 @@
 
 
 
-                    if(object_data.object=='invoice' ) {
-
-                        $('#tabs').removeClass('hide')
-
-                        change_view(state.request, { 'reload_showcase': 1})
-                    }else {
-
-                        $('#new_payment_amount').val('')
-                        $('#new_payment_reference').val('')
-
-                        validate_new_payment()
-
-                        $('.Total_Amount').attr('amount', data.metadata.to_pay)
-                        $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
-
-
-                        $('#Shipping_Net_Amount_input').val(data.metadata.shipping).attr('ovalue', data.metadata.shipping)
-                        $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue', data.metadata.charges)
-
-                        if (data.metadata.to_pay == 0) {
-                            $('.Order_Payments_Amount').addClass('hide')
-                            $('.Order_To_Pay_Amount').addClass('hide')
-
-                        } else {
-                            $('.Order_Payments_Amount').removeClass('hide')
-                            $('.Order_To_Pay_Amount').removeClass('hide')
-
-                        }
-
-                        if (data.metadata.to_pay != 0 || data.metadata.payments == 0) {
-                            $('.Order_Paid').addClass('hide')
-                        } else {
-                            $('.Order_Paid').removeClass('hide')
-                        }
-
-                        if (data.metadata.to_pay <= 0) {
-                            $('.payment_operation').addClass('hide')
-
-                        } else {
-                            $('.payment_operation').removeClass('hide')
-                        }
-
-
-                        if (data.metadata.to_pay == 0) {
-                            $('.Order_To_Pay_Amount').removeClass('button').attr('amount', data.metadata.to_pay)
-
-                        } else {
-                            $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
-
-                        }
-
-
-                        $('#payment_nodes').html(data.metadata.payments_xhtml)
-
-
-                        for (var key in data.metadata.class_html) {
-                            $('.' + key).html(data.metadata.class_html[key])
-                        }
-
-
-                        for (var key in data.metadata.hide) {
-                            $('#' + data.metadata.hide[key]).addClass('hide')
-                        }
-                        for (var key in data.metadata.show) {
-                            $('#' + data.metadata.show[key]).removeClass('hide')
-                        }
-
-
-                        if (state.tab == 'order.payments') {
-                            rows.fetch({
-                                reset: true
-                            });
-                        }
-
-                        close_add_payment_to_order()
+                    change_view(state.request, { 'reload_showcase': 1})
+                    if (state.tab == 'customer.credit_blockchain' || state.tab=='customer.history' ) {
+                        rows.fetch({
+                            reset: true
+                        });
                     }
+
+
+
 
                 } else if (data.state == '400') {
                     $('#tabs').removeClass('hide')

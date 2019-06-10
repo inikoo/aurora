@@ -64,4 +64,4 @@ $table = '`Customer Dimension`  left join `Store Dimension` on (`Customer Store 
 $sql_totals = "select count(`Customer Key`) as num from $table  $where  ";
 $fields     = "`Store Code`,`Store Name`,`Store Key`,`Customer Name`,`Customer Key`,`Customer Account Balance`,`Store Currency Code`";
 
-?>
+
