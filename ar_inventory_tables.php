@@ -3128,13 +3128,13 @@ function parts_weight_errors($_data, $db, $user) {
                                 $error = '<span class="sko_weight_msg error">'._('Missing weight').'</span>';
                                 break;
                             case 'Underweight Web':
-                                $error = '<span class="sko_weight_msg error">'._('Underweight compared with web data').'</span>';
+                                $error = '<span class="sko_weight_msg error">'._('Probably underweight').'</span>';
                                 break;
                             case 'Overweight Web':
-                                $error = '<span class="sko_weight_msg error">'._('Overweight compared with web data').'</span>';
+                                $error = '<span class="sko_weight_msg error">'._('Probably overweight').'</span>';
                                 break;
-                            case 'Overweight Cost':
-                                $error = '<span class="sko_weight_msg error">'._('Cost/weight high').'</span>';
+                            case 'Underweight Cost':
+                                $error = '<span class="sko_weight_msg error">'._('Probably underweight').'</span>';
                                 break;
                             case 'OK':
                                 $error = '';
