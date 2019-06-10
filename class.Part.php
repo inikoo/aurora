@@ -5199,7 +5199,7 @@ class Part extends Asset {
 
 
             if ($weight_status == 'OK' and $max_value > 0 and $max_value < $this->get('Part Package Weight')) {
-                $weight_status = 'Overweight Cost';
+                $weight_status = 'Underweight Cost';
 
             }
 
