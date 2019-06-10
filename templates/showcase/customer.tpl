@@ -440,7 +440,7 @@
         }
 
 
-        
+
 
         //console.log(valid_reference)
         //console.log(valid_max_amount)
