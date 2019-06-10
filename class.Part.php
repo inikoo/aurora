@@ -5166,7 +5166,7 @@ class Part extends Asset {
 
         $max_value = 0;
 
-        $sql=sprintf('select avg(`Part Cost`/`Part Package Weight` ) as average ,STD(`Part Cost`/`Part Package Weight`)  as sd from `Part Dimension` where `Part Package Weight`>0 and `Part Cost`>0  ');
+        $sql=sprintf('select avg(`Part Cost`/`Part Package Weight` ) as average ,STD(`Part Cost`/`Part Package Weight`)  as sd from `Part Dimension` where  `Part Status`="In Use" and  `Part Package Weight`>0 and `Part Cost`>0  ');
         if ($result=$this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $max_value=$row['average']+$row['sd'];
