@@ -2850,6 +2850,20 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $smarty->assign('account', $account);
                 $smarty->assign('object', $object);
 
+
+                $qr_code=json_encode(
+                    array(
+                        'url'    => $object->get('Address'),
+                        'handle' => $object->get('Code'),
+                        'secret' => $object->secret_key
+
+
+                    )
+                );
+
+                $smarty->assign('qr_code', $qr_code);
+
+
                 $pcard        = $smarty->fetch(
                     'presentation_cards/api_key.pcard.tpl'
                 );
