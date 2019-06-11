@@ -1027,15 +1027,17 @@ $export_fields = array(
             'checked' => 1
         ),
 
+
         array(
-            'name'    => '`Part Package Weight`',
-            'label'   => _('SKO weight'),
+            'name'    => '`Part Barcode Number`',
+            'label'   => _('Unit barcode'),
             'checked' => 1,
+            'type'    => 'text'
         ),
 
         array(
-            'name'    => '`Part Package Weight Status`',
-            'label'   => _('Weight status'),
+            'name'    => '`Part Barcode Number Error`',
+            'label'   => _('Barcode errors'),
             'checked' => 1
         ),
 
@@ -1056,19 +1058,18 @@ $export_fields = array(
             'label'   => _('SKO description'),
             'checked' => 1
         ),
-
         array(
-            'name'    => '`Part Barcode Number`',
-            'label'   => _('Unit barcode'),
+            'name'    => '`Part Package Weight`',
+            'label'   => _('SKO weight'),
             'checked' => 1,
-            'type'    => 'text'
         ),
-
         array(
-            'name'    => '`Part Barcode Number Error`',
-            'label'   => _('Barcode errors'),
+            'name'    => '`Part Package Weight Status`',
+            'label'   => _('Weight status'),
             'checked' => 1
         ),
+
+
 
     ),
     'products'            => array(
