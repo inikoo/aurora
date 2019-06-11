@@ -504,6 +504,7 @@ class EmailCampaign extends DB_Table {
     function update_estimated_recipients() {
 
 
+
         if ($this->get('State Index') < 40) {
 
 
@@ -526,6 +527,10 @@ class EmailCampaign extends DB_Table {
                             $this->data['Email Campaign Store Key'], (empty($metadata['Days Last Updated']) ? 0 : $metadata['Days Last Updated'])
                         );
                     }
+
+
+
+
 
 
                     if ($result = $this->db->query($sql)) {
@@ -1427,6 +1432,8 @@ class EmailCampaign extends DB_Table {
                         $this->data['Email Campaign Store Key'], $metadata['Days Last Updated']
                     );
                 }
+
+
 
 
                 return $sql;

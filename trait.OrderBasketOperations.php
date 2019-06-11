@@ -44,6 +44,7 @@ trait OrderBasketOperations {
         }
         $this->data['Order Created Date'] = $this->data['Order Date'];
 
+        $this->data['Order Last Updated by Customer'] = $this->data['Order Date'];
 
         $this->data['Order Tax Code']           = '';
         $this->data['Order Tax Rate']           = 0;

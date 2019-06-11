@@ -128,3 +128,11 @@ ALTER TABLE `Order Dimension` ADD `Order Customer Level Type` ENUM('Normal','VIP
  ALTER TABLE `Delivery Note Dimension` CHANGE `Delivery Note State` `Delivery Note State` ENUM('Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Packed Done','Approved','Dispatched','Cancelled','Cancelled to Restock') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Ready to be Picked';
 ALTER TABLE `Store Dimension` DROP `Store Invoices`, DROP `Store Refunds`, DROP `Store Paid Invoices`, DROP `Store Partially Paid Invoices`, DROP `Store Paid Refunds`, DROP `Store Partially Paid Refunds`;
 ALTER TABLE `Store Data` ADD `Store Total Acc Debit` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Total Acc Credits Amount`, ADD `Store Total Acc Debit Amount` DECIMAL(18,2) NOT NULL DEFAULT '0.00' AFTER `Store Total Acc Debit`;
+
+
+update `Order Dimension` set `Order Last Updated by Customer`=`Order Last Updated Date` where `Order State`='InBasket';
+update `Order Dimension` set `Order Last Updated by Customer`=`Order Submitted by Customer Date`  where `Order Last Updated by Customer` is null and `Order Submitted by Customer Date` is not null;
+update `Order Dimension` set `Order Last Updated by Customer`=`Order Last Updated Date`  where `Order Last Updated by Customer` is null;
+update `Order Dimension` set `Order Last Updated by Customer`=NOW()  where `Order Last Updated by Customer` is null;
+
+
