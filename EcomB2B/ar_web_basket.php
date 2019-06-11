@@ -158,6 +158,17 @@ function update_item($_data, $customer, $order, $editor, $db) {
     //$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 
 
+
+
+    if($order->get('Order State')=='InBasket'){
+        $order->fast_update(
+            array(
+
+                'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+            )
+        );
+    }
+
     $product_pid = $_data['product_id'];
     $quantity    = $_data['qty'];
 
@@ -409,6 +420,16 @@ function invoice_address($data, $order, $editor, $website) {
     $order->update(array('Order Invoice Address' => json_encode($address_data)));
 
 
+
+    if($order->get('Order State')=='InBasket'){
+        $order->fast_update(
+            array(
+
+                'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+            )
+        );
+    }
+
     $labels = $website->get('Localised Labels');
 
     if ($order->get('Shipping Net Amount') == 'TBC') {
@@ -503,6 +524,17 @@ function delivery_address($data, $order, $editor, $website) {
     }
 
 
+
+    if($order->get('Order State')=='InBasket'){
+        $order->fast_update(
+            array(
+
+                'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+            )
+        );
+    }
+
+
     $labels = $website->get('Localised Labels');
 
     if ($order->get('Shipping Net Amount') == 'TBC') {
@@ -553,6 +585,20 @@ function update_special_instructions($data, $order, $editor) {
     $order->fast_update(
         array('Order Customer Message' => $data['value'])
     );
+
+
+
+
+    if($order->get('Order State')=='InBasket'){
+        $order->fast_update(
+            array(
+
+                'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+            )
+        );
+    }
+
+
     $response = array(
         'state' => 200,
 
@@ -769,6 +815,16 @@ function web_toggle_charge($data, $editor, $db, $order, $customer, $website) {
     }
 
 
+    if($order->get('Order State')=='InBasket'){
+        $order->fast_update(
+            array(
+
+                'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+            )
+        );
+    }
+
+
     $new_discounted_products = $order->get_discounted_products();
     foreach ($new_discounted_products as $key => $value) {
         $discounted_products[$key] = $value;
@@ -936,6 +992,16 @@ function web_toggle_deal_component_choose_by_customer($data, $editor, $db, $orde
 
             $db->exec($sql);
 
+
+
+            if($order->get('Order State')=='InBasket'){
+                $order->fast_update(
+                    array(
+
+                        'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+                    )
+                );
+            }
 
             global $_locale;
 
