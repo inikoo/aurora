@@ -276,6 +276,19 @@ switch ($tipo) {
         );
         transfer_customer_credit_to($account, $db, $data, $editor,$user);
         break;
+    case 'add_funds_to_customer_account':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'customer_key'        => array('type' => 'key'),
+                         'amount'              => array('type' => 'amount'),
+                         'note'                => array('type' => 'string'),
+                         'credit_transaction_type' => array('type' => 'string'),
+
+
+                     )
+        );
+        add_funds_to_customer_account($account, $db, $data, $editor,$user);
+        break;
 
 
     default:
@@ -3737,3 +3750,74 @@ function transfer_customer_credit_to($account, $db, $data, $editor,$user) {
 
 }
 
+function add_funds_to_customer_account($account, $db, $data, $editor,$user) {
+
+    include_once 'utils/currency_functions.php';
+
+    $customer         = get_object('Customer', $data['customer_key']);
+    $customer->editor = $editor;
+
+    $store         = get_object('Store', $customer->get('Store Key'));
+
+
+
+    $date=gmdate('Y-m-d H:i:s');
+
+
+    if(!is_numeric($data['amount'])  or $data['amount']<=0  ){
+        $response = array('state' => 400,'msg'=>'invalid amount');
+        echo json_encode($response);
+        exit;
+    }
+
+
+
+
+    $exchange=currency_conversion($db, $store->get('Store Currency Code'), $account->get('Account Currency Code'));
+
+    $sql = sprintf(
+        'INSERT INTO `Credit Transaction Fact` 
+                    (`Credit Transaction Type`,`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`) 
+                    VALUES (%s,%s,%.2f,%s,%f,%d) ', prepare_mysql($data['credit_transaction_type']),prepare_mysql($date), $data['amount'], prepare_mysql($store->get('Store Currency Code')), $exchange,
+        $customer->id
+
+    );
+
+    $db->exec($sql);
+
+
+    $credit_key = $db->lastInsertId();
+
+
+
+    $history_data = array(
+        'History Abstract' => '<i class="fal fa-sign-in "  title="'._('Funds added to customer account').'" ></i> '.money($data['amount'], $store->get('Store Currency Code')).' <i class="fal  fa-mail-bulk"  title="'._('To pay for the shipping of a return').'" ></i>  '.($data['note'] != '' ? ', '.$data['note'] : ''),
+
+        'History Details'  => '',
+        'Action'           => 'edited'
+    );
+
+    $history_key = $customer->add_subject_history(
+        $history_data, true, 'No', 'Changes', $customer->get_object_name(), $customer->id
+    );
+
+    $sql = sprintf(
+        'INSERT INTO `Credit Transaction History Bridge` 
+                    (`Credit Transaction History Credit Transaction Key`,`Credit Transaction History History Key`) 
+                    VALUES (%d,%d) ', $credit_key, $history_key
+
+
+    );
+    $db->exec($sql);
+
+
+
+    $customer->update_account_balance();
+    $customer->update_credit_account_running_balances();
+
+
+
+    $response = array('state' => 200);
+    echo json_encode($response);
+
+}

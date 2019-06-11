@@ -1942,6 +1942,11 @@ function credit_blockchain($_data, $db, $user,$account) {
                     $note=$data['History Abstract'];
 
                     break;
+                case 'PayReturn':
+                    $type=_('Credited to pay for return postage');
+                    $note=$data['History Abstract'];
+
+                    break;
                 case 'Adjust':
                     $type=_('Adjust');
                     $note=$data['History Abstract'];
