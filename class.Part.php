@@ -1391,6 +1391,32 @@ class Part extends Asset {
             case 'Carton Weight':
                 return weight($this->data['Part Package Weight'] * $this->data['Part SKOs per Carton'], 'Kg', 0);
                 break;
+            case 'Weight Status':
+                switch ($this->data['Part Package Weight Status']) {
+                    case 'Missing':
+                        $status = '<span class=" error">'._('Missing weight').'</span>';
+                        break;
+                    case 'Underweight Web':
+                        $status = '<span class=" error">'._('Probably underweight').' <i class="margin_left_5 fal fa-globe"></i></span>';
+                        break;
+                    case 'Overweight Web':
+                        $status = '<span class=" error">'._('Probably overweight').' <i class="margin_left_5 fal fa-globe"></i></span>';
+                        break;
+                    case 'Underweight Cost':
+                        $status = '<span class=" error">'._('Probably underweight').' <i class="margin_left_5 fal fa-box-usd"></i></span>';
+                        break;
+                    case 'Overweight Cost':
+                        $status = '<span class=" error">'._('Probably overweight').' <i class="margin_left_5 fal fa-box-usd"></i></span>';
+                        break;
+                    case 'OK':
+                        $status = '<span class=" success">'._('OK').'</span>';
+                        break;
+                    default:
+                        $status = '<span class=" error">'.$this->data['Part Package Weight Status'].'</span>';
+                }
+
+                return $status;
+                break;
             default:
 
                 if (preg_match('/No Supplied$/', $key)) {
@@ -2356,10 +2382,45 @@ class Part extends Asset {
 
                     }
                 }
+                $this->updated = $updated;
 
                 $this->update_weight_status();
 
-                $this->updated = $updated;
+
+                if ($field == 'Part Package Weight') {
+                    $this->update_metadata['part_weight_status'] = $this->get('Weight Status');
+
+
+                    if (file_exists('widgets/inventory_alerts.wget.php')) {
+                        include_once('widgets/inventory_alerts.wget.php');
+                        global $smarty;
+
+                        $account = get_object('Account', 1);
+                        $account->load_acc_data();
+
+
+                        if (is_object($smarty)) {
+
+                            $all_active = $account->get('Account Active Parts Number') + $account->get('Account In Process Parts Number') + $account->get('Account Discontinuing Parts Number');
+
+
+                            $_data = get_widget_data(
+
+                                $account->get('Account Active Parts with SKO Invalid Weight'), $all_active, 0, 0
+
+                            );
+                            if ($_data['ok']) {
+
+
+                                $smarty->assign('data', $_data);
+                                $this->update_metadata['parts_with_weight_error'] = $smarty->fetch('dashboard/inventory.parts_with_weight_errors.dbard.tpl');
+                            }
+
+
+                        }
+                    }
+
+                }
                 break;
             case('Part Tariff Code'):
 
@@ -5162,18 +5223,20 @@ class Part extends Asset {
 
     function update_weight_status() {
 
-        $weight_status_old=$this->get( 'Part Package Weight Status');
+        $weight_status_old = $this->get('Part Package Weight Status');
 
-        $max_value = 0;
-        $min_value = 0;
-        $avg_weight=0;
-        $sql=sprintf('select avg(`Part Package Weight` ) as average_kg ,avg(`Part Cost`/`Part Package Weight` ) as average_cost_per_kg ,STD(`Part Cost`/`Part Package Weight`)  as sd_cost_per_kg from `Part Dimension` where  `Part Status`="In Use" and  `Part Package Weight`>0 and `Part Cost`>0  ');
-        if ($result=$this->db->query($sql)) {
+        $max_value  = 0;
+        $min_value  = 0;
+        $avg_weight = 0;
+        $sql        = sprintf(
+            'select avg(`Part Package Weight` ) as average_kg ,avg(`Part Cost`/`Part Package Weight` ) as average_cost_per_kg ,STD(`Part Cost`/`Part Package Weight`)  as sd_cost_per_kg from `Part Dimension` where  `Part Status`="In Use" and  `Part Package Weight`>0 and `Part Cost`>0  '
+        );
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $max_value=$row['average_cost_per_kg']+(3*$row['sd_cost_per_kg']);
-                $min_value=$row['average_cost_per_kg']*0.0095;
-                $avg_weight=$row['average_kg'];
-        	}
+                $max_value  = $row['average_cost_per_kg'] + (3 * $row['sd_cost_per_kg']);
+                $min_value  = $row['average_cost_per_kg'] * 0.001;
+                $avg_weight = $row['average_kg'];
+            }
         }
 
 
@@ -5188,14 +5251,14 @@ class Part extends Asset {
                 $sko_weight_from_unit_weight = $this->get('Part Unit Weight') * $this->get('Part Units Per Package');
 
 
-                if ($sko_weight_from_unit_weight > (1.5 * $this->get('Part Package Weight'))) {
+                if ($sko_weight_from_unit_weight > (2 * $this->get('Part Package Weight'))) {
                     $weight_status = 'Underweight Web';
 
                     //   print "$sko_weight_from_unit_weight  ".$this->get('Part Unit Weight')." \n";
 
 
                 }
-                if ($sko_weight_from_unit_weight < 0.8 * $this->get('Part Package Weight')) {
+                if ($sko_weight_from_unit_weight < 0.5 * $this->get('Part Package Weight')) {
 
 
                     $weight_status = 'Overweight Web';
@@ -5204,19 +5267,20 @@ class Part extends Asset {
             }
 
 
+            if ($this->get('Part Cost') > 0 and $weight_status == 'OK' and $max_value > 0 and $max_value < ($this->get('Part Cost') / $this->get('Part Package Weight')) and $avg_weight * 0.1 > $this->get('Part Package Weight')) {
 
-            if ($this->get('Part Cost')>0 and  $weight_status == 'OK' and $max_value > 0 and $max_value <  ( $this->get('Part Cost')/ $this->get('Part Package Weight') )   and $avg_weight*0.5> $this->get('Part Package Weight') ) {
 
-
-             //   print $this->get('Reference')." $max_value  ".$this->get('Part Unit Weight')." ".$this->get('Part Cost')."  ".( $this->get('Part Cost')/ $this->get('Part Package Weight') )."    \n";
+                //   print $this->get('Reference')." $max_value  ".$this->get('Part Package Weight')." ".$this->get('Part Cost')."  ".( $this->get('Part Cost')/ $this->get('Part Package Weight') )."    \n";
 
                 $weight_status = 'Underweight Cost';
 
             }
 
-            if ($this->get('Part Cost')>0 and  $weight_status == 'OK' and $min_value > 0 and     $min_value >( $this->get('Part Cost')/ $this->get('Part Package Weight'))  and $avg_weight*3< $this->get('Part Package Weight') ) {
+            // print $avg_weight."\n";
+
+            if ($this->get('Part Cost') > 0 and $weight_status == 'OK' and $min_value > 0 and $min_value > ($this->get('Part Cost') / $this->get('Part Package Weight')) and $avg_weight * 10 < $this->get('Part Package Weight')) {
                 $weight_status = 'Overweight Cost';
-                print $this->get('Reference')." $min_value  ".$this->get('Part Unit Weight')." ".$this->get('Part Cost')."  ".( $this->get('Part Cost')/ $this->get('Part Package Weight') )."    \n";
+                print $this->get('Reference')." $min_value  ".$this->get('Part Package Weight')." ".$this->get('Part Cost')."  ".($this->get('Part Cost') / $this->get('Part Package Weight'))."    \n";
 
             }
 
@@ -5233,12 +5297,10 @@ class Part extends Asset {
         );
 
 
-        if($weight_status_old!=$weight_status){
-            $account=get_object('Account',1);
+        if ($weight_status_old != $weight_status) {
+            $account = get_object('Account', 1);
             $account->update_parts_data();
         }
-
-
 
 
     }

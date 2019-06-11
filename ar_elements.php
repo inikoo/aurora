@@ -405,6 +405,12 @@ switch ($tab) {
         );
         get_category_deal_components_element_numbers($db, $data['parameters'], $user);
         break;
+    case 'inventory.parts_weight_errors.wget':
+        $data = prepare_values(
+            $_REQUEST, array('parameters' => array('type' => 'json array'))
+        );
+        parts_weight_errors($db, $data['parameters'], $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -451,6 +457,53 @@ function parts_barcode_errors($db, $data, $user) {
 
 }
 
+
+function parts_weight_errors($db, $data, $user) {
+
+
+    $elements_numbers = array(
+        'type' => array(
+            'Missing'       => 0,
+            'Underweight'             => 0,
+            'Overweight' => 0,
+        ),
+
+
+    );
+
+
+    $sql = sprintf(
+        "select count(*) as number,`Part Package Weight Status` as element from `Part Dimension` where `Part Status`!='Not In Use' and   `Part Package Weight Status`!='OK'  group by `Part Package Weight Status` "
+    );
+    foreach ($db->query($sql) as $row) {
+
+
+        if($row['element']=='Underweight Web' or $row['element']=='Underweight Cost'){
+            $elements_numbers['type']['Underweight'] += $row['number'];
+
+        }elseif($row['element']=='Overweight Web' or $row['element']=='Overweight Cost'){
+            $elements_numbers['type']['Overweight'] += $row['number'];
+
+        }else{
+            $elements_numbers['type'][$row['element']] = $row['number'];
+
+        }
+
+    }
+
+    foreach($elements_numbers['type'] as $key=>$value){
+        $elements_numbers['type'][$key] =number($value);
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
 
 function warehouse_leakages_transactions($db, $data, $user) {
 

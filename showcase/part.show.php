@@ -15,7 +15,7 @@ function get_part_showcase($data, $smarty, $user, $db) {
 
     $part = $data['_object'];
     $part->load_acc_data();
-   // $part->update_weight_status();
+    $part->update_weight_status();
     // $part->update_cost();
 
 

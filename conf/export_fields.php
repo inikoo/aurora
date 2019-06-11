@@ -1028,6 +1028,36 @@ $export_fields = array(
         ),
 
         array(
+            'name'    => '`Part Package Weight`',
+            'label'   => _('SKO weight'),
+            'checked' => 1,
+        ),
+
+        array(
+            'name'    => '`Part Package Weight Status`',
+            'label'   => _('Weight status'),
+            'checked' => 1
+        ),
+
+    ),
+    'parts_weight_errors' => array(
+        array(
+            'name'    => '`Part Reference`',
+            'label'   => _('Reference'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Status`',
+            'label'   => _('Part status'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Package Description`',
+            'label'   => _('SKO description'),
+            'checked' => 1
+        ),
+
+        array(
             'name'    => '`Part Barcode Number`',
             'label'   => _('Unit barcode'),
             'checked' => 1,

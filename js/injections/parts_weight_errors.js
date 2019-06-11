@@ -1,4 +1,3 @@
-<script>
 
 
 $('#table').on('input propertychange', '.sko_weight', function() {
@@ -18,11 +17,12 @@ $('#table').on('input propertychange', '.sko_weight', function() {
 
 
 
+
 $('#table').on('click', '.save_sko_weight', function() {
 
 
     var icon= $(this)
-    var msg=$(this).closest('tr').find('.sko_weight_msg')
+    var _msg=$(this).closest('tr').find('.sko_weight_msg')
 
     if(icon.hasClass('error')){
         return;
@@ -32,19 +32,20 @@ $('#table').on('click', '.save_sko_weight', function() {
     var input= $(this).prev('input')
 
     var request = '/ar_edit.php?tipo=edit_field&object=Part&key='+input.attr('part_sku')+'&field=Part_Package_Weight&value='+input.val()+'&metadata={}'
-console.log(request)
     $.getJSON(request, function (data) {
 
+        console.log(data)
 
         icon.removeClass('valid_save button')
 
         if (data.state == 200) {
 
+            console.log(_msg)
+console.log(data.update_metadata.part_weight_status)
+            _msg.html(data.update_metadata.part_weight_status);
 
 
-            msg.html('')
-
-           // $('.parts_with_no_sko_weight').html(data.update_metadata.parts_with_no_sko_weight)
+            $('.parts_with_weight_error').html(data.update_metadata.parts_with_weight_error)
 
         } else {
 
@@ -59,8 +60,3 @@ console.log(request)
 
 
 
-
-
-
-
-</script>

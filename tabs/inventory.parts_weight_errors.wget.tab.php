@@ -31,8 +31,9 @@ $parameters = array(
 
 );
 
-$smarty->assign('table_top_template', 'js/inventory.parts_weight_errors.tpl.js');
-
+$smarty->assign(
+    'js_code', 'js/injections/parts_weight_errors.'.(_DEVEL ? '' : 'min.').'js'
+);
 
 include 'utils/get_table_html.php';
 
