@@ -194,7 +194,7 @@ $_dir   = $order_direction;
 if ($order == 'public_id') {
     $order = '`Order File As`';
 } elseif ($order == 'last_updated') {
-    $order = 'O.`Order Last Updated Date`';
+    $order = 'O.`Order Last Updated by Customer`';
 } elseif ($order == 'date') {
     $order = 'O.`Order Created Date`';
 } elseif ($order == 'customer') {
@@ -202,14 +202,14 @@ if ($order == 'public_id') {
 } elseif ($order == 'total_amount') {
     $order = 'O.`Order Total Amount`';
 } elseif ($order == 'idle_time') {
-    $order = 'DATEDIFF(NOW(), `Order Last Updated Date`) ';
+    $order = 'DATEDIFF(NOW(), `Order Last Updated by Customer`) ';
 } else {
     $order = 'O.`Order Key`';
 }
 
 $fields
-    = '`Order Created Date`,`Order Invoiced`,`Order Number Items`,`Order Store Key`,`Order Balance Total Amount`,`Order Payment State`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount`,
-    DATEDIFF(NOW(), `Order Last Updated Date`)  as idle_time 
+    = '`Order Created Date`,`Order Invoiced`,`Order Number Items`,`Order Store Key`,`Order Balance Total Amount`,`Order Payment State`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated by Customer`,O.`Order Date`,`Order Total Amount`,
+    DATEDIFF(NOW(), `Order Last Updated by Customer`)  as idle_time 
    
     
     

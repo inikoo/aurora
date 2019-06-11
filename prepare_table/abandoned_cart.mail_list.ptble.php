@@ -47,7 +47,7 @@ if ($parameters['parent'] == 'mailshot') {
     }
 */
 
-    $where .= sprintf(' and `Order Store Key`=%d  and `Order Last Updated Date`<= CURRENT_DATE - INTERVAL %d DAY ', $mailshot->get('Store Key'), $metadata['Days Inactive in Basket']);
+    $where .= sprintf(' and `Order Store Key`=%d  and `Order Last Updated by Customer`<= CURRENT_DATE - INTERVAL %d DAY ', $mailshot->get('Store Key'), $metadata['Days Inactive in Basket']);
 
 
 } else {
@@ -71,20 +71,20 @@ if ($order == 'order') {
 } elseif ($order == 'formatted_id') {
     $order = '`Customer Key`';
 } elseif ($order == 'inactive_since') {
-    $order = 'O.`Order Last Updated Date`';
+    $order = 'O.`Order Last Updated by Customer`';
 } elseif ($order == 'email') {
     $order = '`Customer Main Plain Email`';
 } elseif ($order == 'name') {
     $order = '`Customer Name`';
 } elseif ($order == 'inactive_days') {
-    $order = 'DATEDIFF(NOW(), `Order Last Updated Date`) ';
+    $order = 'DATEDIFF(NOW(), `Order Last Updated by Customer`) ';
 } else {
     $order = '`Customer Main Plain Email`';
 }
 
 $fields
-    = '`Order Created Date`,`Order Invoiced`,`Order Number Items`,`Order Store Key`,`Order Balance Total Amount`,`Order Payment State`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount`,
-    DATEDIFF(NOW(), `Order Last Updated Date`)  as inactive_days ,`Customer Key`,`Customer Store Key`,`Customer Name`,`Customer Main Contact Name`,`Customer Main Plain Email`,`Customer Company Name`
+    = '`Order Created Date`,`Order Invoiced`,`Order Number Items`,`Order Store Key`,`Order Balance Total Amount`,`Order Payment State`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated by Customer`,O.`Order Date`,`Order Total Amount`,
+    DATEDIFF(NOW(), `Order Last Updated by Customer`)  as inactive_days ,`Customer Key`,`Customer Store Key`,`Customer Name`,`Customer Main Contact Name`,`Customer Main Plain Email`,`Customer Company Name`
    
     
     

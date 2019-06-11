@@ -309,7 +309,7 @@ class Order_Basket_Purge extends DB_Table {
             $estimated_amount       = 0;
 
             $sql = sprintf(
-                'SELECT count(DISTINCT O.`Order Key`) AS orders,sum(`Order Number Items`) AS transactions,sum(`Order Total Net Amount`) AS amount FROM `Order Dimension` O  WHERE `Order State`="InBasket" AND `Order Store Key`=%d AND `Order Last Updated Date`<= CURRENT_DATE - INTERVAL %d DAY',
+                'SELECT count(DISTINCT O.`Order Key`) AS orders,sum(`Order Number Items`) AS transactions,sum(`Order Total Net Amount`) AS amount FROM `Order Dimension` O  WHERE `Order State`="InBasket" AND `Order Store Key`=%d AND `Order Last Updated by Customer`<= CURRENT_DATE - INTERVAL %d DAY',
                 $this->data['Order Basket Purge Store Key'], $this->data['Order Basket Purge Inactive Days']
             );
 
@@ -492,7 +492,7 @@ class Order_Basket_Purge extends DB_Table {
 
 
                 $sql = sprintf(
-                    'select `Order Key`,`Order Last Updated Date`  from `Order Dimension` O   where `Order State`="InBasket"  and `Order Store Key`=%d  and `Order Last Updated Date`<= CURRENT_DATE - INTERVAL %d DAY ', $this->data['Order Basket Purge Store Key'],
+                    'select `Order Key`,`Order Last Updated by Customer`  from `Order Dimension` O   where `Order State`="InBasket"  and `Order Store Key`=%d  and `Order Last Updated by Customer`<= CURRENT_DATE - INTERVAL %d DAY ', $this->data['Order Basket Purge Store Key'],
                     $this->data['Order Basket Purge Inactive Days']
                 );
 
@@ -502,7 +502,7 @@ class Order_Basket_Purge extends DB_Table {
 
                         $sql = sprintf(
                             'insert into `Order Basket Purge Order Fact` (`Order Basket Purge Order Basket Purge Key`,`Order Basket Purge Order Order Key`,`Order Basket Purge Order Last Updated Date`) values (%d,%d,%s) ', $this->id, $row['Order Key'],
-                            prepare_mysql($row['Order Last Updated Date'])
+                            prepare_mysql($row['Order Last Updated by Customer'])
                         );
                         $this->db->exec($sql);
 
