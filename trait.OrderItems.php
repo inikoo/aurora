@@ -465,7 +465,9 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
                     'Order_Number_Items_with_Deals'  => $this->get('Number Items with Deals'),
                     'Charges_Discount_Amount'        => $this->get('Charges Discount Amount'),
                     'Charges_Discount_Percentage'    => $this->get('Charges Discount Percentage'),
-                    'Amount_Off_Discount_Percentage' => $this->get('Amount Off Percentage')
+                    'Amount_Off_Discount_Percentage' => $this->get('Amount Off Percentage'),
+                    'To_Pay_Amount_Absolute'        => $order->get('To Pay Amount Absolute'),
+
 
                 ),
                 'hide'         => $hide,

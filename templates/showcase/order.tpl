@@ -822,9 +822,10 @@
                 <span class="node_label very_discreet italic">{t}Payments{/t}</span>
 
 
-                <div class="payment_operation {if $order->get('Order To Pay Amount')<=0   }hide{/if}  ">
-                    <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px" title="{t}add payment{/t}">
-                        <i class="fa fa-plus  " aria-hidden="true" onclick="show_add_payment_to_order()"></i>
+                <div class="payment_operation  ">
+                    <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px" title="{t}Add payment{/t}">
+                        <i class="add_payment_to_order_button fa {if $order->get('Order To Pay Amount')<=0   }fa-lock super_discreet{else}fa-plus{/if}  "
+                           data-labels='{ "yes_text_no_stock":"{t}Unlock{/t}", "no_text_no_stock":"{t}Close{/t}", "title":"{t}Order already paid{/t}","text":"{t}Add payment at your own risk{/t}"}' aria-hidden="true" onclick="open_add_payment_to_order(this)"></i>
 
                     </div>
                 </div>
@@ -1166,11 +1167,10 @@
                     }
 
                     if (data.metadata.to_pay <= 0) {
-                        $('.payment_operation').addClass('hide')
-
-                    } else {
-                        $('.payment_operation').removeClass('hide')
-                    }
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
 
 
                     if (data.metadata.to_pay == 0) {
@@ -1212,6 +1212,7 @@
 
 
     }
+
 
     function set_shipping_as_auto() {
 
@@ -1272,11 +1273,10 @@
                     }
 
                     if (data.metadata.to_pay <= 0) {
-                        $('.payment_operation').addClass('hide')
-
-                    } else {
-                        $('.payment_operation').removeClass('hide')
-                    }
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
 
 
                     if (data.metadata.to_pay == 0) {
@@ -1415,11 +1415,10 @@
                     }
 
                     if (data.metadata.to_pay <= 0) {
-                        $('.payment_operation').addClass('hide')
-
-                    } else {
-                        $('.payment_operation').removeClass('hide')
-                    }
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
 
 
                     if (data.metadata.to_pay == 0) {
@@ -1521,11 +1520,10 @@
                     }
 
                     if (data.metadata.to_pay <= 0) {
-                        $('.payment_operation').addClass('hide')
-
-                    } else {
-                        $('.payment_operation').removeClass('hide')
-                    }
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
 
 
                     if (data.metadata.to_pay == 0) {

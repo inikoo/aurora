@@ -19,10 +19,7 @@
     {/if}
     <script src="/assets/aurora_libs.min.js?v190319v2"></script>
 
-    <script src="/assets/aurora.min.js?v190530v2"></script>
-
-    <script src="/js/picking_and_packing.js"></script>
-
+    <script src="/assets/aurora.min.js?v190611"></script>
 
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 
@@ -114,8 +111,7 @@
                 <li title="{t}Share screen{/t}"><a href="https://get.teamviewer.com/txww6bm" target="_blank"><i class="far fa-desktop fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label"
                                                                                                                                                                                                 class="label"> {t}Share screen{/t}</span></a>
                 </li>
-                <li title="{t}Help{/t}" onclick="window.fcWidget.open(); return false;"><i class="fas fa-headset fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label"
-                                                                                                                                                                           class="label"> {t}Online chat{/t}</span>
+                <li class="hide" title="{t}Help{/t}" onclick="window.fcWidget.open(); return false;"><i class="fas fa-headset fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Online chat{/t}</span>
                 </li>
                 <li title="{t}Help{/t}" onclick="FreshWidget.show(); return false;"><i class="fal fa-hands-helping fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label"
                                                                                                                                                                              class="label"> {t}Help{/t}</span>
