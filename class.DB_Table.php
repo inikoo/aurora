@@ -686,6 +686,9 @@ abstract class DB_Table extends stdClass {
         } elseif ($table_full_name == 'Product Category Data' or $table_full_name == 'Product Category DC Data' or $table_full_name == 'Product Category Dimension') {
             $key_field = 'Product Category Key';
 
+        }elseif ($table_full_name == 'Part Category Data' or $table_full_name == 'Part Category Dimension') {
+            $key_field = 'Product Category Key';
+
         } elseif ($table_full_name == 'Invoice Category Data' or $table_full_name == 'Invoice Category DC Data' or $table_full_name == 'Invoice Category Dimension') {
             $key_field = 'Invoice Category Key';
 
