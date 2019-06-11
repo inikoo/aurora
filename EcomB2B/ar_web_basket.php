@@ -424,7 +424,6 @@ function invoice_address($data, $order, $editor, $website) {
     if($order->get('Order State')=='InBasket'){
         $order->fast_update(
             array(
-
                 'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
             )
         );
