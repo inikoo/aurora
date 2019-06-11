@@ -5282,7 +5282,7 @@ class Part extends Asset {
 
             if ($this->get('Part Cost') > 0 and $weight_status == 'OK' and $min_value > 0 and $min_value > ($this->get('Part Cost') / $this->get('Part Package Weight')) and $avg_weight * 10 < $this->get('Part Package Weight')) {
                 $weight_status = 'Overweight Cost';
-                print $this->get('Reference')." $min_value  ".$this->get('Part Package Weight')." ".$this->get('Part Cost')."  ".($this->get('Part Cost') / $this->get('Part Package Weight'))."    \n";
+               // print $this->get('Reference')." $min_value  ".$this->get('Part Package Weight')." ".$this->get('Part Cost')."  ".($this->get('Part Cost') / $this->get('Part Package Weight'))."    \n";
 
             }
 
