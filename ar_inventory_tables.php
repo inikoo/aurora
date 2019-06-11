@@ -3129,10 +3129,11 @@ function parts_weight_errors($_data, $db, $user) {
                     $status = '<span class="sko_weight_msg "><span class="error">'._('Missing weight').'</span></span>';
                     break;
                 case 'Underweight Web':
-                    $status = '<span class="sko_weight_msg "><span class="error">'._('Probably underweight').' <i class="margin_left_5 fal fa-globe"></i></span></span>';
+                    $status = '<span class="sko_weight_msg "><span class="error">'.sprintf(_('Probably underweight <b>or</b> %s high'),'<span title="'._('Unit weight shown on website').'"><i class=" fal fa-weight-hanging"></i><i style="font-size: x-small" class="  fal fa-globe"></i></span>').'</span></span>';
                     break;
                 case 'Overweight Web':
-                    $status = '<span class="sko_weight_msg "><span class="error">'._('Probably overweight').' <i class="margin_left_5 fal fa-globe"></i></span></span>';
+                    $status = '<span class="sko_weight_msg "><span class="error">'.sprintf(_('Probably overweight <b>or</b> %s low'),'<span title="'._('Unit weight shown on website').'"><i class=" fal fa-weight-hanging"></i><i style="font-size: x-small" class="  fal fa-globe"></i></span>').'</span></span>';
+
                     break;
                 case 'Underweight Cost':
                     $status = '<span class="sko_weight_msg "><span class="error">'._('Probably underweight').' <i class="margin_left_5 fal fa-box-usd"></i></span></span>';

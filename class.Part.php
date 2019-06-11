@@ -1397,10 +1397,12 @@ class Part extends Asset {
                         $status = '<span class=" error">'._('Missing weight').'</span>';
                         break;
                     case 'Underweight Web':
-                        $status = '<span class=" error">'._('Probably underweight').' <i class="margin_left_5 fal fa-globe"></i></span>';
+                        $status = '<span class="error">'.sprintf(_('Probably underweight <b>or</b> %s high'),'<span title="'._('Unit weight shown on website').'"><i class=" fal fa-weight-hanging"></i><i style="font-size: x-small" class="  fal fa-globe"></i></span>').'</span>';
+
                         break;
                     case 'Overweight Web':
-                        $status = '<span class=" error">'._('Probably overweight').' <i class="margin_left_5 fal fa-globe"></i></span>';
+                        $status = '<span class="error">'.sprintf(_('Probably overweight <b>or</b> %s low'),'<span title="'._('Unit weight shown on website').'"><i class=" fal fa-weight-hanging"></i><i style="font-size: x-small" class="  fal fa-globe"></i></span>').'</span>';
+
                         break;
                     case 'Underweight Cost':
                         $status = '<span class=" error">'._('Probably underweight').' <i class="margin_left_5 fal fa-box-usd"></i></span>';
