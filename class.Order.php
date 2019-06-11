@@ -880,11 +880,14 @@ class Order extends DB_Table {
                         return;
 
                     }
-
-
-                    $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Submitted by Customer Date', '', 'no_history');
-                    $this->update_field('Order Date', $date, 'no_history');
+                    $this->fast_update(
+                        array(
+                            'Order State'                      => $value,
+                            'Order Submitted by Customer Date' => '',
+                            'Order Date'                       => $date,
+                            'Order Last Updated by Customer'   => $date,
+                        )
+                    );
 
 
                     $history_data = array(
