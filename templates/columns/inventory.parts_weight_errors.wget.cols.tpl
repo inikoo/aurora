@@ -36,7 +36,7 @@ cell: Backgrid.HtmlCell.extend({ })
 },
 {
 name: "weight",
-label: "{t}SKO weight{/t}",
+label: "{t}SKO weight (Kg){/t}",
 editable: false,
 sortType: "toggle",
 
