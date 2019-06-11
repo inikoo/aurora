@@ -8,9 +8,10 @@ cell: "string",
 
 }, {
 name: "image",
-label: "{t}Image{/t}",
+label: "",
 editable: false,
-sortType: "toggle",
+sortable:false,
+
 cell: Backgrid.HtmlCell.extend({
 className: "width_50"
 })
@@ -37,7 +38,7 @@ cell: Backgrid.HtmlCell.extend({ })
 name: "weight",
 label: "{t}SKO weight{/t}",
 editable: false,
-sortable: false,
+sortType: "toggle",
 
 cell: Backgrid.HtmlCell.extend({
 
@@ -45,11 +46,10 @@ className: "width_500"
 })
 
 },{
-name: "error",
+name: "status",
 label: "{t}Notes{/t}",
 editable: false,
-sortType: "toggle",
-
+sortable:false,
 cell: Backgrid.HtmlCell.extend({ })
 
 }

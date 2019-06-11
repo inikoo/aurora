@@ -311,18 +311,22 @@ function parts($_data, $db, $user, $type, $account) {
             }
 
 
-            if($_data['parameters']['parent']=='category'){
-                $reference=sprintf('<span class="link" onclick="change_view(\'category/%d/part/%d\')">%s</span>',$_data['parameters']['parent_key'],$data['Part SKU'],($data['Part Reference']==''?'<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>':$data['Part Reference']));
+            if ($_data['parameters']['parent'] == 'category') {
+                $reference = sprintf(
+                    '<span class="link" onclick="change_view(\'category/%d/part/%d\')">%s</span>', $_data['parameters']['parent_key'], $data['Part SKU'],
+                    ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
+                );
 
-            }else{
-                $reference=sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>',$data['Part SKU'],($data['Part Reference']==''?'<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>':$data['Part Reference']));
+            } else {
+                $reference = sprintf(
+                    '<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'],
+                    ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
+                );
 
             }
 
 
-
-
-            if($data['Part Symbol']!='') {
+            if ($data['Part Symbol'] != '') {
                 if ($data['Part Symbol'] != '') {
 
                     switch ($data['Part Symbol']) {
@@ -356,7 +360,6 @@ function parts($_data, $db, $user, $type, $account) {
                 }
 
             }
-
 
 
             $record_data[] = array(
@@ -413,7 +416,8 @@ function parts($_data, $db, $user, $type, $account) {
                     )
                 ),
 
-                'sales_quarter0' => sprintf('<span>%s</span> %s', money($data['Part Quarter To Day Acc Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part Quarter To Day Acc Invoiced Amount"], $data["Part Quarter To Day Acc 1YB Invoiced Amount"])
+                'sales_quarter0' => sprintf(
+                    '<span>%s</span> %s', money($data['Part Quarter To Day Acc Invoiced Amount'], $account->get('Account Currency')), delta_icon($data["Part Quarter To Day Acc Invoiced Amount"], $data["Part Quarter To Day Acc 1YB Invoiced Amount"])
                 ),
                 'sales_quarter1' => sprintf(
                     '<span>%s</span> %s', money(
@@ -1279,7 +1283,9 @@ function part_categories($_data, $db, $user, $account) {
                     break;
             }
 
-            $code=sprintf('<span class="link" onclick="change_view(\'category/%d\')">%s</span>',$data['Category Key'],($data['Category Code']==''?'<i class="fa error fa-exclamation-circle"> <span class="discreet italic">'._('No code set').'</span>':$data['Category Code']));
+            $code = sprintf(
+                '<span class="link" onclick="change_view(\'category/%d\')">%s</span>', $data['Category Key'], ($data['Category Code'] == '' ? '<i class="fa error fa-exclamation-circle"> <span class="discreet italic">'._('No code set').'</span>' : $data['Category Code'])
+            );
 
             $record_data[] = array(
                 'id'        => (integer)$data['Category Key'],
@@ -1956,11 +1962,7 @@ function sales_history($_data, $db, $user, $account) {
     $sql = sprintf(
         "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ",
 
-        $date_field,
-        prepare_mysql($from_date),
-        $date_field,
-        prepare_mysql($to_date),
-         $group_by
+        $date_field, prepare_mysql($from_date), $date_field, prepare_mysql($to_date), $group_by
     );
 
 
@@ -2646,14 +2648,13 @@ function parts_discontinuing($_data, $db, $user, $account) {
             }
 
 
+            $reference = sprintf(
+                '<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'],
+                ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
+            );
 
 
-            $reference=sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>',$data['Part SKU'],($data['Part Reference']==''?'<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>':$data['Part Reference']));
-
-
-
-
-            if($data['Part Symbol']!='') {
+            if ($data['Part Symbol'] != '') {
                 if ($data['Part Symbol'] != '') {
 
                     switch ($data['Part Symbol']) {
@@ -2908,8 +2909,11 @@ function parts_discontinued($_data, $db, $user, $type, $account) {
         foreach ($result as $data) {
 
 
-            $cost = money($data['Part Cost'], $account->get('Account Currency'));
-            $reference=sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>',$data['Part SKU'],($data['Part Reference']==''?'<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>':$data['Part Reference']));
+            $cost      = money($data['Part Cost'], $account->get('Account Currency'));
+            $reference = sprintf(
+                '<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'],
+                ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
+            );
 
 
             $record_data[] = array(
@@ -3091,7 +3095,6 @@ function parts_discontinued($_data, $db, $user, $type, $account) {
 }
 
 
-
 function parts_weight_errors($_data, $db, $user) {
 
 
@@ -3121,38 +3124,38 @@ function parts_weight_errors($_data, $db, $user) {
             }
 
 
-
-
-                        switch ($data['Part Package Weight Status']) {
-                            case 'Missing':
-                                $error = '<span class="sko_weight_msg error">'._('Missing weight').'</span>';
-                                break;
-                            case 'Underweight Web':
-                                $error = '<span class="sko_weight_msg error">'._('Probably underweight').'</span>';
-                                break;
-                            case 'Overweight Web':
-                                $error = '<span class="sko_weight_msg error">'._('Probably overweight').'</span>';
-                                break;
-                            case 'Underweight Cost':
-                                $error = '<span class="sko_weight_msg error">'._('Probably underweight').'</span>';
-                                break;
-                            case 'OK':
-                                $error = '';
-                                break;
-                            default:
-                                $error = '<span class="sko_weight_msg error">'.$data['Part Package Weight Status'].'</span>';
-                        }
+            switch ($data['Part Package Weight Status']) {
+                case 'Missing':
+                    $status = '<span class="sko_weight_msg "><span class="error">'._('Missing weight').'</span></span>';
+                    break;
+                case 'Underweight Web':
+                    $status = '<span class="sko_weight_msg "><span class="error">'._('Probably underweight').' <i class="margin_left_5 fal fa-globe"></i></span></span>';
+                    break;
+                case 'Overweight Web':
+                    $status = '<span class="sko_weight_msg "><span class="error">'._('Probably overweight').' <i class="margin_left_5 fal fa-globe"></i></span></span>';
+                    break;
+                case 'Underweight Cost':
+                    $status = '<span class="sko_weight_msg "><span class="error">'._('Probably underweight').' <i class="margin_left_5 fal fa-box-usd"></i></span></span>';
+                    break;
+                case 'Overweight Cost':
+                    $status = '<span class="sko_weight_msg "><span class="error">'._('Probably overweight').' <i class="margin_left_5 fal fa-box-usd"></i></span></span>';
+                    break;
+                case 'OK':
+                    $status = '<span class="sko_weight_msg error"></span>';
+                    break;
+                default:
+                    $status = '<span class="sko_weight_msg error">'.$data['Part Package Weight Status'].'</span>';
+            }
 
 
             $record_data[] = array(
                 'id'          => (integer)$data['Part SKU'],
                 'reference'   => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
-               'error'       => $error,
-               'image'      => $image,
+                'status'       => $status,
+                'image'       => $image,
                 'description' => $data['Part Package Description'],
-                'weight'     => sprintf(
-                    '<input class="sko_weight" style="width:100px" value="%s" part_sku="%d" > <i class="fa save_sko_weight fa-cloud very_discreet" aria-hidden="true"></i> <span class="weight_msg error" ></span>', $data['Part Package Weight'],
-                    $data['Part SKU']
+                'weight'      => sprintf(
+                    '<input class="sko_weight" style="width:100px" value="%s" part_sku="%d" > <i class="fa save_sko_weight fa-cloud very_discreet" aria-hidden="true"></i> <span class="weight_msg error" ></span>', $data['Part Package Weight'], $data['Part SKU']
                 )
             );
         }
