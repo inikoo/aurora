@@ -1478,7 +1478,6 @@ function show_create_credit(element) {
 
         }
 
-console.log($(element).attr('amount'))
 
 
         $('#tabs').addClass('hide')
@@ -1518,14 +1517,7 @@ function open_add_payment_to_order(element) {
             console.log(result)
 
             if (result.value) {
-
-
-
-
                 $(element).removeClass('fa-lock super_discreet').addClass('fa-plus')
-
-
-
             }else{
 
 
