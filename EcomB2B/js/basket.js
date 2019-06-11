@@ -263,11 +263,10 @@ function  web_toggle_selected_by_customer_charge(element){
                 }
 
                 if (data.metadata.to_pay <= 0) {
-                    $('.payment_operation').addClass('hide')
-
-                } else {
-                    $('.payment_operation').removeClass('hide')
-                }
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
 
 
                 if (data.metadata.to_pay == 0) {

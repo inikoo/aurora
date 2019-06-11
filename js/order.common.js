@@ -163,11 +163,10 @@ $(document).on('click', '.order_item_percentage_discount_form i', function (evt)
                 }
 
                 if (data.metadata.to_pay <= 0) {
-                    $('.payment_operation').addClass('hide')
-
-                } else {
-                    $('.payment_operation').removeClass('hide')
-                }
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
 
 
                 if (data.metadata.to_pay == 0) {
@@ -865,11 +864,10 @@ function save_item_qty_change(element) {
                 }
 
                 if (data.metadata.to_pay <= 0) {
-                    $('.payment_operation').addClass('hide')
-
-                } else {
-                    $('.payment_operation').removeClass('hide')
-                }
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
 
 
                 if (data.metadata.to_pay == 0) {
@@ -1498,7 +1496,54 @@ console.log($(element).attr('amount'))
 }
 
 
+function open_add_payment_to_order(element) {
+
+
+    if($(element).hasClass('fa-lock')){
+
+        var _labels = $(element).data('labels');
+
+
+        swal({
+            title: _labels.title,
+            text: _labels.text,
+            type: "warning",
+            showCloseButton: true,
+            showCancelButton: true,
+            cancelButtonText:_labels.no_text_no_stock,
+            confirmButtonText:_labels.yes_text_no_stock
+
+        }).then(function (result) {
+
+            console.log(result)
+
+            if (result.value) {
+
+
+
+
+                $(element).removeClass('fa-lock super_discreet').addClass('fa-plus')
+
+
+
+            }else{
+
+
+            }
+        });
+
+
+    }else{
+        show_add_payment_to_order();
+
+    }
+}
+
+
+
 function show_add_payment_to_order() {
+
+
 
 
     if ($('#add_payment').hasClass('hide')) {
@@ -1692,11 +1737,10 @@ function save_new_payment() {
                     }
 
                     if (data.metadata.to_pay <= 0) {
-                        $('.payment_operation').addClass('hide')
-
-                    } else {
-                        $('.payment_operation').removeClass('hide')
-                    }
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
 
 
                     if (data.metadata.to_pay == 0) {
@@ -1855,11 +1899,10 @@ function  toggle_selected_by_customer_charge(element){
                     }
 
                     if (data.metadata.to_pay <= 0) {
-                        $('.payment_operation').addClass('hide')
-
-                    } else {
-                        $('.payment_operation').removeClass('hide')
-                    }
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
 
 
                     if (data.metadata.to_pay == 0) {
@@ -2018,11 +2061,10 @@ function select_deal_component_choose_by_customer(element) {
                 }
 
                 if (data.metadata.to_pay <= 0) {
-                    $('.payment_operation').addClass('hide')
-
-                } else {
-                    $('.payment_operation').removeClass('hide')
-                }
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
 
 
                 if (data.metadata.to_pay == 0) {

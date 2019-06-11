@@ -384,7 +384,7 @@ function update_po_item_note($data, $editor, $smarty, $db, $account, $user) {
     $db->exec($sql);
     $response = array(
         'state' => 200,
-        'note'=>$note
+        'note'  => $note
     );
     echo json_encode($response);
     exit;
@@ -540,6 +540,7 @@ function set_shipping_value($data, $editor) {
             'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
             'To_Pay_Amount'                 => $order->get('To Pay Amount'),
             'Payments_Amount'               => $order->get('Payments Amount'),
+            'To_Pay_Amount_Absolute'        => $order->get('To Pay Amount Absolute'),
 
 
             'Order_Number_items' => $order->get('Number Items')
@@ -587,6 +588,7 @@ function set_shipping_as_auto($data, $editor) {
             'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
             'To_Pay_Amount'                 => $order->get('To Pay Amount'),
             'Payments_Amount'               => $order->get('Payments Amount'),
+            'To_Pay_Amount_Absolute'        => $order->get('To Pay Amount Absolute'),
 
 
             'Order_Number_items' => $order->get('Number Items')
@@ -636,6 +638,7 @@ function set_hanging_charges_value($data, $editor) {
             'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
             'To_Pay_Amount'                 => $order->get('To Pay Amount'),
             'Payments_Amount'               => $order->get('Payments Amount'),
+            'To_Pay_Amount_Absolute'        => $order->get('To Pay Amount Absolute'),
 
 
             'Order_Number_items' => $order->get('Number Items')
@@ -682,6 +685,7 @@ function set_hanging_charges_as_auto($data, $editor) {
             'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
             'To_Pay_Amount'                 => $order->get('To Pay Amount'),
             'Payments_Amount'               => $order->get('Payments Amount'),
+            'To_Pay_Amount_Absolute'        => $order->get('To Pay Amount Absolute'),
 
 
             'Order_Number_items' => $order->get('Number Items')
@@ -933,7 +937,7 @@ function new_payment($data, $editor, $db, $account, $user) {
             'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
             'To_Pay_Amount'                 => $order->get('To Pay Amount'),
             'Payments_Amount'               => $order->get('Payments Amount'),
-
+            'To_Pay_Amount_Absolute'        => $order->get('To Pay Amount Absolute'),
 
             'Order_Number_items' => $order->get('Number Items')
 
