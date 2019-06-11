@@ -890,7 +890,7 @@ function orders_in_website($_data, $db, $user, $account) {
 
             ),
             'date'         => strftime("%e %b %Y", strtotime($data['Order Created Date'].' +0:00')),
-            'last_updated' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'last_updated' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated by Customer'].' +0:00')),
             'customer'     => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
             'total_amount' => money($data['Order Total Amount'], $data['Order Currency']),
             'idle_time'    => number($data['idle_time'])
