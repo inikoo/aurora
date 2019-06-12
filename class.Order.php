@@ -652,23 +652,12 @@ class Order extends DB_Table {
                 break;
 
 
-            case ('Weight'):
-
+            case ('Estimated Weight'):
                 include_once 'utils/natural_language.php';
 
-                if ($this->data['Order State'] == 'Dispatched') {
-                    if ($this->data['Order Weight'] == '') {
-                        return "&#8494;".weight(
-                                $this->data['Order Dispatched Estimated Weight']
-                            );
-                    } else {
-                        return weight($this->data['Order Weight']);
-                    }
-                } else {
-                    return "&#8494;".weight(
-                            $this->data['Order Estimated Weight']
-                        );
-                }
+                return "&#8494;".smart_weight($this->data['Order Estimated Weight'],1);
+
+
                 break;
 
 

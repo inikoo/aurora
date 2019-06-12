@@ -1683,6 +1683,8 @@ function order_items($_data, $db, $user) {
         }
 
 
+
+
         if ($data['Order Quantity'] != $data['Delivery Note Quantity'] and in_array(
                 $customer_order->get('Order State'), array(
                                                        'PackedDone',
@@ -1691,9 +1693,10 @@ function order_items($_data, $db, $user) {
                                                    )
             )) {
             $quantity = '<span class="discreet " title="'.sprintf(_('%s ordered by customer'), number($data['Order Quantity'])).'" >(<span class="strikethrough">'.number($data['Order Quantity']).'</span>)</span> '.number($data['Delivery Note Quantity']);
-
+            $weight=weight($data['Product Package Weight'] * $data['Delivery Note Quantity'],'Kg',3,false,true);
         } else {
             $quantity = number($data['Order Quantity']);
+            $weight=weight($data['Product Package Weight'] * $data['Order Quantity'],'Kg',3,false,true);
 
         }
 
@@ -1750,6 +1753,9 @@ function order_items($_data, $db, $user) {
 
             'discounts' => '<span id="transaction_discounts_'.$data['Order Transaction Fact Key'].'" class="_item_discounts">'.$discounts.'</span>',
 
+            'weight' => $weight,
+            'package_weight' => weight($data['Product Package Weight'],'Kg',3,false,true),
+            'tariff_code'=>$data['Product Tariff Code'],
 
             'net' => sprintf('<span  id="transaction_item_net_'.$data['Order Transaction Fact Key'].'" class="_order_item_net">%s</span>', money($data['Order Transaction Amount'], $data['Order Currency Code'])),
 

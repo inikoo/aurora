@@ -532,12 +532,29 @@
             <tr>
 
                 <td>
-                    <span style=""><i class="fa fa-cube fa-fw discreet" aria-hidden="true"></i> <span class="Order_Number_items">{$order->get('Number Items')}</span></span>
-                    <span style="padding-left:20px"><i class="fa fa-tag fa-fw  " aria-hidden="true"></i> <span class="Order_Number_Items_with_Deals">{$order->get('Number Items with Deals')}</span></span>
-                    <span class="error {if $order->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> <span
-                                class="Order_Number_Items_with_Out_of_Stock">{$order->get('Number Items Out of Stock')}</span></span>
-                    <span class="error {if $order->get('Order Number Items Returned')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-thumbs-o-down fa-fw   " aria-hidden="true"></i> <span
-                                class="Order_Number_Items_with_Returned">{$order->get('Number Items Returned')}</span></span>
+                    {if isset($delivery_note)}
+                        {if $delivery_note->get('Delivery Note Weight Source')=='Given'}
+                            <i class="fal fa-weight"></i> <span title="{t}Delivery weight{/t}" class=" margin_right_10 DN_Weight">{$delivery_note->get('Weight')}</span>
+
+                        {else}
+                            <span title="{t}Estimated delivery weight{/t}" class="italic discreet margin_right_20 DN_Estimated_Weight">{$delivery_note->get('Weight')}</span>
+
+                        {/if}
+                        <span class="margin_right_20"> {$delivery_note->get('Number Parcels')}</span>
+
+
+
+                    {else}
+                    <span title="{t}Estimated weight{/t}" class="  margin_right_20 Order_Estimated_Weight">{$order->get('Estimated Weight')}</span>
+                    {/if}
+                    <span "><i class="fal fa-cube fa-fw " title="{t}Number of items{/t}"></i> <span class="Order_Number_items">{$order->get('Number Items')}</span></span>
+                    <span style="padding-left:20px"><i class="fa fa-tag fa-fw  " title="{t}Number discounted items{/t}"></i> <span class="Order_Number_Items_with_Deals">{$order->get('Number Items with Deals')}</span></span>
+                    <span class="error {if $order->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px">
+                        <i class="fa fa-cube fa-fw" title="{t}Number out of stock items{/t}"></i>
+                        <span class="Order_Number_Items_with_Out_of_Stock">{$order->get('Number Items Out of Stock')}</span></span>
+                    <span class="error {if $order->get('Order Number Items Returned')==0}hide{/if}" style="padding-left:20px">
+                        <i class="fa fa-thumbs-o-down fa-fw"  title="{t}Number items returned{/t}"></i>
+                        <span class="Order_Number_Items_with_Returned">{$order->get('Number Items Returned')}</span></span>
                 </td>
             </tr>
         </table>

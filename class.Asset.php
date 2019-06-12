@@ -653,29 +653,14 @@ class Asset extends DB_Table {
                 include_once 'utils/natural_language.php';
                 $key = preg_replace('/Smart /', '', $key);
 
-                $weight = $this->data[$this->table_name.' '.$key];
-
-
-
-
-                if ($weight < 1) {
-
-
-                    return array(
-                        true,
-                        weight($weight *1000, 'g')
-                    );
-                } else {
-                    return array(
-                        true,
-                        weight($weight)
-                    );
-                }
 
                 return array(
                     true,
-                    weight($this->data[$this->table_name.' '.$key])
-                );
+                    smart_weight($this->data[$this->table_name.' '.$key])
+
+            );
+
+
                 break;
 
 
