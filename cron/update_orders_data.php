@@ -37,12 +37,14 @@ $account = new Account();
 
 
 
-$sql = sprintf("SELECT `Order Key` FROM `Order Dimension`  where `Order Key`=2353168   ");
+$sql = sprintf("SELECT `Order Key` FROM `Order Dimension`    ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $order = get_object('Order', $row['Order Key']);
         $order->update_number_replacements();
-       // $order->update_order_payments();
+        $order->update_order_estimated_weight();
+
+        // $order->update_order_payments();
 
     }
 

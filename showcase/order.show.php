@@ -22,24 +22,27 @@ function get_order_showcase($data, $smarty, $user, $db) {
 
     $order = $data['_object'];
     $store = get_object('store', $order->get('Store Key'));
+    $order->update_order_estimated_weight();
 
     // $order->update_order_payments();
     //$order->update_totals();
-/*
-        $order->update_totals();
-        $order->update_discounts_items();
-        $order->update_totals();
-        $order->update_shipping(false, false);
-        $order->update_charges(false, false);
-        $order->update_discounts_no_items();
-        $order->update_deal_bridge();
+    /*
+            $order->update_totals();
+            $order->update_discounts_items();
+            $order->update_totals();
+            $order->update_shipping(false, false);
+            $order->update_charges(false, false);
+            $order->update_discounts_no_items();
+            $order->update_deal_bridge();
 
-*/
+    */
 
     $smarty->assign('order', $order);
     $smarty->assign('store', $store);
     $smarty->assign('customer', get_object('customer', $order->get('Customer Key')));
-
+    if ($order->get('Order Delivery Note Key')) {
+        $smarty->assign('delivery_note', get_object('DeliveryNote', $order->get('Order Delivery Note Key')));
+    }
 
     $smarty->assign(
         'object_data', json_encode(
