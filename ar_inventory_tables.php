@@ -1178,7 +1178,7 @@ function supplier_parts($_data, $db, $user, $account) {
 
             $reference=sprintf('<span class="link" onClick="change_view(\'supplier/%d/part/%d\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']);
             if($data['Supplier Part Reference']!=$data['Part Reference']){
-                $reference.= '<br><span  class="link" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$part_status.' '.$data['Part Reference'].'</span> ';
+                $reference.= '<br><span  class="link '.($data['Part Status'] == 'Not In Use'?'strikethrough error':'').'  " onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$part_status.' '.$data['Part Reference'].'</span> ';
 
             }else{
                 $reference.= '<span  title="'._('Link to part').'" class="link margin_left_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$part_status.'</span> ';
