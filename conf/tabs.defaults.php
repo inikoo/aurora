@@ -963,6 +963,32 @@ $tab_defaults = array(
         'elements_type' => array_keys($elements_options['invoices'])[0],
         'elements'      => $elements_options['invoices']
     ),
+    'deleted_invoices_server'            => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+        'elements_type' => array_keys($elements_options['invoices'])[0],
+        'elements'      => $elements_options['invoices']
+    ),
+    'deleted_invoices'            => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+        'elements_type' => array_keys($elements_options['invoices'])[0],
+        'elements'      => $elements_options['invoices']
+    ),
     'invoices_server.categories' => array(
         'view'        => 'overview',
         'sort_key'    => 'code',

@@ -2098,7 +2098,7 @@ function get_pick_aid_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-function get_payment_navigation($data, $smarty, $user, $db, $account) {
+function get_order_payment_navigation($data, $smarty, $user, $db, $account) {
 
     global $user, $smarty;
 

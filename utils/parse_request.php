@@ -2442,6 +2442,53 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     } elseif ($view_path[0] == 'per_store') {
                         $section      = 'invoices';
                         $_data['tab'] = 'invoices_per_store';
+                    } elseif ($view_path[0] == 'deleted') {
+
+                        if (isset($view_path[1])) {
+                            if ($view_path[1] == 'all') {
+                                $section      = 'invoices';
+                                $_data['tab'] = 'deleted_invoices_server';
+
+
+                                if (isset($view_path[2])) {
+                                    if (is_numeric($view_path[2]) ) {
+                                        $section      = 'deleted_invoice';
+                                        $object     = 'invoice';
+                                        $key     = $view_path[2];
+
+
+                                    }
+
+                                }
+
+
+                            }elseif (is_numeric($view_path[1]) ) {
+                                $section      = 'deleted_invoices';
+                                $module     = 'accounting';
+                                $parent     = 'store';
+                                $parent_key     = $view_path[1];
+
+
+                                if (isset($view_path[2])) {
+                                    if (is_numeric($view_path[2]) ) {
+                                        $section      = 'deleted_invoice';
+                                        $module     = 'accounting';
+                                        $object     = 'invoice';
+                                        $key     = $view_path[2];
+
+
+
+                                    }
+
+                                }
+
+
+                            }
+
+                        }
+
+
+
                     } elseif ($view_path[0] == 'category') {
 
                         if (isset($view_path[1])) {

@@ -2104,6 +2104,11 @@ $modules = array(
                         'label'     => _('All invoices'),
                         'icon'      => 'copy',
                         'reference' => 'invoices/all',
+                    ),
+                    'deleted_invoices_server'     => array(
+                        'label'     => _('All deleted invoices'),
+                        'icon'      => 'ban',
+                        'reference' => 'invoices/deleted/all',
                     )
 
                 )
@@ -2314,6 +2319,21 @@ $modules = array(
                 )
 
             ),
+            'deleted_invoice' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'deleted_invoice.items' => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+                    'invoice.history'       => array(
+                        'label' => _('History'),
+                        'icon'  => 'road'
+                    ),
+
+
+                )
+            ),
 
 
         ),
@@ -2388,7 +2408,19 @@ $modules = array(
 
                 )
             ),
+            'deleted_invoices' => array(
+                'type'      => 'navigation',
+                'label'     => _('Deleted invoices'),
+                'icon'      => 'ban',
+                'reference' => 'invoices/deleted/%s',
+                'tabs'      => array(
+                    'deleted_invoices'         => array(
+                        'label'             => _('Deleted invoices'),
+                        'icon'              => 'ban',
+                    ),
 
+                )
+            ),
             'payments' => array(
                 'type'      => 'navigation',
                 'label'     => _('Payments'),
