@@ -205,6 +205,7 @@
             "url":         "https://inikoo.freshdesk.com"
         });
     </script>
+    {if false}
     <script>
         window.fcWidget.init({
             token:  "869f028d-7877-4611-a735-7021ae47fab0",
@@ -226,6 +227,7 @@
 
         window.fcWidget.user.setFirstName("{$user->get('Alias')}");
     </script>
+    {/if}
 {/if}
 </body>
 </html>
