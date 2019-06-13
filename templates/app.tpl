@@ -15,7 +15,7 @@
 
     {if !$is_devel}
         <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
-        <script src="https://wchat.freshchat.com/js/widget.js"></script>
+    {if false}<script src="https://wchat.freshchat.com/js/widget.js"></script>{/if}
     {/if}
     <script src="/assets/aurora_libs.min.js?v190319v2"></script>
 
