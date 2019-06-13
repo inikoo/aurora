@@ -525,6 +525,10 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s shipping zone schema', '%s shipping zone schemas', $total_records), number($total_records)
         );
+    } elseif ($record_label == 'deleted invoice') {
+        return sprintf(
+            ngettext('%s deleted invoice', '%s deleted invoices', $total_records), number($total_records)
+        );
     } else {
         return sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)
@@ -1024,6 +1028,12 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
         return sprintf(
             ngettext(
                 '%s shipping zone schema of %s', '%s shipping zone schemas of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    } elseif ($record_label == 'deleted invoice') {
+        return sprintf(
+            ngettext(
+                '%s deleted invoice of %s', '%s deleted invoices of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
     } else {

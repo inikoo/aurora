@@ -1846,13 +1846,13 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_order_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('invoice'):
-                    include_once 'navigation/invoice.nav.php';
+                    include_once 'navigation/accounting.nav.php';
 
                     return get_invoice_navigation($data, $smarty, $user, $db, $account);
                     break;
 
                 case ('refund'):
-                    include_once 'navigation/invoice.nav.php';
+                    include_once 'navigation/accounting.nav.php';
 
                     return get_invoice_navigation($data, $smarty, $user, $db, $account);
                     break;
@@ -1892,7 +1892,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_purge_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('deleted_invoice'):
-                    include_once 'navigation/invoice.nav.php';
+                    include_once 'navigation/accounting.nav.php';
 
                     return get_deleted_invoice_navigation($data, $smarty, $user, $db, $account);
                     break;
@@ -2637,7 +2637,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
             require_once 'navigation/accounting.nav.php';
 
-
             switch ($data['section']) {
 
 
@@ -2675,12 +2674,17 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('invoices'):
                     return get_invoices_server_navigation($data, $smarty, $user, $db, $account);
                     break;
-
+                case ('deleted_invoices_server'):
+                    return get_deleted_invoices_server_navigation($data, $smarty, $user, $db, $account);
+                    break;
                 case ('categories'):
                     return get_invoices_categories_server_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('category'):
                     return get_invoices_category_server_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('deleted_invoice'):
+                    return get_deleted_invoice_navigation($data, $smarty, $user, $db, $account);
                     break;
             }
             break;
@@ -2694,13 +2698,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('invoices'):
                     return get_invoices_navigation($data, $smarty, $user, $db, $account);
                     break;
+
                 case ('invoice'):
-                    include_once 'navigation/invoice.nav.php';
 
                     return get_invoice_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('deleted_invoice'):
-
                     return get_deleted_invoice_navigation($data, $smarty, $user, $db, $account);
                     break;
                 case ('payment_service_provider'):
@@ -2729,6 +2732,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('credits'):
                     return get_credits_navigation($data, $user, $smarty, $db);
+                    break;
+                case ('deleted_invoices'):
+                    return get_deleted_invoices_navigation($data, $smarty, $user, $db, $account);
                     break;
             }
             break;
@@ -3010,6 +3016,10 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     }
 
 
+
+
+
+
     if (isset($modules[$data['module']]['sections'][$data['section']]['tabs'])) {
 
 
@@ -3017,6 +3027,9 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     } else {
         $tabs = array();
     }
+
+
+
 
 
     if (isset($modules[$data['module']]['sections'][$data['section']]['tabs'][$data['tab']] ['subtabs'])) {
@@ -3065,6 +3078,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
 
     );
+
 
 
     if ($data['section'] == 'mailshot') {
@@ -3959,7 +3973,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     }
 
 
-    //print_r($_content['tabs']);
     // print_r($_content['subtabs']);
 
     if (empty($_content['subtabs'])) {
@@ -8498,6 +8511,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
         case 'accounting_server':
 
 
+
+
             if ($state['section'] == 'dashboard') {
 
                 $branch[] = array(
@@ -8585,7 +8600,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            } elseif ($state['section'] == 'payments') {
+            }
+            elseif ($state['section'] == 'payments') {
 
                 if ($state['parent'] == 'account') {
                     $branch[] = array(
@@ -8662,6 +8678,16 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'label'     => _('Invoices').' ('._('All stores').')',
                     'icon'      => 'file-alt',
                     'reference' => 'invoices/all'
+                );
+
+
+            }elseif ($state['section'] == 'deleted_invoices_server') {
+
+
+                $branch[] = array(
+                    'label'     => _('Deleted invoices').' ('._('All stores').')',
+                    'icon'      => 'ban',
+                    'reference' => 'invoices/deleted/all'
                 );
 
 

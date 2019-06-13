@@ -35,6 +35,9 @@ switch ($tipo) {
     case 'invoices':
         invoices(get_table_parameters(), $db, $user, $account);
         break;
+    case 'deleted_invoices':
+        deleted_invoices(get_table_parameters(), $db, $user, $account);
+        break;
     case 'invoice_categories':
         invoice_categories(get_table_parameters(), $db, $user, $account);
         break;
@@ -848,6 +851,85 @@ function invoices($_data, $db, $user) {
                 'type'         => $type,
                 'method'       => $method,
                 'state'        => $state,
+
+
+            );
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function deleted_invoices($_data, $db, $user) {
+
+    $rtext_label = 'deleted invoice';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+
+            if ($data['Invoice Deleted Type'] == 'Invoice') {
+                $type = _('Invoice');
+            } elseif ($data['Invoice Deleted Type'] == 'CreditNote') {
+                $type = _('Credit Note');
+            } else {
+                $type = _('Refund');
+            }
+
+
+
+            $metadata=json_decode($data['Invoice Deleted Metadata'],true);
+
+
+
+            if ($_data['parameters']['parent'] == 'account') {
+                $number = sprintf('<span class="link" onclick="change_view(\'invoices/deleted/all/%d\')">%s</span>', $data['Invoice Deleted Key'], $data['Invoice Deleted Public ID']);
+
+            } else {
+                $number = sprintf('<span class="link" onclick="change_view(\'invoices/deleted//%d/%d\')">%s</span>', $data['Invoice Deleted Store Key'], $data['Invoice Deleted Key'], $data['Invoice Deleted Public ID']);
+            }
+
+
+            $adata[] = array(
+                'id' => (integer)$data['Invoice Deleted Key'],
+
+
+                'number' => $number,
+                'store'     => sprintf('<span class="link" onclick="change_view(\'invoices/deleted/%d\')" title="%s">%s</span>', $data['Invoice Deleted Store Key'], $data['Store Name'], $data['Store Code']),
+                'order'     => sprintf('<span class="link" onclick="change_view(\'orders/%d/%d\')">%s</span>', $data['Invoice Deleted Store Key'], $metadata['Invoice Order Key'], $data['Order Public ID']),
+
+                'customer'     => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')">%s</span>', $data['Invoice Deleted Store Key'], $metadata['Invoice Customer Key'], $metadata['Invoice Customer Name']),
+                'date'         => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Invoice Deleted Date'].' +0:00')),
+                'total_amount' => money($data['Invoice Deleted Total Amount'], $metadata['Invoice Currency']),
+
+                'type'         => $type,
+                'note'         => '<div style="line-height:normal ;font-size: x-small;">'.$data['Invoice Deleted Note'].'</div>',
+                'user'         => '<span >'.$data['User Alias'].'</span>',
 
 
             );
