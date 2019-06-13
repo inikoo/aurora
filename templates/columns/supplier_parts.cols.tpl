@@ -293,6 +293,9 @@ grid.columns.findWhere({ name: 'dispatched'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'dispatched_1yb'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'stock_status'} ).set("renderable", false)
 
+grid.columns.findWhere({ name: 'dispatched_per_week'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'available_forecast'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'next_deliveries'} ).set("renderable", false)
 
 
 if(view=='overview'){
@@ -329,6 +332,12 @@ grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'packing'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'stock_status'} ).set("renderable", true)
+
+
+grid.columns.findWhere({ name: 'dispatched_per_week'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'available_forecast'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'next_deliveries'} ).set("renderable", true)
+
 
 }
 
