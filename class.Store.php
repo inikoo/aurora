@@ -1086,6 +1086,7 @@ class Store extends DB_Table {
                 $this->db, $timeseries->get('Timeseries Frequency'), $from, $to
             );
 
+
             if ($fork_key) {
 
                 $sql = sprintf(
@@ -1112,7 +1113,6 @@ class Store extends DB_Table {
                     );
 
 
-                    //  print "$sql\n";
 
                     $update_sql = $this->db->prepare($sql);
                     $update_sql->execute();
