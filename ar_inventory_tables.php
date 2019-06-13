@@ -1092,7 +1092,7 @@ function supplier_parts($_data, $db, $user, $account) {
             }
 
             if ($data['Part Status'] == 'Not In Use') {
-                $part_status = '<i class="fal box fa-fw  error strikethrough" title="'._('Discontinued').'"></i> ';
+                $part_status = '<i class="fal fa-box fa-fw  error strikethrough" title="'._('Discontinued').'"></i> ';
 
             } elseif ($data['Part Status'] == 'Discontinuing') {
                 $part_status = '<i class="fal fa-box fa-fw  error" title="'._('Discontinuing').'"></i> ';
@@ -1101,7 +1101,7 @@ function supplier_parts($_data, $db, $user, $account) {
                 $part_status = '<i class="fal fa-box fa-fw " aria-hidden="true"></i> ';
             }
 
-
+/*
             if ($data['Part Cost in Warehouse'] == '') {
                 $stock_value = '<span class=" error italic">'._('Unknown cost').'</span> <i class="error fa fa-fw fa-exclamation-circle"></i>';
 
@@ -1119,7 +1119,7 @@ function supplier_parts($_data, $db, $user, $account) {
 
 
             }
-
+*/
 
             if ($data['Part Next Deliveries Data'] == '') {
                 $next_deliveries_array = array();
