@@ -229,12 +229,8 @@ function parts($_data, $db, $user, $type, $account) {
 
             if ($data['Part Cost in Warehouse'] == '') {
                 $sko_stock_value = '<span class="super_discreet">'._('No set').'</span>';
-
-
             } else {
                 $sko_stock_value = money($data['Part Cost in Warehouse'], $account->get('Account Currency'));
-
-
             }
 
 
@@ -374,9 +370,7 @@ function parts($_data, $db, $user, $type, $account) {
                 'stock_value'        => $stock_value,
 
                 'dispatched'     => number($data['dispatched'], 0),
-                'dispatched_1yb' => delta(
-                    $data['dispatched'], $data['dispatched_1yb']
-                ),
+                'dispatched_1yb' => delta($data['dispatched'], $data['dispatched_1yb']),
                 'sales'          => money($data['sales'], $account->get('Account Currency')),
                 'sales_1yb'      => delta($data['sales'], $data['sales_1yb']),
 
@@ -484,7 +478,6 @@ function parts($_data, $db, $user, $type, $account) {
                 'margin'             => '<span class="'.($data['Part Margin'] <= 0 ? 'error' : '').'">'.percentage($data['Part Margin'], 1).'</span>',
                 'next_deliveries'    => $next_deliveries,
                 'available_forecast' => $available_forecast,
-                'next_deliveries'    => $next_deliveries
 
 
             );
@@ -1069,52 +1062,152 @@ function supplier_parts($_data, $db, $user, $account) {
 
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
-                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status       = '<i class="fa  fa-plus-circle fa-fw warning discreet"  aria-hidden="true" title="'._('To much stock').'" ></i>';
+                    $stock_status_label = _('Surplus');
                     break;
                 case 'Optimal':
-                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status       = '<i class="fa fa-check-circle fa-fw success" aria-hidden="true"  title="'._('Good level of stock').'"></i>';
+                    $stock_status_label = _('Ok');
                     break;
                 case 'Low':
-                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status       = '<i class="fa fa-minus-circle fa-fw warning discreet" aria-hidden="true" title="'._('Low stock, order now').'"></i>';
+                    $stock_status_label = _('Low');
                     break;
                 case 'Critical':
-                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status       = '<i class="fa error fa-minus-circle fa-fw error discreet" aria-hidden="true" title="'._('Critical low stock, will be out of stock anytime').'"></i>';
+                    $stock_status_label = _('Critical');
                     break;
                 case 'Out_Of_Stock':
-                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                    $stock_status       = '<i class="fa error fa-ban fa-fw error" aria-hidden="true" title="'._('Out of stock').'"></i>';
+                    $stock_status_label = _('Out of stock');
                     break;
                 case 'Error':
-                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    $stock_status       = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    $stock_status_label = _('Error');
                     break;
                 default:
-                    $stock_status = $data['Part Stock Status'];
+                    $stock_status       = $data['Part Stock Status'];
+                    $stock_status_label = $data['Part Stock Status'];
                     break;
             }
 
             if ($data['Part Status'] == 'Not In Use') {
-                $part_status = '<i class="fa fa-square fa-fw  very_discreet" aria-hidden="true"></i> ';
+                $part_status = '<i class="fal box fa-fw  error strikethrough" title="'._('Discontinued').'"></i> ';
 
             } elseif ($data['Part Status'] == 'Discontinuing') {
-                $part_status = '<i class="fa fa-square fa-fw  very_discreet" aria-hidden="true"></i> ';
+                $part_status = '<i class="fal fa-box fa-fw  error" title="'._('Discontinuing').'"></i> ';
 
             } else {
-                $part_status = '<i class="fa fa-square fa-fw " aria-hidden="true"></i> ';
+                $part_status = '<i class="fal fa-box fa-fw " aria-hidden="true"></i> ';
             }
 
-            $part_description = $part_status.'<span style="min-width:80px;display: inline-block;" class="link padding_right_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$data['Part Reference'].'</span> ';
+
+            if ($data['Part Cost in Warehouse'] == '') {
+                $stock_value = '<span class=" error italic">'._('Unknown cost').'</span> <i class="error fa fa-fw fa-exclamation-circle"></i>';
+
+
+            } elseif ($data['Part Cost in Warehouse'] == 0) {
+                $stock_value = '<span class=" error italic">'._('Cost is zero').'</span> <i class="error fa fa-fw fa-exclamation-circle"></i>';
+
+
+            } elseif ($data['Part Current On Hand Stock'] < 0) {
+                $stock_value = '<span class=" error italic">'._('Unknown stock').'</span> <i class="error fa fa-fw fa-exclamation-circle"></i>';
+
+
+            } else {
+                $stock_value = money($data['Part Cost in Warehouse'] * $data['Part Current On Hand Stock'], $account->get('Account Currency'));
+
+
+            }
+
+
+            if ($data['Part Next Deliveries Data'] == '') {
+                $next_deliveries_array = array();
+            } else {
+                $next_deliveries_array = json_decode($data['Part Next Deliveries Data'], true);
+            }
+
+
+            $next_deliveries = '';
+
+            foreach ($next_deliveries_array as $next_delivery) {
+
+
+                $next_deliveries .= '<div class="as_row "><div class="as_cell padding_left_10" style="min-width: 150px" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_20 as_cell strong" style="text-align: right;min-width: 70px" title="'._(
+                        'SKOs ordered'
+                    ).'">+'.number(
+                        $next_delivery['raw_units_qty'] / $data['Part Units Per Package']
+                    ).'<span style="font-weight: normal" class="small discreet">skos</span></div></div>';
+
+
+            }
+
+
+            $next_deliveries = '<div border="0" style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
+
+
+            if ($data['Part On Demand'] == 'Yes') {
+
+                $available_forecast = '<span >'.sprintf(
+                        '%s', '<span  title="'.sprintf("%s %s", number($data['Part Days Available Forecast'], 1), ngettext("day", "days", intval($data['Part Days Available Forecast']))).'">'.seconds_to_until($data['Part Days Available Forecast'] * 86400).'</span>'
+                    ).'</span>';
+
+                if ($data['Part Fresh'] == 'No') {
+                    $available_forecast .= ' <i class="fa fa-fighter-jet padding_left_5"  title="'._('On demand').'"></i>';
+                } else {
+                    $available_forecast = ' <i class="far fa-lemon padding_left_5"  title="'._('On demand').'"></i>';
+                }
+            } else {
+
+                if ($data['Part Days Available Forecast'] == 0) {
+                    $available_forecast = '';
+                } else {
+
+                    $available_forecast = '<span >'.sprintf(
+                            '%s', '<span  title="'.sprintf(
+                                    "%s %s", number($data['Part Days Available Forecast'], 1), ngettext(
+                                               "day", "days", intval($data['Part Days Available Forecast'])
+                                           )
+                                ).'">'.seconds_to_until($data['Part Days Available Forecast'] * 86400).'</span>'
+                        ).'</span>';
+
+                }
+            }
+
+
+
+            $reference=sprintf('<span class="link" onClick="change_view(\'supplier/%d/part/%d\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']);
+            if($data['Supplier Part Reference']!=$data['Part Reference']){
+                $reference.= '<br><span  class="link" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$part_status.' '.$data['Part Reference'].'</span> ';
+
+            }else{
+                $reference.= '<span  title="'._('Link to part').'" class="link margin_left_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$part_status.'</span> ';
+
+            }
+
+            if ($data['Part Cost in Warehouse'] == '') {
+                $sko_stock_value = '<span class="super_discreet">'._('No set').'</span>';
+            } else {
+                $sko_stock_value = money($data['Part Cost in Warehouse'], $account->get('Account Currency'));
+            }
 
             $record_data[] = array(
                 'id'   => (integer)$data['Supplier Part Key'],
                 'data' => '<span id="item_data_'.$data['Supplier Part Key'].'" class="item_data" data-key="'.$data['Supplier Part Key'].'" ></span>',
 
-                'supplier_key'     => (integer)$data['Supplier Part Supplier Key'],
                 'supplier_code'    => sprintf('<span class="link" onClick="change_view(\'supplier/%d/\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Code']),
-                'part_key'         => (integer)$data['Supplier Part Part SKU'],
                 'part_reference'   => $data['Part Reference'],
-                'reference'        => sprintf('<span class="link" onClick="change_view(\'supplier/%d/part/%d\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']),
-                'part_description' => $part_description,
+                'reference'        => $reference,
+
+
+
                 'barcode'          => $data['Part Barcode Number'],
                 'barcode_sko'      => $data['Part SKO Barcode'],
+                'barcode_carton'      => $data['Part Carton Barcode'],
+                'weight_sko'      => ($data['Part Package Weight']!=''?weight($data['Part Package Weight'],'Kg',3,false,true):'<i class="fa fa-exclamation-circle error"></i>'),
+                'cbm'      => ($data['Supplier Part Carton CBM']!=''?$data['Supplier Part Carton CBM'].'m³':'<i class="fa fa-exclamation-circle error"></i>'),
+
+
 
 
                 'description'    => '<span  data-field="Supplier Part Description"  data-item_class="item_Supplier_Part_Description" class="table_item_editable item_Supplier_Part_Description"  >'.$data['Supplier Part Description'].'</span>',
@@ -1128,11 +1221,26 @@ function supplier_parts($_data, $db, $user, $account) {
                     ).'</span>',
                 'packing'        => '
 				 <div style="float:right;min-width:30px;;text-align:right" title="'._('Units per carton').'"><span class="discreet" >'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span></div>
-				<div style="float:right;min-width:70px;text-align:center;"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div>
-				<div style="float:right;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package'].'</span></div>
+				<div style="float:right;min-width:70px;text-align:center;" title="'._('Packages (SKOs) per carton').'" > <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div>
+				<div style="float:right;min-width:20px;text-align:right" title="'._('Units per SKO').'"><span>'.$data['Part Units Per Package'].'</span></div>
 				 '),
-                'stock'          => number(floor($data['Part Current On Hand Stock']))." $stock_status",
+                'stock'              => '<span class="'.($data['Part Current On Hand Stock'] < 0 ? 'error' : '').'">'.number(floor($data['Part Current On Hand Stock'])).'</span>',
 
+
+                //'stock_value'        => $stock_value,
+
+                'dispatched'     => number($data['dispatched'], 0),
+                'dispatched_1yb' => '<span title="'.sprintf(_('%s dispatched same interval last year'),number($data['dispatched_1yb'])).'">'.delta($data['dispatched'], $data['dispatched_1yb']).'</span>',
+                'sales'          => money($data['sales'], $account->get('Account Currency')),
+                'sales_1yb' => '<span title="'.sprintf(_('%s amount sold same interval last year'),money($data['sales_1yb'], $account->get('Account Currency'))).'">'.delta($data['sales'], $data['sales_1yb']).'</span>',
+
+                'sko_stock_value'      => $sko_stock_value,
+                'sko_commercial_value' => ($data['Part Commercial Value'] == '' ? '' : money($data['Part Commercial Value'], $account->get('Account Currency'))),
+                'stock_status'       => $stock_status,
+                'stock_status_label' => $stock_status_label,
+                'next_deliveries'    => $next_deliveries,
+                'available_forecast' => $available_forecast,
+                'dispatched_per_week'=>number($data['Part 1 Quarter Acc Dispatched'] * 4 / 52, 0)
 
             );
 
