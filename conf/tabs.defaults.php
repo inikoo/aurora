@@ -1827,6 +1827,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
+        'f_period'      => 'ytd',
         'elements_type' => array_keys($elements_options['supplier_parts'])[0],
         'elements'      => $elements_options['supplier_parts'],
         'export_fields' => $export_fields['supplier_parts']
@@ -2389,7 +2390,6 @@ $tab_defaults = array(
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'reference',
-
     ),
 
     'part.supplier.orders'        => array(

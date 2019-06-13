@@ -178,7 +178,7 @@ editable: false,
 
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='dispatched_per_week'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
@@ -190,7 +190,7 @@ editable: false,
 
 defaultOrder:1,
 sortType: "toggle",
-{if $sort_key=='stock'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='weeks_available'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell

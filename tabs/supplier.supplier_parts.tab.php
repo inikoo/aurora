@@ -31,12 +31,12 @@ if ($user->get('User Type') == 'Agent') {
             'label' => _('Overview'),
             'title' => _('Overview')
         ),
-        'barcodes' => array('label' => _("Id's & Barcodes")),
+        'barcodes' => array('label' => _("Barcode/Weight/CMB")),
         'parts'    => array(
-            'label' => _('Inventory Part'),
-            'title' => _('Part details')
+            'label' => _('Part sales'),
+            'title' => _('Sales of associated part (include other suppliers)')
         ),
-        'reorder'  => array('label' => _('Reorder')),
+        'reorder'  => array('label' => _('Part (re)stock')),
 
     );
 
@@ -142,4 +142,4 @@ $smarty->assign('table_top_template', 'supplier_parts.edit.tpl');
 include 'utils/get_table_html.php';
 
 
-?>
+
