@@ -82,7 +82,7 @@ class Customer extends Subject {
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
-            $this->id = $this->data['Customer Key'];
+            $this->id       = $this->data['Customer Key'];
             $this->metadata = json_decode($this->data['Customer Metadata'], true);
 
         }
@@ -164,7 +164,7 @@ class Customer extends Subject {
 
         $raw_data['Customer First Contacted Date'] = gmdate('Y-m-d H:i:s');
         $raw_data['Customer Sticky Note']          = '';
-        $raw_data['Customer Metadata']          = '{}';
+        $raw_data['Customer Metadata']             = '{}';
 
 
         $keys   = '';
@@ -440,28 +440,40 @@ class Customer extends Subject {
                 break;
             case('Account Balance'):
             case 'Invoiced Net Amount':
-                if (is_object($arg1)) {
-                    $store = $arg1;
-                } else {
-                    $store = get_object('Store', $this->data['Customer Store Key']);
-                }
+
+
+            if (!isset($this->store)) {
+                $store       = get_object('Store', $this->data['Customer Store Key']);
+                $this->store = $store;
+            }
 
 
                 return money(
-                    $this->data['Customer '.$key], $store->get('Store Currency Code')
+                    $this->data['Customer '.$key], $this->store->get('Store Currency Code')
+                );
+                break;
+            case 'Invoiced Balance Amount':
+
+                if (!isset($this->store)) {
+                    $store       = get_object('Store', $this->data['Customer Store Key']);
+                    $this->store = $store;
+                }
+
+                return money(
+                    $this->data['Customer Invoiced Net Amount']+ $this->data['Customer Refunded Net Amount']
+                    , $this->store->get('Store Currency Code')
                 );
                 break;
             case('Total Net Per Order'):
                 if ($this->data['Customer Number Invoices'] > 0) {
 
-                    if (is_object($arg1)) {
-                        $store = $arg1;
-                    } else {
-                        $store = get_object('Store', $this->data['Customer Store Key']);
+                    if (!isset($this->store)) {
+                        $store       = get_object('Store', $this->data['Customer Store Key']);
+                        $this->store = $store;
                     }
 
 
-                    return money($this->data['Customer Invoiced Net Amount'] / $this->data['Customer Number Invoices'], $store->data['Store Currency Code']);
+                    return money($this->data['Customer Invoiced Net Amount'] / $this->data['Customer Number Invoices'], $this->store->data['Store Currency Code']);
                 } else {
                     return _('ND');
                 }
@@ -854,7 +866,7 @@ class Customer extends Subject {
         $order_data['Order Customer Name']         = $this->data['Customer Name'];
         $order_data['Order Customer Contact Name'] = $this->data['Customer Main Contact Name'];
         $order_data['Order Registration Number']   = $this->data['Customer Registration Number'];
-        $order_data['Order Customer Level Type'] = $this->data['Customer Level Type'];
+        $order_data['Order Customer Level Type']   = $this->data['Customer Level Type'];
 
         $order_data['Order Tax Number']                    = $this->data['Customer Tax Number'];
         $order_data['Order Tax Number Valid']              = $this->data['Customer Tax Number Valid'];
@@ -979,7 +991,7 @@ class Customer extends Subject {
                 $this->update_field($field, $value);
 
 
-                $sql=sprintf("update `Order Dimension` set `Order Sticky Note`=%s where  WHERE `Order State` in  ('InBasket','InProcess')  and `Order Customer Key`=%d ",$value,$this->id);
+                $sql = sprintf("update `Order Dimension` set `Order Sticky Note`=%s where  WHERE `Order State` in  ('InBasket','InProcess')  and `Order Customer Key`=%d ", $value, $this->id);
                 $this->db->exec($sql);
 
 
@@ -989,7 +1001,7 @@ class Customer extends Subject {
                 $this->update_field($field, $value);
 
 
-                $sql=sprintf("update `Order Dimension` set `Order Delivery Sticky Note`=%s where  WHERE `Order State` in  ('InBasket','InProcess','InWarehouse')  and `Order Customer Key`=%d ",$value,$this->id);
+                $sql = sprintf("update `Order Dimension` set `Order Delivery Sticky Note`=%s where  WHERE `Order State` in  ('InBasket','InProcess','InWarehouse')  and `Order Customer Key`=%d ", $value, $this->id);
                 $this->db->exec($sql);
 
 
@@ -1000,20 +1012,15 @@ class Customer extends Subject {
                 $website_user = get_object('Website_User', $this->get('Customer Website User Key'));
 
 
-
-
-
                 if ($website_user->id) {
                     $website_user->editor = $this->editor;
 
 
-
-
                     $website_user->fast_update(
-                      array(
-                          'Website User Password' => hash('sha256', $value),
-                          'Website User Password Hash' => password_hash(hash('sha256', $value), PASSWORD_DEFAULT, array('cost' => 12))
-                      )
+                        array(
+                            'Website User Password'      => hash('sha256', $value),
+                            'Website User Password Hash' => password_hash(hash('sha256', $value), PASSWORD_DEFAULT, array('cost' => 12))
+                        )
                     );
 
                 }
@@ -2146,8 +2153,6 @@ class Customer extends Subject {
                     '%s <a href="dn.php?id=%d">%s</a> (%s)', $dn->data['Delivery Note Type'], $dn->data ['Delivery Note Key'], $dn->data ['Delivery Note ID'], $state
                 );
                 $details = '';
-
-
 
 
         }
