@@ -14,6 +14,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 
 require_once '../vendor/autoload.php';
 
+require 'keyring/dns.php';
 require_once 'utils/sentry.php';
 
 include_once 'utils/natural_language.php';
