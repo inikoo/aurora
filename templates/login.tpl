@@ -23,10 +23,10 @@
         {if $is_devel }
 
 
-            <script src="https://browser.sentry-cdn.com/5.3.0/bundle.min.js" crossorigin="anonymous"></script>
-
+            <script src="https://browser.sentry-cdn.com/5.4.0/bundle.min.js" crossorigin="anonymous">
+            </script>
             <script>
-                Sentry.init({ dsn: 'https://8f17945abb95493692010f7026553f71@sentry.io/1329970', release: "au-web@1.0"});
+                Sentry.init({ dsn: 'https://6b74919f310546d2a64bbf7c856d0820@sentry.io/1482169' });
             </script>
 
 

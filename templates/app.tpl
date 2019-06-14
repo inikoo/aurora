@@ -14,7 +14,8 @@
 
 
     {if !$is_devel}
-        <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
+        <script src="https://browser.sentry-cdn.com/5.4.0/bundle.min.js" crossorigin="anonymous">
+        </script>
     {if false}<script src="https://wchat.freshchat.com/js/widget.js"></script>{/if}
     {/if}
     <script src="/assets/aurora_libs.min.js?v190319v2"></script>
@@ -65,8 +66,8 @@
         ga('set', 'userId', '{$account->get('Code')}_{"%05d"|sprintf:$user->id}');
         ga('send', 'pageview');
 
-        Sentry.init({
-            dsn: 'https://e719d7109ab24a58a977704fed0d7aeb@sentry.io/1433847'});
+        Sentry.init({ dsn: 'https://6b74919f310546d2a64bbf7c856d0820@sentry.io/1482169' });
+
 
         Sentry.configureScope((scope) => {
             scope
