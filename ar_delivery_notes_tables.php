@@ -351,7 +351,6 @@ function delivery_notes($_data, $db, $user) {
             'customer' => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Customer Key'], $data['Delivery Note Customer Name']),
 
             'date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Created'].' +0:00')),
-            'state'   => $data['Delivery Note XHTML State'],
             'weight'  => weight($data['Delivery Note Weight']),
             'parcels' => $parcels,
             'type'    => $type,
@@ -442,7 +441,6 @@ function pending_delivery_notes($_data, $db, $user) {
             'customer' => $data['Delivery Note Customer Name'],
 
             'date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Created'].' +0:00')),
-            'state'   => $data['Delivery Note XHTML State'],
             'weight'  => weight($data['Delivery Note Weight']),
             'parcels' => $parcels,
             'type'    => $type,

@@ -1195,7 +1195,6 @@ class Order extends DB_Table {
                         'Delivery Note File As'                      => $this->data['Order File As'],
                         'Delivery Note Type'                         => $this->data['Order Type'],
                         'Delivery Note Dispatch Method'              => $dispatch_method,
-                        'Delivery Note Title'                        => '',
                         'Delivery Note Customer Key'                 => $this->data['Order Customer Key'],
                         'Delivery Note Metadata'                     => $this->data['Order Original Metadata'],
                         'Delivery Note Customer Name'                => $this->data['Order Customer Name'],
@@ -1215,7 +1214,6 @@ class Order extends DB_Table {
                         'Delivery Note Address Checksum'             => $this->data['Order Delivery Address Checksum'],
                         'Delivery Note Address Formatted'            => $this->data['Order Delivery Address Formatted'],
                         'Delivery Note Address Postal Label'         => $this->data['Order Delivery Address Postal Label'],
-                        'Delivery Note Show in Warehouse Orders'     => $store->get('Store Show in Warehouse Orders')
                     );
 
 
@@ -2628,7 +2626,7 @@ class Order extends DB_Table {
 
 
         $sql = sprintf(
-            'SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and `Delivery Note Order Alert`="Yes"  group by `Delivery Note State` ', $this->id
+            'SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and `Delivery Note Waiting State`="Customer"  group by `Delivery Note State` ', $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -3198,7 +3196,6 @@ class Order extends DB_Table {
             'Delivery Note File As'                      => $replacement_public_id,
             'Delivery Note Type'                         => 'Replacement',
             'Delivery Note Dispatch Method'              => $dispatch_method,
-            'Delivery Note Title'                        => '',
             'Delivery Note Customer Key'                 => $this->data['Order Customer Key'],
             'Delivery Note Metadata'                     => '',
             'Delivery Note Customer Name'                => $this->data['Order Customer Name'],
@@ -3218,7 +3215,6 @@ class Order extends DB_Table {
             'Delivery Note Address Checksum'             => $this->data['Order Delivery Address Checksum'],
             'Delivery Note Address Formatted'            => $this->data['Order Delivery Address Formatted'],
             'Delivery Note Address Postal Label'         => $this->data['Order Delivery Address Postal Label'],
-            'Delivery Note Show in Warehouse Orders'     => $store->get('Store Show in Warehouse Orders')
         );
 
 

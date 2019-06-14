@@ -619,6 +619,13 @@ class Warehouse extends DB_Table {
 
             case 'formatted_ready_to_pick_number':
             case 'formatted_assigned_number':
+            case 'formatted_waiting_for_customer_number':
+            case 'formatted_waiting_for_restock_number':
+            case 'formatted_waiting_for_production_number':
+            case 'formatted_picking_number':
+            case 'formatted_packing_number':
+            case 'formatted_packed_done_number':
+            case 'formatted_approved_number':
 
                 return number($this->properties(preg_replace('/^formatted_/','',$key)));
 
@@ -2067,10 +2074,14 @@ and `Part Distinct Locations`>1
 
         $ready_to_pick_number = 0;
         $assigned_number      = 0;
+        $assigned_waiting_for_customer      = 0;
+        $assigned_waiting_for_restock     = 0;
+        $assigned_waiting_for_production      = 0;
 
         $ready_to_pick_weight = 0;
         $assigned_weight      = 0;
 
+        //'Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Packed Done','Approved','Dispatched','Cancelled','Cancelled to Restock'
 
         $sql = sprintf(
             'select count(*) as num, sum( if(`Delivery Note Weight Source`="Estimated",`Delivery Note Estimated Weight` ,`Delivery Note Weight`)  ) as weight,  `Delivery Note State` from `Delivery Note Dimension` where `Delivery Note Warehouse Key`=%d group by `Delivery Note State`',
