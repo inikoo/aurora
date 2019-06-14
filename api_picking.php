@@ -539,6 +539,14 @@ switch ($_REQUEST['action']) {
         break;
 
 
+    case 'get_deliveries_ready_to_be_picked':
+
+        $response=get_deliveries($db,'Ready to be Picked');
+        echo json_encode($response);
+        exit;
+        break;
+
+
     default:
 
 
@@ -557,4 +565,24 @@ switch ($_REQUEST['action']) {
 }
 
 
-?>
+function get_deliveries($db,$state){
+
+    $sql = 'select `Delivery Note Key`,`Delivery Note Customer Key`,`Delivery Note Type`,`Delivery Note Date Created`,`Delivery Note Estimated Weight`,`Delivery Note Store Key`,`Delivery Note ID`,`Delivery Note Customer Name`,`Store Code`,`Store Name`,`Delivery Note Number Ordered Parts` 
+        from `Delivery Note Dimension` D left join `Store Dimension` on (`Store Key`=`Delivery Note Store Key`) where `Delivery Note State`=?
+        ';
+
+    $deliveries=array();
+
+    $stmt = $db->prepare($sql);
+    $stmt->execute([$state]);
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $deliveries[] = $row;
+    }
+
+
+     return array(
+        'state' => 'OK',
+        'data'  => $deliveries
+    );
+
+}

@@ -73,7 +73,6 @@ if ($result = $db->query($sql)) {
 }
 
 
-exit;
 
 $sql = sprintf(
     'SELECT `Supplier Key` FROM `Supplier Dimension`   '
