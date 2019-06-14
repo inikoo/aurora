@@ -52,8 +52,8 @@ switch ($_REQUEST['action']) {
             'locale'=>$account->get('Account Locale'),
             'worker_user_id'=>$user->id,
             'worker_alias'=>$user->get('Alias'),
-            'worker_type'=>$type
-
+            //'worker_type'=>$type
+            'worker_type'=>'Supervisor'
         );
 
         $response = array(
