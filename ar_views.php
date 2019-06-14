@@ -1332,7 +1332,6 @@ function get_menu($data, $user, $smarty, $db, $account) {
 
 
 function get_navigation($user, $smarty, $data, $db, $account) {
-
     switch ($data['module']) {
 
         case ('dashboard'):
@@ -1805,7 +1804,14 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
         case ('delivery_notes_server'):
             require_once 'navigation/orders.nav.php';
+
             switch ($data['section']) {
+                case ('pending_delivery_notes'):
+
+                    return get_pending_delivery_notes_server_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
                 case ('delivery_notes'):
 
                     return get_delivery_notes_server_navigation(
@@ -1832,9 +1838,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('basket_orders'):
                     return get_basket_orders_navigation($data, $smarty, $user, $db, $account);
                     break;
-                case ('archived_orders'):
-                    return get_archived_orders_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('pending_orders'):
                     return get_pending_orders_navigation($data, $smarty, $user, $db, $account);
                     break;
@@ -6126,6 +6130,15 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 $branch[] = array(
                     'label'     => _('Delivery notes grouped by store'),
                     'icon'      => 'compress',
+                    'reference' => ''
+                );
+
+
+            }elseif ($state['section'] == 'pending_delivery_notes') {
+
+                $branch[] = array(
+                    'label'     => _('Pending delivery notes'),
+                    'icon'      => 'stream',
                     'reference' => ''
                 );
 

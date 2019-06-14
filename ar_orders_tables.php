@@ -69,9 +69,7 @@ switch ($tipo) {
         orders_dispatched_today(get_table_parameters(), $db, $user, $account);
         break;
 
-    case 'archived_orders':
-        archived_orders(get_table_parameters(), $db, $user);
-        break;
+
 
 
     case 'orders_server':
@@ -914,59 +912,6 @@ function orders_in_website($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
-
-function archived_orders($_data, $db, $user) {
-    $rtext_label = 'order';
-
-
-    include_once 'prepare_table/init.php';
-
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
-
-
-    foreach ($db->query($sql) as $data) {
-
-
-        switch ($data['Order State']) {
-            case 'Dispatched':
-                $dispatch_state = '<i class="fa fa-paper-plane" aria-hidden="true" tile="'._('Dispatched').'" ></i>';
-                break;
-            case 'Cancelled':
-                $dispatch_state = '<i class="fa fa-minus-circle error" aria-hidden="true" tile="'._('Cancelled').'" ></i>';
-                break;
-            default:
-                $dispatch_state = '<i class="fa fa-question warning" aria-hidden="true" tile="'.$data['Order State'].'" ></i>';
-                break;
-        }
-
-        $adata[] = array(
-            'id' => (integer)$data['Order Key'],
-
-            'dispatch_state' => $dispatch_state,
-            'public_id'      => sprintf('<span class="link" onClick="change_view(\'orders/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']),
-            'date'           => strftime("%a %e %b %Y", strtotime($data['Order Date'].' +0:00')),
-            'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
-            'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
-
-
-        );
-
-    }
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
-}
 
 
 function orders_server($_data, $db, $user) {

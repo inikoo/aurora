@@ -2084,7 +2084,8 @@ and `Part Distinct Locations`>1
         //'Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Packed Done','Approved','Dispatched','Cancelled','Cancelled to Restock'
 
         $sql = sprintf(
-            'select count(*) as num, sum( if(`Delivery Note Weight Source`="Estimated",`Delivery Note Estimated Weight` ,`Delivery Note Weight`)  ) as weight,  `Delivery Note State` from `Delivery Note Dimension` where `Delivery Note Warehouse Key`=%d group by `Delivery Note State`',
+            'select count(*) as num, sum( if(`Delivery Note Weight Source`="Estimated",`Delivery Note Estimated Weight` ,`Delivery Note Weight`)  ) as weight,  `Delivery Note State` from `Delivery Note Dimension` 
+                where `Delivery Note Warehouse Key`=%d and ``  group by `Delivery Note State`',
             $this->id
         );
 
