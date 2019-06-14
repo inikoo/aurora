@@ -207,7 +207,7 @@ $sql_totals = "select count(Distinct SP.`Supplier Part Key`) as num from $table 
 $fields = "`Part Status`,`Supplier Code`,`Supplier Part Unit Extra Cost`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Supplier Part Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
 `Part Current Stock`,`Part Stock Status`,`Part Status`,`Part Barcode Number`,`Part SKO Barcode`,`Part Current On Hand Stock`,`Part Carton Barcode`,`Part Package Weight`,`Supplier Part Carton CBM`,$yb_sales as sales_1yb,  $yb_dispatched as dispatched_1yb,
 `Part Cost in Warehouse`,`Part Next Deliveries Data`,`Part On Demand`,`Part Days Available Forecast`,`Part $db_period Acc Dispatched` as dispatched,`Part $db_period Acc Invoiced Amount` as sales ,
-`Part Commercial Value`,`Part 1 Quarter Acc Dispatched`
+`Part Commercial Value`,`Part 1 Quarter Acc Dispatched`,`Part Fresh`
 ";
 //print $sql_totals;
 
