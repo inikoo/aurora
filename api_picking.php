@@ -539,6 +539,11 @@ switch ($_REQUEST['action']) {
         break;
 
 
+    case get_pending_deliveries_stats:
+
+
+        break;
+
     case 'get_deliveries_ready_to_be_picked':
 
         $response=get_deliveries($db,'Ready to be Picked');

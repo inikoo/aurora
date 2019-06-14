@@ -2145,14 +2145,9 @@ class Customer extends Subject {
                 $note    = sprintf(
                     '%s <a href="dn.php?id=%d">%s</a> (%s)', $dn->data['Delivery Note Type'], $dn->data ['Delivery Note Key'], $dn->data ['Delivery Note ID'], $state
                 );
-                $details = $dn->data['Delivery Note Title'];
+                $details = '';
 
-                if ($this->editor['Author Alias'] != '' and $this->editor['Author Key']) {
-                    $details .= '';
-                } else {
-                    $details .= '';
 
-                }
 
 
         }

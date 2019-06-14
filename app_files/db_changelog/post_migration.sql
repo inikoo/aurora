@@ -135,4 +135,5 @@ update `Order Dimension` set `Order Last Updated by Customer`=`Order Submitted b
 update `Order Dimension` set `Order Last Updated by Customer`=`Order Last Updated Date`  where `Order Last Updated by Customer` is null;
 update `Order Dimension` set `Order Last Updated by Customer`=NOW()  where `Order Last Updated by Customer` is null;
 
+ ALTER TABLE `Delivery Note Dimension` DROP `Delivery Note XHTML State`, DROP `Delivery Note Waiting For Parts`, DROP `Delivery Note Title`, DROP `Delivery Note XHTML Orders`, DROP `Delivery Note XHTML Invoices`, DROP `Delivery Note XHTML Pickers`, DROP `Delivery Note Number Pickers`, DROP `Delivery Note XHTML Packers`, DROP `Delivery Note Number Packers`, DROP `Delivery Note XHTML Ship To`, DROP `Delivery Note Ship To Key`, DROP `Delivery Note Country 2 Alpha Code`, DROP `Delivery Note World Region Code`, DROP `Delivery Note Country Code`, DROP `Delivery Note Town`, DROP `Delivery Note Postal Code`, DROP `Delivery Note XHTML Public Message`, DROP `Delivery Note Show in Warehouse Orders`, DROP `Delivery Note Pending`;
 

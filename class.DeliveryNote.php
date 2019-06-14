@@ -155,7 +155,7 @@ class DeliveryNote extends DB_Table {
                         prepare_mysql($this->data['Delivery Note Date Created']), prepare_mysql($this->data['Delivery Note ID'])
 
 
-                        , $this->data['Delivery Note Key'], prepare_mysql($this->data['Delivery Note Country 2 Alpha Code']), $row['Order Transaction Fact Key']
+                        , $this->data['Delivery Note Key'], prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']), $row['Order Transaction Fact Key']
 
                     );
                     $this->db->exec($sql);
