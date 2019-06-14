@@ -5,7 +5,6 @@
         "symfony/http-foundation": "^3.4",
         "mpdf/mpdf": "^7.1",
         "commerceguys/addressing": "^1.0",
-        "sentry/sentry": "^1.10",
         "guzzlehttp/guzzle": "~6.0",
         "braintree/braintree_php" : "3.37.0",
         "ext-json": "*",
@@ -14,6 +13,9 @@
         "ext-pdo": "*",
         "smarty/smarty": "~3.1",
         "phpmailer/phpmailer": "~6.0",
-        "monolog/monolog": "^1.24"
+        "monolog/monolog": "^1.24",
+        "sentry/sdk": "2.0.3"
+
+
     }
 }

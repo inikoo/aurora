@@ -14,17 +14,6 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 require_once 'vendor/autoload.php';
 
 
-if (!preg_match('/bali|sasi|sakoi|geko/', gethostname())) {
-
-
-    $sentry_client = new Raven_Client('https://4d2a1ddba83a4fb896275d4e50ec066d@sentry.io/1433843');
-    $sentry_client = new Raven_Client('https://825ad207fd0f4d50989a28857783377b@sentry.io/1319906');
-
-
-
-    $sentry_client->install();
-}
-
 
 
 
@@ -93,6 +82,9 @@ function get_fork_metadata($job) {
     require_once "keyring/dns.$inikoo_account_code.php";
     require_once "keyring/key.$inikoo_account_code.php";
 
+    if(defined('SENTRY_DNS_FORK')){
+        Sentry\init(['dsn' => SENTRY_DNS_FORK ]);
+    }
 
 
     require_once "class.Account.php";
