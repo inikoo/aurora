@@ -162,10 +162,11 @@ function get_pending_orders_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-function get_archived_orders_navigation($data, $smarty, $user, $db, $account) {
+
+function get_pending_delivery_notes_server_navigation($data, $smarty, $user, $db, $account) {
 
 
-    $sections = get_sections('orders', $data['parent_key']);
+    $sections = get_sections('delivery_notes_server');
 
 
     $left_buttons = array();
@@ -177,8 +178,7 @@ function get_archived_orders_navigation($data, $smarty, $user, $db, $account) {
         $sections[$data['section']]['selected'] = true;
     }
 
-
-    $title = _("Archived orders").' <span class="id">'.$data['store']->get('Code').'</span>';
+    $title = _("Pending deliveries");
 
     $_content = array(
         'sections_class' => '',
@@ -188,7 +188,7 @@ function get_archived_orders_navigation($data, $smarty, $user, $db, $account) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search orders')
+            'placeholder' => _('Search delivery notes')
         )
 
     );
@@ -199,6 +199,46 @@ function get_archived_orders_navigation($data, $smarty, $user, $db, $account) {
     return $html;
 
 }
+
+
+function get_pending_delivery_notes_navigation($data, $smarty, $user, $db, $account) {
+
+
+    $sections = get_sections('delivery_notes', $data['parent_key']);
+
+
+    $left_buttons = array();
+
+
+    $right_buttons = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = _("Pending deliveries").' <span class="id">'.$data['store']->get('Code').'</span>';
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search delivery notes')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
 
 
 function get_basket_orders_navigation($data, $smarty, $user, $db, $account) {
