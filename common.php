@@ -3,6 +3,7 @@
 error_reporting(E_ALL ^ E_DEPRECATED);
 define("_DEVEL", isset($_SERVER['devel']));
 
+require_once 'keyring/dns.php';
 
 require_once 'vendor/autoload.php';
 require_once 'utils/sentry.php';
@@ -12,7 +13,6 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 
-require_once 'keyring/dns.php';
 require_once 'keyring/key.php';
 include_once 'utils/i18n.php';
 require_once 'utils/general_functions.php';
