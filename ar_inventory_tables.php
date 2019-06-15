@@ -2353,14 +2353,28 @@ function stock_cost($_data, $db, $user, $account) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-            //MossRB-04 227330 Taken from: 11A1
+
+//            print_r($data);
+
 
 
             $change = $data['Inventory Transaction Quantity'];
 
-            $cost_per_sko = $data['Inventory Transaction Amount'] / $data['Inventory Transaction Quantity'];
+
+            if($data['Inventory Transaction Amount'] ==0){
+                $cost_per_sko = money($cost_per_sko, $account->get('Account Currency Code'));
+            }else{
+                if($data['Inventory Transaction Quantity']!=0){
+                    $cost_per_sko =   money($data['Inventory Transaction Amount'] / $data['Inventory Transaction Quantity'] ,$account->get('Account Currency Code'));
+
+                }else{
+                    $cost_per_sko='?';
+                }
+            }
 
 
+
+/*
             if ($data['Supplier Delivery Parent'] != '') {
                 $note = sprintf(
                     '<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')" >%s</span>  ', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
@@ -2368,15 +2382,15 @@ function stock_cost($_data, $db, $user, $account) {
             } else {
                 $note = _('Stock audit').' '.$data['Note'];
             }
-
+*/
             $note = $data['Note'];
 
             $cost     = sprintf(
                 '<span  class="part_cost button"  data-itf_key="%d" data-cost="%s"  data-skos="%s"  data-currency_symbol="%s"  data-cost_per_sko="%s" onClick="open_edit_cost(this)">%s</span>', $data['Inventory Transaction Key'], $data['Inventory Transaction Amount'],
-                $data['Inventory Transaction Quantity'], $account->get('Account Currency Symbol'), money($cost_per_sko, $account->get('Account Currency Code')), money($data['Inventory Transaction Amount'], $account->get('Account Currency Code'))
+                $data['Inventory Transaction Quantity'], $account->get('Account Currency Symbol'), $cost_per_sko, money($data['Inventory Transaction Amount'], $account->get('Account Currency Code'))
             );
             $sko_cost = sprintf(
-                '<span  class="part_cost_per_sko "  >%s</span>', money($cost_per_sko, $account->get('Account Currency Code'))
+                '<span  class="part_cost_per_sko "  >%s</span>', $cost_per_sko
             );
 
             $record_data[] = array(
