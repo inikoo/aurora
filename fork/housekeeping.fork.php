@@ -328,6 +328,14 @@ function fork_housekeeping($job) {
                 foreach ($result2 as $row2) {
                     $warehouse = get_object('Warehouse', $row2['Warehouse Key']);
                     $warehouse->update_inventory_snapshot($data['all_parts_min_date'], gmdate('Y-m-d'));
+
+
+
+
+
+
+
+
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
