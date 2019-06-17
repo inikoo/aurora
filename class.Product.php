@@ -667,7 +667,7 @@ class Product extends Asset {
 
                 foreach ($parts_data as $part_data) {
 
-                    $parts .= ', '.number($part_data['Ratio']).'x <span class="button " onClick="change_view(\'part/'.$part_data['Part']->id.'\')">'.$part_data['Part']->get('Reference').'</span>';
+                    $parts .= ', '.number($part_data['Ratio'],5).'x <span class="button " onClick="change_view(\'part/'.$part_data['Part']->id.'\')">'.$part_data['Part']->get('Reference').'</span>';
 
 
                 }
