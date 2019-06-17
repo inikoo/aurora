@@ -1995,7 +1995,19 @@ class Account extends DB_Table {
                     }
 
                 }
-                $timeseries->update_stats();
+
+                $date = gmdate('Y-m-d H:i:s');
+                $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+                $this->db->prepare($sql)->execute(
+                    [
+                        $date,
+                        $date,
+                        'timeseries_stats',
+                        $timeseries->id,
+                        $date,
+
+                    ]
+                );
 
             }
 
