@@ -116,13 +116,77 @@ if ($deal_component->get('Deal Component Status') != 'Finish') {
 
 }
 
+if( $object->get('Deal Component Status')!='Finish') {
 
 
+    if ($number_components == 1) {
 
-if($number_components==1){
+
+        if ($deal->get('Deal Status') != 'Finish') {
+            $operations = array(
+                'label'      => _('Operations'),
+                'show_title' => true,
+                'class'      => 'operations',
+                'fields'     => array(
+
+                    array(
+                        'id'        => 'suspend_deal',
+                        'class'     => 'operation',
+                        'render'    => (($deal->get('Deal Status') == 'Suspended' or $deal->get('Deal Status') == 'Finish') ? false : true),
+                        'value'     => '',
+                        'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$deal->get_object_name().'", "key":"'.$deal->id
+                            .'"}\' onClick="suspend_object(this)" class="delete_object disabled">'._("Suspend offer").' <i class="fa fa-stop error new_button link"></i></span>',
+                        'reference' => '',
+                        'type'      => 'operation'
+                    ),
+
+                    array(
+                        'id'     => 'activate_deal',
+                        'class'  => 'operation',
+                        'render' => ($deal->get('Deal Status') != 'Suspended' ? false : true),
+
+                        'value'     => '',
+                        'label'     => '<i class="fa fa-fw fa-lock hide button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$deal->get_object_name().'", "key":"'.$deal->id
+                            .'"}\' onClick="activate_object(this)" class="button">'._("Activate offer").' <i class="fa fa-play success new_button"></i></span>',
+                        'reference' => '',
+                        'type'      => 'operation'
+                    ),
 
 
-    if( $deal->get('Deal Status')!='Finish'){
+                    array(
+                        'id'     => 'finish_deal',
+                        'class'  => 'operation',
+                        'render' => (($deal->get('Deal Status') == 'Active' or $deal->get('Deal Status') == 'Suspended') ? true : false),
+
+                        'value'     => '',
+                        'label'     => '<i class="fa fa-fw fa-lock  button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$deal->get_object_name().'", "key":"'.$deal->id
+                            .'"}\' onClick="finish_object(this)" class="delete_object disabled">'._("End offer now").' <i class="fa fa-stop discreet new_button"></i></span>',
+                        'reference' => '',
+                        'type'      => 'operation'
+                    ),
+
+                    array(
+                        'id'     => 'finish_deal',
+                        'class'  => 'operation',
+                        'render' => (($deal->get('Deal Status') == 'Waiting') ? true : false),
+
+                        'value'     => '',
+                        'label'     => '<i class="fa fa-fw fa-lock  button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$deal->get_object_name().'", "key":"'.$deal->id
+                            .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete").' <i class="far fa-trash-alt discreet new_button"></i></span>',
+                        'reference' => '',
+                        'type'      => 'operation'
+                    ),
+
+                )
+
+            );
+
+        }
+
+
+    } else {
+
+
         $operations = array(
             'label'      => _('Operations'),
             'show_title' => true,
@@ -132,50 +196,26 @@ if($number_components==1){
                 array(
                     'id'        => 'suspend_deal',
                     'class'     => 'operation',
-                    'render'=>(($deal->get('Deal Status')=='Suspended' or $deal->get('Deal Status')=='Finish' )?false:true),
+                    'render'    => ($deal_component->get('Deal Component Status') == 'Suspended' ? false : true),
                     'value'     => '',
-                    'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$deal->get_object_name().'", "key":"'.$deal->id
-                        .'"}\' onClick="suspend_object(this)" class="delete_object disabled">'._("Suspend offer").' <i class="fa fa-stop error new_button link"></i></span>',
+                    'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$deal_component->get_object_name().'", "key":"'.$deal_component->id
+                        .'"}\' onClick="suspend__parent_object(this)" class="delete_object disabled">'._("Suspend offer").' <i class="fa fa-stop error new_button link"></i></span>',
                     'reference' => '',
                     'type'      => 'operation'
                 ),
 
                 array(
-                    'id'        => 'activate_deal',
-                    'class'     => 'operation',
-                    'render'=>($deal->get('Deal Status')!='Suspended'?false:true),
+                    'id'     => 'activate_deal',
+                    'class'  => 'operation',
+                    'render' => ($deal_component->get('Deal Component Status') != 'Suspended' ? false : true),
 
                     'value'     => '',
-                    'label'     => '<i class="fa fa-fw fa-lock hide button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$deal->get_object_name().'", "key":"'.$deal->id
-                        .'"}\' onClick="activate_object(this)" class="button">'._("Activate offer").' <i class="fa fa-play success new_button"></i></span>',
+                    'label'     => '<i class="fa fa-fw fa-lock hide button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$deal_component->get_object_name().'", "key":"'.$deal_component->id
+                        .'"}\' onClick="activate_parent_object(this)" class="button">'._("Activate offer").' <i class="fa fa-play success new_button"></i></span>',
                     'reference' => '',
                     'type'      => 'operation'
                 ),
 
-
-                array(
-                    'id'        => 'finish_deal',
-                    'class'     => 'operation',
-                    'render'=>(( $deal->get('Deal Status')=='Active' or $deal->get('Deal Status')=='Suspended')  ?true:false),
-
-                    'value'     => '',
-                    'label'     => '<i class="fa fa-fw fa-lock  button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$deal->get_object_name().'", "key":"'.$deal->id
-                        .'"}\' onClick="finish_object(this)" class="delete_object disabled">'._("End offer now").' <i class="fa fa-stop discreet new_button"></i></span>',
-                    'reference' => '',
-                    'type'      => 'operation'
-                ),
-
-                array(
-                    'id'        => 'finish_deal',
-                    'class'     => 'operation',
-                    'render'=>(( $deal->get('Deal Status')=='Waiting')  ?true:false),
-
-                    'value'     => '',
-                    'label'     => '<i class="fa fa-fw fa-lock  button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$deal->get_object_name().'", "key":"'.$deal->id
-                        .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete").' <i class="far fa-trash-alt discreet new_button"></i></span>',
-                    'reference' => '',
-                    'type'      => 'operation'
-                ),
 
             )
 
@@ -183,49 +223,9 @@ if($number_components==1){
 
     }
 
+    if (isset($operations)) {
+        $object_fields[] = $operations;
 
-
-}else{
-
-
-    $operations = array(
-        'label'      => _('Operations'),
-        'show_title' => true,
-        'class'      => 'operations',
-        'fields'     => array(
-
-            array(
-                'id'        => 'suspend_deal',
-                'class'     => 'operation',
-                'render'    => ($deal_component->get('Deal Component Status') == 'Suspended' ? false : true),
-                'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$deal_component->get_object_name().'", "key":"'.$deal_component->id
-                    .'"}\' onClick="suspend__parent_object(this)" class="delete_object disabled">'._("Suspend offer").' <i class="fa fa-stop error new_button link"></i></span>',
-                'reference' => '',
-                'type'      => 'operation'
-            ),
-
-            array(
-                'id'     => 'activate_deal',
-                'class'  => 'operation',
-                'render' => ($deal_component->get('Deal Component Status') != 'Suspended' ? false : true),
-
-                'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock hide button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$deal_component->get_object_name().'", "key":"'.$deal_component->id
-                    .'"}\' onClick="activate_parent_object(this)" class="button">'._("Activate offer").' <i class="fa fa-play success new_button"></i></span>',
-                'reference' => '',
-                'type'      => 'operation'
-            ),
-
-
-        )
-
-    );
-    
-}
-
-if(isset($operations)){
-    $object_fields[] = $operations;
+    }
 
 }
-

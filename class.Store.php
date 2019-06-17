@@ -3427,7 +3427,7 @@ class Store extends DB_Table {
         }
 
         $sql = sprintf(
-            'SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Code`=%s AND `Product Store Key`=%d AND `Product Status`!="Discontinued" ', prepare_mysql($data['Product Code']), $this->id
+            'SELECT count(*) AS num ,`Product ID` FROM `Product Dimension` WHERE `Product Code`=%s AND `Product Store Key`=%d AND `Product Status`!="Discontinued" ', prepare_mysql($data['Product Code']), $this->id
 
         );
 
@@ -3439,6 +3439,8 @@ class Store extends DB_Table {
                     $this->msg        = sprintf(_('Duplicated code (%s)'), $data['Product Code']);
                     $this->error_code = 'duplicate_product_code_reference';
                     $this->metadata   = $data['Product Code'];
+
+                   return get_object('Product',$row['Product ID']);
 
                     return;
                 }
@@ -3805,6 +3807,8 @@ class Store extends DB_Table {
                 }
             }
 
+
+
             return $product;
         } else {
             $this->error = true;
@@ -3815,7 +3819,6 @@ class Store extends DB_Table {
             $this->error      = true;
             $this->error_code = 'cant create product'.$product->msg;
             $this->metadata   = '';
-
 
         }
 

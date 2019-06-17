@@ -23,4 +23,4 @@ $smarty->assign('state', $state);
 
 $html = $smarty->fetch('edit_object.tpl');
 
-?>
+

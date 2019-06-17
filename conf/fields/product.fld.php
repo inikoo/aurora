@@ -175,9 +175,7 @@ $product_fields = array(
                 'edit'            => 'parts_list',
                 'value'           => $object->get('Product Parts'),
                 'formatted_value' => $object->get('Parts'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Product Parts')
-                ),
+                'label'           => ucfirst($object->get_field_label('Product Parts')),
                 'required'        => false,
                 'type'            => 'value'
             )

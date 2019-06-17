@@ -324,13 +324,25 @@ function products($_data, $db, $user, $account) {
 
                     break;
                 case 'category':
-                    $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+                    if($data['Product Units Per Case']==1){
+                        $name = '<span>'.$data['Product Name'].'</span>';
 
+                    }else{
+                        $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+
+                    }
                     $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%sproduct/%d\')" title="%s">%s</span>', $data['Store Key'], $path, $data['Product ID'], $name, $data['Product Code']);
 
                     break;
                 default:
-                    $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+
+                    if($data['Product Units Per Case']==1){
+                        $name = '<span>'.$data['Product Name'].'</span>';
+
+                    }else{
+                        $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+
+                    }
 
                     $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%d\')" title="%s">%s</span>', $data['Store Key'], $data['Product ID'], $name, $data['Product Code']);
 
@@ -1345,7 +1357,6 @@ function product_categories_products($_data, $db, $user) {
         );
         $record_data[] = array(
             'id'                      => (integer)$data['Product Category Key'],
-            'store_key'               => (integer)$data['Category Store Key'],
             'code'                    => $code,
             'label'                   => $data['Category Label'],
             'status'                  => $status,
