@@ -306,7 +306,7 @@ function products($_data, $db, $user, $account) {
                         '<span class="link" onClick="change_view(\'part/%d/product/%d\')" title="%s">%s</span>', $_data['parameters']['parent_key'], $data['Product ID'], '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>',
                         $data['Product Code']
                     );
-                    $name = number($data['Product Part Ratio']).' <i class="far fa-box" title="'.sprintf(_('Each outer pick %s part SKOs'), number($data['Product Part Ratio'])).'"></i> =  '.$data['Product Name'].($data['Product Units Per Case'] != 1
+                    $name = number($data['Product Part Ratio'],5).' <i class="far fa-box" title="'.sprintf(_('Each outer pick %s part SKOs'), number($data['Product Part Ratio'])).'"></i> =  '.$data['Product Name'].($data['Product Units Per Case'] != 1
                             ? '<span class="discreet italic small">('.$data['Product Units Per Case'].' '._('units').')</span>' : '');
 
 
