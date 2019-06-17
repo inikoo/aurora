@@ -88,7 +88,10 @@ if ($result = $db->query($sql)) {
 
 
                     $sql = sprintf(
-                        'Select * from `Category Bridge` left join  `Product Dimension` P on (`Subject Key`=`Product ID`) where P.`Product Type`=\'Product\' and`Subject`=\'Product\'  and `Product Status`="Active" and `Product Public`="Yes"  and `Product Web Configuration`!="Offline"    and  `Category Key`=%d   ',
+                        'Select * from `Category Bridge` left join  `Product Dimension` P on (`Subject Key`=`Product ID`) 
+                        where P.`Product Type`=\'Product\' and`Subject`=\'Product\'  and `Product Status`="Active" and `Product Public`="Yes"  and `Product Web Configuration`!="Offline"    and  `Category Key`=%d  
+                         and `Product Code` not like "%%-pst"   and `Product Code` not like "%%-gift" and `Product Code` not like "%%-st"  and `Product Code` not like "%%-gift" and   `Product Code` not like "awlabel-%%" 
+                         ',
                         $old_family->id
                     );
 
@@ -165,7 +168,60 @@ if ($result = $db->query($sql)) {
                                 $new_product = $store_new_ds->create_product($product_data);
 
 
-                                $new_product->update(array('Product Family Category Key'=>$new_family->id));
+                                if(is_object($new_product) and  $new_product->id) {
+
+                                    $new_product->update(array('Product Family Category Key' => $new_family->id));
+
+
+                                    $webpage_product = get_object('Webpage', $new_product->get('Product Webpage Key'));
+
+                                    if ($webpage_product->id) {
+
+                                        $webpage_product->editor = $editor;
+                                        $new_content_data        = $webpage_product->get('Content Data');
+
+                                        $old_webpage_product = get_object('Webpage', $old_product->get('Product Webpage Key'));
+                                        $old_content_data    = $old_webpage_product->get('Content Data');
+
+                                        $text = '';
+                                        if (isset($old_content_data['blocks'])) {
+                                            foreach ($old_content_data['blocks'] as $block) {
+                                                if ($block['type'] == 'product') {
+                                                    $text = $block['text'];
+                                                }
+
+                                            }
+
+                                            $text = preg_replace('/\bWholesaler\b/', 'Dropshipper', $text);
+                                            $text = preg_replace('/\bwholesaler\b/', 'dropshipper', $text);
+                                            $text = preg_replace('/\bwholesale\b/', 'dropship', $text);
+                                            $text = preg_replace('/\bwholesale\b/', 'dropship', $text);
+                                            $text = preg_replace('/ancientwisdom.biz/i', 'aw-dropship.com', $text);
+
+                                            if ($text != '') {
+                                                if (isset($new_content_data['blocks'])) {
+
+                                                    foreach ($new_content_data['blocks'] as $_key => $_block) {
+                                                        if ($_block['type'] == 'product') {
+                                                            $new_content_data['blocks'][$_key]['text'] = $text;
+                                                        }
+
+                                                    }
+
+
+                                                    //print_r($new_content_data);
+                                                    $webpage_product->update(array('Page Store Content Data' => json_encode($new_content_data)), 'no_history');
+                                                    $webpage_product->publish();
+                                                }
+
+                                            }
+
+                                        }
+                                    }
+                                }
+
+
+
 
 
                               //  print $new_product->get('Code')."\n";
