@@ -28,13 +28,6 @@ $editor = array(
 );
 
 
-$store_old_ds = new Store('code', 'DS');
-$store_new_ds = new Store('code', 'AWD');
-$store_aw     = new Store('code', 'UK');
-
-$new_ds_website = get_object('Website', $store_new_ds->get('Store Website Key'));
-
-$fam_root = get_object('Category', 15038);
 
 
 $sql = sprintf('select `Store Key`  from `Store Dimension`');
@@ -54,9 +47,6 @@ if ($result2 = $db->query($sql)) {
 
                 $cat = get_object('Category', $row['Category Key']);
 
-                //print $cat->get('Product Category Department Category Key')."\n";
-
-                //if($cat->get('Product Category Department Category Key')){
                 $dep = get_object('Category', $cat->get('Product Category Department Category Key'));
 
                 if ($dep->id and $cat->id){
