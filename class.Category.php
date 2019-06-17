@@ -1566,7 +1566,7 @@ class Category extends DB_Table {
         }
 
 
-        $branch_type = $this->data['Category Branch Type'];
+      //  $branch_type = $this->data['Category Branch Type'];
 
         $data['Category Scope'] = $this->data['Category Scope'];
 
@@ -1784,7 +1784,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
             );
             $this->db->exec($sql);
             $sql = sprintf(
-                'DELETE FROM `Product Category Dc Data`  WHERE `Product Category Key`=%d', $this->id
+                'DELETE FROM `Product Category DC Data`  WHERE `Product Category Key`=%d', $this->id
             );
             $this->db->exec($sql);
         }
@@ -1797,6 +1797,22 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
             'DELETE FROM `Category Dimension` WHERE `Category Key`=%d', $this->id
         );
         $this->db->exec($sql);
+
+
+        $sql = sprintf(
+            'DELETE FROM `Category Bridge` WHERE  `Subject`="Category"  and  `Subject Key`=%d', $this->id
+        );
+
+
+        $this->db->exec($sql);
+
+        $sql = sprintf(
+            'DELETE FROM `Category Bridge` WHERE   and  `Category Key`=%d', $this->id
+        );
+
+
+        $this->db->exec($sql);
+
 
         foreach ($parent_keys as $parent_key) {
             $parent_category         = get_object('Category', $parent_key);

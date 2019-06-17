@@ -7669,6 +7669,38 @@ $modules = array(
                 )
             ),
 
+            'profile_admin' => array(
+                'type'      => 'object',
+                'label'     => '',
+                'title'     => '',
+                'icon'      => '',
+                'reference' => '',
+                'tabs'      => array(
+                    'profile.details' => array(
+                        'label' => _('Settings'),
+                        'icon'  => 'sliders-h'
+                    ),
+
+                    'user.login_history' => array(
+                        'label' => _(
+                            'Login history'
+                        ),
+                        'icon'  => 'sign-in'
+                    ),
+
+
+                    'profile.history'       => array(
+                        'label' => '',
+                        'title' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+                
+
+
+                )
+            ),
+
             'profile.api_key.new' => array(
                 'type' => 'new_object',
                 'tabs' => array(
