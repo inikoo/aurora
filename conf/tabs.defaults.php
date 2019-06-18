@@ -675,6 +675,15 @@ $tab_defaults = array(
         'f_field'     => 'code',
 
     ),
+    'refund.new.items_tax'      => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+
+    ),
     'replacement.new.items' => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
@@ -789,6 +798,15 @@ $tab_defaults = array(
     ),
 
     'invoice.items' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+
+    ),
+    'refund.items_tax_only' => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -945,6 +963,32 @@ $tab_defaults = array(
         'elements_type' => array_keys($elements_options['invoices'])[0],
         'elements'      => $elements_options['invoices']
     ),
+    'deleted_invoices_server'            => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+        'elements_type' => array_keys($elements_options['invoices'])[0],
+        'elements'      => $elements_options['invoices']
+    ),
+    'deleted_invoices'            => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+        'elements_type' => array_keys($elements_options['invoices'])[0],
+        'elements'      => $elements_options['invoices']
+    ),
     'invoices_server.categories' => array(
         'view'        => 'overview',
         'sort_key'    => 'code',
@@ -1010,11 +1054,18 @@ $tab_defaults = array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
-        'rpp'         => 100,
+        'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'number',
+    ),
 
-
+    'delivery_notes.assigned' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'number',
     ),
 
     'orders_index' => array(
@@ -1055,7 +1106,15 @@ $tab_defaults = array(
         'f_field'     => 'code',
         'percentages' => 0
     ),
-
+    'credits_group_by_store' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'code',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+        'percentages' => 0
+    ),
 
     'stores'                       => array(
         'view'        => 'overview',
@@ -1768,6 +1827,7 @@ $tab_defaults = array(
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'reference',
+        'f_period'      => 'ytd',
         'elements_type' => array_keys($elements_options['supplier_parts'])[0],
         'elements'      => $elements_options['supplier_parts'],
         'export_fields' => $export_fields['supplier_parts']
@@ -2330,7 +2390,6 @@ $tab_defaults = array(
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'reference',
-
     ),
 
     'part.supplier.orders'        => array(
@@ -2520,7 +2579,18 @@ $tab_defaults = array(
         'f_field'     => 'reference',
 
     ),
+    'inventory.parts_weight_errors.wget' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 1000,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'elements_type' => array_keys($elements_options['parts_weight_errors'])[0],
+        'elements'      => $elements_options['parts_weight_errors'],
+        'export_fields' => $export_fields['parts_weight_errors']
 
+    ),
     'inventory.parts_barcode_errors.wget' => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
@@ -3993,6 +4063,17 @@ $tab_defaults = array(
         'f_field'       => 'name',
         'elements_type' => array_keys($elements_options['deal_components'])[0],
         'elements'      => $elements_options['deal_components'],
+    ),
+
+    'customer.deals' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'name',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+        'elements_type' => array_keys($elements_options['deals'])[0],
+        'elements'      => $elements_options['deals'],
     ),
 
 

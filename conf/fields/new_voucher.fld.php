@@ -24,7 +24,7 @@ $options_trigger = array(
 
 $options_offer_type = array(
     'Percentage_Off' => _('Order'),
-    'Get_item_free'  => _('Product'),
+    'Get_Item_Free'  => _('Product'),
     'Category'       => _('Product category'),
     'Customer'       => _('Customer')
 
@@ -72,7 +72,16 @@ $object_fields[] = array(
             'invalid_msg'       => get_invalid_message('string'),
             'required'          => false,
             'placeholder'       => _('Voucher code'),
-            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
+            'server_validation' => json_encode(array(
+                'tipo' => 'check_for_duplicates',
+                'parent'     => 'store',
+                'parent_key' => $options['parent_object']->get('Store Key'),
+
+
+                                               )
+
+
+                ),
             'type'              => 'value'
         ),
 
@@ -145,10 +154,10 @@ $object_fields[] = array(
 <div class="button_radio_options">
 <span id="Deal_Type_Percentage_Off_field" field_type="button_radio_options" field="Deal_Type_Percentage_Off" onclick="toggle_voucher_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Percentage off').'</span>
 <span id="Deal_Type_Amount_Off_field" field_type="button_radio_options" field="Deal_Type_Amount_Off" onclick="toggle_voucher_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Amount off').'</span>
-<span id="Deal_Type_Get_item_free_field" field_type="button_radio_options" field="Deal_Type_Get_item_free" onclick="toggle_voucher_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(
+<span id="Deal_Type_Get_Item_Free_field" field_type="button_radio_options" field="Deal_Type_Get_Item_Free" onclick="toggle_voucher_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(
                     _('Get product free'), '<span>2</span>', 1
                 ).'</span>
-<span id="Deal_Type_Shipping_Off_field" field_type="button_radio_options" field="Deal_Type_Shipping_Off" onclick="toggle_voucher_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Discounted shipping').'  </span>
+<span id="Deal_Type_Shipping_Off_field" field_type="button_radio_options" field="Deal_Type_Shipping_Off" onclick="toggle_voucher_deal_type(this)" class="button hide value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Discounted shipping').'  </span>
 </div>
 ',
             'label'    => _('Choose offer'),
@@ -185,7 +194,7 @@ $object_fields[] = array(
         ),
 
         array(
-            'id'                       => 'Get_item_free_Product',
+            'id'                       => 'Get_Item_Free_Product',
             'render' => false,
             'edit'                     => 'dropdown_select',
             'scope'                    => 'products',
@@ -194,6 +203,7 @@ $object_fields[] = array(
             'value'                    => '',
             'formatted_value'          => '',
             'stripped_formatted_value' => '',
+            'placeholder'                    => _('Product code'),
             'label'                    => _('Product'),
             'required'                 => true,
             'type'                     => 'value'
@@ -202,15 +212,16 @@ $object_fields[] = array(
         ),
 
         array(
-            'id'     => 'Get_item_free_Quantity',
+            'id'     => 'Get_Item_Free_Quantity',
             'render' => false,
 
 
             'edit'  => 'smallint_unsigned',
-            'value' => '',
+            'value' => '1',
+            'placeholder'=>_('Quantity'),
 
-            'custom'   => '<input id="Get_item_free_Quantity_field" field_type="input_with_field" field="Get_item_free_Quantity" value="1" class="value input_field" style="margin-left:5px;width:60px"  placeholder="'._('Qty').'" />',
-            'label'    => '',
+           // 'custom'   => '<input id="Get_Item_Free_Quantity_field" field_type="input_with_field" field="Get_Item_Free_Quantity" value="1" class="value input_field" style="margin-left:5px;width:60px"  placeholder="'._('Qty').'" />',
+            'label'    => _('Quantity'),
             'required' => false,
             'type'     => 'value'
         ),
@@ -221,4 +232,3 @@ $object_fields[] = array(
 );
 
 
-?>

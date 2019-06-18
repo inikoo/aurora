@@ -4,14 +4,6 @@
  Version 3.0*/
 
 
-
-
-
-
-
-
-
-
 $(document).on('input propertychange', '.order_qty', function (evt) {
 
 
@@ -183,6 +175,28 @@ function save_item_qty_change(element) {
                 ga('auTracker.ec:addProduct', data.analytics.product_data);
                 ga('auTracker.ec:setAction', data.analytics.action);
                 ga('auTracker.send', 'event', 'UX', 'click',data.analytics.event);
+            }
+
+            for (var key in data.metadata.deleted_otfs) {
+                $('#transaction_item_net_' + data.metadata.deleted_otfs[key]).closest('tr').remove()
+            }
+            if(data.metadata.new_otfs.length>0 ||  data.metadata.deleted_otfs.length>0){
+
+
+
+                var request = 'ar_web_basket.php?tipo=get_items_html&device_prefix=' + $('body').data('device_prefix')
+
+
+                $.getJSON(request, function (data2) {
+
+
+                    if (data2.state == 200) {
+
+                        $('.basket_order_items').html(data2.html)
+                    }
+
+                })
+
             }
 
 

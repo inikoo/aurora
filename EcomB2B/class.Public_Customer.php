@@ -63,6 +63,8 @@ class Public_Customer extends DBW_Table {
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Customer Key'];
+            $this->metadata = json_decode($this->data['Customer Metadata'], true);
+
         }
 
 
@@ -121,6 +123,10 @@ class Public_Customer extends DBW_Table {
 
     }
 
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
+    }
+
     function create($raw_data, $address_raw_data) {
 
 
@@ -134,6 +140,7 @@ class Public_Customer extends DBW_Table {
 
         $this->data['Customer First Contacted Date'] = gmdate('Y-m-d H:i:s');
 
+        $this->data['Customer Metadata'] ='{}';
 
         $keys   = '';
         $values = '';
@@ -145,7 +152,6 @@ class Public_Customer extends DBW_Table {
                 $key, array(
                         'Customer First Contacted Date',
                         'Customer Lost Date',
-                        'Customer Last Invoiced Dispatched Date',
                         'Customer First Invoiced Order Date',
                         'Customer Last Invoiced Order Date',
                         'Customer Tax Number Validation Date',
@@ -271,7 +277,6 @@ class Public_Customer extends DBW_Table {
             if ($type == 'Contact') {
 
 
-                $this->fast_update(array('Customer Main Plain Postal Code'=>preg_replace('/\s|\n|\r/','',$this->data['Customer Contact Address Postal Code'])));
 
 
 
@@ -751,6 +756,7 @@ class Public_Customer extends DBW_Table {
                     } catch (\libphonenumber\NumberParseException $e) {
                         $this->error = true;
                         $this->msg   = 'Error 1234';
+                        $formatted_value = '';
                     }
 
                 } else {
@@ -759,6 +765,8 @@ class Public_Customer extends DBW_Table {
 
 
                 $this->update_field($field, $value, 'no_history');
+
+
                 $this->update_field(preg_replace('/Plain/', 'XHTML', $field), $formatted_value, 'no_history');
 
 
@@ -1205,6 +1213,10 @@ class Public_Customer extends DBW_Table {
         $order_data['Order Customer Key']          = $this->id;
         $order_data['Order Customer Name']         = $this->data['Customer Name'];
         $order_data['Order Customer Contact Name'] = $this->data['Customer Main Contact Name'];
+        $order_data['Order Customer Level Type'] = $this->data['Customer Level Type'];
+
+
+
         $order_data['Order Registration Number']   = $this->data['Customer Registration Number'];
 
         $order_data['Order Tax Number']                    = $this->data['Customer Tax Number'];

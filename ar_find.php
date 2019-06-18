@@ -166,6 +166,7 @@ switch ($tipo) {
                 break;
             case 'allowance_target':
                 find_allowance_targets($db, $account, $memcache_ip, $user, $data);
+                break;
             case 'customers':
                 find_customers($db, $account, $memcache_ip, $data, $user);
                 break;
@@ -1711,6 +1712,7 @@ function find_products($db, $account, $memcache_ip, $data) {
 function find_assets_on_sale($db, $account, $memcache_ip, $data) {
 
 
+
     $cache       = false;
     $max_results = 5;
     $user        = $data['user'];
@@ -1732,12 +1734,13 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
     $where = '';
 
 
+
     if (isset($data['metadata']['parent'])) {
         switch ($data['metadata']['parent']) {
             case 'Store':
             case 'store':
 
-                $where_products   = sprintf(
+                $where_product   = sprintf(
                     ' and `Product Store Key`=%d', $data['metadata']['parent_key']
                 );
                 $where_categories = sprintf(
@@ -1752,7 +1755,7 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
 
         switch ($data['parent']) {
             case 'store':
-                $where_products   = sprintf(
+                $where_product   = sprintf(
                     ' and `Product Store Key`=%d', $data['parent_key']
                 );
                 $where_categories = sprintf(
@@ -1767,10 +1770,9 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
     }
 
     if (!isset($data['metadata']['options']['for_order'])) {
-        $where_product = "  and  `Product Status` not in ( 'Suspended','Discontinued')  ";
+        $where_product .= "  and  `Product Status` not in ( 'Suspended','Discontinued')  ";
     }
 
-    $where_product = '';
 
     $candidates = array();
 
@@ -1778,8 +1780,10 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
 
 
     $sql = sprintf(
-        "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key`,`Product Availability` from `Product Dimension` where  `Product Code` like '%s%%' %s %s order by `Product Code` limit $max_results ", $q, $where, $where_product
+        "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key`,`Product Availability`,`Product Availability State` from `Product Dimension` where  `Product Code` like '%s%%' %s %s order by `Product Code` limit $max_results ", $q, $where, $where_product
     );
+
+
 
 
     if ($result = $db->query($sql)) {
@@ -1797,9 +1801,19 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
                 $candidates['P'.$row['Product ID']] = 500 * $factor;
             }
 
+
+
+            if ($row['Product Availability State'] == 'OnDemand') {
+                $stock= ' ('._('on demand').')';
+            } else {
+                $stock=_('Stock').': '.number($row['Product Availability']);
+            }
+
+
+
             $candidates_data['P'.$row['Product ID']] = array(
                 'Code'        => $row['Product Code'],
-                'Name'        => $row['Product Name'].', <span style="font-style: italic"  class="'.($row['Product Availability'] <= 0 ? 'error' : '').'" >'._('Stock').': '.number($row['Product Availability']).'</span>',
+                'Name'        => $row['Product Name'].', <span style="font-style: italic"  class="'.($row['Product Availability'] <= 0 ? 'error' : '').'" >'.$stock.'</span>',
                 'Current Key' => $row['Product Current Key']
 
             );
@@ -1813,7 +1827,7 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
 
 
     $sql = sprintf(
-        "select `Category Key`,`Category Code`,`Category Label`,`Category Number Active Subjects`,`Category Subject` from `Category Dimension` where  `Category Code` like '%s%%' %s  limit $max_results ", $q, $where
+        "select `Category Key`,`Category Code`,`Category Label`,`Category Number Active Subjects`,`Category Subject` from `Category Dimension` where  `Category Code` like '%s%%' %s  %s limit $max_results ", $q, $where,$where_categories
     );
 
 
@@ -1894,16 +1908,25 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
 
     if ($number_product_ids) {
         $sql = sprintf(
-            "SELECT P.`Product ID`,`Product Code`,`Product Name`,`Product Availability` FROM `Product Dimension` P  WHERE P.`Product ID` IN (%s)", $product_ids
+            "SELECT P.`Product ID`,`Product Code`,`Product Name`,`Product Availability`,`Product Availability State` FROM `Product Dimension` P  WHERE P.`Product ID` IN (%s)", $product_ids
         );
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
 
+
+                if ($row['Product Availability State'] == 'OnDemand') {
+                    $stock= _('On demand');
+                } else {
+                    $stock=_('Stock').': '.number($row['Product Availability']);
+                }
+
+
+
                 $results['P'.$row['Product ID']] = array(
                     'label'   => highlightkeyword(sprintf('%s', $row['Product Code']), $q),
-                    'details' => highlightkeyword($row['Product Name'], $q).', <span style="font-style: italic"  class="'.($row['Product Availability'] <= 0 ? 'error' : '').'" >'._('Stock').': '.number($row['Product Availability']).'</span>',
+                    'details' => highlightkeyword($row['Product Name'], $q).', <span style="font-style: italic"  class="'.($row['Product Availability'] <= 0 ? 'error' : '').'" >'.$stock.'</span>',
 
 
                 );
@@ -3261,10 +3284,10 @@ function find_category_webpages($db, $account, $memcache_ip, $data, $smarty) {
 
     switch ($data['parent']) {
         case 'website':
-            $where = sprintf(' and `Page Site Key`=%d', $data['parent_key']);
+            $where = sprintf(' and `Webpage Website Key`=%d', $data['parent_key']);
             break;
         case 'store':
-            $where = sprintf(' and `Page Store Key`=%d', $data['parent_key']);
+            $where = sprintf(' and `Webpage Store Key`=%d', $data['parent_key']);
             break;
         default:
 

@@ -168,7 +168,7 @@ div.inline { float:left; }
 			{foreach from=$transactions item=transaction name=products} 
 			<tr class="{if $smarty.foreach.products.last}last{/if}">
 				<td style="width:8%;text-align:left">{$transaction['Product Code']}</td>
-				<td style="text-align:left">{$transaction['Product XHTML Short Description']}</td>
+				<td style="text-align:left">{$transaction['Product Description']}</td>
 				<td style="width:8%;text-align:right">{$transaction['Discount']}</td>
 				
 				<td style="width:8%;text-align:right">{$transaction['Order Quantity']}</td>
@@ -237,23 +237,38 @@ div.inline { float:left; }
 				<td colspan="2">{t}Tax{/t}</td>
 				<td>{$order->get('Total Tax Amount')}</td>
 			</tr>
+
+
 			<tr class="total">
 				<td style="border:none" colspan="2" ></td>
 				<td colspan="2"><b>{t}Total{/t}</b></td>
 				<td>{$order->get('Total Amount')}</td>
 			</tr>
+
+
+			<tr class="">
+				<td style="border:none" colspan="2" ></td>
+				<td colspan="2"><b>{t}Paid{/t}</b></td>
+				<td>{$order->get('Payments Amount')}</td>
+			</tr>
+
+
+
 			{if $order->get('Order Available Credit Amount')!=0}
 			<tr class="">
 				<td style="border:none" colspan="2" ></td>
 				<td colspan="2">{t}Credits{/t}</td>
 				<td>{$order->get('Available Credit Amount')}</td>
 			</tr>
+
+			{/if}
+
 			<tr class="total">
 				<td style="border:none" colspan="2" ></td>
 				<td colspan="2"><b>{t}To pay{/t}</b></td>
 				<td>{$order->get('Basket To Pay Amount')}</td>
 			</tr>
-			{/if}
+
 		</tbody>
 	</table>
 	<br>

@@ -306,7 +306,7 @@
                     </td>
 
                     <td>
-                        <span style="padding-left:20px"><i class="fa fa-balance-scale fa-fw discreet " aria-hidden="true"></i> <span class="Weight_Details">{$delivery_note->get('Weight Details')}</span></span>
+                        <span style="padding-left:20px"><i class="fal fa-weight fa-fw discreet " aria-hidden="true"></i> <span class="Weight_Details">{$delivery_note->get('Weight Details')}</span></span>
                     </td>
                     <td>
 
@@ -413,7 +413,7 @@
 
 
                 <td>
-                    <span style=""><i class="fa fa-square fa-fw discreet" aria-hidden="true"></i>
+                    <span style=""><i class="fal fa-dot-circle fa-fw discreet" aria-hidden="true"></i>
                           <span class="Number_Ordered_Parts">{$delivery_note->get('Number Ordered Parts')}</span> (<span class="Number_Ordered_Items">{$delivery_note->get('Number Ordered Items')}</span>)
 
                <span class="error {if $delivery_note->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> <span
@@ -423,7 +423,7 @@
                 </td>
 
                 <td>
-                    <span style="padding-left:20px"><i class="fa fa-balance-scale fa-fw discreet " aria-hidden="true"></i> <span class="Weight_Details">{$delivery_note->get('Weight Details')}</span></span>
+                    <span style="padding-left:20px"><i class="fal fa-weight fa-fw discreet " aria-hidden="true"></i> <span class="Weight_Details">{$delivery_note->get('Weight Details')}</span></span>
                 </td>
                 <td>
 

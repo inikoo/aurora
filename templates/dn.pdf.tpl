@@ -159,8 +159,8 @@ div.inline { float:left; }
 			<tr>
 				<td style="width:15%;text-align:left">{t}Code{/t}</td>
 				<td style="text-align:left">{t}Description{/t}</td>
-				<td style="width:8%;text-align:right">{t}Required{/t}</td>
-				<td style="width:8%;text-align:right">{t}Dispatched{/t}</td>
+				<td style="width:15%;text-align:right">{t}Required{/t}</td>
+				<td style="width:15%;text-align:right">{t}Dispatched{/t}</td>
 			</tr>
 		</thead>
 		<tbody>
@@ -173,8 +173,8 @@ div.inline { float:left; }
 				</td>
 				<td style="text-align:left">{$transaction['Part Package Description']}<br/><small>{t}From product{/t}: <b>{$transaction['Product Code']}</b> {$transaction['Product Description']}  ({t}Ordered{/t}:{$transaction['Ordered']})</small> </td>
 
-				<td style="width:8%;text-align:right">{$transaction['Required']}</td>
-				<td style="width:8%;text-align:right"><b>{$transaction['dispatched']}</b></td>
+				<td style="width:15%;text-align:right">{$transaction['Required']}</td>
+				<td style="width:15%;text-align:right"><b>{$transaction['dispatched']}</b></td>
 			</tr>
 			{/foreach} 
 		</tbody>

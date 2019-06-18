@@ -36,6 +36,13 @@ $parameters = array(
 );
 
 
+if($account->get('Account Country 2 Alpha Code')=='SK'){
+    $smarty->assign('export_omega',true);
+
+}
+
+
+
 include 'utils/get_table_html.php';
 
 

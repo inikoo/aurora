@@ -16,7 +16,7 @@ include_once('class.DB_Table.php');
 class Charge extends DB_Table {
 
 
-    function Charge($a1, $a2 = false) {
+    function __construct($a1, $a2 = false) {
 
         global $db;
         $this->db = $db;
@@ -232,11 +232,23 @@ class Charge extends DB_Table {
 
     function get($key = '') {
 
+        if (!$this->id) {
+            return;
+        }
 
         switch ($key) {
+
+            case 'Metadata':
+                $store = get_object('Store', $this->data['Charge Store Key']);
+
+                return money($this->data['Charge Metadata'], $store->get('Store Currency Code'));
+
+                break;
+
             case 'Amount':
-                $store=get_object('Store',$this->data['Charge Store Key']);
-                return money($this->data['Charge Total Acc '.$key],$store->get('Store Currency Code'));
+                $store = get_object('Store', $this->data['Charge Store Key']);
+
+                return money($this->data['Charge Total Acc '.$key], $store->get('Store Currency Code'));
 
                 break;
             case 'Orders':
@@ -261,13 +273,60 @@ class Charge extends DB_Table {
                 }
 
 
-
                 return false;
         }
 
 
     }
 
+
+    function update_field_switcher($field, $value, $options = '', $metadata = '') {
+
+
+        switch ($field){
+            case 'Charge Metadata':
+            case 'Charge Active':
+
+                $old_value=$this->get($field);
+
+                $this->update_field($field, $value, $options);
+
+
+                if( $this->get('Charge Trigger')=='Order' and $old_value!=$this->get($field)){
+
+
+                    $account = get_object('Account', $this->db);
+
+                    require_once 'utils/new_fork.php';
+                    new_housekeeping_fork(
+                        'au_housekeeping', array(
+                        'type'        => 'update_basket_orders',
+                        'store_key' => $this->get('Store Key'),
+                        'editor'      => $this->editor
+                    ), $account->get('Account Code'), $this->db
+                    );
+
+
+                }
+
+
+
+                break;
+
+        }
+
+        $base_data = $this->base_data();
+
+
+        if (array_key_exists($field, $base_data)) {
+
+            if ($value != $this->data[$field]) {
+                $this->update_field($field, $value, $options);
+
+            }
+
+        }
+    }
 
     function get_field_label($field) {
 
@@ -283,11 +342,11 @@ class Charge extends DB_Table {
             case 'Charge Public Description':
                 $label = _('description');
                 break;
-
+            case 'Charge Metadata':
+                $label = _('amount');
+                break;
 
             default:
-
-
 
 
                 $label = $field;
@@ -303,42 +362,36 @@ class Charge extends DB_Table {
 
         $orders    = 0;
         $customers = 0;
-        $amount=0;
+        $amount    = 0;
 
-        $sql       = sprintf(
+        $sql = sprintf(
             "SELECT sum(`Transaction Net Amount`) as amount,count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order No Product Transaction Fact` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) WHERE `Transaction Type Key`=%d AND `Transaction Type` in ('Charges','Premium') AND `Order State` not in ('InBasket','Cancelled') ",
             $this->id
 
         );
 
 
-
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $orders    = $row['orders'];
                 $customers = $row['customers'];
-                $amount = $row['amount'];
+                $amount    = $row['amount'];
             }
-        }else {
-            print_r($error_info=$this->db->errorInfo());
+        } else {
+            print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
             exit;
         }
 
 
-
-
-
         $this->fast_update(
             array(
-                'Charge Total Acc Orders'=>$orders,
-                'Charge Total Acc Customers'=>$customers,
-                'Charge Total Acc Amount'=>$amount,
+                'Charge Total Acc Orders'    => $orders,
+                'Charge Total Acc Customers' => $customers,
+                'Charge Total Acc Amount'    => $amount,
             )
 
         );
-
-
 
 
     }

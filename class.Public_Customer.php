@@ -63,10 +63,17 @@ class Public_Customer extends DBW_Table {
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Customer Key'];
+            $this->metadata = json_decode($this->data['Customer Metadata'], true);
+
         }
 
 
     }
+
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
+    }
+
 
     function find($raw_data, $address_raw_data, $options = '') {
 
@@ -133,7 +140,7 @@ class Public_Customer extends DBW_Table {
         $this->editor = $raw_data['editor'];
 
         $this->data['Customer First Contacted Date'] = gmdate('Y-m-d H:i:s');
-
+        $raw_data['Customer Metadata']          = '{}';
 
         $keys   = '';
         $values = '';
@@ -145,7 +152,6 @@ class Public_Customer extends DBW_Table {
                 $key, array(
                         'Customer First Contacted Date',
                         'Customer Lost Date',
-                        'Customer Last Invoiced Dispatched Date',
                         'Customer First Invoiced Order Date',
                         'Customer Last Invoiced Order Date',
                         'Customer Tax Number Validation Date',
@@ -270,6 +276,7 @@ class Public_Customer extends DBW_Table {
 
             if ($type == 'Contact') {
 
+                $this->fast_update(array('Customer Main Plain Postal Code'=>preg_replace('/\s|\n|\r/','',$this->data['Customer Contact Address Postal Code'])));
 
                 $location = $this->get('Contact Address Locality');
                 if ($location == '') {

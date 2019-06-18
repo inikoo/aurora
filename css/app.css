@@ -809,8 +809,17 @@ right connector from last child*/
 .width_100 {
   width: 100px; }
 
+.min_width_100 {
+  min-width: 100px; }
+
+.min_width_120 {
+  min-width: 120px; }
+
 .width_150 {
   width: 150px; }
+
+.min_width_150 {
+  min-width: 150px; }
 
 .width_200 {
   width: 200px; }
@@ -2358,7 +2367,7 @@ input.input_file {
     position: relative;
     transition: all 200ms ease-in;
     min-width: 50px; }
-  .timeline_horizontal .truck {
+  .timeline_horizontal .truck, .timeline_horizontal .industry {
     padding: 0px 40px;
     display: flex;
     justify-content: center;
@@ -2366,11 +2375,26 @@ input.input_file {
     position: relative;
     transition: all 200ms ease-in;
     min-width: 50px; }
-  .timeline_horizontal.with_time .dot, .timeline_horizontal.with_time .truck {
+  .timeline_horizontal.with_time .dot, .timeline_horizontal.with_time .truck, .timeline_horizontal.with_time .industry {
     padding: 0px 50px; }
   .timeline_horizontal .truck:after {
     font-family: "Font Awesome 5 Pro";
     content: "\f0d1";
+    width: 20px;
+    height: 10px;
+    color: #aaa;
+    background-color: #fcfcfc;
+    border: 0px solid red;
+    padding-left: 6px;
+    padding-top: 5px;
+    position: absolute;
+    top: -12px;
+    left: 100%;
+    transition: all 200ms ease-in;
+    z-index: 10; }
+  .timeline_horizontal .industry:after {
+    font-family: "Font Awesome 5 Pro";
+    content: "\f275";
     width: 20px;
     height: 10px;
     color: #aaa;
@@ -2408,9 +2432,9 @@ input.input_file {
     left: 100%;
     transition: all 200ms ease-in;
     z-index: 10; }
-  .timeline_horizontal .li.complete .dot, .timeline_horizontal .li.complete .truck {
+  .timeline_horizontal .li.complete .dot, .timeline_horizontal .li.complete .truck, .timeline_horizontal .li.complete .industry {
     border-top: 2px solid #66DC71; }
-  .timeline_horizontal .li.semi_complete .dot, .timeline_horizontal .li.semi_complete .truck {
+  .timeline_horizontal .li.semi_complete .dot, .timeline_horizontal .li.semi_complete .truck, .timeline_horizontal .li.semi_complete .indistry {
     border-top: 2px dashed #66DC71; }
   .timeline_horizontal .li.semi_complete .dot:after {
     background-color: #66DC71;
@@ -2420,12 +2444,12 @@ input.input_file {
     background-color: #66DC71;
     border: 1px solid #66DC71;
     transition: all 200ms ease-in; }
-  .timeline_horizontal .li.complete .truck:after, .timeline_horizontal .li.semi_complete .truck:after {
+  .timeline_horizontal .li.complete .truck:after, .timeline_horizontal .li.semi_complete .truck:after, .timeline_horizontal .li.semi_complete .industry:after {
     color: #777;
     transition: all 200ms ease-in; }
   .timeline_horizontal .li.complete .label span, .timeline_horizontal .li.semi_complete .label span {
     color: #888; }
-  .timeline_horizontal .li.cancelled .dot, .timeline_horizontal .li.cancelled .truck {
+  .timeline_horizontal .li.cancelled .dot, .timeline_horizontal .li.cancelled .truck, .timeline_horizontal .li.cancelled .industry {
     border-top: 2px solid tomato; }
   .timeline_horizontal .li.cancelled .dot:after {
     background-color: tomato;
@@ -8412,7 +8436,12 @@ input.input_file {
   margin-bottom: 20px;
   line-height: 170%; }
   .offer_text_banner .name {
+    color: #9068be;
     font-weight: bold; }
+  .offer_text_banner .term {
+    color: #9068be; }
+  .offer_text_banner .allowance {
+    color: #686bbe; }
 
 .progress_bar_container {
   width: 120px;
@@ -8650,5 +8679,13 @@ h2.dashboard {
 
 .app_theme_blue #app_leftmenu, .app_theme_blue #app_leftmenu #top_info, .app_theme_blue #app_leftmenu li:hover {
   background: #424fbd; }
+
+.warning_block {
+  background: repeating-linear-gradient(-55deg, #444, #444 10px, #999900 10px, #999900 20px);
+  color: #FFEFD5;
+  font-weight: 700;
+  font-family: Ubuntu,"Lucida Grande","Lucida Sans Unicode",Verdana,Arial,sans-serif;
+  font-size: 28px;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
 
 /*# sourceMappingURL=app.css.map */

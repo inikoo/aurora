@@ -72,30 +72,21 @@ function new_fork($type, $data, $account_code, $db) {
 function new_housekeeping_fork($type, $data, $account_code) {
 
     if (class_exists('GearmanClient')) {
-
-
         $client = new GearmanClient();
-
         $fork_metadata = json_encode(
             array(
                 'code' => addslashes($account_code),
                 'data' => $data
             )
         );
-
-        //print_r($data);
-
         $client->addServer('127.0.0.1');
         $msg = $client->doBackground($type, $fork_metadata);
 
-
         return $msg;
     } else {
-        return '\'GearmanClient class not found\'';
+        return '\'Gearman Client class not found\'';
     }
 
 
 }
 
-
-?>

@@ -93,11 +93,6 @@ class Page extends DB_Table {
             $sql = sprintf(
                 "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Page Code`=%s AND `Page Store Key`=%d ", prepare_mysql($tag2), $tag
             );
-        } elseif ($tipo == 'site_code') {
-            $sql = sprintf(
-                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Page Code`=%s AND PS.`Page Site Key`=%d ", prepare_mysql($tag2), $tag
-            );
-
         } elseif ($tipo == 'website_code') {
             $sql = sprintf(
                 "SELECT * FROM `Page Store Dimension`  PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Code`=%s AND PS.`Webpage Website Key`=%d ", prepare_mysql($tag2), $tag
@@ -296,7 +291,7 @@ class Page extends DB_Table {
             }
 
             $sql = sprintf(
-                "INSERT INTO `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Created') ", $this->id, $this->data['Page Site Key'], $this->data['Page Site Key'], prepare_mysql(gmdate('Y-m-d H:i:s')),
+                "INSERT INTO `Page State Timeline`  (`Page Key`,`Website Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Created') ", $this->id, $this->data['Webpage Website Key'], $this->data['Webpage Store Key'], prepare_mysql(gmdate('Y-m-d H:i:s')),
                 prepare_mysql($this->data['Page State'])
 
             );
@@ -367,14 +362,8 @@ class Page extends DB_Table {
             $this->db->exec($sql);
 
 
-            $content = $this->get_plain_content();
 
 
-            $sql = sprintf(
-                "INSERT INTO `Page Store Search Dimension` VALUES (%d,%d,%s,%s,%s,%s)", $this->id, $this->data['Webpage Website Key'], prepare_mysql($this->data['Webpage URL']), prepare_mysql($this->data['Webpage Name'], false),
-                prepare_mysql($this->data['Webpage Meta Description'], false), prepare_mysql($content, false)
-            );
-            $this->db->exec($sql);
 
             $this->update_url();
 
@@ -411,33 +400,7 @@ class Page extends DB_Table {
         return $data;
     }
 
-    function get_plain_content() {
-        $content = $this->get_xhtml_content();
-        $content = preg_replace('/\<br\/?\>/', ' ', $content);
-        $content = preg_replace('/:/', ' ', $content);
 
-        $content = strip_tags($content);
-        $content = preg_replace('/\s+/', ' ', $content);
-
-        $content = html_entity_decode($content, ENT_QUOTES, "utf-8");
-
-        $content = preg_replace('/\&amp\;/', '', $content);
-        $content = preg_replace('/\&nbsp\;/', '', $content);
-        $content = preg_replace('/\{.+\}/', '', $content);
-        $content = preg_replace('/(\"|\“|\”)/', '', $content);
-
-
-        return $content;
-    }
-
-    function get_xhtml_content() {
-
-        // todo
-
-        return '';
-
-
-    }
 
     function update_url() {
 
@@ -706,9 +669,7 @@ class Page extends DB_Table {
                     return '';
                 }
 
-            case 'Webpage Website Key':
-                return $this->get('Page Site Key');
-                break;
+
             case 'Code':
                 return $this->data['Webpage Code'];
                 break;
@@ -865,7 +826,7 @@ class Page extends DB_Table {
 
 
         $data = array(
-            'website_key'  => $this->get('Page Site Key'),
+            'website_key'  => $this->get('Webpage Website Key'),
             'webpage_key'  => $this->id,
             'type'         => $this->get('Page Store See Also Type'),
             'number_links' => $this->get('Number See Also Links'),
@@ -1348,29 +1309,6 @@ class Page extends DB_Table {
 
         $template_response = '';
 
-        // Tdo manage smarty cache
-        /*
-
-                if ($site->data['Site SSL'] == 'Yes') {
-                    $site_protocol = 'https';
-                } else {
-                    $site_protocol = 'http';
-                }
-                $template_response = file_get_contents(
-                    $site_protocol.'://'.$site->data['Site URL']."/maintenance/write_templates.php?parent=page_clean_cache&parent_key=".$this->id."&sk=x"
-                );
-
-                */
-
-        /*
-        $mem = new Memcached();
-        $mem->addServer($memcache_ip, 11211);
-
-        $mem->set('ECOMP'.md5($account_code.$this->get('Webpage Website Key').'/'.$this->get('Page Code')), $this->id, 172800);
-        $mem->set(
-            'ECOMP'.md5($account_code.$this->get('Webpage Website Key').'/'.strtolower($this->get('Page Code'))), $this->id, 172800
-        );
-*/
 
 
         $smarty_web = new Smarty();
@@ -1416,46 +1354,7 @@ class Page extends DB_Table {
 
     }
 
-    function update_site_flag_key($value) {
 
-
-        $sql = sprintf(
-            "SELECT `Site Key`,`Site Flag Color` FROM  `Site Flag Dimension` WHERE `Site Flag Key`=%d", $value
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                if ($row['Site Key'] != $this->data['Page Site Key']) {
-                    $this->error = true;
-                    $this->msg   = 'flag key not in this site';
-
-                    return;
-                }
-
-                $old_key = $this->data['Site Flag Key'];
-
-                $sql = sprintf(
-                    "UPDATE `Page Store Dimension` SET `Site Flag Key`=%d ,`Site Flag`=%s WHERE `Page Key`=%d", $value, prepare_mysql($row['Site Flag Color']), $this->id
-                );
-
-                $this->db->exec($sql);
-                $this->data['Site Flag Key'] = $value;
-                $this->new_value             = $this->data['Site Flag Key'];
-                $this->msg                   = _('Site flag changed');
-                $this->updated               = true;
-
-            } else {
-                $this->error = true;
-                $this->msg   = 'flag key not found';
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-    }
 
 
     function get_options() {
@@ -1527,41 +1426,13 @@ class Page extends DB_Table {
     }
 
 
-    function update_content_display_type($value, $options) {
-
-
-        //'Front Page Store','Search','Product Description','Information','Product Category Catalogue','Family Category Catalogue','Family Catalogue','Department Catalogue','Registration','Client Section','Checkout','Login','Welcome','Not Found','Reset','Basket','Login Help','Thanks','Payment Limbo','Family Description','Department Description'
-        //'System','Info','Department','Family','Product','FamilyCategory','ProductCategory'
-        if ($value == 'Template') {
-            if ($this->data['Page Store Section'] == 'Front Page Store') {
-                $this->update_field(
-                    'Page Store Content Template Filename', 'home', 'no_history'
-                );
-            }
-        }
-        $this->update_field(
-            'Page Store Content Display Type', $value, $options
-        );
-        $this->update_store_search();
-    }
 
     function update_store_search() {
 
 
-        //todo redo this
-
-        if ($this->data['Page Type'] == 'Store') {
+        //todo redo this using elastic search
 
 
-            $sql = sprintf(
-                "INSERT INTO `Page Store Search Dimension` VALUES (%d,%d,%s,%s,%s,%s)  ON DUPLICATE KEY UPDATE `Page Store Title`=%s ,`Page Store Resume`=%s ,`Page Store Content`=%s  ", $this->id, $this->data['Page Site Key'], prepare_mysql($this->data['Page URL']),
-                prepare_mysql($this->data['Page Title'], false), prepare_mysql($this->data['Page Store Description'], false), prepare_mysql($this->get_plain_content(), false), prepare_mysql($this->data['Page Title'], false),
-                prepare_mysql($this->data['Page Store Description'], false), prepare_mysql($this->get_plain_content(), false)
-            );
-            $this->db->exec($sql);
-
-
-        }
 
     }
 
@@ -1607,7 +1478,7 @@ class Page extends DB_Table {
 
 
         $data = array(
-            'website_key' => $this->get('Page Site Key'),
+            'website_key' => $this->get('Webpage Website Key'),
             'webpage_key' => $this->id,
             'links'       => $related_products
         );
@@ -1705,7 +1576,7 @@ class Page extends DB_Table {
             }
 
             $sql = sprintf(
-                "INSERT INTO `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Change') ", $this->id, $this->data['Webpage Website Key'], $this->data['Webpage Store Key'], prepare_mysql(gmdate('Y-m-d H:i:s')),
+                "INSERT INTO `Page State Timeline`  (`Page Key`,`Website Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Change') ", $this->id, $this->data['Webpage Website Key'], $this->data['Webpage Store Key'], prepare_mysql(gmdate('Y-m-d H:i:s')),
                 prepare_mysql($this->data['Webpage State'])
 
             );
@@ -2505,13 +2376,6 @@ class Page extends DB_Table {
                 // $this->refresh_cache();
                 break;
 
-            case('Page Store CSS'):
-            case('Number See Also Links'):
-            case('Number Found In Links'):
-            case('Page Footer Height'):
-                $this->update_field($field, $value, $options);
-                $this->update_store_search();
-                break;
 
             case 'Page Store Content Data':
 
@@ -4892,7 +4756,7 @@ class Page extends DB_Table {
             return;
         }
 
-        // print_r($content_data);
+      //  print_r($content_data);
 
 
         $sql = sprintf(
@@ -4957,11 +4821,22 @@ class Page extends DB_Table {
                         //print_r($items_category_key_index);
                         //exit;
 
+
+
+
                         if (in_array($item['category_key'], $items_category_key_index)) {
 
                             $item_data = $items[$item['category_key']];
 
 
+
+
+
+/*
+                            print_r($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
+
+
+                            print_r($item_data);
 
 
 
@@ -4978,6 +4853,19 @@ class Page extends DB_Table {
 
 
 
+
+
+
+                          //  print $item_data['Category Main Image']."\n";
+
+
+
+                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_src']=$item_data['Category Main Image'];
+                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website']= $image_website;
+                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website']= $image_mobile_website;
+
+*/
+
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Subject';
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_key']     = $item_data['Page Key'];
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_code']    = $item_data['Webpage Code'];
@@ -4985,12 +4873,9 @@ class Page extends DB_Table {
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['number_products'] = $item_data['Product Category Active Products'];
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['link']            = $item_data['Webpage URL'];
 
-                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_src']=$item_data['Category Main Image'];
-                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website']= $image_website;
-
-                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website']= $image_mobile_website;
 
 
+//print_r($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
 
 
                             unset($items_category_key_index[$item['category_key']]);
@@ -5503,7 +5388,8 @@ class Page extends DB_Table {
 
 
         $sql = sprintf(
-            "INSERT INTO `Page State Timeline`  (`Page Key`,`Site Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,'Offline','Deleted') ", $this->id, $this->data['Page Site Key'], $this->data['Page Site Key'], prepare_mysql(gmdate('Y-m-d H:i:s'))
+            "INSERT INTO `Page State Timeline`  (`Page Key`,`Website Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,'Offline','Deleted') ",
+            $this->id, $this->data['Webpage Website Key'], $this->data['Webpage Store Key'], prepare_mysql(gmdate('Y-m-d H:i:s'))
 
         );
         $this->db->exec($sql);
@@ -5581,7 +5467,7 @@ class Page extends DB_Table {
             $data = array(
                 'Page Code'                   => $this->data['Page Code'],
                 'Page Key'                    => $this->id,
-                'Site Key'                    => $this->data['Webpage Website Key'],
+                'Website Key'                    => $this->data['Webpage Website Key'],
                 'Store Key'                   => $this->data['Page Store Key'],
                 'Page Store Section'          => $this->data['Page Store Section'],
                 'Page Parent Key'             => $this->data['Page Parent Key'],

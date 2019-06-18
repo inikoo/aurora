@@ -1,5 +1,3 @@
-
-
 <?php
 
 /*
@@ -33,9 +31,6 @@ $editor = array(
 $print_est = true;
 
 print date('l jS \of F Y h:i:s A')."\n";
-
-
-
 
 
 update_sales($db, $print_est);
@@ -86,8 +81,7 @@ function update_products($db, $print_est) {
 function update_sales($db, $print_est) {
 
 
-
-    $account=new Account($db);
+    $account = new Account($db);
     $account->load_acc_data();
 
     $account->update_sales_from_invoices('Total');
@@ -128,6 +122,12 @@ function update_sales($db, $print_est) {
             $category->update_invoice_category_sales('Total');
 
 
+            $category->update_invoice_category_sales('1 Year');
+            $category->update_invoice_category_sales('1 Quarter');
+            $category->update_invoice_category_sales('1 Month');
+            $category->update_invoice_category_sales('1 Week');
+
+
             $category->update_invoice_category_sales('Year To Day');
             $category->update_invoice_category_sales('Quarter To Day');
             $category->update_invoice_category_sales('Month To Day');
@@ -159,7 +159,7 @@ function update_sales($db, $print_est) {
             $store->load_acc_data();
 
 
-
+            $store->update_invoices();
 
             $store->update_sales_from_invoices('Total');
 
@@ -195,4 +195,4 @@ function update_sales($db, $print_est) {
 
 
 
-?>
+

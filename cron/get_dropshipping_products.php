@@ -185,12 +185,8 @@ if ($result = $db->query($sql)) {
         }
 
 
-        //print_r($family_bridge);
         $weight = $weight / 1000;
-        //$weight=500;
-        //print_r($family);
-        //exit;
-        //print $family->data['Product Family Code']."\n";
+
         $editor['Date'] = $row['created_at'];
 
 

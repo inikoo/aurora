@@ -702,6 +702,8 @@ function publish_email_template($data, $editor, $smarty, $db) {
     $email_template->editor = $editor;
 
 
+
+
     $email_template->fast_update(
         array(
             'Email Template Editing JSON'   => $data['json'],
@@ -714,6 +716,7 @@ function publish_email_template($data, $editor, $smarty, $db) {
     );
 
 
+
     $checksum = md5(($email_template->get('Email Template Type') == 'Text' ? '' : $email_template->get('Email Template Editing JSON')).'|'.$email_template->get('Email Template Text').'|'.$email_template->get('Email Template Subject'));
     $email_template->fast_update(array('Email Template Editing Checksum' => $checksum));
 
@@ -723,9 +726,14 @@ function publish_email_template($data, $editor, $smarty, $db) {
     if ($publish_email_template->id) {
         if ($email_template->get('Email Template Scope') == 'Mailshot' or $email_template->get('Email Template Scope') == 'EmailCampaign') {
 
-            $email_campaign         = get_object('EmailCampaign', $email_template->get('Email Template Scope Key'));
-            $email_campaign->editor = $editor;
-            $email_campaign->update_state('Ready');
+            $mailshot         = get_object('Mailshot', $email_template->get('Email Template Scope Key'));
+            $mailshot->editor = $editor;
+
+            if($mailshot->get('State Index')<=20){
+                $mailshot->update_state('Ready');
+            }
+
+
 
             $smarty->assign('data', $email_template->get('Published Info'));
 
@@ -733,7 +741,7 @@ function publish_email_template($data, $editor, $smarty, $db) {
                 'state'               => 200,
                 'email_template_info' => $smarty->fetch('email_template.control.info.tpl'),
                 'published'           => ($email_template->get('Email Template Editing Checksum') == $email_template->get('Email Template Published Checksum') ? true : false),
-                'update_metadata'     => $email_campaign->get_update_metadata()
+                'update_metadata'     => $mailshot->get_update_metadata()
 
             );
 

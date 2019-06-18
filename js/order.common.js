@@ -163,11 +163,10 @@ $(document).on('click', '.order_item_percentage_discount_form i', function (evt)
                 }
 
                 if (data.metadata.to_pay <= 0) {
-                    $('.payment_operation').addClass('hide')
-
-                } else {
-                    $('.payment_operation').removeClass('hide')
-                }
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
 
 
                 if (data.metadata.to_pay == 0) {
@@ -865,11 +864,10 @@ function save_item_qty_change(element) {
                 }
 
                 if (data.metadata.to_pay <= 0) {
-                    $('.payment_operation').addClass('hide')
-
-                } else {
-                    $('.payment_operation').removeClass('hide')
-                }
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
 
 
                 if (data.metadata.to_pay == 0) {
@@ -905,8 +903,14 @@ function save_item_qty_change(element) {
                     $('.' + key).removeClass( data.metadata.remove_class[key])
                 }
 
-
-
+                for (var key in data.metadata.deleted_otfs) {
+                    $('#transaction_item_net_' + data.metadata.deleted_otfs[key]).closest('tr').remove()
+                }
+                if(data.metadata.new_otfs.length>0){
+                    rows.fetch({
+                        reset: true
+                    });
+                }
 
 
                 for (var key in data.discounts_data) {
@@ -931,7 +935,10 @@ function save_item_qty_change(element) {
 
 
                     $('.payments').removeClass('hide')
-                        }
+                }
+
+
+
 
 
             }
@@ -1224,7 +1231,7 @@ function save_item_out_of_stock_qty_change(element) {
 
 
 
-function get_orders_table( order_flow, metadata,force) {
+function get_orders_table( order_flow, metadata, force) {
 
     $('.order_flow').removeClass('selected')
     $('.blue').removeClass('blue')
@@ -1322,30 +1329,14 @@ function get_orders_table( order_flow, metadata,force) {
     if($('#order_flow_website').data('current_order_flow')!=order_flow  || force=='Yes' ){
 
         $('#order_flow_website').data('current_order_flow',order_flow)
-            new_url = window.location.pathname.replace(/dashboard.*$/, '') + 'dashboard/' + order_flow
 
-
-            //console.log(new_url)
-
-
+            var new_url = window.location.pathname.replace(/dashboard.*$/, '') + 'dashboard/' + order_flow
             window.top.history.pushState({
                 request: new_url}, null, new_url)
-
-
-
-
-        // history.pushState(null, null, new_url)
-
-        var request = "/ar_views.php?tipo=widget_details&widget=" + widget + '&metadata=' + JSON.stringify(metadata)
-
-        //console.log(request)
-
-        $.getJSON(request, function (data) {
-
-
-            $('#widget_details').html(data.widget_details).removeClass('hide');
-
-        });
+            var request = "/ar_views.php?tipo=widget_details&widget=" + widget + '&metadata=' + JSON.stringify(metadata)
+            $.getJSON(request, function (data) {
+                $('#widget_details').html(data.widget_details).removeClass('hide');
+            });
 
     }
 
@@ -1401,7 +1392,11 @@ function try_to_pay(element) {
     var object_data = $('#object_showcase div.order').data("object")
 
 
-    //console.log($(element).attr('amount'))
+    console.log($(element).attr('amount'))
+
+
+    console.log(object_data.order_type)
+
 
     if ($(element).attr('amount') > 0  ||  object_data.order_type=='Refund'   ) {
 
@@ -1422,10 +1417,25 @@ function try_to_pay(element) {
 
 
 
+    }else if ($(element).attr('amount') < 0  &&  object_data.order_type=='Order'   ) {
+
+        return;
+
+        if ($('#add_credit').hasClass('hide')) {
+            console.log('caca')
+            show_create_credit(element)
+
+
+        }
+
+
+
+
+
     } else if ($(element).attr('amount') < 0) {
 
 
-        if ($('#payment_refund_amount').is(':visible')) {
+       if ($('#payment_refund_amount').is(':visible')) {
 
             var amount=Math.abs($(element).attr('amount'))
 
@@ -1441,7 +1451,11 @@ function try_to_pay(element) {
 
             $('#payment_refund_amount').val(amount)
             validate_refund_form()
-        }
+        }else{
+
+
+
+       }
 
         //payment_refund_amount
 
@@ -1451,7 +1465,77 @@ function try_to_pay(element) {
 }
 
 
+function show_create_credit(element) {
+
+
+    if ($('#add_credit').hasClass('hide')) {
+
+        var object_data = $('#object_showcase div.order').data("object")
+        if(object_data.object=='invoice') {
+            change_tab('invoice.payments', {'add_payment': 1})
+        }else{
+            change_tab('order.payments', {'add_payment': 1})
+
+        }
+
+
+
+        $('#tabs').addClass('hide')
+
+
+        $('#new_credit_amount').val($(element).attr('absolute_amount'))
+
+        $('#add_credit').removeClass('hide')
+
+
+        // $('#delivery_number').val('').focus()
+
+    }
+
+}
+
+
+function open_add_payment_to_order(element) {
+
+
+    if($(element).hasClass('fa-lock')){
+
+        var _labels = $(element).data('labels');
+
+
+        swal({
+            title: _labels.title,
+            text: _labels.text,
+            type: "warning",
+            showCloseButton: true,
+            showCancelButton: true,
+            cancelButtonText:_labels.no_text_no_stock,
+            confirmButtonText:_labels.yes_text_no_stock
+
+        }).then(function (result) {
+
+            console.log(result)
+
+            if (result.value) {
+                $(element).removeClass('fa-lock super_discreet').addClass('fa-plus')
+            }else{
+
+
+            }
+        });
+
+
+    }else{
+        show_add_payment_to_order();
+
+    }
+}
+
+
+
 function show_add_payment_to_order() {
+
+
 
 
     if ($('#add_payment').hasClass('hide')) {
@@ -1645,11 +1729,10 @@ function save_new_payment() {
                     }
 
                     if (data.metadata.to_pay <= 0) {
-                        $('.payment_operation').addClass('hide')
-
-                    } else {
-                        $('.payment_operation').removeClass('hide')
-                    }
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
 
 
                     if (data.metadata.to_pay == 0) {
@@ -1707,6 +1790,323 @@ function save_new_payment() {
 
 function show_add_offer_to_order() {
 
+
+
+
+}
+
+
+function  toggle_selected_by_customer_charge(element){
+
+
+    if($(element).hasClass('wait')){
+        return;
+    }
+
+    if($(element).hasClass('fa-toggle-on')){
+        var operation='remove_charge';
+    }else{
+        var operation='add_charge';
+    }
+
+
+    $(element).addClass('wait fa-spin fa-spinner').removeClass('fa-toggle-on fa-toggle-off')
+
+    var object_data = $('#object_showcase div.order').data("object")
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo",'toggle_charge')
+    ajaxData.append("operation",operation)
+
+    ajaxData.append("parent", object_data.object)
+
+    ajaxData.append("parent_key", object_data.key)
+    ajaxData.append("charge_key", $(element).data('charge_key'))
+
+
+
+
+
+    $.ajax({
+        url: "/ar_edit_orders.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+        }, success: function (data) {
+
+
+
+
+            $(element).removeClass('wait')
+
+
+
+            console.log(data)
+
+            if (data.state == '200') {
+
+
+
+                if(data.operation=='add_charge' ) {
+                     $(element).addClass('fa-toggle-on').removeClass('fa-spinner fa-spin');
+                     $(element).closest('tr').find('.selected_by_customer_charge').html(data.transaction_data.amount)
+
+
+                    $('.Order_Priority_Icon').removeClass('hide')
+                    $('.priority_label').removeClass('hide')
+
+
+                }else{
+
+                    $(element).addClass('fa-toggle-off').removeClass('fa-spinner fa-spin');
+                    $(element).closest('tr').find('.selected_by_customer_charge').html('')
+
+                    $('.Order_Priority_Icon').addClass('hide')
+                    $('.priority_label').addClass('hide')
+
+                }
+
+
+
+                    $('.Total_Amount').attr('amount', data.metadata.to_pay)
+                    $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
+
+
+                    $('#Shipping_Net_Amount_input').val(data.metadata.shipping).attr('ovalue', data.metadata.shipping)
+                    $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue', data.metadata.charges)
+
+                    if (data.metadata.to_pay == 0) {
+                        $('.Order_Payments_Amount').addClass('hide')
+                        $('.Order_To_Pay_Amount').addClass('hide')
+
+                    } else {
+                        $('.Order_Payments_Amount').removeClass('hide')
+                        $('.Order_To_Pay_Amount').removeClass('hide')
+
+                    }
+
+                    if (data.metadata.to_pay != 0 || data.metadata.payments == 0) {
+                        $('.Order_Paid').addClass('hide')
+                    } else {
+                        $('.Order_Paid').removeClass('hide')
+                    }
+
+                    if (data.metadata.to_pay <= 0) {
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
+
+
+                    if (data.metadata.to_pay == 0) {
+                        $('.Order_To_Pay_Amount').removeClass('button').attr('amount', data.metadata.to_pay)
+
+                    } else {
+                        $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
+
+                    }
+
+
+
+                    for (var key in data.metadata.class_html) {
+                        $('.' + key).html(data.metadata.class_html[key])
+                    }
+
+
+                    for (var key in data.metadata.hide) {
+                        $('#' + data.metadata.hide[key]).addClass('hide')
+                    }
+                    for (var key in data.metadata.show) {
+                        $('#' + data.metadata.show[key]).removeClass('hide')
+                    }
+
+
+
+            }
+            else {
+
+                swal("Error!", data.msg, "error")
+
+
+                console.log(element)
+                $(element).removeClass('fa-spinner fa-spin');
+
+                if(operation=='remove_charge'){
+                    $(element).addClass('fa-toggle-on')
+                }else{
+                    $(element).addClass('fa-toggle-off')
+                }
+            }
+
+
+        }, error: function () {
+            $(element).removeClass('fa-spinner fa-spin');
+
+            if(operation=='remove_charge'){
+                $(element).addClass('fa-toggle-on')
+            }else{
+                $(element).addClass('fa-toggle-off')
+            }
+
+
+        }
+    });
+
+
+
+}
+
+
+function select_deal_component_choose_by_customer(element) {
+
+    var container=$(element).closest('.deal_component_choose_by_customer')
+
+
+    if($(element).data('product_id')==container.data('selected')){
+        return;
+    }
+
+
+    if(container.hasClass('wait')){
+        return;
+    }
+
+    container.addClass('wait')
+
+
+    container.find('i').removeClass('fa-dot-circle').addClass('fa-circle')
+
+    $(element).find('i').addClass('fa-spin fa-spinner').removeClass('fa-circle')
+
+
+
+
+    var object_data = $('#object_showcase div.order').data("object")
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo",'toggle_deal_component_choose_by_customer')
+
+
+    ajaxData.append("order_key", object_data.key)
+    ajaxData.append("deal_component_key", container.data('deal_component_key'))
+    ajaxData.append("otdb_key", container.data('otdb_key'))
+    ajaxData.append("product_id",$(element).data('product_id'))
+
+
+
+
+
+    $.ajax({
+        url: "/ar_edit_orders.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+        }, success: function (data) {
+
+
+
+
+
+
+            console.log(data)
+
+            if (data.state == '200') {
+
+
+
+                $(element).find('i').addClass('fa-spin fa-spinner').removeClass('fa-circle')
+
+
+                var tr=$('#transaction_item_net_'+data.transaction_deal_data.otf_key).closest('tr')
+
+
+                tr.find('.item_code').html(data.transaction_deal_data.Code)
+                tr.find('.item_description').html(data.transaction_deal_data.Description)
+
+
+
+                container.removeClass('wait').data('selected',data.transaction_deal_data.product_id)
+
+                $(element).find('i').removeClass('fa-spin fa-spinner').addClass('fa-dot-circle')
+
+
+
+                $('.Total_Amount').attr('amount', data.metadata.to_pay)
+                $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
+
+
+                $('#Shipping_Net_Amount_input').val(data.metadata.shipping).attr('ovalue', data.metadata.shipping)
+                $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue', data.metadata.charges)
+
+                if (data.metadata.to_pay == 0) {
+                    $('.Order_Payments_Amount').addClass('hide')
+                    $('.Order_To_Pay_Amount').addClass('hide')
+
+                } else {
+                    $('.Order_Payments_Amount').removeClass('hide')
+                    $('.Order_To_Pay_Amount').removeClass('hide')
+
+                }
+
+                if (data.metadata.to_pay != 0 || data.metadata.payments == 0) {
+                    $('.Order_Paid').addClass('hide')
+                } else {
+                    $('.Order_Paid').removeClass('hide')
+                }
+
+                if (data.metadata.to_pay <= 0) {
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
+
+
+                if (data.metadata.to_pay == 0) {
+                    $('.Order_To_Pay_Amount').removeClass('button').attr('amount', data.metadata.to_pay)
+
+                } else {
+                    $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
+
+                }
+
+
+
+                for (var key in data.metadata.class_html) {
+                    $('.' + key).html(data.metadata.class_html[key])
+                }
+
+
+                for (var key in data.metadata.hide) {
+                    $('#' + data.metadata.hide[key]).addClass('hide')
+                }
+                for (var key in data.metadata.show) {
+                    $('#' + data.metadata.show[key]).removeClass('hide')
+                }
+
+
+
+            }
+            else {
+
+                swal("Error!", data.msg, "error")
+
+
+                console.log(element)
+                $(element).removeClass('fa-spinner fa-spin');
+
+                if(operation=='remove_charge'){
+                    $(element).addClass('fa-toggle-on')
+                }else{
+                    $(element).addClass('fa-toggle-off')
+                }
+            }
+
+
+        }, error: function () {
+            $(element).removeClass('fa-spinner fa-spin');
+
+
+
+        }
+    });
 
 
 

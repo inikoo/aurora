@@ -31,6 +31,8 @@
 {if isset($data.top_margin)}{assign "top_margin" $data.top_margin}{else}{assign "top_margin" "30"}{/if}
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "30"}{/if}
 {assign "items_data" $order->get_items()}
+{assign "interactive_charges_data" $order->get_interactive_charges_data()}
+{assign "interactive_deal_component_data" $order->get_interactive_deal_component_data()}
 
 
 <div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
@@ -164,14 +166,20 @@
                 </div>
 
             </div>
+                 {assign "voucher_info" $order->voucher_formatted_info()}
+
+                <div class="container order basket   " style="margin-bottom: 30px">
+                     <span class="basket_order_items">
+                    {include file="theme_1/_order_items.theme_1.EcomB2B.tpl" edit=true hide_title=true   items_data=$items_data }
+                     </span>
 
 
-                <div class="container order basket">
-                    {include file="theme_1/_order_items.theme_1.tpl" edit=true hide_title=true   items_data=$items_data }
 
 
-                    {assign "voucher_info" $order->voucher_formatted_info()}
+                    <div style="margin-top:5px">
+                        {$voucher_info}
 
+                    </div>
 
 
                 </div>
@@ -187,9 +195,14 @@
 
 
                     {assign "voucher_code" $order->get_voucher_code()}
+
+
+
+
+
                     <section >
 
-                        <div class="row"  id="voucher"  style="display: none;">
+                        <div class="row"  id="voucher"  style="">
                             <section class="col col-6">
                                 <label class="input">
                                     <i class="icon-append fa fa-tag"></i>
@@ -197,7 +210,11 @@
                                 </label>
                             </section>
                             <section class="col col-6">
-                                <button  style="margin:0px;{if $voucher_code!=''}display: none{/if}" type="submit" class="button "   data-add_label="{if empty($data._voucher_label)}{t}Add Voucher{/t}{else}{$data._voucher_label}{/if}"  data-update_label="{if empty($data._change_voucher_label)}{t}Update Voucher{/t}{else}{$data._change_voucher_label}{/if}" data-remove_label="{if empty($data._remove_voucher_label)}{t}Remove Voucher{/t}{else}{$data._remove_voucher_label}{/if}"  >
+                                <button  style="margin:0px;display: none" type="submit" class="button "
+                                         data-add_label="{if empty($data._voucher_label)}{t}Add Voucher{/t}{else}{$data._voucher_label}{/if}"
+                                         data-update_label="{if empty($data._change_voucher_label)}{t}Update Voucher{/t}{else}{$data._change_voucher_label}{/if}"
+                                         data-remove_label="{if empty($data._remove_voucher_label)}{t}Remove Voucher{/t}{else}{$data._remove_voucher_label}{/if}"
+                                >
                                     <span>
                                     {if $voucher_code==''}
                                         {if empty($data._voucher_label)}{t}Add Voucher{/t}{else}{$data._voucher_label}{/if}
@@ -605,13 +622,15 @@
                             button.find('span').html(button.data('add_label'))
                             button.find('i').addClass('fa-plus').removeClass('fa-trash-alt fa-sync-alt')
                             input.val('').data('old_value','')
+                            button.css({ 'display': 'none'})
+                            location.reload();
                             break;
                         case 'add':
 
                             button.find('span').html(button.data('update_label'))
                             button.find('i').addClass('fa-sync-alt').removeClass('fa-trash-alt fa-plus')
                             button.css({ 'display': 'block'})
-
+                            location.reload();
                             break;
                     }
 
@@ -621,6 +640,7 @@
 
                         $('.' + key).html(data.metadata.class_html[key])
                     }
+
 
 
 

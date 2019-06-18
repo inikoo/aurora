@@ -40,6 +40,9 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $smarty->assign('blueprints_redirect', 'email_campaign_type.email_blueprints');
 
 
+    //print_r($email_template);
+
+    //exit;
     $smarty->assign('email_template', $email_template);
 
 

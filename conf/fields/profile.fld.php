@@ -94,7 +94,7 @@ $object_fields = array(
                 'invalid_msg'     => get_invalid_message('password'),
             ),
             array(
-                'render'          => ($object->get('User Active') == 'Yes' ? true : false),
+                'render'          => ( ($object->get('User Active') == 'No' or $object->get('User Type')=='Administrator' ) ? false : true),
                 'id'              => 'User_PIN',
                 'edit'            => 'pin',
                 'value'           => $object->get('User PIN'),
@@ -124,6 +124,7 @@ $object_fields = array(
 
             ),
             array(
+                'render'          => (  $object->get('User Type')=='Administrator'  ? false : true),
                 'id'              => 'theme',
                 'edit'            => 'option',
                 'value'           => $user->get('theme_raw'),

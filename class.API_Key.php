@@ -421,7 +421,7 @@ class API_Key extends DB_Table {
     function regenerate_private_key() {
 
         include_once 'utils/password_functions.php';
-        $this->secret_key = generatePassword(40, 10);
+        $this->secret_key = generatePassword(40, 3);
 
 
         $api_key_hash = password_hash($this->secret_key, PASSWORD_DEFAULT);

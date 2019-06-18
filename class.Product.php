@@ -207,11 +207,6 @@ class Product extends Asset {
         );
 
 
-        $this->data['Product Stage']             = 'New';
-        $this->data['Product Sales Type']        = 'Public Sale';
-        $this->data['Product Availability Type'] = 'Normal';
-        $this->data['Product Main Type']         = 'Sale';
-
         if ($this->data['Product Packing Group'] == '') {
             $this->data['Product Packing Group'] = 'None';
         }
@@ -227,8 +222,6 @@ class Product extends Asset {
             $keys .= ",`".$key."`";
             if (in_array(
                 $key, array(
-                        'Product Special Characteristic Component A',
-                        'Product Special Characteristic Component B',
                         'Product XHTML Next Supplier Shipment',
                     )
             )) {
@@ -674,7 +667,7 @@ class Product extends Asset {
 
                 foreach ($parts_data as $part_data) {
 
-                    $parts .= ', '.number($part_data['Ratio']).'x <span class="button " onClick="change_view(\'part/'.$part_data['Part']->id.'\')">'.$part_data['Part']->get('Reference').'</span>';
+                    $parts .= ', '.number($part_data['Ratio'],5).'x <span class="button " onClick="change_view(\'part/'.$part_data['Part']->id.'\')">'.$part_data['Part']->get('Reference').'</span>';
 
 
                 }
@@ -956,7 +949,7 @@ class Product extends Asset {
         include_once 'class.Part.php';
 
         $sql = sprintf(
-            "SELECT `Part Reference`,`Product Part Key`,`Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` 
+            "SELECT `Part Reference`,`Product Part Key`,`Product Part Linked Fields`,`Product Part Part SKU`,`Product Part Ratio`,`Product Part Note` ,`Part Recommended Product Unit Name`,`Part Units`
               FROM `Product Part Bridge` LEFT JOIN `Part Dimension` ON (`Part SKU`=`Product Part Part SKU`)  WHERE `Product Part Product ID`=%d ", $this->id
         );
 
@@ -967,12 +960,16 @@ class Product extends Asset {
 
 
                 $part_data = array(
-                    'Key'            => $row['Product Part Key'],
-                    'Ratio'          => $row['Product Part Ratio'],
-                    'Note'           => $row['Product Part Note'],
-                    'Part SKU'       => $row['Product Part Part SKU'],
-                    'Part Reference' => $row['Part Reference'],
-                );
+                    'Key'                   => $row['Product Part Key'],
+                    'Ratio'                 => $row['Product Part Ratio'],
+                    'Note'                  => $row['Product Part Note'],
+                    'Part SKU'              => $row['Product Part Part SKU'],
+                    'Part Reference'        => $row['Part Reference'],
+                    'Part Name' => $row['Part Recommended Product Unit Name'],
+                    'Part Units'            => $row['Part Units'],
+                    'Units'                 => floatval($row['Part Units']) * floatval($row['Product Part Ratio'])
+
+            );
 
 
                 if ($row['Product Part Linked Fields'] == '') {
@@ -1058,10 +1055,10 @@ class Product extends Asset {
                 break;
 
             case 'Product Unit Weight':
-                $label = _('unit weight');
+                $label = _('Weight shown in website');
                 break;
             case 'Product Unit Dimensions':
-                $label = _('unit dimensions');
+                $label = _('Dimensions shown in website');
                 break;
             case 'Product Units Per Case':
                 $label = _('units per outer');
@@ -1236,33 +1233,6 @@ class Product extends Asset {
 
     }
 
-
-    function update_pages_numbers() {
-
-        $number_pages = 0;
-
-        $sql = sprintf(
-            'SELECT count(DISTINCT `Page Key`) AS num FROM `Page Product Dimension`  WHERE `Product ID`=%d', $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number_pages = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        $this->update(
-            array(
-                'Product Number Web Pages' => $number_pages,
-
-
-            ), 'no_history'
-        );
-
-    }
 
     function update_status_from_parts() {
 
@@ -1579,7 +1549,7 @@ class Product extends Asset {
 
             $sql = sprintf(
                 "INSERT INTO `Product Availability Timeline`  (`Product ID`,`Store Key`,`Department Key`,`Family Key`,`User Key`,`Date`,`Availability`,`Web State`) VALUES (%d,%d,%d,%d,%d,%s,%s,%s) ", $this->id, $this->data['Product Store Key'],
-                $this->data['Product Main Department Key'], $this->data['Product Family Category Key'], $user_key, prepare_mysql($new_date_formatted), prepare_mysql($web_availability), prepare_mysql($web_state)
+                $this->data['Product Department Category Key'], $this->data['Product Family Category Key'], $user_key, prepare_mysql($new_date_formatted), prepare_mysql($web_availability), prepare_mysql($web_state)
 
             );
             $this->db->exec($sql);
@@ -2064,9 +2034,8 @@ class Product extends Asset {
         }
 
 
-
-            $sql = sprintf(
-                "SELECT
+        $sql = sprintf(
+            "SELECT
 		ifnull(count(DISTINCT `Customer Key`),0) AS customers,
 		ifnull(count(DISTINCT `Invoice Key`),0) AS invoices,
 		round(ifnull(sum( `Order Transaction Amount` +(  `Cost Supplier`/`Invoice Currency Exchange Rate`)  ),0),2) AS profit,
@@ -2077,12 +2046,12 @@ class Product extends Asset {
 		round(ifnull(sum((`Order Transaction Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net,
 		round(ifnull(sum((`Order Transaction Amount`+`Cost Supplier`)*`Invoice Currency Exchange Rate`),0),2) AS dc_profit
 		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` >0 AND  `Product ID`=%d %s %s ", $this->id, ($from_date ? sprintf(
-                'and `Invoice Date`>=%s', prepare_mysql($from_date)
-            ) : ''), ($to_date ? sprintf(
-                'and `Invoice Date`<%s', prepare_mysql($to_date)
-            ) : '')
+            'and `Invoice Date`>=%s', prepare_mysql($from_date)
+        ) : ''), ($to_date ? sprintf(
+            'and `Invoice Date`<%s', prepare_mysql($to_date)
+        ) : '')
 
-            );
+        );
 
 
         //print "$sql\n";
@@ -3453,10 +3422,18 @@ class Product extends Asset {
 
         $this->update_part_numbers();
 
+        $this->update_weight();
 
-        $this->fast_update(array('Product Parts Data' => json_encode($this->get_parts_data())));
         $this->fast_update(array('Product XHTML Parts' => $this->get('Parts')));
 
+
+
+        $this->update_metadata = array(
+            'class_html' => array(
+                'Package_Weight' => $this->get('Package Weight'),
+            )
+
+        );
 
         global $account;
 
@@ -3467,6 +3444,47 @@ class Product extends Asset {
             'product_id' => $this->id,
             'editor'     => $this->editor
         ), $account->get('Account Code'), $this->db
+        );
+
+
+    }
+
+    function update_weight() {
+
+        $weight = 0;
+
+        $sql = sprintf(
+            'SELECT `Part Package Weight`,`Product Part Ratio` FROM `Product Part Bridge`  left join `Part Dimension` on (`Product Part Part SKU`=`Part SKU`)  WHERE `Product Part Product ID`=%d', $this->id
+        );
+
+
+      //  print $sql;
+
+
+        if ($result=$this->db->query($sql)) {
+        		foreach ($result as $row) {
+
+        		  //  print_r($row);
+
+                    if(is_numeric($row['Part Package Weight']) and $row['Part Package Weight']>0 ){
+                        $weight += $row['Part Package Weight']*$row['Product Part Ratio'];
+
+                    }
+        		}
+        }else {
+        		print_r($error_info=$this->db->errorInfo());
+        		print "$sql\n";
+        		exit;
+        }
+
+
+
+        $this->fast_update(
+            array(
+                'Product Package Weight' => $weight,
+
+
+            )
         );
 
 
@@ -3950,13 +3968,13 @@ class Product extends Asset {
         switch ($type) {
             case 'Same Family':
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Category Key`=%d order by `Product Total Acc Customers` desc  ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Status` in ('Active','Discontinuing') and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Category Key`=%d order by `Product Total Acc Customers` desc  ",
                     $this->data['Product Store Key'], $this->data['Product Family Category Key']
                 );
                 break;
             case 'Exclude Same Family':
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Category Key`!=%d order by `Product Total Acc Customers` desc  ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Status` in ('Active','Discontinuing') and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Category Key`!=%d order by `Product Total Acc Customers` desc  ",
                     $this->data['Product Store Key'], $this->data['Product Family Category Key']
                 );
 
@@ -3965,7 +3983,7 @@ class Product extends Asset {
             case 'Same Department':
 
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Status` in ('Active','Discontinuing') and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
                     $this->data['Product Store Key'], $limit
                 );
 
@@ -3974,7 +3992,7 @@ class Product extends Asset {
             default:
 
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Main Type`='Sale' and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Status` in ('Active','Discontinuing') and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
                     $this->data['Product Store Key'], $limit
                 );
 

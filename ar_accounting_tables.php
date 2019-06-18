@@ -35,6 +35,9 @@ switch ($tipo) {
     case 'invoices':
         invoices(get_table_parameters(), $db, $user, $account);
         break;
+    case 'deleted_invoices':
+        deleted_invoices(get_table_parameters(), $db, $user, $account);
+        break;
     case 'invoice_categories':
         invoice_categories(get_table_parameters(), $db, $user, $account);
         break;
@@ -63,8 +66,10 @@ switch ($tipo) {
         credits(get_table_parameters(), $db, $user);
         break;
     case 'payments_group_by_store':
-
         payments_group_by_store(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'credits_group_by_store':
+        credits_group_by_store(get_table_parameters(), $db, $user, $account);
         break;
     default:
         $response = array(
@@ -303,37 +308,33 @@ function payments($_data, $db, $user) {
                     $status = _('Completed');
 
 
-                    if ($data['Payment Account Block'] == 'Accounts') {
+                    if ($data['Payment Account Block'] == 'Accountsx') {
                         $operations = sprintf(
                             '<span class="operations">
                                 <i class="far fa-trash-alt button %s " title="%s"   onClick="cancel_payment(this,%d)"  ></i>
                              </span>',
 
-                            ($data['Payment Order Key'] == '' ? 'hide' : ''),
-                            _('Remove credit'),
+                            ($data['Payment Order Key'] == '' ? 'hide' : ''), _('Remove credit'),
 
                             $data['Payment Key']
                         );
+
                     } else {
 
 
                         $operations = sprintf(
                             '<span class="operations">
                             <i class="far fa-trash-alt button %s %s" aria-hidden="true" title="%s"    onClick="cancel_payment(this,%d)"  ></i>
-                            <i class="fa fa-share fa-flip-horizontal button %s" data-settings=\'{"reference":"%s","amount_formatted":"%s","amount":"%s","can_refund_online":"%s","parent":"%s","parent_key":"%s"}\'   aria-hidden="true" title="'._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d)"  ></i>
+                            <i class="fa fa-share fa-flip-horizontal button %s" data-settings=\'{"reference":"%s","amount_formatted":"%s","amount":"%s","can_refund_online":"%s","parent":"%s","parent_key":"%s"}\'   aria-hidden="true" title="'._('Refund/Credit payment').'"  onClick="open_refund_dialog(this,%d,\'%s\')"  ></i>
 
-                            </span>',
-                            ($data['Payment Submit Type'] != 'Manual' ? 'hide' : ''),
-                            ($data['Payment Order Key'] == '' ? 'hide' : ''),
-                            $_remove_label,
+                            </span>', ($data['Payment Submit Type'] != 'Manual' ? 'hide' : ''), ($data['Payment Order Key'] == '' ? 'hide' : ''), $_remove_label,
 
                             $data['Payment Key'],
 
                             (($data['Payment Type'] == 'Payment' and $refundable_amount > 0) ? '' : 'hide'),
 
                             htmlspecialchars($data['Payment Transaction ID']), money($refundable_amount, $data['Payment Currency Code']), $refundable_amount, (($data['Payment Account Block'] == 'BTree' or $data['Payment Account Block'] == 'BTreePaypal') ? true : false),
-                            $parent->get_object_name(), $parent->id,
-                            $data['Payment Key']
+                            $parent->get_object_name(), $parent->id, $data['Payment Key'], $data['Payment Account Block']
                         );
                     }
 
@@ -376,7 +377,7 @@ function payments($_data, $db, $user) {
             $refunds = preg_replace('/^, /', '', $refunds);
 
 
-            if ($data['Payment Account Block'] == 'Accounts'  or  $data['Payment Method'] == 'Account' ) {
+            if ($data['Payment Account Block'] == 'Accounts' or $data['Payment Method'] == 'Account') {
                 $account = _('Customer credits');
 
             } else {
@@ -687,6 +688,110 @@ function payments_group_by_store($_data, $db, $user, $account) {
 }
 
 
+function credits_group_by_store($_data, $db, $user, $account) {
+
+    $rtext_label = 'store';
+    include_once 'prepare_table/init.php';
+    include_once 'utils/currency_functions.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+
+    $total_payments        = 0;
+    $total_payments_amount = 0;
+    $total_credits         = 0;
+    $total_credits_amount  = 0;
+
+    $mix_currencies = false;
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            if ($data['Store Currency Code'] != $account->get('Account Currency')) {
+
+
+                if ($data['Store Total Acc Credits Amount'] != 0) {
+                    $exchange = currency_conversion(
+                        $db, $data['Store Currency Code'], $account->get('Account Currency'), '- 6 hours'
+                    );
+
+                    $mix_currencies       = true;
+
+
+                    $credit_amount_ac=$exchange * $data['Store Total Acc Credits Amount'];
+
+
+
+
+
+                }else{
+                    $credit_amount_ac=0;
+                }
+
+
+            } else {
+                $credit_amount_ac=$data['Store Total Acc Credits Amount'];
+
+            }
+            $total_credits_amount += $credit_amount_ac;
+
+
+            $total_payments        += $data['Store Total Acc Payments'];
+            $total_payments_amount += $data['Store Total Acc Payments Amount'];
+            $total_credits         += $data['Store Total Acc Credits'];
+
+
+
+
+            $adata[] = array(
+                'store_key'       => $data['Store Key'],
+                'code'            => sprintf('<span class="link" onclick="change_view(\'credits/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
+                'name'            => sprintf('<span class="link" onclick="change_view(\'credits/%d\')">%s</span>', $data['Store Key'], $data['Store Name']),
+
+                'credits'        => sprintf('<span class=" %s">%s</span>', ($data['Store Total Acc Credits'] == 0 ? 'super_discreet' : ''), number($data['Store Total Acc Credits'])),
+                'credits_amount' => sprintf('<span class=" %s">%s</span>', ($data['Store Total Acc Credits'] == 0 ? 'super_discreet' : ''), money($data['Store Total Acc Credits Amount'], $data['Store Currency Code'])),
+                'credits_amount_dc' => sprintf('<span class=" %s">%s</span>', ($data['Store Total Acc Credits'] == 0 ? 'super_discreet' : ''), money($credit_amount_ac, $account->get('Account Currency'))),
+
+
+            );
+
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $adata[] = array(
+        'store_key' => '',
+        'name'      => '',
+        'code'      => _('Total').($filtered > 0 ? ' '.'<i class="fa fa-filter fa-fw"></i>' : ''),
+
+         'credits'         => number($total_credits),
+        'credits_amount_dc'  => sprintf('<span class=" %s">%s</span>', ($mix_currencies ? ' ' : 'hide'), money($total_credits_amount, $account->get('Currency Code'))),
+
+        'credits_amount_dc'  => sprintf('<span class=" %s">%s</span>', ($mix_currencies ? ' ' : ''), money($total_credits_amount, $account->get('Currency Code'))),
+
+    );
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+        )
+    );
+    echo json_encode($response);
+}
+
 function invoices($_data, $db, $user) {
 
     $rtext_label = 'invoice';
@@ -772,14 +877,98 @@ function invoices($_data, $db, $user) {
 }
 
 
+function deleted_invoices($_data, $db, $user) {
+
+    $rtext_label = 'deleted invoice';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+
+            if ($data['Invoice Deleted Type'] == 'Invoice') {
+                $type = _('Invoice');
+            } elseif ($data['Invoice Deleted Type'] == 'CreditNote') {
+                $type = _('Credit Note');
+            } else {
+                $type = _('Refund');
+            }
+
+
+
+            $metadata=json_decode($data['Invoice Deleted Metadata'],true);
+
+
+
+            if ($_data['parameters']['parent'] == 'account') {
+                $number = sprintf('<span class="link" onclick="change_view(\'invoices/deleted/all/%d\')">%s</span>', $data['Invoice Deleted Key'], $data['Invoice Deleted Public ID']);
+
+            } else {
+                $number = sprintf('<span class="link" onclick="change_view(\'invoices/deleted//%d/%d\')">%s</span>', $data['Invoice Deleted Store Key'], $data['Invoice Deleted Key'], $data['Invoice Deleted Public ID']);
+            }
+
+
+            $adata[] = array(
+                'id' => (integer)$data['Invoice Deleted Key'],
+
+
+                'number' => $number,
+                'store'     => sprintf('<span class="link" onclick="change_view(\'invoices/deleted/%d\')" title="%s">%s</span>', $data['Invoice Deleted Store Key'], $data['Store Name'], $data['Store Code']),
+                'order'     => sprintf('<span class="link" onclick="change_view(\'orders/%d/%d\')">%s</span>', $data['Invoice Deleted Store Key'], $metadata['Invoice Order Key'], $data['Order Public ID']),
+
+                'customer'     => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')">%s</span>', $data['Invoice Deleted Store Key'], $metadata['Invoice Customer Key'], $metadata['Invoice Customer Name']),
+                'date'         => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Invoice Deleted Date'].' +0:00')),
+                'total_amount' => money($data['Invoice Deleted Total Amount'], $metadata['Invoice Currency']),
+
+                'type'         => $type,
+                'note'         => '<div style="line-height:normal ;font-size: x-small;">'.$data['Invoice Deleted Note'].'</div>',
+                'user'         => '<span >'.$data['User Alias'].'</span>',
+
+
+            );
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
 function invoice_categories($_data, $db, $user, $account) {
 
 
     $rtext_label = 'category';
     include_once 'prepare_table/init.php';
 
+
+    if (empty($_data['parameters']['f_period'])) {
+        $_data['parameters']['f_period'] = 'Total';
+    }
+
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    // print $sql;
+
     $adata = array();
 
     $total_refunds            = 0;
@@ -817,12 +1006,12 @@ function invoice_categories($_data, $db, $user, $account) {
             $adata[] = array(
                 'id'          => (integer)$data['Category Key'],
                 'code'        => sprintf(
-                    '<span class="link" onclick="change_view(\'category/%d\', { tab:\'category.subjects\', parameters:{ period:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}} })" >%s</span>', $data['Category Key'],
+                    '<span class="link" onclick="change_view(\'invoices/category/%d\', { tab:\'category.invoices\', parameters:{ period:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:1,Refund:1}} })" >%s</span>', $data['Category Key'],
                     $_data['parameters']['f_period'], $data['Category Code']
                 ),
                 'label'       => $data['Category Label'],
                 'refunds'     => sprintf(
-                    '<span class="link %s"  onclick="change_view(\'category/%d\', { tab:\'category.subjects\', parameters:{ period:\'%s\',elements_type:\'type\' } ,element:{ type:{ Refund:1,Invoice:\'\'}} })"  >%s</span>',
+                    '<span class="link %s"  onclick="change_view(\'category/%d\', { tab:\'category.invoices\', parameters:{ period:\'%s\',elements_type:\'type\' } ,element:{ type:{ Refund:1,Invoice:\'\'}} })"  >%s</span>',
 
                     ($data['refunds'] == 0 ? 'very_discreet' : ''), $data['Category Key'], $_data['parameters']['f_period'], number($data['refunds'])
                 ),
@@ -938,8 +1127,8 @@ function invoices_per_store($_data, $db, $user, $account) {
 
         foreach ($result as $data) {
 
-            $total_invoices += $data['invoices'];
-            $total_refunds  += $data['refunds'];
+            $total_invoices += $data['Store Invoices'];
+            $total_refunds  += $data['Store Refunds'];
 
 
             $adata[] = array(
@@ -947,8 +1136,9 @@ function invoices_per_store($_data, $db, $user, $account) {
                 'access'    => (in_array($data['Store Key'], $user->stores) ? '<i class="fal fa-lock-open very_discreet"></i>' : '<i class="fal fa-lock "></i>'),
                 'code'      => sprintf('<span class="link" onclick="change_view(\'invoices/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
                 'name'      => sprintf('<span class="link" onclick="change_view(\'invoices/%d\')">%s</span>', $data['Store Key'], $data['Store Name']),
-                'invoices'  => sprintf('<span class="link" onclick="change_view(\'invoices/%d\')">%s</span>', $data['Store Key'], number($data['invoices'])),
-                'refunds'   => sprintf('<span class="link" onclick="change_view(\'invoices/%d\')">%s</span>', $data['Store Key'], number($data['refunds'])),
+                'invoices'  => sprintf('<span class="link" onclick="change_view(\'invoices/%d\')">%s</span>', $data['Store Key'], number($data['Store Invoices'])),
+                'refunds'   => sprintf('<span class="link" onclick="change_view(\'invoices/%d\')">%s</span>', $data['Store Key'], number($data['Store Refunds'])),
+                'refund_percentage'   => sprintf('<span >%s</span>', percentage($data['Store Refunds'],($data['Store Refunds']+$data['Store Invoices']))  ),
 
 
             );
@@ -968,6 +1158,7 @@ function invoices_per_store($_data, $db, $user, $account) {
 
         'invoices' => number($total_invoices),
         'refunds'  => number($total_refunds),
+        'refund_percentage'  => percentage($total_refunds,($total_refunds+$total_invoices)),
 
 
     );

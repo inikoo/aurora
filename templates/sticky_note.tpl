@@ -6,7 +6,7 @@
     <i style="top:30px;float: right" onclick="save_sticky_note('{$scope}')" class="fal save fa-cloud button super_discreet fa-fw" aria-hidden="true"></i>
 
     <i style="top:30px;right:40px" class="fal fa-trash-alt delete_sticky_note button fa-fw" aria-hidden="true"></i>
-    <div class="sticky_note" contenteditable="true" >{$value}</div>
+    <div class="sticky_note" contenteditable="true" >{$value|strip_tags|escape}</div>
 </div>
 
 <script>

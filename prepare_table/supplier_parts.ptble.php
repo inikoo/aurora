@@ -11,7 +11,7 @@
 
 
 $where = "where true  ";
-$table = "`Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) left join `Supplier Dimension` S on (SP.`Supplier Part Supplier Key`=S.`Supplier Key`)  ";
+$table = "`Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) left join `Supplier Dimension` S on (SP.`Supplier Part Supplier Key`=S.`Supplier Key`)  left join `Part Data` D on (D.`Part SKU`=P.`Part SKU`) ";
 
 
 $filter_msg = '';
@@ -55,10 +55,37 @@ if ($parameters['parent'] == 'supplier' or $parameters['parent'] == 'supplier_pr
     }
 
 
-
 } else {
     exit("parent not found x : ".$parameters['parent']);
 }
+
+
+if (isset($parameters['f_period'])) {
+
+    $db_period = get_interval_db_name($parameters['f_period']);
+    if (in_array(
+        $db_period, array(
+                      'Total',
+                      '3 Year'
+                  )
+    )) {
+      //  $yb_fields = " '' as dispatched_1yb,'' as sales_1yb,";
+
+        $yb_sales='0';
+        $yb_dispatched='0';
+    } else {
+      //  $yb_fields = "`Part $db_period Acc 1YB Dispatched` as dispatched_1yb,`Part $db_period Acc 1YB Invoiced Amount` as sales_1yb,";
+        $yb_sales="`Part $db_period Acc 1YB Invoiced Amount`";
+        $yb_dispatched="`Part $db_period Acc 1YB Dispatched`";
+    }
+
+} else {
+    $db_period = 'Total';
+   // $yb_fields = " '' as dispatched_1yb,'' as sales_1yb,";
+    $yb_sales='0';
+    $yb_dispatched='0';
+}
+
 
 if (isset($parameters['elements_type'])) {
 
@@ -126,12 +153,11 @@ if ($parameters['f_field'] == 'reference' and $f_value != '') {
     $wheref .= " and  `Supplier Part Description` like '".addslashes($f_value)."%'";
 }
 
+
 $_order = $order;
 $_dir   = $order_direction;
 
-if ($order == 'part_description') {
-    $order = '`Part Reference`';
-} elseif ($order == 'reference') {
+if ($order == 'reference') {
     $order = '`Supplier Part Reference`';
 } elseif ($order == 'description') {
     $order = '`Supplier Part Description`';
@@ -141,9 +167,35 @@ if ($order == 'part_description') {
     $order = '(`Supplier Part Unit Cost`+`Supplier Part Unit Extra Cost`)';
 } elseif ($order == 'supplier_code') {
     $order = '`Supplier Code`';
+}  elseif ($order == 'barcode') {
+    $order = '`Part Barcode Number`';
+} elseif ($order == 'barcode_sko') {
+    $order = '`Part SKO Barcode`';
+} elseif ($order == 'barcode_carton') {
+    $order = '`Part Carton Barcode`';
+} elseif ($order == 'weight_sko') {
+    $order = '`Part Package Weight`';
+} elseif ($order == 'cbm') {
+    $order = '`Supplier Part Carton CBM`';
+} elseif ($order == 'dispatched') {
+    $order = "`Part $db_period Acc Dispatched` ";
+} elseif ($order == 'dispatched_1yb') {
+    $order = "(`Part $db_period Acc Dispatched`-$yb_dispatched) /$yb_dispatched ";
+} elseif ($order == 'sales') {
+    $order = "`Part $db_period Acc Invoiced Amount` ";
+} elseif ($order == 'sales_1yb') {
+    $order = "(`Part $db_period Acc Invoiced Amount`-$yb_sales) /$yb_sales ";
 } elseif ($order == 'stock') {
-    $order = '`Part Current Stock`';
-} else {
+    $order = '`Part Current On Hand Stock`';
+}elseif ($order == 'stock_status') {
+    $order = '`Part Stock Status`';
+}elseif ($order == 'dispatched_per_week') {
+    $order = '`Part 1 Quarter Acc Dispatched`';
+}elseif ($order == 'available_forecast') {
+    $order = '`Part Days Available Forecast`';
+} elseif ($order == 'next_deliveries') {
+    $order = "(`Part Number Active Deliveries`+`Part Number Draft Deliveries`)";
+}  else {
 
     $order = '`Supplier Part Key`';
 }
@@ -152,9 +204,11 @@ if ($order == 'part_description') {
 $sql_totals = "select count(Distinct SP.`Supplier Part Key`) as num from $table  $where  ";
 
 
-$fields = '`Part Status`,`Supplier Code`,`Supplier Part Unit Extra Cost`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Supplier Part Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
-`Part Current Stock`,`Part Stock Status`,`Part Status`,`Part Barcode Number`,`Part SKO Barcode`,`Part Current On Hand Stock`
-';
+$fields = "`Part Status`,`Supplier Code`,`Supplier Part Unit Extra Cost`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Supplier Part Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
+`Part Current Stock`,`Part Stock Status`,`Part Status`,`Part Barcode Number`,`Part SKO Barcode`,`Part Current On Hand Stock`,`Part Carton Barcode`,`Part Package Weight`,`Supplier Part Carton CBM`,$yb_sales as sales_1yb,  $yb_dispatched as dispatched_1yb,
+`Part Cost in Warehouse`,`Part Next Deliveries Data`,`Part On Demand`,`Part Days Available Forecast`,`Part $db_period Acc Dispatched` as dispatched,`Part $db_period Acc Invoiced Amount` as sales ,
+`Part Commercial Value`,`Part 1 Quarter Acc Dispatched`,`Part Fresh`
+";
 //print $sql_totals;
 
-?>
+

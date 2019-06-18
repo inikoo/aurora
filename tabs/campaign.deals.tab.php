@@ -48,7 +48,9 @@ switch ($state['_object']->get('Code')) {
         );
         $smarty->assign('table_buttons', $table_buttons);
         break;
-    case 'OR':
+    case 'VL':
+
+
         $tab     = 'campaign_bulk_deals';
         $ar_file = 'ar_marketing_tables.php';
         $tipo    = 'campaign_bulk_deals';

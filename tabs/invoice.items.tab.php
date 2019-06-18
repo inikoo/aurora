@@ -13,7 +13,16 @@ $tab     = 'invoice.items';
 $ar_file = 'ar_orders_tables.php';
 
 if( $state['_object']->get('Invoice Type')=='Refund'){
-    $tipo    = 'refund.items';
+
+    if($state['_object']->get('Invoice Tax Type')=='Normal'){
+
+        $tipo    = 'refund.items';
+    }else{
+        $tab     = 'refund.items_tax_only';
+
+        $tipo    = 'refund.items_tax_only';
+    }
+
 
 }else{
     $tipo    = 'invoice.items';
@@ -54,4 +63,4 @@ $parameters = array(
 include('utils/get_table_html.php');
 
 
-?>
+

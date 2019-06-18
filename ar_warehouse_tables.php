@@ -319,6 +319,41 @@ function replenishments($_data, $db, $user) {
             ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
         );
 
+        if($data['Part Symbol']!='') {
+            if ($data['Part Symbol'] != '') {
+
+                switch ($data['Part Symbol']) {
+                    case 'star':
+                        $symbol = '&#9733;';
+                        break;
+
+                    case 'skull':
+                        $symbol = '&#9760;';
+                        break;
+                    case 'radioactive':
+                        $symbol = '&#9762;';
+                        break;
+                    case 'peace':
+                        $symbol = '&#9774;';
+                        break;
+                    case 'sad':
+                        $symbol = '&#9785;';
+                        break;
+                    case 'gear':
+                        $symbol = '&#9881;';
+                        break;
+                    case 'love':
+                        $symbol = '&#10084;';
+                        break;
+                    default:
+                        $symbol = '';
+
+                }
+                $reference .= ' '.$symbol;
+            }
+
+        }
+
 
         $adata[] = array(
             'id'                    => (integer)$data['Location Key'],
@@ -1739,15 +1774,8 @@ function consignments($_data, $db, $user) {
 
             switch ($data['Delivery Note State']) {
 
-                case 'Picker & Packer Assigned':
-                    $state = _('Picker & packer assigned');
-                    break;
-                case 'Picking & Packing':
-                    $state = _('Picking & packing');
-                    break;
-                case 'Packer Assigned':
-                    $state = _('Packer assigned');
-                    break;
+
+
                 case 'Ready to be Picked':
                     $state = _('Waiting');
                     break;
@@ -1852,7 +1880,6 @@ function consignments($_data, $db, $user) {
                 'customer' => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Customer Key'], $data['Delivery Note Customer Name']),
 
                 'date'      => ($data['Delivery Note Date Dispatched'] == '' ? '' : strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Dispatched'].' +0:00'))),
-                // 'state'   => $data['Delivery Note XHTML State'],
                 'weight'    => weight($data['Delivery Note Weight']),
                 'parcels'   => $parcels,
                 'type'      => $type,

@@ -14,6 +14,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 
 require_once '../vendor/autoload.php';
 
+require 'keyring/dns.php';
 require_once 'utils/sentry.php';
 
 include_once 'utils/natural_language.php';
@@ -61,7 +62,7 @@ if (!$is_cached) {
         require 'keyring/dns.php';
 
         $db = new PDO(
-            "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+            "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
         );
         $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     }

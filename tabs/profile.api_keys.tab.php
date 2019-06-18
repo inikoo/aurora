@@ -11,7 +11,7 @@
 
 $tab     = 'staff.user.api_keys';
 $ar_file = 'ar_users_tables.php';
-$tipo    = 'api_keys';
+$tipo    = 'profile_api_keys';
 
 $default = $user->get_tab_defaults($tab);
 
@@ -36,4 +36,4 @@ $smarty->assign('table_buttons', $table_buttons);
 
 include('utils/get_table_html.php');
 
-?>
+

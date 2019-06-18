@@ -20,7 +20,7 @@ list($detected_device, $template_suffix) = get_device();
 if (!isset($db)) {
     require 'keyring/dns.php';
     $db = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
     );
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 }
@@ -123,7 +123,6 @@ if (isset($is_homepage)) {
 }
 
 
-
 $cache_id = $_SESSION['website_key'].'|'.$webpage_key.'|'.($logged_in ? 'in' : 'out');
 
 $template = $theme.'/webpage_blocks.'.$theme.'.'.$website_type.$template_suffix.'.tpl';
@@ -143,7 +142,9 @@ if (!(isset($is_unsubscribe) or isset($is_reset))) {
 }
 
 
-if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset($is_reset)) {
+if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe)    or isset($is_reset) ) {
+
+
 
     include_once 'utils/public_object_functions.php';
 
@@ -190,7 +191,20 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     $smarty->assign('client_tag_google_manager_id', $website->get('Website Google Tag Manager Code'));
     $smarty->assign('zendesk_chat_code', $website->get('Website Zendesk Chat Code'));
     $smarty->assign('tawk_chat_code', $website->get('Website Tawk Chat Code'));
+    $smarty->assign('sumo_code', $website->get('Website Sumo Code'));
 
+
+    $one_signal=$website->get('Website One Signal Code');
+
+
+    if($one_signal!=''){
+        $one_signal_data=preg_split('/,/',$one_signal);
+
+        $smarty->assign('one_signal_id', $one_signal_data[0]);
+        $smarty->assign('one_signal_key',$one_signal_data[1]);
+
+
+    }
 
     date_default_timezone_set($store->get('Store Timezone'));
 
@@ -212,7 +226,6 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
 
     $smarty->assign('labels', $website->get('Localised Labels'));
-
 
     $smarty->assign('navigation', $webpage->get('Navigation Data'));
     $smarty->assign('discounts', $webpage->get('Discounts'));

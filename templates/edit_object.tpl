@@ -15,7 +15,7 @@
             {if isset($field_group.class)}{assign "field_class" $field_group.class}{else}{assign "field_class" ""}{/if}
             {if $field_class=='links'}
                 {foreach from=$field_group.fields item=field name=fields}
-                    {if isset($field.render)}{assign "render" $field.render}{else}{assign "render" true}{/if}
+                    {if isset($field.render) and  isset($field.reference) }{assign "render" $field.render}{else}{assign "render" true}{/if}
                     <tr class="link {if !$render}hide{/if}" onClick="change_view('{$field.reference}')">
                         <td colspan=3><i style="margin-right:10px" class="fa fa-link"></i> {$field.label}</td>
                     </tr>

@@ -10,7 +10,7 @@
 */
 
 
-$where = sprintf(" where  `Site Key`=%d ", $parameters['parent_key']);
+$where = sprintf(" where  `Website Key`=%d ", $parameters['parent_key']);
 
 $group_by = ' group by `Query`';
 

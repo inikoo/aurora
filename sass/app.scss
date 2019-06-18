@@ -1033,10 +1033,20 @@ right connector from last child*/
 .width_100 {
   width: 100px
 }
+.min_width_100 {
+  min-width: 100px
+}
 
+.min_width_120 {
+  min-width: 120px
+}
 .width_150 {
   width: 150px
 }
+.min_width_150 {
+  min-width: 150px
+}
+
 
 .width_200 {
   width: 200px
@@ -1424,3 +1434,25 @@ h2.dashboard{
   background: #0d1875; }
 .app_theme_blue #app_leftmenu, .app_theme_blue #app_leftmenu #top_info, .app_theme_blue #app_leftmenu li:hover {
   background: #424fbd; }
+
+
+.warning_block{
+
+  background: repeating-linear-gradient(
+                  -55deg,
+                  #444,
+                  #444 10px,
+                  #999900 10px,
+                  #999900 20px
+  );
+
+
+  color:#FFEFD5 ;font-weight: 700; font-family: Ubuntu,"Lucida Grande","Lucida Sans Unicode",Verdana,Arial,sans-serif;font-size:28px;
+  text-shadow:
+          -1px -1px 0 #000,
+          1px -1px 0 #000,
+          -1px 1px 0 #000,
+          1px 1px 0 #000;
+
+
+}

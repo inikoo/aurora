@@ -11,6 +11,7 @@
 */
 
 $account->load_acc_data();
+$account->update_parts_data();
 $smarty->assign('show_widget', $state['extra']);
 
 include_once 'widgets/inventory_alerts.wget.php';
@@ -28,9 +29,12 @@ switch ($state['extra']) {
     case 'missing_sko_barcodes':
         $html .= "<script>get_widget_details($('#inventory_parts_no_sko_barcode_wget'),'inventory.parts_no_sko_barcode.wget',{ parent: 'account','parent_key':1})</script>";
         break;
+    case 'weight_errors':
+        $html .= "<script>get_widget_details($('#inventory_parts_weight_errors_wget'),'inventory.parts_weight_errors.wget',{ parent: 'account','parent_key':1})</script>";
+        break;
     default:
         break;
 }
 
 
-?>
+

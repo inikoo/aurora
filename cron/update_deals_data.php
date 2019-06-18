@@ -14,6 +14,55 @@ require_once 'common.php';
 require_once 'utils/natural_language.php';
 require_once 'utils/order_functions.php';
 
+$sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension` where `Deal Key`=2 ");
+
+$sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension` ");
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+        $deal = get_object('Deal', $row['Deal Key']);
+
+        $deal->update_number_components();
+        $deal->update_usage();
+        $deal->update_deal_term_allowances();
+
+
+    }
+
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
+
+
+
+$sql = sprintf("SELECT `Deal Component Key` FROM `Deal Component Dimension` where `Deal Component Deal Key`=%d ",10157);
+$sql = sprintf("SELECT `Deal Component Key` FROM `Deal Component Dimension` ");
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+
+
+        $deal_component = get_object('DealComponent', $row['Deal Component Key']);
+
+        $deal_component->update_usage();
+
+        $deal_component->update_deal_component_term_allowances();
+
+
+
+
+    }
+
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
+
+
+
+
 
 $sql = sprintf("SELECT `Deal Campaign Key` FROM `Deal Campaign Dimension`  ");
 if ($result = $db->query($sql)) {
@@ -32,39 +81,7 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
-$sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension`  ");
-if ($result = $db->query($sql)) {
-    foreach ($result as $row) {
 
-
-        $deal = get_object('Deal', $row['Deal Key']);
-
-        $deal->update_number_components();
-        $deal->update_usage();
-
-    }
-
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
-}
-
-
-$sql = sprintf("SELECT `Deal Component Key` FROM `Deal Component Dimension`  ");
-if ($result = $db->query($sql)) {
-    foreach ($result as $row) {
-
-
-        $deal_component = get_object('DealComponent', $row['Deal Component Key']);
-
-        $deal_component->update_usage();
-
-    }
-
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
-}
 
 
 $sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension`  left join `Store Dimension` on (`Deal Store Key`=`Store Key`) where  `Deal Expiration Date` is not null  and `Deal Status` not in ('Finished') ");
@@ -92,5 +109,3 @@ if ($result = $db->query($sql)) {
     exit;
 }
 
-
-?>

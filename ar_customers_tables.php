@@ -1937,6 +1937,16 @@ function credit_blockchain($_data, $db, $user,$account) {
                     $type=_('Cancelled');
 
                     break;
+                case 'Return':
+                    $type=_('Return');
+                    $note=$data['History Abstract'];
+
+                    break;
+                case 'PayReturn':
+                    $type=_('Credited to pay for return postage');
+                    $note=$data['History Abstract'];
+
+                    break;
                 case 'Adjust':
                     $type=_('Adjust');
                     $note=$data['History Abstract'];

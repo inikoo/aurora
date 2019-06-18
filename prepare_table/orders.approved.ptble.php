@@ -18,7 +18,7 @@ $wheref   = '';
 $currency = '';
 
 
-$where = 'where `Order State`="Approved"  ';
+$where = 'where ( `Order State`="Approved"  or  `Order Replacements Approved`>0) ';
 $table = '`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
 
 

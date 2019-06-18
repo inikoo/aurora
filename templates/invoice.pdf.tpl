@@ -75,12 +75,13 @@
         .clearBoth {
             clear: both;
         }
+        .hide{display:none}
         {/literal}</style>
 </head>
 <body>
 <htmlpageheader name="myheader">
     <table width="100%" style="font-size: 9pt;" border="0">
-        <tr>
+
         <tr>
             {*} {if file_exists("art/invoice_logo.{$store->get('Store Code')}.jpg")}
             <td style="width:150px;"><img style="width:150px" src="art/invoice_logo.{$store->get('Store Code')}.jpg" border="0" title="" alt=""></td>
@@ -93,8 +94,18 @@
                     {$store->get('Store URL')}
                 </div>
             </td>
-            <td style="text-align: right;">{$label_title_no}<br/>
-                <span style="font-weight: bold; font-size: 12pt;">{$invoice->get('Invoice Public ID')}</span></td>
+
+            {if $number_orders==1}
+
+            <td style="text-align: right;">{t}Order Number{/t}<br/>
+
+
+                     <b>{$order->get('Order Public ID')}</b>
+                </td>
+
+            {/if}
+
+
         </tr>
     </table>
 </htmlpageheader>
@@ -123,7 +134,7 @@
     <tr>
         <td>
             <h1>
-                {$label_title}
+                {$label_title} {$invoice->get('Invoice Public ID')}
             </h1>
         </td>
         <td style="text-align: right">
@@ -139,9 +150,17 @@
                 <div style="text-align: right">
                     {t}Order Date{/t}: <b>{$order->get_date('Order Date')}</b>
                 </div>
+
+                {if $invoice->get('Invoice Type')!='Invoice'}
                 <div style="text-align: right">
-                    {t}Order Number{/t}: <b>{$order->get('Order Public ID')}</b>
+                    {t}Invoice Number{/t}: <b>{$original_invoice->get('Invoice Public ID')}</b>
                 </div>
+                {/if}
+                {if $order->get('Order Customer Purchase Order ID')!=''}
+                    <div style="text-align: right">
+                        {t}Customer's Purchase Order Number{/t}: <b>{$order->get('Order Customer Purchase Order ID')}</b>
+                    </div>
+                {/if}
             {/if} </td>
     </tr>
 </table>
@@ -153,6 +172,26 @@
             </div>
             <div style="text-align: right">
                 {t}Customer{/t}: <b>{$invoice->get('Invoice Customer Name')}</b> ({$invoice->get('Invoice Customer Key')})
+            </div>
+            <div >
+                {if $customer->get('Customer Preferred Contact Number')=='Mobile'}
+                    <div  class=" {if !$customer->get('Customer Main Plain Mobile')}hide{/if}">
+                        <span class="address_label">{t}Mobile{/t}:</span> <span class="address_value"  >{$customer->get('Main XHTML Mobile')}</span>
+                    </div>
+                    <div class=" {if !$customer->get('Customer Main Plain Telephone')}hide{/if}">
+                        <span class="address_label">{t}Phone{/t}:</span>  <span class="address_value">{$customer->get('Main XHTML Telephone')}</span>
+                    </div>
+                {else}
+
+
+                    <div class="data_field {if !$customer->get('Customer Main Plain Telephone')}hide{/if}">
+                        <span class="address_label">{t}Phone{/t}:</span> <span class="address_value">{$customer->get('Main XHTML Telephone')}</span>
+                    </div class="data_field {if !$customer->get('Customer Main Plain Telephone')}hide{/if}">
+                    <div class="data_field {if !$customer->get('Customer Main Plain Mobile')}hide{/if}">
+                        <span class="address_label">{t}Mobile{/t}:</span> <span class="address_value" >{$customer->get('Main XHTML Mobile')}</span>
+                    </div>
+                {/if}
+
             </div>
             <div style="{if $invoice->get('Invoice Tax Number')==''}display:none{/if}">
                 {t}Tax Number{/t}: <b>{$invoice->get('Invoice Tax Number')}</b>
@@ -299,6 +338,11 @@
     </tbody>
 </table>
 <br> <br>
+
+
+{assign "payments" $invoice->get_payments('objects','Completed')}
+{if $payments|@count gt 0}
+
 <table class="items" width="100%" style="display:none;font-size: 9pt; border-collapse: collapse;" cellpadding="8">
     <tr class="title">
         <td colspan="5">{t}Payments{/t}</td>
@@ -313,7 +357,7 @@
     </tr>
     </thead>
     <tbody>
-    {foreach from=$invoice->get_payments('objects','Completed') item=payment name=payments}
+    {foreach from=$payments item=payment name=payments}
         <tr class="{if $smarty.foreach.payments.last}last{/if}">
             <td style="text-align:left">{if $payment->get('Payment Type')=='Credit'}{t}Credit{/t}{else}{$payment->get('Method')}{if $payment->get('Payment Type')=='Refund'} ({t}Refund{/t}){/if}{/if}</td>
             <td style="text-align:right">{$payment->get('Created Date')}</td>
@@ -325,21 +369,33 @@
     </tbody>
 </table>
 <br>
-<div style="text-align: center; font-style: italic;">
-    {include file="string:{$store->get('Store Invoice Message')}" }
-</div>
-<br>
-{if $account->get('Account Country 2 Alpha Code')=='SK'  and $invoice->get('Invoice Tax Number')!='' }
+{/if}
+
+
+{if $store->get('Store Invoice Message')!=''}
     <div style="text-align: center; font-style: italic;">
-       {t}Transfer of tax liability{/t}
+        {include file="string:{$store->get('Store Invoice Message')}" }
+    </div>
+    <br>
+{/if}
+{if $invoice->get('Invoice Message')!=''}
+    <div style="text-align: center; font-style: italic;">
+        {include file="string:{$invoice->get('Invoice Message')}" }
+    </div><br>
+{/if}
+{if $account->get('Account Country 2 Alpha Code')=='SK'  and $invoice->get('Invoice Tax Number')!=''  and $invoice->get('Invoice Address Country 2 Alpha Code')!='SK'   }
+    <div style="text-align: center; font-style: italic;">
+        {t}Transfer of tax liability{/t}
+    </div>
+    <br>
+{/if}
+{if $extra_comments!=''}
+    <div style="text-align: center; font-style: italic;">
+        {$extra_comments}
     </div>
     <br>
 {/if}
 
-<div style="text-align: center; font-style: italic;">
-    {$extra_comments}
-</div>
-<br>
 
 </body>
 </html>

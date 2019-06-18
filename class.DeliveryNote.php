@@ -155,7 +155,7 @@ class DeliveryNote extends DB_Table {
                         prepare_mysql($this->data['Delivery Note Date Created']), prepare_mysql($this->data['Delivery Note ID'])
 
 
-                        , $this->data['Delivery Note Key'], prepare_mysql($this->data['Delivery Note Country 2 Alpha Code']), $row['Order Transaction Fact Key']
+                        , $this->data['Delivery Note Key'], prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']), $row['Order Transaction Fact Key']
 
                     );
                     $this->db->exec($sql);
@@ -355,11 +355,9 @@ class DeliveryNote extends DB_Table {
 
                 switch ($this->data['Delivery Note State']) {
                     case 'Ready to be Picked':
-                    case 'Picker & Packer Assigned':
                         return 10;
                         break;
-                    case 'Picker Assigned':
-                    case 'Picking & Packing':
+
                     case 'Picking':
                         return 20;
                         break;
@@ -367,8 +365,6 @@ class DeliveryNote extends DB_Table {
                     case 'Picked':
                         return 30;
                         break;
-
-                    case 'Packer Assigned':
                     case 'Packing':
                         return 40;
                         break;
@@ -506,15 +502,7 @@ class DeliveryNote extends DB_Table {
             case ('State'):
                 switch ($this->data['Delivery Note State']) {
 
-                    case 'Picker & Packer Assigned':
-                        return _('Picker & packer assigned');
-                        break;
-                    case 'Picking & Packing':
-                        return _('Picking & packing');
-                        break;
-                    case 'Packer Assigned':
-                        return _('Packer assigned');
-                        break;
+
                     case 'Ready to be Picked':
                         return _('Ready to be picked');
                         break;
@@ -556,15 +544,7 @@ class DeliveryNote extends DB_Table {
             case ('Abbreviated State'):
                 switch ($this->data['Delivery Note State']) {
 
-                    case 'Picker & Packer Assigned':
-                        return _('Picker & packer assigned');
-                        break;
-                    case 'Picking & Packing':
-                        return _('Picking & packing');
-                        break;
-                    case 'Packer Assigned':
-                        return _('Packer assigned');
-                        break;
+
                     case 'Ready to be Picked':
                         return _('Waiting');
                         break;
@@ -875,6 +855,7 @@ class DeliveryNote extends DB_Table {
 
     }
 
+
     protected function create_replacement($dn_data, $transactions) {
 
 
@@ -910,7 +891,9 @@ class DeliveryNote extends DB_Table {
             $this->get_data('id', $this->id);
 
 
-            foreach ($transactions as $transaction_data) {
+            $feedback = array();
+
+            foreach ($transactions as $tansaction_key => $transaction_data) {
 
 
                 if ($transaction_data['type'] == 'itf') {
@@ -971,6 +954,14 @@ class DeliveryNote extends DB_Table {
 
                             $this->db->exec($sql);
 
+                            $replacement_itf = $this->db->lastInsertId();
+
+
+                            $_feedback        = $transaction_data['feedback'];
+                            $_feedback['itf'] = $replacement_itf;
+                            $feedback[]       = $_feedback;
+
+
                         }
                     } else {
                         print_r($error_info = $this->db->errorInfo());
@@ -981,6 +972,23 @@ class DeliveryNote extends DB_Table {
 
                 }
             }
+
+            $account = get_object('Account', 1);
+
+
+            require_once 'utils/new_fork.php';
+
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'       => 'feedback',
+                'feedback'   => $feedback,
+                'user_key'   => $this->editor['User Key'],
+                'parent'     => 'Replacement',
+                'parent_key' => $this->id,
+                'store_key'  => $this->get('Store Key'),
+                'editor'     => $this->editor
+            ), $account->get('Account Code'), $this->db
+            );
 
 
             $this->update_totals();
@@ -1299,11 +1307,11 @@ class DeliveryNote extends DB_Table {
                     )
                 );
 
-
-                $order         = get_object('order', $this->data['Delivery Note Order Key']);
-                $order->editor = $this->editor;
-                $order->update_totals();
-
+                if ($this->data['Delivery Note Type'] == 'Order') {
+                    $order         = get_object('order', $this->data['Delivery Note Order Key']);
+                    $order->editor = $this->editor;
+                    $order->update_totals();
+                }
 
                 break;
 
@@ -1388,11 +1396,11 @@ class DeliveryNote extends DB_Table {
                     $order->editor = $this->editor;
 
                     $order->update_state('PackedDone', json_encode(array('date' => $date)));
+                    $order->update_totals();
+
 
                 } else {
-                    $order         = get_object('Order', $this->get('Delivery Note Order Key'));
-                    $order->editor = $this->editor;
-                    $order->update(array('Order Replacement State' => 'PackedDone'));
+
 
 
                     $history_data = array(
@@ -1403,16 +1411,9 @@ class DeliveryNote extends DB_Table {
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
 
 
-                    new_housekeeping_fork(
-                        'au_housekeeping', array(
-                        'type'      => 'order_state_changed',
-                        'order_key' => $order->id,
-                    ), $account->get('Account Code')
-                    );
 
                 }
 
-                $order->update_totals();
 
 
                 new_housekeeping_fork(
@@ -1513,6 +1514,7 @@ class DeliveryNote extends DB_Table {
                     $order->editor = $this->editor;
                     $order->update_totals();
                     $order->update(array('Order State' => 'Undo PackedDone'));
+                    $order->update_totals();
 
 
                 } else {
@@ -1525,21 +1527,9 @@ class DeliveryNote extends DB_Table {
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
 
 
-                    $order         = get_object('Order', $this->get('Delivery Note Order Key'));
-                    $order->editor = $this->editor;
-                    $order->update(array('Order Replacement State' => 'InWarehouse'));
-
-
-                    new_housekeeping_fork(
-                        'au_housekeeping', array(
-                        'type'      => 'order_state_changed',
-                        'order_key' => $order->id,
-                    ), $account->get('Account Code')
-                    );
 
                 }
 
-                $order->update_totals();
 
 
                 new_housekeeping_fork(
@@ -1777,16 +1767,8 @@ class DeliveryNote extends DB_Table {
 
 
                 } else {
-                    $order->update(
-                        array(
-                            'Order Replacement State' => 'Dispatched',
-                        )
-                    );
-                    $order->fast_update(
-                        array(
-                            'Order Post Transactions Dispatched Date' => $date
-                        )
-                    );
+
+
 
 
                     $history_data = array(
@@ -1797,13 +1779,6 @@ class DeliveryNote extends DB_Table {
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
 
 
-                    new_housekeeping_fork(
-                        'au_housekeeping', array(
-                        'type'      => 'order_state_changed',
-                        'order_key' => $order->id,
-
-                    ), $account->get('Account Code')
-                    );
 
                 }
 
@@ -1945,8 +1920,6 @@ class DeliveryNote extends DB_Table {
                                                      )
                 )) {
 
-                    $order->fast_update(array('Order Replacement State' => 'NA'));
-
 
                     $history_data = array(
                         'History Abstract' => _('Replacement cancelled'),
@@ -1998,6 +1971,12 @@ class DeliveryNote extends DB_Table {
             default:
                 exit('unknown state '.$value);
                 break;
+        }
+
+
+        if ($this->data['Delivery Note Type'] == 'Replacement') {
+            $order = get_object('Order', $this->get('Delivery Note Order Key'));
+            $order->update_number_replacements();
         }
 
 
@@ -2515,7 +2494,7 @@ class DeliveryNote extends DB_Table {
 
     }
 
-    function delete() {
+    function delete($fix_mode = false) {
 
         $customer = get_object('Customer', $this->get('Delivery Note Customer Key'));
 
@@ -2570,38 +2549,35 @@ class DeliveryNote extends DB_Table {
         $this->db->exec($sql);
 
 
-        if (in_array(
-            $this->data['Delivery Note Type'], array(
-                                                 'Replacement & Shortages',
-                                                 'Replacement',
-                                                 'Shortages'
-                                             )
-        )) {
-            $sql = sprintf(
-                "UPDATE `Order Post Transaction Dimension` SET `State`=%s  WHERE `Delivery Note Key`=%d   ", prepare_mysql('In Process'), $this->id
-            );
-            $this->db->exec($sql);
+        if (!$fix_mode) {
 
-
-
-
-
-            $order->fast_update(array('Order Replacement State' => 'NA'));
-
-        } else {
-
-
-            if ($order->get('Order State') != 'Cancelled') {
-                $order->update(
-                    array(
-                        'Order State' => 'Delivery_Note_deleted'
-                    )
+            if (in_array(
+                $this->data['Delivery Note Type'], array(
+                                                     'Replacement & Shortages',
+                                                     'Replacement',
+                                                     'Shortages'
+                                                 )
+            )) {
+                $sql = sprintf(
+                    "UPDATE `Order Post Transaction Dimension` SET `State`=%s  WHERE `Delivery Note Key`=%d   ", prepare_mysql('In Process'), $this->id
                 );
+                $this->db->exec($sql);
+
+
+            } else {
+
+
+                if ($order->get('Order State') != 'Cancelled') {
+                    $order->update(
+                        array(
+                            'Order State' => 'Delivery_Note_deleted'
+                        )
+                    );
+                }
+
+
             }
-
-
         }
-
 
         $customer->update_last_dispatched_order_key();
 

@@ -118,7 +118,35 @@
         </table>
 
 
-    {include file="theme_1/_order_items.theme_1.EcomB2B.mobile.tpl" edit=false hide_title=true order=$order }
+
+    <table class="order_items" style="margin-bottom: 0px">
+        <thead>
+        <tr >
+            <th colspan="2" class="text-left padding_left_10">{t}Items{/t}</th>
+
+        </tr>
+        </thead>
+        <tbody>
+
+        {foreach from=$items_data item="item" }g
+
+            <tr>
+                <td style="text-align: left">{$item.code_description}</td>
+                <td class="text-right">{$item.qty}</td>
+
+
+                <td class="text-right">{$item.amount}</td>
+            </tr>
+
+
+        {/foreach}
+
+
+
+        </tbody>
+    </table>
+
+
 
 
 </div>

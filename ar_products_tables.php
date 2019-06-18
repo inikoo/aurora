@@ -306,7 +306,7 @@ function products($_data, $db, $user, $account) {
                         '<span class="link" onClick="change_view(\'part/%d/product/%d\')" title="%s">%s</span>', $_data['parameters']['parent_key'], $data['Product ID'], '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>',
                         $data['Product Code']
                     );
-                    $name = number($data['Product Part Ratio']).' <i class="far fa-box" title="'.sprintf(_('Each outer pick %s part SKOs'), number($data['Product Part Ratio'])).'"></i> =  '.$data['Product Name'].($data['Product Units Per Case'] != 1
+                    $name = number($data['Product Part Ratio'],5).' <i class="far fa-box" title="'.sprintf(_('Each outer pick %s part SKOs'), number($data['Product Part Ratio'])).'"></i> =  '.$data['Product Name'].($data['Product Units Per Case'] != 1
                             ? '<span class="discreet italic small">('.$data['Product Units Per Case'].' '._('units').')</span>' : '');
 
 
@@ -324,13 +324,25 @@ function products($_data, $db, $user, $account) {
 
                     break;
                 case 'category':
-                    $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+                    if($data['Product Units Per Case']==1){
+                        $name = '<span>'.$data['Product Name'].'</span>';
 
+                    }else{
+                        $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+
+                    }
                     $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%sproduct/%d\')" title="%s">%s</span>', $data['Store Key'], $path, $data['Product ID'], $name, $data['Product Code']);
 
                     break;
                 default:
-                    $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+
+                    if($data['Product Units Per Case']==1){
+                        $name = '<span>'.$data['Product Name'].'</span>';
+
+                    }else{
+                        $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+
+                    }
 
                     $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%d\')" title="%s">%s</span>', $data['Store Key'], $data['Product ID'], $name, $data['Product Code']);
 
@@ -1345,7 +1357,6 @@ function product_categories_products($_data, $db, $user) {
         );
         $record_data[] = array(
             'id'                      => (integer)$data['Product Category Key'],
-            'store_key'               => (integer)$data['Category Store Key'],
             'code'                    => $code,
             'label'                   => $data['Category Label'],
             'status'                  => $status,
@@ -1463,13 +1474,21 @@ function charges($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
 
+        if($data['Charge Active']=='Yes'){
+            $status='<i class="fa fa-play success"></i>';
+        }else{
+            $status='<i class="fa fa-pause error"></i>';
+
+        }
+
         $record_data[] = array(
             'id'        => (integer)$data['Charge Key'],
             'code'      => sprintf('<span class="link" onClick="change_view(\'store/%d/charge/%d\')" >%s</span>', $data['Charge Store Key'], $data['Charge Key'], $data['Charge Name']),
             'name'      => sprintf('<span class="link" onClick="change_view(\'store/%d/charge/%d\')" >%s</span>', $data['Charge Store Key'], $data['Charge Key'], $data['Charge Description']),
             'orders'    => number($data['Charge Total Acc Orders']),
             'customers' => number($data['Charge Total Acc Customers']),
-            'amount'    => money($data['Charge Total Acc Amount'], $data['Store Currency Code'])
+            'amount'    => money($data['Charge Total Acc Amount'], $data['Store Currency Code']),
+            'status'=>$status
 
         );
 
@@ -1518,9 +1537,17 @@ function shipping_zones($_data, $db, $user) {
 
 
 
+                //print_r($territories_data);
 
                 foreach($territories_data as $territory){
                     $territories.='<img class="padding_left_5" style="width:20px" src="/art/flags/'.strtolower($territory['country_code']).'.gif"> '.$territory['country_code'];
+
+                    if(isset($territory['excluded_postal_codes'])){
+                        $territories.=' <span class="error small">(<i class="fa fa-map-marker-alt-slash error" title="'._('Exclude postal codes').'" ></i> '.$territory['excluded_postal_codes'].')</span> ';
+                    }
+                    if(isset($territory['included_postal_codes'])){
+                        $territories.=' <span class="success small discreet" >(<i class="fa fa-map-marker-smile " title="'._('Include postal codes').'" ></i> '.$territory['included_postal_codes'].')</span> ';
+                    }
 
                 }
 

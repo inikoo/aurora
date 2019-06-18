@@ -14,7 +14,7 @@ require_once 'utils/new_fork.php';
 
 
 
-$time=date('H:i');
+$time=gmdate('H:i');
 
 if($time=='00:00'  ){
 
@@ -469,4 +469,4 @@ function iso_860_to_day_name($num) {
 }
 
 
-?>
+

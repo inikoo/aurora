@@ -629,4 +629,96 @@ function set_po_transaction_amount_to_current_cost(element,type,transaction_key)
 
 }
 
+function show_item_po_note(element){
 
+    $(element).addClass('hide')
+    var item_po_note=$(element).closest('tr').find('.item_po_note')
+    item_po_note.removeClass('hide')
+    item_po_note.find('textarea').removeClass('hide').focus()
+    item_po_note.find('i').removeClass('hide')
+
+}
+
+
+$(document).on('input propertychange', '.item_po_note', function (evt) {
+
+    $(this).closest('tr').find('.item_po_note_save').removeClass('hide').addClass('valid changed')
+
+
+
+})
+
+
+function save_po_note(element){
+
+    var item_po_note=$(element).closest('tr').find('.item_po_note')
+
+
+
+    var form_data = new FormData();
+
+    form_data.append("tipo", 'update_po_item_note')
+    form_data.append("potf_key", item_po_note.data('potfk'))
+    form_data.append("note", item_po_note.val())
+
+
+
+
+    var request = $.ajax({
+
+        url: "/ar_edit_orders.php",
+        data: form_data,
+        processData: false,
+        contentType: false,
+        type: 'POST',
+        dataType: 'json'
+
+    })
+
+
+    request.done(function (data) {
+
+
+        if (data.state == 200) {
+
+
+            var tr=$(element).closest('tr')
+
+            tr.find('.item_po_note_save').addClass('hide')
+
+            tr.find('.item_po_note').addClass('hide')
+
+            if(data.note==''){
+                tr.find('.item_po_note_new').removeClass('hide')
+
+                tr.find('.item_po_note_display').addClass('hide').html('')
+            }else{
+                tr.find('.item_po_note_new').addClass('hide')
+
+                tr.find('.item_po_note_display').removeClass('hide').html(data.note)
+
+
+            }
+
+
+
+
+        } else if (data.state == 400) {
+
+
+            console.log(data)
+        }
+
+    })
+
+
+    request.fail(function (jqXHR, textStatus) {
+        console.log(textStatus)
+        console.log(jqXHR.responseText)
+
+    });
+
+
+
+
+}

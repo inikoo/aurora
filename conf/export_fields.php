@@ -298,7 +298,7 @@ $export_fields = array(
 
     'invoices'                     => array(
         array(
-            'name'    => '`Invoice Title`',
+            'name'    => '`Invoice Type`',
             'label'   => _('Type'),
             'checked' => 1
         ),
@@ -730,6 +730,32 @@ $export_fields = array(
             'checked' => 1
         ),
 
+
+
+        array(
+            'name'    => '`Part Package Weight`',
+            'label'   => _('SKO weight (Kg)'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Units Per Package`',
+            'label'   => _('Units per SKO'),
+            'checked' => 0
+        ),
+        array(
+            'name'    => '`Part Unit Label`',
+            'label'   => _('Unit label'),
+            'checked' => 0
+        ),
+
+        array(
+            'name'    => '`Part Unit Weight`',
+            'label'         => _('Weight shown in website').' (Kg)',
+            'checked' => 0
+        ),
+
+        
+
     ),
     'part_categories' => array(
         array(
@@ -1001,6 +1027,7 @@ $export_fields = array(
             'checked' => 1
         ),
 
+
         array(
             'name'    => '`Part Barcode Number`',
             'label'   => _('Unit barcode'),
@@ -1013,6 +1040,36 @@ $export_fields = array(
             'label'   => _('Barcode errors'),
             'checked' => 1
         ),
+
+    ),
+    'parts_weight_errors' => array(
+        array(
+            'name'    => '`Part Reference`',
+            'label'   => _('Reference'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Status`',
+            'label'   => _('Part status'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Package Description`',
+            'label'   => _('SKO description'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Part Package Weight`',
+            'label'   => _('SKO weight'),
+            'checked' => 1,
+        ),
+        array(
+            'name'    => '`Part Package Weight Status`',
+            'label'   => _('Weight status'),
+            'checked' => 1
+        ),
+
+
 
     ),
     'products'            => array(
@@ -1099,7 +1156,7 @@ $export_fields = array(
 
         array(
             'name'    => '`Product Unit Weight`',
-            'label'   => _('Unit weight'),
+            'label'   => _('Unit weight (marketing)'),
             'checked' => 1
         ),
 
@@ -1213,7 +1270,7 @@ $export_fields = array(
             'checked' => 1
         ),
         array(
-            'name'    => 'sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`)',
+            'name'    => 'sum(`Delivery Note Quantity`*`Product Package Weight`)',
             'label'   => _('Weight').' (Kg)',
             'checked' => 1
         ),

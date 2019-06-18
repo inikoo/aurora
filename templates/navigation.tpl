@@ -19,7 +19,7 @@
         <div {if isset($button.id) and $button.id }id="{$button.id}"{/if}
              class="square_button {if !empty($button.class)}{$button.class}{/if} left"   {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}' {if isset($button.metadata)},{$button.metadata}{/if}  )"{/if}
              title="{$button.title}">
-            <i class="far fa-{$button.icon} fa-fw"></i>{if isset($button.text)}{$button.text}{/if}
+            {if isset($button.html_icon)}{$button.html_icon}{else}<i class="far fa-{$button.icon} fa-fw">{/if}</i>{if isset($button.text)}{$button.text}{/if}
         </div>
     {/foreach}
 

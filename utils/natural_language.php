@@ -357,6 +357,17 @@ function get_file_as($StartCode) {
 
 }
 
+
+function smart_weight($weight,$decimals=3){
+    if ($weight < 1) {
+        return weight($weight *1000, 'g');
+    }elseif ($weight > 1000) {
+        return weight($weight /1000, 't',$decimals);
+    } else {
+        return weight($weight,'Kg',$decimals);
+    }
+}
+
 function weight($w, $unit = 'Kg', $number_decimals = 3, $simplify = false, $zero_fill = false) {
     //print $w;
     if ($w == '') {
@@ -472,6 +483,8 @@ function money($amount, $currency = '', $locale = false, $option = '') {
     } elseif ($option == 'SINGLE_FRACTION_DIGITS') {
         $money->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 1);
     }elseif ($option == 'FOUR_FRACTION_DIGITS') {
+
+
         $money->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 4);
     }
 

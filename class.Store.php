@@ -164,31 +164,32 @@ class Store extends DB_Table {
         $this->new = false;
         $base_data = $this->base_data();
 
+
+        $data['Store Properties'] = '{}';
+        $data['Store Settings']   = '{}';
+
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
                 $base_data[$key] = _trim($value);
             }
         }
 
-        $keys   = '(';
-        $values = 'values (';
+
+        $sql = sprintf(
+            "INSERT INTO `Store Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
+        );
+
+        $stmt = $this->db->prepare($sql);
+
+
+        $i = 1;
         foreach ($base_data as $key => $value) {
-            $keys .= "`$key`,";
-            if (preg_match(
-                '/Store Email|Store Telephone|Store Telephone|Slogan|URL|Fax|Sticky Note|Store VAT Number/i', $key
-            )) {
-                $values .= prepare_mysql($value, false).",";
-            } else {
-                $values .= prepare_mysql($value).",";
-            }
+            $stmt->bindValue($i, $value);
+            $i++;
         }
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
 
 
-        $sql = "insert into `Store Dimension` $keys  $values";
-
-        if ($this->db->exec($sql)) {
+        if ($stmt->execute()) {
             $this->id = $this->db->lastInsertId();
 
 
@@ -296,16 +297,23 @@ class Store extends DB_Table {
 
             $order_recursion_campaign_data = array(
                 'Deal Campaign Name'       => 'Order recursion incentive',
+                'Deal Campaign Icon'       => '<i class="far fa-repeat-1"></i>',
+                'Deal Campaign Code'       => 'OR',
                 'Deal Campaign Valid From' => gmdate('Y-m-d'),
                 'Deal Campaign Valid To'   => '',
 
 
             );
 
+
             $order_recursion_campaign = $this->create_campaign($order_recursion_campaign_data);
 
+
             $bulk_discounts_campaign_data = array(
-                'Deal Campaign Name'       => 'Bulk discount',
+                'Deal Campaign Name' => 'Bulk discount',
+                'Deal Campaign Icon' => '<i class="far fa-ball-pile"></i>',
+
+                'Deal Campaign Code'       => 'VL',
                 'Deal Campaign Valid From' => gmdate('Y-m-d'),
                 'Deal Campaign Valid To'   => '',
 
@@ -315,6 +323,8 @@ class Store extends DB_Table {
 
 
             $first_order_incentive_campaign_data = array(
+                'Deal Campaign Code'       => 'FO',
+                'Deal Campaign Icon'       => '<i class="far fa-trophy-alt"></i>',
                 'Deal Campaign Name'       => 'First order incentive',
                 'Deal Campaign Valid From' => gmdate('Y-m-d'),
                 'Deal Campaign Valid To'   => '',
@@ -336,8 +346,59 @@ class Store extends DB_Table {
             );
 
 
-            // todo create Email email Campaign Type
-            // // update `Email Campaign Type Dimension` set `Email Campaign Type Status`='Active' where `Email Campaign Type Code` in ('Newsletter','Marketing','AbandonedCart','Invite Mailshot','Invite');
+            $campaign_data = array(
+                'Deal Campaign Code' => 'CU',
+                'Deal Campaign Icon' => '<i class="far fa-user-crown"></i>',
+
+                'Deal Campaign Name'       => 'Customers offers',
+                'Deal Campaign Valid From' => gmdate('Y-m-d'),
+                'Deal Campaign Valid To'   => '',
+            );
+            $this->create_campaign($campaign_data);
+
+            $campaign_data = array(
+                'Deal Campaign Code' => 'CA',
+                'Deal Campaign Icon' => '<i class="far fa-bullseye-arrow"></i>',
+
+                'Deal Campaign Name'       => 'Family offers',
+                'Deal Campaign Valid From' => gmdate('Y-m-d'),
+                'Deal Campaign Valid To'   => '',
+            );
+            $this->create_campaign($campaign_data);
+
+            $campaign_data = array(
+                'Deal Campaign Code'       => 'PO',
+                'Deal Campaign Icon'       => '<i class="far fa-crosshairs"></i>',
+                'Deal Campaign Name'       => 'Product offers',
+                'Deal Campaign Valid From' => gmdate('Y-m-d'),
+                'Deal Campaign Valid To'   => '',
+            );
+            $this->create_campaign($campaign_data);
+
+            $campaign_data = array(
+                'Deal Campaign Code' => 'SO',
+                'Deal Campaign Name' => 'Store offers',
+                'Deal Campaign Icon' => '<i class="far fa-badge-percent"></i>',
+
+                'Deal Campaign Valid From' => gmdate('Y-m-d'),
+                'Deal Campaign Valid To'   => '',
+            );
+            $this->create_campaign($campaign_data);
+
+            $campaign_data = array(
+                'Deal Campaign Code' => 'VO',
+                'Deal Campaign Icon' => '<i class="far fa-money-bill-wave"></i>',
+
+                'Deal Campaign Name'       => 'Vouchers',
+                'Deal Campaign Valid From' => gmdate('Y-m-d'),
+                'Deal Campaign Valid To'   => '',
+            );
+            $this->create_campaign($campaign_data);
+
+
+            include_once 'utils/create_email_templates.php';
+
+            create_email_templates($this->db, $this);
 
 
             $history_data = array(
@@ -355,9 +416,14 @@ class Store extends DB_Table {
             $account = new Account();
             $account->add_account_history($history_key);
 
+
             return;
         } else {
-            print $sql;
+
+
+            print_r($stmt->errorInfo());
+
+
             exit;
             $this->msg = _("Error can not create store");
 
@@ -470,6 +536,9 @@ class Store extends DB_Table {
 
                 return json_encode($address_fields);
                 break;
+            case 'Label Signature':
+                return nl2br($this->data['Store Label Signature']);
+                break;
             case 'Collect Address':
 
 
@@ -561,10 +630,8 @@ class Store extends DB_Table {
                 );
             case('Total Users'):
                 return number($this->data['Store Total Users']);
-            case('All To Pay Invoices'):
-                return $this->data['Store Total Acc Invoices'] - $this->data['Store Paid Invoices'] - $this->data['Store Paid Refunds'];
-            case('All Paid Invoices'):
-                return $this->data['Store Paid Invoices'] - $this->data['Store Paid Refunds'];
+
+
             case('code'):
                 return $this->data['Store Code'];
                 break;
@@ -648,7 +715,15 @@ class Store extends DB_Table {
                 }
 
                 break;
+            case 'send invoice attachment in delivery confirmation':
+            case 'send dn attachment in delivery confirmation':
 
+                if ($this->settings(preg_replace('/\s/', '_', $key)) == 'Yes') {
+                    return _('Yes');
+                } else {
+                    return _('No');
+                }
+                break;
             case 'data entry picking aid default picker':
             case 'data entry picking aid default packer':
 
@@ -729,7 +804,42 @@ class Store extends DB_Table {
                 return $this->smarty->fetch('mixed_recipients.edit.tpl');
 
                 break;
+            case 'Next Invoice Public ID Method':
 
+                switch ($this->data['Store Next Invoice Public ID Method']) {
+                    case 'Order ID':
+                        return _('Same as order');
+                        break;
+                    case 'Invoice Public ID':
+                        return _('Own consecutive number');
+                        break;
+                    case 'Account Wide Invoice Public ID':
+                        return _('Own consecutive number (shared all stores)');
+                        break;
+                }
+
+
+                break;
+
+            case 'Refund Public ID Method':
+
+                switch ($this->data['Store Refund Public ID Method']) {
+                    case 'Same Invoice ID'  :
+                        return _('Same as invoice');
+                        break;
+                    case 'Next Invoice ID'  :
+                        return _('Next consecutive invoice number');
+                        break;
+                    case 'Store Own Index':
+                        return _('Own consecutive number');
+                        break;
+                    case 'Account Wide Own Index':
+                        return _('Own consecutive number (shared all stores)');
+                        break;
+                }
+
+
+                break;
 
         }
 
@@ -904,6 +1014,10 @@ class Store extends DB_Table {
         return (isset($this->settings[$key]) ? $this->settings[$key] : '');
     }
 
+    function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
+    }
+
     function create_timeseries($data, $fork_key = 0) {
 
         $data['Timeseries Parent']     = 'Store';
@@ -972,6 +1086,7 @@ class Store extends DB_Table {
                 $this->db, $timeseries->get('Timeseries Frequency'), $from, $to
             );
 
+
             if ($fork_key) {
 
                 $sql = sprintf(
@@ -998,7 +1113,6 @@ class Store extends DB_Table {
                     );
 
 
-                    //  print "$sql\n";
 
                     $update_sql = $this->db->prepare($sql);
                     $update_sql->execute();
@@ -1043,7 +1157,20 @@ class Store extends DB_Table {
                     }
 
                 }
-                $timeseries->update_stats();
+
+                $date = gmdate('Y-m-d H:i:s');
+                $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+                $this->db->prepare($sql)->execute(
+                    [
+                        $date,
+                        $date,
+                        'timeseries_stats',
+                        $timeseries->id,
+                        $date,
+
+                    ]
+                );
+
 
             }
 
@@ -1296,11 +1423,10 @@ class Store extends DB_Table {
         foreach ($recipients_data['external_emails'] as $external_email) {
             $recipients[$external_email] = new email_recipient(
 
-                0,
-                array(
-                    'object_name'      => 'external_email',
-                    'Main Plain Email' => $external_email
-                )
+                0, array(
+                     'object_name'      => 'external_email',
+                     'Main Plain Email' => $external_email
+                 )
 
             );
         }
@@ -1310,12 +1436,11 @@ class Store extends DB_Table {
             if ($user->get('User Active') == 'Yes' and $user->get('User Password Recovery Email') != '') {
                 $recipients[$user->get('User Password Recovery Email')] = new email_recipient(
 
-                    $user->id,
-                    array(
-                        'object_name'      => 'User',
-                        'Main Plain Email' => $user->get('User Password Recovery Email'),
-                        'Name'             => $user->get('Alias'),
-                    )
+                    $user->id, array(
+                                 'object_name'      => 'User',
+                                 'Main Plain Email' => $user->get('User Password Recovery Email'),
+                                 'Name'             => $user->get('Alias'),
+                             )
 
                 );
 
@@ -1601,8 +1726,6 @@ class Store extends DB_Table {
             $sql = sprintf("DELETE FROM `Store Data` WHERE `Store Key`=%d ", $this->id);
             $this->db->exec($sql);
             $sql = sprintf("DELETE FROM `Store DC Data` WHERE `Store Key`=%d ", $this->id);
-            $this->db->exec($sql);
-            $sql = sprintf("DELETE FROM `Invoice Category Dimension` WHERE `Invoice Category Store Key`=%d ", $this->id);
             $this->db->exec($sql);
 
 
@@ -1972,6 +2095,34 @@ class Store extends DB_Table {
 
     }
 
+
+    function update_invoices() {
+
+        $invoices = 0;
+        $refunds  = 0;
+
+
+        $sql = sprintf(
+            "select sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(if(`Invoice Type`='Refund',1,0)) as refunds from  `Invoice Dimension` where `Invoice Store Key`=%d  ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $invoices = $row['invoices'];
+                $refunds  = $row['refunds'];
+            }
+        }
+
+        $this->fast_update(
+            array(
+                'Store Invoices' => $invoices,
+                'Store Refunds'  => $refunds,
+            ), 'Store Data'
+        );
+
+    }
+
+
     function update_orders() {
 
 
@@ -1984,134 +2135,6 @@ class Store extends DB_Table {
         $this->update_orders_dispatched_today();
 
         $this->update_orders_cancelled();
-
-        // todo delete after migation
-        $this->data['Store Total Acc Orders']  = 0;
-        $this->data['Store Dispatched Orders'] = 0;
-        $this->data['Store Cancelled Orders']  = 0;
-        $this->data['Store Orders In Process'] = 0;
-        //======
-        $this->data['Store Total Acc Invoices']      = 0;
-        $this->data['Store Invoices']                = 0;
-        $this->data['Store Refunds']                 = 0;
-        $this->data['Store Paid Invoices']           = 0;
-        $this->data['Store Paid Refunds']            = 0;
-        $this->data['Store Partially Paid Invoices'] = 0;
-        $this->data['Store Partially Paid Refunds']  = 0;
-
-        $this->data['Store Total Acc Delivery Notes']         = 0;
-        $this->data['Store Ready to Pick Delivery Notes']     = 0;
-        $this->data['Store Picking Delivery Notes']           = 0;
-        $this->data['Store Packing Delivery Notes']           = 0;
-        $this->data['Store Ready to Dispatch Delivery Notes'] = 0;
-        $this->data['Store Dispatched Delivery Notes']        = 0;
-        $this->data['Store Cancelled Delivery Notes']         = 0;
-
-
-        $this->data['Store Delivery Notes For Orders']       = 0;
-        $this->data['Store Delivery Notes For Replacements'] = 0;
-        $this->data['Store Delivery Notes For Samples']      = 0;
-        $this->data['Store Delivery Notes For Donations']    = 0;
-        $this->data['Store Delivery Notes For Shortages']    = 0;
-
-
-        //=================== todo delete this after migration
-
-        $sql =
-            "SELECT count(*) AS `Store Total Acc Orders`,sum(IF(`Order Current Dispatch State`='Dispatched',1,0 )) AS `Store Dispatched Orders` ,sum(IF(`Order Current Dispatch State`='Cancelled',1,0 )) AS `Store Cancelled Orders` FROM `Order Dimension`   WHERE `Order Store Key`="
-            .$this->id;
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $this->data['Store Total Acc Orders']  = $row['Store Total Acc Orders'];
-                $this->data['Store Dispatched Orders'] = $row['Store Dispatched Orders'];
-                $this->data['Store Cancelled Orders']  = $row['Store Cancelled Orders'];
-
-                //  $this->data['Store Orders In Process'] = $this->data['Store Total Acc Orders'] - $this->data['Store Dispatched Orders'] - $this->data['Store Cancelled Orders'] - $this->data['Store Unknown Orders'] - $this->data['Store Suspended Orders'];
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        //=================
-
-        $sql =
-            "SELECT count(*) AS `Store Total Invoices`,sum(IF(`Invoice Type`='Invoice',1,0 )) AS `Store Invoices`,sum(IF(`Invoice Type`!='Invoice',1,0 )) AS `Store Refunds` ,sum(IF(`Invoice Paid`='Yes' AND `Invoice Type`='Invoice',1,0 )) AS `Store Paid Invoices`,sum(IF(`Invoice Paid`='Partially' AND `Invoice Type`='Invoice',1,0 )) AS `Store Partially Paid Invoices`,sum(IF(`Invoice Paid`='Yes' AND `Invoice Type`!='Invoice',1,0 )) AS `Store Paid Refunds`,sum(IF(`Invoice Paid`='Partially' AND `Invoice Type`!='Invoice',1,0 )) AS `Store Partially Paid Refunds` FROM `Invoice Dimension`   WHERE `Invoice Store Key`="
-            .$this->id;
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $this->data['Store Total Acc Invoices']      = $row['Store Total Invoices'];
-                $this->data['Store Invoices']                = $row['Store Invoices'];
-                $this->data['Store Paid Invoices']           = $row['Store Paid Invoices'];
-                $this->data['Store Partially Paid Invoices'] = $row['Store Partially Paid Invoices'];
-                $this->data['Store Refunds']                 = $row['Store Refunds'];
-                $this->data['Store Paid Refunds']            = $row['Store Paid Refunds'];
-                $this->data['Store Partially Paid Refunds']  = $row['Store Partially Paid Refunds'];
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $sql = "SELECT count(*) AS `Store Total Delivery Notes`,
-             sum(IF(`Delivery Note State`='Cancelled'  OR `Delivery Note State`='Cancelled to Restock' ,1,0 )) AS `Store Returned Delivery Notes`,
-             sum(IF(`Delivery Note State`='Ready to be Picked' ,1,0 )) AS `Store Ready to Pick Delivery Notes`,
-             sum(IF(`Delivery Note State`='Picking & Packing' OR `Delivery Note State`='Picking' OR `Delivery Note State`='Picker Assigned' OR `Delivery Note State`='' ,1,0 )) AS `Store Picking Delivery Notes`,
-             sum(IF(`Delivery Note State`='Packing' OR `Delivery Note State`='Packer Assigned' OR `Delivery Note State`='Picked' ,1,0 )) AS `Store Packing Delivery Notes`,
-             sum(IF(`Delivery Note State`='Approved' OR `Delivery Note State`='Packed' ,1,0 )) AS `Store Ready to Dispatch Delivery Notes`,
-             sum(IF(`Delivery Note State`='Dispatched' ,1,0 )) AS `Store Dispatched Delivery Notes`,
-             sum(IF(`Delivery Note Type`='Replacement & Shortages' OR `Delivery Note Type`='Replacement' ,1,0 )) AS `Store Delivery Notes For Replacements`,
-             sum(IF(`Delivery Note Type`='Replacement & Shortages' OR `Delivery Note Type`='Shortages' ,1,0 )) AS `Store Delivery Notes For Shortages`,
-             sum(IF(`Delivery Note Type`='Sample' ,1,0 )) AS `Store Delivery Notes For Samples`,
-             sum(IF(`Delivery Note Type`='Donation' ,1,0 )) AS `Store Delivery Notes For Donations`,
-             sum(IF(`Delivery Note Type`='Order' ,1,0 )) AS `Store Delivery Notes For Orders`
-             FROM `Delivery Note Dimension`   WHERE `Delivery Note Store Key`=".$this->id;
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $this->data['Store Total Acc Delivery Notes']         = $row['Store Total Delivery Notes'];
-                $this->data['Store Ready to Pick Delivery Notes']     = $row['Store Ready to Pick Delivery Notes'];
-                $this->data['Store Picking Delivery Notes']           = $row['Store Picking Delivery Notes'];
-                $this->data['Store Packing Delivery Notes']           = $row['Store Packing Delivery Notes'];
-                $this->data['Store Ready to Dispatch Delivery Notes'] = $row['Store Ready to Dispatch Delivery Notes'];
-                $this->data['Store Dispatched Delivery Notes']        = $row['Store Dispatched Delivery Notes'];
-                $this->data['Store Returned Delivery Notes']          = $row['Store Returned Delivery Notes'];
-                $this->data['Store Delivery Notes For Replacements']  = $row['Store Delivery Notes For Replacements'];
-                $this->data['Store Delivery Notes For Shortages']     = $row['Store Delivery Notes For Shortages'];
-                $this->data['Store Delivery Notes For Samples']       = $row['Store Delivery Notes For Samples'];
-                $this->data['Store Delivery Notes For Donations']     = $row['Store Delivery Notes For Donations'];
-                $this->data['Store Delivery Notes For Orders']        = $row['Store Delivery Notes For Orders'];
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        // todo carefully Store Cancelled Orders,Store Dispatched Orders after migration
-        $sql = sprintf(
-            "UPDATE `Store Dimension` SET `Store Dispatched Orders`=%d,`Store Cancelled Orders`=%d
-                    ,`Store Invoices`=%d ,`Store Refunds`=%d ,`Store Paid Invoices`=%d ,`Store Paid Refunds`=%d ,`Store Partially Paid Invoices`=%d ,`Store Partially Paid Refunds`=%d
-                     ,`Store Ready to Pick Delivery Notes`=%d,`Store Picking Delivery Notes`=%d,`Store Packing Delivery Notes`=%d,`Store Ready to Dispatch Delivery Notes`=%d,`Store Dispatched Delivery Notes`=%d,`Store Returned Delivery Notes`=%d
-                     ,`Store Delivery Notes For Replacements`=%d,`Store Delivery Notes For Shortages`=%d,`Store Delivery Notes For Samples`=%d,`Store Delivery Notes For Donations`=%d,`Store Delivery Notes For Orders`=%d
-                     WHERE `Store Key`=%d", $this->data['Store Dispatched Orders'], $this->data['Store Cancelled Orders'], $this->data['Store Invoices'], $this->data['Store Refunds'], $this->data['Store Paid Invoices'], $this->data['Store Paid Refunds'],
-            $this->data['Store Partially Paid Invoices'], $this->data['Store Partially Paid Refunds'], $this->data['Store Ready to Pick Delivery Notes'], $this->data['Store Picking Delivery Notes'], $this->data['Store Picking Delivery Notes'],
-            $this->data['Store Ready to Dispatch Delivery Notes'], $this->data['Store Dispatched Delivery Notes'], $this->data['Store Returned Delivery Notes'], $this->data['Store Delivery Notes For Replacements'], $this->data['Store Delivery Notes For Shortages'],
-            $this->data['Store Delivery Notes For Samples'], $this->data['Store Delivery Notes For Donations'], $this->data['Store Delivery Notes For Orders'], $this->id
-        );
-        $this->db->exec($sql);
-
-        $sql = sprintf(
-            "UPDATE `Store Data` SET `Store Total Acc Orders`=%d,`Store Total Acc Invoices`=%d ,`Store Total Acc Delivery Notes`=%d WHERE `Store Key`=%d", $this->data['Store Total Acc Orders'], $this->data['Store Total Acc Invoices'],
-            $this->data['Store Total Acc Delivery Notes'], $this->id
-        );
-        $this->db->exec($sql);
 
 
     }
@@ -2323,21 +2346,17 @@ class Store extends DB_Table {
         }
 
 
+        $orders_with_replacements_no_alerts = 0;
+
         $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Store Key`=%d  AND  `Order Replacement State` ='InWarehouse' ", $this->id
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacements In Warehouse without Alerts`>0 ", $this->id
         );
 
-
         if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $data['warehouse']['number'] += $row['num'];
-
+            if ($row = $result->fetch()) {
+                $orders_with_replacements_no_alerts += $row['num'];
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -2364,29 +2383,26 @@ class Store extends DB_Table {
         }
 
 
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE    `Order Store Key`=%d   AND  `Order Replacement State` ='InWarehouse' AND `Order Delivery Note Alert`='Yes'  ", $this->id
+        $orders_with_replacements_with_alerts = 0;
+        $sql                                  = sprintf(
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacements In Warehouse with Alerts`>0 ", $this->id
         );
 
-
         if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                $data['warehouse_with_alerts']['number'] += $row['num'];
-
+            if ($row = $result->fetch()) {
+                $orders_with_replacements_with_alerts += $row['num'];
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
-        $data['warehouse_no_alerts']['number'] = $data['warehouse']['number'] - $data['warehouse_with_alerts']['number'];
+        $data['warehouse_no_alerts']['number'] = $data['warehouse']['number'] - $data['warehouse_with_alerts']['number'] + $orders_with_replacements_no_alerts;
         $data['warehouse_no_alerts']['amount'] = $data['warehouse']['amount'] - $data['warehouse_with_alerts']['amount'];
 
         $data['warehouse_no_alerts']['dc_amount'] = $data['warehouse']['dc_amount'] - $data['warehouse_with_alerts']['dc_amount'];
+
+
+        $data['warehouse_with_alerts']['number'] += $orders_with_replacements_with_alerts;
 
 
         $data_to_update = array(
@@ -2399,13 +2415,13 @@ class Store extends DB_Table {
             'Store Orders In Warehouse With Alerts Number' => $data['warehouse_with_alerts']['number'],
             'Store Orders In Warehouse With Alerts Amount' => round($data['warehouse_with_alerts']['amount'], 2)
 
-
         );
 
 
         $this->fast_update($data_to_update, 'Store Data');
 
         $data_to_update = array(
+
             'Store DC Orders In Warehouse Amount'             => round($data['warehouse']['dc_amount'], 2),
             'Store DC Orders In Warehouse No Alerts Amount'   => round($data['warehouse_no_alerts']['dc_amount'], 2),
             'Store DC Orders In Warehouse With Alerts Amount' => round($data['warehouse_with_alerts']['dc_amount'], 2)
@@ -2449,21 +2465,14 @@ class Store extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Store Key`=%d  AND `Order Replacement State` ='PackedDone'  ", $this->id
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacements Packed Done`>0 ", $this->id
         );
 
-
         if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
+            if ($row = $result->fetch()) {
                 $data['packed']['number'] += $row['num'];
 
-
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -2515,6 +2524,18 @@ class Store extends DB_Table {
         } else {
             print_r($error_info = $this->db->errorInfo());
             exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacements Approved Done`>0 ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $data['approved']['number'] += $row['num'];
+
+            }
         }
 
 
@@ -2622,22 +2643,14 @@ class Store extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacement State` ='Dispatched' AND `Order Post Transactions Dispatched Date`>=%s ", $this->id, prepare_mysql(gmdate('Y-m-d 00:00:00'))
-
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacements Dispatched Today`>0 ", $this->id
         );
 
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-
-
                 $data['dispatched_today']['number'] += $row['num'];
-
-
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -3153,9 +3166,23 @@ class Store extends DB_Table {
             case 'Store Order Public ID Format':
                 $label = _("order number format");
                 break;
-
             case 'Store Order Last Order ID':
                 $label = _("last incremental order number");
+                break;
+            case 'Store Next Invoice Public ID Method':
+                $label = _("Invoice number");
+                break;
+            case 'Store Invoice Public ID Format':
+                $label = _("invoice number format");
+                break;
+            case 'Store Invoice Last Invoice Public ID':
+                $label = _("last incremental invoice number");
+                break;
+            case 'Store Invoice Last Refund Public ID':
+                $label = _("last incremental refund number");
+                break;
+            case 'Store Next Refund Public ID Method':
+                $label = _("Refund number");
                 break;
 
             default:
@@ -3413,7 +3440,7 @@ class Store extends DB_Table {
         }
 
         $sql = sprintf(
-            'SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Code`=%s AND `Product Store Key`=%d AND `Product Status`!="Discontinued" ', prepare_mysql($data['Product Code']), $this->id
+            'SELECT count(*) AS num ,`Product ID` FROM `Product Dimension` WHERE `Product Code`=%s AND `Product Store Key`=%d AND `Product Status`!="Discontinued" ', prepare_mysql($data['Product Code']), $this->id
 
         );
 
@@ -3425,6 +3452,8 @@ class Store extends DB_Table {
                     $this->msg        = sprintf(_('Duplicated code (%s)'), $data['Product Code']);
                     $this->error_code = 'duplicate_product_code_reference';
                     $this->metadata   = $data['Product Code'];
+
+                   return get_object('Product',$row['Product ID']);
 
                     return;
                 }
@@ -3791,6 +3820,8 @@ class Store extends DB_Table {
                 }
             }
 
+
+
             return $product;
         } else {
             $this->error = true;
@@ -3801,7 +3832,6 @@ class Store extends DB_Table {
             $this->error      = true;
             $this->error_code = 'cant create product'.$product->msg;
             $this->metadata   = '';
-
 
         }
 
@@ -3936,7 +3966,7 @@ class Store extends DB_Table {
 
     }
 
-    function create_email_campaign($data) {
+    function create_mailshot($data) {
 
 
         $email_template_type         = get_object('Email_Template_Type', $data['Email Campaign Type'].'|'.$this->id, 'code_store');
@@ -4057,7 +4087,11 @@ class Store extends DB_Table {
                 $this->new_object = true;
 
 
-                $this->update_field_switcher('Store Website Key', $this->id, 'no_history');
+                $this->fast_update(
+                    array(
+                        'Store Website Key' => $website->id
+                    )
+                );
 
 
                 $this->update_websites_data();
@@ -4097,6 +4131,7 @@ class Store extends DB_Table {
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
+
         switch ($field) {
 
 
@@ -4115,6 +4150,14 @@ class Store extends DB_Table {
             case 'data entry picking aid default packer':
             case 'data entry picking aid default shipper':
             case 'data entry picking aid default number boxes':
+            case 'invoice show rrp':
+            case 'invoice show parts':
+            case 'invoice show tariff codes':
+            case 'invoice show barcode':
+            case 'invoice show weight':
+            case 'invoice show origin':
+            case 'send invoice attachment in delivery confirmation':
+            case 'send dn attachment in delivery confirmation':
 
                 $this->fast_update_json_field('Store Settings', preg_replace('/\s/', '_', $field), $value);
 
@@ -4195,6 +4238,67 @@ class Store extends DB_Table {
                     $this->msg   = _("Value can't be empty");
                 }
                 $this->update_field($field, $value, $options);
+                break;
+
+            case 'Store Next Invoice Public ID Method':
+
+                $this->update_field($field, $value);
+
+
+                if ($value == 'Order ID') {
+                    $this->update_field('Store Refund Public ID Method', 'Same Invoice ID');
+
+                }
+
+
+                $this->other_fields_updated = array(
+                    'Store_Invoice_Public_ID_Format'       => array(
+                        'field'  => 'Store_Invoice_Public_ID_Format',
+                        'render' => ($this->get('Store Next Invoice Public ID Method') == 'Invoice Public ID' ? true : false),
+
+                    ),
+                    'Store_Invoice_Last_Invoice_Public_ID' => array(
+                        'field'  => 'Store_Invoice_Last_Invoice_Public_ID',
+                        'render' => ($this->get('Store Next Invoice Public ID Method') == 'Invoice Public ID' ? true : false),
+                    ),
+
+
+                    'Store_Refund_Public_ID_Format'       => array(
+                        'field'  => 'Store_Refund_Public_ID_Format',
+                        'render' => ($this->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' ? false : true),
+
+                    ),
+                    'Store_Invoice_Last_Refund_Public_ID' => array(
+                        'field'  => 'Store_Invoice_Last_Refund_Public_ID',
+                        'render' => ($this->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' ? false : true),
+                    ),
+
+                );
+
+
+                break;
+
+            case 'Store Refund Public ID Method':
+
+                $this->update_field($field, $value);
+
+
+                $this->other_fields_updated = array(
+
+
+                    'Store_Refund_Public_ID_Format'       => array(
+                        'field'  => 'Store_Refund_Public_ID_Format',
+                        'render' => (($this->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' or $this->get('Store Refund Public ID Method') != 'Store Own Index') ? false : true),
+
+                    ),
+                    'Store_Invoice_Last_Refund_Public_ID' => array(
+                        'field'  => 'Store_Invoice_Last_Refund_Public_ID',
+                        'render' => (($this->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' or $this->get('Store Refund Public ID Method') != 'Store Own Index') ? false : true),
+                    ),
+
+                );
+
+
                 break;
 
 

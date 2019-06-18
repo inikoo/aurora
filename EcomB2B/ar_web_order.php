@@ -38,7 +38,7 @@ switch ($tipo) {
                          ),
 
                          'device_prefix' => array(
-                             'type'     => 'string',
+                             'type' => 'string',
 
                          )
                      )
@@ -64,17 +64,16 @@ switch ($tipo) {
 function get_order_html($data, $customer, $db) {
 
 
-
-    $smarty               = new Smarty();
+    $smarty = new Smarty();
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
     $smarty->setCacheDir('server_files/smarty/cache');
-$smarty->setConfigDir('server_files/smarty/configs');
+    $smarty->setConfigDir('server_files/smarty/configs');
     $smarty->addPluginsDir('./smarty_plugins');
 
     $order = get_object('Order', $data['order_key']);
 
-    if(!$order->id) {
+    if (!$order->id) {
         $response = array(
             'state' => 200,
             'html'  => _('Order not found')
@@ -82,7 +81,7 @@ $smarty->setConfigDir('server_files/smarty/configs');
         echo json_encode($response);
     }
 
-    if($customer->id!=$order->get('Order Customer Key')) {
+    if ($customer->id != $order->get('Order Customer Key')) {
         $response = array(
             'state' => 200,
             'html'  => _('Wrong order id')
@@ -102,6 +101,8 @@ $smarty->setConfigDir('server_files/smarty/configs');
     $smarty->assign('labels', $website->get('Localised Labels'));
     $smarty->assign('logged_in', true);
 
+    $smarty->assign('items_data', $order->get_items());
+
 
 
     $response = array(
@@ -115,4 +116,3 @@ $smarty->setConfigDir('server_files/smarty/configs');
 }
 
 
-?>

@@ -150,6 +150,8 @@ function check_for_duplicates($data, $db, $user, $account) {
     $options_where = '';
 
 
+
+
     switch ($data['object']) {
 
         case 'Customers_List':
@@ -215,13 +217,14 @@ function check_for_duplicates($data, $db, $user, $account) {
             break;
 
         case 'Deal':
+
+
             switch ($field) {
                 case 'Deal Name':
                     $invalid_msg = _('Another offer has this name');
                     $sql         = sprintf(
                         "SELECT `Deal Key`AS `key` ,`Deal Name` AS field FROM `Deal Dimension` WHERE `Deal Name`=%s  and `Deal Store Key`=%d ", prepare_mysql($data['value']),$data['parent_key']
                     );
-
 
 
                     $validation_sql_queries[] = array(
@@ -251,19 +254,7 @@ function check_for_duplicates($data, $db, $user, $account) {
             break;
         case 'Deal_Component':
             switch ($field) {
-                case 'Deal Component Name Label':
-                    $invalid_msg = _('Another offer has this name');
-                    $sql         = sprintf(
-                        "SELECT `Deal Component Key`AS `key` ,`Deal Component Name Label` AS field FROM `Deal Component Dimension` WHERE `Deal Component Name Label`=%s  and `Deal Component Store Key`=%d ", prepare_mysql($data['value']),$data['parent_key']
-                    );
 
-
-
-                    $validation_sql_queries[] = array(
-                        'sql'         => $sql,
-                        'invalid_msg' => $invalid_msg
-                    );
-                    break;
 
 
 
@@ -1084,6 +1075,8 @@ function check_for_duplicates($data, $db, $user, $account) {
         );
 
 
+
+
         if (!isset($invalid_msg)) {
             $invalid_msg = _('There is another object with the same value');
         }
@@ -1131,4 +1124,4 @@ function check_for_duplicates($data, $db, $user, $account) {
 }
 
 
-?>
+

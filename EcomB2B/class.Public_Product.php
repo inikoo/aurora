@@ -139,6 +139,27 @@ class Public_Product {
 
 
                 break;
+            case 'Unit Smart Weight':
+                include_once 'utils/natural_language.php';
+                $key = preg_replace('/Smart /', '', $key);
+
+                $weight = $this->data['Product '.$key];
+
+
+
+
+                if ($weight < 1) {
+
+
+                    return   weight($weight *1000, 'g');
+                } else {
+                    return weight($weight);
+                }
+
+                return weight($this->data['Product '.$key]);
+
+                break;
+
             case 'Status':
             case 'Barcode Number':
             case 'CPNP Number':
@@ -147,6 +168,8 @@ class Public_Product {
             case 'Description':
             case 'Current Key':
             case 'Code File As':
+            case 'Store Key':
+
                 return $this->data['Product '.$key];
                 break;
 
@@ -208,6 +231,9 @@ class Public_Product {
 
             case 'Product Name':
             case 'Product Price':
+            case 'Product Unit Weight':
+            case 'Product Barcode Number':
+            case 'Product Code':
                 return $this->data[$key];
 
 

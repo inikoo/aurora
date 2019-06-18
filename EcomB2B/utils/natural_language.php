@@ -16,30 +16,25 @@ function seconds_to_natural_string($seconds, $short = false) {
 
         }
 
-    }elseif ($seconds < 5400) {
+    } elseif ($seconds < 5400) {
 
         if ($short) {
-            return sprintf(_('%sm'), floor($seconds/60));
+            return sprintf(_('%sm'), floor($seconds / 60));
         } else {
-            return sprintf("%d %s", $seconds/60, ngettext("minute", "minutes", $seconds/60));
+            return sprintf("%d %s", $seconds / 60, ngettext("minute", "minutes", $seconds / 60));
 
         }
 
-    }elseif ($seconds < 86400) {
+    } elseif ($seconds < 86400) {
 
         if ($short) {
-            return sprintf(_('%sm'), floor($seconds/3600));
+            return sprintf(_('%sm'), floor($seconds / 3600));
         } else {
-            return sprintf("%d %s", $seconds/3600, ngettext("hour", "hours", $seconds/3600));
+            return sprintf("%d %s", $seconds / 3600, ngettext("hour", "hours", $seconds / 3600));
 
         }
 
     }
-
-
-
-
-
 
 
     $days = round($seconds / 86400);
@@ -124,7 +119,7 @@ function seconds_to_string($seconds, $until = 'seconds', $short = false) {
     $end    = false;
     $string = '';
     foreach ($units as $key => $unit) {
-        $quot = intval($seconds / $unit);
+        $quot    = intval($seconds / $unit);
         $seconds -= $quot * $unit;
 
 
@@ -207,7 +202,7 @@ function seconds_to_hourminutes($seconds) {
     $end    = false;
     $string = '';
     foreach ($units as $key => $unit) {
-        $quot = intval($seconds / $unit);
+        $quot    = intval($seconds / $unit);
         $seconds -= $quot * $unit;
 
         switch ($key) {
@@ -260,8 +255,7 @@ function get_file_as_old($code) {
             if (preg_match('/^[^\d]+\d+$/', $c[1])) {
                 if (preg_match('/\d*$/', $c[1], $match_num) and preg_match(
                         '/^[^\d]*/', $c[1], $match_alpha
-                    )
-                ) {
+                    )) {
                     $ncode = sprintf(
                         "%s-%s%05d", strtolower($c[0]), strtolower($match_alpha[0]), $match_num[0]
                     );
@@ -272,8 +266,7 @@ function get_file_as_old($code) {
             if (preg_match('/^\d+[^\d]+$/', $c[1])) {
                 if (preg_match('/^\d*/', $c[1], $match_num) and preg_match(
                         '/[^\d]*$/', $c[1], $match_alpha
-                    )
-                ) {
+                    )) {
                     $ncode = sprintf(
                         "%s-%05d%s", strtolower($c[0]), $match_num[0], strtolower($match_alpha[0])
                     );
@@ -384,6 +377,17 @@ function weight($w, $unit = 'Kg', $number_decimals = 3, $simplify = false, $zero
     }
 }
 
+
+function smart_weight($weight) {
+    if ($weight < 1) {
+        return weight($weight * 1000, 'g');
+    } elseif ($weight > 1000) {
+        return weight($weight / 1000, 't');
+    } else {
+        return weight($weight);
+    }
+}
+
 function volume($value, $unit = 'L') {
     if ($value == '') {
         return '';
@@ -463,23 +467,21 @@ function money($amount, $currency = '', $locale = false, $option = '') {
     $money = new NumberFormatter($locale, NumberFormatter::CURRENCY);
 
 
-
-
     if ($option == 'NO_FRACTION_DIGITS') {
         $money->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 0);
     } elseif ($option == 'SINGLE_FRACTION_DIGITS') {
         $money->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 1);
-    }elseif ($option == 'FOUR_FRACTION_DIGITS') {
+    } elseif ($option == 'FOUR_FRACTION_DIGITS') {
         $money->setAttribute(NumberFormatter::MAX_FRACTION_DIGITS, 4);
     }
 
 
-    $formatted_money=$money->formatCurrency($amount, $currency);
+    $formatted_money = $money->formatCurrency($amount, $currency);
 
     // todo, remove when NumberFormatter support this symbols
 
-    $formatted_money=preg_replace('/\s?PLN\s?/','zł',$formatted_money);
-    $formatted_money=preg_replace('/\s?CZK\s?/','Kč ',$formatted_money);
+    $formatted_money = preg_replace('/\s?PLN\s?/', 'zł', $formatted_money);
+    $formatted_money = preg_replace('/\s?CZK\s?/', 'Kč ', $formatted_money);
 
     return $formatted_money;
 }

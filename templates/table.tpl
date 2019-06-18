@@ -118,7 +118,7 @@
         </div>
 
 
-    <div  style="position:absolute" class="export_dialog_container  ">
+    <div style="position:absolute" class="export_dialog_container  ">
 
 
         <div  class="export_dialog export_dialog_block hide" >
@@ -311,9 +311,11 @@
     <div id="first_page" onclick="rows.getFirstPage()" class="square_button right hide" title="{t}First page{/t}" style="position:relative">
         <i class="fa fa-chevron-left fa-fw" style="position:absolute;left:2px;bottom:6px"></i> <i style="position:absolute;left:9px;bottom:6px" class="fa fa-chevron-left fa-fw"></i>
     </div>
+    <div id="show_export_dialog_omega" class="left square_button  {if !isset($export_omega)}hide{/if}  " title="{t}Export for Omega accountancy software{/t}">
+        <i onclick="export_omega(this)" class="fa fa-omega fa-fw"></i>
+    </div>
     <div id="show_export_dialog" class="left square_button  {if !isset($export_fields)}hide{/if}  " title="{t}Export{/t}">
         <i onclick="show_export_dialog_left_button(this)" class="fa fa-download fa-fw"></i>
-
     </div>
 
     <div  style="position:absolute" class="export_dialog_container  ">
@@ -892,6 +894,8 @@
     change_table_view('{$table_view}', false)
 
     $("#filter").append(serverSideFilter.render().el);
+
+
 
     rows.fetch({
         reset: true, success: function () {

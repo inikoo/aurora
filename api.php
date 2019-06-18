@@ -22,11 +22,11 @@
 
 require_once 'vendor/autoload.php';
 
-if ( !preg_match('/bali|sasi|sakoi|geko/', gethostname()) ) {
 
-    $sentry_client = new Raven_Client('https://99566f104c5e4e178fd3931399d93371@sentry.io/1433858');
-    $sentry_client->install();
+include_once 'keyring/dns.php';
 
+if(defined('SENTRY_DNS_API')){
+    Sentry\init(['dsn' => SENTRY_DNS_API ]);
 }
 
 header('Access-Control-Allow-Origin: *');
@@ -38,7 +38,13 @@ date_default_timezone_set('UTC');
 include_once 'utils/general_functions.php';
 include_once 'utils/object_functions.php';
 
-$db = get_db();
+
+
+$db = new PDO(
+    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
+);
+$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
 
 list($user_key, $api_key_key, $scope) = authenticate($db);
 
@@ -383,22 +389,6 @@ function authenticate($db) {
 }
 
 
-function get_db() {
-
-
-    include_once 'keyring/dns.php';
-
-
-    $db = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
-    );
-    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
-
-    return $db;
-
-
-}
 
 
 function log_api_key_access_failure($db, $api_key_key, $fail_type, $fail_reason) {

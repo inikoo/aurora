@@ -29,11 +29,9 @@ if( date('H:i') > date('H:i',strtotime($metadata['Schedule']['Time']))) {
 }
 
 
-$where = sprintf("where `Customer Store Key`=%d and  `Customer Send Email Marketing`='Yes' and  `Customer Last Dispatched Order Key` is NOT NULL and Date(`Order Dispatched Date`)=%s",$parent->get('Store Key'),
+$where = sprintf("where `Customer Store Key`=%d and  `Customer Send Email Marketing`='Yes' and `Customer Last Dispatched Order Date`=%s",$parent->get('Store Key'),
     prepare_mysql($date)
     );
-
-
 
 
 $group='';
@@ -58,15 +56,11 @@ $table = '`Customer Dimension`   left join `Order Dimension` on (`Customer Last 
 
 $sql_totals = "select count(distinct `Customer Key`) as num from $table  $where  ";
 
+
 //print $sql_totals;
-
-$fields
-            = "`Customer Store Key`,`Customer Name`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Dispatched Date`
-            
-            ";
+//exit;
 
 
+$fields = "`Customer Store Key`,`Customer Name`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Dispatched Date`";
 
 
-
-?>

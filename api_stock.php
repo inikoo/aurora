@@ -26,24 +26,167 @@ include_once 'api_stock_picking_common_actions.php';
 
 switch ($_REQUEST['action']) {
 
+    case 'update_part_symbol':
+
+        if (!isset($_REQUEST['part_sku'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part_sku needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
 
 
+        $part = get_object('part', $_REQUEST['part_sku']);
+        $part->editor = $editor;
+
+        if (!$part->id) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part not found ('.$_REQUEST['part_sku'].')  '
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if (empty($_REQUEST['symbol'])) {
+
+
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'symbol needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if (!in_array(
+            $_REQUEST['symbol'], array(
+                                   'none',
+                                   'star',
+                                   'skull',
+                                   'radioactive',
+                                   'peace',
+                                   'gear',
+                                   'love'
+                               )
+        )) {
+
+
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'Invalid symbol value ('.$_REQUEST['symbol'].')  '
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        $part->update(
+            array(
+                'Part Symbol' => $_REQUEST['symbol']
+            )
+        );
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $part->get('Part Symbol')
+        );
+        echo json_encode($response);
+        exit;
+        break;
+
+
+    case 'set_part_feedback':
+
+        if (!isset($_REQUEST['part_sku'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part_sku needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        $part = get_object('part', $_REQUEST['part_sku']);
+        $part->editor = $editor;
+
+        if (!$part->id) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part not found ('.$_REQUEST['part_sku'].')  '
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if (empty($_REQUEST['feedback'])) {
+
+
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'feedback needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        if (empty($_REQUEST['scope'])) {
+
+
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'scope needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if (!in_array(
+            $_REQUEST['scope'], array(
+                                   'Marketing',
+                                   'Supplier',
+
+                               )
+        )) {
+
+
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'Invalid scope value ('.$_REQUEST['symbol'].')  '
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => ''
+        );
+        echo json_encode($response);
+        exit;
+        break;
 
     default:
 
 
         $response = array(
             'state' => 'Error',
-            'msg'   => "Action ".$_REQUEST['action'].' not found'
+            'msg'   => "Action ".$_REQUEST['action'].' not found',
         );
         echo json_encode($response);
         exit;
 
 
-        //$response = log_api_key_access_failure($db, $api_key_key, 'Fail_Operation', "Action ".$_REQUEST['action'].' not found');
-        echo json_encode($response);
-        exit;
 
 }
 
-?>
+

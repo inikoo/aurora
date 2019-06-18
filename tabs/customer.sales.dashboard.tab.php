@@ -242,6 +242,8 @@ $smarty->assign(
 );
 
 
+$customer->store=$state['store'];
+
 $smarty->assign('customer', $customer);
 $smarty->assign('header_total_sales', sprintf(_('Customer since: %s'), $customer->get('First Contacted Date')));
 

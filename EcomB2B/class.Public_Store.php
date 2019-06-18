@@ -69,7 +69,7 @@ class Public_Store {
 
     }
 
-    function get_categories($type = 'families', $pages = '0-10', $output = 'data') {
+    function get_categories($type = 'families', $pages = '1-10', $output = 'data') {
 
         $categories = array();
 
@@ -174,6 +174,7 @@ class Public_Store {
             case 'Email':
             case 'Address':
             case 'Home Country Code 2 Alpha':
+            case 'Label Signature':
                 return $this->data['Store '.$key];
                 break;
 
@@ -201,8 +202,9 @@ class Public_Store {
             case 'Store Collect Address Locality':
             case 'Store Collect Address Administrative Area':
             case 'Store Collect Address Country 2 Alpha Code':
-
-
+            case 'Store URL':
+            case 'Store Address':
+            case 'Store Invoice Message':
                 return $this->data[$key];
                 break;
 

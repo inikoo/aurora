@@ -51,6 +51,7 @@ class PurchaseOrder extends DB_Table {
 
         $data['Purchase Order Creation Date']     = gmdate('Y-m-d H:i:s');
         $data['Purchase Order Last Updated Date'] = gmdate('Y-m-d H:i:s');
+        $data['Purchase Order Metadata'] = '{}';
         //$data['Purchase Order Public ID']         = $this->get_next_public_id($parent);
 
 
@@ -238,6 +239,8 @@ class PurchaseOrder extends DB_Table {
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Purchase Order Key'];
 
+
+
             if ($this->data['Purchase Order Metadata'] == '') {
                 $this->metadata = array();
             } else {
@@ -364,8 +367,7 @@ class PurchaseOrder extends DB_Table {
                                 `Supplier Delivery Weight`=%s,
                                  `Supplier Delivery CBM`=%s,
                                 
-                                `Supplier Delivery Key`=%d,`Supplier Delivery Transaction State`=%s  ,`Supplier Delivery Transaction Placed`="No" WHERE `Purchase Order Transaction Fact Key`=%d',
-                            prepare_mysql('Inputted'), $net, $extra, $units_qty,
+                                `Supplier Delivery Key`=%d,`Supplier Delivery Transaction State`=%s  ,`Supplier Delivery Transaction Placed`="No" WHERE `Purchase Order Transaction Fact Key`=%d', prepare_mysql('Inputted'), $net, $extra, $units_qty,
                             prepare_mysql($weight), prepare_mysql($cbm),
 
                             $delivery->id, prepare_mysql('InProcess'), $potf_key
@@ -409,7 +411,63 @@ class PurchaseOrder extends DB_Table {
         }
 
         switch ($key) {
+            case 'Estimated Production Datetime':
 
+
+                include_once 'utils/object_functions.php';
+
+
+                if ($this->data['Purchase Order Estimated Production Date'] and in_array(
+                        $this->data['Purchase Order State'], array(
+                                                               'InProcess',
+                                                               'Submitted',
+                                                               'Inputted',
+                                                               'Dispatched'
+                                                           )
+                    )) {
+                    return gmdate("Y-m-d H:i:s", strtotime($this->data['Purchase Order Estimated Production Date']));
+                } else {
+
+
+                    if (in_array(
+                        $this->data['Purchase Order State'], array(
+                                                               'InProcess',
+                                                               'Submitted',
+                                                               'Inputted',
+                                                               'Dispatched'
+                                                           )
+                    )) {
+
+
+                        $parent = get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
+
+
+                        if ($parent->get($parent->table_name.' Average Production Days') != '' and is_numeric($parent->get($parent->table_name.' Average Production Days'))) {
+
+                            //  print 'now +'.$parent->get($parent->table_name.' Average Delivery Days').' days';
+                            if ($this->data['Purchase Order State'] == 'InProcess') {
+                                return gmdate("Y-m-d H:i:s", strtotime('now +'.$parent->get($parent->table_name.' Average Production Days').' days'));
+                            } else {
+
+
+                                return gmdate("Y-m-d H:i:s", strtotime($this->get('Purchase Order Submitted Date').' +'.$parent->get($parent->table_name.' Average Production Days').' days'));
+
+                            }
+
+                        } else {
+
+
+                            return '';
+                        }
+                    } else {
+
+                        return '';
+                    }
+
+                }
+
+
+                break;
 
             case 'Estimated Receiving Datetime':
 
@@ -467,14 +525,58 @@ class PurchaseOrder extends DB_Table {
 
                 break;
 
-            case 'Estimated Receiving Formatted Date':
+            case 'Estimated Production Formatted Date':
 
-                if ($this->get('Estimated Receiving Datetime')) {
-                    return strftime("%d-%m-%Y", strtotime($this->get('Estimated Receiving Datetime')));
+
+                if ($this->get('State Index') == 10) {
+
+                    $parent = get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
+
+
+                    if ($parent->get($parent->table_name.' Average Production Days') != '' and is_numeric($parent->get($parent->table_name.' Average Production Days'))) {
+
+                        return sprintf(_('%s after submit'), $parent->get('Production Time'));
+
+                    } else {
+
+
+                        return '';
+                    }
+
                 } else {
-                    return '';
+                    if ($this->get('Estimated Production Datetime')) {
+                        return strftime("%e %b %Y", strtotime($this->get('Estimated Production Datetime')));
+                    } else {
+                        return '';
+                    }
                 }
 
+
+                break;
+            case 'Estimated Receiving Formatted Date':
+
+                if ($this->get('State Index') == 10) {
+
+                    $parent = get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
+
+
+                    if ($parent->get($parent->table_name.' Average Delivery Days') != '' and is_numeric($parent->get($parent->table_name.' Average Delivery Days'))) {
+
+                        return sprintf(_('%s after submit'), $parent->get('Delivery Time'));
+
+                    } else {
+
+
+                        return '';
+                    }
+
+                } else {
+                    if ($this->get('Estimated Receiving Datetime')) {
+                        return strftime("%e %b %Y", strtotime($this->get('Estimated Receiving Datetime')));
+                    } else {
+                        return '';
+                    }
+                }
 
                 break;
             case 'State Index':
@@ -541,6 +643,7 @@ class PurchaseOrder extends DB_Table {
                 }
                 break;
             case 'Estimated Receiving Date':
+            case 'Estimated Production Date':
             case 'Agreed Receiving Date':
             case 'Creation Date':
             case 'Submitted Date':
@@ -800,6 +903,11 @@ class PurchaseOrder extends DB_Table {
                 }
 
                 break;
+
+
+            case 'payment terms':
+
+             return $this->metadata(preg_replace('/\s/', '_', $key));
             default:
 
 
@@ -1043,8 +1151,6 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         }
 
 
-
-
         $deliveries = array();
         $sql        = sprintf(
             "SELECT `Supplier Delivery Key` FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Key`=%d  GROUP BY `Supplier Delivery Key`", $this->id
@@ -1094,15 +1200,17 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
             switch ($value) {
                 case 'InProcess':
 
-                    $this->update_field(
-                        'Purchase Order Submitted Date', '', 'no_history'
+
+                    $this->fast_update(
+                        array(
+                            'Purchase Order Submitted Date' => '',
+                            'Purchase Order Send Date'      => '',
+                            'Purchase Order Estimated Production Date' =>'',
+                            'Purchase Order Estimated Receiving Date' =>'',
+                            'Purchase Order State'          => $value,
+                        )
                     );
-                    $this->update_field(
-                        'Purchase Order Estimated Receiving Date', '', 'no_history'
-                    );
-                    $this->update_field(
-                        'Purchase Order State', $value, 'no_history'
-                    );
+
                     $operations = array(
                         'delete_operations',
                         'submit_operations',
@@ -1135,16 +1243,35 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                 case 'Submitted':
 
 
-                    $this->update_field(
-                        'Purchase Order Submitted Date', $date, 'no_history'
-                    );
-                    $this->update_field(
-                        'Purchase Order Send Date', '', 'no_history'
+                    $this->fast_update(
+                        array(
+                            'Purchase Order Submitted Date' => $date,
+                            'Purchase Order Send Date'      => '',
+                            'Purchase Order State'          => $value,
+                        )
                     );
 
-                    $this->update_field(
-                        'Purchase Order State', $value, 'no_history'
-                    );
+                    $parent = get_object($this->data['Purchase Order Parent'], $this->data['Purchase Order Parent Key']);
+
+
+                    if ($parent->get($parent->table_name.' Average Production Days') != '' and is_numeric($parent->get($parent->table_name.' Average Production Days'))) {
+                        $this->fast_update(
+                            array(
+                                'Purchase Order Estimated Production Date' => gmdate("Y-m-d H:i:s", strtotime('now +'.$parent->get($parent->table_name.' Average Production Days').' days')),
+                            )
+                        );
+                    }
+
+
+                    if ($parent->get($parent->table_name.' Average Delivery Days') != '' and is_numeric($parent->get($parent->table_name.' Average Delivery Days'))) {
+                        $this->fast_update(
+                            array(
+                                'Purchase Order Estimated Receiving Date' => gmdate("Y-m-d H:i:s", strtotime('now +'.$parent->get($parent->table_name.' Average Delivery Days').' days')),
+                            )
+                        );
+                    }
+
+
                     $operations = array(
                         'cancel_operations',
                         'undo_submit_operations',
@@ -1188,8 +1315,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                                 $sql = sprintf(
                                     'update `Purchase Order Transaction Fact` set `Purchase Order Submitted Units`=%f ,`Purchase Order Submitted Unit Cost`=%f,`Purchase Order Submitted Units Per SKO`=%d,`Purchase Order Submitted SKOs Per Carton`=%d ,`Purchase Order Submitted Unit Extra Cost Percentage`=%f where `Purchase Order Transaction Fact Key`=%d  ',
 
-                                    $row['Purchase Order Ordering Units'], $supplier_part->get('Supplier Part Unit Cost'), $supplier_part->part->get('Part Units Per Package'), $supplier_part->get('Supplier Part Packages Per Carton'),
-                                    $extra_cost_percentage,
+                                    $row['Purchase Order Ordering Units'], $supplier_part->get('Supplier Part Unit Cost'), $supplier_part->part->get('Part Units Per Package'), $supplier_part->get('Supplier Part Packages Per Carton'), $extra_cost_percentage,
                                     $row['Purchase Order Transaction Fact Key']
                                 );
 
@@ -1385,20 +1511,16 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
     function update_parts_next_delivery() {
 
-        $account=get_object('account',1);
+        $account = get_object('account', 1);
 
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
             'au_housekeeping', array(
-            'type'        => 'update_parts_next_delivery',
+            'type'   => 'update_parts_next_delivery',
             'po_key' => $this->id,
-            'editor'      => $this->editor
+            'editor' => $this->editor
         ), $account->get('Account Code'), $this->db
         );
-
-
-
-
 
 
     }
@@ -2002,6 +2124,10 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
         switch ($field) {
 
+            case 'payment terms':
+                $this->fast_update_json_field('Purchase Order Metadata', preg_replace('/\s/', '_', $field), $value);
+
+                break;
             case 'Purchase Order Port of Export':
             case 'Purchase Order Port of Import':
             case 'Purchase Order Warehouse Address':
@@ -2031,6 +2157,17 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                 $this->update_metadata = array(
                     'class_html' => array(
                         'Purchase_Order_Received_Date' => $this->get('Received Date'),
+
+                    )
+                );
+
+                break;
+            case 'Purchase Order Estimated Production Date':
+                $this->update_field($field, $value, $options);
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Purchase_Order_Production_Date' => $this->get('Estimated Production Formatted Date'),
 
                     )
                 );
@@ -2084,8 +2221,15 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
             case 'Purchase Order Warehouse Address':
                 $label = _('Delivery address');
                 break;
-
-
+            case 'Purchase Order Terms and Conditions':
+                $label = _('terms and conditions');
+                break;
+            case 'Purchase Order Estimated Production Date':
+                $label = _('estimated production date');
+                break;
+            case 'payment terms':
+                $label = _('payment terms');
+                break;
             default:
                 $label = $field;
 
@@ -2095,8 +2239,12 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
     }
 
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
+    }
+
 
 }
 
 
-?>
+

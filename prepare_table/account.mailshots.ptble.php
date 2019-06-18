@@ -80,7 +80,7 @@ if ($order == 'name') {
     $order = '`Email Campaign Key`';
 }
 $table  = '`Email Campaign Dimension`  left join `Store Dimension` on (`Email Campaign Store Key`=`Store Key`) ';
-$fields = "`Email Campaign Key`,`Email Campaign Name`,`Email Campaign Store Key`,`Email Campaign Last Updated Date`,`Email Campaign State`,`Email Campaign Number of Emails`,`Store Code`,`Store Name`,`Store Key`,`Email Campaign Type`,`Email Campaign Email Template Type Key`,
+$fields = "`Email Campaign Key`,`Email Campaign Name`,`Email Campaign Store Key`,`Email Campaign Last Updated Date`,`Email Campaign State`,`Email Campaign Number Estimated Emails`,`Store Code`,`Store Name`,`Store Key`,`Email Campaign Type`,`Email Campaign Email Template Type Key`,
 `Email Campaign Sent`,`Email Campaign Delivered`,`Email Campaign Hard Bounces`,`Email Campaign Soft Bounces`,(`Email Campaign Hard Bounces`+`Email Campaign Soft Bounces`) as `Email Campaign Bounces`,`Email Campaign Open`,`Email Campaign Clicked`,`Email Campaign Spams`,`Email Campaign Unsubscribed`
 
 ";

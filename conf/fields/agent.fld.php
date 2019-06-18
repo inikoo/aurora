@@ -302,38 +302,13 @@ $object_fields = array(
         )
     ),
 
-
     array(
-        'label'      => _("Agent's delivery time & currency"),
+        'label'      => _("Supplier's parts settings"),
         'show_title' => false,
         'fields'     => array(
 
-            array(
-                'id'              => 'Agent_Average_Delivery_Days',
-                'edit'            => 'mediumint_unsigned',
-                'value'           => $object->get(
-                    'Agent Average Delivery Days'
-                ),
-                'formatted_value' => $object->get('Average Delivery Days'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Agent Average Delivery Days')
-                ),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-            array(
-                'id'              => 'Agent_Default_Currency_Code',
-                'edit'            => ($edit ? 'country_select' : ''),
-                'options'         => get_currencies($db),
-                'scope'           => 'currencies',
-                'value'           => ($new ? $account->get('Account Currency') : $object->get('Agent Default Currency Code')),
-                'formatted_value' => $object->get('Default Currency'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Agent Default Currency Code')
-                ),
-                'required'        => false,
-                'type'            => 'value'
-            ),
+
+
             array(
                 'id'                       => 'Agent_Products_Origin_Country_Code',
                 'edit'                     => ($edit ? 'country_select' : ''),
@@ -362,8 +337,34 @@ $object_fields = array(
         )
     ),
 
+
     array(
-        'label'      => _('Purchase order settings'),
+        'label'      => _("Waiting times"),
+        'show_title' => false,
+        'fields'     => array(
+
+            array(
+                'id'              => 'Agent_Average_Delivery_Days',
+                'edit'            => 'mediumint_unsigned',
+                'value'           => $object->get(
+                    'Agent Average Delivery Days'
+                ),
+                'formatted_value' => $object->get('Average Delivery Days'),
+                'label'           => ucfirst(
+                    $object->get_field_label('Agent Average Delivery Days')
+                ),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+
+
+
+        )
+    ),
+
+
+    array(
+        'label'      => _("Payment"),
         'show_title' => false,
         'fields'     => array(
 
@@ -381,6 +382,38 @@ $object_fields = array(
                 'required'        => false,
                 'type'            => 'value'
             ),
+            array(
+                'id'              => 'Agent_Default_Currency_Code',
+                'edit'            => ($edit ? 'country_select' : ''),
+                'options'         => get_currencies($db),
+                'scope'           => 'currencies',
+                'value'           => ($new ? $account->get('Account Currency') : $object->get('Agent Default Currency Code')),
+                'formatted_value' => $object->get('Default Currency'),
+                'label'           => ucfirst(
+                    $object->get_field_label('Agent Default Currency Code')
+                ),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+            array(
+                'id'              => 'payment_terms',
+                'edit'            => ($edit ? 'string' : ''),
+                'value'           => htmlspecialchars($object->get('payment terms')),
+                'formatted_value' => $object->get('payment terms'),
+                'label'           => ucfirst($object->get_field_label('payment terms')),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+
+
+        )
+    ),
+    array(
+        'label'      => _('Delivery'),
+        'show_title' => false,
+        'fields'     => array(
+
+
             array(
                 'id'   => 'Agent_Default_Port_of_Export',
                 'edit' => ($edit ? 'string' : ''),
@@ -409,6 +442,18 @@ $object_fields = array(
                 'required'        => false,
                 'type'            => 'value'
             ),
+
+
+
+        )
+    ),
+    array(
+        'label'      => _('Terms and conditions'),
+        'show_title' => false,
+        'fields'     => array(
+
+
+
             array(
                 'id'   => 'Agent_Default_PO_Terms_and_Conditions',
                 'edit' => ($edit ? 'textarea' : ''),
@@ -448,6 +493,19 @@ $object_fields = array(
                 'required'        => false,
                 'type'            => 'value'
             ),
+
+
+
+
+        )
+    ),
+    array(
+        'label'      => _('Purchase order settings'),
+        'show_title' => false,
+        'fields'     => array(
+
+
+
 
             array(
                 'edit'     => ($edit ? 'string' : ''),

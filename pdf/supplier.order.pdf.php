@@ -94,12 +94,18 @@ $adata = array();
 if ($result = $db->query($sql)) {
     foreach ($result as $data) {
 
+
+        if($data['Part Units Per Package']==0){
+            continue;
+        }
+
+
         $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
 
 
         $items_qty = $data['Purchase Order Submitted Units'].'<span class="small discreet">u.</span> | ';
 
-        if ($data['Part Units Per Package'] != 1) {
+        if ($data['Part Units Per Package'] != 1   ) {
 
             if ($data['Purchase Order Submitted Units'] % $data['Part Units Per Package'] != 0) {
                 $items_qty .= '<span class="error">'.number($data['Purchase Order Submitted Units'] / $data['Part Units Per Package'], 3).'<span class="small discreet">sko.</span></span> | ';
@@ -123,10 +129,11 @@ if ($result = $db->query($sql)) {
         $items_qty=preg_replace('/\|\s$/','',$items_qty);
 
 
-        $description = $data['Supplier Part Description'].' @'.money(
-                $data['Supplier Part Historic Unit Cost'], $purchase_order->get('Purchase Order Currency Code')
-            );
+        $description = $data['Supplier Part Description'];
         $description .= '<span style="font-style: italic;font-size:90%">';
+
+
+
         if ($data['Part Units Per Package'] > 1) {
             $description .= '<br>'.sprintf(
                     _("packed in %d's"), $data['Part Units Per Package']
@@ -143,7 +150,7 @@ if ($result = $db->query($sql)) {
                 );
 
 
-        } else {
+        } elseif($units_per_carton>1) {
 
             $description .= '<br>'.sprintf(
                     ngettext(
@@ -154,14 +161,35 @@ if ($result = $db->query($sql)) {
         }
         $description .= '</span>';
 
-        $unit_cost = money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'));
+
+        if($data['Note to Supplier']!=''){
+
+            $description.='<div><b>'.$data['Note to Supplier'].'</b></div>';
+        }
+
+
+        if(preg_match('/00$/',$data['Supplier Part Unit Cost'])){
+            $unit_cost = money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'));
+
+        }else{
+            $unit_cost = money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'),'en_US','FOUR_FRACTION_DIGITS');
+
+        }
+
+
 
         $amount = money($data['Purchase Order Submitted Units'] * $data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code'));
 
 
+
+        $reference=$data['Supplier Part Reference'];
+        if($data['Supplier Part Reference']!=$data['Part Reference']){
+            $reference.='<br>'.$data['Part Reference'];
+        }
+
         $adata[] = array(
 
-            'reference'   => $data['Supplier Part Reference'],
+            'reference'   => $reference,
             'description' => $description,
             'ordered'     => $items_qty,
             'unit_cost'   => $unit_cost,
@@ -182,10 +210,8 @@ $smarty->assign('transactions', $adata);
 
 $html = $smarty->fetch('supplier.order.pdf.tpl');
 
-//print $html;
+
 
 $mpdf->WriteHTML($html);
-$mpdf->Output();
+$mpdf->Output($purchase_order->get('Public ID').'.pdf', 'I');
 
-
-?>

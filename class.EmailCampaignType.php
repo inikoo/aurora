@@ -570,14 +570,14 @@ class EmailCampaignType extends DB_Table {
     }
 
 
-    function create_mailshot() {
+    function create_mailshot($data=false) {
 
 
         if ($this->get_estimated_recipients() > 0 or $this->data['Email Campaign Type Code'] == 'create_mailshot' or $this->data['Email Campaign Type Code'] == 'Marketing') {
             include_once 'class.EmailCampaign.php';
             $email_campaign_data = array(
                 'Email Campaign Store Key'               => $this->data['Email Campaign Type Store Key'],
-                'Email Campaign Name'                    => date('Y.m.d'),
+                'Email Campaign Name'                    => (!empty($data['mail Campaign Name'])?$data['mail Campaign Name']:date('Y.m.d')),
                 'Email Campaign Type'                    => $this->data['Email Campaign Type Code'],
                 'Email Campaign Email Template Type Key' => $this->id,
                 'editor'                                 => $this->editor
@@ -608,10 +608,13 @@ class EmailCampaignType extends DB_Table {
                     )
                 );
 
-            } elseif ($this->data['Email Campaign Type Code'] == 'Marketing') {
-
-
             }
+
+            if(!empty($data['Email Campaign Metadata'])){
+                $email_campaign_data['Email Campaign Metadata']= $data['Email Campaign Metadata'];
+            }
+
+
             $email_campaign = new EmailCampaign('create', $email_campaign_data);
 
             return $email_campaign;
@@ -636,7 +639,7 @@ class EmailCampaignType extends DB_Table {
 
 
                 $sql = sprintf(
-                    'SELECT count(DISTINCT O.`Order Key`) AS num FROM `Order Dimension` O LEFT JOIN `Customer Dimension` ON (`Order Customer Key`=`Customer Key`) WHERE `Order State`="InBasket" AND `Customer Main Plain Email`!="" AND `Customer Send Email Marketing`="Yes" AND `Order Store Key`=%d AND `Order Last Updated Date`<= CURRENT_DATE - INTERVAL %d DAY',
+                    'SELECT count(DISTINCT O.`Order Key`) AS num FROM `Order Dimension` O LEFT JOIN `Customer Dimension` ON (`Order Customer Key`=`Customer Key`) WHERE `Order State`="InBasket" AND `Customer Main Plain Email`!="" AND `Customer Send Email Marketing`="Yes" AND `Order Store Key`=%d AND `Order Last Updated by Customer`<= CURRENT_DATE - INTERVAL %d DAY',
                     $this->data['Email Campaign Type Store Key'], (empty($metadata['Days Inactive in Basket']) ? 0 : $metadata['Days Inactive in Basket'])
                 );
 
@@ -693,7 +696,7 @@ class EmailCampaignType extends DB_Table {
 
 
                 $sql = sprintf(
-                    'select count( distinct `Customer Key`)  as num from `Customer Dimension`    left join `Order Dimension` on (`Customer Last Dispatched Order Key`=`Order Key`) where `Customer Store Key`=%d and  `Customer Send Email Marketing`=\'Yes\' and  `Customer Last Dispatched Order Key` is NOT NULL and Date(`Order Dispatched Date`)=%s  ',
+                    'select count( distinct `Customer Key`)  as num from `Customer Dimension`    left join `Order Dimension` on (`Customer Last Dispatched Order Key`=`Order Key`) where `Customer Store Key`=%d and  `Customer Send Email Marketing`=\'Yes\' and  `Customer Last Dispatched Order Date`=%s  ',
                     $this->get('Store Key'), prepare_mysql($date)
                 );
 

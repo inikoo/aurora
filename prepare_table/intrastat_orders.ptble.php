@@ -14,10 +14,10 @@
 
 
 if($parameters['tariff_code']=='missing'){
-    $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and (`Product Tariff Code` is null or `Product Tariff Code`="")  and DN.`Delivery Note Key` is not null  ',prepare_mysql($parameters['country_code']));
+    $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and (`Product Tariff Code` is null or `Product Tariff Code`="")  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" and `Delivery Note Quantity`>0  ',prepare_mysql($parameters['country_code']));
 
 }else{
-    $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and `Product Tariff Code` like "%s%%"  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched"  ',prepare_mysql($parameters['country_code']),addslashes($parameters['tariff_code']));
+    $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and `Product Tariff Code` like "%s%%"  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" and `Delivery Note Quantity`>0  ',prepare_mysql($parameters['country_code']),addslashes($parameters['tariff_code']));
 
 }
 
@@ -102,7 +102,7 @@ if ($order == 'number') {
 }elseif ($order == 'amount_ac') {
     $order = 'amount_ac';
 }elseif ($order == 'weight') {
-    $order = 'weight';
+    $order = 'sum(`Delivery Note Quantity`*`Product Package Weight`)';
 }else{
 
     $order='OTF.`Order Key`';
@@ -126,8 +126,8 @@ $sql_totals = "";
     $fields = "OTF.`Order Key`,O.`Order Public ID`,`Order Customer Name`,`Delivery Note Date`,`Order Store Key`,`Order Customer Key`,`Order Currency Code`,
     
    sum(   `Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount_ac,
-sum (`Order Transaction Amount`) as amount,
-sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight ,
+sum(`Order Transaction Amount`) as amount,
+sum(`Delivery Note Quantity`*`Product Package Weight`) as weight ,
 	group_concat(P.`Product Code` SEPARATOR ', ') as products
 
 ";

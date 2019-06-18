@@ -11,6 +11,7 @@
 */
 
 require_once '../vendor/autoload.php';
+require 'keyring/dns.php';
 require_once 'utils/sentry.php';
 
 
@@ -32,4 +33,3 @@ if (!$webpage_key) {
 
 
 include 'display_webpage.php';
-?>

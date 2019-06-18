@@ -15,12 +15,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 require_once 'vendor/autoload.php';
 
 
-if (!preg_match('/bali|sasi|sakoi|geko/', gethostname())) {
 
-
-    $sentry_client = new Raven_Client('https://4d2a1ddba83a4fb896275d4e50ec066d@sentry.io/1433843');
-    $sentry_client->install();
-}
 
 
 class fake_session {
@@ -88,6 +83,7 @@ while ($worker->work()) {
 function get_fork_metadata($job) {
 
 
+
     $editor = array(
 
 
@@ -135,11 +131,14 @@ function get_fork_metadata($job) {
     require_once "keyring/key.$inikoo_account_code.php";
 
 
+    if(defined('SENTRY_DNS_FORK')){
+        Sentry\init(['dsn' => SENTRY_DNS_FORK ]);
+    }
 
     require_once "class.Account.php";
 
     $db = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
     );
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
@@ -261,7 +260,7 @@ function get_fork_data($job) {
     $fork_key = $fork_metadata['fork_key'];
     //    $token    = $fork_metadata['token'];
 
-    $db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';"));
+    $db = new PDO("mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';"));
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
     if (function_exists('mysql_connect')) {

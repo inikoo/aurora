@@ -51,9 +51,9 @@ if (isset($parameters['elements'])) {
                         $_elements .= ",'Ready to be Picked'";
 
                     } elseif ($_key == 'Picking') {
-                        $_elements .= ",'Picking','Picking & Packing','Picked','Picker Assigned','Picker & Packer Assigned'";
+                        $_elements .= ",'Picking','Picked','Picker Assigned'";
                     } elseif ($_key == 'Packing') {
-                        $_elements .= ",'Packing','Packed','Packer Assigned','Packed Done'";
+                        $_elements .= ",'Packing','Packed','Packed Done'";
                     } elseif ($_key == 'Done') {
                         $_elements .= ",'Approved'";
                     } elseif ($_key == 'Send') {

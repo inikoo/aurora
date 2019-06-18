@@ -11,7 +11,7 @@
 */
 
 
-function parse_deal_free_item($data, $deal_new_data, $store) {
+function parse_deal_not_ordered_free_item($data, $deal_new_data, $store) {
 
     $product = get_object('Product', $data['fields_data']['Get Item Free Product']);
     if (!$product->id) {
@@ -51,7 +51,6 @@ function parse_deal_free_item($data, $deal_new_data, $store) {
         );
     }
 
-
     if (!is_numeric($qty) or $qty <= 0) {
         $response = array(
             'state' => 400,
@@ -72,15 +71,21 @@ function parse_deal_free_item($data, $deal_new_data, $store) {
 
 
     $new_component_data = array(
-        'Deal Component Name Label'             => $data['fields_data']['Deal Name'],
-        'Deal Component Term Label'             => $deal_new_data['Deal Allowance Label'],
+
         'Deal Component Allowance Label'        => $deal_new_data['Deal Allowance Label'],
-        'Deal Component Allowance Type'         => 'Get Free',
-        'Deal Component Allowance Target'       => 'Order',
+        'Deal Component Allowance Type'         => 'Get Free No Ordered Product',
+        'Deal Component Allowance Target'       => 'Product',
         'Deal Component Allowance Target Type'  => 'Items',
-        'Deal Component Allowance Target Key'   => '',
-        'Deal Component Allowance Target Label' => '',
-        'Deal Component Allowance'              => $product->id.';'.$qty
+        'Deal Component Allowance Target Key'   => $product->id,
+        'Deal Component Allowance Target Label' => $product->get('Code'),
+        'Deal Component Allowance'              => json_encode(
+            array(
+                'object'=>'Product',
+                'key'=>$product->id,
+                'qty'=>$qty
+            )
+
+        )
     );
 
     return array(
@@ -160,8 +165,7 @@ function parse_deal_amount_off($data, $deal_new_data, $store) {
 
 
     $new_component_data = array(
-        'Deal Component Name Label'             => $data['fields_data']['Deal Name'],
-        'Deal Component Term Label'             => $deal_new_data['Deal Allowance Label'],
+
         'Deal Component Allowance Label'        => $deal_new_data['Deal Allowance Label'],
         'Deal Component Allowance Type'         => 'Amount Off',
         'Deal Component Allowance Target'       => 'Order',

@@ -165,7 +165,7 @@
         </tr>
         <tr class="{if $cpnp==''}hide{/if}">
             <td title="{if empty($labels._product_cpnp)}{t}Cosmetic Products Notification Portal{/t}{else}{$labels._product_cpnp}{/if} - Europa.eu">CPNP</td>
-            <td>{$cpnp}</td>
+            <td>{$cpnp}x2</td>
         </tr>
         <tr class="{if $barcode==''}hide{/if}">
             <td>{if empty($labels._product_barcode)}{t}Barcode{/t}{else}{$labels._product_barcode}{/if}</td>
@@ -180,7 +180,28 @@
             </tr>
         {/foreach}
 
+
+
         </table>
+
+         <table class="{if $materials==''}hide{/if}"   style="margin-top: 20px;min-width: 270px">
+             <tr class="{if $materials==''}hide{/if}">
+
+                 <td ><a href="asset_label.php?object=product&key={$product->id}&type=unit_ingredients" target="_blank" style="text-decoration: none">
+                         <span style="border:1px solid #ccc;padding:5px 15px 5px 10px"><img  style="width: 50px;height:16px;position: relative;top:3px;margin-right: 5px" src="/art/pdf.gif"> {if empty($labels._product_materials)}{t}Materials{/t} / {t}Ingredients{/t}{else}{$labels._product_materials}</span>{/if}
+                     </a></td>
+             </tr>
+             <tr style="height: 20px"><td></td></tr>
+             <tr class="{if $barcode==''}hide{/if}">
+
+                 <td ><a href="asset_label.php?object=product&key={$product->id}&type=unit_barcode" target="_blank" style="text-decoration: none">
+                         <span style="border:1px solid #ccc;padding:5px 15px 5px 10px"><img  style="width: 50px;height:16px;position: relative;top:3px;margin-right: 5px" src="/art/pdf.gif"> {if empty($labels._product_barcode)}{t}Barcode{/t}{else}{$labels._product_barcode}</span>{/if}
+                     </a></td>
+             </tr>
+
+         </table>
+
+
 
         </div>
     </div>

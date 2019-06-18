@@ -768,13 +768,14 @@ class Account extends DB_Table {
     }
 
     function update_parts_data() {
-        $number_in_process_parts      = 0;
-        $number_active_parts          = 0;
-        $number_discontinuing_parts   = 0;
-        $number_discontinued_parts    = 0;
-        $number_parts_no_sko_barcodes = 0;
-        $number_parts_barcode_error   = 0;
-        $number_parts_with_barcode    = 0;
+        $number_in_process_parts          = 0;
+        $number_active_parts              = 0;
+        $number_discontinuing_parts       = 0;
+        $number_discontinued_parts        = 0;
+        $number_parts_no_sko_barcodes     = 0;
+        $number_parts_barcode_error       = 0;
+        $number_parts_with_barcode        = 0;
+        $number_parts_with_invalid_weight = 0;
 
 
         $sql = sprintf('SELECT count(*) AS num ,`Part Status`  FROM `Part Dimension`  GROUP BY `Part Status`');
@@ -825,6 +826,14 @@ class Account extends DB_Table {
         }
 
 
+        $sql = sprintf(
+            'SELECT count(*) AS num FROM `Part Dimension` WHERE `Part Status`!="Not In Use" and  `Part Package Weight Status`!="OK"       '
+        );
+        if ($row = $this->db->query($sql)->fetch()) {
+            $number_parts_with_invalid_weight = $row['num'];
+        }
+
+
         $this->fast_update(
             array(
                 'Account Active Parts Number'                  => $number_active_parts,
@@ -834,6 +843,7 @@ class Account extends DB_Table {
                 'Account Active Parts with SKO Barcode Number' => $number_parts_no_sko_barcodes,
                 'Account Parts with Barcode Number Error'      => $number_parts_barcode_error,
                 'Account Parts with Barcode Number'            => $number_parts_with_barcode,
+                'Account Active Parts with SKO Invalid Weight' => $number_parts_with_invalid_weight,
 
 
             ), 'Account Data'
@@ -1985,7 +1995,19 @@ class Account extends DB_Table {
                     }
 
                 }
-                $timeseries->update_stats();
+
+                $date = gmdate('Y-m-d H:i:s');
+                $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+                $this->db->prepare($sql)->execute(
+                    [
+                        $date,
+                        $date,
+                        'timeseries_stats',
+                        $timeseries->id,
+                        $date,
+
+                    ]
+                );
 
             }
 
@@ -2415,23 +2437,7 @@ class Account extends DB_Table {
             exit;
         }
 
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE   `Order Replacement State` ='Dispatched' AND `Order Post Transactions Dispatched Date`>=%s ", prepare_mysql(gmdate('Y-m-d 00:00:00'))
-
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $data['dispatched_today']['number'] += $row['num'];
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
+        // todo do same as store
 
 
         $data_to_update = array(

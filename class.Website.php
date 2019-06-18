@@ -327,6 +327,17 @@ class Website extends DB_Table {
                 ), 'no_history'
             );
 
+            require_once 'conf/website_styles.php';
+
+
+            $this->fast_update(
+                array(
+                    'Website Style' => json_encode($website_styles)
+                )
+            );
+
+
+
 
             return;
         } else {
@@ -623,6 +634,7 @@ class Website extends DB_Table {
         $data['Website Header Website Key'] = $this->id;
 
 
+
         $header = new WebsiteHeader('find', $data, 'create');
         if (!$header->id) {
             $this->error = true;
@@ -725,7 +737,6 @@ class Website extends DB_Table {
 
             'Page Code'                            => $data['Webpage Code'],
             'Page URL'                             => $this->data['Website URL'].'/'.strtolower($data['Webpage Code']),
-            'Page Site Key'                        => $this->id,
             'Page Type'                            => 'Store',
             'Page Store Key'                       => $this->get('Website Store Key'),
             'Page Store Creation Date'             => gmdate('Y-m-d H:i:s'),
@@ -1118,7 +1129,6 @@ class Website extends DB_Table {
         $page_data = array(
             'Page Code'                            => $page_code,
             'Page URL'                             => $this->data['Website URL'].'/'.strtolower($page_code),
-            'Page Site Key'                        => $this->id,
             'Page Type'                            => 'Store',
             'Page Store Key'                       => $category->get('Category Store Key'),
             'Page Store Creation Date'             => gmdate('Y-m-d H:i:s'),
@@ -1323,7 +1333,6 @@ class Website extends DB_Table {
         $page_data = array(
             'Page Code'                            => $page_code,
             'Page URL'                             => $this->data['Website URL'].'/'.strtolower($page_code),
-            'Page Site Key'                        => $this->id,
             'Page Type'                            => 'Store',
             'Page Store Key'                       => $product->get('Product Store Key'),
             'Page Store Creation Date'             => gmdate('Y-m-d H:i:s'),

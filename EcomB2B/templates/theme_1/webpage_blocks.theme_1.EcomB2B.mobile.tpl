@@ -9,7 +9,8 @@
 -->
 *}
 {include file="theme_1/_head.theme_1.EcomB2B.mobile.tpl"}
-<body>{include file="analytics.tpl"}
+<body data-device_prefix="mobile">
+{include file="analytics.tpl"}
 {if $logged_in}
     <span id="ordering_settings" class="hide"  data-website_key="{$website->id}" ></span>
 {/if}
@@ -285,7 +286,7 @@
                 {if $with_basket==1}
             getScript('/js/mobile.logged_in.min.js?v=190227', function () {
                 getScript('/js/mobile.forms.min.js', function () {
-                    getScript('/js/mobile.basket.min.js?v=190229', function () {
+                    getScript('/js/mobile.basket.min.js?v=190529', function () {
                     $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=mobile", function (data) {
 
                         $('#basket').html(data.html)

@@ -267,11 +267,7 @@
         var request = '/ar_edit_marketing.php?tipo=add_target_to_campaign&field=' + table_metadata.field + '&parent=' + table_metadata.parent + '&parent_key=' + table_metadata.parent_key + '&target_key=' + $('#add_bulk_deal_save').attr('item_key')  + '&terms=' + $('#add_bulk_deal_terms').val() + '&allowance=' + $('#add_bulk_deal_allowance').val()
 
 
-        console.log(request)
 
-        return
-
-        //=====
         var form_data = new FormData();
 
         form_data.append("tipo", 'add_target_to_campaign')
@@ -307,7 +303,7 @@
                 $('#add_bulk_deal_qty').val('').removeClass('invalid')
                 $('#add_bulk_deal_save').addClass('super_discreet').removeClass('invalid valid button')
 
-
+                close_add_bulk_deal()
 
 
 

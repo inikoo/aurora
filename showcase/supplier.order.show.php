@@ -23,6 +23,9 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
     } else {
 
 
+
+        $smarty->assign('no_production_date_label', sprintf(_('No estimated %s'),'<i class="far fa-industry-alt"></i>'));
+
         $smarty->assign('order', $data['_object']);
 
 

@@ -21,9 +21,9 @@ $table_views = array(
         'label' => _('Description'),
         'title' => _('Description')
     ),
-    'tariff_codes' => array(
-        'label' => _('Tariff Codes'),
-        'title' => _('Tariff Codes')
+    'properties' => array(
+        'label' => _('Tariff Codes / Weight'),
+        'title' => _('Tariff Codes / Weight')
     ),
 
 );

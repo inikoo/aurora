@@ -8,6 +8,7 @@ $group_by   = '';
 $currency = '';
 
 
+
 if (isset($parameters['excluded_stores']) and is_array(
         $parameters['excluded_stores']
     ) and count($parameters['excluded_stores']) > 0
@@ -75,7 +76,7 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 
         $fields = '`Store Code`,`Store Name`,`Country Name`,';
         $table
-                = '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`)  left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
+                = '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Address Country 2 Alpha Code`=C.`Country 2 Alpha Code`)  left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
 
         $parents = preg_split('/_/', $parameters['parent_key']);
         $where   = sprintf(
@@ -89,7 +90,7 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 
         $fields = '`Store Code`,`Store Name`,`Country Name`,';
         $table
-                = '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Billing Country 2 Alpha Code`=C.`Country 2 Alpha Code`)  left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
+                = '`Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=I.`Invoice Store Key`)  left join kbase.`Country Dimension` C on (I.`Invoice Address Country 2 Alpha Code`=C.`Country 2 Alpha Code`)  left join `Payment Account Dimension` P on (P.`Payment Account Key`=I.`Invoice Payment Account Key`)';
 
         $parents = preg_split('/_/', $parameters['parent_key']);
         $where   = sprintf(
@@ -241,20 +242,6 @@ if (($parameters['f_field'] == 'customer') and $f_value != '') {
     $wheref .= " and  `Invoice Total Amount`<=".$f_value."    ";
 } elseif ($parameters['f_field'] == 'minvalue' and is_numeric($f_value)) {
     $wheref .= " and  `Invoice Total Amount`>=".$f_value."    ";
-} elseif ($parameters['f_field'] == 'country' and $f_value != '') {
-    if ($f_value == 'UNK') {
-        $wheref .= " and  `Invoice Billing Country Code`='".$f_value."'    ";
-        $find_data = ' '._('a unknown country');
-    } else {
-
-        $f_value = Address::parse_country($f_value);
-        if ($f_value != 'UNK') {
-            $wheref .= " and  `Invoice Billing Country Code`='".$f_value."'    ";
-            $country   = new Country('code', $f_value);
-            $find_data = ' '.$country->data['Country Name'].' <img src="/art/flags/'.$country->data['Country 2 Alpha Code'].'.png" alt="'.$country->data['Country Code'].'"/>';
-        }
-
-    }
 }
 
 $_order = $order;

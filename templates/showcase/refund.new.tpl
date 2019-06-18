@@ -189,7 +189,7 @@
         </tr>
 
         <tr class="subtotal">
-            <td class="label">{t}Tax{/t}</td>
+            <td class="label">{t}Tax{/t} {if $order->get('Order Total Tax Amount')>0} <span onclick="refund_tax_only()" class="small show_refund_tax_only very_discreet_on_hover button">(Refund tax only)</span>{else}<span class="show_refund_tax_only"></span>{/if} </td>
             <td class="aright Total_Tax_Amount">{$order->get('Total Tax Amount')}</td>
         </tr>
 
@@ -209,7 +209,7 @@
     <div style="clear:both"></div>
 </div>
     <div class="block " style="align-items: stretch;flex: 1;">
-        <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
+        <div class="state create_net_and_tax_refund" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
             <div id="back_operations">
 
             </div>
@@ -219,6 +219,26 @@
                 <div id="create_refund_operations" class="order_operation {if {$order->get('State Index')}<100  }hide{/if}">
                     <div  class="square_button right  " title="{t}Create refund{/t}">
                         <i class="fa fa-cloud save   open_create_refund_dialog_button" aria-hidden="true" onclick="create_refund(this)"></i>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+
+
+        <div class="state hide create_tax_only_refund  " style="height:30px;margin-bottom:10px;position:relative;top:-5px">
+            <div id="back_operations">
+
+            </div>
+            <span style="float:left;padding-left:10px;padding-top:5px" class="Order_State"> {t}Create tax only refund{/t} </span>
+            <div >
+
+                <div i class="order_operation {if {$order->get('State Index')}<100  }hide{/if}">
+                    <div  class="square_button right  " title="{t}Create tax only refund{/t}">
+                        <i class="fa fa-cloud save   open_create_refund_dialog_button" aria-hidden="true" onclick="create_tax_only_refund(this)"></i>
 
                     </div>
                 </div>
@@ -323,3 +343,69 @@
         </table>
     </div>
 </div>
+
+<style>
+    .feedback_otf_form .scope{
+        margin-right: 10px;
+    }
+</style>
+
+<div class="feedback_otf_form hide" style="position:absolute;background-color:#fff;z-index:2000;padding:10px 0px 10px 10px;width: 500px;border:1px solid #ccc"  data-feedback_set_label="<i class='fa fa-comment-alt-exclamation padding_right_5'></i> {t}Feedback set{/t}">
+    <table border="0" style="width: 100%">
+        <tr>
+            <td>
+                <span  onclick="feedback_otf_scope_clicked(this)" data-label="{t}Supplier{/t}" data-scope="Supplier" class="scope button very_discreet_on_hover Supplier"> <i class="far fa-square"></i> {t}Supplier{/t}</span>
+            </td>
+            <td>
+                <span onclick="feedback_otf_scope_clicked(this)" data-label="{t}Picker{/t}" data-scope="Picker" class="scope button very_discreet_on_hover Picker"><i class="far fa-square"></i> {t}Picker{/t} </span>
+            </td>
+            <td>
+                <span onclick="feedback_otf_scope_clicked(this)" data-label="{t}Packer{/t}" data-scope="Packer" class="scope button very_discreet_on_hover Packer"><i class="far fa-square"></i> {t}Packer{/t} </span>
+            </td>
+            <td>
+                <span onclick="feedback_otf_scope_clicked(this)" data-label="{t}Warehouse{/t}" data-scope="Warehouse" class="scope button very_discreet_on_hover Warehouse"><i class="far fa-square"></i> {t}Warehouse{/t} </span>
+            </td>
+
+
+            </td>
+        </tr>
+        <tr>
+
+            <td>
+                <span onclick="feedback_otf_scope_clicked(this)" data-label="{t}Courier{/t}" data-scope="Courier" class="scope button very_discreet_on_hover Courier"><i class="far fa-square"></i> {t}Courier{/t} </span>
+            </td>
+            <td>
+                <span onclick="feedback_otf_scope_clicked(this)"  data-label="{t}Marketing{/t}" data-scope="Marketing" class="scope button very_discreet_on_hover Marketing"><i class="far fa-square "></i> {t}Marketing{/t} </span>
+            </td>
+            <td>
+                <span onclick="feedback_otf_scope_clicked(this)"  data-label="{t}Customer{/t}" data-scope="Customer" class="scope button very_discreet_on_hover Customer"><i class="far fa-square"></i> {t}Customer{/t} </span>
+            </td>
+            <td>
+                <span onclick="feedback_otf_scope_clicked(this)"  data-label="{t}Management{/t}" data-scope="Other" class="scope button very_discreet_on_hover Other"><i class="far fa-square"></i> {t}Management{/t} </span>
+            </td>
+
+
+
+
+        </tr>
+        <tr>
+            <td colspan=4 style="padding-right: 25px"><textarea  style="width: 100%;" placeholder="{t}Feedback{/t}"></textarea></td>
+        </tr>
+        <tr>
+            <td colspan=2 class="aleft padding_left_10"><span onclick="close_otf_feedback()" class="close_feedback  button very_discreet_on_hover">{t}Close{/t}</span></td>
+
+            <td colspan=2 class="aright padding_right_10"><span class="save save_feedback "><i class="fa fa-check "></i> {t}Ok{/t}</span></td>
+        </tr>
+
+    </table>
+
+</div>
+
+
+
+
+<script type="text/javascript" src="/js/injections/refund.new.js"></script>
+
+<script>
+    close_refund_tax_only()
+</script>

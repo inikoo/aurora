@@ -3,8 +3,8 @@
 </div>
 
 <div class="name_and_categories">
-    <span class="strong"> <span class="Product_Units_Per_Case">{$product->get('Units Per Case')}</span>x <span
-                class="Product_Name">{$product->get('Name')}</span></span>
+    <span class="strong">
+        <span class="Units_Per_Case_in_Name {if $product->get('Product Units Per Case')==1}hide{/if}"><span class="Product_Units_Per_Case">{$product->get('Units Per Case')}</span>x</span> <span class="Product_Name">{$product->get('Name')}</span></span>
     <ul class="tags Categories" style="float:right">
 
         {if $family_data.id}
@@ -34,22 +34,6 @@
         <div style="clear:both">
         </div>
 
-
-        <table id="barcode_data" border="0" class="overview {if $product->get('Product Barcode Number')==''}hide{/if} ">
-            <tr class="main">
-                <td class="label">
-                    <i {if $product->get('Product Barcode Key')} class="fa fa-barcode button" onClick="change_view('inventory/barcode/{$product->get('Product Barcode Key')}')"{else}  class="fa fa-barcode"{/if} ></i>
-                </td>
-                <td class="Product_Barcode_Number highlight">{$product->get('Product Barcode Number')} </td>
-                <td class="barcode_labels aright {if !$product->get('Product Barcode Key')}hide{/if}">
-                    <a class="padding_left_10" title="{t}Unit label{/t}"
-                       href="/asset_label.php?object=product&key={$product->id}&type=unit"><i class="fa fa-tags "></i></a>
-                </td>
-
-            </tr>
-
-
-        </table>
 
     </div>
 
@@ -284,6 +268,77 @@
 
         </div>
     </div>
+
+
+    <div style="width: 770px">
+
+
+
+        <table id="barcode_data" border="0" class="overview  ">
+
+
+
+            <tr class=" units_data">
+
+                <td>
+                    <i class="fal fa-fw fa-stop-circle" title="{t}Unit{/t}" ></i>
+                </td>
+                <td>
+                </td>
+
+                <td>
+                    <a  target="_blank"title="{t}Barcode label{/t}" href="/asset_label.php?object=product&key={$product->id}&type=unit_barcode"><i class="fal fa-barcode-alt fa-fw padding_right_5" ></i></a> <span class="Product_Barcode_Number" data-label_no_set="{t}Not set{/t}" >{if $product->get('Product Barcode Number')==''}<span class="discreet italic">{t}Not set{/t}</span>{else}{$product->get('Product Barcode Number')}{/if}</span>
+                    {if $product->get('Product Barcode Key')}
+                        <i class="discreet_on_hover button fal fa-external-link-square" onClick="change_view('inventory/barcode/{$product->get('Product Barcode Key')}')"></i>
+                    {/if}
+                </td>
+
+
+
+                <td style="text-align: right">
+                    <span class="Unit_Weight">{$product->get('Unit Weight')}</span>
+                </td>
+                <td style="text-align: right">
+                    <span class="Unit_Dimensions">{$product->get('Unit Dimensions')}</span>
+                </td>
+                <td style="text-align: right;min-width: 40px">
+                    <a  target="_blank"title="{t}Material/Ingredients label{/t}" href="/asset_label.php?object=product&key={$product->id}&type=unit_ingredients"><i class="fal fa-puzzle-piece fa-fw padding_right_5" ></i></a>
+
+                </td>
+
+            </tr>
+
+            <tr class="sko_data">
+
+                <td>
+                    <i class="fal fa-cube fa-fw" title="{t}Outer{/t}" ></i>
+                </td>
+                <td style="padding-left: 4px">
+                    <span class="discreet" title="{t}Units per outer{/t}"><i class="fal fa-fwx fa-stop-circle very_discreet" style="font-size: 80%;margin-right: 1px" ></i><i class="fal fa-fws very_discreet fa-times" style="position: relative;top:1px;margin-right: 3px"></i>{$product->get('Units Per Case')}</span>
+                </td>
+
+                <td>
+
+                </td>
+
+                <td style="text-align: right">
+                    <span class="Package_Weight">{$product->get('Package Weight')}</span>
+                </td>
+
+                <td style="text-align: right">
+                    <span class="Package_Dimensions">{$product->get('Outer Dimensions')}</span>
+                </td>
+                <td>
+                </td>
+
+            </tr>
+
+
+        </table>
+
+    </div>
+
+
     <div style="clear:both">
     </div>
 </div>

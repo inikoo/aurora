@@ -20,8 +20,9 @@ function get_invoice_showcase($data, $smarty, $user, $db) {
     }
 
 
+    //$data['_object']->update_tax_data();
 
-    $data['_object']->update_payments_totals();
+
 
     $smarty->assign('invoice', $data['_object']);
 
@@ -40,6 +41,12 @@ function get_invoice_showcase($data, $smarty, $user, $db) {
     $smarty->assign('user', $user);
 
     $invoice = $data['_object'];
+
+
+    if ($account->get('Account Country 2 Alpha Code') == 'SK') {
+        $smarty->assign('export_omega', true);
+
+    }
 
     $tax_data = array();
     $sql      = sprintf(
@@ -74,12 +81,10 @@ function get_invoice_showcase($data, $smarty, $user, $db) {
     $smarty->assign('tax_data', $tax_data);
 
 
-    if (in_array(
-        $invoice->get('Invoice Address Country 2 Alpha Code'), get_countries_EC_Fiscal_VAT_area($db)
-    )) {
-        $pdf_with_commodity = false;
-    } else {
+    if ($store->settings('invoice_show_tariff_codes') == 'Yes' or !in_array($invoice->get('Invoice Address Country 2 Alpha Code'), get_countries_EC_Fiscal_VAT_area($db))) {
         $pdf_with_commodity = true;
+    } else {
+        $pdf_with_commodity = false;
     }
     $smarty->assign('pdf_with_commodity', $pdf_with_commodity);
 
@@ -91,9 +96,41 @@ function get_invoice_showcase($data, $smarty, $user, $db) {
     }
     $smarty->assign('pdf_show_locale_option', $pdf_show_locale_option);
 
-    $pdf_with_rrp = true;
+
+    if ($store->settings('invoice_show_rrp') == 'Yes') {
+        $pdf_with_rrp = true;
+    } else {
+        $pdf_with_rrp = false;
+    }
     $smarty->assign('pdf_with_rrp', $pdf_with_rrp);
 
+    if ($store->settings('invoice_show_parts') == 'Yes') {
+        $pdf_with_parts = true;
+    } else {
+        $pdf_with_parts = false;
+    }
+    $smarty->assign('pdf_with_parts', $pdf_with_parts);
+
+    if ($store->settings('invoice_show_barcode') == 'Yes') {
+        $pdf_with_barcode = true;
+    } else {
+        $pdf_with_barcode = false;
+    }
+    $smarty->assign('pdf_with_barcode', $pdf_with_barcode);
+
+    if ($store->settings('invoice_show_weight') == 'Yes') {
+        $pdf_with_weight = true;
+    } else {
+        $pdf_with_weight = false;
+    }
+    $smarty->assign('pdf_with_weight', $pdf_with_weight);
+
+    if ($store->settings('invoice_show_origin') == 'Yes') {
+        $pdf_with_origin = true;
+    } else {
+        $pdf_with_origin = false;
+    }
+    $smarty->assign('pdf_with_origin', $pdf_with_origin);
 
     if ($invoice->deleted) {
         if ($data['_object']->get('Invoice Type') == 'Refund') {
@@ -113,18 +150,17 @@ function get_invoice_showcase($data, $smarty, $user, $db) {
 
 
             $smarty->assign(
-                'object_data',
-                json_encode(
-                    array(
-                        'object'              => $data['object'],
-                        'key'                 => $data['key'],
-                        'symbol'              => currency_symbol($invoice->get('Order Currency')),
-                        'tax_rate'            => $invoice->get('Invoice Tax Rate'),
-                        'available_to_refund' => $invoice->get('Invoice Total Amount'),
-                        'tab'                 => $data['tab'],
-                        'order_type'          => $invoice->get('Invoice Type'),
-                    )
-                )
+                'object_data', json_encode(
+                                 array(
+                                     'object'              => $data['object'],
+                                     'key'                 => $data['key'],
+                                     'symbol'              => currency_symbol($invoice->get('Order Currency')),
+                                     'tax_rate'            => $invoice->get('Invoice Tax Rate'),
+                                     'available_to_refund' => $invoice->get('Invoice Total Amount'),
+                                     'tab'                 => $data['tab'],
+                                     'order_type'          => $invoice->get('Invoice Type'),
+                                 )
+                             )
 
             );
 

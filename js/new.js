@@ -347,6 +347,8 @@ function save_new_object(object, form_type) {
                 var value = $('#' + field+'_field').hasClass('selected')
             }else if(field_type == 'input_with_field') {
                 var value = $('#' + field+'_field').val()
+            }else if(field_type == 'asset') {
+                var value = $('#Asset_Key').val()
             }else {
                 var value = $('#' + field).val()
             }

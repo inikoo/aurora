@@ -122,6 +122,7 @@ $object_fields[] = array(
 <span id="Deal_Type_Get_Item_Free_field" field_type="button_radio_options" field="Deal_Type_Get_Item_Free" onclick="toggle_first_order_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(
                     _('Get product free'), '<span>2</span>', 1
                 ).'</span>
+
 <span id="Deal_Type_Shipping_Off_field" field_type="button_radio_options" field="Deal_Type_Shipping_Off" onclick="toggle_first_order_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Discounted shipping').'  </span>
 </div>
 ',

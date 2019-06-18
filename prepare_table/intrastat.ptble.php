@@ -54,7 +54,7 @@ $intrastat_countries = preg_replace('/,?\''.$account_country->get('Country 2 Alp
 $intrastat_countries = preg_replace('/^,/', '', $intrastat_countries);
 
 
-$where = ' where `Delivery Note Address Country 2 Alpha Code` in ('.$intrastat_countries.')  and DN.`Delivery Note Key` is not null  and `Delivery Note State`="Dispatched" ';
+$where = ' where `Delivery Note Address Country 2 Alpha Code` in ('.$intrastat_countries.')  and DN.`Delivery Note Key` is not null  and `Delivery Note State`="Dispatched"  and `Delivery Note Quantity`>0  ';
 
 
 //print_r($parameters);
@@ -135,6 +135,8 @@ if ($order == 'period') {
     $order = 'items';
 } elseif ($order == 'products') {
     $order = 'products';
+} elseif ($order == 'weight') {
+    $order = 'sum(`Delivery Note Quantity`*`Product Package Weight`)';
 } elseif ($order == 'orders') {
     $order = 'orders';
 } else {
@@ -157,7 +159,7 @@ count(distinct OTF.`Product ID`) as products,
 count(distinct OTF.`Order Key`) as orders,
 
 sum(`Invoice Currency Exchange Rate`*`Order Transaction Amount`) as value,
-	sum(`Delivery Note Quantity`*`Product Unit Weight`*`Product Units Per Case`) as weight ,
+	sum(`Delivery Note Quantity`*`Product Package Weight`) as weight ,
 	LEFT(`Product Tariff Code`,8) as tariff_code, min(`Delivery Note Date`) as min_date , `Delivery Note Date` , `Delivery Note Address Country 2 Alpha Code`,
 	group_concat(DN.`Delivery Note Key`),group_concat(distinct date_format(`Delivery Note Date`,'%y%m')) as monthyear 
 ";

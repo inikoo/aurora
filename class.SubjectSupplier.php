@@ -17,12 +17,12 @@ class SubjectSupplier extends Subject {
 
     function create_order($_data) {
 
-        include_once 'class.Staff.php';
-        include_once 'class.Warehouse.php';
+
+        $account = get_object('Account', 1);
 
 
-        $staff     = new Staff($_data['user']->get('User Parent Key'));
-        $warehouse = new Warehouse($_data['warehouse_key']);
+        $staff     = get_object('Staff', $_data['user']->get('User Parent Key'));
+        $warehouse = get_object('Warehouse', $_data['warehouse_key']);
 
         $order_data = array(
             'Purchase Order Parent'              => $this->table_name,
@@ -35,7 +35,7 @@ class SubjectSupplier extends Subject {
             'Purchase Order Parent Address'      => $this->get('Contact Address Formatted'),
 
             'Purchase Order Currency Code'  => $this->get('Default Currency Code'),
-            'Purchase Order Incoterm'       => $this->get('Default Incoterm'),
+            'Purchase Order Incoterm'       => $this->get($this->table_name.' Default Incoterm'),
             'Purchase Order Port of Import' => $this->get('Default Port of Import'),
             'Purchase Order Port of Export' => $this->get('Default Port of Export'),
 
@@ -54,12 +54,16 @@ class SubjectSupplier extends Subject {
             'Purchase Order Terms and Conditions' => $this->get('Default PO Terms and Conditions'),
             'Purchase Order Main Buyer Key'       => $staff->id,
             'Purchase Order Main Buyer Name'      => $staff->get('Staff Name'),
-            'editor'                              => $this->editor,
+
+            'Purchase Order Metadata' => json_encode(
+                array(
+                    'payment_terms' => $this->metadata('payment_terms')
+                )
+            ),
+            'editor'                  => $this->editor,
 
 
         );
-
-
 
 
         if ($this->get('Show Warehouse TC in PO') == 'Yes') {
@@ -67,9 +71,11 @@ class SubjectSupplier extends Subject {
             if ($order_data['Purchase Order Terms and Conditions'] != '') {
                 $order_data['Purchase Order Terms and Conditions'] .= '<br><br>';
             }
-            $order_data['Purchase Order Terms and Conditions'] .= $warehouse->data['Warehouse Default PO Terms and Conditions'];
+            $order_data['Purchase Order Terms and Conditions'] .= $account->get('Account Suppliers Terms and Conditions');
         }
 
+
+        //   print_r($order_data);
 
         $order = new PurchaseOrder('new', $order_data);
 
@@ -265,6 +271,29 @@ class SubjectSupplier extends Subject {
         switch ($key) {
 
 
+            case 'Default Incoterm':
+
+                if ($this->get($this->table_name.' '.$key) == '' or $this->get($this->table_name.' '.$key) == 'No') {
+                    return array(
+                        true,
+                        '<span class="discreet italic">'._('Not set').'</span>'
+                    );
+                } else {
+                    return array(
+                        true,
+                        $this->get($this->table_name.' '.$key)
+                    );
+                }
+
+                brea;
+
+            case 'payment terms':
+
+                return array(
+                    true,
+                    $this->metadata(preg_replace('/\s/', '_', $key))
+                );
+
             case 'Supplier Number Todo Parts':
             case 'Agent Number Todo Parts':
 
@@ -358,9 +387,7 @@ class SubjectSupplier extends Subject {
                 if ($this->get($this->table_name.' Average Delivery Days') == '') {
                     return array(
                         true,
-                        '<span class="italic very_discreet">'._(
-                            'Unknown'
-                        ).'</span>'
+                        '<span class="italic very_discreet">'._('Unknown').'</span>'
                     );
                 } else {
                     return array(
@@ -373,7 +400,41 @@ class SubjectSupplier extends Subject {
                     );
                 }
                 break;
+            case 'Average Production Days':
+                if ($this->data[$this->table_name.' Average Production Days'] == '') {
+                    return array(
+                        true,
+                        ''
+                    );
+                }
 
+                return array(
+                    true,
+                    number(
+                        $this->data[$this->table_name.' Average Production Days']
+                    )
+                );
+                break;
+            case 'Production Time':
+
+
+                include_once 'utils/natural_language.php';
+                if ($this->get($this->table_name.' Average Production Days') == '') {
+                    return array(
+                        true,
+                        '<span class="italic very_discreet">'._('Unknown').'</span>'
+                    );
+                } else {
+                    return array(
+                        true,
+                        seconds_to_natural_string(
+                            24 * 3600 * $this->get(
+                                $this->table_name.' Average Production Days'
+                            )
+                        )
+                    );
+                }
+                break;
 
             case 'Products Origin Country Code':
                 if ($this->get(
@@ -614,7 +675,7 @@ class SubjectSupplier extends Subject {
                 $this->table_name." $db_interval Acc With Stock Days"  => $sales_data['with_stock_days'],
             );
 
-           // print_r($data_to_update);
+            // print_r($data_to_update);
 
             $this->fast_update($data_to_update, $this->table_name.' Data');
         }
@@ -701,9 +762,9 @@ class SubjectSupplier extends Subject {
 
         if (!$part_skos) {
             $part_skos = $this->get_part_skus();
-            $method='like_a_supplier';
-        }else{
-            $method='like_a_part';
+            $method    = 'like_a_supplier';
+        } else {
+            $method = 'like_a_part';
         }
 
 
@@ -716,8 +777,8 @@ class SubjectSupplier extends Subject {
 
             $sql = sprintf(
                 "SELECT count(DISTINCT `Delivery Note Customer Key`) AS customers, count( DISTINCT ITF.`Delivery Note Key`) AS deliveries, round(ifnull(sum(`Amount In`),0),2) AS invoiced_amount,round(ifnull(sum(`Amount In`+`Inventory Transaction Amount`),0),2) AS profit,round(ifnull(sum(`Inventory Transaction Quantity`),0),1) AS dispatched,round(ifnull(sum(`Required`),0),1) AS required 
-                FROM `Inventory Transaction Fact` ITF  LEFT JOIN `Delivery Note Dimension` DN ON (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) WHERE `Inventory Transaction Type` LIKE 'Sale' AND `Part SKU` IN (%s) %s %s",
-                $part_skos, ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
+                FROM `Inventory Transaction Fact` ITF  LEFT JOIN `Delivery Note Dimension` DN ON (DN.`Delivery Note Key`=ITF.`Delivery Note Key`) WHERE `Inventory Transaction Type` LIKE 'Sale' AND `Part SKU` IN (%s) %s %s", $part_skos,
+                ($from_date ? sprintf('and  `Date`>=%s', prepare_mysql($from_date)) : ''), ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
             );
 
 
@@ -739,9 +800,7 @@ class SubjectSupplier extends Subject {
         }
 
 
-
-
-        if($method=='like_a_supplier') {
+        if ($method == 'like_a_supplier') {
 
             $sql = sprintf(
                 'SELECT ifnull(sum(`Supplier Delivery Total Amount`*`Supplier Delivery Currency Exchange`),0) AS invoiced_amount, count(*) AS supplier_deliveries FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery State`="Placed"  AND `Supplier Delivery Parent`=%s AND `Supplier Delivery Parent Key`=%d  %s %s ',
@@ -749,7 +808,7 @@ class SubjectSupplier extends Subject {
 
             );
 
-           // print "$sql\n";
+            // print "$sql\n";
 
 
             if ($result = $this->db->query($sql)) {
@@ -764,9 +823,7 @@ class SubjectSupplier extends Subject {
                 print "$sql\n";
                 exit;
             }
-        }else{
-
-
+        } else {
 
 
         }
@@ -872,8 +929,12 @@ class SubjectSupplier extends Subject {
 
     }
 
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
+    }
+
 
 }
 
 
-?>
+

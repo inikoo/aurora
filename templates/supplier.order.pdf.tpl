@@ -91,13 +91,50 @@
         <tr>
 
             <td style="width:250px;padding-left:10px;">{$purchase_order->get('Warehouse Company Name')}
+
+
+                <div style="text-align: left; {if $purchase_order->get('Account Number')==''}display:none{/if}">
+                    {t}Account no.{/t} <b>{$purchase_order->get('Account Number')}</b>
+
+                </div>
+
                 <div style="font-size:7pt">
                     {$purchase_order->get('Warehouse Address')|nl2br}
                 </div>
 
             </td>
             <td style="text-align: right;">{t}Purchase order no.{/t}<br/>
-                <span style="font-weight: bold; font-size: 12pt;">{$purchase_order->get('Public ID')}</span></td>
+                <span style="font-weight: bold; font-size: 12pt;">{$purchase_order->get('Public ID')}</span>
+                {if $purchase_order->get('Purchase Order State')=='Cancelled' }
+                    <div>
+                        {t}Cancelled{/t}: <b>{$purchase_order->get('Cancelled Date')}</b>
+                    </div>
+                {elseif $purchase_order->get('Purchase Order State')=='InProcess' }
+                    <div>
+                        <b class="error">{t}Preview only, not submitted yet!{/t}</b>
+                    </div>
+                    <div>
+                        {t}Date{/t}: <b>{$smarty.now|date_format:"%e %b %Y"}</b>
+                    </div>
+                {else}
+                    </div>
+                    {t}Submitted{/t}:
+                    <b>{$purchase_order->get('Submitted Date')}</b>
+                    </div>
+                    {if $purchase_order->get('Estimated Production Date')!=''}
+                        </div>
+                        {t}Expected dispatch{/t}:
+                        <b>{$purchase_order->get('Estimated Production Date')}</b>
+                        </div>
+                    {/if}
+
+
+
+                {/if}
+
+
+
+            </td>
         </tr>
     </table>
 </htmlpageheader>
@@ -121,9 +158,15 @@
             <td width="33%"
                 style="color:#000;text-align: center">{t}Page{/t} {literal}{PAGENO}{/literal} {t}of{/t} {literal}{nbpg}{/literal}</td>
             <td width="34%" style="text-align: right;">
-                <small> {if $purchase_order->get('Warehouse Telephone')!=''}{$purchase_order->get('Warehouse Telephone')}
+                <small>
+                    {if $purchase_order->get('Purchase Order Main Buyer Name')!=''}
+                    {t}Submitted by{/t} {$purchase_order->get('Purchase Order Main Buyer Name')}
                         <br>
-                    {/if} {if $purchase_order->get('Warehouse Email')!=''}{$purchase_order->get('Warehouse Email')}{/if}
+                    {/if}
+                    {if $purchase_order->get('Warehouse Telephone')!=''}{$purchase_order->get('Warehouse Telephone')}
+                        <br>
+                    {/if}
+                    {if $purchase_order->get('Warehouse Email')!=''}{$purchase_order->get('Warehouse Email')}{/if}
                 </small>
             </td>
 
@@ -141,25 +184,32 @@
             <h1>
                 {t}Purchase Order{/t}
             </h1>
+            <b>{$purchase_order->get('Parent Name')}</b>
         </td>
         <td style="text-align: right">
 
-            {if $purchase_order->get('Purchase Order State')=='Cancelled' }
-                <div>
-                    {t}Cancelled{/t}: <b>{$purchase_order->get('Cancelled Date')}</b>
+            {if $purchase_order->metadata('payment_terms')!=''}
                 </div>
-            {else if $purchase_order->get('Purchase Order State')=='InProcess' }
-                <div>
-                    <b class="error">{t}Preview only, not submitted yet!{/t}</b>
+                {t}Payment terms{/t}:
+                <b>{$purchase_order->metadata('payment_terms')}</b>
                 </div>
-                <div>
-                    {t}Date{/t}: <b>{$smarty.now|date_format:"%e %b %Y"}</b>
+            {/if}
+            </div>
+            {t}Currency{/t}:
+            <b>{$purchase_order->get('Currency Code')}</b>
+            </div>
+            {if ($purchase_order->get('Incoterm')!=''  and   $purchase_order->get('Incoterm')!='No')}
                 </div>
-            {else}
+                Incoterm:
+                <b>{$purchase_order->get('Incoterm')}</b>
                 </div>
-                {t}Submitted{/t}:
-                <b>{$purchase_order->get('Submitted Date')}</b>
+            {/if}
+            {if $purchase_order->get('Purchase Order Port of Import')!='' }
                 </div>
+                {t}Port of import{/t}:
+                <b>{$purchase_order->get('Port of Import')}</b>
+                </div>
+
             {/if}
 
 
@@ -170,21 +220,13 @@
     <tr>
         <td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;">
 
-            <div style="text-align: right">
-                <b>{$purchase_order->get('Parent Name')}</b>
-            </div>
+
 
         </td>
         <td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right">
 
-            <div style="text-align: right; {if $purchase_order->get('Account Number')==''}display:none{/if}">
-                {t}Account no.{/t} <b>{$purchase_order->get('Account Number')}</b>
 
-            </div>
-            <div style="text-align: right">
-                ({$purchase_order->get('Warehouse Code')}) <b>{$purchase_order->get('Warehouse Company Name')}</b>
 
-            </div>
 
         </td>
     </tr>
@@ -192,14 +234,21 @@
 
 <table width="100%" style="font-family: sans-serif;" cellpadding="0">
     <tr>
-        <td width="45%" style="border: 0.1mm solid #888888;padding:5pt 5pt 10pt 10pt"><span
+        <td width="45%" style="border: 0.1mm solid #888888;padding:5pt 5pt 10pt 10pt">
+
+            <span
                     style="font-size: 7pt; color: #777777; font-family: sans-serif;">{t}Supplier's address{/t}:</span>
             <div style="margin-top:100pt">
                 {$purchase_order->get('Parent Address')}
             </div>
+
         </td>
         <td width="10%">&nbsp;</td>
-        <td width="45%" style="border: 0.1mm solid #888888;padding:5pt 5pt 10pt 10pt"><span
+        <td width="45%" style="border: 0.1mm solid #888888;padding:5pt 5pt 10pt 10pt">
+
+
+
+            <span
                     style="font-size: 7pt; color: #777777; font-family: sans-serif;">{t}Ship to address{/t}:</span>
             <div>
                 {$purchase_order->get('Warehouse Address')|nl2br}
@@ -216,7 +265,7 @@
         <td style="width:22%;text-align:right">{t}Quantity ordered{/t}</td>
         <td style="width:10%;text-align:right">{t}Unit cost{/t}</td>
 
-        <td style="width:12%;text-align:right">{t}Amount{/t}</td>
+        <td style="width:15%;text-align:right">{t}Amount{/t}</td>
 
     </tr>
     </thead>
@@ -242,12 +291,15 @@
 
     </tbody>
 </table>
-<br>
+<div style="font-size: 2mm">
+u. = {t}Units{/t}; pks. = {t}Packs{/t}; C. = {t}Cartons{/t};
+</div>
+    <br>
 
 <br>
 <div>
     {include file="string:{$purchase_order->get('Terms and Conditions')}" }
 </div>
-<br>
+<br><br>.
 </body>
 </html>
