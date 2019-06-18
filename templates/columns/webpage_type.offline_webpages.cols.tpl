@@ -1,3 +1,11 @@
+{*/*
+ About:
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created: 18-06-2019 18:27:30 MYT Kuala Lumpur, Malaysia
+ Copyright (c) 2019, Inikoo
+
+ Version 3
+*/*}
 var columns = [
 {
 name: "id",
@@ -9,6 +17,7 @@ cell: "string"
 
 
 
+
 {
 name: "code",
 label: "{t}Code{/t}",
@@ -16,6 +25,16 @@ editable: false,
 cell: Backgrid.HtmlCell.extend({ })
 },
 
+
+{
+name: "name",
+label: "{t}Name{/t}",
+editable: false,
+sortType: "toggle",
+{if $sort_key=='name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: Backgrid.HtmlCell.extend({ })
+},
  {
 name: "users",
 label:"{t}Users{/t}",

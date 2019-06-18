@@ -1547,18 +1547,29 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'code',
         'f_period'    => 'ytd',
-        //'elements_type' => array_keys($elements_options['online_webpages_in_webpage_type'])[0],
-        //'elements'      => $elements_options['online_webpages'],
+
     ),
-    'webpage_type.offline_webpages' => array(
+       'webpage_type.in_process_webpages'  => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code'
+        'f_field'     => 'code',
+        'f_period'    => 'ytd',
 
     ),
+       'webpage_type.offline_webpages'  => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+        'f_period'    => 'ytd',
+
+    ),
+
     'website.webpage.types'         => array(
         'view'        => 'overview',
         'sort_key'    => 'type',
@@ -1568,46 +1579,7 @@ $tab_defaults = array(
         'f_field'     => ''
     ),
 
-    'website.root_nodes' => array(
-        'view'        => 'overview',
-        'sort_key'    => 'id',
-        'sort_order'  => 1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code',
-        'f_period'    => 'ytd',
 
-    ),
-    'node.nodes'         => array(
-        'view'        => 'overview',
-        'sort_key'    => 'id',
-        'sort_order'  => 1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code',
-        'f_period'    => 'ytd',
-
-    ),
-    'website.node.pages' => array(
-        'view'        => 'overview',
-        'sort_key'    => 'id',
-        'sort_order'  => 1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code',
-        'f_period'    => 'ytd',
-
-    ),
-    'website.node.nodes' => array(
-        'view'        => 'overview',
-        'sort_key'    => 'id',
-        'sort_order'  => 1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code',
-        'f_period'    => 'ytd',
-
-    ),
 
     'website.footer.versions' => array(
         'view'        => 'overview',
