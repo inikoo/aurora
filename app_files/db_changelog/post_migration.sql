@@ -103,8 +103,6 @@ Drop table `Campaign`;
 Drop table `Campaign`;
 Drop table `Campaign`;
 
-Drop this tables:
-;
 
 
 DROP TABLE `Billing To Dimension`, `Shipping Notices Fact`, `Ship to Contact Dimension`, `Ship To Dimension`;

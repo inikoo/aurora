@@ -1738,7 +1738,8 @@ class Order extends DB_Table {
         $this->db->exec($sql);
 
         $sql = sprintf(
-            "UPDATE `Order Transaction Fact` SET  `Delivery Note Quantity`=0, `No Shipped Due Out of Stock`=0,`Order Out of Stock Lost Amount`=0 WHERE `Order Key`=%d ",
+
+            "UPDATE `Order Transaction Fact` SET   `Estimated Dispatched Weight`=0,`Delivery Note Quantity`=0, `No Shipped Due Out of Stock`=0,`Order Out of Stock Lost Amount`=0 WHERE `Order Key`=%d ",
 
             $this->id
         );
@@ -2417,8 +2418,10 @@ class Order extends DB_Table {
             $intersect = array_intersect($old_used_deals[1], $new_used_deals[1]);
             $deal_diff = array_merge(array_diff($old_used_deals[1], $intersect), array_diff($new_used_deals[1], $intersect));
 
+
             $intersect            = array_intersect($old_used_deals[2], $new_used_deals[2]);
             $deal_components_diff = array_merge(array_diff($old_used_deals[2], $intersect), array_diff($new_used_deals[2], $intersect));
+
 
 
             if (count($campaigns_diff) > 0 or count($deal_diff) > 0 or count($deal_components_diff) > 0) {

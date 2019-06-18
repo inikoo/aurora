@@ -87,7 +87,7 @@ if (isset($metadata['element'])) {
 
             foreach ($elements as $_key => $value) {
 
-             //  print $element_type.' '.$_key.': '.$value."\n";
+                //  print $element_type.' '.$_key.': '.$value."\n";
 
                 $parameters['elements'][$element_type]['items'][$_key]['selected'] = $value;
             }
@@ -181,7 +181,7 @@ if (array_key_exists('frequency', $parameters)) {
 
     $frequencies = array(
         'annually'  => _('Annually'),
-       'quarterly' => _('Quarterly'),
+        'quarterly' => _('Quarterly'),
         'monthly'    => _('Monthly'),
         'weekly'    => _('Weekly'),
         'daily'     => _('Daily'),

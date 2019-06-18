@@ -2828,7 +2828,7 @@ $modules = array(
                 )
             ),
 
-             'webpage' => array(
+            'webpage' => array(
                 'type' => 'object',
                 'label' => _('Web page'),
                 'icon' => 'globe',

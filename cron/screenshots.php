@@ -37,7 +37,8 @@ if ($result=$db->query($sql)) {
 exit;
 
 try {
-    $stmt = $db->prepare("SELECT `Page Key`,`Webpage URL` FROM sk.`Page Store Dimension` LIMIT 1");
+
+    $stmt = $db->prepare("SELECT `Page Key`,`Webpage URL` FROM sk.`Page Store Dimension`");
     $stmt->execute();
 
 

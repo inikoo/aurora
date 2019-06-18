@@ -987,7 +987,8 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
                 }
 
             }
-            $msg = _('There was a problem processing your credit card; please double check your payment information and try again');
+
+            $msg = _('There was a problem processing your credit card; please double check your payment information and try again').'. ('.$result->transaction->id.')';
 
 
             $payment_metadata = '';
