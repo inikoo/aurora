@@ -35,9 +35,9 @@ $store_new_ds = new Store('code', 'AWD');
 $store_aw     = new Store('code', 'UK');
 
 $new_ds_website=get_object('Website',$store_new_ds->get('Store Website Key'));
-
+$new_ds_website->editor=$editor;
 $fam_root = get_object('Category', 30960);
-
+$fam_root->editor=$editor;
 
 $sql = sprintf(
     'SELECT  `Category Code`,`Category Label`,`Category Key` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Categories" ) WHERE   C.`Category Parent Key`=%d  and `Page Key` is not null order by `Webpage Name`  ',
@@ -45,6 +45,7 @@ $sql = sprintf(
 );
 
 $cat = get_object('Category', 30961);
+$cat->editor=$editor;
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
@@ -68,6 +69,8 @@ if ($result = $db->query($sql)) {
         if ($result2 = $db->query($sql)) {
             foreach ($result2 as $row2) {
                 $old_family = get_object('Category', $row2['Category Key']);
+                $old_family->editor=$editor;
+
                 $old_family->update_product_category_products_data();
                 if ($old_family->get('Product Category Public') == 'Yes') {
 
@@ -90,7 +93,7 @@ if ($result = $db->query($sql)) {
                     $sql = sprintf(
                         'Select * from `Category Bridge` left join  `Product Dimension` P on (`Subject Key`=`Product ID`) 
                         where P.`Product Type`=\'Product\' and`Subject`=\'Product\'  and `Product Status`="Active" and `Product Public`="Yes"  and `Product Web Configuration`!="Offline"    and  `Category Key`=%d  
-                         and `Product Code` not like "%%-pst"   and `Product Code` not like "%%-gift" and `Product Code` not like "%%-st"  and `Product Code` not like "%%-gift" and   `Product Code` not like "awlabel-%%" 
+                         and `Product Code` not like "%%-pst"   and `Product Code` not like "%%-gift" and `Product Code` not like "%%-st" and `Product Code` not like "%%-mx"  and `Product Code` not like "%%-gift" and   `Product Code` not like "awlabel-%%" and   `Product Code` not like "starter-%%"   and   `Product Name` not like "%%carton%%"  and `Product Name` not like "%%assorted%%"   
                          ',
                         $old_family->id
                     );
@@ -115,11 +118,15 @@ if ($result = $db->query($sql)) {
                             if($old_product->get('Product Price') <=0){
                                 print  '****     '.$old_product->get('Code')." wrong price\n";
                             }elseif($old_product->get('Product Price') <=0.15){
-                                print  '####    '.$old_product->get('Code')." wrong price\n";
+                                print  '####    '.$old_product->get('Code')." price too low\n";
                             }
 
                             if($old_product->get('Product Units Per Case') <=0){
                                 print  '****     '.$old_product->get('Code')." wrong units\n";
+                            }
+
+                            if($old_product->get('Product Units Per Case') >100){
+                                print  '****     '.$old_product->get('Code')." to many units\n";
                             }
 
                            // print $old_product->get('Code')." *\n";
@@ -131,7 +138,9 @@ if ($result = $db->query($sql)) {
                                 $price = round(1.3 * $ds_factor * $old_product->get('Product Price'), 2);
 
 
-
+                                if($price<.20){
+                                    continue;
+                                }
 
                                 $part_data = array_pop($parts_data);
 
@@ -167,8 +176,10 @@ if ($result = $db->query($sql)) {
 
                                 $new_product = $store_new_ds->create_product($product_data);
 
-
                                 if(is_object($new_product) and  $new_product->id) {
+
+                                    $new_product->editor=$editor;
+
 
                                     $new_product->update(array('Product Family Category Key' => $new_family->id));
 
@@ -252,6 +263,7 @@ if ($result = $db->query($sql)) {
                     if($products_in_family>0){
                         $webpage_key = $new_ds_website->create_category_webpage($new_family->id);
                         $webpage=get_object('Webpage',$webpage_key);
+                        $webpage->editor=$editor;
                         $webpage->publish();
 
 
@@ -286,6 +298,7 @@ if ($result = $db->query($sql)) {
         if($products_in_department>0){
             $webpage_key = $new_ds_website->create_category_webpage($new_department->id);
             $webpage=get_object('Webpage',$webpage_key);
+            $webpage->editor=$editor;
             $webpage->publish();
 
 
