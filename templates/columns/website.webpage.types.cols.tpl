@@ -7,38 +7,13 @@ renderable: false,
 cell: "string"
 },
 
-{
-name: "icon",
-label:'',
-html_label: '<i class="fa fa-layer-group"></i>',
-editable: false,
-title: '{t}Web page group{/t}',
-sortType: "toggle",
-cell: Backgrid.HtmlCell.extend({
-className: ""
-}),
-headerCell: HeaderHtmlCell,
-
-},
 
   {
 name: "label",
-label:"{t}Name{/t}",
+label:"{t}Webpage type{/t}",
 editable: false,
 sortable:false,
 cell: Backgrid.HtmlCell.extend({  }),
-},
- {
-name: "in_process_webpages",
-label: "{t}In Process{/t}",
-editable: false,
-
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='in_process_webpages'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-
-headerCell: integerHeaderCell
 },
 {
 name: "online_webpages",
@@ -52,6 +27,19 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
+ {
+name: "in_process_webpages",
+label: "{t}In Process{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='in_process_webpages'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+
 {
 name: "offline_webpages",
 label: "{t}Offline{/t}",

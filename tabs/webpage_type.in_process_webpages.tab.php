@@ -2,7 +2,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created:21 February 2017 at 18:32:36 GMT+8, Cyberjaya, Malaysia
+ Created: 18-06-2019 15:43:14 MYT Kuala Lumpur, Malaysia
  Copyright (c) 2017, Inikoo
 
  Version 3
@@ -10,9 +10,9 @@
 */
 
 
-$tab     = 'webpage_type.online_webpages';
+$tab     = 'webpage_type.in_process_webpages';
 $ar_file = 'ar_websites_tables.php';
-$tipo    = 'online_webpages';
+$tipo    = 'in_process_webpages';
 
 $default = $user->get_tab_defaults($tab);
 
@@ -33,4 +33,4 @@ $parameters = array(
 include('utils/get_table_html.php');
 
 
-?>
+

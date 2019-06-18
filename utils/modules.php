@@ -2586,6 +2586,10 @@ $modules = array(
                 'reference' => 'webpages/%d',
 
                 'tabs' => array(
+                    'website.webpage.types' => array(
+                        'label' => _('Web pages by type'),
+                        'icon' => 'server'
+                    ),
                     'website.online_webpages' => array(
                         'label' => _('Online web pages'),
                         'icon' => 'browser'
@@ -2594,15 +2598,8 @@ $modules = array(
                         'label' => _('To be published web pages'),
                         'icon' => 'seedling'
                     ),
-                    'website.webpage.types' => array(
-                        'label' => _('Web pages by type'),
-                        'icon' => 'server'
-                    ),
-                    'website.root_nodes' => array(
-                        'label' => _('Sitemap'),
-                        'icon' => 'sitemap',
-                        'class' => 'hide'
-                    ),
+
+
                     'website.offline_webpages' => array(
                         'label' => _('Offline web pages'),
                         'class' => 'right icon_only',
@@ -2690,12 +2687,20 @@ $modules = array(
                 'type' => 'object',
                 'tabs' => array(
 
+                    'webpage_type.online_webpages' => array(
+                        'label' => _('Online web pages'),
+                        'icon' => 'browser'
+                    ),
+                    'webpage_type.in_process_webpages' => array(
+                        'label' => _('To be published web pages'),
+                        'icon' => 'seedling'
+                    ),
 
-                    'webpage_type.webpages' => array(
-                        'label' => _(
-                            'Versions'
-                        ),
-                        'icon' => 'files'
+
+                    'webpage_type.offline_webpages' => array(
+                        'label' => _('Offline web pages'),
+                        'class' => 'right icon_only',
+                        'icon' => 'eye-slash'
                     ),
 
                 )
@@ -2892,7 +2897,6 @@ $modules = array(
                     'webpage.reminders.families' => 'webpage.reminders',
                     'webpage.reminders.products' => 'webpage.reminders',
 
-                    'webpage.root_nodes' => 'webpage.webpages',
                     'webpage.online_webpages' => 'webpage.webpages',
                     'webpage.offline_webpages' => 'webpage.webpages',
                     'webpage.webpage.types' => 'webpage.webpages',

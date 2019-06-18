@@ -113,7 +113,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
     );
 
 
-
     //if (isset($data['metadata']['help']) and $data['metadata']['help']) {
     //    get_help($data, $modules, $db);
     //    return;
@@ -137,7 +136,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
     $state = parse_request($data, $db, $modules, $account, $user);
 
 
-    $state['current_website']      = $session->get('current_website');
+    $state['current_website']    = $session->get('current_website');
     $state['current_store']      = $session->get('current_website');
     $state['current_warehouse']  = $session->get('current_warehouse');
     $state['current_production'] = (!empty($session->get('current_production')) ? $session->get('current_production') : '');
@@ -272,7 +271,8 @@ function get_view($db, $smarty, $user, $account, $modules) {
             //print_r($state);
             $_parent = get_object($state['parent'], $state['parent_key']);
 
-            if (in_array($state['module'], array(
+            if (in_array(
+                $state['module'], array(
                                     'customers_server',
                                     'orders_server'
                                 )
@@ -309,7 +309,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
     }
     $state['_parent'] = $_parent;
-
 
 
     if ($state['object'] != '') {
@@ -419,7 +418,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
         if ($state['object'] == 'website' and $state['tab'] != 'website.new') {
 
 
-            if ($state['_parent']=='store' and !$state['_parent']->get('Store Website Key')) {
+            if ($state['_parent'] == 'store' and !$state['_parent']->get('Store Website Key')) {
                 $state = array(
                     'old_state'  => $state,
                     'module'     => 'products',
@@ -792,8 +791,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
     list($state, $response['tabs']) = get_tabs($state, $db, $account, $modules, $user, $smarty, $requested_tab);// todo only calculate when is subtabs in the section
 
 
-
-
     if ($state['object'] != '' and ($modules[$state['module']]['sections'][$state['section']]['type'] == 'object' or isset($modules[$state['module']]['sections'][$state['section']]['showcase']))) {
 
         if (isset($data['metadata']['reload_showcase']) or !($data['old_state']['module'] == $state['module'] and $data['old_state']['section'] == $state['section'] and $data['old_state']['object'] == $state['object'] and $data['old_state']['key'] == $state['key'])) {
@@ -935,7 +932,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'webpage':
             include_once 'showcase/webpage.show.php';
-            $html = get_webpage_showcase($data, $smarty, $user, $db);
+            $html  = get_webpage_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Code');
 
             break;
@@ -946,7 +943,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'website':
             include_once 'showcase/website.show.php';
-            $html = get_website_showcase($data, $smarty, $user, $db);
+            $html  = get_website_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Code');
 
             break;
@@ -1024,7 +1021,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'supplier_part':
             include_once 'showcase/supplier_part.show.php';
-            $html = get_supplier_part_showcase($data, $smarty, $user, $db);
+            $html  = get_supplier_part_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Reference');
 
             break;
@@ -1036,7 +1033,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'contractor':
             include_once 'showcase/contractor.show.php';
-            $html = get_contractor_showcase($data, $smarty, $user, $db);
+            $html  = get_contractor_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Name');
 
             break;
@@ -1427,60 +1424,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_order_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-/*
-                case ('websites'):
-
-                    return get_websites_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('webpages'):
-
-                    return get_webpages_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('webpage_type'):
-                    return get_webpage_type_navigation($data, $smarty, $user, $db, $account);
-                    break;
-                case ('website'):
-                    return get_website_navigation($data, $smarty, $user, $db, $account);
-                    break;
-                case ('website.new'):
-                    return get_website_new_navigation($data, $smarty, $user, $db, $account);
-                    break;
-
-                case ('no_website'):
-                    return get_no_website_navigation($data, $smarty, $user, $db, $account);
-                    break;
-
-                case ('website.node'):
-                    return get_node_navigation($data, $smarty, $user, $db, $account);
-                    break;
-                case ('webpage'):
-                    return get_webpage_navigation($data, $smarty, $user, $db, $account);
-                    break;
-                case ('deleted.webpage'):
-                    return get_deleted_webpage_navigation($data, $smarty, $user, $db, $account);
-                    break;
-                case ('webpage.new'):
-                    return get_new_webpage_navigation($data, $smarty, $user, $db, $account);
-                    break;
-                case ('page'):
-                    return get_page_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('page_version'):
-                    return get_page_version_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('website.user'):
-                    return get_user_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-*/
 
                 case ('offers'):
                     return get_marketing_navigation($data, $smarty, $user, $db, $account);
@@ -1953,6 +1896,9 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('webpage'):
                     return get_webpage_navigation($data, $smarty, $user, $db, $account);
                     break;
+                case ('webpage_type'):
+                    return get_webpage_type_navigation($data, $smarty, $user, $db, $account);
+                    break;
                 case 'webpages':
                     return get_webpages_navigation($data, $smarty, $user, $db, $account);
                     break;
@@ -1960,7 +1906,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_new_webpage_navigation($data, $smarty, $user, $db, $account);
                     break;
                 default:
-                    return 'View not found';
+                    return 'View not found '.$data['section'];
 
             }
             break;
@@ -3025,10 +2971,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     }
 
 
-
-
-
-
     if (isset($modules[$data['module']]['sections'][$data['section']]['tabs'])) {
 
 
@@ -3036,9 +2978,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     } else {
         $tabs = array();
     }
-
-
-
 
 
     if (isset($modules[$data['module']]['sections'][$data['section']]['tabs'][$data['tab']] ['subtabs'])) {
@@ -3087,7 +3026,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
 
     );
-
 
 
     if ($data['section'] == 'mailshot') {
@@ -4074,11 +4012,12 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            }if ($state['section'] == 'settings') {
+            }
+            if ($state['section'] == 'settings') {
                 $branch[] = array(
                     'label'     => _('Settings store').' <span class="Store_Code id">'.$state['_object']->get('Store Code').'</span>',
                     'icon'      => 'sliders-h',
-                   'reference' => 'store/'.$state['_object']->id.'/settings'
+                    'reference' => 'store/'.$state['_object']->id.'/settings'
                 );
 
 
@@ -6147,7 +6086,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            }elseif ($state['section'] == 'pending_delivery_notes') {
+            } elseif ($state['section'] == 'pending_delivery_notes') {
 
                 $branch[] = array(
                     'label'     => _('Pending delivery notes'),
@@ -8537,8 +8476,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
         case 'accounting_server':
 
 
-
-
             if ($state['section'] == 'dashboard') {
 
                 $branch[] = array(
@@ -8626,8 +8563,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            }
-            elseif ($state['section'] == 'payments') {
+            } elseif ($state['section'] == 'payments') {
 
                 if ($state['parent'] == 'account') {
                     $branch[] = array(
@@ -8707,7 +8643,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            }elseif ($state['section'] == 'deleted_invoices_server') {
+            } elseif ($state['section'] == 'deleted_invoices_server') {
 
 
                 $branch[] = array(

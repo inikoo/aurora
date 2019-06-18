@@ -312,6 +312,20 @@ function get_products_categories_navigation($data, $smarty, $user, $db, $account
 
     $right_buttons = array();
 
+
+    foreach($data['store']->get_websites('data') as $website_data){
+
+        $right_buttons[]
+            = array(
+            'icon'  => 'browser',
+            'title' => sprintf(_('%s webpages'),  $website_data['Website Name']),
+            'click'=>"change_view('/webpages/".$website_data['Website Key']."')",
+            'pre_text'=> $website_data['Website Code'],
+            'class'=>'text'
+        );
+
+    }
+
     //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_customer_categories.php?store_id=".$store->id);
 
     $sections = get_sections('products', $store->id);
@@ -761,18 +775,15 @@ function get_new_store_navigation($data, $smarty, $user, $db, $account) {
 function get_products_navigation($data, $smarty, $user, $db, $account) {
 
 
-    require_once 'class.Store.php';
 
 
-    if ($data['parent'] == 'store') {
+    if ($data['parent'] != 'store') {
 
 
-    } else {
-        exit('');
+        exit('error PNav');
 
     }
 
-    $block_view = $data['section'];
 
 
     $left_buttons = array();
@@ -836,6 +847,21 @@ function get_products_navigation($data, $smarty, $user, $db, $account) {
     $right_buttons = array();
     //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit store'), 'reference'=>'store/'.$data['store']->id.'/edit');
     //$right_buttons[]=array('icon'=>'plus', 'title'=>_('New store'), 'id'=>"new_store");
+
+
+    foreach($data['store']->get_websites('data') as $website_data){
+
+        $right_buttons[]
+            = array(
+            'icon'  => 'browser',
+            'title' => sprintf(_('%s webpages'),  $website_data['Website Name']),
+            'click'=>"change_view('/webpages/".$website_data['Website Key']."')",
+            'pre_text'=> $website_data['Website Code'],
+            'class'=>'text'
+        );
+
+    }
+
 
     $sections = get_sections('products', $data['store']->id);
     $_section = 'products';
@@ -1253,6 +1279,8 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
             ).'</span>';
 
     }
+
+
 
     $right_buttons[] = array(
         'icon'  => 'sticky-note',

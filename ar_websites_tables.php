@@ -71,9 +71,7 @@ switch ($tipo) {
     case 'offline_webpages':
         webpages_offline(get_table_parameters(), $db, $user);
         break;
-    case 'root_nodes':
-        root_nodes(get_table_parameters(), $db, $user);
-        break;
+
     case 'pages':
         pages(get_table_parameters(), $db, $user);
         break;
@@ -951,8 +949,10 @@ function webpage_types($_data, $db, $user) {
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
+
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
+
 
 
 
@@ -962,10 +962,13 @@ function webpage_types($_data, $db, $user) {
             $adata[] = array(
                 'id'              => $data['Webpage Type Key'],
                 'icon'           => '<i class="fa '.$icon.' fa-fw padding_left_5" aria-hidden="true"></i>',
-                'label'           => sprintf('<span class="button" onClick="change_view(\'/webpages/%d/type/%d\')">%s</span>', $data['Webpage Type Website Key'], $data['Webpage Type Key'], $label),
-                'in_process_webpages' => number($data['Webpage Type In Process Webpages']),
-                'online_webpages' => number($data['Webpage Type Online Webpages']),
-                'offline_webpages' => number($data['Webpage Type Offline Webpages'])
+                'label'           => sprintf('<span class="link" onClick="change_view(\'/webpages/%d/type/%d\')">%s</span>', $data['Webpage Type Website Key'], $data['Webpage Type Key'], $label),
+
+                'in_process_webpages'           => sprintf('<span class="link" onClick="change_view(\'/webpages/%d/type/%d\')">%s</span>', $data['Webpage Type Website Key'], $data['Webpage Type Key'], number($data['Webpage Type In Process Webpages'])),
+                'online_webpages'           => sprintf('<span class="link" onClick="change_view(\'/webpages/%d/type/%d\')">%s</span>', $data['Webpage Type Website Key'], $data['Webpage Type Key'], number($data['Webpage Type Online Webpages'])),
+                'offline_webpages'           => sprintf('<span class="link" onClick="change_view(\'/webpages/%d/type/%d\')">%s</span>', $data['Webpage Type Website Key'], $data['Webpage Type Key'], number($data['Webpage Type Offline Webpages'])),
+
+
             );
 
         }

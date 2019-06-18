@@ -18,8 +18,8 @@ switch ($parameters['parent']) {
     case('website'):
         $where .= sprintf(' and  `Webpage Website Key`=%d  ', $parameters['parent_key']);
         break;
-    case('node'):
-        $where .= sprintf(' and  `Webpage Parent Key`=%d  ', $parameters['parent_key']);
+    case('webpage_type'):
+        $where .= sprintf(' and  P.`Webpage Type Key`=%d  ', $parameters['parent_key']);
         break;
     default:
         exit('parent not configured '.$parameters['parent']);

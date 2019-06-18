@@ -38,26 +38,8 @@
     "grunt-contrib-sass": "^1.0.0",
     "grunt-contrib-uglify": "^1.0.0",
     "grunt-contrib-watch": "^1.0.0",
-    "puppeteer": "^1.14.0",
-    "grunt-ssh-deploy": "^0.4.1",
-
-
-  },
-  "dependencies": {
-    "grunt": "^0.4.5",
-    "grunt-contrib-clean": "^1.0.0",
-    "grunt-contrib-concat": "^1.0.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-cssmin": "^1.0.1",
-    "grunt-contrib-imagemin": "^1.0.0",
-    "grunt-contrib-sass": "^1.0.0",
-    "grunt-contrib-uglify": "^1.0.0",
-    "grunt-contrib-watch": "^1.0.0",
-    "grunt-ssh-deploy": "^0.4.1",
-    "puppeteer": "^1.15.0",
     "grunt-ssh-deploy": "^0.4.1",
     "puppeteer": "^1.14.0"
-
-  }
-
+  },
+  "dependencies": {}
 }
