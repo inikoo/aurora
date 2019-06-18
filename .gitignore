@@ -138,3 +138,14 @@ keyring/currency_exchange_api_keys.php
 cron/read_madmimi_suppresion_lists.php
 
 node_modules/*
+screenshots/
+testapi.php
+keyring/api.google.include.php
+keyring/api.secret.json
+utils/api.secret.json
+cron/screenshots/*
+cron/testapi.php
+
+package.json
+package-lock.json
+

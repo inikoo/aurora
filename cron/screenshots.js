@@ -1,13 +1,14 @@
 const puppeteer = require('puppeteer');
 const devices = require('puppeteer/DeviceDescriptors');
-const iPhone = devices[ 'iPhone X' ];
-const iPad = devices[ 'iPad' ];
+
+const iPhone = devices['iPhone 4'];
+const iPad = devices['iPad'];
 const argv = require('minimist')(process.argv.slice(2));
 const url = argv.url;
-const file_root = argv.file_root;
-//var fs = require('fs');
-//var dir = './screenshots';
-//if (!fs.existsSync(dir)){ fs.mkdirSync(dir); }
+const pageKey = argv.pageKey;
+var fs = require('fs');
+var dir = './cron/screenshots';
+if (!fs.existsSync(dir)){ fs.mkdirSync(dir); }
 
 async function run() {
     let browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});

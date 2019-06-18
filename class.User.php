@@ -2388,6 +2388,7 @@ class User extends DB_Table {
 
 
 
+
     function get_tab_defaults($tab) {
 
 
