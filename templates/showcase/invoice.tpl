@@ -169,10 +169,15 @@
     <div id="dates" class="block dates" >
         <table border="0" class="date_and_state">
             <tr class="date">
-                <td class="button"  onclick="change_view('orders/{$order->get('Order Store Key')}/{$order->id}')" ><i class="fa fa-shopping-cart" aria-hidden="true"></i> {$order->get('Public ID')}</td>
+                <td class="button"  onclick="change_view('orders/{$order->get('Order Store Key')}/{$order->id}')" ><i class="fa fa-shopping-cart padding_right_5" aria-hidden="true"></i> {$order->get('Public ID')}</td>
             </tr>
 
-
+            {assign 'category' $invoice->get('Category Object') }
+            {if $category->id}
+            <tr class="date">
+                <td class="button"  onclick="change_view('invoices/category/{$category->id}')"  ><i class="fal fa-sitemap padding_right_5" ></i> {$category->get('Label')}</td>
+            </tr>
+            {/if}
             <tr class="date">
                 <td title="{$invoice->get('Date')}">{$invoice->get_date('Invoice Date')}</td>
             </tr>
@@ -196,6 +201,11 @@
                                 </td>
 
                             </tr>
+                            <tr data-field='parts' class="button pdf_option" onclick="check_field_value(this)">
+                                <td>
+                                    <i class="far {if $pdf_with_parts}fa-check-square{else}fa-square{/if}  margin_right_10"></i> <span class="discreet">{t}Parts{/t}</span>
+                                </td>
+                            </tr>
                             <tr data-field='commodity' class="button pdf_option" onclick="check_field_value(this)">
                                 <td>
                                     <i class="far {if $pdf_with_commodity}fa-check-square{else}fa-square{/if} margin_right_10"></i> <span {if !$pdf_with_commodity}class="discreet"{/if}>{t}Commodity codes{/t}</span>
@@ -204,18 +214,18 @@
                             </tr>
                             <tr data-field='barcode' class="button pdf_option" onclick="check_field_value(this)">
                                 <td>
-                                    <i class="far fa-square  margin_right_10"></i> <span class="discreet">{t}Product barcode{/t}</span>
+                                    <i class="far {if $pdf_with_barcode}fa-check-square{else}fa-square{/if}  margin_right_10"></i> <span class="discreet">{t}Product barcode{/t}</span>
                                 </td>
                             </tr>
                             <tr data-field='weight' class="button pdf_option" onclick="check_field_value(this)">
                                 <td>
-                                    <i class="far fa-square  margin_right_10"></i> <span class="discreet">{t}Weight{/t}</span>
+                                    <i class="far {if $pdf_with_weight}fa-check-square{else}fa-square{/if}  margin_right_10"></i> <span class="discreet">{t}Weight{/t}</span>
                                 </td>
                             </tr>
 
                             <tr data-field='origin' class="button pdf_option" onclick="check_field_value(this)">
                                 <td>
-                                    <i class="far fa-square  margin_right_10"></i> <span class="discreet">{t}Country of origin{/t}</span>
+                                    <i class="far {if $pdf_with_origin}fa-check-square{else}fa-square{/if}  margin_right_10"></i> <span class="discreet">{t}Country of origin{/t}</span>
                                 </td>
                             </tr>
                             <tr data-field='locale' class="button pdf_option {if !$pdf_show_locale_option}hide{/if}" onclick="check_field_value(this)">
@@ -230,6 +240,8 @@
                                 </td>
 
                             </tr>
+
+
                         </table>
 
 
@@ -237,6 +249,17 @@
 
                 </td>
             </tr>
+
+
+
+            {if isset($export_omega)}
+                <tr class="state " >
+                    <td>
+                        <span  class=" button" onclick="export_omega()"><i class="fa fa-omega"></i> Omega export</span>
+                    </td>
+
+                </tr>
+            {/if}
 
         </table>
 
@@ -262,6 +285,12 @@
         $('.pdf_invoice_dialog').removeClass('hide').offset({
             top: $(anchor_y).offset().top-1, left: $(anchor_x).offset().left-10
         })
+    }
+
+
+    function export_omega(){
+
+        window.open('/invoice.omega.txt.php?id={$invoice->id}', '_blank')
     }
 
 </script>

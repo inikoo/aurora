@@ -1364,7 +1364,13 @@ function order_items_in_process($_data, $db, $user, $account) {
             $average_sales_per_year_skos  = '&lang;'.number($data['Part 1 Year Acc Dispatched']).' SKOs/y&rang;';
 
 
-            $average_sales_per_year_cartons = '&lang;'.number($data['Part 1 Year Acc Dispatched'] / $data['Supplier Part Packages Per Carton']).' C/y&rang;';
+            if($data['Supplier Part Packages Per Carton']!=0){
+                $average_sales_per_year_cartons = '&lang;'.number($data['Part 1 Year Acc Dispatched'] / $data['Supplier Part Packages Per Carton']).' C/y&rang;';
+
+            }else{
+                $average_sales_per_year_cartons='';
+            }
+
 
 
             $description_units = $description_units.'<div style="margin-top:10px" >
@@ -1414,10 +1420,11 @@ function order_items_in_process($_data, $db, $user, $account) {
 			    </div>
 			</div>';
 
-            $description_cartons = $description_cartons.'<div style="margin-top:10px" >
+            if($data['Supplier Part Packages Per Carton']!=0){
+                $description_cartons = $description_cartons.'<div style="margin-top:10px" >
                        
                        <span style="display: inline-block; min-width: 50px;color:black" class="strong padding_right_10" title="'._('Stock (cartons)').'">'.number($data['Part Current On Hand Stock'] / $data['Supplier Part Packages Per Carton'])
-                .'<span class="small discreet">C.</span></span> '.$stock_status.'
+                    .'<span class="small discreet">C.</span></span> '.$stock_status.'
                         <span>'.$available_forecast.'</span>
                         <span class="discreet padding_left_10" title="'._('Cartons dispatched by year').'">'.$average_sales_per_year_cartons.'</span>
                     </div>
@@ -1437,13 +1444,23 @@ function order_items_in_process($_data, $db, $user, $account) {
 			        <div class="as_cell width_75">'.number($data['Part Quarter To Day Acc Dispatched'] / $data['Supplier Part Packages Per Carton']).'</div>
 			    </div>
 			</div>';
+            }
+
+
 
             $units_qty   = $data['Purchase Order Ordering Units'];
-            $skos_qty    = $units_qty / $data['Part Units Per Package'];
-            $cartons_qty = $skos_qty / $data['Supplier Part Packages Per Carton'];
+
+            if( $data['Part Units Per Package']!=0 and $data['Supplier Part Packages Per Carton']!=0){
+                $skos_qty    = $units_qty / $data['Part Units Per Package'];
+                $cartons_qty = $skos_qty / $data['Supplier Part Packages Per Carton'];
+            }else{
+                $skos_qty='';
+                $cartons_qty='';
+            }
 
 
-            if ($data['Purchase Order Ordering Units'] % ($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton']) != 0 or $data['Purchase Order Ordering Units'] % ($data['Part Units Per Package']) != 0) {
+
+            if ($data['Part Units Per Package'] ==0 or $data['Purchase Order Ordering Units'] % ($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton']) != 0 or $data['Purchase Order Ordering Units'] % ($data['Part Units Per Package']) != 0) {
                 $class = 'error';
             } else {
                 $class = '';
@@ -1598,6 +1615,13 @@ function order_items($_data, $db, $user, $account) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
+
+
+            if( $data['Part Units Per Package']==0){
+                continue;
+
+            }
+
 
 
             $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
@@ -1838,6 +1862,19 @@ function order_items($_data, $db, $user, $account) {
                 $quantity_skos    = '';
                 $quantity_cartons = '';
             }
+
+
+
+
+
+
+            $description_skos.= '<i  onclick="show_item_po_note(this)" class="item_po_note_new  very_discreet_on_hover  '.($data['Note to Supplier']==''?'':'hide').'   margin_left_10 fal fa-sticky-note button"></i> <i onclick="save_po_note(this)" class="item_po_note_save hide save fa fa-cloud"></i><div ><textarea  data-potfk="'.$data['Purchase Order Transaction Fact Key'].'" class="item_po_note hide"  style="height: 50px;width: 80%">'.$data['Note to Supplier'].'</textarea>  </div>
+
+<span style="background-color: yellow;padding:1px 10px"  onclick="show_item_po_note(this)" class="item_po_note_display button '.($data['Note to Supplier']==''?'hide':'').'">'.$data['Note to Supplier'].'</span>
+
+
+';
+
 
             $table_data[] = array(
 

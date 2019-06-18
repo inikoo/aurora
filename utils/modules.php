@@ -682,27 +682,31 @@ $modules = array(
                         )
                     ),
 
-                    'customer.insights' => array(
+
+                    'customer.insights'          => array(
                         'label' => _('Insights'),
                         'icon' => 'graduation-cap'
                     ),
-                    'customer.sent_emails' => array(
+                    'customer.sent_emails'       => array(
                         'label' => _('Sent emails'),
                         'icon' => 'paper-plane'
                     ),
-                    'customer.history' => array(
+
+                    'customer.history'           => array(
                         'label' => _('History, notes'),
                         'icon' => 'sticky-note'
                     ),
-                    'customer.orders' => array(
+
+                    'customer.orders'            => array(
                         'label' => _('Orders'),
                         'icon' => 'shopping-cart'
 
                     ),
-                    'customer.invoices' => array('label' => _('Invoices')),
-                    'customer.marketing' => array(
-                        'label' => _('Interests'),
-                        'title' => _("Customer's interests"),
+
+                    'customer.invoices'          => array('label' => _('Invoices')),
+                    'customer.marketing'         => array(
+                        'label'   => _('Interests'),
+                        'title'   => _("Customer's interests"),
                         'subtabs' => array(
 
                             'customer.marketing.products' => array(
@@ -733,7 +737,8 @@ $modules = array(
                         )
 
                     ),
-                    'customer.discounts' => array(
+
+                    'customer.deals'         => array(
                         'label' => _('Discounts'),
                         'icon' => 'tags'
                     ),
@@ -1282,13 +1287,15 @@ $modules = array(
                 'tabs' => array(
 
 
-                    'refund.new.items' => array(
-                        'label' => _(
-                            'Items'
-                        ),
-                        'icon' => 'bars'
-                    )
 
+                    'refund.new.items'     => array(
+                        'label' => _('Transactions'),
+                        'icon'  => 'bars'
+                    ),
+                    'refund.new.items_tax' => array(
+                        'label' => 'Transactions (Tax only)',
+                        'icon'  => 'bars'
+                    )
 
                 )
 
@@ -1531,7 +1538,7 @@ $modules = array(
 
                 )
             ),
-            'order'   => array(
+            'order'    => array(
                 'type' => 'object',
                 'tabs' => array(
 
@@ -2112,11 +2119,17 @@ $modules = array(
                         'label' => _('All invoices'),
                         'icon' => 'copy',
                         'reference' => 'invoices/all',
+                    ),
+                    'deleted_invoices_server'     => array(
+                        'label'     => _('All deleted invoices'),
+                        'icon'      => 'ban',
+                        'reference' => 'invoices/deleted/all',
                     )
 
                 )
 
             ),
+
 
             'payments' => array(
                 'type' => 'navigation',
@@ -2158,7 +2171,16 @@ $modules = array(
                 'label' => _('Credit vault') . ' (' . _('All') . ')',
                 'html_icon' => '<i class="fa fa-piggy-bank"></i>',
                 'reference' => 'credits/all',
-                'tabs' => array(
+
+                'tabs'      => array(
+
+                    'credits_group_by_store' => array(
+                        'label'     => _('Credits per store'),
+                        'icon'      => 'layer-group',
+                        'reference' => 'credits/per_store'
+                    ),
+
+
                     'account.credits' => array(
                         'label' => _('Credits'),
                         'icon' => 'university',
@@ -2178,10 +2200,9 @@ $modules = array(
                         'title' => _('Details')
                     ),
 
-                    'category.subjects' => array('label' => _('Invoices')),
-                    'category.categories' => array(
-                        'label' => _('Categories')
-                    ),
+
+                    'category.invoices' => array('label' => _('Invoices')),
+
                     'category.history' => array(
                         'title' => _('History'),
                         'label' => '',
@@ -2315,6 +2336,22 @@ $modules = array(
                 )
 
             ),
+            'deleted_invoice' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'deleted_invoice.items' => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+                    'invoice.history'       => array(
+                        'label' => _('History'),
+                        'icon'  => 'road'
+                    ),
+
+
+
+                )
+            ),
 
 
         ),
@@ -2389,7 +2426,19 @@ $modules = array(
 
                 )
             ),
+            'deleted_invoices' => array(
+                'type'      => 'navigation',
+                'label'     => _('Deleted invoices'),
+                'icon'      => 'ban',
+                'reference' => 'invoices/deleted/%s',
+                'tabs'      => array(
+                    'deleted_invoices'         => array(
+                        'label'             => _('Deleted invoices'),
+                        'icon'              => 'ban',
+                    ),
 
+                )
+            ),
             'payments' => array(
                 'type' => 'navigation',
                 'label' => _('Payments'),
@@ -2856,6 +2905,11 @@ $modules = array(
                     'webpage.templates' => 'webpage.templates',
 
 
+                    'user_notifications'             => 'store.notifications',
+                    'store.notifications_recipients' => 'store.notifications',
+                    'localization.materials' => 'store.localization',
+                    'localization.website'   => 'store.localization'
+
                 ),
 
                 'tabs' => array(
@@ -2952,16 +3006,28 @@ $modules = array(
                     'store.sales.plot' => array(
                         'label' => _('Plot')
                     ),
-                    'store.sales.history' => array(
-                        'label' => _('Sales history')
+
+                    'store.localization' => array(
+                        'label'   => _('Localization'),
+                        'icon'    => 'language',
+                        'subtabs' => array(
+
+                            'localization.materials' => array(
+                                'label' => _('Materials/Ingredients'),
+                                'icon'  => 'puzzle-piece',
+                            ),
+                            'localization.website'   => array(
+                                'label' => _('Website'),
+                                'icon'  => 'globe',
+                            ),
+
+
+                        ),
                     ),
-                    'store.sales.calendar' => array(
-                        'label' => _('Calendar')
-                    ),
-                    'store.sales.info' => array(
-                        'label' => '',
-                        'title' => _('Sales data info'),
-                        'icon_v2' => 'fal fa-fw fa-chess-clock',
+
+                    'store.history' => array(
+                        'label' => _('History'),
+                        'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
 
@@ -2983,6 +3049,7 @@ $modules = array(
                 )
 
             ),
+
 
 
             'services' => array(
@@ -3034,7 +3101,7 @@ $modules = array(
 
 
 
-            /*
+
 
             'website.new' => array(
                 'type' => 'new_object',
@@ -3048,7 +3115,7 @@ $modules = array(
                 )
 
             ),
-*/
+
 
 
             'no_website' => array(
@@ -3570,7 +3637,8 @@ $modules = array(
                             'field' => 'Number History Records'
                         ),
                     ),
-                    'campaign.details' => array(
+
+                    'campaign.details'                    => array(
                         'class' => 'right icon_only',
                         'label' => '',
                         'icon' => 'sliders-h',
@@ -4055,7 +4123,8 @@ $modules = array(
                         'icon' => 'sliders-h',
                         'title' => _('Settings')
                     ),
-                    'shipping_zone_schema.zones' => array(
+
+                    'shipping_zone_schema.zones'   => array(
                         'label' => _('Zones'),
                         'icon' => 'layer-group',
 
@@ -4095,7 +4164,7 @@ $modules = array(
 
                 )
             ),
-            'shipping_zone' => array(
+            'shipping_zone'        => array(
                 'type' => 'object',
 
 
@@ -4228,6 +4297,20 @@ $modules = array(
 
                 )
             ),
+            'store.new' => array(
+                'type'  => 'new_object',
+                'title' => _('New store'),
+                'tabs'  => array(
+                    'store.new' => array(
+                        'label' => _(
+                            'New store'
+                        )
+                    ),
+
+                )
+
+            ),
+
 
         )
     ),
@@ -4684,10 +4767,11 @@ $modules = array(
 
 
             'settings' => array(
-                'type' => 'navigation',
-                'label' => '',
-                'title' => _('Settings'),
-                'icon' => 'sliders',
+
+                'type'      => 'navigation',
+                'label'     => '',
+                'title'     => _('Settings'),
+                'icon'      => 'sliders-h',
                 'reference' => 'suppliers/settings',
                 'class' => 'icon_only right',
                 'tabs' => array(
@@ -7339,6 +7423,38 @@ $modules = array(
                 )
             ),
 
+            'profile_admin' => array(
+                'type'      => 'object',
+                'label'     => '',
+                'title'     => '',
+                'icon'      => '',
+                'reference' => '',
+                'tabs'      => array(
+                    'profile.details' => array(
+                        'label' => _('Settings'),
+                        'icon'  => 'sliders-h'
+                    ),
+
+                    'user.login_history' => array(
+                        'label' => _(
+                            'Login history'
+                        ),
+                        'icon'  => 'sign-in'
+                    ),
+
+
+                    'profile.history'       => array(
+                        'label' => '',
+                        'title' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+                
+
+
+                )
+            ),
+
             'profile.api_key.new' => array(
                 'type' => 'new_object',
                 'tabs' => array(
@@ -7348,7 +7464,39 @@ $modules = array(
 
                 )
             ),
+            'profile.api_key'     => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'user.api_key.details'  => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+                    'user.api_key.requests' => array(
+                        'label' => _('Requests'),
+                        'icon'  => 'arrow-circle-right'
+                    ),
+                    'user.api_key.history'  => array(
+                        'label' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
 
+                )
+            ),
+            'profile.deleted_api_key'  => array(
+                'type'     => 'object',
+                'showcase' => 'deleted_api_key',
+                'tabs'     => array(
+
+                    'api_key.history' => array(
+                        'label' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+
+                )
+            ),
 
         )
 
@@ -7903,8 +8051,9 @@ $modules = array(
             'fire' => array(
                 'type' => 'object',
                 'label' => _('Fire'),
-                'icon' => 'file',
-                'id' => 'not_found',
+
+                'icon'  => 'file',
+                'id'    => 'fire',
 
                 'tabs' => array(
                     'fire' => array(),

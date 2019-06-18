@@ -82,5 +82,22 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 },
 
 
+{
+name: "refund_percentage",
+label:'',
+html_label: '{t}% Ref{/t}',
+title: "{t}Percentage refunds{/t}",
+headerCell: rightHeaderHtmlCell,
+headerClass:"aright",
+
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='refund_percentage'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+},
+
+
 ]
 function change_table_view(view,save_state){}

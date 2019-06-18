@@ -548,7 +548,10 @@ function change_table_element(event, item) {
 
 function show_export_dialog_left_button(element) {
 
+
     var export_dialog =$(element).closest('div').next('.export_dialog_container').find('.export_dialog')
+
+
     if (export_dialog.hasClass('hide')) {
         export_dialog.removeClass('hide')
         export_dialog.css('top', $(element).closest('.square_button').height());
@@ -1041,7 +1044,9 @@ function edit_category_subject(element) {
 
 function post_table_rendered(el) {
 
-    //console.log(state.tab)
+    console.log('hello')
+    console.log(state.tab)
+
     switch (state.tab) {
 
         case 'order.input_picking_sheet':
@@ -1073,6 +1078,40 @@ function post_table_rendered(el) {
 
             console.log(el)
             // $('#nav_title').
+            break;
+        case 'refund.new.items':
+
+
+            $('.new_refund_item').each(function (i, obj) {
+                if ($(obj).val() != ''   ) {
+
+
+                    var error;
+
+
+                    if($(obj).val()!='' && validate_number($(obj).val(),0,$(obj).attr('max'))){
+                        $(obj).addClass('error')
+                        error=true;
+                    }else{
+                        $(this).removeClass('error')
+                        error=false;
+                    }
+
+                    var    feedback_element    = $(obj).closest('tr').find('.set_otf_feedback_button').removeClass('hide')
+
+                    if( $(obj).val()>0 && !error){
+                        feedback_element.removeClass('hide')
+                    }else{
+                        feedback_element.addClass('hide')
+                    }
+
+                    update_new_refund_totals()
+
+
+                }
+
+            });
+
             break;
 
 

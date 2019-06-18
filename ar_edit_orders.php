@@ -31,7 +31,6 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 
-
 switch ($tipo) {
 
     case 'data_entry_picking_aid':
@@ -69,7 +68,8 @@ switch ($tipo) {
         $data = prepare_values(
             $_REQUEST, array(
                          'key'          => array('type' => 'key'),
-                         'transactions' => array('type' => 'json array'),
+                         'transactions' => array('type' => 'json array')
+
                      )
         );
         create_replacement($data, $editor, $smarty, $db, $account, $user);
@@ -94,7 +94,18 @@ switch ($tipo) {
         );
 
         create_refund($data, $editor, $smarty, $db, $account, $user);
+        break;
+    case 'create_refund_tax_only':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key'          => array('type' => 'key'),
+                         'transactions' => array('type' => 'json array'),
 
+
+                     )
+        );
+
+        create_refund_tax_only($data, $editor, $smarty, $db, $account, $user);
 
         break;
 
@@ -227,10 +238,10 @@ switch ($tipo) {
 
                      )
         );
-        set_charges_as_auto($data, $editor);
+        set_hanging_charges_as_auto($data, $editor);
         break;
 
-    case 'set_charges_value':
+    case 'set_hanging_charges_value':
         $data = prepare_values(
             $_REQUEST, array(
                          'order_key' => array('type' => 'key'),
@@ -238,7 +249,7 @@ switch ($tipo) {
 
                      )
         );
-        set_charges_value($data, $editor);
+        set_hanging_charges_value($data, $editor);
         break;
     case 'edit_item_discount':
         $data = prepare_values(
@@ -308,6 +319,44 @@ switch ($tipo) {
         set_po_transaction_amount_to_current_cost($data, $editor, $account, $db);
         break;
 
+    case 'toggle_charge':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parent_key' => array('type' => 'key'),
+                         'parent'     => array('type' => 'string'),
+                         'charge_key' => array('type' => 'key'),
+                         'operation'  => array('type' => 'string'),
+
+                     )
+        );
+        toggle_charge($data, $editor, $smarty, $db, $account, $user);
+        break;
+
+    case 'toggle_deal_component_choose_by_customer':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'order_key'          => array('type' => 'key'),
+                         'deal_component_key' => array('type' => 'key'),
+                         'product_id'         => array('type' => 'key'),
+                         'otdb_key'           => array('type' => 'otdb_key'),
+
+
+                     )
+        );
+        toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, $account, $user);
+        break;
+
+    case 'update_po_item_note':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'potf_key' => array('type' => 'key'),
+                         'note'     => array('type' => 'string'),
+
+
+                     )
+        );
+        update_po_item_note($data, $editor, $smarty, $db, $account, $user);
+        break;
 
     default:
         $response = array(
@@ -319,6 +368,28 @@ switch ($tipo) {
         break;
 }
 
+
+function update_po_item_note($data, $editor, $smarty, $db, $account, $user) {
+
+
+    $note = trim(strip_tags($data['note']));
+
+    $sql = sprintf(
+        'update  `Purchase Order Transaction Fact` set `Note to Supplier`=%s where `Purchase Order Transaction Fact Key`=%d      ', prepare_mysql($note),
+
+        $data['potf_key']
+    );
+
+
+    $db->exec($sql);
+    $response = array(
+        'state' => 200,
+        'note'  => $note
+    );
+    echo json_encode($response);
+    exit;
+
+}
 
 function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
 
@@ -352,16 +423,14 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
     }
 
 
-    if($data['parent']=='production_part'){
+    if ($data['parent'] == 'production_part') {
         $transaction_data = $parent->update_bill_of_materials($data);
 
 
-    }else{
+    } else {
         $transaction_data = $parent->update_item($data);
 
     }
-
-
 
 
     $discounts_data = array();
@@ -419,7 +488,14 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
             exit;
         }
 
+        $update_metadata                 = $parent->get_update_metadata();
+        $update_metadata['deleted_otfs'] = $parent->deleted_otfs;
+        $update_metadata['new_otfs']     = $parent->new_otfs;
 
+
+    } else {
+
+        $update_metadata = $parent->get_update_metadata();
     }
 
 
@@ -433,7 +509,7 @@ function edit_item_in_order($account, $db, $user, $editor, $data, $smarty) {
         $response = array(
             'state'            => 200,
             'transaction_data' => $transaction_data,
-            'metadata'         => $parent->get_update_metadata(),
+            'metadata'         => $update_metadata,
             'discounts_data'   => $discounts_data
         );
     }
@@ -464,6 +540,7 @@ function set_shipping_value($data, $editor) {
             'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
             'To_Pay_Amount'                 => $order->get('To Pay Amount'),
             'Payments_Amount'               => $order->get('Payments Amount'),
+            'To_Pay_Amount_Absolute'        => $order->get('To Pay Amount Absolute'),
 
 
             'Order_Number_items' => $order->get('Number Items')
@@ -511,6 +588,7 @@ function set_shipping_as_auto($data, $editor) {
             'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
             'To_Pay_Amount'                 => $order->get('To Pay Amount'),
             'Payments_Amount'               => $order->get('Payments Amount'),
+            'To_Pay_Amount_Absolute'        => $order->get('To Pay Amount Absolute'),
 
 
             'Order_Number_items' => $order->get('Number Items')
@@ -537,14 +615,14 @@ function set_shipping_as_auto($data, $editor) {
 }
 
 
-function set_charges_value($data, $editor) {
+function set_hanging_charges_value($data, $editor) {
 
 
     $order         = get_object('order', $data['order_key']);
     $order->editor = $editor;
 
 
-    $order->update_charges_amount($data['amount']);
+    $order->update_hanging_charges_amount($data['amount']);
 
 
     $metadata = array(
@@ -560,6 +638,7 @@ function set_charges_value($data, $editor) {
             'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
             'To_Pay_Amount'                 => $order->get('To Pay Amount'),
             'Payments_Amount'               => $order->get('Payments Amount'),
+            'To_Pay_Amount_Absolute'        => $order->get('To Pay Amount Absolute'),
 
 
             'Order_Number_items' => $order->get('Number Items')
@@ -569,7 +648,6 @@ function set_charges_value($data, $editor) {
         'state_index' => $order->get('State Index'),
         'to_pay'      => $order->get('Order To Pay Amount'),
         'total'       => $order->get('Order Total Amount'),
-        'charges'     => $order->get('Order Charges Net Amount'),
         'charges'     => $order->get('Order Charges Net Amount'),
 
 
@@ -585,7 +663,7 @@ function set_charges_value($data, $editor) {
 
 }
 
-function set_charges_as_auto($data, $editor) {
+function set_hanging_charges_as_auto($data, $editor) {
 
 
     $order         = get_object('order', $data['order_key']);
@@ -607,6 +685,7 @@ function set_charges_as_auto($data, $editor) {
             'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
             'To_Pay_Amount'                 => $order->get('To Pay Amount'),
             'Payments_Amount'               => $order->get('Payments Amount'),
+            'To_Pay_Amount_Absolute'        => $order->get('To Pay Amount Absolute'),
 
 
             'Order_Number_items' => $order->get('Number Items')
@@ -616,7 +695,6 @@ function set_charges_as_auto($data, $editor) {
         'state_index' => $order->get('State Index'),
         'to_pay'      => $order->get('Order To Pay Amount'),
         'total'       => $order->get('Order Total Amount'),
-        'charges'     => $order->get('Order Charges Net Amount'),
         'charges'     => $order->get('Order Charges Net Amount'),
 
 
@@ -859,7 +937,7 @@ function new_payment($data, $editor, $db, $account, $user) {
             'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
             'To_Pay_Amount'                 => $order->get('To Pay Amount'),
             'Payments_Amount'               => $order->get('Payments Amount'),
-
+            'To_Pay_Amount_Absolute'        => $order->get('To Pay Amount Absolute'),
 
             'Order_Number_items' => $order->get('Number Items')
 
@@ -1290,7 +1368,38 @@ function create_refund($data, $editor, $smarty, $db) {
     $object->editor = $editor;
 
 
-    $refund = $object->create_refund(gmdate('Y-m-d H:i:s'),$data['transactions']);
+    $refund = $object->create_refund(gmdate('Y-m-d H:i:s'), $data['transactions']);
+
+
+    if ($refund->id) {
+        $response = array(
+            'state'      => 200,
+            'refund_key' => $refund->id,
+            'order_key'  => $refund->get('Invoice Order Key'),
+            'store_key'  => $refund->get('Store Key')
+
+        );
+    } else {
+        $response = array(
+            'state' => 400,
+            'msg'   => $object->msg
+        );
+    }
+
+
+    echo json_encode($response);
+
+}
+
+
+function create_refund_tax_only($data, $editor, $smarty, $db) {
+
+
+    $object         = get_object('order', $data['key']);
+    $object->editor = $editor;
+
+
+    $refund = $object->create_refund(gmdate('Y-m-d H:i:s'), $data['transactions'], true);
 
 
     if ($refund->id) {
@@ -1563,9 +1672,7 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
     $sql      = sprintf(
         'SELECT PL.`Location Key` as pl_ok  ,ITF.`Location Key`, sum(`Required`+`Given`) AS required ,group_concat(`Inventory Transaction Key`) as itf_keys 
         FROM `Inventory Transaction Fact` ITF    LEFT JOIN  `Part Location Dimension` PL ON  (ITF.`Location Key`=PL.`Location Key` and ITF.`Part SKU`=PL.`Part SKU`)
-        WHERE   `Delivery Note Key`=%d  and  ITF.`Part SKU`=%d  group by `Location Key` ',
-        $data['metadata']['delivery_note_key'],
-        $data['metadata']['part_sku']
+        WHERE   `Delivery Note Key`=%d  and  ITF.`Part SKU`=%d  group by `Location Key` ', $data['metadata']['delivery_note_key'], $data['metadata']['part_sku']
     );
 
 
@@ -1573,13 +1680,12 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
         foreach ($result as $row) {
 
 
-
             $itf_data[$row['Location Key']] = array(
                 'required' => $row['required'],
                 'picked'   => 0,
                 'pending'  => $row['required'],
                 'itf_keys' => $row['itf_keys'],
-                'pl_ok'=>$row['pl_ok']
+                'pl_ok'    => $row['pl_ok']
             );
 
 
@@ -1592,38 +1698,21 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
     }
 
 
-
     $part = get_object('part', $data['metadata']['part_sku']);
     foreach ($part->get_locations('part_location_object', '', true) as $part_location) {
 
 
         $locations .= '<div style="height: 32px">'.get_delivery_note_fast_track_packing_item_location(
 
-                'Yes',
-                $total_required - $total_picked,
-                $part_location->get('Quantity On Hand'),
-                $date,
-                $part_location->location->id,
-                $part_location->location->get('Code'),
-                $part_location->part->get('Part Current On Hand Stock'),
-                1,
-                $part_location->part->sku,
-                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
-                $data['metadata']['delivery_note_key']
+                'Yes', $total_required - $total_picked, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock'), 1, $part_location->part->sku,
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $data['metadata']['delivery_note_key']
             ).'</div>';
 
         $picked_offline_input .= '<div style="margin-bottom: 4px">'.get_delivery_note_fast_track_packing_input(
-                'Yes',
-                $total_required,
-                $total_picked,
-                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),
-                ($part_location->get('Can Pick') == 'Yes' ? (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['pending'] : 0) : 0),
-                $part_location->get('Quantity On Hand'),
+                'Yes', $total_required, $total_picked, (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),
+                ($part_location->get('Can Pick') == 'Yes' ? (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['pending'] : 0) : 0), $part_location->get('Quantity On Hand'),
 
-                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
-                $part_location->part->sku,
-                $part_location->part->get('Part Current On Hand Stock'),
-                $part_location->location->id
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $part_location->part->sku, $part_location->part->get('Part Current On Hand Stock'), $part_location->location->id
             ).'</div>';
 
     }
@@ -1655,8 +1744,7 @@ function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $a
     $itf_data = array();
     $sql      = sprintf(
         'SELECT `Location Key`,sum(`Picked`) as picked,  sum(`Required`+`Given`) AS required ,group_concat(`Inventory Transaction Key`) as itf_keys FROM `Inventory Transaction Fact` ITF   WHERE   `Delivery Note Key`=%d  and  ITF.`Part SKU`=%d  group by `Location Key` ',
-        $data['metadata']['delivery_note_key'],
-        $data['metadata']['part_sku']
+        $data['metadata']['delivery_note_key'], $data['metadata']['part_sku']
     );
 
     if ($result = $db->query($sql)) {
@@ -1691,30 +1779,15 @@ function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $a
         // $itf_key,$delivery_note_key ) {
 
         $locations .= '<div style="height: 32px">'.get_item_location(
-                $total_required - $total_picked,
-                $part_location->get('Quantity On Hand'),
-                $date,
-                $part_location->location->id,
-                $part_location->location->get('Code'),
-                $part_location->part->get('Part Current On Hand Stock'),
-                $part_location->part->get('Part SKO Barcode'),
-                1,
-                $part_location->part->sku,
-                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
-                $data['metadata']['delivery_note_key']
+                $total_required - $total_picked, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock'), $part_location->part->get('Part SKO Barcode'),
+                1, $part_location->part->sku, (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $data['metadata']['delivery_note_key']
             ).'</div>';
         //function get_picked_offline_input($total_required,$total_picked,$picked_in_location, $quantity_on_location, $itf_key, $part_sku,  $part_stock) {
         $picked_offline_input .= '<div style="margin-bottom: 4px">'.get_picked_offline_input(
-                $total_required,
-                $total_picked,
-                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),
-                ($part_location->get('Can Pick') == 'Yes' ? (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['pending'] : 0) : 0),
-                $part_location->get('Quantity On Hand'),
+                $total_required, $total_picked, (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),
+                ($part_location->get('Can Pick') == 'Yes' ? (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['pending'] : 0) : 0), $part_location->get('Quantity On Hand'),
 
-                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
-                $part_location->part->sku,
-                $part_location->part->get('Part Current On Hand Stock'),
-                $part_location->location->id
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $part_location->part->sku, $part_location->part->get('Part Current On Hand Stock'), $part_location->location->id
             ).'</div>';
 
     }
@@ -1733,7 +1806,6 @@ function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $a
 
 
 function data_entry_picking_aid($data, $editor, $smarty, $db, $account) {
-
 
 
     include_once 'utils/data_entry_picking_aid.class.php';
@@ -1772,4 +1844,251 @@ function data_entry_picking_aid($data, $editor, $smarty, $db, $account) {
 }
 
 
-?>
+function toggle_charge($data, $editor, $smarty, $db, $account, $user) {
+
+    $order = get_object($data['parent'], $data['parent_key']);
+    if (!$order->id) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'Order not found',
+        );
+
+        echo json_encode($response);
+        exit;
+    }
+
+    $charge = get_object('Charge', $data['charge_key']);
+    if (!$charge->id) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'Charge not found',
+        );
+
+        echo json_encode($response);
+        exit;
+    }
+
+    if ($charge->get('Store Key') != $order->get('Store Key')) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'Charge not in same store as order',
+        );
+
+        echo json_encode($response);
+        exit;
+    }
+
+
+    if ($data['operation'] == 'add_charge') {
+
+        $transaction_data = $order->add_charge($charge);
+
+
+    } else {
+        $transaction_data = $order->remove_charge($charge);
+
+
+    }
+
+
+    $metadata = array(
+
+        'class_html'  => array(
+            'Order_State'                   => $order->get('State'),
+            'Items_Net_Amount'              => $order->get('Items Net Amount'),
+            'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
+            'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
+            'Total_Net_Amount'              => $order->get('Total Net Amount'),
+            'Total_Tax_Amount'              => $order->get('Total Tax Amount'),
+            'Total_Amount'                  => $order->get('Total Amount'),
+            'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
+            'To_Pay_Amount'                 => $order->get('To Pay Amount'),
+            'Payments_Amount'               => $order->get('Payments Amount'),
+
+
+            'Order_Number_items' => $order->get('Number Items')
+
+        ),
+        //  'operations'    => $operations,
+        'state_index' => $order->get('State Index'),
+        'to_pay'      => $order->get('Order To Pay Amount'),
+        'total'       => $order->get('Order Total Amount'),
+        'charges'     => $order->get('Order Charges Net Amount'),
+
+
+    );
+
+
+    $response = array(
+        'state'            => 200,
+        'metadata'         => $metadata,
+        'operation'        => $data['operation'],
+        'transaction_data' => $transaction_data
+    );
+    echo json_encode($response);
+
+
+}
+
+function toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, $account, $user) {
+
+
+    $sql = sprintf('select * from `Order Transaction Deal Bridge` where `Order Transaction Deal Key`=%d ', $data['otdb_key']);
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+
+            if ($row['Product ID'] == $data['product_id']) {
+                $response = array(
+                    'state' => 400,
+                    'msg'   => 'nothing to change'
+                );
+
+                echo json_encode($response);
+                exit;
+            }
+
+
+            $deal_component = get_object('DealComponent', $data['deal_component_key']);
+
+            $allowance_data = json_decode($deal_component->get('Deal Component Allowance'), true);
+
+
+            if (!array_key_exists($data['product_id'], $allowance_data['options'])) {
+
+                $response = array(
+                    'state' => 400,
+                    'msg'   => 'product not in offer'
+                );
+
+                echo json_encode($response);
+                exit;
+            }
+            $order = get_object('Order', $data['order_key']);
+
+            $product = get_object('Product', $data['product_id']);
+
+
+            $customer = get_object('Customer', $order->get('Order Customer Key'));
+            $customer->fast_update_json_field('Customer Metadata', 'DC_'.$deal_component->id, $product->id);
+
+            //  $sql=sprintf('update `Order Transaction Fact` set `Product ID`  ')
+
+
+            $deal = get_object('Deal', $deal_component->get('Deal Component Deal Key'));
+
+
+            $deal_info = sprintf(
+                "%s: %s, %s", ($deal->get('Deal Name Label') == '' ? _('Offer') : $deal->get('Deal Name Label')), (!empty($deal->get('Deal Term Label')) ? $deal->get('Deal Term Label') : ''), $deal_component->get('Deal Component Allowance Label')
+
+            );
+
+
+            $deal_info .= ' <span class="highlight"><i class="fa fa-plus-square padding_left_10"></i> '.sprintf('%d %s', $allowance_data['qty'], $product->get('Code')).'</span>';
+
+
+            $sql = sprintf(
+                'update `Order Transaction Deal Bridge` set `Product ID`=%d,`Product Key`=%d,`Category Key`=%d,`Order Transaction Deal Metadata`=%s,`Deal Info`=%s where `Order Transaction Deal Key`=%d  ', $product->id, $product->get('Product Current Key'),
+                $product->get('Product Family Category Key'), prepare_mysql('{"selected": "'.$product->id.'"}'), prepare_mysql($deal_info), $data['otdb_key']
+            );
+
+            $db->exec($sql);
+
+
+            global $_locale;
+
+
+            if ($product->get('Product Availability State') == 'OnDemand') {
+                $stock = _('On demand');
+
+            } else {
+
+                if (is_numeric($product->get('Product Availability'))) {
+                    $stock = number($product->get('Product Availability'));
+                } else {
+                    $stock = '?';
+                }
+            }
+
+
+            $units    = $product->get('Product Units Per Case');
+            $name     = $product->get('Product Name');
+            $price    = $product->get('Product Price');
+            $currency = $product->get('Product Currency');
+
+
+            $description = '';
+            if ($units > 1) {
+                $description = number($units).'x ';
+            }
+            $description .= ' '.$name;
+            if ($price > 0) {
+                $description .= ' ('.money($price, $currency, $_locale).')';
+            }
+
+
+            $description .= ' <span style="color:#777">['.$stock.']</span> '.$deal_info;
+
+
+            $sql = sprintf(
+                'update `Order Transaction Fact` set `Product ID`=%d,`Product Key`=%d,`Product Code`=%s,`Estimated Weight`=%f,`OTF Category Family Key`=%d,`OTF Category Department Key`=%d  where `Order Transaction Fact Key`=%d  ', $product->id,
+                $product->get('Product Current Key'), prepare_mysql($product->get('Product Code')), $product->get('Product Package Weight'), $product->get('Product Family Category Key'), $product->get('Product Department Category Key'),
+                $row['Order Transaction Fact Key']
+            );
+
+            $db->exec($sql);
+
+
+            $transaction_deal_data = array(
+                'otf_key'     => $row['Order Transaction Fact Key'],
+                'product_id'  => $product->id,
+                'Code'        => sprintf('<span class="link" onclick="change_view(\'/products/%d/%d\')">%s</span>', $order->get('Order Store Key'), $product->id, $product->get('Product Code')),
+                'Description' => $description
+
+            );
+
+
+            $metadata = array(
+
+                'class_html'  => array(
+                    'Order_State'                   => $order->get('State'),
+                    'Items_Net_Amount'              => $order->get('Items Net Amount'),
+                    'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
+                    'Charges_Net_Amount'            => $order->get('Charges Net Amount'),
+                    'Total_Net_Amount'              => $order->get('Total Net Amount'),
+                    'Total_Tax_Amount'              => $order->get('Total Tax Amount'),
+                    'Total_Amount'                  => $order->get('Total Amount'),
+                    'Total_Amount_Account_Currency' => $order->get('Total Amount Account Currency'),
+                    'To_Pay_Amount'                 => $order->get('To Pay Amount'),
+                    'Payments_Amount'               => $order->get('Payments Amount'),
+
+
+                    'Order_Number_items' => $order->get('Number Items')
+
+                ),
+                //  'operations'    => $operations,
+                'state_index' => $order->get('State Index'),
+                'to_pay'      => $order->get('Order To Pay Amount'),
+                'total'       => $order->get('Order Total Amount'),
+                'charges'     => $order->get('Order Charges Net Amount'),
+
+
+            );
+
+
+            $response = array(
+                'state'                 => 200,
+                'metadata'              => $metadata,
+                'transaction_deal_data' => $transaction_deal_data
+            );
+            echo json_encode($response);
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+}

@@ -50,15 +50,35 @@ $object_fields = array(
         )
     ),
     array(
-        'label'      => _('Estimated delivery'),
+        'label'      => _('Estimated procession dates'),
         'show_title' => true,
+        'class'=>($object->get('State Index')==10?'hide':''),
+
         'fields'     => array(
 
             array(
 
 
+                'id'   => 'Purchase_Order_Estimated_Production_Date',
+                'edit' => ($edit ? 'date' : ''),
+                'render'=>($object->get('State Index')==10?false:true),
+
+                'time'            => '00:00:00',
+                'value'           => $object->get('Purchase Order Estimated Production Date'),
+                'formatted_value' => $object->get('Estimated Production Date'),
+                'label'           => ucfirst($object->get_field_label('Purchase Order Estimated Production Date')),
+                'invalid_msg'     => get_invalid_message('date'),
+                'required'        => false,
+                'type'            => 'value'
+
+
+            ),
+            array(
+
+
                 'id'   => 'Purchase_Order_Estimated_Receiving_Date',
                 'edit' => ($edit ? 'date' : ''),
+                'render'=>($object->get('State Index')==10?false:true),
 
                 'time'            => '00:00:00',
                 'value'           => $object->get('Purchase Order Estimated Receiving Date'),
@@ -75,7 +95,24 @@ $object_fields = array(
         )
     ),
     array(
-        'label'      => _('Delivery rules'),
+        'label'      => _('Payment terms'),
+        'show_title' => true,
+        'fields'     => array(
+
+
+            array(
+                'id'              => 'payment_terms',
+                'edit'            => ($edit ? 'string' : ''),
+                'value'           => htmlspecialchars($object->get('payment terms')),
+                'formatted_value' => $object->get('payment terms'),
+                'label'           => ucfirst($object->get_field_label('payment terms')),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+        )
+    ),
+    array(
+        'label'      => _('Delivery terms'),
         'show_title' => true,
         'fields'     => array(
 
@@ -86,7 +123,7 @@ $object_fields = array(
                 'edit'            => ($edit ? 'option' : ''),
                 'options'         => $options_Incoterm,
                 'value'           => htmlspecialchars(
-                    $object->get('Purchase Order Incoterm')
+                    $object->get(' v')
                 ),
                 'formatted_value' => $object->get('Incoterm'),
                 'label'           => ucfirst(
@@ -139,8 +176,63 @@ $object_fields = array(
 
         )
     ),
+    array(
+        'label'      => _('Labels'),
+        'show_title' => true,
+        'fields'     => array(
+
+            array(
+                'id'              => 'Purchase_Order_Terms_and_Conditions',
+                'edit'            => ($edit ? 'editor' : ''),
+                'class'           => 'editor',
+                'editor_data'     => array(
+                    'id'      => 'Purchase_Order_Terms_and_Conditions',
+                    'content' => $object->get('Purchase Order Terms and Conditions'),
+
+                    'data' => base64_encode(
+                        json_encode(
+                            array(
+                                'mode'     => 'edit_object',
+                                'field'    => 'Purchase_Order_Terms_and_Conditions',
+                                'plugins'  => array(
+                                    'align',
+                                    'draggable',
+                                    'image',
+                                    'link',
+                                    'save',
+                                    'entities',
+                                    'emoticons',
+                                    'fullscreen',
+                                    'lineBreaker',
+                                    'table',
+                                    'codeView',
+                                    'codeBeautifier'
+                                ),
+                                'metadata' => array(
+                                    'tipo'   => 'edit_field',
+                                    'object' => 'PurchaseOrder',
+                                    'key'    => $object->id,
+                                    'field'  => 'Purchase Order Terms and Conditions',
+
+
+                                )
+                            )
+                        )
+                    )
+
+                ),
+                'value'           => $object->get('Purchase Order Terms and Conditions'),
+                'formatted_value' => $object->get('Terms and Conditions'),
+                'label'           => ucfirst($object->get_field_label('Purchase Order Terms and Conditions')
+                ),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+
+        )
+    ),
 
 );
 
 
-?>
+

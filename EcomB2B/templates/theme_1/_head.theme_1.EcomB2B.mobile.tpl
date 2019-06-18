@@ -10,6 +10,7 @@
 *}<!DOCTYPE HTML>
 <html lang="en">
 <head>
+
     {if !isset($is_devel) or !$is_devel  }
 
     {if  $client_tag_google_manager_id!=''}
@@ -107,9 +108,9 @@
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
     {if !isset($is_devel) or !$is_devel  }
-        <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
+        <script src="https://browser.sentry-cdn.com/5.3.0/bundle.min.js" crossorigin="anonymous"></script>
         <script>
-            Sentry.init({ dsn: 'https://28ce49c599e44d48a66d94aa954f639e@sentry.io/1433844', release: "au-web@1.0" });
+            Sentry.init({ dsn: 'https://ca602819cbd14ce99a6d3ab94e1c5f04@sentry.io/1329969', release: "au-web@1.0" });
         </script>
     {/if}
 

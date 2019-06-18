@@ -13,9 +13,6 @@
 function get_order_showcase($data, $smarty, $user, $db) {
 
 
-
-
-
     require_once 'utils/geography_functions.php';
 
     if (!$data['_object']->id) {
@@ -25,29 +22,40 @@ function get_order_showcase($data, $smarty, $user, $db) {
 
     $order = $data['_object'];
     $store = get_object('store', $order->get('Store Key'));
+    $order->update_order_estimated_weight();
 
-    $order->update_order_payments();
+    // $order->update_order_payments();
+    //$order->update_totals();
+    /*
+            $order->update_totals();
+            $order->update_discounts_items();
+            $order->update_totals();
+            $order->update_shipping(false, false);
+            $order->update_charges(false, false);
+            $order->update_discounts_no_items();
+            $order->update_deal_bridge();
 
-
+    */
 
     $smarty->assign('order', $order);
     $smarty->assign('store', $store);
     $smarty->assign('customer', get_object('customer', $order->get('Customer Key')));
-
+    if ($order->get('Order Delivery Note Key')) {
+        $smarty->assign('delivery_note', get_object('DeliveryNote', $order->get('Order Delivery Note Key')));
+    }
 
     $smarty->assign(
-        'object_data',
-                         json_encode(
-                             array(
-                                 'object'              => $data['object'],
-                                 'key'                 => $data['key'],
-                                 'symbol'              => currency_symbol($order->get('Order Currency')),
-                                 'tax_rate'            => $order->get('Order Tax Rate'),
-                                 'available_to_refund' => $order->get('Order Total Amount'),
-                                 'tab'                 => $data['tab'],
-                                 'order_type'          => 'Order'
-                             )
+        'object_data', json_encode(
+                         array(
+                             'object'              => $data['object'],
+                             'key'                 => $data['key'],
+                             'symbol'              => currency_symbol($order->get('Order Currency')),
+                             'tax_rate'            => $order->get('Order Tax Rate'),
+                             'available_to_refund' => $order->get('Order Total Amount'),
+                             'tab'                 => $data['tab'],
+                             'order_type'          => 'Order'
                          )
+                     )
 
     );
 
@@ -61,16 +69,49 @@ function get_order_showcase($data, $smarty, $user, $db) {
     }
     $smarty->assign('pdf_with_commodity', $pdf_with_commodity);
 
-    if($store->get('Store Locale')!='en_GB'){
+    if ($store->get('Store Locale') != 'en_GB') {
         $pdf_show_locale_option = true;
-    }else{
+    } else {
         $pdf_show_locale_option = false;
 
     }
     $smarty->assign('pdf_show_locale_option', $pdf_show_locale_option);
 
-    $pdf_with_rrp=true;
+
+    if ($store->settings('invoice_show_rrp') == 'Yes') {
+        $pdf_with_rrp = true;
+    } else {
+        $pdf_with_rrp = false;
+    }
     $smarty->assign('pdf_with_rrp', $pdf_with_rrp);
+
+    if ($store->settings('invoice_show_parts') == 'Yes') {
+        $pdf_with_parts = true;
+    } else {
+        $pdf_with_parts = false;
+    }
+    $smarty->assign('pdf_with_parts', $pdf_with_parts);
+
+    if ($store->settings('invoice_show_barcode') == 'Yes') {
+        $pdf_with_barcode = true;
+    } else {
+        $pdf_with_barcode = false;
+    }
+    $smarty->assign('pdf_with_barcode', $pdf_with_barcode);
+
+    if ($store->settings('invoice_show_weight') == 'Yes') {
+        $pdf_with_weight = true;
+    } else {
+        $pdf_with_weight = false;
+    }
+    $smarty->assign('pdf_with_weight', $pdf_with_weight);
+
+    if ($store->settings('invoice_show_origin') == 'Yes') {
+        $pdf_with_origin = true;
+    } else {
+        $pdf_with_origin = false;
+    }
+    $smarty->assign('pdf_with_origin', $pdf_with_origin);
 
 
     if ($data['section'] == 'refund.new') {
@@ -83,7 +124,7 @@ function get_order_showcase($data, $smarty, $user, $db) {
 
         return $smarty->fetch('showcase/replacement.new.tpl');
 
-    }elseif ($data['section'] == 'return.new') {
+    } elseif ($data['section'] == 'return.new') {
         $smarty->assign('zero_amount', money(0, $store->get('Store Currency Code')));
 
         return $smarty->fetch('showcase/return.new.tpl');

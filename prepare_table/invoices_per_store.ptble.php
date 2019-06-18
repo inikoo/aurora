@@ -10,13 +10,6 @@
 */
 
 
-
-
-
-
-//$where_interval_working_hours='';
-
-
 $where = " where true   ";
 
 
@@ -58,48 +51,30 @@ $_dir   = $order_direction;
 if ($order == 'store') {
     $order = '`Store Code`';
 }elseif ($order == 'invoices') {
-    $order = 'invoices';
+    $order = '`Store Invoices`';
 }elseif ($order == 'refunds') {
-    $order = 'refunds';
-}elseif ($order == 'refund_amount') {
-    $order = 'refunds_amount_oc';
-}elseif ($order == 'revenue') {
-    $order = 'revenue_oc ';
-}elseif ($order == 'profit') {
-    $order = 'profit_oc';
-}elseif ($order == 'customers') {
-    $order = ' customers ';
+    $order = '`Store Refunds`';
+}elseif ($order == 'refund_percentage') {
+    $order = '(`Store Refunds`/(`Store Refunds`+`Store Invoices`))';
 }else{
 
     $order='`Store Code`';
 }
 
 
-$group_by
-    = 'group by `Store Key`';
+$group_by = '';
 
-$table = '`Store Dimension` S   left join  `Invoice Dimension` I  on (`Store Key`=`Invoice Store Key`)    ';
+$table = '`Store Dimension` S   left join  `Store Data` SD  on (S.`Store Key`=SD.`Store Key`)    ';
 
 $fields = "
-`Store Key`,`Store Code`,`Store Name`,`Store Currency Code`,sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(if(`Invoice Type`='Refund',1,0)) as refunds,
-sum(if(`Invoice Type`='Refund',`Invoice Total Net Amount`* `Invoice Currency Exchange`,0)) refunds_amount_oc,
-sum(`Invoice Total Net Amount` * `Invoice Currency Exchange`) revenue_oc,
-sum(`Invoice Total Profit` * `Invoice Currency Exchange`) profit_oc,
-
-sum(if(`Invoice Type`='Refund',`Invoice Total Net Amount`,0)) refunds_amount,
-sum(`Invoice Total Net Amount` ) revenue,
-sum(`Invoice Total Profit` ) profit,
-
-count(distinct `Invoice Customer Key`) customers
+S.`Store Key`,`Store Code`,`Store Name`,`Store Currency Code`,`Store Invoices`,`Store Refunds`, (`Store Refunds`/(`Store Refunds`+`Store Invoices`)) as refund_percentage
 
 
 
 ";
 
 
-$sql_totals = "select count(Distinct `Store Key` )  as num from $table  $where  ";
+$sql_totals = "select count(* )  as num from $table  $where  ";
 
 //print $sql_totals;
 
-
-?>

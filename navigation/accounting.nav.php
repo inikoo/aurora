@@ -43,9 +43,9 @@ function get_accounting_server_dashboard_navigation($data, $user, $smarty) {
 function get_payments_navigation($data, $user, $smarty, $db) {
 
 
-    $right_buttons = array();
-    $left_buttons  = array();
-    $search_placeholder=_('Search payments');
+    $right_buttons      = array();
+    $left_buttons       = array();
+    $search_placeholder = _('Search payments');
 
 
     switch ($data['parent']) {
@@ -150,8 +150,8 @@ function get_payments_navigation($data, $user, $smarty, $db) {
                 }
 
 
-                $title = _('Payments').' <span class="id" title="'.$store->get('Name').'">'.$store->get('Code').'</span>';
-                $search_placeholder=_('Search payments').' '.$data['_parent']->get('Code');
+                $title              = _('Payments').' <span class="id" title="'.$store->get('Name').'">'.$store->get('Code').'</span>';
+                $search_placeholder = _('Search payments').' '.$data['_parent']->get('Code');
 
                 $sections['payments']['selected'] = true;
 
@@ -383,17 +383,14 @@ function get_payment_service_provider_navigation($data, $user, $smarty, $db) {
 
 function get_payment_account_navigation($data, $user, $smarty, $db) {
 
-    $search_placeholder= _('Search invoices');
+    $search_placeholder = _('Search invoices');
 
     $object        = $data['_object'];
     $left_buttons  = array();
     $right_buttons = array();
 
 
-
     if ($data['parent']) {
-
-
 
 
         switch ($data['parent']) {
@@ -599,7 +596,7 @@ function get_payment_account_navigation($data, $user, $smarty, $db) {
 
             }
 
-            $search_placeholder.=' '.$data['_parent']->get('code');
+            $search_placeholder .= ' '.$data['_parent']->get('code');
 
 
         } elseif ($data['parent'] == 'payment_service_provider') {
@@ -1154,7 +1151,7 @@ function get_payment_navigation($data, $user, $smarty, $db) {
     $left_buttons  = array();
     $right_buttons = array();
 
-    $search_placeholder=_('Search payments');
+    $search_placeholder = _('Search payments');
 
 
     if ($data['parent']) {
@@ -1460,7 +1457,7 @@ function get_payment_navigation($data, $user, $smarty, $db) {
                 );
 
             }
-            $search_placeholder.=' '.$data['store']->get('Code');
+            $search_placeholder .= ' '.$data['store']->get('Code');
 
 
         } elseif ($data['parent'] == 'store') {
@@ -1510,7 +1507,7 @@ function get_payment_navigation($data, $user, $smarty, $db) {
                 );
 
             }
-            $search_placeholder.=' '.$data['_parent']->get('Code');
+            $search_placeholder .= ' '.$data['_parent']->get('Code');
 
 
         }
@@ -1820,6 +1817,55 @@ function get_invoices_server_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+function get_deleted_invoices_server_navigation($data, $smarty, $user, $db, $account) {
+
+
+    $block_view = $data['section'];
+
+
+    $sections = get_sections('accounting_server', 'all');
+
+    switch ($block_view) {
+
+        case 'deleted_invoices_server':
+            $sections_class = '';
+            $title          = _('Deleted invoices').' ('._('All stores').')';
+
+            $button_label = _('Deleted invoices %s');
+            break;
+
+
+    }
+
+    $left_buttons = array();
+
+
+    $right_buttons = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+
+    $_content = array(
+        'sections_class' => $sections_class,
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search invoices')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
 
 function get_invoices_categories_server_navigation($data, $smarty, $user, $db, $account) {
 
@@ -1881,6 +1927,7 @@ function get_invoices_category_server_navigation($data, $smarty, $user, $db, $ac
 
     $sections = get_sections('accounting_server', 'all');
 
+
     $sections_class = '';
 
     if ($data['_object']->get('Category Branch Type') == 'Root') {
@@ -1891,7 +1938,7 @@ function get_invoices_category_server_navigation($data, $smarty, $user, $db, $ac
         $up_button = array(
             'icon'      => 'arrow-up',
             'title'     => _("Invoice's categories"),
-            'reference' => 'invoices/all/categories'
+            'reference' => 'invoices/category/all'
         );
 
 
@@ -1906,7 +1953,7 @@ function get_invoices_category_server_navigation($data, $smarty, $user, $db, $ac
     // $up_button=array('icon'=>'arrow-up', 'title'=>_("Order's index"), 'reference'=>'account/orders');
 
 
-    $sections['categories']['selected'] = true;
+    $sections['invoices']['selected'] = true;
 
 
     $_content = array(
@@ -1945,8 +1992,6 @@ function get_invoices_navigation($data, $smarty, $user, $db, $account) {
     $block_view = $data['section'];
 
 
-
-
     $sections = get_sections('accounting', $store->id);
     switch ($block_view) {
 
@@ -1954,7 +1999,7 @@ function get_invoices_navigation($data, $smarty, $user, $db, $account) {
             $sections_class = '';
             $title          = _('Invoices').' <span class="id">'.$store->get('Store Code').'</span>';
 
-            $up_button    = array(
+            $up_button = array(
                 'icon'      => 'arrow-up',
                 'title'     => _('Invoices').' ('._('All stores').')',
                 'reference' => 'invoices/all'
@@ -1965,7 +2010,7 @@ function get_invoices_navigation($data, $smarty, $user, $db, $account) {
             $sections_class = '';
             $title          = _('Payments').' <span class="id">'.$store->get('Store Code').'</span>';
 
-            $up_button    = array(
+            $up_button = array(
                 'icon'      => 'arrow-up',
                 'title'     => _('Payments').' ('._('All stores').')',
                 'reference' => 'invoices/payments/all'
@@ -2026,7 +2071,7 @@ function get_invoices_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-    $search_placeholder= _('Search invoices').' '.$store->get('Code');
+    $search_placeholder = _('Search invoices').' '.$store->get('Code');
 
 
     $right_buttons = array();
@@ -2057,5 +2102,931 @@ function get_invoices_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
+function get_deleted_invoices_navigation($data, $smarty, $user, $db, $account) {
 
-?>
+
+    switch ($data['parent']) {
+        case 'store':
+            $store = get_object('Store', $data['parent_key']);
+            break;
+        default:
+
+            break;
+    }
+
+    $block_view = $data['section'];
+
+
+    $sections = get_sections('accounting', $store->id);
+    switch ($block_view) {
+
+        case 'deleted_invoices':
+            $sections_class = '';
+            $title          = _('Deleted invoices').' <span class="id">'.$store->get('Store Code').'</span>';
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _('Deleted invoices').' ('._('All stores').')',
+                'reference' => 'invoices/deleted/all'
+            );
+            break;
+
+
+    }
+
+    $left_buttons = array();
+    if ($user->stores > 1) {
+
+        list($prev_key, $next_key) = get_prev_next($store->id, $user->stores);
+
+        $sql = sprintf(
+            "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $prev_key
+        );
+
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $prev_title = _('Store').' '.$row['Store Code'];
+            } else {
+                $prev_title = '';
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $next_key
+        );
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $next_title = _('Store').' '.$row['Store Code'];
+            } else {
+                $next_title = '';
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        $left_buttons[] = array(
+            'icon'      => 'arrow-left',
+            'title'     => $prev_title,
+            'reference' => 'invoices/deleted/'.$prev_key
+        );
+        $left_buttons[] = $up_button;
+
+        $left_buttons[] = array(
+            'icon'      => 'arrow-right',
+            'title'     => $next_title,
+            'reference' => 'invoices/deleted//'.$next_key
+        );
+    }
+
+
+    $search_placeholder = _('Search invoices').' '.$store->get('Code');
+
+
+    $right_buttons = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+
+    $_content = array(
+        'sections_class' => $sections_class,
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => $search_placeholder
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+function get_invoice_navigation($data, $smarty, $user, $db, $account) {
+
+    $search_placeholder = _('Search invoices');
+
+
+    $object        = $data['_object'];
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    if ($data['parent']) {
+
+        switch ($data['parent']) {
+            case 'customer':
+                $tab      = 'customer.orders';
+                $_section = 'customers';
+                break;
+            case 'store':
+                $tab      = 'invoices';
+                $_section = 'invoices';
+                break;
+            case 'account':
+                $tab      = 'invoices';
+                $_section = 'invoices';
+                break;
+            case 'order':
+                $tab      = 'order.invoices';
+                $_section = 'orders';
+                break;
+            case 'delivery_note':
+                $tab      = 'delivery_note.invoices';
+                $_section = 'delivery_notes';
+                break;
+        }
+
+        if (isset($_SESSION['table_state'][$tab])) {
+            $number_results  = $_SESSION['table_state'][$tab]['nr'];
+            $start_from      = 0;
+            $order           = $_SESSION['table_state'][$tab]['o'];
+            $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
+            $f_value         = $_SESSION['table_state'][$tab]['f_value'];
+            $parameters      = $_SESSION['table_state'][$tab];
+        } else {
+
+            $default = $user->get_tab_defaults($tab);
+
+            $number_results           = $default['rpp'];
+            $start_from               = 0;
+            $order                    = $default['sort_key'];
+            $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
+            $f_value                  = '';
+            $parameters               = $default;
+            $parameters['parent']     = $data['parent'];
+            $parameters['parent_key'] = $data['parent_key'];
+
+        }
+
+
+        include_once 'prepare_table/'.$tab.'.ptble.php';
+        $_order_field       = $order;
+        $order              = preg_replace('/^.*\.`/', '', $order);
+        $order              = preg_replace('/^`/', '', $order);
+        $order              = preg_replace('/`$/', '', $order);
+        $_order_field_value = $object->get($order);
+
+
+        $prev_title = '';
+        $next_title = '';
+        $prev_key   = 0;
+        $next_key   = 0;
+        $sql        = trim($sql_totals." $wheref");
+
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch()) {
+                if ($row2['num'] > 1) {
+
+
+                    $sql = sprintf(
+                        "select `Invoice Public ID` object_name,I.`Invoice Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND I.`Invoice Key` < %d))  order by $_order_field desc , I.`Invoice Key`desc limit 1",
+
+                        prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+                    );
+
+                    if ($result = $db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $prev_key   = $row['object_key'];
+                            $prev_title = _("Invoice").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+                        }
+                    } else {
+                        print_r($error_info = $db->errorInfo());
+                        print $sql;
+                        exit;
+                    }
+
+
+                    $sql = sprintf(
+                        "select `Invoice Public ID` object_name,I.`Invoice Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND I.`Invoice Key` > %d))  order by $_order_field   , I.`Invoice Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+                    );
+
+                    if ($result = $db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $next_key   = $row['object_key'];
+                            $next_title = _("Invoice").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+                        }
+                    } else {
+                        print_r($error_info = $db->errorInfo());
+                        exit;
+                    }
+
+
+                    if ($order_direction == 'desc') {
+                        $_tmp1      = $prev_key;
+                        $_tmp2      = $prev_title;
+                        $prev_key   = $next_key;
+                        $prev_title = $next_title;
+                        $next_key   = $_tmp1;
+                        $next_title = $_tmp2;
+                    }
+
+
+                }
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        if ($data['parent'] == 'customer') {
+
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Customer").' '.$object->get(
+                        'Order Customer Name'
+                    ),
+                'reference' => 'customers/'.$object->get(
+                        'Order Store Key'
+                    ).'/'.$object->get('Order Customer Key')
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'customer/'.$object->get(
+                            'Order Customer Key'
+                        ).'/order/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'customer/'.$object->get('Order Customer Key').'/order/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $sections = get_sections(
+                'customers', $object->get('Order Store Key')
+            );
+
+
+        } elseif ($data['parent'] == 'store') {
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Invoices").' ('.$data['_parent']->get('Code').')',
+                'reference' => 'invoices/'.$data['parent_key']
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'invoices/'.$data['parent_key'].'/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'invoices/'.$data['parent_key'].'/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+            $sections           = get_sections('accounting', $data['parent_key']);
+            $search_placeholder .= ' '.$data['_parent']->get('Code');
+
+
+        } elseif ($data['parent'] == 'account') {
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Invoices").' ('._('All stores').')',
+                'reference' => 'invoices/all'
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'invoice/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'invoice/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+            $sections = get_sections('accounting_server', '');
+
+
+        } elseif ($data['parent'] == 'order') {
+            $order     = new Order($data['parent_key']);
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Order").' ('.$order->get(
+                        'Order Public ID'
+                    ).')',
+                'reference' => '/orders/'.$order->get(
+                        'Order Store Key'
+                    ).'/'.$data['parent_key']
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'order/'.$data['parent_key'].'/invoice/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'order/'.$data['parent_key'].'/invoice/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+            $sections = get_sections('orders', $order->get('Order Store Key'));
+
+
+        } elseif ($data['parent'] == 'delivery_note') {
+            $delivery_note = new DeliveryNote($data['parent_key']);
+            $up_button     = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Delivery Note").' ('.$delivery_note->get(
+                        'Delivery Note ID'
+                    ).')',
+                'reference' => '/delivery_notes/'.$delivery_note->get('Delivery Note Store Key').'/'.$data['parent_key']
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'delivery_note/'.$data['parent_key'].'/invoice/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'delivery_note/'.$data['parent_key'].'/invoice/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+            $sections = get_sections(
+                'orders', $delivery_note->get('Delivery Note Store Key')
+            );
+
+
+        }
+    } else {
+
+
+    }
+
+
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+    if ($object->get('Invoice Type') == 'Refund') {
+
+        if ($object->get('Invoice Tax Type') == 'Tax_Only') {
+            $title = _('Tax refund').' <span class="id Invoice_Public_ID">'.$object->get('Invoice Public ID').'</span>';
+
+        } else {
+            $title = _('Refund').' <span class="id Invoice_Public_ID">'.$object->get('Invoice Public ID').'</span>';
+
+        }
+
+
+    } else {
+        $title = _('Invoice').' <span class="id Invoice_Public_ID">'.$object->get('Invoice Public ID').'</span>';
+
+    }
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => $search_placeholder
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+function get_deleted_invoice_navigation($data, $smarty, $user, $db, $account) {
+
+    $search_placeholder = _('Search invoices');
+
+
+    $object        = $data['_object'];
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    if ($data['parent']) {
+
+        switch ($data['parent']) {
+            case 'customer':
+                $tab      = 'customer.orders';
+                $_section = 'customers';
+                break;
+            case 'store':
+                $tab      = 'deleted_invoices';
+                $_section = 'deleted_invoices';
+                break;
+            case 'account':
+                $tab      = 'deleted_invoices_server';
+                $_section = 'invoices';
+                break;
+            case 'order':
+                $tab      = '';
+                $_section = 'orders';
+                break;
+            case 'delivery_note':
+                $tab      = 'delivery_note.invoices';
+                $_section = 'delivery_notes';
+                break;
+        }
+
+
+
+        $prev_title = '';
+        $next_title = '';
+        $prev_key   = 0;
+        $next_key   = 0;
+
+        if($tab!='') {
+            if (isset($_SESSION['table_state'][$tab])) {
+                $number_results  = $_SESSION['table_state'][$tab]['nr'];
+                $start_from      = 0;
+                $order           = $_SESSION['table_state'][$tab]['o'];
+                $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
+                $f_value         = $_SESSION['table_state'][$tab]['f_value'];
+                $parameters      = $_SESSION['table_state'][$tab];
+            } else {
+
+                $default = $user->get_tab_defaults($tab);
+
+                $number_results           = $default['rpp'];
+                $start_from               = 0;
+                $order                    = $default['sort_key'];
+                $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
+                $f_value                  = '';
+                $parameters               = $default;
+                $parameters['parent']     = $data['parent'];
+                $parameters['parent_key'] = $data['parent_key'];
+
+            }
+
+
+            include_once 'prepare_table/'.$tab.'.ptble.php';
+            $_order_field       = $order;
+            $order              = preg_replace('/^.*\.`/', '', $order);
+            $order              = preg_replace('/^`/', '', $order);
+            $order              = preg_replace('/`$/', '', $order);
+            $_order_field_value = $object->get($order);
+
+
+            $prev_title = '';
+            $next_title = '';
+            $prev_key   = 0;
+            $next_key   = 0;
+            $sql        = trim($sql_totals." $wheref");
+
+
+            $sql = sprintf(
+                "select `Invoice Deleted Public ID` object_name,I.`Invoice Deleted Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND I.`Invoice Deleted Key` < %d))  order by $_order_field desc , I.`Invoice Deleted Key`desc limit 1",
+
+                prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+            );
+
+            if ($result = $db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $prev_key   = $row['object_key'];
+                    $prev_title = _("Deleted invoice").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                print $sql;
+                exit;
+            }
+
+
+            $sql = sprintf(
+                "select `Invoice Deleted Public ID` object_name,I.`Invoice Deleted Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND I.`Invoice Deleted Key` > %d))  order by $_order_field   , I.`Invoice Deleted Key`  limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+            );
+
+            if ($result = $db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $next_key   = $row['object_key'];
+                    $next_title = _("Deleted invoice").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+
+            if ($order_direction == 'desc') {
+                $_tmp1      = $prev_key;
+                $_tmp2      = $prev_title;
+                $prev_key   = $next_key;
+                $prev_title = $next_title;
+                $next_key   = $_tmp1;
+                $next_title = $_tmp2;
+            }
+
+        }
+
+
+        if ($data['parent'] == 'customer') {
+
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Customer").' '.$object->get(
+                        'Order Customer Name'
+                    ),
+                'reference' => 'customers/'.$object->get(
+                        'Order Store Key'
+                    ).'/'.$object->get('Order Customer Key')
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'customer/'.$object->get(
+                            'Order Customer Key'
+                        ).'/order/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'customer/'.$object->get('Order Customer Key').'/order/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $sections = get_sections(
+                'customers', $object->get('Order Store Key')
+            );
+
+
+        } elseif ($data['parent'] == 'store') {
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Deleted invoices").' ('.$data['_parent']->get('Code').')',
+                'reference' => 'invoices/deleted/'.$data['parent_key']
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'invoices/deleted/'.$data['parent_key'].'/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'invoices/deleted/'.$data['parent_key'].'/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+            $sections           = get_sections('accounting', $data['parent_key']);
+            $search_placeholder .= ' '.$data['_parent']->get('Code');
+
+
+        } elseif ($data['parent'] == 'account') {
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Deleted invoices").' ('._('All stores').')',
+                'reference' => 'invoices/deleted/all'
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'invoices/deleted/all/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'invoices/deleted/all/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+            $sections = get_sections('accounting_server', '');
+
+
+        } elseif ($data['parent'] == 'order') {
+            $order     = new Order($data['parent_key']);
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Order").' ('.$order->get(
+                        'Order Public ID'
+                    ).')',
+                'reference' => '/orders/'.$order->get(
+                        'Order Store Key'
+                    ).'/'.$data['parent_key']
+            );
+
+
+            $left_buttons[] = $up_button;
+
+
+
+
+            $sections = get_sections('orders', $order->get('Order Store Key'));
+
+
+        } elseif ($data['parent'] == 'delivery_note') {
+            $delivery_note = new DeliveryNote($data['parent_key']);
+            $up_button     = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Delivery Note").' ('.$delivery_note->get(
+                        'Delivery Note ID'
+                    ).')',
+                'reference' => '/delivery_notes/'.$delivery_note->get('Delivery Note Store Key').'/'.$data['parent_key']
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'delivery_note/'.$data['parent_key'].'/invoice/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'delivery_note/'.$data['parent_key'].'/invoice/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+            $sections = get_sections(
+                'orders', $delivery_note->get('Delivery Note Store Key')
+            );
+
+
+        }
+    } else {
+
+
+    }
+
+
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+    if ($object->get('Invoice Type') == 'Refund') {
+        $title = _('Deleted refund').' <span class="strong error Invoice_Public_ID">'.$object->get('Invoice Public ID').'</span>';
+
+    } else {
+        $title = _('Deleted invoice').' <span class="strong error Invoice_Public_ID">'.$object->get('Invoice Public ID').'</span>';
+
+    }
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => '<span class="error">'.$title.'</span>',
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => $search_placeholder
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}

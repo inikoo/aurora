@@ -585,6 +585,68 @@
                     {if $part->get('Part Barcode Key')}
                         <i class="discreet_on_hover button fal fa-external-link-square" onClick="change_view('inventory/barcode/{$part->get('Part Barcode Key')}')"></i>
                     {/if}
+                    <span onclick="download_label()" class="link download_a4_label  "  target="_blank" title="{t}Commercial unit label in A4{/t}" data-href="/asset_label.php?object=part&key={$part->id}&type=" data-type="unit_EL30" ><i class="fal fa-th fa-fw padding_right_5" ></i></span>
+
+
+
+                        <span onclick="open_a4_label_chooser()" class="a4_label button italic">EL30</span>
+
+                    <div class="a4_label_chooser hide" style="width:200px;position: absolute;padding:10px 10px 20px 20px ;background-color:#fff;border:1px solid #ccc;z-index:2000">
+
+                        <i onclick="close_a4_label_chooser()" style="" class="fa fa-window-close button"></i>
+
+                        <input class="a4_label_selected_type" type="hidden"  value="EL30" >
+
+                        <div style="clear:both:margin-top:20px;padding-top:10px">
+
+                        <select class="a4_labels_options small" style="width: 500px;margin-top:40px">
+                            {foreach from=$a4_labels_options item=label}
+                                <option value="{$label.code}" {if $label.code=='EL30'}selected="selected"{/if} >{$label.description}</option>
+                            {/foreach}
+
+
+                        </select>
+                        </div>
+
+                        <script>
+                            $('.a4_labels_options').niceSelect();
+
+                            $( ".a4_labels_options" ).on('change',
+                                function() {
+
+                                    var value=$( ".a4_labels_options option:selected" ).val();
+                                    $('.a4_label_selected_type').val(value)
+
+
+                                    $('.download_a4_label').data('type','unit_'+value)
+                                    $('.a4_label').html(value)
+
+
+                                    $('.a4_label_chooser').addClass('hide')
+
+                                });
+                            function open_a4_label_chooser(){
+                                $('.a4_label_chooser').removeClass('hide')
+                            }
+
+                            function close_a4_label_chooser(){
+                                $('.a4_label_chooser').addClass('hide')
+                            }
+
+                            function download_label(){
+                                window.open($('.download_a4_label').data('href')+$('.download_a4_label').data('type'), '_blank');
+                            }
+
+
+                        </script>
+
+
+                    </div>
+
+
+
+
+
                 </td>
 
 

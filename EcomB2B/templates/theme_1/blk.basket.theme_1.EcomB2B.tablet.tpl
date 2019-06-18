@@ -13,7 +13,8 @@
 {if isset($data.top_margin)}{assign "top_margin" $data.top_margin}{else}{assign "top_margin" "30"}{/if}
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 {assign "items_data" $order->get_items()}
-
+{assign "interactive_charges_data" $order->get_interactive_charges_data()}
+{assign "interactive_deal_component_data" $order->get_interactive_deal_component_data()}
 
 <div id="block_{$key}"  class="clear content {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
 
@@ -149,41 +150,19 @@
 
 
 
-                <table class="order_items">
-                    <thead>
-                    <tr >
-                        <th colspan="2" class="text-left padding_left_10">{t}Items{/t}</th>
+        {assign "voucher_info" $order->voucher_formatted_info()}
 
-                    </tr>
-                    </thead>
-                    <tbody>
+        <div class="container order basket   " style="margin-bottom: 20px">
+            <span class="basket_order_items">
+            {include file="theme_1/_order_items.theme_1.EcomB2B.tablet.tpl" edit=true hide_title=true   items_data=$items_data }
+            </span>
+            <div style="margin-top:5px">
+                {$voucher_info}
 
-                    {foreach from=$items_data item="item" }
-
-                        <tr>
-                            <td style="text-align: left">{$item.code_description}</td>
-                            <td style="min-width: 10em;" >
-
-                                {if $item.state=='Out of Stock in Basket'}
-                                    0
-                                {else}
-                                    <div class="mobile_ordering"  data-settings='{ "pid":{$item.pid},"basket":true }'>
-                                        <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
-                                        <input  type="number" min="0" value="{$item.qty_raw}" class="needsclick order_qty">
-                                        <i onclick="save_item_qty_change(this)" class="hide ordering_button save fa fa-save fa-fw color-blue-dark"></i>
-                                        <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
-                                    </div>
-                                {/if}
-                            </td>
+            </div>
 
 
-                            <td style="min-width: 5em;" class="text-right">{$item.amount}</td>
-                        </tr>
-
-
-                    {/foreach}
-                    </tbody>
-                </table>
+        </div>
 
 
 
@@ -202,17 +181,34 @@
 
 
 
+                    {assign "voucher_code" $order->get_voucher_code()}
+
+
+
+
+
                     <section >
 
-                        <div class="row"   style="display:none"  >
+                        <div class="row"  id="voucher"  style="">
                             <section class="col col-6">
                                 <label class="input">
-                                    <i class="icon-append fa fa-tag"></i>
-                                    <input type="text" name="name" id="name" placeholder="{$data._voucher}">
+
+                                    <input type="text" name="voucher_code" id="voucher_code"  value="{$voucher_code}"  data-old_value="{$voucher_code}" placeholder="{$data._voucher}">
+                                    <i class="icon-append fa fa-money-bill-wave"></i>
                                 </label>
                             </section>
                             <section class="col col-6">
-                                <button style="margin:0px" type="submit" class="button">{$data._voucher_label}</button>
+                                <button  style="margin:0px;display: none" type="submit" class="button "
+                                         data-add_label="{if empty($data._voucher_label)}{t}Add Voucher{/t}{else}{$data._voucher_label}{/if}"
+                                         data-update_label="{if empty($data._change_voucher_label)}{t}Update Voucher{/t}{else}{$data._change_voucher_label}{/if}"
+                                         data-remove_label="{if empty($data._remove_voucher_label)}{t}Remove Voucher{/t}{else}{$data._remove_voucher_label}{/if}"
+                                >
+                                    <span>
+                                    {if $voucher_code==''}
+                                        {if empty($data._voucher_label)}{t}Add Voucher{/t}{else}{$data._voucher_label}{/if}
+                                    {else}
+                                        {if empty($data._change_voucher_label)}{t}Update Voucher{/t}{else}{$data._change_voucher_label}{/if}
+                                    {/if}</span> <i style="margin-left: 5px" class=" fa fa-fw {if $voucher_code==''}fa-plus{else}fa-sync-alt{/if}"></i> </button>
 
                             </section>
                         </div>
@@ -221,7 +217,6 @@
 
 
                     </section>
-
 
                     <section style="border: none">
                                 <label class="textarea">
@@ -544,6 +539,114 @@
     });
 
 
+
+
+
+
+    $(document).on('input propertychange,change', '#voucher_code', function (evt) {
+
+
+        var button = $('#voucher .button')
+
+        button.css({ 'display': 'block'})
+
+        if ($(this).data('old_value') != '') {
+            if ($(this).val() == '') {
+                button.find('span').html(button.data('remove_label'))
+                button.find('i').addClass('fa-trash-alt').removeClass('fa-sync-alt fa-plus')
+            } else {
+                button.find('span').html(button.data('update_label'))
+                button.find('i').addClass('fa-sync-alt').removeClass('fa-trash-alt fa-plus')
+
+            }
+        }
+
+
+    });
+
+
+    $(document).on('click', "#voucher .button", function(ev){
+
+
+
+        var button=$(this)
+
+
+        if( button.hasClass('wait')){
+            return;
+        }
+
+        button.addClass('wait')
+        button.find('i').addClass('fa-spin fa-spinner')
+
+        var input=$(this).closest('div').find('input')
+
+        var voucher=input.val()
+
+
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'update_voucher')
+        ajaxData.append("voucher",voucher)
+
+
+
+
+
+        $.ajax({
+            url: "/ar_web_voucher.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+            complete: function () {
+            }, success: function (data) {
+
+
+                if (data.state == '200') {
+
+
+                    switch (data.action) {
+                        case 'deleted':
+
+                            button.find('span').html(button.data('add_label'))
+                            button.find('i').addClass('fa-plus').removeClass('fa-trash-alt fa-sync-alt')
+                            input.val('').data('old_value','')
+                            button.css({ 'display': 'none'})
+                            location.reload();
+                            break;
+                        case 'add':
+
+                            button.find('span').html(button.data('update_label'))
+                            button.find('i').addClass('fa-sync-alt').removeClass('fa-trash-alt fa-plus')
+                            button.css({ 'display': 'block'})
+                            location.reload();
+                            break;
+                    }
+
+
+                    for (var key in data.metadata.class_html) {
+
+
+                        $('.' + key).html(data.metadata.class_html[key])
+                    }
+
+
+
+
+
+
+                } else if (data.state == '400') {
+                    swal("{t}Error{/t}!", data.msg, "error")
+                }
+
+
+                button.removeClass('wait')
+                button.find('i').removeClass('fa-spinner fa-spin')
+            }, error: function () {
+                button.removeClass('wait')
+                button.find('i').removeClass('fa-spinner fa-spin')
+            }
+        });
+
+    });
 
 
 

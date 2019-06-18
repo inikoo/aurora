@@ -364,7 +364,7 @@ function pageviews($_data, $db, $user) {
             'type'  => $type,
 
             'page_key' => $data['Page Key'],
-            'site_key' => $data['Page Site Key'],
+            'site_key' => $data['Webpage Website Key'],
             'date'     => strftime(
                 "%a %e %b %Y %H:%M:%S %Z", strtotime($data['Date'])
             ),

@@ -162,12 +162,12 @@
             <tbody class="data">
             <tr class="{$record.class} small_row">
                 <td class="label" ><span class=" {if isset($record.label.view) and $record.label.view!='' }link{/if}"
-                            {if isset($record.label.view) and $record.label.view!='' }onclick="change_view('{$record.label.view}')" {/if}
+                            {if isset($record.label.view) and $record.label.view!='' }onclick="change_view('{$record.label.view}', {  parameters:{ period:'{$period}',elements_type:'type'} ,element:{ type:{ Refund:1,Invoice:1}}  {if $type=='invoice_categories'},tab:'category.invoices'{/if}  })" {/if}
                                          title="{if isset($record.label.title)}{$record.label.title}{else}{$record.label.label}{/if} ">{$record.label.label}</span>  {if !empty($record.label.representatives_link_label)}<span id="representatives_link_{$record.id}" title="{t}Sales representative reports{/t}" class=" margin_left_10">{$record.label.representatives_link_label}</span>{/if} </td>
 
 
                 <td id="orders_overview_refunds_{$record.id}"
-                    {if isset($record.refunds.view) and $record.label.view!='' }onclick="change_view('{$record.refunds.view}' , { parameters:{ period:'{$period}',elements_type:'type' } ,element:{ type:{ Refund:1,Invoice:''}} } )" {/if}
+                    {if isset($record.refunds.view) and $record.label.view!='' }onclick="change_view('{$record.refunds.view}' , { parameters:{ period:'{$period}',elements_type:'type'} ,element:{ type:{ Refund:1,Invoice:''}} {if $type=='invoice_categories'},tab:'category.invoices'{/if} } )" {/if}
                     class="link refunds width_1500 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}">{$record.refunds.value}</td>
                 <td id="orders_overview_refunds_delta_{$record.id}"
                     class="refunds width_100 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}"
@@ -187,7 +187,7 @@
                     class="last replacements width_100 aright {if $type!='delivery_notes'}hide{/if}"
                     title="{$record.replacements_1yb}/{$record.delivery_notes_1yb}">{$record.replacements_percentage_1yb}</td>
                 <td id="orders_overview_invoices_{$record.id}"
-                    {if isset($record.invoices.view) and $record.invoices.view!='' }onclick="change_view('{$record.invoices.view}' , { parameters:{ period:'{$period}',elements_type:'type' } ,element:{ type:{ Refund:'',Invoice:1}} } )" {/if}
+                    {if isset($record.invoices.view) and $record.invoices.view!='' }onclick="change_view('{$record.invoices.view}' , { parameters:{ period:'{$period}',elements_type:'type' } ,element:{ type:{ Refund:'',Invoice:1}} {if $type=='invoice_categories'},tab:'category.invoices'{/if} } )" {/if}
                     class="link invoices width_150 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}">{$record.invoices.value}</td>
                 <td id="orders_overview_invoices_delta_{$record.id}"
                     class="invoices width_100 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}"

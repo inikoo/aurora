@@ -14,6 +14,7 @@
 function currency_conversion($db, $currency_from, $currency_to, $update_interval = "-1 hour") {
 
 
+
     require 'keyring/currency_exchange_api_keys.php';
 
     $currency_from = strtoupper($currency_from);
@@ -27,12 +28,16 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
     $exchange = '1';// <-- recipe for disaster is just a fail over if is not internet during development
     $source   = 'FailOver';
 
+
+
+
     $sql = sprintf(
         "SELECT * FROM kbase.`Currency Exchange Dimension` WHERE `Currency Pair`=%s", prepare_mysql($currency_from.$currency_to)
     );
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
+
 
             $date1 = $row['Currency Exchange Last Updated'];
             $date2 = gmdate("Y-m-d H:i:s", strtotime('now '.$update_interval));
@@ -53,6 +58,11 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
     $api_keys = $currency_exhange_api_keys['apilayer'];
     shuffle($api_keys);
     $api_key = reset($api_keys);
+
+
+
+
+
     $contents = json_decode(file_get_contents(sprintf('http://www.apilayer.net/api/live?access_key=%s&format=1&currencies=%s,%s', $api_key, $currency_from, $currency_to)), true);
 
     if (!empty($contents['quotes']['USD'.$currency_from]) and !empty($contents['quotes']['USD'.$currency_to])) {

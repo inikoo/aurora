@@ -64,11 +64,22 @@ name: "refund_net",
 label: "{t}To re-send{/t}",
 defaultOrder:1,
 editable: false,
-sortType: "toggle",
-{if $sort_key=='refund_net'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+sortable:false,
 cell: Backgrid.HtmlCell.extend({ className: "aright width_100"} ),
 headerCell: integerHeaderCell
-}
+},
+{
+name: "feedback",
+label: "{t}Feedback{/t}",
+sortable:false,
+editable: false,
+cell: Backgrid.HtmlCell.extend({ className: "aright min_width_120"} ),
+headerCell: integerHeaderCell
+
+},
+
+
+
 ]
 
 

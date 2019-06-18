@@ -111,10 +111,10 @@
             <div class="discount_card"  key="{$item->id}">
                 <span class="discount_icon">{$item->get('Deal Component Icon')}</span>
 
-                <span contenteditable="true" class="discount_name">{$item->get('Deal Component Name Label')}</span><br/>
-                <span contenteditable="true" class="discount_term">{$item->get('Deal Component Term Label')}</span>
+                <span xcontenteditable="true" class="discount_name">{$item->get('Deal Name Label')}</span><br/>
+                <span xcontenteditable="true" class="discount_term">{$item->get('Deal Term Label')}</span>
 
-                <span contenteditable="true" class="discount_allowance">{$item->get('Deal Component Allowance Label')}</span>
+                <span xcontenteditable="true" class="discount_allowance">{$item->get('Deal Component Allowance Label')}</span>
 
             </div>
 

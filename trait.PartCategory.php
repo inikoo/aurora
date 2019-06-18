@@ -65,8 +65,8 @@ trait PartCategory {
             $update_sql = $this->db->prepare($sql);
             $update_sql->execute();
             if ($update_sql->rowCount()) {
-                $timeseries->update(
-                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                $timeseries->fast_update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
                 );
 
             }
@@ -78,8 +78,8 @@ trait PartCategory {
             $update_sql = $this->db->prepare($sql);
             $update_sql->execute();
             if ($update_sql->rowCount()) {
-                $timeseries->update(
-                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                $timeseries->fast_update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
                 );
 
             }
@@ -94,8 +94,8 @@ trait PartCategory {
             }
 
             if ($timeseries->get('Timeseries Number Records') == 0) {
-                $timeseries->update(
-                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                $timeseries->fast_update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
                 );
             }
 
@@ -138,8 +138,8 @@ trait PartCategory {
             $this->db->exec($sql);
         }
 
-        $timeseries->update(
-            array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+        $timeseries->fast_update(
+            array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
         );
 
 
@@ -167,8 +167,8 @@ trait PartCategory {
                 $update_sql->execute();
 
                 if ($update_sql->rowCount() or $date == date('Y-m-d')) {
-                    $timeseries->update(
-                        array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                    $timeseries->fast_update(
+                        array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
                     );
                 }
 
@@ -180,8 +180,8 @@ trait PartCategory {
                 $update_sql = $this->db->prepare($sql);
                 $update_sql->execute();
                 if ($update_sql->rowCount()) {
-                    $timeseries->update(
-                        array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                    $timeseries->fast_update(
+                        array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
                     );
 
                 }
@@ -201,7 +201,21 @@ trait PartCategory {
             }
 
 
-            $timeseries->update_stats();
+
+            $date = gmdate('Y-m-d H:i:s');
+            $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+            $this->db->prepare($sql)->execute(
+                [
+                    $date,
+                    $date,
+                    'timeseries_stats',
+                    $timeseries->id,
+                    $date,
+
+                ]
+            );
+
+
 
         }
 
@@ -369,7 +383,7 @@ trait PartCategory {
             );
 
 
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update, 'Part Category Data');
         }
         if ($from_date_1yb and $last_year) {
 
@@ -392,7 +406,7 @@ trait PartCategory {
                 "Part Category $db_interval Acc 1YB With Stock Days"  => $sales_data['with_stock_days'],
 
             );
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update, 'Part Category Data');
 
 
         }
@@ -410,7 +424,7 @@ trait PartCategory {
                         ]
         )) {
 
-            $this->update(['Part Category Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update(['Part Category Acc To Day Updated' => gmdate('Y-m-d H:i:s')], 'Part Category Dimension');
 
         } elseif (in_array(
             $db_interval, [
@@ -421,7 +435,7 @@ trait PartCategory {
                         ]
         )) {
 
-            $this->update(['Part Category Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update(['Part Category Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')], 'Part Category Dimension');
         } elseif (in_array(
             $db_interval, [
                             'Last Month',
@@ -431,7 +445,7 @@ trait PartCategory {
                         ]
         )) {
 
-            $this->update(['Part Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+            $this->fast_update(['Part Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'Part Category Dimension');
         }
 
 
@@ -577,33 +591,33 @@ trait PartCategory {
         }
 
 
-        $this->update(
+        $this->fast_update(
             array(
                 'Part Category In Process'    => $elements_numbers['In Process'],
                 'Part Category Active'        => $elements_numbers['In Use'],
                 'Part Category Discontinuing' => $elements_numbers['Discontinuing'],
                 'Part Category Discontinued'  => $elements_numbers['Not In Use'],
                 'Part Category Status'        => $status
-            ), 'no_history'
+            ), 'Part Category Dimension'
         );
 
 
         if ($status == 'NotInUse') {
 
             if ($this->data['Part Category Valid To'] == '' or $current_status != $status) {
-                $this->update(
+                $this->fast_update(
                     array(
                         'Part Category Valid To' => gmdate('Y-m-d H:i:s')
-                    ), 'no_history'
+                    ), 'Part Category Dimension'
                 );
 
             }
 
         } else {
-            $this->update(
+            $this->fast_update(
                 array(
                     'Part Category Valid To' => ''
-                ), 'no_history'
+                ), 'Part Category Dimension'
             );
         }
 
@@ -696,13 +710,12 @@ trait PartCategory {
             );
 
 
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update, 'Part Category Data');
         }
 
 
-        $this->update($data_to_update, 'no_history');
 
-        $this->update(['Part Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        $this->fast_update(['Part Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'Part Category Dimension');
 
 
     }
@@ -747,10 +760,10 @@ trait PartCategory {
                 "Part Category $i Quarter Ago 1YB Keeping Day"      => $sales_data_1yb['keep_days'],
                 "Part Category $i Quarter Ago 1YB With Stock Days"  => $sales_data_1yb['with_stock_days'],
             );
-            $this->update($data_to_update, 'no_history');
+            $this->fast_update($data_to_update, 'Part Category Data');
         }
 
-        $this->update(['Part Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'no_history');
+        $this->fast_update(['Part Category Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')], 'Part Category Dimension');
 
 
     }
@@ -758,4 +771,4 @@ trait PartCategory {
 
 }
 
-?>
+

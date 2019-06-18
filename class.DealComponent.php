@@ -237,10 +237,33 @@ class DealComponent extends DB_Table {
 
         switch ($key) {
 
+
+            case 'Deal Name Label':
+            case 'Name Label':
+            case 'Deal Term Label':
+            case 'Term Label':
+
+                if (!isset($this->deal)) {
+                    $this->deal = get_object('Deal', $this->get('Deal Key'));
+                }
+
+                // print_r($this->deal);
+                // exit;
+                return $this->deal->get($key);
+
+                break;
+
+
             case 'Deal Component Allowance Percentage':
             case 'Allowance Percentage':
 
-                return percentage($this->get('Deal Component Allowance'), 1, 0);
+
+                if (is_numeric(($this->get('Deal Component Allowance')))) {
+                    return percentage($this->get('Deal Component Allowance'), 1, 0);
+
+                } else {
+                    return '';
+                }
 
 
                 break;
@@ -389,22 +412,22 @@ class DealComponent extends DB_Table {
 
     function get_formatted_allowances() {
 
-
+        $allowance = '';
         switch ($this->data['Deal Component Allowance Type']) {
             case 'Percentage Off':
 
 
                 if ($this->data['Deal Component Allowance Target'] == 'Category' and $this->data['Deal Component Terms Type'] != 'Category Quantity Ordered') {
                     $allowance = sprintf(_('%s %s off'), $this->data['Deal Component Allowance Target Label'], percentage($this->data['Deal Component Allowance'], 1, 0));
-
                 } else {
                     $allowance = sprintf(_('%s off'), percentage($this->data['Deal Component Allowance'], 1, 0));
-
                 }
 
 
                 break;
-
+            case 'Shipping Off':
+                $allowance = '<i class="fal fa-badge-percent"></i> '._('Shipping');
+                break;
             case 'Get Cheapest Free':
 
                 if ($this->data['Deal Component Allowance'] == 1) {
@@ -419,13 +442,105 @@ class DealComponent extends DB_Table {
                 break;
             case 'Get Free':
 
-                switch ($this->data['Deal Component Allowance Target']) {
+
+                $allowance_data = json_decode($this->get('Deal Component Allowance'), true);
+
+
+                switch ($allowance_data['object']) {
+
+                    case 'Choose Product in Basket':
+
+                        $allowance = _('Choose').': (';
+
+                        foreach ($allowance_data['objects'] as $object_data) {
+                            $object    = get_object($object_data['object'], $object_data['key']);
+                            $allowance .= $object->get('Code').' | ';
+
+
+                        }
+
+                        $allowance = preg_replace('/\|\s*$/', ' )', $allowance);
+
+                        break;
+
+                    case 'Product':
+                        $object = get_object($allowance_data['object'], $allowance_data['key']);
+                        if ($allowance_data['qty'] == 1) {
+                            $allowance = sprintf(_('Get one %s free'), $object->get('Code'));
+
+                        } else {
+                            $allowance = sprintf(_('Get %d %s free'), $allowance_data['qty'], $object->get('Code'));
+                        }
+
+                        break;
+                    case 'Category':
+                        $object = get_object($allowance_data['object'], $allowance_data['key']);
+                        if ($allowance_data['qty'] == 1) {
+                            $allowance = ', '.sprintf(
+                                    _('Get one %s product free'), sprintf(
+                                                                    '<span class="link" onclick="change_view(\'store/%d/%d\')">%s</span>', $object->get('Store Key'), $object->id, $object->get('Code')
+                                                                )
+                                );
+
+                        } else {
+                            $allowance = ', '.sprintf(
+                                    _('Get %d %s product free'), $allowance_data['qty'], sprintf(
+                                                                   '<span class="link" onclick="change_view(\'store/%d/%d\')">%s</span>', $object->get('Store Key'), $object->id, $object->get('Code')
+                                                               )
+                                );
+                        }
+
+                        break;
+
+
                     case 'Charge':
-                        $allowance = _('Free charges');
+
+
+                        $object = get_object($allowance_data['object'], $allowance_data['key']);
+
+
+                        $allowance = sprintf(_('Free %s'), $object->get('Name'));
                         break;
-                    default:
-                        $allowance = $this->data['Deal Component Allowance Target'];
+                }
+
+
+                break;
+
+
+            case 'Get Free No Ordered Product':
+
+
+                $allowance_data = json_decode($this->get('Deal Component Allowance'), true);
+
+
+                switch ($allowance_data['object']) {
+
+                    case 'Choose Product in Basket':
+
+                        $allowance = _('Choose').': (';
+
+                        foreach ($allowance_data['objects'] as $object_data) {
+                            $object    = get_object($object_data['object'], $object_data['key']);
+                            $allowance .= $object->get('Code').' | ';
+
+
+                        }
+
+                        $allowance = preg_replace('/\|\s*$/', ' )', $allowance);
+
                         break;
+
+                    case 'Product':
+                        $object = get_object($allowance_data['object'], $allowance_data['key']);
+                        if ($allowance_data['qty'] == 1) {
+                            $allowance = sprintf(_('Get one %s free'), $object->get('Code'));
+
+                        } else {
+                            $allowance = sprintf(_('Get %d %s free'), $allowance_data['qty'], $object->get('Code'));
+                        }
+
+                        break;
+
                 }
 
 
@@ -434,11 +549,14 @@ class DealComponent extends DB_Table {
                 $store     = get_object('Store', $this->get('Store Key'));
                 $allowance = sprintf(_('%s off'), money($this->data['Deal Component Allowance'], $store->get('Store Currency Code')));
 
+
                 break;
             default:
-                $allowance = $this->data['Deal Component Allowance'];
+                $allowance = '?';
 
         };
+
+        //  print $allowance."\n";
 
         return $allowance;
 
@@ -477,7 +595,7 @@ class DealComponent extends DB_Table {
             case 'Category For Every Quantity Any Product Ordered':
 
                 if ($this->data['Deal Component Terms'] == 1) {
-                    $terms = sprintf('%s (Mix & match)',$this->get('Deal Component Allowance Target Label'));
+                    $terms = sprintf('%s (Mix & match)', $this->get('Deal Component Allowance Target Label'));
 
                 } else {
                     $terms = sprintf('%s (Mix & match), for every %d ', $this->get('Deal Component Allowance Target Label'), $this->data['Deal Component Terms']);
@@ -520,18 +638,59 @@ class DealComponent extends DB_Table {
                 $_terms = json_decode($this->get('Deal Component Terms'), true);
 
                 if (!$_terms) {
-                    $tmp    = preg_split('/\;/', $this->get('Deal Component Terms'));
-                    $_terms = array(
-                        'voucher' => $tmp[0],
-                        'amount'  => ';'.$tmp[1].';'.$tmp[2],
-                    );
+                    $tmp    = preg_split('/\;/', $this->get('Deal Terms'));
+
+
+                    if(count($tmp)!=3){
+
+                        $_terms = array(
+                            'voucher' =>'',
+                            'amount'  =>';0;'
+                        );
+                    }else{
+
+                        $_terms = array(
+                            'voucher' => $tmp[0],
+                            'amount'  => ';'.$tmp[1].';'.$tmp[2],
+                        );
+                    }
+
+
                 }
+
 
 
                 $amount_data = preg_split('/\;/', $_terms['amount']);
 
+                if(is_array($amount_data)){
 
-                $terms = '<span style="border:1px solid ;padding: 1px 10px">'.$_terms['voucher'].'</span> <span style="opacity: .8">'.money($amount_data[1], $store->get('Store Currency Code')).'</span>';
+                    if(count($amount_data)>1){
+                        $amount=$amount_data[1];
+                    }elseif(count($amount_data)==1 ){
+                        if(is_numeric($amount_data[0]) ){
+                            $amount=$amount_data[0];
+
+                        }else{
+                            $amount=0;
+                        }
+
+
+                    }else{
+                        print_r($amount_data);
+
+                    }
+
+
+                }elseif(is_numeric($amount_data)){
+                    $amount=$amount_data;
+
+                }else{
+                    $amount=0;
+                }
+
+
+
+                $terms = '<span style="border:1px solid ;padding: 1px 10px">'.$_terms['voucher'].'</span> <span style="opacity: .8">'.money($amount, $store->get('Store Currency Code')).'</span>';
 
 
                 break;
@@ -546,6 +705,22 @@ class DealComponent extends DB_Table {
 
         switch ($field) {
 
+
+            case 'Deal Name Label':
+            case 'Deal Term Label':
+
+                if (!isset($this->deal)) {
+                    $this->deal = get_object('Deal', $this->get('Deal Key'));
+                }
+
+                $this->deal->editor = $this->editor;
+                // print_r($this->deal);
+                // exit;
+                return $this->deal->update_field_switcher($field, $value, $options);
+
+                break;
+
+
             case 'Deal Component Allowance Percentage':
 
                 //used for bulk discounts campaign
@@ -559,28 +734,7 @@ class DealComponent extends DB_Table {
 
                 $this->update_status($value, $options);
                 break;
-            /*
-                        case 'Deal Component Name Label':
 
-                            if ($this->data['Deal Component Campaign Key']) {
-                                $campaign         = get_object('DealCampaign', $this->data['Deal Component Campaign Key']);
-                                $campaign->editor = $this->editor;
-                                $campaign->update(array('Deal Campaign Name' => $value));
-                            } else {
-                                $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
-                                $deal->editor = $this->editor;
-                                $deal->update(array('Deal Name Label' => $value));
-                                $this->update_field('Deal Component Name Label', $value, $options);
-
-                            }
-
-
-                            break;
-            */ case 'Deal Component Term Label':
-            $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
-            $deal->editor = $this->editor;
-            $deal->update(array('Deal Term Label' => $value));
-            break;
             case 'Deal Terms':
                 $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
                 $deal->editor = $this->editor;
@@ -667,9 +821,12 @@ class DealComponent extends DB_Table {
 
             if ($old_value != $value) {
 
+                if (!preg_match('/bali|sasi|sakoi|geko/', gethostname())) {
+                    $this->update_deal_component_assets();
+                    $this->update_deal_component_orders_in_basket_after_status_change($old_value, $value);
+                }
 
-                $this->update_deal_component_assets();
-                $this->update_deal_component_orders_in_basket_after_status_change($old_value, $value);
+
             }
 
             return;
@@ -694,10 +851,11 @@ class DealComponent extends DB_Table {
 
 
         if ($old_value != $value) {
+            if (!preg_match('/bali|sasi|sakoi|geko/', gethostname())) {
 
-            $this->update_deal_component_assets();
-            $this->update_deal_component_orders_in_basket_after_status_change($old_value, $value);
-
+                $this->update_deal_component_assets();
+                $this->update_deal_component_orders_in_basket_after_status_change($old_value, $value);
+            }
 
         }
 
@@ -746,8 +904,7 @@ class DealComponent extends DB_Table {
             // todo get only the orders affected by the deal
             default:
                 $sql = sprintf(
-                    "SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Key`=%d order by `Order Last Updated Date` desc ",
-                    $this->data['Deal Component Store Key']
+                    "SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Key`=%d order by `Order Last Updated Date` desc ", $this->data['Deal Component Store Key']
                 );
 
         }
@@ -1013,7 +1170,7 @@ class DealComponent extends DB_Table {
 
         switch ($field) {
 
-            case 'Deal Component Name Label':
+            case 'Deal Name Label':
                 $label = _('name');
                 break;
 

@@ -226,9 +226,20 @@ $user_rights = array(
         'Right Type' => 'View',
         'Right Name' => 'reports'
     ),
-
+    'AP'=> array(
+        'Right Type' => 'Edit',
+        'Right Name' => 'assign_picker'
+    ),
+    'DNPiE'=> array(
+        'Right Type' => 'Edit',
+        'Right Name' => 'assign_picker'
+    ),
+   'PiV'=> array(
+    'Right Type' => 'View',
+    'Right Name' => 'pickers'
+)
 
 );
 
 
-?>
+

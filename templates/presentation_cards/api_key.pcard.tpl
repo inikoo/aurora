@@ -52,7 +52,10 @@
 <script>
     $('#api_key_qrcode').qrcode({
         size: 300,
-        text:"{$api_key->get('Address')},{$api_key->get('Code')},{$api_key->secret_key}"
+        text:'{$qr_code}'
     });
+
+
+
 
 </script>

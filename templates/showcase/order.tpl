@@ -13,7 +13,7 @@
 <div  class="sticky_note_container order_customer_sticky_note {if $order->get('Order Customer Message')==''}hide{/if}"    >
     <i style="top:30px" class="fas fa-clone button fa-fw copy_to_delivery_note_sticky_note" aria-hidden="true"></i>
 
-    <div class="sticky_note" >{$order->get('Order Customer Message')}</div>
+    <div class="sticky_note" >{$order->get('Order Customer Message')|strip_tags|escape}</div>
 </div>
 
 
@@ -189,33 +189,32 @@
 
             <div class="data_field small  " style="margin-top:5px">
 
-            <span id="display_telephones"></span> {if $customer->get('Customer Preferred Contact Number')=='Mobile'}
+            <span id="display_telephones"></span>
+                {if $customer->get('Customer Preferred Contact Number')=='Mobile'}
                 <div id="Customer_Main_Plain_Mobile_display"
                      class="data_field {if !$customer->get('Customer Main Plain Mobile')}hide{/if}">
-                    <i class="fa fa-fw fa-mobile"></i> <span
-                            class="Customer_Main_Plain_Mobile">{$customer->get('Main XHTML Mobile')}</span>
+                    <i class="fal fa-fw fa-mobile"></i> <span class="Customer_Main_Plain_Mobile">{$customer->get('Main XHTML Mobile')}</span>
                 </div>
                 <div id="Customer_Main_Plain_Telephone_display"
                      class="data_field {if !$customer->get('Customer Main Plain Telephone')}hide{/if}">
-                    <i class="fa fa-fw fa-phone"></i> <span
-                            class="Customer_Main_Plain_Telephone">{$customer->get('Main XHTML Telephone')}</span>
+                    <i class="fal fa-fw fa-phone"></i> <span class="Customer_Main_Plain_Telephone">{$customer->get('Main XHTML Telephone')}</span>
                 </div>
-            {else}
+                {else}
                 <div id="Customer_Main_Plain_Telephone_display"
                      class="data_field {if !$customer->get('Customer Main Plain Telephone')}hide{/if}">
                     <i title="Telephone" class="fa fa-fw fa-phone"></i> <span  class="Customer_Main_Plain_Telephone">{$customer->get('Main XHTML Telephone')}</span>
                 </div>
                 <div id="Customer_Main_Plain_Mobile_display"
                      class="data_field {if !$customer->get('Customer Main Plain Mobile')}hide{/if}">
-                    <i title="Mobile" class="fa fa-fw fa-mobile"></i> <span
+                    <i title="Mobile" class="fal fa-fw fa-mobile"></i> <span
                             class="Customer_Main_Plain_Mobile">{$customer->get('Main XHTML Mobile')}</span>
                 </div>
-            {/if}
+                {/if}
             </div>
 
             <div class="data_field small {if $customer->get('Customer Main Plain Email')==''}hide{/if}" style="margin-top:5px">
                 <div class="">
-                    <i class="fa fa-envelope fa-fw" title="{t}Email{/t}"></i> {if $customer->get('Customer Main Plain Email')!=''}{mailto address=$customer->get('Customer Main Plain Email')}{/if}
+                    <i class="fal fa-envelope fa-fw" title="{t}Email{/t}"></i> {if $customer->get('Customer Main Plain Email')!=''}{mailto address=$customer->get('Customer Main Plain Email')}{/if}
                 </div>
             </div>
 
@@ -242,6 +241,12 @@
     </div>
 
     <div class="block " style="align-items: stretch;flex: 1;padding-top: 0px">
+
+
+        <div class="state warning_block  priority_label  {if $order->get('Order Priority Level')=='Normal' or $order->get('State Index')<=10 or $order->get('State Index')==100  }hide{/if}  " style="height:30px;text-align: center;line-height: 30px">
+            {t}Priority{/t}  <i title="'._('Priority dispatching').'" style="font-size: 25px" class="fas fa-shipping-fast"></i>
+        </div>
+
         <div class="state" style="height:30px;">
             <div id="back_operations" >
 
@@ -332,6 +337,11 @@
                                 </td>
 
                             </tr>
+                            <tr data-field='parts' class="button pdf_option" onclick="check_field_value(this)">
+                                <td>
+                                    <i class="far fa-square  margin_right_10"></i> <span class="discreet">{t}Parts{/t}</span>
+                                </td>
+                            </tr>
                             <tr data-field='commodity' class="button pdf_option" onclick="check_field_value(this)">
                                 <td>
                                     <i class="far {if $pdf_with_commodity}fa-check-square{else}fa-square{/if} margin_right_10"></i> <span {if !$pdf_with_commodity}class="discreet"{/if}>{t}Commodity codes{/t}</span>
@@ -348,6 +358,7 @@
                                     <i class="far fa-square  margin_right_10"></i> <span class="discreet">{t}Country of origin{/t}</span>
                                 </td>
                             </tr>
+
                             <tr data-field='locale' class="button pdf_option {if !$pdf_show_locale_option}hide{/if}" onclick="check_field_value(this)">
                                 <td>
                                     <i class="far fa-square margin_right_10" data-value="en_GB"></i> <span class="discreet">{t}English{/t}</span>
@@ -368,7 +379,7 @@
 
                 </div>
 
-                <div id="create_refund_operations" class="order_operation {if $order->get('State Index')<100  }hide{/if}">
+                <div id="create_refund_operations" class="order_operation {if !($order->get('State Index')==100   )     }hide{/if}">
                     <div class="square_button right  " title="{t}Create refund{/t}">
                         <i class="fal fa-file-alt error " aria-hidden="true" onclick="toggle_order_operation_dialog('create_refund')"></i>
                         <table id="create_refund_dialog" border="0" class="order_operation_dialog hide" style="color:#777">
@@ -378,7 +389,25 @@
 
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('create_refund')"></i></td>
-                                <td class="aright"><span id="create_refund_save_buttons" class="valid save button" onclick="change_view('orders/{$order->get('Store Key')}/{$order->id}/refund/new')"><span
+                                <td class="aright"><span id="create_refund_save_buttons" class="valid save button" onclick="change_view('orders/{$order->get('Store Key')}/{$order->id}/refund/new',{ tab:'refund.new.items'})"><span
+                                                class="label">{t}Next{/t}</span> <i class="fa fa-arrow-right fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+
+                <div id="create_credit_note_operations" class="order_operation hide {if !( $order->get('Order To Pay Amount')<=0)       }hide{/if}">
+                    <div class="square_button right  " title="{t}Create credit note{/t}">
+                        <i class="fal money-check-alt " aria-hidden="true" onclick="toggle_order_operation_dialog('create_credit_note')"></i>
+                        <table id="create_credit_note_dialog" border="0" class="order_operation_dialog hide" style="color:#777">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Create credit note{/t}</td>
+                            </tr>
+
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('create_credit_note')"></i></td>
+                                <td class="aright"><span id="create_credit_note_save_buttons" class="valid save button" onclick="change_view('orders/{$order->get('Store Key')}/{$order->id}/credit_note/new',{ tab:'credit_note.new.items'})"><span
                                                 class="label">{t}Next{/t}</span> <i class="fa fa-arrow-right fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
                         </table>
@@ -386,7 +415,7 @@
                 </div>
 
                 <div id="create_replacement_operations"
-                     class="order_operation {if {$order->get('State Index')}<100  or $order->get('Order Replacement State')=='InWarehouse' or $order->get('Order Replacement State')=='PackedDone'  or $order->get('Order Replacement State')=='Approved'   }hide{/if}">
+                     class="order_operation {if {$order->get('State Index')}<100    }hide{/if}">
                     <div class="square_button right  " title="{t}Create replacement{/t}">
                         <i class="fa fa-truck red " aria-hidden="true" onclick="toggle_order_operation_dialog('create_replacement')"></i>
                         <table id="create_replacement_dialog" border="0" class="order_operation_dialog hide" style="color:#777">
@@ -503,12 +532,29 @@
             <tr>
 
                 <td>
-                    <span style=""><i class="fa fa-cube fa-fw discreet" aria-hidden="true"></i> <span class="Order_Number_items">{$order->get('Number Items')}</span></span>
-                    <span style="padding-left:20px"><i class="fa fa-tag fa-fw  " aria-hidden="true"></i> <span class="Order_Number_Items_with_Deals">{$order->get('Number Items with Deals')}</span></span>
-                    <span class="error {if $order->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-cube fa-fw  " aria-hidden="true"></i> <span
-                                class="Order_Number_Items_with_Out_of_Stock">{$order->get('Number Items Out of Stock')}</span></span>
-                    <span class="error {if $order->get('Order Number Items Returned')==0}hide{/if}" style="padding-left:20px"><i class="fa fa-thumbs-o-down fa-fw   " aria-hidden="true"></i> <span
-                                class="Order_Number_Items_with_Returned">{$order->get('Number Items Returned')}</span></span>
+                    {if isset($delivery_note)}
+                        {if $delivery_note->get('Delivery Note Weight Source')=='Given'}
+                            <i class="fal fa-weight"></i> <span title="{t}Delivery weight{/t}" class=" margin_right_10 DN_Weight">{$delivery_note->get('Weight')}</span>
+
+                        {else}
+                            <span title="{t}Estimated delivery weight{/t}" class="italic discreet margin_right_20 DN_Estimated_Weight">{$delivery_note->get('Weight')}</span>
+
+                        {/if}
+                        <span class="margin_right_20"> {$delivery_note->get('Number Parcels')}</span>
+
+
+
+                    {else}
+                    <span title="{t}Estimated weight{/t}" class="  margin_right_20 Order_Estimated_Weight">{$order->get('Estimated Weight')}</span>
+                    {/if}
+                    <span "><i class="fal fa-cube fa-fw " title="{t}Number of items{/t}"></i> <span class="Order_Number_items">{$order->get('Number Items')}</span></span>
+                    <span style="padding-left:20px"><i class="fa fa-tag fa-fw  " title="{t}Number discounted items{/t}"></i> <span class="Order_Number_Items_with_Deals">{$order->get('Number Items with Deals')}</span></span>
+                    <span class="error {if $order->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px">
+                        <i class="fa fa-cube fa-fw" title="{t}Number out of stock items{/t}"></i>
+                        <span class="Order_Number_Items_with_Out_of_Stock">{$order->get('Number Items Out of Stock')}</span></span>
+                    <span class="error {if $order->get('Order Number Items Returned')==0}hide{/if}" style="padding-left:20px">
+                        <i class="fa fa-thumbs-o-down fa-fw"  title="{t}Number items returned{/t}"></i>
+                        <span class="Order_Number_Items_with_Returned">{$order->get('Number Items Returned')}</span></span>
                 </td>
             </tr>
         </table>
@@ -613,6 +659,7 @@
 
 
                         <a title="{t}Picking sheet{/t}" class="pdf_link {if $dn->get('State Index')!=10 }hide{/if}" target="_blank" href="/pdf/order_pick_aid.pdf.php?id={$dn->id}"> <i class="fal fa-clipboard-list-check " style="font-size: larger"></i></a>
+                        <a title="{t}Picking sheet with address labels{/t}" class="pdf_link {if $dn->get('State Index')!=10 }hide{/if}" target="_blank" href="/pdf/order_pick_aid.pdf.php?with_labels&id={$dn->id}"> <i class="fal fw fa-pager " style="font-size: larger"></i></a>
 
                         <a class="pdf_link {if $dn->get('State Index')<90 }hide{/if}" target='_blank' href="/pdf/dn.pdf.php?id={$dn->id}"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
                     </span>
@@ -717,6 +764,11 @@
                     </td>
 
                 </tr>
+                <tr data-field='parts' class="button pdf_option" onclick="check_field_value(this)">
+                    <td>
+                        <i class="far  {if $pdf_with_parts}fa-check-square{else}fa-square{/if}  margin_right_10"></i> <span class="discreet">{t}Parts{/t}</span>
+                    </td>
+                </tr>
                 <tr data-field='commodity' class="button pdf_option" onclick="check_field_value(this)">
                     <td>
                         <i class="far {if $pdf_with_commodity}fa-check-square{else}fa-square{/if} margin_right_10"></i> <span {if !$pdf_with_commodity}class="discreet"{/if}>{t}Commodity codes{/t}</span>
@@ -725,17 +777,17 @@
                 </tr>
                 <tr data-field='barcode' class="button pdf_option" onclick="check_field_value(this)">
                     <td>
-                        <i class="far fa-square  margin_right_10"></i> <span class="discreet">{t}Product barcode{/t}</span>
+                        <i class="far {if $pdf_with_barcode}fa-check-square{else}fa-square{/if}   margin_right_10"></i> <span class="discreet">{t}Product barcode{/t}</span>
                     </td>
                 </tr>
                 <tr data-field='weight' class="button pdf_option" onclick="check_field_value(this)">
                     <td>
-                        <i class="far fa-square  margin_right_10"></i> <span class="discreet">{t}Weight{/t}</span>
+                        <i class="far {if $pdf_with_weight}fa-check-square{else}fa-square{/if}   margin_right_10"></i> <span class="discreet">{t}Weight{/t}</span>
                     </td>
                 </tr>
                 <tr data-field='origin' class="button pdf_option" onclick="check_field_value(this)">
                     <td>
-                        <i class="far fa-square  margin_right_10"></i> <span class="discreet">{t}Country of origin{/t}</span>
+                        <i class="far {if $pdf_with_origin}fa-check-square{else}fa-square{/if}   margin_right_10"></i> <span class="discreet">{t}Country of origin{/t}</span>
                     </td>
                 </tr>
                 <tr data-field='locale' class="button pdf_option {if !$pdf_show_locale_option}hide{/if}" onclick="check_field_value(this)">
@@ -787,9 +839,10 @@
                 <span class="node_label very_discreet italic">{t}Payments{/t}</span>
 
 
-                <div class="payment_operation {if $order->get('Order To Pay Amount')<=0   }hide{/if}  ">
-                    <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px" title="{t}add payment{/t}">
-                        <i class="fa fa-plus  " aria-hidden="true" onclick="show_add_payment_to_order()"></i>
+                <div class="payment_operation  ">
+                    <div class="square_button right" style="padding:0;margin:0;position:relative;top:0px" title="{t}Add payment{/t}">
+                        <i class="add_payment_to_order_button fa {if $order->get('Order To Pay Amount')<=0   }fa-lock super_discreet{else}fa-plus{/if}  "
+                           data-labels='{ "yes_text_no_stock":"{t}Unlock{/t}", "no_text_no_stock":"{t}Close{/t}", "title":"{t}Order already paid{/t}","text":"{t}Add payment at your own risk{/t}"}' aria-hidden="true" onclick="open_add_payment_to_order(this)"></i>
 
                     </div>
                 </div>
@@ -827,9 +880,9 @@
                 <td class="label">{t}Paid{/t}</td>
                 <td class="aright Payments_Amount">{$order->get('Payments Amount')}</td>
             </tr>
-            <tr class="total  Order_To_Pay_Amount {if $order->get('Order To Pay Amount')==0    }hide{/if} button" amount="{$order->get('Order To Pay Amount')}" onclick="try_to_pay(this)">
-                <td class="label">{t}To pay{/t}</td>
-                <td class="aright To_Pay_Amount   ">{$order->get('To Pay Amount')}</td>
+            <tr class="total  Order_To_Pay_Amount {if $order->get('Order To Pay Amount')==0    }hide{/if} button"  absolute_amount="{$order->get('Order To Pay Amount Absolute')}" amount="{$order->get('Order To Pay Amount')}" onclick="try_to_pay(this)">
+                <td class="label">{if $order->get('Order To Pay Amount')>0}{t}To pay{/t}{else}To credit / refund{/if}</td>
+                <td class="aright To_Pay_Amount_Absolute   ">{$order->get('To Pay Amount Absolute')}</td>
             </tr>
             <tr class="total success  Order_Paid {if $order->get('Order To Pay Amount')!=0   or $order->get('Order Total Amount')==0  }hide{/if}">
 
@@ -863,7 +916,7 @@
             <tr>
                 <td class="label" id="Charges_Net_Amount_label">{t}Charges{/t}</td>
                 <td class="aright "><span id="Charges_Net_Amount_form" class="hide"><i id="set_charges_as_auto" class="fa fa-magic button" onClick="set_charges_as_auto()" aria-hidden="true"></i>  <input
-                                value="{$order->get('Order Charges Net Amount')}" ovalue="{$order->get('Order Charges Net Amount')}" style="width: 100px" id="Charges_Net_Amount_input"> <i id="Charges_Net_Amount_save"
+                                value="{$order->get('Order Hanging Charges Net Amount')}" ovalue="{$order->get('Order Hanging Charges Net Amount')}" style="width: 100px" id="Charges_Net_Amount_input"> <i id="Charges_Net_Amount_save"
                                                                                                                                                                                             class="fa fa-cloud save"
                                                                                                                                                                                             onClick="save_charges_value()"
                                                                                                                                                                                             aria-hidden="true"></i> </span><span
@@ -980,6 +1033,56 @@
     </div>
 </div>
 
+<div id="add_credit" class="table_new_fields hide">
+
+    <div style="align-items: stretch;flex: 1;padding:10px 20px;border-bottom: 1px solid #ccc;position: relative">
+
+        <i style="position:absolute;top:10px;" class="fa fa-window-close fa-flip-horizontal button" aria-hidden="true" onclick="close_add_payment_to_order()"></i>
+
+        <table border="0" style="width:50%;float:right;xborder-left:1px solid #ccc;width:100%;">
+            <tr>
+                <td style="width: 400px">
+                <td>
+
+
+
+                        {foreach from=$store->get_payment_accounts('objects','Active') item=payment_account}
+
+                            {if $payment_account->get('Payment Account Block')=='Accounts'}
+
+
+                                <input type="hidden" id="new_credit_payment_account_key" value="{$payment_account->id}"">
+                                <input type="hidden" id="new_credit_payment_method" value="{$payment_account->get('Default Payment Method')}">
+
+                            {/if}
+
+
+
+                        {/foreach}
+
+
+
+
+
+
+                <td class="payment_fields " style="padding-left:30px;width: 400px">
+                    <table>
+                        <tr>
+                            <td> {t}Amount to be credited{/t}</td>
+                            <td style="padding-left:20px"><input class="new_payment_field" id="new_credit_amount" placeholder="{t}Amount{/t}"></td>
+                        </tr>
+
+                    </table>
+                </td>
+
+                <td id="save_new_credit" class="buttons save" onclick="save_new_credit()"><span>{t}Save{/t}</span> <i class=" fa fa-cloud " aria-hidden="true"></i></td>
+            </tr>
+
+        </table>
+    </div>
+</div>
+
+
 <script>
 
     var out_of_stock_dialog_open=false;
@@ -1081,11 +1184,10 @@
                     }
 
                     if (data.metadata.to_pay <= 0) {
-                        $('.payment_operation').addClass('hide')
-
-                    } else {
-                        $('.payment_operation').removeClass('hide')
-                    }
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
 
 
                     if (data.metadata.to_pay == 0) {
@@ -1127,6 +1229,7 @@
 
 
     }
+
 
     function set_shipping_as_auto() {
 
@@ -1187,11 +1290,10 @@
                     }
 
                     if (data.metadata.to_pay <= 0) {
-                        $('.payment_operation').addClass('hide')
-
-                    } else {
-                        $('.payment_operation').removeClass('hide')
-                    }
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
 
 
                     if (data.metadata.to_pay == 0) {
@@ -1283,7 +1385,7 @@
 
         var ajaxData = new FormData();
 
-        ajaxData.append("tipo", 'set_charges_value')
+        ajaxData.append("tipo", 'set_hanging_charges_value')
 
         ajaxData.append("order_key", '{$order->id}')
         ajaxData.append("amount", amount)
@@ -1330,11 +1432,10 @@
                     }
 
                     if (data.metadata.to_pay <= 0) {
-                        $('.payment_operation').addClass('hide')
-
-                    } else {
-                        $('.payment_operation').removeClass('hide')
-                    }
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
 
 
                     if (data.metadata.to_pay == 0) {
@@ -1436,11 +1537,10 @@
                     }
 
                     if (data.metadata.to_pay <= 0) {
-                        $('.payment_operation').addClass('hide')
-
-                    } else {
-                        $('.payment_operation').removeClass('hide')
-                    }
+  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+} else {
+  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+}
 
 
                     if (data.metadata.to_pay == 0) {

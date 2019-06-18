@@ -28,6 +28,7 @@ $redirect_to_login = array(
 );
 include_once 'ar_web_common_logged_in.php';
 
+
 $account = get_object('Account', 1);
 
 $smarty = new Smarty();
@@ -52,8 +53,6 @@ $customer = get_object('Customer', $invoice->get('Invoice Customer Key'));
 
 
 
-
-
 if (!empty($_REQUEST['locale'])) {
     $_locale = $_REQUEST['locale'];
 } else {
@@ -73,6 +72,14 @@ if (!empty($_REQUEST['barcode'])) {
 } else {
     $print_barcode = false;
 }
+
+
+if (!empty($_REQUEST['parts'])) {
+    $parts = true;
+} else {
+    $parts = false;
+}
+
 
 if (!empty($_REQUEST['rrp'])) {
     $print_rrp = true;
@@ -121,6 +128,7 @@ if ($order->id) {
 
 }
 
+$smarty->assign('customer', $customer);
 
 $smarty->assign('number_orders', $number_orders);
 $smarty->assign('number_dns', $number_dns);
@@ -142,6 +150,7 @@ $mpdf = new \Mpdf\Mpdf(
         'margin_footer' => 10
     ]
 );
+
 
 
 //$mpdf->useOnlyCoreFonts = true;    // false is default
@@ -174,17 +183,29 @@ if ($invoice->data['Invoice Type'] == 'Invoice') {
 } elseif ($invoice->data['Invoice Type'] == 'CreditNote') {
     $smarty->assign('label_title', _('Credit Note'));
     $smarty->assign('label_title_no', _('Credit Note No.'));
+    $original_invoice=get_object('Invoice',$order->get('Order Invoice Key'));
+    $smarty->assign('original_invoice', $original_invoice);
 
 } else {
-    $smarty->assign('label_title', _('Refund'));
-    $smarty->assign('label_title_no', _('Refund No.'));
+
+    if($invoice->get('Invoice Tax Type')=='Tax_Only') {
+        $smarty->assign('label_title', _('Tax Refund'));
+        $smarty->assign('label_title_no', _('Tax Refund No.'));
+    }else{
+        $smarty->assign('label_title', _('Refund'));
+        $smarty->assign('label_title_no', _('Refund No.'));
+    }
+
+    $original_invoice=get_object('Invoice',$order->get('Order Invoice Key'));
+    $smarty->assign('original_invoice', $original_invoice);
 }
+
 
 
 $transactions = array();
 
 $sql = sprintf(
-    "SELECT  `Product Barcode Number`,`Product Origin Country Code`,`Delivery Note Quantity` as Qty, `Order Transaction Amount` as Amount, `Product Unit Weight`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
+    "SELECT  `Product Barcode Number`,`Product Origin Country Code`,`Delivery Note Quantity` as Qty, `Order Transaction Amount` as Amount, `Product Package Weight`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
 `Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code`
  FROM `Order Transaction Fact` O  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`) LEFT JOIN
   `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=%d  and `Current Dispatching State`   and (`Order Transaction Amount`!=0 or `Delivery Note Quantity`!=0)  ORDER BY `Product Code`", $invoice->id
@@ -231,8 +252,8 @@ if ($result = $db->query($sql)) {
             $description .= ' <br>'._('RRP').': '.money($row['Product RRP'], $row['Order Currency Code']);
         }
 
-        if ($row['Product Unit Weight'] != 0 and $print_weight) {
-            $description .= ' <br>'._('Weight').': '.weight($row['Product Unit Weight'] * $row['Product Units Per Case']);
+        if ($row['Product Package Weight'] != 0 and $print_weight) {
+            $description .= ' <br>'._('Weight').': '.weight($row['Product Package Weight'] );
         }
 
         if ($row['Product Origin Country Code'] != '' and $print_origin) {
@@ -276,6 +297,7 @@ if ($result = $db->query($sql)) {
     print "$sql\n";
     exit;
 }
+
 
 
 $transactions_no_products = array();
@@ -389,12 +411,12 @@ if ($result = $db->query($sql)) {
 $transactions_out_of_stock = array();
 $sql                       = sprintf(
     "SELECT (`No Shipped Due Out of Stock`) AS qty,`Product RRP`,
-`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code` ,`Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`,`Product Origin Country Code`,`Product Unit Weight`
+`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,O.`Product Code` ,`Product Units Per Case`,`Product History Name`,`Product History Price`,`Product Currency`,`Product Origin Country Code`,`Product Package Weight`
 FROM `Order Transaction Fact` O
  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`)
  LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`)
 
-  WHERE    `Invoice Key`=%d   and   AND (`No Shipped Due Out of Stock`>0  )  ORDER BY `Product Code`", $invoice->id
+  WHERE    `Invoice Key`=%d   AND (`No Shipped Due Out of Stock`>0  )  ORDER BY `Product Code`", $invoice->id
 );
 //print $sql;exit;
 
@@ -428,8 +450,8 @@ if ($result = $db->query($sql)) {
             $description .= ' <br>'._('RRP').': '.money($row['Product RRP'], $row['Product Currency']);
         }
 
-        if ($row['Product Unit Weight'] != 0 and $print_weight) {
-            $description .= ' <br>'._('Weight').': '.weight($row['Product Unit Weight'] * $row['Product Units Per Case']);
+        if ($row['Product Package Weight'] != 0 and $print_weight) {
+            $description .= ' <br>'._('Weight').': '.weight($row['Product Package Weight'] );
         }
 
         if ($row['Product Origin Country Code'] != '' and $print_origin) {
@@ -645,5 +667,6 @@ $html = $smarty->fetch('invoice.pdf.tpl');
 $html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');
 
 $mpdf->WriteHTML($html);
-//$mpdf->WriteHTML('<pagebreak resetpagenum="1" pagenumstyle="1" suppress="off" />');
-$mpdf->Output();
+$mpdf->Output($invoice->get('Public ID').'.pdf', 'I');
+
+

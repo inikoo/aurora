@@ -17,15 +17,17 @@ $current_section = $data['section'];
 $nav_menu = array();
 
 
-$nav_menu[] = array(
-    '<i class="button far fa-tachometer-alt fa-fw"></i>',
-    _('Dashboard'),
-    '/dashboard',
-    '_dashboard',
-    'module',
-    ''
-);
+if ($user->get('Type') != 'Administrator') {
 
+    $nav_menu[] = array(
+        '<i class="button far fa-tachometer-alt fa-fw"></i>',
+        _('Dashboard'),
+        '/dashboard',
+        '_dashboard',
+        'module',
+        ''
+    );
+}
 
 if ($user->can_view('customers')) {
 
@@ -307,7 +309,6 @@ if ($user->can_view('suppliers')) {
 if ($user->can_view('production') and $account->get('Account Manufacturers') > 0) {
 
 
-
     if ($user->get('User Hooked Production Key')) {
         $nav_menu[] = array(
             '<i class="button far fa-industry fa-fw"></i>',
@@ -333,8 +334,6 @@ if ($user->can_view('production') and $account->get('Account Manufacturers') > 0
         }
 
 
-
-
         $nav_menu[] = array(
             '<i class="button far fa-industry fa-fw"></i>',
             _('Production'),
@@ -358,27 +357,31 @@ if ($user->can_view('production') and $account->get('Account Manufacturers') > 0
 
 }
 
-if ($user->get('User Hooked Store Key')) {
-    $nav_menu[] = array(
-        '<i class="button fal fa-abacus fa-fw"></i>',
-        _('Accounting'),
-        'accounting/'.$user->get('User Hooked Store Key'),
-        'accounting',
-        'module',
-        ''
-    );
-} else {
+
+if ($user->can_view('orders')) {
+
+    if ($user->get('User Hooked Store Key')) {
+        $nav_menu[] = array(
+            '<i class="button fal fa-abacus fa-fw"></i>',
+            _('Accounting'),
+            'accounting/'.$user->get('User Hooked Store Key'),
+            'accounting',
+            'module',
+            ''
+        );
+    } else {
 
 
-    $nav_menu[] = array(
-        '<i class="button fal fa-abacus fa-fw"></i>',
-        _('Accounting'),
-        'invoices/per_store',
-        'accounting',
-        'module',
-        ''
-    );
+        $nav_menu[] = array(
+            '<i class="button fal fa-abacus fa-fw"></i>',
+            _('Accounting'),
+            'invoices/per_store',
+            'accounting',
+            'module',
+            ''
+        );
 
+    }
 }
 
 if ($user->can_view('staff')) {

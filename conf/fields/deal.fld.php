@@ -41,6 +41,51 @@ $object_fields[] = array(
 );
 
 
+$object_fields[] = array(
+    'label'      => _('Public labels'),
+    'show_title' => true,
+    'fields'     => array(
+
+
+        array(
+            'edit'              => ($edit ? 'string' : ''),
+            'id'                => 'Deal_Name_Label',
+            'value'             => $object->get('Deal Name Label'),
+            'formatted_value'   => $object->get('Name Label'),
+            'label'             => _('Name'),
+            'invalid_msg'       => get_invalid_message('string'),
+            'required'          => false,
+            'type'              => 'value'
+        ),
+
+        array(
+            'edit'            => ($edit ? 'string' : ''),
+            'id'              => 'Deal_Term_Label',
+            'value'           => $object->get('Deal Term Label'),
+            'formatted_value' => $object->get('Term Label'),
+            'label'           => _('Terms info'),
+            'invalid_msg'     => get_invalid_message('string'),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+
+        array(
+            'edit'            => ($edit ? 'string' : ''),
+            'id'              => 'Deal_Component_Allowance_Label',
+            'value'           => $object->get('Deal Component Allowance Label'),
+            'formatted_value' => $object->get('Component Allowance Label'),
+            'label'           => _('Allowance info'),
+            'invalid_msg'     => get_invalid_message('string'),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+
+
+    )
+
+);
+
+
 if($object->get('Deal Status')!='Finish'){
 
 
@@ -66,7 +111,7 @@ if($object->get('Deal Status')!='Finish'){
 
             array(
                 'edit' => ($edit ? 'date' : ''),
-                'time' => '00:00:00',
+                'time' => '23:59:59',
 
                 'id'              => 'Deal_Expiration_Date',
                 'value'           => $object->get('Deal Expiration Date'),

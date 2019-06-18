@@ -31,34 +31,37 @@ $object_fields = array(
         'show_title' => true,
         'fields'     => array(
 
+            /*
+                        array(
+                            'id'    => 'Order_Customer_Name',
+                            'edit'            => ($edit ? 'string' : ''),
+                            'value' => $object->get('Order Customer Name'),
+                            'label' => _('Customer name'),
+                            'required'        => false
+                        ),
 
-            array(
-                'id'    => 'Order_Customer_Name',
-                'edit'            => ($edit ? 'string' : ''),
-                'value' => $object->get('Order Customer Name'),
-                'label' => _('Customer name'),
-                'required'        => false
-            ),
-
-            array(
-                'id'    => 'Order_Telephone',
-                'edit'            => ($edit ? 'string' : ''),
-                'value' => $object->get('Order Telephone'),
-                'label' => _('Contact telephone'),
-                'required'        => false
-            ),
+                        array(
+                            'id'    => 'Order_Telephone',
+                            'edit'            => ($edit ? 'string' : ''),
+                            'value' => $object->get('Order Telephone'),
+                            'label' => _('Contact telephone'),
+                            'required'        => false
+                        ),
 
 
 
-            array(
-                'id'                => 'Order_Email',
-                'edit'              => ($edit ? 'email' : ''),
-                'value'             => $object->get('Order Email'),
-                'formatted_value'   => $object->get('Email'),
-                'label' => _('Email'),
-                'invalid_msg'       => get_invalid_message('email'),
-                'required'          => false,
-            ),
+                        array(
+                            'id'                => 'Order_Email',
+                            'edit'              => ($edit ? 'email' : ''),
+                            'value'             => $object->get('Order Customer Purchase Order ID'),
+                            'formatted_value'   => $object->get('Customer Purchase Order ID'),
+                            'label' => _('Email'),
+                            'invalid_msg'       => get_invalid_message('email'),
+                            'required'          => false,
+                        ),
+
+            */
+
             array(
                 'id'              => 'Order_Tax_Number',
                 'edit'            => ($edit ? 'string' : ''),
@@ -76,11 +79,18 @@ $object_fields = array(
                 'options'         => $options_valid_tax_number,
                 'value'           => $object->get('Order Tax Number Valid'),
                 'formatted_value' => $object->get('Tax Number Valid'),
-                'label'           => ucfirst($object->get_field_label('Order Tax Number Valid')
-                ),
+                'label'           => ucfirst($object->get_field_label('Order Tax Number Valid')),
             ),
 
-
+            array(
+                'id'              => 'Order_Customer_Purchase_Order_ID',
+                'edit'            => ($edit ? 'string' : ''),
+                'value'           => $object->get('Order Customer Purchase Order ID'),
+                'formatted_value' => $object->get('Customer Purchase Order ID'),
+                'label'           => ucfirst($object->get_field_label('Order Customer Purchase Order ID')),
+                'invalid_msg'     => get_invalid_message('string'),
+                'required'        => false,
+            ),
 
         )
     ),
@@ -114,10 +124,8 @@ $object_fields = array(
             ),
 
 
-
         )
     ),
-
 
 
 );

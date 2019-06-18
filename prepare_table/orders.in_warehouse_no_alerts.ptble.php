@@ -16,7 +16,9 @@ $wheref   = '';
 $currency = '';
 
 
-$where = 'where (`Order State`="InWarehouse" or `Order Replacement State`="InWarehouse"  ) and `Order Delivery Note Alert`!="Yes" ';
+
+
+$where = 'where (( `Order State`="InWarehouse"  and `Order Delivery Note Alert`!="Yes") or `Order Replacements In Warehouse without Alerts`>0 )';
 $table = '`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
 
 $home_country = 'XX';
@@ -191,8 +193,8 @@ $_dir   = $order_direction;
 
 if ($order == 'public_id') {
     $order = '`Order File As`';
-} elseif ($order == 'last_date' or $order == 'date') {
-    $order = 'O.`Order Date`';
+} elseif ($order == 'date') {
+    $order = 'if(`Order Replacements In Warehouse without Alerts`>0,`Order Replacement Created Date`,`Order Submitted by Customer Date`)`';
 } elseif ($order == 'customer') {
     $order = 'O.`Order Customer Name`';
 } elseif ($order == 'dispatch_state') {
@@ -203,15 +205,19 @@ if ($order == 'public_id') {
     $order = 'O.`Order Total Amount`';
 } else {
     if ($order == 'waiting_time') {
-        $order = 'DATEDIFF(NOW(), `Order Submitted by Customer Date`)';
+        $order = 'DATEDIFF(NOW(), if(`Order Replacements In Warehouse without Alerts`>0,`Order Replacement Created Date`,`Order Submitted by Customer Date`) )';
     } else {
         $order = 'O.`Order Key`';
     }
 }
 
-$fields = '`Order Replacement State`,`Order Invoiced`,`Order Number Items`,`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Balance Total Amount`,`Order Payment State`,`Order State`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount`,
+$fields = '
+
+if(`Order Replacements In Warehouse without Alerts`>0,`Order Replacement Created Date`,`Order Submitted by Customer Date`) as submitted_date,
+
+`Order Replacement State`,`Order Invoiced`,`Order Number Items`,`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Balance Total Amount`,`Order Payment State`,`Order State`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount`,
      (select group_concat(concat_ws("|",`Delivery Note Key`,`Delivery Note ID`)) from `Delivery Note Dimension` where `Delivery Note Order Key`=O.`Order Key` and `Delivery Note State` in ("Ready to be Picked","Picking","Picked","Packing","Packed")   ) as delivery_notes,
-     DATEDIFF(NOW(), `Order Submitted by Customer Date`) as waiting_time
+     DATEDIFF(NOW(), if(`Order Replacements In Warehouse without Alerts`>0,`Order Replacement Created Date`,`Order Submitted by Customer Date`) ) as waiting_time
     
     
     ';
@@ -221,4 +227,4 @@ $sql_totals = "select count(Distinct O.`Order Key`) as num from $table $where";
 //print $sql;
 
 
-?>
+

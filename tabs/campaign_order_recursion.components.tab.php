@@ -36,8 +36,8 @@ $parameters = array(
 $table_buttons   = array();
 
 $table_buttons[] = array(
-    'icon'     => 'plus',
-    'title'    => _('New allowance'),
+    'icon'     => 'layer-plus',
+    'title'    => _('Add family to this offer'),
     'id'       => 'new_item',
     'class'    => 'items_operation',
     'add_allowance_to_order_recursion_deal' => array(

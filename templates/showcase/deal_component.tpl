@@ -23,7 +23,7 @@
 
             <span class="term">{$deal_component->get_formatted_terms()}</span> <i class="fa fa-arrow-right"></i> <span class="allowance">{$deal_component->get_formatted_allowances()} </span></h1>
 
-        <div class="offer_text_banner">{$deal_component->get('Deal Component Icon')} <span class="name">{$deal_component->get('Deal Component Name Label')}</span> <span class="term">{$deal_component->get('Deal Component Term Label')}</span> <span class="allowance">{$deal_component->get('Deal Component Allowance Label')}</span></div>
+        <div class="offer_text_banner"><span class="name Deal_Name_Label">{$deal_component->get('Deal Name Label')}</span> <span class="term Deal_Term_Label">{$deal_component->get('Deal Term Label')}</span> <span class="allowance Deal_Component_Allowance_Label">{$deal_component->get('Deal Component Allowance Label')}</span></div>
 
 
     </div>

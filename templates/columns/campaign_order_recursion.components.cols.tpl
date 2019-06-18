@@ -18,6 +18,9 @@ renderable: false,
 cell: "string",
 
 },
+
+
+
 {
 name: "status",
 label: "",
@@ -28,9 +31,24 @@ className: "width_30 align_center"
 })
 
 },
+
+
+
 {
-name: "name",
-label: "{t}Name{/t}",
+name: "term_allowances",
+label: "{t}Description{/t}",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({
+
+}),
+
+},
+
+
+{
+name: "public_description",
+label: "{t}Public description{/t}",
 sortType: "toggle",
 editable: false,
 cell: Backgrid.HtmlCell.extend({
@@ -39,37 +57,7 @@ cell: Backgrid.HtmlCell.extend({
 
 },
 
-{
-name: "target",
-label: "{t}Target{/t}",
-sortType: "toggle",
-editable: false,
-cell: Backgrid.HtmlCell.extend({
 
-}),
-
-},
-
-{
-name: "label",
-label: "{t}Label{/t}",
-sortType: "toggle",
-editable: false,
-cell: Backgrid.HtmlCell.extend({
-
-}),
-
-},
-{
-name: "allowance",
-label: "{t}Allowance{/t}",
-editable: false,
-sortType: "toggle",
-cell: Backgrid.HtmlCell.extend({
-
-}),
-
-},
 
 
 

@@ -44,6 +44,10 @@ class Order extends DB_Table {
         $this->db = $db;
 
 
+        $this->deleted_otfs = array();
+        $this->new_otfs     = array();
+
+
         $this->table_name      = 'Order';
         $this->ignore_fields   = array('Order Key');
         $this->update_customer = true;
@@ -166,7 +170,18 @@ class Order extends DB_Table {
                 $this->auto_account_payments($value, $options);
                 break;
 
+            case('Order Customer Purchase Order ID'):
+                $this->update_field('Order Customer Purchase Order ID', $value);
 
+
+                if ($value == '') {
+                    $this->update_metadata['hide'] = array('Order_Customer_Purchase_Order_ID_container');
+
+                } else {
+                    $this->update_metadata['show'] = array('Order_Customer_Purchase_Order_ID_container');
+                }
+
+                break;
             case('Sticky Note'):
                 $this->update_field('Order '.$field, $value, 'no_null');
                 $this->new_value = html_entity_decode($this->new_value);
@@ -545,7 +560,14 @@ class Order extends DB_Table {
                 );
                 break;
 
-
+            case('To Pay Amount Absolute'):
+                return money(
+                    abs($this->data['Order To Pay Amount']), $this->data['Order Currency']
+                );
+                break;
+            case('Order To Pay Amount Absolute'):
+                return abs($this->data['Order To Pay Amount']);
+                break;
             case('Shipping And Handing Net Amount'):
                 return money($this->data['Order Shipping Net Amount'] + $this->data['Order Charges Net Amount']);
                 break;
@@ -630,23 +652,12 @@ class Order extends DB_Table {
                 break;
 
 
-            case ('Weight'):
-
+            case ('Estimated Weight'):
                 include_once 'utils/natural_language.php';
 
-                if ($this->data['Order State'] == 'Dispatched') {
-                    if ($this->data['Order Weight'] == '') {
-                        return "&#8494;".weight(
-                                $this->data['Order Dispatched Estimated Weight']
-                            );
-                    } else {
-                        return weight($this->data['Order Weight']);
-                    }
-                } else {
-                    return "&#8494;".weight(
-                            $this->data['Order Estimated Weight']
-                        );
-                }
+                return "&#8494;".smart_weight($this->data['Order Estimated Weight'],1);
+
+
                 break;
 
 
@@ -727,6 +738,41 @@ class Order extends DB_Table {
 
 
                 break;
+            case 'Order Basket To Pay Amount':
+
+                if ($this->data['Order To Pay Amount'] > $this->data['Order Available Credit Amount']) {
+                    return $this->data['Order To Pay Amount'] - $this->data['Order Available Credit Amount'];
+                } else {
+                    return 0;
+
+                }
+
+                break;
+
+            case 'Order Hanging Charges Net Amount':
+
+                $amount = 0;
+                $sql    = sprintf(
+                    'select sum(`Transaction Net Amount`) as amount from `Order No Product Transaction Fact`  left join `Charge Dimension` on (`Charge Key`=`Transaction Type Key`)   where  `Charge Scope`="Hanging" and  `Transaction Type`="Charges" and `Order Key`=%d  ',
+                    $this->id
+                );
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $amount = $row['amount'];
+                    }
+                } else {
+                    print_r($error_info = $this->db->errorInfo());
+                    print "$sql\n";
+                    exit;
+                }
+
+                return $amount;
+
+                break;
+            case 'replacements_in_process':
+                return $this->data['Order Replacements In Warehouse without Alerts'] + $this->data['Order Replacements In Warehouse with Alerts'] + $this->data['Order Replacements Packed Done'] + $this->data['Order Replacements Approved'];
+                break;
 
 
         }
@@ -783,6 +829,7 @@ class Order extends DB_Table {
         $options = json_decode($options, true);
         if (!empty($options['date'])) {
             $date = $options['date'];
+
         } else {
             $date = gmdate('Y-m-d H:i:s');
         }
@@ -822,11 +869,14 @@ class Order extends DB_Table {
                         return;
 
                     }
-
-
-                    $this->update_field('Order State', $value, 'no_history');
-                    $this->update_field('Order Submitted by Customer Date', '', 'no_history');
-                    $this->update_field('Order Date', $date, 'no_history');
+                    $this->fast_update(
+                        array(
+                            'Order State'                      => $value,
+                            'Order Submitted by Customer Date' => '',
+                            'Order Date'                       => $date,
+                            'Order Last Updated by Customer'   => $date,
+                        )
+                    );
 
 
                     $history_data = array(
@@ -1145,7 +1195,6 @@ class Order extends DB_Table {
                         'Delivery Note File As'                      => $this->data['Order File As'],
                         'Delivery Note Type'                         => $this->data['Order Type'],
                         'Delivery Note Dispatch Method'              => $dispatch_method,
-                        'Delivery Note Title'                        => '',
                         'Delivery Note Customer Key'                 => $this->data['Order Customer Key'],
                         'Delivery Note Metadata'                     => $this->data['Order Original Metadata'],
                         'Delivery Note Customer Name'                => $this->data['Order Customer Name'],
@@ -1165,12 +1214,11 @@ class Order extends DB_Table {
                         'Delivery Note Address Checksum'             => $this->data['Order Delivery Address Checksum'],
                         'Delivery Note Address Formatted'            => $this->data['Order Delivery Address Formatted'],
                         'Delivery Note Address Postal Label'         => $this->data['Order Delivery Address Postal Label'],
-                        'Delivery Note Show in Warehouse Orders'     => $store->get('Store Show in Warehouse Orders')
                     );
 
 
                     $delivery_note = new DeliveryNote('create', $data_dn, $this);
-
+                    //059-645919
 
                     new_housekeeping_fork(
                         'au_housekeeping', array(
@@ -1523,7 +1571,12 @@ class Order extends DB_Table {
                     $customer = get_object('Customer', $this->data['Order Customer Key']);
 
 
-                    $customer->fast_update(array('Customer Last Dispatched Order Key' => $this->id));
+                    $customer->fast_update(
+                        array(
+                            'Customer Last Dispatched Order Key'  => $this->id,
+                            'Customer Last Dispatched Order Date' => date('Y-m-d', strtotime($date))
+                        )
+                    );
 
 
                     new_housekeeping_fork(
@@ -1858,8 +1911,7 @@ class Order extends DB_Table {
             $invoice_public_id = sprintf(
                 $store->data['Store Invoice Public ID Format'], $public_id
             );
-
-            //todo file as
+            $file_as           = get_file_as($invoice_public_id);
 
         } else {
 
@@ -1874,22 +1926,21 @@ class Order extends DB_Table {
                 $account->data['Account Invoice Public ID Format'], $public_id
             );
 
-            //todo file as
+            $file_as = get_file_as($invoice_public_id);
         }
 
 
         $data_invoice = array(
-            'editor'                                => $this->editor,
-            'Invoice Date'                          => $date,
-            'Invoice Type'                          => 'Invoice',
-            'Invoice Public ID'                     => $invoice_public_id,
-            'Invoice File As'                       => $file_as,
-            'Invoice Order Key'                     => $this->id,
-            'Invoice Store Key'                     => $this->data['Order Store Key'],
-            'Invoice Customer Key'                  => $this->data['Order Customer Key'],
-            'Invoice Tax Code'                      => $this->data['Order Tax Code'],
-            'Invoice Tax Shipping Code'             => $this->data['Order Tax Code'],
-            'Invoice Tax Charges Code'              => $this->data['Order Tax Code'],
+            'editor'               => $this->editor,
+            'Invoice Date'         => $date,
+            'Invoice Type'         => 'Invoice',
+            'Invoice Public ID'    => $invoice_public_id,
+            'Invoice File As'      => $file_as,
+            'Invoice Order Key'    => $this->id,
+            'Invoice Store Key'    => $this->data['Order Store Key'],
+            'Invoice Customer Key' => $this->data['Order Customer Key'],
+            'Invoice Tax Code'     => $this->data['Order Tax Code'],
+
             'Invoice Metadata'                      => $this->data['Order Original Metadata'],
             'Invoice Tax Number'                    => $this->data['Order Tax Number'],
             'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
@@ -1899,35 +1950,37 @@ class Order extends DB_Table {
             'Invoice Net Amount Off'                => $this->data['Order Deal Amount Off'],
             'Invoice Customer Contact Name'         => $this->data['Order Customer Contact Name'],
             'Invoice Customer Name'                 => $this->data['Order Customer Name'],
-            'Invoice Sales Representative Key'      => $this->data['Order Sales Representative Key'],
+            'Invoice Customer Level Type'           => $this->data['Order Customer Level Type'],
+
+
+            'Invoice Sales Representative Key'     => $this->data['Order Sales Representative Key'],
 
             //   'Invoice Telephone'                    => $this->data['Order Telephone'],
             //     'Invoice Email'                        => $this->data['Order Email'],
-            'Invoice Address Recipient'             => $this->data['Order Invoice Address Recipient'],
-            'Invoice Address Organization'          => $this->data['Order Invoice Address Organization'],
-            'Invoice Address Line 1'                => $this->data['Order Invoice Address Line 1'],
-            'Invoice Address Line 2'                => $this->data['Order Invoice Address Line 2'],
-            'Invoice Address Sorting Code'          => $this->data['Order Invoice Address Sorting Code'],
-            'Invoice Address Postal Code'           => $this->data['Order Invoice Address Postal Code'],
-            'Invoice Address Dependent Locality'    => $this->data['Order Invoice Address Dependent Locality'],
-            'Invoice Address Locality'              => $this->data['Order Invoice Address Locality'],
-            'Invoice Address Administrative Area'   => $this->data['Order Invoice Address Administrative Area'],
-            'Invoice Address Country 2 Alpha Code'  => $this->data['Order Invoice Address Country 2 Alpha Code'],
-            'Invoice Address Checksum'              => $this->data['Order Invoice Address Checksum'],
-            'Invoice Address Formatted'             => $this->data['Order Invoice Address Formatted'],
-            'Invoice Address Postal Label'          => $this->data['Order Invoice Address Postal Label'],
-            'Invoice Registration Number'           => $this->data['Order Registration Number'],
+            'Invoice Address Recipient'            => $this->data['Order Invoice Address Recipient'],
+            'Invoice Address Organization'         => $this->data['Order Invoice Address Organization'],
+            'Invoice Address Line 1'               => $this->data['Order Invoice Address Line 1'],
+            'Invoice Address Line 2'               => $this->data['Order Invoice Address Line 2'],
+            'Invoice Address Sorting Code'         => $this->data['Order Invoice Address Sorting Code'],
+            'Invoice Address Postal Code'          => $this->data['Order Invoice Address Postal Code'],
+            'Invoice Address Dependent Locality'   => $this->data['Order Invoice Address Dependent Locality'],
+            'Invoice Address Locality'             => $this->data['Order Invoice Address Locality'],
+            'Invoice Address Administrative Area'  => $this->data['Order Invoice Address Administrative Area'],
+            'Invoice Address Country 2 Alpha Code' => $this->data['Order Invoice Address Country 2 Alpha Code'],
+            'Invoice Address Checksum'             => $this->data['Order Invoice Address Checksum'],
+            'Invoice Address Formatted'            => $this->data['Order Invoice Address Formatted'],
+            'Invoice Address Postal Label'         => $this->data['Order Invoice Address Postal Label'],
+            'Invoice Registration Number'          => $this->data['Order Registration Number'],
 
 
             'Invoice Tax Liability Date' => $this->data['Order Packed Done Date'],
 
-            'Invoice Main Source Type' => $this->data['Order Main Source Type'],
 
             'Invoice Items Gross Amount'    => $this->data['Order Items Gross Amount'],
             'Invoice Items Discount Amount' => $this->data['Order Items Discount Amount'],
 
             'Invoice Items Net Amount'          => $this->data['Order Items Net Amount'],
-            'Invoice Items Out of Stock Amount' => ($this->data['Order Items Out of Stock Amount']==''?0:$this->data['Order Items Out of Stock Amount']),
+            'Invoice Items Out of Stock Amount' => ($this->data['Order Items Out of Stock Amount'] == '' ? 0 : $this->data['Order Items Out of Stock Amount']),
             'Invoice Shipping Net Amount'       => $this->data['Order Shipping Net Amount'],
             'Invoice Charges Net Amount'        => $this->data['Order Charges Net Amount'],
             'Invoice Insurance Net Amount'      => $this->data['Order Insurance Net Amount'],
@@ -1948,27 +2001,27 @@ class Order extends DB_Table {
 
     }
 
-    function get_invoices($scope = 'keys',$options='') {
+    function get_invoices($scope = 'keys', $options = '') {
 
 
         $invoices = array();
 
 
-        switch ($options){
+        switch ($options) {
             case 'refunds_only':
-                $where=" and `Invoice Type`='Refund'";
+                $where = " and `Invoice Type`='Refund'";
                 break;
             case 'invoices_only':
-                $where=" and `Invoice Type`='Refund'";
+                $where = " and `Invoice Type`='Refund'";
                 break;
             default:
-                $where='';
+                $where = '';
 
         }
 
 
-        $sql      = sprintf(
-            "SELECT `Invoice Key` FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d  %s ", $this->id,$where
+        $sql = sprintf(
+            "SELECT `Invoice Key` FROM `Invoice Dimension` WHERE `Invoice Order Key`=%d  %s ", $this->id, $where
         );
 
         if ($result = $this->db->query($sql)) {
@@ -2476,6 +2529,151 @@ class Order extends DB_Table {
         return $number;
     }
 
+
+    function update_number_replacements() {
+
+        $old_in_warehouse_no_alerts   = $this->get('Order Replacements In Warehouse without Alerts');
+        $old_in_warehouse_with_alerts = $this->get('Order Replacements In Warehouse with Alerts');
+        $old_packed_done              = $this->get('Order Replacements Packed Done');
+        $old_approved                 = $this->get('Order Replacements Approved');
+        $old_dispatched_today         = $this->get('Order Replacements Dispatched Today');
+
+
+        $in_warehouse             = 0;
+        $in_warehouse_with_alerts = 0;
+        $packed_done              = 0;
+        $approved                 = 0;
+        $dispatched_today         = 0;
+
+
+        // if($this->id){
+
+        $sql = sprintf(
+            'SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  group by `Delivery Note State` ', $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                //'Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Packed Done','Approved','Dispatched','Cancelled','Cancelled to Restock'
+
+                if ($row['num'] > 0) {
+                    switch ($row['Delivery Note State']) {
+                        case 'Ready to be Picked':
+                        case 'Picker Assigned':
+                        case 'Picking':
+                        case 'Picked':
+                        case 'Packing':
+                        case 'Packed':
+
+                            $in_warehouse += $row['num'];
+
+
+                            break;
+
+                        case 'Packed Done':
+                            $packed_done += $row['num'];
+                            break;
+                        case 'Approved':
+                            $approved += $row['num'];
+                            break;
+
+                    }
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $sql = sprintf(
+            'SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and `Delivery Note Waiting State`="Customer"  group by `Delivery Note State` ', $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                if ($row['num'] > 0) {
+                    switch ($row['Delivery Note State']) {
+                        case 'Ready to be Picked':
+                        case 'Picker Assigned':
+                        case 'Picking':
+                        case 'Picked':
+                        case 'Packing':
+                        case 'Packed':
+                            $in_warehouse_with_alerts += $row['num'];
+                            break;
+
+                    }
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $in_warehouse_no_alerts = $in_warehouse - $in_warehouse_with_alerts;
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Delivery Note Dimension` 
+            WHERE  `Delivery Note Order Key`=%d  AND   `Delivery Note State` ='Dispatched' AND `Delivery Note Date Dispatched`>=%s ", $this->id, prepare_mysql(gmdate('Y-m-d 00:00:00'))
+
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                if ($row['num'] > 0) {
+                    $dispatched_today = $row['num'];
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $this->fast_update(
+            array(
+                'Order Replacements In Warehouse without Alerts' => $in_warehouse_no_alerts,
+                'Order Replacements In Warehouse with Alerts'    => $in_warehouse_with_alerts,
+                'Order Replacements Packed Done'                 => $packed_done,
+                'Order Replacements Approved'                    => $approved,
+                'Order Replacements Dispatched Today'            => $dispatched_today,
+
+
+            )
+        );
+
+        $store = get_object('Store', $this->get('Store Key'));
+        $store->update_orders_in_warehouse_data();
+
+        if ($old_in_warehouse_no_alerts != $in_warehouse_no_alerts or $old_in_warehouse_with_alerts != $in_warehouse_with_alerts) {
+            $store->update_orders_in_warehouse_data();
+        }
+        if ($old_packed_done != $packed_done) {
+            $store->update_orders_packed_data();
+        }
+        if ($old_approved != $approved) {
+            $store->update_orders_approved_data();
+        }
+        if ($old_dispatched_today != $dispatched_today) {
+            $store->update_orders_dispatched_today();
+        }
+
+
+    }
+
+
     function update_insurance($dn_key = false) {
         $valid_insurances = $this->get_insurances($dn_key);
 
@@ -2678,8 +2876,10 @@ class Order extends DB_Table {
 
     }
 
-    function create_refund($date, $transactions) {
+    function create_refund($date, $transactions, $tax_only = false) {
 
+
+        include_once 'class.Invoice.php';
 
         $store = get_object('Store', ($this->data['Order Store Key']));
 
@@ -2689,16 +2889,18 @@ class Order extends DB_Table {
 
         if ($store->data['Store Refund Public ID Method'] == 'Same Invoice ID') {
 
+
             foreach ($this->get_invoices('objects') as $_invoice) {
                 if ($_invoice->data['Invoice Type'] == 'Invoice') {
                     $invoice_public_id = $_invoice->data['Invoice Public ID'];
+
+
                 }
             }
 
 
             if ($invoice_public_id == '') {
                 //Next Invoice ID
-
 
                 if ($store->data['Store Next Invoice Public ID Method'] == 'Invoice Public ID') {
 
@@ -2711,6 +2913,7 @@ class Order extends DB_Table {
                     $invoice_public_id = sprintf(
                         $store->data['Store Invoice Public ID Format'], $this->db->lastInsertId()
                     );
+
 
                 } elseif ($store->data['Store Next Invoice Public ID Method'] == 'Order ID') {
 
@@ -2736,13 +2939,20 @@ class Order extends DB_Table {
                         $account->data['Account Invoice Public ID Format'], $public_id
                     );
 
+
                 }
 
 
             }
 
 
+            if ($invoice_public_id != '') {
+                $invoice_public_id = $this->get_refund_public_id($invoice_public_id.$store->data['Store Refund Suffix']);
+            }
+
         } elseif ($store->data['Store Refund Public ID Method'] == 'Account Wide Own Index') {
+
+
             include_once 'class.Account.php';
             $account = new Account();
             $sql     = sprintf(
@@ -2755,6 +2965,7 @@ class Order extends DB_Table {
 
 
         } elseif ($store->data['Store Refund Public ID Method'] == 'Store Own Index') {
+
 
             $sql = sprintf(
                 "UPDATE `Store Dimension` SET `Store Invoice Last Refund Public ID` = LAST_INSERT_ID(`Store Invoice Last Refund Public ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
@@ -2806,25 +3017,21 @@ class Order extends DB_Table {
 
         }
 
-        if ($invoice_public_id != '') {
-            $invoice_public_id = $this->get_refund_public_id(
-                $invoice_public_id.$store->data['Store Refund Suffix']
-            );
-        }
+
+        $file_as = get_file_as($invoice_public_id);
 
 
         $refund_data = array(
-            'editor'                                => $this->editor,
-            'Invoice Date'                          => $date,
-            'Invoice Type'                          => 'Refund',
-            'Invoice Public ID'                     => $invoice_public_id,
-            'Invoice File As'                       => $invoice_public_id,
-            'Invoice Order Key'                     => $this->id,
-            'Invoice Store Key'                     => $this->data['Order Store Key'],
-            'Invoice Customer Key'                  => $this->data['Order Customer Key'],
-            'Invoice Tax Code'                      => $this->data['Order Tax Code'],
-            'Invoice Tax Shipping Code'             => $this->data['Order Tax Code'],
-            'Invoice Tax Charges Code'              => $this->data['Order Tax Code'],
+            'editor'               => $this->editor,
+            'Invoice Date'         => $date,
+            'Invoice Type'         => 'Refund',
+            'Invoice Public ID'    => $invoice_public_id,
+            'Invoice File As'      => $file_as,
+            'Invoice Order Key'    => $this->id,
+            'Invoice Store Key'    => $this->data['Order Store Key'],
+            'Invoice Customer Key' => $this->data['Order Customer Key'],
+            'Invoice Tax Code'     => $this->data['Order Tax Code'],
+
             'Invoice Metadata'                      => $this->data['Order Original Metadata'],
             'Invoice Tax Number'                    => $this->data['Order Tax Number'],
             'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
@@ -2834,6 +3041,7 @@ class Order extends DB_Table {
             'Invoice Net Amount Off'                => 0,
             'Invoice Customer Contact Name'         => $this->data['Order Customer Contact Name'],
             'Invoice Customer Name'                 => $this->data['Order Customer Name'],
+            'Invoice Customer Level Type'           => $this->data['Order Customer Level Type'],
             'Invoice Sales Representative Key'      => $this->data['Order Sales Representative Key'],
 
             //   'Invoice Telephone'                    => $this->data['Order Telephone'],
@@ -2852,25 +3060,21 @@ class Order extends DB_Table {
             'Invoice Address Formatted'             => $this->data['Order Invoice Address Formatted'],
             'Invoice Address Postal Label'          => $this->data['Order Invoice Address Postal Label'],
             'Invoice Registration Number'           => $this->data['Order Registration Number'],
-
-
-            'Invoice Tax Liability Date' => $date,
-
-            'Invoice Main Source Type' => '',
-
-            'Invoice Items Gross Amount'        => 0,
-            'Invoice Items Discount Amount'     => 0,
-            'Invoice Items Net Amount'          => 0,
-            'Invoice Items Out of Stock Amount' => 0,
-            'Invoice Shipping Net Amount'       => 0,
-            'Invoice Charges Net Amount'        => 0,
-            'Invoice Insurance Net Amount'      => 0,
-            'Invoice Total Net Amount'          => 0,
-            'Invoice Total Tax Amount'          => 0,
-            'Invoice Payments Amount'           => 0,
-            'Invoice To Pay Amount'             => 0,
-            'Invoice Total Amount'              => 0,
-            'Invoice Currency'                  => $this->data['Order Currency'],
+            'Invoice Tax Type'                      => ($tax_only ? 'Tax_Only' : 'Normal'),
+            'Invoice Tax Liability Date'            => $date,
+            'Invoice Items Gross Amount'            => 0,
+            'Invoice Items Discount Amount'         => 0,
+            'Invoice Items Net Amount'              => 0,
+            'Invoice Items Out of Stock Amount'     => 0,
+            'Invoice Shipping Net Amount'           => 0,
+            'Invoice Charges Net Amount'            => 0,
+            'Invoice Insurance Net Amount'          => 0,
+            'Invoice Total Net Amount'              => 0,
+            'Invoice Total Tax Amount'              => 0,
+            'Invoice Payments Amount'               => 0,
+            'Invoice To Pay Amount'                 => 0,
+            'Invoice Total Amount'                  => 0,
+            'Invoice Currency'                      => $this->data['Order Currency'],
 
 
         );
@@ -2917,18 +3121,6 @@ class Order extends DB_Table {
 
         global $session;
 
-        if (in_array(
-            $this->data['Order Replacement State'], array(
-                                                      'InWarehouse',
-                                                      'PackedDone',
-                                                      'Approved'
-                                                  )
-        )) {
-            $this->error = true;
-            $this->msg   = _("This order has a replacement in progress");
-
-            return;
-        }
 
         include_once 'utils/new_fork.php';
 
@@ -2968,7 +3160,6 @@ class Order extends DB_Table {
             'Delivery Note File As'                      => $replacement_public_id,
             'Delivery Note Type'                         => 'Replacement',
             'Delivery Note Dispatch Method'              => $dispatch_method,
-            'Delivery Note Title'                        => '',
             'Delivery Note Customer Key'                 => $this->data['Order Customer Key'],
             'Delivery Note Metadata'                     => '',
             'Delivery Note Customer Name'                => $this->data['Order Customer Name'],
@@ -2988,17 +3179,26 @@ class Order extends DB_Table {
             'Delivery Note Address Checksum'             => $this->data['Order Delivery Address Checksum'],
             'Delivery Note Address Formatted'            => $this->data['Order Delivery Address Formatted'],
             'Delivery Note Address Postal Label'         => $this->data['Order Delivery Address Postal Label'],
-            'Delivery Note Show in Warehouse Orders'     => $store->get('Store Show in Warehouse Orders')
         );
 
 
-        // print_r($data_dn);
         $replacement = new DeliveryNote('create replacement', $data_dn, $transactions);
 
-        $this->fast_update(array('Order Replacement State' => 'InWarehouse'));
+
+        $this->update_number_replacements();
+
+
+        if ($this->get('replacements_in_process') == 1) {
+            $this->fast_update(
+                array(
+                    'Order Replacement Created Date' => $date
+                )
+            );
+        }
 
 
         require_once 'utils/new_fork.php';
+
         new_housekeeping_fork(
             'au_housekeeping', array(
             'type'      => 'replacement_created',
@@ -3193,7 +3393,32 @@ class Order extends DB_Table {
     }
 
 
+    function get_field_label($field) {
+
+        switch ($field) {
+            case 'Order Customer Purchase Order ID':
+                return _("customer's purchase order number");
+                break;
+            case 'Order Tax Number':
+                return _("tax number");
+                break;
+            case 'Order Tax Number Valid':
+                return _("tax number valid");
+                break;
+            case 'Order Delivery Address':
+                return _("delivery address");
+                break;
+            case 'Order Invoice Address':
+                return _("invoice address");
+                break;
+            default:
+                return $field;
+
+        }
+
+    }
+
 }
 
 
-?>
+

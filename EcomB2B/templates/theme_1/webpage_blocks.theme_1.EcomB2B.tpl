@@ -8,7 +8,7 @@
  Version 3
 -->
 *}{include file="theme_1/_head.theme_1.EcomB2B.tpl"}
-<body xmlns="http://www.w3.org/1999/html">
+<body xmlns="http://www.w3.org/1999/html" data-device_prefix="">
 {include file="analytics.tpl"}
 
 
@@ -305,7 +305,7 @@
 
             {/if}
             {if $with_reset_password==1}
-            getScript('/js/desktop.logged_in.min.js?v=190227', function () {
+            getScript('/js/desktop.logged_in.min.js?v=190522', function () {
                 getScript('/js/desktop.forms.min.js', function () {
 
                     $("form").on('submit', function (e) {
@@ -420,9 +420,9 @@
 
             {/if}
             {if $with_basket==1}
-            getScript('/js/desktop.logged_in.min.js?v=190227', function () {
+            getScript('/js/desktop.logged_in.min.js?v=190522', function () {
                 getScript('/js/desktop.forms.min.js', function () {
-                    getScript('/js/desktop.basket.min.js?v=190229', function () {
+                    getScript('/js/desktop.basket.min.js?v=190529', function () {
 
                     $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=", function (data) {
 
@@ -466,7 +466,7 @@
 
 
 
-            getScript('/js/desktop.logged_in.min.js?v=190227', function () {
+            getScript('/js/desktop.logged_in.min.js?v=190522', function () {
 
                 var getUrlParameter = function getUrlParameter(sParam) {
                     var sPageURL = window.location.search.substring(1),
@@ -508,7 +508,7 @@
 
             {/if}
             {if $with_checkout==1}
-            getScript('/js/desktop.logged_in.min.js?v=190227', function () {
+            getScript('/js/desktop.logged_in.min.js?v=190522', function () {
                 getScript('/js/desktop.forms.min.js', function () {
                     getScript('/js/desktop.checkout.min.js?v=190329v3', function () {
                         $.getJSON("ar_web_checkout.php?tipo=get_checkout_html&device_prefix=", function (data) {
@@ -1214,7 +1214,7 @@
 
             });
                 {/if}
-                getScript('/js/desktop.logged_in.min.js?v=190227', function () {
+                getScript('/js/desktop.logged_in.min.js?v=190522', function () {
                 $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
 
 

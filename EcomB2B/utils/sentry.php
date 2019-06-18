@@ -10,9 +10,6 @@
  Version 2.0
 */
 
-if ( !preg_match('/bali|sasi|sakoi|geko/', gethostname()) ) {
-
-    $sentry_client = new Raven_Client('https://518cd71faa40409b839c5e2c58a6b581@sentry.io/1433839');
-    $sentry_client->install();
+if(defined('SENTRY_DNS_ECOM')){
+    Sentry\init(['dsn' => SENTRY_DNS_ECOM ]);
 }
-?>

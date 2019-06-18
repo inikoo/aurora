@@ -5,7 +5,6 @@
         "symfony/http-foundation": "^3.4",
         "mpdf/mpdf": "^7.1",
         "commerceguys/addressing": "^1.0",
-        "sentry/sentry": "^1.10",
         "guzzlehttp/guzzle": "~6.0",
         "braintree/braintree_php" : "3.37.0",
         "ext-json": "*",
@@ -19,6 +18,8 @@
         "google/apiclient": "^2.0"
         "gumlet/php-image-resize": "1.9.*",
         "spatie/image-optimizer": "^1.1"
+        "sentry/sdk": "2.0.3"
+
 
     }
 }

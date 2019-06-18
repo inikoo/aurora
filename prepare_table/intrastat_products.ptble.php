@@ -11,10 +11,10 @@
 
 
 if ($parameters['tariff_code'] == 'missing') {
-    $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and (`Product Tariff Code` is null or `Product Tariff Code`="")  and DN.`Delivery Note Key` is not null  ', prepare_mysql($parameters['country_code']));
+    $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and (`Product Tariff Code` is null or `Product Tariff Code`="")  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched"  and `Delivery Note Quantity`>0  ', prepare_mysql($parameters['country_code']));
 
 } else {
-    $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and `Product Tariff Code` like "%s%%"  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched"  ', prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code']));
+    $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and `Product Tariff Code` like "%s%%"  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" and `Delivery Note Quantity`>0  ', prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code']));
 
 }
 
@@ -82,13 +82,20 @@ if ($parameters['f_field'] == 'number' and $f_value != '') {
 $_order = $order;
 $_dir   = $order_direction;
 
-
 if ($order == 'code') {
-    $order = 'Product File As';
+    $order = '`Product Code File As`';
 } elseif ($order == 'name') {
     $order = '`Product Name`';
+} elseif ($order == 'units') {
+    $order = '`Product Units Per Case`';
+} elseif ($order == 'store') {
+    $order = '`Store Code`';
+} elseif ($order == 'price') {
+    $order = '`Product Price`/`Product Units Per Case`';
+} elseif ($order == 'weight') {
+    $order = '`Product Package Weight`';
 } elseif ($order == 'units_send') {
-    $order = 'units_send`';
+    $order = 'sum(`Delivery Note Quantity`*`Product Units Per Case`) ';
 } else {
 
     $order = 'OTF.`Product ID`';
@@ -103,9 +110,8 @@ $table =
 $sql_totals = "";
 
 
-$fields = "OTF.`Product ID`,P.`Product Code`,`Product Name`,`Product Store Key`,`Product Units Per Case`,`Product Tariff Code`,`Product Price`,`Order Currency Code`,`Product Unit Weight`,`Store Code`,`Store Name`,
+$fields = "OTF.`Product ID`,P.`Product Code`,`Product Name`,`Product Store Key`,`Product Units Per Case`,`Product Tariff Code`,`Product Price`,`Order Currency Code`,`Product Package Weight`,`Store Code`,`Store Name`,
 sum(`Delivery Note Quantity`*`Product Units Per Case`) as units_send
 ";
 
 
-?>

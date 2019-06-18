@@ -11,6 +11,7 @@
 */
 
 require_once '../vendor/autoload.php';
+require 'keyring/dns.php';
 require_once 'utils/sentry.php';
 
 
@@ -21,7 +22,6 @@ if(  $redis->connect('127.0.0.1', 6379)){
     $redis_on=false;
 }
 
-require 'keyring/dns.php';
 
 
 session_start();
@@ -37,5 +37,3 @@ $is_homepage=true;
 
 include 'display_webpage.php';
 
-
-?>

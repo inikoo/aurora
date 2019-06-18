@@ -20,9 +20,10 @@
                 <td colspan=3>{$header_total_sales}</td>
             </tr>
             <tr class="total_sales">
-                <td title="{t}Invoiced amount{/t} {$customer->get('Invoiced Net Amount')}  , {t}Refunds{/t} {$customer->get('Refunded Net Amount')} ">{$customer->get('Net Amount')}</td>
                 <td><span title="{t}Invoices{/t}">{$customer->get('Number Invoices Soft Minify')}</span> <span class="very_discreet error" title="{t}Refunds{/t}" >({$customer->get('Number Refunds Soft Minify')})</td>
-                <td></td>
+                <td title="{t}Invoiced amount{/t}"> {$customer->get('Invoiced Net Amount')} <span class="error" title="{t}Refunds amount{/t}">({$customer->get('Refunded Net Amount')})</span></td>
+                <td title="{t}Invoiced minus refunded{/t}"> {$customer->get('Invoiced Balance Amount')} </td>
+
             </tr>
         </table>
 

@@ -19,7 +19,6 @@ trait OrderCalculateTotals {
         $number_with_deals               = 0;
         $number_items_with_out_of_stock  = 0;
         $number_with_problems            = 0;
-        $total_weight                    = 0;
         $total_items_gross               = 0;
         $total_items_out_of_stock_amount = 0;
         $total_items_net                 = 0;
@@ -33,7 +32,6 @@ trait OrderCalculateTotals {
             "SELECT
 		count(*) AS number_items,
 		sum(`Cost Supplier`) AS cost,
-		sum(`Estimated Weight`) AS weight,
 		sum(`Order Transaction Amount`) AS net ,
 		sum(`Order Transaction Total Discount Amount`) AS discounts ,sum(`Order Transaction Gross Amount`) AS gross ,
 		sum(`Order Transaction Out of Stock Amount`) AS out_of_stock ,
@@ -53,7 +51,6 @@ trait OrderCalculateTotals {
 
 
                 $total_items_out_of_stock_amount = $row['out_of_stock'];
-                $total_weight                    = $row['weight'];
                 $total_items_gross               = $row['gross'];
                 $total_items_net                 = $row['net'];
                 $total_items_discounts           = $row['discounts'];
@@ -134,6 +131,10 @@ trait OrderCalculateTotals {
         $total_tax = 0;
         $data      = array();
 
+
+        //$base_tax_code='';
+
+
         $sql = sprintf(
             "SELECT  `Transaction Tax Code`,sum(`Order Transaction Amount`) AS net   FROM `Order Transaction Fact` WHERE
 		`Order Key`=%d  AND `Order Transaction Type`='Order' GROUP BY  `Transaction Tax Code`  ", $this->id
@@ -146,11 +147,18 @@ trait OrderCalculateTotals {
             foreach ($result as $row) {
                 $data[$row['Transaction Tax Code']] = $row['net'];
 
+                //   $base_tax_code=$row['Transaction Tax Code'];//todo <-- this is used for assign the tax code to the amount off and may not work of is different taxt codes
+
+
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
             exit;
+        }
+
+        if ($this->data['Order Deal Amount Off'] != 0) {
+            $data[$row['Transaction Tax Code']] -= $this->data['Order Deal Amount Off'];
         }
 
 
@@ -164,6 +172,7 @@ trait OrderCalculateTotals {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
+
 
                 if (isset($data[$row['Tax Category Code']])) {
                     $data[$row['Tax Category Code']] += $row['net'];
@@ -196,7 +205,9 @@ trait OrderCalculateTotals {
 
         }
 
-        $total_net-=$this->data['Order Deal Amount Off'];
+
+        //     print_r($total_net);
+
 
         $total = round($total_net + $total_tax, 2);
 
@@ -338,9 +349,41 @@ trait OrderCalculateTotals {
         );
 
         $this->update_payment_state();
+        $this->update_order_estimated_weight();
 
     }
 
+
+    function update_order_estimated_weight() {
+
+        $order_estimated_weight = 0;
+        $sql                    = sprintf(
+            "SELECT sum(`Order Quantity`*`Product Package Weight`) as order_estimated_weight  FROM `Order Transaction Fact` OTF left join `Product Dimension` P on (OTF.`Product ID`=P.`Product ID`)  WHERE `Order Key`=%d AND `Order Transaction Type`='Order' ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                $order_estimated_weight = $row['order_estimated_weight'];
+
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            exit;
+        }
+
+        $this->fast_update(
+            array(
+                'Order Estimated Weight' => $order_estimated_weight,
+
+
+            )
+        );
+
+
+    }
 
     /**
      *
@@ -349,7 +392,7 @@ trait OrderCalculateTotals {
     function update_order_payments() {
 
 
-        $total=$this->get('Order Total Amount');
+        $total    = $this->get('Order Total Amount');
         $payments = 0;
 
         $sql = sprintf(
@@ -389,10 +432,10 @@ trait OrderCalculateTotals {
             array(
 
 
-                'Order Payments Amount'      => $payments,
-                'Order To Pay Amount'        => round($total_balance - $payments, 2),
-                'Order Total Refunds'        => $total_refunds,
-                'Order Total Balance'        => $total_balance,
+                'Order Payments Amount' => $payments,
+                'Order To Pay Amount'   => round($total_balance - $payments, 2),
+                'Order Total Refunds'   => $total_refunds,
+                'Order Total Balance'   => $total_balance,
 
 
             )

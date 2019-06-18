@@ -125,14 +125,7 @@ switch ($tipo) {
                 $data['scope'] = 'stores';
                 search_orders($db, $account, $user,$data);
             } elseif ($data['state']['module'] == 'accounting_server') {
-                if (in_array(
-                    $data['state']['section'], array(
-                                                 'invoices',
-
-                                             )
-                )) {
-
-
+                if (in_array($data['state']['section'], array('deleted_invoice','deleted_invoices_server','invoices','invoice','category'))) {
 
 
                     $data['scope'] = 'stores';
@@ -153,17 +146,7 @@ switch ($tipo) {
 
                 $data['scope']     = 'store';
                 $data['scope_key'] = $data['state']['current_store'];
-                if (in_array(
-                    $data['state']['section'], array(
-                                                 'invoices',
-
-                                             )
-                )) {
-
-
-
-
-
+                if (in_array($data['state']['section'], array('deleted_invoice','deleted_invoices','invoices','invoice','category'))) {
                     search_invoices($db, $account, $user, $data);
                 } else {
                     search_payments($db, $account,$user, $data);

@@ -169,11 +169,11 @@ if ($order == 'tax_number') {
         } else {
             if ($order == 'country_code') {
                 $order
-                    = '`Invoice Billing Country 2 Alpha Code`,`Invoice Tax Number`';
+                    = '`Invoice Address Country 2 Alpha Code`,`Invoice Tax Number`';
 
                 if ($order_direction != '') {
                     $order
-                        = '`Invoice Billing Country 2 Alpha Code` desc ,`Invoice Tax Number`';
+                        = '`Invoice Address Country 2 Alpha Code` desc ,`Invoice Tax Number`';
 
                 }
 
@@ -200,7 +200,7 @@ if ($order == 'tax_number') {
 
 
 $group_by
-    = 'group by `Invoice Tax Number`,`Invoice Billing Country 2 Alpha Code`,`Invoice Customer Key`';
+    = 'group by `Invoice Tax Number`,`Invoice Address Country 2 Alpha Code`,`Invoice Customer Key`';
 
 $table = '  `Invoice Dimension` ';
 

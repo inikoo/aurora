@@ -4,21 +4,23 @@
 
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
     <title>Aurora</title>
 
     <link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon"/>
 
 
-    <link href="/css/au_app.min.css?v=190319v3" rel="stylesheet">
+    <link href="/assets/au_app.min.css?v=190527" rel="stylesheet">
 
 
     {if !$is_devel}
-        <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
-        <script src="https://wchat.freshchat.com/js/widget.js"></script>
+        <script src="https://browser.sentry-cdn.com/5.4.0/bundle.min.js" crossorigin="anonymous">
+        </script>
+    {if false}<script src="https://wchat.freshchat.com/js/widget.js"></script>{/if}
     {/if}
-    <script src="/js/aurora_libs.min.js?v190319"></script>
+    <script src="/assets/aurora_libs.min.js?v190319v2"></script>
 
-    <script src="/js/aurora.min.js?v190422v4"></script>
+    <script src="/assets/aurora.min.js?v190611"></script>
 
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 
@@ -30,7 +32,7 @@
     {/if}
 
 
-    <script src="https://app-rsrc.getbee.io/plugin/BeePlugin.js"></script>
+    <script src="https://app-rsrc.getbee.io/plugin/BeePlugin.js" async></script>
 
 
 </head>
@@ -64,8 +66,8 @@
         ga('set', 'userId', '{$account->get('Code')}_{"%05d"|sprintf:$user->id}');
         ga('send', 'pageview');
 
-        Sentry.init({
-            dsn: 'https://e719d7109ab24a58a977704fed0d7aeb@sentry.io/1433847'});
+        Sentry.init({ dsn: 'https://6b74919f310546d2a64bbf7c856d0820@sentry.io/1482169' });
+
 
         Sentry.configureScope((scope) => {
             scope
@@ -110,8 +112,7 @@
                 <li title="{t}Share screen{/t}"><a href="https://get.teamviewer.com/txww6bm" target="_blank"><i class="far fa-desktop fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label"
                                                                                                                                                                                                 class="label"> {t}Share screen{/t}</span></a>
                 </li>
-                <li title="{t}Help{/t}" onclick="window.fcWidget.open(); return false;"><i class="fas fa-headset fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label"
-                                                                                                                                                                           class="label"> {t}Online chat{/t}</span>
+                <li class="hide" title="{t}Help{/t}" onclick="window.fcWidget.open(); return false;"><i class="fas fa-headset fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Online chat{/t}</span>
                 </li>
                 <li title="{t}Help{/t}" onclick="FreshWidget.show(); return false;"><i class="fal fa-hands-helping fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label"
                                                                                                                                                                              class="label"> {t}Help{/t}</span>
@@ -205,6 +206,7 @@
             "url":         "https://inikoo.freshdesk.com"
         });
     </script>
+    {if false}
     <script>
         window.fcWidget.init({
             token:  "869f028d-7877-4611-a735-7021ae47fab0",
@@ -226,6 +228,7 @@
 
         window.fcWidget.user.setFirstName("{$user->get('Alias')}");
     </script>
+    {/if}
 {/if}
 </body>
 </html>

@@ -55,6 +55,16 @@ function update_voucher($_data, $customer, $order, $editor, $db) {
     $error                = false;
     $fail_code            = '';
 
+
+    if($order->get('Order State')=='InBasket'){
+        $order->fast_update(
+            array(
+                'Order Last Updated by Customer'   => gmdate('Y-m-d H:i:s')
+            )
+        );
+    }
+
+
     if ($voucher_code == '') {
         if (count($current_voucher_keys) == 0) {
 

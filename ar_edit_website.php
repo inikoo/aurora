@@ -75,20 +75,20 @@ switch ($tipo) {
     case 'update_website_styles':
         $data = prepare_values(
             $_REQUEST, array(
-                         'key'      => array('type' => 'key'),
-                         'styles'   => array(
+                         'key'           => array('type' => 'key'),
+                         'styles'        => array(
                              'type'     => 'string',
                              'optional' => true
                          ),
-                         'mobile_styles'   => array(
+                         'mobile_styles' => array(
                              'type'     => 'string',
                              'optional' => true
                          ),
-                         'labels'   => array(
+                         'labels'        => array(
                              'type'     => 'string',
                              'optional' => true
                          ),
-                         'settings' => array(
+                         'settings'      => array(
                              'type'     => 'string',
                              'optional' => true
                          )
@@ -1833,7 +1833,7 @@ function save_header($data, $editor) {
     $header_data = json_decode($header->get('Website Header Data'), true);
 
 
-   // print_r($header_data);
+    // print_r($header_data);
 
     // $header_data=$website->get('Header Data');
 
@@ -1901,9 +1901,19 @@ function save_webpage_content($data, $editor, $smarty, $db) {
 
             $deal_component->update(
                 array(
-                    'Deal Component Name Label'      => $deal_component_data['name'],
-                    'Deal Component Term Label'      => $deal_component_data['term'],
+
                     'Deal Component Allowance Label' => $deal_component_data['allowance']
+                )
+            );
+
+
+            $deal         = get_object('Deal', $deal_component->get('Deal Key'));
+            $deal->editor = $editor;
+
+            $deal->update(
+                array(
+                    'Deal Name Label' => $deal_component_data['name'],
+                    'Deal Term Label' => $deal_component_data['term'],
                 )
             );
             //  print_r($deal_component_data);
@@ -1962,6 +1972,8 @@ function save_webpage_content($data, $editor, $smarty, $db) {
     $old_content_data = $webpage->get('Content Data');
 
     //====== here ===== do all post edit stuff
+
+
 
 
     $webpage->update(array('Page Store Content Data' => $data['content_data']), 'no_history');
@@ -2024,22 +2036,30 @@ function save_deal_component_labels($data, $editor) {
     $deal_component         = get_object('Deal Component', $data['key']);
     $deal_component->editor = $editor;
 
-    $update_fields = array();
+    $deal = get_object('deal', $deal_component->get('Deal Key'));
+
+    $deal->editor = $editor;
+
+    //  $update_fields = array();
 
     switch ($data['label']) {
         case 'name':
-            $update_fields = array('Deal Component Name Label' => $data['value']);
+            $update_fields = array('Deal Name Label' => $data['value']);
+            $deal->update($update_fields);
+
             break;
         case 'term':
-            $update_fields = array('Deal Component Term Label' => $data['value']);
+            $update_fields = array('Deal Term Label' => $data['value']);
+            $deal->update($update_fields);
+
             break;
         case 'allowance':
             $update_fields = array('Deal Component Allowance Label' => $data['value']);
+            $deal_component->update($update_fields);
+
             break;
 
     }
-
-    $deal_component->update($update_fields);
 
 
     $response = array(
@@ -2069,16 +2089,12 @@ function update_website_styles($data, $editor) {
     }
 
 
-
     if (isset($data['styles'])) {
         $website->update_styles(json_decode($data['styles'], true));
     }
     if (isset($data['mobile_styles'])) {
         $website->update_mobile_styles(json_decode($data['mobile_styles'], true));
     }
-
-
-
 
 
     $website->clean_cache();

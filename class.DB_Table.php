@@ -656,6 +656,9 @@ abstract class DB_Table extends stdClass {
 
     public function fast_update($data, $table_full_name = false, $options = '') {
 
+
+
+
         if ($options == 'no_null') {
             $null_if_empty = false;
 
@@ -683,6 +686,9 @@ abstract class DB_Table extends stdClass {
         } elseif ($table_full_name == 'Product Category Data' or $table_full_name == 'Product Category DC Data' or $table_full_name == 'Product Category Dimension') {
             $key_field = 'Product Category Key';
 
+        }elseif ($table_full_name == 'Part Category Data' or $table_full_name == 'Part Category Dimension') {
+            $key_field = 'Product Category Key';
+
         } elseif ($table_full_name == 'Invoice Category Data' or $table_full_name == 'Invoice Category DC Data' or $table_full_name == 'Invoice Category Dimension') {
             $key_field = 'Invoice Category Key';
 
@@ -695,6 +701,8 @@ abstract class DB_Table extends stdClass {
         foreach ($data as $field => $value) {
 
 
+
+
             $sql = sprintf(
                 "UPDATE `%s` SET `%s`=? WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($key_field)
             );
@@ -703,6 +711,7 @@ abstract class DB_Table extends stdClass {
             if ($value == '' and $null_if_empty) {
                 $value = null;
             }
+
 
             $stmt->bindParam(1, $value);
             $stmt->bindParam(2, $this->id);
@@ -716,6 +725,8 @@ abstract class DB_Table extends stdClass {
 
 
     }
+
+
 
     public function fast_update_json_field($field, $key, $value, $table_full_name = '') {
 

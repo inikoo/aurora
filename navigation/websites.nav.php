@@ -600,9 +600,10 @@ function get_page_version_navigation($data, $smarty, $user, $db, $account)
                                         "Website"
                                     ) . ' (' . $data['_parent']->get(
                                         'Code'
-                                    ) . ')',
-                                'reference' => 'website/' . $object->get(
-                                        'Page Site Key'
+
+                                    ).')',
+                                'reference' => 'website/'.$object->get(
+                                        'Webpage Website Key'
                                     )
                             );
 
@@ -658,7 +659,7 @@ function get_page_version_navigation($data, $smarty, $user, $db, $account)
     }
 
 
-    $sections = get_sections('websites', $object->get('Page Site Key'));
+    $sections = get_sections('websites', $object->get('Webpage Website Key'));
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;
     }
@@ -860,11 +861,12 @@ function get_user_navigation($data, $smarty, $user, $db, $account)
 
 
             $up_button = array(
-                'icon' => 'arrow-up',
-                'title' => _("Page"),
-                'reference' => 'website/' . $page->get(
-                        'Page Site Key'
-                    ) . '/page/' . $data['parent_key']
+
+                'icon'      => 'arrow-up',
+                'title'     => _("Page"),
+                'reference' => 'website/'.$page->get(
+                        'Webpage Website Key'
+                    ).'/page/'.$data['parent_key']
             );
 
             if ($prev_key) {

@@ -12,10 +12,14 @@
 
 
 use Aws\Ses\SesClient;
+use Aws\Exception\AwsException;
 
 
 trait Send_Email {
+
+
     function send($recipient, $data, $smarty = false) {
+
 
         $this->sent = false;
 
@@ -66,7 +70,6 @@ trait Send_Email {
                 'Email Tracking Recipient Key'                => $recipient->id,
 
             );
-
 
             $email_tracking = new Email_Tracking('new', $email_tracking_data);
         } else {
@@ -154,36 +157,142 @@ trait Send_Email {
             $to_address = 'raul@inikoo.com';
         }
 
+        if ($this->email_template_type->get('Email Campaign Type Code') == 'Delivery Confirmation' and
 
-        $request                               = array();
-        $request['Source']                     = $_source;
-        $request['Destination']['ToAddresses'] = array($to_address);
-        $request['ConfigurationSetName']       = $this->account->get('Account Code');
+            (($this->store->settings('send_invoice_attachment_in_delivery_confirmation') == 'Yes' and !empty($this->invoice_pdf)) or ($this->store->settings('send_dn_attachment_in_delivery_confirmation') == 'Yes' and !empty($this->dn_pdf))
+
+            )
+
+        ) {
+            $send_raw = true;
+        } else {
+            $send_raw = false;
+        }
+
+        $subject   = $this->get_email_subject();
+        $html_part = $this->get_email_html($email_tracking, $recipient, $data, $smarty, $localised_labels);
+        $text_part = $this->get_email_plain_text();
+
+        if ($send_raw) {
 
 
-        $request['Message']['Subject']['Data'] = $this->get_email_subject();
+            $message = "To: ".$to_address."\n";
+            $message .= "From: ".$_source."\n";
 
 
-        if ($request['Message']['Subject']['Data'] == '') {
+            $separator_multipart = md5($this->id.time());
 
-            $this->error = true;
-            $this->msg   = _('Empty email subject');
 
-            return false;
+            $message .= "Subject: ".'=?utf-8?B?'.base64_encode($subject).'?='."\n";
+            $message .= "MIME-Version: 1.0\n";
+
+            $message .= 'Content-Type: multipart/mixed; boundary="'.$separator_multipart.'"';
+
+            $message .= "\n\n";
+            $message .= "--$separator_multipart\n";
+
+            if ($text_part != '') {
+
+                $message .= 'Content-Type: multipart/alternative; boundary="sub_'.$separator_multipart."\"\n\n";
+
+                $message .= '--sub_'.$separator_multipart."\n";
+                $message .= 'Content-Type: text/plain; charset=utf-8'."\n";
+                $message .= 'Content-Transfer-Encoding: quoted-printable'."\n";
+                $message .= "\n".$text_part."\n\n";
+
+                $message .= '--sub_'.$separator_multipart."\n";
+                $message .= 'Content-Type: text/html; charset=utf-8'."\n";
+                $message .= 'Content-Transfer-Encoding: quoted-printable'."\n";
+                $message .= "\n".$html_part."\n";
+
+                //$message .= "\n".'<p>hello</p>'."\n\n";
+
+                $message .= '--sub_'.$separator_multipart.'--'."\n\n";
+
+
+            } else {
+                $message .= 'Content-Type: text/html; charset=utf-8'."\n";
+                //  $message .= "Content-Transfer-Encoding: 7bit\n";
+                //$message .= "Content-Type-Encoding: base64\n";
+
+                $message .= "Content-Disposition: inline\n";
+                $message .= "\n";
+                $message .= $html_part;
+                //$message .= '<p>hello</p>';
+                $message .= "\n\n";
+            }
+
+
+            if (isset($this->invoice_pdf)) {
+                $filename = _('Invoice').'_';
+
+                $filename .= $this->placeholders['[Invoice Number]'];
+
+                $filename .= '.pdf';
+                $message  .= "--$separator_multipart\n";
+                $message  .= 'Content-Type: application/pdf; name="'.$filename.'"';
+                $message  .= "\n";
+                $message  .= 'Content-Disposition: attachment; filename="'.$filename.'"'."\n";
+                $message  .= "Content-Transfer-Encoding: base64\n";
+
+                $message .= "\n";
+                $message .= chunk_split(base64_encode($this->invoice_pdf));
+                //$message .= base64_encode('hello');
+                $message .= "\n\n";
+            }
+            if (isset($this->dn_pdf)) {
+
+
+                $filename = $this->placeholders['[Delivery Note Number]'].'_delivery.pdf';
+
+
+                $message .= "--$separator_multipart\n";
+                $message .= 'Content-Type: application/pdf; name="'.$filename.'"';
+                $message .= "\n";
+                $message .= 'Content-Disposition: attachment; filename="'.$filename.'"'."\n";
+                $message .= "Content-Transfer-Encoding: base64\n";
+
+                $message .= "\n";
+                $message .= chunk_split(base64_encode($this->dn_pdf));
+                //$message .= base64_encode('hello');
+                $message .= "\n\n";
+            }
+            $message .= "--$separator_multipart--\n";
+
+
+            $request = [
+                'Source'               => $_source,
+                'Destinations'         => array($to_address),
+                'ConfigurationSetName' => $this->account->get('Account Code'),
+                'RawMessage'           => [
+                    'Data' => $message
+                ]
+            ];
+
+
+        } else {
+            $request                               = array();
+            $request['Source']                     = $_source;
+            $request['Destination']['ToAddresses'] = array($to_address);
+            $request['ConfigurationSetName']       = $this->account->get('Account Code');
+
+
+            $request['Message']['Subject']['Data'] = '=?utf-8?B?'.base64_encode($subject).'?=';
+            if ($request['Message']['Subject']['Data'] == '') {
+                $this->error = true;
+                $this->msg   = _('Empty email subject');
+
+                return false;
+            }
+            $request['Message']['Body']['Text']['Data'] = $text_part;
+            $request['Message']['Body']['Html']['Data'] = $html_part;
 
         }
 
-        $request['Message']['Body']['Text']['Data'] = $this->get_email_plain_text();
-
-
-        // if ($this->get('Published Email Template HTML') != '') {
-
-        $request['Message']['Body']['Html']['Data'] = $this->get_email_html($email_tracking, $recipient, $data, $smarty, $localised_labels);
-
 
         if (!isset($this->ses_clients)) {
-            $this->ses_clients=array();
-            /*
+            $this->ses_clients = array();
+
             $this->ses_clients[] = SesClient::factory(
                 array(
                     'version'     => 'latest',
@@ -194,7 +303,7 @@ trait Send_Email {
                     ],
                 )
             );
-            */
+
             $this->ses_clients[] = SesClient::factory(
                 array(
                     'version'     => 'latest',
@@ -212,37 +321,61 @@ trait Send_Email {
         try {
 
 
+            $ses_client = $this->ses_clients[(rand(0, 1) == 0 ? 0 : 1)];
 
-            //$ses_client=$this->ses_clients[(rand(0,3)==0?0:1)];
-
-            $ses_client=$this->ses_clients[0];
-
-            $result = $ses_client->sendEmail($request);
+            //$ses_client = $this->ses_clients[0];
 
 
+            if ($send_raw) {
+
+                // print_r($request);
+
+
+                //  print "sened A\n";
+                $result = $ses_client->sendRawEmail($request);
+
+            } else {
+                // print "sened B\n";
+                $result = $ses_client->sendEmail($request);
+
+            }
+
+
+            //            print_r($result);
+
+            // exit('xx');
             $email_tracking->fast_update(
                 array(
-                    'Email Tracking State'  => "Sent to SES",
                     "Email Tracking SES Id" => $result->get('MessageId'),
 
 
                 )
             );
 
+
             /*
 
-                                $email_tracking->fast_update(
-                                    array(
-                                        'Email Tracking State'  => "Sent to SES",
-                                        "Email Tracking SES Id" => 'xxxx'.date('U'),
+                        $email_tracking->fast_update(
+                            array(
+                                'Email Tracking State'  => "Sent to SES",
+                                "Email Tracking SES Id" => 'xxxx'.date('U'),
 
 
-                                    )
-                                );
-            */
+                            )
+                        );
+            */ //usleep(100000);
+
+            //    sleep(1);
 
 
-            //  sleep(1);
+            $sql = sprintf(
+                'insert into `Email Tracking Event Dimension`  (`Email Tracking Event Tracking Key`,`Email Tracking Event Type`,`Email Tracking Event Date`)
+                  values (%d,%s,%s)', $email_tracking->id, prepare_mysql('Sent'), prepare_mysql(gmdate('Y-m-d H:i:s'))
+            );
+            $this->db->exec($sql);
+
+
+            $email_tracking->update_state('Sent');
 
 
             if (in_array(
@@ -260,8 +393,8 @@ trait Send_Email {
             )) {
 
                 $sql = sprintf(
-                    'insert into `Email Tracking Email Copy` (`Email Tracking Email Copy Key`,`Email Tracking Email Copy Subject`,`Email Tracking Email Copy Body`) values (%d,%s,%s)  ', $email_tracking->id, prepare_mysql($request['Message']['Subject']['Data']),
-                    (isset($request['Message']['Body']['Html']['Data']) ? prepare_mysql($request['Message']['Body']['Html']['Data']) : prepare_mysql($request['Message']['Body']['Text']['Data'])
+                    'insert into `Email Tracking Email Copy` (`Email Tracking Email Copy Key`,`Email Tracking Email Copy Subject`,`Email Tracking Email Copy Body`) values (%d,%s,%s)  ', $email_tracking->id, prepare_mysql($subject),
+                    (isset($html_part) ? prepare_mysql($html_part) : prepare_mysql($text_part)
 
 
                     )
@@ -272,34 +405,47 @@ trait Send_Email {
 
             }
 
-            $this->sent           = true;
+            $this->sent = true;
+
+
             $this->email_tracking = $email_tracking;
 
 
-        } catch (Exception $e) {
+        } catch (AwsException $e) {
+
+            //print_r($request);
+
+            //echo $e->getAwsRequestId()."\n";
+            //echo $e->getAwsErrorType()."\n";
+            //echo $e->getAwsErrorCode()."\n";
+            //echo $e->getAwsErrorMessage();
+            if ($e->getAwsErrorCode() == 'Throttling') {
+                usleep(47620);
+
+            } else {
+
+                $email_tracking->fast_update(
+                    array(
+                        'Email Tracking State' => "Rejected by SES",
 
 
-            $email_tracking->fast_update(
-                array(
-                    'Email Tracking State' => "Rejected by SES",
+                    )
+                );
 
-
-                )
-            );
-
-            $sql = sprintf(
-                'insert into `Email Tracking Event Dimension` (
+                $sql = sprintf(
+                    'insert into `Email Tracking Event Dimension` (
               `Email Tracking Event Tracking Key`,`Email Tracking Event Type`,
               `Email Tracking Event Date`,`Email Tracking Event Data`) values (
-                    %d,%s,%s,%s)', $email_tracking->id, prepare_mysql('Send to SES Error'), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(json_encode(array('error' => $e->getMessage())))
+                    %d,%s,%s,%s)', $email_tracking->id, prepare_mysql('Send to SES Error'), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(json_encode(array('error' => $e->getAwsErrorMessage())))
 
 
-            );
-            $this->db->exec($sql);
+                );
+                $this->db->exec($sql);
 
 
-            $this->error = true;
-            $this->msg   = _('Error, email not send').' '.$e->getMessage();
+                $this->error = true;
+                $this->msg   = _('Error, email not send').' '.$e->getAwsErrorMessage();
+            }
 
 
         }
@@ -316,114 +462,14 @@ trait Send_Email {
         }
 
 
-        if ($email_tracking->get('Email Tracking Email Mailshot Key') > 0) {
+        if (!$email_tracking->get('Email Tracking Email Mailshot Key') > 0) {
 
-            $email_template->update_sent_emails_totals();
-
-            $this->email_template_type->update_sent_emails_totals();
-
-            $email_campaign = get_object('email_campaign', $email_tracking->get('Email Tracking Email Mailshot Key'));
-            $email_campaign->update_sent_emails_totals();
-
-
-            if (isset($this->socket)) {
-
-
-                switch ($email_tracking->get('Email Tracking State')) {
-                    case 'Ready':
-                        $state = _('Ready to send');
-                        break;
-                    case 'Sent to SES':
-                        $state = _('Sending');
-                        break;
-                        break;
-                    case 'Delivered':
-                        $state = _('Delivered');
-                        break;
-                    case 'Opened':
-                        $state = _('Opened');
-                        break;
-                    case 'Clicked':
-                        $state = _('Clicked');
-                        break;
-                    case 'Error':
-                        $state = '<span class="warning">'._('Error').'</span>';
-                        break;
-                    case 'Hard Bounce':
-                        $state = '<span class="error"><i class="fa fa-exclamation-circle"></i>  '._('Bounced').'</span>';
-                        break;
-                    case 'Soft Bounce':
-                        $state = '<span class="warning"><i class="fa fa-exclamation-triangle"></i>  '._('Probable bounce').'</span>';
-                        break;
-                    case 'Spam':
-                        $state = '<span class="error"><i class="fa fa-exclamation-circle"></i>  '._('Mark as spam').'</span>';
-                        break;
-                    default:
-                        $state = $email_tracking->get('Email Tracking State');
-                }
-
-
-                $this->socket->send(
-                    json_encode(
-                        array(
-                            'channel' => 'real_time.'.strtolower($this->account->get('Account Code')),
-                            'objects' => array(
-                                array(
-                                    'object' => 'mailshot',
-                                    'key'    => $email_campaign->id,
-
-                                    'update_metadata' => array(
-                                        'class_html' => array(
-                                            '_Sent_Emails_Info'    => $email_campaign->get('Sent Emails Info'),
-                                            '_Email_Campaign_Sent' => $email_campaign->get('Sent'),
-                                        )
-                                    )
-
-                                )
-
-                            ),
-
-                            'tabs' => array(
-                                array(
-                                    'tab'        => 'mailshot.sent_emails',
-                                    'parent'     => 'email_campaign_type',
-                                    'parent_key' => $this->email_template_type->id,
-                                    'cell'       => array(
-                                        'email_tracking_state_'.$email_tracking->id => $state
-                                    )
-
-
-                                ),
-                                array(
-                                    'tab'        => 'email_campaign_type.mailshots',
-                                    'parent'     => 'store',
-                                    'parent_key' => $this->email_template_type->get('Store Key'),
-                                    'cell'       => array(
-                                        'date_'.$email_campaign->id  => strftime("%a, %e %b %Y %R", strtotime($email_campaign->get('Email Campaign Last Updated Date')." +00:00")),
-                                        'state_'.$email_campaign->id => $email_campaign->get('State'),
-                                        'sent_'.$email_campaign->id  => $email_campaign->get('Sent')
-                                    )
-
-
-                                ),
-
-                            ),
-
-
-                        )
-                    )
-                );
-            }
-
-
-        } else {
             include_once 'utils/new_fork.php';
             new_housekeeping_fork(
                 'au_housekeeping', array(
                 'type'                    => 'update_sent_emails_data',
                 'email_template_key'      => $email_tracking->get('Email Tracking Email Template Key'),
                 'email_template_type_key' => $email_tracking->get('Email Tracking Email Template Type Key'),
-                'email_mailshot_key'      => $email_tracking->get('Email Tracking Email Mailshot Key'),
 
             ), $this->account->get('Account Code')
             );
@@ -524,25 +570,25 @@ trait Send_Email {
                 $this->placeholders['[Order Amount]'] = $this->order->get('Total');
                 $this->placeholders['[Order Date]']   = $this->order->get('Date');
 
-                if($this->order->get('Order For Collection')=='Yes'){
-                    $this->placeholders['[Delivery Address]']   = _('For collection');
-                }else{
-                    $this->placeholders['[Delivery Address]']   = $this->order->get('Order Delivery Address Formatted');
+                if ($this->order->get('Order For Collection') == 'Yes') {
+                    $this->placeholders['[Delivery Address]'] = _('For collection');
+                } else {
+                    $this->placeholders['[Delivery Address]'] = $this->order->get('Order Delivery Address Formatted');
 
                 }
 
-                $this->placeholders['[Invoice Address]']   = $this->order->get('Order Invoice Address Formatted');
+                $this->placeholders['[Invoice Address]'] = $this->order->get('Order Invoice Address Formatted');
 
-                if(trim($this->order->get('Order Customer Message'))==''){
-                    $this->placeholders['[Customer Note]']   = '';
-                }else{
-                    $this->placeholders['[Customer Note]']   = '<span>'._('Note').':</span><br/><div>'.$this->order->get('Order Customer Message').'</div>';
+                if (trim($this->order->get('Order Customer Message')) == '') {
+                    $this->placeholders['[Customer Note]'] = '';
+                } else {
+                    $this->placeholders['[Customer Note]'] = '<span>'._('Note').':</span><br/><div>'.$this->order->get('Order Customer Message').'</div>';
 
                 }
 
 
-                $this->placeholders['[Pay Info]']     = $data['Pay Info'];
-                $this->placeholders['[Order]']        = $data['Order Info'];
+                $this->placeholders['[Pay Info]'] = $data['Pay Info'];
+                $this->placeholders['[Order]']    = $data['Order Info'];
                 break;
             case 'Delivery Confirmation':
 
@@ -565,6 +611,82 @@ trait Send_Email {
                     $this->placeholders['[Tracking URL]'] = '';
 
                 }
+
+
+                $aurora_url = $this->account->get('Account System Public URL');
+                //$aurora_url='http://au.geko';
+
+                if ($this->order->get('Order Invoice Key')) {
+                    $invoice = get_object('Invoice', $this->order->get('Order Invoice Key'));
+                    if ($invoice->id) {
+
+
+                        $this->placeholders['[Invoice Number]'] = $invoice->get('Invoice Public ID');
+
+                        $auth_data = json_encode(
+                            array(
+                                'auth_token' => array(
+                                    'logged_in'      => true,
+                                    'user_key'       => 0,
+                                    'logged_in_page' => 0
+                                )
+                            )
+                        );
+
+                        $sak = safeEncrypt($auth_data, md5('82$je&4WN1g2B^{|bRbcEdx!Nz$OAZDI3ZkNs[cm9Q1)8buaLN'.SKEY));
+
+                        $invoice_settings = '';
+                        if ($this->store->settings('invoice_show_rrp') == 'Yes') {
+                            $invoice_settings .= '&rrp=1';
+                        }
+                        if ($this->store->settings('invoice_show_parts') == 'Yes') {
+                            $invoice_settings .= '&parts=1';
+                        }
+                        if ($this->store->settings('invoice_show_tariff_codes') == 'Yes') {
+                            $invoice_settings .= '&commodity=1';
+                        }
+                        if ($this->store->settings('invoice_show_barcode') == 'Yes') {
+                            $invoice_settings .= '&barcode=1';
+                        }
+                        if ($this->store->settings('invoice_show_weight') == 'Yes') {
+                            $invoice_settings .= '&weight=1';
+                        }
+                        if ($this->store->settings('invoice_show_origin') == 'Yes') {
+                            $invoice_settings .= '&origin=1';
+                        }
+
+                        $this->invoice_pdf = file_get_contents($aurora_url.'/pdf/invoice.pdf.php?id='.$this->order->get('Order Invoice Key').$invoice_settings.'&sak='.$sak);
+
+
+                    }
+
+                }
+
+
+                if ($delivery_note->id) {
+
+
+                    $this->placeholders['[Delivery Note Number]'] = $delivery_note->get('Delivery Note ID');
+
+                    $auth_data = json_encode(
+                        array(
+                            'auth_token' => array(
+                                'logged_in'      => true,
+                                'user_key'       => 0,
+                                'logged_in_page' => 0
+                            )
+                        )
+                    );
+
+                    $sak = safeEncrypt($auth_data, md5('82$je&4WN1g2B^{|bRbcEdx!Nz$OAZDI3ZkNs[cm9Q1)8buaLN'.SKEY));
+
+
+                    $this->dn_pdf = file_get_contents($aurora_url.'/pdf/dn.pdf.php?id='.$delivery_note->id.'&sak='.$sak);
+
+
+                }
+
+
                 break;
             case 'New Customer':
 
@@ -632,46 +754,39 @@ trait Send_Email {
 
         }
 
+        if ($subject == '') {
+            $subject = 'hello';
+        }
+
+
         return $subject;
     }
 
     function get_email_plain_text() {
 
-
         switch ($this->email_template_type->get('Email Campaign Type Code')) {
             case 'New Customer':
                 $text = sprintf(
-                    _('%s (%s) has registered'),
-                    $this->new_customer->get('Name'),
-                    $this->new_customer->get('Customer Main Plain Email')
+                    _('%s (%s) has registered'), $this->new_customer->get('Name'), $this->new_customer->get('Customer Main Plain Email')
 
                 );
                 break;
             case 'New Order':
 
                 $text = sprintf(
-                    _('New order %s (%s) has been placed by %s'),
-                    $this->order->get('Public ID'),
-                    $this->order->get('Total Amount'),
-                    $this->notification_trigger_author->get('Name')
+                    _('New order %s (%s) has been placed by %s'), $this->order->get('Public ID'), $this->order->get('Total Amount'), $this->notification_trigger_author->get('Name')
 
                 );
                 break;
             case 'Invoice Deleted':
                 if ($this->invoice->get('Invoice Type') == 'Invoice') {
                     $text = sprintf(
-                        _('Invoice %s (%s, %s) has been deleted by %s.'),
-                        $this->invoice->get('Public ID'),
-                        $this->invoice->get('Total Amount'),
-                        $this->invoice->get_date('Invoice Date'), $this->notification_trigger_author->get('Alias')
+                        _('Invoice %s (%s, %s) has been deleted by %s.'), $this->invoice->get('Public ID'), $this->invoice->get('Total Amount'), $this->invoice->get_date('Invoice Date'), $this->notification_trigger_author->get('Alias')
 
                     );
                 } else {
                     $text = sprintf(
-                        _('Refund %s (%s, %s) has been deleted by %s.'),
-                        $this->invoice->get('Public ID'),
-                        $this->invoice->get('Total Amount'),
-                        $this->invoice->get_date('Invoice Date'), $this->notification_trigger_author->get('Alias')
+                        _('Refund %s (%s, %s) has been deleted by %s.'), $this->invoice->get('Public ID'), $this->invoice->get('Total Amount'), $this->invoice->get_date('Invoice Date'), $this->notification_trigger_author->get('Alias')
 
                     );
                 }
@@ -680,17 +795,13 @@ trait Send_Email {
             case 'Delivery Note Undispatched':
                 if ($this->delivery_note->get('Delivery Note Type') == 'Replacement') {
                     $text = sprintf(
-                        _('Replacement %s has been undispatched by %s.'),
-                        $this->delivery_note->get('ID'),
-                        $this->notification_trigger_author->get('Alias')
+                        _('Replacement %s has been undispatched by %s.'), $this->delivery_note->get('ID'), $this->notification_trigger_author->get('Alias')
 
                     );
                 } else {
 
                     $text = sprintf(
-                        _('Delivery note %s has been undispatched by %s.'),
-                        $this->delivery_note->get('ID'),
-                        $this->notification_trigger_author->get('Alias')
+                        _('Delivery note %s has been undispatched by %s.'), $this->delivery_note->get('ID'), $this->notification_trigger_author->get('Alias')
 
                     );
                 }
@@ -729,7 +840,7 @@ trait Send_Email {
         }
 
 
-        return $text;
+        return trim($text);
 
     }
 
@@ -744,17 +855,12 @@ trait Send_Email {
 
 
                 $info = sprintf(
-                    _('%s (%s) has registered'),
-                    '<b>'.$this->new_customer->get('Name').'</b>',
-                    '<a href="href="mailto:'.$this->new_customer->get('Customer Main Plain Email').'"">'.$this->new_customer->get('Customer Main Plain Email').'</a>'
+                    _('%s (%s) has registered'), '<b>'.$this->new_customer->get('Name').'</b>', '<a href="href="mailto:'.$this->new_customer->get('Customer Main Plain Email').'"">'.$this->new_customer->get('Customer Main Plain Email').'</a>'
 
                 );
 
                 $link = sprintf(
-                    '%s/customers/%d/%d',
-                    $this->account->get('Account System Public URL'),
-                    $this->store->id,
-                    $this->new_customer->id
+                    '%s/customers/%d/%d', $this->account->get('Account System Public URL'), $this->store->id, $this->new_customer->id
                 );
 
                 $smarty->assign('type', 'Success');
@@ -777,18 +883,12 @@ trait Send_Email {
                 $link_label = _('Link to order');
 
                 $link = sprintf(
-                    '%s/orders/%d/%d',
-                    $this->account->get('Account System Public URL'),
-                    $this->store->id,
-                    $this->order->id
+                    '%s/orders/%d/%d', $this->account->get('Account System Public URL'), $this->store->id, $this->order->id
                 );
 
 
                 $info = sprintf(
-                    _('New order %s (%s) has been placed by %s'),
-                    '<a href="'.$link.'">'.$this->order->get('Public ID').'</a>',
-                    '<b>'.$this->order->get('Total Amount').'</b>',
-                    '<b>'.$this->notification_trigger_author->get('Name').'</b>'
+                    _('New order %s (%s) has been placed by %s'), '<a href="'.$link.'">'.$this->order->get('Public ID').'</a>', '<b>'.$this->order->get('Total Amount').'</b>', '<b>'.$this->notification_trigger_author->get('Name').'</b>'
 
                 );
 
@@ -816,10 +916,7 @@ trait Send_Email {
                     $title      = '<b>'._('Invoice deleted').'</b> '.$this->store->get('Name');
                     $link_label = _('Link to deleted invoice');
                     $info       = sprintf(
-                        _('Invoice %s (%s, %s) has been deleted by %s.'),
-                        $this->invoice->get('Public ID'),
-                        '<b>'.$this->invoice->get('Total Amount').'</b>',
-                        $this->invoice->get_date('Invoice Date'), $this->notification_trigger_author->get('Alias')
+                        _('Invoice %s (%s, %s) has been deleted by %s.'), $this->invoice->get('Public ID'), '<b>'.$this->invoice->get('Total Amount').'</b>', $this->invoice->get_date('Invoice Date'), $this->notification_trigger_author->get('Alias')
 
                     );
 
@@ -829,10 +926,7 @@ trait Send_Email {
 
                     $link_label = _('Link to deleted refund');
                     $info       = sprintf(
-                        _('Refund %s (%s, %s) has been deleted by %s.'),
-                        $this->invoice->get('Public ID'),
-                        '<b>'.$this->invoice->get('Total Amount').'</b>',
-                        $this->invoice->get_date('Invoice Date'), $this->notification_trigger_author->get('Alias')
+                        _('Refund %s (%s, %s) has been deleted by %s.'), $this->invoice->get('Public ID'), '<b>'.$this->invoice->get('Total Amount').'</b>', $this->invoice->get_date('Invoice Date'), $this->notification_trigger_author->get('Alias')
 
                     );
                 }
@@ -846,12 +940,9 @@ trait Send_Email {
                 $info .= sprintf('<p style="border:1px solid orange;width: 100%%;padding-top: 20px;padding-bottom: 20px"><span style="padding:0px 20px;color:#777">%s</span></p>', $note);
 
                 $link = sprintf(
-                    '%s/orders/%d/%d/invoice/%d',
-                    $this->account->get('Account System Public URL'),
+                    '%s/orders/%d/%d/invoice/%d', $this->account->get('Account System Public URL'),
 
-                    $this->store->id,
-                    $this->invoice->get('Invoice Order Key'),
-                    $this->invoice->id
+                    $this->store->id, $this->invoice->get('Invoice Order Key'), $this->invoice->id
                 );
 
                 $smarty->assign('type', 'Warning');
@@ -876,9 +967,7 @@ trait Send_Email {
 
 
                     $info = sprintf(
-                        _('Replacement %s has been undispatched by %s.'),
-                        '<b>'.$this->delivery_note->get('ID').'</b>',
-                        $this->notification_trigger_author->get('Alias')
+                        _('Replacement %s has been undispatched by %s.'), '<b>'.$this->delivery_note->get('ID').'</b>', $this->notification_trigger_author->get('Alias')
 
                     );
                 } else {
@@ -888,9 +977,7 @@ trait Send_Email {
 
 
                     $info = sprintf(
-                        _('Delivery note %s has been undispatched by %s.'),
-                        '<b>'.$this->delivery_note->get('ID').'</b>',
-                        $this->notification_trigger_author->get('Alias')
+                        _('Delivery note %s has been undispatched by %s.'), '<b>'.$this->delivery_note->get('ID').'</b>', $this->notification_trigger_author->get('Alias')
 
                     );
                 }
@@ -905,12 +992,8 @@ trait Send_Email {
                 $info .= sprintf('<p style="border:1px solid orange;width: 100%%;padding-top: 20px;padding-bottom: 20px"><span style="padding:0px 20px;color:#777">%s</span></p>', $note);
 
 
-
                 $link = sprintf(
-                    '%s/delivery_notes/%d/%d',
-                    $this->account->get('Account System Public URL'),
-                    $this->store->id,
-                    $this->delivery_note->id
+                    '%s/delivery_notes/%d/%d', $this->account->get('Account System Public URL'), $this->store->id, $this->delivery_note->id
                 );
 
 
@@ -1005,6 +1088,3 @@ trait Send_Email {
 
 
 }
-
-
-?>

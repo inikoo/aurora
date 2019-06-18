@@ -61,7 +61,9 @@ switch ($tipo) {
         login_history(get_table_parameters(), $db, $user);
         break;
     case 'api_keys':
-        api_keys(get_table_parameters(), $db, $user);
+    case 'profile_api_keys':
+
+    api_keys($tipo,get_table_parameters(), $db, $user);
         break;
     case 'deleted_api_keys':
         deleted_api_keys(get_table_parameters(), $db, $user);
@@ -594,7 +596,7 @@ function deleted_users($_data, $db, $user) {
 }
 
 
-function api_keys($_data, $db, $user) {
+function api_keys($tipo,$_data, $db, $user) {
 
     $rtext_label = 'api key';
     include_once 'prepare_table/init.php';
@@ -603,6 +605,9 @@ function api_keys($_data, $db, $user) {
 
 
     $adata = array();
+
+
+
 
     foreach ($db->query($sql) as $data) {
 
@@ -629,9 +634,18 @@ function api_keys($_data, $db, $user) {
                 $scope = $data['API Key Scope'];
         }
 
+
+
+        if($tipo=='profile_api_keys'){
+            $code=sprintf('<span class="link" onclick="change_view(\'profile/api_key/%d\')">%s</span>',  $data['API Key Key'], $data['API Key Code']);
+
+        }else{
+            $code=sprintf('<span class="link" onclick="change_view(\'users/%d/api_key/%d\')">%s</span>', $data['API Key User Key'], $data['API Key Key'], $data['API Key Code']);
+        }
+
         $adata[] = array(
             'id'     => (integer)$data['API Key Key'],
-            'code'   => sprintf('<span class="link" onclick="change_view(\'users/%d/api_key/%d\')">%s</span>', $data['API Key User Key'], $data['API Key Key'], $data['API Key Code']),
+            'code'   => $code,
             'active' => $active,
             'scope'  => $scope,
 

@@ -1540,6 +1540,28 @@ $elements_options = array(
         )
     ),
 
+    'parts_weight_errors' => array(
+        'type' => array(
+            'label' => _('Type'),
+            'items' => array(
+                'Missing'       => array(
+                    'label'    => _('Missing'),
+                    'selected' => true
+                ),
+                'Underweight'             => array(
+                    'label'    => _('Underweight'),
+                    'selected' => true
+                ),
+                'Overweight' => array(
+                    'label'    => _('Overweight'),
+                    'selected' => true
+                )
+
+            ),
+
+        )
+    ),
+
     'purged_orders' => array(
         'state' => array(
             'label' => _('State'),

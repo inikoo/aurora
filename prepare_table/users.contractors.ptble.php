@@ -92,7 +92,7 @@ $fields
     = "`User Failed Login Count`,`User Last Failed Login`,`User Last Login`,`User Login Count`,`User Alias`,`User Handle`,`User Password Recovery Email`,`Staff Key`,`Staff ID`,
 	(select GROUP_CONCAT(S.`Store Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB  left join `Store Dimension` S on (URSB.`Scope Key`=S.`Store Key`) where URSB.`User Key`=U.`User Key` and `Scope`='Store' ) as Stores,
 	(select GROUP_CONCAT(S.`Warehouse Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB left join `Warehouse Dimension` S on (URSB.`Scope Key`=S.`Warehouse Key`) where URSB.`User Key`=U.`User Key`and `Scope`='Warehouse'  ) as Warehouses ,
-	(select GROUP_CONCAT(S.`Site Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB left join `Website Dimension` S on (URSB.`Scope Key`=S.`Website Key`)  where URSB.`User Key`=U.`User Key`and `Scope`='Website'  ) as Sites ,
+	(select GROUP_CONCAT(S.`Website Code` SEPARATOR ', ') from `User Right Scope Bridge` URSB left join `Website Dimension` S on (URSB.`Scope Key`=S.`Website Key`)  where URSB.`User Key`=U.`User Key`and `Scope`='Website'  ) as Sites ,
 
 	(select GROUP_CONCAT(S.`User Group Name` SEPARATOR ', ') from `User Group User Bridge` URSB left join `User Group Dimension` S on (URSB.`User Group Key`=S.`User Group Key`)   where URSB.`User Key`=U.`User Key` ) as Groups,`User Key`,`User Active`
 ";

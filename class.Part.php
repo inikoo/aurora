@@ -270,6 +270,9 @@ class Part extends Asset {
 
             $this->validate_barcode();
 
+            $this->update_weight_status();
+
+
         } else {
             print "Error Part can not be created $sql\n";
             $this->msg = 'Error Part can not be created';
@@ -739,6 +742,39 @@ class Part extends Asset {
 
         switch ($key) {
 
+
+            case 'Symbol':
+
+
+                switch ($this->data['Part Symbol']) {
+                    case 'star':
+                        return '&#9733;';
+                        break;
+
+                    case 'skull':
+                        return '&#9760;';
+                        break;
+                    case 'radioactive':
+                        return '&#9762;';
+                        break;
+                    case 'peace':
+                        return '&#9774;';
+                        break;
+                    case 'sad':
+                        return '&#9785;';
+                        break;
+                    case 'gear':
+                        return '&#9881;';
+                        break;
+                    case 'love':
+                        return '&#10084;';
+                        break;
+
+
+                }
+
+
+                break;
             case 'made_in_production_data':
 
                 $made_in_production_data = $this->properties($key);
@@ -1355,6 +1391,34 @@ class Part extends Asset {
             case 'Carton Weight':
                 return weight($this->data['Part Package Weight'] * $this->data['Part SKOs per Carton'], 'Kg', 0);
                 break;
+            case 'Weight Status':
+                switch ($this->data['Part Package Weight Status']) {
+                    case 'Missing':
+                        $status = '<span class=" error">'._('Missing weight').'</span>';
+                        break;
+                    case 'Underweight Web':
+                        $status = '<span class="error">'.sprintf(_('Probably underweight <b>or</b> %s high'),'<span title="'._('Unit weight shown on website').'"><i class=" fal fa-weight-hanging"></i><i style="font-size: x-small" class="  fal fa-globe"></i></span>').'</span>';
+
+                        break;
+                    case 'Overweight Web':
+                        $status = '<span class="error">'.sprintf(_('Probably overweight <b>or</b> %s low'),'<span title="'._('Unit weight shown on website').'"><i class=" fal fa-weight-hanging"></i><i style="font-size: x-small" class="  fal fa-globe"></i></span>').'</span>';
+
+                        break;
+                    case 'Underweight Cost':
+                        $status = '<span class=" error">'._('Probably underweight').' <i class="margin_left_5 fal fa-box-usd"></i></span>';
+                        break;
+                    case 'Overweight Cost':
+                        $status = '<span class=" error">'._('Probably overweight').' <i class="margin_left_5 fal fa-box-usd"></i></span>';
+                        break;
+                    case 'OK':
+                        $status = '<span class=" success">'._('OK').'</span>';
+                        break;
+                    default:
+                        $status = '<span class=" error">'.$this->data['Part Package Weight Status'].'</span>';
+                }
+
+                return $status;
+                break;
             default:
 
                 if (preg_match('/No Supplied$/', $key)) {
@@ -1849,12 +1913,6 @@ class Part extends Asset {
                 $this->update_field($field, $value, $options);
 
 
-                foreach ($this->get_products('objects') as $product) {
-                    $product->update(array('Product Parts Data' => json_encode($product->get_parts_data())), 'no_history');
-
-                }
-
-
                 break;
             case 'Part Unit Price':
 
@@ -2300,6 +2358,12 @@ class Part extends Asset {
                         exit;
                     }
 
+                    foreach ($this->get_products('objects') as $product) {
+                        $product->update_weight();
+
+
+                    }
+
 
                 }
 
@@ -2320,8 +2384,45 @@ class Part extends Asset {
 
                     }
                 }
-
                 $this->updated = $updated;
+
+                $this->update_weight_status();
+
+
+                if ($field == 'Part Package Weight') {
+                    $this->update_metadata['part_weight_status'] = $this->get('Weight Status');
+
+
+                    if (file_exists('widgets/inventory_alerts.wget.php')) {
+                        include_once('widgets/inventory_alerts.wget.php');
+                        global $smarty;
+
+                        $account = get_object('Account', 1);
+                        $account->load_acc_data();
+
+
+                        if (is_object($smarty)) {
+
+                            $all_active = $account->get('Account Active Parts Number') + $account->get('Account In Process Parts Number') + $account->get('Account Discontinuing Parts Number');
+
+
+                            $_data = get_widget_data(
+
+                                $account->get('Account Active Parts with SKO Invalid Weight'), $all_active, 0, 0
+
+                            );
+                            if ($_data['ok']) {
+
+
+                                $smarty->assign('data', $_data);
+                                $this->update_metadata['parts_with_weight_error'] = $smarty->fetch('dashboard/inventory.parts_with_weight_errors.dbard.tpl');
+                            }
+
+
+                        }
+                    }
+
+                }
                 break;
             case('Part Tariff Code'):
 
@@ -2552,6 +2653,15 @@ class Part extends Asset {
 
                 $this->update_status($value, $options);
                 break;
+
+            case 'Part Symbol':
+
+                if ($value == 'none') {
+                    $value = '';
+                }
+                $this->update_field($field, $value, $options);
+                break;
+
             case('Part Available for Products Configuration'):
                 $this->update_availability_for_products_configuration(
                     $value, $options
@@ -2919,6 +3029,7 @@ class Part extends Asset {
 
             }
 
+            $this->update_weight_status();
 
             include_once 'utils/new_fork.php';
             $account = get_object('Account', 1);
@@ -3953,101 +4064,6 @@ class Part extends Asset {
         return $suppliers;
     }
 
-    function update_weight_dimensions_data($field, $value, $type) {
-
-        include_once 'utils/units_functions.php';
-
-        //print "$field $value |";
-
-        $this->update_field($field, $value);
-        $_new_value = $this->new_value;
-        $_updated   = $this->updated;
-
-        $this->updated   = true;
-        $this->new_value = $value;
-        if ($this->updated) {
-
-            if (preg_match('/Package/i', $field)) {
-                $tag = 'Package';
-            } else {
-                $tag = 'Unit';
-            }
-            if ($field != 'Part '.$tag.' '.$type.' Display Units') {
-                $value_in_standard_units = convert_units(
-                    $value, $this->data['Part '.$tag.' '.$type.' Display Units'], ($type == 'Dimensions' ? 'm' : 'Kg')
-                );
-
-
-                $this->update_field(
-                    preg_replace('/\sDisplay$/', '', $field), $value_in_standard_units, 'nohistory'
-                );
-            } elseif ($field == 'Part '.$tag.' Dimensions Display Units') {
-
-                $width_in_standard_units    = convert_units(
-                    $this->data['Part '.$tag.' Dimensions Width Display'], $value, 'm'
-                );
-                $depth_in_standard_units    = convert_units(
-                    $this->data['Part '.$tag.' Dimensions Depth Display'], $value, 'm'
-                );
-                $length_in_standard_units   = convert_units(
-                    $this->data['Part '.$tag.' Dimensions Length Display'], $value, 'm'
-                );
-                $diameter_in_standard_units = convert_units(
-                    $this->data['Part '.$tag.' Dimensions Diameter Display'], $value, 'm'
-                );
-
-
-                $this->update_field(
-                    'Part '.$tag.' Dimensions Width', $width_in_standard_units, 'nohistory'
-                );
-                $this->update_field(
-                    'Part '.$tag.' Dimensions Depth', $depth_in_standard_units, 'nohistory'
-                );
-                $this->update_field(
-                    'Part '.$tag.' Dimensions Length', $length_in_standard_units, 'nohistory'
-                );
-                $this->update_field(
-                    'Part '.$tag.' Dimensions Diameter', $diameter_in_standard_units, 'nohistory'
-                );
-
-
-            }
-
-            //print "x".$this->updated."<<";
-
-
-            //print "x".$this->updated."< $type <";
-            if ($type == 'Dimensions') {
-                include_once 'utils/geometry_functions.php';
-                $volume = get_volume(
-                    $this->data["Part $tag Dimensions Type"], $this->data["Part $tag Dimensions Width"], $this->data["Part $tag Dimensions Depth"], $this->data["Part $tag Dimensions Length"], $this->data["Part $tag Dimensions Diameter"]
-                );
-
-                //print "*** $volume $volume";
-                if (is_numeric($volume) and $volume > 0) {
-
-                    $this->update_field(
-                        'Part '.$tag.' Dimensions Volume', $volume, 'nohistory'
-                    );
-                }
-                $this->update_field(
-                    'Part '.$tag.' XHTML Dimensions', $this->get_xhtml_dimensions($tag), 'nohistory'
-                );
-
-            } else {
-                $this->update_field(
-                    'Part '.$tag.' Weight', convert_units(
-                    $this->data['Part '.$tag.' Weight Display'], $this->data['Part '.$tag.' '.$type.' Display Units'], 'Kg'
-                ), 'nohistory'
-                );
-
-            }
-
-
-            $this->updated   = $_updated;
-            $this->new_value = $_new_value;
-        }
-    }
 
     function get_period($period, $key) {
         return $this->get($period.' '.$key);
@@ -4548,10 +4564,10 @@ class Part extends Asset {
                 $label = _('SKO dimensions');
                 break;
             case 'Part Unit Weight':
-                $label = _('unit weight');
+                $label = _('Weight shown in website');
                 break;
             case 'Part Unit Dimensions':
-                $label = _('unit dimensions');
+                $label = _('Dimensions shown in website');
                 break;
             case 'Part Tariff Code':
                 $label = _('tariff code');
@@ -5202,6 +5218,91 @@ class Part extends Asset {
                     'Part Production Supply' => 'Yes',
                 )
             );
+        }
+
+
+    }
+
+
+    function update_weight_status() {
+
+        $weight_status_old = $this->get('Part Package Weight Status');
+
+        $max_value  = 0;
+        $min_value  = 0;
+        $avg_weight = 0;
+        $sql        = sprintf(
+            'select avg(`Part Package Weight` ) as average_kg ,avg(`Part Cost`/`Part Package Weight` ) as average_cost_per_kg ,STD(`Part Cost`/`Part Package Weight`)  as sd_cost_per_kg from `Part Dimension` where  `Part Status`="In Use" and  `Part Package Weight`>0 and `Part Cost`>0  '
+        );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $max_value  = $row['average_cost_per_kg'] + (3 * $row['sd_cost_per_kg']);
+                $min_value  = $row['average_cost_per_kg'] * 0.001;
+                $avg_weight = $row['average_kg'];
+            }
+        }
+
+
+        $weight_status = 'OK';
+        if ($this->get('Part Package Weight') == '' or $this->get('Part Package Weight') == 0) {
+            $weight_status = 'Missing';
+        } else {
+
+            if ($this->get('Part Package Weight') > 0 and $this->get('Part Unit Weight') > 0) {
+
+
+                $sko_weight_from_unit_weight = $this->get('Part Unit Weight') * $this->get('Part Units Per Package');
+
+
+                if ($sko_weight_from_unit_weight > (2 * $this->get('Part Package Weight'))) {
+                    $weight_status = 'Underweight Web';
+
+                    //   print "$sko_weight_from_unit_weight  ".$this->get('Part Unit Weight')." \n";
+
+
+                }
+                if ($sko_weight_from_unit_weight < 0.5 * $this->get('Part Package Weight')) {
+
+
+                    $weight_status = 'Overweight Web';
+
+                }
+            }
+
+
+            if ($this->get('Part Cost') > 0 and $weight_status == 'OK' and $max_value > 0 and $max_value < ($this->get('Part Cost') / $this->get('Part Package Weight')) and $avg_weight * 0.1 > $this->get('Part Package Weight')) {
+
+
+                //   print $this->get('Reference')." $max_value  ".$this->get('Part Package Weight')." ".$this->get('Part Cost')."  ".( $this->get('Part Cost')/ $this->get('Part Package Weight') )."    \n";
+
+                $weight_status = 'Underweight Cost';
+
+            }
+
+            // print $avg_weight."\n";
+
+            if ($this->get('Part Cost') > 0 and $weight_status == 'OK' and $min_value > 0 and $min_value > ($this->get('Part Cost') / $this->get('Part Package Weight')) and $avg_weight * 10 < $this->get('Part Package Weight')) {
+                $weight_status = 'Overweight Cost';
+               // print $this->get('Reference')." $min_value  ".$this->get('Part Package Weight')." ".$this->get('Part Cost')."  ".($this->get('Part Cost') / $this->get('Part Package Weight'))."    \n";
+
+            }
+
+        }
+
+
+        //print $weight_status;
+
+
+        $this->fast_update(
+            array(
+                'Part Package Weight Status' => $weight_status,
+            )
+        );
+
+
+        if ($weight_status_old != $weight_status) {
+            $account = get_object('Account', 1);
+            $account->update_parts_data();
         }
 
 

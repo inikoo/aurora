@@ -108,84 +108,57 @@ $object_fields[] = array(
 );
 
 $object_fields[] = array(
-    'label'      => _('Beneficiary'),
-    'class'      => '',
-    'show_title' => true,
-    'fields'     => array(
-
-
-        array(
-            'id'   => 'Who',
-            'edit' => 'custom',
-
-            'value'    => false,
-            'custom'   => '
-<div class="button_radio_options">
-<span id="Entitled_To_Anyone_field" field_type="button_radio_options" field="Entitled_To_Anyone" onclick="toggle_new_category_deal_entitled_to(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Open to all').'</span>
-<span id="Entitled_To_Voucher_field" field_type="button_radio_options" field="Entitled_To_Voucher" onclick="toggle_new_category_deal_entitled_to(this)" class="button value hide" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Voucher').'</span>
-
-</div>
-',
-            'label'    => _('Who is entitled to this offer'),
-            'required' => false,
-            'type'     => 'value'
-        ),
-
-        array(
-            'id'   => 'Deal_Voucher_Auto_Code',
-            'edit' => 'custom',
-
-            'class'    => 'hide',
-            'value'    => false,
-            'custom'   => '<span class="button value"  field_type="toggle" onclick="toggle_voucher_auto_code(this)"  field="Deal_Voucher_Auto_Code"  style="margin-right:40px"><i id="toggle_voucher_auto_code_icon" class="Deal_Voucher_Auto_Code_toggle fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span class="discreet">'
-                ._('Automatically generated').'</span></span>',
-            'label'    => _('Voucher code'),
-            'required' => false,
-            'type'     => ''
-        ),
-        array(
-            'edit'  => ($edit ? 'string' : ''),
-            'id'    => 'Deal_Voucher_Code',
-            'class' => 'hide',
-
-            'value'             => '',
-            'label'             => ucfirst($object->get_field_label('Voucher code')).' <i onClick="set_voucher_code_as_auto()" class="fa fa-magic button padding_left_10" title="'._('Automatically generated voucher code').'"></i>',
-            'invalid_msg'       => get_invalid_message('string'),
-            'required'          => false,
-            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
-            'type'              => 'value'
-        ),
-
-
-    ),
-
-
-);
-
-$object_fields[] = array(
     'label'      => _('Offer'),
     'show_title' => true,
     'class'      => 'deal_type_title hide',
     'fields'     => array(
 
         array(
-            'id'       => 'Type',
-            'edit'     => 'custom',
-            'class'    => 'hide',
+            'id'       => 'Allowance_Type',
+            'edit'     => 'no_icon',
+            'class'    => '',
             'value'    => false,
-            'custom'   => '
+            'formatted_value'   => '<input id="Allowance_Type" type="hidden" value="">
 <div class="button_radio_options">
-<span id="Deal_Type_Percentage_Off_field" field_type="button_radio_options" field="Deal_Type_Percentage_Off" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Percentage off').'</span>
-<span id="Deal_Type_Buy_n_get_n_free_field" field_type="button_radio_options" field="Deal_Type_Buy_n_get_n_free" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(
+<span  field_type="button_radio_options" field="Deal_Type_Percentage_Off" onclick="toggle_category_deal_type(this)" class="button " style="border:1px solid #ccc;padding:5px;margin:4px">'._('Percentage off').'</span>
+<span  field_type="button_radio_options" field="Deal_Type_Buy_n_get_n_free" onclick="toggle_category_deal_type(this)" class="button " style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(
                     _('Buy %s get %s free'), '<span>2</span>', 1
                 ).'</span>
-<span id="Deal_Type_Buy_n_pay_n_field" field_type="button_radio_options" field="Deal_Type_Buy_n_pay_n" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(_("Buy %s cheapest %s free"), 3, 1).' ('
+<span field_type="button_radio_options" field="Deal_Type_Buy_n_pay_n" onclick="toggle_category_deal_type(this)" class="button " style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(_("Buy %s cheapest %s free"), 3, 1).' ('
                 ._('Mix & match').')  </span>
+<span  field_type="button_radio_options" field="Deal_Type_Amount_Off" onclick="toggle_category_deal_type(this)" class="button " style="border:1px solid #ccc;padding:5px;margin:4px">'._('Amount off').'</span>
+
 </div>
 ',
             'label'    => _('Choose offer'),
             'required' => false,
-            'type'     => ''
+            'type'     => 'value'
+        ),
+
+        array(
+            'edit'        => ($edit ? 'amount' : ''),
+            'id'          => 'Trigger_Extra_Items_Amount_Net',
+            'class'       => 'hide',
+            'value'       => '',
+            'placeholder'=>_('amount'),
+
+            'label'       => _('Minimum category/product ordered amount'),
+            'invalid_msg' => get_invalid_message('amount'),
+            'required'    => false,
+            'type'        => 'value'
+        ),
+
+        array(
+            'edit'        => ($edit ? 'amount' : ''),
+            'id'          => 'Amount_Off',
+            'class'       => 'hide',
+            'value'       => '',
+            'placeholder'=>_('amount'),
+
+            'label'       => _('Amount off'),
+            'invalid_msg' => get_invalid_message('amount'),
+            'required'    => false,
+            'type'        => 'value'
         ),
 
         array(

@@ -45,6 +45,9 @@ switch ($tipo) {
     case 'delivery_notes_ready_to_pick':
         delivery_notes_ready_to_pick(get_table_parameters(), $db, $user);
         break;
+    case 'delivery_notes_assigned':
+        delivery_notes_ready_to_pick(get_table_parameters(), $db, $user);
+        break;
 
     case 'delivery_notes':
         delivery_notes(get_table_parameters(), $db, $user);
@@ -157,6 +160,84 @@ function delivery_notes_ready_to_pick($_data, $db, $user) {
 }
 
 
+
+function delivery_notes_assigned($_data, $db, $user) {
+
+
+    $rtext_label = 'delivery_note';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+    $adata = array();
+
+
+
+    if ($result=$db->query($sql)) {
+        foreach ($result as $data) {
+
+            switch ($data['Delivery Note Type']) {
+                case('Order'):
+                    $type = _('Order');
+                    break;
+                case('Sample'):
+                    $type = _('Sample');
+                    break;
+                case('Donation'):
+                    $type = _('Donation');
+                    break;
+                case('Replacement'):
+                case('Replacement & Shortages'):
+                    $type = _('Replacement');
+                    break;
+                case('Shortages'):
+                    $type = _('Shortages');
+                    break;
+                default:
+                    $type = $data['Delivery Note Type'];
+
+            }
+
+
+            $adata[] = array(
+                'id' => (integer)$data['Delivery Note Key'],
+
+
+                'number'   => sprintf('<span class="link" onclick="change_view(\'delivery_notes/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Key'], $data['Delivery Note ID']),
+                'store' => sprintf('<span class="link" onclick="change_view(\'store/%d\')" title="%s">%s</span>', $data['Delivery Note Store Key'], $data['Store Name'],$data['Store Code']),
+
+                'customer' => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Customer Key'], $data['Delivery Note Customer Name']),
+
+                'date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Created'].' +0:00')),
+                'weight'  => weight($data['Delivery Note Estimated Weight'],'Kg',0,false,true),
+                'parts'  => number($data['Delivery Note Number Ordered Parts']),
+                'type'    => $type,
+
+            );
+        }
+    }else {
+        print_r($error_info=$db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
 function delivery_notes($_data, $db, $user) {
 
 
@@ -175,15 +256,6 @@ function delivery_notes($_data, $db, $user) {
 
         switch ($data['Delivery Note State']) {
 
-            case 'Picker & Packer Assigned':
-                $state = _('Picker & packer assigned');
-                break;
-            case 'Picking & Packing':
-                $state = _('Picking & packing');
-                break;
-            case 'Packer Assigned':
-                $state = _('Packer assigned');
-                break;
             case 'Ready to be Picked':
                 $state = _('Waiting');
                 break;
@@ -279,7 +351,6 @@ function delivery_notes($_data, $db, $user) {
             'customer' => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Customer Key'], $data['Delivery Note Customer Name']),
 
             'date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Created'].' +0:00')),
-            'state'   => $data['Delivery Note XHTML State'],
             'weight'  => weight($data['Delivery Note Weight']),
             'parcels' => $parcels,
             'type'    => $type,
@@ -370,7 +441,6 @@ function pending_delivery_notes($_data, $db, $user) {
             'customer' => $data['Delivery Note Customer Name'],
 
             'date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Created'].' +0:00')),
-            'state'   => $data['Delivery Note XHTML State'],
             'weight'  => weight($data['Delivery Note Weight']),
             'parcels' => $parcels,
             'type'    => $type,

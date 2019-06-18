@@ -33,7 +33,36 @@ include_once 'api_stock_picking_common_actions.php';
 
 switch ($_REQUEST['action']) {
 
+    case 'initialize':
 
+        $groups=preg_split('/,/',$user->get('User Groups') );
+
+        $type='Invalid';
+        if(in_array(17,$groups)){
+            $type='Supervisor';
+        }elseif(in_array(11,$groups)){
+            $type='Worker';
+        }
+
+
+
+        $data=array(
+            'account_code'=>$account->get('Code'),
+            'account_name'=>$account->get('Name'),
+            'locale'=>$account->get('Account Locale'),
+            'worker_user_id'=>$user->id,
+            'worker_alias'=>$user->get('Alias'),
+            //'worker_type'=>$type
+            'worker_type'=>'Supervisor'
+        );
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $data
+        );
+        echo json_encode($response);
+
+        break;
     case 'get_delivery_note_from_public_id':
 
         if (!isset($_REQUEST['public_id'])) {
@@ -510,6 +539,19 @@ switch ($_REQUEST['action']) {
         break;
 
 
+    case get_pending_deliveries_stats:
+
+
+        break;
+
+    case 'get_deliveries_ready_to_be_picked':
+
+        $response=get_deliveries($db,'Ready to be Picked');
+        echo json_encode($response);
+        exit;
+        break;
+
+
     default:
 
 
@@ -528,4 +570,24 @@ switch ($_REQUEST['action']) {
 }
 
 
-?>
+function get_deliveries($db,$state){
+
+    $sql = 'select `Delivery Note Key`,`Delivery Note Customer Key`,`Delivery Note Type`,`Delivery Note Date Created`,`Delivery Note Estimated Weight`,`Delivery Note Store Key`,`Delivery Note ID`,`Delivery Note Customer Name`,`Store Code`,`Store Name`,`Delivery Note Number Ordered Parts` 
+        from `Delivery Note Dimension` D left join `Store Dimension` on (`Store Key`=`Delivery Note Store Key`) where `Delivery Note State`=?
+        ';
+
+    $deliveries=array();
+
+    $stmt = $db->prepare($sql);
+    $stmt->execute([$state]);
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $deliveries[] = $row;
+    }
+
+
+     return array(
+        'state' => 'OK',
+        'data'  => $deliveries
+    );
+
+}

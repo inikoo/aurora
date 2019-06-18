@@ -1602,16 +1602,16 @@ function search_customers($db, $account, $user, $data) {
    // $q_postal_code = $q;
     if (strlen($q_postal_code) > 2) {
         $sql = sprintf(
-            "select `Customer Key`,`Customer Contact Address Postal Code` from `Customer Dimension`where true $where_store and  `Customer Main Plain Postal Code` like '%s%%' limit 50", addslashes($q_postal_code)
+            "select `Customer Key`,`Customer Contact Address Postal Code`,`Customer Main Plain Postal Code` from `Customer Dimension`where true $where_store and  `Customer Main Plain Postal Code` like '%s%%' limit 50", addslashes($q_postal_code)
         );
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
-                if ($row['Customer Contact Address Postal Code'] == $q_postal_code) {
+                if ($row['Customer Main Plain Postal Code'] == $q_postal_code) {
                     $candidates[$row['Customer Key']] = 50;
                 } else {
-                    $len_name                         = strlen($row['Customer Contact Address Postal Code']);
+                    $len_name                         = strlen($row['Customer Main Plain Postal Code']);
                     $len_q                            = strlen($q_postal_code);
                     $factor                           = $len_q / $len_name;
                     $candidates[$row['Customer Key']] = 20 * $factor;
@@ -1768,7 +1768,7 @@ function search_customers($db, $account, $user, $data) {
 
 
     $sql = sprintf(
-        "SELECT `Store Code`,`Customer Store Key`, `Customer Main XHTML Telephone`,`Customer Main Postal Code`,`Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Main Location`,`Customer Tax Number` FROM `Customer Dimension` LEFT JOIN `Store Dimension` ON (`Customer Store Key`=`Store Key`) WHERE `Customer Key` IN (%s)",
+        "SELECT `Store Code`,`Customer Store Key`, `Customer Main XHTML Telephone`,`Customer Main Plain Postal Code`,`Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Location`,`Customer Tax Number` FROM `Customer Dimension` LEFT JOIN `Store Dimension` ON (`Customer Store Key`=`Store Key`) WHERE `Customer Key` IN (%s)",
         $customer_keys
     );
 
@@ -1799,8 +1799,8 @@ function search_customers($db, $account, $user, $data) {
         }
 
         $address=$row['Customer Main Plain Email'];
-        $address.='<br/>'.$row['Customer Main Location'];
-        if ($row['Customer Main Postal Code'])$address.=', '.$row['Customer Main Postal Code'];
+        $address.='<br/>'.$row['Customer Location'];
+        if ($row['Customer Main Plain Postal Code'])$address.=', '.$row['Customer Main Plain Postal Code'];
         $address=preg_replace('/^\<br\/\>/', '', $address);
         */
             $results[$row['Customer Key']] = array(
@@ -1909,6 +1909,54 @@ function search_orders($db, $account, $user, $data) {
         exit;
     }
 
+    $sql = sprintf(
+        "select `Order Key`,`Order Customer Purchase Order ID` from `Order Dimension` where true $where_store and `Order Customer Purchase Order ID` like '%s%%'  order by `Order Key` desc limit 10 ", $q
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            if ($row['Order Customer Purchase Order ID'] == $q) {
+                $candidates[$row['Order Key']] = 30;
+            } else {
+
+                $len_name                      = strlen($row['Order Customer Purchase Order ID']);
+                $len_q                         = strlen($q);
+                $factor                        = $len_q / $len_name;
+                $candidates[$row['Order Key']] = 18 * $factor;
+            }
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+
+    $sql = sprintf(
+        "select `Order Key`,`Invoice Public ID` from `Order Dimension` left join `Invoice Dimension` on (`Invoice Order Key`=`Order Key`)  where true $where_store and `Invoice Public ID` like '%s%%'  order by `Invoice Key` desc limit 10 ", $q
+    );
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            if ($row['Invoice Public ID'] == $q) {
+                $candidates[$row['Order Key']] = 10;
+            } else {
+
+                $len_name                      = strlen($row['Invoice Public ID']);
+                $len_q                         = strlen($q);
+                $factor                        = $len_q / $len_name;
+                $candidates[$row['Order Key']] = 9 * $factor;
+            }
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
 
     arsort($candidates);
 
@@ -1941,7 +1989,11 @@ function search_orders($db, $account, $user, $data) {
     $order_keys = preg_replace('/^,/', '', $order_keys);
 
     $sql = sprintf(
-        "SELECT `Order Key`,`Store Code`,`Order Store Key`,`Order Public ID`,`Order State`,`Order Customer Name` FROM `Order Dimension` LEFT JOIN `Store Dimension` ON (`Order Store Key`=`Store Key`) WHERE `Order Key` IN (%s)", $order_keys
+        "SELECT `Order Key`,`Store Code`,`Order Customer Purchase Order ID`,`Invoice Public ID`,`Order Store Key`,`Order Public ID`,`Order State`,`Order Customer Name` 
+
+            FROM `Order Dimension` LEFT JOIN `Store Dimension` ON (`Order Store Key`=`Store Key`) LEFT JOIN `Invoice Dimension` ON (`Order Invoice Key`=`Invoice Key`) 
+            
+            WHERE `Order Key` IN (%s)", $order_keys
     );
 
     if ($result = $db->query($sql)) {
@@ -1974,21 +2026,33 @@ function search_orders($db, $account, $user, $data) {
                     $state = _('Cancelled');
                     break;
                 default:
-                    $state = $this->data['Order State'];
+                    $state = $row['Order State'];
             }
 
-            $details = '<span >'.$row['Order Customer Name'].'</span> <span class="discreet">('.$state.')</span>';
+
+
+                $details = ($row['Order Customer Purchase Order ID']!=''?'('.$row['Order Customer Purchase Order ID'].') ':'').'<span >'.$row['Order Customer Name'].'</span> <span class="discreet">('.$state.')</span>';
+
+
+
+
 
             if ($data['scope'] != 'store') {
                 $details = '<span style="float:left;min-width:40px">'.$row['Store Code'].'</span>'.$details;
             }
 
 
+
+            $label=$row['Order Public ID'];
+            if($row['Invoice Public ID']!='' and $row['Invoice Public ID']!=$row['Order Public ID']){
+                $label.=' ('.$row['Invoice Public ID'].')';
+            }
+
+
             $results[$row['Order Key']] = array(
                 'store'   => $row['Store Code'],
-                'label'   => highlightkeyword(sprintf('%s', $row['Order Public ID']), $queries),
+                'label'   => highlightkeyword($label, $queries),
                 'details' => $details,
-                //highlightkeyword($details, $queries),
                 'view'    => sprintf(
                     'orders/%d/%d', $row['Order Store Key'], $row['Order Key']
                 )
@@ -2001,6 +2065,8 @@ function search_orders($db, $account, $user, $data) {
         print_r($error_info = $db->errorInfo());
         exit;
     }
+
+
 
 
     $results_data = array(
@@ -2158,15 +2224,8 @@ function search_delivery_notes($db, $account, $user, $data) {
 
                 switch ($row['Delivery Note State']) {
 
-                    case 'Picker & Packer Assigned':
-                        $details = _('Picker & packer assigned');
-                        break;
-                    case 'Picking & Packing':
-                        $details = _('Picking & packing');
-                        break;
-                    case 'Packer Assigned':
-                        $details = _('Packer assigned');
-                        break;
+
+
                     case 'Ready to be Picked':
                         $details = _('Ready to be picked');
                         break;
@@ -2271,19 +2330,20 @@ function search_invoices($db, $account, $user, $data) {
     if ($data['scope'] == 'store') {
         if (in_array($data['scope_key'], $user->stores)) {
             $stores      = $data['scope_key'];
-            $where_store = sprintf(
-                ' and `Invoice Store Key`=%d', $data['scope_key']
-            );
+            $where_store = sprintf(' and `Invoice Store Key`=%d', $data['scope_key']);
+            $_d_where_store = sprintf(' and `Invoice Deleted Store Key`=%d', $data['scope_key']);
         } else {
             $where_store = ' and false';
+            $_d_where_store = ' and false';
         }
     } else {
         if (count($user->stores) == $account->get('Account Stores')) {
             $where_store = '';
+            $_d_where_store = ' and false';
         } else {
-            $where_store = sprintf(
-                ' and `Invoice Store Key` in (%s)', join(',', $user->stores)
-            );
+            $where_store = sprintf(' and `Invoice Store Key` in (%s)', join(',', $user->stores));
+            $_d_where_store = sprintf(' and `Invoice Deleted Store Key` in (%s)', join(',', $user->stores));
+
         }
 
         $stores = join(',', $user->stores);
@@ -2316,19 +2376,47 @@ function search_invoices($db, $account, $user, $data) {
             "select `Invoice Key`,`Invoice Public ID` from `Invoice Dimension` where true $where_store and `Invoice Public ID` like '%s%%'  order by `Invoice Key` desc limit 10 ", $q
         );
 
+
+
+
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
                 if ($row['Invoice Public ID'] == $q) {
-                    $candidates[$row['Invoice Key']] = 30;
+                    $candidates['I'.$row['Invoice Key']] = 30;
                 } else {
 
-                    $len_name                        = strlen(
-                        $row['Invoice Public ID']
-                    );
+                    $len_name                        = strlen($row['Invoice Public ID']);
                     $len_q                           = strlen($q);
                     $factor                          = $len_q / $len_name;
-                    $candidates[$row['Invoice Key']] = 20 * $factor;
+                    $candidates['I'.$row['Invoice Key']] = 20 * $factor;
+                }
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "select `Invoice Deleted Key`,`Invoice Deleted Public ID` from `Invoice Deleted Dimension` where true $_d_where_store and `Invoice Deleted Public ID` like '%s%%'  order by `Invoice Deleted Key` desc limit 10 ", $q
+        );
+
+
+
+
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($row['Invoice Deleted Public ID'] == $q) {
+                    $candidates['D'.$row['Invoice Deleted Key']] = 30;
+                } else {
+
+                    $len_name                        = strlen($row['Invoice Deleted Public ID']);
+                    $len_q                           = strlen($q);
+                    $factor                          = $len_q / $len_name;
+                    $candidates['D'.$row['Invoice Deleted Key']] = 20 * $factor;
                 }
 
             }
@@ -2355,72 +2443,123 @@ function search_invoices($db, $account, $user, $data) {
         }
 
         $counter      = 0;
-        $invoice_keys = '';
+
+        $number_invoices_keys=0;
+        $number_deleted_invoices_keys=0;
+        $invoice_keys='';
+        $deleted_invoice_keys='';
         $results      = array();
 
-        foreach ($candidates as $key => $val) {
+        foreach ($candidates as $_key => $val) {
             $counter++;
-            $invoice_keys  .= ','.$key;
-            $results[$key] = '';
+
+            if ($_key[0] == 'I') {
+                $key            = preg_replace('/^I/', '', $_key);
+                $invoice_keys   .= ','.$key;
+                $results[$_key] = '';
+                $number_invoices_keys++;
+
+            } elseif ($_key[0] == 'D') {
+                $key            = preg_replace('/^D/', '', $_key);
+                $deleted_invoice_keys  .= ','.$key;
+                $results[$_key] = '';
+                $number_deleted_invoices_keys++;
+
+            }
+
             if ($counter > $max_results) {
                 break;
             }
         }
-        $invoice_keys = preg_replace('/^,/', '', $invoice_keys);
+        $invoice_keys  = preg_replace('/^,/', '', $invoice_keys);
+        $deleted_invoice_keys = preg_replace('/^,/', '', $deleted_invoice_keys);
 
-        $sql = sprintf(
-            "SELECT `Invoice Key`,`Store Code`,`Invoice Store Key`,`Invoice Public ID`,`Invoice Paid`,`Invoice Total Amount`,`Invoice Currency`,`Invoice Customer Name` FROM `Invoice Dimension` LEFT JOIN `Store Dimension` ON (`Invoice Store Key`=`Store Key`) WHERE `Invoice Key` IN (%s)",
-            $invoice_keys
-        );
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
+        if ($number_invoices_keys) {
+
+            $sql = sprintf(
+                "SELECT `Invoice Key`,`Store Code`,`Invoice Store Key`,`Invoice Public ID`,`Invoice Paid`,`Invoice Total Amount`,`Invoice Currency`,`Invoice Customer Name` FROM `Invoice Dimension` LEFT JOIN `Store Dimension` ON (`Invoice Store Key`=`Store Key`) WHERE `Invoice Key` IN (%s)",
+                $invoice_keys
+            );
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
 
 
-                switch ($row['Invoice Paid']) {
-                    case 'Yes':
-                        $details = _('Paid');
-                        break;
-                    case 'No':
-                        $details = _('Not paid');
-                        break;
-                    case 'Partially':
-                        $details = _('Partially paid');
-                        break;
-                    default:
-                        $details = $row['Invoice Paid'];
-                        break;
+                    switch ($row['Invoice Paid']) {
+                        case 'Yes':
+                            $details = _('Paid');
+                            break;
+                        case 'No':
+                            $details = _('Not paid');
+                            break;
+                        case 'Partially':
+                            $details = _('Partially paid');
+                            break;
+                        default:
+                            $details = $row['Invoice Paid'];
+                            break;
+                    }
+
+                    if ($data['scope'] != 'store') {
+                        $details = '<span style="float:left;min-width:40px">'.$row['Store Code'].'</span> '.$details;
+                    }
+
+                    $details .= ' <span style="padding-left:20px">'.$row['Invoice Customer Name'].'</span>';
+
+                    $results['I'.$row['Invoice Key']] = array(
+                        'store'   => $row['Store Code'],
+                        'label'   => highlightkeyword($row['Invoice Public ID'], $queries),
+                        'details' => highlightkeyword($details, $queries),
+                        'view'    => sprintf('invoices/%d/%d', $row['Invoice Store Key'], $row['Invoice Key'])
+
+
+                    );
+
                 }
-
-                if ($data['scope'] != 'store') {
-                    $details = '<span style="float:left;min-width:40px">'.$row['Store Code'].'</span> '.$details;
-                }
-
-                $details .= ' <span style="padding-left:20px">'.$row['Invoice Customer Name'].'</span>';
-
-                $results[$row['Invoice Key']] = array(
-                    'store'   => $row['Store Code'],
-                    'label'   => highlightkeyword(
-                        sprintf('%s', $row['Invoice Public ID']), $queries
-                    ),
-                    'details' => highlightkeyword($details, $queries),
-                    'view'    => sprintf(
-                        'invoices/%d/%d', $row['Invoice Store Key'], $row['Invoice Key']
-                    )
-
-
-                );
-
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
+
         }
+
+        if ($number_deleted_invoices_keys) {
+
+            $sql = sprintf(
+                "SELECT `Invoice Deleted Key`,`Store Code`,`Invoice Deleted Store Key`,`Invoice Deleted Public ID` FROM `Invoice Deleted Dimension` LEFT JOIN `Store Dimension` ON (`Invoice Deleted Store Key`=`Store Key`) WHERE `Invoice Deleted Key` IN (%s)",
+                $deleted_invoice_keys
+            );
+
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+                    if ($data['scope'] != 'store') {
+                        $details = '<span style="float:left;min-width:40px">'.$row['Store Code'].'</span> ';
+                    }else{
+                        $details='';
+                    }
+
+                    $results['D'.$row['Invoice Deleted Key']] = array(
+                        'store'   => $row['Store Code'],
+                        'label'   => '<span class="italic">'.highlightkeyword($row['Invoice Deleted Public ID'], $queries).'</span>',
+                        'details' => $details.'<span class="error discrete">'._('Deleted invoice').'</span> ',
+                        'view'    => sprintf('invoices/deleted/%d/%d', $row['Invoice Deleted Store Key'], $row['Invoice Deleted Key'])
+
+
+                    );
+
+                }
+            }
+
+        }
+
+
 
 
         $results_data = array(
             'n' => count($results),
             'd' => $results
         );
+
+
+
         $redis->set($cache_fingerprint, json_encode($results_data));
 
 

@@ -378,9 +378,7 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
-    $title = _('Part').' <span class="id Part_Reference">'.$object->get(
-            'Part Reference'
-        ).'</span>';
+    $title = _('Part').' <span class="id Part_Reference">'.$object->get('Part Reference').'</span>  <span class="Part_Symbol">'.$object->get('Symbol').'</span> ';
 
     $supplier_parts = $object->get_supplier_parts('objects');
 

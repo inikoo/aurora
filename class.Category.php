@@ -75,6 +75,12 @@ class Category extends DB_Table {
                     "SELECT * FROM `Category Dimension` WHERE `Category Subject`=%s AND `Category Code`=%s ", prepare_mysql($tag), prepare_mysql($tag2)
                 );
                 break;
+            case 'root_key_key':
+                $sql = sprintf(
+                    "SELECT * FROM `Category Dimension` WHERE `Category Root Key`=%d AND `Category Key`=%d ", $tag,$tag2
+                );
+                break;
+
             default:
                 $sql = sprintf(
                     "SELECT * FROM `Category Dimension` WHERE `Category Key`=%d", $tag
@@ -335,12 +341,7 @@ class Category extends DB_Table {
             $created_msg = _('Category created');
 
 
-            if ($this->data['Category Scope'] == 'Invoice') {
-                $sql = sprintf(
-                    "INSERT INTO `Invoice Category Dimension` (`Invoice Category Key`,`Invoice Category Store Key`) VALUES (%d,%d)", $this->id, $this->data['Category Store Key']
-                );
-                $this->db->exec($sql);
-            } elseif ($this->data['Category Scope'] == 'Supplier') {
+           if ($this->data['Category Scope'] == 'Supplier') {
                 $sql = sprintf(
                     "INSERT INTO `Supplier Category Dimension` (`Supplier Category Key`,`Supplier Category Valid From`) VALUES (%d,Now())", $this->id
                 );
@@ -1395,7 +1396,7 @@ class Category extends DB_Table {
                 break;
             case('Product'):
 
-                $sql = sprintf("SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Store Key`=%d AND `Product Record Type`='Normal'", $this->data['Category Store Key']);
+                $sql = sprintf("SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Store Key`=%d ", $this->data['Category Store Key']);
                 break;
 
             default:
@@ -1565,7 +1566,7 @@ class Category extends DB_Table {
         }
 
 
-        $branch_type = $this->data['Category Branch Type'];
+      //  $branch_type = $this->data['Category Branch Type'];
 
         $data['Category Scope'] = $this->data['Category Scope'];
 
@@ -1745,6 +1746,19 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 'DELETE FROM `Invoice Category Dimension` WHERE `Category Key`=%d', $this->id
             );
             $this->db->exec($sql);
+
+
+            $sql = sprintf(
+                "DELETE FROM `Invoice Category Data` WHERE `Invoice Category Key`=%d ", $this->id
+
+            );
+            $this->db->exec($sql);
+            $sql = sprintf(
+                "DELETE FROM  `Invoice Category DC Data` WHERE `Invoice Category Key`=%d ", $this->id
+            );
+            $this->db->exec($sql);
+
+
         } elseif ($this->data['Category Scope'] == 'Supplier') {
             $sql = sprintf(
                 'DELETE FROM `Supplier Category Dimension` WHERE `Category Key`=%d', $this->id
@@ -1770,7 +1784,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
             );
             $this->db->exec($sql);
             $sql = sprintf(
-                'DELETE FROM `Product Category Dc Data`  WHERE `Product Category Key`=%d', $this->id
+                'DELETE FROM `Product Category DC Data`  WHERE `Product Category Key`=%d', $this->id
             );
             $this->db->exec($sql);
         }
@@ -1783,6 +1797,22 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
             'DELETE FROM `Category Dimension` WHERE `Category Key`=%d', $this->id
         );
         $this->db->exec($sql);
+
+
+        $sql = sprintf(
+            'DELETE FROM `Category Bridge` WHERE  `Subject`="Category"  and  `Subject Key`=%d', $this->id
+        );
+
+
+        $this->db->exec($sql);
+
+        $sql = sprintf(
+            'DELETE FROM `Category Bridge` WHERE   and  `Category Key`=%d', $this->id
+        );
+
+
+        $this->db->exec($sql);
+
 
         foreach ($parent_keys as $parent_key) {
             $parent_category         = get_object('Category', $parent_key);
@@ -1963,7 +1993,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     $abstract = _('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> '._('disassociated with category').sprintf(
                             ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
                         );
-                    $details  = _('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> ('.$customer->data['Customer Main Location'].') '._(
+                    $details  = _('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a>  '._(
                             'associated with category'
                         ).sprintf(
                             ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
@@ -3114,7 +3144,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         $abstract = _('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> '._('associated with category').sprintf(
                                 ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
                             );
-                        $details  = _('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a> ('.$customer->data['Customer Main Location'].') '._(
+                        $details  = _('Customer').': <a href="customer.php?id='.$customer->id.'">'.$customer->data['Customer Name'].'</a>  '._(
                                 'associated with category'
                             ).sprintf(
                                 ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']

@@ -1252,6 +1252,8 @@ function intrastat_orders($_data, $db, $user, $account) {
 }
 
 
+
+
 function intrastat_products($_data, $db, $user, $account) {
 
     $rtext_label = 'product';
@@ -1260,7 +1262,7 @@ function intrastat_products($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    // print $sql;
+
 
     if ($result = $db->query($sql)) {
 
@@ -1274,7 +1276,7 @@ function intrastat_products($_data, $db, $user, $account) {
                 'name'       => $data['Product Name'],
                 'units'      => number($data['Product Units Per Case']),
                 'price'      => money($data['Product Price'] / $data['Product Units Per Case'], $data['Order Currency Code']),
-                'weight'     => weight($data['Product Unit Weight'], 'Kg', 3, false, true),
+                'weight'     => weight($data['Product Package Weight']/$data['Product Units Per Case'], 'Kg', 2, false, true),
                 'units_send' => number($data['units_send']),
 
             );
@@ -2246,11 +2248,11 @@ function sales_invoice_category($_data, $db, $user, $account) {
 
 
                 'invoices' => sprintf(
-                    '<span class="link" onclick="change_view(\'invoices/all/category/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Refund:\'\',Invoice:1}} } )" >%s</span>', $data['Category Key'],
+                    '<span class="link" onclick="change_view(\'invoices/category/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Refund:\'\',Invoice:1}} } )" >%s</span>', $data['Category Key'],
                     $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], number($data['invoices'])
                 ),
                 'refunds'  => sprintf(
-                    '<span class="link" onclick="change_view(\'invoices/all/category/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}} } )" >%s</span>', $data['Category Key'],
+                    '<span class="link" onclick="change_view(\'invoices/category/%s\' , { parameters:{ period:\'%s\', from:\'%s\', to:\'%s\',elements_type:\'type\' } ,element:{ type:{ Invoice:\'\',Refund:1}} } )" >%s</span>', $data['Category Key'],
                     $_data['parameters']['period'], $_data['parameters']['from'], $_data['parameters']['to'], number($data['refunds'])
                 ),
 

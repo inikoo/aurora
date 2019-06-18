@@ -281,7 +281,7 @@
                 $('#add_allowance_to_order_recursion_deal_save').addClass('super_discreet').removeClass('invalid valid button')
 
 
-
+                close_add_allowance_to_order_recursion_deal()
 
 
                 rows.fetch({

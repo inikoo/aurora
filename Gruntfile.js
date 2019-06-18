@@ -151,7 +151,7 @@ module.exports = function (grunt) {
                 },
                 src: [
                     'EcomB2B/theme_1/local/jquery.js',
-                    'EcomB2B/theme_1/tablet/plugins.js', ,
+                    'EcomB2B/theme_1/tablet/plugins.js',
                     'EcomB2B/js/search.js',
                 ], dest: 'EcomB2B/js/mobile.190304.min.js',
 
@@ -240,7 +240,7 @@ module.exports = function (grunt) {
 
 
 
-], dest: 'js/aurora_libs.min.js',
+], dest: 'assets/aurora_libs.min.js',
 
             }, aurora: {
                 options: {
@@ -269,15 +269,15 @@ module.exports = function (grunt) {
                     'js/part_locations.edit_locations.js',
                     'js/part_locations.stock_check.js',
                     'js/part_locations.move_stock.js',
-                    'js/picking_and_packing.js',
                     'js/fast_track_packing.js',
                     'js/sticky_notes.js',
+                    'js/picking_and_packing.js',
                     'js/app.js'
 
 
 
 
-                ], dest: 'js/aurora.min.js',
+                ], dest: 'assets/aurora.min.js',
 
             }
 
@@ -373,7 +373,7 @@ module.exports = function (grunt) {
 
             au: {
                 files: {
-                    'css/au_app.min.css':
+                    'assets/au_app.min.css':
                         [
                             'css/jquery-ui.css',
                             'css/fontawesome-all.css',

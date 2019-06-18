@@ -64,7 +64,7 @@ if (($parameters['f_field'] == 'name') and $f_value != '') {
 
 
 } elseif (($parameters['f_field'] == 'postcode') and $f_value != '') {
-    $wheref = "  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
+    $wheref = "  and  `Customer Main Plain Postal Code` like '%".addslashes($f_value)."%'";
 } elseif ($parameters['f_field'] == 'id') {
     $wheref .= " and  `Customer Key` like '".addslashes(
             preg_replace('/\s*|\,|\./', '', $f_value)
@@ -81,20 +81,6 @@ if (($parameters['f_field'] == 'name') and $f_value != '') {
     $wheref .= " and  `Customer Net Balance`<=".$f_value."    ";
 } elseif ($parameters['f_field'] == 'minvalue' and is_numeric($f_value)) {
     $wheref .= " and  `Customer Net Balance`>=".$f_value."    ";
-} elseif ($parameters['f_field'] == 'country' and $f_value != '') {
-    if ($f_value == 'UNK') {
-        $wheref    .= " and  `Customer Main Country Code`='".$f_value."'    ";
-        $find_data = ' '._('a unknown country');
-    } else {
-
-        $f_value = Address::parse_country($f_value);
-        if ($f_value != 'UNK') {
-            $wheref    .= " and  `Customer Main Country Code`='".$f_value."'    ";
-            $country   = new Country('code', $f_value);
-            $find_data = ' '.$country->data['Country Name'].' <img src="art/flags/'.$country->data['Country 2 Alpha Code'].'.png" alt="'.$country->data['Country Code'].'"/>';
-        }
-
-    }
 }
 
 $_order = $order;

@@ -214,14 +214,10 @@ if ($order == 'stock') {
     $order = '`Product '.$period_tag.' Acc Quantity Invoiced`';
 } elseif ($order == 'family') {
     $order = '`Product Family`Code';
-} elseif ($order == 'dept') {
-    $order = '`Product Main Department Code`';
 } elseif ($order == 'expcode') {
     $order = '`Product Tariff Code`';
 } elseif ($order == 'parts') {
     $order = '`Product XHTML Parts`';
-} elseif ($order == 'supplied') {
-    $order = '`Product XHTML Supplied By`';
 } elseif ($order == 'gmroi') {
     $order = '`Product GMROI`';
 } elseif ($order == 'state') {
@@ -232,9 +228,7 @@ if ($order == 'stock') {
     $order = '`Product Availability State`';
 } elseif ($order == 'stock_forecast') {
     $order = '`Product Available Days Forecast`';
-} elseif ($order == 'formatted_record_type') {
-    $order = '`Product Record Type`';
-} elseif ($order == 'store') {
+}  elseif ($order == 'store') {
     $order = '`Store Code`';
 } elseif ($order == 'price') {
     $order = '`Product Price`';
@@ -244,19 +238,11 @@ if ($order == 'stock') {
     $order = '`Product Valid To`';
 } elseif ($order == 'last_update') {
     $order = '`Product Last Updated`';
-} elseif ($order == 'package_type') {
-    $order = '`Product Package Type`';
 } elseif ($order == 'package_weight') {
     $order = '`Product Package Weight`';
-} elseif ($order == 'Package') {
-    $order = '`Product Package Dimensions Volume`';
-} elseif ($order == 'package_volume') {
-    $order = '`Product Package Dimensions Volume`';
 } elseif ($order == 'unit_weight') {
     $order = '`Product Unit Weight`';
-} elseif ($order == 'unit_dimension') {
-    $order = '`Product Unit Dimensions Volume`';
-} elseif ($order == '1m_avg_sold_over_1y') {
+}elseif ($order == '1m_avg_sold_over_1y') {
     $order = '`Product 1 Year Acc Quantity Invoiced`';
 } elseif ($order == 'days_available_over_1y') {
     $order = '`Product 1 Year Acc Days On Sale`';

@@ -16,56 +16,30 @@ $new = false;
 
 $object_fields = array();
 
-$object_fields[] = array(
-    'label'      => _('Id'),
-    'show_title' => true,
-    'fields'     => array(
 
 
-        array(
-            'edit'              => ($edit ? 'string' : ''),
-            'id'                => 'Deal_Component_Name_Label',
-            'value'             => $object->get('Deal Component Name Label'),
-            'formatted_value'   => $object->get('Name Label'),
-            'label'             => ucfirst($object->get_field_label('Deal Component Name Label')),
-            'invalid_msg'       => get_invalid_message('string'),
-            'required'          => true,
-            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
-            'type'              => 'value'
-        ),
+if($object->get('Deal Component Allowance Type')=='Percentage Off') {
+
+    $object_fields[] = array(
+        'label'      => _('Allowances'),
+        'show_title' => true,
+        'fields'     => array(
 
 
+            array(
+                'edit'            => ($edit ? 'percentage' : ''),
+                'id'              => 'Deal_Component_Allowance_Percentage',
+                'value'           => $object->get('Deal Component Allowance Percentage'),
+                'formatted_value' => $object->get('Allowance Percentage'),
+                'label'           => _('Percentage off'),
+                'invalid_msg'     => get_invalid_message('percentage'),
+                'required'        => true,
+                'type'            => 'value'
+            ),
 
-    ),
-
-
-
-);
-
-
-
-
-$object_fields[] = array(
-    'label'      => _('Allowances'),
-    'show_title' => true,
-    'fields'     => array(
-
-
-
-        array(
-            'edit'            => ($edit ? 'percentage' : ''),
-            'id'              => 'Deal_Component_Allowance_Percentage',
-            'value'           => $object->get('Deal Component Allowance Percentage'),
-            'formatted_value' => $object->get('Allowance Percentage'),
-            'label'           => _('Percentage off'),
-            'invalid_msg'     => get_invalid_message('percentage'),
-            'required'        => true,
-            'type'            => 'value'
-        ),
-
-    )
-);
-
+        )
+    );
+}
 
 $object_fields[] =    array(
         'label'      => _('Public description'),

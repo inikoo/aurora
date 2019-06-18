@@ -81,6 +81,15 @@ class Supplier extends SubjectSupplier {
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Supplier Key'];
+
+
+            if (empty($this->data['Supplier Metadata'] )) {
+                $this->metadata = array();
+            } else {
+                $this->metadata = json_decode(
+                    $this->data['Supplier Metadata'], true
+                );
+            }
         }
 
     }
@@ -213,6 +222,7 @@ class Supplier extends SubjectSupplier {
             );
         }
 
+        $this->data['Supplier Metadata'] = '{}';
 
         $this->data['Supplier Valid From'] = gmdate('Y-m-d H:i:s');
 
@@ -349,6 +359,10 @@ class Supplier extends SubjectSupplier {
 
 
         switch ($field) {
+            case 'payment terms':
+                $this->fast_update_json_field('Supplier Metadata', preg_replace('/\s/', '_', $field), $value);
+
+                break;
             case 'Supplier Contact Address':
 
 
@@ -1596,6 +1610,9 @@ class Supplier extends SubjectSupplier {
             case 'Supplier Average Delivery Days':
                 $label = _('delivery time (days)');
                 break;
+            case 'Supplier Average Production Days':
+                $label = _('production time (days)');
+                break;
             case 'Supplier Default Currency Code':
                 $label = _('currency');
                 break;
@@ -2113,7 +2130,19 @@ class Supplier extends SubjectSupplier {
                 }
 
             }
-            $timeseries->update_stats();
+
+            $date = gmdate('Y-m-d H:i:s');
+            $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+            $this->db->prepare($sql)->execute(
+                [
+                    $date,
+                    $date,
+                    'timeseries_stats',
+                    $timeseries->id,
+                    $date,
+
+                ]
+            );
 
 
         }
@@ -2264,7 +2293,8 @@ class Supplier extends SubjectSupplier {
     }
 
 
+
 }
 
 
-?>
+

@@ -3,7 +3,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 229 January 2018 at 13:21:09 GMT+8, Kuala Lumpur, Malaysia
+ Created: 3 April 2017 at 11:46:49 GMT+8, Cyberjaya, Malaysia
  Copyright (c) 2016, Inikoo
 
  Version 3
@@ -11,10 +11,18 @@
 */
 
 require_once 'common.php';
+require_once 'utils/aes.php';
+require_once 'utils/new_fork.php';
+require_once 'conf/timeseries.php';
 
 
 require_once 'class.Product.php';
 require_once 'class.Category.php';
+require_once 'class.Timeserie.php';
+require_once 'class.Store.php';
+require_once 'class.Part.php';
+
+$timeseries = get_time_series_config();
 
 
 $editor = array(
@@ -23,44 +31,180 @@ $editor = array(
     'Author Type'  => '',
     'Author Key'   => '',
     'User Key'     => 0,
-    'Date'         => gmdate('Y-m-d H:i:s'),
-    'Subject'      => 'System',
-    'Subject Key'  => 0,
-    'Author Name'  => 'Script (product availability recently processes)'
+    'Date'         => gmdate('Y-m-d H:i:s')
 );
 
+//shortcuts($db);
 
-$sql = sprintf(
-    "SELECT `Product ID` FROM   `Inventory Transaction Fact` ITF left join `Order Transaction Fact` on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`) where ITF.`Date`>%s  and `Product ID`>0 group by `Product ID`",
-prepare_mysql(gmdate('Y-m-d H:i:s',strtotime('now -18 minutes')))
 
+$intervals = array(
+    'Quarter To Day'
 );
-$number_products=0;
-if ($result = $db->query($sql)) {
-    foreach ($result as $row) {
-
-        $number_products++;
+foreach ($intervals as $interval) {
 
 
+    $msg = new_housekeeping_fork(
+        'au_asset_sales', array(
+        'type'     => 'update_stores_sales_data',
+        'interval' => $interval,
+        'mode'     => array(
+            true,
+            true
+        )
+    ), $account->get('Account Code')
+    );
 
-        $product       = new Product($row['Product ID']);
-        $product->editor=$editor;
-        $web_state_old = $product->get_web_state();
-        $product->update_availability();
-        $web_state_new = $product->get_web_state();
+    $msg = new_housekeeping_fork(
+        'au_asset_sales', array(
+        'type'     => 'update_invoices_categories_sales_data',
+        'interval' => $interval,
+        'mode'     => array(
+            true,
+            true
+        )
+    ), $account->get('Account Code')
+    );
 
-        if ($web_state_old != $web_state_new) {
-            print $product->get('Store Key').' '.$product->get('Code')." $web_state_old $web_state_new \n";
-        }
+
+    $msg = new_housekeeping_fork(
+        'au_asset_sales', array(
+        'type'     => 'update_products_sales_data',
+        'interval' => $interval,
+        'mode'     => array(
+            true,
+            true
+        )
+    ), $account->get('Account Code')
+    );
+
+    $msg = new_housekeeping_fork(
+        'au_asset_sales', array(
+        'type'     => 'update_parts_sales_data',
+        'interval' => $interval,
+        'mode'     => array(
+            true,
+            true
+        )
+    ), $account->get('Account Code')
+    );
+
+    $msg = new_housekeeping_fork(
+        'au_asset_sales', array(
+        'type'     => 'update_part_categories_sales_data',
+        'interval' => $interval,
+        'mode'     => array(
+            true,
+            true
+        )
+    ), $account->get('Account Code')
+    );
+
+    $msg = new_housekeeping_fork(
+        'au_asset_sales', array(
+        'type'     => 'update_product_categories_sales_data',
+        'interval' => $interval,
+        'mode'     => array(
+            true,
+            true
+        )
+    ), $account->get('Account Code')
+    );
 
 
-    }
+    $msg = new_housekeeping_fork(
+        'au_asset_sales', array(
+        'type'     => 'update_suppliers_data',
+        'interval' => $interval,
+        'mode'     => array(
+            true,
+            true
+        )
+    ), $account->get('Account Code')
+    );
 
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
+
+    $msg = new_housekeeping_fork(
+        'au_asset_sales', array(
+        'type'     => 'update_supplier_categories_sales_data',
+        'interval' => $interval,
+        'mode'     => array(
+            true,
+            true
+        )
+    ), $account->get('Account Code')
+    );
+
+
 }
 
-print "$number_products\n";
 
-?>
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'      => 'update_stores_previous_intervals',
+    'intervals' => 'Quarters',
+
+), $account->get('Account Code')
+);
+
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'      => 'update_invoices_categories_previous_intervals',
+    'intervals' => 'Quarters',
+
+), $account->get('Account Code')
+);
+
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'      => 'update_suppliers_previous_intervals',
+    'intervals' => 'Quarters',
+
+), $account->get('Account Code')
+);
+
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'      => 'update_products_previous_intervals',
+    'intervals' => 'Quarters',
+
+), $account->get('Account Code')
+);
+
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'      => 'update_parts_previous_intervals',
+    'intervals' => 'Quarters',
+
+), $account->get('Account Code')
+);
+
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'      => 'update_product_categories_previous_intervals',
+    'intervals' => 'Quarters',
+
+), $account->get('Account Code')
+);
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'      => 'update_part_categories_previous_intervals',
+    'intervals' => 'Quarters',
+
+), $account->get('Account Code')
+);
+
+$msg = new_housekeeping_fork(
+    'au_asset_sales', array(
+    'type'      => 'update_suppliers_categories_previous_intervals',
+    'intervals' => 'Quarters',
+
+), $account->get('Account Code')
+);
+
+

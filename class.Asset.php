@@ -31,7 +31,7 @@ class Asset extends DB_Table {
 
 
                 if ($value == '') {
-                    $barcode         = get_object('Barcode',$this->get('Barcode Key'));
+                    $barcode         = get_object('Barcode', $this->get('Barcode Key'));
                     $barcode->editor = $this->editor;
                     if ($barcode->id) {
                         $asset_data = array(
@@ -147,8 +147,6 @@ class Asset extends DB_Table {
                     }
 
 
-
-
                     $sql = sprintf(
                         "SELECT `Barcode Key` ,`Barcode Status` ,`Barcode Sticky Note` FROM `Barcode Dimension` WHERE `Barcode Number`=%s", prepare_mysql($value)
                     );
@@ -158,13 +156,13 @@ class Asset extends DB_Table {
                             include_once 'class.Barcode.php';
 
 
-                            $barcode_status=$row['Barcode Status'] ;
+                            $barcode_status = $row['Barcode Status'];
 
-                            if ($barcode_status== 'Reserved' and preg_match('/ignore_reserved/', $options)) {
+                            if ($barcode_status == 'Reserved' and preg_match('/ignore_reserved/', $options)) {
 
                                 $barcode = new Barcode($row['Barcode Key']);
                                 $barcode->update(array('Barcode Status' => 'Available'));
-                                $barcode_status=$barcode->get('Barcode Status');
+                                $barcode_status = $barcode->get('Barcode Status');
                             }
 
 
@@ -442,7 +440,7 @@ class Asset extends DB_Table {
                     );
 
 
-                   // print ">>".$this->data[$this->table_name.' Materials']."<<";
+                    // print ">>".$this->data[$this->table_name.' Materials']."<<";
 
 
                     foreach ($materials_data as $material_data) {
@@ -482,7 +480,6 @@ class Asset extends DB_Table {
             case 'Materials':
 
                 if ($this->data[$this->table_name.' Materials'] != '') {
-
 
 
                     $materials_data  = json_decode($this->data[$this->table_name.' Materials'], true);
@@ -651,6 +648,22 @@ class Asset extends DB_Table {
                 );
                 break;
 
+            case 'Package Smart Weight':
+            case 'Unit Smart Weight':
+                include_once 'utils/natural_language.php';
+                $key = preg_replace('/Smart /', '', $key);
+
+
+                return array(
+                    true,
+                    smart_weight($this->data[$this->table_name.' '.$key])
+
+            );
+
+
+                break;
+
+
             case 'Package Dimensions':
             case 'Unit Dimensions':
 
@@ -684,7 +697,7 @@ class Asset extends DB_Table {
                                     )
                                 ).' ('.$data['units'].')';
                             $dimensions .= '<span class="discreet volume">, '.volume($data['vol']).'</span>';
-                            if ($this->data[$this->table_name." $tag Weight"] > 0 and  $data['vol']>0) {
+                            if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol'] > 0) {
 
                                 $dimensions .= '<span class="discreet density">, '.number(
                                         $this->data[$this->table_name." $tag Weight"] / $data['vol'], 3
@@ -716,7 +729,7 @@ class Asset extends DB_Table {
                                     )
                                 ).' ('.$data['units'].')';
                             $dimensions .= '<span class="discreet volume">, '.volume($data['vol']).'</span>';
-                            if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol']>0) {
+                            if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol'] > 0) {
                                 $dimensions .= '<span class="discreet density">, '.number(
                                         $this->data[$this->table_name." $tag Weight"] / $data['vol']
                                     ).'Kg/L</span>';
@@ -746,7 +759,7 @@ class Asset extends DB_Table {
                             $dimensions .= ', <span class="discreet">'.volume(
                                     $data['vol']
                                 ).'</span>';
-                            if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol']>0) {
+                            if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol'] > 0) {
                                 $dimensions .= '<span class="discreet">, '.number(
                                         $this->data[$this->table_name." $tag Weight"] / $data['vol']
                                     ).'Kg/L</span>';

@@ -3,7 +3,7 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
-function post_table_rendered(otable) {
+function post_table_rendered_todo(otable) {
 
 
     $("[data-fancybox]").fancybox({

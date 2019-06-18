@@ -48,6 +48,19 @@ $options_yes_no = array(
 );
 
 
+$options_symbols = array(
+    'none'            => _('None'),
+    'star'        => '&#9733; '._('Star'),
+    'skull'       => '&#9760; '._('Skull'),
+    'radioactive' => '&#9762; '._('Radioactive'),
+    'peace'       => '&#9774; '._('Peace'),
+    'sad'         => '&#9785; '._('Sad'),
+    'gear'       => '&#9881; '._('Gear'),
+    'love'        => '&#10084; '._('Love'),
+);
+
+//'star','skull','radioactive','peace','sad','happy','love'
+
 
 $part_fields = array();
 
@@ -68,6 +81,19 @@ if (!($supplier_part_scope or $new)) {
                 'formatted_value' => $object->get('Status'),
                 'label'           => ucfirst($object->get_field_label('Part Status')),
                 'required'        => ($new ? false : true),
+                'type'            => 'skip'
+            ),
+
+            array(
+                'render' => ($new ? false : true),
+                'id'     => 'Part_Symbol',
+                'edit'   => ($edit ? 'option' : ''),
+
+                'options'         => $options_symbols,
+                'value'           => htmlspecialchars($object->get('Part Symbol')),
+                'formatted_value' => $object->get('Symbol'),
+                'label'           => ucfirst($object->get_field_label('Part Symbol')),
+                'required'        => false,
                 'type'            => 'skip'
             ),
         )
@@ -161,9 +187,9 @@ $part_fields[] = array(
     'show_title' => true,
     'fields'     => array(
         array(
-            'id'     => 'Part_Recommended_Product_Unit_Name',
-            'edit'   => ($edit ? 'string' : ''),
-            'render' => ($supplier_part_scope ? false : true),
+            'id'              => 'Part_Recommended_Product_Unit_Name',
+            'edit'            => ($edit ? 'string' : ''),
+            'render'          => ($supplier_part_scope ? false : true),
             'value'           => htmlspecialchars($object->get('Part Recommended Product Unit Name')),
             'formatted_value' => $object->get('Recommended Product Unit Name'),
             'label'           => ucfirst($object->get_field_label('Part Recommended Product Unit Name')),
@@ -251,9 +277,9 @@ $part_fields[] = array(
             'type'            => 'value'
         ),
         array(
-            'id'     => 'Part_Unit_RRP',
-            'edit'   => 'amount_margin',
-            'render' => (!($supplier_part_scope or $new) ? true : false),
+            'id'              => 'Part_Unit_RRP',
+            'edit'            => 'amount_margin',
+            'render'          => (!($supplier_part_scope or $new) ? true : false),
             'value'           => htmlspecialchars($object->get('Part Unit RRP')),
             'formatted_value' => $object->get('Unit RRP'),
             'label'           => ucfirst($object->get_field_label('Part Unit RRP')),
@@ -263,7 +289,6 @@ $part_fields[] = array(
             ),
             'type'            => 'value'
         ),
-
 
 
     )
@@ -470,15 +495,11 @@ if (!$supplier_part_scope) {
             ),
 
 
-
-            
-
-
         )
     );
 }
 
-if($account->get('Account Add Stock Value Type')=='Last Price') {
+if ($account->get('Account Add Stock Value Type') == 'Last Price') {
 
     if (!($supplier_part_scope or $new)) {
 
@@ -632,8 +653,8 @@ $part_fields[] = array(
             'type'            => 'value'
         ),
         array(
-            'id'   => 'Part_Packing_Group',
-            'edit' => ($edit ? 'option' : ''),
+            'id'              => 'Part_Packing_Group',
+            'edit'            => ($edit ? 'option' : ''),
             'options'         => $options_Packing_Group,
             'value'           => htmlspecialchars($object->get('Part Packing Group')),
             'formatted_value' => $object->get('Packing Group'),
@@ -675,17 +696,16 @@ $part_fields[] = array(
 );
 
 
-
 $part_fields[] = array(
-    'label' =>_('Production'),
+    'label' => _('Production'),
 
     'show_title' => true,
     'fields'     => array(
 
 
         array(
-            'id'   => 'Part_Production_Supply',
-            'edit' => ($edit ? 'option' : ''),
+            'id'              => 'Part_Production_Supply',
+            'edit'            => ($edit ? 'option' : ''),
             'options'         => $options_yes_no,
             'value'           => htmlspecialchars($object->get('Part Production Supply')),
             'formatted_value' => $object->get('Production Supply'),
@@ -698,7 +718,6 @@ $part_fields[] = array(
 
 
 );
-
 
 
 if (!$new and !$supplier_part_scope) {

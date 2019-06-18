@@ -26,18 +26,36 @@ $css = '<style>'.file_get_contents(getcwd().'/css/fontawesome-all.css').'</style
 $smarty->assign('css', $css);
 
 
-$mpdf = new \Mpdf\Mpdf(
-    [
-        'tempDir'       => __DIR__.'/../server_files/pdf_tmp',
-        'mode'          => 'utf-8',
-        'margin_left'   => 15,
-        'margin_right'  => 15,
-        'margin_top'    => 22,
-        'margin_bottom' => 25,
-        'margin_header' => 10,
-        'margin_footer' => 10
-    ]
-);
+if(isset($_REQUEST['with_labels'])) {
+
+
+    $mpdf = new \Mpdf\Mpdf(
+        [
+            'tempDir'       => __DIR__.'/../server_files/pdf_tmp',
+            'mode'          => 'utf-8',
+            'margin_left'   => 15,
+            'margin_right'  => 15,
+            'margin_top'    => 15,
+            'margin_bottom' => 25,
+            'margin_header' => 5,
+            'margin_footer' => 10
+        ]
+    );
+
+}else{
+    $mpdf = new \Mpdf\Mpdf(
+        [
+            'tempDir'       => __DIR__.'/../server_files/pdf_tmp',
+            'mode'          => 'utf-8',
+            'margin_left'   => 15,
+            'margin_right'  => 15,
+            'margin_top'    => 22,
+            'margin_bottom' => 25,
+            'margin_header' => 10,
+            'margin_footer' => 10
+        ]
+    );
+}
 
 
 //$mpdf->useOnlyCoreFonts = true;    // false is default
@@ -50,6 +68,7 @@ $mpdf->SetAuthor($store->data['Store Name']);
 
 $smarty->assign('store', $store);
 $smarty->assign('order', $order);
+$smarty->assign('customer', $customer);
 
 $smarty->assign('delivery_note', $delivery_note);
 
@@ -58,13 +77,13 @@ $transactions = array();
 
 
 $sql = sprintf(
-    "SELECT  Part.`Part Current On Hand Stock` AS total_stock, PLD.`Quantity On Hand` AS stock_in_picking,`Part Current Stock`,`Part Reference` AS reference,`Picking Note` AS notes,ITF.`Part SKU`,`Part Package Description` AS description,
+    "SELECT  Part.`Part Current On Hand Stock` AS total_stock, PLD.`Quantity On Hand` AS stock_in_picking,`Part Current Stock`,`Part Reference` AS reference,`Part Symbol` AS symbol,`Picking Note` AS notes,ITF.`Part SKU`,`Part Package Description` AS description,
 (`Required`+`Given`) AS qty,`Location Code` AS location ,
         IFNULL((select GROUP_CONCAT(LD.`Location Key`,':',LD.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') 
         from `Part Location Dimension` PLD  left join `Location Dimension` LD on (LD.`Location Key`=PLD.`Location Key`) 
         where PLD.`Part SKU`=Part.`Part SKU`  and PLD.`Location Key`!=L.`Location Key` 
         )   ,'') as location_data,
-
+`Part SKOs per Carton` as carton,
 `Part UN Number` AS un_number,
 `Part Packing Group` AS part_packing_group
 FROM 
@@ -80,15 +99,15 @@ if ($result = $db->query($sql)) {
         $stock_in_picking = $row['stock_in_picking'];
         $total_stock      = $row['total_stock'];
 
-        $row['stock'] = sprintf("[<b>%d</b>,%d]", $stock_in_picking, $total_stock);
+        $row['stock']     = sprintf("[<b>%d</b>,%d]", $stock_in_picking, $total_stock);
         $row['locations'] = array();
 
 
-       // print $row['location_data'];
+        // print $row['location_data'];
 
-        if($row['location_data']==''){
+        if ($row['location_data'] == '') {
 
-        }else{
+        } else {
             foreach (preg_split('/,/', $row['location_data']) as $location_data) {
                 $row['locations'][] = preg_split('/\:/', $location_data);
             }
@@ -99,18 +118,66 @@ if ($result = $db->query($sql)) {
 
             if (count($can_pick) > 0) {
                 array_multisort($can_pick, SORT_DESC, $stock, SORT_DESC, $row['locations']);
-
-
             }
+
+
+
+
         }
 
+        $qty=$row['qty']   ;
+        $carton=$row['carton']   ;
 
 
+        $row['qty']           = '<b>'.$qty.'</b>';
 
+        if($carton>1 and fmod($qty,$carton)==0){
+
+
+            $row['qty']  .='<div style="font-style: italic;">('.number($qty/$carton).'c)</div>';
+        }
 
 
         $row['description_note'] = '';
         $row['images']           = '';
+
+        if($row['symbol'] !=''){
+
+            switch ($row['symbol']){
+                case 'star':
+                    $symbol= '&#9733;';
+                    break;
+
+                case 'skull':
+                    $symbol=  '&#9760;';
+                    break;
+                case 'radioactive':
+                    $symbol=  '&#9762;';
+                    break;
+                case 'peace':
+                    $symbol=  '&#9774;';
+                    break;
+                case 'sad':
+                    $symbol=  '&#9785;';
+                    break;
+                case 'gear':
+                    $symbol=  '&#9881;';
+                    break;
+                case 'love':
+                    $symbol=  '&#10084;';
+                    break;
+                default:
+                    $symbol= '';
+
+            }
+
+
+
+            $row['reference']           .= ' '.$symbol ;
+
+        }
+
+
         $transactions[]          = $row;
     }
 } else {
@@ -154,14 +221,14 @@ $smarty->assign('formatted_number_of_picks', $formatted_number_of_picks);
 
 $qr_data = sprintf(
     '%s/delivery_notes/%d?d=%s', $account->get('Account System Public URL'), $delivery_note->id, base64_url_encode(
-    (json_encode(
-        array(
-            'a' => $account->get('Code'),
-            'k' => $delivery_note->id,
-            'c' => gmdate('u')
-        )
-    ))
-)
+                                   (json_encode(
+                                       array(
+                                           'a' => $account->get('Code'),
+                                           'k' => $delivery_note->id,
+                                           'c' => gmdate('u')
+                                       )
+                                   ))
+                               )
 );
 
 
@@ -172,12 +239,15 @@ $smarty->assign(
     'qr_data', $qr_data
 );
 
+if(isset($_REQUEST['with_labels'])){
+    $html = $smarty->fetch('order_pick_aid_with_labels.pdf.tpl');
 
-$html = $smarty->fetch('order_pick_aid.pdf.tpl');
+}else{
+    $html = $smarty->fetch('order_pick_aid.pdf.tpl');
+
+}
+
 
 $mpdf->WriteHTML($html);
+$mpdf->Output($delivery_note->get('Delivery Note ID').'_picking.pdf', 'I');
 
-
-$mpdf->Output();
-
-?>

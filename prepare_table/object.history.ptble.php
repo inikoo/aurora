@@ -66,7 +66,7 @@ if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_custo
     $subject = 'Account';
 } elseif ($parameters['parent'] == 'Website') {
     $where   = sprintf(
-        ' where   B.`Site Key`=%d   ', $parameters['parent_key']
+        ' where   B.`Website Key`=%d   ', $parameters['parent_key']
     );
     $subject = 'Website';
 } elseif ($parameters['parent'] == 'porder') {

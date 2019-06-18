@@ -25,7 +25,7 @@ switch ($parameters['parent']) {
         break;
     case('Website'):
         $where .= sprintf(
-            ' and PS.`Page Site Key`=%d', $parameters['parent_key']
+            ' and PS.`Webpage Website Key`=%d', $parameters['parent_key']
         );
         break;
     case('department'):
@@ -55,92 +55,7 @@ switch ($parameters['parent']) {
 }
 
 $group = '';
-/*
-switch ($elements_type) {
-case 'section':
 
-
-	$_elements='';
-	$count_elements=0;
-	foreach ($elements_section as $_key=>$_value) {
-		if ($_value) {
-			$_elements.=',"'.$_key.'"';
-			$count_elements++;
-		}
-	}
-	$_elements=preg_replace('/^\,/', '', $_elements);
-	if ($_elements=='') {
-		$where.=' and false' ;
-	}elseif ($count_elements<7) {
-		$where.=' and `Page Store Section Type` in ('.$_elements.')' ;
-	}
-
-
-	break;
-case 'state':
-
-
-	$_elements='';
-	$count_elements=0;
-	foreach ($elements_state as $_key=>$_value) {
-		if ($_value) {
-			$_elements.=',"'.$_key.'"';
-			$count_elements++;
-		}
-	}
-	$_elements=preg_replace('/^\,/', '', $_elements);
-	if ($_elements=='') {
-		$where.=' and false' ;
-	}elseif ($count_elements<2) {
-		$where.=' and `Page State` in ('.$_elements.')' ;
-	}
-	//print count($count_elements);
-
-	break;
-case 'flags':
-
-
-	$_elements='';
-	$count_elements=0;
-	foreach ($elements_flags as $_key=>$_value) {
-		if ($_value) {
-			$count_elements++;
-			if ($_key=='Blue') {
-				$_elements.=",'Blue'";
-			}
-			elseif ($_key=='Green') {
-				$_elements.=",'Green'";
-			}
-			elseif ($_key=='Orange') {
-				$_elements.=",'Orange'";
-			}
-			elseif ($_key=='Pink') {
-				$_elements.=",'Pink'";
-			}
-			elseif ($_key=='Purple') {
-				$_elements.=",'Purple'";
-			}
-			elseif ($_key=='Red') {
-				$_elements.=",'Red'";
-			}
-			elseif ($_key=='Yellow') {
-				$_elements.=",'Yellow'";
-			}
-		}
-	}
-	$_elements=preg_replace('/^\,/', '', $_elements);
-	if ($_elements=='') {
-		$where.=' and false' ;
-	} elseif ($count_elements<7) {
-		$where.=' and `Site Flag` in ('.$_elements.')' ;
-	}
-
-
-	break;
-
-}
-
-*/
 
 $wheref = '';
 if ($parameters['f_field'] == 'code' and $f_value != '') {

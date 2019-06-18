@@ -12,7 +12,6 @@
 <html lang="en-gb" class="isie ie8 oldie no-js"> <![endif]--><!--[if IE 9 ]>
 <html lang="en-gb" class="isie ie9 no-js"> <![endif]--><!--[if (gt IE 9)|!(IE)]><!-->
 <html lang="en-gb" class="no-js"> <!--<![endif]-->
-
 <head>
     {if !isset($is_devel) or !$is_devel  }
 
@@ -112,8 +111,6 @@
         </script>
     {/if}
 
-
-
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta charset="utf-8">
     <meta name="keywords" content=""/>
@@ -131,10 +128,10 @@
     <![endif]-->
 
     {if !isset($is_devel) or !$is_devel  }
-        <script src="https://browser.sentry-cdn.com/4.3.4/bundle.min.js" crossorigin="anonymous"></script>
+        <script src="https://browser.sentry-cdn.com/5.3.0/bundle.min.js" crossorigin="anonymous"></script>
         <script>
             Sentry.init({
-                dsn: 'https://28ce49c599e44d48a66d94aa954f639e@sentry.io/1433844' ,
+                dsn: 'https://ca602819cbd14ce99a6d3ab94e1c5f04@sentry.io/1329969' ,
                 release: "au-web@1.0"
 
             });
@@ -147,7 +144,7 @@
     {/if}
 
 
-    <link rel="stylesheet" href="css/desktop.min.css?v181125" type="text/css"/>
+    <link rel="stylesheet" href="css/desktop.min.css?v190516v2" type="text/css"/>
 
     {assign "with_forms" false}
     {assign "with_not_found" 0}
@@ -272,7 +269,7 @@
 
     {if !isset($is_devel) or !$is_devel  }
     {if  $zendesk_chat_code!=''}
-        <!--Start of Zendesk Chat Script-->
+
         <script>
             window.$zopim || (function (d, s) {
                 var z = $zopim = function (c) {
@@ -298,15 +295,39 @@
 
 
         </script>
-        <!--End of Zendesk Chat Script-->
+
 
     {/if}
     {/if}
 
 
 
+    {if !isset($is_devel) or !$is_devel  }
+        {if  !empty($sumo_code)}
+            <script async>(function(s,u,m,o,j,v){
+                    j=u.createElement(m);v=u.getElementsByTagName(m)[0];j.async=1;j.src=o;j.dataset.sumoSiteId=‘{$sumo_code}’;v.parentNode.insertBefore(j,v)})(window,document,‘script’,‘//load.sumo.com/’);</script>
+
+        {/if}
+    {/if}
 
 
+
+    {if !isset($is_devel) or !$is_devel  }
+        {if  !empty($one_signal_id)}
+            <link rel="manifest" href='data:application/manifest+json,{ "gcm_sender_id": "{$one_signal_id}", "gcm_sender_id_comment": "Do not change the GCM Sender ID"}' />
+
+            <script src="OneSignalSDKWorker.js" async=""></script>
+            <script>
+                var OneSignal = window.OneSignal || [];
+                OneSignal.push(function() {
+                    OneSignal.init({
+                        appId: "{$one_signal_key}",
+                });
+                });
+            </script>
+        {/if}
+
+    {/if}
 
     {if $website->get('Website Text Font')!=''  and $logged_in}
         <link href="https://fonts.googleapis.com/css?family={$website->get('Website Text Font')}:400,700" rel="stylesheet">

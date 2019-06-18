@@ -56,29 +56,29 @@ $where_elements_region = '';
 
 if ($country == 'GB') {
     if ($elements_region['GBIM']) {
-        $where_elements_region .= ' or `Invoice Billing Country 2 Alpha Code` in ("GB","IM")  ';
+        $where_elements_region .= ' or `Invoice Address Country 2 Alpha Code` in ("GB","IM")  ';
     }
     if ($elements_region['EU']) {
-        $where_elements_region .= ' or ( `Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="Yes" ) ';
+        $where_elements_region .= ' or ( `Invoice Address Country 2 Alpha Code` not in ("GB","IM") and `European Union`="Yes" ) ';
     }
     if ($elements_region['NOEU']) {
-        $where_elements_region .= ' or (`Invoice Billing Country 2 Alpha Code` not in ("GB","IM") and `European Union`="No")  ';
+        $where_elements_region .= ' or (`Invoice Address Country 2 Alpha Code` not in ("GB","IM") and `European Union`="No")  ';
     }
 } else {
 
     if ($elements_region[$country]) {
         $where_elements_region .= sprintf(
-            ' or `Invoice Billing Country 2 Alpha Code` =%s  ', prepare_mysql($country)
+            ' or `Invoice Address Country 2 Alpha Code` =%s  ', prepare_mysql($country)
         );
     }
     if ($elements_region['EU']) {
         $where_elements_region .= sprintf(
-            ' or ( `Invoice Billing Country 2 Alpha Code`!=%s and `European Union`="Yes" ) ', prepare_mysql($country)
+            ' or ( `Invoice Address Country 2 Alpha Code`!=%s and `European Union`="Yes" ) ', prepare_mysql($country)
         );
     }
     if ($elements_region['NOEU']) {
         $where_elements_region .= sprintf(
-            ' or (`Invoice Billing Country 2 Alpha Code`!=%s and `European Union`="No")  ', prepare_mysql($country)
+            ' or (`Invoice Address Country 2 Alpha Code`!=%s and `European Union`="No")  ', prepare_mysql($country)
         );
     }
 

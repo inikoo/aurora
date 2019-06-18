@@ -17,12 +17,11 @@ if (isset($options['new']) and $options['new']) {
     $new = false;
 }
 
-$options_trigger = array(
-    'Order'    => _('Order'),
-    'Product'  => _('Product'),
-    'Category' => _('Product category'),
-    'Customer' => _('Customer')
 
+$options_Charge_Type = array(
+    'SOC'               => _('Small order charge'),
+    'Priority_Delivery' => _('Priority delivery'),
+    'Insurance'         => _('Insurance')
 );
 
 $options_yn = array(
@@ -31,18 +30,38 @@ $options_yn = array(
 );
 
 
-$options_offer_type = array(
-    'Percentage_Off'    => _('Order'),
-    'Buy_n_get_n_free'  => _('Product'),
-    'Category' => _('Product category'),
-    'Customer' => _('Customer')
+$object_fields = array();
 
-);
+if ($new) {
 
-$object_fields=array();
+    $object_fields[] = array(
+        'label'      => _('Type'),
+        'show_title' => true,
+        'class'      => 'edit_fields',
 
-$object_fields[]=
-    array(
+        'fields' => array(
+
+
+            array(
+                'id'              => 'Charge_Type',
+                'edit'            => 'option',
+                'value'           => '',
+                'formatted_value' => '',
+                'options'         => $options_Charge_Type,
+                'label'           => _('Charge type'),
+                'required'        => true,
+
+                'type' => 'value'
+            ),
+
+
+        )
+
+    );
+} else {
+
+
+    $object_fields[] = array(
         'label'      => _('Status'),
         'show_title' => true,
         'fields'     => array(
@@ -52,13 +71,13 @@ $object_fields[]=
                 'edit' => ($edit ? 'option' : ''),
 
                 'options'         => $options_yn,
-                'id'                => 'Charge_Active',
-                'value'             => $object->get('Charge Active'),
+                'id'              => 'Charge_Active',
+                'value'           => $object->get('Charge Active'),
                 'formatted_value' => $object->get('Active'),
 
-                'label'             => ucfirst($object->get_field_label('Charge Active')),
-                'invalid_msg'       => get_invalid_message('string'),
-                'required'          => true,
+                'label'       => ucfirst($object->get_field_label('Charge Active')),
+                'invalid_msg' => get_invalid_message('string'),
+                'required'    => true,
             ),
 
 
@@ -66,8 +85,36 @@ $object_fields[]=
 
     );
 
-$object_fields[]=
 
+    $object_fields[] = array(
+        'label'      => _('Amount'),
+        'show_title' => true,
+        'fields'     => array(
+
+
+            array(
+                'edit'            => ($edit ? 'string' : ''),
+
+                'id'              => 'Charge_Metadata',
+                'value'           => $object->get('Charge Metadata'),
+                'formatted_value' => $object->get('Metadata'),
+
+                'label'       => ucfirst($object->get_field_label('Charge Metadata')),
+                'invalid_msg' => get_invalid_message('number'),
+                'required'    => true,
+            ),
+
+
+        )
+
+    );
+
+
+
+}
+
+
+$object_fields[] =
 
 
     array(
@@ -77,33 +124,34 @@ $object_fields[]=
 
 
             array(
-                'edit'              => ($edit ? 'string' : ''),
-                'id'                => 'Charge_Name',
-                'value'             => $object->get('Charge Name'),
+                'edit'            => ($edit ? 'string' : ''),
+                'id'              => 'Charge_Name',
+                'value'           => $object->get('Charge Name'),
                 'formatted_value' => $object->get('Name'),
 
                 'label'             => ucfirst($object->get_field_label('Charge Name')),
                 'invalid_msg'       => get_invalid_message('string'),
                 'required'          => true,
                 'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
-                'type' => 'value'
+                'type'              => 'value'
             ),
             array(
-                'edit'              => ($edit ? 'string' : ''),
-                'id'                => 'Charge_Description',
-                'value'             => $object->get('Charge Description'),
+                'edit'            => ($edit ? 'string' : ''),
+                'id'              => 'Charge_Description',
+                'value'           => $object->get('Charge Description'),
                 'formatted_value' => $object->get('Description'),
 
-                'label'             => ucfirst($object->get_field_label('Charge Description')),
-                'invalid_msg'       => get_invalid_message('string'),
-                'required'          => true,
-                'type' => 'value'
+                'label'       => ucfirst($object->get_field_label('Charge Description')),
+                'invalid_msg' => get_invalid_message('string'),
+                'required'    => true,
+                'type'        => 'value'
             ),
 
 
             array(
-                'id'                => 'Charge_Public_Description',
+                'id'              => 'Charge_Public_Description',
                 'edit'            => ($edit ? 'editor' : ''),
+                'render'          => ($new ? false : true),
                 'class'           => 'editor',
                 'editor_data'     => array(
                     'id'      => 'Charge_Public_Description',
@@ -143,15 +191,19 @@ $object_fields[]=
                 ),
                 'value'           => '',
                 'formatted_value' => $object->get('Charge Public Description'),
-                'label'             => ucfirst($object->get_field_label('Charge Public Description')),
+                'label'           => ucfirst($object->get_field_label('Charge Public Description')),
                 'required'        => true,
-                'type'            => 'value'
+                'type'            => ''
             ),
 
 
         )
 
-);
+    );
+
+
+
+
 
 /*
 
@@ -305,4 +357,3 @@ $object_fields[]=array(
 
 
 
-?>

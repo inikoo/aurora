@@ -43,7 +43,7 @@ $table
 $sql_totals = "select count(*) as num from $table $where";
 
 
-$fields = "PL.`Location Key` as pl_ok  ,`Part UN Number`,`Part Package Description`,`Part Reference`,PD.`Part SKU`,`Part Distinct Locations`,`Required`+`Given` as required,L.`Location Key`,`Location Code`,`Quantity on Hand`,`Quantity On Hand`,`Part Current On Hand Stock`,`Date Picked`,`Picked`,
+$fields = " `Part Symbol`, PL.`Location Key` as pl_ok  ,`Part UN Number`,`Part Package Description`,`Part Reference`,PD.`Part SKU`,`Part Distinct Locations`,`Required`+`Given` as required,L.`Location Key`,`Location Code`,`Quantity on Hand`,`Quantity On Hand`,`Part Current On Hand Stock`,`Date Picked`,`Picked`,
  `Out of Stock`-`No Authorized`-`Not Found`-`No Picked Other` as cant_pick ,`Part SKO Barcode`,`Part Distinct Locations` ,`Inventory Transaction Key`,
  `Part Main Image Key`,`Picking Note`,`Order Transaction Amount`,`Order Currency Code`
  ";

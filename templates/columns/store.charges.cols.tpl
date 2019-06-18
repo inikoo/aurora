@@ -15,7 +15,19 @@ cell: "integer",
 renderable: false
 
 
-}, {
+},
+
+{
+name: "status",
+label: "",
+editable: false,
+sortable:false,
+cell: Backgrid.HtmlCell.extend({
+className: "width_30 align_center"
+})
+},
+
+{
 name: "code",
 label: "{t}Code{/t}",
 editable: false,
@@ -24,6 +36,7 @@ sortType: "toggle",
 
 cell: Backgrid.HtmlCell.extend({ })
 },
+
 {
 name: "name",
 label: "{t}Name{/t}",

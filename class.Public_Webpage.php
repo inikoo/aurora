@@ -46,7 +46,7 @@ class Public_Webpage {
             $sql = sprintf(
                 "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Code`=%s AND `Page Store Key`=%d ", prepare_mysql($tag2), $tag
             );
-        } elseif ($tipo == 'site_code' or $tipo == 'website_code') {
+        } elseif ($tipo == 'website_code') {
             $sql = sprintf(
                 "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Code`=%s AND PS.`Webpage Website Key`=%d ", prepare_mysql($tag2), $tag
             );
@@ -209,7 +209,11 @@ class Public_Webpage {
                     case 'Category Products':
                         $deals=array();
                         $sql = sprintf(
-                            "SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Component Name Label`,`Deal Component Term Label`,`Deal Component Allowance Label` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d AND `Deal Component Status`='Active'",
+                            "SELECT  `Deal Name Label`,`Deal Term Label`, `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Component Allowance Label` 
+                            FROM `Deal Component Dimension` left join `Deal Dimension` on (`Deal Key`=`Deal Component Deal Key`)
+                            
+                            WHERE 
+                            `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d AND `Deal Component Status`='Active'",
                             $this->data['Webpage Scope Key']
                         );
 
@@ -219,10 +223,10 @@ class Public_Webpage {
                                 $deals[]=array(
                                     'key'=>$row['Deal Component Key'],
                                     'icon'=>$row['Deal Component Icon'],
-                                    'name'=>$row['Deal Component Name Label'],
+                                    'name'=>$row['Deal Name Label'],
                                     'until'=>$row['Deal Component Expiration Date'],
                                     'until_formatted'=>  strftime("%a %e %b %Y", strtotime($row['Deal Component Expiration Date'].' ')),
-                                    'term'=>$row['Deal Component Term Label'],
+                                    'term'=>$row['Deal Term Label'],
                                     'allowance'=>$row['Deal Component Allowance Label']
                                 );
 
@@ -261,7 +265,8 @@ class Public_Webpage {
 
                         if(count($categories)>0){
                             $sql = sprintf(
-                                "SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Component Name Label`,`Deal Component Term Label`,`Deal Component Allowance Label` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) AND `Deal Component Status`='Active'",
+                                "SELECT `Deal Component Expiration Date`,`Deal Component Key`,`Deal Component Icon`,`Deal Name Label`,`Deal Term Label`,`Deal Component Allowance Label` 
+                                FROM `Deal Component Dimension`  left join `Deal Dimension` on (`Deal Key`=`Deal Component Deal Key`) WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) AND `Deal Component Status`='Active'",
                                 join($categories,',')
                             );
 
@@ -271,10 +276,10 @@ class Public_Webpage {
                                     $deals[]=array(
                                         'key'=>$row['Deal Component Key'],
                                         'icon'=>$row['Deal Component Icon'],
-                                        'name'=>$row['Deal Component Name Label'],
+                                        'name'=>$row['Deal Name Label'],
                                         'until'=>$row['Deal Component Expiration Date'],
                                         'until_formatted'=>  strftime("%a %e %b %Y", strtotime($row['Deal Component Expiration Date'].' +0:00')),
-                                        'term'=>$row['Deal Component Term Label'],
+                                        'term'=>$row['Deal Term Label'],
                                         'allowance'=>$row['Deal Component Allowance Label']
                                     );
 

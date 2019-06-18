@@ -151,3 +151,102 @@ function toggle_allow_data_entry_picking_aid(element){
 
 
 
+
+
+function toggle_invoice_show(element){
+
+    var icon=$(element).find('i')
+
+    var field=$(element).data('field')
+
+
+        if (icon.hasClass('fa-check-square')) {
+            var value = 'No'
+        }else{
+
+            var value = 'Yes'
+        }
+        icon.removeClass('fa-check-square fa-square ').addClass(' fa-spinner fa-spin')
+
+
+
+
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'edit_field')
+    ajaxData.append("object", 'Store')
+
+    ajaxData.append("key", $('#fields').attr('key'))
+    ajaxData.append("field", field)
+
+    ajaxData.append("value", value)
+
+
+   // console.log(value)
+
+    $.ajax({
+        url: "/ar_edit.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+
+
+                if (value == 'Yes') {
+                    icon.addClass('fa-check-square').removeClass(' fa-spinner fa-spin')
+
+                } else {
+                    icon.addClass('fa-square').removeClass(' fa-spinner fa-spin')
+
+
+                }
+
+
+                if (data.other_fields) {
+                    for (var key in data.other_fields) {
+
+                        //   console.log(data.other_fields[key])
+
+                        update_field(data.other_fields[key])
+                    }
+                }
+
+                if (data.deleted_fields) {
+                    for (var key in data.deleted_fields) {
+                        delete_field(data.deleted_fields[key])
+                    }
+                }
+
+                for (var key in data.update_metadata.class_html) {
+                    $('.' + key).html(data.update_metadata.class_html[key])
+                }
+
+
+                for (var key in data.update_metadata.hide) {
+                    $('.' + data.update_metadata.hide[key]).addClass('hide')
+                }
+
+                for (var key in data.update_metadata.show) {
+
+                    $('.' + data.update_metadata.show[key]).removeClass('hide')
+                }
+
+                //  $('#save_button', window.parent.document).removeClass('save').find('i').removeClass('fa-spinner fa-spin')
+
+            } else if (data.state == '400') {
+                swal({
+                    title: data.title, text: data.msg, confirmButtonText: "OK"
+                });
+            }
+
+
+        }, error: function () {
+
+        }
+
+    }
+    )
+
+
+}

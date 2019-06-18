@@ -38,6 +38,9 @@ class Public_Order extends DBW_Table {
         $this->exchange = 1;
 
 
+        $this->deleted_otfs = array();
+        $this->new_otfs     = array();
+
         $this->table_name = 'Order';
 
 
@@ -183,8 +186,7 @@ class Public_Order extends DBW_Table {
 
 
                     $sql = sprintf(
-                        'update `Order Transaction Fact` set `Current Dispatching State`="Submitted by Customer" where `Order Key`=%d  and `Current Dispatching State` in ("In Process by Customer","In Process")  ',
-                        $this->id
+                        'update `Order Transaction Fact` set `Current Dispatching State`="Submitted by Customer" where `Order Key`=%d  and `Current Dispatching State` in ("In Process by Customer","In Process")  ', $this->id
                     );
 
                     $this->db->exec($sql);
@@ -230,8 +232,7 @@ class Public_Order extends DBW_Table {
 
                     if ($deal_components != '') {
                         $sql = sprintf(
-                            "select * from `Deal Component Dimension` left join `Deal Dimension` D on (D.`Deal Key`=`Deal Component Deal Key`)  where `Deal Component Key` in (%s)",
-                            $deal_components
+                            "select * from `Deal Component Dimension` left join `Deal Dimension` D on (D.`Deal Key`=`Deal Component Deal Key`)  where `Deal Component Key` in (%s)", $deal_components
                         );
 
 
@@ -249,13 +250,11 @@ class Public_Order extends DBW_Table {
 
 
                     $sql = sprintf(
-                        "UPDATE `Order Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ",
-                        $this->id
+                        "UPDATE `Order Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ", $this->id
                     );
                     $this->db->exec($sql);
                     $sql = sprintf(
-                        "UPDATE `Order No Product Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ",
-                        $this->id
+                        "UPDATE `Order No Product Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ", $this->id
                     );
 
                     $this->db->exec($sql);
@@ -265,7 +264,6 @@ class Public_Order extends DBW_Table {
                             'Order Pinned Deal Components' => json_encode($deals_component_data)
                         )
                     );
-
 
 
                     break;
@@ -309,6 +307,8 @@ class Public_Order extends DBW_Table {
 
 
         switch ($key) {
+
+
             case ('State'):
 
 
@@ -397,7 +397,7 @@ class Public_Order extends DBW_Table {
                 break;
             case 'Basket To Pay Amount':
 
-                if ($this->data['Order To Pay Amount']> $this->data['Order Available Credit Amount']) {
+                if ($this->data['Order To Pay Amount'] > $this->data['Order Available Credit Amount']) {
                     return money($this->data['Order To Pay Amount'] - $this->data['Order Available Credit Amount'], $this->data['Order Currency']);
 
                 } else {
@@ -410,8 +410,8 @@ class Public_Order extends DBW_Table {
 
             case 'Order Basket To Pay Amount':
 
-                if ($this->data['Order To Pay Amount']> $this->data['Order Available Credit Amount']) {
-                    return $this->data['Order To Pay Amount'] - $this->data['Order Available Credit Amount'] ;
+                if ($this->data['Order To Pay Amount'] > $this->data['Order Available Credit Amount']) {
+                    return $this->data['Order To Pay Amount'] - $this->data['Order Available Credit Amount'];
                 } else {
                     return 0;
 
@@ -462,6 +462,7 @@ class Public_Order extends DBW_Table {
                     return json_decode($this->data['Order Pinned Deal Components'], true);
                 }
 
+
             default:
 
 
@@ -502,19 +503,120 @@ class Public_Order extends DBW_Table {
 
     function get_voucher_code() {
 
-        $vouchers_data=$this->get_vouchers('data');
-        $voucher_data = reset($vouchers_data);
+        $vouchers_data = $this->get_vouchers('data');
+        $voucher_data  = reset($vouchers_data);
 
-        if($voucher_data){
+        if ($voucher_data) {
 
 
             return $voucher_data['Voucher Code'];
-        }else{
+        } else {
             return '';
+        }
+    }
+
+
+    function get_interactive_charges_data() {
+
+        $charges = array();
+
+        $sql = sprintf(
+            "select `Charge Key` ,`Charge Name`,`Charge Scope` ,`Charge Store Key`,`Charge Description` ,`Charge Metadata` ,
+ (select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`='Charges'  and `Transaction Type Key`=`Charge Key`  limit 1  ) as onptf_key   
+ from `Charge Dimension` where `Charge Store Key`=%d and `Charge Trigger`  = 'Selected by Customer'  and `Charge Active`='Yes'  ",
+            $this->id, $this->get('Order Store Key')
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                $onptf_key = $row['onptf_key'];
+
+                $charges[] = array(
+
+
+                    'description'   => $row['Charge Description'].' ('.money($row['Charge Metadata'], $this->get('Currency Code')).')',
+
+                    'quantity_edit' => '<i onclick="web_toggle_selected_by_customer_charge(this)"  data-charge_key="'.$row['Charge Key'].'" data-onptf_key="'.$onptf_key.'"    class="'.($onptf_key > 0 ? 'fa-toggle-on' : 'fa-toggle-off')
+                        .' far  " style="cursor: pointer" ></i>',
+
+
+
+                    'net' => sprintf('<span  class="  selected_by_customer_charge">%s</span>', ($onptf_key > 0 ? money($row['Charge Metadata'], $this->get('Currency Code')) : '')),
+
+
+                );
+
+            }
         }
 
 
 
+
+        return $charges;
+
+    }
+
+
+    function get_interactive_deal_component_data() {
+
+        $deal_components_choose_by_customer = array();
+
+
+        $sql = sprintf(
+            "select `Deal Name`,`Order Transaction Deal Key`,`Deal Component Allowance`,DCD.`Deal Component Key` ,`Order Transaction Deal Metadata` from `Order Transaction Deal Bridge` OTDB left join 
+    `Deal Component Dimension` DCD on (DCD.`Deal Component Key`=OTDB.`Deal Component Key`) left join  `Deal Dimension` DD on (DCD.`Deal Component Deal Key`=DD.`Deal Key`) 
+    
+    where `Order Key`=%d and `Deal Component Allowance Type`='Get Free Customer Choose'  ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+                //  print_r($row);
+                $allowances         = json_decode($row['Deal Component Allowance'], true);
+                $selected_allowance = json_decode($row['Order Transaction Deal Metadata'], true);
+
+
+                if (!empty($selected_allowance['selected'])) {
+                    $selected = $selected_allowance['selected'];
+                } else {
+                    $selected = $allowances['default'];
+                }
+
+                //  print_r($allowances);
+
+                $options = '<div data-selected="'.$selected.'"  data-deal_component_key="'.$row['Deal Component Key'].'"  data-otdb_key="'.$row['Order Transaction Deal Key'].'" class="deal_component_choose_by_customer">';
+                foreach ($allowances['options'] as $product_id => $option) {
+                    $options .= '<span onclick="web_select_deal_component_choose_by_customer(this)" data-product_id="'.$product_id.'" class="deal_component_item deal_component_item_'.$product_id.'    margin_right_30"  style="cursor:pointer"> <span>'.$option['Description'].'</span>
+<i class="margin_left_10 far '.($selected == $product_id
+                            ? 'fa-dot-circle' : 'fa-circle').' "></i>
+</span><br/>';
+                }
+
+                $options .= '</div>';
+
+                $deal_components_choose_by_customer[] = array(
+
+                    'code'        => $row['Deal Name'],
+                    'description' => $options,
+
+
+                );
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        return $deal_components_choose_by_customer;
 
 
     }
@@ -522,4 +624,3 @@ class Public_Order extends DBW_Table {
 
 }
 
-?>
