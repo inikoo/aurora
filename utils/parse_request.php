@@ -521,13 +521,14 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                     }
 
                                 } else {
-                                    if ($view_path[1] == 'image') {
+
+                                    if ($view_path[1] == 'order') {
 
                                         if (isset($view_path[2])) {
 
                                             if (is_numeric($view_path[2])) {
-                                                $section    = 'product.image';
-                                                $object     = 'image.subject';
+                                                $section    = 'order';
+                                                $object     = 'order';
                                                 $parent_key = $key;
                                                 $key        = $view_path[2];
                                                 $parent     = 'product';
@@ -536,24 +537,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                         }
 
-                                    } else {
-                                        if ($view_path[1] == 'order') {
-
-                                            if (isset($view_path[2])) {
-
-                                                if (is_numeric($view_path[2])) {
-                                                    $section    = 'order';
-                                                    $object     = 'order';
-                                                    $parent_key = $key;
-                                                    $key        = $view_path[2];
-                                                    $parent     = 'product';
-
-                                                }
-
-                                            }
-
-                                        }
                                     }
+
                                 }
                             }
 
@@ -749,29 +734,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         $parent_key = $view_path[0];
 
 
-                                        if (isset($view_path[2])) {
 
-                                            if ($view_path[2] == 'image') {
-
-                                                if (isset($view_path[3])) {
-
-                                                    if (is_numeric(
-                                                        $view_path[3]
-                                                    )) {
-                                                        $section    = 'product.image';
-                                                        $object     = 'image.subject';
-                                                        $parent_key = $key;
-                                                        $key        = $view_path[3];
-                                                        $parent     = 'product';
-
-                                                    }
-
-                                                }
-
-                                            }
-
-
-                                        }
 
 
                                     }
@@ -1174,21 +1137,25 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         if (isset($view_path[2]) and is_numeric($view_path[2])) {
                             $key = $view_path[2];
 
-                            if (isset($view_path[3]) and  in_array($view_path[3] ,array('online','in_process','offline')) ) {
+                            if (isset($view_path[3]) and in_array(
+                                    $view_path[3], array(
+                                    'online',
+                                    'in_process',
+                                    'offline'
+                                )
+                                )) {
 
-                                $parent='webpage_type';
-                                $parent_key=$key;
+                                $parent     = 'webpage_type';
+                                $parent_key = $key;
 
                                 if (isset($view_path[4]) and is_numeric($view_path[4])) {
 
                                     $section = 'webpage';
                                     $object  = 'webpage';
-                                    $key = $view_path[4];
-
+                                    $key     = $view_path[4];
 
 
                                 }
-
 
 
                             }
