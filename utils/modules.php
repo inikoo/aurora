@@ -3962,29 +3962,6 @@ $modules = array(
                 )
 
             ),
-            'product.image' => array(
-                'type' => 'object',
-
-
-                'tabs' => array(
-
-
-                    'product.image.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon' => 'database'
-                    ),
-                    'product.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
-                        'icon' => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-            ),
 
             'order' => array(
                 'type' => 'object',
@@ -6024,28 +6001,7 @@ $modules = array(
                 )
 
             ),
-            'part.image' => array(
-                'type' => 'object',
 
-
-                'tabs' => array(
-
-
-                    'part.image.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon' => 'database'
-                    ),
-                    'part.image.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
-                        'icon' => 'road'
-                    ),
-
-                )
-            ),
 
             'part.attachment.new' => array(
                 'type' => 'new_object',
