@@ -2925,7 +2925,8 @@ $modules = array(
                     ),
                     'webpage.preview' => array(
                         'label' => _('Workshop'),
-                        'icon' => 'wrench'
+                        'icon' => 'wrench',
+                        'class'=>'hide'
                     ),
 
                     'webpage.analytics' => array(
@@ -3796,11 +3797,11 @@ $modules = array(
                     'category.product.sales.history' => 'category.sales',
                     'category.product.sales.calendar' => 'category.sales',
                     'category.product.sales.info' => 'category.sales',
-                    'category.webpage.preview' => 'category.webpage',
-                    'category.webpage.settings' => 'category.webpage',
-                    'category.webpage.products' => 'category.webpage',
-                    'category.webpage.analytics' => 'category.webpage',
-                    'category.webpage.logbook' => 'category.webpage',
+                    //'category.webpage.preview' => 'category.webpage',
+                    //'category.webpage.settings' => 'category.webpage',
+                    //'category.webpage.products' => 'category.webpage',
+                    //'category.webpage.analytics' => 'category.webpage',
+                    //'category.webpage.logbook' => 'category.webpage',
                     'category.customers' => 'category.customers',
                     'category.customers.favored' => 'category.customers',
 
@@ -3815,7 +3816,7 @@ $modules = array(
                             'Subcategories'
                         )
                     ),
-
+/*
 
                     'category.webpage' => array(
                         'label' => _('Website'),
@@ -3842,7 +3843,7 @@ $modules = array(
 
                         )
                     ),
-
+*/
                     'category.sales' => array(
                         'label' => _('Sales'),
                         'icon' => 'money-bill-alt',

@@ -70,31 +70,11 @@ class Webpage_Type extends DB_Table {
         switch ($key) {
             case 'Label':
 
-                switch ($this->data['Webpage Type Code']) {
-                    case 'Ops':
-                        $label = _('System');
-                        break;
-                    case 'Info':
-                        $label = _('Info');
-                        break;
-                    case 'Prods':
-                        $label = _('Products');
-                        break;
-                    case 'Prod':
-                        $label = _('Product');
-                        break;
-                    case 'Cats':
-                        $label = _('Categories');
-                        break;
-                    default:
-                        $label = $this->data['Webpage Type Code'];
-                        break;
-                }
 
-                return $label;
+                include 'conf/webpage_types.php';
+                return $webpage_types[$this->data['Webpage Type Code']]['title'];
                 break;
 
-                return $this->data[$key];
             default:
                 if (array_key_exists($key, $this->data)) {
                     return $this->data[$key];

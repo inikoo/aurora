@@ -8,7 +8,7 @@
  Version 3
 -->
 *}
-
+<div class="webpage_showcase">
 <div class="name_and_categories">
     {if $webpage->get('Webpage Scope')=='Info'}
         <span class="strong">{t}Information page{/t}</span>
@@ -20,4 +20,5 @@
 </div>
 
 <div class="asset_container">
+</div>
 </div>

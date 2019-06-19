@@ -89,6 +89,20 @@ switch ($tipo) {
                 //  print_r($data['state']);
 
 
+            } elseif ($data['state']['module'] == 'websites') {
+
+
+
+
+                if ($data['state']['current_website']) {
+                    $data['scope']     = 'website';
+                    $data['scope_key'] = $data['state']['current_store'];
+                } else {
+                    $data['scope'] = 'websites';
+                }
+
+                search_webpages($db, $account, $user, $data);
+
             } elseif ($data['state']['module'] == 'products_server') {
 
                 $data['scope'] = 'stores';

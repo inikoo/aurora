@@ -62,8 +62,7 @@ function get_websites_navigation($data, $smarty, $user, $db, $account)
  * @param $account
  * @return mixed
  */
-function get_website_navigation($data, $smarty, $user, $db, $account)
-{
+function get_website_navigation($data, $smarty, $user, $db, $account) {
 
 
     $website = $data['_object'];
@@ -219,7 +218,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
     $object = $data['_object'];
 
 
-    $block_view = 'website';
+    $block_view = 'webpages';
 
 
     $sections_class = '';
@@ -258,12 +257,25 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
             case 'website':
                 $tab = 'website.online_webpages';
                 break;
+            case 'webpage_type':
+                $tab = 'webpage_type.online_webpages';
+                break;
 
         }
 
 
     } elseif (preg_match('/offline/', $data['request'])) {
+        $request_prefix = 'offline/';
+        switch ($data['parent']) {
 
+            case 'website':
+                $tab = 'website.offline_webpages';
+                break;
+            case 'webpage_type':
+                $tab = 'webpage_type.offline_webpages';
+                break;
+
+        }
     } elseif (preg_match('/in_process/', $data['request'])) {
 
 
@@ -400,7 +412,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
             $up_button = array(
                 'icon' => 'arrow-up',
                 'title' => _("Website") . ' (' . $data['_parent']->get('Code') . ')',
-                'reference' => 'store/' . $object->get('Webpage Store Key') . '/website'
+                'reference' => 'webpages/' . $object->get('Webpage Website Key')
             );
 
             if ($prev_key) {
@@ -439,15 +451,110 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
             }
 
             break;
+        case 'webpage_type':
 
+
+            $up_button = array(
+                'icon' => 'arrow-up',
+                'title' => _("Webpage type") . ' (' . $data['_parent']->get('Label') . ')',
+                'reference' => 'webpages/' . $object->get('Webpage Website Key').'/type/'.$data['_parent']->id
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon' => 'arrow-left',
+                    'title' => $prev_title,
+                    'reference' => 'webpages/' . $object->get('Webpage Website Key').'/type/'.$data['_parent']->id.'/'.$request_prefix.'/'.$prev_key
+
+
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon' => 'arrow-left disabled',
+                    'title' => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon' => 'arrow-right',
+                    'title' => $next_title,
+                    'reference' => 'webpages/' . $object->get('Webpage Website Key').'/type/'.$data['_parent']->id.'/'.$request_prefix.'/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon' => 'arrow-right disabled',
+                    'title' => '',
+                    'url' => ''
+                );
+
+            }
+
+            break;
 
     }
 
 
-    $sections = get_sections('products', $object->get('Webpage Store Key'));
+    $sections = get_sections('websites', $object->get('Webpage Website Key'));
     if (isset($sections[$block_view])) {
         $sections[$block_view]['selected'] = true;
     }
+
+    $right_buttons[] = array(
+        'icon'  => 'drafting-compass',
+        'click'=>'show_webpage_editor()',
+        'title' => _('Edit webpage'),
+        'pre_text'=> _('Workshop'),
+        'class'=>'text width_150  show_webpage_editor '
+    );
+
+    $right_buttons[] = array(
+        'icon'  => 'drafting-compass',
+        'click'=>'hide_webpage_editor()',
+        'title' => _('Exit edit webpage'),
+        'pre_text'=> _('Exit'),
+        'class'=>'text width_150  hide  hide_webpage_editor'
+    );
+
+    switch($object->get('Webpage Scope')){
+        case 'Category Categories':
+            $right_buttons[] = array(
+                'icon'  => 'folder-tree',
+                'reference'=>'products/'.$object->get('Webpage Store Key').'/category/'.$object->get('Webpage Scope Key'),
+                'title' => _('Department'),
+                'class'=>'button'
+            );
+            break;
+        case 'Category Products':
+            $right_buttons[] = array(
+                'icon'  => 'cubes',
+                'reference'=>'products/'.$object->get('Webpage Store Key').'/category/'.$object->get('Webpage Scope Key'),
+                'title' => _('Family'),
+                'class'=>'button'
+            );
+            break;
+        case 'Product':
+            $right_buttons[] = array(
+                'icon'  => 'cube',
+                'reference'=>'products/'.$object->get('Webpage Store Key').'/'.$object->get('Webpage Scope Key'),
+                'title' => _('Product'),
+                'class'=>'button'
+            );
+            break;
+        default:
+            //$title.=$object->get('Webpage Scope');
+
+    }
+
+
+
+
+
 
 
     $_content = array(
@@ -731,290 +838,6 @@ function get_user_navigation($data, $smarty, $user, $db, $account)
 }
 
 
-function get_node_navigation($data, $smarty, $user, $db, $account)
-{
-
-
-    $object = $data['_object'];
-
-
-    $block_view = $data['section'];
-
-
-    $sections_class = '';
-
-    $left_buttons = array();
-    $right_buttons = array();
-
-
-    if ($data['parent']) {
-
-        switch ($data['parent']) {
-            case 'website':
-                $tab = 'website.nodes';
-                $_section = 'websites';
-                break;
-            case 'node':
-                $tab = 'website.node.nodes';
-                $_section = 'websites';
-                break;
-
-        }
-
-
-        if (isset($_SESSION['table_state'][$tab])) {
-            $number_results = $_SESSION['table_state'][$tab]['nr'];
-            $start_from = 0;
-            $order = $_SESSION['table_state'][$tab]['o'];
-            $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
-            $f_value = $_SESSION['table_state'][$tab]['f_value'];
-            $parameters = $_SESSION['table_state'][$tab];
-            $parameters['parent'] = $data['parent'];
-            $parameters['parent_key'] = $data['parent_key'];
-        } else {
-
-            $default = $user->get_tab_defaults($tab);
-            $number_results = $default['rpp'];
-            $start_from = 0;
-            $order = $default['sort_key'];
-            $order_direction = ($default['sort_order'] == 1 ? 'desc' : '');
-            $f_value = '';
-            $parameters = $default;
-            $parameters['parent'] = $data['parent'];
-            $parameters['parent_key'] = $data['parent_key'];
-        }
-
-        include_once 'prepare_table/' . $tab . '.ptble.php';
-
-        $_order_field = $order;
-        $order = preg_replace('/^.*\.`/', '', $order);
-        $order = preg_replace('/^`/', '', $order);
-        $order = preg_replace('/`$/', '', $order);
-        $_order_field_value = $object->get($order);
-
-
-        $prev_title = '';
-        $next_title = '';
-        $prev_key = 0;
-        $next_key = 0;
-        $sql = trim($sql_totals . " $wheref");
-
-
-        if ($result2 = $db->query($sql)) {
-            if ($row2 = $result2->fetch()) {
-                if ($row2['num'] > 1) {
-
-
-                    $sql = sprintf(
-                        "select `Webpage Code` object_name, N.`Website Node Key` as object_key from $table   $where $wheref
-	                and ($_order_field < %s OR ($_order_field = %s AND N.`Website Node Key` < %d))  order by $_order_field desc ,N.`Website Node Key` desc limit 1",
-
-                        prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
-                    );
-
-
-                    if ($result = $db->query($sql)) {
-                        if ($row = $result->fetch()) {
-                            $prev_key = $row['object_key'];
-                            $prev_title = _("Node") . ' ' . $row['object_name'];
-                        }
-                    } else {
-                        print_r($error_info = $db->errorInfo());
-                        exit;
-                    }
-
-
-                    $sql = sprintf(
-                        "select `Webpage Code` object_name,N.`Website Node Key` as object_key from $table   $where $wheref
-	                and ($_order_field  > %s OR ($_order_field  = %s AND N.`Website Node Key` > %d))  order by $_order_field   , N.`Website Node Key`  limit 1", prepare_mysql($_order_field_value),
-                        prepare_mysql($_order_field_value), $object->id
-                    );
-
-
-                    if ($result = $db->query($sql)) {
-                        if ($row = $result->fetch()) {
-                            $next_key = $row['object_key'];
-                            $next_title = _("Node") . ' ' . $row['object_name'];
-                        }
-                    } else {
-                        print_r($error_info = $db->errorInfo());
-                        exit;
-                    }
-
-
-                    if ($order_direction == 'desc') {
-                        $_tmp1 = $prev_key;
-                        $_tmp2 = $prev_title;
-                        $prev_key = $next_key;
-                        $prev_title = $next_title;
-                        $next_key = $_tmp1;
-                        $next_title = $_tmp2;
-                    }
-
-
-                }
-
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
-        }
-
-
-        switch ($data['parent']) {
-            case 'website':
-
-
-                $up_button = array(
-                    'icon' => 'arrow-up',
-                    'title' => _("Website") . ' (' . $data['_parent']->get('Code') . ')',
-                    'reference' => 'website/' . $object->get(
-                            'Website Key'
-                        )
-                );
-
-                if ($prev_key) {
-                    $left_buttons[] = array(
-                        'icon' => 'arrow-left',
-                        'title' => $prev_title,
-                        'reference' => 'website/' . $object->get('Website Key') . '/node/' . $prev_key
-                    );
-
-                } else {
-                    $left_buttons[] = array(
-                        'icon' => 'arrow-left disabled',
-                        'title' => ''
-                    );
-
-                }
-                $left_buttons[] = $up_button;
-
-
-                if ($next_key) {
-                    $left_buttons[] = array(
-                        'icon' => 'arrow-right',
-                        'title' => $next_title,
-                        'reference' => 'website/' . $object->get('Website Key') . '/node/' . $next_key
-                    );
-
-                } else {
-                    $left_buttons[] = array(
-                        'icon' => 'arrow-right disabled',
-                        'title' => '',
-                        'url' => ''
-                    );
-
-                }
-
-                break;
-
-
-            case 'node':
-
-
-                if ($object->get('Website Node Key') == $object->get(
-                        'Website Node Parent Key'
-                    )
-                ) {
-                    $up_button = array(
-                        'icon' => 'arrow-up',
-                        'title' => $data['website']->get(
-                                'Name'
-                            ) . ' (' . $data['website']->get('Code') . ')',
-                        'reference' => 'website/' . $data['website']->id
-                    );
-
-                } else {
-
-                    $up_button = array(
-                        'icon' => 'arrow-up',
-                        'title' => $data['_parent']->get(
-                                'Name'
-                            ) . ' (' . $data['_parent']->get('Code') . ')',
-                        'reference' => 'node/' . $data['_parent']->get('Website Node Parent Key') . '/node/' . $data['_parent']->id
-                    );
-
-                }
-                if ($prev_key) {
-                    $left_buttons[] = array(
-                        'icon' => 'arrow-left',
-                        'title' => $prev_title,
-                        'reference' => 'node/' . $object->get(
-                                'Website Node Parent Key'
-                            ) . '/node/' . $prev_key
-                    );
-
-                } else {
-                    $left_buttons[] = array(
-                        'icon' => 'arrow-left disabled',
-                        'title' => ''
-                    );
-
-                }
-                $left_buttons[] = $up_button;
-
-
-                if ($next_key) {
-                    $left_buttons[] = array(
-                        'icon' => 'arrow-right',
-                        'title' => $next_title,
-                        'reference' => 'node/' . $object->get(
-                                'Website Node Parent Key'
-                            ) . '/node/' . $next_key
-                    );
-
-                } else {
-                    $left_buttons[] = array(
-                        'icon' => 'arrow-right disabled',
-                        'title' => '',
-                        'url' => ''
-                    );
-
-                }
-
-                break;
-
-
-        }
-
-
-    } else {
-        $_section = 'products';
-
-    }
-
-
-    $title = '<span class="id Website_Node_Name">' . $object->get('Name') . '</span>';
-
-
-    $sections = get_sections('websites', $object->get('Website Key'));
-    if (isset($sections[$data['section']])) {
-        $sections[$data['section']]['selected'] = true;
-    }
-
-
-    $_content = array(
-        'sections_class' => $sections_class,
-        'sections' => $sections,
-        'left_buttons' => $left_buttons,
-        'right_buttons' => $right_buttons,
-        'title' => $title,
-        'search' => array(
-            'show' => true,
-            'placeholder' => _('Search website')
-        )
-
-    );
-
-
-    $smarty->assign('_content', $_content);
-
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
-
-}
-
 
 function get_webpages_navigation($data, $smarty, $user, $db, $account)
 {
@@ -1156,7 +979,9 @@ function get_webpage_type_navigation($data, $smarty, $user, $db, $account)
                 $tab = 'website.webpage.types';
                 $_section = 'websites';
 
-                include_once 'conf/webpage_types.php';
+                include 'conf/webpage_types.php';
+
+
 
                 $label=$webpage_types[$object->get('Code')]['title'];
                 $icon=$webpage_types[$object->get('Code')]['icon'];
@@ -1319,9 +1144,7 @@ function get_webpage_type_navigation($data, $smarty, $user, $db, $account)
 
 
     $sections = get_sections('websites', $object->get('Website Key'));
-    if (isset($sections[$data['section']])) {
-        $sections[$data['section']]['selected'] = true;
-    }
+    $sections['webpages']['selected'] = true;
 
 
     $_content = array(

@@ -10,14 +10,13 @@
 *}
 
 
+<div class="webpage_showcase">
+    <div class="name_and_categories">
+        <span class="strong">{t}Group of families{/t}: <span class="link" onclick="change_view('category/{$category->id}')">{$category->get('Code')}</span> {$category->get('Label')} </span>
 
-<div class="name_and_categories">
-    <span class="strong">{t}Group of families{/t}: <span class="link" onclick="change_view('category/{$category->id}')">{$category->get('Code')}</span> {$category->get('Label')} </span>
+        <div style="clear:both"></div>
+    </div>
 
-    <div style="clear:both"></div>
+    <div class="asset_container"></div>
 </div>
-
-<div class="asset_container">
-</div>
-
 

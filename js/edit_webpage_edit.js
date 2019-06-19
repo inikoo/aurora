@@ -750,3 +750,26 @@ $(document).on('click', '.toggle_view_category_categories', function () {
 
 })
 
+function show_webpage_editor(){
+    $('.webpage_showcase').addClass('hide')
+
+    $('.hide_webpage_editor').removeClass('hide')
+    $('.show_webpage_editor').addClass('hide')
+
+
+
+    change_tab('webpage.preview')
+    $('#tabs').addClass('hide')
+
+}
+
+
+function hide_webpage_editor(){
+    $('.webpage_showcase').removeClass('hide')
+    $('.hide_webpage_editor').addClass('hide')
+    $('.show_webpage_editor').removeClass('hide')
+
+    change_tab('webpage.analytics')
+    $('#tabs').removeClass('hide')
+
+}

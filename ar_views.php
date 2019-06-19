@@ -151,7 +151,6 @@ function get_view($db, $smarty, $user, $account, $modules) {
         $store = get_object('Store', $state['store_key']);
     }
 
-
     switch ($state['parent']) {
 
         case 'store':
@@ -204,7 +203,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
             $store                  = get_object('Store', $_parent->get('Website Store Key'));
             $state['current_store'] = $store->id;
-
+            $state['current_website'] = $_parent->id;
 
             break;
         case 'page':
@@ -212,17 +211,10 @@ function get_view($db, $smarty, $user, $account, $modules) {
             $website = get_object('Website', $_parent->get('Webpage Website Key'));
             //$state['current_website'] = $website->id;
             $website = $website;
+            $state['current_website'] = $website->id;
 
             break;
-        case 'node':
-            $_parent = get_object(
-                'WebsiteNode', $state['parent_key']
-            );
-            $website = get_object('Website', $_parent->get('Website Node Website Key'));
-            //$state['current_website'] = $website->id;
 
-
-            break;
         case 'warehouse':
             $_parent                    = get_object('Warehouse', $state['parent_key']);
             $warehouse                  = $_parent;
@@ -237,14 +229,11 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
             break;
         case 'category':
-            include_once 'class.Category.php';
-            include_once 'class.Store.php';
-            $_parent = new Category($state['parent_key']);
 
-            if ($_parent->get('Category Scope') == 'Product' or $_parent->get(
-                    'Category Scope'
-                ) == 'Customer') {
-                $store = new Store($_parent->get('Store Key'));
+            $_parent = get_object('Category',$state['parent_key']);
+
+            if ($_parent->get('Category Scope') == 'Product' or $_parent->get('Category Scope') == 'Customer') {
+                $store = get_object('Store',$_parent->get('Store Key'));
 
             }
 
