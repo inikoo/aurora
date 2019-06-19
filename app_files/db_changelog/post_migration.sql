@@ -159,3 +159,5 @@ ALTER TABLE `Image Dimension` ADD `Image MIME Type` ENUM('image/jpeg', 'image/pn
 ALTER TABLE `Image Dimension` CHANGE `Image Data` `Image Data` LONGBLOB NULL DEFAULT NULL, CHANGE `Image Filename` `Image Filename` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `Image File Checksum` `Image File Checksum` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `Image Width` `Image Width` SMALLINT(5) UNSIGNED NULL DEFAULT NULL, CHANGE `Image Height` `Image Height` SMALLINT(5) UNSIGNED NULL DEFAULT NULL, CHANGE `Image File Size` `Image File Size` MEDIUMINT(8) UNSIGNED NULL DEFAULT NULL;
 ALTER TABLE `Image Dimension` CHANGE `Image File Format` `Image File Format` ENUM('jpeg','png','gif','ico') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'jpeg';
 ALTER TABLE `Image Dimension` ADD `Image Path` VARCHAR(255) NULL DEFAULT NULL AFTER `Last Modify Date`;
+ALTER TABLE `Image Subject Bridge` ADD `Image Subject Metadata` JSON NULL DEFAULT NULL AFTER `Image Subject Date`;
+update `Image Subject Bridge` set `Image Subject Metadata`='{}';
