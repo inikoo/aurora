@@ -8,7 +8,7 @@
  Version 3
 
 */
-//this has to cbe integrated to image_root or imagecache
+//this has to cbe integrated to image.php or imagecache
 
 require_once 'common.php';
 

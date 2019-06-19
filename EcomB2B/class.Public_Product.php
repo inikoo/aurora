@@ -286,11 +286,11 @@ class Public_Product {
 
                         $image_data = array(
                             'key'           => $row['Image Key'],
-                            'src'           => $img = '/image_root.php?&id='.$row['Image Key'],
+                            'src'           => $img = '/image.php?&id='.$row['Image Key'],
                             'caption'       => $row['Image Subject Image Caption'],
                             'width'         => $row['Image Width'],
                             'height'        => $row['Image Height'],
-                            'image_website' => $img = '/image_root.php?&id='.$row['Image Key'],
+                            'image_website' => $img = '/image.php?&id='.$row['Image Key'],
                         );
                     } else {
                         $image_data = array(
@@ -337,7 +337,7 @@ class Public_Product {
 
                         $image_data = array(
                             'key'           => $row['Image Key'],
-                            'src'           => $img = '/image_root.php?&id='.$row['Image Key'],
+                            'src'           => $img = '/image.php?&id='.$row['Image Key'],
                             'caption'       => $row['Image Subject Image Caption'],
                             'width'         => $row['Image Width'],
                             'height'        => $row['Image Height'],
@@ -372,7 +372,7 @@ class Public_Product {
                 $image_key = $this->data['Product Main Image Key'];
 
                 if ($image_key) {
-                    $img = '/image_root.php?size=small&id='.$image_key;
+                    $img = '/image.php?s=320x280&id='.$image_key;
 
 
                 } else {
@@ -1072,12 +1072,12 @@ class Public_Product {
                    // $image_website = create_cached_image($row['Image Key'], '', 50, 'height');
 
                     $gallery[] = array(
-                        'src'           => 'image_root.php?id='.$row['Image Key'],
+                        'src'           => 'image.php?id='.$row['Image Key'],
                         'caption'       => $row['Image Subject Image Caption'],
                         'key'           => $row['Image Key'],
                         'width'         => $row['Image Width'],
                         'height'        => $row['Image Height'],
-                        'image_website' => 'image_root.php?id='.$row['Image Key'],
+                        'image_website' => 'image.php?id='.$row['Image Key'],
 
                     );
                 }
@@ -1116,7 +1116,7 @@ class Public_Product {
                     $image_website = create_cached_image($row['Image Key'], '', 50, 'height');
 
                     $gallery[] = array(
-                        'src'           => 'image_root.php?id='.$row['Image Key'],
+                        'src'           => 'image.php?id='.$row['Image Key'],
                         'caption'       => $row['Image Subject Image Caption'],
                         'key'           => $row['Image Key'],
                         'width'         => $row['Image Width'],
@@ -1225,9 +1225,9 @@ class Public_Product {
                     $images_slideshow[] = array(
                         'subject_order'         => $subject_order,
                         'name'                  => $row['Image Filename'],
-                        'small_url'             => 'image_root.php?id='.$row['Image Key'].'&size=small',
-                        'thumbnail_url'         => 'image_root.php?id='.$row['Image Key'].'&size=thumbnail',
-                        'normal_url'            => 'image_root.php?id='.$row['Image Key'],
+                        'small_url'             => 'image.php?id='.$row['Image Key'].'&s=320x280',
+                        'thumbnail_url'         => 'image.php?id='.$row['Image Key'].'&s=25x20',
+                        'normal_url'            => 'image.php?id='.$row['Image Key'],
                         'filename'              => $row['Image Filename'],
                         'ratio'                 => $ratio,
                         'caption'               => $row['Image Subject Image Caption'],

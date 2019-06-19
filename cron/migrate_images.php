@@ -7,9 +7,6 @@ require_once 'common.php';
 $sql = sprintf('select  `Image Key`  from `Image Dimension`   where `Image Data` is not null  ');
 
 
-
-
-
 if ($result2 = $db->query($sql)) {
     foreach ($result2 as $row2) {
 
@@ -60,34 +57,68 @@ if ($result2 = $db->query($sql)) {
         $data['Image Width']         = $size_data[0];
         $data['Image Height']        = $size_data[1];
         $data['Image File Format']   = $file_extension;
-        $data['Image File Size']   = filesize($tmp_file);
+        $data['Image File Size']     = filesize($tmp_file);
 
-        $data['Image Data']        = '';
-        $data['Image Thumbnail Data']='';
-        $data['Image Small Data']='';
-        $data['Image Large Data']='';
+        $data['Image Data']           = '';
+        $data['Image Thumbnail Data'] = '';
+        $data['Image Small Data']     = '';
+        $data['Image Large Data']     = '';
 
-        $data['Image Path']='img/db/'.$data['Image File Checksum'][0].'/'.$data['Image File Checksum'][1].'/'.$data['Image File Checksum'].'.'.$file_extension;
+        $data['Image Path'] = 'img/db/'.$data['Image File Checksum'][0].'/'.$data['Image File Checksum'][1].'/'.$data['Image File Checksum'].'.'.$file_extension;
 
-        print_r($data);
+       // print_r($data);
 
-        if(rename($tmp_file, $data['Image Path'] )){
-            $image->fast_update($data);
+        if (rename($tmp_file, $data['Image Path'])) {
+           $image->fast_update($data);
 
-        }else{
+        } else {
             exit('error cant migrate image');
         }
 
 
+        $sql = sprintf(
+            "select `Image Subject Key` from `Image Subject Bridge`  where  `Image Subject Is Public`='Yes'  
+            and `Image Subject Object` in ('Webpage','Store Product','Site Favicon','Product','Family','Department','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','Category')
+             and `Image Subject Image Key`=%d 
+             limit 1",
+            $image->id
+        );
+
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+               // print_r($row);
+
+                if (!is_dir('img/public_db/'.$data['Image File Checksum'][0])) {
+                    mkdir('img/public_db/'.$data['Image File Checksum'][0]);
+                }
+
+
+                if (!is_dir('img/public_db/'.$data['Image File Checksum'][0].'/'.$data['Image File Checksum'][1])) {
+                    mkdir('img/public_db/'.$data['Image File Checksum'][0].'/'.$data['Image File Checksum'][1]);
+                }
+                chdir('img/public_db/'.$data['Image File Checksum'][0].'/'.$data['Image File Checksum'][1]);
+
+
+                if(!file_exists(preg_replace('/.*\//', '', $data['Image Path']))){
+                    if(!symlink(
+                        preg_replace('/img\/db/', '../../../db', $data['Image Path']),
+                        preg_replace('/.*\//', '', $data['Image Path'])
+
+
+                    )){
+                        exit('can  not create symlink');
+                    }
+                }
 
 
 
 
+                chdir('../../../../');
 
-
-
-
-
+            }
+        }
 
 
     }

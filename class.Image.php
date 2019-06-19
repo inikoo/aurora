@@ -791,32 +791,6 @@ class Image extends DB_Table{
     }
 
 
-    function get_subjects_types($result_type = 'array') {
-        $subject_types = array();
-        $sql           = sprintf(
-            'SELECT `Image Subject Type` FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d ', $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $subject_types[$row['Subject Type']] = $row['Image Subject Type'];
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql";
-            exit;
-        }
-
-
-        if ($result_type == 'array') {
-            return $subject_types;
-        } else {
-            return implode(",", $subject_types);
-        }
-
-    }
-
     function remove_other_sizes_data() {
         $sql = sprintf(
             "UPDATE `Image Dimension` SET `Image Small Data`=NULL,`Image Thumbnail Data`=NULL,`Image Large Data`=NULL WHERE `Image Key`=%d ", $this->id

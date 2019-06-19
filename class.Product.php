@@ -387,7 +387,7 @@ class Product extends Asset {
 
 
                 if ($image_key) {
-                    $img = '/image_root.php?size=small&id='.$image_key;
+                    $img = '/image.php?s=320x280&id='.$image_key;
                 } else {
                     $img = '/art/nopic.png';
 
@@ -414,11 +414,9 @@ class Product extends Asset {
                 $image_key = $this->get('Product Main Image Key');
 
                 if ($image_key) {
-                    $img = '/image_root.php?size=small&id='.$image_key;
-                    // $normal_img='image_root.php?id='.$image_key;
+                    $img = '/image.php?s=320x280&id='.$image_key;
                 } else {
                     $img = '/art/nopic.png';
-                    // $normal_img='art/nopic.png';
 
                 }
 

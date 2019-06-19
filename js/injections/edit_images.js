@@ -131,7 +131,7 @@ function delete_image(image_bridge_key) {
             } else {
                 $('div.main_image').removeClass('hide')
                 $('form.main_image').addClass('hide')
-                $('div.main_image img').attr('src', '/image_root.php?id=' + data.main_image_key + '&size=small')
+                $('div.main_image img').attr('src', '/image.php?id=' + data.main_image_key + '&s=320x280')
 
             }
 
@@ -184,7 +184,7 @@ function set_as_principal(image_bridge_key) {
             } else {
                 $('div.main_image').removeClass('hide')
                 $('form.main_image').addClass('hide')
-                $('div.main_image img').attr('src', '/image_root.php?id=' + data.main_image_key + '&size=small')
+                $('div.main_image img').attr('src', '/image.php?id=' + data.main_image_key + '&s=320x280')
 
             }
 

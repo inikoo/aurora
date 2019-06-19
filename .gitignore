@@ -3,9 +3,16 @@ keyring/nano.key.php
 .sass-cache/
 *.csv
 
-img/db
-img/cache
+img/db/*
+img/public_db/*
+img/public_cache/*
+img/cache/*
 
+!img/index.html
+!img/db/index.html
+!img/cache/index.html
+!img/public_db/index.html
+!img/public_cache/index.html
 
 web/
 wcpcache/
@@ -148,6 +155,6 @@ cron/testapi.php
 
 package.json
 package-lock.json
-img/*
+
 
 

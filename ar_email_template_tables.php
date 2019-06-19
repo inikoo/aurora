@@ -90,7 +90,7 @@ function email_blueprints($_data, $db, $user) {
 
 
             if ($data['Email Blueprint Image Key']) {
-                $image = sprintf('<div class="tint"><img style="max-width:100px;height-width:50px" src="/image_root.php?id=%d&size=small" /></div>', $data['Email Blueprint Image Key']);
+                $image = sprintf('<div class="tint"><img style="max-width:100px;height-width:50px" src="/image.php?id=%d&s=320x280" /></div>', $data['Email Blueprint Image Key']);
 
             } else {
                 $image = '<span style="font-style: italic" class="disabled">'._('Preview not available').'</span>';

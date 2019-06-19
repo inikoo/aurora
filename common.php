@@ -40,7 +40,7 @@ if ($redis->connect('127.0.0.1', 6379)) {
  * @var PDO
  */
 $db = new PDO(
-    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
@@ -76,12 +76,8 @@ require_once 'utils/modules.php';
 
 $sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
 $session        = new Session($sessionStorage);
-
-
-//$session = new Session();
 $session->start();
 
-//session_start();
 $session->set('account', $account->get('Code'));
 
 

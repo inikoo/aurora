@@ -1261,7 +1261,7 @@ function order_items_in_process($_data, $db, $user, $account) {
 
             if ($data['Part Main Image Key'] != 0) {
                 $image = sprintf(
-                    '<img src="/image_root.php?id=%d&r=50x50" style="display: block;
+                    '<img src="/image.php?id=%d&s=50x50" style="display: block;
   max-width:50px;
   max-height:50px;
   width: auto;
@@ -1643,7 +1643,7 @@ function order_items($_data, $db, $user, $account) {
 
             if ($data['Part Main Image Key'] != 0) {
                 $image = sprintf(
-                    '<img src="/image_root.php?id=%d&r=50x50" style="display: block;
+                    '<img src="/image.php?id=%d&s=50x50" style="display: block;
   max-width:50px;
   max-height:50px;
   width: auto;
@@ -3359,7 +3359,7 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
 
             if ($data['Part Main Image Key'] != 0) {
                 $image = sprintf(
-                    '<img src="/image_root.php?id=%d&r=50x50" style="display: block;  max-width:50px; max-height:50px; width: auto; height: auto;">', $data['Part Main Image Key']
+                    '<img src="/image.php?id=%d&s=50x50" style="display: block;  max-width:50px; max-height:50px; width: auto; height: auto;">', $data['Part Main Image Key']
                 );
             } else {
                 $image = '';

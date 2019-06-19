@@ -3235,7 +3235,7 @@ function parts_weight_errors($_data, $db, $user) {
 
             if ($data['Part Main Image Key'] != 0) {
                 $image = sprintf(
-                    '<img src="/image_root.php?id=%d&r=50x50" style="display: block;
+                    '<img src="/image.php?id=%d&s=50x50" style="display: block;
   max-width:50px;
   max-height:50px;
   width: auto;

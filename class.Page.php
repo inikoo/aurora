@@ -3348,7 +3348,7 @@ class Page extends DB_Table {
                             'type'                 => 'category',
                             'category_key'         => $row['Product Category Key'],
                             'header_text'          => trim(strip_tags($row['Category Label'])),
-                            'image_src'            => ($row['Category Main Image Key'] ? 'image_root.php?id='.$row['Category Main Image Key'] : '/art/nopic.png'),
+                            'image_src'            => ($row['Category Main Image Key'] ? 'image.php?id='.$row['Category Main Image Key'] : '/art/nopic.png'),
                             'image_mobile_website' => '',
                             'image_website'        => '',
                             'webpage_key'          => $row['Page Key'],
@@ -4547,7 +4547,7 @@ class Page extends DB_Table {
 
 
                             if ($image_key) {
-                                $image_src = '/image_root.php?id='.$image_key;
+                                $image_src = '/image.php?id='.$image_key;
                             } else {
                                 $image_src = '/art/nopic.png';
 
@@ -4937,7 +4937,7 @@ class Page extends DB_Table {
                 'type'                 => 'category',
                 'category_key'         => $item_data['Category Key'],
                 'header_text'          => trim(strip_tags($item_data['Category Label'])),
-                'image_src'            => ($item_data['Category Main Image Key'] ? 'image_root.php?id='.$item_data['Category Main Image Key'] : '/art/nopic.png'),
+                'image_src'            => ($item_data['Category Main Image Key'] ? 'image.php?id='.$item_data['Category Main Image Key'] : '/art/nopic.png'),
                 'image_mobile_website' => '',
                 'image_website'        => '',
                 'webpage_key'          => $item_data['Page Key'],

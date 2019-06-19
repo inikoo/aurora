@@ -289,7 +289,7 @@ function client_order_items($_data, $db, $user, $account) {
 
             if ($data['Part Main Image Key'] != 0) {
                 $image = sprintf(
-                    '<img src="/image_root.php?id=%d&r=50x50" style="display: block;
+                    '<img src="/image.php?id=%d&s=50x50" style="display: block;
   max-width:50px;
   max-height:50px;
   width: auto;
@@ -566,7 +566,7 @@ function agent_supplier_order_items($_data, $db, $user, $account) {
 
             if ($data['Part Main Image Key'] != 0) {
                 $image = sprintf(
-                    '<img src="/image_root.php?id=%d&r=50x50" style="display: block;max-width:50px;max-height:50px;width: auto;height: auto;">', $data['Part Main Image Key']
+                    '<img src="/image.php?id=%d&s=50x50" style="display: block;max-width:50px;max-height:50px;width: auto;height: auto;">', $data['Part Main Image Key']
                 );
             } else {
                 $image = '';
@@ -907,7 +907,7 @@ function agent_items_in_warehouse($_data, $db, $user, $account) {
 
             if ($data['Part Main Image Key'] != 0) {
                 $image = sprintf(
-                    '<img src="/image_root.php?id=%d&r=50x50" style="display: block;max-width:50px;max-height:50px;width: auto;height: auto;">', $data['Part Main Image Key']
+                    '<img src="/image.php?id=%d&s=50x50" style="display: block;max-width:50px;max-height:50px;width: auto;height: auto;">', $data['Part Main Image Key']
                 );
             } else {
                 $image = '';

@@ -3502,7 +3502,7 @@ function find_category_webpages($db, $account, $memcache_ip, $data, $smarty) {
 
 
             if ($image_key) {
-                $image = '/image_root.php?size=small&id='.$image_key;
+                $image = '/image.php?s=320x280&id='.$image_key;
             } else {
                 $image = '/art/nopic.png';
 
