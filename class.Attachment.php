@@ -11,11 +11,17 @@
 
  Version 2.0
 */
+
+include_once 'trait.ImageSubject.php';
+
+
 include_once 'class.DB_Table.php';
 
 
 class Attachment extends DB_Table {
-    var $locations = false;
+
+    use ImageSubject;
+
     var $compress = true;
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false, $_db = false) {
@@ -63,9 +69,6 @@ class Attachment extends DB_Table {
         $filename = $data['file'];
 
 
-
-
-
         $this->data['Attachment Data'] = addslashes(
             fread(fopen($filename, "r"), filesize($filename))
         );
@@ -105,11 +108,9 @@ class Attachment extends DB_Table {
         } else {
 
 
-
             $error = $this->db->errorInfo();
             if (preg_match('/max_allowed_packet/i', $error[2])) {
-                $this->msg
-                    = "Got a packet bigger than 'max_allowed_packet' bytes ";
+                $this->msg = "Got a packet bigger than 'max_allowed_packet' bytes ";
             } else {
                 $this->msg = 'Unknown error';
 
@@ -175,7 +176,7 @@ class Attachment extends DB_Table {
 
 
         try {
-            include_once 'class.Image.php';
+
             if (preg_match('/application\/pdf/', $this->data['Attachment MIME Type'])) {
                 $tmp_file = 'server_files/tmp/attch'.date('U').$this->data['Attachment File Checksum'];
 
@@ -204,52 +205,33 @@ class Attachment extends DB_Table {
             $im->writeImage($tmp_file.'.jpg');
 
 
-            $image_data = array(
-                'Image Width'         => 0,
-                'Image Height'        => 0,
-                'Image File Size'     => 0,
-                'Image File Checksum' => '',
-                'Image Filename'      => 'attachment_thumbnail',
-                'Image File Format'   => '',
-                'Image Data'          => '',
-                'upload_data'         => array('tmp_name' => $tmp_file.'.jpg'),
-                'editor'              => $this->editor
+            $image = $this->add_image(
+                array(
+                    'Image Filename' => 'attachment_thumbnail',
+                    'Upload Data'    => array(
+                        'tmp_name' => $tmp_file.'.jpg',
+                        'type'     => 'jpg'
+                    ),
+
+
+                )
             );
 
 
-            $image = new Image('find', $image_data, 'create');
-
-            if (!$image->error) {
-
-
-                $sql = sprintf(
-                    "DELETE FROM `Image Bridge` WHERE `Subject Type`=%s AND `Subject Key`=%d", prepare_mysql('Attachment Thumbnail'), $this->id
-
+            if (is_object($image) and $image->id) {
+                $this->fast_update(
+                    array(
+                        'Attachment Thumbnail Image Key' => $image->id
+                    )
                 );
-                $this->db->exec($sql);
-                $sql = sprintf(
-                    "INSERT INTO `Image Bridge` (`Subject Type`,`Subject Key`,`Image Key`,`Is Principal`,`Caption`) VALUES (%s,%d,%d,'Yes','')", prepare_mysql('Attachment Thumbnail'), $this->id,
-                    $image->id
-                );
-                $this->db->exec($sql);
-
-                $sql = sprintf(
-                    "UPDATE `Attachment Dimension` SET `Attachment Thumbnail Image Key`=%d WHERE `Attachment Key`=%d", $image->id, $this->id
-                );
-                $this->db->exec($sql);
-                $this->data['Attachment Thumbnail Image Key'] = $image->id;
-            } else {
-
-
             }
+
 
             unlink($tmp_file_name);
             unlink($tmp_file.'.jpg');
         } catch (Exception $e) {
-           // echo 'Caught exception: ',  $e->getMessage(), "\n";
+            // echo 'Caught exception: ',  $e->getMessage(), "\n";
         }
-
-
 
 
     }
@@ -273,7 +255,6 @@ class Attachment extends DB_Table {
         if (preg_match('/create/i', $options)) {
             $create = 'create';
         }
-
 
 
         if (isset($raw_data['file']) and $raw_data['file'] != '') {
@@ -304,23 +285,23 @@ class Attachment extends DB_Table {
             $data[$_key] = $val;
         }
 
-       // print_r($raw_data);
-       // print_r($data);
+        // print_r($raw_data);
+        // print_r($data);
 
         $sql = sprintf(
             "SELECT `Attachment Key` FROM `Attachment Dimension` WHERE `Attachment File Checksum`=%s", prepare_mysql($data['Attachment File Checksum'])
         );
 
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $this->found     = true;
                 $this->found_key = $row['Attachment Key'];
-        	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
 
@@ -536,7 +517,7 @@ class Attachment extends DB_Table {
 
             case 'Subject Type':
 
-                if(array_key_exists('Attachment Subject Type',$this->data)) {
+                if (array_key_exists('Attachment Subject Type', $this->data)) {
 
 
                     switch ($this->data['Attachment Subject Type']) {
@@ -573,7 +554,7 @@ class Attachment extends DB_Table {
                     }
 
                     return $type;
-                }else{
+                } else {
                     return '';
                 }
                 break;
@@ -695,7 +676,7 @@ class Attachment extends DB_Table {
         }
     }
 
-    function save_to_file($file_path){
+    function save_to_file($file_path) {
 
         $this->get_data('id', $this->id, $with_data = true);
 

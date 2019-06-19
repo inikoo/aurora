@@ -791,6 +791,9 @@ class Image extends DB_Table{
     }
 
 
+//'Webpage','Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category','Staff'
+
+
     function remove_other_sizes_data() {
         $sql = sprintf(
             "UPDATE `Image Dimension` SET `Image Small Data`=NULL,`Image Thumbnail Data`=NULL,`Image Large Data`=NULL WHERE `Image Key`=%d ", $this->id
