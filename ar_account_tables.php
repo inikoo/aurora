@@ -438,7 +438,7 @@ function images($_data, $db, $user, $account) {
                     ),
                 'filesize'     => file_size($data['Image File Size']),
                 'thumbnail'    => sprintf(
-                    '<img src="/image_root.php?id=%d&size=thumbnail">', $data['Image Key']
+                    '<img src="/image.php?id=%d&s=25x20">', $data['Image Key']
                 )
 
             );
@@ -527,7 +527,7 @@ function attachments($_data, $db, $user, $account) {
                 'file_type'    => $file_type,
                 'filesize'     => file_size($data['Attachment File Size']),
                 'thumbnail'    => sprintf(
-                    '<img src="/image_root.php?id=%d&size=thumbnail">', $data['Attachment Thumbnail Image Key']
+                    '<img src="/image.php?id=%d&s=25x20">', $data['Attachment Thumbnail Image Key']
                 )
 
             );

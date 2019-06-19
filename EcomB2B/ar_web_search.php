@@ -154,7 +154,7 @@ function process_search($q, $db, $website, $order_key) {
 
 
                 if ($row['Product Main Image Key'] > 0) {
-                    $image = sprintf('image_root.php?size=small&id=%d', $row['Product Main Image Key']);
+                    $image = sprintf('image.php?s=320x280&id=%d', $row['Product Main Image Key']);
 
                     $image_mobile = get_image_mobile($row['Product Main Image Key']);
 
@@ -220,7 +220,7 @@ function process_search($q, $db, $website, $order_key) {
                 //   print_r($row);
 
                 if ($row['Category Main Image Key'] > 0) {
-                    $image        = sprintf('image_root.php?size=small&id=%d', $row['Category Main Image Key']);
+                    $image        = sprintf('image.php?s=320x280&id=%d', $row['Category Main Image Key']);
                     $image_mobile = get_image_mobile($row['Category Main Image Key']);
 
                 } else {
@@ -282,7 +282,7 @@ function process_search($q, $db, $website, $order_key) {
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
                     if ($row['Product Main Image Key'] > 0) {
-                        $image        = sprintf('image_root.php?size=small&id=%d', $row['Product Main Image Key']);
+                        $image        = sprintf('image.php?s=320x280&id=%d', $row['Product Main Image Key']);
                         $image_mobile = get_image_mobile($row['Product Main Image Key']);
 
                     } else {
@@ -344,7 +344,7 @@ function process_search($q, $db, $website, $order_key) {
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
                     if ($row['Category Main Image Key'] > 0) {
-                        $image = sprintf('image_root.php?size=small&id=%d', $row['Category Main Image Key']);
+                        $image = sprintf('image.php?s=320x280&id=%d', $row['Category Main Image Key']);
 
                         $image_mobile = get_image_mobile($row['Category Main Image Key']);
 

@@ -146,7 +146,7 @@ function get_website_section_items($db, $section_data) {
                 $image_key = $row['Category Main Image Key'];
                 if ($image_key) {
 
-                    $image_mobile_website = '/image_root.php?id='.$image_key;
+                    $image_mobile_website = '/image.php?id='.$image_key;
 
                 }
             }

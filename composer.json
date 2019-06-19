@@ -15,9 +15,9 @@
         "phpmailer/phpmailer": "~6.0",
         "monolog/monolog": "^1.24",
         "google/cloud": "^0.13.0",
-        "google/apiclient": "^2.0"
+        "google/apiclient": "^2.0",
         "gumlet/php-image-resize": "1.9.*",
-        "spatie/image-optimizer": "^1.1"
+        "spatie/image-optimizer": "^1.1",
         "sentry/sdk": "2.0.3"
 
 

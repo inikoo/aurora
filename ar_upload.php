@@ -755,7 +755,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         $image = array_pop($images);
 
         if (isset($data['response_type']) and $data['response_type'] == 'froala') {
-            echo json_encode(array('link' => sprintf('/image_root.php?id=%d', $image->id)));
+            echo json_encode(array('link' => sprintf('/image.php?id=%d', $image->id)));
         } else {
 
             if ($uploads > 0) {
@@ -778,9 +778,9 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
                 'number_images'  => $parent->get_number_images(),
 
                 'main_image_key' => $parent->get_main_image_key(),
-                'image_src'      => sprintf('/image_root.php?id=%d', $image->id),
-                'thumbnail'      => sprintf('<img src="/image_root.php?id=%d&size=thumbnail">', $image->id),
-                'small_image'    => sprintf('<img src="/image_root.php?id=%d&size=small">', $image->id),
+                'image_src'      => sprintf('/image.php?id=%d', $image->id),
+                'thumbnail'      => sprintf('<img src="/image.php?id=%d&size=25x20">', $image->id),
+                'small_image'    => sprintf('<img src="/image.php?id=%d&size=320x280">', $image->id),
                 'img_key'        => $image->id,
                 'height'         => $image->get('Image Height'),
                 'width'          => $image->get('Image Width'),

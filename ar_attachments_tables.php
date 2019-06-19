@@ -149,8 +149,8 @@ function attachments($_data, $db, $user) {
 
         if ($data['Attachment Thumbnail Image Key'] > 0) {
             $preview = sprintf(
-                '<a href="/image_root.php?id=%d&size=original" data-type="image"  data-fancybox="group" data-caption="%s">
-                    <img  src="/image_root.php?id=%d&size=small"  style="max-width:100px;height-width:50px"  />
+                '<a href="/image.php?id=%d" data-type="image"  data-fancybox="group" data-caption="%s">
+                    <img  src="/image.php?id=%d&s=50x50"  style="max-width:100px;height:50px"  />
                  </a>', $data['Attachment Thumbnail Image Key'], $data['Attachment File Original Name'].' '.$data['Attachment Caption'], $data['Attachment Thumbnail Image Key']
             );
         } else {

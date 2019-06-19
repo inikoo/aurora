@@ -119,7 +119,7 @@ trait ImageSubject {
                 if ($scope_data['scope'] == 'content') {
 
                     $content_data = $this->get('Content Data');
-                    $image_src    = '/image_root.php?id='.$image->id;
+                    $image_src    = '/image.php?id='.$image->id;
 
                     if ($scope_data['section'] == 'mute') {
                         return $image;
@@ -476,7 +476,7 @@ trait ImageSubject {
         if ($image_key) {
 
 
-            $main_image_src = 'image_root.php?id='.$image_key.'&size=small';
+            $main_image_src = 'image.php?id='.$image_key.'&s=320x280';
             $main_image_key = $image_key;
 
         } else {
@@ -571,9 +571,9 @@ trait ImageSubject {
                 // print_r($row);
                 $images_slideshow[] = array(
                     'name'            => $row['Image Filename'],
-                    'small_url'       => 'image_root.php?id='.$row['Image Key'].'&size=small',
-                    'thumbnail_url'   => 'image_root.php?id='.$row['Image Key'].'&size=thumbnail',
-                    'normal_url'      => 'image_root.php?id='.$row['Image Key'],
+                    'small_url'       => 'image.php?id='.$row['Image Key'].'&s=320x280',
+                    'thumbnail_url'   => 'image.php?id='.$row['Image Key'].'&s=25x20',
+                    'normal_url'      => 'image.php?id='.$row['Image Key'],
                     'filename'        => $row['Image Filename'],
                     'ratio'           => $ratio,
                     'formatted_ratio' => $formatted_ratio,

@@ -1068,24 +1068,7 @@ trait ProductCategory {
 
                     $product = new product($row['product id']);
 
-                    /*
 
-                    $image_375x250     = '';
-                    $images_slides_show = $product->get_images_slidesshow();
-
-                    foreach ($images_slides_show as $image_data) {
-                        if ($image_data['ratio'] == 1.5 and $image_375x250 == '') {
-                            $image_375x250 = '/image_root.php?id='.$image_data['id'];
-                        }
-                    }
-
-                    foreach ($images_slides_show as $image_data) {
-                        if ($image_data['ratio'] < 1.6 and $image_data['ratio'] > 1.4 and $image_375x250 == '') {
-                            $image_375x250 = '/image_root.php?id='.$image_data['id'];
-                        }
-                    }
-
-                    */
 
 
                     $image = get_object('Image',$product->get('product main image key'));
@@ -1118,7 +1101,7 @@ trait ProductCategory {
                     // print_r($image);
 
 
-                    $image_375x250 = '/image_root.php?id='.$image->id;
+                    $image_375x250 = '/image.php?id='.$image->id;
 
                     unlink($image_filename);
 
@@ -1210,13 +1193,13 @@ trait ProductCategory {
 
                             foreach ($images_slides_show as $image_data) {
                                 if ($image_data['ratio'] == 1.5 and $image_375x250 == '') {
-                                    $image_375x250 = '/image_root.php?id='.$image_data['id'];
+                                    $image_375x250 = '/image.php?id='.$image_data['id'];
                                 }
                             }
 
                             foreach ($images_slides_show as $image_data) {
                                 if ($image_data['ratio'] < 1.6 and $image_data['ratio'] > 1.4 and $image_375x250 == '') {
-                                    $image_375x250 = '/image_root.php?id='.$image_data['id'];
+                                    $image_375x250 = '/image.php?id='.$image_data['id'];
                                 }
                             }
 
@@ -1314,7 +1297,7 @@ trait ProductCategory {
                             $image = $this->webpage->add_image($image_data);
 
                             if ($image) {
-                                $image_375x250 = '/image_root.php?id='.$image->id;
+                                $image_375x250 = '/image.php?id='.$image->id;
 
                                 unlink($image_filename);
                             }
@@ -1463,13 +1446,13 @@ trait ProductCategory {
 
                             foreach ($images_slidesshow as $image_data) {
                                 if ($image_data['ratio'] == 1.5 and $image_375x250 == '') {
-                                    $image_375x250 = '/image_root.php?id='.$image_data['id'];
+                                    $image_375x250 = '/image.php?id='.$image_data['id'];
                                 }
                             }
 
                             foreach ($images_slidesshow as $image_data) {
                                 if ($image_data['ratio'] < 1.6 and $image_data['ratio'] > 1.4 and $image_375x250 == '') {
-                                    $image_375x250 = '/image_root.php?id='.$image_data['id'];
+                                    $image_375x250 = '/image.php?id='.$image_data['id'];
                                 }
                             }
 
@@ -1529,58 +1512,12 @@ trait ProductCategory {
                                 $image_key            = $row['Category Main Image Key'];
                                 if ($image_key) {
 
-                                    $image_mobile_website = '/image_root.php?id='.$image_key;
+                                    $image_mobile_website = '/image.php?id='.$image_key;
 
                                 }
                             }
 
-                            /*
 
-                                                    $image_mobile_website = '/art/nopic.png';
-                                                    $image_key = $row['Category Main Image Key'];
-                                                    if ($image_key) {
-
-                                                        $image_mobile_website = '/image_root.php?id='.$image_key;
-
-                                                    }
-
-
-
-
-                                                    require_once 'external_libs/ImageCache.php';
-                                                    $imagecache                         = new ImageCache();
-                                                    $imagecache->cached_image_directory = 'EcomB2B/server_files/cached_images/';
-
-
-                                                    $image_key = $row['Category Main Image Key'];
-
-                                                    $_size_image_product_webpage = '320_200';
-
-                                                    if ($image_key) {
-
-                                                        if (file_exists('EcomB2B/server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.jpeg').'.jpeg')) {
-                                                            $image_mobile_website = 'server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.jpeg').'.jpeg';
-                                                        } else {
-                                                            $image          = get_object('Image', $image_key);
-                                                            $image_filename = 'EcomB2B/server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.jpeg';
-
-                                                            if (!file_exists($image_filename)) {
-                                                                $image->save_image_to_file('EcomB2B/server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $image->fit_to_canvas(320, 200), 'jpeg');
-                                                            }
-
-
-
-
-                                                            $image_mobile_website = $imagecache->cache($image_filename);
-                                                            unlink($image_filename);
-                                                        }
-
-
-                                                    } else {
-                                                        $image_mobile_website = '/art/nopic.png';
-
-                                                    }
-                        */
 
                             $_data = array(
                                 'category_key'         => $subject->id,

@@ -1276,7 +1276,7 @@ class Part extends Asset {
                     $image = '/art/nopic.png';
 
                 } else {
-                    $image = sprintf('<img src="/image_root.php?id=%d&size=thumbnail"> ', $this->data['Part SKO Image Key']);
+                    $image = sprintf('<img src="/image.php?id=%d&s=25x20"> ', $this->data['Part SKO Image Key']);
 
                 }
 

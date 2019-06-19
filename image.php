@@ -9,14 +9,38 @@
 
 */
 
+
+
 include_once 'keyring/dns.php';
+
+require_once 'vendor/autoload.php';
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
+
+
+$memcached = new Memcached();
+$memcached->addServer($memcache_ip, 11211);
+
+$sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
+$session        = new Session($sessionStorage);
+$session->start();
+
+
+if(empty($_SESSION['logged_in'])){
+    http_response_code(403);
+    exit('Forbidden');
+}
+
+
+
 
 use \Gumlet\ImageResize;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 
 if (empty($_REQUEST['id']) or !is_numeric($_REQUEST['id']) or $_REQUEST['id'] <= 0) {
     header("HTTP/1.0 404 Not Found");
-    echo "Image not found";
+    echo "Image not found (invalid id)";
     exit();
 } else {
     $image_key = $_REQUEST['id'];
@@ -47,6 +71,7 @@ if ($redis->connect('127.0.0.1', 6379)) {
 $image_code = 'i.'.DNS_ACCOUNT_CODE.'.'.$image_key.'_'.$size_r;
 
 
+
 if ($redis->exists($image_code)  ) {
 
 
@@ -54,14 +79,16 @@ if ($redis->exists($image_code)  ) {
 
 
     if (file_exists($image_filename)) {
-
         header("Content-type: $mime_type");
         $seconds_to_cache = 43200000;
         $ts               = gmdate("D, d M Y H:i:s", time() + $seconds_to_cache)." GMT";
+
         header("Expires: $ts");
         header("Pragma: cache");
         header("Cache-Control: max-age=$seconds_to_cache");
         header('Content-Length: ' . filesize($image_filename));
+
+
 
 
         readfile($image_filename);
@@ -76,15 +103,25 @@ if ($redis->exists($image_code)  ) {
 
 
 
-include_once 'common.php';
+
+$db = new PDO(
+    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
+);
+$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
 
 
 $sql  = sprintf('select `Image Path`,`Image MIME Type` from `Image Dimension` where `Image Key`=? ');
 $stmt = $db->prepare($sql);
 
+//print $sql;
+
 $stmt->execute([$image_key]);
 
 if ($row = $stmt->fetch()) {
+
+
+
     $image_path = $row['Image Path'];
     $image_mime = $row['Image MIME Type'];
 
