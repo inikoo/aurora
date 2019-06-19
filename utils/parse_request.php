@@ -93,10 +93,9 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         if (isset($view_path[1])) {
                             if ($view_path[1] == 'dashboard') {
                                 $section = 'dashboard';
-                            }elseif ($view_path[1] == 'settings') {
+                            } elseif ($view_path[1] == 'settings') {
                                 $section = 'settings';
-                            }
-                            /*
+                            } /*
                             elseif ($view_path[1] == 'website') {
 
 
@@ -151,8 +150,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                             }
-                            */
-                            elseif ($view_path[1] == 'charge') {
+                            */ elseif ($view_path[1] == 'charge') {
                                 $section = 'charge';
                                 $object  = 'charge';
 
@@ -1176,7 +1174,28 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         if (isset($view_path[2]) and is_numeric($view_path[2])) {
                             $key = $view_path[2];
 
+                            if (isset($view_path[3]) and  in_array($view_path[3] ,array('online','in_process','offline')) ) {
+
+                                $parent='webpage_type';
+                                $parent_key=$key;
+
+                                if (isset($view_path[4]) and is_numeric($view_path[4])) {
+
+                                    $section = 'webpage';
+                                    $object  = 'webpage';
+                                    $key = $view_path[4];
+
+
+
+                                }
+
+
+
+                            }
+
                         }
+
+
                     }
 
                 }
@@ -1211,14 +1230,14 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
 
-                    }elseif ($view_path[1] == 'settings') {
-                        $section    = 'settings';
+                    } elseif ($view_path[1] == 'settings') {
+                        $section = 'settings';
                     } elseif ($view_path[1] == 'workshop') {
-                        $section    = 'workshop';
+                        $section = 'workshop';
                     } elseif ($view_path[1] == 'users') {
-                        $section    = 'web_users';
-                    }elseif ($view_path[1] == 'analytics') {
-                        $section    = 'analytics';
+                        $section = 'web_users';
+                    } elseif ($view_path[1] == 'analytics') {
+                        $section = 'analytics';
                     } elseif ($view_path[1] == 'online') {
 
 

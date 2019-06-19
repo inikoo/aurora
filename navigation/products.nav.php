@@ -689,18 +689,26 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
 
     //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit'), 'url'=>"edit_product_categories.php?store_id=".$data['store']->id);
 
-    $sections                           = get_sections(
-        'products', $data['store']->id
-    );
+    $sections                           = get_sections('products', $data['store']->id);
     $sections['categories']['selected'] = true;
 
-
-
     $right_buttons[] = array(
+
         'icon'  => 'sticky-note',
         'title' => _('Sticky note'),
         'class' => 'open_sticky_note  square_button right object_sticky_note  '.($data['_object']->get('Sticky Note') == '' ? '' : 'hide')
     );
+
+
+    $right_buttons[] = array(
+        'icon_class'  => 'far',
+
+        'icon'  => 'browser',
+        'reference'=>'website/'.$data['store']->get('Store Website Key').'/online/webpage/'.$data['_object']->get('Product Category Webpage Key'),
+        'title' => _('Webpage'),
+        'class'=>'button'
+    );
+
 
 
     $_content = array(

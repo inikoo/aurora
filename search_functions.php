@@ -3356,19 +3356,18 @@ function search_webpages($db, $account, $user, $data) {
     }
 
 
-    if ($data['scope'] == 'store') {
+    if ($data['scope'] == 'website') {
         if (in_array($data['scope_key'], $user->stores)) {
-            $stores      = $data['scope_key'];
-            $where_store = sprintf(' and `Webpage Store Key`=%d', $data['scope_key']);
+            $where_store = sprintf(' and `Webpage Website Key`=%d', $data['scope_key']);
 
         } else {
             $where_store = ' and false';
         }
     } else {
-        if (count($user->stores) == $account->get('Account Stores')) {
+        if (count($user->websites) == $account->get('Account Websites')) {
             $where_store = '';
         } else {
-            $where_store = sprintf(' and `Webpage Store Key` in (%s)', join(',', $user->stores));
+            $where_store = sprintf(' and `Webpage Website Key` in (%s)', join(',', $user->websites));
         }
 
         $stores = join(',', $user->stores);

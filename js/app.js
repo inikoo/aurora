@@ -593,6 +593,9 @@ function change_view(_request, metadata) {
 
     //console.log(websocket_connected)
 
+    $('#tabs').removeClass('hide')
+
+
 
     if (metadata == undefined || !metadata ) {
         metadata = {};

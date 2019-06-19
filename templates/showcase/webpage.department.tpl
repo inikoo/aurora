@@ -9,7 +9,7 @@
 -->
 *}
 
-
+<div class="webpage_showcase">
 <div class="name_and_categories">
     <span class="strong">{t}Department{/t}: <span class="link" onclick="change_view('category/{$category->id}')">{$category->get('Code')}</span> {$category->get('Label')} </span>
 
@@ -17,4 +17,5 @@
 </div>
 
 <div class="asset_container">
+</div>
 </div>

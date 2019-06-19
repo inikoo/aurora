@@ -31,7 +31,6 @@ switch ($parameters['parent']) {
 $group = '';
 
 
-
 if (isset($parameters['elements_type'])) {
 
     switch ($parameters['elements_type']) {
@@ -42,12 +41,11 @@ if (isset($parameters['elements_type'])) {
                 if ($_value['selected']) {
                     $count_elements++;
 
-                    if($_key=='Others'){
-                        $_elements.=",'Info','Home','Ordering','Customer','Portfolio','Sys'";
-                    }else{
-                        $_elements .= ','.prepare_mysql(preg_replace('/_/',' ',$_key));
+                    if ($_key == 'Others') {
+                        $_elements .= ",'Info','Home','Ordering','Customer','Portfolio','Sys'";
+                    } else {
+                        $_elements .= ','.prepare_mysql(preg_replace('/_/', ' ', $_key));
                     }
-
 
 
                 }
@@ -68,8 +66,12 @@ if (isset($parameters['elements_type'])) {
             ) {
                 if ($_value['selected']) {
 
-                    if($_key=='II')$_key=2;
-                    if($_key=='I')$_key=1;
+                    if ($_key == 'II') {
+                        $_key = 2;
+                    }
+                    if ($_key == 'I') {
+                        $_key = 1;
+                    }
                     $count_elements++;
                     $_elements .= ','.prepare_mysql($_key);
 
@@ -111,7 +113,7 @@ if ($order == 'code') {
     $order = '`Webpage Name`';
 } elseif ($order == 'template') {
     $order = '`Webpage Template Filename`';
-}  elseif ($order == 'type') {
+} elseif ($order == 'type') {
     $order = '`Webpage Type Code`';
 } else {
     $order = '`Webpage Key`';
@@ -121,9 +123,7 @@ if ($order == 'code') {
 $sql_totals = "select count(Distinct `Page Key`) as num from $table  $where  ";
 
 
-
 $fields = "`Page Key` as `Webpage Key` ,`Webpage Code`,`Webpage State`,`Webpage Scope`,`Webpage Website Key`,`Webpage Name`,`Webpage Template Filename`,`Webpage Type Code`";
-
 
 
 ?>
