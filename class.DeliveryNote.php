@@ -2536,6 +2536,8 @@ class DeliveryNote extends DB_Table {
         $order->editor = $this->editor;
 
 
+
+
         $sql = sprintf(
             "DELETE FROM  `Delivery Note Dimension` WHERE `Delivery Note Key`=%d  ", $this->id
         );
@@ -2578,6 +2580,8 @@ class DeliveryNote extends DB_Table {
         }
 
         $customer->update_last_dispatched_order_key();
+
+        $order->update_number_replacements();
 
 
         return 'orders/'.$order->get('Order Store Key').'/'.$order->id;
