@@ -754,13 +754,8 @@ class data_entry_picking_aid {
                             $out_of_stock = $row['Required'] + $row['Given'] + -$transaction['qty'];
 
 
-                            if ($out_of_stock == 0) {
-                                $out_of_stock_tag = 'No';
-                            } else {
-                                $out_of_stock_tag = 'Yes';
-                            }
 
-                            $state = 'Done';
+
 
                             if ($transaction['qty'] == 0) {
                                 $transaction_type    = 'No Dispatched';
@@ -778,8 +773,8 @@ class data_entry_picking_aid {
                             $sql = 'UPDATE  `Inventory Transaction Fact`  SET  
                                   `Date Picked`=? ,`Date Packed`=?,`Date`=? ,`Location Key`=? ,`Inventory Transaction Type`=? ,`Inventory Transaction Section`=? ,
                                   `Inventory Transaction Quantity`=?, `Inventory Transaction Amount`=?,`Inventory Transaction Weight`=?,
-                                  `Picked`=?,`Packed`=?,`Out of Stock`=?,`Out of Stock Tag`=?,
-                                  `Picker Key`=?,`Packer Key`=?,`Inventory Transaction State`=? WHERE `Inventory Transaction Key`=? ';
+                                  `Picked`=?,`Packed`=?,`Out of Stock`=?,
+                                  `Picker Key`=?,`Packer Key`=? WHERE `Inventory Transaction Key`=? ';
 
 
                             $this->db->prepare($sql)->execute(
@@ -796,10 +791,8 @@ class data_entry_picking_aid {
                                     $transaction['qty'],
                                     $transaction['qty'],
                                     $out_of_stock,
-                                    $out_of_stock_tag,
                                     $this->dn->get('Delivery Note Assigned Picker Key'),
                                     $this->dn->get('Delivery Note Assigned Packer Key'),
-                                    $state,
                                     $transaction['itf_key']
 
                                 ]

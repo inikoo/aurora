@@ -640,10 +640,6 @@ function webpage_content_data($data, $editor, $db, $smarty) {
 
                                 $db->exec($sql);
                             }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
                         }
 
 

@@ -131,6 +131,13 @@ update `Order Dimension` set `Order Last Updated by Customer`=NOW()  where `Orde
 
  ALTER TABLE `Delivery Note Dimension` DROP `Delivery Note XHTML State`, DROP `Delivery Note Waiting For Parts`, DROP `Delivery Note Title`, DROP `Delivery Note XHTML Orders`, DROP `Delivery Note XHTML Invoices`, DROP `Delivery Note XHTML Pickers`, DROP `Delivery Note Number Pickers`, DROP `Delivery Note XHTML Packers`, DROP `Delivery Note Number Packers`, DROP `Delivery Note XHTML Ship To`, DROP `Delivery Note Ship To Key`, DROP `Delivery Note Country 2 Alpha Code`, DROP `Delivery Note World Region Code`, DROP `Delivery Note Country Code`, DROP `Delivery Note Town`, DROP `Delivery Note Postal Code`, DROP `Delivery Note XHTML Public Message`, DROP `Delivery Note Show in Warehouse Orders`, DROP `Delivery Note Pending`;
 
+ALTER TABLE `Inventory Transaction Fact`
+  DROP `Dispatch Country Code`,
+  DROP `Out of Stock Tag`,
+  DROP `Map To Order Transaction Fact Parts Multiplicity`,
+  DROP `Map To Order Transaction Fact XHTML Info`,
+  DROP `Inventory Transaction State`;
+
 
 ALTER TABLE `Order Dimension` DROP `Order Class`, drop `Order Checkout Submitted Payment Date`,drop `Order Checkout Completed Payment Date`,drop `Order XHTML Invoices`,drop `Order Store Code`,drop `Order XHTML Delivery Notes`,drop `Order Current XHTML Post Dispatch State`;
 ALTER TABLE `Order Dimension` DROP `Order Ship To Key To Deliver`, DROP `Order XHTML Ship Tos`, DROP `Order Ship To Country 2 Alpha Code`, DROP `Order Ship To World Region Code`, DROP `Order Ship To Town`, DROP `Order Ship To Postal Code`, DROP `Order Billing To Key To Bill`, DROP `Order XHTML Billing Tos`, DROP `Order Billing To Keys`, DROP `Order Billing To Country Code`, DROP `Order Billing To World Region Code`, DROP `Order Billing To Town`, DROP `Order Billing To Postal Code`;
