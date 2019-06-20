@@ -248,9 +248,6 @@ class DeliveryNote extends DB_Table {
         $part_index = 0;
 
 
-        $multipart_data              = sprintf('<a href="product.php?id=%d">%s</a>', $product->id, $product->data['Product Code']);
-        $multipart_data_multiplicity = count($part_list);
-
 
         // print_r($part_list);
 
@@ -279,7 +276,7 @@ class DeliveryNote extends DB_Table {
 
                 $sql = sprintf(
                     "INSERT INTO `Inventory Transaction Fact`  (
-					`Map To Order Transaction Fact Parts Multiplicity`,`Map To Order Transaction Fact XHTML Info`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Inventory Transaction Fact Delivery 2 Alpha Code`,`Picking Note`,
+					`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Inventory Transaction Fact Delivery 2 Alpha Code`,`Picking Note`,
 
 					`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,
 
@@ -287,11 +284,11 @@ class DeliveryNote extends DB_Table {
 
 					`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`)
 					VALUES (
-					%d,%s,%s,%s,%s,%s,
+					%s,%s,%s,%s,
 					%f,%s,%s,%d,%s,%d,
 					%s,%s,%.2f,%f,%f,%f,
 
-					%s,%s,%d,%d,%d,%d,%s) ", $multipart_data_multiplicity, prepare_mysql($multipart_data), "'Movement'", "'OIP'", prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']), prepare_mysql($picking_note),
+					%s,%s,%d,%d,%d,%d,%s) ",  "'Movement'", "'OIP'", prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']), prepare_mysql($picking_note),
 
                     $weight, prepare_mysql($this->get('Delivery Note Date')), prepare_mysql($this->get('Delivery Note Date')), $this->id, prepare_mysql($part_data['Part SKU']), $location_key,
 
@@ -1867,7 +1864,7 @@ class DeliveryNote extends DB_Table {
 
                         $sql = sprintf(
                             "INSERT INTO `Inventory Transaction Fact`  (
-					`Map To Order Transaction Fact Parts Multiplicity`,`Map To Order Transaction Fact XHTML Info`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,
+					`Inventory Transaction Record Type`,`Inventory Transaction Section`,
 					`Inventory Transaction Fact Delivery 2 Alpha Code`,`Picking Note`,
 
 					`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,
@@ -1876,11 +1873,12 @@ class DeliveryNote extends DB_Table {
 
 					`Metadata`,`Note`,`Supplier Product ID`,`Supplier Product Historic Key`,`Supplier Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`,`Relations`,`Picker Key`)
 					VALUES (
-					%d,%s,%s,%s,%s,%s,
+					%s,%s,%s,%s,
 					%f,%s,%s,%d,%s,%d,
 					%s,%s,%.2f,%f,%f,%f,
 
-					%s,%s,%d,%d,%d,%d,%s,%d,%d) ", $row['Map To Order Transaction Fact Parts Multiplicity'], prepare_mysql(''), "'Movement'", "'In'", prepare_mysql(''), prepare_mysql(''),
+					%s,%s,%d,%d,%d,%d,%s,%d,%d) ",
+                            "'Movement'", "'In'", prepare_mysql(''), prepare_mysql(''),
 
                             $row['Inventory Transaction Weight'], prepare_mysql($date), prepare_mysql($date), $this->id, prepare_mysql($row['Part SKU']), $location_key,
 
@@ -2215,8 +2213,8 @@ class DeliveryNote extends DB_Table {
                     $transaction_value = $row['Part Cost'] * $qty;
 
                     $sql = sprintf(
-                        "UPDATE `Inventory Transaction Fact` SET `Out of Stock`=%f ,`Out of Stock Lost Amount`=%f ,`Out of Stock Tag`=%s ,`Date`=%s ,`Picker Key`=%s WHERE `Inventory Transaction Key`=%d  ", $qty, $transaction_value,
-                        prepare_mysql(($qty == 0 ? 'No' : 'Yes')), prepare_mysql($date), prepare_mysql($data['picker_key']), $data['transaction_key']
+                        "UPDATE `Inventory Transaction Fact` SET `Out of Stock`=%f ,`Out of Stock Lost Amount`=%f ,`Date`=%s ,`Picker Key`=%s WHERE `Inventory Transaction Key`=%d  ", $qty, $transaction_value,
+                         prepare_mysql($date), prepare_mysql($data['picker_key']), $data['transaction_key']
                     );
 
                     $this->db->exec($sql);
@@ -2610,13 +2608,7 @@ class DeliveryNote extends DB_Table {
                     $out_of_stock = $row['Required'] + $row['Given'] + -$transaction['qty'];
 
 
-                    if ($out_of_stock == 0) {
-                        $out_of_stock_tag = 'No';
-                    } else {
-                        $out_of_stock_tag = 'Yes';
-                    }
 
-                    $state = 'Done';
 
                     if ($transaction['qty'] == 0) {
                         $transaction_type    = 'No Dispatched';
@@ -2635,14 +2627,14 @@ class DeliveryNote extends DB_Table {
                         'UPDATE  `Inventory Transaction Fact`  SET  
                                   `Date Picked`=%s ,`Date Packed`=%s ,`Date`=%s ,`Location Key`=%d ,`Inventory Transaction Type`=%s ,`Inventory Transaction Section`=%s ,
                                   `Inventory Transaction Quantity`=%f, `Inventory Transaction Amount`=%.3f,`Inventory Transaction Weight`=%f,
-                                  `Picked`=%f,`Packed`=%f,`Out of Stock`=%f,`Out of Stock Tag`=%s,
-                                  `Picker Key`=%d,`Packer Key`=%d,`Inventory Transaction State`=%s
+                                  `Picked`=%f,`Packed`=%f,`Out of Stock`=%f,
+                                  `Picker Key`=%d,`Packer Key`=%d
                                   
                                   
                                   WHERE `Inventory Transaction Key`=%d ',
 
                         prepare_mysql($date_picked), prepare_mysql($date_packed), prepare_mysql($date), $transaction['location_key'], prepare_mysql($transaction_type), prepare_mysql($transaction_section), $qty, $cost, $weight, $transaction['qty'], $transaction['qty'],
-                        $out_of_stock, prepare_mysql($out_of_stock_tag), $this->get('Delivery Note Assigned Picker Key'), $this->get('Delivery Note Assigned Packer Key'), prepare_mysql($state), $transaction['transaction_key']
+                        $out_of_stock, $this->get('Delivery Note Assigned Picker Key'), $this->get('Delivery Note Assigned Packer Key'),  $transaction['transaction_key']
                     );
 
 
