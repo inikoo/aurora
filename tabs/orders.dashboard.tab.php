@@ -24,6 +24,9 @@ $store->load_acc_data();
 
 //print 'xxx'.$state['extra'];
 
+
+
+
 $smarty->assign('order_flow',(empty($state['extra_tab'])?$state['extra']:$state['extra'].'_'.$state['extra_tab']));
 
 
@@ -36,4 +39,4 @@ $html .= '<div id="widget_details" class="hide" style="clear:both;margin-top:20p
 
 
 
-?>
+

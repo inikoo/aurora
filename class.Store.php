@@ -2514,7 +2514,6 @@ class Store extends DB_Table {
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-
                 $data['approved']['number']    = $row['num'];
                 $data['approved']['amount']    = $row['amount'];
                 $data['approved']['dc_amount'] = $row['dc_amount'];
@@ -2528,7 +2527,7 @@ class Store extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacements Approved Done`>0 ", $this->id
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacements Approved`>0 ", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -2545,6 +2544,7 @@ class Store extends DB_Table {
 
 
         );
+
 
         $this->fast_update($data_to_update, 'Store Data');
 

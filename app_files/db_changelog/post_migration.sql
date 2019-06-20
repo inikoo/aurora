@@ -144,4 +144,3 @@ ALTER TABLE `Inventory Transaction Fact`
   DROP `Map To Order Transaction Fact XHTML Info`,
   DROP `Inventory Transaction State`;
 
-  
