@@ -1761,27 +1761,16 @@ class PartLocation extends DB_Table {
                 if (strtotime($this->part->data['Part Valid From']) <= strtotime($row['Date'].' 23:59:59 -1 year')) {
 
                     $sql = sprintf(
-                        "SELECT count(*) AS num FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Location Key`=%d AND `Inventory Transaction Type`='Sale' AND `Date`>=%s AND `Date`<=%s ", $this->part->sku, $this->location->id, prepare_mysql(
-                        date(
-                            "Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year')
-                        )
-                    ), prepare_mysql($row['Date'].' 23:59:59')
+                        "SELECT `Inventory Transaction key`   FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Location Key`=%d AND `Inventory Transaction Type`='Sale' AND `Date`>=%s AND `Date`<=%s  limit 1", $this->part->sku, $this->location->id,
+                        prepare_mysql(date("Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year'))),
+                        prepare_mysql($row['Date'].' 23:59:59')
                     );
 
-
+                    $dormant_1year = 'Yes';
                     if ($result3 = $this->db->query($sql)) {
                         if ($row3 = $result3->fetch()) {
-                            if ($row3['num'] == 0) {
-                                $dormant_1year = 'Yes';
-                            } else {
-                                $dormant_1year = 'No';
-                            }
-                        } else {
-                            $dormant_1year = 'Yes';
+                            $dormant_1year = 'No';
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
                     }
 
 
