@@ -1138,6 +1138,8 @@ class Warehouse extends DB_Table {
 
                         if ($result3 = $this->db->query($sql)) {
                             if ($row3 = $result3->fetch()) {
+
+                            }else{
                                 $dormant_1y_open_value_at_day += $row2['Value At Day Cost'];
                             }
 
