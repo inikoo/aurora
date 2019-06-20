@@ -518,7 +518,10 @@ class Warehouse extends DB_Table {
             exit;
         }
 
-        $sql = sprintf('SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) AS errors , count(DISTINCT `Part SKU`) as parts  FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d  and `Location Key`!=%d  ', $this->id, $this->get('Warehouse Unknown Location Key'));
+        $sql = sprintf(
+            'SELECT count(*) AS number  , sum(if(`Quantity On Hand`<0,1,0) ) AS errors , count(DISTINCT `Part SKU`) as parts  FROM `Part Location Dimension` WHERE `Part Location Warehouse Key`=%d  and `Location Key`!=%d  ', $this->id,
+            $this->get('Warehouse Unknown Location Key')
+        );
 
 
         if ($result = $this->db->query($sql)) {
@@ -627,7 +630,7 @@ class Warehouse extends DB_Table {
             case 'formatted_packed_done_number':
             case 'formatted_approved_number':
 
-                return number($this->properties(preg_replace('/^formatted_/','',$key)));
+                return number($this->properties(preg_replace('/^formatted_/', '', $key)));
 
                 break;
 
@@ -635,13 +638,13 @@ class Warehouse extends DB_Table {
             case 'formatted_assigned_weight':
 
 
-                $weight=$this->properties(preg_replace('/^formatted_/','',$key));
+                $weight = $this->properties(preg_replace('/^formatted_/', '', $key));
 
-                if($weight>1000){
-                    return weight($weight/1000,'T',1,true);
+                if ($weight > 1000) {
+                    return weight($weight / 1000, 'T', 1, true);
 
-                }else{
-                    return weight($weight,'Kg',0,true);
+                } else {
+                    return weight($weight, 'Kg', 0, true);
 
                 }
 
@@ -1061,8 +1064,6 @@ class Warehouse extends DB_Table {
         $locations_keys = array();
 
 
-
-
         $warehouse_area = new WarehouseArea('find', $data, 'create');
 
 
@@ -1072,9 +1073,6 @@ class Warehouse extends DB_Table {
             if ($warehouse_area->new) {
                 $this->new_warehouse_area     = true;
                 $this->new_warehouse_area_key = $warehouse_area->id;
-
-
-
 
 
             } else {
@@ -1128,8 +1126,9 @@ class Warehouse extends DB_Table {
                 if ($result2 = $this->db->query($sql)) {
                     foreach ($result2 as $row2) {
 
+
                         $sql = sprintf(
-                            "SELECT count(*) AS num FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND  `Inventory Transaction Type`='Sale' AND `Date`>=%s AND `Date`<=%s ", $row2['Part SKU'], prepare_mysql(
+                            "SELECT `Inventory Transaction Key` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND  `Inventory Transaction Type`='Sale' AND `Date`>=%s AND `Date`<=%s  limit 1 ", $row2['Part SKU'], prepare_mysql(
                             date(
                                 "Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year')
                             )
@@ -1139,20 +1138,15 @@ class Warehouse extends DB_Table {
 
                         if ($result3 = $this->db->query($sql)) {
                             if ($row3 = $result3->fetch()) {
-                                if ($row3['num'] == 0) {
-                                    $dormant_1y_open_value_at_day += $row2['Value At Day Cost'];
-                                }
+
+                            }else{
+                                $dormant_1y_open_value_at_day += $row2['Value At Day Cost'];
                             }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            exit;
+
                         }
 
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
                 }
 
 
@@ -1214,23 +1208,14 @@ class Warehouse extends DB_Table {
                         );
                         $this->db->exec($sql);
 
-                        // print "$sql\n";
 
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
                 }
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
-
-        //print "$from \n";
 
     }
 
@@ -1926,7 +1911,7 @@ and `Part Distinct Locations`>1
             }
 
             $date = gmdate('Y-m-d H:i:s');
-            $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+            $sql  = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
             $this->db->prepare($sql)->execute(
                 [
                     $date,
@@ -2084,11 +2069,11 @@ and `Part Distinct Locations`>1
 
     function update_delivery_notes() {
 
-        $ready_to_pick_number = 0;
-        $assigned_number      = 0;
-        $assigned_waiting_for_customer      = 0;
-        $assigned_waiting_for_restock     = 0;
-        $assigned_waiting_for_production      = 0;
+        $ready_to_pick_number            = 0;
+        $assigned_number                 = 0;
+        $assigned_waiting_for_customer   = 0;
+        $assigned_waiting_for_restock    = 0;
+        $assigned_waiting_for_production = 0;
 
         $ready_to_pick_weight = 0;
         $assigned_weight      = 0;
@@ -2097,8 +2082,7 @@ and `Part Distinct Locations`>1
 
         $sql = sprintf(
             'select count(*) as num, sum( if(`Delivery Note Weight Source`="Estimated",`Delivery Note Estimated Weight` ,`Delivery Note Weight`)  ) as weight,  `Delivery Note State` from `Delivery Note Dimension` 
-                where `Delivery Note Warehouse Key`=%d and ``  group by `Delivery Note State`',
-            $this->id
+                where `Delivery Note Warehouse Key`=%d and ``  group by `Delivery Note State`', $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -2125,14 +2109,10 @@ and `Part Distinct Locations`>1
         }
 
 
-
-
-        $this->fast_update_json_field('Warehouse Properties','ready_to_pick_number',$ready_to_pick_number);
-        $this->fast_update_json_field('Warehouse Properties','ready_to_pick_weight',$ready_to_pick_weight);
-        $this->fast_update_json_field('Warehouse Properties','assigned_number',$assigned_number);
-        $this->fast_update_json_field('Warehouse Properties','assigned_weight',$assigned_weight);
-
-
+        $this->fast_update_json_field('Warehouse Properties', 'ready_to_pick_number', $ready_to_pick_number);
+        $this->fast_update_json_field('Warehouse Properties', 'ready_to_pick_weight', $ready_to_pick_weight);
+        $this->fast_update_json_field('Warehouse Properties', 'assigned_number', $assigned_number);
+        $this->fast_update_json_field('Warehouse Properties', 'assigned_weight', $assigned_weight);
 
 
     }

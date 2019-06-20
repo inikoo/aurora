@@ -1761,27 +1761,16 @@ class PartLocation extends DB_Table {
                 if (strtotime($this->part->data['Part Valid From']) <= strtotime($row['Date'].' 23:59:59 -1 year')) {
 
                     $sql = sprintf(
-                        "SELECT count(*) AS num FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Location Key`=%d AND `Inventory Transaction Type`='Sale' AND `Date`>=%s AND `Date`<=%s ", $this->part->sku, $this->location->id, prepare_mysql(
-                        date(
-                            "Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year')
-                        )
-                    ), prepare_mysql($row['Date'].' 23:59:59')
+                        "SELECT `Inventory Transaction key`   FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Location Key`=%d AND `Inventory Transaction Type`='Sale' AND `Date`>=%s AND `Date`<=%s  limit 1", $this->part->sku, $this->location->id,
+                        prepare_mysql(date("Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year'))),
+                        prepare_mysql($row['Date'].' 23:59:59')
                     );
 
-
+                    $dormant_1year = 'Yes';
                     if ($result3 = $this->db->query($sql)) {
                         if ($row3 = $result3->fetch()) {
-                            if ($row3['num'] == 0) {
-                                $dormant_1year = 'Yes';
-                            } else {
-                                $dormant_1year = 'No';
-                            }
-                        } else {
-                            $dormant_1year = 'Yes';
+                            $dormant_1year = 'No';
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
                     }
 
 
@@ -1791,9 +1780,9 @@ class PartLocation extends DB_Table {
 
 
                 list($stock, $value, $in_process) = $this->get_stock($row['Date'].' 23:59:59');
-                list($sold, $sales_value) = $this->get_sales($row['Date'].' 23:59:59');
-                list($in, $in_value) = $this->get_in($row['Date'].' 23:59:59');
-                list($lost, $lost_value) = $this->get_lost($row['Date'].' 23:59:59');
+                list($sold, $sales_value) = $this->get_sales($row['Date']);
+                list($in, $in_value) = $this->get_in($row['Date']);
+                list($lost, $lost_value) = $this->get_lost($row['Date']);
 
                 list($amount_in_po, $amount_in_other, $amount_out_sales, $amount_out_other) = $this->get_amount_deltas($row['Date']);
 
@@ -1906,14 +1895,16 @@ class PartLocation extends DB_Table {
 
     }
 
-    function get_sales($date = '') {
-        if (!$date) {
-            $date = gmdate('Y-m-d');
-        }
+    function get_sales($date) {
+
+        $start=$date.' 00:00:00';
+        $end=$date.' 23:59:59';
+
 
         $sql = sprintf(
-            "SELECT ifnull(sum(`Inventory Transaction Quantity`),0) AS stock ,ifnull(sum(`Amount In`),0) AS value FROM `Inventory Transaction Fact` WHERE  Date(`Date`)=%s AND `Part SKU`=%d AND `Location Key`=%d AND `Inventory Transaction Type` LIKE 'Sale'",
-            prepare_mysql(date('Y-m-d', strtotime($date))), $this->part_sku, $this->location_key
+            "SELECT ifnull(sum(`Inventory Transaction Quantity`),0) AS stock ,ifnull(sum(`Amount In`),0) AS value FROM `Inventory Transaction Fact` WHERE  `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Location Key`=%d AND `Inventory Transaction Type` LIKE 'Sale'",
+            prepare_mysql($start), prepare_mysql($end),
+            $this->part_sku, $this->location_key
         );
 
         if ($result = $this->db->query($sql)) {
@@ -1938,14 +1929,15 @@ class PartLocation extends DB_Table {
 
     }
 
-    function get_in($date = '') {
-        if (!$date) {
-            $date = gmdate('Y-m-d');
-        }
+    function get_in($date) {
+
+        $start=$date.' 00:00:00';
+        $end=$date.' 23:59:59';
 
         $sql = sprintf(
-            "SELECT ifnull(sum(`Inventory Transaction Quantity`),0) AS stock ,ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  Date(`Date`)=%s AND `Part SKU`=%d AND `Location Key`=%d AND ( `Inventory Transaction Type` IN ('In','Move In','Move Out') OR  (`Inventory Transaction Type` LIKE 'Audit' AND `Inventory Transaction Quantity`>0 ) )   ",
-            prepare_mysql(date('Y-m-d', strtotime($date))), $this->part_sku, $this->location_key
+            "SELECT ifnull(sum(`Inventory Transaction Quantity`),0) AS stock ,ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Location Key`=%d AND ( `Inventory Transaction Type` IN ('In','Move In','Move Out') OR  (`Inventory Transaction Type` LIKE 'Audit' AND `Inventory Transaction Quantity`>0 ) )   ",
+            prepare_mysql($start), prepare_mysql($end),
+            $this->part_sku, $this->location_key
         );
 
         if ($result = $this->db->query($sql)) {
@@ -1970,14 +1962,14 @@ class PartLocation extends DB_Table {
 
     }
 
-    function get_lost($date = '') {
-        if (!$date) {
-            $date = gmdate('Y-m-d');
-        }
+    function get_lost($date) {
+        $start=$date.' 00:00:00';
+        $end=$date.' 23:59:59';
 
         $sql = sprintf(
-            "SELECT ifnull(sum(`Inventory Transaction Quantity`),0) AS stock ,ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  Date(`Date`)=%s AND `Part SKU`=%d AND `Location Key`=%d AND ( `Inventory Transaction Type` IN ('Broken','Lost') OR  (`Inventory Transaction Type` LIKE 'Audit' AND `Inventory Transaction Quantity`<0 ))    ",
-            prepare_mysql(date('Y-m-d', strtotime($date))), $this->part_sku, $this->location_key
+            "SELECT ifnull(sum(`Inventory Transaction Quantity`),0) AS stock ,ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  `Date`>=%s and `Date`<=%s   AND `Part SKU`=%d AND `Location Key`=%d AND ( `Inventory Transaction Type` IN ('Broken','Lost') OR  (`Inventory Transaction Type` LIKE 'Audit' AND `Inventory Transaction Quantity`<0 ))    ",
+            prepare_mysql($start), prepare_mysql($end),
+            $this->part_sku, $this->location_key
         );
 
 
@@ -2004,10 +1996,12 @@ class PartLocation extends DB_Table {
 
     function get_amount_deltas($date) {
 
-        //Move', 'Order In Process', 'No Dispatched', 'Sale', 'Audit', 'In', 'Adjust', 'Broken', 'Lost', 'Not Found', 'Associate', 'Disassociate', 'Move In', 'Move Out', 'Other Out', 'Restock', 'FailSale', 'Production
+        $start=$date.' 00:00:00';
+        $end=$date.' 23:59:59';
 
         $sql = sprintf(
-            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  Date(`Date`)=%s AND `Part SKU`=%d AND `Location Key`=%d AND  `Inventory Transaction Type` ='In'   ", prepare_mysql(date('Y-m-d', strtotime($date))),
+            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Location Key`=%d AND `Inventory Transaction Type` ='In'",
+            prepare_mysql($start), prepare_mysql($end),
             $this->part_sku, $this->location_key
         );
 
@@ -2017,15 +2011,12 @@ class PartLocation extends DB_Table {
             } else {
                 $amount_in_po = 0;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $sql = sprintf(
-            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  Date(`Date`)=%s AND `Part SKU`=%d AND `Location Key`=%d AND  `Inventory Transaction Type` in ('Adjust','Restock') and  `Inventory Transaction Amount`>0  ",
-            prepare_mysql(date('Y-m-d', strtotime($date))), $this->part_sku, $this->location_key
+            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Location Key`=%d AND  `Inventory Transaction Type` in ('Adjust','Restock') and `Inventory Transaction Amount`>0  ",
+            prepare_mysql($start), prepare_mysql($end),
+            $this->part_sku, $this->location_key
         );
 
 
@@ -2035,14 +2026,11 @@ class PartLocation extends DB_Table {
             } else {
                 $amount_in_other = 0;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $sql = sprintf(
-            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  Date(`Date`)=%s AND `Part SKU`=%d AND `Location Key`=%d AND  `Inventory Transaction Type` ='Sale'   ", prepare_mysql(date('Y-m-d', strtotime($date))),
+            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Location Key`=%d AND `Inventory Transaction Type` ='Sale'",
+            prepare_mysql($start), prepare_mysql($end),
             $this->part_sku, $this->location_key
         );
 
@@ -2052,15 +2040,12 @@ class PartLocation extends DB_Table {
             } else {
                 $amount_out_sales = 0;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
-        //'Move','Order In Process','No Dispatched','Sale','Audit','In','Adjust','Broken','Lost','Not Found','Associate','Disassociate','Move In','Move Out','Other Out','Restock','FailSale','Production'
+
         $sql = sprintf(
-            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  Date(`Date`)=%s AND `Part SKU`=%d AND `Location Key`=%d AND   `Inventory Transaction Type`  in ('Adjust','Other Out','Broken','Lost') and  `Inventory Transaction Amount`<0  ",
-            prepare_mysql(date('Y-m-d', strtotime($date))), $this->part_sku, $this->location_key
+            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Location Key`=%d AND `Inventory Transaction Type` in ('Adjust','Other Out','Broken','Lost') and `Inventory Transaction Amount`<0",
+            prepare_mysql($start), prepare_mysql($end),
+            $this->part_sku, $this->location_key
         );
 
         if ($result = $this->db->query($sql)) {
@@ -2069,10 +2054,6 @@ class PartLocation extends DB_Table {
             } else {
                 $amount_out_other = 0;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         return array(
@@ -2086,13 +2067,9 @@ class PartLocation extends DB_Table {
 
     function get_ohlc($date) {
 
-        $day_before_date = date(
-            "Y-m-d", strtotime($date."-1 day", strtotime($date))
-        );
+        $day_before_date = date("Y-m-d", strtotime($date."-1 day", strtotime($date)));
 
-        list ($open, $value_open, $in_process) = $this->get_stock(
-            $day_before_date." 23:59:59"
-        );
+        list ($open, $value_open, $in_process) = $this->get_stock($day_before_date." 23:59:59");
 
         $high  = $open;
         $low   = $open;
@@ -2102,8 +2079,14 @@ class PartLocation extends DB_Table {
         $value_low   = $value_open;
         $value_close = $value_open;
 
+        $start=$date.' 00:00:00';
+        $end=$date.' 23:59:59';
+
         $sql = sprintf(
-            "SELECT `Inventory Transaction Quantity` AS delta,`Inventory Transaction Amount` AS value_delta  FROM `Inventory Transaction Fact` WHERE  Date(`Date`)=%s AND `Part SKU`=%d AND `Location Key`=%d ORDER BY `Date` ", prepare_mysql($date), $this->part_sku,
+            "SELECT `Inventory Transaction Quantity` AS delta,`Inventory Transaction Amount` AS value_delta  FROM `Inventory Transaction Fact` WHERE  `Date`>=%s and `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  ",
+            prepare_mysql($start),
+            prepare_mysql($end),
+            $this->part_sku,
             $this->location_key
         );
 
