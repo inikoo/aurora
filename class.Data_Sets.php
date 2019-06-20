@@ -175,7 +175,7 @@ class Data_Sets extends DB_Table {
         global $dns_db;
 
         if ($this->data['Data Sets Code'] == 'Images') {
-            $tables = '"Image Dimension","Image Bridge"';
+            $tables = '"Image Dimension"';
             $sql    = sprintf(
                 'SELECT count(*) AS num  FROM `Image Dimension`', $this->id
             );

@@ -813,7 +813,7 @@ class Image extends DB_Table{
 
             $this->db->exec($sql);
             $sql = sprintf(
-                "DELETE FROM `Image Bridge` WHERE `Image Key`=%d", $this->id
+                "DELETE FROM `Image Subject Bridge` WHERE `Image Subject Image Key`=%d", $this->id
             );
             $this->db->exec($sql);
             $this->deleted = true;

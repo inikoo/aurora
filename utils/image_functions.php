@@ -78,6 +78,9 @@ function create_cached_image($image_key, $width, $height ,$mode='') {
 
             if (!file_exists($image_filename)) {
 
+
+
+
                 $_image = $image->fit_to_canvas($width, $height);
 
                 if ($image->get('Image File Format') == 'png') {
