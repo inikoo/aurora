@@ -161,3 +161,4 @@ ALTER TABLE `Image Dimension` CHANGE `Image File Format` `Image File Format` ENU
 ALTER TABLE `Image Dimension` ADD `Image Path` VARCHAR(255) NULL DEFAULT NULL AFTER `Last Modify Date`;
 ALTER TABLE `Image Subject Bridge` ADD `Image Subject Metadata` JSON NULL DEFAULT NULL AFTER `Image Subject Date`;
 update `Image Subject Bridge` set `Image Subject Metadata`='{}';
+Drop table `Image Bridge`;

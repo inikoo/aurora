@@ -306,17 +306,17 @@ class Public_Product {
 
 
 
-                        $image_website = create_cached_image($row['Image Key'], 330, 330, 'fit_highest');
+                    //    $image_website = create_cached_image($row['Image Key'], 330, 330, 'fit_highest');
 
 
 
                         $image_data = array(
                             'key'           => $row['Image Key'],
-                            'src'           => $img = '/image.php?&id='.$row['Image Key'],
+                            'src'           => '/i.php?&id='.$row['Image Key'],
                             'caption'       => $row['Image Subject Image Caption'],
                             'width'         => $row['Image Width'],
                             'height'        => $row['Image Height'],
-                            'image_website' => $image_website
+                            'image_website' => '/i.php?&id='.$row['Image Key'].'&s=330x330',
                         );
                     } else {
                         $image_data = array(

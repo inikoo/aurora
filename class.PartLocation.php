@@ -2126,10 +2126,6 @@ class PartLocation extends DB_Table {
                     $value_low = $value_close;
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 

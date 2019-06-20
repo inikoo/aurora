@@ -5402,12 +5402,12 @@ class Page extends DB_Table {
         $this->db->exec($sql);
         $images = array();
         $sql    = sprintf(
-            "SELECT `Image Key` FROM `Image Bridge` WHERE `Subject Type`='Page' AND `Subject Key`=%d", $this->id
+            "SELECT `Image Subject Image Key` FROM  `Image Subject Bridge` WHERE `Image Subject Object`='Webpage' AND `Image Subject Object Key`=%d", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                $images[] = $row['Image Key'];
+                $images[] = $row['Image Subject Image Key'];
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -5417,7 +5417,7 @@ class Page extends DB_Table {
 
 
         $sql = sprintf(
-            "DELETE FROM  `Image Bridge` WHERE `Subject Type`='Page' AND `Subject Key`=%d", $this->id
+            "DELETE FROM  `Image Subject Bridge` WHERE `Image Subject Object`='Webpage' AND `Image Subject Object Key`=%d", $this->id
         );
 
         $this->db->exec($sql);
@@ -5425,9 +5425,7 @@ class Page extends DB_Table {
         foreach ($images as $image_key) {
             $image = get_object('Image',$image_key);
             $image->delete();
-            //if (!$image->deleted) {
-            //    $image->update_other_size_data();
-            // }
+
 
 
         }
