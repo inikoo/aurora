@@ -16,7 +16,7 @@ include_once 'class.DB_Table.php';
 class Customer_Poll_Query extends DB_Table {
 
 
-    function Customer_Poll_Query($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
         global $db;
         $this->db = $db;
