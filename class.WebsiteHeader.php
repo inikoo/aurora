@@ -19,7 +19,7 @@ class WebsiteHeader extends DB_Table {
 
     use ImageSubject;
 
-    function WebsiteHeader($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
         global $db;
         $this->db = $db;

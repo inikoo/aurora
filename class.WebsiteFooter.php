@@ -18,7 +18,7 @@ class WebsiteFooter extends DB_Table {
 
     use ImageSubject;
 
-    function WebsiteFooter($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
         global $db;
         $this->db = $db;
