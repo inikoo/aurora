@@ -165,7 +165,7 @@
         </tr>
         <tr class="{if $cpnp==''}hide{/if}">
             <td title="{if empty($labels._product_cpnp)}{t}Cosmetic Products Notification Portal{/t}{else}{$labels._product_cpnp}{/if} - Europa.eu">CPNP</td>
-            <td>{$cpnp}x2</td>
+            <td>{$cpnp}</td>
         </tr>
         <tr class="{if $barcode==''}hide{/if}">
             <td>{if empty($labels._product_barcode)}{t}Barcode{/t}{else}{$labels._product_barcode}{/if}</td>
