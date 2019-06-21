@@ -32,7 +32,7 @@
                         </tr>
                     </table>
 
-                    <span class=" button discreet timeseries_operations_daily" onclick="create_sales_history('{$object->id}')">
+                    <span class="hide button discreet timeseries_operations_daily" onclick="create_sales_history('{$object->id}')">
                         <span class="label_create_sales_history_daily hide"><i class="fa fa-plus padding_right_5" aria-hidden="true"></i> <span>{t}Create stock history{/t}</span></span>
                         <span class="label_recreate_sales_history_daily "><i class="fa fa-repeat padding_right_5"  aria-hidden="true"></i> <span>{t}Recreate stock history{/t}</span></span>
                    </span>
@@ -66,7 +66,7 @@
                     </tr>
                 </table>
 
-                <span class=" button discreet precomputed_sales_operations_X_To_Day" onclick="calculate_sales('X_To_Day','part','{$object->id}')">
+                <span class="hide button discreet precomputed_sales_operations_X_To_Day" onclick="calculate_sales('X_To_Day','part','{$object->id}')">
                         <span class="label_calculate_sales_X_To_Day {if $object->get('Acc To Day Updated')!=''}hide{/if}"><i class="fa fa-calculator padding_right_5" aria-hidden="true"></i> <span>{t}Calculate values{/t}</span></span>
                         <span class="label_recalculate_sales_X_To_Day {if $object->get('Acc To Day Updated')==''}hide{/if}"><i class="fa fa-repeat padding_right_5" aria-hidden="true"></i> <span>{t}Recalculate values{/t}</span></span>
                 </span>
@@ -87,7 +87,7 @@
                     </tr>
                 </table>
 
-                <span class=" button discreet precomputed_sales_operations_Ongoing_Intervals" onclick="calculate_sales('Ongoing_Intervals','part','{$object->id}')">
+                <span class="hide button discreet precomputed_sales_operations_Ongoing_Intervals" onclick="calculate_sales('Ongoing_Intervals','part','{$object->id}')">
                         <span class="label_calculate_sales_Ongoing_Intervals {if $object->get('Acc Ongoing Intervals Updated')!=''}hide{/if}"><i class="fa fa-calculator padding_right_5" aria-hidden="true"></i> <span>{t}Calculate values{/t}</span></span>
                         <span class="label_recalculate_sales_Ongoing_Intervals {if $object->get('Acc Ongoing Intervals Updated')==''}hide{/if}"><i class="fa fa-repeat padding_right_5" aria-hidden="true"></i> <span>{t}Recalculate values{/t}</span></span>
                 </span>
@@ -107,7 +107,7 @@
                     </tr>
                 </table>
 
-                <span class=" button discreet precomputed_sales_operations_Previous_Intervals" onclick="calculate_sales('Previous_Intervals','part','{$object->id}')">
+                <span class="hide button discreet precomputed_sales_operations_Previous_Intervals" onclick="calculate_sales('Previous_Intervals','part','{$object->id}')">
                         <span class="label_calculate_sales_Previous_Intervals {if $object->get('Acc Previous Intervals Updated')!=''}hide{/if}"><i class="fa fa-calculator padding_right_5" aria-hidden="true"></i> <span>{t}Calculate values{/t}</span></span>
                         <span class="label_recalculate_sales_Previous_Intervals {if $object->get('Acc Previous Intervals Updated')==''}hide{/if}"><i class="fa fa-repeat padding_right_5" aria-hidden="true"></i> <span>{t}Recalculate values{/t}</span></span>
                 </span>

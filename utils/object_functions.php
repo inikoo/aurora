@@ -513,6 +513,15 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Order_Basket_Purge.php';
             $object = new Order_Basket_Purge('id', $key);
             break;
+        case 'data_set':
+        case 'data_sets':
+            include_once('class.Data_Sets.php');
+            $object = new Data_Sets('id', $key);
+            break;
+        case 'data_sets-code':
+            include_once('class.Data_Sets.php');
+            $object = new Data_Sets('code', $key);
+            break;
         default:
             exit('need to complete E1: x>'.strtolower($object_name).'<<++>>'.$load_other_data."<\n");
             break;

@@ -357,8 +357,7 @@ class Staff extends DB_Table {
             if ($options == 'force') {
 
                 $sql = sprintf(
-                    "DELETE FROM `Timesheet Record Dimension`  WHERE `Timesheet Record Type` IN ('WorkingHoursMark','OvertimeMark','BreakMark') AND `Timesheet Record Timesheet Key`=%d  ",
-                    $timesheet->id
+                    "DELETE FROM `Timesheet Record Dimension`  WHERE `Timesheet Record Type` IN ('WorkingHoursMark','OvertimeMark','BreakMark') AND `Timesheet Record Timesheet Key`=%d  ", $timesheet->id
                 );
 
                 $this->db->exec($sql);
@@ -484,9 +483,8 @@ class Staff extends DB_Table {
                             $week_hours_day_breakdown = json_decode(
                                 $this->data['Staff Working Hours Per Week Metadata'], true
                             );
-                            $average_year_amount      =
-                                ($salary_data['data']['amount_weekdays'] * $week_hours_day_breakdown['Weekdays'] + $salary_data['data']['amount_saturday'] * $week_hours_day_breakdown['Saturday']
-                                    + $salary_data['data']['amount_sunday'] * $week_hours_day_breakdown['Sunday']) * 52.1429;
+                            $average_year_amount      = ($salary_data['data']['amount_weekdays'] * $week_hours_day_breakdown['Weekdays'] + $salary_data['data']['amount_saturday'] * $week_hours_day_breakdown['Saturday'] + $salary_data['data']['amount_sunday']
+                                    * $week_hours_day_breakdown['Sunday']) * 52.1429;
 
                         }
 
@@ -516,9 +514,8 @@ class Staff extends DB_Table {
                             $week_hours_day_breakdown = json_decode(
                                 $this->data['Staff Working Hours Per Week Metadata'], true
                             );
-                            $average_year_amount      =
-                                ($salary_data['data']['amount_weekdays'] * $week_hours_day_breakdown['Weekdays'] + $salary_data['data']['amount_saturday'] * $week_hours_day_breakdown['Saturday']
-                                    + $salary_data['data']['amount_sunday'] * $week_hours_day_breakdown['Sunday']) * 52.1429;
+                            $average_year_amount      = ($salary_data['data']['amount_weekdays'] * $week_hours_day_breakdown['Weekdays'] + $salary_data['data']['amount_saturday'] * $week_hours_day_breakdown['Saturday'] + $salary_data['data']['amount_sunday']
+                                    * $week_hours_day_breakdown['Sunday']) * 52.1429;
 
                         }
 
@@ -626,9 +623,8 @@ class Staff extends DB_Table {
 
                 //  print_r($working_hours);
 
-                if ((isset($working_hours['data'][1]) and isset($working_hours['data'][2]) and isset($working_hours['data'][3]) and isset($working_hours['data'][4])
-                        and isset($working_hours['data'][5])) and ($working_hours['data'][1] == $working_hours['data'][2] and $working_hours['data'][1] == $working_hours['data'][3]
-                        and $working_hours['data'][1] == $working_hours['data'][4] and $working_hours['data'][1] == $working_hours['data'][5])
+                if ((isset($working_hours['data'][1]) and isset($working_hours['data'][2]) and isset($working_hours['data'][3]) and isset($working_hours['data'][4]) and isset($working_hours['data'][5])) and ($working_hours['data'][1] == $working_hours['data'][2]
+                        and $working_hours['data'][1] == $working_hours['data'][3] and $working_hours['data'][1] == $working_hours['data'][4] and $working_hours['data'][1] == $working_hours['data'][5])
 
                 ) {
 
@@ -1011,7 +1007,7 @@ class Staff extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $this->system_user = get_object('User',$row['User Key']);
+                $this->system_user = get_object('User', $row['User Key']);
 
                 return $this->system_user;
             } else {
@@ -1043,8 +1039,7 @@ class Staff extends DB_Table {
 
         $supervisors = '';
         $sql         = sprintf(
-            'SELECT GROUP_CONCAT(`Staff Alias`  ORDER BY `Staff Alias` SEPARATOR ", ") AS supervisors   FROM  `Staff Supervisor Bridge` B LEFT JOIN `Staff Dimension` S ON (B.`Supervisor Key`=S.`Staff Key`)  WHERE  B.`Staff Key`=%d ',
-            $this->id
+            'SELECT GROUP_CONCAT(`Staff Alias`  ORDER BY `Staff Alias` SEPARATOR ", ") AS supervisors   FROM  `Staff Supervisor Bridge` B LEFT JOIN `Staff Dimension` S ON (B.`Supervisor Key`=S.`Staff Key`)  WHERE  B.`Staff Key`=%d ', $this->id
         );
         if ($row = $this->db->query($sql)->fetch()) {
 
@@ -1094,6 +1089,7 @@ class Staff extends DB_Table {
 
         $data['User Parent Key'] = $this->id;
         $data['User Alias']      = $this->get('Name');
+        $data['editor']          = $this->editor;
         $user                    = new User('find', $data, 'create');
 
 
@@ -1638,7 +1634,7 @@ class Staff extends DB_Table {
 
     }
 
-    function update_is_working($value, $options='') {
+    function update_is_working($value, $options = '') {
 
         global $account;
         include_once 'class.Timesheet.php';
@@ -1654,8 +1650,7 @@ class Staff extends DB_Table {
                 'Y-m-d', strtotime($this->get('Staff Valid To').' + 1 day')
             );
             $sql         = sprintf(
-                "DELETE FROM `Timesheet Record Dimension` WHERE `Timesheet Record Staff Key`=%d AND `Timesheet Record Date`>=%s AND `Timesheet Record Type`!='ClockingRecord'  ", $this->id,
-                prepare_mysql($delete_from)
+                "DELETE FROM `Timesheet Record Dimension` WHERE `Timesheet Record Staff Key`=%d AND `Timesheet Record Date`>=%s AND `Timesheet Record Type`!='ClockingRecord'  ", $this->id, prepare_mysql($delete_from)
             );
             $this->db->exec($sql);
 
@@ -1725,8 +1720,7 @@ class Staff extends DB_Table {
                     if ($row = $result->fetch()) {
                         $this->error = true;
                         $this->msg   = sprintf(
-                            _('%s has same %s'), '<span class="link" onClick="change_view(\'employee/'.$row['Staff Key'].'\')">'.$row['Staff Alias'].'</span>',
-                            $this->get_field_label('Staff Official ID')
+                            _('%s has same %s'), '<span class="link" onClick="change_view(\'employee/'.$row['Staff Key'].'\')">'.$row['Staff Alias'].'</span>', $this->get_field_label('Staff Official ID')
                         );
 
                         return;
@@ -2007,8 +2001,7 @@ class Staff extends DB_Table {
         foreach (preg_split('/,/', $values) as $selected_supervisor) {
             if (is_numeric($selected_supervisor) and array_key_exists(
                     $selected_supervisor, $supervisors
-                )
-            ) {
+                )) {
                 $supervisors[$selected_supervisor] = true;
             }
         }
@@ -2108,11 +2101,9 @@ class Staff extends DB_Table {
 
 
         $sql = sprintf(
-            "INSERT INTO `Staff Deleted Dimension`  (`Staff Deleted Key`,`Staff Deleted Type`,`Staff Deleted ID`,`Staff Deleted Alias`,`Staff Deleted Name`,`Staff Deleted Date`,`Staff Deleted Metadata`) VALUES (%d,%s,%s,%s,%s,%s,%s) ",
-            $this->id, prepare_mysql(
-                ($this->get('Staff Type') == 'Contractor' ? 'Contractor' : 'Employee')
-            ), prepare_mysql($this->get('Staff ID'), true), prepare_mysql($this->get('Staff Alias'), true), prepare_mysql($this->get('Staff Name'), true), prepare_mysql(gmdate('Y-m-d H:i:s')),
-            prepare_mysql(gzcompress($metadata, 9))
+            "INSERT INTO `Staff Deleted Dimension`  (`Staff Deleted Key`,`Staff Deleted Type`,`Staff Deleted ID`,`Staff Deleted Alias`,`Staff Deleted Name`,`Staff Deleted Date`,`Staff Deleted Metadata`) VALUES (%d,%s,%s,%s,%s,%s,%s) ", $this->id, prepare_mysql(
+            ($this->get('Staff Type') == 'Contractor' ? 'Contractor' : 'Employee')
+        ), prepare_mysql($this->get('Staff ID'), true), prepare_mysql($this->get('Staff Alias'), true), prepare_mysql($this->get('Staff Name'), true), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gzcompress($metadata, 9))
 
         );
 
@@ -2178,7 +2169,7 @@ class Staff extends DB_Table {
                     "DELETE FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d", $row['Image Subject Key']
                 );
                 $this->db->exec($sql);
-                $image = get_object('Image',$row['Image Subject Image Key']);
+                $image = get_object('Image', $row['Image Subject Image Key']);
                 $image->delete();
             }
         } else {

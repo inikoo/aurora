@@ -1281,7 +1281,7 @@ trait OrderDiscountOperations {
 
 
                         if (isset($this->allowance[$allowance_index][$product_pid])) {
-                            $this->allowance[$allowance_index][$product_pid][$allowance_index] += $get_free_allowance;
+                            $this->allowance[$allowance_index][$product_pid]['Get Free'] += $get_free_allowance;
                         } else {
                             $this->allowance[$allowance_index][$product_pid] = array(
                                 'Product ID'           => $product->id,
