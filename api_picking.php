@@ -539,7 +539,7 @@ switch ($_REQUEST['action']) {
         break;
 
 
-    case get_pending_deliveries_stats:
+    case 'get_pending_deliveries_stats':
 
 
         break;
