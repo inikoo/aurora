@@ -69,15 +69,12 @@ class User extends DB_Table {
             }
         }
 
-        $create = false;
-        $update = false;
-
         if (preg_match('/create/i', $options)) {
-            $create = 'create';
+            $create = true;
+        }else{
+            $create = false;
         }
-        if (preg_match('/update/i', $options)) {
-            $update = 'update';
-        }
+
 
 
         $data = $this->base_data();
@@ -121,7 +118,7 @@ class User extends DB_Table {
 
 
     function get_data($key, $data, $data2 = 'Staff') {
-        global $_group;
+
         if ($key == 'handle') {
             $sql = sprintf(
                 "SELECT * FROM  `User Dimension` WHERE `User Handle`=%s AND `User Type`=%s", prepare_mysql($data), prepare_mysql($data2)
@@ -207,6 +204,7 @@ class User extends DB_Table {
         }
 
         $this->editor = $data['editor'];
+        unset( $data['editor']);
 
         if ($base_data['User Created'] == '') {
             $base_data['User Created'] = gmdate("Y-m-d H:i:s");
