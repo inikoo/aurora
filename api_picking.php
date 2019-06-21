@@ -539,7 +539,7 @@ switch ($_REQUEST['action']) {
         break;
 
 
-    case get_pending_deliveries_stats:
+    case 'get_pending_deliveries_stats':
 
 
         break;
@@ -551,6 +551,26 @@ switch ($_REQUEST['action']) {
         exit;
         break;
 
+
+    case 'get_staff':
+
+        $staff_data=array();
+
+        $sql="select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Main Image Key`,(select group_concat(`Role Code` SEPARATOR ',') from `Staff Role Bridge` SRB where SRB.`Staff Key`=S.`Staff Key`  ) as `Staff Roles`      from `Staff Dimension` S where  `Staff Type`='Employee' and `Staff Currently Working`='Yes'   ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
+            $staff_data[]=$row;
+        }
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $staff_data
+        );
+        echo json_encode($response);
+        exit;
+        break;
 
     default:
 

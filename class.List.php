@@ -15,7 +15,7 @@ include_once 'class.DB_Table.php';
 class SubjectList extends DB_Table {
 
 
-    function SubjectList($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
 
         global $db;
