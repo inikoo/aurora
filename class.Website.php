@@ -852,15 +852,20 @@ class Website extends DB_Table {
 
             if (preg_match('/id=(\d+)/', $this->settings['favicon'], $matches)) {
 
-                $favicon_website = create_cached_image($matches[1], 32, 32, 'fit_highest');
-
+                $favicon_website = 'wi.php?id='.$matches[1].'&s='.get_image_size($matches[1], 32, 32, 'fit_highest');
                 $this->fast_update(array('Website Settings' => json_encode(array_merge($this->settings, array('favicon_website' => $favicon_website)))));
                 $this->settings = json_decode($this->data['Website Settings'], true);
-
-
             }
+        }
 
+        if (!empty($this->settings['favicon'])) {
 
+            if (preg_match('/id=(\d+)/', $this->settings['favicon'], $matches)) {
+
+                $favicon_website = 'wi.php?id='.$matches[1].'&s='.get_image_size($matches[1], 32, 32, 'fit_highest');
+                $this->fast_update(array('Website Settings' => json_encode(array_merge($this->settings, array('favicon_website' => $favicon_website)))));
+                $this->settings = json_decode($this->data['Website Settings'], true);
+            }
         }
 
         $this->clean_cache();

@@ -28,7 +28,6 @@ if (!empty($_REQUEST['s'])) {
         $size_r = '';
     }
 
-
 } else {
     $size_r = '';
 }

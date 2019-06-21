@@ -68,7 +68,10 @@ $smarty->assign('content', $webpage->get('Content Data'));
 
 $settings=$website->settings;
 
+
 $smarty->assign('settings',$settings);
+
+
 
 
 
