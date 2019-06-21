@@ -384,7 +384,7 @@
 
     <div class="order sent_email_data {if $email_campaign->get('State Index')!=100}hide{/if}">
         <div>
-            <label>{t}Sent{/t} <span onclick="create_second_wave_newsletter()" class="button margin_left_10 " style="border:1px solid #ccc;padding:3px 5px"><i class="fas fa-paper-plane discreet_on_hover"></i> {t}2nd wave{/t}</label>
+            <label>{t}Sent{/t} <span onclick="create_second_wave_newsletter()" class="button margin_left_10 hide" style="border:1px solid #ccc;padding:3px 5px"><i class="fas fa-paper-plane discreet_on_hover"></i> {t}2nd wave{/t}</label>
             <div><span class="Email_Campaign_Sent">{$email_campaign->get('Sent')}</span></div>
         </div>
         <div>
