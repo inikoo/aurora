@@ -515,6 +515,8 @@ class EmailCampaign extends DB_Table {
 
                     $metadata = $this->get('Metadata');
 
+                 
+
 
                     if ($metadata['Type'] == 'Inactive') {
                         $sql = sprintf(

@@ -32,7 +32,7 @@
                         </tr>
                     </table>
 
-                    <span class=" button discreet timeseries_operations_{$time_series['Timeseries Frequency']}"
+                    <span class="hide button discreet timeseries_operations_{$time_series['Timeseries Frequency']}"
                           onclick="create_sales_history('{$time_series['Timeseries Frequency']}','{$time_series['parent']}','{$time_series['parent_key']}',
                                   {
                                   'Timeseries Type': '{$time_series['Timeseries Type']}',
@@ -79,7 +79,7 @@
                     </tr>
                 </table>
 
-                <span class=" button discreet precomputed_sales_operations_X_To_Day" onclick="calculate_sales('X_To_Day','{$time_series['parent']}','{$time_series['parent_key']}')">
+                <span class="hide button discreet precomputed_sales_operations_X_To_Day" onclick="calculate_sales('X_To_Day','{$time_series['parent']}','{$time_series['parent_key']}')">
                         <span class="label_calculate_sales_X_To_Day {if $object->get('Acc To Day Updated')!=''}hide{/if}"><i class="fa fa-calculator padding_right_5" aria-hidden="true"></i> <span>{t}Calculate values{/t}</span></span>
                         <span class="label_recalculate_sales_X_To_Day {if $object->get('Acc To Day Updated')==''}hide{/if}"><i class="fa fa-repeat padding_right_5" aria-hidden="true"></i> <span>{t}Recalculate values{/t}</span></span>
                 </span>
@@ -100,7 +100,7 @@
                     </tr>
                 </table>
 
-                <span class=" button discreet precomputed_sales_operations_Ongoing_Intervals" onclick="calculate_sales('Ongoing_Intervals','{$time_series['parent']}','{$time_series['parent_key']}')">
+                <span class="hide button discreet precomputed_sales_operations_Ongoing_Intervals" onclick="calculate_sales('Ongoing_Intervals','{$time_series['parent']}','{$time_series['parent_key']}')">
                         <span class="label_calculate_sales_Ongoing_Intervals {if $object->get('Acc Ongoing Intervals Updated')!=''}hide{/if}"><i class="fa fa-calculator padding_right_5" aria-hidden="true"></i> <span>{t}Calculate values{/t}</span></span>
                         <span class="label_recalculate_sales_Ongoing_Intervals {if $object->get('Acc Ongoing Intervals Updated')==''}hide{/if}"><i class="fa fa-repeat padding_right_5" aria-hidden="true"></i> <span>{t}Recalculate values{/t}</span></span>
                 </span>
@@ -120,7 +120,7 @@
                     </tr>
                 </table>
 
-                <span class=" button discreet precomputed_sales_operations_Previous_Intervals" onclick="calculate_sales('Previous_Intervals','{$time_series['parent']}','{$time_series['parent_key']}')">
+                <span class="hide button discreet precomputed_sales_operations_Previous_Intervals" onclick="calculate_sales('Previous_Intervals','{$time_series['parent']}','{$time_series['parent_key']}')">
                         <span class="label_calculate_sales_Previous_Intervals {if $object->get('Acc Previous Intervals Updated')!=''}hide{/if}"><i class="fa fa-calculator padding_right_5" aria-hidden="true"></i> <span>{t}Calculate values{/t}</span></span>
                         <span class="label_recalculate_sales_Previous_Intervals {if $object->get('Acc Previous Intervals Updated')==''}hide{/if}"><i class="fa fa-repeat padding_right_5" aria-hidden="true"></i> <span>{t}Recalculate values{/t}</span></span>
                 </span>
