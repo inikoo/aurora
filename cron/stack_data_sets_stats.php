@@ -36,6 +36,7 @@ $editor = array(
 $lap_time0 = date('U');
 $lap_time1 = date('U');
 
+$contador=0;
 
 
 $sql = sprintf(
@@ -87,7 +88,7 @@ if ($result = $db->query($sql)) {
     print_r($error_info = $db->errorInfo());
     exit;
 }
-if ($total > 0) {
+if ($contador > 0) {
     printf("%s:  %.2f min Date sets stats\n", gmdate('Y-m-d H:i:s'), ($lap_time1 - $lap_time0) / 60);
 }
 
