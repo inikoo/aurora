@@ -49,14 +49,13 @@ function images($_data, $db, $user) {
     $rtext_label = 'image';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
     //print_r($_data);
 
 
-  //  print $sql;
+    //  print $sql;
 
     $adata = array();
 
@@ -67,14 +66,15 @@ function images($_data, $db, $user) {
         foreach ($result as $data) {
 
 
+
+
             if ($data['Image Subject Is Public'] == 'Yes') {
-                $visibility = sprintf(
-                    '<i title="%s" class="fa fa-eye"></i>', _('Public')
-                );
+                $visibility   = sprintf('<i title="%s" class="fa fa-eye"></i>', _('Public'));
+                $image_server = 'i.php';
             } else {
-                $visibility = sprintf(
-                    '<i title="%s" class="fa fa-eye-slash"></i>', _('Private')
-                );
+                $visibility   = sprintf('<i title="%s" class="fa fa-eye-slash"></i>', _('Private'));
+                $image_server = 'image.php';
+
             }
 
 
@@ -84,89 +84,85 @@ function images($_data, $db, $user) {
 
 
                 $operations .= sprintf(
-                    '<div style="margin-bottom:10px"><span class="button" id="set_as_principal_image_button_%d" onClick="set_as_principal(%d)"><i class="fa fa-trophy"></i> %s</span></div>',
-                    $data['Image Subject Key'], $data['Image Subject Key'], _('Set as first')
+                    '<div style="margin-bottom:10px"><span class="button" id="set_as_principal_image_button_%d" onClick="set_as_principal(%d)"><i class="fa fa-trophy"></i> %s</span></div>', $data['Image Subject Key'], $data['Image Subject Key'], _('Set as first')
                 );
 
             }
 
 
-          //  $operations .= sprintf(
-          //      '<span class="button" id="edit_image_%d" onClick="change_view(\'image/%d\')"><i class="fa fa-pencil"></i> %s</span><br>', $data['Image Subject Key'], $data['Image Subject Key'], _('Edit')
-          //  );
+            //  $operations .= sprintf(
+            //      '<span class="button" id="edit_image_%d" onClick="change_view(\'image/%d\')"><i class="fa fa-pencil"></i> %s</span><br>', $data['Image Subject Key'], $data['Image Subject Key'], _('Edit')
+            //  );
 
             $operations .= sprintf(
                 '<span class="button" id="delete_image_button_%d" onClick="delete_image(%d)"><i class="fa fa-trash"></i> %s</span>', $data['Image Subject Key'], $data['Image Subject Key'], _('Delete')
             );
 
-            switch ($data['Image Subject Object Image Scope']){
+            switch ($data['Image Subject Object Image Scope']) {
                 case 'SKO':
 
-                    $object_image_scope=_('SKO image');
+                    $object_image_scope = _('SKO image');
                     break;
 
                 case 'Default':
 
-                    switch ($data['Image Subject Object']){
+                    switch ($data['Image Subject Object']) {
                         case 'Part':
                         case 'Product':
 
-                        $object_image_scope=_('Marketing');
+                            $object_image_scope = _('Marketing');
                             break;
 
 
                         default:
-                            $object_image_scope=$data['Image Subject Object Image Scope'];
+                            $object_image_scope = $data['Image Subject Object Image Scope'];
 
                     }
 
 
                     break;
                 default:
-                    $object_image_scope=$data['Image Subject Object Image Scope'];
+                    $object_image_scope = $data['Image Subject Object Image Scope'];
 
             }
 
 
-
-            if($data['Image Subject Object']=='Part'){
-                $object_image_scope=sprintf('<span id="edit_image_scope_%d" class="button" onclick="edit_image_scope(%d)" >%s</span>', $data['Image Subject Key'], $data['Image Subject Key'],$object_image_scope);
+            if ($data['Image Subject Object'] == 'Part') {
+                $object_image_scope = sprintf('<span id="edit_image_scope_%d" class="button" onclick="edit_image_scope(%d)" >%s</span>', $data['Image Subject Key'], $data['Image Subject Key'], $object_image_scope);
 
             }
 
 
-
-            if($data['Image Subject Image Caption']!=''){
-                $caption='<span class="caption">'.$data['Image Subject Image Caption'].'</span>';
-            }else{
-                $caption='<i class="fa fa-plus" aria-hidden="true"></i><span class="caption"></span>';
+            if ($data['Image Subject Image Caption'] != '') {
+                $caption = '<span class="caption">'.$data['Image Subject Image Caption'].'</span>';
+            } else {
+                $caption = '<i class="fa fa-plus" aria-hidden="true"></i><span class="caption"></span>';
             }
 
 
-            $caption=sprintf('<span id="edit_image_caption_%d" class="button" onclick="edit_image_caption(%d)" >%s</span>', $data['Image Subject Key'], $data['Image Subject Key'],$caption);
+            $caption = sprintf('<span id="edit_image_caption_%d" class="button" onclick="edit_image_caption(%d)" >%s</span>', $data['Image Subject Key'], $data['Image Subject Key'], $caption);
 
 
             $adata[] = array(
-                'id'          => (integer)$data['Image Subject Key'],
-                'image'       => sprintf(
-                    '<div class="tint"><img style="max-width:100px;height-width:50px" src="/image.php?id=%d&s=100x100" title="%s" /></div>', $data['Image Key'], $data['Image Filename']
+                'id'    => (integer)$data['Image Subject Key'],
+                'image' => sprintf(
+                    '<div class="tint"><img style="max-width:100px;height-width:50px" src="/%s?id=%d&s=100x100" title="%s" /></div>', $image_server, $data['Image Key'], $data['Image Filename']
                 ),
 
-                'preview'       => sprintf(
-                    '<a href="/image.php?id=%d&s=700x700" data-type="image" data-fancybox="group" data-caption="%s">
-                    <img  src="/image.php?id=%d&s=50x50"  style="max-width:100px;height-width:50px"  />
-                 </a>',
-                    $data['Image Key'],   $data['Image Subject Image Caption'],$data['Image Key']
+                'preview' => sprintf(
+                    '<a href="/%s?id=%d&s=700x700" data-type="image" data-fancybox="group" data-caption="%s">
+                    <img  src="/%s?id=%d&s=50x50"  style="max-width:100px;height-width:50px"  />
+                 </a>', $image_server, $data['Image Key'], $data['Image Subject Image Caption'], $image_server, $data['Image Key']
                 ),
 
-                'filename'    => $data['Image Filename'],
-                'caption'     => $caption,
-                'size'        => file_size($data['Image File Size']),
-                'dimensions'  => $data['Image Width'].'x'.$data['Image Height'],
-                'operations'  => $operations,
-                'visibility'  => $visibility,
-                'image_order' => $ordinal_formatter->format($data['Image Subject Order']),
-                 'object_image_scope'  => $object_image_scope
+                'filename'           => $data['Image Filename'],
+                'caption'            => $caption,
+                'size'               => file_size($data['Image File Size']),
+                'dimensions'         => $data['Image Width'].'x'.$data['Image Height'],
+                'operations'         => $operations,
+                'visibility'         => $visibility,
+                'image_order'        => $ordinal_formatter->format($data['Image Subject Order']),
+                'object_image_scope' => $object_image_scope
                 //'type'=>$type,
                 //'file_type'=>$file_type,
                 //'file'=>sprintf('<a href="/attachment.php?id=%d" download><i class="fa fa-download"></i></a>  <a href="/attachment.php?id=%d" >%s</a>' , $data['Image Subject Key'], $data['Image Subject Key'], $data['Image File Original Name']),

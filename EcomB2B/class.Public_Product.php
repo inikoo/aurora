@@ -330,14 +330,14 @@ class Public_Product {
                     if ($row = $result->fetch()) {
 
 
+                        $image_website ='wi.php?id='.$row['Image Key'].'&s='.get_image_size($row['Image Key'], 330, 330, 'fit_highest');
 
-                        $image_website = create_cached_image($row['Image Key'], 330, 330, 'fit_highest');
 
 
 
                         $image_data = array(
                             'key'           => $row['Image Key'],
-                            'src'           => $img = '/image.php?&id='.$row['Image Key'],
+                            'src'           => $img = '/wi.php?&id='.$row['Image Key'],
                             'caption'       => $row['Image Subject Image Caption'],
                             'width'         => $row['Image Width'],
                             'height'        => $row['Image Height'],
@@ -372,7 +372,7 @@ class Public_Product {
                 $image_key = $this->data['Product Main Image Key'];
 
                 if ($image_key) {
-                    $img = '/image.php?s=320x280&id='.$image_key;
+                    $img = '/wi.php?s=320x280&id='.$image_key;
 
 
                 } else {
@@ -973,8 +973,7 @@ class Public_Product {
 
     function load_webpage() {
 
-        include_once 'class.Public_Webpage.php';
-        $this->webpage = new Public_Webpage('scope', 'Product', $this->id);
+        $this->webpage = get_object('public_webpage-scope_product',$this->id);
     }
 
     function get_attachments() {
@@ -1072,12 +1071,12 @@ class Public_Product {
                    // $image_website = create_cached_image($row['Image Key'], '', 50, 'height');
 
                     $gallery[] = array(
-                        'src'           => 'image.php?id='.$row['Image Key'],
+                        'src'           => 'wi.php?id='.$row['Image Key'],
                         'caption'       => $row['Image Subject Image Caption'],
                         'key'           => $row['Image Key'],
                         'width'         => $row['Image Width'],
                         'height'        => $row['Image Height'],
-                        'image_website' => 'image.php?id='.$row['Image Key'],
+                        'image_website' => 'wi.php?id='.$row['Image Key'],
 
                     );
                 }
@@ -1113,10 +1112,13 @@ class Public_Product {
 
                 if ($row['Image Key']) {
 
-                    $image_website = create_cached_image($row['Image Key'], '', 50, 'height');
+
+                    $image_website ='wi.php?id='.$row['Image Key'].'&s='.get_image_size($row['Image Key'], '', 50, 'height');
+
+
 
                     $gallery[] = array(
-                        'src'           => 'image.php?id='.$row['Image Key'],
+                        'src'           => 'wi.php?id='.$row['Image Key'],
                         'caption'       => $row['Image Subject Image Caption'],
                         'key'           => $row['Image Key'],
                         'width'         => $row['Image Width'],
@@ -1225,9 +1227,9 @@ class Public_Product {
                     $images_slideshow[] = array(
                         'subject_order'         => $subject_order,
                         'name'                  => $row['Image Filename'],
-                        'small_url'             => 'image.php?id='.$row['Image Key'].'&s=320x280',
-                        'thumbnail_url'         => 'image.php?id='.$row['Image Key'].'&s=25x20',
-                        'normal_url'            => 'image.php?id='.$row['Image Key'],
+                        'small_url'             => 'wi.php?id='.$row['Image Key'].'&s=320x280',
+                        'thumbnail_url'         => 'wi.php?id='.$row['Image Key'].'&s=25x20',
+                        'normal_url'            => 'wi.php?id='.$row['Image Key'],
                         'filename'              => $row['Image Filename'],
                         'ratio'                 => $ratio,
                         'caption'               => $row['Image Subject Image Caption'],

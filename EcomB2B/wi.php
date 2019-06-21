@@ -2,8 +2,8 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 22 January 2018 at 14:23:19 GMT+8, Kuala Lumpur, Malaysia
- Copyright (c) 2018, Inikoo
+ Created: 20-06-2019 23:08:34 MYT, Kuala Lumpur, Malaysia
+ Copyright (c) 2019, Inikoo
 
  Version 3
 
@@ -105,23 +105,8 @@ if ($row = $stmt->fetch()) {
 
     $image_mime = $row['Image MIME Type'];
 
-
-
-    $image_path=preg_replace('/\/\//','/',$image_path);
-
     $cached_image_path = preg_replace('/^img\/public_db/', 'img/public_cache', $image_path);
     $cached_image_path = preg_replace('/\./', '_'.$size_r.'.', $cached_image_path);
-
-
-    if (!is_dir('img/public_cache/'.$row['Image File Checksum'][0])) {
-        mkdir('img/public_cache/'.$row['Image File Checksum'][0]);
-    }
-
-
-    if (!is_dir('img/public_cache/'.$row['Image File Checksum'][0].'/'.$row['Image File Checksum'][1])) {
-        mkdir('img/public_cache/'.$row['Image File Checksum'][0].'/'.$row['Image File Checksum'][1]);
-    }
-
 
     if ($size_r != '') {
         list($w, $h) = preg_split('/x/', $size_r);
@@ -134,6 +119,14 @@ if ($row = $stmt->fetch()) {
 
 
 
+        if (!is_dir('img/public_cache/'.$row['Image File Checksum'][0])) {
+            mkdir('img/public_cache/'.$row['Image File Checksum'][0]);
+        }
+
+
+        if (!is_dir('img/public_cache/'.$row['Image File Checksum'][0].'/'.$row['Image File Checksum'][1])) {
+            mkdir('img/public_cache/'.$row['Image File Checksum'][0].'/'.$row['Image File Checksum'][1]);
+        }
 
 
         $image->save($cached_image_path);
@@ -151,9 +144,6 @@ if ($row = $stmt->fetch()) {
             usleep(100000);
         }
     } else {
-
-
-
         copy($image_path, $cached_image_path);
     }
 

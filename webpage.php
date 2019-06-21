@@ -12,9 +12,7 @@
 include_once 'common.php';
 include_once 'utils/object_functions.php';
 
-include_once 'class.Public_Webpage.php';
-include_once 'class.Public_Store.php';
-include_once 'class.Public_Website.php';
+
 
 
 if (!isset($_REQUEST['webpage_key']) or !is_numeric($_REQUEST['webpage_key'])) {
@@ -26,24 +24,28 @@ if (!isset($_REQUEST['theme']) or !preg_match('/^theme\_\d+$/', $_REQUEST['theme
 
     return;
 }
-require_once 'external_libs/ImageCache.php';
-$imagecache                         = new ImageCache();
-$imagecache->cached_image_directory = 'EcomB2B/server_files/cached_images/';
+
+
+//require_once 'external_libs/ImageCache.php';
+//$imagecache                         = new ImageCache();
+//$imagecache->cached_image_directory = 'EcomB2B/server_files/cached_images/';
 
 $webpage_key = $_REQUEST['webpage_key'];
 $theme       = $_REQUEST['theme'];
 
-$webpage = new Public_Webpage($webpage_key);
+$webpage = get_object('Public_Webpage',$webpage_key);
 
 $webpage->load_scope();
 
-$website = new Public_Website($webpage->get('Webpage Website Key'));
+$website = get_object('Public_Website',$webpage->get('Webpage Website Key'));
 
-$store = new Public_Store($webpage->get('Webpage Store Key'));
+$store = get_object('Public_Store',$webpage->get('Webpage Store Key'));
 
 
 $content_data = $webpage->get('Content Data');
 
+//print_r($content_data);
+//exit;
 
 $header_data = $website->get('Header Data');
 $header_key  = $website->get('Website Header Key');
@@ -105,6 +107,8 @@ if ($webpage->get('Webpage Template Filename') == 'products_showcase') {
 }
 
 
+
+
 $smarty->assign('content', $content_data);
 $smarty->assign('labels', $website->get('Localised Labels'));
 $smarty->assign('webpage', $webpage);
@@ -122,10 +126,9 @@ $smarty->assign('poll_queries', $website->get_poll_queries($webpage));
 
 
 if (file_exists('templates/'.$template)) {
-
     $smarty->display($template);
 } else {
     printf("template %s not found", $template);
 }
 
-?>
+

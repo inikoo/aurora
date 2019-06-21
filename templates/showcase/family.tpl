@@ -23,7 +23,7 @@
 
             {assign "image_key" $category->get_main_image_key()}
             <div id="main_image" class="wraptocenter main_image {if $image_key==''}hide{/if}">
-                <img src="/{if $image_key}public_image.php?id={$image_key}&s=270x270{else}art/nopic.png{/if}">
+                <img src="/{if $image_key}i.php?id={$image_key}&s=270x270{else}art/nopic.png{/if}">
                 </span>
             </div>
             {include file='upload_main_image.tpl' object='Category'  key=$category->id class="{if $image_key!=''}hide{/if}"}

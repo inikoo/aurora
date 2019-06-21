@@ -30,7 +30,7 @@ class Page extends DB_Table {
     var $set_currency_exchange = 1;
     var $deleted = false;
 
-    /** @var PDO  */
+    /** @var PDO */
     var $db;
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false, $_db = false) {
@@ -115,8 +115,7 @@ class Page extends DB_Table {
         }
 
 
-
-       // print $sql;
+        // print $sql;
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
@@ -264,9 +263,7 @@ class Page extends DB_Table {
 
 
         $sql = sprintf(
-            "INSERT INTO `Page Dimension` (%s) values (%s)",
-            '`'.join('`,`', array_keys($data)).'`',
-            join(',', array_fill(0, count($data), '?'))
+            "INSERT INTO `Page Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($data)).'`', join(',', array_fill(0, count($data), '?'))
         );
 
         $stmt = $this->db->prepare($sql);
@@ -291,8 +288,8 @@ class Page extends DB_Table {
             }
 
             $sql = sprintf(
-                "INSERT INTO `Page State Timeline`  (`Page Key`,`Website Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Created') ", $this->id, $this->data['Webpage Website Key'], $this->data['Webpage Store Key'], prepare_mysql(gmdate('Y-m-d H:i:s')),
-                prepare_mysql($this->data['Page State'])
+                "INSERT INTO `Page State Timeline`  (`Page Key`,`Website Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Created') ", $this->id, $this->data['Webpage Website Key'], $this->data['Webpage Store Key'],
+                prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($this->data['Page State'])
 
             );
             $this->db->exec($sql);
@@ -327,9 +324,7 @@ class Page extends DB_Table {
         $data['Page Key'] = $this->id;
 
         $sql = sprintf(
-            "INSERT INTO `Page Store Dimension` (%s) values (%s)",
-            '`'.join('`,`', array_keys($data)).'`',
-            join(',', array_fill(0, count($data), '?'))
+            "INSERT INTO `Page Store Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($data)).'`', join(',', array_fill(0, count($data), '?'))
         );
 
 
@@ -350,7 +345,6 @@ class Page extends DB_Table {
             $this->new = true;
 
 
-
             $sql = sprintf(
                 "INSERT INTO `Webpage Analytics Data` (`Webpage Analytics Webpage Key`) VALUES (%d)", $this->id
             );
@@ -360,9 +354,6 @@ class Page extends DB_Table {
                 "INSERT INTO `Page Store Data Dimension` (`Page Key`) VALUES (%d)", $this->id
             );
             $this->db->exec($sql);
-
-
-
 
 
             $this->update_url();
@@ -399,7 +390,6 @@ class Page extends DB_Table {
 
         return $data;
     }
-
 
 
     function update_url() {
@@ -490,13 +480,13 @@ class Page extends DB_Table {
                 break;
 
             case 'Send Email Address':
-                $store = get_object('Store',$this->data['Webpage Store Key']);
+                $store = get_object('Store', $this->data['Webpage Store Key']);
 
                 return $store->get('Store Email');
 
                 break;
             case 'Send Email Signature':
-                $store = get_object('Store',$this->data['Webpage Store Key']);
+                $store = get_object('Store', $this->data['Webpage Store Key']);
 
                 return $store->get('Store Email Template Signature');
 
@@ -843,14 +833,12 @@ class Page extends DB_Table {
 
 
         if ($this->data['Webpage Scope'] == 'Product') {
-            include_once('class.Public_Product.php');
-            $this->scope       = new Public_Product($this->data['Webpage Scope Key']);
+            $this->scope       = get_object('Public_Product', $this->data['Webpage Scope Key']);
             $this->scope_found = 'Product';
 
         } elseif ($this->data['Webpage Scope'] == 'Category Categories' or $this->data['Webpage Scope'] == 'Category Products') {
-            include_once('class.Public_Category.php');
 
-            $this->scope       = new Public_Category($this->data['Webpage Scope Key']);
+            $this->scope       = get_object('Public_Category', $this->data['Webpage Scope Key']);
             $this->scope_found = 'Category';
 
         }
@@ -1265,7 +1253,7 @@ class Page extends DB_Table {
             case 'Category Products':
                 $category = get_object('Category', $this->data['Page Parent Key']);
                 if ($category->id and $category->get('Category Main Image Key')) {
-                    $_page_image = get_object('Image',$category->get('Category Main Image Key'));
+                    $_page_image = get_object('Image', $category->get('Category Main Image Key'));
                     if ($_page_image->id) {
                         $page_image_source = sprintf("images/%07d.%s", $_page_image->data['Image Key'], $_page_image->data['Image File Format']);
                         $image_key         = $_page_image->id;
@@ -1310,7 +1298,6 @@ class Page extends DB_Table {
         $template_response = '';
 
 
-
         $smarty_web = new Smarty();
 
         if (empty($this->fork)) {
@@ -1334,8 +1321,6 @@ class Page extends DB_Table {
         $smarty_web->clearCache(null, $cache_id);
 
 
-
-
         $redis = new Redis();
         if ($redis->connect('127.0.0.1', 6379)) {
 
@@ -1353,8 +1338,6 @@ class Page extends DB_Table {
         return $template_response;
 
     }
-
-
 
 
     function get_options() {
@@ -1426,12 +1409,10 @@ class Page extends DB_Table {
     }
 
 
-
     function update_store_search() {
 
 
         //todo redo this using elastic search
-
 
 
     }
@@ -1565,7 +1546,6 @@ class Page extends DB_Table {
         $this->update_field('Webpage State', $value, $options);
 
 
-
         if ($old_state != $this->data['Webpage State']) {
 
 
@@ -1576,8 +1556,8 @@ class Page extends DB_Table {
             }
 
             $sql = sprintf(
-                "INSERT INTO `Page State Timeline`  (`Page Key`,`Website Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Change') ", $this->id, $this->data['Webpage Website Key'], $this->data['Webpage Store Key'], prepare_mysql(gmdate('Y-m-d H:i:s')),
-                prepare_mysql($this->data['Webpage State'])
+                "INSERT INTO `Page State Timeline`  (`Page Key`,`Website Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Change') ", $this->id, $this->data['Webpage Website Key'], $this->data['Webpage Store Key'],
+                prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($this->data['Webpage State'])
 
             );
 
@@ -1676,13 +1656,14 @@ class Page extends DB_Table {
 
         $website = get_object('Website', $this->get('Webpage Website Key'));
 
+
         if ($website->get('Website Theme') == 'theme_1') {
 
             $content_data = $this->get('Content Data');
             if (isset($content_data['blocks'])) {
                 foreach ($content_data['blocks'] as $block_key => $block) {
 
-                    //   print $block['type']."\n";
+                    //  print $block['type']."\n";
 
                     switch ($block['type']) {
                         case 'category_products':
@@ -1725,8 +1706,8 @@ class Page extends DB_Table {
 
             $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
-            $theme        = 'theme_1';
-            $website_type = 'EcomB2B';
+            //   $theme        = 'theme_1';
+            //   $website_type = 'EcomB2B';
 
 
             $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
@@ -1737,7 +1718,7 @@ class Page extends DB_Table {
             $redis = new Redis();
             if ($redis->connect('127.0.0.1', 6379)) {
 
-                $cache_id_prefix='pwc2|'.$account->get('Code').'|'.$this->get('Webpage Website Key').'_';
+                $cache_id_prefix = 'pwc2|'.$account->get('Code').'|'.$this->get('Webpage Website Key').'_';
 
                 $redis->delete($cache_id_prefix.$this->data['Page Code']);
                 $redis->delete($cache_id_prefix.strtolower($this->data['Page Code']));
@@ -1745,148 +1726,17 @@ class Page extends DB_Table {
                 $redis->delete($cache_id_prefix.ucfirst($this->data['Page Code']));
 
 
-
-
             }
 
 
         }
-        else {
-            if ($this->get('Webpage Scope') == 'Category Categories') {
 
-                if ($this->get('Webpage Version') == 2) {
-
-
-                    $this->updated = true;
-
-
-                    $subjects = array();
-                    $sql      = sprintf(
-                        'SELECT `Webpage Scope Key` FROM `Category Bridge` LEFT JOIN `Page Store Dimension` ON (`Webpage Scope Key`=`Subject Key`   )  WHERE  ( `Webpage Scope`="Category Categories" OR  `Webpage Scope`="Category Products" ) AND   `Subject`="Category" AND `Category Key`=%d  ORDER BY `Webpage Scope Key` ',
-                        $this->get('Webpage Scope Key')
-                    );
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
-                            if ($row['Webpage Scope Key']) {
-                                $subjects[] = $row['Webpage Scope Key'];
-                            }
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
-
-
-                    foreach ($subjects as $item_key) {
-                        $sql = sprintf(
-                            'UPDATE `Category Webpage Index` SET `Category Webpage Index Subject Type`="Subject" WHERE `Category Webpage Index Webpage Key`=%d  AND `Category Webpage Index Category Key`=%d   ', $this->id, $item_key
-                        );
-                        $this->db->exec($sql);
-
-                    }
-
-                    // print_r($subjects);
-
-
-                    $content_data = $this->get('Content Data');
-
-
-                    //     print count($subjects)."sss\n";
-
-
-                    if ($content_data != '') {
-
-
-                        foreach ($content_data['sections'] as $section_stack_index => $section_data) {
-
-
-                            $content_data['sections'][$section_stack_index]['items'] = get_website_section_items($this->db, $section_data);
-
-
-                        }
-                    }
-                    $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
-                    $_subjects_in_webpage = array();
-
-                    $sql = sprintf(
-                        "SELECT `Category Webpage Index Category Key`  ,`Category Webpage Index Section Key`          FROM `Category Webpage Index` CWI  WHERE  `Category Webpage Index Webpage Key`=%d AND `Category Webpage Index Subject Type`='Subject'  ORDER BY `Category Webpage Index Category Key` ",
-                        $this->id
-
-
-                    );
-
-
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
-
-
-                            $_subjects_in_webpage[] = $row['Category Webpage Index Category Key'];
-
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
-                    //print_r($subjects);
-                    //print_r($_subjects_in_webpage);
-
-                    //print count($_subjects_in_webpage)."\n";
-
-
-                    $to_add    = array_diff($subjects, $_subjects_in_webpage);
-                    $to_remove = array_diff($_subjects_in_webpage, $subjects);
-
-
-                    //print_r($to_add);
-                    //print_r($to_remove);
-
-
-                    foreach ($to_add as $item_key) {
-                        $this->add_section_item($item_key);
-
-
-                    }
-
-
-                    // print_r($_to_remove);
-
-                    foreach ($to_remove as $item_key) {
-                        $this->remove_section_item($item_key);
-
-                    }
-
-
-                }
-            }
-        }
-
-        /*
-                if ($this->get('Webpage Template Filename') == 'category_categories') {
-
-                    $this->reindex_category_categories();
-                    $this->updated = true;
-
-                    return;
-                }
-                if ($this->get('Webpage Template Filename') == 'category_products') {
-
-                    $this->reindex_category_products();
-                    $this->updated = true;
-
-                    return;
-                }
-        */
 
     }
 
     function reindex_category_products() {
+
         $content_data = $this->get('Content Data');
-
-
-        //print_r($content_data);
 
         $block_found = false;
         foreach ($content_data['blocks'] as $_block_key => $_block) {
@@ -1918,10 +1768,6 @@ class Page extends DB_Table {
                 $items[$row['Product ID']]                  = $row;
                 $items_product_id_index[$row['Product ID']] = $row['Product ID'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1935,7 +1781,7 @@ class Page extends DB_Table {
             exit;
         }
 
-        if(isset($block['items']) and is_array($block['items'])) {
+        if (isset($block['items']) and is_array($block['items'])) {
             foreach ($block['items'] as $item_key => $item) {
                 if ($item['type'] == 'product') {
                     if (in_array($item['product_id'], $items_product_id_index)) {
@@ -1950,35 +1796,35 @@ class Page extends DB_Table {
 
 
                             if ($product->get('Image') != $content_data['blocks'][$block_key]['items'][$item_key]['image_src']) {
-                                $content_data['blocks'][$block_key]['items'][$item_key]['image_src'] = $product->get('Image');
+                                $content_data['blocks'][$block_key]['items'][$item_key]['image_src']            = $product->get('Image');
                                 $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = '';
-                                $content_data['blocks'][$block_key]['items'][$item_key]['image_website'] = '';
+                                $content_data['blocks'][$block_key]['items'][$item_key]['image_website']        = '';
 
 
                             }
 
 
                             $content_data['blocks'][$block_key]['items'][$item_key]['web_state'] = $product->get('Web State');
-                            $content_data['blocks'][$block_key]['items'][$item_key]['price'] = $product->get('Price');
+                            $content_data['blocks'][$block_key]['items'][$item_key]['price']     = $product->get('Price');
 
 
                             $content_data['blocks'][$block_key]['items'][$item_key]['price_unit'] = $product->get('Price Per Unit');
 
-                            $content_data['blocks'][$block_key]['items'][$item_key]['rrp'] = $product->get('RRP');
-                            $content_data['blocks'][$block_key]['items'][$item_key]['code'] = $product->get('Code');
-                            $content_data['blocks'][$block_key]['items'][$item_key]['name'] = $product->get('Name');
-                            $content_data['blocks'][$block_key]['items'][$item_key]['link'] = $product->webpage->get('URL');
+                            $content_data['blocks'][$block_key]['items'][$item_key]['rrp']          = $product->get('RRP');
+                            $content_data['blocks'][$block_key]['items'][$item_key]['code']         = $product->get('Code');
+                            $content_data['blocks'][$block_key]['items'][$item_key]['name']         = $product->get('Name');
+                            $content_data['blocks'][$block_key]['items'][$item_key]['link']         = $product->webpage->get('URL');
                             $content_data['blocks'][$block_key]['items'][$item_key]['webpage_code'] = $product->webpage->get('Webpage Code');
-                            $content_data['blocks'][$block_key]['items'][$item_key]['webpage_key'] = $product->webpage->id;
+                            $content_data['blocks'][$block_key]['items'][$item_key]['webpage_key']  = $product->webpage->id;
 
 
-                            $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_class'] = $product->get('Out of Stock Class');
-                            $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_label'] = $product->get('Out of Stock Label');
-                            $content_data['blocks'][$block_key]['items'][$item_key]['sort_code'] = $product->get('Code File As');
-                            $content_data['blocks'][$block_key]['items'][$item_key]['sort_name'] = $product->get('Product Name');
+                            $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_class']      = $product->get('Out of Stock Class');
+                            $content_data['blocks'][$block_key]['items'][$item_key]['out_of_stock_label']      = $product->get('Out of Stock Label');
+                            $content_data['blocks'][$block_key]['items'][$item_key]['sort_code']               = $product->get('Code File As');
+                            $content_data['blocks'][$block_key]['items'][$item_key]['sort_name']               = $product->get('Product Name');
                             $content_data['blocks'][$block_key]['items'][$item_key]['next_shipment_timestamp'] = $product->get('Next Supplier Shipment Timestamp');
 
-                            $content_data['blocks'][$block_key]['items'][$item_key]['category'] = $product->get('Family Code');
+                            $content_data['blocks'][$block_key]['items'][$item_key]['category']  = $product->get('Family Code');
                             $content_data['blocks'][$block_key]['items'][$item_key]['raw_price'] = $product->get('Product Price');
 
 
@@ -2376,386 +2222,19 @@ class Page extends DB_Table {
                 // $this->refresh_cache();
                 break;
 
-
             case 'Page Store Content Data':
 
-                // post edit content data
-                include_once('utils/image_functions.php');
+
 
                 $content_data = json_decode($value, true);
 
 
                 if (isset($content_data['blocks'])) {
-                    foreach ($content_data['blocks'] as $block_key => $block) {
 
-                        if ($block['type'] == 'blackboard') {
+                    include_once('utils/webpage_blocks_digest_functions.php');
 
-                            $items = array();
-                            $index = 0;
+                    $content_data = digest_website_content_data_blocks($content_data);
 
-                            $max_images = count($block['texts']);
-                            if ($max_images == 0) {
-                                $max_images = 1;
-                            }
-
-                            $counter = 0;
-                            foreach ($block['images'] as $key_item => $item) {
-                                $index        = $index + 10;
-                                $item['type'] = 'image';
-
-
-                                if (empty($item['image_website']) and $item['width'] > 0 and $item['height'] > 0) {
-                                    $image_website = $item['src'];
-                                    if (preg_match('/id=(\d+)/', $item['src'], $matches)) {
-                                        $image_key = $matches[1];
-
-                                        $width  = $item['width'] * 2;
-                                        $height = $item['height'] * 2;
-
-
-                                        $image_website = create_cached_image($image_key, $width, $height, 'do_not_enlarge');
-
-                                    }
-
-
-                                    $content_data['blocks'][$block_key]['images'][$key_item]['image_website'] = $image_website;
-                                    $item['image_website']                                                    = $image_website;
-
-                                }
-
-                                $items[$index] = $item;
-                                $counter++;
-
-                            }
-                            $index = 5;
-                            foreach ($block['texts'] as $item) {
-                                $index         = $index + 10;
-                                $item['type']  = 'text';
-                                $items[$index] = $item;
-                            }
-
-                            ksort($items);
-
-
-                            $image_counter = 0;
-                            $mobile_html   = '';
-                            $tablet_html   = '';
-
-
-                            foreach ($items as $item) {
-                                if ($item['type'] == 'text') {
-                                    $tablet_html .= '<p>'.$item['text'].'</p>';
-                                }
-                                if ($item['type'] == 'image') {
-
-                                    if ($image_counter >= $max_images) {
-                                        break;
-                                    }
-
-                                    if ($image_counter % 2 == 0) {
-                                        $tablet_html .= '<img src="'.$item['image_website'].'" style="width:45%;float:left;margin-right:20px;" alt="'.$item['title'].'">';
-
-                                    } else {
-                                        $tablet_html .= '<img src="'.$item['image_website'].'" style="width:40%;float:right;margin-left:20px;" alt="'.$item['title'].'">';
-
-                                    }
-
-
-                                    $image_counter++;
-
-                                }
-
-                            }
-                            $image_counter = 0;
-
-                            foreach ($items as $key_item => $item) {
-
-                                if ($item['type'] == 'image') {
-
-                                    if ($item['height'] == 0 or $item['width'] == 0) {
-                                        unset($items[$key_item]);
-                                    } else {
-                                        $ratio = $item['width'] / $item['height'];
-                                        //print "$ratio\n";
-
-                                        if ($ratio > 7.5) {
-                                            $mobile_html .= '<img src="'.$item['image_website'].'" style="width:100%;" alt="'.$item['title'].'">';
-                                            unset($items[$key_item]);
-                                            break;
-                                        }
-                                    }
-
-                                }
-
-
-                            }
-
-
-                            foreach ($items as $item) {
-                                if ($item['type'] == 'text') {
-                                    $mobile_html .= '<p>'.$item['text'].'</p>';
-                                }
-                                if ($item['type'] == 'image') {
-
-
-                                    if ($image_counter % 2 == 0) {
-                                        $mobile_html .= '<img src="'.$item['image_website'].'" style="width:40%;padding-top:15px;float:left;margin-right:15px;" alt="'.$item['title'].'">';
-
-                                    } else {
-                                        $mobile_html .= '<img src="'.$item['image_website'].'" style="width:40%;padding-top:15px;float:right;margin-left:15px;" alt="'.$item['title'].'">';
-
-                                    }
-
-
-                                    $image_counter++;
-
-                                }
-
-                            }
-
-
-                            $mobile_html = preg_replace('/\<p\>\<br\>\<\/p\>/', '', $mobile_html);
-                            $mobile_html = preg_replace('/\<p style\=\"text-align: left;\"\><br\>\<\/p\>/', '', $mobile_html);
-                            $mobile_html = preg_replace('/\<p style\=\"\"\>\<br\>\<\/p\>/', '', $mobile_html);
-
-
-                            $tablet_html = preg_replace('/\<p\>\<br\>\<\/p\>/', '', $tablet_html);
-                            $tablet_html = preg_replace('/\<p style\=\"text-align: left;\"\><br\>\<\/p\>/', '', $tablet_html);
-                            $tablet_html = preg_replace('/\<p style\=\"\"\>\<br\>\<\/p\>/', '', $tablet_html);
-
-                            // print_r($mobile_html);
-                            $content_data['blocks'][$block_key]['mobile_html'] = $mobile_html;
-                            $content_data['blocks'][$block_key]['tablet_html'] = $tablet_html;
-
-                        } elseif ($block['type'] == 'category_products') {
-                            foreach ($block['items'] as $item_key => $item) {
-                                if ($item['type'] == 'product') {
-                                    if (empty($item['image_mobile_website'])) {
-                                        $image_mobile_website = $item['image_src'];
-                                        if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                            $image_key = $matches[1];
-
-                                            $image_mobile_website = create_cached_image($image_key, 340, 214);
-
-                                        }
-
-
-                                        $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = $image_mobile_website;
-
-
-                                    }
-
-                                    if (empty($item['image_website'])) {
-                                        $image_website = $item['image_src'];
-                                        if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                            $image_key     = $matches[1];
-                                            $image_website = create_cached_image($image_key, 432, 330, 'fit_highest');
-                                        }
-
-
-                                        $content_data['blocks'][$block_key]['items'][$item_key]['image_website'] = $image_website;
-
-
-                                    }
-                                } elseif ($item['type'] == 'image') {
-
-                                    if (empty($item['image_website'])) {
-                                        $image_website = $item['image_src'];
-                                        if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                            $image_key = $matches[1];
-
-                                            if ($content_data['blocks'][$block_key]['item_headers']) {
-                                                $height = 330;
-                                            } else {
-                                                $height = 290;
-                                            }
-
-
-                                            switch ($item['size_class']) {
-                                                case 'panel_1':
-                                                    $width = 226;
-
-                                                    break;
-                                                case 'panel_2':
-                                                    $width = 470;
-                                                    break;
-                                                case 'panel_3':
-                                                    $width = 714;
-                                                    break;
-                                                case 'panel_4':
-                                                    $width = 958;
-                                                    break;
-                                                case 'panel_5':
-                                                    $width = 1202;
-                                                    break;
-
-                                            }
-
-                                            $image_website = create_cached_image($image_key, $width, $height);
-                                        }
-
-
-                                        $content_data['blocks'][$block_key]['items'][$item_key]['image_website'] = $image_website;
-
-
-                                    }
-
-
-                                }
-
-                            }
-
-                        } elseif ($block['type'] == 'products') {
-                            foreach ($block['items'] as $item_key => $item) {
-
-                                if (empty($item['image_mobile_website'])) {
-                                    $image_mobile_website = $item['image_src'];
-                                    if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                        $image_key = $matches[1];
-
-                                        $image_mobile_website = create_cached_image($image_key, 340, 214);
-
-                                    }
-
-
-                                    $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = $image_mobile_website;
-
-
-                                }
-
-                                if (empty($item['image_website'])) {
-                                    $image_website = $item['image_src'];
-                                    if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                        $image_key     = $matches[1];
-                                        $image_website = create_cached_image($image_key, 432, 330, 'fit_highest');
-                                    }
-
-
-                                    $content_data['blocks'][$block_key]['items'][$item_key]['image_website'] = $image_website;
-
-
-                                }
-                            }
-
-                        } elseif ($block['type'] == 'see_also') {
-                            foreach ($block['items'] as $item_key => $item) {
-
-                                if (empty($item['image_mobile_website'])) {
-                                    $image_mobile_website = $item['image_src'];
-                                    if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                        $image_key = $matches[1];
-
-                                        $image_mobile_website = create_cached_image($image_key, 320, 200);
-
-                                    }
-
-
-                                    $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = $image_mobile_website;
-
-
-                                }
-
-                                if (empty($item['image_website'])) {
-                                    $image_website = $item['image_src'];
-                                    if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                        $image_key     = $matches[1];
-                                        $image_website = create_cached_image($image_key, 432, 330, 'fit_highest');
-                                    }
-
-
-                                    $content_data['blocks'][$block_key]['items'][$item_key]['image_website'] = $image_website;
-
-
-                                }
-                            }
-
-                        } elseif ($block['type'] == 'category_categories') {
-
-
-                            foreach ($block['sections'] as $section_key => $section) {
-
-                                if(isset($section['items']) and is_array($section['items']) ){
-
-
-                                    foreach ($section['items'] as $item_key => $item) {
-
-                                        if ($item['type'] == 'category') {
-                                            if (empty($item['image_mobile_website'])) {
-                                                $image_mobile_website = $item['image_src'];
-                                                if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                                    $image_key = $matches[1];
-
-                                                    $image_mobile_website = create_cached_image($image_key, 320, 200);
-
-                                                }
-
-
-                                                $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website'] = $image_mobile_website;
-
-
-                                            }
-
-                                            if (empty($item['image_website'])) {
-                                                $image_website = $item['image_src'];
-                                                if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                                    $image_key     = $matches[1];
-                                                    $image_website = create_cached_image($image_key, 432, 330, 'fit_highest');
-                                                }
-
-
-                                                $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website'] = $image_website;
-
-
-                                            }
-                                        } elseif ($item['type'] == 'image') {
-
-                                            if (empty($item['image_website'])) {
-                                                $image_website = $item['image_src'];
-                                                if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                                    $image_key = $matches[1];
-                                                    $height    = 220;
-                                                    switch ($item['size_class']) {
-                                                        case 'panel_1':
-                                                            $width = 226;
-
-                                                            break;
-                                                        case 'panel_2':
-                                                            $width = 470;
-                                                            break;
-                                                        case 'panel_3':
-                                                            $width = 714;
-                                                            break;
-                                                        case 'panel_4':
-                                                            $width = 958;
-                                                            break;
-                                                        case 'panel_5':
-                                                            $width = 1202;
-                                                            break;
-
-                                                    }
-
-                                                    $image_website = create_cached_image($image_key, $width, $height);
-                                                }
-
-
-                                                $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website'] = $image_website;
-
-
-                                            }
-
-
-                                        }
-                                    }
-                                }
-
-
-
-
-                            }
-                        }
-
-
-                    }
 
                 }
 
@@ -2768,12 +2247,13 @@ class Page extends DB_Table {
                 if ($this->get('Webpage Scope') == 'Category Categories' and $this->get('Webpage Template Filename') != 'category_categories') {
 
 
-                        $this->update_category_webpage_index();
+                    $this->update_category_webpage_index();
 
                 }
 
 
                 break;
+
 
             case 'Website Registration Type':
 
@@ -2840,6 +2320,9 @@ class Page extends DB_Table {
 
 
     }
+
+
+
 
     function update_version() {
 
@@ -3261,7 +2744,6 @@ class Page extends DB_Table {
                 $this->update_navigation();
 
             } else {
-                include_once 'class.Public_Product.php';
 
 
                 $title = $category->get('Label');
@@ -3321,8 +2803,7 @@ class Page extends DB_Table {
             }
 
 
-        }
-        elseif ($this->get('Webpage Scope') == 'Category Categories') {
+        } elseif ($this->get('Webpage Scope') == 'Category Categories') {
 
 
             //  $category=get_object('Category',$this->get('Webpage Scope Key'));
@@ -3506,8 +2987,7 @@ class Page extends DB_Table {
             }
 
 
-        }
-        elseif ($this->get('Webpage Scope') == 'Product') {
+        } elseif ($this->get('Webpage Scope') == 'Product') {
 
 
             //  $category=get_object('Category',$this->get('Webpage Scope Key'));
@@ -3627,7 +3107,7 @@ class Page extends DB_Table {
 
             include_once 'conf/website_system_webpages.php';
 
-            $website = get_object('Website',$this->get('Webpage Website Key'));
+            $website = get_object('Website', $this->get('Webpage Website Key'));
 
             $website_system_webpages = website_system_webpages_config($website->get('Website Type'));
 
@@ -3635,12 +3115,8 @@ class Page extends DB_Table {
             if (isset($website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data'])) {
 
 
-
-
                 $this->update(array('Page Store Content Data' => $website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data']), 'no_history');
             }
-
-
 
 
         }
@@ -4756,7 +4232,7 @@ class Page extends DB_Table {
             return;
         }
 
-      //  print_r($content_data);
+        //  print_r($content_data);
 
 
         $sql = sprintf(
@@ -4774,7 +4250,6 @@ class Page extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-
 
 
                 $items[$row['Category Key']]                    = $row;
@@ -4812,7 +4287,7 @@ class Page extends DB_Table {
                 $anchor_section_key = $section_key;
             }
 
-            if(isset($section['items']) and is_array($section['items']) ){
+            if (isset($section['items']) and is_array($section['items'])) {
                 foreach ($section['items'] as $item_key => $item) {
                     if ($item['type'] == 'category') {
 
@@ -4822,49 +4297,44 @@ class Page extends DB_Table {
                         //exit;
 
 
-
-
                         if (in_array($item['category_key'], $items_category_key_index)) {
 
                             $item_data = $items[$item['category_key']];
 
 
+                            /*
+                                                        print_r($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
+
+
+                                                        print_r($item_data);
 
 
 
-/*
-                            print_r($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
+                                                        if (preg_match('/id=(\d+)/', $item_data['Category Main Image'], $matches)) {
 
+                                                            $image_mobile_website=create_cached_image($matches[1], 320, 200);
+                                                            $image_website = create_cached_image($matches[1], 432, 330, 'fit_highest');
 
-                            print_r($item_data);
+                                                        }else{
+                                                            $image_mobile_website= 'art/nopic_mobile.png';
+                                                            $image_website= $item_data['Category Main Image'];
 
-
-
-                            if (preg_match('/id=(\d+)/', $item_data['Category Main Image'], $matches)) {
-
-                                $image_mobile_website=create_cached_image($matches[1], 320, 200);
-                                $image_website = create_cached_image($matches[1], 432, 330, 'fit_highest');
-
-                            }else{
-                                $image_mobile_website= 'art/nopic_mobile.png';
-                                $image_website= $item_data['Category Main Image'];
-
-                            }
+                                                        }
 
 
 
 
 
 
-                          //  print $item_data['Category Main Image']."\n";
+                                                      //  print $item_data['Category Main Image']."\n";
 
 
 
-                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_src']=$item_data['Category Main Image'];
-                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website']= $image_website;
-                            $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website']= $image_mobile_website;
+                                                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_src']=$item_data['Category Main Image'];
+                                                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website']= $image_website;
+                                                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website']= $image_mobile_website;
 
-*/
+                            */
 
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Subject';
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_key']     = $item_data['Page Key'];
@@ -4874,8 +4344,7 @@ class Page extends DB_Table {
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['link']            = $item_data['Webpage URL'];
 
 
-
-//print_r($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
+                            //print_r($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
 
 
                             unset($items_category_key_index[$item['category_key']]);
@@ -4926,9 +4395,7 @@ class Page extends DB_Table {
             }
 
 
-
         }
-
 
 
         foreach ($items_category_key_index as $index) {
@@ -4952,7 +4419,6 @@ class Page extends DB_Table {
 
             array_unshift($content_data['blocks'][$block_key]['sections'][$anchor_section_key]['items'], $item);
         }
-
 
 
         // print_r($content_data['blocks'][$block_key]['sections']);
@@ -5310,7 +4776,6 @@ class Page extends DB_Table {
                 return $updated_metadata;
 
 
-
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -5388,8 +4853,8 @@ class Page extends DB_Table {
 
 
         $sql = sprintf(
-            "INSERT INTO `Page State Timeline`  (`Page Key`,`Website Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,'Offline','Deleted') ",
-            $this->id, $this->data['Webpage Website Key'], $this->data['Webpage Store Key'], prepare_mysql(gmdate('Y-m-d H:i:s'))
+            "INSERT INTO `Page State Timeline`  (`Page Key`,`Website Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,'Offline','Deleted') ", $this->id, $this->data['Webpage Website Key'], $this->data['Webpage Store Key'],
+            prepare_mysql(gmdate('Y-m-d H:i:s'))
 
         );
         $this->db->exec($sql);
@@ -5423,9 +4888,8 @@ class Page extends DB_Table {
         $this->db->exec($sql);
 
         foreach ($images as $image_key) {
-            $image = get_object('Image',$image_key);
+            $image = get_object('Image', $image_key);
             $image->delete();
-
 
 
         }
@@ -5465,7 +4929,7 @@ class Page extends DB_Table {
             $data = array(
                 'Page Code'                   => $this->data['Page Code'],
                 'Page Key'                    => $this->id,
-                'Website Key'                    => $this->data['Webpage Website Key'],
+                'Website Key'                 => $this->data['Webpage Website Key'],
                 'Store Key'                   => $this->data['Page Store Key'],
                 'Page Store Section'          => $this->data['Page Store Section'],
                 'Page Parent Key'             => $this->data['Page Parent Key'],
@@ -5514,7 +4978,7 @@ class Page extends DB_Table {
         $redis = new Redis();
         if ($redis->connect('127.0.0.1', 6379)) {
 
-            $cache_id_prefix='pwc2|'.$account->get('Code').'|'.$this->get('Webpage Website Key').'_';
+            $cache_id_prefix = 'pwc2|'.$account->get('Code').'|'.$this->get('Webpage Website Key').'_';
 
             $redis->delete($cache_id_prefix.$this->data['Page Code']);
             $redis->delete($cache_id_prefix.strtolower($this->data['Page Code']));
@@ -5522,22 +4986,16 @@ class Page extends DB_Table {
             $redis->delete($cache_id_prefix.ucfirst($this->data['Page Code']));
 
             include_once 'utils/string_functions.php';
-            foreach(permutation_letter_case($this->data['Page Code']) as $permutation){
+            foreach (permutation_letter_case($this->data['Page Code']) as $permutation) {
                 $redis->delete($cache_id_prefix.$permutation);
 
             }
-
 
 
         }
 
 
     }
-
-
-
-
-
 
 
     function update_items_order($item_key, $target_key, $target_section_key) {
@@ -5985,8 +5443,6 @@ class Page extends DB_Table {
 
 
                     }
-
-
 
 
                     return array();
@@ -6515,31 +5971,30 @@ class Page extends DB_Table {
     }
 
 
-    function get_analytics_data($from,$to){
+    function get_analytics_data($from, $to) {
 
 
         include_once('utils/google_api.php');
 
 
-        list($url_base,$url_suffix)=preg_split('/\//',$this->get('URL'));
+        list($url_base, $url_suffix) = preg_split('/\//', $this->get('URL'));
 
         try {
-            $analytics_data=get_analytics_data($url_base,$url_suffix,$from,$to);
+            $analytics_data = get_analytics_data($url_base, $url_suffix, $from, $to);
         } catch (Exception $e) {
-           // echo 'Caught exception: ',  $e->getMessage(), "\n";
-            $analytics_data=array(
-                'pageviews'=>0,
-                'pageviews_registered_users'=>0,
-                'page_value'=>0,
-                'users'=>0,
-                'registered_users'=>0,
-                'sessions'=>0,
-                'sessions_registered_users'=>0,
-                'impressions'=>0,
-                'clicks'=>0,
-                'ctr'=>0,
-                'position'=>0,
-
+            // echo 'Caught exception: ',  $e->getMessage(), "\n";
+            $analytics_data = array(
+                'pageviews'                  => 0,
+                'pageviews_registered_users' => 0,
+                'page_value'                 => 0,
+                'users'                      => 0,
+                'registered_users'           => 0,
+                'sessions'                   => 0,
+                'sessions_registered_users'  => 0,
+                'impressions'                => 0,
+                'clicks'                     => 0,
+                'ctr'                        => 0,
+                'position'                   => 0,
 
 
             );
@@ -6547,17 +6002,14 @@ class Page extends DB_Table {
         }
 
 
-
-
         return $analytics_data;
 
     }
 
-    function update_analytics($interval,$this_period=true,$last_period=true){
+    function update_analytics($interval, $this_period = true, $last_period = true) {
 
         include_once 'utils/date_functions.php';
-        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb,$from_prev_period,$to_prev_period) = calculate_interval_dates($this->db, $interval);
-
+        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb, $from_prev_period, $to_prev_period) = calculate_interval_dates($this->db, $interval);
 
 
         if ($this_period) {
@@ -6566,25 +6018,23 @@ class Page extends DB_Table {
 
 
             $data_to_update = array(
-                "Webpage Analytics $db_interval Acc Pageviews" =>$analytics_data['pageviews'],
-                "Webpage Analytics $db_interval Acc RUsers Pageviews" =>$analytics_data['pageviews_registered_users'],
-                "Webpage Analytics $db_interval Acc Page Value"          => round($analytics_data['page_value'], 2),
-                "Webpage Analytics $db_interval Acc Users" =>$analytics_data['users'],
-                "Webpage Analytics $db_interval Acc RUsers" =>$analytics_data['registered_users'],
-                "Webpage Analytics $db_interval Acc Sessions" =>$analytics_data['sessions'],
-                "Webpage Analytics $db_interval Acc RUsers Sessions" =>$analytics_data['sessions_registered_users'],
-                "Webpage Analytics $db_interval Acc SC Impressions" =>$analytics_data['impressions'],
-                "Webpage Analytics $db_interval Acc SC Clicks" =>$analytics_data['clicks'],
-                "Webpage Analytics $db_interval Acc SC CTR" =>$analytics_data['ctr'],
-                "Webpage Analytics $db_interval Acc SC Position" =>$analytics_data['position'],
-
+                "Webpage Analytics $db_interval Acc Pageviews"        => $analytics_data['pageviews'],
+                "Webpage Analytics $db_interval Acc RUsers Pageviews" => $analytics_data['pageviews_registered_users'],
+                "Webpage Analytics $db_interval Acc Page Value"       => round($analytics_data['page_value'], 2),
+                "Webpage Analytics $db_interval Acc Users"            => $analytics_data['users'],
+                "Webpage Analytics $db_interval Acc RUsers"           => $analytics_data['registered_users'],
+                "Webpage Analytics $db_interval Acc Sessions"         => $analytics_data['sessions'],
+                "Webpage Analytics $db_interval Acc RUsers Sessions"  => $analytics_data['sessions_registered_users'],
+                "Webpage Analytics $db_interval Acc SC Impressions"   => $analytics_data['impressions'],
+                "Webpage Analytics $db_interval Acc SC Clicks"        => $analytics_data['clicks'],
+                "Webpage Analytics $db_interval Acc SC CTR"           => $analytics_data['ctr'],
+                "Webpage Analytics $db_interval Acc SC Position"      => $analytics_data['position'],
 
 
             );
 
 
             $this->fast_update($data_to_update, 'Webpage Analytics Data');
-
 
 
         }
@@ -6595,18 +6045,17 @@ class Page extends DB_Table {
             $analytics_data = $this->get_analytics_data($from_prev_period, $to_prev_period);
 
             $data_to_update = array(
-                "Webpage Analytics $db_interval Acc Pageviews" =>$analytics_data['pageviews'],
-                "Webpage Analytics $db_interval Acc RUsers Pageviews" =>$analytics_data['pageviews_registered_users'],
-                "Webpage Analytics $db_interval Acc Page Value"          => round($analytics_data['page_value'], 2),
-                "Webpage Analytics $db_interval Acc Users" =>$analytics_data['users'],
-                "Webpage Analytics $db_interval Acc RUsers" =>$analytics_data['registered_users'],
-                "Webpage Analytics $db_interval Acc Sessions" =>$analytics_data['sessions'],
-                "Webpage Analytics $db_interval Acc RUsers Sessions" =>$analytics_data['sessions_registered_users'],
-                "Webpage Analytics $db_interval Acc SC Impressions" =>$analytics_data['impressions'],
-                "Webpage Analytics $db_interval Acc SC Clicks" =>$analytics_data['clicks'],
-                "Webpage Analytics $db_interval Acc SC CTR" =>$analytics_data['ctr'],
-                "Webpage Analytics $db_interval Acc SC Position" =>$analytics_data['position'],
-
+                "Webpage Analytics $db_interval Acc Pageviews"        => $analytics_data['pageviews'],
+                "Webpage Analytics $db_interval Acc RUsers Pageviews" => $analytics_data['pageviews_registered_users'],
+                "Webpage Analytics $db_interval Acc Page Value"       => round($analytics_data['page_value'], 2),
+                "Webpage Analytics $db_interval Acc Users"            => $analytics_data['users'],
+                "Webpage Analytics $db_interval Acc RUsers"           => $analytics_data['registered_users'],
+                "Webpage Analytics $db_interval Acc Sessions"         => $analytics_data['sessions'],
+                "Webpage Analytics $db_interval Acc RUsers Sessions"  => $analytics_data['sessions_registered_users'],
+                "Webpage Analytics $db_interval Acc SC Impressions"   => $analytics_data['impressions'],
+                "Webpage Analytics $db_interval Acc SC Clicks"        => $analytics_data['clicks'],
+                "Webpage Analytics $db_interval Acc SC CTR"           => $analytics_data['ctr'],
+                "Webpage Analytics $db_interval Acc SC Position"      => $analytics_data['position'],
 
 
             );
