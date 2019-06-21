@@ -2105,4 +2105,3 @@ function update_website_styles($data, $editor) {
 }
 
 
-?>
