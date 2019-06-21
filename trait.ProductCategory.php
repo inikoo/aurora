@@ -75,8 +75,9 @@ trait ProductCategory {
             $update_sql = $this->db->prepare($sql);
             $update_sql->execute();
             if ($update_sql->rowCount()) {
-                $timeseries->update(
-                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+
+                $timeseries->fast_update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
                 );
 
             }
@@ -88,8 +89,8 @@ trait ProductCategory {
             $update_sql = $this->db->prepare($sql);
             $update_sql->execute();
             if ($update_sql->rowCount()) {
-                $timeseries->update(
-                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                $timeseries->fast_update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
                 );
 
             }
@@ -102,8 +103,8 @@ trait ProductCategory {
             }
 
             if ($timeseries->get('Timeseries Number Records') == 0) {
-                $timeseries->update(
-                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                $timeseries->fast_update(
+                    array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
                 );
             }
 
@@ -145,8 +146,8 @@ trait ProductCategory {
             $this->db->exec($sql);
         }
 
-        $timeseries->update(
-            array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+        $timeseries->fast_update(
+            array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
         );
 
 
@@ -181,8 +182,8 @@ trait ProductCategory {
                 $update_sql->execute();
 
                 if ($update_sql->rowCount() or $date == date('Y-m-d')) {
-                    $timeseries->update(
-                        array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                    $timeseries->fast_update(
+                        array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
                     );
                 }
 
@@ -194,8 +195,8 @@ trait ProductCategory {
                 $update_sql = $this->db->prepare($sql);
                 $update_sql->execute();
                 if ($update_sql->rowCount()) {
-                    $timeseries->update(
-                        array('Timeseries Updated' => gmdate('Y-m-d H:i:s')), 'no_history'
+                    $timeseries->fast_update(
+                        array('Timeseries Updated' => gmdate('Y-m-d H:i:s'))
                     );
 
                 }
@@ -557,14 +558,10 @@ trait ProductCategory {
                 if ($row = $result->fetch()) {
                     $new = $row['num'];
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
         }
 
-        $this->update(array('Store New Products' => $new), 'no_history');
+        $this->fast_update(array('Product Category New Products' => $new), 'Product Category Dimension');
 
     }
 
@@ -656,11 +653,6 @@ trait ProductCategory {
 
         }
 
-        //  print_r($elements_status_numbers);
-        //print_r($elements_active_web_status_numbers);
-
-        //exit;
-
 
         $update_data = array(
             'Product Category Status'                 => $category_status,
@@ -669,15 +661,12 @@ trait ProductCategory {
             'Product Category Suspended Products'     => $elements_status_numbers['Suspended'],
             'Product Category Discontinuing Products' => $elements_status_numbers['Discontinuing'],
             'Product Category Discontinued Products'  => $elements_status_numbers['Discontinued'],
-
             'Product Category Active Web For Sale'     => $elements_active_web_status_numbers['For Sale'],
             'Product Category Active Web Out of Stock' => $elements_active_web_status_numbers['Out of Stock'],
             'Product Category Active Web Offline'      => $elements_active_web_status_numbers['Offline']
-
-
         );
 
-        $this->update($update_data, 'no_history');
+        $this->fast_update($update_data, 'Product Category Data');
 
 
         $this->get_data('id', $this->id);
@@ -747,54 +736,6 @@ trait ProductCategory {
 
 
         return $this->webpage;
-
-    }
-
-    function update_product_stock_status() {
-
-        $elements_numbers = array(
-            'Surplus'      => 0,
-            'Optimal'      => 0,
-            'Low'          => 0,
-            'Critical'     => 0,
-            'Out_Of_Stock' => 0,
-            'Error'        => 0
-        );
-
-        $sql = sprintf(
-            "SELECT count(*) AS num ,`Part Stock Status` FROM  `Part Dimension` P LEFT JOIN `Category Bridge` B ON (P.`Part SKU`=B.`Subject Key`)  WHERE B.`Category Key`=%d AND `Subject`='Part' GROUP BY  `Part Stock Status`   ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $elements_numbers[$row['Part Stock Status']] = number(
-                    $row['num']
-                );
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-        $update_data = array(
-            'Product Category Number Surplus Parts' => $elements_numbers['Surplus'],
-            'Product Category Number Surplus Parts' => $elements_numbers['Surplus'],
-            'Product Category Number Surplus Parts' => $elements_numbers['Surplus'],
-            'Product Category Number Surplus Parts' => $elements_numbers['Surplus'],
-            'Product Category Number Surplus Parts' => $elements_numbers['Surplus'],
-            'Product Category Number Surplus Parts' => $elements_numbers['Surplus'],
-
-        );
-
-        $this->update($update_data, 'no_history');
-
-        $sql = sprintf(
-            "UPDATE `Product Category Dimension` SET `Product Category Number Surplus Parts`=%d ,`Product Category Number Optimal Parts`=%d ,`Product Category Number Low Parts`=%d ,`Product Category Number Critical Parts`=%d ,`Product Category Number Out Of Stock Parts`=%d ,`Product Category Number Error Parts`=%d  WHERE `Product Category Key`=%d",
-            $elements_numbers['Surplus'], $elements_numbers['Optimal'], $elements_numbers['Low'], $elements_numbers['Critical'], $elements_numbers['Out_Of_Stock'], $elements_numbers['Error'], $this->id
-        );
-
-        $this->db->exec($sql);
-
 
     }
 
