@@ -32,7 +32,7 @@ $editor = array(
 );
 
 
-$sql = sprintf("SELECT count(*) AS num FROM `Stack Dimension`  where `Stack Operation`='timeseries_stats' limit 5000");
+$sql = sprintf("SELECT count(*) AS num FROM `Stack Dimension`  where `Stack Operation`='timeseries_stats' ");
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -52,7 +52,7 @@ $contador = 0;
 
 
 $sql = sprintf(
-    "SELECT `Stack Key`,`Stack Object Key` FROM `Stack Dimension`  where `Stack Operation`='timeseries_stats' ORDER BY RAND() limit 5000"
+    "SELECT `Stack Key`,`Stack Object Key` FROM `Stack Dimension`  where `Stack Operation`='timeseries_stats' ORDER BY RAND() "
 );
 
 if ($result = $db->query($sql)) {

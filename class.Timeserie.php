@@ -389,9 +389,10 @@ class Timeseries extends DB_Table {
             );
 
             $this->db->exec($sql);
-            include_once('class.Data_Sets.php');
-            $data_set = new Data_Sets('code', 'Timeseries');
 
+
+
+            $data_set=get_object('data_sets-code','Timeseries');
 
             if ($data_set->id) {
 
