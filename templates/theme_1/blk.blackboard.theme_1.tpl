@@ -20,7 +20,7 @@
 
         {foreach from=$data.images item=image}
             <div id="{$image.id}" class="blackboard_image " style="position: absolute;top:{$image.top}px;left:{$image.left}px;width:{$image.width}px;height:{$image.height}px; ">
-                <img src="EcomB2B/{$image.image_website}" style="width:{$image.width}px;" link="{if !empty($image.link)}{$image.link}{/if}" alt="{if isset($image.title)}{$image.title}{/if}"
+                <img src="{$image.image_website}" style="width:{$image.width}px;" link="{if !empty($image.link)}{$image.link}{/if}" alt="{if isset($image.title)}{$image.title}{/if}"
                      title="{if isset($image.title)}{$image.title}{/if}"
 
                      data-image_website="{$image.image_website}"  data-src="{$image.src}" data-width="{$image.width}"

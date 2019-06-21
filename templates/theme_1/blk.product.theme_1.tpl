@@ -40,7 +40,7 @@
             >
 
                 <a href="{$data.image.src}" itemprop="contentUrl" data-w="{$data.image.width}" data-h="{$data.image.height}">
-                    <img style="max-width: 330px;max-height: 330px" src="EcomB2B/{$data.image.image_website}" itemprop="image" alt="{$data.image.caption}">
+                    <img style="max-width: 330px;max-height: 330px" src="{$data.image.image_website}" itemprop="image" alt="{$data.image.caption}">
                 </a>
             </figure>
 
@@ -56,7 +56,7 @@
                             data-image_website="{$image.image_website}"
                     >
                         <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
-                            <img style="height: 50px" src="EcomB2B/{$image.image_website}" itemprop="thumbnail" alt="{$image.caption}"/>
+                            <img style="height: 50px" src="{$image.image_website}" itemprop="thumbnail" alt="{$image.caption}"/>
                         </a>
                     </figure>
                 {/foreach}

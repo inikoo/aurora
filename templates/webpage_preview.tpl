@@ -127,7 +127,7 @@
 </div>
 
 
-<iframe id="preview" style="width:100%;height: 900px;" frameBorder="1" src="/webpage.php?webpage_key={$webpage->id}&theme={$theme}"></iframe>
+<iframe id="preview" style="width:100%;height: 2500px;" frameBorder="1" src="/webpage.php?webpage_key={$webpage->id}&theme={$theme}"></iframe>
 
 <script>
 

@@ -86,7 +86,7 @@ class Image extends DB_Table{
 
 
             $sql = sprintf(
-                "SELECT `Image Key`,`Image Data`,`Image Thumbnail Data`,`Image Small Data`,`Image Large Data`,`Image Filename`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Size`,`Image File Format` FROM `Image Dimension` WHERE `Image Key`=%d ", $id
+                "SELECT * FROM `Image Dimension` WHERE `Image Key`=%d ", $id
             );
 
             if ($this->data = $this->db->query($sql)->fetch()) {
@@ -102,7 +102,7 @@ class Image extends DB_Table{
                 $this->id = $this->data['Image Subject Image Key'];
                 if ($this->id) {
                     $sql = sprintf(
-                        "SELECT `Image Key`,`Image Data`,`Image Thumbnail Data`,`Image Small Data`,`Image Large Data`,`Image Filename`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Size`,`Image File Format` FROM `Image Dimension` WHERE `Image Key`=%d ",
+                        "SELECT * FROM `Image Dimension` WHERE `Image Key`=%d ",
                         $this->id
                     );
 

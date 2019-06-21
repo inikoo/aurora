@@ -52,10 +52,24 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Public_Product($key);
 
             break;
+        case 'public_category':
+            include_once 'class.Public_Category.php';
+            $object = new Public_Category($key);
+
+            break;
         case 'public_store':
             include_once 'class.Public_Store.php';
             $object = new Public_Store($key);
 
+            break;
+        case 'public_webpage':
+            include_once 'class.Public_Webpage.php';
+            $object = new Public_Webpage($key);
+
+            break;
+        case 'public_webpage-scope_product':
+            include_once 'class.Public_Webpage.php';
+            $object = new  Public_Webpage('scope', 'Product', $key);
             break;
         case 'product-historic_key':
             include_once 'class.Product.php';

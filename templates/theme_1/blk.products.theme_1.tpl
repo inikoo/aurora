@@ -60,7 +60,7 @@
                         <i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"></i>
                         <i onclick="remove_product_from_products(this)" style="top:50px;color:red" class="far fa-fw fa-trash-alt more_info delete_product  " title="{t}Remove product{/t}" aria-hidden="true"></i>
                         <i class="far fa-fw  fa-heart favourite" aria-hidden="true"></i>
-                        <img src="{$item.image_src}" data-src="{$item.image_src}"  data-image_website="{$item.image_website}" />
+                        <img src="{$item.image_website}" data-src="{$item.image_src}"  data-image_website="{$item.image_website}" />
                     </div>
 
 
