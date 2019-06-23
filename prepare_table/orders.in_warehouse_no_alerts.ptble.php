@@ -194,7 +194,7 @@ $_dir   = $order_direction;
 if ($order == 'public_id') {
     $order = '`Order File As`';
 } elseif ($order == 'date') {
-    $order = 'if(`Order Replacements In Warehouse without Alerts`>0,`Order Replacement Created Date`,`Order Submitted by Customer Date`)`';
+    $order = 'if(`Order Replacements In Warehouse without Alerts`>0,`Order Replacement Created Date`,`Order Submitted by Customer Date`)';
 } elseif ($order == 'customer') {
     $order = 'O.`Order Customer Name`';
 } elseif ($order == 'dispatch_state') {
@@ -223,8 +223,7 @@ if(`Order Replacements In Warehouse without Alerts`>0,`Order Replacement Created
     ';
 
 $sql_totals = "select count(Distinct O.`Order Key`) as num from $table $where";
-$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-print $sql;
+
 
 
 
