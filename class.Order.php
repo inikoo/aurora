@@ -2695,18 +2695,29 @@ class Order extends DB_Table {
 
         $store = get_object('Store', $this->get('Store Key'));
         $store->update_orders_in_warehouse_data();
+        $account = get_object('Account', 1);
+        $account->update_orders_in_warehouse_data();
+
 
         if ($old_in_warehouse_no_alerts != $in_warehouse_no_alerts or $old_in_warehouse_with_alerts != $in_warehouse_with_alerts) {
             $store->update_orders_in_warehouse_data();
+            $account->update_orders_in_warehouse_data();
+
         }
         if ($old_packed_done != $packed_done) {
             $store->update_orders_packed_data();
+            $account->update_orders_packed_data();
+
         }
         if ($old_approved != $approved) {
             $store->update_orders_approved_data();
+            $account->update_orders_approved_data();
+
         }
         if ($old_dispatched_today != $dispatched_today) {
             $store->update_orders_dispatched_today();
+            $account->update_orders_dispatched_today();
+
         }
 
 
