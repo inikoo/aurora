@@ -3059,7 +3059,7 @@ function refund_new_items_tax($_data, $db, $user, $account) {
 }
 
 
-function replacement_new_items($_data, $db, $user) {
+function replacement_new_items($_data, $db, $user){
 
     global $_locale;// fix this locale stuff
 
@@ -3078,7 +3078,7 @@ function replacement_new_items($_data, $db, $user) {
 
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-   
+
     foreach ($db->query($sql) as $data) {
 
 

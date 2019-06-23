@@ -2221,7 +2221,6 @@ class Account extends DB_Table {
 
         );
 
-        print_r($data_to_update);
 
         $this->fast_update($data_to_update, 'Account Data');
     }
