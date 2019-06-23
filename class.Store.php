@@ -1113,7 +1113,6 @@ class Store extends DB_Table {
                     );
 
 
-
                     $update_sql = $this->db->prepare($sql);
                     $update_sql->execute();
                     if ($update_sql->rowCount() or $date == date('Y-m-d')) {
@@ -1159,7 +1158,7 @@ class Store extends DB_Table {
                 }
 
                 $date = gmdate('Y-m-d H:i:s');
-                $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+                $sql  = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
                 $this->db->prepare($sql)->execute(
                     [
                         $date,
@@ -2326,88 +2325,55 @@ class Store extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND  `Order State` ='InWarehouse' ", $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                $data['warehouse']['number']    = $row['num'];
-                $data['warehouse']['amount']    = $row['amount'];
-                $data['warehouse']['dc_amount'] = $row['dc_amount'];
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $orders_with_replacements_no_alerts = 0;
-
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacements In Warehouse without Alerts`>0 ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $orders_with_replacements_no_alerts += $row['num'];
-
-            }
-        }
-
-
-        $sql = sprintf(
-            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE   `Order Store Key`=%d   AND  `Order State` ='InWarehouse' AND `Order Delivery Note Alert`='Yes'  ",
+            "SELECT ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND  `Order State` ='InWarehouse' and `Order Delivery Note Alert`='No'",
             $this->id
         );
 
-
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-
-
-                $data['warehouse_with_alerts']['number'] = $row['num'];
-                $data['warehouse_with_alerts']['amount'] = $row['amount'];
-
-                $data['warehouse_with_alerts']['dc_amount'] = $row['dc_amount'];
-
-
+                $data['warehouse_no_alerts']['amount']    = $row['amount'];
+                $data['warehouse_no_alerts']['dc_amount'] = $row['dc_amount'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
-        $orders_with_replacements_with_alerts = 0;
-        $sql                                  = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE  `Order Store Key`=%d  AND   `Order Replacements In Warehouse with Alerts`>0 ", $this->id
+        $sql = sprintf(
+            "SELECT ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` WHERE `Order Store Key`=%d  AND  `Order State` ='InWarehouse' and `Order Delivery Note Alert`='Yes'",
+            $this->id
         );
 
         if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $orders_with_replacements_with_alerts += $row['num'];
-
+            foreach ($result as $row) {
+                $data['warehouse_with_alerts']['amount']    = $row['amount'];
+                $data['warehouse_with_alerts']['dc_amount'] = $row['dc_amount'];
             }
         }
 
 
-        $data['warehouse_no_alerts']['number'] = $data['warehouse']['number'] - $data['warehouse_with_alerts']['number'] + $orders_with_replacements_no_alerts;
-        $data['warehouse_no_alerts']['amount'] = $data['warehouse']['amount'] - $data['warehouse_with_alerts']['amount'];
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Store Key`=%d  and (( `Order State` ='InWarehouse' and  `Order Delivery Note Alert`='No'  ) or `Order Replacements In Warehouse without Alerts`>0  ) ", $this->id
+        );
 
-        $data['warehouse_no_alerts']['dc_amount'] = $data['warehouse']['dc_amount'] - $data['warehouse_with_alerts']['dc_amount'];
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $data['warehouse_no_alerts']['number'] = $row['num'];
+            }
+        }
 
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Store Key`=%d  and (( `Order State` ='InWarehouse' and  `Order Delivery Note Alert`='Yes'  ) or `Order Replacements In Warehouse with Alerts`>0  ) ", $this->id
+        );
 
-        $data['warehouse_with_alerts']['number'] += $orders_with_replacements_with_alerts;
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $data['warehouse_with_alerts']['number'] = $row['num'];
+            }
+        }
 
 
         $data_to_update = array(
-            'Store Orders In Warehouse Number' => $data['warehouse']['number'],
-            'Store Orders In Warehouse Amount' => round($data['warehouse']['amount'], 2),
+            'Store Orders In Warehouse Number' => $data['warehouse_with_alerts']['number'] + $data['warehouse_no_alerts']['number'],
+            'Store Orders In Warehouse Amount' => round($data['warehouse_with_alerts']['amount'] + $data['warehouse_no_alerts']['amount'], 2),
 
             'Store Orders In Warehouse No Alerts Number' => $data['warehouse_no_alerts']['number'],
             'Store Orders In Warehouse No Alerts Amount' => round($data['warehouse_no_alerts']['amount'], 2),
@@ -2422,7 +2388,7 @@ class Store extends DB_Table {
 
         $data_to_update = array(
 
-            'Store DC Orders In Warehouse Amount'             => round($data['warehouse']['dc_amount'], 2),
+            'Store DC Orders In Warehouse Amount'             => round($data['warehouse_with_alerts']['dc_amount'] + $data['warehouse_no_alerts']['dc_amount'], 2),
             'Store DC Orders In Warehouse No Alerts Amount'   => round($data['warehouse_no_alerts']['dc_amount'], 2),
             'Store DC Orders In Warehouse With Alerts Amount' => round($data['warehouse_with_alerts']['dc_amount'], 2)
 
@@ -3453,7 +3419,7 @@ class Store extends DB_Table {
                     $this->error_code = 'duplicate_product_code_reference';
                     $this->metadata   = $data['Product Code'];
 
-                   return get_object('Product',$row['Product ID']);
+                    return get_object('Product', $row['Product ID']);
 
                     return;
                 }
@@ -3819,7 +3785,6 @@ class Store extends DB_Table {
                     $this->msg = $product->msg;
                 }
             }
-
 
 
             return $product;
