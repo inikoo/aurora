@@ -453,11 +453,11 @@ function orders_in_warehouse_no_alerts($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    //   print $sql;
+     //  print $sql;
     foreach ($db->query($sql) as $data) {
 
 
-        include_once 'class.Order.php';
+
 
         $operations = '<div id="operations'.$data['Order Key'].'">';
         $class      = 'right';
