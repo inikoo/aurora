@@ -11,7 +11,7 @@
 */
 
 
-$where  = sprintf(' where OTF.`Order Key`=%d', $parameters['parent_key']);
+$where  = sprintf(' where  `Inventory Transaction Type`="Sale" and  OTF.`Order Key`=%d', $parameters['parent_key']);
 $wheref = '';
 if ($parameters['f_field'] == 'code' and $f_value != '') {
     $wheref .= " and OTF.`Product Code` like '".addslashes($f_value)."%'";
@@ -52,4 +52,4 @@ $fields
 
 ";
 
-?>
+

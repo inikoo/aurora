@@ -2584,8 +2584,11 @@ class Order extends DB_Table {
 
         // if($this->id){
 
+
+
+
         $sql = sprintf(
-            'SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  group by `Delivery Note State` ', $this->id
+            "SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') group by `Delivery Note State` ", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -2626,7 +2629,7 @@ class Order extends DB_Table {
 
 
         $sql = sprintf(
-            'SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and `Delivery Note Waiting State`="Customer"  group by `Delivery Note State` ', $this->id
+            "SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') and `Delivery Note Waiting State`='Customer'  group by `Delivery Note State` ", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -2659,7 +2662,7 @@ class Order extends DB_Table {
 
         $sql = sprintf(
             "SELECT count(*) AS num FROM `Delivery Note Dimension` 
-            WHERE  `Delivery Note Order Key`=%d  AND   `Delivery Note State` ='Dispatched' AND `Delivery Note Date Dispatched`>=%s ", $this->id, prepare_mysql(gmdate('Y-m-d 00:00:00'))
+            WHERE  `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') AND   `Delivery Note State` ='Dispatched' AND `Delivery Note Date Dispatched`>=%s ", $this->id, prepare_mysql(gmdate('Y-m-d 00:00:00'))
 
         );
 
