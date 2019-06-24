@@ -268,7 +268,7 @@
     {/if}
 
     {if !isset($is_devel) or !$is_devel  }
-    {if  $zendesk_chat_code!=''}
+    {if  $zendesk_chat_code!='' and false}
 
         <script>
             window.$zopim || (function (d, s) {
