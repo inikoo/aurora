@@ -814,6 +814,9 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
             if ($web_location != '') {
                 $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $web_location);
                 $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'request', $state['request']);
+            }else{
+                $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '');
+                $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'request', $state['request']);
             }
 
         }
@@ -1026,12 +1029,14 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             }
 
             $title = $data['_object']->get('Code');
+            $web_location = '<i class="fal fa-cube"></i> '.$title
 
             break;
         case 'part':
             include_once 'showcase/part.show.php';
             $html  = get_part_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Reference');
+            $web_location = '<i class="fal fa-box"></i> '.$title
 
             break;
         case 'supplier_part':
@@ -1044,12 +1049,14 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/employee.show.php';
             $html  = get_employee_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Name');
+            $web_location = '<i class="fal fa-hand-rock"></i> '.$data['_object']->get('ID');
 
             break;
         case 'contractor':
             include_once 'showcase/contractor.show.php';
             $html  = get_contractor_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Name');
+            $web_location = '<i class="fal fa-hand-spock"></i> '.$data['_object']->get('ID');
 
             break;
         case 'customer':
@@ -1105,6 +1112,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             }
 
             $title = 'W '.$data['_object']->get('Code');
+            $web_location = '<i class="fal fa-warehouse-alt"></i> '.$title;
 
 
             break;
