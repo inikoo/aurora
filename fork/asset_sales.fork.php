@@ -92,9 +92,6 @@ function fork_asset_sales($job) {
                     $store->load_acc_data();
                     $store->update_sales_from_invoices($data['interval'], $this_year, $last_year);
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
             }
 
             $account->load_acc_data();
