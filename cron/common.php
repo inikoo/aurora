@@ -28,6 +28,15 @@ if (class_exists('Memcached')) {
     $mem->addServer($memcache_ip, 11211);
 }
 
+
+
+$redis = new Redis();
+if ($redis->connect('127.0.0.1', 6379)) {
+    $redis_on = true;
+} else {
+    $redis_on = false;
+}
+
 $db = new PDO(
     "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
 );
