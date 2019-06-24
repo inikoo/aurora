@@ -948,17 +948,15 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/webpage.show.php';
             $html  = get_webpage_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Code');
+            $web_location = '<i class="fal fa-browser"></i> '.$title;
 
             break;
-        case 'page_version':
-            include_once 'showcase/webpage_version.show.php';
-            $html = get_webpage_version_showcase($data, $smarty, $user, $db);
 
-            break;
         case 'website':
             include_once 'showcase/website.show.php';
             $html  = get_website_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Code');
+            $web_location = '<i class="fal fa-globe"></i> '.$title;
 
             break;
         case 'dashboard':
@@ -967,10 +965,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             $web_location = '<i class="fal fa-tachometer-alt"></i> '._('Dashboard');
 
             break;
-        case 'node':
-            include_once 'showcase/website_node.show.php';
-            $html = get_website_node_showcase($data, $smarty, $user, $db);
-            break;
+
         case 'upload':
             include_once 'showcase/upload.show.php';
             $html = get_upload_showcase($data, $smarty, $user, $db);
@@ -998,7 +993,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/store.show.php';
             $html  = get_store_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Code');
-            $web_location = '<i class="fal fa-store"></i> '.$data['_object']->get('Code');
+            $web_location = '<i class="fal fa-store"></i> '.$title;
             break;
         case 'products_special_categories':
             include_once 'showcase/products_special_categories.show.php';
@@ -1088,7 +1083,9 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/invoice.show.php';
             $html  = get_invoice_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Public ID');
-            break;
+        $web_location = '<i class="fal fa-file-alt"></i> '.$title;
+
+        break;
         case 'delivery_note':
             include_once 'showcase/delivery_note.show.php';
             $html  = get_delivery_note_showcase($data, $smarty, $user, $db);
@@ -1135,6 +1132,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
                 $html = get_location_showcase($data, $smarty, $user, $db);
             }
             $title = $data['_object']->get('Code');
+            $web_location = '<i class="fal fa-pallet"></i> '.$title;
 
             break;
 
