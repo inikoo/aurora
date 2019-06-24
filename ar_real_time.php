@@ -44,7 +44,10 @@ function real_time_users($redis, $account, $user) {
 
     $html            = '<table class="real_time_users">';
     $real_time_users = array();
-    foreach ($redis->zrange('_IU'.$account->get('Code'), 0, 100, 'WITHSCORES') as $user_key => $timestamp) {
+
+
+
+    foreach (array_reverse($redis->zrange('_IU'.$account->get('Code'), 0, 100, 'WITHSCORES')) as $user_key => $timestamp) {
 
 
         $_user = $redis->hgetall('_IUObj'.$account->get('Code').':'.$user_key);
