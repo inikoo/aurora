@@ -127,16 +127,7 @@
 
     <![endif]-->
 
-    {if !isset($is_devel) or !$is_devel  or false }
-        <script src="https://browser.sentry-cdn.com/5.3.0/bundle.min.js" crossorigin="anonymous"></script>
-        <script>
-            Sentry.init({
-                dsn: 'https://ca602819cbd14ce99a6d3ab94e1c5f04@sentry.io/1329969' ,
-                release: "au-web@1.0"
-
-            });
-        </script>
-    {/if}
+ 
     <link rel="canonical" href="{$webpage->get('URL')}"/>
 
     {if $logged_in or isset($is_unsubscribe) }
