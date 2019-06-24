@@ -15,6 +15,36 @@ require_once 'common.php';
 require_once 'utils/object_functions.php';
 
 
+$european_union_2alpha = array(
+    'NL',
+    'BE',
+    'GB',
+    'BG',
+    'ES',
+    'IE',
+    'IT',
+    'AT',
+    'GR',
+    'CY',
+    'LV',
+    'LT',
+    'LU',
+    'MT',
+    'PT',
+    'PL',
+    'FR',
+    'RO',
+    'SE',
+    'DE',
+    'SK',
+    'SI',
+    'FI',
+    'DK',
+    'CZ',
+    'HU',
+    'EE'
+);
+
 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
 if (!$id) {
     exit;
@@ -68,6 +98,26 @@ if ($account->get('Account Country 2 Alpha Code') == $invoice->get('Invoice Addr
 
     $invoice_alpha_code = 'zOF';
 }
+
+if ($invoice->get('Invoice Address Country 2 Alpha Code') == 'SK') {
+    $code_sum = '3';
+    $code_tax = 'A1';
+} elseif (in_array($invoice->get('Invoice Address Country 2 Alpha Code'), $european_union_2alpha)) {
+
+    if ($invoice->get('Invoice Tax Code') == 'EX') {
+        $code_sum = '16';
+        $code_tax = 'X';
+    } else {
+        $code_sum = '3';
+        $code_tax = 'A1';
+    }
+
+
+} else {
+    $code_sum = '17t';
+    $code_tax = 'X';
+}
+
 
 $text = "R00\tT00\r\n";
 
@@ -131,7 +181,8 @@ $invoice_header_data = array(
     '',
     '/',
     0,
-    '', '',
+    '',
+    '',
     0
 
 );
@@ -190,9 +241,18 @@ $row_data = array(
     '(Nedefinované)',
     'X',
     '(Nedefinované)',
-    '','','','','','',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
     'X',
-    '','','',0,0
+    '',
+    '',
+    '',
+    0,
+    0
 );
 
 
@@ -204,7 +264,14 @@ $invoice_row .= "\r\n";
 $text        .= $invoice_row;
 
 
+
+
 if ($invoice->get('Invoice Shipping Net Amount') != 0) {
+
+
+
+
+
     $row_data = array(
         'R02',
         0,
@@ -215,7 +282,7 @@ if ($invoice->get('Invoice Shipping Net Amount') != 0) {
         $invoice->get('Invoice Shipping Net Amount'),
         round($invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
         'Shipping '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
-        '3',
+        $code_sum,
         '',
         'X',
         '(Nedefinované)',
@@ -225,9 +292,18 @@ if ($invoice->get('Invoice Shipping Net Amount') != 0) {
         '(Nedefinované)',
         'X',
         '(Nedefinované)',
-        '','','','','','',
-        'A1',
-        '','','',0,0
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        $code_tax,
+        '',
+        '',
+        '',
+        0,
+        0
     );
 
     $invoice_row = "";
@@ -241,6 +317,11 @@ if ($invoice->get('Invoice Shipping Net Amount') != 0) {
 
 
 if ($invoice->get('Invoice Charges Net Amount') != 0) {
+
+
+
+
+
     $row_data = array(
         'R02',
         0,
@@ -251,7 +332,7 @@ if ($invoice->get('Invoice Charges Net Amount') != 0) {
         $invoice->get('Invoice Charges Net Amount'),
         round($invoice->get('Invoice Charges Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
         'Charges '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
-        '3',
+        $code_sum,
         '',
         'X',
         '(Nedefinované)',
@@ -261,9 +342,18 @@ if ($invoice->get('Invoice Charges Net Amount') != 0) {
         '(Nedefinované)',
         'X',
         '(Nedefinované)',
-        '','','','','','',
-        'A1',
-        '','','',0,0
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        $code_tax,
+        '',
+        '',
+        '',
+        0,
+        0
     );
 
     $invoice_row = "";
@@ -297,9 +387,18 @@ if ($invoice->get('Invoice Total Tax Amount') != 0) {
         '(Nedefinované)',
         'X',
         '(Nedefinované)',
-        '','','','','','',
-        'A1',
-        '','','',0,0
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        $code_tax,
+        '',
+        '',
+        '',
+        0,
+        0
     );
 
     $invoice_row = "";
@@ -313,6 +412,7 @@ if ($invoice->get('Invoice Total Tax Amount') != 0) {
 
 
 $text = mb_convert_encoding($text, 'iso-8859-2', 'auto');
+
 
 header("Content-type: text/plain");
 header("Content-Disposition: attachment; filename=".$invoice->get('Invoice Public ID').".txt");
