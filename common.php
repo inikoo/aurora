@@ -152,6 +152,9 @@ if ($user->id) {
     $redis->zadd('_IU'.$account->get('Code'), gmdate('U'), $user->id);
 
 
+    $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'alias', $user->get('Alias'));
+
+
     switch ($user->get('User Type')) {
         case 'Staff':
             break;

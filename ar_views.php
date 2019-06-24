@@ -20,7 +20,7 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
     case 'views':
-        get_view($db, $smarty, $user, $account, $modules);
+        get_view($db, $smarty, $user, $account, $modules,$redis);
         break;
     case 'widget_details':
         get_widget_details($db, $smarty, $user, $account, $modules);
@@ -81,7 +81,7 @@ function get_widget_details($db, $smarty, $user, $account, $modules) {
 }
 
 
-function get_view($db, $smarty, $user, $account, $modules) {
+function get_view($db, $smarty, $user, $account, $modules,$redis) {
 
 
     global $session;
@@ -803,12 +803,17 @@ function get_view($db, $smarty, $user, $account, $modules) {
         if (isset($data['metadata']['reload_showcase']) or !($data['old_state']['module'] == $state['module'] and $data['old_state']['section'] == $state['section'] and $data['old_state']['object'] == $state['object'] and $data['old_state']['key'] == $state['key'])) {
 
 
-            list($response['object_showcase'], $title) = get_object_showcase(
+            list($response['object_showcase'], $title,$web_location) = get_object_showcase(
                 (isset($modules[$state['module']]['sections'][$state['section']]['showcase']) ? $modules[$state['module']]['sections'][$state['section']]['showcase'] : $state['object']), $state, $smarty, $user, $db, $account
             );
 
             if ($title != '') {
                 $state['title'] = $title;
+            }
+
+            if ($web_location != '') {
+                $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $web_location);
+                $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'request', $state['request']);
             }
 
         }
@@ -923,7 +928,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 
 
     $title = '';
-
+    $web_location='';
     if (preg_match('/\_edit$/', $data['tab'])) {
         return array(
             '',
@@ -956,6 +961,9 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'dashboard':
             $html = '';
+
+            $web_location = '<i class="fal fa-tachometer-alt"></i> '._('Dashboard');
+
             break;
         case 'node':
             include_once 'showcase/website_node.show.php';
@@ -987,8 +995,8 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 
             include_once 'showcase/store.show.php';
             $html  = get_store_showcase($data, $smarty, $user, $db);
-            $title = $data['_object']->get('Name');
-
+            $title = $data['_object']->get('Code');
+            $web_location = '<i class="fal fa-store"></i> '.$data['_object']->get('Code');
             break;
         case 'products_special_categories':
             include_once 'showcase/products_special_categories.show.php';
@@ -1048,12 +1056,14 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/customer.show.php';
             $html  = get_customer_showcase($data, $smarty, $user, $db);
             $title = 'C'.$data['_object']->get('Formatted ID');
+            $web_location = '<i class="fal fa-user"></i> '.$title;
+
             break;
         case 'supplier':
             include_once 'showcase/supplier.show.php';
             $html  = get_supplier_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Code');
-
+            $web_location = '<i class="fal fa-hand-holding-box"></i> '.$title;
             break;
         case 'agent':
             include_once 'showcase/agent.show.php';
@@ -1063,6 +1073,8 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/order.show.php';
             $html  = get_order_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Public ID');
+            $web_location = '<i class="fal fa-shopping-cart"></i> '.$title;
+
 
             break;
         case 'invoice':
@@ -1318,7 +1330,8 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 
     return array(
         $html,
-        $title
+        $title,
+        $web_location
     );
 
 }
