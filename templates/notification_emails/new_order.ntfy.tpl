@@ -252,7 +252,7 @@
                                                                             align="right" valign="top"> {$order->get('Shipping Net Amount')}
                                                                         </td>
                                                                     </tr>
-                                                                    {if ($order->get('Order Deal Amount Off') != 0}
+                                                                    {if $order->get('Order Deal Amount Off') != 0}
 
                                                                     <tr class="subtotal" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
 
