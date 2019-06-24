@@ -24,7 +24,7 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo = $_REQUEST['tipo'];
 
-switch ($tipo) {
+switch ($tipo){
     case 'users':
         real_time_users($redis, $account, $user);
         break;
@@ -43,16 +43,13 @@ switch ($tipo) {
 function real_time_users($redis, $account, $user) {
 
     $html            = '<table class="real_time_users">';
-    $real_time_users =$redis->ZREVRANGE('_IU'.$account->get('Code'), 0, 100, 'WITHSCORES');
-
-
+    $real_time_users = $redis->ZREVRANGE('_IU'.$account->get('Code'), 0, 100, 'WITHSCORES');
 
 
     foreach ($real_time_users as $user_key => $timestamp) {
 
 
         $_user = $redis->hgetall('_IUObj'.$account->get('Code').':'.$user_key);
-
 
 
         if (isset($_user['alias'])) {
@@ -68,23 +65,22 @@ function real_time_users($redis, $account, $user) {
             }
 
 
-            if ($user_key != $user->id) {
+            // if ($user_key != $user->id) {
 
 
-                if (!empty($_user['web_location'])) {
-                    $web_location = $_user['web_location'];
+            if (!empty($_user['web_location'])) {
+                $web_location = $_user['web_location'];
 
-                    $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td onclick="change_view(\''.$_user['request'].'\')" class="button">'.$web_location.'</td>';
+                $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td onclick="change_view(\''.$_user['request'].'\')" class="button">'.$web_location.'</td>';
 
 
-                } else {
-                    $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td onclick="change_view(\''.$_user['request'].'\')" class="button"><i class="fa fal fa-eye-evil"></i></td>';
-
-                }
-            }else{
-                $html .= '<tr><td>'.$icon.'</td><td class="italic">'._('Me').'</td><td></td>';
+            } else {
+                $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td onclick="change_view(\''.$_user['request'].'\')" class="button"><i class="fal fa-eye-evil"></i></td>';
 
             }
+            // }else{
+            //     $html .= '<tr><td>'.$icon.'</td><td class="italic">'._('Me').'</td><td></td>';
+            //}
 
 
             $html .= '</tr>';
