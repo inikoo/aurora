@@ -2879,6 +2879,8 @@ class Store extends DB_Table {
             );
 
 
+
+
             $this->fast_update($data_to_update, 'Store Data');
 
             $data_to_update = array(

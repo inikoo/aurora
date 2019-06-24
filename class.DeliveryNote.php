@@ -1462,13 +1462,6 @@ class DeliveryNote extends DB_Table {
 
 
 
-                if ( !( ($this->get('State Index') == 80 or $this->get('State Index') == 90 )    and  in_array($this->data['Delivery Note Type'],array('Replacement & Shortages', 'Replacement', 'Shortages'))) ) {
-                    $this->error = true;
-                    $this->msg   = 'Replacement note must be closed or approved to dispatch';
-
-                    return;
-                }
-
                 $this->update_field('Delivery Note Date Done Approved', '', 'no_history');
                 $this->update_field('Delivery Note State', 'Packed', 'no_history');
                 $this->update_field('Delivery Note Approved Done', 'No', 'no_history');
