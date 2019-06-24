@@ -825,6 +825,42 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
 
 
         $response['object_showcase'] = '_';
+
+
+       // print_r($state);
+
+        switch($state['module']) {
+        case 'suppliers':
+            switch($state['section']) {
+                case 'agents':
+                    $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-user-secret"></i> '._('Agents'));
+                    break;
+                case 'categories':
+                    $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-sitemap"></i> '._("Supplier's categories"));
+                    break;
+                default:
+                    $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-hand-holding-box"></i> '._('Suppliers'));
+
+            }
+
+            break;
+            case 'dashboard':
+                switch($state['section']) {
+
+                    default:
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-tachometer-alt"></i> '._('Dashboard'));
+
+                }
+
+                break;
+        default:
+            $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '');
+
+        }
+
+
+
+
     }
 
     $state['metadata'] = (isset($data['metadata']) ? $data['metadata'] : array());
