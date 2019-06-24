@@ -127,7 +127,7 @@
 
     <![endif]-->
 
-    {if !isset($is_devel) or !$is_devel  }
+    {if !isset($is_devel) or !$is_devel  or false }
         <script src="https://browser.sentry-cdn.com/5.3.0/bundle.min.js" crossorigin="anonymous"></script>
         <script>
             Sentry.init({
