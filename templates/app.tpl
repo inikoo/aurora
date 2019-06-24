@@ -20,7 +20,7 @@
     {/if}
     <script src="/assets/aurora_libs.min.js?v190319v2"></script>
 
-    <script src="/assets/aurora.min.js?v190611"></script>
+    <script src="/assets/aurora.min.js?v190624"></script>
 
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 
@@ -137,16 +137,18 @@
         <div class="top_buttons">
 
 
-            <div id="help_button" onclick="show_side_content('help')" class="side_content_icon square_button {if $_side_block=='help'}selected{/if}" title="{t}Help{/t}">
+            <div data-type="help" onclick="show_side_content('help')" class="help_button side_content_icon square_button {if $_side_block=='help'}selected{/if}" title="{t}Help{/t}">
                 <i class="fa fa-question-circle fa-fw  "></i>
             </div>
 
-
+            <div data-type="real_time_users" onclick="show_side_content('real_time_users')" class="real_time_users_button side_content_icon square_button {if $_side_block=='real_time_users'}selected{/if}" title="{t}Real time users{/t}">
+                <i class="fa fa-user-circle fa-fw  "></i>
+            </div>
             <div style="clear:both"></div>
         </div>
 
 
-        <div id="help" class="side_content ">
+        <div  class="help side_content hide">
             <div class="top">
                 {t}Help{/t}
             </div>
@@ -156,8 +158,17 @@
             <div class="content"></div>
         </div>
 
+        <div  class="real_time_users side_content hide">
+            <div class="top">
+                {t}Real-time users{/t}
+            </div>
 
-        <div id="whiteboard" class="side_content ">
+            <div class="content">xxxx</div>
+        </div>
+
+
+
+        <div  class="whiteboard side_content hide">
             <div class="top">
                 {t}Whiteboard{/t}
             </div>

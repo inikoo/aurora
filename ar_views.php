@@ -86,6 +86,9 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
     global $session;
 
+
+
+
     require_once 'utils/parse_request.php';
 
     $data = prepare_values(
@@ -936,7 +939,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'webpage':
             include_once 'showcase/webpage.show.php';
-            $html = get_webpage_showcase($data, $smarty, $user, $db);
+            $html  = get_webpage_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Code');
 
             break;
@@ -947,7 +950,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'website':
             include_once 'showcase/website.show.php';
-            $html = get_website_showcase($data, $smarty, $user, $db);
+            $html  = get_website_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Code');
 
             break;
@@ -1025,7 +1028,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'supplier_part':
             include_once 'showcase/supplier_part.show.php';
-            $html = get_supplier_part_showcase($data, $smarty, $user, $db);
+            $html  = get_supplier_part_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Reference');
 
             break;
@@ -1037,7 +1040,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'contractor':
             include_once 'showcase/contractor.show.php';
-            $html = get_contractor_showcase($data, $smarty, $user, $db);
+            $html  = get_contractor_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Name');
 
             break;
@@ -3020,10 +3023,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     }
 
 
-
-
-
-
     if (isset($modules[$data['module']]['sections'][$data['section']]['tabs'])) {
 
 
@@ -3031,9 +3030,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
     } else {
         $tabs = array();
     }
-
-
-
 
 
     if (isset($modules[$data['module']]['sections'][$data['section']]['tabs'][$data['tab']] ['subtabs'])) {
@@ -3082,7 +3078,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
 
     );
-
 
 
     if ($data['section'] == 'mailshot') {
@@ -6134,7 +6129,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            }elseif ($state['section'] == 'pending_delivery_notes') {
+            } elseif ($state['section'] == 'pending_delivery_notes') {
 
                 $branch[] = array(
                     'label'     => _('Pending delivery notes'),
@@ -8524,8 +8519,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
         case 'accounting_server':
 
 
-
-
             if ($state['section'] == 'dashboard') {
 
                 $branch[] = array(
@@ -8613,8 +8606,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            }
-            elseif ($state['section'] == 'payments') {
+            } elseif ($state['section'] == 'payments') {
 
                 if ($state['parent'] == 'account') {
                     $branch[] = array(
@@ -8694,7 +8686,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 );
 
 
-            }elseif ($state['section'] == 'deleted_invoices_server') {
+            } elseif ($state['section'] == 'deleted_invoices_server') {
 
 
                 $branch[] = array(

@@ -144,3 +144,6 @@ ALTER TABLE `Inventory Transaction Fact`
   DROP `Map To Order Transaction Fact XHTML Info`,
   DROP `Inventory Transaction State`;
 
+  ALTER TABLE `User Dimension` CHANGE `User Type` `User Type` ENUM('Staff','Supplier','Administrator','Warehouse','Contractor','Agent') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
+
