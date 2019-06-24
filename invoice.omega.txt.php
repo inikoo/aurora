@@ -190,7 +190,7 @@ $row_data = array(
     '(Nedefinované)',
     'X',
     '(Nedefinované)',
-    '','','','','',
+    '','','','','','',
     'X',
     '','','',0,0
 );
@@ -225,7 +225,7 @@ if ($invoice->get('Invoice Shipping Net Amount') != 0) {
         '(Nedefinované)',
         'X',
         '(Nedefinované)',
-        '','','','','',
+        '','','','','','',
         'A1',
         '','','',0,0
     );
@@ -261,7 +261,7 @@ if ($invoice->get('Invoice Charges Net Amount') != 0) {
         '(Nedefinované)',
         'X',
         '(Nedefinované)',
-        '','','','','',
+        '','','','','','',
         'A1',
         '','','',0,0
     );
@@ -297,7 +297,7 @@ if ($invoice->get('Invoice Total Tax Amount') != 0) {
         '(Nedefinované)',
         'X',
         '(Nedefinované)',
-        '','','','','',
+        '','','','','','',
         'A1',
         '','','',0,0
     );
