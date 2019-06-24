@@ -13,7 +13,7 @@
 require_once 'common.php';
 
 $smarty->assign('_request', $_SERVER['REQUEST_URI']);
-$smarty->assign('_side_block', (isset($_SESSION['side_block']) ? $_SESSION['side_block'] : 'whiteboard'));
+$smarty->assign('_side_block', (!empty($session->get('side_block')) ? $session->get('side_block') : 'real_time_users'));
 
 ;
 require_once 'external_libs/mobile_detect/Mobile_Detect.php';

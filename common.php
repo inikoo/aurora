@@ -150,12 +150,25 @@ if ($user->id) {
     $user->read_stores();
     $user->read_websites();
     $user->read_warehouses();
-    if ($user->data['User Type'] == 'Supplier') {
-        $user->read_suppliers();
 
+    $redis->zadd('_IU'.$account->get('Code'), gmdate('U'), $user->id);
+
+
+    switch ($user->get('User Type')){
+        case 'Staff':
+           // $redis->zadd('_uS'.$account->get('Code'), gmdate('U'), $user->id);
+            break;
+        case 'Contractor':
+           // $redis->zadd('_uC'.$account->get('Code'), gmdate('U'), $user->id);
+            break;
+        case 'Supplier':
+            $user->read_suppliers();
+           // $redis->zadd('_uS'.$account->get('Code'), gmdate('U'), $user->id);
+            break;
+        case 'Agent':
+          //  $redis->zadd('_uA'.$account->get('Code'), gmdate('U'), $user->id);
+            break;
     }
-
-
 } else {
     $locale = $account->get('Locale').'.UTF-8';
 }
