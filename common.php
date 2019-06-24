@@ -151,7 +151,7 @@ if ($user->id) {
     $user->read_websites();
     $user->read_warehouses();
 
-    $redis->zadd('_IU'.$account->get('Code'), gmdate('U'), $user->id);
+ //   $redis->zadd('_IU'.$account->get('Code'), gmdate('U'), $user->id);
 
 
     switch ($user->get('User Type')){
