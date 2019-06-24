@@ -8489,6 +8489,12 @@ input.input_file {
   margin-top: 10px;
   text-align: center; }
 
+.real_time_users td {
+  padding-right: 5px; }
+  .real_time_users td.button {
+    padding-right: 0px;
+    padding-left: 10px; }
+
 @media screen and (max-width: 1550px) {
   .grid {
     padding-left: 1300px; }
