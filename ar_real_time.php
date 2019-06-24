@@ -26,7 +26,7 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
     case 'users':
-        real_time_users($redis, $account,$user);
+        real_time_users($redis, $account, $user);
         break;
 
     default:
@@ -40,12 +40,11 @@ switch ($tipo) {
 }
 
 
-function real_time_users($redis, $account,$user) {
+function real_time_users($redis, $account, $user) {
 
-    $html = '<table class="real_time_users">';
+    $html            = '<table class="real_time_users">';
     $real_time_users = array();
     foreach ($redis->zrange('_IU'.$account->get('Code'), 0, 100, 'WITHSCORES') as $user_key => $timestamp) {
-
 
 
         $_user = $redis->hgetall('_IUObj'.$account->get('Code').':'.$user_key);
@@ -54,8 +53,7 @@ function real_time_users($redis, $account,$user) {
         if (isset($_user['alias'])) {
 
 
-
-            $date= strftime("%a %e %b %Y %H:%M %Z", $timestamp);
+            $date = strftime("%a %e %b %Y %H:%M %Z", $timestamp);
 
             if ((gmdate('U') - $timestamp) < 200) {
                 $icon = '<i class="fa fa-fw fa-circle success" title="'.$date.'"></i>';
@@ -64,17 +62,24 @@ function real_time_users($redis, $account,$user) {
 
             }
 
-            if(!empty($_user['web_location'])  and  $user_key!=$user->id){
-                $web_location=$_user['web_location'];
-                $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td onclick="change_view(\''.$_user['request'].'\')" class="button">'.$web_location.'</td>';
+
+            if ($user_key != $user->id) {
 
 
+                if (!empty($_user['web_location'])) {
+                    $web_location = $_user['web_location'];
+
+                    $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td onclick="change_view(\''.$_user['request'].'\')" class="button">'.$web_location.'</td>';
+
+
+                } else {
+                    $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td onclick="change_view(\''.$_user['request'].'\')" class="button"><i class="fa fal fa-eye-evil"></i></td>';
+
+                }
             }else{
-                $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td></td>';
+                $html .= '<tr><td>'.$icon.'</td><td class="italic">'._('Me').'</td><td></td>';
 
             }
-
-
 
 
             $html .= '</tr>';
@@ -85,7 +90,6 @@ function real_time_users($redis, $account,$user) {
     }
 
     $html .= '</table>';
-
 
 
     $response = array(
