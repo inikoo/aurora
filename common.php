@@ -48,7 +48,6 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 $account = new Account($db);
 
 
-
 if ($account->get('Account State') != 'Active') {
 
 
@@ -85,11 +84,10 @@ $session->start();
 $session->set('account', $account->get('Code'));
 
 
-
 /**
  * @var Smarty
  */
-$smarty               = new Smarty();
+$smarty = new Smarty();
 $smarty->setTemplateDir('templates');
 $smarty->setCompileDir('server_files/smarty/templates_c');
 $smarty->setCacheDir('server_files/smarty/cache');
@@ -98,11 +96,11 @@ $smarty->addPluginsDir('./smarty_plugins');
 $smarty->assign('_DEVEL', _DEVEL);
 
 
-if(isset($auth_data)){
+if (isset($auth_data)) {
 
-   foreach($auth_data['auth_token'] as $_key=>$_value){
-       $_SESSION[$_key]=$_value;
-   }
+    foreach ($auth_data['auth_token'] as $_key => $_value) {
+        $_SESSION[$_key] = $_value;
+    }
 }
 
 
@@ -136,7 +134,7 @@ if ($_SESSION['logged_in_page'] != 0) {
     exit;
 
 }
-$user = get_object('User',$_SESSION['user_key']);
+$user = get_object('User', $_SESSION['user_key']);
 
 //$_client_locale='en_GB.UTF-8';
 
@@ -151,22 +149,18 @@ if ($user->id) {
     $user->read_websites();
     $user->read_warehouses();
 
- //   $redis->zadd('_IU'.$account->get('Code'), gmdate('U'), $user->id);
+    $redis->zadd('_IU'.$account->get('Code'), gmdate('U'), $user->id);
 
 
-    switch ($user->get('User Type')){
+    switch ($user->get('User Type')) {
         case 'Staff':
-           // $redis->zadd('_uS'.$account->get('Code'), gmdate('U'), $user->id);
             break;
         case 'Contractor':
-           // $redis->zadd('_uC'.$account->get('Code'), gmdate('U'), $user->id);
             break;
         case 'Supplier':
             $user->read_suppliers();
-           // $redis->zadd('_uS'.$account->get('Code'), gmdate('U'), $user->id);
             break;
         case 'Agent':
-          //  $redis->zadd('_uA'.$account->get('Code'), gmdate('U'), $user->id);
             break;
     }
 } else {

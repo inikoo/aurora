@@ -362,8 +362,7 @@ switch ($time) {
         }
         break;
     default:
-
-     //   $redis->zRemRangeByScore('_IU'.$account->get('Code'), 0, gmdate('U') - 1800);
+        $redis->zRemRangeByScore('_IU'.$account->get('Code'), 0, gmdate('U') - 1800);
 
         break;
 }
