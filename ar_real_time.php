@@ -43,14 +43,16 @@ switch ($tipo) {
 function real_time_users($redis, $account, $user) {
 
     $html            = '<table class="real_time_users">';
-    $real_time_users = array();
+    $real_time_users =$redis->ZREVRANGE('_IU'.$account->get('Code'), 0, 100, 'WITHSCORES');
 
 
 
-    foreach (array_reverse($redis->zrange('_IU'.$account->get('Code'), 0, 100, 'WITHSCORES')) as $user_key => $timestamp) {
+
+    foreach ($real_time_users as $user_key => $timestamp) {
 
 
         $_user = $redis->hgetall('_IUObj'.$account->get('Code').':'.$user_key);
+
 
 
         if (isset($_user['alias'])) {
