@@ -1029,14 +1029,14 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             }
 
             $title = $data['_object']->get('Code');
-            $web_location = '<i class="fal fa-cube"></i> '.$title
+            $web_location = '<i class="fal fa-cube"></i> '.$title;
 
             break;
         case 'part':
             include_once 'showcase/part.show.php';
             $html  = get_part_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Reference');
-            $web_location = '<i class="fal fa-box"></i> '.$title
+            $web_location = '<i class="fal fa-box"></i> '.$title;
 
             break;
         case 'supplier_part':
