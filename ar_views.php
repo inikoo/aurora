@@ -797,6 +797,7 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
 
     //  print_r($state);
 
+    $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'request', $state['request']);
 
     if ($state['object'] != '' and ($modules[$state['module']]['sections'][$state['section']]['type'] == 'object' or isset($modules[$state['module']]['sections'][$state['section']]['showcase']))) {
 
@@ -813,10 +814,8 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
 
             if ($web_location != '') {
                 $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $web_location);
-                $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'request', $state['request']);
             }else{
                 $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '');
-                $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'request', $state['request']);
             }
 
         }
