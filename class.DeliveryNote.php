@@ -1584,7 +1584,7 @@ class DeliveryNote extends DB_Table {
 
             case 'Approved':
 
-                if ($this->get('State Index') != 80 or  in_arrray($this->data['Delivery Note Type'] , array('Replacement & Shortages', 'Replacement', 'Shortages'))   ) {
+                if ($this->get('State Index') != 80 or  in_array($this->data['Delivery Note Type'] , array('Replacement & Shortages', 'Replacement', 'Shortages'))   ) {
                     return;
                 }
                 $this->update_field('Delivery Note Date Dispatched Approved', $date, 'no_history');
