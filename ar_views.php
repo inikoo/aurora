@@ -830,6 +830,29 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
        // print_r($state);
 
         switch($state['module']) {
+
+            case 'inventory':
+                switch($state['section']) {
+                    case 'barcodes':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-barcode"></i> '._("Retail Barcodes"));
+
+                        break;
+                    case 'dashboard':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-tachometer"></i> '._("Inventory dashboard"));
+                        break;
+                    case 'categories':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-sitemap"></i> '._("Part's categories"));
+                        break;
+                    case 'stock_history':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-scanner"></i> '._("Stock history"));
+                        break;
+                    default:
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-boxes"></i> '._("Inventory (Parts)"));
+
+                }
+
+                break;
+
         case 'suppliers':
             switch($state['section']) {
                 case 'agents':
@@ -849,6 +872,41 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
 
                     default:
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-tachometer-alt"></i> '._('Dashboard'));
+
+                }
+
+                break;
+            case 'customers_server ':
+                switch($state['section']) {
+
+                    default:
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users"></i> '._('Customers (All stores)'));
+
+                }
+
+                break;
+            case 'orders_server':
+                switch($state['section']) {
+                    case 'group_by_store':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-compress"></i> '._("Orders by store"));
+                        break;
+                    case 'dashboard':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-stream"></i> '._("Pending orders"));
+                        break;
+                    default:
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-shopping-cart"></i> '._('Orders (All stores)'));
+
+                }
+
+                break;
+            case 'customers_server':
+                switch($state['section']) {
+                    case 'email_communications':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-paper-plane"></i> '._('Notifications.').' ('._('All stores').')');
+                        break;
+
+                    default:
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users"></i> '._('Customers (All stores)'));
 
                 }
 
