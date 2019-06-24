@@ -163,7 +163,7 @@
                 {t}Real-time users{/t}
             </div>
 
-            <div class="content">xxxx</div>
+            <div class="content"></div>
         </div>
 
 
