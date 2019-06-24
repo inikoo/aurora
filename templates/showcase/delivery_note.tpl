@@ -95,7 +95,7 @@
             </div>
             <div class="dot"></div>
         </li>
-    {/if}
+    
 
         {if $delivery_note->get('State Index')<0   }
             <li id="received_node" class="li  cancelled">
