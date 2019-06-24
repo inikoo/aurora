@@ -107,7 +107,7 @@
 
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
-    {if !isset($is_devel) or !$is_devel  }
+    {if !isset($is_devel) or !$is_devel  or false}
         <script src="https://browser.sentry-cdn.com/5.3.0/bundle.min.js" crossorigin="anonymous"></script>
         <script>
             Sentry.init({ dsn: 'https://8f17945abb95493692010f7026553f71@sentry.io/1329970', release: "au-web@1.0"});
