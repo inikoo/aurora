@@ -114,6 +114,13 @@ function get_order_showcase($data, $smarty, $user, $db) {
     }
     $smarty->assign('pdf_with_origin', $pdf_with_origin);
 
+    if ($store->settings('invoice_show_CPNP') == 'Yes') {
+        $pdf_with_CPNP = true;
+    } else {
+        $pdf_with_CPNP = false;
+    }
+    $smarty->assign('pdf_with_CPNP', $pdf_with_CPNP);
+
 
     if ($data['section'] == 'refund.new') {
         $smarty->assign('zero_amount', money(0, $store->get('Store Currency Code')));

@@ -1238,6 +1238,16 @@ right connector from last child*/
   text-align: center;
 }
 
+.real_time_users{
+
+  td{padding-right:5px;
+
+  &.button{padding-right:0px;padding-left: 10px}
+  }
+
+
+}
+
 
 @import 'media_screen_small';
 
@@ -1458,3 +1468,4 @@ h2.dashboard{
 
 
 }
+

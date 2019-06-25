@@ -85,17 +85,6 @@
         </li>
 
 
-        <li id="dispatch_approved_node"
-            class="li  {if $delivery_note->get('State Index')>=90  }complete{/if}   {if $delivery_note->get('State Index')<0} {if $delivery_note->get('Delivery Note Date Dispatched Approved')=='' }hide{else}complete{/if}{/if}">
-            <div class="label">
-                <span class="state ">{t}Dispatch Approved{/t} <span></i></span></span>
-            </div>
-            <div class="timestamp">
-                <span class="Delivery_Note_Dispatched_Approved_Datetime">&nbsp;{$delivery_note->get('Dispatched Approved Datetime')}</span>
-            </div>
-            <div class="dot"></div>
-        </li>
-
 
         <li id="dispatched_node" class="li  {if $delivery_note->get('State Index')>=100  }complete{/if}  {if $delivery_note->get('State Index')<0 }hide{/if}   ">
             <div class="label">

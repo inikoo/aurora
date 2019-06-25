@@ -561,7 +561,8 @@ $object_fields = array(
                     <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_barcode"  ><i class=" far fa-fw '.($object->settings('invoice_show_barcode')=='Yes'?'fa-check-square':'fa-square').'" ></i> '._('Product barcode').' </span>  <br>
                     <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_weight"  ><i class=" far fa-fw '.($object->settings('invoice_show_weight')=='Yes'?'fa-check-square':'fa-square').'" ></i> '._('Weight').' </span>  <br>
                     <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_origin"  > <i class=" far fa-fw '.($object->settings('invoice_show_origin')=='Yes'?'fa-check-square':'fa-square').'" ></i> '._('Country of origin').'</span>  <br>
-                    </div>
+                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_CPNP"  > <i class=" far fa-fw '.($object->settings('invoice_show_CPNP')=='Yes'?'fa-check-square':'fa-square').'" ></i> '._('CPNP').'</span>  <br>
+                   </div>
                     ',
 
                 'label'    => _('Display').':',

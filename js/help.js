@@ -87,6 +87,24 @@ function save_whiteboard_content(object){
 
 }
 
+
+function get_real_time_users() {
+
+    var request = "/ar_real_time.php?tipo=users";
+
+    $.getJSON(request, function (data) {
+
+
+        $('.real_time_users.side_content  .content').html(data.html).removeClass('hide');
+
+
+
+
+    })
+
+
+}
+
 function help() {
 
     var request = "/ar_help.php?state=" +JSON.stringify(state)
@@ -206,26 +224,23 @@ function show_answer(element) {
 }
 
 
-
-
-
-
 function show_side_content(type) {
-    help()
-/*
+
+
     $('.side_content').addClass('hide')
     $('.side_content_icon').removeClass('selected')
 
-    switch (type){
+
+    $('#notifications .'+type+'_button').addClass('selected')
+
+    $('.side_content.' + type).removeClass('hide')
+    switch (type) {
         case 'help':
-            $('#help').removeClass('hide')
-            $('#help_button').addClass('selected')
             help()
             break;
-        case 'whiteboard':
-            $('#whiteboard').removeClass('hide')
-            $('#whiteboard_button').addClass('selected')
-            whiteboard()
+        case 'real_time_users':
+            get_real_time_users()
+
             break;
     }
 
@@ -235,5 +250,5 @@ function show_side_content(type) {
     $.getJSON(request, function (data) {
     })
 
-*/
+
 }
