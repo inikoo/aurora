@@ -4127,6 +4127,7 @@ class Store extends DB_Table {
             case 'invoice show barcode':
             case 'invoice show weight':
             case 'invoice show origin':
+            case 'invoice show CPNP':
             case 'send invoice attachment in delivery confirmation':
             case 'send dn attachment in delivery confirmation':
 

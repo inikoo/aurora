@@ -654,6 +654,9 @@ trait Send_Email {
                         if ($this->store->settings('invoice_show_origin') == 'Yes') {
                             $invoice_settings .= '&origin=1';
                         }
+                        if ($this->store->settings('invoice_show_CPNP') == 'Yes') {
+                            $invoice_settings .= '&CPNP=1';
+                        }
 
                         $this->invoice_pdf = file_get_contents($aurora_url.'/pdf/invoice.pdf.php?id='.$this->order->get('Order Invoice Key').$invoice_settings.'&sak='.$sak);
 
