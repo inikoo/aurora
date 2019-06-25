@@ -3,7 +3,7 @@
 
 require_once 'common.php';
 
-/*
+
 
 $sql  = sprintf('select  `Website Key`  from `Website Dimension`    ');
 $stmt = $db->prepare($sql);
@@ -13,6 +13,8 @@ while ($row = $stmt->fetch()) {
     $website = get_object('Website', $row['Website Key']);
 
     $settings = $website->settings;
+
+    print_r($settings);
 
     if (isset($settings['logo_website'])) {
         $settings['logo_website'] = preg_replace('/image_root/', 'wi', $settings['logo_website']);
@@ -26,6 +28,10 @@ while ($row = $stmt->fetch()) {
         $settings['favicon'] = '';
     }
 
+
+
+    exit;
+
     $website->fast_update(
         array(
             'Website Settings' => json_encode($settings)
@@ -34,8 +40,8 @@ while ($row = $stmt->fetch()) {
 
 }
 
-exit;
-*/
+
+
 
 $sql = sprintf('select  `Image Key`  from `Image Dimension`   where `Image Data` is not null  ');
 
