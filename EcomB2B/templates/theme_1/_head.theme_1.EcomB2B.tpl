@@ -15,7 +15,7 @@
 <head>
     {if !isset($is_devel) or !$is_devel  }
 
-       {if  $client_tag_google_manager_id!=''  and false}
+       {if  $client_tag_google_manager_id!=''}
         <!-- Google Tag Manager -->
         <script>(function (w, d, s, l, i) {
                 w[l] = w[l] || [];
