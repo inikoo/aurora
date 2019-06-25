@@ -1610,6 +1610,14 @@ function order_items($_data, $db, $user) {
             $description = number($units).'x ';
         }
         $description .= ' '.$name;
+
+
+
+        if ($data['Product UN Number']) {
+
+            $description .= ' <span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;padding:0px;font-size:90%">'.$data['Product UN Number'].'</span>';
+        }
+
         if ($price > 0) {
             $description .= ' ('.money($price, $currency, $_locale).')';
         }
