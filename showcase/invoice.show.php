@@ -132,6 +132,14 @@ function get_invoice_showcase($data, $smarty, $user, $db) {
     }
     $smarty->assign('pdf_with_origin', $pdf_with_origin);
 
+    if ($store->settings('invoice_show_CPNP') == 'Yes') {
+        $pdf_with_CPNP = true;
+    } else {
+        $pdf_with_CPNP = false;
+    }
+    $smarty->assign('pdf_with_CPNP', $pdf_with_CPNP);
+
+
     if ($invoice->deleted) {
         if ($data['_object']->get('Invoice Type') == 'Refund') {
 

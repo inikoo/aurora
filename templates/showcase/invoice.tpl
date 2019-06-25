@@ -228,11 +228,17 @@
                                     <i class="far {if $pdf_with_origin}fa-check-square{else}fa-square{/if}  margin_right_10"></i> <span class="discreet">{t}Country of origin{/t}</span>
                                 </td>
                             </tr>
+                            <tr data-field='CPNP' class="button pdf_option" onclick="check_field_value(this)">
+                                <td>
+                                    <i class="far {if $pdf_with_CPNP}fa-check-square{else}fa-square{/if}  margin_right_10"></i> <span class="discreet">{t}CPNP{/t}</span>
+                                </td>
+                            </tr>
                             <tr data-field='locale' class="button pdf_option {if !$pdf_show_locale_option}hide{/if}" onclick="check_field_value(this)">
                                 <td>
                                     <i class="far fa-square margin_right_10" data-value="en_GB"></i> <span class="discreet">{t}English{/t}</span>
                                 </td>
                             </tr>
+
                             </tbody>
                             <tr>
                                 <td>
