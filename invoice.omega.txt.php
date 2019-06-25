@@ -110,14 +110,14 @@ if ($invoice->get('Invoice Address Country 2 Alpha Code') == 'SK') {
     }
 
 
-    $code_sum = '3';
+    $code_sum = '03';
 } elseif (in_array($invoice->get('Invoice Address Country 2 Alpha Code'), $european_union_2alpha)) {
 
     if ($invoice->get('Invoice Tax Code') == 'EX') {
         $code_sum = '16';
         $code_tax = 'X';
     } else {
-        $code_sum = '3';
+        $code_sum = '03';
         $code_tax = 'A1';
     }
 
@@ -240,7 +240,7 @@ $row_data = array(
     $invoice->get('Invoice Items Net Amount'),
     round($invoice->get('Invoice Items Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
     'Items '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
-    '3',
+    '03',
     '',
     'X',
     '(Nedefinované)',
@@ -386,7 +386,7 @@ if ($invoice->get('Invoice Total Tax Amount') != 0) {
         $invoice->get('Invoice Total Tax Amount'),
         round($invoice->get('Invoice Total Tax Amount') * $invoice->get('Invoice Currency Exchange'), 2),
         'Tax '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
-        '4',
+        '04',
         '',
         'X',
         '(Nedefinované)',
