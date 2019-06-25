@@ -135,9 +135,8 @@ $invoice_header_data = array(
     $invoice_numeric_code,
     $invoice_alpha_code,
     $invoice_alpha_code,
-
-    $order->get('Order Public ID'),
     $invoice->get('Invoice Public ID'),
+    $order->get('Order Public ID'),
     $invoice->get('Invoice Customer Name'),
     $invoice->get('Invoice Registration Number'),
     preg_replace('/^[^0-9]*/', '', $invoice->get('Invoice Tax Number')),
