@@ -15,13 +15,16 @@ $sql = sprintf(
 );
 $db->exec($sql);
 
+$redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'logged_in', false);
+
+
+
 $session->migrate();
 $session->invalidate();
 
-//session_destroy();
 unset($_SESSION);
 header('Location: login.php');
 exit;
 
 
-?>
+

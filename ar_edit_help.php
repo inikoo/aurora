@@ -27,8 +27,20 @@ switch ($tipo) {
                          'content' => array('type' => 'string'),
                      )
         );
-        save_whiteboard($data, $db, $user, $smarty, $account,$modules);
+        save_whiteboard($data, $db, $user, $smarty, $account, $modules);
         break;
+    case  'side_block':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'value'   => array('type' => 'string'),
+                     )
+        );
+
+        $session->set('side_block',$data['value']);
+
+
+        break;
+
 
     default:
         $response = array(
@@ -39,7 +51,10 @@ switch ($tipo) {
 
 }
 
-function save_whiteboard($data, $db, $user, $smarty, $account,$modules) {
+
+
+
+function save_whiteboard($data, $db, $user, $smarty, $account, $modules) {
 
 
     if (!isset($data['state']['module']) or !isset($data['state']['section'])) {
@@ -73,8 +88,7 @@ function save_whiteboard($data, $db, $user, $smarty, $account,$modules) {
     $sql = sprintf(
         'INSERT INTO `Whiteboard Dimension` (`Whiteboard Hash`,`Whiteboard Type`,`Whiteboard Module`,`Whiteboard Section`,`Whiteboard Tab`,`Whiteboard Text`,`Whiteboard Created`,`Whiteboard Updated`,`Whiteboard Last Updated User Key`,`Whiteboard Last Updated Staff Key`) 
         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%d,%d) ON DUPLICATE KEY UPDATE `Whiteboard Text`=%s,`Whiteboard Updated`=%s,`Whiteboard Last Updated User Key`=%d ,`Whiteboard Last Updated Staff Key`=%d ', prepare_mysql($hash), prepare_mysql($type), prepare_mysql($module),
-        prepare_mysql($section), prepare_mysql($tab),
-        prepare_mysql($data['content'], false), prepare_mysql($date), prepare_mysql($date), $user->id, $user->get_staff_key(), prepare_mysql($data['content'], false), prepare_mysql($date), $user->id, $user->get_staff_key()
+        prepare_mysql($section), prepare_mysql($tab), prepare_mysql($data['content'], false), prepare_mysql($date), prepare_mysql($date), $user->id, $user->get_staff_key(), prepare_mysql($data['content'], false), prepare_mysql($date), $user->id, $user->get_staff_key()
 
     );
 
@@ -98,19 +112,17 @@ function save_whiteboard($data, $db, $user, $smarty, $account,$modules) {
     }
 
 
-    $state=$data['state'];
+    $state          = $data['state'];
     $help_cache_key = 'au_help|'.hash('crc32', $state['module'].'|'.$state['section']).'|'.hash('crc32', $state['tab'].$state['subtab']);
 
 
-    $response =
-        array(
-            'help' =>
-                array(
-                    'title'   => get_help_title($state, $user),
-                    'content' => get_help_content($state, $smarty, $account, $user)
-                ),
-            'whiteboard'=>get_whiteboard($state['module'], $state['section'], $state['tab'], $state['subtab'], $modules, $db)
-        );
+    $response = array(
+        'help'       => array(
+            'title'   => get_help_title($state, $user),
+            'content' => get_help_content($state, $smarty, $account, $user)
+        ),
+        'whiteboard' => get_whiteboard($state['module'], $state['section'], $state['tab'], $state['subtab'], $modules, $db)
+    );
 
 
     $redis = new Redis();
@@ -119,7 +131,6 @@ function save_whiteboard($data, $db, $user, $smarty, $account,$modules) {
     } else {
         $redis_on = false;
     }
-
 
 
     $redis->set($help_cache_key, json_encode($response));

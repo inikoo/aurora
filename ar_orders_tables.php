@@ -453,11 +453,11 @@ function orders_in_warehouse_no_alerts($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    //   print $sql;
+     //  print $sql;
     foreach ($db->query($sql) as $data) {
 
 
-        include_once 'class.Order.php';
+
 
         $operations = '<div id="operations'.$data['Order Key'].'">';
         $class      = 'right';
@@ -1610,6 +1610,14 @@ function order_items($_data, $db, $user) {
             $description = number($units).'x ';
         }
         $description .= ' '.$name;
+
+
+
+        if ($data['Product UN Number']) {
+
+            $description .= ' <span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;padding:0px;font-size:90%">'.$data['Product UN Number'].'</span>';
+        }
+
         if ($price > 0) {
             $description .= ' ('.money($price, $currency, $_locale).')';
         }
@@ -3059,7 +3067,7 @@ function refund_new_items_tax($_data, $db, $user, $account) {
 }
 
 
-function replacement_new_items($_data, $db, $user) {
+function replacement_new_items($_data, $db, $user){
 
     global $_locale;// fix this locale stuff
 
@@ -3078,7 +3086,7 @@ function replacement_new_items($_data, $db, $user) {
 
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    //print $sql;
+
     foreach ($db->query($sql) as $data) {
 
 

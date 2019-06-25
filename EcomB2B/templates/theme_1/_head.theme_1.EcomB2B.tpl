@@ -127,7 +127,7 @@
 
     <![endif]-->
 
-    {if !isset($is_devel) or !$is_devel  }
+    {if !isset($is_devel) or !$is_devel  and false }
         <script src="https://browser.sentry-cdn.com/5.3.0/bundle.min.js" crossorigin="anonymous"></script>
         <script>
             Sentry.init({
@@ -256,7 +256,7 @@
 
 
     {if $with_reviews==1}
-        <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js"></script>
+        <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js" async></script>
 
     {/if}
 
@@ -268,7 +268,7 @@
     {/if}
 
     {if !isset($is_devel) or !$is_devel  }
-    {if  $zendesk_chat_code!=''}
+    {if  $zendesk_chat_code!='' }
 
         <script>
             window.$zopim || (function (d, s) {

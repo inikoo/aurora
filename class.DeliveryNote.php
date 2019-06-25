@@ -1438,25 +1438,37 @@ class DeliveryNote extends DB_Table {
                     return;
                 }
 
-                if (!(isset($this->medatata) and $this->medatata >= 2)) {
 
-                    $this->error = true;
-                    $this->msg   = "version of this DN don't support undo sealing, try cancel DN";
+                if(in_array($this->data['Delivery Note Type'],array('Replacement & Shortages', 'Replacement', 'Shortages'))){
 
+                    if ( !( $this->get('State Index') == 80 or $this->get('State Index') == 90 )     ) {
+                        $this->error = true;
+                        $this->msg   = 'Replacement note must be closed or approved to dispatch';
 
-                    return;
+                        return;
+                    }
+
+                }else{
+                    if  ( $this->get('State Index') != 80    ) {
+                        $this->error = true;
+                        $this->msg   = 'Delivery note must be closed.';
+
+                        return;
+                    }
+
                 }
 
-                if ($this->get('State Index') != 80) {
-                    $this->error = true;
-                    $this->msg   = 'Delivery note must be closed';
 
-                    return;
-                }
+
+
+
                 $this->update_field('Delivery Note Date Done Approved', '', 'no_history');
                 $this->update_field('Delivery Note State', 'Packed', 'no_history');
                 $this->update_field('Delivery Note Approved Done', 'No', 'no_history');
                 $this->update_field('Delivery Note Date', $date, 'no_history');
+                $this->update_field('Delivery Note Date Dispatched Approved', '', 'no_history');
+
+
 
                 $this->update_totals();
                 if ($this->data['Delivery Note Type'] == 'Order') {
@@ -1565,7 +1577,7 @@ class DeliveryNote extends DB_Table {
 
             case 'Approved':
 
-                if ($this->get('State Index') != 80) {
+                if ($this->get('State Index') != 80 or  in_array($this->data['Delivery Note Type'] , array('Replacement & Shortages', 'Replacement', 'Shortages'))   ) {
                     return;
                 }
                 $this->update_field('Delivery Note Date Dispatched Approved', $date, 'no_history');
@@ -1673,9 +1685,7 @@ class DeliveryNote extends DB_Table {
                     return;
                 }
                 $this->update_field('Delivery Note Date Dispatched Approved', $date, 'no_history');
-                $this->update_field(
-                    'Delivery Note State', 'Approved', 'no_history'
-                );
+                $this->update_field('Delivery Note State', 'Approved', 'no_history');
 
 
                 break;
@@ -1940,18 +1950,18 @@ class DeliveryNote extends DB_Table {
 
                     $order->update(array('Order State' => 'Delivery Note Cancelled'));
 
-                    $_date = $this->data['Delivery Note Date Start Picking'];
-                    if ($_date == '') {
-                        $_date = $this->data['Delivery Note Date Created'];
-                    }
-                    if ($_date == '') {
-                        $_date = $date;
 
-
-                    }
                 }
 
+                $_date = $this->data['Delivery Note Date Start Picking'];
+                if ($_date == '') {
+                    $_date = $this->data['Delivery Note Date Created'];
+                }
+                if ($_date == '') {
+                    $_date = $date;
 
+
+                }
                 new_housekeeping_fork(
                     'au_housekeeping', array(
                     'type'                    => 'delivery_note_cancelled',

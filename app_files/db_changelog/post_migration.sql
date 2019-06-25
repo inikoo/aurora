@@ -138,6 +138,9 @@ ALTER TABLE `Inventory Transaction Fact`
   DROP `Map To Order Transaction Fact XHTML Info`,
   DROP `Inventory Transaction State`;
 
+  ALTER TABLE `User Dimension` CHANGE `User Type` `User Type` ENUM('Staff','Supplier','Administrator','Warehouse','Contractor','Agent') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
+
 
 ALTER TABLE `Order Dimension` DROP `Order Class`, drop `Order Checkout Submitted Payment Date`,drop `Order Checkout Completed Payment Date`,drop `Order XHTML Invoices`,drop `Order Store Code`,drop `Order XHTML Delivery Notes`,drop `Order Current XHTML Post Dispatch State`;
 ALTER TABLE `Order Dimension` DROP `Order Ship To Key To Deliver`, DROP `Order XHTML Ship Tos`, DROP `Order Ship To Country 2 Alpha Code`, DROP `Order Ship To World Region Code`, DROP `Order Ship To Town`, DROP `Order Ship To Postal Code`, DROP `Order Billing To Key To Bill`, DROP `Order XHTML Billing Tos`, DROP `Order Billing To Keys`, DROP `Order Billing To Country Code`, DROP `Order Billing To World Region Code`, DROP `Order Billing To Town`, DROP `Order Billing To Postal Code`;

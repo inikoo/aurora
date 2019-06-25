@@ -13,7 +13,7 @@
 
     {if !isset($is_devel) or !$is_devel  }
 
-    {if  $client_tag_google_manager_id!=''}
+    {if  $client_tag_google_manager_id!=''  }
         <!-- Google Tag Manager -->
         <script>(function (w, d, s, l, i) {
                 w[l] = w[l] || [];
@@ -107,7 +107,7 @@
 
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
-    {if !isset($is_devel) or !$is_devel  }
+    {if !isset($is_devel) or !$is_devel  and false}
         <script src="https://browser.sentry-cdn.com/5.3.0/bundle.min.js" crossorigin="anonymous"></script>
         <script>
             Sentry.init({ dsn: 'https://8f17945abb95493692010f7026553f71@sentry.io/1329970', release: "au-web@1.0"});
@@ -207,7 +207,7 @@
     {/foreach}
     {/if}
     {if $with_reviews==1}
-        <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js"></script>
+        <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js" async></script>
     {/if}
     {if $with_forms==1}
         <link rel="stylesheet" href="css/forms.min.css?v2.0" type="text/css"/>

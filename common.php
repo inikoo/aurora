@@ -48,7 +48,6 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 $account = new Account($db);
 
 
-
 if ($account->get('Account State') != 'Active') {
 
 
@@ -81,11 +80,10 @@ $session->start();
 $session->set('account', $account->get('Code'));
 
 
-
 /**
  * @var Smarty
  */
-$smarty               = new Smarty();
+$smarty = new Smarty();
 $smarty->setTemplateDir('templates');
 $smarty->setCompileDir('server_files/smarty/templates_c');
 $smarty->setCacheDir('server_files/smarty/cache');
@@ -94,11 +92,11 @@ $smarty->addPluginsDir('./smarty_plugins');
 $smarty->assign('_DEVEL', _DEVEL);
 
 
-if(isset($auth_data)){
+if (isset($auth_data)) {
 
-   foreach($auth_data['auth_token'] as $_key=>$_value){
-       $_SESSION[$_key]=$_value;
-   }
+    foreach ($auth_data['auth_token'] as $_key => $_value) {
+        $_SESSION[$_key] = $_value;
+    }
 }
 
 
@@ -132,7 +130,7 @@ if ($_SESSION['logged_in_page'] != 0) {
     exit;
 
 }
-$user = get_object('User',$_SESSION['user_key']);
+$user = get_object('User', $_SESSION['user_key']);
 
 //$_client_locale='en_GB.UTF-8';
 
@@ -146,12 +144,25 @@ if ($user->id) {
     $user->read_stores();
     $user->read_websites();
     $user->read_warehouses();
-    if ($user->data['User Type'] == 'Supplier') {
-        $user->read_suppliers();
 
+    $redis->zadd('_IU'.$account->get('Code'), gmdate('U'), $user->id);
+    $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'logged_in', true);
+
+
+    $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'alias', $user->get('Alias'));
+
+
+    switch ($user->get('User Type')) {
+        case 'Staff':
+            break;
+        case 'Contractor':
+            break;
+        case 'Supplier':
+            $user->read_suppliers();
+            break;
+        case 'Agent':
+            break;
     }
-
-
 } else {
     $locale = $account->get('Locale').'.UTF-8';
 }

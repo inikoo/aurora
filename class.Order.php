@@ -2548,8 +2548,11 @@ class Order extends DB_Table {
 
         // if($this->id){
 
+
+
+
         $sql = sprintf(
-            'SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  group by `Delivery Note State` ', $this->id
+            "SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') group by `Delivery Note State` ", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -2590,7 +2593,7 @@ class Order extends DB_Table {
 
 
         $sql = sprintf(
-            'SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and `Delivery Note Waiting State`="Customer"  group by `Delivery Note State` ', $this->id
+            "SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') and `Delivery Note Waiting State`='Customer'  group by `Delivery Note State` ", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -2623,7 +2626,7 @@ class Order extends DB_Table {
 
         $sql = sprintf(
             "SELECT count(*) AS num FROM `Delivery Note Dimension` 
-            WHERE  `Delivery Note Order Key`=%d  AND   `Delivery Note State` ='Dispatched' AND `Delivery Note Date Dispatched`>=%s ", $this->id, prepare_mysql(gmdate('Y-m-d 00:00:00'))
+            WHERE  `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') AND   `Delivery Note State` ='Dispatched' AND `Delivery Note Date Dispatched`>=%s ", $this->id, prepare_mysql(gmdate('Y-m-d 00:00:00'))
 
         );
 
@@ -2656,18 +2659,29 @@ class Order extends DB_Table {
 
         $store = get_object('Store', $this->get('Store Key'));
         $store->update_orders_in_warehouse_data();
+        $account = get_object('Account', 1);
+        $account->update_orders_in_warehouse_data();
+
 
         if ($old_in_warehouse_no_alerts != $in_warehouse_no_alerts or $old_in_warehouse_with_alerts != $in_warehouse_with_alerts) {
             $store->update_orders_in_warehouse_data();
+            $account->update_orders_in_warehouse_data();
+
         }
         if ($old_packed_done != $packed_done) {
             $store->update_orders_packed_data();
+            $account->update_orders_packed_data();
+
         }
         if ($old_approved != $approved) {
             $store->update_orders_approved_data();
+            $account->update_orders_approved_data();
+
         }
         if ($old_dispatched_today != $dispatched_today) {
             $store->update_orders_dispatched_today();
+            $account->update_orders_dispatched_today();
+
         }
 
 
