@@ -262,7 +262,7 @@ if ($result = $db->query($sql)) {
             $description .= ' <br>'._('Weight').': '.weight($row['Product Package Weight'] );
         }
 
-        if ($row['Product Origin Country Code'] != '' and $print_origin) {
+        if ($row['Product Origin Country Code'] != '' and $print_origin){
 
             $_country = new Country('code', $row['Product Origin Country Code']);
 
