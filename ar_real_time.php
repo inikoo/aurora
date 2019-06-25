@@ -24,7 +24,7 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo = $_REQUEST['tipo'];
 
-switch ($tipo){
+switch ($tipo) {
     case 'users':
         real_time_users($redis, $account, $user);
         break;
@@ -55,32 +55,39 @@ function real_time_users($redis, $account, $user) {
         if (isset($_user['alias'])) {
 
 
-            $date = strftime("%a %e %b %Y %H:%M %Z", $timestamp);
+            $date = strftime("%H:%M %Z", $timestamp);
 
-            if ((gmdate('U') - $timestamp) < 200) {
-                $icon = '<i class="fa fa-fw fa-circle success" title="'.$date.'"></i>';
+
+
+
+            if ($user_key != $user->id) {
+
+                if ($_user['logged_in']) {
+
+                    if ((gmdate('U') - $timestamp) < 300) {
+                        $icon = '<i class="fa fa-fw fa-circle success" title="'.$date.'"></i>';
+                    } else {
+                        $icon = '<i class="far fa-fw fa-circle success" title="'.$date.'"></i>';
+
+                    }
+
+                    if (!empty($_user['web_location'])) {
+                        $web_location = $_user['web_location'];
+                        $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td onclick="change_view(\''.$_user['request'].'\')" class="button">'.$web_location.'</td>';
+
+                    } else {
+                        $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td onclick="change_view(\''.$_user['request'].'\')" class="button"><i class="fal fa-eye-evil"></i></td>';
+
+                    }
+                } else {
+                    $html .= '<tr><td><i class="far fa-fw fa-circle-notch error" title="'.$date.'"></i></td><td>'.$_user['alias'].'</td><td class="discreet error">'._('Log out').'</td>';
+
+                }
+
+
             } else {
-                $icon = '<i class="far fa-fw fa-circle success" title="'.$date.'"></i>';
-
+                //     $html .= '<tr><td>'.$icon.'</td><td class="italic">'._('Me').'</td><td></td>';
             }
-
-
-            // if ($user_key != $user->id) {
-
-
-            if (!empty($_user['web_location'])) {
-                $web_location = $_user['web_location'];
-
-                $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td onclick="change_view(\''.$_user['request'].'\')" class="button">'.$web_location.'</td>';
-
-
-            } else {
-                $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td onclick="change_view(\''.$_user['request'].'\')" class="button"><i class="fal fa-eye-evil"></i></td>';
-
-            }
-            // }else{
-            //     $html .= '<tr><td>'.$icon.'</td><td class="italic">'._('Me').'</td><td></td>';
-            //}
 
 
             $html .= '</tr>';
