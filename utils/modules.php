@@ -2028,7 +2028,7 @@ $modules = array(
 
                 'type'      => 'navigation',
                 'label'     => _('Pending delivery notes'),
-                'icon'      => 'angle-double-right',
+                'icon'      => 'stean',
                 'reference' => 'pending_delivery_notes',
                 'tabs'      => array(
                     'pending_delivery_notes' => array(
@@ -2054,7 +2054,7 @@ $modules = array(
             */
             'delivery_notes'         => array(
                 'type'      => 'navigation',
-                'label'     => _('Delivery notes'),
+                'label'     => _('Delivery notes').' ('._('All').')',
                 'icon'      => 'truck',
                 'reference' => 'delivery_notes/all',
                 'tabs'      => array(

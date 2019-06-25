@@ -20,7 +20,7 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
     case 'views':
-        get_view($db, $smarty, $user, $account, $modules,$redis);
+        get_view($db, $smarty, $user, $account, $modules, $redis);
         break;
     case 'widget_details':
         get_widget_details($db, $smarty, $user, $account, $modules);
@@ -81,12 +81,10 @@ function get_widget_details($db, $smarty, $user, $account, $modules) {
 }
 
 
-function get_view($db, $smarty, $user, $account, $modules,$redis) {
+function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
     global $session;
-
-
 
 
     require_once 'utils/parse_request.php';
@@ -804,7 +802,7 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
         if (isset($data['metadata']['reload_showcase']) or !($data['old_state']['module'] == $state['module'] and $data['old_state']['section'] == $state['section'] and $data['old_state']['object'] == $state['object'] and $data['old_state']['key'] == $state['key'])) {
 
 
-            list($response['object_showcase'], $title,$web_location) = get_object_showcase(
+            list($response['object_showcase'], $title, $web_location) = get_object_showcase(
                 (isset($modules[$state['module']]['sections'][$state['section']]['showcase']) ? $modules[$state['module']]['sections'][$state['section']]['showcase'] : $state['object']), $state, $smarty, $user, $db, $account
             );
 
@@ -814,7 +812,7 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
 
             if ($web_location != '') {
                 $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $web_location);
-            }else{
+            } else {
                 $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '');
             }
 
@@ -827,12 +825,12 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
         $response['object_showcase'] = '_';
 
 
-       // print_r($state);
+        // print_r($state);
 
-        switch($state['module']) {
+        switch ($state['module']) {
 
             case 'inventory':
-                switch($state['section']) {
+                switch ($state['section']) {
                     case 'barcodes':
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-barcode"></i> '._("Retail Barcodes"));
 
@@ -853,22 +851,22 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
 
                 break;
 
-        case 'suppliers':
-            switch($state['section']) {
-                case 'agents':
-                    $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-user-secret"></i> '._('Agents'));
-                    break;
-                case 'categories':
-                    $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-sitemap"></i> '._("Supplier's categories"));
-                    break;
-                default:
-                    $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-hand-holding-box"></i> '._('Suppliers'));
+            case 'suppliers':
+                switch ($state['section']) {
+                    case 'agents':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-user-secret"></i> '._('Agents'));
+                        break;
+                    case 'categories':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-sitemap"></i> '._("Supplier's categories"));
+                        break;
+                    default:
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-hand-holding-box"></i> '._('Suppliers'));
 
-            }
+                }
 
-            break;
+                break;
             case 'dashboard':
-                switch($state['section']) {
+                switch ($state['section']) {
 
                     default:
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-tachometer-alt"></i> '._('Dashboard'));
@@ -876,8 +874,58 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
                 }
 
                 break;
+            case 'orders':
+                switch ($state['section']) {
+                    case 'dashboard':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-stream"></i> '._("Pending orders").' '.$store->get('Code'));
+                        break;
+                    default:
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-shopping-cart"></i> '._('Orders').' '.$store->get('Code'));
+
+                }
+                break;
+            case 'products':
+                switch ($state['section']) {
+                    case 'marketing':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-bullhorn"></i> '._("Marketing").' '.$store->get('Code'));
+                        break;
+                    case 'offers':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-tags"></i> '._("Offers").' '.$store->get('Code'));
+                        break;
+                    case 'categories':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-sitemap"></i> '._("Products's categories").' '.$store->get('Code'));
+                        break;
+                    default:
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-cubes"></i> '._('Products').' '.$store->get('Code'));
+
+                }
+                break;
+            case 'customers':
+                switch ($state['section']) {
+                    case 'customer_notifications':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-paper-plane"></i> '._("Notifications").' '.$store->get('Code'));
+                        break;
+                    case 'insights':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-graduation-cap"></i> '._("Customer's insigths").' '.$store->get('Code'));
+                        break;
+                    case 'lists':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-list"></i> '._("Customer's lists").' '.$store->get('Code'));
+                        break;
+
+                    case 'dashboard':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-tachometer"></i> '._("Customer's dashboard").' '.$store->get('Code'));
+                        break;
+                    case 'prospects':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-user-friends"></i> '._('Prospects').' '.$store->get('Code'));
+                        break;
+                    default:
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users"></i> '._('Customers').' '.$store->get('Code'));
+
+                }
+
+                break;
             case 'customers_server ':
-                switch($state['section']) {
+                switch ($state['section']) {
 
                     default:
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users"></i> '._('Customers (All stores)'));
@@ -886,7 +934,7 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
 
                 break;
             case 'orders_server':
-                switch($state['section']) {
+                switch ($state['section']) {
                     case 'group_by_store':
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-compress"></i> '._("Orders by store"));
                         break;
@@ -900,7 +948,7 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
 
                 break;
             case 'customers_server':
-                switch($state['section']) {
+                switch ($state['section']) {
                     case 'email_communications':
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-paper-plane"></i> '._('Notifications.').' ('._('All stores').')');
                         break;
@@ -911,12 +959,139 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
                 }
 
                 break;
-        default:
-            $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $state['module'].' '.$state['section']);
+            case 'accounting':
+                switch ($state['section']) {
+
+                    case 'invoices':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-file-alt"></i> '._('Invoices').' '.$store->get('Code'));
+                        break;
+                    case 'payments':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-credit-cart"></i> '._('Payments').' '.$store->get('Code'));
+                        break;
+                    case 'credits':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-piggy-bank"></i> '._('Credit vault').' '.$store->get('Code'));
+                        break;
+                    case 'deleted_invoices':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-file-alt"></i> '._('Deleted invoices').' '.$store->get('Code'));
+                        break;
+
+                }
+            case 'accounting_server':
+                switch ($state['section']) {
+
+                    case 'invoices':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-file-alt"></i> '._('Invoices').' ('._('All').')');
+                        break;
+                    case 'deleted_invoices':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-file-alt"></i> '._('Deleted invoices').' ('._('All').')');
+                        break;
+                    case 'payments':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-credit-cart"></i> '._('Payments').' ('._('All').')');
+                        break;
+                    case 'credits':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-piggy-bank"></i> '._('Credit vault').' ('._('All').')');
+                        break;
+
+
+                }
+
+                break;
+            case 'warehouses':
+                switch ($state['section']) {
+
+                    case 'dashboard':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-warehouse"></i> '._("Dashboard"));
+                        break;
+                    case 'warehouse':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-warehouse"></i> '.$warehouse->get('Code'));
+                        break;
+                    case 'locations':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-pallet"></i> '._("Locations"));
+                        break;
+                    case 'returns':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-backspace"></i> '._("Returns"));
+                        break;
+
+
+                }
+
+                break;
+            case 'delivery_notes_server':
+                switch ($state['section']) {
+                    case 'group_by_store':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-compress"></i> '._("Delivery notes by store"));
+                        break;
+                    case 'delivery_notes':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-truxk"></i> '._('Delivery notes').' ('._('All').')');
+                        break;
+                    case 'pending_delivery_notes':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-stream"></i> '._("Pending delivery notes'"));
+                        break;
+
+
+                }
+            case 'hr':
+                switch ($state['section']) {
+                    case 'employees':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-hand-rock"></i> '._('Employees'));
+                        break;
+                    case 'contractors':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-hand-spock"></i> '._('Contractors'));
+                        break;
+                    case 'overtimes':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-clock"></i> '._('Overtimes'));
+                        break;
+                    case 'organization':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-sitemap"></i> '._('Organization'));
+                        break;
+
+                }
+
+                break;
+            case 'users':
+                switch ($state['section']) {
+                    case 'users':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users-class"></i> '._('Users').' ('._('All').')');
+                        break;
+                    case 'staff':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users-class"></i> '._('Users').' ('._('Employees').')');
+                        break;
+                    case 'contractors':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users-class"></i> '._('Users').' ('._('Contractors').')');
+                        break;
+                    case 'suppliers':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users-class"></i> '._('Users').' ('._('Suppliers').')');
+                        break;
+                    case 'agents':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users-class"></i> '._('Users').' ('._('Agents').')');
+                        break;
+                    default:
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users-class"></i> '._('Users'));
+
+                }
+                break;
+            case 'reports':
+                switch ($state['section']) {
+                    case 'intrastat':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-chart-line"></i> '._('Intrastat'));
+                        break;
+                    case 'pickers':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-chart-line"></i> '._('Pickers'));
+                        break;
+                    case 'packers':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-chart-line"></i> '._('Packers'));
+                        break;
+
+                    default:
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-chart-line"></i> '._('Reports'));
+
+                }
+
+                break;
+            default:
+                $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $state['module'].' '.$state['section']);
 
         }
-
-
 
 
     }
@@ -1023,15 +1198,14 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
 function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 
 
-    $title = '';
-    $web_location='';
+    $title        = '';
+    $web_location = '';
     if (preg_match('/\_edit$/', $data['tab'])) {
         return array(
             '',
             ''
         );
     }
-
 
     switch ($showcase) {
         case 'material':
@@ -1040,23 +1214,23 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'webpage':
             include_once 'showcase/webpage.show.php';
-            $html  = get_webpage_showcase($data, $smarty, $user, $db);
-            $title = $data['_object']->get('Code');
-            $web_location = '<i class="fal fa-browser"></i> '.$title;
+            $html         = get_webpage_showcase($data, $smarty, $user, $db);
+            $title        = $data['_object']->get('Code');
+            $web_location = '<i class="fal fa-fw fa-browser"></i> '.$title;
 
             break;
 
         case 'website':
             include_once 'showcase/website.show.php';
-            $html  = get_website_showcase($data, $smarty, $user, $db);
-            $title = $data['_object']->get('Code');
-            $web_location = '<i class="fal fa-globe"></i> '.$title;
+            $html         = get_website_showcase($data, $smarty, $user, $db);
+            $title        = $data['_object']->get('Code');
+            $web_location = '<i class="fal fa-fw fa-globe"></i> '.$title;
 
             break;
         case 'dashboard':
             $html = '';
 
-            $web_location = '<i class="fal fa-tachometer-alt"></i> '._('Dashboard');
+            $web_location = '<i class="fal fa-fw fa-tachometer-alt"></i> '._('Dashboard');
 
             break;
 
@@ -1085,9 +1259,9 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         case 'store':
 
             include_once 'showcase/store.show.php';
-            $html  = get_store_showcase($data, $smarty, $user, $db);
-            $title = $data['_object']->get('Code');
-            $web_location = '<i class="fal fa-store"></i> '.$title;
+            $html         = get_store_showcase($data, $smarty, $user, $db);
+            $title        = $data['_object']->get('Code');
+            $web_location = '<i class="fal fa-fw fa-store"></i> '.$title;
             break;
         case 'products_special_categories':
             include_once 'showcase/products_special_categories.show.php';
@@ -1116,49 +1290,50 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
                 $html = get_product_showcase($data, $smarty, $user, $db);
             }
 
-            $title = $data['_object']->get('Code');
-            $web_location = '<i class="fal fa-cube"></i> '.$title;
+            $title        = $data['_object']->get('Code');
+            $web_location = '<i class="fal fa-fw fa-cube"></i> '.$title;
 
             break;
         case 'part':
             include_once 'showcase/part.show.php';
-            $html  = get_part_showcase($data, $smarty, $user, $db);
-            $title = $data['_object']->get('Reference');
-            $web_location = '<i class="fal fa-box"></i> '.$title;
+            $html         = get_part_showcase($data, $smarty, $user, $db);
+            $title        = $data['_object']->get('Reference');
+            $web_location = '<i class="fal fa-fw fa-box"></i> '.$title;
 
             break;
         case 'supplier_part':
             include_once 'showcase/supplier_part.show.php';
             $html  = get_supplier_part_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Reference');
+            $web_location = '<i class="fal fa-fw fa-hand-receiving"></i> '.$title;
 
             break;
         case 'employee':
             include_once 'showcase/employee.show.php';
-            $html  = get_employee_showcase($data, $smarty, $user, $db);
-            $title = $data['_object']->get('Name');
-            $web_location = '<i class="fal fa-hand-rock"></i> '.$data['_object']->get('ID');
+            $html         = get_employee_showcase($data, $smarty, $user, $db);
+            $title        = $data['_object']->get('Name');
+            $web_location = '<i class="fal fa-fw fa-hand-rock"></i> '.$data['_object']->get('ID');
 
             break;
         case 'contractor':
             include_once 'showcase/contractor.show.php';
-            $html  = get_contractor_showcase($data, $smarty, $user, $db);
-            $title = $data['_object']->get('Name');
-            $web_location = '<i class="fal fa-hand-spock"></i> '.$data['_object']->get('ID');
+            $html         = get_contractor_showcase($data, $smarty, $user, $db);
+            $title        = $data['_object']->get('Name');
+            $web_location = '<i class="fal fa-fw fa-hand-spock"></i> '.$data['_object']->get('ID');
 
             break;
         case 'customer':
             include_once 'showcase/customer.show.php';
-            $html  = get_customer_showcase($data, $smarty, $user, $db);
-            $title = 'C'.$data['_object']->get('Formatted ID');
-            $web_location = '<i class="fal fa-user"></i> '.$title;
+            $html         = get_customer_showcase($data, $smarty, $user, $db);
+            $title        = 'C'.$data['_object']->get('Formatted ID');
+            $web_location = '<i class="fal fa-fw fa-user"></i> '.$title;
 
             break;
         case 'supplier':
             include_once 'showcase/supplier.show.php';
-            $html  = get_supplier_showcase($data, $smarty, $user, $db);
-            $title = $data['_object']->get('Code');
-            $web_location = '<i class="fal fa-hand-holding-box"></i> '.$title;
+            $html         = get_supplier_showcase($data, $smarty, $user, $db);
+            $title        = $data['_object']->get('Code');
+            $web_location = '<i class="fal fa-fw fa-hand-holding-box"></i> '.$title;
             break;
         case 'agent':
             include_once 'showcase/agent.show.php';
@@ -1166,29 +1341,43 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'order':
             include_once 'showcase/order.show.php';
-            $html  = get_order_showcase($data, $smarty, $user, $db);
-            $title = $data['_object']->get('Public ID');
-            $web_location = '<i class="fal fa-shopping-cart"></i> '.$title;
+            $html         = get_order_showcase($data, $smarty, $user, $db);
+            $title        = $data['_object']->get('Public ID');
+            $web_location = '<i class="fal fa-fw fa-shopping-cart"></i> '.$title;
 
 
             break;
         case 'invoice':
         case 'refund':
             include_once 'showcase/invoice.show.php';
-            $html  = get_invoice_showcase($data, $smarty, $user, $db);
-            $title = $data['_object']->get('Public ID');
-        $web_location = '<i class="fal fa-file-alt"></i> '.$title;
+            $html         = get_invoice_showcase($data, $smarty, $user, $db);
+            $title        = $data['_object']->get('Public ID');
+            $web_location = '<i class="fal fa-fw fa-file-alt"></i> '.$title;
 
-        break;
+            break;
         case 'delivery_note':
             include_once 'showcase/delivery_note.show.php';
             $html  = get_delivery_note_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('ID');
+            $web_location = '<i class="fal fa-fw fa-truck"></i> '.$title;
+
             break;
         case 'user':
             include_once 'showcase/user.show.php';
             $html  = get_user_showcase($data, $smarty, $user, $db);
             $title = $data['_object']->get('Handle');
+
+
+
+            if($user->id==$data['_object']->id  and preg_match('/profile/',$data['request']) ){
+                $web_location = '<i class="fal fa-fw fa-user-circle"></i> '._('Profile');
+
+            }else{
+                $web_location = '<i class="fal fa-fw fa-terminal"></i> '.$title;
+
+            }
+
+
 
             break;
         case 'warehouse':
@@ -1201,8 +1390,8 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
                 $html = get_warehouse_showcase($data, $smarty, $user, $db);
             }
 
-            $title = 'W '.$data['_object']->get('Code');
-            $web_location = '<i class="fal fa-warehouse-alt"></i> '.$title;
+            $title        = 'W '.$data['_object']->get('Code');
+            $web_location = '<i class="fal fa-fw fa-warehouse-alt"></i> '.$title;
 
 
             break;
@@ -1225,8 +1414,8 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             } else {
                 $html = get_location_showcase($data, $smarty, $user, $db);
             }
-            $title = $data['_object']->get('Code');
-            $web_location = '<i class="fal fa-pallet"></i> '.$title;
+            $title        = $data['_object']->get('Code');
+            $web_location = '<i class="fal fa-fw fa-pallet"></i> '.$title;
 
             break;
 
