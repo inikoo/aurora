@@ -150,6 +150,7 @@ if ($user->id) {
     $user->read_warehouses();
 
     $redis->zadd('_IU'.$account->get('Code'), gmdate('U'), $user->id);
+    $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'logged_in', true);
 
 
     $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'alias', $user->get('Alias'));

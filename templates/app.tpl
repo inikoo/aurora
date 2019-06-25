@@ -160,7 +160,7 @@
 
         <div  class="real_time_users side_content hide">
             <div class="top">
-                {t}Real-time users{/t}
+                {t}Active users{/t}
             </div>
 
             <div class="content"></div>
