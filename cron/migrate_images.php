@@ -3,6 +3,8 @@
 
 require_once 'common.php';
 
+/*
+
 $sql  = sprintf('select  `Website Key`  from `Website Dimension`    ');
 $stmt = $db->prepare($sql);
 $stmt->execute();
@@ -33,7 +35,7 @@ while ($row = $stmt->fetch()) {
 }
 
 exit;
-
+*/
 
 $sql = sprintf('select  `Image Key`  from `Image Dimension`   where `Image Data` is not null  ');
 
