@@ -100,8 +100,17 @@ if ($account->get('Account Country 2 Alpha Code') == $invoice->get('Invoice Addr
 }
 
 if ($invoice->get('Invoice Address Country 2 Alpha Code') == 'SK') {
+
+    if($invoice->get('Order Registration Number')!=''){
+        $code_tax = 'A1';
+
+    }else{
+        $code_tax = 'D2';
+
+    }
+
+
     $code_sum = '3';
-    $code_tax = 'A1';
 } elseif (in_array($invoice->get('Invoice Address Country 2 Alpha Code'), $european_union_2alpha)) {
 
     if ($invoice->get('Invoice Tax Code') == 'EX') {
