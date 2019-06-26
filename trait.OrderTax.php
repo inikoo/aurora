@@ -15,6 +15,9 @@ trait OrderTax {
 
     function update_tax_number($value) {
 
+        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+            return;
+        }
 
         $this->update_field('Order Tax Number', $value);
 
@@ -46,6 +49,12 @@ trait OrderTax {
     }
 
     function update_tax_number_validation() {
+
+        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+            return;
+        }
+
+
         include_once 'utils/validate_tax_number.php';
         $tax_validation_data = validate_tax_number($this->data['Order Tax Number'], $this->data['Order Invoice Address Country 2 Alpha Code']);
 
