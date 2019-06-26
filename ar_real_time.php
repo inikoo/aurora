@@ -60,7 +60,7 @@ function real_time_users($redis, $account, $user) {
 
 
 
-           // if ($user_key != $user->id) {
+            if ($user_key != $user->id) {
 
                 if ($_user['logged_in']) {
 
@@ -85,7 +85,7 @@ function real_time_users($redis, $account, $user) {
                 }
 
 
-          //  }
+            }
 
 
             $html .= '</tr>';
