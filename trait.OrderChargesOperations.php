@@ -16,6 +16,10 @@ trait OrderChargesOperations {
     function update_charges($dn_key = false, $order_picked = true) {
 
 
+        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+            return;
+        }
+
         if ($dn_key and $order_picked) {
             $charges_array = $this->get_charges($dn_key);
         } else {
@@ -319,6 +323,10 @@ trait OrderChargesOperations {
     function use_calculated_items_charges() {
 
 
+        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+            return;
+        }
+
         $sql = sprintf(
             'delete `Order No Product Transaction Fact`  from `Order No Product Transaction Fact`      left join `Charge Dimension` on (`Charge Key`=`Transaction Type Key`) 
 
@@ -340,6 +348,12 @@ trait OrderChargesOperations {
 
 
     function update_hanging_charges_amount($value, $dn_key = false) {
+
+
+        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+            return;
+        }
+
         $value = sprintf("%.2f", $value);
 
 
@@ -417,6 +431,9 @@ trait OrderChargesOperations {
     function add_charge($charge) {
 
 
+        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+            return;
+        }
         $sql = sprintf(
             'select `Order No Product Transaction Fact Key`,`Transaction Net Amount`  from `Order No Product Transaction Fact`  where `Order Key`=%d and `Transaction Type`="Charges" and `Transaction Type Key`=%d and `Type`="Order" ', $this->id, $charge->id
 
@@ -516,6 +533,9 @@ trait OrderChargesOperations {
 
     function remove_charge($charge) {
 
+        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+            return;
+        }
 
         $sql = sprintf(
             'delete from  `Order No Product Transaction Fact`  where `Order Key`=%d and `Transaction Type`="Charges" and `Transaction Type Key`=%d and `Type`="Order" ', $this->id, $charge->id
