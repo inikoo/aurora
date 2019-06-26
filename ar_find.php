@@ -3502,7 +3502,7 @@ function find_category_webpages($db, $account, $memcache_ip, $data, $smarty) {
 
 
             if ($image_key) {
-                $image = '/image.php?s=320x280&id='.$image_key;
+                $image = '/wi.php?s=320x280&id='.$image_key;
             } else {
                 $image = '/art/nopic.png';
 
@@ -3519,8 +3519,11 @@ function find_category_webpages($db, $account, $memcache_ip, $data, $smarty) {
                         if (preg_match('/id=(\d+)/', $image_src, $matches)) {
                             $image_key = $matches[1];
 
-                            $image_mobile_website = create_cached_image($image_key, 320, 200);
-                            $image_website        = create_cached_image($image_key, 432, 330, 'fit_highest');
+
+                            $image_mobile_website = 'wi.php?id='.$image_key.'&s=320x200';
+                            $image_website        = 'wi.php?id='.$image_key.'&s='.get_image_size($image_key, 432, 330, 'fit_highest');
+
+
 
                         } else {
                             $image_mobile_website = $image_src;

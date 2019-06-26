@@ -81,7 +81,7 @@ function get_widget_details($db, $smarty, $user, $account, $modules) {
 }
 
 
-function get_view($db, $smarty, $user, $account, $modules) {
+function get_view($db, $smarty, $user, $account, $modules,$redis) {
 
 
     global $session;
@@ -150,6 +150,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
     if (!empty($state['store_key'])) {
         $store = get_object('Store', $state['store_key']);
     }
+
 
     switch ($state['parent']) {
 
@@ -303,11 +304,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
     if ($state['object'] != '') {
 
 
-        if ($state['object'] == 'website' and $state['parent'] == 'store') {
 
-
-            $state['key'] = $state['_parent']->get('Store Website Key');
-        }
         if ($state['object'] == 'campaign' and !is_numeric($state['key'])) {
 
             $_object = get_object('campaign_code-store_key', $state['key'].'|'.$state['parent_key']);
@@ -323,8 +320,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
         if (is_numeric($_object->get('Store Key'))) {
 
 
-            include_once 'class.Store.php';
-            $store                  = new Store($_object->get('Store Key'));
+            $store                  = get_object('Store',$_object->get('Store Key'));
             $state['current_store'] = $store->id;
         }
 
@@ -342,7 +338,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
 
             include_once 'class.Website.php';
             $website = new Website($_object->get('Website Key'));
-            //$state['current_website'] = $website->id;
+            $state['current_website'] = $website->id;
         }
 
 
@@ -407,6 +403,7 @@ function get_view($db, $smarty, $user, $account, $modules) {
         if ($state['object'] == 'website' and $state['tab'] != 'website.new') {
 
 
+            $state['current_website'] = $state['key'];
             if ($state['_parent'] == 'store' and !$state['_parent']->get('Store Website Key')) {
                 $state = array(
                     'old_state'  => $state,

@@ -225,7 +225,8 @@ function digest_website_content_data_blocks($content_data) {
 
                                 }
 
-                                $image_website = create_cached_image($image_key, $width, $height);
+                                $image_website = 'wi.php?id='.$image_key.'&s='.$width.'x'.$height;
+
                             }
 
 
@@ -382,7 +383,8 @@ function digest_website_content_data_blocks($content_data) {
 
                                         }
 
-                                        $image_website = create_cached_image($image_key, $width, $height);
+                                        $image_website = 'wi.php?id='.$image_key.'&s='.$width.'x'.$height;
+
                                     }
 
 
@@ -400,25 +402,20 @@ function digest_website_content_data_blocks($content_data) {
             case 'images':
 
 
-                if(isset($block['images'])) {
-
+                if (isset($block['images'])) {
 
 
                     foreach ($block['images'] as $_key => $_data) {
 
 
-
-
-                        $content_data['blocks'][$block_key]['images'][$_key]['src']=preg_replace('/image_root.php/','iw.php',$_data['src']);
+                        $content_data['blocks'][$block_key]['images'][$_key]['src'] = preg_replace('/image_root.php/', 'iw.php', $_data['src']);
 
                     }
 
                 }
 
 
-
             default:
-
 
 
         }

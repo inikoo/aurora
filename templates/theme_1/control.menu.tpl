@@ -294,7 +294,7 @@
             <td  class="label">
 
 
-                <input style="display:none" type="file" name="left_menu_logo_mobile" id="update_image_logo_mobile" class="image_upload_mobile" data-options='{ }'/>
+                <input style="display:none" type="file" name="left_menu_logo_mobile" id="update_image_logo_mobile" class="image_upload_mobile" data-options='{ "parent_object_scope":"logo_website_mobile"}'/>
                 <label style="cursor: pointer" for="update_image_logo_mobile">
                     <img id="left_menu_logo_mobile" style="height: 54px" src="{if !empty($mobile_style_values['left_menu_logo'])}{$mobile_style_values['left_menu_logo']}{else}/EcomB2b/art/nopic.png{/if}"/>
                 </label>

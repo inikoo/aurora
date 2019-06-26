@@ -2070,6 +2070,8 @@ function save_deal_component_labels($data, $editor) {
 
 function update_website_styles($data, $editor) {
 
+    include_once 'utils/image_functions.php';
+
 
     $website         = get_object('Website', $data['key']);
     $website->editor = $editor;
@@ -2080,8 +2082,60 @@ function update_website_styles($data, $editor) {
     }
     if (isset($data['settings'])) {
 
+        $settings=json_decode($data['settings'], true);
 
-        $website->update_settings(json_decode($data['settings'], true));
+        $tmp = array();
+        foreach ($website->style as $style_data) {
+            $tmp[trim($style_data[0]).'|'.trim($style_data[1])] = $style_data[2];
+
+        }
+        $style = array();
+        foreach ($tmp as $_key => $_value) {
+            $_tmp    = preg_split('/\|/', $_key);
+            $style[] = array(
+                $_tmp[0],
+                $_tmp[1],
+                $_value
+            );
+        }
+
+        $height = 60;
+        $width  = 80;
+        foreach ($style as $style_data) {
+            if ($style_data[0] == '#header_logo' and $style_data[1] == 'flex-basis') {
+                $width = floatval($style_data[2]);
+            }
+            if ($style_data[0] == '#top_header' and $style_data[1] == 'height') {
+                $height = floatval($style_data[2]);
+            }
+        }
+
+
+        if (isset($settings['logo_website'])) {
+            $settings['logo_website'] = preg_replace('/image_root/', 'wi', $settings['logo_website']);
+            if (preg_match('/id=(\d+)/', $settings['logo_website'], $matches)) {
+                $settings['logo_website_website'] = 'wi.php?id='.$matches[1].'&s='.get_image_size($matches[1], $width * 2, $height * 2, 'fit_highest');
+            }
+
+        } else {
+            $settings['logo_website']         = '';
+            $settings['logo_website_website'] = '';
+        }
+
+        if (isset($settings['favicon'])) {
+            $settings['favicon'] = preg_replace('/image_root/', 'wi', $settings['logo_website']);
+            if (preg_match('/id=(\d+)/', $settings['favicon'], $matches)) {
+                $settings['favicon_website'] = 'wi.php?id='.$matches[1].'&s='.get_image_size($matches[1], 32, 32, 'fit_highest');
+            }
+        } else {
+            $settings['favicon']         = '';
+            $settings['favicon_website'] = '';
+        }
+
+
+
+
+        $website->update_settings($settings);
     }
 
 

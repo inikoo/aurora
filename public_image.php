@@ -8,6 +8,7 @@
  Version 3
 
 */
+// Note this is not the same as the EcomB2B/wi.php
 
 include_once 'keyring/dns.php';
 

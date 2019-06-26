@@ -15,7 +15,7 @@
 <div id="top_header" style="width: 100%; display: flex;"  >
 
     <div id="header_logo" style="flex-grow:1;;flex-grow: 0;flex-shrink: 0;flex-grow: 0;flex-shrink: 0; ;text-align: center">
-            <a href="https://{$website->get('Website URL')}"><img id="website_logo" style="margin-top:{if isset($settings['logo_top_margin'])}{$settings['logo_top_margin']}{else}0px{/if};max-height: 100%;max-width:  100%;vertical-align: middle;" src="{if empty($settings['logo_website'])}https://via.placeholder.com/60x60{else}{$settings['logo_website']}{/if}"/></a>
+            <a href="https://{$website->get('Website URL')}"><img id="website_logo" style="margin-top:{if isset($settings['logo_top_margin'])}{$settings['logo_top_margin']}{else}0px{/if};max-height: 100%;max-width:  100%;vertical-align: middle;" src="{if empty($settings['logo_website'])}https://via.placeholder.com/60x60{else}{$settings['logo_website_website']}{/if}"/></a>
     </div>
 
     <div id="main_header" style="flex-grow:2;position: relative">

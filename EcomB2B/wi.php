@@ -8,8 +8,9 @@
  Version 3
 
 */
-
+// Note this is not the same as the other wi.php
 include_once 'keyring/dns.php';
+chdir('../');
 
 
 if (empty($_REQUEST['id']) or !is_numeric($_REQUEST['id']) or $_REQUEST['id'] <= 0) {
@@ -44,7 +45,6 @@ if ($redis->connect('127.0.0.1', 6379)) {
 
 $image_code = 'pi.'.DNS_ACCOUNT_CODE.'.'.$image_key.'_'.$size_r;
 
-
 if ($redis->exists($image_code)) {
 
 
@@ -69,7 +69,6 @@ if ($redis->exists($image_code)) {
     }
 
 }
-
 require_once 'vendor/autoload.php';
 
 use \Gumlet\ImageResize;
@@ -85,7 +84,6 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 $sql  = sprintf('select `Image Path`,`Image MIME Type`,`Image File Checksum` from `Image Dimension` where `Image Key`=? ');
 $stmt = $db->prepare($sql);
 
-//print $sql;
 
 $stmt->execute([$image_key]);
 
@@ -115,8 +113,6 @@ if ($row = $stmt->fetch()) {
         $image->quality_png = 9;
 
         $image->resizeToBestFit($w, $h);
-
-
 
 
         if (!is_dir('img/public_cache/'.$row['Image File Checksum'][0])) {
@@ -163,6 +159,8 @@ if ($row = $stmt->fetch()) {
     if (file_exists($cached_image_path)) {
         usleep(100000);
     }
+
+
 
 
     $redis->set(
