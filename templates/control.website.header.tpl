@@ -103,7 +103,7 @@
             <td id="" class="label">
 
 
-                <input style="display:none" type="file" name="logo_mobile" id="update_image_logo_mobile" class="image_upload_mobile" data-options='{ }'/>
+                <input style="display:none" type="file" name="logo_mobile" id="update_image_logo_mobile" class="image_upload_mobile" data-options='{ "parent_object_scope":"logo_website_mobile"}'/>
                 <label style="cursor: pointer" for="update_image_logo_mobile">
                     <img id="website_logo_mobile" style="height: 54px" src="{if !empty($mobile_style_values['header_background_image'])}{$mobile_style_values['header_background_image']}{else}/EcomB2b/art/nopic.png{/if}"/>
                 </label>

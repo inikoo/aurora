@@ -315,6 +315,8 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
     $images = array();
 
 
+    print_r($data);
+
     if (isset($data['parent_object_scope'])) {
         $parent_object_scope = $data['parent_object_scope'];
     } else {
@@ -323,11 +325,15 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
 
     if (isset($data['options'])) {
-        $options = $data['options'];
+        $options =$data['options'];
     } else {
         $options = '';
     }
 
+    $_options = json_decode($options, true);
+
+
+    print_r($_options);
 
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
@@ -426,7 +432,8 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         list($width, $height) = getimagesize($tmp_name);
 
 
-        $_options = json_decode($options, true);
+
+
 
 
         if (isset($_options['width']) and isset($_options['height'])) {
@@ -723,8 +730,8 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         );
 
 
-        $image = $parent->add_image($image_data, $options);
 
+        $image = $parent->add_image($image_data, $options);
 
         if ($parent->error) {
 

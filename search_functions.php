@@ -3356,6 +3356,8 @@ function search_webpages($db, $account, $user, $data) {
     }
 
 
+
+
     if ($data['scope'] == 'website') {
         if (in_array($data['scope_key'], $user->stores)) {
             $where_store = sprintf(' and `Webpage Website Key`=%d', $data['scope_key']);
@@ -3370,7 +3372,7 @@ function search_webpages($db, $account, $user, $data) {
             $where_store = sprintf(' and `Webpage Website Key` in (%s)', join(',', $user->websites));
         }
 
-        $stores = join(',', $user->stores);
+       // $stores = join(',', $user->stores);
     }
 
     /*
@@ -3392,8 +3394,11 @@ function search_webpages($db, $account, $user, $data) {
     }
 
 
+
     $results_data = $cache->get($memcache_fingerprint);
 */
+
+
     $results_data = false;
     if (!$results_data or true) {
 

@@ -276,14 +276,6 @@ class Public_Product {
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
 
-
-
-
-
-                      //  $image_website = create_cached_image($row['Image Key'], 330, 330, 'fit_highest');
-
-
-
                         $image_data = array(
                             'key'           => $row['Image Key'],
                             'src'           => $img = '/image.php?&id='.$row['Image Key'],
@@ -1068,7 +1060,6 @@ class Public_Product {
 
                 if ($row['Image Key']) {
 
-                   // $image_website = create_cached_image($row['Image Key'], '', 50, 'height');
 
                     $gallery[] = array(
                         'src'           => 'wi.php?id='.$row['Image Key'],

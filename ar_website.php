@@ -44,8 +44,8 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                         'webpage_key'      => array('type' => 'key'),
-                         'number_items'     => array('type' => 'numeric'),
+                         'webpage_key'  => array('type' => 'key'),
+                         'number_items' => array('type' => 'numeric'),
 
 
                      )
@@ -57,9 +57,9 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                         'code'      => array('type' => 'string'),
-                         'theme'     => array('type' => 'string'),
-                         'store_key' => array(
+                         'code'        => array('type' => 'string'),
+                         'theme'       => array('type' => 'string'),
+                         'store_key'   => array(
                              'type'     => 'key',
                              'optional' => true
                          ),
@@ -88,21 +88,18 @@ switch ($tipo) {
 function see_also($data, $db, $user, $smarty) {
     include_once('utils/image_functions.php');
 
-    $webpage=get_object('Webpage',$data['webpage_key']);
+    $webpage = get_object('Webpage', $data['webpage_key']);
 
 
-   // $see_also=array();
-    $html='';
+    // $see_also=array();
+    $html = '';
 
-//print $data['number_items'];
-   // print_r($webpage->get_related_webpages_key($data['number_items']));
-    foreach($webpage->get_related_webpages_key($data['number_items']) as $webpage_key){
-
-
+    //print $data['number_items'];
+    // print_r($webpage->get_related_webpages_key($data['number_items']));
+    foreach ($webpage->get_related_webpages_key($data['number_items']) as $webpage_key) {
 
 
         $see_also_page = get_object('Webpage', $webpage_key);
-
 
 
         if ($see_also_page->get('Webpage Scope') == 'Category Products' or $see_also_page->get('Webpage Scope') == 'Category Categories') {
@@ -110,18 +107,18 @@ function see_also($data, $db, $user, $smarty) {
 
             $category = get_object('Category', $see_also_page->get('Webpage Scope Key'));
 
-            $image_src =$category->get('Image');
+            $image_src = $category->get('Image');
 
 
             if (preg_match('/id=(\d+)/', $image_src, $matches)) {
-                $image_key = $matches[1];
+                $image_key            = $matches[1];
+                $image_mobile_website = 'wi.php?id='.$image_key.'&s=320x200';
+                $image_website        = 'wi.php?id='.$image_key.'&s='.get_image_size($image_key, 432, 330, 'fit_highest');
 
-                $image_mobile_website = create_cached_image($image_key, 320, 200);
-                $image_website = create_cached_image($image_key, 432, 330, 'fit_highest');
 
-            }else{
-                $image_mobile_website=$image_src;
-                $image_website=$image_src;
+            } else {
+                $image_mobile_website = $image_src;
+                $image_website        = $image_src;
             }
 
             $see_also = array(
@@ -140,29 +137,28 @@ function see_also($data, $db, $user, $smarty) {
             );
 
 
-
-        }
-        elseif ($see_also_page->get('Webpage Scope') == 'Product') {
+        } elseif ($see_also_page->get('Webpage Scope') == 'Product') {
 
             $product = get_object('Public_Product', $see_also_page->get('Webpage Scope Key'));
 
-            $image_src =$product->get('Image');
+            $image_src = $product->get('Image');
 
 
             if (preg_match('/id=(\d+)/', $image_src, $matches)) {
                 $image_key = $matches[1];
 
-                $image_mobile_website = create_cached_image($image_key, 320, 200);
-                $image_website = create_cached_image($image_key, 432, 330, 'fit_highest');
 
-            }else{
-                $image_mobile_website=$image_src;
-                $image_website=$image_src;
+                $image_mobile_website = 'wi.php?id='.$image_key.'&s=320x200';
+                $image_website        = 'wi.php?id='.$image_key.'&s='.get_image_size($image_key, 432, 330, 'fit_highest');
+
+            } else {
+                $image_mobile_website = $image_src;
+                $image_website        = $image_src;
             }
 
             $see_also = array(
                 'type'                 => 'product',
-                'product_id'         => $product->id,
+                'product_id'           => $product->id,
                 'header_text'          => $product->get('Name'),
                 'image_src'            => $product->get('Image'),
                 'image_mobile_website' => $image_mobile_website,
@@ -170,34 +166,28 @@ function see_also($data, $db, $user, $smarty) {
                 'webpage_key'          => $see_also_page->id,
                 'webpage_code'         => strtolower($see_also_page->get('Webpage Code')),
 
-                'product_code'        => $product->get('Code'),
-                'product_web_state'      =>$product->get('Web State'),
-                'link'                 => $see_also_page->get('Webpage URL')
+                'product_code'      => $product->get('Code'),
+                'product_web_state' => $product->get('Web State'),
+                'link'              => $see_also_page->get('Webpage URL')
 
             );
 
         }
 
 
-       // print_r($see_also);
+        // print_r($see_also);
 
 
-        $smarty->assign('item_data',$see_also);
-        $html.=$smarty->fetch('splinters/see_also_item.splinter.tpl');
-
-
-
-
-
-
+        $smarty->assign('item_data', $see_also);
+        $html .= $smarty->fetch('splinters/see_also_item.splinter.tpl');
 
 
     }
 
     $response = array(
-        'state' => 200,
-        'html'  => $html,
-        'update_date'=>gmdate('Y-m-d H:i:s')
+        'state'       => 200,
+        'html'        => $html,
+        'update_date' => gmdate('Y-m-d H:i:s')
     );
     echo json_encode($response);
 
@@ -219,22 +209,22 @@ function webpage_block($data, $db, $user, $smarty) {
     if ($data['code'] == 'text') {
         $smarty->assign('template', 't1');
 
-       // $block['text_blocks'][0]['text'] = preg_replace('/block_block_key_t1_editor/', 'block_'.$block_id.'_t1_editor', $block['text_blocks'][0]['text']);
-    }elseif ($data['code'] == 'map' ) {
-        $smarty->assign('store', get_object('store',$data['store_key']));
+        // $block['text_blocks'][0]['text'] = preg_replace('/block_block_key_t1_editor/', 'block_'.$block_id.'_t1_editor', $block['text_blocks'][0]['text']);
+    } elseif ($data['code'] == 'map') {
+        $smarty->assign('store', get_object('store', $data['store_key']));
 
-    }elseif ( $data['code'] == 'reviews' ) {
-        $store=get_object('store',$data['store_key']);
+    } elseif ($data['code'] == 'reviews') {
+        $store = get_object('store', $data['store_key']);
 
-        $reviews_data=$store->get('Reviews Settings');
+        $reviews_data = $store->get('Reviews Settings');
 
 
-        if(!$reviews_data){
-            $review_widget='';
-        }else{
-            if($reviews_data['provider']=='reviews.io'){
+        if (!$reviews_data) {
+            $review_widget = '';
+        } else {
+            if ($reviews_data['provider'] == 'reviews.io') {
 
-                $review_widget="
+                $review_widget = "
                  <div id=\"carousel-inline-widget-810\" style=\"width:100%;margin:0 auto;\"></div>
             <script>
                 richSnippetReviewsWidgets('carousel-inline-widget-810', {
@@ -256,16 +246,16 @@ function webpage_block($data, $db, $user, $smarty) {
 
         }
 
-        $block['html']=$review_widget;
+        $block['html'] = $review_widget;
 
 
     }
 
 
-    if(!empty($data['webpage_key'])){
+    if (!empty($data['webpage_key'])) {
 
-        $webpage=get_object('Webpage',$data['webpage_key']);
-        $website=get_object('Website',$webpage->get('Webpage Website Key'));
+        $webpage = get_object('Webpage', $data['webpage_key']);
+        $website = get_object('Website', $webpage->get('Webpage Website Key'));
         $smarty->assign('webpage', $webpage);
         $smarty->assign('website', $website);
 
@@ -277,7 +267,7 @@ function webpage_block($data, $db, $user, $smarty) {
     $smarty->assign('data', $block);
     $smarty->assign('block', $block);
 
-//print $smarty->fetch($data['theme'].'/blk.'.$data['code'].'.'.$data['theme'].'.tpl');
+    //print $smarty->fetch($data['theme'].'/blk.'.$data['code'].'.'.$data['theme'].'.tpl');
     $response = array(
         'state'     => 200,
         'button'    => $smarty->fetch($data['theme'].'/blk.control_label.'.$data['theme'].'.tpl'),

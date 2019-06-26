@@ -73,24 +73,11 @@ switch ($tipo) {
                     $data['scope'] = 'stores';
                 }
 
-                if (in_array(
-                    $data['state']['section'], array(
-                    'website',
-                    'webpage',
-                    '',
-                    ''
-                )
-                )) {
-                    search_webpages($db, $account, $user, $data);
-                } else {
-                    search_products($db, $account, $user,$data);
-                }
+                search_products($db, $account, $user,$data);
 
-                //  print_r($data['state']);
 
 
             } elseif ($data['state']['module'] == 'websites') {
-
 
 
 

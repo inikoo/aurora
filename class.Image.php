@@ -14,7 +14,7 @@
 */
 
 
-class Image extends DB_Table{
+class Image extends DB_Table {
 
     var $id = false;
     var $im = "";
@@ -102,8 +102,7 @@ class Image extends DB_Table{
                 $this->id = $this->data['Image Subject Image Key'];
                 if ($this->id) {
                     $sql = sprintf(
-                        "SELECT * FROM `Image Dimension` WHERE `Image Key`=%d ",
-                        $this->id
+                        "SELECT * FROM `Image Dimension` WHERE `Image Key`=%d ", $this->id
                     );
 
                     if ($row = $this->db->query($sql)->fetch()) {
@@ -176,9 +175,6 @@ class Image extends DB_Table{
         );
 
 
-
-
-
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $this->found     = true;
@@ -192,7 +188,6 @@ class Image extends DB_Table{
         }
 
 
-
         if (!$this->found and $create) {
             $this->create($raw_data);
 
@@ -203,22 +198,26 @@ class Image extends DB_Table{
 
     function create($data) {
 
-//ALTER TABLE `Image Dimension` ADD `Image MIME Type` ENUM('image/jpeg', 'image/png','image/gif','image/x-icon') NULL DEFAULT NULL AFTER `Image Key`, ADD INDEX (`Image MIME Type`);
-
-
+        //ALTER TABLE `Image Dimension` ADD `Image MIME Type` ENUM('image/jpeg', 'image/png','image/gif','image/x-icon') NULL DEFAULT NULL AFTER `Image Key`, ADD INDEX (`Image MIME Type`);
 
 
         $tmp_file = $data['upload_data']['tmp_name'];
-        //unset($data['upload_data']);
+
         $data['Image File Size'] = filesize($tmp_file);
 
         $finfo = new finfo(FILEINFO_MIME_TYPE);
 
-        $whitelist_type= array('image/jpeg', 'image/png','image/gif','image/x-icon');
+        $whitelist_type = array(
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/x-icon'
+        );
 
-        if (!in_array($file_mime=$finfo->file($tmp_file), $whitelist_type)) {
-            $this->error=true;
-            $this->msg = _("Uploaded file is not an valid image format").' '.$file_mime;
+        if (!in_array($file_mime = $finfo->file($tmp_file), $whitelist_type)) {
+            $this->error = true;
+            $this->msg   = _("Uploaded file is not an valid image format").' '.$file_mime;
+
             return;
         }
 
@@ -226,58 +225,54 @@ class Image extends DB_Table{
 
         $size_data = getimagesize($tmp_file);
 
-        if(!$size_data){
-            $this->error=true;
-            $this->msg = _("Error opening the image").', '._('please contact support');
-            return;
-        }
-
-
-
-        $data['Image Width'] =$size_data[0];
-        $data['Image Height'] =$size_data[1];
-
-
-        if($data['Image Width']==0 or $data['Image Height']==0){
-            $this->error=true;
-            $this->msg = _("Image is not supported").', '._('please contact support');
+        if (!$size_data) {
+            $this->error = true;
+            $this->msg   = _("Error opening the image").', '._('please contact support');
 
             return;
         }
 
 
-        switch($data['Image MIME Type']) {
-        case 'image/x-icon':
-            $file_extension='ico';
-            break;
-        default:
-            $file_extension=preg_replace('/image\//','',$data['Image MIME Type']);
+        $data['Image Width']  = $size_data[0];
+        $data['Image Height'] = $size_data[1];
+
+
+        if ($data['Image Width'] == 0 or $data['Image Height'] == 0) {
+            $this->error = true;
+            $this->msg   = _("Image is not supported").', '._('please contact support');
+
+            return;
+        }
+
+
+        switch ($data['Image MIME Type']) {
+            case 'image/x-icon':
+                $file_extension = 'ico';
+                break;
+            default:
+                $file_extension = preg_replace('/image\//', '', $data['Image MIME Type']);
         }
 
         //print 'img/db/'.$data['Image File Checksum'][0].'/'.$data['Image File Checksum'][1].'/'.$data['Image File Checksum'].'.'.$file_extension;
 
-        rename($tmp_file,'img/db/'.$data['Image File Checksum'][0].'/'.$data['Image File Checksum'][1].'/'.$data['Image File Checksum'].'.'.$file_extension  );
+
+        $data['Image Path'] = 'img/db/'.$data['Image File Checksum'][0].'/'.$data['Image File Checksum'][1].'/'.$data['Image File Checksum'].'.'.$file_extension;
+        rename($tmp_file, $data['Image Path']);
 
 
-
-        $data['Last Modify Date']=gmdate('Y-n-d H:i:s');
-
-        print_r($data);
-        exit;
+        $data['Image Creation Date'] = gmdate('Y-n-d H:i:s');
 
 
-
+        unset($data['upload_data']);
 
         $sql = sprintf(
-            "INSERT INTO `Image Dimension` (%s) values (%s)",
-            '`'.join('`,`', array_keys($this->data)).'`',
-            join(',', array_fill(0, count($this->data), '?'))
+            "INSERT INTO `Image Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($data)).'`', join(',', array_fill(0, count($data), '?'))
         );
 
         $stmt = $this->db->prepare($sql);
 
         $i = 1;
-        foreach ($this->data as $key => $value) {
+        foreach ($data as $key => $value) {
             $stmt->bindValue($i, $value);
             $i++;
         }
@@ -285,7 +280,6 @@ class Image extends DB_Table{
 
         if ($stmt->execute()) {
             $this->id = $this->db->lastInsertId();
-
 
 
             $this->new = true;
@@ -296,14 +290,10 @@ class Image extends DB_Table{
             $this->error = true;
             $this->msg   = 'Can not insert the image ';
 
-            print_r($this->db->errorInfo());
+            print_r($stmt->errorInfo());
 
             return;
         }
-
-
-
-
 
 
     }
@@ -791,7 +781,7 @@ class Image extends DB_Table{
     }
 
 
-//'Webpage','Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category','Staff'
+    //'Webpage','Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category','Staff'
 
 
     function remove_other_sizes_data() {
@@ -907,6 +897,80 @@ class Image extends DB_Table{
                     return $this->data['Image '.$key];
                 }
 
+        }
+
+
+    }
+
+
+    function update_public_db() {
+
+
+        $checksum   = $this->get('Image File Checksum');
+        $image_path = $this->get('Image Path');
+
+        if (!preg_match('/^[a-f0-9]{32}$/i', $checksum)) {
+            exit('wrong checksum');
+        }
+
+
+        $sql = sprintf(
+            "select `Image Subject Key` from `Image Subject Bridge`  where  `Image Subject Is Public`='Yes'  
+             and `Image Subject Image Key`=%d 
+             limit 1", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                if (!is_dir('img/public_db/'.$checksum[0])) {
+                    mkdir('img/public_db/'.$checksum[0]);
+                }
+
+
+                if (!is_dir('img/public_db/'.$checksum[0].'/'.$checksum[1])) {
+                    mkdir('img/public_db/'.$checksum[0].'/'.$checksum[1]);
+                }
+
+
+                chdir('img/public_db/'.$checksum[0].'/'.$checksum[1]);
+
+                //  print 'img/public_db/'.$checksum[0].'/'.$checksum[1]."\n";
+
+                $_tmp = preg_replace('/.*\//', '', $image_path);
+
+                if (!file_exists($_tmp)) {
+
+                    if (!symlink(
+                        preg_replace('/img\/db/', '../../../db', $image_path), $_tmp
+
+
+                    )) {
+                        print getcwd()."\n";
+                        print preg_replace('/img\/db/', '../../../db', $image_path)."\n";
+                        print "$_tmp\n";
+                        exit('can not create symlink');
+                    }
+                }
+
+
+                chdir('../../../../');
+
+            } else {
+
+
+                $public_db_path = preg_replace('/img\/db/', 'img/public_sb', $image_path);
+                if (file_exists($public_db_path)) {
+                    unlink($public_db_path);
+                }
+
+
+                $mask = 'img/public_cache/'.$checksum[0].'/'.$checksum[1]."/".$checksum."_*";
+                array_map("unlink", glob($mask));
+
+
+            }
         }
 
 

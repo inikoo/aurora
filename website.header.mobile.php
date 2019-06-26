@@ -44,10 +44,10 @@ $smarty->assign('header_key', $header_key);
 
 
 
-$header_data = $website->get('Footer Data');
-$header_key=$website->get('Website Footer Key');
-$smarty->assign('footer_data', $header_data);
-$smarty->assign('footer_key', $header_key);
+$footer_data = $website->get('Footer Data');
+$footer_key=$website->get('Website Footer Key');
+$smarty->assign('footer_data', $footer_data);
+$smarty->assign('footer_key', $footer_key);
 
 
 $webpage_key=$website->get_system_webpage_key('home.sys');

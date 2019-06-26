@@ -37,6 +37,7 @@ trait ImageSubject {
 
 
 
+
         if (isset($raw_data['Image Subject Object Image Scope']) and $raw_data['Image Subject Object Image Scope'] != '') {
 
             if ($this->table_name == 'Page') {
@@ -61,8 +62,8 @@ trait ImageSubject {
         }
 
 
-        $image = new Image('find', $data, 'create');
 
+        $image = new Image('find', $data, 'create');
         if ($image->id) {
 
             $this->link_image($image->id, $object_image_scope);
@@ -242,6 +243,8 @@ trait ImageSubject {
 
         // ALTER TABLE `Image Subject Bridge` CHANGE `Image Subject Object` `Image Subject Object` ENUM('Webpage','Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category','Staff') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
+        $metadata='';
+
         $image = get_object('Image',$image_key);
 
         if ($image->id) {
@@ -280,30 +283,51 @@ trait ImageSubject {
             }
 
 
-            if (in_array(
-                $subject, array(
-                            'Product',
-                            'Part',
-                            'Webpage'
-                        )
-            )) {
-                $is_public = 'Yes';
-            } else {
-                $is_public = 'No';
+            $is_public = 'No';
+
+
+            switch ($subject){
+                case 'Product':
+                    $is_public = 'Yes';
+                    break;
+                case 'Webpage':
+                    $is_public = 'Yes';
+                    break;
+                case 'Website':
+                    $is_public = 'Yes';
+                    break;
+                case 'Category':
+
+                    if($this->get('Category Scope')=='Product'){
+                        $is_public = 'Yes';
+                    }
+
+
+                    break;
             }
 
+
+
+
             $sql = sprintf(
-                "INSERT INTO `Image Subject Bridge` (`Image Subject Object Image Scope`,`Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key`,`Image Subject Is Principal`,`Image Subject Image Caption`,`Image Subject Date`,`Image Subject Order`,`Image Subject Is Public`) VALUES (%s,%s,%d,%d,%s,'',%s,%d,%s)",
+                "INSERT INTO `Image Subject Bridge` (`Image Subject Object Image Scope`,`Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key`,`Image Subject Is Principal`,`Image Subject Image Caption`,`Image Subject Date`,`Image Subject Order`,`Image Subject Is Public`, `Image Subject Metadata`) VALUES (%s,%s,%d,%d,%s,'',%s,%d,%s,%s)",
                 prepare_mysql($object_image_scope), prepare_mysql($subject), $subject_key, $image->id, prepare_mysql($principal), prepare_mysql(gmdate('Y-m-d H:i:s')), ($number_images + 1),
-                prepare_mysql($is_public)
+                prepare_mysql($is_public), ($metadata==''?'{}':prepare_mysql(json_encode($metadata)))
 
             );
 
 
             $this->db->exec($sql);
+            $image_subject_key = $this->db->lastInsertId();
+
+
+
+            $image->update_public_db();
+
+
+
             $this->update_images_data();
 
-            $image_subject_key = $this->db->lastInsertId();
 
             //print $sql;
 

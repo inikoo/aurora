@@ -4292,49 +4292,13 @@ class Page extends DB_Table {
                     if ($item['type'] == 'category') {
 
 
-                        //print $item['category_key'];
-                        //print_r($items_category_key_index);
-                        //exit;
-
 
                         if (in_array($item['category_key'], $items_category_key_index)) {
 
                             $item_data = $items[$item['category_key']];
 
 
-                            /*
-                                                        print_r($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
 
-
-                                                        print_r($item_data);
-
-
-
-                                                        if (preg_match('/id=(\d+)/', $item_data['Category Main Image'], $matches)) {
-
-                                                            $image_mobile_website=create_cached_image($matches[1], 320, 200);
-                                                            $image_website = create_cached_image($matches[1], 432, 330, 'fit_highest');
-
-                                                        }else{
-                                                            $image_mobile_website= 'art/nopic_mobile.png';
-                                                            $image_website= $item_data['Category Main Image'];
-
-                                                        }
-
-
-
-
-
-
-                                                      //  print $item_data['Category Main Image']."\n";
-
-
-
-                                                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_src']=$item_data['Category Main Image'];
-                                                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website']= $image_website;
-                                                        $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website']= $image_mobile_website;
-
-                            */
 
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Subject';
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['webpage_key']     = $item_data['Page Key'];
@@ -4344,7 +4308,6 @@ class Page extends DB_Table {
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['link']            = $item_data['Webpage URL'];
 
 
-                            //print_r($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
 
 
                             unset($items_category_key_index[$item['category_key']]);
