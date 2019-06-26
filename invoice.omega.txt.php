@@ -101,7 +101,7 @@ if ($account->get('Account Country 2 Alpha Code') == $invoice->get('Invoice Addr
 
 if ($invoice->get('Invoice Address Country 2 Alpha Code') == 'SK') {
 
-    if($invoice->get('Order Registration Number')!=''){
+    if($invoice->get('Order Registration Number')!=''   or $invoice->get('Invoice Tax Number')!=''       ){
         $code_tax = 'A1';
 
     }else{
@@ -139,7 +139,7 @@ $invoice_header_data = array(
     $order->get('Order Public ID'),
     $invoice->get('Invoice Customer Name'),
     $invoice->get('Invoice Registration Number'),
-    preg_replace('/^[^0-9]*/', '', $invoice->get('Invoice Tax Number')),
+    $invoice->get('Invoice Tax Number'),
     date('d.m.Y', strtotime($invoice->get_date('Invoice Date'))),
     '',
     date('d.m.Y', strtotime($invoice->get_date('Invoice Tax Liability Date'))),
@@ -217,7 +217,22 @@ $row_data = array(
     $invoice->get('Invoice Customer Name'),
     'S',
     '',
-    ''
+		     '',
+		      '',
+		      '',
+		      '',
+		      '',
+		      '',
+		      '',
+		      '',
+		      '',
+		      '',
+		      '',
+		      '',
+		      '',
+		      '',
+		      'X',
+		  
 
 
 );
@@ -239,9 +254,9 @@ $row_data = array(
     $invoice->get('Invoice Items Net Amount'),
     round($invoice->get('Invoice Items Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
     'Items '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
-    '03',
+    $code_sum,
     '',
-    'X',
+    '',
     '(Nedefinované)',
     'X',
     '(Nedefinované)',
@@ -292,7 +307,7 @@ if ($invoice->get('Invoice Shipping Net Amount') != 0) {
         'Shipping '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
         $code_sum,
         '',
-        'X',
+        '',
         '(Nedefinované)',
         'X',
         '(Nedefinované)',
@@ -342,7 +357,7 @@ if ($invoice->get('Invoice Charges Net Amount') != 0) {
         'Charges '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
         $code_sum,
         '',
-        'X',
+        '',
         '(Nedefinované)',
         'X',
         '(Nedefinované)',
@@ -387,7 +402,7 @@ if ($invoice->get('Invoice Total Tax Amount') != 0) {
         'Tax '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
         '04',
         '',
-        'X',
+        '',
         '(Nedefinované)',
         'X',
         '(Nedefinované)',
@@ -419,11 +434,13 @@ if ($invoice->get('Invoice Total Tax Amount') != 0) {
 }
 
 
-$text = iconv('UTF-8', 'WINDOWS-1250', $text);
+//$text = iconv('UTF-8', 'WINDOWS-1250', $text);
+$encoded_text = iconv( mb_detect_encoding( $text ), 'Windows-1252//TRANSLIT', $text );
 
 
-header("Content-type: text/plain");
+header('Content-Type: text/plain; charset=Windows-1252');
+
 header("Content-Disposition: attachment; filename=".$invoice->get('Invoice Public ID').".txt");
 
 
-print $text;
+print $encoded_text;
