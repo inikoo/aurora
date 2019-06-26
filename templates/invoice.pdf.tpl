@@ -1,5 +1,5 @@
 <html>
-<head>
+<head> x
     <style>
         {literal}
 
@@ -158,7 +158,7 @@
                 {/if}
                 {if $order->get('Order Customer Purchase Order ID')!=''}
                     <div style="text-align: right">
-                        {t}Customer's Purchase Order Number{/t}: <b>{$order->get('Order Customer Purchase Order ID')}</b>
+                        {t}Customer's PO Reference{/t}: <b>{$order->get('Order Customer Purchase Order ID')}</b>
                     </div>
                 {/if}
             {/if} </td>
