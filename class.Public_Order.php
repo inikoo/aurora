@@ -308,7 +308,42 @@ class Public_Order extends DBW_Table {
 
         switch ($key) {
 
+            case ('State Index'):
 
+
+                switch ($this->data['Order State']) {
+                    case 'InBasket':
+                        return 10;
+                        break;
+
+
+                    case 'InProcess':
+                        return 30;
+                        break;
+                    case 'InWarehouse':
+                        return 40;
+                        break;
+
+                    case 'PackedDone':
+                        return 80;
+                        break;
+                    case 'Approved':
+                        return 90;
+                        break;
+                    case 'Dispatched':
+                        return 100;
+                        break;
+                    case 'Cancelled':
+                        return -10;
+                        break;
+
+
+                    default:
+                        return 0;
+                        break;
+                }
+
+                break;
             case ('State'):
 
 
