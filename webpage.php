@@ -13,8 +13,6 @@ include_once 'common.php';
 include_once 'utils/object_functions.php';
 
 
-
-
 if (!isset($_REQUEST['webpage_key']) or !is_numeric($_REQUEST['webpage_key'])) {
     exit;
 }
@@ -33,13 +31,13 @@ if (!isset($_REQUEST['theme']) or !preg_match('/^theme\_\d+$/', $_REQUEST['theme
 $webpage_key = $_REQUEST['webpage_key'];
 $theme       = $_REQUEST['theme'];
 
-$webpage = get_object('Public_Webpage',$webpage_key);
+$webpage = get_object('Public_Webpage', $webpage_key);
 
 $webpage->load_scope();
 
-$website = get_object('Public_Website',$webpage->get('Webpage Website Key'));
+$website = get_object('Public_Website', $webpage->get('Webpage Website Key'));
 
-$store = get_object('Public_Store',$webpage->get('Webpage Store Key'));
+$store = get_object('Public_Store', $webpage->get('Webpage Store Key'));
 
 
 $content_data = $webpage->get('Content Data');
@@ -66,47 +64,27 @@ switch ($webpage->get('Webpage Scope')) {
 
 //print_r($webpage);
 
-if ($webpage->get('Webpage Template Filename') == 'products_showcase') {
-    include_once 'class.Public_Product.php';
 
-    foreach ($content_data['products'] as $key => $value) {
-        $product                                  = new Public_Product($value['product_id']);
-        $content_data['products'][$key]['object'] = $product;
-    }
+if ($webpage->get('Webpage Code') == 'register.sys') {
+    $scope_metadata = $webpage->get('Scope Metadata');
 
 
-}  else {
+    require_once 'utils/get_addressing.php';
+    list($address_format, $address_labels, $used_fields, $hidden_fields, $required_fields) = get_address_form_data($store->get('Store Home Country Code 2 Alpha'), $website->get('Website Locale'));
+
+    require_once 'utils/get_countries.php';
+    $countries = get_countries($website->get('Website Locale'));
 
 
-    if($webpage->get('Webpage Code')=='register.sys'){
-        $scope_metadata = $webpage->get('Scope Metadata');
-
-
-        require_once 'utils/get_addressing.php';
-        list($address_format, $address_labels, $used_fields, $hidden_fields, $required_fields) = get_address_form_data($store->get('Store Home Country Code 2 Alpha'), $website->get('Website Locale'));
-
-        require_once 'utils/get_countries.php';
-        $countries = get_countries($website->get('Website Locale'));
-
-
-        $smarty->assign('address_labels', $address_labels);
-        $smarty->assign('used_address_fields', $used_fields);
-        $smarty->assign('countries', $countries);
-        $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
-
-    }
-
-    $template = $theme.'/'.strtolower($webpage->get('Webpage Template Filename')).'.'.$theme.'.tpl';
-
-    if (!file_exists('templates/'.$template)) {
-        $template = $theme.'/webpage_blocks.'.$theme.'.tpl';
-
-    }
-
+    $smarty->assign('address_labels', $address_labels);
+    $smarty->assign('used_address_fields', $used_fields);
+    $smarty->assign('countries', $countries);
+    $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
 
 }
 
 
+$template = $theme.'/webpage_blocks.'.$theme.'.tpl';
 
 
 $smarty->assign('content', $content_data);
@@ -115,7 +93,6 @@ $smarty->assign('webpage', $webpage);
 $smarty->assign('store', $store);
 $smarty->assign('website', $website);
 $smarty->assign('theme', $theme);
-$smarty->assign('template', $webpage->get('Webpage Template Filename'));
 
 
 $smarty->assign('navigation', $webpage->get('Navigation Data'));
