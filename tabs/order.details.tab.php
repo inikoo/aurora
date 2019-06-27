@@ -14,10 +14,7 @@ include_once 'utils/invalid_messages.php';
 include_once 'conf/object_fields.php';
 
 
-if (!$user->can_view('orders') or !in_array(
-        $state['store']->id, $user->stores
-    )
-) {
+if (!$user->can_view('orders') or !in_array($state['store']->id, $user->stores)  or $state['_object']->get('State Index')<=10  )      {
     $html = '';
 } else {
 

@@ -64,6 +64,7 @@ $object_fields = array(
 
             array(
                 'id'              => 'Order_Tax_Number',
+                'render'          => ($object->get('State Index') >= 90 ? false : true),
                 'edit'            => ($edit ? 'string' : ''),
                 'value'           => $object->get('Order Tax Number'),
                 'formatted_value' => $object->get('Tax Number'),
@@ -73,7 +74,7 @@ $object_fields = array(
 
             ),
             array(
-                'render'          => ($object->get('Order Tax Number') == '' ? false : true),
+                'render'          => ($object->get('Order Tax Number') == '' ? false : ($object->get('State Index') >= 90 ? false : true)),
                 'id'              => 'Order_Tax_Number_Valid',
                 'edit'            => ($edit ? 'option' : ''),
                 'options'         => $options_valid_tax_number,
@@ -99,11 +100,13 @@ $object_fields = array(
     array(
         'label'      => _('Address'),
         'show_title' => false,
+        'class'      => ($object->get('State Index') >= 90 ? 'hide' : ''),
         'fields'     => array(
 
 
             array(
                 'id'              => 'Order_Delivery_Address',
+                'render'          => ($object->get('State Index') >= 90 ? false : true),
                 'edit'            => ($edit ? 'address' : ''),
                 'countries'       => $countries,
                 'value'           => htmlspecialchars($object->get('Order Delivery Address')),
@@ -114,7 +117,9 @@ $object_fields = array(
             ),
 
             array(
-                'id'              => 'Order_Invoice_Address',
+                'id'     => 'Order_Invoice_Address',
+                'render' => ($object->get('State Index') >= 90 ? false : true),
+
                 'edit'            => ($edit ? 'address' : ''),
                 'countries'       => $countries,
                 'value'           => htmlspecialchars($object->get('Order Invoice Address')),
@@ -131,4 +136,4 @@ $object_fields = array(
 );
 
 
-?>
+

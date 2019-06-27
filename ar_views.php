@@ -798,6 +798,7 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
                 $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $web_location);
             } else {
                 $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '');
+               // $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $state['module'].' * '.$state['section']);
             }
 
         }
@@ -816,20 +817,20 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
             case 'inventory':
                 switch ($state['section']) {
                     case 'barcodes':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-barcode"></i> '._("Retail Barcodes"));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-barcode"></i> '._("Retail Barcodes"));
 
                         break;
                     case 'dashboard':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-tachometer"></i> '._("Inventory dashboard"));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-tachometer"></i> '._("Inventory dashboard"));
                         break;
                     case 'categories':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-sitemap"></i> '._("Part's categories"));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-sitemap"></i> '._("Part's categories"));
                         break;
                     case 'stock_history':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-scanner"></i> '._("Stock history"));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-scanner"></i> '._("Stock history"));
                         break;
                     default:
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-boxes"></i> '._("Inventory (Parts)"));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-boxes"></i> '._("Inventory (Parts)"));
 
                 }
 
@@ -838,13 +839,13 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
             case 'suppliers':
                 switch ($state['section']) {
                     case 'agents':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-user-secret"></i> '._('Agents'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-user-secret"></i> '._('Agents'));
                         break;
                     case 'categories':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-sitemap"></i> '._("Supplier's categories"));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-sitemap"></i> '._("Supplier's categories"));
                         break;
                     default:
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-hand-holding-box"></i> '._('Suppliers'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-hand-holding-box"></i> '._('Suppliers'));
 
                 }
 
@@ -853,7 +854,7 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
                 switch ($state['section']) {
 
                     default:
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-tachometer-alt"></i> '._('Dashboard'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-tachometer-alt"></i> '._('Dashboard'));
 
                 }
 
@@ -861,49 +862,49 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
             case 'orders':
                 switch ($state['section']) {
                     case 'dashboard':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-stream"></i> '._("Pending orders").' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-stream"></i> '._("Pending orders").' '.$store->get('Code'));
                         break;
                     default:
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-shopping-cart"></i> '._('Orders').' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-shopping-cart"></i> '._('Orders').' '.$store->get('Code'));
 
                 }
                 break;
             case 'products':
                 switch ($state['section']) {
                     case 'marketing':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-bullhorn"></i> '._("Marketing").' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-bullhorn"></i> '._("Marketing").' '.$store->get('Code'));
                         break;
                     case 'offers':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-tags"></i> '._("Offers").' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-tags"></i> '._("Offers").' '.$store->get('Code'));
                         break;
                     case 'categories':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-sitemap"></i> '._("Products's categories").' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-sitemap"></i> '._("Products's categories").' '.$store->get('Code'));
                         break;
                     default:
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-cubes"></i> '._('Products').' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-cubes"></i> '._('Products').' '.$store->get('Code'));
 
                 }
                 break;
             case 'customers':
                 switch ($state['section']) {
                     case 'customer_notifications':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-paper-plane"></i> '._("Notifications").' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-paper-plane"></i> '._("Notifications").' '.$store->get('Code'));
                         break;
                     case 'insights':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-graduation-cap"></i> '._("Customer's insigths").' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-graduation-cap"></i> '._("Customer's insigths").' '.$store->get('Code'));
                         break;
                     case 'lists':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-list"></i> '._("Customer's lists").' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-list"></i> '._("Customer's lists").' '.$store->get('Code'));
                         break;
 
                     case 'dashboard':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-tachometer"></i> '._("Customer's dashboard").' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-tachometer"></i> '._("Customer's dashboard").' '.$store->get('Code'));
                         break;
                     case 'prospects':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-user-friends"></i> '._('Prospects').' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-user-friends"></i> '._('Prospects').' '.$store->get('Code'));
                         break;
                     default:
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users"></i> '._('Customers').' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-users"></i> '._('Customers').' '.$store->get('Code'));
 
                 }
 
@@ -912,7 +913,7 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
                 switch ($state['section']) {
 
                     default:
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users"></i> '._('Customers (All stores)'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-users"></i> '._('Customers (All stores)'));
 
                 }
 
@@ -920,13 +921,13 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
             case 'orders_server':
                 switch ($state['section']) {
                     case 'group_by_store':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-compress"></i> '._("Orders by store"));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-compress"></i> '._("Orders by store"));
                         break;
                     case 'dashboard':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-stream"></i> '._("Pending orders"));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-stream"></i> '._("Pending orders"));
                         break;
                     default:
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-shopping-cart"></i> '._('Orders (All stores)'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-shopping-cart"></i> '._('Orders (All stores)'));
 
                 }
 
@@ -934,11 +935,11 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
             case 'customers_server':
                 switch ($state['section']) {
                     case 'email_communications':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-paper-plane"></i> '._('Notifications.').' ('._('All stores').')');
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-paper-plane"></i> '._('Notifications.').' ('._('All stores').')');
                         break;
 
                     default:
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users"></i> '._('Customers (All stores)'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-users"></i> '._('Customers (All stores)'));
 
                 }
 
@@ -947,16 +948,16 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
                 switch ($state['section']) {
 
                     case 'invoices':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-file-alt"></i> '._('Invoices').' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-file-alt"></i> '._('Invoices').' '.$store->get('Code'));
                         break;
                     case 'payments':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-credit-cart"></i> '._('Payments').' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-credit-cart"></i> '._('Payments').' '.$store->get('Code'));
                         break;
                     case 'credits':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-piggy-bank"></i> '._('Credit vault').' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-piggy-bank"></i> '._('Credit vault').' '.$store->get('Code'));
                         break;
                     case 'deleted_invoices':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-file-alt"></i> '._('Deleted invoices').' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-file-alt"></i> '._('Deleted invoices').' '.$store->get('Code'));
                         break;
 
                 }
@@ -964,16 +965,16 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
                 switch ($state['section']) {
 
                     case 'invoices':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-file-alt"></i> '._('Invoices').' ('._('All').')');
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-file-alt"></i> '._('Invoices').' ('._('All').')');
                         break;
                     case 'deleted_invoices':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-file-alt"></i> '._('Deleted invoices').' ('._('All').')');
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-file-alt"></i> '._('Deleted invoices').' ('._('All').')');
                         break;
                     case 'payments':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-credit-cart"></i> '._('Payments').' ('._('All').')');
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-credit-cart"></i> '._('Payments').' ('._('All').')');
                         break;
                     case 'credits':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-piggy-bank"></i> '._('Credit vault').' ('._('All').')');
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-piggy-bank"></i> '._('Credit vault').' ('._('All').')');
                         break;
 
 
@@ -984,16 +985,16 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
                 switch ($state['section']) {
 
                     case 'dashboard':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-warehouse"></i> '._("Dashboard"));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-warehouse"></i> '._("Dashboard"));
                         break;
                     case 'warehouse':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-warehouse"></i> '.$warehouse->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-warehouse"></i> '.$warehouse->get('Code'));
                         break;
                     case 'locations':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-pallet"></i> '._("Locations"));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-pallet"></i> '._("Locations"));
                         break;
                     case 'returns':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-backspace"></i> '._("Returns"));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-backspace"></i> '._("Returns"));
                         break;
 
 
@@ -1003,13 +1004,13 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
             case 'delivery_notes_server':
                 switch ($state['section']) {
                     case 'group_by_store':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-compress"></i> '._("Delivery notes by store"));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-compress"></i> '._("Delivery notes by store"));
                         break;
                     case 'delivery_notes':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-truxk"></i> '._('Delivery notes').' ('._('All').')');
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-truxk"></i> '._('Delivery notes').' ('._('All').')');
                         break;
                     case 'pending_delivery_notes':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-stream"></i> '._("Pending delivery notes'"));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-stream"></i> '._("Pending delivery notes'"));
                         break;
 
 
@@ -1017,16 +1018,16 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
             case 'hr':
                 switch ($state['section']) {
                     case 'employees':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-hand-rock"></i> '._('Employees'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-hand-rock"></i> '._('Employees'));
                         break;
                     case 'contractors':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-hand-spock"></i> '._('Contractors'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-hand-spock"></i> '._('Contractors'));
                         break;
                     case 'overtimes':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-clock"></i> '._('Overtimes'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-clock"></i> '._('Overtimes'));
                         break;
                     case 'organization':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-sitemap"></i> '._('Organization'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-sitemap"></i> '._('Organization'));
                         break;
 
                 }
@@ -1035,45 +1036,56 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
             case 'users':
                 switch ($state['section']) {
                     case 'users':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users-class"></i> '._('Users').' ('._('All').')');
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-users-class"></i> '._('Users').' ('._('All').')');
                         break;
                     case 'staff':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users-class"></i> '._('Users').' ('._('Employees').')');
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-users-class"></i> '._('Users').' ('._('Employees').')');
                         break;
                     case 'contractors':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users-class"></i> '._('Users').' ('._('Contractors').')');
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-users-class"></i> '._('Users').' ('._('Contractors').')');
                         break;
                     case 'suppliers':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users-class"></i> '._('Users').' ('._('Suppliers').')');
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-users-class"></i> '._('Users').' ('._('Suppliers').')');
                         break;
                     case 'agents':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users-class"></i> '._('Users').' ('._('Agents').')');
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-users-class"></i> '._('Users').' ('._('Agents').')');
                         break;
                     default:
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-users-class"></i> '._('Users'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-users-class"></i> '._('Users'));
 
                 }
                 break;
             case 'reports':
                 switch ($state['section']) {
                     case 'intrastat':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-chart-line"></i> '._('Intrastat'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-chart-line"></i> '._('Intrastat'));
                         break;
                     case 'pickers':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-chart-line"></i> '._('Pickers'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-chart-line"></i> '._('Pickers'));
                         break;
                     case 'packers':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-chart-line"></i> '._('Packers'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-chart-line"></i> '._('Packers'));
                         break;
 
                     default:
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-chart-line"></i> '._('Reports'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-chart-line"></i> '._('Reports'));
+
+                }
+
+                break;
+            case 'account':
+                switch ($state['section']) {
+
+
+                    default:
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-toolbox"></i> '._('Account'));
 
                 }
 
                 break;
             default:
-                $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $state['module'].' '.$state['section']);
+                $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '');
+               // $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $state['module'].' '.$state['section']);
 
         }
 
@@ -1252,16 +1264,21 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             $html = get_products_special_categories_showcase(
                 $data, $smarty, $user, $db
             );
+            $title        = _("Product's categories").' '.$data['store']->get('Code');
+            $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
             break;
         case 'account':
             if ($data['module'] == 'products_server') {
                 include_once 'showcase/stores.show.php';
                 $html = get_stores_showcase($data, $smarty, $user, $db);
-
+                $title        = _('Stores');
+                $web_location = '<i class="fal fa-fw fa-store"></i> '.$title;
             } else {
 
                 include_once 'showcase/account.show.php';
                 $html = get_account_showcase($data, $smarty, $user, $db);
+                $title        = _('Account');
+                $web_location = '<i class="fal fa-fw fa-toolbox"></i> '.$title;
             }
             break;
         case 'product':
@@ -1428,38 +1445,50 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 
             if ($data['_object']->get('Category Scope') == 'Product') {
 
-                if ($data['_object']->id == $data['store']->get(
-                        'Store Family Category Key'
-                    ) or $data['_object']->id == $data['store']->get(
-                        'Store Department Category Key'
-                    )) {
+
+
+                if ($data['_object']->id == $data['store']->get('Store Family Category Key')) {
                     $html = '';
+                    $title        = _('Families').' '.$data['store']->get('Code');
+                    $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
+                } else if ($data['_object']->id == $data['store']->get('Store Department Category Key')) {
+                    $html = '';
+                    $title        = _('Departments').' '.$data['store']->get('Code');
+                    $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
                 } elseif ($data['_object']->get('Root Key') == $data['store']->get('Store Family Category Key')) {
                     include_once 'showcase/family.show.php';
                     $html = get_family_showcase($data, $smarty, $user, $db);
+                    $title        = $data['_object']->get('Code').' '.$data['store']->get('Code');
+                    $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
                 } elseif ($data['_object']->get('Root Key') == $data['store']->get('Store Department Category Key')) {
                     include_once 'showcase/department.show.php';
                     $html = get_department_showcase($data, $smarty, $user, $db);
+                    $title        = $data['_object']->get('Code').' '.$data['store']->get('Code');
+                    $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
                 } else {
+
                     $html = '';
+                    $title        = $data['_object']->get('Code').' '.$data['store']->get('Code');
+                    $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
                 }
+
+
 
             } elseif ($data['_object']->get('Category Scope') == 'Part') {
 
-                if ($data['_object']->id == $account->get(
-                        'Account Part Family Category Key'
-                    )) {
+                if ($data['_object']->id == $account->get('Account Part Family Category Key')) {
                     include_once 'showcase/part_families.show.php';
-                    $html = get_part_familes_showcase(
-                        $data, $smarty, $user, $db
-                    );
-                } elseif ($data['_object']->get('Root Key') == $account->get(
-                        'Account Part Family Category Key'
-                    )) {
+                    $html = get_part_familes_showcase($data, $smarty, $user, $db);
+                    $title        = _("Families").' <i class="fal fa-fw fa-box"></i>';
+                    $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
+
+
+                } elseif ($data['_object']->get('Root Key') == $account->get('Account Part Family Category Key')) {
                     include_once 'showcase/part_family.show.php';
-                    $html = get_part_family_showcase(
-                        $data, $smarty, $user, $db
-                    );
+                    $html = get_part_family_showcase($data, $smarty, $user, $db);
+                    $title        = $data['_object']->get('Code').' <i class="fal fa-fw fa-box"></i>';
+                    $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
+
                 } else {
                     return '_';
                 }

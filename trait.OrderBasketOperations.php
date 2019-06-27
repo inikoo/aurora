@@ -468,6 +468,11 @@ trait OrderBasketOperations {
 
     function update_for_collection($value, $options) {
 
+        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+            return;
+        }
+
+
         if ($value != 'Yes') {
             $value = 'No';
         }

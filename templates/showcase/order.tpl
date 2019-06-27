@@ -171,7 +171,7 @@
     </ul>
 </div>
 
-<div id="order" class="order" style="display: flex;" data-object='{$object_data}' order_key="{$order->id}">
+<div id="order" class="order" style="display: flex;" data-object='{$object_data}' order_key="{$order->id}"  data-state_index="{$order->get('State Index')}" >
     <div class="block" style=" align-items: stretch;flex: 1">
         <div class="data_container" style="padding:5px 10px">
             <div class="data_field  " style="margin-bottom:10px">
@@ -583,7 +583,7 @@
 
         <div  class=" node" style="border-top: 1px solid #ccc">
 
-            <div class="payment_operation   ">
+            <div class="payment_operation  hide ">
                 <div class="close_add_discounts square_button left " style="padding:0;margin:0;position:relative;top:0px" title="{t}Close{/t}">
                     <i class="fa fa-window-close  " aria-hidden="true" onclick="hide_add_deal_to_order()"></i>
 
@@ -595,7 +595,7 @@
 
 
 
-            <div class="payment_operation  ">
+            <div class="payment_operation {if $order->get('State Index')<0 or  $order->get('State Index')>=90   }hide{/if} ">
                 <div class="open_add_discounts square_button right " style="padding:0;margin:0;position:relative;top:0px" title="{t}Add offer{/t}">
                     <i class="fa fa-plus  " aria-hidden="true" onclick="show_add_deal_to_order()"></i>
 
@@ -920,16 +920,16 @@
                                                                                                                                                                                             class="fa fa-cloud save"
                                                                                                                                                                                             onClick="save_charges_value()"
                                                                                                                                                                                             aria-hidden="true"></i> </span><span
-                            id="Charges_Net_Amount" class="Charges_Net_Amount button">{$order->get('Charges Net Amount')}<span></td>
+                            id="Charges_Net_Amount" class="Charges_Net_Amount {if $order->get('State Index')<90 and $order->get('State Index')>0}button{/if}">{$order->get('Charges Net Amount')}<span></td>
             </tr>
             <tr>
                 <td class="label" id="Shipping_Net_Amount_label">{t}Shipping{/t}</td>
                 <td class="aright "><span id="Shipping_Net_Amount_form" class="hide"><i id="set_shipping_as_auto" class="fa fa-magic button" onClick="set_shipping_as_auto()" aria-hidden="true"></i>  <input
-                                value="{$order->get('Order Shipping Net Amount')}" ovalue="{$order->get('Order Shipping Net Amount')}" style="width: 100px" id="Shipping_Net_Amount_input"> <i id="Shipping_Net_Amount_save"
+                                value="{$order->get('Order Shipping Net Amount')}" ovalue="{$order->get('Order Shipping Net Amount')}" style="width: 100px" id="Shipping_Net_Amount_input"><i id="Shipping_Net_Amount_save"
                                                                                                                                                                                                class="fa fa-cloud save"
                                                                                                                                                                                                onClick="save_shipping_value()"
                                                                                                                                                                                                aria-hidden="true"></i> </span><span
-                            id="Shipping_Net_Amount" class="Shipping_Net_Amount button">{$order->get('Shipping Net Amount')}<span></td>
+                            id="Shipping_Net_Amount" class="Shipping_Net_Amount {if $order->get('State Index')<90 and $order->get('State Index')>0}button{/if}">{$order->get('Shipping Net Amount')}<span></td>
             </tr>
             <tr class="Deal_Amount_Off_tr  {if $order->get('Order Deal Amount Off')==0}hide{/if}">
                 <td class="label">{t}Amount off{/t}</td>
@@ -947,18 +947,18 @@
 
             <tr class="total">
                 <td class="label">{t}Total{/t}</td>
-                <td class="aright Total_Amount  button " amount="{$order->get('Order To Pay Amount')}" onclick="try_to_pay(this)">{$order->get('Total Amount')}</td>
+                <td class="aright Total_Amount  {if $order->get('State Index')>0}button{/if} " amount="{$order->get('Order To Pay Amount')}" onclick="try_to_pay(this)">{$order->get('Total Amount')}</td>
             </tr>
 
 
             <tr class="total  {if $order->get('Order Total Refunds')==0}hide{/if}">
                 <td class="label" title="{t}Total refunds{/t}">{t}Refunds{/t}</td>
-                <td class="aright Total_Refunds  button ">{$order->get('Total Refunds')}</td>
+                <td class="aright Total_Refunds  {if $order->get('State Index')>0}button{/if}  ">{$order->get('Total Refunds')}</td>
             </tr>
 
             <tr class="total {if $order->get('Order Total Refunds')==0}hide{/if}">
                 <td class="label" title="{t}Total final balance afer refunds{/t}">{t}Final balance{/t}</td>
-                <td class="aright Total_Balance  button ">{$order->get('Total Balance')}</td>
+                <td class="aright Total_Balance  {if $order->get('State Index')>0}button{/if}  ">{$order->get('Total Balance')}</td>
             </tr>
 
 
@@ -1090,12 +1090,18 @@
 
 
     $(document).on('click', '#Shipping_Net_Amount', function (evt) {
+        if($('#order').data('state_index')>=90 || $('#order').data('state_index')<=0 ){
+            return;
+        }
         $('#Shipping_Net_Amount').addClass('hide')
         $('#Shipping_Net_Amount_form').removeClass('hide')
 
     })
 
     $(document).on('click', '#Shipping_Net_Amount_label', function (evt) {
+        if($('#order').data('state_index')>=90 || $('#order').data('state_index')<=0 ){
+            return;
+        }
         $('#Shipping_Net_Amount').removeClass('hide')
         $('#Shipping_Net_Amount_form').addClass('hide')
 
@@ -1119,6 +1125,9 @@
 
     function save_shipping_value() {
 
+        if($('#order').data('state_index')>=90 || $('#order').data('state_index')<=0 ){
+            return;
+        }
 
         if ($('#Shipping_Net_Amount_save').hasClass('wait')) {
             return;
@@ -1233,6 +1242,9 @@
 
     function set_shipping_as_auto() {
 
+        if($('#order').data('state_index')>=90 || $('#order').data('state_index')<=0 ){
+            return;
+        }
 
         if ($('#set_shipping_as_auto').hasClass('wait')) {
             return;
@@ -1338,12 +1350,18 @@
 
 
     $(document).on('click', '#Charges_Net_Amount', function (evt) {
+        if($('#order').data('state_index')>=90 || $('#order').data('state_index')<=0 ){
+            return;
+        }
         $('#Charges_Net_Amount').addClass('hide')
         $('#Charges_Net_Amount_form').removeClass('hide')
 
     })
 
     $(document).on('click', '#Charges_Net_Amount_label', function (evt) {
+        if($('#order').data('state_index')>=90 || $('#order').data('state_index')<=0 ){
+            return;
+        }
         $('#Charges_Net_Amount').removeClass('hide')
         $('#Charges_Net_Amount_form').addClass('hide')
 
@@ -1366,6 +1384,11 @@
     })
 
     function save_charges_value() {
+
+
+        if($('#order').data('state_index')>=90 || $('#order').data('state_index')<=0 ){
+            return;
+        }
 
 
         if ($('#Charges_Net_Amount_save').hasClass('wait')) {
@@ -1480,6 +1503,9 @@
 
     function set_charges_as_auto() {
 
+        if($('#order').data('state_index')>=90 || $('#order').data('state_index')<=0 ){
+            return;
+        }
 
         if ($('#set_charges_as_auto').hasClass('wait')) {
             return;
