@@ -1402,9 +1402,13 @@
                 ajaxData.append("tipo", 'upload_images')
                 ajaxData.append("parent", 'website')
                 ajaxData.append("parent_key", '{$website->id}')
-                ajaxData.append("parent_object_scope", JSON.stringify({
-                    scope: 'footer', scope_key: '{$footer_key}'
 
+                ajaxData.append("parent_object_scope", 'Footer')
+
+
+
+                ajaxData.append("metadata", JSON.stringify({
+                    scope: 'footer', scope_key: '{$footer_key}'
                 }))
                 ajaxData.append("options", JSON.stringify({
                     max_width: 180
@@ -1433,12 +1437,12 @@
 
 
 
-                            $('#change_image').data('element').attr('src', data.image_src).attr('web_image_key', data.web_image_key)
+                            $('#change_image').data('element').attr('src', 'wi.php?id='+data.img_key).attr('web_image_key', data.img_key)
                             $('#save_button', window.parent.document).addClass('save button changed valid')
 
 
                         } else if (data.state == '400') {
-                            swal({
+                            swal.fire({
                                 title: data.title, text: data.msg, confirmButtonText: "OK"
                             });
                         }

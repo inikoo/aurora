@@ -20,7 +20,7 @@
             <div id="main_image" class="wraptocenter main_image {if $image_key==''}hide{/if}">
                 <img src="/{if $image_key}image.php?id={$image_key}&amp;s=270x270{else}art/nopic.png{/if}"> </span>
             </div>
-            {include file='upload_main_image.tpl' object='Category' key=$category->id class="{if $image_key!=''}hide{/if}"}
+            {include file='upload_main_image.tpl' object='Category' parent_object_scope="Marketing" key=$category->id class="{if $image_key!=''}hide{/if}"}
         </div>
         <div style="clear:both">
         </div>

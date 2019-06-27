@@ -1637,7 +1637,7 @@ class Category extends DB_Table {
                     $account = get_object('Account', 1);
 
                     $sql = sprintf(
-                        'SELECT `Image Subject Image Key` FROM `Image Subject Bridge` LEFT JOIN `Category Dimension` ON (`Image Subject Object Key`=`Category Key`)  WHERE `Category Subject`="Part" AND `Category Code`=%s  AND `Category Root Key`=%d AND `Image Subject Object`="Category" ',
+                        'SELECT `Image Subject Image Key` FROM `Image Subject Bridge` LEFT JOIN `Category Dimension` ON (`Image Subject Object Key`=`Category Key`)  WHERE `Category Subject`="Part" AND  `Image Subject Object Image Scope`="Marketing"  and   `Category Code`=%s  AND `Category Root Key`=%d AND `Image Subject Object`="Category" ',
                         prepare_mysql($subcategory->get('Category Code')), $account->get('Account Part Family Category Key')
                     );
 
@@ -1645,7 +1645,7 @@ class Category extends DB_Table {
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
                             //  print_r($row);
-                            $subcategory->link_image($row['Image Subject Image Key']);
+                            $subcategory->link_image($row['Image Subject Image Key'],'Marketing');
 
 
                         }
