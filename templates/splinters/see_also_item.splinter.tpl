@@ -56,7 +56,7 @@
             <div class="flex-item full change_category_image button">
                 <form method="post" _action="/ar_edit.php" enctype="multipart/form-data" novalidate>
                     <input type="file" name="category_categories_category" id="file_upload_{$item_data.category_key}" class="image_upload hide" multiple
-                           data-options='{ "scope":"category", "scope_key":"{$item_data.category_key}"}'/>
+                           data-scope="Category"  data-metadata='{ "block":"see_also", "scope":"category", "scope_key":"{$item_data.category_key}"}'/>
                     <label for="file_upload_{$item_data.category_key}">
                         <i class="fa  fa-image fa-fw button" aria-hidden="true"></i> {t}Change image{/t}
                     </label>
@@ -79,7 +79,7 @@
                 <div class="flex-item full change_category_image button">
                     <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
                         <input type="file" name="category_categories_category" id="file_upload_{$item_data.product_id}" class="image_upload hide" multiple
-                               data-options='{ "scope":"category", "scope_key":"{$item_data.product_id}"}'/>
+                               data-scope="Product"  data-options='{ "block":"see_also", "scope":"product", "scope_key":"{$item_data.product_id}"}'/>
                         <label for="file_upload_{$item_data.product_id}">
                             <i class="fa  fa-image fa-fw button" aria-hidden="true"></i> {t}Change image{/t}
                         </label>

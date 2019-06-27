@@ -2146,6 +2146,9 @@
         ajaxData.append("tipo", 'upload_images')
         ajaxData.append("parent", 'webpage')
         ajaxData.append("parent_key", '{$webpage->id}')
+        ajaxData.append("parent_object_scope", JSON.stringify($(this).data('scope')))
+        ajaxData.append("metadata", JSON.stringify($(this).data('metadata')))
+
         ajaxData.append("options", JSON.stringify($(this).data('options')))
         ajaxData.append("response_type", 'webpage')
 
@@ -2349,10 +2352,7 @@
             pastePlain: true,
             imageUploadURL: '/ar_upload.php',
             imageUploadParams: {
-                tipo: 'upload_images', parent: 'webpage', parent_key: $('#blocks').data('webpage_key'), parent_object_scope: JSON.stringify({
-                    scope: 'block', block_key: key
-
-                }), response_type: 'froala'
+                tipo: 'upload_images', parent: 'webpage', parent_key: $('#blocks').data('webpage_key'),   parent_object_scope: 'Froala',    parent_object_scope: JSON.stringify({ scope: 'block', block_key: key}), response_type: 'froala'
 
             },
             imageUploadMethod: 'POST',

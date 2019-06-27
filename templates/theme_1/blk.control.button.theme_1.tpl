@@ -19,7 +19,7 @@
 
 
         <span class="small" style="font-style: italic">{t}Background image{/t}, {t}Min width{/t} 1240px,{t}Min height{/t} 75px  </span>
-        <input style="display:none" type="file" block_key="{$key}" name="button_bg" id="update_image_{$key}" class="image_upload" data-options='{ "min_width":"1240","min_height":"750"}'/>
+        <input style="display:none" type="file" block_key="{$key}" name="button_bg" id="update_image_{$key}" class="image_upload"   data-scope="Image" data-metadata='{ "block":"button"}'  data-options='{ "min_width":"1240","min_height":"750"}'/>
         <label style="margin-left:10px;font-weight: normal;cursor: pointer" for="update_image_{$key}"><i class="fa fa-upload" aria-hidden="true"></i> {t}Upload{/t}</label>
 
 

@@ -628,7 +628,8 @@
         ajaxData.append("tipo", 'upload_images')
         ajaxData.append("parent", 'webpage')
         ajaxData.append("parent_key", '{$webpage->id}')
-        ajaxData.append("parent_object_scope", JSON.stringify({ scope: 'item'}))
+        ajaxData.append("parent_object_scope", 'ItemCat')
+
         ajaxData.append("options", JSON.stringify({ width: 375, height: 250}))
         ajaxData.append("response_type", 'webpage')
 
