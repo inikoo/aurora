@@ -242,38 +242,6 @@ if (in_array($object->get('Payment Account Scope'), array('Contact'))) {
 }
 
 
-if (in_array($object->get('Payment Account Scope'), array('Category Categories'))) {
-
-    $template_options = array(
-        'categories_classic_showcase' => _('Responsive grid'),
-        'categories_showcase'         => _('Fixed grid')
-    );
-
-
-    $object_fields[] = array(
-        'label'      => _('Template'),
-        'show_title' => true,
-        'fields'     => array(
-
-            array(
-                'edit' => ($edit ? 'option' : ''),
-
-                'id'              => 'Payment_Account_Template_Filename',
-                'value'           => $object->get('Payment Account Template Filename'),
-                'formatted_value' => $object->get('Template Filename'),
-                'options'         => $template_options,
-                'label'           => _('Template'),
-                'invalid_msg'     => get_invalid_message('string'),
-                'required'        => true,
-                'type'            => 'value'
-            ),
-
-
-        )
-    );
-
-
-}
 
 
 

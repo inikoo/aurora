@@ -519,24 +519,7 @@ class Page extends DB_Table {
 
                 break;
 
-            case 'Template Filename':
 
-                switch ($this->data['Webpage Template Filename']) {
-                    case 'blank':
-                        $template_label = _('Old template').' '._('unsupported');
-                        break;
-                    case 'categories_classic_showcase':
-                        $template_label = _('Classic grid');
-                        break;
-                    case 'categories_showcase':
-                        $template_label = _('Rigid grid');
-                        break;
-                    default:
-                        $template_label = $this->data['Webpage Template Filename'];
-                }
-
-                return $template_label;
-                break;
             case 'Publish':
 
 
@@ -2020,34 +2003,6 @@ class Page extends DB_Table {
                 break;
 
 
-            case 'Webpage Template Filename':
-
-
-                if ($value == 'blank') {
-
-
-                    $sql = sprintf('UPDATE `Page Store Dimension` SET `Page Store Content Display Type`="Source" WHERE `Page Key`=%d ', $this->id);
-                    $this->db->exec($sql);
-
-                } else {
-
-
-                    $sql = sprintf('UPDATE `Page Store Dimension` SET `Page Store Content Display Type`="Template" WHERE `Page Key`=%d ', $this->id);
-                    $this->db->exec($sql);
-
-                    $sql = sprintf('UPDATE `Page Store Dimension` SET `Page Store Content Template Filename`=%s WHERE `Page Key`=%d ', prepare_mysql($value), $this->id);
-                    $this->db->exec($sql);
-
-
-                }
-
-
-                $this->update_field($field, $value, $options);
-
-                $this->update_version();
-                $this->publish();
-
-                break;
 
 
             case('Webpage Launching Date'):
@@ -2244,12 +2199,7 @@ class Page extends DB_Table {
                 $this->update_field('Page Store Content Data', $value, $options);
                 $this->update_store_search();
 
-                if ($this->get('Webpage Scope') == 'Category Categories' and $this->get('Webpage Template Filename') != 'category_categories') {
 
-
-                    $this->update_category_webpage_index();
-
-                }
 
 
                 break;
@@ -2610,50 +2560,7 @@ class Page extends DB_Table {
 
     }
 
-    function update_category_webpage_index() {
 
-
-        if ($this->get('Webpage Scope') == 'Category Categories') {
-
-            include_once 'class.Website.php';
-            $website = new Website($this->get('Webpage Website Key'));
-
-            if ($website->get('Website Theme') == 'theme_1' and false) {
-
-
-                $sql = sprintf('DELETE FROM  `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d  ', $this->id);
-                $this->db->exec($sql);
-
-
-                $content_data = $this->get('Content Data');
-
-                $stack              = 0;
-                $anchor_section_key = 0;
-
-                foreach ($content_data['catalogue']['items'] as $item) {
-
-
-                    $sql = sprintf(
-                        'INSERT INTO `Category Webpage Index` (`Category Webpage Index Section Key`,`Category Webpage Index Content Data`,
-                          `Category Webpage Index Parent Category Key`,`Category Webpage Index Category Key`,`Category Webpage Index Webpage Key`,`Category Webpage Index Category Webpage Key`,`Category Webpage Index Stack`) VALUES (%d,%s,%d,%d,%d,%d,%d) ',
-                        $anchor_section_key, prepare_mysql(json_encode($item)), $this->get('Webpage Scope Key'), $item['category_key'], $this->id, $item['webpage_key'], $stack
-                    );
-
-
-                    $this->db->exec($sql);
-                    $stack++;
-
-
-                }
-
-
-            }
-
-
-        }
-
-
-    }
 
     function reset_object() {
 

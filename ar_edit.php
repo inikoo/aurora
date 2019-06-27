@@ -2244,7 +2244,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             $data['fields_data']['Webpage Type']              = 'Info';
-            $data['fields_data']['Webpage Template Filename'] = 'blocks';
             $data['fields_data']['Webpage Scope']             = 'Info';
 
             $object = $parent->create_system_webpage($data['fields_data']);
