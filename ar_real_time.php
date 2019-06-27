@@ -85,8 +85,6 @@ function real_time_users($redis, $account, $user) {
                 }
 
 
-            } else {
-                //     $html .= '<tr><td>'.$icon.'</td><td class="italic">'._('Me').'</td><td></td>';
             }
 
 

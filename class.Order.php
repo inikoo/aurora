@@ -141,16 +141,28 @@ class Order extends DB_Table {
 
                 break;
             case('Order For Collection'):
+                if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+                    return;
+                }
 
                 $this->update_for_collection($value, $options);
                 break;
             case('Order Tax Number'):
+                if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+                    return;
+                }
                 $this->update_tax_number($value);
                 break;
             case('Order Tax Number Valid'):
+                if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+                    return;
+                }
                 $this->update_tax_number_valid($value);
                 break;
             case 'Order Invoice Address':
+                if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+                    return;
+                }
                 $this->update_address('Invoice', json_decode($value, true));
 
 
@@ -160,6 +172,9 @@ class Order extends DB_Table {
 
                 break;
             case 'Order Delivery Address':
+                if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+                    return;
+                }
                 $this->update_address('Delivery', json_decode($value, true));
                 break;
 
@@ -2689,6 +2704,11 @@ class Order extends DB_Table {
 
 
     function update_insurance($dn_key = false) {
+
+        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+            return;
+        }
+
         $valid_insurances = $this->get_insurances($dn_key);
 
         $sql = sprintf(

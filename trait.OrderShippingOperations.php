@@ -13,6 +13,11 @@
 trait OrderShippingOperations {
 
     function update_shipping_amount($value, $dn_key = false) {
+
+        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+            return;
+        }
+
         $value = sprintf("%.2f", $value);
 
 
@@ -33,6 +38,10 @@ trait OrderShippingOperations {
     }
 
     function update_shipping($dn_key = false, $order_picked = true) {
+
+        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+            return;
+        }
 
 
         if (!$dn_key) {
@@ -73,9 +82,8 @@ trait OrderShippingOperations {
             $sql = sprintf(
                 "INSERT INTO `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,
 				`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,
-				`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`,`Order No Product Transaction Version`)  VALUES (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%s,%.2f,%s,%s,2)  ", $this->id, prepare_mysql($this->data['Order Date']),
-                prepare_mysql('Shipping'), $shipping_key, prepare_mysql(_('Shipping')), $this->data['Order Shipping Net Amount'], $this->data['Order Shipping Net Amount'],
-                prepare_mysql($this->data['Order Tax Code']), $this->data['Order Shipping Tax Amount'],
+				`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`,`Order No Product Transaction Version`)  VALUES (%d,%s,%s,%d,%s,%.2f,%.2f,%s,%.2f,%s,%.2f,%s,%s,2)  ", $this->id, prepare_mysql($this->data['Order Date']), prepare_mysql('Shipping'),
+                $shipping_key, prepare_mysql(_('Shipping')), $this->data['Order Shipping Net Amount'], $this->data['Order Shipping Net Amount'], prepare_mysql($this->data['Order Tax Code']), $this->data['Order Shipping Tax Amount'],
 
 
                 prepare_mysql($this->data['Order Currency']), $this->data['Order Currency Exchange'], prepare_mysql($this->data['Order Original Metadata']), prepare_mysql($dn_key)
@@ -179,8 +187,7 @@ trait OrderShippingOperations {
 
         if ($dn_key) {
             $sql = sprintf(
-                "SELECT sum( `Order Transaction Amount`*(`Delivery Note Quantity`/`Order Quantity`)  ) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0",
-                $this->id, $dn_key
+                "SELECT sum( `Order Transaction Amount`*(`Delivery Note Quantity`/`Order Quantity`)  ) AS amount FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Delivery Note Key`=%d AND `Order Quantity`!=0", $this->id, $dn_key
             );
 
             if ($result = $this->db->query($sql)) {
@@ -249,6 +256,9 @@ trait OrderShippingOperations {
     function use_calculated_shipping() {
 
 
+        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+            return;
+        }
         $this->update_field_switcher('Order Shipping Method', 'Calculated', 'no_history');
 
         $this->update_shipping();
@@ -263,4 +273,4 @@ trait OrderShippingOperations {
 }
 
 
-?>
+
