@@ -333,7 +333,7 @@
                 '<div class="button_container" >' +
                     '<div class="flex-item full move_to_other_section button">{t}Move to other section{/t}</div>\n'+
                 '</div>\n'+
-            '<div class="button_container"><div class="flex-item full change_category_image button"><form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate><input type="file" name="category_categories_category"  id="file_upload_'+data.category_key+'" class="image_upload hide" multiple data-options=\'{ "scope":"category", "scope_key":"'+data.category_key+'"}\' /><label for="file_upload_'+data.category_key+'"><i class="fa  fa-image fa-fw button" aria-hidden="true"></i> {t}Change image{/t}</label></form></div></div>'
+            '<div class="button_container"><div class="flex-item full change_category_image button"><form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate><input type="file" name="category_categories_category"  id="file_upload_'+data.category_key+'" class="image_upload hide" multiple  data-scope="Category"  data-metadata=\'{ "block":"category_categories", "scope":"category", "scope_key":"'+data.category_key+'"}\' /><label for="file_upload_'+data.category_key+'"><i class="fa  fa-image fa-fw button" aria-hidden="true"></i> {t}Change image{/t}</label></form></div></div>'
         );
 
 
