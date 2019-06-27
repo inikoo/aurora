@@ -4734,7 +4734,7 @@ class Part extends Asset {
     }
 
     function updated_linked_products() {
-        include_once 'class.Image.php';
+
         foreach ($this->get_products('objects') as $product) {
 
             if (count($product->get_parts()) == 1) {
@@ -4744,7 +4744,6 @@ class Part extends Asset {
                     array(
                         'Product Tariff Code' => $this->get('Part Tariff Code'),
                         'Product HTSUS Code'  => $this->get('Part HTSUS Code'),
-
                         'Product Duty Rate'                     => $this->get('Part Duty Rate'),
                         'Product Origin Country Code'           => $this->get('Part Origin Country Code'),
                         'Product UN Number'                     => $this->get('Part UN Number'),
@@ -4758,83 +4757,17 @@ class Part extends Asset {
                     )
                 );
 
-                /*
-                            $product->update(
-                                array(
-                                    'Product Tariff Code' => $this->get('Part Tariff Code')
-                                ), 'no_history from_part'
-                            );
-                            $product->update(
-                                array('Product Duty Rate' => $this->get('Part Duty Rate')), 'no_history from_part'
-                            );
-                            $product->update(
-                                array(
-                                    'Product Origin Country Code' => $this->get('Part Origin Country Code'
-                                    )
-                                ), 'no_history from_part'
-                            );
 
 
-                                        $product->update(
-                                            array('Product UN Number' => $this->get('Part UN Number')), 'no_history from_part'
-                                        );
-                                        $product->update(
-                                            array('Product UN Class' => $this->get('Part UN Class')), 'no_history from_part'
-                                        );
-                                        $product->update(
-                                            array(
-                                                'Product Packing Group' => $this->get('Part Packing Group')
-                                            ), 'no_history from_part'
-                                        );
+                $sql = 'SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`="Part" AND `Image Subject Object Key`=? and `Image Subject Object Image Scope`="Marketing" ORDER BY `Image Subject Order` ';
 
-                                      $product->update(
-                                          array(
-                                              'Product Proper Shipping Name' => $this->get('Part Proper Shipping Name')
-                                          ), 'no_history from_part'
-                                      );
-                                      $product->update(
-                                          array(
-                                              'Product Hazard Indentification Number' => $this->get('Part Hazard Indentification Number')
-                                          ), 'no_history from_part'
-                                      );
-
-
-                                      $product->update(
-                                          array(
-                                              'Product Unit Weight' => $this->get('Part Unit Weight')
-                                          ), 'no_history from_part'
-                                      );
-
-
-                                      $product->update(
-                                          array(
-                                              'Product Unit Dimensions' => $this->get('Part Unit Dimensions')
-                                          ), 'no_history from_part'
-                                      );
-                                      $product->update(
-                                          array(
-                                              'Product Materials' => strip_tags($this->get('Materials'))
-                                          ), 'no_history from_part'
-                                      );
-
-                                      */
-
-                $sql = sprintf(
-                    'SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`="Part" AND `Image Subject Object Key`=%d ORDER BY `Image Subject Order` ', $this->id
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array($this->id)
                 );
-
-                //   print "$sql\n";
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-                        //print_r($row);
-                        $product->link_image($row['Image Subject Image Key']);
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
+                while ($row = $stmt->fetch()) {
+                    $product->link_image($row['Image Subject Image Key'],'Marketing');
                 }
-
 
             }
 

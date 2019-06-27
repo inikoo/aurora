@@ -102,7 +102,7 @@ $('#page_content').on('change', '.input_file_item', function() {
 
 
 
-    var section_key=$(this).attr('section_key');
+  //  var section_key=$(this).attr('section_key');
     var item_key = $(this).attr('item_key');
    var index_key = $(this).attr('index_key');
 

@@ -3550,7 +3550,7 @@ function edit_image($account, $db, $user, $editor, $data, $smarty) {
 
                                 $product         = get_object('Product', $row['Product ID']);
                                 $product->editor = $editor;
-                                $product->link_image($row['Image Subject Image Key'], $data['value']);
+                                $product->link_image($row['Image Subject Image Key'],'Marketing');
 
                             }
 

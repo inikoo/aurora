@@ -104,6 +104,10 @@ switch ($tipo) {
                              'type'     => 'string',
                              'optional' => true
                          ),
+                         'metadata'             => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
 
                          'response_type'       => array(
                              'type'     => 'string',
@@ -315,7 +319,6 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
     $images = array();
 
 
-    print_r($data);
 
     if (isset($data['parent_object_scope'])) {
         $parent_object_scope = $data['parent_object_scope'];
@@ -324,16 +327,31 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
     }
 
 
+
+
+
     if (isset($data['options'])) {
         $options =$data['options'];
     } else {
         $options = '';
     }
 
+    if (isset($data['metadata'])) {
+        $metadata =json_decode($data['metadata'],true);
+    } else {
+        $metadata = '';
+    }
+
+
+
     $_options = json_decode($options, true);
 
+    if (!empty($_options['parent_object_scope'])) {
+        $parent_object_scope = $_options['parent_object_scope'];
+    }
 
-    print_r($_options);
+
+
 
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
@@ -730,8 +748,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         );
 
 
-
-        $image = $parent->add_image($image_data, $options);
+        $image = $parent->add_image($image_data, $metadata);
 
         if ($parent->error) {
 

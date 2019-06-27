@@ -95,6 +95,7 @@
                     ajaxData.append("tipo", 'upload_images')
                     ajaxData.append("parent", '{$object}')
                     ajaxData.append("parent_key", '{$key}')
+                    ajaxData.append("parent_object_scope", '{$parent_object_scope}')
 
                     $.ajax({
                         url: "/ar_upload.php",

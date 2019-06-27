@@ -15,12 +15,12 @@ include_once 'utils/natural_language.php';
 trait ImageSubject {
 
 
-    function add_image($raw_data, $options = '') {
+    function add_image($raw_data, $metadata = '') {
+
 
 
         include_once 'utils/units_functions.php';
-
-        // print_r($raw_data);
+        include_once 'class.Image.php';
 
 
         $data = array(
@@ -34,8 +34,6 @@ trait ImageSubject {
             'upload_data' => $raw_data['Upload Data'],
             'editor'      => $this->editor
         );
-
-
 
 
         if (isset($raw_data['Image Subject Object Image Scope']) and $raw_data['Image Subject Object Image Scope'] != '') {
@@ -62,31 +60,29 @@ trait ImageSubject {
         }
 
 
-
         $image = new Image('find', $data, 'create');
         if ($image->id) {
 
-            $this->link_image($image->id, $object_image_scope);
+            $this->link_image($image->id, $object_image_scope,$metadata);
 
 
             if ($this->table_name == 'Part') {
 
 
-                if ($object_image_scope != 'SKO') {
+                if ($object_image_scope == 'Marketing') {
 
 
                     foreach ($this->get_products('objects') as $product) {
 
                         if (count($product->get_parts()) == 1) {
                             $product->editor = $this->editor;
-                            $product->link_image($image->id);
+                            $product->link_image($image->id,'Marketing');
                         }
 
                     }
                 }
 
             } elseif ($this->table_name == 'Category') {
-
 
 
                 $account = new Account();
@@ -102,14 +98,10 @@ trait ImageSubject {
 
                             $category         = new Category($row['Category Key']);
                             $category->editor = $this->editor;
-                            $category->link_image($image->id, $object_image_scope);
+                            $category->link_image($image->id, 'Marketing');
 
                         }
 
-                    } else {
-                        print_r($error_info = $db->errorInfo());
-                        print $sql;
-                        exit;
                     }
 
                 }
@@ -136,8 +128,7 @@ trait ImageSubject {
 
 
                                     $sql = sprintf(
-                                        'SELECT `Category Webpage Index Key` ,`Category Webpage Index Content Data` FROM `Category Webpage Index` WHERE `Category Webpage Index Key`=%d  ',
-                                        $content_data['sections'][$section_index]['items'][$item_index]['index_key']
+                                        'SELECT `Category Webpage Index Key` ,`Category Webpage Index Content Data` FROM `Category Webpage Index` WHERE `Category Webpage Index Key`=%d  ', $content_data['sections'][$section_index]['items'][$item_index]['index_key']
 
 
                                     );
@@ -150,8 +141,7 @@ trait ImageSubject {
 
 
                                             $sql = sprintf(
-                                                'UPDATE `Category Webpage Index` SET `Category Webpage Index Content Data`=%s WHERE `Category Webpage Index Key`=%d ',
-                                                prepare_mysql(json_encode($item_content_data)), $row['Category Webpage Index Key']
+                                                'UPDATE `Category Webpage Index` SET `Category Webpage Index Content Data`=%s WHERE `Category Webpage Index Key`=%d ', prepare_mysql(json_encode($item_content_data)), $row['Category Webpage Index Key']
                                             );
 
                                             $this->db->exec($sql);
@@ -238,14 +228,11 @@ trait ImageSubject {
     }
 
 
-    function link_image($image_key, $object_image_scope = 'Default') {
+    function link_image($image_key, $object_image_scope = 'Default',$metadata='') {
 
 
-        // ALTER TABLE `Image Subject Bridge` CHANGE `Image Subject Object` `Image Subject Object` ENUM('Webpage','Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category','Staff') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
-        $metadata='';
-
-        $image = get_object('Image',$image_key);
+        $image = get_object('Image', $image_key);
 
         if ($image->id) {
             $subject_key = $this->id;
@@ -256,24 +243,40 @@ trait ImageSubject {
             }
 
 
-            $sql = sprintf(
-                "SELECT `Image Subject Image Key`,`Image Subject Is Principal` FROM `Image Subject Bridge` WHERE `Image Subject Object`=%s AND `Image Subject Object Key`=%d  AND `Image Subject Image Key`=%d",
-                prepare_mysql($subject), $subject_key, $image->id
-            );
-
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $this->nochange = true;
-                    $this->msg      = _('Image already uploaded');
-
-                    return;
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql";
-                exit;
+            // todo, very dangerous hack to remove Default image bridges,Remove this when all Defaults are gone
+            if($object_image_scope != 'Default') {
+                $sql  = "DELETE FROM `Image Subject Bridge`  WHERE `Image Subject Object`=? AND `Image Subject Object Key`=?  AND `Image Subject Image Key`=?  AND `Image Subject Object Image Scope`='Default'";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $subject,
+                        $subject_key,
+                        $image->id,
+                    )
+                );
             }
+
+            $sql = "SELECT `Image Subject Image Key`,`Image Subject Is Principal` FROM `Image Subject Bridge` WHERE `Image Subject Object`=? AND `Image Subject Object Key`=?  AND `Image Subject Image Key`=?  AND `Image Subject Object Image Scope`=?";
+
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $subject,
+                    $subject_key,
+                    $image->id,
+                    $object_image_scope
+                )
+            );
+            if ($row = $stmt->fetch()) {
+
+
+                $this->nochange = true;
+                $this->msg      = _('Image already uploaded');
+
+                return;
+            }
+
 
             $number_images = $this->get_number_images();
             if ($number_images == 0) {
@@ -286,9 +289,12 @@ trait ImageSubject {
             $is_public = 'No';
 
 
-            switch ($subject){
+            switch ($subject) {
                 case 'Product':
-                    $is_public = 'Yes';
+                    if($object_image_scope=='Marketing'){
+                        $is_public = 'Yes';
+                    }
+
                     break;
                 case 'Webpage':
                     $is_public = 'Yes';
@@ -297,22 +303,22 @@ trait ImageSubject {
                     $is_public = 'Yes';
                     break;
                 case 'Category':
+                    if($object_image_scope=='Marketing') {
 
-                    if($this->get('Category Scope')=='Product'){
-                        $is_public = 'Yes';
+                        if ($this->get('Category Scope') == 'Product') {
+                            $is_public = 'Yes';
+                        }
+
                     }
-
-
                     break;
             }
 
 
 
-
             $sql = sprintf(
                 "INSERT INTO `Image Subject Bridge` (`Image Subject Object Image Scope`,`Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key`,`Image Subject Is Principal`,`Image Subject Image Caption`,`Image Subject Date`,`Image Subject Order`,`Image Subject Is Public`, `Image Subject Metadata`) VALUES (%s,%s,%d,%d,%s,'',%s,%d,%s,%s)",
-                prepare_mysql($object_image_scope), prepare_mysql($subject), $subject_key, $image->id, prepare_mysql($principal), prepare_mysql(gmdate('Y-m-d H:i:s')), ($number_images + 1),
-                prepare_mysql($is_public), ($metadata==''?'{}':prepare_mysql(json_encode($metadata)))
+                prepare_mysql($object_image_scope), prepare_mysql($subject), $subject_key, $image->id, prepare_mysql($principal), prepare_mysql(gmdate('Y-m-d H:i:s')), ($number_images + 1), prepare_mysql($is_public),
+                ($metadata == '' ? '"{}"' : prepare_mysql(json_encode($metadata)))
 
             );
 
@@ -321,9 +327,7 @@ trait ImageSubject {
             $image_subject_key = $this->db->lastInsertId();
 
 
-
             $image->update_public_db();
-
 
 
             $this->update_images_data();
@@ -441,18 +445,15 @@ trait ImageSubject {
         }
 
 
-        if($this->get_object_name() == 'Category'){
+        if ($this->get_object_name() == 'Category') {
             $this->fast_update(
-                array($this->subject_table_name.' Number Images' => $number_images),$this->subject_table_name.' Dimension'
+                array($this->subject_table_name.' Number Images' => $number_images), $this->subject_table_name.' Dimension'
             );
-        }else{
+        } else {
             $this->fast_update(
                 array($this->get_object_name().' Number Images' => $number_images)
             );
         }
-
-
-
 
 
     }
@@ -464,8 +465,7 @@ trait ImageSubject {
 
         $subject = $this->table_name;
         $sql     = sprintf(
-            "SELECT `Image Subject Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`=%s AND   `Image Subject Object Key`=%d ORDER BY `Image Subject Order`,`Image Subject Date`,`Image Subject Key`",
-            prepare_mysql($subject), $this->id
+            "SELECT `Image Subject Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`=%s AND   `Image Subject Object Key`=%d ORDER BY `Image Subject Order`,`Image Subject Date`,`Image Subject Key`", prepare_mysql($subject), $this->id
         );
         //print $sql;
         $order = 1;
@@ -521,7 +521,6 @@ trait ImageSubject {
         );
 
 
-
         if ($this->table_name == 'Category') {
 
             $this->update_webpages();
@@ -547,8 +546,7 @@ trait ImageSubject {
         $subject = $this->table_name;
 
         $sql = sprintf(
-            "SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`=%s AND `Image Subject Object Key`=%d ORDER BY `Image Subject Order` LIMIT 1",
-            prepare_mysql($subject), $this->id
+            "SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`=%s AND `Image Subject Object Key`=%d ORDER BY `Image Subject Order` LIMIT 1", prepare_mysql($subject), $this->id
 
         );
 
@@ -641,7 +639,7 @@ trait ImageSubject {
                 $this->update_images_data();
 
 
-                $image         = get_object('Image',$row['Image Subject Image Key']);
+                $image         = get_object('Image', $row['Image Subject Image Key']);
                 $image->editor = $this->editor;
 
                 $image->delete();
@@ -700,8 +698,7 @@ trait ImageSubject {
 
         if ($look_up == 'image_key') {
             $sql = sprintf(
-                'UPDATE  `Image Subject Bridge` SET `Image Subject Order`=0  WHERE   `Image Subject Object`=%s AND `Image Subject Object Key`=%d AND  `Image Subject Image Key`=%d ',
-                prepare_mysql($this->table_name), $this->id, $key
+                'UPDATE  `Image Subject Bridge` SET `Image Subject Order`=0  WHERE   `Image Subject Object`=%s AND `Image Subject Object Key`=%d AND  `Image Subject Image Key`=%d ', prepare_mysql($this->table_name), $this->id, $key
             );
         } else {
             $sql = sprintf(
