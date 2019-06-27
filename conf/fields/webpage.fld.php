@@ -12,9 +12,9 @@
 
 
 $options_registration_type = array(
-    'Open' => _('Open'),
-    'Closed'  => _('Closed'),
-   'ApprovedOnly'  => _('Only approved')
+    'Open'         => _('Open'),
+    'Closed'       => _('Closed'),
+    'ApprovedOnly' => _('Only approved')
 
 );
 
@@ -28,42 +28,47 @@ if (isset($options['new']) and $options['new']) {
 }
 
 
-
 //$can_update_code = true;
-
-
-
 
 
 $can_change_state = ($object->get('Webpage Scope') == 'System' ? false : true);
 
 
-if($object->get('Webpage Scope')=='Category Categories' or $object->get('Webpage Scope')=='Category Products' ){
+if ($object->get('Webpage Scope') == 'Category Categories' or $object->get('Webpage Scope') == 'Category Products') {
 
-    $scope=get_object('Category',$object->get('Webpage Scope Key'));
+    $scope = get_object('Category', $object->get('Webpage Scope Key'));
 
 
-    if($scope->get('Product Category Public')=='No'){
-        $can_change_state=false;
+    if ($scope->get('Product Category Public') == 'No') {
+        $can_change_state = false;
     }
 
 }
 
 
+$can_update_code = (in_array(
+    $object->get('Webpage Scope'), array(
+    'Product',
+    'Category Categories',
+    'Category Products',
+    'Info'
+)
+) ? true : false);
 
 
-$can_update_code =(in_array($object->get('Webpage Scope'),array('Product','Category Categories','Category Products','Info')) ? true : false);
+$can_delete = (in_array(
+    $object->get('Webpage Scope'), array(
+    'Info',
+    ''
+)
+) ? true : false);
 
 
-
-$can_delete =(in_array($object->get('Webpage Scope'),array('Info','')) ? true : false);
-
-
-if($object->get('Webpage Scope')=='Category Products'){
+if ($object->get('Webpage Scope') == 'Category Products') {
     $category = get_object('Category', $object->get('Webpage Scope Key'));
 
-    if(!$category->id){
-        $can_delete=true;
+    if (!$category->id) {
+        $can_delete = true;
     }
 
 }
@@ -72,12 +77,12 @@ if($object->get('Webpage Scope')=='Category Products'){
 // This can be deleted if we make impossible  to have this error
 
 
-if(in_array($object->get('Webpage Scope'),array('Category Categories'))){
+if (in_array($object->get('Webpage Scope'), array('Category Categories'))) {
     $category = get_object('Category', $object->get('Webpage Scope Key'));
 
 
-    if(!$category->id){
-        $can_delete=true;
+    if (!$category->id) {
+        $can_delete = true;
     }
 }
 
@@ -89,8 +94,12 @@ $object_fields = array();
 
 
 if (in_array(
-    $object->get('Webpage Scope'), array('Category Categories', 'Product', 'Category Products')
-) and $can_change_state) {
+        $object->get('Webpage Scope'), array(
+                                         'Category Categories',
+                                         'Product',
+                                         'Category Products'
+                                     )
+    ) and $can_change_state) {
 
     $object_fields[] =
 
@@ -107,8 +116,8 @@ if (in_array(
                     'render'    => ($website->get('Website Status') == 'Active' and $object->get('Webpage State') == 'InProcess' ? true : false),
                     'class'     => 'operation',
                     'value'     => '',
-                    'label'     => ' <span style="margin:10px 0px;padding:10px;border:1px solid #ccc"  webpage_key="'.$object->id
-                        .'" onClick="publish(this,\'publish_webpage\')" class="save changed valid">'._("Launch web page").' <i class="fa fa-rocket save changed valid"></i></span>',
+                    'label'     => ' <span style="margin:10px 0px;padding:10px;border:1px solid #ccc"  webpage_key="'.$object->id.'" onClick="publish(this,\'publish_webpage\')" class="save changed valid">'._("Launch web page")
+                        .' <i class="fa fa-rocket save changed valid"></i></span>',
                     'reference' => '',
                     'type'      => 'operation'
                 ),
@@ -118,8 +127,8 @@ if (in_array(
                     'render'    => ($website->get('Website Status') == 'Active' and $object->get('Webpage State') == 'Online' ? true : false),
                     'class'     => 'operation',
                     'value'     => '',
-                    'label'     => ' <span style="margin:10px 0px;padding:10px;border:1px solid #ccc" webpage_key="'.$object->id
-                        .'" onClick="publish(this,\'unpublish_webpage\')" class="error button ">'._("Unpublish web page").' <i class="fa fa-rocket  fa-flip-vertical error button"></i></span>',
+                    'label'     => ' <span style="margin:10px 0px;padding:10px;border:1px solid #ccc" webpage_key="'.$object->id.'" onClick="publish(this,\'unpublish_webpage\')" class="error button ">'._("Unpublish web page")
+                        .' <i class="fa fa-rocket  fa-flip-vertical error button"></i></span>',
                     'reference' => '',
                     'type'      => 'operation'
                 ),
@@ -136,14 +145,12 @@ if (in_array(
                 ),
 
 
-
                 array(
                     'id'        => 'set_as_ready_webpage',
                     'render'    => ($website->get('Website Status') == 'InProcess' and $object->get('Webpage State') != 'Ready' ? true : false),
                     'class'     => 'operation',
                     'value'     => '',
-                    'label'     => '<span style="margin:10px 0px;padding:10px;border:1px solid #ccc" webpage_key="'.$object->id.'" onClick="publish(this,\'set_webpage_as_ready\')" class=" button ">'
-                        ._(
+                    'label'     => '<span style="margin:10px 0px;padding:10px;border:1px solid #ccc" webpage_key="'.$object->id.'" onClick="publish(this,\'set_webpage_as_ready\')" class=" button ">'._(
                             "Set as ready"
                         ).' <i class="fa fa-check-circle padding_left_5  button"></i></span>',
                     'reference' => '',
@@ -158,23 +165,25 @@ if (in_array(
                     'render'    => ($website->get('Website Status') == 'Active' and $object->get('Webpage State') == 'InProcess' ? true : false),
                     'class'     => 'operation',
                     'value'     => '',
-                    'label'     => ' <span style="margin:10px 0px;padding:10px;border:1px solid #ccc"  webpage_key="'.$object->id
-                        .'" onClick="publish(this,\'publish_webpage\')" class="save changed valid">'._("Launch web page").' <i class="fa fa-rocket save changed valid"></i></span>',
+                    'label'     => ' <span style="margin:10px 0px;padding:10px;border:1px solid #ccc"  webpage_key="'.$object->id.'" onClick="publish(this,\'publish_webpage\')" class="save changed valid">'._("Launch web page")
+                        .' <i class="fa fa-rocket save changed valid"></i></span>',
                     'reference' => '',
                     'type'      => 'operation'
                 ),
 
                 array(
-                    'id'   => 'Webpage_Redirection_Code',
-                    'edit' => ($edit ? 'string' : ''),
-                    'render'    => ($website->get('Website Status') == 'Active' and $object->get('Webpage State') == 'Offline' ? true : false),
+                    'id'     => 'Webpage_Redirection_Code',
+                    'edit'   => ($edit ? 'string' : ''),
+                    'render' => ($website->get('Website Status') == 'Active' and $object->get('Webpage State') == 'Offline' ? true : false),
 
-                'value'           => htmlspecialchars($object->get('Webpage Redirection Code')),
-                'formatted_value' => $object->get('Webpage Redirection Code'),
-                'label'           => ucfirst($object->get_field_label('Webpage Redirection Code')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, this is a 301 redirection, and misconfiguration will affect how google index this webpage').'" ></i>',
-                'required'        => false,
-                'type'            => 'value' ,
-                'server_validation' => json_encode(array('tipo' => 'valid_redirection_webpage_code')),
+                    'value'             => htmlspecialchars($object->get('Webpage Redirection Code')),
+                    'formatted_value'   => $object->get('Webpage Redirection Code'),
+                    'label'             => ucfirst($object->get_field_label('Webpage Redirection Code')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._(
+                            'Warning, this is a 301 redirection, and misconfiguration will affect how google index this webpage'
+                        ).'" ></i>',
+                    'required'          => false,
+                    'type'              => 'value',
+                    'server_validation' => json_encode(array('tipo' => 'valid_redirection_webpage_code')),
                 )
 
 
@@ -189,19 +198,16 @@ $object_fields[] = array(
     'fields'     => array(
 
 
-
-
         array(
-            'id'     => 'Webpage_Code',
-            'render' => ($can_update_code or $new ? true : false),
-            'edit'   => ($edit ? 'string' : ''),
-            'value'           => htmlspecialchars($object->get('Webpage Code')),
-            'formatted_value' => $object->get('Code'),
-            'label'           => ucfirst($object->get_field_label('Webpage Code')).' <span class="warning small '.($new?'hide':'').'   "><i class="fa fa-exclamation-triangle    " aria-hidden="true"></i> '._('URL will change').'</span>',
-            'required'        => true,
-            'type'            => 'value' ,
+            'id'                => 'Webpage_Code',
+            'render'            => ($can_update_code or $new ? true : false),
+            'edit'              => ($edit ? 'string' : ''),
+            'value'             => htmlspecialchars($object->get('Webpage Code')),
+            'formatted_value'   => $object->get('Code'),
+            'label'             => ucfirst($object->get_field_label('Webpage Code')).' <span class="warning small '.($new ? 'hide' : '').'   "><i class="fa fa-exclamation-triangle    " aria-hidden="true"></i> '._('URL will change').'</span>',
+            'required'          => true,
+            'type'              => 'value',
             'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
-
 
 
         ),
@@ -213,7 +219,7 @@ $object_fields[] = array(
             'formatted_value' => $object->get('Webpage Name'),
             'label'           => ucfirst($object->get_field_label('Webpage Name')),
             'required'        => true,
-            'type'            => 'value' ,
+            'type'            => 'value',
 
 
         ),
@@ -226,7 +232,7 @@ $object_fields[] = array(
             'formatted_value' => $object->get('Webpage Browser Title'),
             'label'           => ucfirst($object->get_field_label('Webpage Browser Title')),
             'required'        => true,
-            'type'            => 'value' ,
+            'type'            => 'value',
 
 
         ),
@@ -239,7 +245,7 @@ $object_fields[] = array(
             'formatted_value' => $object->get('Webpage Meta Description'),
             'label'           => ucfirst($object->get_field_label('Webpage Meta Description')),
             'required'        => false,
-            'type'            => 'value' ,
+            'type'            => 'value',
 
 
         ),
@@ -359,82 +365,9 @@ if (in_array($object->get('Webpage Scope'), array('Contact'))) {
 
 }
 
-if (in_array($object->get('Webpage Scope'), array('Category Categories')) and $website->get('Website Theme')!='theme_1'   ) {
 
-    $template_options = array(
-        'categories_classic_showcase' => _('Responsive grid'),
-        'categories_showcase'         => _('Fixed grid')
-    );
-
-
-    $object_fields[] = array(
-        'label'      => _('Template'),
-        'show_title' => true,
-        'fields'     => array(
-
-            array(
-                'edit' => ($edit ? 'option' : ''),
-
-                'id'              => 'Webpage_Template_Filename',
-
-                'value'           => $object->get('Webpage Template Filename'),
-                'formatted_value' => $object->get('Template Filename'),
-                'options'         => $template_options,
-                'label'           => _('Template'),
-                'invalid_msg'     => get_invalid_message('string'),
-                'required'        => true,
-                'type'            => 'value'
-            ),
-
-
-            array(
-                'id'              => 'Webpage_See_Also',
-                'edit'            => 'webpage_see_also',
-                'value'           => '',
-                'formatted_value' => $object->get('See Also'),
-                'label'           => _('See also links'),
-                'required'        => false,
-                'type'            => ''
-            ),
-
-
-        )
-    );
-
-
-}
-
-if (in_array($object->get('Webpage Scope'), array('Product'))  and $website->get('Website Theme')!='theme_1'  ) {
-
-
-
-
-    $object_fields[] = array(
-        'label'      => _('Template'),
-        'show_title' => true,
-        'fields'     => array(
-
-
-
-            array(
-                'id'              => 'Webpage_See_Also',
-                'edit'            => 'webpage_see_also',
-                'value'           => '',
-                'formatted_value' => $object->get('See Also'),
-                'label'           => _('See also links'),
-                'required'        => false,
-                'type'            => ''
-            ),
-
-
-        )
-    );
-
-
-}
-
-if(!$new and $object->get('Webpage Scope')=='Category Products'){
-    $export_operations      = array(
+if (!$new and $object->get('Webpage Scope') == 'Category Products') {
+    $export_operations = array(
         'label'      => _('Export'),
         'show_title' => true,
         'class'      => 'operations',
@@ -445,14 +378,11 @@ if(!$new and $object->get('Webpage Scope')=='Category Products'){
                 'id'        => 'export_webpage',
                 'class'     => 'operation',
                 'value'     => '',
-                'label'     => sprintf('<span type="submit" class="button" file="/webpage_images.zip.php?parent=category&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fa fa-file-archive" aria-hidden="true"></i> %s</span>
+                'label'     => sprintf(
+                    '<span type="submit" class="button" file="/webpage_images.zip.php?parent=category&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fa fa-file-archive" aria-hidden="true"></i> %s</span>
 <span type="submit" class="padding_left_30 button" file="/webpage_texts.txt.php?parent=category&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fal fa-file-alt" aria-hidden="true"></i> %s</span>
 
-',
-                                       $object->get('Webpage Scope Key'),
-                                       _('Images (including products)'),
-                   $object->get('Webpage Scope Key'),
-                                       _('Text (including products)')
+', $object->get('Webpage Scope Key'), _('Images (including products)'), $object->get('Webpage Scope Key'), _('Text (including products)')
 
 
                 ),
@@ -469,38 +399,35 @@ if(!$new and $object->get('Webpage Scope')=='Category Products'){
 
 }
 
-if(!$new and $object->get('Webpage Scope')=='Product'){
-$export_operations      = array(
-    'label'      => _('Export'),
-    'show_title' => true,
-    'class'      => 'operations',
-    'fields'     => array(
+if (!$new and $object->get('Webpage Scope') == 'Product') {
+    $export_operations = array(
+        'label'      => _('Export'),
+        'show_title' => true,
+        'class'      => 'operations',
+        'fields'     => array(
 
 
-        array(
-            'id'        => 'export_webpage',
-            'class'     => 'operation',
-            'value'     => '',
-            'label'     => sprintf('<span type="submit" class="button" file="/webpage_images.zip.php?parent=product&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fa fa-file-archive" aria-hidden="true"></i> %s</span>
+            array(
+                'id'        => 'export_webpage',
+                'class'     => 'operation',
+                'value'     => '',
+                'label'     => sprintf(
+                    '<span type="submit" class="button" file="/webpage_images.zip.php?parent=product&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fa fa-file-archive" aria-hidden="true"></i> %s</span>
 <span type="submit" class="padding_left_30 button" file="/webpage_texts.txt.php?parent=product&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fal fa-file-alt" aria-hidden="true"></i> %s</span>
 
-',
-                                   $object->get('Webpage Scope Key'),
-                                   _('Images'),
-                                   $object->get('Webpage Scope Key'),
-                                   _('Text')
+', $object->get('Webpage Scope Key'), _('Images'), $object->get('Webpage Scope Key'), _('Text')
 
+                ),
+                'reference' => '',
+                'type'      => 'operation'
             ),
-            'reference' => '',
-            'type'      => 'operation'
-        ),
 
 
-    )
+        )
 
-);
+    );
 
-$object_fields[] = $export_operations;
+    $object_fields[] = $export_operations;
 
 }
 
@@ -549,8 +476,7 @@ if (in_array($object->get('Webpage Scope'), array('Register'))) {
 }
 
 
-
-$operations      = array(
+$operations = array(
     'label'      => _('Operations'),
     'show_title' => true,
     'class'      => 'operations',
@@ -562,7 +488,9 @@ $operations      = array(
             'class'     => 'operation',
             'value'     => '',
             'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "old_page", "key":"'.$object->id
-                .'"}\' onClick="reindex_object(this)" class="delete_object disabled ">'._("Reindex").' <i class="fa fa-indent  "></i></span>',
+                .'"}\' onClick="reindex_object(this)" class="delete_object disabled ">'._(
+                    "Reindex"
+                ).' <i class="fa fa-indent  "></i></span>',
             'reference' => '',
             'type'      => 'operation'
         ),
@@ -572,20 +500,21 @@ $operations      = array(
             'id'        => 'reset_webpage',
             'class'     => 'operation',
             'value'     => '',
-            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "webpage", "key":"'.$object->id
-                .'"}\' onClick="reset_object(this)" class="delete_object disabled ">'._("Reset webpage").' <i class="fa fa-recycle  "></i></span>',
+            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "webpage", "key":"'.$object->id.'"}\' onClick="reset_object(this)" class="delete_object disabled ">'
+                ._(
+                    "Reset webpage"
+                ).' <i class="fa fa-recycle  "></i></span>',
             'reference' => '',
             'type'      => 'operation'
         ),
 
         array(
             'id'        => 'delete_website',
-            'render'=>$can_delete,
+            'render'    => $can_delete,
             'class'     => 'operation',
             'value'     => '',
-            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'
-                .$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete webpage")
-                .' <i class="far fa-trash-alt new_button link"></i></span>',
+            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete webpage").' <i class="far fa-trash-alt new_button link"></i></span>',
             'reference' => '',
             'type'      => 'operation'
         ),
@@ -595,7 +524,7 @@ $operations      = array(
 
 );
 
-if(!$new) {
+if (!$new) {
 
     $object_fields[] = $operations;
 }

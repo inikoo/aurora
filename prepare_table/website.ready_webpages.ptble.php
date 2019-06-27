@@ -111,9 +111,7 @@ if ($order == 'code') {
     $order = '`Webpage Scope`';
 } elseif ($order == 'name') {
     $order = '`Webpage Name`';
-} elseif ($order == 'template') {
-    $order = '`Webpage Template Filename`';
-}  elseif ($order == 'type') {
+}   elseif ($order == 'type') {
     $order = '`Webpage Type Code`';
 } else {
     $order = '`Webpage Key`';
@@ -124,7 +122,7 @@ $sql_totals = "select count(Distinct `Page Key`) as num from $table  $where  ";
 
 
 
-$fields = "`Page Key` as `Webpage Key` ,`Webpage Code`,`Webpage State`,`Webpage Scope`,`Webpage Website Key`,`Webpage Name`,`Webpage Template Filename`,`Webpage Type Code`";
+$fields = "`Page Key` as `Webpage Key` ,`Webpage Code`,`Webpage State`,`Webpage Scope`,`Webpage Website Key`,`Webpage Name`,`Webpage Type Code`";
 
 
 

@@ -147,7 +147,6 @@ class Public_Webpage {
             case 'Webpage Store Key':
             case 'Webpage Scope Key':
             case 'Webpage Website Key':
-            case 'Webpage Template Filename':
             case 'Website URL':
                 return $this->data[$key];
                 break;

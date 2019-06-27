@@ -720,8 +720,7 @@ function webpages_in_process($_data, $db, $user) {
             'code'     => sprintf('<span class="link" onclick="change_view(\'website/%d/in_process/webpage/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], $data['Webpage Code']),
             'state'    => $state,
             'type'     => $type,
-            'name'     => $data['Webpage Name'],
-            'template' => $data['Webpage Template Filename'],
+            'name'     => $data['Webpage Name']
 
 
         );
@@ -766,8 +765,7 @@ function webpages_ready($_data, $db, $user) {
             'id'       => (integer)$data['Webpage Key'],
             'code'     => sprintf('<span class="link" onclick="change_view(\'website/%d/ready/webpage/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], $data['Webpage Code']),
             'type'     => $type,
-            'name'     => $data['Webpage Name'],
-            'template' => $data['Webpage Template Filename'],
+            'name'     => $data['Webpage Name']
 
 
         );

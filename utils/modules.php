@@ -3797,11 +3797,7 @@ $modules = array(
                     'category.product.sales.history' => 'category.sales',
                     'category.product.sales.calendar' => 'category.sales',
                     'category.product.sales.info' => 'category.sales',
-                    //'category.webpage.preview' => 'category.webpage',
-                    //'category.webpage.settings' => 'category.webpage',
-                    //'category.webpage.products' => 'category.webpage',
-                    //'category.webpage.analytics' => 'category.webpage',
-                    //'category.webpage.logbook' => 'category.webpage',
+
                     'category.customers' => 'category.customers',
                     'category.customers.favored' => 'category.customers',
 
@@ -3816,34 +3812,7 @@ $modules = array(
                             'Subcategories'
                         )
                     ),
-/*
 
-                    'category.webpage' => array(
-                        'label' => _('Website'),
-                        'icon' => 'globe',
-                        'subtabs' => array(
-                            'category.webpage.settings' => array(
-                                'label' => _('Settings'),
-                                'icon' => 'sliders'
-                            ),
-
-                            'category.webpage.preview' => array(
-                                'label' => _('Workshop'),
-                                'icon' => 'wrench'
-                            ),
-                            'category.webpage.logbook' => array(
-                                'label' => _('Logbook'),
-                                'icon' => 'road'
-                            ),
-                            //   'category.webpage.analytics'  => array(
-                            //      'label' => _('Analytics'),
-                            //       'icon'=>'line-chart'
-                            //  ),
-
-
-                        )
-                    ),
-*/
                     'category.sales' => array(
                         'label' => _('Sales'),
                         'icon' => 'money-bill-alt',

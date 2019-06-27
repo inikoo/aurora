@@ -30,7 +30,6 @@ function website_system_webpages_config($website_type) {
 
         'home.sys' => array(
             'Webpage Scope'             => 'Homepage',
-            'Webpage Template Filename' => 'homepage',
             'Webpage Type'              => 'Home',
             'Webpage Code'              => 'home.sys',
             'Webpage Browser Title'     => _('Homepage'),
@@ -58,7 +57,6 @@ function website_system_webpages_config($website_type) {
 
         'home_logout.sys' => array(
             'Webpage Scope'             => 'HomepageLogout',
-            'Webpage Template Filename' => 'homepage_logout',
             'Webpage Type'              => 'Home',
             'Webpage Code'              => 'home_logout.sys',
             'Webpage Browser Title'     => _('Homepage'),
@@ -89,7 +87,6 @@ function website_system_webpages_config($website_type) {
 
         'launching.sys' => array(
             'Webpage Scope'             => 'HomepageToLaunch',
-            'Webpage Template Filename' => 'homepage_to_launch',
             'Webpage Type'              => 'Home',
             'Webpage Code'              => 'launching.sys',
             'Webpage Browser Title'     => _('Coming soon'),
@@ -124,7 +121,6 @@ function website_system_webpages_config($website_type) {
         'favourites.sys' => array(
             'Webpage Scope'             => 'Favourites',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'Favourites',
             'Webpage Type'              => 'Portfolio',
             'Webpage Code'              => 'favourites.sys',
             'Webpage Browser Title'     => _('Favourites'),
@@ -157,7 +153,6 @@ function website_system_webpages_config($website_type) {
         'login.sys' => array(
             'Webpage Scope'             => 'Login',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'login',
             'Webpage Type'              => 'Customer',
             'Webpage Code'              => 'login.sys',
             'Webpage Browser Title'     => _('Login'),
@@ -218,7 +213,6 @@ function website_system_webpages_config($website_type) {
         'register.sys' => array(
             'Webpage Scope'             => 'Register',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'register',
             'Webpage Type'              => 'Customer',
             'Webpage Code'              => 'register.sys',
             'Webpage Browser Title'     => _('Register'),
@@ -292,7 +286,6 @@ function website_system_webpages_config($website_type) {
         'welcome.sys'   => array(
             'Webpage Scope'             => 'Welcome',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'welcome',
             'Webpage Type'              => 'Customer',
             'Webpage Code'              => 'welcome.sys',
             'Webpage Browser Title'     => _('Welcome'),
@@ -314,7 +307,6 @@ function website_system_webpages_config($website_type) {
         'reset_pwd.sys' => array(
             'Webpage Scope'             => 'ResetPwd',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'reset_password',
             'Webpage Type'              => 'Customer',
             'Webpage Code'              => 'reset_pwd.sys',
             'Webpage Browser Title'     => _('Reset password'),
@@ -371,7 +363,6 @@ function website_system_webpages_config($website_type) {
         'unsubscribe.sys' => array(
             'Webpage Scope'             => 'Unsubscribe',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'unsubscribe',
             'Webpage Type'              => 'Customer',
             'Webpage Code'              => 'unsubscribe.sys',
             'Webpage Browser Title'     => _('Unsubscribe'),
@@ -415,7 +406,6 @@ function website_system_webpages_config($website_type) {
         'profile.sys' => array(
             'Webpage Scope'             => 'UserProfile',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'profile',
             'Webpage Type'              => 'Customer',
             'Webpage Code'              => 'profile.sys',
             'Webpage Browser Title'     => _('Customer section'),
@@ -519,7 +509,6 @@ function website_system_webpages_config($website_type) {
         'contact.sys' => array(
             'Webpage Scope'             => 'Contact',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'contact',
             'Webpage Type'              => 'Info',
             'Webpage Code'              => 'contact.sys',
             'Webpage Browser Title'     => _('Contact'),
@@ -544,7 +533,6 @@ function website_system_webpages_config($website_type) {
         'basket.sys'   => array(
             'Webpage Scope'             => 'Basket',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'basket',
             'Webpage Type'              => 'Ordering',
             'Webpage Code'              => 'basket.sys',
             'Webpage Browser Title'     => _('Basket'),
@@ -603,7 +591,6 @@ function website_system_webpages_config($website_type) {
         'checkout.sys' => array(
             'Webpage Scope'             => 'Checkout',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'checkout',
             'Webpage Type'              => 'Ordering',
             'Webpage Code'              => 'checkout.sys',
             'Webpage Browser Title'     => _('Checkout'),
@@ -685,7 +672,6 @@ function website_system_webpages_config($website_type) {
         'thanks.sys' => array(
             'Webpage Scope'             => 'Thanks',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'thanks',
             'Webpage Type'              => 'Ordering',
             'Webpage Code'              => 'thanks.sys',
             'Webpage Browser Title'     => _('Thanks for your order'),
@@ -721,7 +707,6 @@ function website_system_webpages_config($website_type) {
         'not_found.sys' => array(
             'Webpage Scope'             => 'NotFound',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'not_found',
             'Webpage Type'              => 'Sys',
             'Webpage Code'              => 'not_found.sys',
             'Webpage Browser Title'     => _('Not found'),
@@ -758,7 +743,6 @@ function website_system_webpages_config($website_type) {
         'offline.sys'   => array(
             'Webpage Scope'             => 'Offline',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'offline',
             'Webpage Type'              => 'Sys',
             'Webpage Code'              => 'offline.sys',
             'Webpage Browser Title'     => _('Offline'),
@@ -798,7 +782,6 @@ function website_system_webpages_config($website_type) {
         'in_process.sys' => array(
             'Webpage Scope'             => 'InProcess',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'in_process',
             'Webpage Type'              => 'Sys',
             'Webpage Code'              => 'in_process.sys',
             'Webpage Browser Title'     => _('Under construction'),
@@ -829,7 +812,6 @@ function website_system_webpages_config($website_type) {
         'search.sys'     => array(
             'Webpage Scope'             => 'Search',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'search',
             'Webpage Type'              => 'Portfolio',
             'Webpage Code'              => 'search.sys',
             'Webpage Browser Title'     => _('Search'),
@@ -856,7 +838,6 @@ function website_system_webpages_config($website_type) {
         'catalogue.sys'  => array(
             'Webpage Scope'             => 'Catalogue',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'catalogue',
             'Webpage Type'              => 'Portfolio',
             'Webpage Code'              => 'catalogue.sys',
             'Webpage Browser Title'     => _('Catalogue'),
@@ -866,7 +847,6 @@ function website_system_webpages_config($website_type) {
         'tac.sys'        => array(
             'Webpage Scope'             => 'TandC',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'terms_and_conditions',
             'Webpage Type'              => 'Info',
             'Webpage Code'              => 'tac.sys',
             'Webpage Browser Title'     => _('Terms & Conditions'),
@@ -884,7 +864,6 @@ function website_system_webpages_config($website_type) {
         'shipping.sys'   => array(
             'Webpage Scope'             => 'ShippingInfo',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'shipping',
             'Webpage Type'              => 'Info',
             'Webpage Code'              => 'shipping.sys',
             'Webpage Browser Title'     => _('Shipping info'),
@@ -903,7 +882,6 @@ function website_system_webpages_config($website_type) {
         'about.sys' => array(
             'Webpage Scope'             => 'About',
             'Webpage Scope Metadata'    => '',
-            'Webpage Template Filename' => 'about',
             'Webpage Type'              => 'Info',
             'Webpage Code'              => 'about.sys',
             'Webpage Browser Title'     => _('About us'),

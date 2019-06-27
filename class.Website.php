@@ -741,8 +741,7 @@ class Website extends DB_Table {
             'Page Store Key'                       => $this->get('Website Store Key'),
             'Page Store Creation Date'             => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'                => 0,
-            'Page Store Content Display Type'      => 'Template',
-            'Page Store Content Template Filename' => $data['Webpage Template Filename'],
+
             'Page Title'                           => $data['Webpage Name'],
             'Page Short Title'                     => $data['Webpage Browser Title'],
             'Page Parent Key'                      => 0,
@@ -756,7 +755,6 @@ class Website extends DB_Table {
             'Webpage Store Key'             => $this->get('Website Store Key'),
             'Webpage Type Key'              => $webpage_type->id,
             'Webpage Code'                  => $data['Webpage Code'],
-            'Webpage Template Filename'     => $data['Webpage Template Filename'],
             'Webpage Number See Also Links' => 0,
             'Webpage Creation Date'         => gmdate('Y-m-d H:i:s'),
             'Webpage URL'                   => $this->data['Website URL'].'/'.strtolower($data['Webpage Code']),
@@ -1110,25 +1108,7 @@ class Website extends DB_Table {
         $webpage_type = new Webpage_Type('website_code', $this->id, ($category->get('Category Subject') == 'Product' ? 'Prods' : 'Cats'));
 
 
-        if ($category->get('Category Subject') == 'Product') {
 
-
-            if ($this->get('Website Theme') == 'theme_1') {
-                $template = 'category_products';
-            } else {
-                $template = 'categories_showcase';
-            }
-
-        } else {
-
-            if ($this->get('Website Theme') == 'theme_1') {
-                $template = 'category_categories';
-            } else {
-                $template = 'categories_showcase';
-            }
-
-
-        }
 
 
         $page_data = array(
@@ -1138,8 +1118,6 @@ class Website extends DB_Table {
             'Page Store Key'                       => $category->get('Category Store Key'),
             'Page Store Creation Date'             => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'                => ($category->get('Category Subject') == 'Product' ? 5 : 0),
-            'Page Store Content Display Type'      => 'Template',
-            'Page Store Content Template Filename' => $template,
 
 
             'Webpage Scope'                 => ($category->get('Category Subject') == 'Product' ? 'Category Products' : 'Category Categories'),
@@ -1148,7 +1126,6 @@ class Website extends DB_Table {
             'Webpage Store Key'             => $category->get('Category Store Key'),
             'Webpage Type Key'              => $webpage_type->id,
             'Webpage Code'                  => $page_code,
-            'Webpage Template Filename'     => $template,
             'Webpage Number See Also Links' => ($category->get('Category Subject') == 'Product' ? 5 : 0),
             'Webpage Creation Date'         => gmdate('Y-m-d H:i:s'),
             'Webpage Name'                  => $category->get('Label'),
@@ -1326,14 +1303,6 @@ class Website extends DB_Table {
         $webpage_type = new Webpage_Type('website_code', $this->id, 'Prod');
 
 
-        if ($this->get('Website Theme') == 'theme_1') {
-            $template = 'product2';
-
-        } else {
-            $template = 'product';
-
-        }
-
 
         $page_data = array(
             'Page Code'                            => $page_code,
@@ -1342,8 +1311,6 @@ class Website extends DB_Table {
             'Page Store Key'                       => $product->get('Product Store Key'),
             'Page Store Creation Date'             => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'                => 5,
-            'Page Store Content Display Type'      => 'Template',
-            'Page Store Content Template Filename' => $template,
 
 
             'Webpage Scope'                          => 'Product',
@@ -1352,7 +1319,6 @@ class Website extends DB_Table {
             'Webpage Store Key'                      => $product->get('Product Store Key'),
             'Webpage Type Key'                       => $webpage_type->id,
             'Webpage Code'                           => $page_code,
-            'Webpage Template Filename'              => $template,
             'Webpage Number See Also Links'          => 5,
             'Webpage Creation Date'                  => gmdate('Y-m-d H:i:s'),
             'Webpage Name'                           => $product->get('Name'),

@@ -715,41 +715,7 @@ class Category extends DB_Table {
                         break;
 
 
-                    case 'Category Webpage Template':
-                        // todo migrate to new webpage and webpage version classes
 
-
-                        $this->webpage->get('Webpage Template Filename');
-
-
-                    case 'Webpage Template':
-                        // todo migrate to new webpage and webpage version classes
-
-                        if (!is_object($this->webpage)) {
-                            $this->get_webpage();
-                        }
-
-
-                        switch ($this->webpage->get('Page Store Content Template Filename')) {
-                            case 'family_buttons':
-                                return 'Old products showcase (unsupported)';
-                                break;
-                            case 'products_showcase':
-                                return _("Products showcase");
-                                break;
-                            case 'categories_showcase':
-                                return _("Categories showcase");
-                                break;
-                            case '':
-                                return 'Very old products showcase (unsupported)<';
-                                break;
-                            default:
-                                return $this->webpage->get('Page Store Content Template Filename');
-                                break;
-                        }
-
-
-                        break;
                     case 'Webpage Related Products':
 
                         $related_products_data = $this->webpage->get_related_products_data();
@@ -2887,19 +2853,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     break;
 
 
-                case 'Webpage Template':
 
-                    if (!is_object($this->webpage)) {
-                        $this->get_webpage();
-                    }
-
-
-                    $this->webpage->update(array('Webpage Template Filename' => $value), $options);
-
-
-                    $this->updated = $this->webpage->updated;
-
-                    break;
 
                 case 'Category Webpage Meta Description':
                 case 'Webpage Meta Description':

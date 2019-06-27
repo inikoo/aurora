@@ -152,17 +152,7 @@ $product_fields = array(
 
 
 
-            /*
-                        array(
-                            'id'              => 'Webpage_Versions',
-                            'edit'            => 'Webpage_Versions',
-                            'value'           => '',
-                            'formatted_value' => $object->get('Webpage Versions'),
-                            'label'           => _('Versions'),
-                            'required'        => false,
-                            'type'            => ''
-                        ),
-            */
+
 
         )
     ),

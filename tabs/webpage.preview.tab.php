@@ -30,13 +30,7 @@ if (!$webpage->id) {
 $theme = $website->get('Website Theme');
 
 
-if ($theme == 'old') {
 
-
-    $html = '<div style="padding:40px">'.'Old webpage version'.'</div>';
-
-    return;
-}
 
 
 $smarty->assign('theme', $theme);
@@ -48,14 +42,7 @@ $smarty->assign('content', $webpage->get('Content Data'));
 $smarty->assign('metadata', $webpage->get('Scope MetaData'));
 
 
-$control_template = $theme.'/control.'.strtolower($webpage->get('Webpage Template Filename')).'.'.$theme.'.tpl';
 
-// print $control_template;
-
-if (file_exists('templates/'.$control_template)) {
-    $smarty->assign('control_template', $control_template);
-
-} else {
 
     include_once 'conf/webpage_blocks.php';
     $blocks = get_webpage_blocks();
@@ -67,7 +54,7 @@ if (file_exists('templates/'.$control_template)) {
     $smarty->assign('blocks', $blocks);
 
     $smarty->assign('control_template', $theme.'/control.webpage_blocks.'.$theme.'.tpl');
-}
+
 
 // print_r( $webpage->get('Content Data'));
 
