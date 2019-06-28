@@ -153,6 +153,8 @@ if ($invoice->get('Invoice Address Country 2 Alpha Code') == 'SK') {
     $code_tax = 'X';
 }
 
+$_total_amount_exchange=round($invoice->get('Invoice Items Net Amount') * $exchange_rate, 2)+round($invoice->get('Invoice Shipping Net Amount') * $exchange_rate, 2)+round($invoice->get('Invoice Charges Net Amount') * $exchange_rate, 2)+round($invoice->get('Invoice Total Tax Amount') * $exchange_rate, 2);
+
 
 $text = "R00\tT00\r\n";
 
@@ -176,7 +178,7 @@ $invoice_header_data = array(
     1/$exchange_rate,
     0,
     $invoice->get('Invoice Total Amount'),
-    round($invoice->get('Invoice Total Amount') * $exchange_rate, 2),
+    $_total_amount_exchange,
     10,
     20,
     '0.000',
@@ -231,6 +233,9 @@ $invoice_header .= "\r\n";
 $text .= $invoice_header;
 
 
+
+
+
 $row_data = array(
     'R02',
     0,
@@ -238,7 +243,7 @@ $row_data = array(
     200,
     '',
     '',
-    round($invoice->get('Invoice Total Amount') * $exchange_rate, 2),
+    $_total_amount_exchange,
     $invoice->get('Invoice Total Amount'),
     $invoice->get('Invoice Customer Name'),
     'S',
