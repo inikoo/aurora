@@ -249,7 +249,6 @@ function deals($_data, $db, $user) {
                 $name = sprintf('<span class="link" onClick="change_view(\'offers/%d/%s/%d\')">%s</span>', $data['Deal Store Key'], strtolower($parent->get('Code')),$data['Deal Key'], $data['Deal Name']);
 
             } else {
-               // $name = sprintf('<span class="link" onClick="change_view(\'campaigns/%d/%d/deal/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Campaign Key'], $data['Deal Key'], $data['Deal Name']);
 
                 $name=$data['Deal Name'];
             }
@@ -1283,28 +1282,7 @@ function vouchers($_data, $db, $user) {
                     $status = $data['Deal Status'];
             }
 
-            $duration = '';
-            if ($data['Deal Expiration Date'] == '' and $data['Deal Begin Date'] == '') {
-                $duration = _('Permanent');
-            } else {
 
-                if ($data['Deal Begin Date'] != '') {
-                    $duration = strftime(
-                        "%x", strtotime($data['Deal Begin Date']." +00:00")
-                    );
-
-                }
-                $duration .= ' - ';
-                if ($data['Deal Expiration Date'] != '') {
-                    $duration .= strftime(
-                        "%x", strtotime($data['Deal Expiration Date']." +00:00")
-                    );
-
-                } else {
-                    $duration .= _('Present');
-                }
-
-            }
 
             if ($data['Deal Expiration Date'] != '') {
                 $to = strftime(
@@ -1342,7 +1320,7 @@ function vouchers($_data, $db, $user) {
                 $name = sprintf('<span class="link" onClick="change_view(\'deals/%d/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Key'], $data['Deal Name']);
 
             } else {
-                $name = sprintf('<span class="link" onClick="change_view(\'campaigns/%d/%d/deal/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Campaign Key'], $data['Deal Key'], $data['Deal Name']);
+                $name = sprintf('<span class="link" onClick="change_view(\'offers/%d/%s/%d\')">%s</span>', $data['Deal Store Key'], 'vo',$data['Deal Key'], $data['Deal Name']);
 
             }
 

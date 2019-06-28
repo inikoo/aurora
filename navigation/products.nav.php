@@ -2108,14 +2108,15 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             $up_button = array(
                 'icon'      => 'arrow-up',
                 'title'     => _("Campaign").' '.$data['_parent']->get('Code'),
-                'reference' => 'campaigns/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id
+                'reference' => 'offers/'.$data['_parent']->get('Store Key').'/'.strtolower($data['_parent']->get('Code'))
             );
 
             if ($prev_key) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-left',
                     'title'     => $prev_title,
-                    'reference' => 'campaign/'.$data['_parent']->id.'/order/'.$prev_key
+                    'reference' => 'offers/'.$data['_parent']->get('Store Key').'/'.strtolower($data['_parent']->get('Code')).'/order/'.$prev_key
+
                 );
 
             } else {
@@ -2133,7 +2134,8 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-right',
                     'title'     => $next_title,
-                    'reference' => 'campaign/'.$data['_parent']->id.'/order/'.$next_key
+                    'reference' => 'offers/'.$data['_parent']->get('Store Key').'/'.strtolower($data['_parent']->get('Code')).'/order/'.$next_key
+
                 );
 
             } else {
@@ -2155,14 +2157,14 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
             $up_button = array(
                 'icon'      => 'arrow-up',
                 'title'     => _("Offer").' '.$data['_parent']->get('Code'),
-                'reference' => 'campaigns/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->get('Deal Campaign Key').'/deal/'.$data['_parent']->id
+                'reference' => 'deals/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id
             );
 
             if ($prev_key) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-left',
                     'title'     => $prev_title,
-                    'reference' => 'deal/'.$data['_parent']->id.'/order/'.$prev_key
+                    'reference' => 'deals/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id.'/order/'.$prev_key
                 );
 
             } else {
@@ -2180,7 +2182,7 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-right',
                     'title'     => $next_title,
-                    'reference' => 'deal/'.$data['_parent']->id.'/order/'.$next_key
+                    'reference' => 'deals/'.$data['_parent']->get('Store Key').'/'.$data['_parent']->id.'/order/'.$next_key
                 );
 
             } else {
