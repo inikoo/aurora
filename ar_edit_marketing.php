@@ -280,12 +280,13 @@ function add_target_to_campaign($account, $db, $user, $editor, $data, $smarty) {
 
 
         $component_data = array(
-            'Deal Component Trigger'              => 'Category',
-            'Deal Component Allowance Type'       => 'Percentage Off',
-            'Deal Component Allowance Target'     => 'Category',
-            'Deal Component Allowance Target Key' => $category->id,
-            'Deal Component Allowance Label'      => sprintf(_('%s off'), percentage($allowance, 1)),
-            'Deal Component Allowance'            => $allowance,
+            'Deal Component Trigger'               => 'Category',
+            'Deal Component Allowance Type'        => 'Percentage Off',
+            'Deal Component Allowance Target'      => 'Category',
+            'Deal Component Allowance Target Key'  => $category->id,
+            'Deal Component Allowance Label'       => sprintf(_('%s off'), percentage($allowance, 1)),
+            'Deal Component Allowance'             => $allowance,
+            'Deal Component Allowance Target Type' => 'Items',
         );
 
 
@@ -324,7 +325,9 @@ function add_target_to_campaign($account, $db, $user, $editor, $data, $smarty) {
             'Deal Component Allowance Target Key'   => $category->id,
             'Deal Component Allowance'              => $off_ratio,
             'Deal Component Allowance Label'        => $off,
-            'Deal Component Allowance Target Label' => $category->get('Code')
+            'Deal Component Allowance Target Label' => $category->get('Code'),
+            'Deal Component Allowance Target Type' => 'Items',
+
         );
 
         //print_r($deal_new_data);

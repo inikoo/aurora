@@ -285,7 +285,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
 
 
         $sql = sprintf(
-            "select `Deal Campaign Name` object_name,C.`Deal Campaign Key` as object_key from $table   $where $wheref
+            "select `Deal Campaign Name` object_name,C.`Deal Campaign Code` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND C.`Deal Campaign Key` < %d))  order by $_order_field desc , C.`Deal Campaign Key` desc limit 1",
 
             prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
@@ -293,7 +293,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
                 $prev_key   = $row['object_key'];
-                $prev_title = _("Offer category").' '.$row['object_name'].' ('.$row['object_key'].')';
+                $prev_title = _("Offer category").' '.$row['object_name'];
 
             }
         } else {
@@ -303,7 +303,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
 
 
         $sql = sprintf(
-            "select `Deal Campaign Name` object_name,C.`Deal Campaign Key` as object_key from $table   $where $wheref
+            "select `Deal Campaign Name` object_name,C.`Deal Campaign Code` as object_key from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Deal Campaign Key` > %d))  order by $_order_field   , C.`Deal Campaign Key`  limit 1", prepare_mysql($_order_field_value),
             prepare_mysql($_order_field_value), $object->id
         );
@@ -311,7 +311,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
                 $next_key   = $row['object_key'];
-                $next_title = _("Offer category").' '.$row['object_name'].' ('.$row['object_key'].')';
+                $next_title = _("Offer category").' '.$row['object_name'];
 
             }
         } else {
@@ -345,7 +345,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-left',
                     'title'     => $prev_title,
-                    'reference' => 'campaigns/'.$data['parent_key'].'/'.$prev_key
+                    'reference' => 'offers/'.$data['parent_key'].'/'.strtolower($prev_key)
                 );
 
             } else {
@@ -363,7 +363,8 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-right',
                     'title'     => $next_title,
-                    'reference' => 'campaigns/'.$data['parent_key'].'/'.$next_key
+                    'reference' => 'offers/'.$data['parent_key'].'/'.strtolower($next_key)
+
                 );
 
             } else {
@@ -637,15 +638,16 @@ function get_deal_navigation($data, $smarty, $user, $db) {
 
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _("Campaign").' '.$data['_parent']->get('Code'),
-                'reference' => 'campaigns/'.$data['store']->id.'/'.$data['parent_key']
+                'title'     => _("Campaign").' '.$data['_parent']->get('Name'),
+                'reference' => 'offers/'.$data['store']->id.'/'.strtolower($data['_parent']->get('Code'))
             );
 
             if ($prev_key) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-left',
                     'title'     => $prev_title,
-                    'reference' => 'campaigns/'.$data['store']->id.'/'.$data['parent_key'].'/deal/'.$prev_key
+                    'reference' => 'offers/'.$data['store']->id.'/'.strtolower($data['_parent']->get('Code')).'/'.$prev_key
+
                 );
 
             } else {
@@ -663,7 +665,7 @@ function get_deal_navigation($data, $smarty, $user, $db) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-right',
                     'title'     => $next_title,
-                    'reference' => 'campaigns/'.$data['store']->id.'/'.$data['parent_key'].'/deal/'.$next_key
+                    'reference' => 'offers/'.$data['store']->id.'/'.strtolower($data['_parent']->get('Code')).'/'.$next_key
                 );
 
 

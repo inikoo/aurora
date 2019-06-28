@@ -995,7 +995,7 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 
         } elseif ($object->get_object_name() == 'Deal Campaign') {
 
-            $response['request'] = sprintf('campaigns/%d', $object->get('Deal Campaign Store Key'));
+           // $response['request'] = sprintf('offers/%d/%s', $object->get('Deal Campaign Store Key'));
 
         } elseif ($object->get_object_name() == 'Supplier Delivery') {
 
@@ -1938,7 +1938,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     $pcard = '';
 
 
-                    $redirect     = 'campaigns/'.$campaign->get('Store Key').'/'.$campaign->id.'/deal/'.$object->id;
+                    $redirect     = 'offers/'.$campaign->get('Store Key').'/'.strtolower($campaign->get('Deal Campaign Code')).'/'.$object->id;
                     $updated_data = array();
 
 

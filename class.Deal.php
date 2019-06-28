@@ -1214,7 +1214,6 @@ class Deal extends DB_Table {
             'Trigger Key',
             'Terms Type',
             'Terms',
-            'Allowance Target Type'
         );
         foreach ($hereditary_fields as $hereditary_field) {
             if (!array_key_exists('Deal Component '.$hereditary_field, $data)) {
@@ -1222,6 +1221,8 @@ class Deal extends DB_Table {
             }
         }
 
+
+      
 
         $deal_component = new DealComponent('find create', $data);
         //$deal_component->update_status($this->data['Deal Status']);
