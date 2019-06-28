@@ -95,7 +95,6 @@ if($invoice->get('Invoice Currency')=='EUR'){
     if ($row = $stmt->fetch()) {
 
         $exchange_rate=$row['ECB Currency Exchange Rate'];
-        print $exchange_rate;
 
     }else{
         $exchange_rate=$invoice->get('Invoice Currency Exchange');
