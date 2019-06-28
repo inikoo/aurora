@@ -77,11 +77,38 @@ if ($order->id) {
     }
 
 }
-$smarty->assign('customer', $customer);
 
 
-$smarty->assign('number_orders', $number_orders);
-$smarty->assign('number_dns', $number_dns);
+if($invoice->get('Invoice Currency')=='EUR'){
+    $exchange_rate=1;
+}else{
+    $sql='select *,`ECB Currency Exchange Rate` from kbase.`ECB Currency Exchange Dimension` where `ECB Currency Exchange Date`<? and `ECB Currency Exchange Currency Pair`=? order by `ECB Currency Exchange Date` desc';
+
+
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            gmdate('Y-m-d',strtotime($invoice->get('Invoice Date').' +0:00')),
+            $invoice->get('Invoice Currency').'EUR'
+        )
+    );
+    if ($row = $stmt->fetch()) {
+
+        $exchange_rate=$row['ECB Currency Exchange Rate'];
+        print $exchange_rate;
+
+    }else{
+        $exchange_rate=$invoice->get('Invoice Currency Exchange');
+    }
+
+
+
+
+
+}
+
+
+
 
 if ($account->get('Account Country 2 Alpha Code') == $invoice->get('Invoice Address Country 2 Alpha Code')) {
     $invoice_numeric_code          = 100;
@@ -147,10 +174,10 @@ $invoice_header_data = array(
     date('d.m.Y', strtotime($order->get_date('Order Date'))),
     $invoice->get('Invoice Currency'),
     1,
-    1/$invoice->get('Invoice Currency Exchange'),
+    1/$exchange_rate,
     0,
     $invoice->get('Invoice Total Amount'),
-    round($invoice->get('Invoice Total Amount') * $invoice->get('Invoice Currency Exchange'), 2),
+    round($invoice->get('Invoice Total Amount') * $exchange_rate, 2),
     10,
     20,
     '0.000',
@@ -212,7 +239,7 @@ $row_data = array(
     200,
     '',
     '',
-    round($invoice->get('Invoice Total Amount') * $invoice->get('Invoice Currency Exchange'), 2),
+    round($invoice->get('Invoice Total Amount') * $exchange_rate, 2),
     $invoice->get('Invoice Total Amount'),
     $invoice->get('Invoice Customer Name'),
     'S',
@@ -251,7 +278,7 @@ $row_data = array(
     '',
     604,
     $invoice_numeric_code_total,
-    round($invoice->get('Invoice Items Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
+    round($invoice->get('Invoice Items Net Amount') * $exchange_rate, 2),
     $invoice->get('Invoice Items Net Amount'),
     'Items '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
     $code_sum,
@@ -302,7 +329,7 @@ if ($invoice->get('Invoice Shipping Net Amount') != 0) {
         '',
         604,
         $invoice_numeric_code_shipping,
-        round($invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
+        round($invoice->get('Invoice Shipping Net Amount') * $exchange_rate, 2),
         $invoice->get('Invoice Shipping Net Amount'),
         'Shipping '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
         $code_sum,
@@ -352,7 +379,7 @@ if ($invoice->get('Invoice Charges Net Amount') != 0) {
         '',
         604,
         $invoice_numeric_code_charges,
-        round($invoice->get('Invoice Charges Net Amount') * $invoice->get('Invoice Currency Exchange'), 2),
+        round($invoice->get('Invoice Charges Net Amount') * $exchange_rate, 2),
         $invoice->get('Invoice Charges Net Amount'),
         'Charges '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
         $code_sum,
@@ -397,7 +424,7 @@ if ($invoice->get('Invoice Total Tax Amount') != 0) {
         '',
         343,
         220,
-        round($invoice->get('Invoice Total Tax Amount') * $invoice->get('Invoice Currency Exchange'), 2),
+        round($invoice->get('Invoice Total Tax Amount') * $exchange_rate, 2),
         $invoice->get('Invoice Total Tax Amount'),
         'Tax '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
         '04',
