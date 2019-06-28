@@ -1222,7 +1222,7 @@ class Deal extends DB_Table {
         }
 
 
-      
+
 
         $deal_component = new DealComponent('find create', $data);
         //$deal_component->update_status($this->data['Deal Status']);

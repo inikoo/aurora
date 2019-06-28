@@ -596,7 +596,7 @@ function get_deal_navigation($data, $smarty, $user, $db) {
             $up_button = array(
                 'icon'      => 'arrow-up',
                 'title'     => _("Marketing").' '.$data['store']->get('Code'),
-                'reference' => 'marketing/'.$data['store']->id.'&tab=deals'
+                'reference' => 'offers/'.$data['store']->id.'&tab=deals'
             );
 
             if ($prev_key) {
