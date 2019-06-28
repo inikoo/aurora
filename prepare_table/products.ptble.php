@@ -38,7 +38,6 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 }
 
 
-//print_r($parameters);
 
 
 switch ($parameters['parent']) {
@@ -88,15 +87,11 @@ switch ($parameters['parent']) {
         );
         break;
     case('category'):
-        include_once 'class.Category.php';
-        $category = new Category($parameters['parent_key']);
+        $category = get_object('Category',$parameters['parent_key']);
 
 
         if($category->get('Category Scope')=='Product'){
-            if (!in_array($category->data['Category Store Key'], $user->stores)) {
-                return;
-            }
-
+            
             $where = sprintf(" where P.`Product Type`='Product' and`Subject`='Product' and  `Category Key`=%d", $parameters['parent_key']);
             $table = ' `Category Bridge` left join  `Product Dimension` P on (`Subject Key`=`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`)  left join `Store Dimension` S on (`Product Store Key`=`Store Key`)';
 
