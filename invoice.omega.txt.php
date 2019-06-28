@@ -139,7 +139,7 @@ if ($invoice->get('Invoice Address Country 2 Alpha Code') == 'SK') {
     $code_sum = '03';
 } elseif (in_array($invoice->get('Invoice Address Country 2 Alpha Code'), $european_union_2alpha)) {
 
-    if ($invoice->get('Invoice Tax Code') == 'EX') {
+    if ($invoice->get('Invoice Tax Code') != 'S1') {
         $code_sum = '16';
         $code_tax = 'X';
     } else {
@@ -149,8 +149,16 @@ if ($invoice->get('Invoice Address Country 2 Alpha Code') == 'SK') {
 
 
 } else {
-    $code_sum = '17t';
-    $code_tax = 'X';
+
+    if ($invoice->get('Invoice Tax Code') != 'S1') {
+        $code_sum = '17t';
+        $code_tax = 'X';
+    } else {
+        $code_sum = '03';
+        $code_tax = 'A1';
+    }
+
+
 }
 
 $_total_amount_exchange=round($invoice->get('Invoice Items Net Amount') * $exchange_rate, 2)+round($invoice->get('Invoice Shipping Net Amount') * $exchange_rate, 2)+round($invoice->get('Invoice Charges Net Amount') * $exchange_rate, 2)+round($invoice->get('Invoice Total Tax Amount') * $exchange_rate, 2);
