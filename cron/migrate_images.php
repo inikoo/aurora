@@ -62,9 +62,9 @@ while ($row = $stmt->fetch()) {
     }
 
     if (isset($settings['favicon'])) {
-        $settings['favicon'] = preg_replace('/image_root/', 'wi', $settings['logo_website']);
+        $settings['favicon'] = preg_replace('/image_root/', 'wi', $settings['favicon']);
         if (preg_match('/id=(\d+)/', $settings['favicon'], $matches)) {
-            $settings['favicon_website'] = 'wi.php?id='.$matches[1].'&s='.get_image_size($matches[1], 32, 32, 'fit_highest');
+            $settings['favicon_website'] = 'wi.php?id='.$matches[1].'&s=32x32';
         }
     } else {
         $settings['favicon']         = '';

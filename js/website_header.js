@@ -413,14 +413,21 @@ break;
 function save_header(){
 
     if (!$('#save_button', window.parent.document).hasClass('save')) {
-        return;
+        return
+
+
+
     }
 
 
-    settings={
+    var settings={
         'search_top':$('#search_hanger').offset().top,
         'logo_website':  $('#website_logo').attr('src'),
         'logo_top_margin':  $('#website_logo').css('margin-top')
+    }
+
+    if($('#favicon', window.parent.document).attr('src')!='/art/favicon_empty.png'){
+        settings.favicon= $('#favicon', window.parent.document).attr('src')
     }
 
     var header_texts=[]
@@ -754,94 +761,5 @@ function  change_text_style(element,style){
 
 
     $(element).html(style)
-
-}
-
-$(document).on('change', '.image_upload', function (e) {
-
-
-
-    var ajaxData = new FormData();
-
-    //var ajaxData = new FormData( );
-    if (droppedFiles) {
-        $.each(droppedFiles, function (i, file) {
-            ajaxData.append('files', file);
-            return false;
-        });
-    }
-
-
-    $.each($(this).prop("files"), function (i, file) {
-        ajaxData.append("files[" + i + "]", file);
-        return false;
-    });
-
-
-    ajaxData.append("tipo", 'upload_images')
-    ajaxData.append("parent", 'website')
-    ajaxData.append("parent_key", $('#webpage_data').data('website_key'))
-    ajaxData.append("options", JSON.stringify($(this).data('options')))
-    ajaxData.append("response_type", 'website')
-
-    var element = $(this)
-
-    $.ajax({
-        url: "/ar_upload.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-
-
-        complete: function () {
-
-        }, success: function (data) {
-
-
-            console.log(element.attr('name'))
-
-            if (data.state == '200') {
-
-                $('#save_button', window.parent.document).addClass('save button changed valid')
-
-
-                    switch (element.attr('name')){
-                    case 'logo':
-                        $('#website_logo').attr('src',data.image_src);
-
-                    }
-
-
-                //$('#save_button', window.parent.document).addClass('save button changed valid')
-
-            } else if (data.state == '400') {
-                swal({
-                    title: data.title, text: data.msg, confirmButtonText: "{t}OK{/t}"
-                });
-            }
-
-            element.val('')
-
-        }, error: function () {
-
-        }
-    });
-
-
-});
-
-
-function set_logo_position(){
-    var height=$('#header_logo').height()
-    var image_height=$('#header_logo img').height()
-
-
-    if(height>image_height){
-        $('#header_logo img').css('margin-top', 0.5*(height-image_height) + 'px')
-    }else{
-        $('#header_logo img').css('margin-top',   '0px')
-    }
-
-
-
-
-
 
 }

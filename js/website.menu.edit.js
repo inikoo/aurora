@@ -542,7 +542,7 @@ function save_header() {
 var droppedFiles = false;
 
 
-$(document).on('change', '.image_upload', function (e) {
+$(document).on('change', '.image_upload_XXXX', function (e) {
 
 
     var ajaxData = new FormData();

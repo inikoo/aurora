@@ -27,7 +27,8 @@
 
     </style>
 
-<script src="js/website_style.js?v=2"></script>
+<script src="js/website_style.js?v=3"></script>
+<script src="js/edit_webpage_upload_images_from_iframe.js"></script>
 
 
 <body xmlns="http://www.w3.org/1999/html">
@@ -37,15 +38,7 @@
 
     <div id="aux" class="">
 
-        <div style="background-color: #fff;width: 150px;padding:3px 10px;border:1px solid #ccc;border-bottom: none;height: 24px;line-height: 24px">
 
-
-            <input style="display:none" type="file" name="favicon" id="update_image_favicon" class="image_upload" data-options='{ }'/>
-            <label style="cursor: pointer" for="update_image_favicon">
-                <img id="favicon"     style="height: 20px;width: 20px" src="{if empty($settings['favicon'])}art/favicon_empty.png{else}{$settings['favicon']}{/if}">  <span style="position: relative;bottom: 4.5px;margin-left: 5px">Favicon</span>
-            </label>
-
-        </div>
 
         <div id="header_style" class="hide object_control_panel element_for_color element_for_margins" style="padding: 0px;z-index: 5002;">
 
@@ -631,10 +624,8 @@
           <div id="header_logo" style="flex-grow:1;;flex-grow: 0;flex-shrink: 0;flex-grow: 0;flex-shrink: 0; ;text-align: center">
 
 
-                <input style="display:none" type="file" name="logo" id="update_image_logo" class="image_upload" data-options='{ "parent_object_scope":"logo_website"}'/>
-                <label style="cursor: pointer" for="update_image_logo">
-                    <img id="website_logo" style="margin-top:{if isset($settings['logo_top_margin'])}{$settings['logo_top_margin']}{else}0px{/if};max-height: 100%;max-width:  100%;vertical-align: middle;" src="{if empty($settings['logo_website'])}https://via.placeholder.com/60x60{else}{$settings['logo_website']}{/if}"/>
-                </label>
+
+                    <img  style="cursor:not-allowed	;max-height: 100%;max-width:  100%;vertical-align: middle;" src="{if empty($settings['logo_website'])}https://via.placeholder.com/60x60{else}{$settings['logo_website']}{/if}"/>
 
 
             </div>
@@ -1273,6 +1264,23 @@
 
     }
 
+    set_logo_position();
+
+    function set_logo_position(){
+        var height=$('#header_logo').height()
+        var image_height=$('#header_logo img').height()
+
+        console.log(height)
+        console.log(image_height)
+
+        if(height>image_height){
+            $('#header_logo img').css('margin-top', 0.5*(height-image_height) + 'px')
+        }else{
+            $('#header_logo img').css('margin-top',   '0px')
+        }
+
+
+    }
 
 </script>
 

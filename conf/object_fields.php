@@ -373,15 +373,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                 include 'fields/website_localization.fld.php';
 
 
-            } elseif (!empty($options['info_bar'])) {
-                include 'fields/website_info_bar.fld.php';
-
-
-            } elseif (!empty($options['logos'])) {
-                include 'fields/website_logos.fld.php';
-
-
-            } else {
+            }  else {
                 include 'fields/website.fld.php';
             }
 

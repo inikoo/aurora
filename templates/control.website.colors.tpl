@@ -19,7 +19,11 @@
 
     <i class="far hide fa-expand-alt button" onclick="toggle_showcase(this)" ></i>
 
+    <input style="display:none" type="file" name="favicon" id="update_image_favicon" class="image_upload"   data-parent="Website"  data-parent_key="{$website->id}"  data-parent_object_scope="Favicon"  data-metadata=''    data-options=""  data-response_type="website" />
+    <label style="cursor: pointer" for="update_image_favicon">
 
+        <img id="favicon"     style="margin-left:30px;height: 20px;width: 20px;vertical-align:middle" src="{if empty($settings['favicon'])}/art/favicon_empty.png{else}{$settings['favicon']}{/if}">  <span style=";margin-left: 5px;margin-right:30px;">Favicon</span>
+    </label>
 
 
 

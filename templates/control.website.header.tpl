@@ -18,9 +18,17 @@
 
     <i class="far hide fa-expand-alt button" onclick="toggle_showcase(this)"></i>
 
+    <input style="display:none" type="file" name="favicon" id="update_image_favicon" class="image_upload"   data-parent="Website"  data-parent_key="{$website->id}"  data-parent_object_scope="Favicon"  data-metadata=''    data-options=""  data-response_type="website" />
+    <label style="cursor: pointer" for="update_image_favicon">
+
+    <img id="favicon"     style="margin-left:30px;height: 20px;width: 20px;vertical-align:middle" src="{if empty($settings['favicon'])}/art/favicon_empty.png{else}{$settings['favicon']}{/if}">  <span style=";margin-left: 5px;margin-right:30px;">Favicon</span>
+    </label>
+
+
 
     <span onclick="add_header_text()" class="button" style="margin-left: 30px"><i class="fa fa-plus"></i> {t}Text in main header{/t}</span>
     <span onclick="add_search_text()" class="button" style="margin-left: 30px"><i class="fa fa-plus"></i> {t}Text in search area{/t}</span>
+
 
 
     <span id="save_button" class="" style="float:right" onClick="$('#preview')[0].contentWindow.save_header()"><i class="fa fa-cloud  " aria-hidden="true"></i> {t}Save{/t}</span>
@@ -103,7 +111,7 @@
             <td id="" class="label">
 
 
-                <input style="display:none" type="file" name="logo_mobile" id="update_image_logo_mobile" class="image_upload_mobile" data-options='{ "parent_object_scope":"logo_website_mobile"}'/>
+                <input style="display:none" type="file" name="logo_mobile" id="update_image_logo_mobile" class="image_upload" data-options='{ "parent_object_scope":"logo_website_mobile"}'/>
                 <label style="cursor: pointer" for="update_image_logo_mobile">
                     <img id="website_logo_mobile" style="height: 54px" src="{if !empty($mobile_style_values['header_background_image'])}{$mobile_style_values['header_background_image']}{else}/EcomB2b/art/nopic.png{/if}"/>
                 </label>
@@ -162,7 +170,7 @@
 
     droppedFiles = false;
 
-    $(document).on('change', '.image_upload_mobile', function (e) {
+    $(document).on('change', '.image_upload_mobile_XXXXX', function (e) {
 
 
 
