@@ -1830,16 +1830,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
-                case ('campaigns'):
-                    return get_campaigns_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
-                case ('deals'):
-                    return get_deals_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
+
+
                 case ('campaign'):
                 case ('campaign_order_recursion'):
                 case ('vouchers'):

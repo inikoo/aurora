@@ -91,7 +91,7 @@ switch ($parameters['parent']) {
 
 
         if($category->get('Category Scope')=='Product'){
-            
+
             $where = sprintf(" where P.`Product Type`='Product' and`Subject`='Product' and  `Category Key`=%d", $parameters['parent_key']);
             $table = ' `Category Bridge` left join  `Product Dimension` P on (`Subject Key`=`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`)  left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`)  left join `Store Dimension` S on (`Product Store Key`=`Store Key`)';
 

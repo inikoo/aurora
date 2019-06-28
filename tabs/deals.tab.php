@@ -57,4 +57,4 @@ $smarty->assign('view_position', ' <span onclick=\"change_view(\'stores\')\">'._
 include 'utils/get_table_html.php';
 
 
-?>
+
