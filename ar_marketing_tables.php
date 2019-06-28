@@ -112,7 +112,7 @@ function marketing_server($_data, $db, $user) {
 
                 'code'      => sprintf('<span class="link" onClick="change_view(\'marketing/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
                 'name'      => $data['Store Name'],
-                'campaigns' => sprintf('<span class="link" onClick="change_view(\'campaigns/%d\')">%s</span>', $data['Store Key'], $data['campaigns']),
+                'campaigns' => sprintf('<span class="link" >%s</span>',  $data['campaigns']),
                 'deals'     => sprintf('<span class="link" onClick="change_view(\'deals/%d\')">%s</span>', $data['Store Key'], $data['deals']),
             );
 
@@ -178,6 +178,7 @@ function deals($_data, $db, $user) {
                     $status = $data['Deal Status'];
             }
 
+            /*
             $duration = '';
             if ($data['Deal Expiration Date'] == '' and $data['Deal Begin Date'] == '') {
                 $duration = _('Permanent');
@@ -200,7 +201,7 @@ function deals($_data, $db, $user) {
                 }
 
             }
-
+*/
             if ($data['Deal Expiration Date'] != '') {
                 $to = strftime(
                     "%x", strtotime($data['Deal Expiration Date']." +00:00")
