@@ -99,14 +99,13 @@ switch ($state['_object']->get('Code')) {
         );
 
         $smarty->assign(
-            'table_metadata',
-            json_encode(
-                array(
-                    'parent'     => $state['object'],
-                    'parent_key' => $state['key'],
-                    'field'      => 'target'
-                )
-            )
+            'table_metadata', json_encode(
+                                array(
+                                    'parent'     => $state['object'],
+                                    'parent_key' => $state['key'],
+                                    'field'      => 'target'
+                                )
+                            )
 
         );
 
@@ -149,7 +148,8 @@ switch ($state['_object']->get('Code')) {
         $table_buttons[] = array(
             'icon'      => 'plus',
             'title'     => _('New offer'),
-            'reference' => "campaigns/".$state['parent_key']."/".$state['key']."/deal/new"
+            'reference' => "offers/".$state['parent_key']."/".strtolower($state['_object']->get('Code'))."/new"
+
         );
         $smarty->assign('table_buttons', $table_buttons);
 }

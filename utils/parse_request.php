@@ -3044,7 +3044,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 }
 
-                            } elseif ($view_path[1] == 'vl' or $view_path[1] == 'vl' or $view_path[1] == 'so' or $view_path[1] == 'fo' or $view_path[1] == 'ca' or $view_path[1] == 'cu') {
+                            } elseif ($view_path[1] == 'vl'  or $view_path[1] == 'so' or $view_path[1] == 'fo' or $view_path[1] == 'ca' or $view_path[1] == 'cu') {
 
                                 $section = 'campaign';
 
@@ -3052,7 +3052,18 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 $key    = $view_path[1];
 
                                 if (isset($view_path[2])) {
-                                    if ($view_path[2] == 'new') {
+
+
+                                    if(is_numeric($view_path[2])){
+
+                                        $parent     = 'campaign';
+                                        $parent_key = $view_path[1];
+                                        $extra      = $view_path[0];
+                                        $object     = 'deal';
+                                        $key        = $view_path[2];
+                                        $section    = 'deal';
+
+                                    }elseif ($view_path[2] == 'new') {
 
                                         $parent     = 'campaign';
                                         $parent_key = $view_path[1];
@@ -3063,6 +3074,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                                     }
+
 
                                 }
 

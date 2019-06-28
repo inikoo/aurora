@@ -147,6 +147,14 @@ function deals($_data, $db, $user) {
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
+
+
+    if($_data['parameters']['parent']=='campaign'){
+        $parent=get_object('DEalCampaign',$_data['parameters']['parent_key']);
+    }
+
+
+
     // print $sql;
 
     if ($result = $db->query($sql)) {
@@ -237,9 +245,13 @@ function deals($_data, $db, $user) {
             } elseif ($_data['parameters']['parent'] == 'store') {
                 $name = sprintf('<span class="link" onClick="change_view(\'deals/%d/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Key'], $data['Deal Name']);
 
-            } else {
-                $name = sprintf('<span class="link" onClick="change_view(\'campaigns/%d/%d/deal/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Campaign Key'], $data['Deal Key'], $data['Deal Name']);
+            }elseif ($_data['parameters']['parent'] == 'campaign') {
+                $name = sprintf('<span class="link" onClick="change_view(\'offers/%d/%s/%d\')">%s</span>', $data['Deal Store Key'], strtolower($parent->get('Code')),$data['Deal Key'], $data['Deal Name']);
 
+            } else {
+               // $name = sprintf('<span class="link" onClick="change_view(\'campaigns/%d/%d/deal/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Campaign Key'], $data['Deal Key'], $data['Deal Name']);
+
+                $name=$data['Deal Name'];
             }
 
 
@@ -706,11 +718,15 @@ function campaign_bulk_deals($_data, $db, $user) {
                 $data['Deal Component Allowance Label'], strip_tags($data['Deal Term Label'].' '.$data['Deal Component Allowance Label']), $data['Deal Term Allowances Label']
             );
 
+            $name = sprintf('<span class="link" onClick="change_view(\'offers/%d/%s/%d\')">%s</span>', $data['Deal Store Key'], 'vl',$data['Deal Key'], $data['Deal Name']);
+
+
+
 
             $adata[] = array(
                 'id'          => (integer)$data['Deal Key'],
                 'status'      => $status,
-                'name'        => sprintf('<span class="link" onClick="change_view(\'campaigns/%d/%d/deal/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Campaign Key'], $data['Deal Key'], $data['Deal Name']),
+                'name'        => $name,
                 'target'      => sprintf('<span class="link" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Component Allowance Target Key'], $data['Deal Component Allowance Target Label']),
                 'description' => $description,
 
