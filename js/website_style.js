@@ -3,7 +3,6 @@
  Copyright (c) 2018, Inikoo
  Version 3.0*/
 
-droppedFiles = false;
 
 $(function () {
 
@@ -688,15 +687,11 @@ function save_styles(){
     $('#save_button', window.parent.document).find('i').addClass('fa-spinner fa-spin')
 
 
-    settings={
-        'header_title':$('#header_title').html(),
-        'logo_website':  $('#website_logo').attr('src'),
+    var settings={
+        }
 
-
-    }
-
-    if($('#favicon').attr('src')!='art/favicon_empty.png'){
-        settings.favicon= $('#favicon').attr('src')
+    if($('#favicon', window.parent.document).attr('src')!='/art/favicon_empty.png'){
+        settings.favicon= $('#favicon', window.parent.document).attr('src')
     }
 
 
@@ -735,80 +730,4 @@ function save_styles(){
 
 
 }
-
-
-
-$(document).on('change', '.image_upload', function (e) {
-
-
-
-    var ajaxData = new FormData();
-
-    //var ajaxData = new FormData( );
-    if (droppedFiles) {
-        $.each(droppedFiles, function (i, file) {
-            ajaxData.append('files', file);
-            return false;
-        });
-    }
-
-
-    $.each($(this).prop("files"), function (i, file) {
-        ajaxData.append("files[" + i + "]", file);
-        return false;
-    });
-
-
-    ajaxData.append("tipo", 'upload_images')
-    ajaxData.append("parent", 'website')
-    ajaxData.append("parent_key", $('#webpage_data').data('website_key'))
-    ajaxData.append("options", JSON.stringify($(this).data('options')))
-    ajaxData.append("response_type", 'website')
-
-    var element = $(this)
-
-    $.ajax({
-        url: "/ar_upload.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-
-
-        complete: function () {
-
-        }, success: function (data) {
-
-
-            console.log(element.attr('name'))
-
-            if (data.state == '200') {
-
-                $('#save_button', window.parent.document).addClass('save button changed valid')
-
-
-                    switch (element.attr('name')){
-                    case 'logo':
-                        $('#website_logo').attr('src',data.image_src);
-                        break;
-                        case 'favicon':
-                            $('#favicon').attr('src',data.image_src);
-                            break;
-                    }
-
-
-                //$('#save_button', window.parent.document).addClass('save button changed valid')
-
-            } else if (data.state == '400') {
-                swal({
-                    title: data.title, text: data.msg, confirmButtonText: "{t}OK{/t}"
-                });
-            }
-
-            element.val('')
-
-        }, error: function () {
-
-        }
-    });
-
-
-});
-
 

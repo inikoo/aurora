@@ -67,10 +67,7 @@ $smarty->assign('content', $webpage->get('Content Data'));
 
 
 $settings=$website->settings;
-
-
 $smarty->assign('settings',$settings);
-
 
 
 
@@ -83,4 +80,4 @@ if (file_exists('templates/'.$template)) {
     printf("template %s not found",$template);
 }
 
-?>
+

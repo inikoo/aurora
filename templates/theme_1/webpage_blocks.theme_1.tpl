@@ -2122,8 +2122,8 @@
 
 
 
-
-    $(document).on('change', '.image_upload', function (e) {
+//delete this
+    $(document).on('change', '.image_upload_XXXXX', function (e) {
 
 
         var ajaxData = new FormData();
@@ -2148,7 +2148,6 @@
         ajaxData.append("parent_key", '{$webpage->id}')
         ajaxData.append("parent_object_scope", JSON.stringify($(this).data('scope')))
         ajaxData.append("metadata", JSON.stringify($(this).data('metadata')))
-
         ajaxData.append("options", JSON.stringify($(this).data('options')))
         ajaxData.append("response_type", 'webpage')
 
@@ -2180,8 +2179,6 @@
 
                         //$('#image_control_panel').attr('img_src',data.image_src)
                         var img_element = $('#image_control_panel').find('.image_upload').data('img')
-
-
                         $(img_element).attr('src', data.image_src);
 
 
@@ -2201,9 +2198,6 @@
 
                     }else if(element.attr('name') =='category_categories_category'){
                         var img_element = element.closest('.category_wrap').find('.wrap_to_center img')
-
-                        console.log(img_element)
-
                         $(img_element).attr('src', data.image_src);
                         $(img_element).data('src', data.image_src);
 
@@ -2213,7 +2207,6 @@
                         //$('#image_control_panel').attr('img_src',data.image_src)
                         var img_element = $('#image_control_panel').find('.image_upload').data('img')
 
-                        console.log(img_element)
 
                         $(img_element).resizable('destroy')
                         $(img_element).closest('.blackboard_image').draggable('destroy')

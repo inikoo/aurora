@@ -83,7 +83,8 @@
 
     </style>
 
-<script src="js/website_header.js?v=2"></script>
+<script src="js/website_header.js?v=3"></script>
+<script src="js/edit_webpage_upload_images_from_iframe.js"></script>
 
 
 <body xmlns="http://www.w3.org/1999/html">
@@ -125,20 +126,19 @@
 
 
 
-
     <div class="site_wrapper ">
 
 
         <span id="webpage_data" style="display:none" data-website_key="{$website->id}"
-
                 {foreach from=$website->style  item=style  }
                     {$style[0]}{ {$style[1]}: {$style[2]}}
                 {/foreach}
-
-
-
-
         ></span>
+
+
+
+
+
 
         <div id="top_header" style="width: 100%; display: flex;"  >
 
@@ -151,7 +151,8 @@
             <div id="header_logo" style="flex-grow:1;;flex-grow: 0;flex-shrink: 0; border-right:1px dashed #ccc;flex-grow: 0;flex-shrink: 0; ;text-align: center">
 
 
-                <input style="display:none" type="file" name="logo" id="update_image_logo" class="image_upload" data-options='{ "parent_object_scope":"logo_website"}'/>
+                <input style="display:none" type="file" name="logo" id="update_image_logo" class="image_upload_from_iframe"   data-parent="Website"  data-parent_key="{$website->id}"  data-parent_object_scope="Logo"  data-metadata=""  data-options=""  data-response_type="website" />
+
                 <label style="cursor: pointer" for="update_image_logo">
                     <img id="website_logo" style="max-height: 100%;max-width:  100%;vertical-align: middle;" src="{if empty($settings['logo_website'])}http://via.placeholder.com/60x60{else}{$settings['logo_website']}{/if}"/>
                 </label>
@@ -413,6 +414,20 @@
     {foreach from=$website->style  item=style  }
             "{$style[0]} {$style[1]}":['{$style[0]}','{$style[1]}','{$style[2]}'],
     {/foreach}
+
+    }
+
+    function set_logo_position(){
+        var height=$('#header_logo').height()
+        var image_height=$('#header_logo img').height()
+
+
+        if(height>image_height){
+            $('#header_logo img').css('margin-top', 0.5*(height-image_height) + 'px')
+        }else{
+            $('#header_logo img').css('margin-top',   '0px')
+        }
+
 
     }
 

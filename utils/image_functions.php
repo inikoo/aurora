@@ -15,6 +15,11 @@ function get_image_size($image_key, $width, $height, $mode = '') {
 
     $image = get_object('Image', $image_key);
 
+    if(!$image->id){
+        return ceil($width).'x'.ceil($height);
+    }
+
+
     switch ($mode) {
         case 'fit_highest':
             $ratio = $image->get('Image Width') / $image->get('Image Height');
