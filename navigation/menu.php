@@ -54,12 +54,7 @@ if ($user->can_view('customers')) {
     }
 
 
-    /*
-    $sections=get_sections('customers', $data['parent_key']);
-    foreach ($sections as $key=>$section ) {
-        $nav_menu[] = array('<i class="button far fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
-    }
-    */
+
 }
 
 if ($user->can_view('stores')) {
@@ -83,8 +78,6 @@ if ($user->can_view('stores')) {
             'module',
             ''
         );
-
-
     }
 
 
@@ -97,16 +90,9 @@ if ($user->can_view('stores')) {
         ''
     );
 
-    /*
-    $sections=get_sections('products', $data['parent_key']);
-    foreach ($sections as $key=>$section ) {
-        $nav_menu[] = array('<i class="button far fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
-    }
-*/
 
 
 }
-
 
 
 if ($user->can_view('orders')) {
@@ -130,12 +116,7 @@ if ($user->can_view('orders')) {
             ''
         );
     }
-    /*
-    $sections=get_sections('orders', $data['parent_key']);
-    foreach ($sections as $key=>$section ) {
-        $nav_menu[] = array('<i class="button far fa-'.$section['icon'].' fa-fw"></i>',$section['label'], $section['reference'], $key, 'section', '');
-    }
-*/
+
 
 
     $nav_menu[] = array(
@@ -147,7 +128,7 @@ if ($user->can_view('orders')) {
         ''
     );
 
-
+}
 
 
 if ($user->can_view('locations')) {
@@ -166,16 +147,19 @@ if ($user->can_view('locations')) {
     } elseif ($account->get('Account Warehouses') == 1) {
 
 
-        $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`="Active" ');
+        $sql = 'SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`=?';
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array('Active')
+        );
+        if ($row = $stmt->fetch()) {
+            $warehouse_key = $row['Warehouse Key'];
+        }
 
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
                 $warehouse_key = $row['Warehouse Key'];
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $nav_menu[] = array(
@@ -244,27 +228,29 @@ if ($user->can_view('production') and $account->get('Account Manufacturers') > 0
     } elseif ($account->get('Account Manufacturers') == 1) {
 
 
-        $sql = sprintf('SELECT `Supplier Production Supplier Key` FROM `Supplier Production Dimension` left join `Supplier Dimension` on (`Supplier Key`=`Supplier Production Supplier Key`) WHERE `Supplier Type`!="Archived"  ');
+        $sql = 'SELECT `Supplier Production Supplier Key` FROM `Supplier Production Dimension` left join `Supplier Dimension` on (`Supplier Key`=`Supplier Production Supplier Key`) WHERE `Supplier Type`!=?';
 
-        if ($result = $db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $manufacturer_key = $row['Supplier Production Supplier Key'];
-            }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            print "$sql\n";
-            exit;
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array('Archived')
+        );
+        if ($row = $stmt->fetch()) {
+            $manufacturer_key = $row['Supplier Production Supplier Key'];
+
+            $nav_menu[] = array(
+                '<i class="button far fa-industry fa-fw"></i>',
+                _('Production'),
+                'production/'.$manufacturer_key,
+                'production',
+                'module',
+                ''
+            );
+
         }
 
 
-        $nav_menu[] = array(
-            '<i class="button far fa-industry fa-fw"></i>',
-            _('Production'),
-            'production/'.$manufacturer_key,
-            'production',
-            'module',
-            ''
-        );
+
+
     } else {
         $nav_menu[] = array(
             '<i class="button far fa-industry fa-fw"></i>',
@@ -487,11 +473,8 @@ if ($data['object'] == 'order') {
 
 $smarty->assign('current_item', $current_item);
 $smarty->assign('current_section', $current_section);
-
-
 $smarty->assign('nav_menu', $nav_menu);
 
 $html = $smarty->fetch('menu.tpl');
 
 
-?>
