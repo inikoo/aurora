@@ -162,12 +162,6 @@ $(document).on('change', '.image_upload_from_iframe', function (e) {
                         break;
                 }
 
-
-
-
-
-
-
                 $('#save_button', window.parent.document).addClass('save button changed valid')
 
             } else if (data.state == '400') {
