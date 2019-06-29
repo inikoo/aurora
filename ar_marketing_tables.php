@@ -112,7 +112,7 @@ function marketing_server($_data, $db, $user) {
 
                 'code'      => sprintf('<span class="link" onClick="change_view(\'marketing/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
                 'name'      => $data['Store Name'],
-                'campaigns' => sprintf('<span class="link" onClick="change_view(\'campaigns/%d\')">%s</span>', $data['Store Key'], $data['campaigns']),
+                'campaigns' => sprintf('<span class="link" >%s</span>',  $data['campaigns']),
                 'deals'     => sprintf('<span class="link" onClick="change_view(\'deals/%d\')">%s</span>', $data['Store Key'], $data['deals']),
             );
 
@@ -147,6 +147,14 @@ function deals($_data, $db, $user) {
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
+
+
+    if($_data['parameters']['parent']=='campaign'){
+        $parent=get_object('DEalCampaign',$_data['parameters']['parent_key']);
+    }
+
+
+
     // print $sql;
 
     if ($result = $db->query($sql)) {
@@ -178,6 +186,7 @@ function deals($_data, $db, $user) {
                     $status = $data['Deal Status'];
             }
 
+            /*
             $duration = '';
             if ($data['Deal Expiration Date'] == '' and $data['Deal Begin Date'] == '') {
                 $duration = _('Permanent');
@@ -200,7 +209,7 @@ function deals($_data, $db, $user) {
                 }
 
             }
-
+*/
             if ($data['Deal Expiration Date'] != '') {
                 $to = strftime(
                     "%x", strtotime($data['Deal Expiration Date']." +00:00")
@@ -236,9 +245,12 @@ function deals($_data, $db, $user) {
             } elseif ($_data['parameters']['parent'] == 'store') {
                 $name = sprintf('<span class="link" onClick="change_view(\'deals/%d/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Key'], $data['Deal Name']);
 
-            } else {
-                $name = sprintf('<span class="link" onClick="change_view(\'campaigns/%d/%d/deal/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Campaign Key'], $data['Deal Key'], $data['Deal Name']);
+            }elseif ($_data['parameters']['parent'] == 'campaign') {
+                $name = sprintf('<span class="link" onClick="change_view(\'offers/%d/%s/%d\')">%s</span>', $data['Deal Store Key'], strtolower($parent->get('Code')),$data['Deal Key'], $data['Deal Name']);
 
+            } else {
+
+                $name=$data['Deal Name'];
             }
 
 
@@ -705,11 +717,15 @@ function campaign_bulk_deals($_data, $db, $user) {
                 $data['Deal Component Allowance Label'], strip_tags($data['Deal Term Label'].' '.$data['Deal Component Allowance Label']), $data['Deal Term Allowances Label']
             );
 
+            $name = sprintf('<span class="link" onClick="change_view(\'offers/%d/%s/%d\')">%s</span>', $data['Deal Store Key'], 'vl',$data['Deal Key'], $data['Deal Name']);
+
+
+
 
             $adata[] = array(
                 'id'          => (integer)$data['Deal Key'],
                 'status'      => $status,
-                'name'        => sprintf('<span class="link" onClick="change_view(\'campaigns/%d/%d/deal/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Campaign Key'], $data['Deal Key'], $data['Deal Name']),
+                'name'        => $name,
                 'target'      => sprintf('<span class="link" onClick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Component Allowance Target Key'], $data['Deal Component Allowance Target Label']),
                 'description' => $description,
 
@@ -1266,28 +1282,7 @@ function vouchers($_data, $db, $user) {
                     $status = $data['Deal Status'];
             }
 
-            $duration = '';
-            if ($data['Deal Expiration Date'] == '' and $data['Deal Begin Date'] == '') {
-                $duration = _('Permanent');
-            } else {
 
-                if ($data['Deal Begin Date'] != '') {
-                    $duration = strftime(
-                        "%x", strtotime($data['Deal Begin Date']." +00:00")
-                    );
-
-                }
-                $duration .= ' - ';
-                if ($data['Deal Expiration Date'] != '') {
-                    $duration .= strftime(
-                        "%x", strtotime($data['Deal Expiration Date']." +00:00")
-                    );
-
-                } else {
-                    $duration .= _('Present');
-                }
-
-            }
 
             if ($data['Deal Expiration Date'] != '') {
                 $to = strftime(
@@ -1325,7 +1320,7 @@ function vouchers($_data, $db, $user) {
                 $name = sprintf('<span class="link" onClick="change_view(\'deals/%d/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Key'], $data['Deal Name']);
 
             } else {
-                $name = sprintf('<span class="link" onClick="change_view(\'campaigns/%d/%d/deal/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Campaign Key'], $data['Deal Key'], $data['Deal Name']);
+                $name = sprintf('<span class="link" onClick="change_view(\'offers/%d/%s/%d\')">%s</span>', $data['Deal Store Key'], 'vo',$data['Deal Key'], $data['Deal Name']);
 
             }
 

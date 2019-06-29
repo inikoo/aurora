@@ -13,7 +13,7 @@
 switch ($parameters['parent']) {
     case('store'):
         $where = sprintf(
-            ' where  `Deal Store Key`=%d  and D.`Deal Campaign Key` is NULL ', $parameters['parent_key']
+            ' where  `Deal Store Key`=%d   ', $parameters['parent_key']
         );
         break;
     case('campaign'):

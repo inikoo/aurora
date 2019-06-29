@@ -652,7 +652,7 @@ function get_deals_element_numbers($db, $data, $user) {
     switch ($data['parent']) {
         case 'store':
             $where = sprintf(
-                ' where `Deal Store Key`=%d and D.`Deal Campaign Key` is NULL ', $data['parent_key']
+                ' where `Deal Store Key`=%d ', $data['parent_key']
             );
             break;
         case 'campaign':

@@ -11,9 +11,6 @@ require_once 'class.Product.php';
 require_once 'class.Part.php';
 
 
-$db_drop = new PDO("mysql:host=$dns_host;dbname=drop;charset=utf8", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';"));
-$db_drop->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
 
 $counter=0;
 
@@ -30,13 +27,13 @@ $editor       = array(
 
 
 );
-$store_old_ds = new Store('code', 'DS');
+
 $store_new_ds = new Store('code', 'AWD');
-$store_aw     = new Store('code', 'UK');
+$store_aw     = new Store('code', 'EU');
 
 $new_ds_website=get_object('Website',$store_new_ds->get('Store Website Key'));
 $new_ds_website->editor=$editor;
-$fam_root = get_object('Category', 30960);
+$fam_root = get_object('Category', 5646); // new DS Families cat
 $fam_root->editor=$editor;
 
 $sql = sprintf(
@@ -44,7 +41,7 @@ $sql = sprintf(
     $store_aw->get('Store Department Category Key')
 );
 
-$cat = get_object('Category', 30961);
+$cat = get_object('Category', 5647); // new DS Departments cat
 $cat->editor=$editor;
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {

@@ -3040,7 +3040,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 }
 
-                            } elseif ($view_path[1] == 'vl' or $view_path[1] == 'vl' or $view_path[1] == 'so' or $view_path[1] == 'fo' or $view_path[1] == 'ca' or $view_path[1] == 'cu') {
+                            } elseif ($view_path[1] == 'vl'  or $view_path[1] == 'so' or $view_path[1] == 'fo' or $view_path[1] == 'ca' or $view_path[1] == 'cu') {
 
                                 $section = 'campaign';
 
@@ -3048,7 +3048,18 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 $key    = $view_path[1];
 
                                 if (isset($view_path[2])) {
-                                    if ($view_path[2] == 'new') {
+
+
+                                    if(is_numeric($view_path[2])){
+
+                                        $parent     = 'campaign';
+                                        $parent_key = $view_path[1];
+                                        $extra      = $view_path[0];
+                                        $object     = 'deal';
+                                        $key        = $view_path[2];
+                                        $section    = 'deal';
+
+                                    }elseif ($view_path[2] == 'new') {
 
                                         $parent     = 'campaign';
                                         $parent_key = $view_path[1];
@@ -3059,6 +3070,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                                     }
+
 
                                 }
 
@@ -3078,24 +3090,31 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                 break;
             case 'marketing':
+
+
+
+
                 if (!$user->can_view('marketing')) {
                     $module  = 'utils';
                     $section = 'forbidden';
                     break;
                 }
 
-                $module = 'products';
+
 
 
                 if (isset($view_path[0])) {
                     if (is_numeric($view_path[0])) {
 
-                        $parent     = 'store';
-                        $parent_key = $view_path[0];
 
                         if (isset($view_path[1])) {
-                            if ($view_path[1] == 'emails') {
 
+                            $parent     = 'store';
+                            $parent_key = $view_path[0];
+
+
+                            if ($view_path[1] == 'emails') {
+                                $module = 'products';
                                 $section = 'marketing';
                                 if (isset($view_path[2])) {
                                     if (is_numeric($view_path[2])) {
@@ -3163,80 +3182,15 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
 
-                    } elseif ($view_path[0] == 'all') {
-                        $module  = 'marketing_server';
-                        $section = 'marketing';
                     }
 
                 }
 
 
+
+
                 break;
-            case 'campaigns':
-                $module = 'products';
 
-                if (isset($view_path[0])) {
-                    $section = 'marketing';
-
-
-                    $parent     = 'store';
-                    $parent_key = $view_path[0];
-
-
-                    if (isset($view_path[1])) {
-
-                        if (is_numeric($view_path[1])) {
-
-                            $key = $view_path[1];
-
-
-                            $object = 'campaign';
-                            $store  = get_object('store', $parent_key);
-
-                            if ($store->get('Store Order Recursion Campaign Key') == $key) {
-                                $section = 'campaign_order_recursion';
-
-                            } else {
-                                $section = 'campaign';
-
-                            }
-
-
-                            if (isset($view_path[2])) {
-                                if ($view_path[2] == 'deal') {
-                                    $section    = 'deal';
-                                    $object     = 'deal';
-                                    $parent     = 'campaign';
-                                    $parent_key = $view_path[1];
-                                    if (isset($view_path[3])) {
-                                        if (is_numeric($view_path[3])) {
-                                            $key = $view_path[3];
-                                        } elseif ($view_path[3] == 'new') {
-
-
-                                            $key     = 0;
-                                            $section = 'deal.new';
-
-                                        }
-
-                                    }
-                                }
-
-
-                            }
-
-
-                        } elseif ($view_path[1] == 'new') {
-                            $object  = 'campaign';
-                            $section = 'campaign.new';
-                        }
-
-
-                    }
-
-
-                }
-                break;
             case 'deals':
                 $module = 'products';
 
@@ -3265,46 +3219,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                 break;
-            case 'campaign':
-                $module = 'products';
 
-
-                if (isset($view_path[0])) {
-                    $section = 'campaigns';
-
-
-                    $parent = 'store';
-                    $key    = $view_path[0];
-
-
-                    if (isset($view_path[1])) {
-
-
-                        if ($view_path[1] == 'order') {
-                            $object     = 'order';
-                            $section    = 'order';
-                            $parent     = 'campaign';
-                            $parent_key = $key;
-                            if (isset($view_path[2])) {
-                                $key = $view_path[2];
-                            }
-
-                        } elseif ($view_path[1] == 'customer') {
-                            $object     = 'customer';
-                            $section    = 'customer';
-                            $parent     = 'campaign';
-                            $parent_key = $key;
-                            if (isset($view_path[2])) {
-                                $key = $view_path[2];
-                            }
-
-                        }
-
-
-                    }
-
-                }
-                break;
             case 'deal':
                 $module = 'products';
 
