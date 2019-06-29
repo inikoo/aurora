@@ -81,6 +81,9 @@
         color:#555
     }
 
+    input.edit_margin{
+        width:100px}
+
     </style>
 
 <script src="js/website_header.js?v=3"></script>
@@ -151,7 +154,8 @@
             <div id="header_logo" style="flex-grow:1;;flex-grow: 0;flex-shrink: 0; border-right:1px dashed #ccc;flex-grow: 0;flex-shrink: 0; ;text-align: center">
 
 
-                <input style="display:none" type="file" name="logo" id="update_image_logo" class="image_upload_from_iframe"   data-parent="Website"  data-parent_key="{$website->id}"  data-parent_object_scope="Logo"  data-metadata=""  data-options=""  data-response_type="website" />
+                <input style="display:none" type="file" name="logo" id="update_image_logo" class="image_upload_from_iframe"
+                       data-parent="Website"  data-parent_key="{$website->id}"  data-parent_object_scope="Logo"  data-metadata=""  data-options=""  data-response_type="website" />
 
                 <label style="cursor: pointer" for="update_image_logo">
                     <img id="website_logo" style="max-height: 100%;max-width:  100%;vertical-align: middle;" src="{if empty($settings['logo_website'])}http://via.placeholder.com/60x60{else}{$settings['logo_website']}{/if}"/>
@@ -206,7 +210,7 @@
             <div id="search_header" style="padding-top:5px;flex-grow:1;text-align: right;;flex-grow: 0;flex-shrink: 0; flex-basis:350px;position: relative" oncxlick="open_header_style()" class="xsearch_container ">
 
 
-                <div id="search_hanger" style="position: absolute;left:10px;top:{if isset($settings.search_top)}{$settings.search_top}{else}0{/if}px"><input/> <i class="button fa fa-search"></i></div>
+                <div id="search_hanger" style="position: absolute;left:10px;top:{if isset($settings.search_top)}{$settings.search_top}{else}0{/if}px"><input /> <i class="button fa fa-search"></i></div>
 
                 {if isset($settings.search_texts)}
                     {foreach from=$settings.search_texts key=key item=header_text}

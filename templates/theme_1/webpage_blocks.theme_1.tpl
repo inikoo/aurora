@@ -465,7 +465,11 @@
             <tr>
                 <td class="label">{t}Image{/t}</td>
                 <td class="image_control_panel_upload_td">
-                    <input style="display:none" type="file" name="images" id="update_images_block_image" class="image_upload" />
+                    <input style="display:none" type="file" name="images" id="update_images_block_image" class="image_upload_from_iframe"
+
+                           data-parent="Webpage" data-parent_key="{$webpage->id}" data-parent_object_scope="Image" data-metadata='{ "block":"button"}'  data-options='{ "min_width":"1240","min_height":"750"}'  data-response_type="webpage"
+
+                    />
                     <label style="font-weight: normal;cursor: pointer;width:100%"  for="update_images_block_image">
                         {t}Upload image{/t} <span class="image_size"></span> <i class="hide fa fa-check success" aria-hidden="true"></i>
                     </label>

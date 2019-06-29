@@ -123,7 +123,6 @@
     {if $website->get('Website Text Font')!=''  and $logged_in}
         <link href="https://fonts.googleapis.com/css?family={$website->get('Website Text Font')}:400,700" rel="stylesheet">
     {/if}
-
     <style>
 
 

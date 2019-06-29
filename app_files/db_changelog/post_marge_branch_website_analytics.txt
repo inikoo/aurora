@@ -5,6 +5,9 @@ raul@geko:~/au/img$ sudo chmod g+s cache/
 raul@geko:~/au/img$ sudo chmod g-w */index.html
 
 
+ALTER TABLE ``Image Subject Bridge` DROP INDEX `unique`, ADD UNIQUE `unique` (`Image Subject Object`, `Image Subject Object Key`, `Image Subject Image Key`, `Image Subject Object Image Scope`) USING BTREE;
+
+
 
 ALTER TABLE `Image Dimension` ADD `Image MIME Type` ENUM('image/jpeg', 'image/png','image/gif','image/x-icon') NULL DEFAULT NULL AFTER `Image Key`, ADD INDEX (`Image MIME Type`);
 

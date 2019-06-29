@@ -26,8 +26,8 @@
 
             <div class="one_half">
 
-                <input style="display:none" type="file" block_key="{$key}" name="{$data.type}" id="update_image_{$key}" class="image_upload"
-                       data-parent="Webpage"  data-parent_key="{$webpage->id}"  data-parent_object_scope="Image"  data-metadata='{ "block":"two_pack"}'   data-options='{ }' data-response_type="webpage" />
+                <input style="display:none" type="file" block_key="{$key}" name="{$data.type}" id="update_image_{$key}" class="image_upload_from_iframe"
+                       data-parent="Webpage"  data-parent_key="{$webpage->id}"  data-parent_object_scope="Image"  data-metadata='{ "block":"two_pack"}'   data-options='' data-response_type="webpage" />
                 <label style="margin-left:10px;font-weight: normal;cursor: pointer;width:100%"  for="update_image_{$key}">
                     <img   class="button _image rimg" image_key="{$data._image_key}"  src="{if $data._image!=''}{$data._image}{else}/art/image_562x280.png{/if}" alt="" >
                 </label>

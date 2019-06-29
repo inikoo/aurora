@@ -271,7 +271,7 @@
             <td  class="label" style="padding-top: 5px;">
 
 
-                <input style="display:none" type="file" name="left_menu_background" id="update_image_left_menu_background_mobile" class="image_upload" data-scope="left_menu_background_mobile" data-options='{ }'/>
+                <input style="display:none" type="file" name="left_menu_background" id="update_image_left_menu_background_mobile" class="image_upload"  data-parent="Website" data-parent_key="{$website->id}" data-parent_object_scope="Mobile Left Flap Background" data-metadata=""  data-options=""  data-response_type="website"  />
                 <label style="cursor: pointer" for="update_image_left_menu_background_mobile">
                     <img id="website_left_menu_background_mobile" style="height: 120px" src="{if !empty($mobile_style_values['left_menu_background'])}{$mobile_style_values['left_menu_background']}{else}/EcomB2b/art/nopic.png{/if}"/>
                 </label>
@@ -294,7 +294,7 @@
             <td  class="label">
 
 
-                <input style="display:none" type="file" name="left_menu_logo_mobile" id="update_image_logo_mobile" class="image_upload" data-scope="logo_website_mobile"  data-options='{ }'/>
+                <input style="display:none" type="file" name="left_menu_logo_mobile" id="update_image_logo_mobile" class="image_upload" data-parent="Website" data-parent_key="{$website->id}" data-parent_object_scope="Mobile Left Flap Logo " data-metadata=""  data-options=""  data-response_type="website" />
                 <label style="cursor: pointer" for="update_image_logo_mobile">
                     <img id="left_menu_logo_mobile" style="height: 54px" src="{if !empty($mobile_style_values['left_menu_logo'])}{$mobile_style_values['left_menu_logo']}{else}/EcomB2b/art/nopic.png{/if}"/>
                 </label>
@@ -376,96 +376,6 @@
 
 
     }
-
-
-    droppedFiles = false;
-
-    $(document).on('change', '.image_upload_mobile_XXXXX', function (e) {
-
-
-
-        var ajaxData = new FormData();
-
-        //var ajaxData = new FormData( );
-        if (droppedFiles) {
-            $.each(droppedFiles, function (i, file) {
-                ajaxData.append('files', file);
-                return false;
-            });
-        }
-
-
-        $.each($(this).prop("files"), function (i, file) {
-            ajaxData.append("files[" + i + "]", file);
-            return false;
-        });
-
-
-        ajaxData.append("tipo", 'upload_images')
-        ajaxData.append("parent", 'website')
-        ajaxData.append("parent_key", $('#main_settings').data('website_key'))
-        ajaxData.append("options", JSON.stringify($(this).data('options')))
-        ajaxData.append("response_type", 'website')
-
-        var element = $(this)
-
-        $.ajax({
-            url: "/ar_upload.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-
-
-            complete: function () {
-
-            }, success: function (data) {
-
-
-                console.log(element.attr('name'))
-
-                if (data.state == '200') {
-
-                    $('#save_button_mobile').addClass('save button changed valid')
-
-
-                    switch (element.attr('name')){
-                        case 'left_menu_background':
-                            $('#website_left_menu_background_mobile').attr('src',data.image_src);
-
-                            $('#preview_mobile').contents().find('.sidebar-header-image.bg-1').css('background-image','url('+data.image_src+')');
-                            $('#preview_mobile').contents().find('.sidebar-header-image.bg-1').attr('background-image','url(/image.php?id='+data.img_key+')')
-
-
-                            break;
-
-                        case 'left_menu_logo_mobile':
-                            $('#left_menu_logo_mobile').attr('src',data.image_src);
-
-                            $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo').css('background-image','url('+data.image_src+')');
-                            $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo').attr('background-image','url(/image.php?id='+data.img_key+')')
-
-                            break;
-
-
-                    }
-
-
-                    $('#save_button_mobile').addClass('save button changed valid')
-
-
-
-                } else if (data.state == '400') {
-                    swal({
-                        title: data.title, text: data.msg, confirmButtonText: "{t}OK{/t}"
-                    });
-                }
-
-                element.val('')
-
-            }, error: function () {
-
-            }
-        });
-
-
-    });
 
 
 

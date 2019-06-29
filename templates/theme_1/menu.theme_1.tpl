@@ -114,7 +114,7 @@
 <div id="aux" >
 
 
-    <div id="image_control_panel" class="hide object_control_panel" style="z-index: 8000">
+    <div id="image_control_panel" class="hide object_control_panel" style="z-index: 8000;width:450px">
         <div style="margin-bottom: 10px;padding-right: 5px;text-align: right">
             <span onclick="update_image()" class="button unselectable"><i class="fa fa-check button""></i> {t}Apply changes{/t}</span>
         </div>
@@ -123,17 +123,19 @@
             <tr>
                 <td class="label">{t}Image{/t}</td>
                 <td class="image_control_panel_upload_td">
-                    <input style="display:none" type="file" name="images" id="update_images_block_image" class="image_upload" />
+                    <input style="display:none" type="file" name="menu_image" id="update_images_block_image" class="image_upload_from_iframe"
+                           data-parent="Website"  data-parent_key="{$website->id}"  data-parent_object_scope="Menu"  data-metadata='{ "header_key":"{$header_key}"}'  data-options=""  data-response_type="website"
+                    />
                     <label style="font-weight: normal;cursor: pointer;width:100%"  for="update_images_block_image">
                         {t}Upload image{/t} <span class="image_size"></span> <i class="hide fa fa-check success" aria-hidden="true"></i>
                     </label>
                 </td>
             </tr>
             <tr>
-                <td class="label">{t}Tooltip{/t}</td><td><input class="image_tooltip" style="width: 200px" placeholder="tooltip"></td>
+                <td class="label">{t}Tooltip{/t}</td><td><input class="image_tooltip" style="width: 320px" placeholder="tooltip"></td>
             </tr>
             <tr>
-                <td class="label">{t}Link{/t}</td><td><input class="image_url" style="width: 200px" placeholder="https://"></td>
+                <td class="label">{t}Link{/t}</td><td><input class="image_url" style="width: 320px" placeholder="https://"></td>
             </tr>
 
 
@@ -518,6 +520,7 @@
 
 
 <script src="js/website.menu.edit.js?v=25"></script>
+<script src="js/edit_webpage_upload_images_from_iframe.js"></script>
 
 
 

@@ -19,6 +19,36 @@ while ($row = $stmt->fetch()) {
     );
 
 
+
+    $mobile_style=json_decode($website->data['Website Mobile Style'], true);
+
+
+    if($mobile_style!=''){
+
+        foreach($mobile_style  as $_key=>$_value){
+            if($_value[1]=='background-image'){
+                if(preg_match('/^\/wi.php/',$_value[2],$match)){
+                    $mobile_style[$_key][2]='url('.$_value[2].')';
+                }
+
+
+            }
+
+        }
+
+
+        $website->fast_update(
+            array(
+                'Website Mobile Style' => json_encode($mobile_style)
+            )
+        );
+    }
+
+
+
+
+
+
     $settings = $website->settings;
     // $style = $website->style;
 

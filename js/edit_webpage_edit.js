@@ -469,27 +469,19 @@ $(document).on('change', '.image_upload', function (e) {
 
         }, success: function (data) {
 
-            // console.log(data)
 
             if (data.state == '200') {
 
-    /*
-                switch (response_type) {
-                    case 'webpage':
-                        $('#save_button', window.parent.document).addClass('save button changed valid')
 
-                        break;
-                }
-*/
 
                 switch (element.attr('name') ) {
                     case 'left_menu_background':
                         $('#website_left_menu_background_mobile').attr('src',data.image_src);
 
                         $('#preview_mobile').contents().find('.sidebar-header-image.bg-1').css('background-image','url('+data.image_src+')');
-                        $('#preview_mobile').contents().find('.sidebar-header-image.bg-1').attr('background-image','url(/image.php?id='+data.img_key+')')
-                        $('#save_button_mobile').addClass('save button changed valid')
+                        $('#preview_mobile').contents().find('.sidebar-header-image.bg-1').attr('background-image','url(/wi.php?id='+data.img_key+')')
 
+                        $('#save_button_mobile').addClass('save button changed valid')
 
                         break;
 
@@ -497,83 +489,32 @@ $(document).on('change', '.image_upload', function (e) {
                         $('#left_menu_logo_mobile').attr('src',data.image_src);
 
                         $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo').css('background-image','url('+data.image_src+')');
-                        $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo').attr('background-image','url(/image.php?id='+data.img_key+')')
+                        $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo').attr('background-image','url(/wi.php?id='+data.img_key+')')
                         $('#save_button_mobile').addClass('save button changed valid')
 
                         break;
-                    case 'logo':
-                        $('#website_logo').attr('src',data.image_src);
-                        break;
+
                     case 'favicon':
                         $('#favicon').attr('src',data.image_src);
-                        break;
-                    case '_Website_Favicon':
-                        $('#_Website_Favicon').find('img').attr('src',data.image_src);
-                    case 'menu':
-                        $('#image_control_panel').data('element').attr('src', data.image_src).attr('image_key', data.img_key).data('src', data.image_src)
+                        $('#save_button').addClass('save button changed valid')
 
                         break;
+                    case 'logo_mobile':
 
-                    case 'two_pack':
-                        $(element).closest('.one_half').find('img').attr('src', data.image_src).attr('image_key', data.img_key)
+
+                        console.log(data)
+                        $('#website_logo_mobile').attr('src',data.image_src);
+
+                        $('#preview_mobile').contents().find('.header-logo').css('background-image','url(/wi.php?id='+data.img_key+')');
+
+                        $('#preview_mobile').contents().find('.header-logo').attr('background-image','url(/wi.php?id='+data.img_key+')')
+                        $('#save_button_mobile').addClass('save button changed valid')
+
                         break;
-                    case 'images':
-                    case 'category_categories':
-                    case 'category_products':
-
-                        var img_element = $('#image_control_panel').find('.image_upload').data('img')
-                        $(img_element).attr('src', data.image_src);
-                        $(img_element).data('src', data.image_src);
-
-                        break;
-                    case 'category_categories_category':
-                        var img_element = element.closest('.category_wrap').find('.wrap_to_center img')
-                        $(img_element).attr('src', data.image_src);
-                        $(img_element).data('src', data.image_src);
-                        break;
-                    case 'blackboard_image':
-                        var img_element = $('#image_control_panel').find('.image_upload').data('img')
-
-
-                        $(img_element).resizable('destroy')
-                        $(img_element).closest('.blackboard_image').draggable('destroy')
-
-                        old_height= $(img_element).height()
-                        old_width= $(img_element).width()
-
-                        ratio=old_width/old_height
 
 
 
-                        if(ratio<data.ratio){
-                            width=old_width
-                            height=width/data.ratio
 
-                        }else{
-                            height=old_height
-                            width=data.ratio*height
-                        }
-
-                        $(img_element).height(height)
-                        $(img_element).width(width)
-
-                        $(img_element).closest('.blackboard_image').height(height)
-                        $(img_element).closest('.blackboard_image').width(width)
-
-                        $(img_element).attr('src', data.image_src);
-                        $(img_element).data('src', data.image_src);
-
-
-                        set_up_blackboard_image( $(img_element).closest('.blackboard_image').attr('id'))
-
-                        update_image()
-                        break;
-                    case 'update_image_block':
-                        $("#preview").contents().find("#block_" + element.attr('block_key')).find('img').attr('src', data.image_src);
-                        break;
-                    case 'button_bg':
-                        $("#preview").contents().find("#block_" + element.attr('block_key')).find('div.button_block').css('background-image', 'url(' + data.image_src + ')').attr('button_bg', data.image_src);
-                        break;
                 }
 
 
@@ -582,7 +523,6 @@ $(document).on('change', '.image_upload', function (e) {
 
 
 
-                $('#save_button').addClass('save button changed valid')
 
             } else if (data.state == '400') {
                 swal.fire({

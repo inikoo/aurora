@@ -12,8 +12,6 @@
 {include file="theme_1/_head.theme_1.tpl"}
 <style>
 
-
-
     .handle{
         cursor: move;
     }
@@ -26,7 +24,6 @@
         left:94%;
     }
 
-
     .footer_block .recycler{
         position:absolute;top:-23px;left:20px
     }
@@ -34,9 +31,6 @@
     .footer_block.last .recycler{
        left:94%;
     }
-
-
-
 
     .button{
         cursor: pointer;
@@ -272,7 +266,19 @@
 
             <i id="delete_item" class="far fa-trash-alt hide editing button"  aria-hidden="true" onClick="delete_item(this)" style="position:absolute;cursor: pointer;z-index: 10000" title="{t}Remove item{/t}"></i>
 
-            <form id="change_image" class="hide" style="z-index:5000;position:absolute;top:0;left:0" method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
+
+
+
+            <input style="display:none" type="file" name="footer" id="footer_image" class="image_upload_from_iframe"
+                   data-parent="Website"  data-parent_key="{$website->id}"  data-parent_object_scope="Footer"  data-metadata='{ "footer_key":"{$footer_key}"}'  data-options=""  data-response_type="website"
+            />
+            <label id="change_image" class="hide" style="z-index:5000;position:absolute;top:0;left:0;"  for="footer_image">
+                <i style="cursor:pointer;font-weight: normal;" class=" fa fa-image fa-fw button editing" aria-hidden="true" title="{t}Change image{/t}"></i>
+            </label>
+
+
+
+            <form id="change_imagex" class="hide" style="z-index:5000;position:absolute;top:0;left:0" method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
                 <input type="file" name="image_upload" id="file_upload" class="input_file" multiple/>
                 <label for="file_upload">
                     <i style="cursor:pointer" class=" fa fa-image fa-fw button editing" aria-hidden="true" title="{t}Change image{/t}"></i>
@@ -604,864 +610,866 @@
         </footer>
 
 
-        <script>
 
-
-            $(document).on('click', 'a', function (e) {
-                if (e.which == 1 && !e.metaKey && !e.shiftKey) {
-
-                    return false
-                }
-            })
-
-
-            document.addEventListener("paste", function (e) {
-                e.preventDefault();
-                var text = e.clipboardData.getData("text/plain");
-                document.execCommand("insertHTML", false, text);
-            });
-
-
-
-
-            $(document).on('input paste', '[contenteditable=true]', function (e) {
-                $('#save_button', window.parent.document).addClass('save button changed valid')
-            });
-
-
-
-
-            var image = false;
-
-            var current_editing_link_id = false;
-            var current_editing_item_id = false
-
-            function open_block_type_options(element, option_id, current_block_type) {
-
-
-                var option_dialog = $('#' + option_id)
-
-                var block = $(element).closest('.footer_block')
-
-                block.uniqueId()
-                var id = block.attr('id')
-
-
-
-
-                if (!option_dialog.hasClass('hide') && option_dialog.attr('block_id') == id) {
-
-                    option_dialog.addClass('hide')
-                } else {
-
-
-
-                    if( $(element).closest('.text_blocks').hasClass('copyright')  && $(element).closest('.footer_block').hasClass('last') ){
-
-
-
-                        option_dialog.removeClass('hide').offset({
-                            top: $(element).offset().top - 5, left: $(element).offset().left - 20 -option_dialog.width()
-                        }).attr('block_id', id)
-
-                    }else{
-                        option_dialog.removeClass('hide').offset({
-                            top: $(element).offset().top - 5, left: $(element).offset().left + 20
-                        }).attr('block_id', id)
-
-                    }
-
-
-
-                    $('#' + option_id + ' div').addClass('selected')
-
-
-                    option_dialog.find('.type_' + current_block_type).removeClass('selected')
-
-                }
-
-            }
-
-
-            function change_block_type(element) {
-
-
-                var block_type = $(element).closest('.block_type');
-
-                console.log($(element))
-
-               //$('#' + block_type.attr('block_id')).data('type',$(element).data('type'))
-
-                if ($(element).hasClass('type_text')) {
-                    $('#' + block_type.attr('block_id')).replaceWith($('#block_text_stem_cell').html())
-                } else if ($(element).hasClass('type_low_text')) {
-                    $('#' + block_type.attr('block_id')).html($('#block_low_text_stem_cell').html())
-                    $('#' + block_type.attr('block_id')).data('type','low_text')
-                    $('#' + block_type.attr('block_id')).attr('data-type','low_text')
-                } else if ($(element).hasClass('type_social_links')) {
-                    $('#' + block_type.attr('block_id')).html($('#block_social_links_stem_cell').html())
-                    $('#' + block_type.attr('block_id')).data('type','social_links')
-                    $('#' + block_type.attr('block_id')).attr('data-type','social_links')
-
-
-
-                } else if ($(element).hasClass('type_copyright_bundle')) {
-                    $('#' + block_type.attr('block_id')).html($('#block_copyright_bundle_stem_cell').html())
-
-                    $('#' + block_type.attr('block_id')).data('type','copyright_bundle')
-                    $('#' + block_type.attr('block_id')).attr('data-type','copyright_bundle')
-
-                } else if ($(element).hasClass('type_links')) {
-                    $('#' + block_type.attr('block_id')).replaceWith($('#block_links_stem_cell').html())
-                } else if ($(element).hasClass('type_address')) {
-                    $('#' + block_type.attr('block_id')).replaceWith($('#block_items_stem_cell').html())
-
-                    $('.address').sortable({
-                        disabled: false, items: "li:not(.ui-state-disabled)", connectWith: ".address"
-                    });
-
-
-                } else if ($(element).hasClass('type_nothing')) {
-                    $('#' + block_type.attr('block_id')).replaceWith($('#block_nothing_stem_cell').html())
-                } else if ($(element).hasClass('type_low_nothing')) {
-                    $('#' + block_type.attr('block_id')).html($('#block_low_nothing_stem_cell').html())
-                    $('#' + block_type.attr('block_id')).data('type','nothing')
-                    $('#' + block_type.attr('block_id')).attr('data-type','nothing')
-                }
-
-
-                $('.sortable_container').sortable({
-                    disabled: false, update: function (event, ui) {
-                        $(this).children().removeClass('last')
-                        $(this).children().last().addClass('last')
-
-
-                    }
-
-                });
-
-                block_type.addClass('hide')
-
-                $('#save_button', window.parent.document).addClass('save button changed valid')
-            }
-
-
-            function add_item_type(element) {
-
-
-                var icon = $(element).find('i')
-                $('#item_types').addClass('hide')
-
-
-                if (icon.hasClass('fa-image')) {
-
-                    var new_item = $("#item_image_stem_cell").clone()
-
-                    new_item.removeAttr("id")
-                    new_item.addClass('item _logo')
-
-
-                } else {
-
-
-                    var new_item = $("#item_stem_cell").clone()
-
-
-                    new_item.removeAttr("id")
-                    new_item.addClass('item _text')
-
-                    new_item.attr("icon", $(element).attr('icon'))
-
-                    new_item.attr('onClick', 'edit_item(this)');
-
-
-                    new_item.find('span').html(icon.attr('label'));
-                    new_item.find('i').attr('class', icon.attr('class'))
-
-
-                }
-
-
-                new_item.insertBefore($('#' + $('#item_types').attr('anchor')));
-                console.log('add_item_type')
-
-            }
-
-            function add_item(element) {
-
-
-                if ($('#item_types').hasClass('hide')) {
-                    $(element).uniqueId()
-                    $('#item_types').removeClass('hide').offset({ 
-                        top: $(element).offset().top - 55, left: $(element).offset().left + 20
-                    }).attr('anchor', $(element).attr('id'))
-                } else {
-                    $('#item_types').addClass('hide')
-
-                }
-
-            }
-
-
-            function edit_item(element) {
-
-
-                $(element).uniqueId()
-                var id = $(element).attr('id')
-
-                $('#change_image').addClass('hide')
-
-
-                if ($('#delete_item').hasClass('hide')) {
-                    current_editing_item_id = id
-
-
-                    $('#delete_item').removeClass('hide').offset(
-                            { top: $(element).offset().top, left: $(element).offset().left - 20}).data('element', element)
-                } else {
-
-
-                    if (current_editing_item_id == id) {
-                        $('#delete_item').addClass('hide')
-                    } else {
-                        current_editing_item_id = id
-                        $('#delete_item').removeClass('hide').offset({ 
-                            top: $(element).offset().top, left: $(element).offset().left - 20}).data('element', element)
-                    }
-
-                }
-
-            }
-
-
-
-            function edit_item_image(element) {
-                $(element).uniqueId()
-                var id = $(element).attr('id')
-
-                if ($('#delete_item').hasClass('hide')) {
-                    current_editing_item_id = id
-
-                    $('#delete_item').removeClass('hide').offset({ 
-                        top: $(element).offset().top, left: $(element).offset().left - 20}).data('element', $(element))
-                    $('#change_image').removeClass('hide').offset({ 
-                        top: $(element).offset().top + 20, left: $(element).offset().left - 20}).data('element', $(element))
-
-                    //   $('#change_image').removeClass('hide')
-
-                } else {
-                    if (current_editing_item_id == id) {
-                        $('#delete_item').addClass('hide')
-                        $('#change_image').addClass('hide')
-
-                    } else {
-                        current_editing_item_id = id
-                        $('#delete_item').removeClass('hide').offset({ 
-                            top: $(element).offset().top, left: $(element).offset().left - 20}).attr('item_id', id)
-                        $('#change_image').removeClass('hide').offset({ 
-                            top: $(element).offset().top + 20, left: $(element).offset().left - 20}).attr('item_id', id)
-
-                    }
-
-                }
-
-            }
-
-
-            function update_link(element) {
-
-
-                $(element).uniqueId()
-                var id = $(element).attr('id')
-
-
-                if ($('#input_container_link').hasClass('hide')) {
-                    current_editing_link_id = id
-
-                    $('#input_container_link').removeClass('hide').offset({ top: $(element).offset().top - 55, left: $(element).offset().left + 20}).find('input').val($(element).closest('a').attr("href"))
-                    $('#delete_link').removeClass('hide').offset({ top: $(element).offset().top, left: $(element).offset().left - 20}).attr('link_id', id).data('element', $(element))
-                    $(element).removeClass('fa-angle-right').addClass('editing fa-check-circle').next('span').addClass('editing')
-
-
-                } else {
-
-
-                    $('#delete_link').data('element').closest('a').attr("href", $('#input_container_link').find('input').val())
-
-
-                    if (current_editing_link_id == id) {
-                        $('#input_container_link').addClass('hide')
-                        $('#delete_link').addClass('hide')
-                        $(element).addClass('fa-angle-right').removeClass('editing fa-check-circle').next('span').removeClass('editing')
-
-
-                    } else {
-
-
-                        $('#' + current_editing_link_id).addClass('fa-angle-right').removeClass('editing fa-check-circle').next('span').removeClass('editing')
-                        current_editing_link_id = id
-
-                        $('#input_container_link').removeClass('hide').offset({ top: $(element).offset().top - 55, left: $(element).offset().left + 20}).find('input').val($(element).closest('a').attr("href"))
-                        $('#delete_link').removeClass('hide').offset({ top: $(element).offset().top, left: $(element).offset().left - 15}).attr('link_id', id).data('element', $(element))
-                        $(element).removeClass('fa-angle-right').addClass('editing fa-check-circle').next('span').addClass('editing')
-
-                    }
-
-
-                }
-
-
-            }
-
-
-            function drag_mode_on(element) {
-
-
-                $('#delete_item').addClass('hide')
-                $('#change_image').addClass('hide')
-
-
-                $('.links_list').sortable({
-                    disabled: false, items: "li:not(.ui-state-disabled)", connectWith: ".links_list"
-                });
-
-                $('.address').sortable({
-                    disabled: false, items: "li:not(.ui-state-disabled)", connectWith: ".address"
-                });
-
-                $('.sortable_container').sortable({
-                    disabled: false,
-                    handle: '.handle',
-                    update: function (event, ui) {
-
-                        $('#save_button', window.parent.document).addClass('save button changed valid')
-
-                    }
-
-                });
-
-
-                $('.sortable_container2').sortable({
-                    disabled: false,
-                    handle: '.handle',
-                    update: function (event, ui) {
-                        $(this).children().removeClass('last')
-                        $(this).children().last().addClass('last')
-
-                        $('#save_button', window.parent.document).addClass('save button changed valid')
-                    }
-
-                });
-
-
-
-                $('.handle').removeClass('hide')
-
-
-                $('.add_item').addClass('invisible')
-                $('.add_link').addClass('invisible')
-                $('.recycler').addClass('hide')
-
-
-            }
-
-            function block_edit_mode_on(element) {
-
-                $('#delete_item').addClass('hide')
-                $('#change_image').addClass('hide')
-
-                $('.links_list').sortable({
-                    disabled: true
-                });
-
-                $('.address').sortable({
-                    disabled: true
-                });
-
-                $('.sortable_container').sortable({
-                    disabled: true
-
-                });
-                $('.handle').addClass('hide')
-                $('.recycler').removeClass('hide')
-
-                $('.add_item').addClass('invisible')
-                $('.add_link').addClass('invisible')
-
-            }
-
-
-            function edit_mode_on(element) {
-
-
-                $('.links_list').sortable({
-                    disabled: true
-                });
-
-                $('.address').sortable({
-                    disabled: true
-                });
-
-                $('.sortable_container').sortable({
-                    disabled: true
-
-                });
-                $('.handle').addClass('hide')
-                $('.recycler').addClass('hide')
-
-                $('.add_item').removeClass('invisible')
-                $('.add_link').removeClass('invisible')
-
-            }
-
-
-            function add_link(element) {
-
-                console.log(element)
-                var ul = $(element).closest('ul');
-
-                var new_data = $("#link_stem_cell").clone();
-
-                console.log(new_data)
-
-                new_data.insertBefore($(element));
-            }
-
-
-            function delete_link(element) {
-
-                console.log(element)
-
-                $('#' + $(element).attr('link_id')).closest('li').remove()
-                $('#input_container_link').addClass('hide')
-                $('#delete_link').addClass('hide')
-            }
-
-            function delete_item(element) {
-
-
-                console.log('caca')
-
-                $($(element).data('element')).closest('li').remove()
-                $('#delete_item').addClass('hide')
-                $('#change_image').addClass('hide')
-
-
-
-            }
-
-
-
-
-            function edit_social_links(element) {
-
-
-
-
-                var block = $(element)
-                block.uniqueId()
-                var id = block.attr('id')
-
-                block.find('li').each(function (i, obj) {
-                    $('#social_links_control_center').find('.' + $(obj).attr('icon')).next('input').val($(obj).find('a').attr('href'))
-                });
-
-
-                if ($(element).closest('.footer_block').hasClass('last')) {
-                    $('#social_links_control_center').attr('block_id', id).removeClass('hide').offset({ 
-                        top: 10,
-                        left: block.offset().left + block.width() - $('#social_links_control_center').width()
-                    })
-
-                } else {
-                    $('#social_links_control_center').attr('block_id', id).removeClass('hide').offset({ top: 10, left: block.offset().left})
-
-                }
-
-
-            }
-
-
-            function update_social_links_from_dialog() {
-
-                var block = $('#' + $('#social_links_control_center').attr('block_id'))
-                $('#social_links_control_center').addClass('hide')
-                social_links = ''
-
-                $('#social_links_control_center .social_link').each(function (i, obj) {
-                    if ($(obj).next('input').val() != '') {
-                        social_links += ' <li class="social_link" icon="' + $(obj).attr('icon') + '"  ><a href="' + $(obj).next('input').val() + '"><i class="fab ' + $(obj).attr('icon') + '"></i></a></li>'
-                    }
-                })
-
-                if (social_links == '') {
-                    social_links = '<i class="fa fa-plus editing" title="{t}Add social media link{/t}" aria-hidden="true"></i>  <span style="margin-left:5px" class="editing">{t}Add social media link{/t}</span>';
-                }
-
-                block.html(social_links)
-
-
-                $('#save_button', window.parent.document).addClass('save button changed valid')
-
-
-            }
-
-
-            function edit_copyright_bundle(element) {
-
-
-                if ($('#drag_mode').hasClass('on')) {
-                    return;
-                }
-
-
-                if (!$('#copyright_bundle_control_center').hasClass('hide')) {
-                    return
-                }
-
-                var block = $(element)
-                block.uniqueId()
-                var id = block.attr('id')
-
-                block.find('.copyright_bundle_link').each(function (i, obj) {
-
-                    var link = $("#copyright_bundle_control_center .discreet_links_control_panel div:nth-child(" + (i + 1) + ")")
-
-                    // console.log( "#copyright_bundle_control_center .social_links_control_center:nth-child("+i+")")
-                    //  console.log( $("#copyright_bundle_control_center .discreet_links_control_panel div:nth-child(1)").html())
-                    console.log(link.html())
-                    link.find('.label').val($(obj).html())
-                    link.find('.url').val($(obj).attr('href'))
-
-                    //      $('#social_links_control_center').find('.'+$(obj).attr('icon')).next('input').val($(obj).find('a').attr('href')   )
-                });
-
-                $('#copyright_bundle_control_center_owner').val(block.find('.copyright_bundle_owner').html())
-                $('#copyright_bundle_control_center').attr('block_id', id).removeClass('hide').offset({ 
-                    top: block.offset().top - 30 - $('#copyright_bundle_control_center').height(),
-                    left: block.offset().left + block.width() - $('#copyright_bundle_control_center').width()
-                })
-
-
-            }
-
-
-            function update_copyright_bundle_from_dialog() {
-
-                var block = $('#' + $('#copyright_bundle_control_center').attr('block_id'))
-                $('#copyright_bundle_control_center').addClass('hide')
-                copyright_links = ''
-
-
-                block.find('.copyright_bundle_owner').html($('#copyright_bundle_control_center_owner').val())
-
-                $('#copyright_bundle_control_center .copyright_link').each(function (i, obj) {
-                    if ($(obj).find('.label').val() != '' && $(obj).find('.url').val() != '') {
-                        copyright_links += '<a class="copyright_bundle_link" href="' + $(obj).find('.url').val() + '">' + $(obj).find('.label').val() + '</a>  | '
-                    }
-                })
-
-                copyright_links = copyright_links.replace(/ \| $/g, "");
-
-                block.find('.copyright_bundle_links').html(copyright_links)
-
-                $('#save_button', window.parent.document).addClass('save button changed valid')
-
-            }
-
-
-
-            function save_footer() {
-
-
-
-                if (!$('#save_button', window.parent.document).hasClass('save')) {
-                    return;
-                }
-
-                $('#save_button', window.parent.document).find('i').addClass('fa-spinner fa-spin')
-
-
-                var cols_main_4 = [];
-                var cols_copyright = [];
-
-                $('footer .text_blocks').each(function (i, obj) {
-
-
-                    if ($(obj).hasClass('top_header')) {
-
-                        $('.footer_block', obj).each(function (i, obj2) {
-
-                            console.log($(obj2))
-
-                            switch ($(obj2).data('type')) {
-
-                                case 'address':
-
-                                    items = []
-
-                                    $('.item', obj2).each(function (i, obj3) {
-
-                                        if ($(obj3).hasClass('_logo')) {
-                                            var img = $(obj3).find('img')
-                                            items.push({
-                                                type: "logo", src: img.attr('src'), title: $.trim(img.attr('title'))
-                                            });
-
-                                        } else if ($(obj3).hasClass('_text')) {
-
-
-                                            items.push({
-                                                type: "text",
-                                                icon: $(obj3).attr('icon'),
-                                                text: $.trim($(obj3).find('span').html()),
-                                            });
-
-                                        } else if ($(obj3).hasClass('_email')) {
-
-
-                                            items.push({
-                                                type: "email", text: $.trim($(obj3).find('span').html()),
-                                            });
-
-                                        }
-
-
-                                    })
-
-                                    cols_main_4.push({
-                                        'type': 'address', 'items': items
-
-                                    })
-
-                                    break;
-
-                                case 'links':
-                                    var items = []
-                                    $('.links_list .item', obj2).each(function (i, obj3) {
-
-                                        items.push({
-                                            url: $(obj3).find('a').attr('href'), label: $(obj3).find('.item_label').html(),
-                                        });
-
-                                        // console.log($(obj2).find('a').attr('href'))
-                                        // console.log($(obj2).find('.item_label').html())
-                                    });
-
-
-                                    cols_main_4.push({
-                                        'type': 'links', 'header': $(obj2).find('h5').html(), 'items': items
-                                    })
-
-                                    break;
-
-                                case 'text':
-
-
-                                    cols_main_4.push({
-                                        'type': 'text', 'header': $(obj2).find('h5').html(), 'text': $(obj2).find('.footer_text').html()
-                                    })
-                                    break;
-
-                                case 'nothing':
-                                    cols_main_4.push({
-                                        'type': 'nothing'
-
-                                    })
-
-                                    break;
-
-                            }
-
-                        })
-
-
-                    }
-
-
-                    if ($(obj).hasClass('bottom_header')) {
-
-                        $('.footer_block', obj).each(function (i, obj2) {
-
-                            switch ($(obj2).data('type')) {
-
-                                case 'low_text':
-                                    cols_copyright.push({
-                                        'type': 'text', 'text': $(obj2).find('.lower_footer_text').html()
-                                    })
-
-                                    break;
-                                case 'nothing':
-                                    cols_copyright.push({
-                                        'type': 'nothing'
-                                    })
-
-                                    break;
-                                case 'social_links':
-                                    items = []
-                                    $('.social_link', obj2).each(function (i, obj3) {
-                                        items.push({
-                                            url: $(obj3).find('a').attr('href'), icon: $(obj3).attr('icon'),
-                                        });
-                                    })
-                                    cols_copyright.push({
-                                        'type': 'social_links', 'items': items
-                                    })
-
-                                    break;
-                                case 'copyright_bundle':
-                                    var links = []
-                                    $(obj2).find('.copyright_bundle_link').each(function (j, obj3) {
-
-                                        links.push({
-                                            url: $(obj3).attr('href'), label: $(obj3).html(),
-                                        });
-
-
-                                    });
-
-                                    cols_copyright.push({
-                                        'type': 'copyright_bundle', 'owner': $(obj).find('.copyright_bundle_owner').html(), 'links': links
-                                    })
-                                    break;
-
-
-                            }
-
-                        })
-
-                    }
-
-
-                })
-
-                footer_data = {
-                    rows: []
-                }
-
-
-                footer_data.rows.push({
-                    'type': 'main_4', 'columns': cols_main_4
-                })
-                footer_data.rows.push({
-                    'type': 'copyright', 'columns': cols_copyright
-                })
-
-
-                console.log(footer_data)
-               // return;
-
-                var ajaxData = new FormData();
-
-                ajaxData.append("tipo", 'save_footer')
-                ajaxData.append("footer_key", '{$footer_key}')
-                ajaxData.append("footer_data", JSON.stringify(footer_data))
-
-
-                $.ajax({
-                    url: "/ar_edit_website.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
-                    }, success: function (data) {
-
-                        if (data.state == '200') {
-
-                            $('#save_button', window.parent.document).removeClass('save').find('i').removeClass('fa-spinner fa-spin')
-                        } else if (data.state == '400') {
-                            swal(data.msg);
-                        }
-
-
-                    }, error: function () {
-
-                    }
-                });
-
-
-            }
-
-            var droppedFiles = false;
-
-            $('#file_upload').on('change', function (e) {
-
-
-                var ajaxData = new FormData();
-
-                //var ajaxData = new FormData( );
-                if (droppedFiles) {
-                    $.each(droppedFiles, function (i, file) {
-                        ajaxData.append('files', file);
-                    });
-                }
-
-
-                $.each($('#file_upload').prop("files"), function (i, file) {
-                    ajaxData.append("files[" + i + "]", file);
-
-                });
-
-
-                ajaxData.append("tipo", 'upload_images')
-                ajaxData.append("parent", 'website')
-                ajaxData.append("parent_key", '{$website->id}')
-
-                ajaxData.append("parent_object_scope", 'Footer')
-
-
-
-                ajaxData.append("metadata", JSON.stringify({
-                    scope: 'footer', scope_key: '{$footer_key}'
-                }))
-                ajaxData.append("options", JSON.stringify({
-                    max_width: 180
-
-                }))
-
-                ajaxData.append("response_type", 'website')
-
-
-                //   var image = $('#' + $('#image_edit_toolbar').attr('block') + ' img')
-
-
-                $.ajax({
-                    url: "/ar_upload.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-
-
-                    complete: function () {
-
-                    }, success: function (data) {
-
-                        console.log(data)
-
-                        if (data.state == '200') {
-
-                            console.log($('#change_image').data('element'))
-
-
-
-                            $('#change_image').data('element').attr('src', 'wi.php?id='+data.img_key).attr('web_image_key', data.img_key)
-                            $('#save_button', window.parent.document).addClass('save button changed valid')
-
-
-                        } else if (data.state == '400') {
-                            swal.fire({
-                                title: data.title, text: data.msg, confirmButtonText: "OK"
-                            });
-                        }
-
-
-                    }, error: function () {
-
-                    }
-                });
-
-
-            });
-
-
-        </script>
 
     </div>
 </div>
 
+<script>
+
+
+    $(document).on('click', 'a', function (e) {
+        if (e.which == 1 && !e.metaKey && !e.shiftKey) {
+
+            return false
+        }
+    })
+
+
+    document.addEventListener("paste", function (e) {
+        e.preventDefault();
+        var text = e.clipboardData.getData("text/plain");
+        document.execCommand("insertHTML", false, text);
+    });
+
+
+
+
+    $(document).on('input paste', '[contenteditable=true]', function (e) {
+        $('#save_button', window.parent.document).addClass('save button changed valid')
+    });
+
+
+
+
+    var image = false;
+
+    var current_editing_link_id = false;
+    var current_editing_item_id = false
+
+    function open_block_type_options(element, option_id, current_block_type) {
+
+
+        var option_dialog = $('#' + option_id)
+
+        var block = $(element).closest('.footer_block')
+
+        block.uniqueId()
+        var id = block.attr('id')
+
+
+
+
+        if (!option_dialog.hasClass('hide') && option_dialog.attr('block_id') == id) {
+
+            option_dialog.addClass('hide')
+        } else {
+
+
+
+            if( $(element).closest('.text_blocks').hasClass('copyright')  && $(element).closest('.footer_block').hasClass('last') ){
+
+
+
+                option_dialog.removeClass('hide').offset({
+                    top: $(element).offset().top - 5, left: $(element).offset().left - 20 -option_dialog.width()
+                }).attr('block_id', id)
+
+            }else{
+                option_dialog.removeClass('hide').offset({
+                    top: $(element).offset().top - 5, left: $(element).offset().left + 20
+                }).attr('block_id', id)
+
+            }
+
+
+
+            $('#' + option_id + ' div').addClass('selected')
+
+
+            option_dialog.find('.type_' + current_block_type).removeClass('selected')
+
+        }
+
+    }
+
+
+    function change_block_type(element) {
+
+
+        var block_type = $(element).closest('.block_type');
+
+        console.log($(element))
+
+        //$('#' + block_type.attr('block_id')).data('type',$(element).data('type'))
+
+        if ($(element).hasClass('type_text')) {
+            $('#' + block_type.attr('block_id')).replaceWith($('#block_text_stem_cell').html())
+        } else if ($(element).hasClass('type_low_text')) {
+            $('#' + block_type.attr('block_id')).html($('#block_low_text_stem_cell').html())
+            $('#' + block_type.attr('block_id')).data('type','low_text')
+            $('#' + block_type.attr('block_id')).attr('data-type','low_text')
+        } else if ($(element).hasClass('type_social_links')) {
+            $('#' + block_type.attr('block_id')).html($('#block_social_links_stem_cell').html())
+            $('#' + block_type.attr('block_id')).data('type','social_links')
+            $('#' + block_type.attr('block_id')).attr('data-type','social_links')
+
+
+
+        } else if ($(element).hasClass('type_copyright_bundle')) {
+            $('#' + block_type.attr('block_id')).html($('#block_copyright_bundle_stem_cell').html())
+
+            $('#' + block_type.attr('block_id')).data('type','copyright_bundle')
+            $('#' + block_type.attr('block_id')).attr('data-type','copyright_bundle')
+
+        } else if ($(element).hasClass('type_links')) {
+            $('#' + block_type.attr('block_id')).replaceWith($('#block_links_stem_cell').html())
+        } else if ($(element).hasClass('type_address')) {
+            $('#' + block_type.attr('block_id')).replaceWith($('#block_items_stem_cell').html())
+
+            $('.address').sortable({
+                disabled: false, items: "li:not(.ui-state-disabled)", connectWith: ".address"
+            });
+
+
+        } else if ($(element).hasClass('type_nothing')) {
+            $('#' + block_type.attr('block_id')).replaceWith($('#block_nothing_stem_cell').html())
+        } else if ($(element).hasClass('type_low_nothing')) {
+            $('#' + block_type.attr('block_id')).html($('#block_low_nothing_stem_cell').html())
+            $('#' + block_type.attr('block_id')).data('type','nothing')
+            $('#' + block_type.attr('block_id')).attr('data-type','nothing')
+        }
+
+
+        $('.sortable_container').sortable({
+            disabled: false, update: function (event, ui) {
+                $(this).children().removeClass('last')
+                $(this).children().last().addClass('last')
+
+
+            }
+
+        });
+
+        block_type.addClass('hide')
+
+        $('#save_button', window.parent.document).addClass('save button changed valid')
+    }
+
+
+    function add_item_type(element) {
+
+
+        var icon = $(element).find('i')
+        $('#item_types').addClass('hide')
+
+
+        if (icon.hasClass('fa-image')) {
+
+            var new_item = $("#item_image_stem_cell").clone()
+
+            new_item.removeAttr("id")
+            new_item.addClass('item _logo')
+
+
+        } else {
+
+
+            var new_item = $("#item_stem_cell").clone()
+
+
+            new_item.removeAttr("id")
+            new_item.addClass('item _text')
+
+            new_item.attr("icon", $(element).attr('icon'))
+
+            new_item.attr('onClick', 'edit_item(this)');
+
+
+            new_item.find('span').html(icon.attr('label'));
+            new_item.find('i').attr('class', icon.attr('class'))
+
+
+        }
+
+
+        new_item.insertBefore($('#' + $('#item_types').attr('anchor')));
+        console.log('add_item_type')
+
+    }
+
+    function add_item(element) {
+
+
+        if ($('#item_types').hasClass('hide')) {
+            $(element).uniqueId()
+            $('#item_types').removeClass('hide').offset({
+                top: $(element).offset().top - 55, left: $(element).offset().left + 20
+            }).attr('anchor', $(element).attr('id'))
+        } else {
+            $('#item_types').addClass('hide')
+
+        }
+
+    }
+
+
+    function edit_item(element) {
+
+
+        $(element).uniqueId()
+        var id = $(element).attr('id')
+
+        $('#change_image').addClass('hide')
+
+
+        if ($('#delete_item').hasClass('hide')) {
+            current_editing_item_id = id
+
+
+            $('#delete_item').removeClass('hide').offset(
+                { top: $(element).offset().top, left: $(element).offset().left - 20}).data('element', element)
+        } else {
+
+
+            if (current_editing_item_id == id) {
+                $('#delete_item').addClass('hide')
+            } else {
+                current_editing_item_id = id
+                $('#delete_item').removeClass('hide').offset({
+                    top: $(element).offset().top, left: $(element).offset().left - 20}).data('element', element)
+            }
+
+        }
+
+    }
+
+
+
+    function edit_item_image(element) {
+        $(element).uniqueId()
+        var id = $(element).attr('id')
+
+        if ($('#delete_item').hasClass('hide')) {
+            current_editing_item_id = id
+
+            $('#delete_item').removeClass('hide').offset({
+                top: $(element).offset().top, left: $(element).offset().left - 20}).data('element', $(element))
+            $('#change_image').removeClass('hide').offset({
+                top: $(element).offset().top + 20, left: $(element).offset().left - 20}).data('element', $(element))
+
+            //   $('#change_image').removeClass('hide')
+
+        } else {
+            if (current_editing_item_id == id) {
+                $('#delete_item').addClass('hide')
+                $('#change_image').addClass('hide')
+
+            } else {
+                current_editing_item_id = id
+                $('#delete_item').removeClass('hide').offset({
+                    top: $(element).offset().top, left: $(element).offset().left - 20}).attr('item_id', id)
+                $('#change_image').removeClass('hide').offset({
+                    top: $(element).offset().top + 20, left: $(element).offset().left - 20}).attr('item_id', id)
+
+            }
+
+        }
+
+    }
+
+
+    function update_link(element) {
+
+
+        $(element).uniqueId()
+        var id = $(element).attr('id')
+
+
+        if ($('#input_container_link').hasClass('hide')) {
+            current_editing_link_id = id
+
+            $('#input_container_link').removeClass('hide').offset({ top: $(element).offset().top - 55, left: $(element).offset().left + 20}).find('input').val($(element).closest('a').attr("href"))
+            $('#delete_link').removeClass('hide').offset({ top: $(element).offset().top, left: $(element).offset().left - 20}).attr('link_id', id).data('element', $(element))
+            $(element).removeClass('fa-angle-right').addClass('editing fa-check-circle').next('span').addClass('editing')
+
+
+        } else {
+
+
+            $('#delete_link').data('element').closest('a').attr("href", $('#input_container_link').find('input').val())
+
+
+            if (current_editing_link_id == id) {
+                $('#input_container_link').addClass('hide')
+                $('#delete_link').addClass('hide')
+                $(element).addClass('fa-angle-right').removeClass('editing fa-check-circle').next('span').removeClass('editing')
+
+
+            } else {
+
+
+                $('#' + current_editing_link_id).addClass('fa-angle-right').removeClass('editing fa-check-circle').next('span').removeClass('editing')
+                current_editing_link_id = id
+
+                $('#input_container_link').removeClass('hide').offset({ top: $(element).offset().top - 55, left: $(element).offset().left + 20}).find('input').val($(element).closest('a').attr("href"))
+                $('#delete_link').removeClass('hide').offset({ top: $(element).offset().top, left: $(element).offset().left - 15}).attr('link_id', id).data('element', $(element))
+                $(element).removeClass('fa-angle-right').addClass('editing fa-check-circle').next('span').addClass('editing')
+
+            }
+
+
+        }
+
+
+    }
+
+
+    function drag_mode_on(element) {
+
+
+        $('#delete_item').addClass('hide')
+        $('#change_image').addClass('hide')
+
+
+        $('.links_list').sortable({
+            disabled: false, items: "li:not(.ui-state-disabled)", connectWith: ".links_list"
+        });
+
+        $('.address').sortable({
+            disabled: false, items: "li:not(.ui-state-disabled)", connectWith: ".address"
+        });
+
+        $('.sortable_container').sortable({
+            disabled: false,
+            handle: '.handle',
+            update: function (event, ui) {
+
+                $('#save_button', window.parent.document).addClass('save button changed valid')
+
+            }
+
+        });
+
+
+        $('.sortable_container2').sortable({
+            disabled: false,
+            handle: '.handle',
+            update: function (event, ui) {
+                $(this).children().removeClass('last')
+                $(this).children().last().addClass('last')
+
+                $('#save_button', window.parent.document).addClass('save button changed valid')
+            }
+
+        });
+
+
+
+        $('.handle').removeClass('hide')
+
+
+        $('.add_item').addClass('invisible')
+        $('.add_link').addClass('invisible')
+        $('.recycler').addClass('hide')
+
+
+    }
+
+    function block_edit_mode_on(element) {
+
+        $('#delete_item').addClass('hide')
+        $('#change_image').addClass('hide')
+
+        $('.links_list').sortable({
+            disabled: true
+        });
+
+        $('.address').sortable({
+            disabled: true
+        });
+
+        $('.sortable_container').sortable({
+            disabled: true
+
+        });
+        $('.handle').addClass('hide')
+        $('.recycler').removeClass('hide')
+
+        $('.add_item').addClass('invisible')
+        $('.add_link').addClass('invisible')
+
+    }
+
+
+    function edit_mode_on(element) {
+
+
+        $('.links_list').sortable({
+            disabled: true
+        });
+
+        $('.address').sortable({
+            disabled: true
+        });
+
+        $('.sortable_container').sortable({
+            disabled: true
+
+        });
+        $('.handle').addClass('hide')
+        $('.recycler').addClass('hide')
+
+        $('.add_item').removeClass('invisible')
+        $('.add_link').removeClass('invisible')
+
+    }
+
+
+    function add_link(element) {
+
+        console.log(element)
+        var ul = $(element).closest('ul');
+
+        var new_data = $("#link_stem_cell").clone();
+
+        console.log(new_data)
+
+        new_data.insertBefore($(element));
+    }
+
+
+    function delete_link(element) {
+
+        console.log(element)
+
+        $('#' + $(element).attr('link_id')).closest('li').remove()
+        $('#input_container_link').addClass('hide')
+        $('#delete_link').addClass('hide')
+    }
+
+    function delete_item(element) {
+
+
+        console.log('caca')
+
+        $($(element).data('element')).closest('li').remove()
+        $('#delete_item').addClass('hide')
+        $('#change_image').addClass('hide')
+
+
+
+    }
+
+
+
+
+    function edit_social_links(element) {
+
+
+
+
+        var block = $(element)
+        block.uniqueId()
+        var id = block.attr('id')
+
+        block.find('li').each(function (i, obj) {
+            $('#social_links_control_center').find('.' + $(obj).attr('icon')).next('input').val($(obj).find('a').attr('href'))
+        });
+
+
+        if ($(element).closest('.footer_block').hasClass('last')) {
+            $('#social_links_control_center').attr('block_id', id).removeClass('hide').offset({
+                top: 10,
+                left: block.offset().left + block.width() - $('#social_links_control_center').width()
+            })
+
+        } else {
+            $('#social_links_control_center').attr('block_id', id).removeClass('hide').offset({ top: 10, left: block.offset().left})
+
+        }
+
+
+    }
+
+
+    function update_social_links_from_dialog() {
+
+        var block = $('#' + $('#social_links_control_center').attr('block_id'))
+        $('#social_links_control_center').addClass('hide')
+        social_links = ''
+
+        $('#social_links_control_center .social_link').each(function (i, obj) {
+            if ($(obj).next('input').val() != '') {
+                social_links += ' <li class="social_link" icon="' + $(obj).attr('icon') + '"  ><a href="' + $(obj).next('input').val() + '"><i class="fab ' + $(obj).attr('icon') + '"></i></a></li>'
+            }
+        })
+
+        if (social_links == '') {
+            social_links = '<i class="fa fa-plus editing" title="{t}Add social media link{/t}" aria-hidden="true"></i>  <span style="margin-left:5px" class="editing">{t}Add social media link{/t}</span>';
+        }
+
+        block.html(social_links)
+
+
+        $('#save_button', window.parent.document).addClass('save button changed valid')
+
+
+    }
+
+
+    function edit_copyright_bundle(element) {
+
+
+        if ($('#drag_mode').hasClass('on')) {
+            return;
+        }
+
+
+        if (!$('#copyright_bundle_control_center').hasClass('hide')) {
+            return
+        }
+
+        var block = $(element)
+        block.uniqueId()
+        var id = block.attr('id')
+
+        block.find('.copyright_bundle_link').each(function (i, obj) {
+
+            var link = $("#copyright_bundle_control_center .discreet_links_control_panel div:nth-child(" + (i + 1) + ")")
+
+            // console.log( "#copyright_bundle_control_center .social_links_control_center:nth-child("+i+")")
+            //  console.log( $("#copyright_bundle_control_center .discreet_links_control_panel div:nth-child(1)").html())
+            console.log(link.html())
+            link.find('.label').val($(obj).html())
+            link.find('.url').val($(obj).attr('href'))
+
+            //      $('#social_links_control_center').find('.'+$(obj).attr('icon')).next('input').val($(obj).find('a').attr('href')   )
+        });
+
+        $('#copyright_bundle_control_center_owner').val(block.find('.copyright_bundle_owner').html())
+        $('#copyright_bundle_control_center').attr('block_id', id).removeClass('hide').offset({
+            top: block.offset().top - 30 - $('#copyright_bundle_control_center').height(),
+            left: block.offset().left + block.width() - $('#copyright_bundle_control_center').width()
+        })
+
+
+    }
+
+
+    function update_copyright_bundle_from_dialog() {
+
+        var block = $('#' + $('#copyright_bundle_control_center').attr('block_id'))
+        $('#copyright_bundle_control_center').addClass('hide')
+        copyright_links = ''
+
+
+        block.find('.copyright_bundle_owner').html($('#copyright_bundle_control_center_owner').val())
+
+        $('#copyright_bundle_control_center .copyright_link').each(function (i, obj) {
+            if ($(obj).find('.label').val() != '' && $(obj).find('.url').val() != '') {
+                copyright_links += '<a class="copyright_bundle_link" href="' + $(obj).find('.url').val() + '">' + $(obj).find('.label').val() + '</a>  | '
+            }
+        })
+
+        copyright_links = copyright_links.replace(/ \| $/g, "");
+
+        block.find('.copyright_bundle_links').html(copyright_links)
+
+        $('#save_button', window.parent.document).addClass('save button changed valid')
+
+    }
+
+
+
+    function save_footer() {
+
+
+
+        if (!$('#save_button', window.parent.document).hasClass('save')) {
+            return;
+        }
+
+        $('#save_button', window.parent.document).find('i').addClass('fa-spinner fa-spin')
+
+
+        var cols_main_4 = [];
+        var cols_copyright = [];
+
+        $('footer .text_blocks').each(function (i, obj) {
+
+
+            if ($(obj).hasClass('top_header')) {
+
+                $('.footer_block', obj).each(function (i, obj2) {
+
+                    console.log($(obj2))
+
+                    switch ($(obj2).data('type')) {
+
+                        case 'address':
+
+                            items = []
+
+                            $('.item', obj2).each(function (i, obj3) {
+
+                                if ($(obj3).hasClass('_logo')) {
+                                    var img = $(obj3).find('img')
+                                    items.push({
+                                        type: "logo", src: img.attr('src'), title: $.trim(img.attr('title'))
+                                    });
+
+                                } else if ($(obj3).hasClass('_text')) {
+
+
+                                    items.push({
+                                        type: "text",
+                                        icon: $(obj3).attr('icon'),
+                                        text: $.trim($(obj3).find('span').html()),
+                                    });
+
+                                } else if ($(obj3).hasClass('_email')) {
+
+
+                                    items.push({
+                                        type: "email", text: $.trim($(obj3).find('span').html()),
+                                    });
+
+                                }
+
+
+                            })
+
+                            cols_main_4.push({
+                                'type': 'address', 'items': items
+
+                            })
+
+                            break;
+
+                        case 'links':
+                            var items = []
+                            $('.links_list .item', obj2).each(function (i, obj3) {
+
+                                items.push({
+                                    url: $(obj3).find('a').attr('href'), label: $(obj3).find('.item_label').html(),
+                                });
+
+                                // console.log($(obj2).find('a').attr('href'))
+                                // console.log($(obj2).find('.item_label').html())
+                            });
+
+
+                            cols_main_4.push({
+                                'type': 'links', 'header': $(obj2).find('h5').html(), 'items': items
+                            })
+
+                            break;
+
+                        case 'text':
+
+
+                            cols_main_4.push({
+                                'type': 'text', 'header': $(obj2).find('h5').html(), 'text': $(obj2).find('.footer_text').html()
+                            })
+                            break;
+
+                        case 'nothing':
+                            cols_main_4.push({
+                                'type': 'nothing'
+
+                            })
+
+                            break;
+
+                    }
+
+                })
+
+
+            }
+
+
+            if ($(obj).hasClass('bottom_header')) {
+
+                $('.footer_block', obj).each(function (i, obj2) {
+
+                    switch ($(obj2).data('type')) {
+
+                        case 'low_text':
+                            cols_copyright.push({
+                                'type': 'text', 'text': $(obj2).find('.lower_footer_text').html()
+                            })
+
+                            break;
+                        case 'nothing':
+                            cols_copyright.push({
+                                'type': 'nothing'
+                            })
+
+                            break;
+                        case 'social_links':
+                            items = []
+                            $('.social_link', obj2).each(function (i, obj3) {
+                                items.push({
+                                    url: $(obj3).find('a').attr('href'), icon: $(obj3).attr('icon'),
+                                });
+                            })
+                            cols_copyright.push({
+                                'type': 'social_links', 'items': items
+                            })
+
+                            break;
+                        case 'copyright_bundle':
+                            var links = []
+                            $(obj2).find('.copyright_bundle_link').each(function (j, obj3) {
+
+                                links.push({
+                                    url: $(obj3).attr('href'), label: $(obj3).html(),
+                                });
+
+
+                            });
+
+                            cols_copyright.push({
+                                'type': 'copyright_bundle', 'owner': $(obj).find('.copyright_bundle_owner').html(), 'links': links
+                            })
+                            break;
+
+
+                    }
+
+                })
+
+            }
+
+
+        })
+
+        footer_data = {
+            rows: []
+        }
+
+
+        footer_data.rows.push({
+            'type': 'main_4', 'columns': cols_main_4
+        })
+        footer_data.rows.push({
+            'type': 'copyright', 'columns': cols_copyright
+        })
+
+
+        console.log(footer_data)
+        // return;
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'save_footer')
+        ajaxData.append("footer_key", '{$footer_key}')
+        ajaxData.append("footer_data", JSON.stringify(footer_data))
+
+
+        $.ajax({
+            url: "/ar_edit_website.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+            }, success: function (data) {
+
+                if (data.state == '200') {
+
+                    $('#save_button', window.parent.document).removeClass('save').find('i').removeClass('fa-spinner fa-spin')
+                } else if (data.state == '400') {
+                    swal(data.msg);
+                }
+
+
+            }, error: function () {
+
+            }
+        });
+
+
+    }
+
+    var droppedFiles = false;
+
+    $('#file_uploadc').on('change', function (e) {
+
+
+        var ajaxData = new FormData();
+
+        //var ajaxData = new FormData( );
+        if (droppedFiles) {
+            $.each(droppedFiles, function (i, file) {
+                ajaxData.append('files', file);
+            });
+        }
+
+
+        $.each($('#file_upload').prop("files"), function (i, file) {
+            ajaxData.append("files[" + i + "]", file);
+
+        });
+
+
+        ajaxData.append("tipo", 'upload_images')
+        ajaxData.append("parent", 'website')
+        ajaxData.append("parent_key", '{$website->id}')
+
+        ajaxData.append("parent_object_scope", 'Footer')
+
+
+
+        ajaxData.append("metadata", JSON.stringify({
+            scope: 'footer', scope_key: '{$footer_key}'
+        }))
+        ajaxData.append("options", JSON.stringify({
+            max_width: 180
+
+        }))
+
+        ajaxData.append("response_type", 'website')
+
+
+        //   var image = $('#' + $('#image_edit_toolbar').attr('block') + ' img')
+
+
+        $.ajax({
+            url: "/ar_upload.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+
+
+            complete: function () {
+
+            }, success: function (data) {
+
+                console.log(data)
+
+                if (data.state == '200') {
+
+                    console.log($('#change_image').data('element'))
+
+
+
+                    $('#change_image').data('element').attr('src', 'wi.php?id='+data.img_key).attr('web_image_key', data.img_key)
+                    $('#save_button', window.parent.document).addClass('save button changed valid')
+
+
+                } else if (data.state == '400') {
+                    swal.fire({
+                        title: data.title, text: data.msg, confirmButtonText: "OK"
+                    });
+                }
+
+
+            }, error: function () {
+
+            }
+        });
+
+
+    });
+
+
+</script>
+<script src="js/edit_webpage_upload_images_from_iframe.js"></script>
 
 </body></html>
 

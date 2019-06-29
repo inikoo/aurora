@@ -155,6 +155,11 @@ $(document).on('change', '.image_upload_from_iframe', function (e) {
                     case 'button_bg':
                         $("#preview").contents().find("#block_" + element.attr('block_key')).find('div.button_block').css('background-image', 'url(' + data.image_src + ')').attr('button_bg', data.image_src);
                         break;
+                    case 'menu_image':
+                        $('#image_control_panel').data('element').attr('src', data.image_src).attr('image_key', data.img_key).data('src', data.image_src)
+                        case 'footer':
+                            $('#change_image').data('element').attr('src', 'wi.php?id='+data.img_key).attr('web_image_key', data.img_key)
+                        break;
                 }
 
 
