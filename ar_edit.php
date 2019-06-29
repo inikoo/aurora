@@ -2290,28 +2290,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $updated_data = array();
             }
             break;
-        case 'Deal Campaign':
-            include_once 'class.Location.php';
 
-            $data['fields_data']['user'] = $user;
-
-
-            $object = $parent->create_campaign($data['fields_data']);
-
-
-            if (!$parent->error) {
-
-                $smarty->assign('account', $account);
-                $smarty->assign('parent', $parent);
-
-                $smarty->assign('object', $object);
-
-                $pcard        = '';
-                $redirect     = sprintf('campaigns/%d/%d', $object->get('Deal Campaign Store Key'), $object->id);
-                $updated_data = array();
-
-            }
-            break;
 
         case 'Location':
             include_once 'class.Location.php';
