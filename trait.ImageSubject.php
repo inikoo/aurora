@@ -323,6 +323,7 @@ trait ImageSubject {
             );
 
 
+
             $this->db->exec($sql);
             $image_subject_key = $this->db->lastInsertId();
 
