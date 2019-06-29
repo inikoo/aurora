@@ -30,7 +30,7 @@ $editor = array(
 );
 
 
-$sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension` where `Deal Status`='Finish' ");
+$sql = sprintf("SELECT `Deal Key`,`Deal Store Key` FROM `Deal Dimension` where `Deal Campaign Key` is null ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
@@ -38,27 +38,25 @@ if ($result = $db->query($sql)) {
         $deal         = get_object('Deal', $row['Deal Key']);
         $deal->editor = $editor;
 
-        $campaign=get_object('Campaign',$deal->get('Deal Campaign Key'));
+        $campaign = get_object('campaign_code-store_key', 'VO|'.$row['Deal Store Key']);
+
+        $sql = sprintf(
+            'update `Deal Component Dimension` set `Deal Component Campaign Key`=%d  where `Deal Component Deal Key`=%d', $campaign->id, $deal->id
+        );
 
 
-        if($campaign->get('Code')!='OR'){
+        $db->exec($sql);
+        $deal->fast_update(
+            array(
+                'Deal Campaign Key' => $campaign->id
+            )
+        );
 
-            $sql=sprintf('update `Deal Component Dimension` set `Deal Component Status`="Finish" where `Deal Component Deal Key`=%d ',$deal->id);
-            print $sql."\n";
-
-            $db->exec($sql);
-
-        };
-
-
-
+        $deal->finish();
 
 
     }
 }
-
-
-
 
 
 exit;

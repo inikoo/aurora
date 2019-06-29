@@ -218,290 +218,9 @@ function get_marketing_navigation($data, $smarty, $user, $db) {
 }
 
 
-function get_campaigns_navigation($data, $smarty, $user, $db) {
 
 
-    $block_view = $data['section'];
 
-    $left_buttons  = array();
-    $right_buttons = array();
-
-
-    if (count($user->stores) > 1) {
-
-
-        list($prev_key, $next_key) = get_prev_next($data['store']->id, $user->stores);
-
-
-        if ($prev_key) {
-
-            $sql = sprintf(
-                "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $prev_key
-            );
-            if ($result = $db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $prev_title     = _('Campaigns').' '.$row['Store Code'];
-                    $left_buttons[] = array(
-                        'icon'      => 'arrow-left',
-                        'title'     => $prev_title,
-                        'reference' => 'campaigns/'.$prev_key
-                    );
-                } else {
-                    $left_buttons[] = array(
-                        'icon'      => 'arrow-left disabled',
-                        'title'     => '',
-                        'reference' => ''
-                    );
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-
-
-        } else {
-            $left_buttons[] = array(
-                'icon'      => 'arrow-left disabled',
-                'title'     => '',
-                'reference' => ''
-            );
-        }
-
-
-        $left_buttons[] = array(
-            'icon'      => 'arrow-up',
-            'title'     => _('Marketing (All stores)'),
-            'reference' => 'marketing/all',
-            'parent'    => ''
-        );
-
-        if ($next_key) {
-            $sql = sprintf(
-                "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $next_key
-            );
-            if ($result = $db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $next_title     = _('Campaigns').' '.$row['Store Code'];
-                    $left_buttons[] = array(
-                        'icon'      => 'arrow-right',
-                        'title'     => $next_title,
-                        'reference' => 'campaigns/'.$next_key
-                    );
-                } else {
-                    $left_buttons[] = array(
-                        'icon'      => 'arrow-right disabled',
-                        'title'     => '',
-                        'reference' => ''
-                    );
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-        } else {
-            $left_buttons[] = array(
-                'icon'      => 'arrow-right disabled',
-                'title'     => '',
-                'reference' => ''
-            );
-        }
-
-
-    }
-
-
-    $sections = get_sections('products', $data['store']->id);
-
-    if (isset($sections[$data['section']])) {
-        $sections[$data['section']]['selected'] = true;
-    }
-
-
-    $_content = array(
-
-        'sections_class' => '',
-        'sections'       => $sections,
-
-        'left_buttons'  => $left_buttons,
-        'right_buttons' => $right_buttons,
-        'title'         => _('Campaigns').sprintf(' <span class="Store_Code id">%s</span>', $data['store']->get('Code')),
-        'search'        => array(
-            'show'        => true,
-            'placeholder' => _('Search offers')
-        )
-
-    );
-    $smarty->assign('_content', $_content);
-
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
-
-}
-
-
-function get_deals_navigation($data, $smarty, $user, $db) {
-
-
-    $block_view = $data['section'];
-
-    $left_buttons  = array();
-    $right_buttons = array();
-
-
-    if (count($user->stores) > 1) {
-
-
-        list($prev_key, $next_key) = get_prev_next($data['store']->id, $user->stores);
-
-
-        if ($prev_key) {
-
-            $sql = sprintf(
-                "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $prev_key
-            );
-            if ($result = $db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $prev_title     = _('Offers').' '.$row['Store Code'];
-                    $left_buttons[] = array(
-                        'icon'      => 'arrow-left',
-                        'title'     => $prev_title,
-                        'reference' => 'deals/'.$prev_key
-                    );
-                } else {
-                    $left_buttons[] = array(
-                        'icon'      => 'arrow-left disabled',
-                        'title'     => '',
-                        'reference' => ''
-                    );
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-
-
-        } else {
-            $left_buttons[] = array(
-                'icon'      => 'arrow-left disabled',
-                'title'     => '',
-                'reference' => ''
-            );
-        }
-
-
-        $left_buttons[] = array(
-            'icon'      => 'arrow-up',
-            'title'     => _('Marketing (All stores)'),
-            'reference' => 'marketing/all',
-            'parent'    => ''
-        );
-
-        if ($next_key) {
-            $sql = sprintf(
-                "SELECT `Store Code` FROM `Store Dimension` WHERE `Store Key`=%d", $next_key
-            );
-            if ($result = $db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $next_title     = _('Offers').' '.$row['Store Code'];
-                    $left_buttons[] = array(
-                        'icon'      => 'arrow-right',
-                        'title'     => $next_title,
-                        'reference' => 'deals/'.$next_key
-                    );
-                } else {
-                    $left_buttons[] = array(
-                        'icon'      => 'arrow-right disabled',
-                        'title'     => '',
-                        'reference' => ''
-                    );
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-        } else {
-            $left_buttons[] = array(
-                'icon'      => 'arrow-right disabled',
-                'title'     => '',
-                'reference' => ''
-            );
-        }
-
-
-    }
-
-    $sections = get_sections('products', $data['store']->id);
-
-    if (isset($sections[$data['section']])) {
-        $sections[$data['section']]['selected'] = true;
-    }
-
-
-    $_content = array(
-
-        'sections_class' => '',
-        'sections'       => $sections,
-
-        'left_buttons'  => $left_buttons,
-        'right_buttons' => $right_buttons,
-        'title'         => _('Offers').sprintf(
-                ' <span class="Store_Code id">%s</span>', $data['store']->get('Code')
-            ),
-        'search'        => array(
-            'show'        => true,
-            'placeholder' => _('Search offers')
-        )
-
-    );
-    $smarty->assign('_content', $_content);
-
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
-
-}
-
-
-function get_marketing_server_navigation($data) {
-
-
-    global $user, $smarty;
-
-    $block_view = $data['section'];
-
-    $left_buttons  = array();
-    $right_buttons = array();
-    $sections      = get_sections('marketing_server', '');
-
-    if (isset($sections[$data['section']])) {
-        $sections[$data['section']]['selected'] = true;
-    }
-
-
-    $_content = array(
-
-        'sections_class' => '',
-        'sections'       => $sections,
-
-        'left_buttons'  => $left_buttons,
-        'right_buttons' => $right_buttons,
-        'title'         => _('Marketing (All stores)'),
-        'search'        => array(
-            'show'        => true,
-            'placeholder' => _(
-                'Search offers all stores'
-            )
-        )
-
-    );
-    $smarty->assign('_content', $_content);
-
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
-
-}
 
 
 function get_campaign_navigation($data, $smarty, $user, $db) {
@@ -566,7 +285,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
 
 
         $sql = sprintf(
-            "select `Deal Campaign Name` object_name,C.`Deal Campaign Key` as object_key from $table   $where $wheref
+            "select `Deal Campaign Name` object_name,C.`Deal Campaign Code` as object_key from $table   $where $wheref
 	                and ($_order_field < %s OR ($_order_field = %s AND C.`Deal Campaign Key` < %d))  order by $_order_field desc , C.`Deal Campaign Key` desc limit 1",
 
             prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
@@ -574,7 +293,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
                 $prev_key   = $row['object_key'];
-                $prev_title = _("Offer category").' '.$row['object_name'].' ('.$row['object_key'].')';
+                $prev_title = _("Offer category").' '.$row['object_name'];
 
             }
         } else {
@@ -584,7 +303,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
 
 
         $sql = sprintf(
-            "select `Deal Campaign Name` object_name,C.`Deal Campaign Key` as object_key from $table   $where $wheref
+            "select `Deal Campaign Name` object_name,C.`Deal Campaign Code` as object_key from $table   $where $wheref
 	                and ($_order_field  > %s OR ($_order_field  = %s AND C.`Deal Campaign Key` > %d))  order by $_order_field   , C.`Deal Campaign Key`  limit 1", prepare_mysql($_order_field_value),
             prepare_mysql($_order_field_value), $object->id
         );
@@ -592,7 +311,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
                 $next_key   = $row['object_key'];
-                $next_title = _("Offer category").' '.$row['object_name'].' ('.$row['object_key'].')';
+                $next_title = _("Offer category").' '.$row['object_name'];
 
             }
         } else {
@@ -626,7 +345,7 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-left',
                     'title'     => $prev_title,
-                    'reference' => 'campaigns/'.$data['parent_key'].'/'.$prev_key
+                    'reference' => 'offers/'.$data['parent_key'].'/'.strtolower($prev_key)
                 );
 
             } else {
@@ -644,7 +363,8 @@ function get_campaign_navigation($data, $smarty, $user, $db) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-right',
                     'title'     => $next_title,
-                    'reference' => 'campaigns/'.$data['parent_key'].'/'.$next_key
+                    'reference' => 'offers/'.$data['parent_key'].'/'.strtolower($next_key)
+
                 );
 
             } else {
@@ -876,7 +596,7 @@ function get_deal_navigation($data, $smarty, $user, $db) {
             $up_button = array(
                 'icon'      => 'arrow-up',
                 'title'     => _("Marketing").' '.$data['store']->get('Code'),
-                'reference' => 'marketing/'.$data['store']->id.'&tab=deals'
+                'reference' => 'offers/'.$data['store']->id.'&tab=deals'
             );
 
             if ($prev_key) {
@@ -918,15 +638,16 @@ function get_deal_navigation($data, $smarty, $user, $db) {
 
             $up_button = array(
                 'icon'      => 'arrow-up',
-                'title'     => _("Campaign").' '.$data['_parent']->get('Code'),
-                'reference' => 'campaigns/'.$data['store']->id.'/'.$data['parent_key']
+                'title'     => _("Campaign").' '.$data['_parent']->get('Name'),
+                'reference' => 'offers/'.$data['store']->id.'/'.strtolower($data['_parent']->get('Code'))
             );
 
             if ($prev_key) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-left',
                     'title'     => $prev_title,
-                    'reference' => 'campaigns/'.$data['store']->id.'/'.$data['parent_key'].'/deal/'.$prev_key
+                    'reference' => 'offers/'.$data['store']->id.'/'.strtolower($data['_parent']->get('Code')).'/'.$prev_key
+
                 );
 
             } else {
@@ -944,7 +665,7 @@ function get_deal_navigation($data, $smarty, $user, $db) {
                 $left_buttons[] = array(
                     'icon'      => 'arrow-right',
                     'title'     => $next_title,
-                    'reference' => 'campaigns/'.$data['store']->id.'/'.$data['parent_key'].'/deal/'.$next_key
+                    'reference' => 'offers/'.$data['store']->id.'/'.strtolower($data['_parent']->get('Code')).'/'.$next_key
                 );
 
 
