@@ -476,34 +476,31 @@ $(document).on('change', '.image_upload', function (e) {
 
                 switch (element.attr('name') ) {
                     case 'left_menu_background':
-                        $('#website_left_menu_background_mobile').attr('src',data.image_src);
+                        $('#website_left_menu_background_mobile').attr('src', '/wi.php?id='+data.img_key);
 
-                        $('#preview_mobile').contents().find('.sidebar-header-image.bg-1').css('background-image','url('+data.image_src+')');
-                        $('#preview_mobile').contents().find('.sidebar-header-image.bg-1').attr('background-image','url(/wi.php?id='+data.img_key+')')
-
+                        $('#preview_mobile').contents().find('.sidebar-header-image.bg-1').css('background-image','url(/wi.php?id=' + data.img_key + ')')
+                        $('#preview_mobile').contents().find('.sidebar-header-image.bg-1').attr('background-image', 'url(/wi.php?id=' + data.img_key + ')')
                         $('#save_button_mobile').addClass('save button changed valid')
-
                         break;
 
                     case 'left_menu_logo_mobile':
-                        $('#left_menu_logo_mobile').attr('src',data.image_src);
+                        $('#left_menu_logo_mobile').attr('src', '/wi.php?id='+data.img_key);
 
-                        $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo').css('background-image','url('+data.image_src+')');
-                        $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo').attr('background-image','url(/wi.php?id='+data.img_key+')')
+                        $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo').css('background-image', 'url(/wi.php?id=' + data.img_key + ')')
+                        $('#preview_mobile').contents().find('.sidebar-header-image .sidebar-logo').attr('background-image', 'url(/wi.php?id=' + data.img_key + ')')
                         $('#save_button_mobile').addClass('save button changed valid')
 
                         break;
 
                     case 'favicon':
-                        $('#favicon').attr('src',data.image_src);
+                        $('#favicon').attr('src', '/wi.php?id='+data.img_key);
                         $('#save_button').addClass('save button changed valid')
 
                         break;
                     case 'logo_mobile':
 
 
-                        console.log(data)
-                        $('#website_logo_mobile').attr('src',data.image_src);
+                        $('#website_logo_mobile').attr('src', '/wi.php?id='+data.img_key);
 
                         $('#preview_mobile').contents().find('.header-logo').css('background-image','url(/wi.php?id='+data.img_key+')');
 

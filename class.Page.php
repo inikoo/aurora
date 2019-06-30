@@ -1637,79 +1637,69 @@ class Page extends DB_Table {
 
         $this->updated = false;
 
-        $website = get_object('Website', $this->get('Webpage Website Key'));
 
 
-        if ($website->get('Website Theme') == 'theme_1') {
+        $content_data = $this->get('Content Data');
+        if (isset($content_data['blocks'])) {
+            foreach ($content_data['blocks'] as $block_key => $block) {
 
-            $content_data = $this->get('Content Data');
-            if (isset($content_data['blocks'])) {
-                foreach ($content_data['blocks'] as $block_key => $block) {
-
-                    //  print $block['type']."\n";
-
-                    switch ($block['type']) {
-                        case 'category_products':
-                            $this->reindex_category_products();
-                            break;
-                        case 'category_categories':
-                            $this->reindex_category_categories();
-                            break;
-                        case 'products':
-                            $this->reindex_products();
-                            break;
-                        case 'product':
-                            $this->reindex_product();
-                            break;
-                        case 'see_also':
-                            $this->reindex_see_also();
-                            break;
-                    }
-
+                switch ($block['type']) {
+                    case 'category_products':
+                        $this->reindex_category_products();
+                        break;
+                    case 'category_categories':
+                        $this->reindex_category_categories();
+                        break;
+                    case 'products':
+                        $this->reindex_products();
+                        break;
+                    case 'product':
+                        $this->reindex_product();
+                        break;
+                    case 'see_also':
+                        $this->reindex_see_also();
+                        break;
 
                 }
+
+
             }
-            $this->updated = true;
+        }
+        $this->updated = true;
 
 
-            $smarty_web = new Smarty();
+        $smarty_web = new Smarty();
 
-            if (empty($this->fork)) {
-                $base = '';
-            } else {
-                $account = get_object('Account', 1);
-                $base    = 'base_dirs/_home.'.strtoupper($account->get('Account Code')).'/';
-            }
-
-            $smarty_web->template_dir = $base.'EcomB2B/templates';
-            $smarty_web->compile_dir  = $base.'EcomB2B/server_files/smarty/templates_c';
-            $smarty_web->cache_dir    = $base.'EcomB2B/server_files/smarty/cache';
-            $smarty_web->config_dir   = $base.'EcomB2B/server_files/smarty/configs';
-            $smarty_web->addPluginsDir('./smarty_plugins');
-
-            $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-
-            //   $theme        = 'theme_1';
-            //   $website_type = 'EcomB2B';
-
-
-            $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
-            $smarty_web->clearCache(null, $cache_id);
+        if (empty($this->fork)) {
+            $base = '';
+        } else {
             $account = get_object('Account', 1);
+            $base    = 'base_dirs/_home.'.strtoupper($account->get('Account Code')).'/';
+        }
+
+        $smarty_web->template_dir = $base.'EcomB2B/templates';
+        $smarty_web->compile_dir  = $base.'EcomB2B/server_files/smarty/templates_c';
+        $smarty_web->cache_dir    = $base.'EcomB2B/server_files/smarty/cache';
+        $smarty_web->config_dir   = $base.'EcomB2B/server_files/smarty/configs';
+        $smarty_web->addPluginsDir('./smarty_plugins');
+
+        $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
 
-            $redis = new Redis();
-            if ($redis->connect('127.0.0.1', 6379)) {
-
-                $cache_id_prefix = 'pwc2|'.$account->get('Code').'|'.$this->get('Webpage Website Key').'_';
-
-                $redis->delete($cache_id_prefix.$this->data['Page Code']);
-                $redis->delete($cache_id_prefix.strtolower($this->data['Page Code']));
-                $redis->delete($cache_id_prefix.strtoupper($this->data['Page Code']));
-                $redis->delete($cache_id_prefix.ucfirst($this->data['Page Code']));
+        $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
+        $smarty_web->clearCache(null, $cache_id);
+        $account = get_object('Account', 1);
 
 
-            }
+        $redis = new Redis();
+        if ($redis->connect('127.0.0.1', 6379)) {
+
+            $cache_id_prefix = 'pwc2|'.$account->get('Code').'|'.$this->get('Webpage Website Key').'_';
+
+            $redis->delete($cache_id_prefix.$this->data['Page Code']);
+            $redis->delete($cache_id_prefix.strtolower($this->data['Page Code']));
+            $redis->delete($cache_id_prefix.strtoupper($this->data['Page Code']));
+            $redis->delete($cache_id_prefix.ucfirst($this->data['Page Code']));
 
 
         }
@@ -2003,8 +1993,6 @@ class Page extends DB_Table {
                 break;
 
 
-
-
             case('Webpage Launching Date'):
 
 
@@ -2180,7 +2168,6 @@ class Page extends DB_Table {
             case 'Page Store Content Data':
 
 
-
                 $content_data = json_decode($value, true);
 
 
@@ -2198,8 +2185,6 @@ class Page extends DB_Table {
 
                 $this->update_field('Page Store Content Data', $value, $options);
                 $this->update_store_search();
-
-
 
 
                 break;
@@ -2270,8 +2255,6 @@ class Page extends DB_Table {
 
 
     }
-
-
 
 
     function update_version() {
@@ -2559,7 +2542,6 @@ class Page extends DB_Table {
 
 
     }
-
 
 
     function reset_object() {
@@ -4162,10 +4144,6 @@ class Page extends DB_Table {
                 $items[$row['Category Key']]                    = $row;
                 $items_category_key_index[$row['Category Key']] = $row['Category Key'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $offline_items_category_key_index = array();
@@ -4180,10 +4158,6 @@ class Page extends DB_Table {
 
                 $offline_items_category_key_index[$row['Category Key']] = $row['Category Key'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $anchor_section_key = 0;
@@ -4196,15 +4170,19 @@ class Page extends DB_Table {
 
             if (isset($section['items']) and is_array($section['items'])) {
                 foreach ($section['items'] as $item_key => $item) {
-                    if ($item['type'] == 'category') {
 
+
+
+                    if ($item['type'] == 'category') {
 
 
                         if (in_array($item['category_key'], $items_category_key_index)) {
 
+
+                         // print_r($content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]);
+
+
                             $item_data = $items[$item['category_key']];
-
-
 
 
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['item_type']       = 'Subject';
@@ -4213,8 +4191,6 @@ class Page extends DB_Table {
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['category_code']   = $item_data['Category Code'];
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['number_products'] = $item_data['Product Category Active Products'];
                             $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['link']            = $item_data['Webpage URL'];
-
-
 
 
                             unset($items_category_key_index[$item['category_key']]);
@@ -4268,13 +4244,14 @@ class Page extends DB_Table {
         }
 
 
+
         foreach ($items_category_key_index as $index) {
             $item_data = $items[$index];
             $item      = array(
                 'type'                 => 'category',
                 'category_key'         => $item_data['Category Key'],
                 'header_text'          => trim(strip_tags($item_data['Category Label'])),
-                'image_src'            => ($item_data['Category Main Image Key'] ? 'image.php?id='.$item_data['Category Main Image Key'] : '/art/nopic.png'),
+                'image_src'            => ($item_data['Category Main Image Key'] ? 'wi.php?id='.$item_data['Category Main Image Key'] : '/art/nopic.png'),
                 'image_mobile_website' => '',
                 'image_website'        => '',
                 'webpage_key'          => $item_data['Page Key'],

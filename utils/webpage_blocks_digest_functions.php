@@ -325,6 +325,9 @@ function digest_website_content_data_blocks($content_data) {
                 break;
             case 'category_categories':
 
+
+
+
                 foreach ($block['sections'] as $section_key => $section) {
 
                     if (isset($section['items']) and is_array($section['items'])) {
@@ -333,16 +336,16 @@ function digest_website_content_data_blocks($content_data) {
                         foreach ($section['items'] as $item_key => $item) {
 
                             if ($item['type'] == 'category') {
-                                if (empty($item['image_mobile_website'])) {
+
                                     $image_mobile_website = $item['image_src'];
                                     if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
                                         $image_key            = $matches[1];
                                         $image_mobile_website = 'wi.php?id='.$image_key.'&s=320x200';
                                     }
                                     $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website'] = $image_mobile_website;
-                                }
 
-                                if (empty($item['image_website'])) {
+
+
                                     $image_website = $item['image_src'];
                                     if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
                                         $image_key     = $matches[1];
@@ -355,7 +358,7 @@ function digest_website_content_data_blocks($content_data) {
                                     $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website'] = $image_website;
 
 
-                                }
+
                             } elseif ($item['type'] == 'image') {
 
                                 if (empty($item['image_website'])) {

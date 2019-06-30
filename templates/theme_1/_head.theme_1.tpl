@@ -49,6 +49,8 @@
     <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js"></script>
     <script src="js/libs/master_slider/banner.js"></script>
 
+    <script src="/js/edit_webpage_upload_images_from_iframe.js"></script>
+
 
     <script src="/js/libs/sweetalert.min.js?v2a"></script>
 
