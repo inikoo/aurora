@@ -106,6 +106,16 @@ if ($row = $stmt->fetch()) {
     $cached_image_path = preg_replace('/^img\/public_db/', 'img/public_cache', $image_path);
     $cached_image_path = preg_replace('/\./', '_'.$size_r.'.', $cached_image_path);
 
+
+    if (!is_dir('img/public_cache/'.$row['Image File Checksum'][0])) {
+        mkdir('img/public_cache/'.$row['Image File Checksum'][0]);
+    }
+
+
+    if (!is_dir('img/public_cache/'.$row['Image File Checksum'][0].'/'.$row['Image File Checksum'][1])) {
+        mkdir('img/public_cache/'.$row['Image File Checksum'][0].'/'.$row['Image File Checksum'][1]);
+    }
+
     if ($size_r != '') {
         list($w, $h) = preg_split('/x/', $size_r);
         $image              = new ImageResize($image_path);
@@ -115,14 +125,7 @@ if ($row = $stmt->fetch()) {
         $image->resizeToBestFit($w, $h);
 
 
-        if (!is_dir('img/public_cache/'.$row['Image File Checksum'][0])) {
-            mkdir('img/public_cache/'.$row['Image File Checksum'][0]);
-        }
 
-
-        if (!is_dir('img/public_cache/'.$row['Image File Checksum'][0].'/'.$row['Image File Checksum'][1])) {
-            mkdir('img/public_cache/'.$row['Image File Checksum'][0].'/'.$row['Image File Checksum'][1]);
-        }
 
 
         $image->save($cached_image_path);

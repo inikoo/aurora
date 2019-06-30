@@ -44,13 +44,20 @@
     </div>
     <div class="button_container">
         <div class="flex-item full change_category_image button">
-            <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
-                <input type="file" name="category_categories_category" id="file_upload_{$category_data.category_key}" class="image_upload hide" multiple
-                       data-scope="Category"  data-metadata='{ "block":"category_categories", "scope":"category", "scope_key":"{$category_data.category_key}"}'/>
-                <label for="file_upload_{$category_data.category_key}">
-                    <i class="fa  fa-image fa-fw button" aria-hidden="true"></i> {t}Change image{/t}
-                </label>
-            </form>
+
+
+
+            <input style="display:none" type="file"  name="category_categories_category"  id="file_upload_{$category_data.category_key}" class="image_upload_from_iframe hide"
+                   data-parent="Webpage"  data-parent_key="{$webpage->id}"  data-parent_object_scope="Item"   data-metadata='{ "block":"category_categories", "scope":"category", "scope_key":"{$category_data.category_key}"}'   data-options='' data-response_type="webpage" />
+
+            <label for="file_upload_{$category_data.category_key}">
+                <i class="fa  fa-image fa-fw button" aria-hidden="true"></i> {t}Change image{/t}
+            </label>
+
+
+
+
+
         </div>
     </div>
 </div>

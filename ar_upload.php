@@ -805,6 +805,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
                 'image_src'      => sprintf('/image.php?id=%d', $image->id),
                 'thumbnail'      => sprintf('<img src="/image.php?id=%d&size=25x20">', $image->id),
                 'small_image'    => sprintf('<img src="/image.php?id=%d&size=320x280">', $image->id),
+
                 'img_key'        => $image->id,
                 'height'         => $image->get('Image Height'),
                 'width'          => $image->get('Image Width'),
