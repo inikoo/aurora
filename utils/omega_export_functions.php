@@ -132,7 +132,7 @@ function get_omega_export_text($db,$account,$invoice) {
 
     }
 
-    $_total_amount_exchange = round($invoice->get('Invoice Items Net Amount') * $exchange_rate, 2) + round($invoice->get('Invoice Shipping Net Amount') * $exchange_rate, 2) + round($invoice->get('Invoice Charges Net Amount') * $exchange_rate, 2) + round(
+    $_total_amount_exchange = round( ($invoice->get('Invoice Items Net Amount')-$invoice->get('Invoice Net Amount Off') ) * $exchange_rate, 2) + round($invoice->get('Invoice Shipping Net Amount') * $exchange_rate, 2) + round($invoice->get('Invoice Charges Net Amount') * $exchange_rate, 2) + round(
             $invoice->get('Invoice Total Tax Amount') * $exchange_rate, 2
         );
 
@@ -162,7 +162,7 @@ function get_omega_export_text($db,$account,$invoice) {
         10,
         20,
         '0.000',
-        $invoice->get('Invoice Items Net Amount') + $invoice->get('Invoice Shipping Net Amount') + $invoice->get('Invoice Charges Net Amount'),
+        $invoice->get('Invoice Items Net Amount') -$invoice->get('Invoice Net Amount Off')+ $invoice->get('Invoice Shipping Net Amount') + $invoice->get('Invoice Charges Net Amount'),
         '0.000',
         '0.000',
         '0.000',
@@ -258,8 +258,8 @@ function get_omega_export_text($db,$account,$invoice) {
         '',
         604,
         $invoice_numeric_code_total,
-        round($invoice->get('Invoice Items Net Amount') * $exchange_rate, 2),
-        $invoice->get('Invoice Items Net Amount'),
+        round(($invoice->get('Invoice Items Net Amount') -$invoice->get('Invoice Net Amount Off'))* $exchange_rate, 2),
+        $invoice->get('Invoice Items Net Amount')-$invoice->get('Invoice Net Amount Off'),
         'Items '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
         $code_sum,
         '',
