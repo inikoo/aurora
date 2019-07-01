@@ -44,3 +44,4 @@ update `Image Subject Bridge` set `Image Subject Is Public`='No' where `Image Su
  update `Image Subject Bridge` set `Image Subject Object Image Scope`='Profile' where `Image Subject Object`='Staff';
  update `Image Subject Bridge` set `Image Subject Object Image Scope`='Marketing' where `Image Subject Object` in ('Category','Part','Product') and `Image Subject Object Image Scope`='Default' ;
   update `Image Subject Bridge` set `Image Subject Object Image Scope`='Footer' where `Image Subject Object` in ('Website') and `Image Subject Object Image Scope`!='Default' ;
+DROP TABLE `Template Dimension`, `Template Scope Dimension`;
