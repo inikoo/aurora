@@ -1434,9 +1434,12 @@ function search_customers($db, $account, $user, $data) {
         return;
     }
 
+
+
+
     if ($data['scope'] == 'store') {
         if (in_array($data['scope_key'], $user->stores)) {
-            $stores      = $data['scope_key'];
+           // $stores      = $data['scope_key'];
             $where_store = sprintf(
                 ' and `Customer Store Key`=%d', $data['scope_key']
             );
@@ -1444,7 +1447,7 @@ function search_customers($db, $account, $user, $data) {
             $where_store = ' and false';
         }
     } else {
-        if (count($user->stores) == $account->data['Stores']) {
+        if (count($user->stores) == $account->data['Account Stores']) {
             $where_store = '';
         } else {
             $where_store = sprintf(
@@ -1452,7 +1455,7 @@ function search_customers($db, $account, $user, $data) {
             );
         }
 
-        $stores = join(',', $user->stores);
+      //  $stores = join(',', $user->stores);
     }
 
 
