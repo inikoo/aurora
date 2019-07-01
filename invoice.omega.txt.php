@@ -127,7 +127,7 @@ if ($account->get('Account Country 2 Alpha Code') == $invoice->get('Invoice Addr
 
 if ($invoice->get('Invoice Address Country 2 Alpha Code') == 'SK') {
 
-    if($invoice->get('Order Registration Number')!=''   or $invoice->get('Invoice Tax Number')!=''       ){
+    if($invoice->get('Invoice Registration Number')!=''   or $invoice->get('Invoice Tax Number')!=''       ){
         $code_tax = 'A1';
 
     }else{
