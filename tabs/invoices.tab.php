@@ -37,7 +37,7 @@ $parameters = array(
 
 
 if($account->get('Account Country 2 Alpha Code')=='SK'){
-    $smarty->assign('export_omega',true);
+    $smarty->assign('export_omega_invoices',true);
 
 }
 
