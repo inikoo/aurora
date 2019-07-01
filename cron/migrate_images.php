@@ -20,7 +20,12 @@ if ($result2 = $db->query($sql)) {
         $image = get_object('image', $row2['Image Key']);
 
 
-        $tmp_file = $image->save_image_to_file('/tmp', '_'.$image->get('Image File Checksum'));
+        $tmp_file = save_image_to_file($image,'/tmp', '_'.$image->get('Image File Checksum'));
+
+
+
+
+
 
         $tmp_file = '/tmp/'.$tmp_file;
 
@@ -134,3 +139,23 @@ if ($result2 = $db->query($sql)) {
     }
 }
 
+
+function save_image_to_file($image,$path, $filename = false) {
+
+
+    $image_data = $image->data['Image Data'];
+
+    if (!$filename) {
+        $filename = $image->id;
+    }
+
+
+    $extension = $image->data['Image File Format'];
+
+
+
+    file_put_contents($path.'/'.$filename.'.'.$extension, $image_data);
+
+    return $filename.'.'.$extension;
+
+}

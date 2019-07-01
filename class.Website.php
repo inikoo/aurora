@@ -255,8 +255,6 @@ class Website extends DB_Table {
             $this->create_header($header_data);
 
 
-            $this->setup_templates();
-
 
             include 'conf/webpage_types.php';
             foreach ($webpage_types as $webpage_type) {
@@ -645,46 +643,7 @@ class Website extends DB_Table {
 
     }
 
-    function setup_templates() {
 
-        include_once('class.TemplateScope.php');
-        include_once('class.Template.php');
-        include_once('conf/website_templates.php');
-
-        $templates = website_templates_config($this->get('Website Type'));
-
-        //print_r($templates);
-
-        foreach ($templates['templates'] as $template_code => $_template_data) {
-            // print_r($_template_data);
-
-            $template_scope_data = array(
-                'Template Scope Website Key' => $this->id,
-                'Template Scope Code'        => $_template_data['scope'],
-
-                'editor' => $this->editor
-
-            );
-
-            $template_scope = new TemplateScope('find', $template_scope_data, 'create');
-
-
-            $template_data = array(
-                'Template Code'   => $template_code,
-                'Template Base'   => 'Yes',
-                'Template Device' => (isset($_template_data['device']) ? $_template_data['device'] : 'desktop'),
-                'editor'          => $this->editor
-
-            );
-
-            $template_scope->create_template($template_data);
-
-            // $template=new Template('find',$template_data,'create');
-
-        }
-
-
-    }
 
     function create_system_webpage($data) {
 
