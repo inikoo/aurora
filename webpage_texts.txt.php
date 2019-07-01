@@ -83,9 +83,8 @@ function get_product_text($product) {
 }
 
 
-function get_category_text($category) {
+function get_category_text($db,$category) {
 
-    global $db;
 
     $category->get_webpage();
     $webpage      = $category->webpage;
@@ -100,18 +99,34 @@ function get_category_text($category) {
     $text .= "\n";
 
 
-    foreach ($content_data['description_block']['blocks'] as $id => $data) {
-        if ($data['type'] == 'text' and $data['content'] != '') {
-            $text .= strip_tags(br2nl($data['content']))."\n";
+
+   // print_r($content_data);
+
+    foreach ($content_data['blocks'] as $_key => $block) {
+        if ($block['type'] == 'blackboard' ) {
+
+
+            foreach ($content_data['blocks'][$_key]['texts'] as $_key2 => $text_data) {
+                if ($block['type'] == 'blackboard' ) {
+
+
+                    $text .= strip_tags(br2nl($content_data['blocks'][$_key]['texts'][$_key2]['text']))."\n";
+                }
+
+            }
         }
 
     }
 
 
+
+
+
+
     if ($category->get('Category Subject') == 'Product') {
 
         $sql = sprintf(
-            "SELECT `Product Category Index Key`,`Product Category Index Content Data`,`Product Category Index Product ID`,`Product Category Index Category Key`,`Product Category Index Stack`, P.`Product ID`,`Product Code`,`Product Web State` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`,   ifnull(`Product Category Index Stack`,99999999)",
+            "SELECT P.`Product ID` FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  LEFT JOIN `Product Category Index` S ON (`Subject Key`=S.`Product Category Index Product ID` AND S.`Product Category Index Category Key`=B.`Category Key`)  WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State`,   ifnull(`Product Category Index Stack`,99999999)",
             $category->id
         );
 
@@ -128,12 +143,7 @@ function get_category_text($category) {
 
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
-
     $text .= "\n";
 
     return $text;
@@ -152,7 +162,7 @@ $object = get_object($_REQUEST['parent'], $_REQUEST['key']);
 
 
 if ($object->get_object_name() == 'Category') {
-    $text = get_category_text($object);
+    $text = get_category_text($db,$object);
 } elseif ($object->get_object_name() == 'Product') {
     $text = get_product_text($object);
 }
@@ -174,4 +184,4 @@ $text = preg_replace("/\&apos\;/", "'", $text);
 //header("Content-Type: text/plain");
 print $text;
 
-?>
+

@@ -20,17 +20,9 @@ if (!isset($_REQUEST['id'])) {
 }
 
 
-if (isset($_REQUEST['size']) and preg_match(
-        '/^(large|small|thumbnail|tiny|original)$/', $_REQUEST['size']
-    )
-) {
-    $size = $_REQUEST['size'];
-} else {
-    $size = 'large';
-}
 
 
-$attachement_not_found_image = 'art/error_404.png';
+$attachment_not_found_image = 'art/error_404.png';
 $no_preview_image            = 'art/attachment_no_preview.png';
 $forbidden_image             = 'art/error_403.jpg';
 
@@ -48,13 +40,12 @@ if ($result = $db->query($sql)) {
 
         if ($row['Attachment Thumbnail Image Key']) {
 
-            if (authorize_file_view(
-                $db, $user, $row['Attachment Public'], $row['Subject'], $row['Subject Key']
-            )) {
+            if (authorize_file_view($db, $user, $row['Attachment Public'], $row['Subject'], $row['Subject Key'])) {
 
-                display_database_image(
-                    $db, $row['Attachment Thumbnail Image Key']
-                );
+
+                echo file_get_contents('image.php?id='.$row['Attachment Thumbnail Image Key'].(!empty($_REQUEST['s'])?'&s='.$_REQUEST['s'] :'' ));
+
+
             } else {
 
                 header('Content-type:image/jpg');
@@ -71,7 +62,7 @@ if ($result = $db->query($sql)) {
 
     } else {
         header('Content-type:image/png');
-        readfile($attachement_not_found_image);
+        readfile($attachment_not_found_image);
         exit;
     }
 
@@ -82,61 +73,3 @@ if ($result = $db->query($sql)) {
 
 }
 
-
-function display_database_image($db, $image_key, $size = 'small') {
-
-    $sql = sprintf(
-        'SELECT `Image Filename`,`Image Data`,`Image Small Data`,`Image Large Data`,`Image Thumbnail Data` FROM `Image Dimension` WHERE `Image Key`=%d', $image_key
-    );
-    if ($result = $db->query($sql)) {
-
-        if ($row = $result->fetch()) {
-
-            header('Content-type: image/jpeg');
-            header(
-                'Content-Disposition: inline; filename='.$row['Image Filename']
-            );
-            //readfile($row['Attachment Filename']);
-            // echo  $row['Image Data'];
-            // var_dump(  $row) ;
-
-            //exit;
-
-            if ($size == 'original') {
-                echo $row['Image Data'];
-            } elseif ($size == 'large') {
-                if (!$row['Image Large Data']) {
-                    echo $row['Image Data'];
-                } else {
-                    echo $row['Image Large Data'];
-                }
-            } elseif ($size == 'small') {
-                if (!$row['Image Small Data']) {
-                    echo $row['Image Data'];
-                } else {
-                    echo $row['Image Small Data'];
-                }
-            } elseif ($size == 'thumbnail' or $size == 'tiny') {
-                echo $row['Image Thumbnail Data'];
-
-            } else {
-                echo $row['Image Data'];
-
-            }
-
-        } else {
-            header("HTTP/1.0 404 Not Found");
-            exit();
-
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
-
-    }
-
-
-}
-
-
-?>

@@ -111,7 +111,7 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
 
-$sql  = sprintf('select `Image Path`,`Image MIME Type` from `Image Dimension` where `Image Key`=? ');
+$sql  = sprintf('select `Image Path`,`Image MIME Type`,`Image File Checksum` from `Image Dimension` where `Image Key`=? ');
 $stmt = $db->prepare($sql);
 
 //print $sql;
@@ -125,8 +125,23 @@ if ($row = $stmt->fetch()) {
     $image_path = $row['Image Path'];
     $image_mime = $row['Image MIME Type'];
 
+
+
+
+
     $cached_image_path = preg_replace('/^img\/db/', 'img/cache', $image_path);
     $cached_image_path = preg_replace('/\./', '_'.$size_r.'.', $cached_image_path);
+
+
+
+    if (!is_dir('img/cache/'.$row['Image File Checksum'][0])) {
+        mkdir('img/cache/'.$row['Image File Checksum'][0]);
+    }
+
+    if (!is_dir('img/cache/'.$row['Image File Checksum'][0].'/'.$row['Image File Checksum'][1])) {
+        mkdir('img/cache/'.$row['Image File Checksum'][0].'/'.$row['Image File Checksum'][1]);
+    }
+
 
     if($size_r!=''){
         list($w, $h) = preg_split('/x/', $size_r);

@@ -237,13 +237,7 @@ class Website extends DB_Table {
                         'tmp_name' => 'conf/website.logo.png',
                         'type'     => 'png'
                     ),
-                    'Image Subject Object Image Scope' => json_encode(
-                        array(
-                            'scope'     => 'website_logo',
-                            'scope_key' => $this->id
-
-                        )
-                    )
+                    'Image Subject Object Image Scope' => 'Logo'
 
                 )
             );
@@ -335,8 +329,6 @@ class Website extends DB_Table {
                     'Website Style' => json_encode($website_styles)
                 )
             );
-
-
 
 
             return;
@@ -634,7 +626,6 @@ class Website extends DB_Table {
         $data['Website Header Website Key'] = $this->id;
 
 
-
         $header = new WebsiteHeader('find', $data, 'create');
         if (!$header->id) {
             $this->error = true;
@@ -735,18 +726,18 @@ class Website extends DB_Table {
 
         $page_data = array(
 
-            'Page Code'                            => $data['Webpage Code'],
-            'Page URL'                             => $this->data['Website URL'].'/'.strtolower($data['Webpage Code']),
-            'Page Type'                            => 'Store',
-            'Page Store Key'                       => $this->get('Website Store Key'),
-            'Page Store Creation Date'             => gmdate('Y-m-d H:i:s'),
-            'Number See Also Links'                => 0,
+            'Page Code'                => $data['Webpage Code'],
+            'Page URL'                 => $this->data['Website URL'].'/'.strtolower($data['Webpage Code']),
+            'Page Type'                => 'Store',
+            'Page Store Key'           => $this->get('Website Store Key'),
+            'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
+            'Number See Also Links'    => 0,
 
-            'Page Title'                           => $data['Webpage Name'],
-            'Page Short Title'                     => $data['Webpage Browser Title'],
-            'Page Parent Key'                      => 0,
-            'Page State'                           => 'Online',
-            'Page Store Description'               => $data['Webpage Meta Description'],
+            'Page Title'             => $data['Webpage Name'],
+            'Page Short Title'       => $data['Webpage Browser Title'],
+            'Page Parent Key'        => 0,
+            'Page State'             => 'Online',
+            'Page Store Description' => $data['Webpage Meta Description'],
 
 
             'Webpage Scope'                 => $data['Webpage Scope'],
@@ -1100,24 +1091,19 @@ class Website extends DB_Table {
         }
 
 
-
-
         $page_code = $this->get_unique_code($category->get('Code'), 'Webpage');
 
 
         $webpage_type = new Webpage_Type('website_code', $this->id, ($category->get('Category Subject') == 'Product' ? 'Prods' : 'Cats'));
 
 
-
-
-
         $page_data = array(
-            'Page Code'                            => $page_code,
-            'Page URL'                             => $this->data['Website URL'].'/'.strtolower($page_code),
-            'Page Type'                            => 'Store',
-            'Page Store Key'                       => $category->get('Category Store Key'),
-            'Page Store Creation Date'             => gmdate('Y-m-d H:i:s'),
-            'Number See Also Links'                => ($category->get('Category Subject') == 'Product' ? 5 : 0),
+            'Page Code'                => $page_code,
+            'Page URL'                 => $this->data['Website URL'].'/'.strtolower($page_code),
+            'Page Type'                => 'Store',
+            'Page Store Key'           => $category->get('Category Store Key'),
+            'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
+            'Number See Also Links'    => ($category->get('Category Subject') == 'Product' ? 5 : 0),
 
 
             'Webpage Scope'                 => ($category->get('Category Subject') == 'Product' ? 'Category Products' : 'Category Categories'),
@@ -1145,7 +1131,7 @@ class Website extends DB_Table {
             'Page Short Title'                       => $category->get('Label'),
             'Page Store Title'                       => $category->get('Label'),
 
-            'editor'                                 => $this->editor,
+            'editor' => $this->editor,
 
         );
 
@@ -1187,74 +1173,6 @@ class Website extends DB_Table {
         $this->error        = $page->error;
 
 
-        if ($this->get('Website Theme') == 'theme_1') {
-
-
-        } else {
-
-            if ($category->get('Category Subject') == 'Product') {
-
-
-                $title = $category->get('Label');
-                if ($title == '') {
-                    $title = $category->get('Code');
-                }
-                if ($title == '') {
-                    $title = _('Title');
-                }
-
-                $description = $category->get('Product Category Description');
-                if ($description == '') {
-                    $description = $category->get('Label');
-                }
-                if ($description == '') {
-                    $description = $category->get('Code');
-                }
-                if ($description == '') {
-                    $description = _('Description');
-                }
-
-
-                $image_src = $category->get('Image');
-
-                $content_data = array(
-                    'description_block' => array(
-                        'class' => '',
-
-                        'blocks' => array(
-
-                            'webpage_content_header_image' => array(
-                                'type'      => 'image',
-                                'image_src' => $image_src,
-                                'caption'   => '',
-                                'class'     => ''
-
-                            ),
-
-                            'webpage_content_header_text' => array(
-                                'class'   => '',
-                                'type'    => 'text',
-                                'content' => sprintf('<h1 class="description_title">%s</h1><div class="description">%s</div>', $title, $description)
-
-                            )
-
-                        )
-                    )
-
-                );
-
-                //  print_r($content_data);
-                $page->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
-
-                $category->create_stack_index(true);
-            }
-        }
-
-
-        //$this->update_product_totals();
-        //$this->update_page_totals();
-
         return $page->id;
 
     }
@@ -1265,8 +1183,6 @@ class Website extends DB_Table {
         include_once 'class.Webpage_Type.php';
         include_once 'class.Page.php';
         include_once 'class.Product.php';
-
-
 
 
         $sql = sprintf(
@@ -1298,19 +1214,16 @@ class Website extends DB_Table {
         $page_code = $this->get_unique_code($product->get('Code'), 'Webpage');
 
 
-
-
         $webpage_type = new Webpage_Type('website_code', $this->id, 'Prod');
 
 
-
         $page_data = array(
-            'Page Code'                            => $page_code,
-            'Page URL'                             => $this->data['Website URL'].'/'.strtolower($page_code),
-            'Page Type'                            => 'Store',
-            'Page Store Key'                       => $product->get('Product Store Key'),
-            'Page Store Creation Date'             => gmdate('Y-m-d H:i:s'),
-            'Number See Also Links'                => 5,
+            'Page Code'                => $page_code,
+            'Page URL'                 => $this->data['Website URL'].'/'.strtolower($page_code),
+            'Page Type'                => 'Store',
+            'Page Store Key'           => $product->get('Product Store Key'),
+            'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
+            'Number See Also Links'    => 5,
 
 
             'Webpage Scope'                          => 'Product',
@@ -1368,26 +1281,7 @@ class Website extends DB_Table {
         $this->error        = $page->error;
 
 
-        if ($this->get('Website Theme') == 'theme_1') {
-            $page->reset_object();
-        } else {
-
-            $content_data = array(
-                'description_block' => array(
-                    'class' => '',
-
-                    'content' => sprintf('<div class="description">%s</div>', $product->get('Description'))
-
-
-                ),
-                'tabs'              => array()
-
-            );
-
-            $page->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
-
-        }
+        $page->reset_object();
 
 
         //todo: AUR-33

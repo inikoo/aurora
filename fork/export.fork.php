@@ -10,8 +10,14 @@
 
 */
 
+use \Gumlet\ImageResize;
+use Spatie\ImageOptimizer\OptimizerChainFactory;
 
 function fork_export($job) {
+
+
+    require_once 'vendor/autoload.php';
+    include_once 'utils/image_functions.php';
 
 
     if (!$_data = get_fork_metadata($job)) {
@@ -21,6 +27,7 @@ function fork_export($job) {
     list($account, $db, $fork_data, $editor, $session) = $_data;
 
     $inikoo_account_code = $account->get('Account Code');
+
 
     $output_type   = $fork_data['output'];
     $sql_count     = $fork_data['sql_count'];
@@ -41,6 +48,8 @@ function fork_export($job) {
 
     $output_filename = 'export_'.$inikoo_account_code.'_'.$fork_data['table'].'_'.$download_key;
 
+    //print "Exporting $output_filename\n";
+
 
     $sql = sprintf(
         'update `Download Dimension` set `Download State`="In Process",`Download Filename`=%s where `Download Key`=%d  ', prepare_mysql($output_filename.'.'.$output_type), $download_key
@@ -50,10 +59,10 @@ function fork_export($job) {
     $db->exec($sql);
 
 
-    $files_to_delete=array();
+    $files_to_delete = array();
 
 
-    $columns_no_resize=array();
+    $columns_no_resize = array();
 
     $number_rows = 0;
 
@@ -169,10 +178,10 @@ function fork_export($job) {
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
 
-           //print_r($row);
+           // print_r($row);
             //usleep(10000);
 
-           // exit;
+            // exit;
 
             if ($row_index == 1) {
 
@@ -233,7 +242,6 @@ function fork_export($job) {
                 if ($sql_field == 'Part Materials') {
 
 
-
                     $materials = '';
                     if ($value != '') {
 
@@ -278,55 +286,128 @@ function fork_export($job) {
 
                 if ($sql_field == 'Part Main Image Key') {
 
-                    if($value>0){
+                    if ($value > 0) {
 
-                        $columns_no_resize[]=$char;
+
+                        $columns_no_resize[] = $char;
 
                         $objDrawing = new PHPExcel_Worksheet_Drawing();    //create object for Worksheet drawing
                         $objDrawing->setName('Image');        //set name to image
                         $objDrawing->setDescription('Item image'); //set description to image
 
 
-                        $tmp_file='tmp/'.$output_filename.date('U').$row_index.'.png';
+                        //$tmp_file = 'tmp/'.$output_filename.date('U').$row_index.'.png';
+
+                        $original_image = get_object('Image', $value);
 
 
 
 
-                        include_once 'class.Image.php';
-                        $image = new Image($value);
+                        $height=200;
+                        $width=200;
+                        $ratio = $original_image->get('Image Width') / $original_image->get('Image Height');
+
+                        if ($ratio > 1) {
+                            $height = ceil(200 / $ratio);
+                        } else {
+                            $width = ceil(200 * $ratio);
+                        }
+
+                        $size_r=ceil($width).'x'.ceil($height);
 
 
 
-
-                        $new_image = $image->fit_to_canvas(200, 200);
-
-
-                        ImagePNG($new_image,$tmp_file);
+                        $image_path = preg_replace('/^img\//', 'img_'.$account->get('Code').'/', $original_image->get('Image Path'));;
 
 
+                        $cached_image_path = preg_replace('/^.*\/db\//', 'img_cache/', $image_path);
+                        $cached_image_path = preg_replace('/\./', '_'.$size_r.'.', $cached_image_path);
 
 
 
+                      // print "$cached_image_path\n";
 
-                        $signature = $tmp_file;    //Path to signature .jpg file
-                        $objDrawing->setPath($signature);
+                        if (!file_exists($cached_image_path)) {
+
+                            if (!is_dir('img_cache/'.$original_image->get('Image File Checksum')[0])) {
+                                mkdir('img_cache/'.$original_image->get('Image File Checksum')[0]);
+                            }
+
+                            if (!is_dir('img_cache/'.$original_image->get('Image File Checksum')[0].'/'.$original_image->get('Image File Checksum')[1])) {
+                                mkdir('img_cache/'.$original_image->get('Image File Checksum')[0].'/'.$original_image->get('Image File Checksum')[1]);
+                            }
+
+
+                            if ($size_r != '') {
+                                list($w, $h) = preg_split('/x/', $size_r);
+                                $image = new ImageResize($image_path);
+
+
+                                $image->quality_jpg = 100;
+                                $image->quality_png = 9;
+
+                                $image->resizeToBestFit($w, $h);
+                                $image->save($cached_image_path);
+
+
+                                if (file_exists($cached_image_path)) {
+                                    usleep(1000);
+                                }
+                                if (file_exists($cached_image_path)) {
+                                    usleep(2000);
+                                }
+                                if (file_exists($cached_image_path)) {
+                                    usleep(3000);
+                                }
+                                if (file_exists($cached_image_path)) {
+                                    usleep(100000);
+                                }
+                            } else {
+                                copy($image_path, $cached_image_path);
+                            }
+                        }
+
+
+                        $optimizerChain = OptimizerChainFactory::create();
+                        $optimizerChain->optimize($cached_image_path);
+
+                        if (file_exists($cached_image_path)) {
+                            usleep(1000);
+                        }
+                        if (file_exists($cached_image_path)) {
+                            usleep(2000);
+                        }
+                        if (file_exists($cached_image_path)) {
+                            usleep(3000);
+                        }
+                        if (file_exists($cached_image_path)) {
+                            usleep(100000);
+                        }
+
+
+                        $objDrawing->setPath($cached_image_path);
                         $objDrawing->setOffsetX(10);                       //setOffsetX works properly
                         $objDrawing->setOffsetY(10);                       //setOffsetY works properly
                         $objDrawing->setCoordinates($char.$row_index);        //set image to cell
 
 
-                        $objDrawing->setResizeProportional(false);
+                        $objDrawing->setResizeProportional(true);
 
-                        $objDrawing->setWidth(200);                 //set width, height
-                       //$objDrawing->setHeight(20);
+                       // $objDrawing->setWidth(200);                 //set width, height
+
+                       if($width>$height){
+                           $objDrawing->setWidth(200);
+                       }else{
+                           $objDrawing->setHeight(200);
+                       }
+
 
                         $objDrawing->setWorksheet($objPHPExcel->getActiveSheet());  //save
 
 
                         $objPHPExcel->getActiveSheet()->getRowDimension($row_index)->setRowHeight(220);
 
-                        $files_to_delete[]=$tmp_file;
-
+                        //$files_to_delete[] = $tmp_file;
 
 
                     }
@@ -334,8 +415,7 @@ function fork_export($job) {
 
                     $objPHPExcel->getActiveSheet()->getColumnDimension($char)->setWidth(220);
 
-                }
-                else{
+                } else {
 
 
                     $type = (empty($fork_data['field_set'][$char_index]['type']) ? '' : $fork_data['field_set'][$char_index]['type']);
@@ -362,9 +442,6 @@ function fork_export($job) {
                         $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
                     }
                 }
-
-
-
 
 
                 $char_index++;
@@ -427,8 +504,7 @@ function fork_export($job) {
             }
 
 
-
-         //
+            //
 
 
         }
@@ -437,6 +513,7 @@ function fork_export($job) {
         print "$sql_data\n";
         // exit;
     }
+
 
 
     /*
@@ -448,7 +525,7 @@ function fork_export($job) {
 */
 
 
-   // exit;
+
 
     $sheet        = $objPHPExcel->getActiveSheet();
     $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
@@ -456,13 +533,13 @@ function fork_export($job) {
     /** @var PHPExcel_Cell $cell */
     foreach ($cellIterator as $cell) {
 
-       // print_r($cell->getColumn());
-if(in_array($cell->getColumn(),$columns_no_resize)){
-    $sheet->getColumnDimension($cell->getColumn())->setWidth(250);
-}else{
-    $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+        // print_r($cell->getColumn());
+        if (in_array($cell->getColumn(), $columns_no_resize)) {
+            $sheet->getColumnDimension($cell->getColumn())->setWidth(250);
+        } else {
+            $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
 
-}
+        }
 
     }
 
@@ -556,9 +633,7 @@ if(in_array($cell->getColumn(),$columns_no_resize)){
     );
 
 
-
-
-    foreach($files_to_delete as $file_to_delete){
+    foreach ($files_to_delete as $file_to_delete) {
         unlink($file_to_delete);
     }
 

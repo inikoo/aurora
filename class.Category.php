@@ -2113,11 +2113,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
             if ($webpage->id) {
 
                 $website = get_object('Website', $webpage->get('Webpage Website Key'));
-                if ($website->get('Website Theme') == 'theme_1') {
 
-                    //print_r($webpage);
                     $webpage->reindex_items();
-                }
+
 
 
             }
@@ -2657,36 +2655,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         }
 
 
-                        /*
-                        foreach ($this->get_children_keys() as $children_key) {
-                            $subcategory = new Category($children_key);
-                            $subcategory->update(array('Product Category Public' => $value), $options);
-                        }
 
-
-
-                        $sql = sprintf('SELECT `Subject Key`,`Subject` FROM `Category Bridge` WHERE `Category Key`=%d ', $this->id);
-
-
-                        if ($result = $this->db->query($sql)) {
-                            foreach ($result as $row) {
-
-
-                                if ($row['Subject'] == 'Product') {
-                                    $product = new Product($row['Subject Key']);
-                                    //  print_r($row);
-                                    $product->update(array('Product Web Configuration' => 'Offline'), $options);
-                                } else {
-                                    if ($row['Subject'] == 'Category') {
-                                        $subcategory = new Category($row['Subject Key']);
-                                        $subcategory->update(array('Product Category Public' => $value), $options);
-                                    }
-                                }
-
-
-                            }
-                        }
-                        */
 
                     } elseif ($value == 'Yes') {
 
@@ -2695,19 +2664,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                             $this->webpage->update(array('Page State' => 'Online'));
 
 
-                            $sql = sprintf(
-                                "SELECT `Category Key`  FROM `Category Bridge` WHERE `Subject Key`=%d AND `Subject`='Category' GROUP BY `Category Key` ", $this->id
 
-                            );
-                            if ($result = $this->db->query($sql)) {
-                                foreach ($result as $row) {
-                                    $parent         = get_object('Category', $row['Category Key']);
-                                    $parent->editor = $this->editor;
-                                    // print_r($parent->get('Code'));
-                                    $parent->create_stack_index(true);
-
-                                }
-                            }
 
 
                         } else {
@@ -3165,7 +3122,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         $website = get_object('Website', $store->get('Store Website Key'));
 
 
-                        if ($website->get('Website Theme') == 'theme_1') {
+
                             $webpage = get_object('Webpage', $this->get('Product Category Webpage Key'));
 
                             //  print_r($webpage);
@@ -3177,13 +3134,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                                 $webpage->reindex_items();
                             }
 
-                        } else {
 
-                            if ($this->get('Category Subject') == 'Product') {
-                                $this->create_stack_index(true);
-
-                            }
-                        }
 
 
                         $this->update_product_category_products_data();

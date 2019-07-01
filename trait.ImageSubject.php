@@ -36,24 +36,11 @@ trait ImageSubject {
         );
 
 
-        if (isset($raw_data['Image Subject Object Image Scope']) and $raw_data['Image Subject Object Image Scope'] != '') {
-
-            if ($this->table_name == 'Page') {
-
-                json_decode($raw_data['Image Subject Object Image Scope']);
-                if (json_last_error() == JSON_ERROR_NONE) {
-                    $scope_data         = json_decode($raw_data['Image Subject Object Image Scope'], true);
-                    $object_image_scope = $scope_data['scope'];
-                } else {
-                    $scope_data         = array('scope' => '');
-                    $object_image_scope = $raw_data['Image Subject Object Image Scope'];
-                }
+        if (!empty($raw_data['Image Subject Object Image Scope']) ) {
 
 
-            } else {
-                $object_image_scope = $raw_data['Image Subject Object Image Scope'];
-            }
 
+            $object_image_scope = $raw_data['Image Subject Object Image Scope'];
 
         } else {
             $object_image_scope = 'Default';
@@ -105,113 +92,6 @@ trait ImageSubject {
                     }
 
                 }
-
-            } elseif ($this->table_name == 'Page') {
-
-
-                if ($scope_data['scope'] == 'content') {
-
-                    $content_data = $this->get('Content Data');
-                    $image_src    = '/image.php?id='.$image->id;
-
-                    if ($scope_data['section'] == 'mute') {
-                        return $image;
-                    } elseif ($scope_data['section'] == 'items') {
-
-                        foreach ($content_data['sections'] as $section_index => $section) {
-
-
-                            foreach ($section['items'] as $item_index => $item) {
-
-
-                                if ($item['type'] == 'category' and $item['category_key'] == $scope_data['item_key']) {
-
-
-                                    $sql = sprintf(
-                                        'SELECT `Category Webpage Index Key` ,`Category Webpage Index Content Data` FROM `Category Webpage Index` WHERE `Category Webpage Index Key`=%d  ', $content_data['sections'][$section_index]['items'][$item_index]['index_key']
-
-
-                                    );
-
-                                    if ($result = $this->db->query($sql)) {
-                                        if ($row = $result->fetch()) {
-                                            $item_content_data = json_decode($row['Category Webpage Index Content Data'], true);
-
-                                            $item_content_data['image_src'] = $image_src;
-
-
-                                            $sql = sprintf(
-                                                'UPDATE `Category Webpage Index` SET `Category Webpage Index Content Data`=%s WHERE `Category Webpage Index Key`=%d ', prepare_mysql(json_encode($item_content_data)), $row['Category Webpage Index Key']
-                                            );
-
-                                            $this->db->exec($sql);
-                                        }
-                                    } else {
-                                        print_r($error_info = $this->db->errorInfo());
-                                        print "$sql\n";
-                                        exit;
-                                    }
-
-
-                                    //    print_r(  $content_data['sections'][$section_index]['items']);
-
-                                    break 2;
-                                }
-                            }
-
-                        }
-
-                        include_once('utils/website_functions.php');
-                        $content_data['sections'][$section_index]['items'] = get_website_section_items($this->db, $content_data['sections'][$section_index]);
-                        // print_r( $content_data['sections'][$section_index]['items']);
-
-                    } elseif ($scope_data['section'] == 'panels_in_section') {
-
-
-                        foreach ($content_data['sections'] as $section_index => $section) {
-
-
-                            foreach ($section['panels'] as $panel_index => $panel) {
-                                if ($panel['id'] == $scope_data['block']) {
-
-
-                                    $content_data['sections'][$section_index]['panels'][$panel_index]['image_src'] = $image_src;
-                                    break 2;
-                                }
-                            }
-
-                        }
-
-                        include_once('utils/website_functions.php');
-                        $content_data['sections'][$section_index]['items'] = get_website_section_items($this->db, $content_data['sections'][$section_index]);
-
-
-                        //  print_r( $content_data);
-
-
-                    } elseif ($scope_data['section'] == 'panels') {
-                        foreach ($content_data['panels'] as $panel_key => $panel) {
-                            if ($panel['id'] == $scope_data['block']) {
-                                $content_data['panels'][$panel_key]['image_src'] = $image_src;
-                            }
-                        }
-
-                    } else {
-                        if (isset($content_data[$scope_data['section']]['blocks'][$scope_data['block']])) {
-                            $content_data[$scope_data['section']]['blocks'][$scope_data['block']]['image_src'] = $image_src;
-                        } else {
-                            $content_data[$data['section']]['blocks'][$data['block']] = array(
-                                'image_src' => $image_src,
-                                'type'      => 'image'
-                            );
-                        }
-                    }
-
-
-                    $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
-                }
-
 
             }
 

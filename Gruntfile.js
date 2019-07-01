@@ -447,6 +447,8 @@ module.exports = function (grunt) {
                 }, {
                     expand: true, src: ['class.*.php'], dest: '../fork/'
                 }, {
+                    expand: true, src: ['image.php'], dest: '../fork/'
+                },{
                     expand: true, src: ['trait.*.php'], dest: '../fork/'
                 }, {
                     expand: true, src: ['conf/*.php'], dest: '../fork/'
