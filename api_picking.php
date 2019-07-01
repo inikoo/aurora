@@ -571,6 +571,25 @@ switch ($_REQUEST['action']) {
         echo json_encode($response);
         exit;
         break;
+    case 'get_pickers':
+
+        $staff_data=array();
+
+        $sql="select S.`Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Main Image Key`  from `Staff Dimension` S   left join `Staff Role Bridge`  SRB on (S.`Staff Key`=SRB.`Staff Key`) where  `Role Code`='Pick'  `Staff Type`='Employee' and `Staff Currently Working`='Yes'   ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+
+        while ($row = $stmt->fetch()) {
+            $staff_data[]=$row;
+        }
+
+        $response = array(
+            'state' => 'OK',
+            'data'  => $staff_data
+        );
+        echo json_encode($response);
+        exit;
+        break;
 
     default:
 
