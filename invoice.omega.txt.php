@@ -479,7 +479,6 @@ if ($invoice->get('Invoice Total Tax Amount') != 0) {
 $encoded_text = mb_convert_encoding($text, 'UTF-16LE', 'UTF-8');
 
 
-$encoded_text=$text;
 //header('Content-Type: text/plain; charset=Windows-1252');
 header('Content-Type: text/plain');
 
