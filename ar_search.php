@@ -41,15 +41,13 @@ switch ($tipo) {
         );
 
 
+
+
+
         if ($user->get('User Type') == 'Agent') {
             agent_search($db, $account, $user, $data);
         } else {
-
-
-            // print_r($data);
-
-
-            if ($data['state']['module'] == 'customers') {
+            if ($data['state']['module'] == 'customers' or $data['state']['module'] == 'customers_server') {
                 if ($data['state']['current_store']) {
                     $data['scope']     = 'store';
                     $data['scope_key'] = $data['state']['current_store'];
@@ -135,14 +133,6 @@ switch ($tipo) {
                     $data['scope'] = 'stores';
                     search_payments($db, $account,$user, $data);
                 }
-
-
-
-
-
-
-
-
             } elseif ($data['state']['module'] == 'accounting') {
 
                 $data['scope']     = 'store';
@@ -180,4 +170,4 @@ switch ($tipo) {
 
 
 
-?>
+

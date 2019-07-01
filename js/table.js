@@ -1119,3 +1119,7 @@ function post_table_rendered(el) {
 
 }
 
+function export_omega_invoices(){
+
+    window.open('/invoices.omega.txt.php', '_blank')
+}
