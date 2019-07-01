@@ -18,7 +18,7 @@
         </script>
     {if false}<script src="https://wchat.freshchat.com/js/widget.js"></script>{/if}
     {/if}
-    <script src="/assets/aurora_libs.min.js?v190319v2"></script>
+    <script src="/assets/aurora_libs.min.js?v190701"></script>
 
     <script src="/assets/aurora.min.js?v190701"></script>
 
