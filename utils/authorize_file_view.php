@@ -32,10 +32,7 @@ function authorize_file_view($db, $user, $public, $subject, $subject_key) {
             }
 
 
-            if ($user->get('User Type') == 'Staff' and $user->get(
-                    'User Parent Key'
-                ) == $subject_key
-            ) {
+            if ($user->get('User Type') == 'Staff' and $user->get('User Parent Key') == $subject_key) {
                 return true;
             }
 
@@ -82,4 +79,4 @@ function authorize_file_view($db, $user, $public, $subject, $subject_key) {
 }
 
 
-?>
+

@@ -117,7 +117,6 @@ if ($row = $stmt->fetch()) {
         mkdir('img/public_cache/'.$row['Image File Checksum'][0]);
     }
 
-
     if (!is_dir('img/public_cache/'.$row['Image File Checksum'][0].'/'.$row['Image File Checksum'][1])) {
         mkdir('img/public_cache/'.$row['Image File Checksum'][0].'/'.$row['Image File Checksum'][1]);
     }

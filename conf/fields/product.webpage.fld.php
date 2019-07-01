@@ -159,93 +159,6 @@ $product_fields = array(
 
 
 );
-/*
-$template_field = array(
-
-
-
-
-
-    array(
-        'label'      => _('Template'),
-        'show_title' => true,
-        'fields'     => array(
-
-
-
-            array(
-                'edit' => ($edit ? 'option' : ''),
-
-                'id'              => 'Webpage_Template',
-                'value'           => $object->get('Product Webpage Template'),
-                'formatted_value' => $object->get('Webpage Template'),
-                'options'         => $template_options,
-                'label'           => _('Template'),
-                'invalid_msg'     => get_invalid_message('string'),
-                'required'        => true,
-                'type'            => 'value'
-            ),
-
-
-
-
-
-
-        )
-    ),
-
-
-);
-*/
-
-
-if( $website->get('Website Theme')!='theme_1'){
-
-    $template_fields = array(
-
-
-
-
-
-
-        array(
-            'label'      => _('Template settings'),
-            'show_title' => true,
-            'fields'     => array(
-
-
-
-
-
-
-
-                array(
-                    'id'              => 'Webpage_See_Also',
-                    'edit'            => 'webpage_see_also',
-                    'value'           => '',
-                    'formatted_value' => $object->get('Webpage See Also'),
-                    'label'           => _('See also links'),
-                    'required'        => false,
-                    'type'            => ''
-                ),
-
-
-            )
-        ),
-
-
-    );
-
-
-    $product_fields = array_merge(
-        $product_fields,
-        //$template_field,
-        $template_fields
-    );
-}
-
-
-
 
 
 
@@ -284,7 +197,3 @@ $export_operations      = array(
 $product_fields[] = $export_operations;
 
 
-
-
-
-?>

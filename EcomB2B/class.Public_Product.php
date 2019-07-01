@@ -378,58 +378,13 @@ class Public_Product {
 
             case 'Image Mobile In Family Webpage':
 
-                global $imagecache;
-
-
-                if (!is_object($imagecache)) {
-                    require_once 'external_libs/ImageCache.php';
-
-                    $imagecache                         = new ImageCache();
-                    $imagecache->cached_image_directory = 'server_files/cached_images/';
-                }
-
-
                 $image_key = $this->data['Product Main Image Key'];
 
-                $_size_image_product_webpage = '340_214';
-
                 if ($image_key) {
-
-
-                    $image_format = 'jpeg';
-
-                    if (file_exists('server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
-                        return 'server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format;
-                    } else {
-                        $image = get_object('Image', $image_key);
-
-                        $image_filename = 'server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
-
-                        if (!file_exists($image_filename)) {
-
-                            $_image = $image->fit_to_canvas(340, 214);
-
-                            if ($image->get('Image File Format') == 'png') {
-                                $image->save_image_to_file_as_jpeg('server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
-                            } else {
-                                $image->save_image_to_file('server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
-
-                            }
-
-
-                        }
-                        $image_product_webpage = $imagecache->cache($image_filename);
-                        unlink($image_filename);
-
-                        return $image_product_webpage;
-                    }
-
-
+                    return '/wi.php?id='.$image_key.'&s=340x214';
                 } else {
                     return '/art/nopic.png';
-
                 }
-
 
                 break;
 
@@ -1167,51 +1122,18 @@ class Public_Product {
                     }
 
 
-                    //=======
-
-
-                    $image_format = 'jpeg';
 
                     $image_key = $row['Image Key'];
 
-                    $_size_image_product_webpage = '600_375';
 
                     if ($image_key) {
-
-                        if (file_exists('server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
-                            $image_product_webpage = 'server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format;
-                        } else {
-                            $image = get_object('Image', $image_key);
-
-                            $image_filename = 'server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
-
-                            if (!file_exists($image_filename)) {
-
-                                $_image = $image->fit_to_canvas(600, 375);
-
-                                if ($image->get('Image File Format') == 'png') {
-                                    $image->save_image_to_file_as_jpeg('server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
-                                } else {
-                                    $image->save_image_to_file('server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
-
-                                }
-
-
-                            }
-
-
-                            $image_product_webpage = $imagecache->cache($image_filename);
-                            unlink($image_filename);
-                        }
-
-
+                        $image_product_webpage='/wi.php?id='.$image_key.'&s=600x375';
                     } else {
                         $image_product_webpage = '/art/nopic.png';
 
                     }
 
 
-                    //=======
 
 
                     // print_r($row);

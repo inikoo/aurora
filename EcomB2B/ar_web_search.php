@@ -61,7 +61,6 @@ function search($db, $website, $data, $smarty, $template_suffix, $order_key) {
     $smarty->assign('results', $results['results']);
 
 
-
     $response = array(
         'state'     => 200,
         'results'   => $smarty->fetch("$theme/_search_results.$theme.EcomB2B".$template_suffix.'.tpl'),
@@ -82,7 +81,7 @@ function get_search_results_analytics_data($results) {
         if ($result['scope'] == 'Product') {
             $analytics_data[] = array(
                 'id'       => $result['code'],
-                'name'       => $result['name'],
+                'name'     => $result['name'],
                 'category' => $result['family_code'],
                 'price'    => $result['raw_price']
             );
@@ -183,7 +182,7 @@ function process_search($q, $db, $website, $order_key) {
                 $candidates[$row['Page Key']]['key']          = $row['Product ID'];
                 $candidates[$row['Page Key']]['ordered']      = $row['ordered'];
                 $candidates[$row['Page Key']]['family_code']  = $row['Category Code'];
-                $candidates[$row['Page Key']]['raw_price']        = $row['Product Price'];
+                $candidates[$row['Page Key']]['raw_price']    = $row['Product Price'];
 
                 $candidates[$row['Page Key']]['web_state'] = $row['Product Web State'];
                 // todo a proper way to do this class
@@ -192,7 +191,7 @@ function process_search($q, $db, $website, $order_key) {
 
 
                 $candidates[$row['Page Key']]['code']  = $row['Product Code'];
-                $candidates[$row['Page Key']]['name']  = ($row['Product Units Per Case']>1?$row['Product Units Per Case'].'x ':'').$row['Product Name'];
+                $candidates[$row['Page Key']]['name']  = ($row['Product Units Per Case'] > 1 ? $row['Product Units Per Case'].'x ' : '').$row['Product Name'];
                 $candidates[$row['Page Key']]['price'] = money($row['Product Price'], $row['Product Currency']);
 
                 $candidates[$row['Page Key']]['description']       = $row['Webpage Meta Description'];
@@ -307,11 +306,11 @@ function process_search($q, $db, $website, $order_key) {
                     $candidates[$row['Page Key']]['url']         = '/'.strtolower($row['Webpage Code']);
                     $candidates[$row['Page Key']]['key']         = $row['Product ID'];
                     $candidates[$row['Page Key']]['code']        = $row['Product Code'];
-                    $candidates[$row['Page Key']]['name']  = ($row['Product Units Per Case']>1?$row['Product Units Per Case'].'x ':'').$row['Product Name'];
+                    $candidates[$row['Page Key']]['name']        = ($row['Product Units Per Case'] > 1 ? $row['Product Units Per Case'].'x ' : '').$row['Product Name'];
                     $candidates[$row['Page Key']]['price']       = money($row['Product Price'], $row['Product Currency']);
                     $candidates[$row['Page Key']]['ordered']     = $row['ordered'];
                     $candidates[$row['Page Key']]['family_code'] = $row['Category Code'];
-                    $candidates[$row['Page Key']]['raw_price']       = $row['Product Price'];
+                    $candidates[$row['Page Key']]['raw_price']   = $row['Product Price'];
 
 
                     $candidates[$row['Page Key']]['web_state'] = $row['Product Web State'];
@@ -392,7 +391,6 @@ function process_search($q, $db, $website, $order_key) {
     }
 
 
-
     array_multisort($page_scores, SORT_NUMERIC, SORT_DESC, $candidates);
 
 
@@ -400,7 +398,6 @@ function process_search($q, $db, $website, $order_key) {
 
     $did_you_mean      = '';
     $alternative_found = false;
-
 
 
     if (!$alternative_found) {
@@ -418,42 +415,10 @@ function process_search($q, $db, $website, $order_key) {
 
 function get_image_mobile($image_key) {
 
-    global $imagecache;
 
-
-    $_size_image_product_webpage = '120_120';
-
-
-    $image_format = 'jpeg';
-
-    if (file_exists('server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format)) {
-        return 'server_files/cached_images/'.md5($image_key.'_'.$_size_image_product_webpage.'.'.$image_format).'.'.$image_format;
-    } else {
-        $image = get_object('Image', $image_key);
-
-        $image_filename = 'server_files/tmp/'.$image_key.'_'.$_size_image_product_webpage.'.'.$image_format;
-
-        if (!file_exists($image_filename)) {
-
-            $_image = $image->fit_to_canvas(120, 120);
-
-            if ($image->get('Image File Format') == 'png') {
-                $image->save_image_to_file_as_jpeg('server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
-            } else {
-                $image->save_image_to_file('server_files/tmp', $image_key.'_'.$_size_image_product_webpage, $_image, $image_format);
-
-            }
-
-
-        }
-        $image_product_webpage = $imagecache->cache($image_filename);
-        unlink($image_filename);
-
-        return $image_product_webpage;
-    }
+    return 'wi?id='.$image_key.'&s=120x120';
 
 
 }
 
 
-?>
