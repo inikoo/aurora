@@ -345,13 +345,15 @@ function fork_housekeeping($job) {
             break;
         case 'update_parts_stock_run':
 
-            //  print_r($data);
 
             foreach ($data['parts_data'] as $part_sku => $from_date) {
+
+
+
+
+
                 $part         = get_object('Part', $part_sku);
                 $part->editor = $data['editor'];
-                $part->update_stock_run();
-                $part->redo_inventory_snapshot_fact($from_date);
 
                 if ($account->get('Account Add Stock Value Type') == 'Last Price') {
                     // update if is last placement
@@ -362,12 +364,12 @@ function fork_housekeeping($job) {
                         $part->id
                     );
 
-                    // print $sql;
+
 
                     if ($result = $db->query($sql)) {
                         foreach ($result as $row) {
 
-                            //  print_r($row);
+
 
                             $part->update_field_switcher('Part Cost in Warehouse', $row['value_per_sko'], 'no_history');
                         }
@@ -379,6 +381,11 @@ function fork_housekeeping($job) {
 
 
                 }
+
+
+                $part->update_stock_run();
+                $part->redo_inventory_snapshot_fact($from_date);
+
 
 
             }
