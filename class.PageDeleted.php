@@ -117,11 +117,8 @@ class PageDeleted {
         }
     }
 
-    function update_version(){
-
-    }
 
 
 }
 
-?>
+

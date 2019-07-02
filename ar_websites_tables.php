@@ -666,7 +666,6 @@ function webpages($_data, $db, $user) {
             'code'    => sprintf('<span class="link" onclick="change_view(\'website/%d/page/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], $data['Webpage Code']),
             'state'   => $state,
             'type'    => $type,
-            'version' => number_format($data['Webpage Version'], 1),
 
 
         );
@@ -826,7 +825,6 @@ function webpages_online($_data, $db, $user) {
 
             // 'state'   => $state,
             'type' => $type,
-            // 'version' => number_format($data['Webpage Version'], 1),
 
 
         );

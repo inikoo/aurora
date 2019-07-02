@@ -1900,7 +1900,6 @@ class Page extends DB_Table {
             case ('Webpage Redirection Code'):
 
             case('Webpage Type Key'):
-            case 'Webpage Version':
             case 'Webpage Launch Date':
             case 'Webpage Name':
             case 'Webpage Browser Title':
@@ -2175,27 +2174,7 @@ class Page extends DB_Table {
     }
 
 
-    function update_version() {
 
-        if (in_array(
-                $this->get('Page Store Content Template Filename'), array(
-                                                                      'products_showcase',
-                                                                      'categories_showcase'
-                                                                  )
-            ) and $this->get('Page Store Content Display Type') == 'Template') {
-            $version = 2;
-        } elseif ($this->get('Webpage Scope') == 'Product') {
-            $version = 2;
-
-        } else {
-            $version = 1;
-
-        }
-
-
-        $this->update(array('Webpage Version' => $version), 'no_history');
-
-    }
 
     function publish($note = '') {
 
