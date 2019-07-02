@@ -727,7 +727,7 @@ class Website extends DB_Table {
         if ($data['Webpage Scope'] == 'HomepageToLaunch') {
             $page->publish();
         }
-        $page->update_version();
+
 
 
         $this->new_page     = $page->new;
@@ -1119,7 +1119,7 @@ class Website extends DB_Table {
 
         $webpage_type->update_number_webpages();
 
-        $page->update_version();
+
 
 
         if ($page->new) {
@@ -1227,7 +1227,6 @@ class Website extends DB_Table {
 
         $webpage_type->update_number_webpages();
 
-        $page->update_version();
 
 
         if ($page->new) {

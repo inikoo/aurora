@@ -19,7 +19,6 @@ function get_webpage_showcase($data, $smarty) {
         return "";
     }
 
-    $webpage->update_version();
 
 
     if ($data['_object']->deleted) {
