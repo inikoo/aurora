@@ -104,24 +104,22 @@ switch ($tipo) {
 
 function users($_data, $db, $user) {
 
-    $rtext_label = 'user';
+    $rtext_label = 'website user';
     include_once 'prepare_table/init.php';
 
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    //print $sql;
     foreach ($db->query($sql) as $data) {
 
         $adata[] = array(
-            'site_key'     => $data['User Site Key'],
-            'id'           => $data['User Key'],
-            'customer_key' => $data['User Parent Key'],
-            'user'         => $data['User Handle'],
-            'customer'     => $data['User Alias'],
-            'sessions'     => number($data['User Sessions Count']),
-            'last_login'   => ($data['User Last Login'] ? strftime(
-                "%a %e %b %Y %H:%M %Z", strtotime($data['User Last Login'].' +0:00')
+            'id'           => $data['Website User Key'],
+            'customer_key' => $data['Customer Key'],
+            'user'         => $data['Website User Handle'],
+            'customer'     => $data['Customer Name'],
+            'sessions'     => number($data['Website User Sessions Count']),
+            'last_login'   => ($data['Website User Last Login'] ? strftime(
+                "%a %e %b %Y %H:%M %Z", strtotime($data['Website User Last Login'].' +0:00')
             ) : ''),
         );
 

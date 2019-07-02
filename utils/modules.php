@@ -2616,7 +2616,7 @@ $modules = array(
                 'reference' => 'website/%d/users',
 
                 'tabs' => array(
-                    'website.web_users' => array(
+                    'website.users' => array(
                         'label' => _('Users'),
                         'icon' => 'users'
                     )
@@ -2636,12 +2636,7 @@ $modules = array(
                 'tabs' => array(
 
 
-                    'website.colours' => array(
-                        'label' => _('Colours'),
-                        'icon' => 'tint',
 
-
-                    ),
 
                     'website.header.preview' => array(
                         'label' => _('Header'),
@@ -2657,10 +2652,6 @@ $modules = array(
                     ),
 
 
-                    'website.localization' => array(
-                        'label' => _('Localization'),
-                        'icon' => 'language',
-                    ),
 
 
                 )
@@ -2679,7 +2670,18 @@ $modules = array(
                         'label' => _('Setting'),
                         'icon' => 'sliders-h'
                     ),
-                )
+                    'website.colours' => array(
+                        'label' => _('Colours'),
+                        'icon' => 'tint',
+
+
+                    ),
+                    'website.localization' => array(
+                        'label' => _('Localization'),
+                        'icon' => 'language',
+                    ),
+                ),
+
 
             ),
 
