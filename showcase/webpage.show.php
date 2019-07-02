@@ -15,6 +15,11 @@ function get_webpage_showcase($data, $smarty) {
 
 
     $webpage = $data['_object'];
+
+
+
+ //   print_r($webpage->get('Content Data'));
+
     if (!$webpage->id) {
         return "";
     }
