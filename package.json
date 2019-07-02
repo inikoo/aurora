@@ -39,7 +39,7 @@
     "grunt-contrib-uglify": "^1.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-ssh-deploy": "^0.4.1",
-    "puppeteer": "^1.14.0"
+    "puppeteer": "^1.18.1"
   },
   "dependencies": {}
 }
