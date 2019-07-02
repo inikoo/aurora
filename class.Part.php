@@ -1714,8 +1714,7 @@ class Part extends Asset {
 
             case 'Part Cost in Warehouse':
 
-                //$old_value = $this->get('Part Cost in Warehouse');
-                //print 'xxxx';
+
                 $this->update_field($field, $value, $options);
                 //  print 'yyyy';
 
