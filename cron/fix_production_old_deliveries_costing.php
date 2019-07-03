@@ -42,7 +42,7 @@ if ($resultx = $db->query($sql)) {
 
         $sql = sprintf(
             'select `Supplier Part Part SKU`,`Purchase Order Transaction Fact Key`,`Metadata` from `Purchase Order Transaction Fact`  POTF left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) 
-where `Supplier Delivery Key`=%d   and `Supplier Part Part SKU`=273 group by `Supplier Part Part SKU` ',
+where `Supplier Delivery Key`=%d   group by `Supplier Part Part SKU` ',
             $rowx['Supplier Delivery Key']
         );
         if ($result = $db->query($sql)) {
