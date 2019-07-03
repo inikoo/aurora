@@ -2354,8 +2354,6 @@ function stock_cost($_data, $db, $user, $account) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-          // print_r($data);
-
 
 
             $change = $data['Inventory Transaction Quantity'];
