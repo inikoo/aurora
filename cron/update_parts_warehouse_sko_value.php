@@ -53,7 +53,7 @@ if ($result = $db->query($sql)) {
 
 
 
-$lap_time0 = date('U');update_parts_warehouse_sko_value.php
+$lap_time0 = date('U');
 $contador  = 0;
 
 $sql = sprintf(
