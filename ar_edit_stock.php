@@ -367,6 +367,9 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
                             );
                             $db->exec($sql);
 
+                            $sql=sprintf('insert into `ITF POTF Costing Done Bridge`  values (%d,%d)  ',$placement_data['oif_key'],$row['Purchase Order Transaction Fact Key']);
+                            $db->exec($sql);
+
 
                         }
 

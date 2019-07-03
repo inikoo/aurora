@@ -632,10 +632,6 @@ class PartLocation extends DB_Table {
                 $value = 0;
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1121,7 +1117,6 @@ class PartLocation extends DB_Table {
 
 
         $diff = $audit->data['Inventory Audit Quantity'] - $stock;
-        //$cost_per_part=$this->part->get_unit_cost($audit->data['Inventory Audit Date']);
         $cost_per_part = $this->part->data['Part Cost in Warehouse'];
 
         $cost = $diff * $cost_per_part;
@@ -1754,9 +1749,6 @@ class PartLocation extends DB_Table {
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-
-                //print $this->part->data['Part Valid From'].' '.date('Y-m-d ',strtotime($row['Date'].' 23:59:59 -1 year'))."\n";
-                //print strtotime($this->part->data['Part Valid From']).' '.strtotime($row['Date'].' 23:59:59 -1 year')."\n\n";
 
                 if (strtotime($this->part->data['Part Valid From']) <= strtotime($row['Date'].' 23:59:59 -1 year')) {
 

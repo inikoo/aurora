@@ -2348,13 +2348,13 @@ function stock_cost($_data, $db, $user, $account) {
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-    //print $sql;
+
     $record_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-//            print_r($data);
+          // print_r($data);
 
 
 
@@ -2362,10 +2362,10 @@ function stock_cost($_data, $db, $user, $account) {
 
 
             if($data['Inventory Transaction Amount'] ==0){
-                $cost_per_sko = money($cost_per_sko, $account->get('Account Currency Code'));
+                $cost_per_sko = '-';
             }else{
                 if($data['Inventory Transaction Quantity']!=0){
-                    $cost_per_sko =   money($data['Inventory Transaction Amount'] / $data['Inventory Transaction Quantity'] ,$account->get('Account Currency Code'));
+                    $cost_per_sko =   ''.money($data['Inventory Transaction Amount'] / $data['Inventory Transaction Quantity'] ,$account->get('Account Currency Code'));
 
                 }else{
                     $cost_per_sko='?';
@@ -2385,13 +2385,33 @@ function stock_cost($_data, $db, $user, $account) {
 */
             $note = $data['Note'];
 
-            $cost     = sprintf(
-                '<span  class="part_cost button"  data-itf_key="%d" data-cost="%s"  data-skos="%s"  data-currency_symbol="%s"  data-cost_per_sko="%s" onClick="open_edit_cost(this)">%s</span>', $data['Inventory Transaction Key'], $data['Inventory Transaction Amount'],
-                $data['Inventory Transaction Quantity'], $account->get('Account Currency Symbol'), $cost_per_sko, money($data['Inventory Transaction Amount'], $account->get('Account Currency Code'))
-            );
-            $sko_cost = sprintf(
-                '<span  class="part_cost_per_sko "  >%s</span>', $cost_per_sko
-            );
+
+
+
+
+            if($data['costing_done']){
+                $sko_cost = sprintf(
+                    '<span  class="part_cost_per_sko "  >%s</span>', $cost_per_sko
+                );
+                $cost     = sprintf(
+                    '<span  class="part_cost button"  data-itf_key="%d" data-cost="%s"  data-skos="%s"  data-currency_symbol="%s"  data-cost_per_sko="%s" onClick="open_edit_cost(this)">%s</span>', $data['Inventory Transaction Key'], $data['Inventory Transaction Amount'],
+                    $data['Inventory Transaction Quantity'], $account->get('Account Currency Symbol'), $cost_per_sko, money($data['Inventory Transaction Amount'], $account->get('Account Currency Code'))
+                );
+            }else{
+                $sko_cost = sprintf(
+                    '<i class="error fa fa-fw fa-exclamation-circle"></i> <span  class="part_cost_per_sko error italic"  >%s</span>  ', $cost_per_sko
+                );
+                $cost     = '<i class="error fa fa-question-circle "></i>';
+            }
+
+         //   ($data['costing_done']?'<i class="success fa fa-fw fa-tick"></i>':'<i class="error fa fa-fw fa-exclamation-circle"></i>');
+
+
+
+
+
+
+
 
             $record_data[] = array(
                 'id'       => (integer)$data['Inventory Transaction Key'],
@@ -2399,7 +2419,7 @@ function stock_cost($_data, $db, $user, $account) {
                 'delivery' => $note,
                 'skos'     => $change,
                 'cost'     => $cost,
-                'sko_cost' => $sko_cost
+                'sko_cost' => $sko_cost,
 
             );
 

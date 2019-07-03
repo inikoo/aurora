@@ -13,11 +13,27 @@
 require_once 'common.php';
 require_once 'utils/object_functions.php';
 
+$where='';
+$print_est = true;
 
-$sql = sprintf(
-    'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Reference`="EO-01" ORDER BY `Part SKU` DESC  '
-);
-$sql = sprintf('SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`  desc ');
+$sql = sprintf("SELECT count(*) AS num FROM `Part Dimension` %s", $where);
+if ($result = $db->query($sql)) {
+    if ($row = $result->fetch()) {
+        $total = $row['num'];
+    } else {
+        $total = 0;
+    }
+} else {
+    print_r($error_info = $db->errorInfo());
+    exit;
+}
+
+$lap_time0 = date('U');
+$contador  = 0;
+
+
+
+$sql = sprintf('SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`   ');
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
@@ -27,7 +43,16 @@ if ($result = $db->query($sql)) {
 
 
         $part->update_stock_run();
-        print $part->get('Reference')."\r";
+
+
+        $contador++;
+        $lap_time1 = date('U');
+
+        if ($print_est) {
+            print 'Pa '.percentage($contador, $total, 3)."  lap time ".sprintf("%.2f", ($lap_time1 - $lap_time0) / $contador)." EST  ".sprintf(
+                    "%.1f", (($lap_time1 - $lap_time0) / $contador) * ($total - $contador) / 3600
+                )."h  ($contador/$total) \r";
+        }
 
     }
 
@@ -37,4 +62,4 @@ if ($result = $db->query($sql)) {
 }
 
 
-?>
+
