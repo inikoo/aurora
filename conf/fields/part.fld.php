@@ -499,7 +499,7 @@ if (!$supplier_part_scope) {
     );
 }
 
-if ($account->get('Account Add Stock Value Type') == 'Last Price'  or false ) {
+if ($account->get('Account Add Stock Value Type') == 'Last Price'  and false ) {
 
     if (!($supplier_part_scope or $new)) {
 
