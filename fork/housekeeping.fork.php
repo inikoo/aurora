@@ -359,11 +359,17 @@ function fork_housekeeping($job) {
                     // update if is last placement
 
 
+
+
+
+
                     $sql = sprintf(
-                        'select `Date`,(`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko from  `Inventory Transaction Fact` ITF  where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0 and  ( `Inventory Transaction Section`=\'In\' or ( `Inventory Transaction Type`=\'Adjust\' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d  order by `Date` desc, FIELD(`Inventory Transaction Type`, \'In\',\'Adjust\')  limit 1 ',
+                        'select `ITF POTF Costing Done POTF Key`,(`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko 
+from    `ITF POTF Costing Done Bridge` B  left join     `Inventory Transaction Fact` ITF   on  (B.`ITF POTF Costing Done ITF Key`=`Inventory Transaction Key`)  
+    left join `Purchase Order Transaction Fact` POTF on  (`Purchase Order Transaction Fact Key`=`ITF POTF Costing Done POTF Key`) 
+where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0   and  `Inventory Transaction Section`="In"    and ITF.`Part SKU`=%d    order by `Date` desc  limit 1 ',
                         $part->id
                     );
-
 
 
                     if ($result = $db->query($sql)) {
