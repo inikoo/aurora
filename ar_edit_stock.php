@@ -401,8 +401,7 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
 
     new_housekeeping_fork(
         'au_housekeeping', array(
-        'type'               => '
-        ',
+        'type'               => 'update_parts_stock_run',
         'parts_data'         => $parts_data,
         'editor'             => $editor,
         'all_parts_min_date' => ($all_parts_min_date != '' ? gmdate('Y-m-d', $all_parts_min_date) : ''),
