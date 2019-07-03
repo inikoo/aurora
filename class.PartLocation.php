@@ -615,45 +615,77 @@ class PartLocation extends DB_Table {
             $date = gmdate('Y-m-d H:i:s');
         }
 
-
-        $sql = sprintf(
-            "SELECT sum(`Inventory Transaction Quantity`) AS stock FROM `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  ", prepare_mysql($date), $this->part_sku, $this->location_key
-        );
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
+    $account = get_object('Account', 1);
 
 
-                $stock = round($row['stock'], 3);
-            } else {
-                $stock = 0;
+        if ($account->get('Account Add Stock Value Type') == 'Blockchain') {
 
 
+            $sql = sprintf(
+                "SELECT `Running Stock`,`Running Stock Value`,`Running Cost per SKO` from `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  and `Inventory Transaction Section` in ('In','Out')  order by `Date` desc ", prepare_mysql($date), $this->part_sku, $this->location_key
+            );
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+
+                    $stock = round($row['Running Stock'], 3);
+                    $value_per_sko = $row['Running Cost per SKO'];
+                } else {
+                    $stock = 0;
+                    $value_per_sko = $this->part->get('Part Cost');
+
+                }
             }
-        }
 
 
-        $sql = sprintf(
-            'select  (`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko ,`ITF POTF Costing Done POTF Key` 
+
+
+        }else{
+
+            $sql = sprintf(
+                "SELECT sum(`Inventory Transaction Quantity`) AS stock FROM `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  ", prepare_mysql($date), $this->part_sku, $this->location_key
+            );
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
+
+
+                    $stock = round($row['stock'], 3);
+                } else {
+                    $stock = 0;
+
+
+                }
+            }
+
+
+
+            $sql = sprintf(
+                'select  (`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko ,`ITF POTF Costing Done POTF Key` 
 from    `ITF POTF Costing Done Bridge` B  left join     `Inventory Transaction Fact` ITF   on  (B.`ITF POTF Costing Done ITF Key`=`Inventory Transaction Key`)  
 where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0    and  ITF.`Part SKU`=%d  and `Date`<=%s order by `Date` desc  limit 1 ', $this->part_sku, prepare_mysql($date)
-        );
+            );
 
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
 
-                if ($row['ITF POTF Costing Done POTF Key'] > 0) {
-                    $value_per_sko = $row['value_per_sko'];
+                    if ($row['ITF POTF Costing Done POTF Key'] > 0) {
+                        $value_per_sko = $row['value_per_sko'];
+
+                    } else {
+                        $value_per_sko = $this->part->get('Part Cost');
+                    }
 
                 } else {
                     $value_per_sko = $this->part->get('Part Cost');
                 }
 
-            } else {
-                $value_per_sko = $this->part->get('Part Cost');
             }
 
+
         }
+
+
 
 
 
