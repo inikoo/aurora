@@ -346,6 +346,7 @@ function fork_housekeeping($job) {
         case 'update_parts_stock_run':
 
 
+
             foreach ($data['parts_data'] as $part_sku => $from_date) {
 
 
@@ -372,9 +373,13 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                     );
 
 
+                  //  print "$sql\n";
+
                     if ($result = $db->query($sql)) {
                         foreach ($result as $row) {
 
+
+                            print_r($row);
 
 
                             $part->update_field_switcher('Part Cost in Warehouse', $row['value_per_sko'], 'no_history');
@@ -387,6 +392,23 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
                 }
+
+
+
+
+            }
+
+
+            foreach ($data['parts_data'] as $part_sku => $from_date) {
+
+
+
+
+
+                $part         = get_object('Part', $part_sku);
+                $part->editor = $data['editor'];
+
+
 
 
                 $part->update_stock_run();
