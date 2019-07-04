@@ -1810,6 +1810,7 @@ class DeliveryNote extends DB_Table {
                 }
 
 
+
                 // todo before cancel the picked stock has to go some cleaver way back to locations, (making fork update_cancelled_delivery_note_products_sales_data section in delivery_note_cancelled fork obsolete? )
 
 
@@ -1842,7 +1843,7 @@ class DeliveryNote extends DB_Table {
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
 
-                        $sql = sprintf('UPDATE `Inventory Transaction Fact`  SET `Inventory Transaction Type`="FailSale" , `Inventory Transaction Section`="Out"  WHERE `Inventory Transaction Key`=%d  ', $row['Inventory Transaction Key']);
+                        $sql = sprintf('UPDATE `Inventory Transaction Fact`  SET   `Inventory Transaction Type`="FailSale" , `Inventory Transaction Section`="Out"  WHERE `Inventory Transaction Key`=%d  ', $row['Inventory Transaction Key']);
                         $this->db->exec($sql);
 
 
@@ -1858,7 +1859,7 @@ class DeliveryNote extends DB_Table {
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
 
-                        $sql = sprintf('UPDATE `Inventory Transaction Fact`  SET `Inventory Transaction Type`="FailSale" WHERE `Inventory Transaction Key`=%d  ', $row['Inventory Transaction Key']);
+                        $sql = sprintf('UPDATE `Inventory Transaction Fact`  SET  `Inventory Transaction Record Type`="Info",  `Inventory Transaction Type`="FailSale" WHERE `Inventory Transaction Key`=%d  ', $row['Inventory Transaction Key']);
                         $this->db->exec($sql);
 
 
