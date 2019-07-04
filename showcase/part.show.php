@@ -22,9 +22,9 @@ function get_part_showcase($data, $smarty, $user, $db) {
     // $part->update_available_forecast();
     //   $part->update_stock_status();
 
-    ///  foreach($part->get_locations('part_location_object') as $pl){
-    //    $pl->update_stock();
-    //
+      foreach($part->get_locations('part_location_object') as $pl) {
+          $pl->update_stock();
+      }
 
 
     // $part->update_stock_run();
