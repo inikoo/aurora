@@ -285,7 +285,7 @@ class PartLocation extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT sum(ifnull(`Inventory Transaction Quantity`,0)) AS stock ,ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  `Date`<".($include_current ? '=' : '')."%s AND `Part SKU`=%d AND `Location Key`=%d",
+            "SELECT sum(ifnull(`Inventory Transaction Quantity`,0)) AS stock ,ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Record Type`='Movement' and  `Date`<".($include_current ? '=' : '')."%s AND `Part SKU`=%d AND `Location Key`=%d",
             prepare_mysql($date), $this->part_sku, $this->location_key
         );
 
