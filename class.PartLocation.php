@@ -1711,6 +1711,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
     function update_stock_history_date($date) {
 
+
+
         if ($this->exist_on_date($date)) {
 
             $this->update_stock_history_interval($date, $date);
@@ -1727,14 +1729,13 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
     }
 
     function exist_on_date($date) {
-        //print $date;
+      //  print $date;
         $date = gmdate('U', strtotime($date));
 
         $intervals = $this->get_history_intervals();
 
-        //print_r($intervals);
+      //  print_r($intervals);
 
-        //print "*******";
 
         foreach ($intervals as $interval) {
 
@@ -1747,11 +1748,15 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 }
 
                 if ($date >= gmdate('U', strtotime($interval['From'])) and $date <= gmdate('U', strtotime($interval['To']))) {
+
+
                     return true;
                 }
 
             } else {
                 if ($date >= gmdate('U', strtotime($interval['From']))) {
+
+
                     return true;
                 }
 
@@ -1773,11 +1778,11 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
+
+               // print_r($row);
+
                 $dates[$row['Date']] = $row['Inventory Transaction Type'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -1785,33 +1790,29 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
         $index = 0;
+
+        $last_type='';
+
         foreach ($dates as $date => $type) {
             if ($index == 0 and $type == 'Disassociate') {
                 continue;
             }
 
-            if ($type == 'Associate') {
+            if ($type == 'Associate' and $last_type!='Associate') {
                 $intervals[] = array(
                     'From' => date("Y-m-d", strtotime($date)),
                     'To'   => false
                 );
+                $last_type=$type;
             }
-            if ($type == 'Disassociate') {
-                $intervals[count($intervals) - 1]['To'] = gmdate(
-                    "Y-m-d", strtotime($date)
-                );
+            if ($type == 'Disassociate' and $last_type!='Disassociate') {
+                $intervals[count($intervals) - 1]['To'] = gmdate("Y-m-d", strtotime($date));
+                $last_type=$type;
             }
 
             $index++;
         }
 
-        /*
-    print "++++++++++\n";
-         print_r($dates);
-     print_r($intervals);
-
-     print "---------\n";
-    */
 
         return $intervals;
 
