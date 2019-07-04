@@ -49,7 +49,7 @@ headerCell: integerHeaderCell
 
 {
 name: "cost",
-label: "{t}Cost/SKO{/t}",
+label: "{t}SKO value{/t}",
 editable: false,
 
 defaultOrder:1,
