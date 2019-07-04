@@ -624,6 +624,9 @@ class PartLocation extends DB_Table {
                 "SELECT sum(`Inventory Transaction Quantity`) AS stock ,sum(`Inventory Transaction Amount`) AS value from `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  and `Inventory Transaction Record Type` in ('Movement')  order by `Date` desc ",
                 prepare_mysql($date), $this->part_sku, $this->location_key
             );
+
+//            print $sql;
+
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
 
@@ -643,6 +646,8 @@ class PartLocation extends DB_Table {
 
 
             }
+
+
 
             return array(
                 $stock,
@@ -1331,7 +1336,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
             case('Move Out'):
-                $record_type          = 'Helper';
+                $record_type          = 'Movement';
                 $section              = 'Other';
                 $destination_location = new Location(
                     'code', $data['Destination']
@@ -1348,7 +1353,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                     ).' ('.($value_change > 0 ? '+' : '').money($value_change).')';
                 break;
             case('Move In'):
-                $record_type = 'Helper';
+                $record_type = 'Movement';
                 $section     = 'Other';
                 $details     = number($qty_change).'x '.'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' '._(
                         'move in to'
