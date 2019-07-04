@@ -618,15 +618,47 @@ class PartLocation extends DB_Table {
         $account = get_object('Account', 1);
 
 
-        if ($account->get('Account Add Stock Value Type') == 'Blockchain') {
+        if ($account->get('Account Add Stock Value Type') == 'Blockchain' or true ) {
+
+            $sql = sprintf(
+                "SELECT sum(`Inventory Transaction Quantity`) AS stock ,sum(`Inventory Transaction Amount`) AS value from `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  and `Inventory Transaction Record Type` in ('Movement')  order by `Date` desc ",
+                prepare_mysql($date), $this->part_sku, $this->location_key
+            );
+            if ($result = $this->db->query($sql)) {
+                if ($row = $result->fetch()) {
 
 
+
+
+                    $stock         = round($row['stock'], 3);
+                    $value = $row['value'];
+
+                    //$value_per_sko = $row['Running Cost per SKO'];
+                } else {
+                    $stock         = 0;
+                    $value =0;
+                   // $value_per_sko = $this->part->get('Part Cost');
+
+                }
+
+
+            }
+
+            return array(
+                $stock,
+                $value,
+                0
+            );
+
+/*
             $sql = sprintf(
                 "SELECT `Running Stock`,`Running Stock Value`,`Running Cost per SKO` from `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  and `Inventory Transaction Record Type` in ('Movement')  order by `Date` desc ",
                 prepare_mysql($date), $this->part_sku, $this->location_key
             );
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
+
+
 
 
                     $stock         = round($row['Running Stock'], 3);
@@ -637,6 +669,7 @@ class PartLocation extends DB_Table {
 
                 }
             }
+*/
 
 
         } else {

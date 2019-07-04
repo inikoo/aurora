@@ -3378,11 +3378,10 @@ class Part extends Asset {
 
 
             $sql = sprintf(
-                'SELECT `ITF POTF Costing Done ITF Key`,`Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` 
-                FROM `Inventory Transaction Fact` left join `ITF POTF Costing Done Bridge` on (`ITF POTF Costing Done ITF Key`=`Inventory Transaction Key`)   WHERE `Part SKU`=%d  ORDER BY `Date`   ',
+                'SELECT    ( select `ITF POTF Costing Done ITF Key` from `ITF POTF Costing Done Bridge` where `ITF POTF Costing Done ITF Key`=`Inventory Transaction Key`   ) as costing,  `Inventory Transaction Record Type`,`Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` 
+                FROM `Inventory Transaction Fact`   WHERE `Part SKU`=%d  ORDER BY `Date` ,`Inventory Transaction Key`  ',
                 $this->id
             );
-
 
 
 
@@ -3394,14 +3393,21 @@ class Part extends Asset {
 
 
 
-                    if($row['ITF POTF Costing Done ITF Key']=='' and !$costing){
+
+                    if($row['costing']=='' and !$costing){
                         $cost_per_sko=$this->get('Part Cost');
-                    }elseif($row['ITF POTF Costing Done ITF Key']>0  and $row['Inventory Transaction Quantity']>0 and $row['Inventory Transaction Amount']>0 ){
+                    }elseif($row['costing']>0  and $row['Inventory Transaction Quantity']>0 and $row['Inventory Transaction Amount']>0 ){
                         $costing=true;
                         $cost_per_sko= $row['Inventory Transaction Amount']/ $row['Inventory Transaction Quantity'];
                     }
 
-                    $running_stock       = $running_stock + $row['Inventory Transaction Quantity'];
+
+                    if($row['Inventory Transaction Record Type']=='Movement'){
+                        $running_stock       = $running_stock + $row['Inventory Transaction Quantity'];
+
+                    }
+
+
                     $running_stock_value=$running_stock*$cost_per_sko;
 
 
@@ -3413,7 +3419,7 @@ class Part extends Asset {
                     $this->db->exec($sql);
 
 //        " where ( `Inventory Transaction Section`='In' or ( `Inventory Transaction Type`='Adjust' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d", $parameters['parent_key']
-                    if($row['ITF POTF Costing Done ITF Key']==''  and ( $row['Inventory Transaction Section']=='In'  or   $row['Inventory Transaction Type']=='Adjust'  )  ){
+                    if($row['costing']>0 and  $row['Inventory Transaction Record Type']=='Movement' ){
 
                         $sql = sprintf(
                             'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%f  WHERE `Inventory Transaction Key`=%d ',
@@ -3434,6 +3440,8 @@ class Part extends Asset {
 
 
         }
+
+
 
 
     }
