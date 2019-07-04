@@ -692,7 +692,7 @@ class data_entry_picking_aid {
 					) ";
         $this->db->prepare($sql)->execute(
             [
-                'Movement',
+                'Info',
                 'OIP',
                 $this->dn->get('Delivery Note Address Country 2 Alpha Code'),
                 $weight,
@@ -758,11 +758,13 @@ class data_entry_picking_aid {
 
 
                             if ($transaction['qty'] == 0) {
+                                $transaction_record_type='Info';
                                 $transaction_type    = 'No Dispatched';
                                 $transaction_section = 'NoDispatched';
                                 $date_picked         = '';
                                 $date_packed         = '';
                             } else {
+                                $transaction_record_type='Movement';
                                 $transaction_type    = 'Sale';
                                 $transaction_section = 'Out';
                                 $date_picked         = $date;
@@ -770,8 +772,7 @@ class data_entry_picking_aid {
                             }
 
 
-                            $sql = 'UPDATE  `Inventory Transaction Fact`  SET  
-                                  `Date Picked`=? ,`Date Packed`=?,`Date`=? ,`Location Key`=? ,`Inventory Transaction Type`=? ,`Inventory Transaction Section`=? ,
+                            $sql = 'UPDATE  `Inventory Transaction Fact`  SET  `Inventory Transaction Record Type`=?,`Date Picked`=? ,`Date Packed`=?,`Date`=? ,`Location Key`=? ,`Inventory Transaction Type`=? ,`Inventory Transaction Section`=? ,
                                   `Inventory Transaction Quantity`=?, `Inventory Transaction Amount`=?,`Inventory Transaction Weight`=?,
                                   `Picked`=?,`Packed`=?,`Out of Stock`=?,
                                   `Picker Key`=?,`Packer Key`=? WHERE `Inventory Transaction Key`=? ';
@@ -779,6 +780,7 @@ class data_entry_picking_aid {
 
                             $this->db->prepare($sql)->execute(
                                 [
+                                    $transaction_record_type,
                                     $date_picked,
                                     $date_packed,
                                     $date,
@@ -797,6 +799,7 @@ class data_entry_picking_aid {
 
                                 ]
                             );
+
 
                             $this->db->exec($sql);
 
