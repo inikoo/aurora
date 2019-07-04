@@ -322,7 +322,6 @@ function save_stock(element) {
 
 }
 
-//'Move','Order In Process','No Dispatched','Sale','Audit','In','Adjust','Broken','Lost','Not Found','Associate','Disassociate','Move In','Move Out','Other Out','Restock','FailSale'
 
 function show_dialog_consolidate_unknown_location(element) {
 
