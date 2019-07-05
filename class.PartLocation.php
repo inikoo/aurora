@@ -285,8 +285,8 @@ class PartLocation extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT sum(ifnull(`Inventory Transaction Quantity`,0)) AS stock  FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Record Type`='Movement' and  `Date`<".($include_current ? '=' : '')
-            ."%s AND `Part SKU`=%d AND `Location Key`=%d", prepare_mysql($date), $this->part_sku, $this->location_key
+            "SELECT sum(ifnull(`Inventory Transaction Quantity`,0)) AS stock  FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Record Type`='Movement' and  `Date`<".($include_current ? '=' : '')."%s AND `Part SKU`=%d AND `Location Key`=%d",
+            prepare_mysql($date), $this->part_sku, $this->location_key
         );
 
 
@@ -300,9 +300,8 @@ class PartLocation extends DB_Table {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 //$old_qty   = round($row['stock'], 6);
-               $old_qty = $row['stock'];
+                $old_qty = $row['stock'];
                 //$old_value = $row['value'];
-
 
 
             }
@@ -312,12 +311,11 @@ class PartLocation extends DB_Table {
         }
 
 
-
         $qty_change = $qty - $old_qty;
 
 
-       // print "$qty $old_qty";
-       // exit;
+        // print "$qty $old_qty";
+        // exit;
 
 
         $value_change = round($qty_change * $this->part->get('Part Cost in Warehouse'), 2);
@@ -357,34 +355,36 @@ class PartLocation extends DB_Table {
         if ($parent == 'associate') {
             if ($unknown_location != $this->location->id) {
                 $details = sprintf(
-                    '<span class="note_data"><span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> <i class="fa fa-link" aria-hidden="true"></i> %s</span>%s', $this->part_sku, $this->part->get('Reference'),
-                    $location_link, $audit_note
+                    '<span class="note_data"><span class="link" onClick="change_view(\'part/%d\')"><i class="fal fa-box"></i> %s</span> <i class="fa fa-link" aria-hidden="true"></i> %s</span>%s', $this->part_sku, $this->part->get('Reference'), $location_link,
+                    $audit_note
                 );
             }
 
+            $section = 'Other';
 
         } elseif ($parent == 'disassociate') {
             if ($unknown_location != $this->location->id) {
                 $details = sprintf(
-                    '<span class="note_data"><span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> <i class="fa fa-unlink" aria-hidden="true"></i> %s</span>%s', $this->part_sku, $this->part->get('Reference'),
-                    $location_link, $audit_note
+                    '<span class="note_data"><span class="link" onClick="change_view(\'part/%d\')"><i class="fal fa-box"></i> %s</span> <i class="fa fa-unlink" aria-hidden="true"></i> %s</span>%s', $this->part_sku, $this->part->get('Reference'), $location_link,
+                    $audit_note
                 );
             }
+            $section = 'Other';
 
         } else {
 
             $details = sprintf(
-                '<span class="note_data"><i class="fa fa-dot-circle" aria-hidden="true"></i>: %s SKO <span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> @ %s</span>%s', number($qty), $this->part_sku,
-                $this->part->get('Reference'), $location_link, $audit_note
+                '<span class="note_data"><i class="fa fa-dot-circle" aria-hidden="true"></i>: %s SKO <span class="link" onClick="change_view(\'part/%d\')"><i class="fal fa-box"></i> %s</span> @ %s</span>%s', number($qty), $this->part_sku, $this->part->get('Reference'),
+                $location_link, $audit_note
             );
 
-
+            $section = 'Audit';
         }
 
 
         $sql = sprintf(
             "INSERT INTO `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Part Location Stock`) VALUES (%s,%s,%d,%d,%s,%f,%.2f,%s,%s,%s,%f)",
-            "'Info'", "'Audit'", $this->part_sku, $this->location_key, "'Audit'", 0, 0, $this->editor['User Key'], prepare_mysql($details, false), prepare_mysql($date), $qty
+            "'Info'", prepare_mysql($section), $this->part_sku, $this->location_key, "'Audit'", 0, 0, $this->editor['User Key'], prepare_mysql($details, false), prepare_mysql($date), $qty
 
         );
         //print $sql;
@@ -398,7 +398,7 @@ class PartLocation extends DB_Table {
 
 
             $details = sprintf(
-                '<span class="note_data"><i class="fa fa-dot-circle" aria-hidden="true"></i>: <i class="fa fa-fw fa-sliders" aria-hidden="true"></i> <b>%s</b> SKO <span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> @ <span class="link" onClick="change_view(\'locations/%d/%d\')">%s</span></span>',
+                '<span class="note_data"><i class="fa fa-dot-circle" aria-hidden="true"></i>: <i class="fa fa-fw fa-sliders" aria-hidden="true"></i> <b>%s</b> SKO <span class="link" onClick="change_view(\'part/%d\')"><i class="fal fa-box"></i> %s</span> @ <span class="link" onClick="change_view(\'locations/%d/%d\')">%s</span></span>',
                 ($qty_change > 0 ? '+' : '').number($qty_change), $this->part_sku, $this->part->get('Reference'), $this->location->get('Warehouse Key'), $this->location->id, $this->location->get('Code')
             );
 
@@ -414,7 +414,7 @@ class PartLocation extends DB_Table {
 
             $sql = sprintf(
                 "INSERT INTO `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`) VALUES (%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s,%s)",
-                "'Movement'", "'Audit'", $this->part_sku, $this->location_key, "'Adjust'", $qty_change, $value_change, $this->editor['User Key'], prepare_mysql($details, false), prepare_mysql($date), prepare_mysql($audit_key)
+                "'Movement'", "'Leakage Detail'", $this->part_sku, $this->location_key, "'Adjust'", $qty_change, $value_change, $this->editor['User Key'], prepare_mysql($details, false), prepare_mysql($date), prepare_mysql($audit_key)
             );
 
 
@@ -442,7 +442,7 @@ class PartLocation extends DB_Table {
 
                 $sql = sprintf(
                     "INSERT INTO `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`) VALUES (%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s,%s)",
-                    "'Movement'", "'Audit'", $part_unk_location->part_sku, $part_unk_location->location_key, "'Adjust'", -$qty_change, -$value_change, $this->editor['User Key'], prepare_mysql($_details, false), prepare_mysql($date), prepare_mysql($audit_key)
+                    "'Movement'", "'Leakage Detail'", $part_unk_location->part_sku, $part_unk_location->location_key, "'Adjust'", -$qty_change, -$value_change, $this->editor['User Key'], prepare_mysql($_details, false), prepare_mysql($date), prepare_mysql($audit_key)
                 );
                 $this->db->exec($sql);
 
@@ -629,15 +629,13 @@ class PartLocation extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT sum(`Inventory Transaction Quantity`) AS stock  from `Inventory Transaction Fact` WHERE  `Inventory Transaction Record Type`='Movement' and `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  ",
-            prepare_mysql($date), $this->part_sku, $this->location_key
+            "SELECT sum(`Inventory Transaction Quantity`) AS stock  from `Inventory Transaction Fact` WHERE  `Inventory Transaction Record Type`='Movement' and `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  ", prepare_mysql($date), $this->part_sku,
+            $this->location_key
         );
-
 
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-
 
 
                 $stock = round($row['stock'], 3);
@@ -654,14 +652,7 @@ class PartLocation extends DB_Table {
         return $stock;
 
 
-
-
-
-
-
     }
-
-
 
 
     function get_value_per_sko($date = '') {
@@ -672,16 +663,14 @@ class PartLocation extends DB_Table {
         }
 
 
-
-
         $account = get_object('Account', 1);
 
 
         if ($account->get('Account Add Stock Value Type') == 'Blockchain') {
 
             $sql = sprintf(
-                "SELECT `Running Cost per SKO` AS sko_value from `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  and   `Running Cost per SKO`  is not null order by `Date` desc  ",
-                prepare_mysql($date), $this->part_sku, $this->location_key
+                "SELECT `Running Cost per SKO` AS sko_value from `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  and   `Running Cost per SKO`  is not null order by `Date` desc  ", prepare_mysql($date), $this->part_sku,
+                $this->location_key
             );
 
             //            print $sql;
@@ -694,7 +683,7 @@ class PartLocation extends DB_Table {
 
                     //$value_per_sko = $row['Running Cost per SKO'];
                 } else {
-                    $value_per_sko =  $this->part->get('Part Cost');
+                    $value_per_sko = $this->part->get('Part Cost');
                     // $value_per_sko = $this->part->get('Part Cost');
 
                 }
@@ -705,11 +694,7 @@ class PartLocation extends DB_Table {
             return $value;
 
 
-
-
-
         } else {
-
 
 
             $sql = sprintf(
@@ -1139,9 +1124,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         $this->deleted_msg = _('Part no longer associated with location');
 
 
-        $audit_key = $this->audit(
-            0, _('Part disassociate with location'), $date, $include_current = true, 'disassociate'
-        );
+        $audit_key = $this->audit(0, _('Part disassociate with location'), $date, $include_current = true, 'disassociate');
         $sql       = sprintf(
             "UPDATE `Inventory Transaction Fact` SET `Relations`=%d WHERE `Inventory Transaction Key`=%d", $disassociate_transaction_key, $audit_key
         );
@@ -1164,8 +1147,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
     }
-
-
 
 
     function add_stock($data, $date) {
@@ -1245,24 +1226,28 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 break;
             case('Lost'):
                 $record_type = 'Movement';
-                $section     = 'Other';
+                $section     = 'Lost';
                 $details     = sprintf(_('%s SKO lost'), -$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change, $account->get('Account Currency')).') '.$data['Note'];
                 break;
             case('Broken'):
                 $record_type = 'Movement';
-                $section     = 'Other';
+                $section     = 'Lost';
                 $details     = sprintf(_('%s SKO damaged'), -$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change, $account->get('Account Currency')).') '.$data['Note'];
                 break;
+
+
             case('Other Out'):
 
                 $record_type = 'Movement';
-                $section     = 'Other';
 
                 if ($qty_change > 0) {
-                    $details = sprintf(_('%s SKO found'), ($qty_change > 0 ? '+' : '').$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change, $account->get('Account Currency')).') '.$data['Note'];
+                    $details          = sprintf(_('%s SKO found'), ($qty_change > 0 ? '+' : '').$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change, $account->get('Account Currency')).') '.$data['Note'];
+                    $section          = 'In';
+                    $transaction_type = 'Found';
 
                 } else {
                     $details = sprintf(_('%s SKO leaked'), ($qty_change > 0 ? '+' : '').$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change, $account->get('Account Currency')).') '.$data['Note'];
+                    $section = 'Lost';
 
                 }
 
@@ -1271,7 +1256,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             case('Move Out'):
                 $record_type          = 'Movement';
-                $section              = 'Other';
+                $section              = 'Move Detail';
                 $destination_location = new Location(
                     'code', $data['Destination']
                 );
@@ -1288,7 +1273,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 break;
             case('Move In'):
                 $record_type = 'Movement';
-                $section     = 'Other';
+                $section     = 'Move Detail';
                 $details     = number($qty_change).'x '.'<a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' '._(
                         'move in to'
                     ).' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('from').' '.$data['Origin'].': '.($qty_change > 0 ? '+' : '').number(
@@ -1346,14 +1331,13 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             case('Broken'):
                 $this->part->update_leakages('Damaged');
                 break;
+            case('Found'):
+                $this->part->update_leakages('Found');
+                break;
             case('Other Out'):
-                if ($qty_change > 0) {
-                    $this->part->update_leakages('Found');
 
-                } else {
-                    $this->part->update_leakages('Errors');
+                $this->part->update_leakages('Errors');
 
-                }
 
                 break;
 
@@ -1538,70 +1522,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
     }
 
-    function set_stock_as_lost($data, $date) {
-
-        if (!is_numeric($this->data['Quantity On Hand'])) {
-            $this->error;
-            $this->msg = _('Unknown stock in the location');
-
-            return;
-        }
-
-        if ($this->data['Quantity On Hand'] < $data['Lost Quantity']) {
-            $this->error;
-            $this->msg = _(
-                'Lost Quantity greater than the stock on the location'
-            );
-
-            return;
-        }
-
-        $qty = $data['Lost Quantity'] * -1;
-
-        $_data = array(
-            'Quantity'         => $qty,
-            'Transaction Type' => $data['Type'],
-            'Reason'           => $data['Reason'],
-            'Action'           => $data['Action']
-        );
-        //print_r($_data);
-
-        $this->stock_transfer($_data);
-
-    }
-
-    function is_associated($date = false) {
-
-        if (!$date) {
-            $date = gmdate('Y-m-d H:i:s');
-        }
-
-        // print "is test: $date ".$this->location_key."\n";
-
-        $intervals = $this->get_history_datetime_intervals();
-        //print_r($intervals);
-        $date = strtotime($date);
-        foreach ($intervals as $interval) {
-            if (!$interval['To']) {
-                $to = gmdate('U') + 1000000000;
-            } else {
-                $to = strtotime($interval['To'].' +00:00');
-            }
-
-            $from = strtotime($interval['From'].' +00:00');
-            // print "f: $from d: $date t: $to\n";
-            if ($from <= $date and $to >= $date) {
-                return true;
-            }
-
-        }
-
-        //print "not asscated\n ";
-
-        return false;
-
-
-    }
 
     function get_history_datetime_intervals() {
         $sql = sprintf(
@@ -1785,23 +1705,23 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
                 $cost_per_sko = $this->get_value_per_sko($row['Date'].' 23:59:59');
 
-               $stock = $this->get_stock($row['Date'].' 23:59:59');
+                $stock = $this->get_stock($row['Date'].' 23:59:59');
 
-               $value=$stock*$cost_per_sko;
+                $value = $stock * $cost_per_sko;
 
                 list($sold, $sales_value) = $this->get_sales($row['Date']);
-                $in= $this->get_in($row['Date']);
-                $lost= $this->get_lost($row['Date']);
+                $in   = $this->get_in($row['Date']);
+                $lost = $this->get_lost($row['Date']);
 
                 list($amount_in_po, $amount_in_other, $amount_out_sales, $amount_out_other) = $this->get_amount_deltas($row['Date']);
 
 
-//print "$cost_per_sko $stock $value";
-//exit;
+                //print "$cost_per_sko $stock $value";
+                //exit;
 
 
-              //  Remoev   ohlc
-              //  list($open, $high, $low, $close, $value_open, $value_high, $value_low, $value_close) = $this->get_ohlc($row['Date']);
+                //  Remoev   ohlc
+                //  list($open, $high, $low, $close, $value_open, $value_high, $value_low, $value_close) = $this->get_ohlc($row['Date']);
 
 
                 //=====================================
@@ -1836,9 +1756,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 $commercial_value_low = $low * $commercial_value_unit_cost;
 
 */
-
-
-
 
 
                 //print $row['Date']." $stock v: $value $value_day_cost_value  $commercial_value \n";
@@ -1892,8 +1809,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
                     $sold, $in, $lost,
 
-                    prepare_mysql($location_type),
-                    $sales_value, prepare_mysql($dormant_1year), $amount_in_po, $amount_in_other, $amount_out_sales, $amount_out_other, $cost_per_sko
+                    prepare_mysql($location_type), $sales_value, prepare_mysql($dormant_1year), $amount_in_po, $amount_in_other, $amount_out_sales, $amount_out_other, $cost_per_sko
 
 
                 );
@@ -1957,8 +1873,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 */
 
         $sql = sprintf(
-            "SELECT ifnull(sum(`Inventory Transaction Quantity`),0) AS stock  FROM `Inventory Transaction Fact` WHERE  `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Location Key`=%d AND `Inventory Transaction Section`='In'   ",
-            prepare_mysql($start), prepare_mysql($end), $this->part_sku, $this->location_key
+            "SELECT ifnull(sum(`Inventory Transaction Quantity`),0) AS stock  FROM `Inventory Transaction Fact` WHERE  `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Location Key`=%d AND `Inventory Transaction Section`='In'   ", prepare_mysql($start),
+            prepare_mysql($end), $this->part_sku, $this->location_key
         );
 
         if ($result = $this->db->query($sql)) {
@@ -1970,7 +1886,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         }
 
 
-        return   $stock;
+        return $stock;
 
     }
 
@@ -2092,139 +2008,8 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
     }
 
-    function redo_adjusts() {
-        //print "XXXXXXX";
-        $sql = sprintf(
-            "DELETE FROM `Inventory Transaction Fact` WHERE `Inventory Transaction Type`='Adjust' AND  `Part SKU`=%d AND `Location Key`=%d   ", $this->part_sku, $this->location_key
-        );
-
-        $this->db->exec($sql);
-        $sql = sprintf(
-            "SELECT *  FROM `Inventory Transaction Fact` WHERE `Inventory Transaction Type` LIKE 'Audit' AND  `Part SKU`=%d AND `Location Key`=%d  ORDER BY `Date` ", $this->part_sku, $this->location_key
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $audit_key = $row['Inventory Transaction Key'];
-                $date      = $row['Date'];
-
-                $include_current = true;
-                $sql             = sprintf(
-                    "SELECT `Inventory Transaction Type` FROM `Inventory Transaction Fact` WHERE `Inventory Transaction Type` LIKE 'Associate' AND  `Part SKU`=%d AND `Location Key`=%d AND `Date`=%s  ", $this->part_sku, $this->location_key, prepare_mysql($date)
-
-                );
-
-
-                if ($result2 = $this->db->query($sql)) {
-                    if ($row2 = $result2->fetch()) {
-                        $include_current = false;
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
-                }
-
-                //print "$sql\n";
-
-
-                $sql = sprintf(
-                    "SELECT sum(ifnull(`Inventory Transaction Quantity`,0)) AS stock ,ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  `Date`<".($include_current ? '=' : '')."%s AND `Part SKU`=%d AND `Location Key`=%d",
-                    prepare_mysql($date), $this->part_sku, $this->location_key
-                );
-
-                //print "$sql\n";
-                $old_qty   = 0;
-                $old_value = 0;
-
-                if ($result3 = $this->db->query($sql)) {
-                    if ($row3 = $result3->fetch()) {
-                        $old_qty   = round($row3['stock'], 3);
-                        $old_value = $row3['value'];
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
-                }
-
-
-                $qty = $row['Part Location Stock'];
-
-                $qty_change = $qty - $old_qty;
-
-
-                $value_change = $qty_change * $this->part->get('Part Cost in Warehouse');
-
-                if ($qty_change != 0 or $value_change != 0) {
-
-                    $audit_key = $row['Inventory Transaction Key'];
-
-                    $note = $row['Note'];
-
-
-                    $details = sprintf(
-                        '<span class="note_data"><i class="fa fa-dot-circle" aria-hidden="true"></i>: <i class="fa fa-fw fa-sliders" aria-hidden="true"></i> <b>%s</b> SKO <span class="link" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span> @ <span class="link" onClick="change_view(\'locations/%d/%d\')">%s</span></span>',
-                        ($qty_change > 0 ? '+' : '').number($qty_change), $this->part_sku, $this->part->get('Reference'), $this->location->get('Warehouse Key'), $this->location->id, $this->location->get('Code')
-                    );
-
-
-                    // $details='Audit: <b>['.number($qty).']</b> <a href="part.php?sku='.$this->part_sku.'">'.$this->part->id.'</a>'.' '._('adjust quantity').' '.$location_link.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
-                    if ($note) {
-                        $details .= $note;
-
-                    }
-
-
-                    $sql = sprintf(
-                        "INSERT INTO `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`)
-			VALUES (%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s,%s)", "'Movement'", "'Audit'", $this->part_sku, $this->location_key, "'Adjust'", $qty_change, $value_change, $row['User Key'], prepare_mysql($details, false), prepare_mysql($date), prepare_mysql($audit_key)
-                    );
-
-
-                    $sql = sprintf(
-                        "INSERT INTO `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`) VALUES (%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s,%s)",
-                        "'Movement'", "'Audit'", $this->part_sku, $this->location_key, "'Adjust'", $qty_change, $value_change, $this->editor['User Key'], prepare_mysql($details, false), prepare_mysql($date), prepare_mysql($audit_key)
-                    );
-
-
-                    //  print "$sql\n\n\n";
-                    //  if($date=='2012-02-27 02:43:48')
-                    //  exit;
-
-                    $this->db->exec($sql);
-
-                }
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $this->update_stock();
-
-
-        $this->get_data();
-
-        include_once 'utils/new_fork.php';
-        global $account;
-
-
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'          => 'update_warehouse_leakages',
-            'warehouse_key' => $this->location->get('Location Warehouse Key'),
-        ), $account->get('Account Code')
-        );
-
-
-    }
-
 
 }
 
 
-?>
+

@@ -24,20 +24,20 @@ $fields = '';
 if ($parameters['parent'] == 'part') {
 
     $where = sprintf(
-        " where  `Inventory Transaction Record Type`='Movement' and ITF.`Part SKU`=%d", $parameters['parent_key']
+        " where ITF.`Part SKU`=%d", $parameters['parent_key']
     );
 
 
 } elseif ($parameters['parent'] == 'account') {
 
 
-    $where = sprintf(" where  `Inventory Transaction Record Type`='Movement' ");
+    $where = sprintf(" where  true ");
 
 
 } elseif ($parameters['parent'] == 'location') {
 
     $where = sprintf(
-        " where  `Inventory Transaction Record Type`='Movement' and ITF.`Location Key`=%d", $parameters['parent_key']
+        " where   ITF.`Location Key`=%d", $parameters['parent_key']
     );
 
 
@@ -83,19 +83,9 @@ if (isset($parameters['elements_type'])) {
 }
 
 
-if ($parameters['f_field'] == 'used_in' and $f_value != '') {
-    $wheref .= " and  `Part XHTML Currently Used In` like '%".addslashes(
-            $f_value
-        )."%'";
-} elseif ($parameters['f_field'] == 'reference' and $f_value != '') {
+if ($parameters['f_field'] == 'reference' and $f_value != '') {
     $wheref .= " and  `Part Reference` like '".addslashes($f_value)."%'";
-} elseif ($parameters['f_field'] == 'supplied_by' and $f_value != '') {
-    $wheref .= " and  `Part XHTML Currently Supplied By` like '%".addslashes(
-            $f_value
-        )."%'";
-} elseif ($parameters['f_field'] == 'sku' and $f_value != '') {
-    $wheref .= " and  `Part SKU` ='".addslashes($f_value)."'";
-} elseif ($parameters['f_field'] == 'description' and $f_value != '') {
+}elseif ($parameters['f_field'] == 'description' and $f_value != '') {
     $wheref .= " and  `Part Package Description` like '".addslashes($f_value)."%'";
 }
 
@@ -116,5 +106,3 @@ $fields
 `Note`,`User Alias`,ITF.`User Key`,`User Handle`,`Given`,`Required`+`Given`+`Inventory Transaction Quantity`-`Out of Stock`-`No Authorized`-`Not Found`-`No Picked Other` as pending  '           ;
 
 
-
-?>
