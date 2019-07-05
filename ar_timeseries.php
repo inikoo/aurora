@@ -41,6 +41,7 @@ switch ($tipo) {
         );
         asset_sales($db, $data, $account);
         break;
+   /*
     case 'part_stock':
         $data = prepare_values(
             $_REQUEST, array(
@@ -53,7 +54,7 @@ switch ($tipo) {
         );
         part_stock($db, $data, $account);
         break;
-
+*/
     case 'csv':
         $data = prepare_values(
             $_REQUEST, array(
@@ -434,8 +435,8 @@ count(distinct `Customer Key`) as customers
 
 }
 
-
-function part_stock($db, $data, $account) {
+/*
+function part_stock_to_delete($db, $data, $account) {
 
     global $memcache_ip;
 
@@ -502,6 +503,6 @@ function part_stock($db, $data, $account) {
 
 
 }
+*/
 
 
-?>

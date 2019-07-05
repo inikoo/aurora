@@ -22,7 +22,7 @@ require_once 'utils/date_functions.php';
 require_once 'utils/object_functions.php';
 
 
-//$db->exec('truncate `Inventory Warehouse Spanshot Fact`; truncate `Inventory Spanshot Fact`');
+$db->exec('truncate `Inventory Warehouse Spanshot Fact`; truncate `Inventory Spanshot Fact`');
 
 
 $warehouse=get_object('Warehouse',1);
@@ -47,8 +47,8 @@ $sql = sprintf(
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
-        $where = ' `Part SKU`=46433';
-        $where = '  true';
+        $where = ' `Part SKU`=257';
+      //  $where = '  true';
 
         $count = 0;
         $sql   = sprintf(

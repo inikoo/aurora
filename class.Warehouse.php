@@ -1153,9 +1153,9 @@ class Warehouse extends DB_Table {
                 $sql = sprintf(
                     "SELECT `Date`,
 			count(DISTINCT `Part SKU`) AS parts,`Date`, count(DISTINCT `Location Key`) AS locations,
-			sum(`Value At Cost Open`) AS open ,sum(`Value At Cost High`) AS high,sum(`Value At Cost Low`) AS low,sum(`Value At Cost`) AS close ,
-			sum(`Value At Day Cost Open`) AS open_value_at_day ,sum(`Value At Day Cost High`) AS high_value_at_day,sum(`Value At Day Cost Low`) AS low_value_at_day,sum(`Value At Day Cost`) AS close_value_at_day,
-			sum(`Value Commercial Open`) AS open_commercial_value ,sum(`Value Commercial High`) AS high_commercial_value,sum(`Value Commercial Low`) AS low_commercial_value,sum(`Value Commercial`) AS close_commercial_value,
+			sum(`Value At Cost`) AS value_at_cost ,
+			sum(`Value At Day Cost`) AS value_at_day,
+			sum(`Value Commercial`) AS commercial_value,
 			
 			sum(`Inventory Spanshot Amount In PO`) AS amount_in_po,
 			sum(`Inventory Spanshot Amount In Other`) AS amount_in_other,
@@ -1179,29 +1179,31 @@ class Warehouse extends DB_Table {
 
                         $sql = sprintf(
                             "INSERT INTO `Inventory Warehouse Spanshot Fact` (`Date`,`Warehouse Key`,`Parts`,`Locations`,
-				`Value At Cost`,`Value At Day Cost`,`Value Commercial`,`Value At Cost Open`,`Value At Cost High`,`Value At Cost Low`,`Value At Day Cost Open`,`Value At Day Cost High`,`Value At Day Cost Low`,
-				`Value Commercial Open`,`Value Commercial High`,`Value Commercial Low`,`Dormant 1 Year Value At Day Cost`,
+				`Value At Cost`,`Value At Day Cost`,`Value Commercial`,
+                                            
+                                                 
+                                                 `Dormant 1 Year Value At Day Cost`,
 				`Inventory Warehouse Spanshot In PO`,`Inventory Warehouse Spanshot In Other`,`Inventory Warehouse Spanshot Out Sales`,`Inventory Warehouse Spanshot Out Other`
 
 				) VALUES (%s,%d,%.2f,%.2f,%.2f, %f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%.2f,%.2f,%.2f,%.2f,%.2f) ON DUPLICATE KEY UPDATE
 					`Value At Cost`=%.2f, `Value At Day Cost`=%.2f,`Value Commercial`=%.2f,
-			`Value At Cost Open`=%f,`Value At Cost High`=%f,`Value At Cost Low`=%f,
-			`Value At Day Cost Open`=%f,`Value At Day Cost High`=%f,`Value At Day Cost Low`=%f,
-			`Value Commercial Open`=%f,`Value Commercial High`=%f,`Value Commercial Low`=%f,
+	
 			`Parts`=%d,`Locations`=%d,`Dormant 1 Year Value At Day Cost`=%.2f,
 			`Inventory Warehouse Spanshot In PO`=%.2f,`Inventory Warehouse Spanshot In Other`=%.2f,`Inventory Warehouse Spanshot Out Sales`=%.2f,`Inventory Warehouse Spanshot Out Other`=%.2f
 			", prepare_mysql($row['Date']),
 
                             $this->id, $row2['parts'], $row2['locations'],
 
-                            $row2['close'], $row2['close_value_at_day'], $row2['close_commercial_value'], $row2['open'], $row2['high'], $row2['low'],
+                            $row2['value_at_cost'], $row2['value_at_day'], $row2['commercial_value'],
 
-                            $row2['open_value_at_day'], $row2['high_value_at_day'], $row2['low_value_at_day'], $row2['open_commercial_value'], $row2['high_commercial_value'], $row2['low_commercial_value'], $dormant_1y_open_value_at_day, $row2['amount_in_po'],
+
+                            $dormant_1y_open_value_at_day, $row2['amount_in_po'],
                             $row2['amount_in_other'], $row2['amount_out_sales'], $row2['amount_out_other'],
 
-                            $row2['close'], $row2['close_value_at_day'], $row2['close_commercial_value'], $row2['open'], $row2['high'], $row2['low'],
+                            $row2['value_at_cost'], $row2['value_at_day'], $row2['commercial_value'],
 
-                            $row2['open_value_at_day'], $row2['high_value_at_day'], $row2['low_value_at_day'], $row2['open_commercial_value'], $row2['high_commercial_value'], $row2['low_commercial_value'], $row2['parts'], $row2['locations'],
+
+                            $row2['parts'], $row2['locations'],
                             $dormant_1y_open_value_at_day, $row2['amount_in_po'], $row2['amount_in_other'], $row2['amount_out_sales'], $row2['amount_out_other']
 
 
