@@ -48,7 +48,7 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
         $where = ' `Part SKU`=257';
-      //  $where = '  true';
+      $where = '  true';
 
         $count = 0;
         $sql   = sprintf(
