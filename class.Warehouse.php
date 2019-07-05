@@ -1185,14 +1185,12 @@ class Warehouse extends DB_Table {
                                                  `Dormant 1 Year Value At Day Cost`,
 				`Inventory Warehouse Spanshot In PO`,`Inventory Warehouse Spanshot In Other`,`Inventory Warehouse Spanshot Out Sales`,`Inventory Warehouse Spanshot Out Other`
 
-				) VALUES (%s,%d,%.2f,%.2f,%.2f, %f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%.2f,%.2f,%.2f,%.2f,%.2f) ON DUPLICATE KEY UPDATE
+				) VALUES (%s,%d,%d,%d  ,%f,%f,%f, %f, %f,%f,%f,%f) ON DUPLICATE KEY UPDATE
 					`Value At Cost`=%.2f, `Value At Day Cost`=%.2f,`Value Commercial`=%.2f,
 	
 			`Parts`=%d,`Locations`=%d,`Dormant 1 Year Value At Day Cost`=%.2f,
 			`Inventory Warehouse Spanshot In PO`=%.2f,`Inventory Warehouse Spanshot In Other`=%.2f,`Inventory Warehouse Spanshot Out Sales`=%.2f,`Inventory Warehouse Spanshot Out Other`=%.2f
-			", prepare_mysql($row['Date']),
-
-                            $this->id, $row2['parts'], $row2['locations'],
+			", prepare_mysql($row['Date']), $this->id, $row2['parts'], $row2['locations'],
 
                             $row2['value_at_cost'], $row2['value_at_day'], $row2['commercial_value'],
 
@@ -1208,7 +1206,9 @@ class Warehouse extends DB_Table {
 
 
                         );
-                        $this->db->exec($sql);
+
+
+                        //$this->db->exec($sql);
 
 
 

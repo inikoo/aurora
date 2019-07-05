@@ -285,9 +285,13 @@ class PartLocation extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT sum(ifnull(`Inventory Transaction Quantity`,0)) AS stock ,ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Record Type`='Movement' and  `Date`<".($include_current ? '=' : '')
+            "SELECT sum(ifnull(`Inventory Transaction Quantity`,0)) AS stock  FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Record Type`='Movement' and  `Date`<".($include_current ? '=' : '')
             ."%s AND `Part SKU`=%d AND `Location Key`=%d", prepare_mysql($date), $this->part_sku, $this->location_key
         );
+
+
+        //print $sql;
+        //exit;
 
         $old_qty = 0;
         // $old_value = 0;
@@ -296,8 +300,11 @@ class PartLocation extends DB_Table {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 //$old_qty   = round($row['stock'], 6);
-                $old_qty = $row['stock'];
+               $old_qty = $row['stock'];
                 //$old_value = $row['value'];
+
+
+
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -305,7 +312,12 @@ class PartLocation extends DB_Table {
         }
 
 
+
         $qty_change = $qty - $old_qty;
+
+
+       // print "$qty $old_qty";
+       // exit;
 
 
         $value_change = round($qty_change * $this->part->get('Part Cost in Warehouse'), 2);
@@ -617,7 +629,7 @@ class PartLocation extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT sum(`Inventory Transaction Quantity`) AS stock  from `Inventory Transaction Fact` WHERE  `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  ",
+            "SELECT sum(`Inventory Transaction Quantity`) AS stock  from `Inventory Transaction Fact` WHERE  `Inventory Transaction Record Type`='Movement' and `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  ",
             prepare_mysql($date), $this->part_sku, $this->location_key
         );
 
@@ -625,6 +637,7 @@ class PartLocation extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
 
 
                 $stock = round($row['stock'], 3);
