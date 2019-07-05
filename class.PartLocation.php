@@ -1900,7 +1900,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         $end   = $date.' 23:59:59';
 
         $sql = sprintf(
-            "SELECT ifnull(sum(`Inventory Transaction Quantity`),0) AS stock FROM `Inventory Transaction Fact` WHERE  `Date`>=%s and `Date`<=%s   AND `Part SKU`=%d AND `Location Key`=%d AND ( `Inventory Transaction Type` IN ('Broken','Lost') OR  (`Inventory Transaction Type` LIKE 'Audit' AND `Inventory Transaction Quantity`<0 ))    ",
+            "SELECT ifnull(sum(`Inventory Transaction Quantity`),0) AS stock FROM `Inventory Transaction Fact` WHERE  `Date`>=%s and `Date`<=%s   AND `Part SKU`=%d AND `Location Key`=%d AND  `Inventory Transaction Section`='Lost'   ",
             prepare_mysql($start), prepare_mysql($end), $this->part_sku, $this->location_key
         );
 
@@ -1936,7 +1936,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         }
 
         $sql = sprintf(
-            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Location Key`=%d AND  `Inventory Transaction Type` in ('Adjust','Restock') and `Inventory Transaction Amount`>0  ",
+            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Location Key`=%d AND  `Inventory Transaction Type` in ('Found','Restock')   ",
             prepare_mysql($start), prepare_mysql($end), $this->part_sku, $this->location_key
         );
 
@@ -1963,17 +1963,19 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         }
 
         $sql = sprintf(
-            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Location Key`=%d AND `Inventory Transaction Type` in ('Adjust','Other Out','Broken','Lost') and `Inventory Transaction Amount`<0",
+            "SELECT ifnull(sum(`Inventory Transaction Amount`),0) AS value FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Location Key`=%d AND `Inventory Transaction Section`='Out' ",
             prepare_mysql($start), prepare_mysql($end), $this->part_sku, $this->location_key
         );
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $amount_out_other = $row['value'];
+                $all_out = $row['value'];
             } else {
-                $amount_out_other = 0;
+                $all_out = 0;
             }
         }
+
+        $amount_out_other=$all_out-$amount_out_sales;
 
         return array(
             $amount_in_po,
@@ -1985,8 +1987,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
     }
 
     function update_stock_history() {
-        //$sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d", $this->part_sku, $this->location_key);
-        //$this->db->exec($sql);
 
         $intervals = $this->get_history_intervals();
         foreach ($intervals as $interval) {
