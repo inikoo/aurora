@@ -1208,7 +1208,7 @@ class Warehouse extends DB_Table {
                         );
 
 
-                        //$this->db->exec($sql);
+                        $this->db->exec($sql);
 
 
 
