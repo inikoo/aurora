@@ -3419,7 +3419,7 @@ class Part extends Asset {
                     $this->db->exec($sql);
 
 //        " where ( `Inventory Transaction Section`='In' or ( `Inventory Transaction Type`='Adjust' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d", $parameters['parent_key']
-                    if($row['costing']>0 and  $row['Inventory Transaction Record Type']=='Movement' ){
+
 
                         $sql = sprintf(
                             'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%f  WHERE `Inventory Transaction Key`=%d ',
@@ -3428,7 +3428,7 @@ class Part extends Asset {
                         );
 
                         $this->db->exec($sql);
-                    }
+
 
 
 

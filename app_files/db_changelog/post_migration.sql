@@ -147,3 +147,5 @@ ALTER TABLE `Inventory Transaction Fact`
   ALTER TABLE `User Dimension` CHANGE `User Type` `User Type` ENUM('Staff','Supplier','Administrator','Warehouse','Contractor','Agent') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 
 
+ALTER TABLE `Inventory Spanshot Fact` DROP `Quantity Open`, DROP `Quantity High`, DROP `Quantity Low`, DROP `Value At Cost Open`, DROP `Value At Cost High`, DROP `Value At Cost Low`, DROP `Value At Day Cost Open`, DROP `Value At Day Cost High`, DROP `Value At Day Cost Low`, DROP `Value Commercial Open`, DROP `Value Commercial High`, DROP `Value Commercial Low`;
+ALTER TABLE `Inventory Warehouse Spanshot Fact` DROP `Value At Cost Open`, DROP `Value At Cost High`, DROP `Value At Cost Low`, DROP `Value At Day Cost Open`, DROP `Value At Day Cost High`, DROP `Value At Day Cost Low`, DROP `Value Commercial Open`, DROP `Value Commercial High`, DROP `Value Commercial Low`;
