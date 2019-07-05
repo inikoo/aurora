@@ -1843,7 +1843,7 @@ class DeliveryNote extends DB_Table {
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
 
-                        $sql = sprintf('UPDATE `Inventory Transaction Fact`  SET   `Inventory Transaction Type`="FailSale" , `Inventory Transaction Section`="Out"  WHERE `Inventory Transaction Key`=%d  ', $row['Inventory Transaction Key']);
+                        $sql = sprintf('UPDATE `Inventory Transaction Fact`  SET   `Inventory Transaction Type`="FailSale" , `Inventory Transaction Section`="NoDispatched"  WHERE `Inventory Transaction Key`=%d  ', $row['Inventory Transaction Key']);
                         $this->db->exec($sql);
 
 
@@ -1859,7 +1859,7 @@ class DeliveryNote extends DB_Table {
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
 
-                        $sql = sprintf('UPDATE `Inventory Transaction Fact`  SET  `Inventory Transaction Record Type`="Info",  `Inventory Transaction Type`="FailSale" WHERE `Inventory Transaction Key`=%d  ', $row['Inventory Transaction Key']);
+                        $sql = sprintf('UPDATE `Inventory Transaction Fact`  SET  `Inventory Transaction Record Type`="Info",  `Inventory Transaction Type`="FailSale" , `Inventory Transaction Section`="NoDispatched"  WHERE `Inventory Transaction Key`=%d  ', $row['Inventory Transaction Key']);
                         $this->db->exec($sql);
 
 

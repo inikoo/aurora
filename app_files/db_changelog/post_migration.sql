@@ -149,3 +149,12 @@ ALTER TABLE `Inventory Transaction Fact`
 
 ALTER TABLE `Inventory Spanshot Fact` DROP `Quantity Open`, DROP `Quantity High`, DROP `Quantity Low`, DROP `Value At Cost Open`, DROP `Value At Cost High`, DROP `Value At Cost Low`, DROP `Value At Day Cost Open`, DROP `Value At Day Cost High`, DROP `Value At Day Cost Low`, DROP `Value Commercial Open`, DROP `Value Commercial High`, DROP `Value Commercial Low`;
 ALTER TABLE `Inventory Warehouse Spanshot Fact` DROP `Value At Cost Open`, DROP `Value At Cost High`, DROP `Value At Cost Low`, DROP `Value At Day Cost Open`, DROP `Value At Day Cost High`, DROP `Value At Day Cost Low`, DROP `Value Commercial Open`, DROP `Value Commercial High`, DROP `Value Commercial Low`;
+
+
+ update  `Inventory Transaction Fact` set `Inventory Transaction Section`='Leakage Detail' where `Inventory Transaction Type`='Adjust' and  `Inventory Transaction Section`='Audit';
+ update  `Inventory Transaction Fact` set `Inventory Transaction Section`='Lost' where `Inventory Transaction Type` in ('Broken','Lost');
+update  `Inventory Transaction Fact` set `Inventory Transaction Section`='In',`Inventory Transaction Type`='Found' where `Inventory Transaction Type`='Other Out' and `Inventory Transaction Quantity`>=0;
+update  `Inventory Transaction Fact` set `Inventory Transaction Section`='Lost' where `Inventory Transaction Type`='Other Out' and `Inventory Transaction Quantity`<0;
+
+update  `Inventory Transaction Fact` set `Inventory Transaction Section`='Move Detail' where `Inventory Transaction Type` in ('Move In','Move Out');
+update  `Inventory Transaction Fact` set `Inventory Transaction Section`='NoDispatched' where `Inventory Transaction Type` in ('Failsale');

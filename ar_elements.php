@@ -131,7 +131,7 @@ switch ($tab) {
     case 'deals':
     case 'vouchers':
 
-    $data = prepare_values(
+        $data = prepare_values(
             $_REQUEST, array('parameters' => array('type' => 'json array'))
         );
         get_deals_element_numbers($db, $data['parameters'], $user);
@@ -463,9 +463,9 @@ function parts_weight_errors($db, $data, $user) {
 
     $elements_numbers = array(
         'type' => array(
-            'Missing'       => 0,
-            'Underweight'             => 0,
-            'Overweight' => 0,
+            'Missing'     => 0,
+            'Underweight' => 0,
+            'Overweight'  => 0,
         ),
 
 
@@ -478,21 +478,21 @@ function parts_weight_errors($db, $data, $user) {
     foreach ($db->query($sql) as $row) {
 
 
-        if($row['element']=='Underweight Web' or $row['element']=='Underweight Cost'){
+        if ($row['element'] == 'Underweight Web' or $row['element'] == 'Underweight Cost') {
             $elements_numbers['type']['Underweight'] += $row['number'];
 
-        }elseif($row['element']=='Overweight Web' or $row['element']=='Overweight Cost'){
+        } elseif ($row['element'] == 'Overweight Web' or $row['element'] == 'Overweight Cost') {
             $elements_numbers['type']['Overweight'] += $row['number'];
 
-        }else{
+        } else {
             $elements_numbers['type'][$row['element']] = $row['number'];
 
         }
 
     }
 
-    foreach($elements_numbers['type'] as $key=>$value){
-        $elements_numbers['type'][$key] =number($value);
+    foreach ($elements_numbers['type'] as $key => $value) {
+        $elements_numbers['type'][$key] = number($value);
     }
 
 
@@ -806,16 +806,15 @@ function get_campaigns_element_numbers($db, $data, $user) {
 function get_stock_transactions_elements($db, $data, $user) {
 
 
-    $parent_key       = $data['parent_key'];
     $elements_numbers = array(
         'stock_status' => array(
-            'OIP'          => 0,
             'In'           => 0,
-            'Other'        => 0,
-            'Move'         => 0,
             'Out'          => 0,
+            'Lost'         => 0,
+            'Move'         => 0,
             'Audit'        => 0,
-            'NoDispatched' => 0
+            'NoDispatched' => 0,
+            'OIP'          => 0
         ),
 
     );
@@ -825,17 +824,17 @@ function get_stock_transactions_elements($db, $data, $user) {
     switch ($data['parent']) {
         case 'part':
             $where = sprintf(
-                "where `Inventory Transaction Record Type`='Movement' and `Part SKU`=%d", $data['parent_key']
+                "where `Part SKU`=%d", $data['parent_key']
             );
             break;
         case 'account':
             $where = sprintf(
-                "where `Inventory Transaction Record Type`='Movement' "
+                "where  true "
             );
             break;
         case 'location':
             $where = sprintf(
-                "where `Inventory Transaction Record Type`='Movement' and `Location Key`=%d", $data['parent_key']
+                "where  `Location Key`=%d", $data['parent_key']
             );
             break;
         default:
@@ -854,9 +853,7 @@ function get_stock_transactions_elements($db, $data, $user) {
     );
     foreach ($db->query($sql) as $row) {
 
-        $elements_numbers['stock_status'][preg_replace(
-            '/\s/', '', $row['element']
-        )] = number($row['number']);
+        $elements_numbers['stock_status'][preg_replace('/\s/', '', $row['element'])] = number($row['number']);
 
     }
 
@@ -1857,7 +1854,7 @@ function get_delivery_notes_element_numbers($db, $data, $user) {
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
-            if ($row['element'] == 'Ready to be Picked' or $row['element'] == 'Picker Assigned' ) {
+            if ($row['element'] == 'Ready to be Picked' or $row['element'] == 'Picker Assigned') {
                 $row['element'] = 'Ready';
             }
             if ($row['element'] == 'Picking' or $row['element'] == 'Picked' or $row['element'] == 'Packing') {
@@ -2020,8 +2017,7 @@ function get_invoices_element_numbers($db, $parameters) {
             $where = sprintf(
                 ' where  `Invoice Store Key`=%d ', $parameters['parent_key']
             );
-            $store    = get_object('Store',$parameters['parent_key']);
-
+            $store = get_object('Store', $parameters['parent_key']);
 
 
             $currency = $store->data['Store Currency Code'];
@@ -2200,7 +2196,7 @@ function get_delivery_note_element_numbers($db, $data) {
 
         if ($row['element'] == 'Ready to be Picked') {
             $_element = 'Ready';
-        } elseif ($row['element'] == 'Picking'  or $row['element'] == 'Picked' or $row['element'] == 'Picker Assigned') {
+        } elseif ($row['element'] == 'Picking' or $row['element'] == 'Picked' or $row['element'] == 'Picker Assigned') {
             $_element = 'Picking';
         } elseif ($row['element'] == 'Packing' or $row['element'] == 'Packed' or $row['element'] == 'Packed Done') {
             $_element = 'Packing';

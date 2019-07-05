@@ -864,22 +864,7 @@ $elements_options = array(
         'type' => array(
             'label' => _('Transaction type'),
             'items' => array(
-                'Audit'        => array(
-                    'label'    => _('Audits'),
-                    'selected' => false
-                ),
-                'Other'        => array(
-                    'label'    => _('Leakages'),
-                    'selected' => false
-                ),
-                'Move'         => array(
-                    'label'    => _('Movements'),
-                    'selected' => false
-                ),
-                'NoDispatched' => array(
-                    'label'    => _('No Dispatched'),
-                    'selected' => true
-                ),
+
 
                 'In'  => array(
                     'label'    => _('In'),
@@ -889,11 +874,30 @@ $elements_options = array(
                     'label'    => _('Out'),
                     'selected' => true
                 ),
+                'Lost' => array(
+                    'label'    => _('Lost'),
+                    'selected' => true
+                ),
+                'Move'         => array(
+                    'label'    => _('Move'),
+                    'selected' => false
+                ),
+
+                'NoDispatched' => array(
+                    'label'    => _('No Dispatched'),
+                    'selected' => true
+                ),
                 'OIP' => array(
                     'label'    => 'OIP',
                     'selected' => true,
                     'title'    => _('Orders in Process')
-                )
+                ),
+
+                'Audit'        => array(
+                    'label'    => _('Audits'),
+                    'selected' => false
+                ),
+
 
             )
 
