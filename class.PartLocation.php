@@ -1497,7 +1497,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             $sql = sprintf(
                 "INSERT INTO `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Relations`,`Metadata`) VALUES (%s,%s,%d,%d,%s,%f,%.2f,%s,%s,%s,%s,%d)",
-                "'Movement'", "'Move'", $this->part_sku, $data['Destination Key'], "'Move'", 0, 0, $this->editor['User Key'], prepare_mysql($details, false), prepare_mysql($this->editor['Date']), prepare_mysql($from_transaction_id.','.$to_transaction_id),
+                "'Info'", "'Move'", $this->part_sku, $data['Destination Key'], "'Move'", 0, 0, $this->editor['User Key'], prepare_mysql($details, false), prepare_mysql($this->editor['Date']), prepare_mysql($from_transaction_id.','.$to_transaction_id),
                 $data['Quantity To Move']
             );
 
