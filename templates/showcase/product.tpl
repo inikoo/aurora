@@ -27,7 +27,7 @@
         <div class="data_container">
             {assign "image_key" $product->get_main_image_key()}
             <div id="main_image" class="wraptocenter main_image {if $image_key==''}hide{/if}">
-                <img src="/{if $image_key}i.php?id={$image_key}&amp;s=270x270{else}art/nopic.png{/if}"> </span>
+                <img src="/{if $image_key}wi.php?id={$image_key}&amp;s=270x270{else}art/nopic.png{/if}"> </span>
             </div>
             {include file='upload_main_image.tpl' object='Product' parent_object_scope="Marketing" key=$product->id class="{if $image_key!=''}hide{/if}"}
         </div>

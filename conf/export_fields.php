@@ -1381,6 +1381,11 @@ $export_fields = array(
             'label'   => _('Stock value'),
             'checked' => 1
         ),
+        array(
+            'name'    => '`Inventory Spanshot Warehouse SKO Value`',
+            'label'   => _('SKO value'),
+            'checked' => 1
+        ),
 
 
     ),

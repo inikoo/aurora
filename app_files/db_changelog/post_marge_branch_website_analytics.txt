@@ -2,7 +2,7 @@
 ALTER TABLE `Image Dimension` ADD `Image MIME Type` ENUM('image/jpeg', 'image/png','image/gif','image/x-icon') NULL DEFAULT NULL AFTER `Image Key`, ADD INDEX (`Image MIME Type`);
 ALTER TABLE `Image Dimension` CHANGE `Image Data` `Image Data` LONGBLOB NULL DEFAULT NULL, CHANGE `Image Filename` `Image Filename` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `Image File Checksum` `Image File Checksum` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `Image Width` `Image Width` SMALLINT(5) UNSIGNED NULL DEFAULT NULL, CHANGE `Image Height` `Image Height` SMALLINT(5) UNSIGNED NULL DEFAULT NULL, CHANGE `Image File Size` `Image File Size` MEDIUMINT(8) UNSIGNED NULL DEFAULT NULL;
 ALTER TABLE `Image Dimension` CHANGE `Image File Format` `Image File Format` ENUM('jpeg','png','gif','ico') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'jpeg';
-ALTER TABLE `Image Dimension` ADD `Image Path` VARCHAR(255) NULL DEFAULT NULL AFTER `Last Modify Date`;
+ALTER TABLE `Image Dimension` ADD `Image Path` VARCHAR(255) NULL DEFAULT NULL;
 ALTER TABLE `Image Subject Bridge` CHANGE `Image Subject Object` `Image Subject Object` ENUM('Webpage Screenshot','Website','Webpage','Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category','Staff') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
 ====== Done until here
@@ -45,3 +45,6 @@ update `Image Subject Bridge` set `Image Subject Is Public`='No' where `Image Su
  update `Image Subject Bridge` set `Image Subject Object Image Scope`='Marketing' where `Image Subject Object` in ('Category','Part','Product') and `Image Subject Object Image Scope`='Default' ;
   update `Image Subject Bridge` set `Image Subject Object Image Scope`='Footer' where `Image Subject Object` in ('Website') and `Image Subject Object Image Scope`!='Default' ;
 DROP TABLE `Template Dimension`, `Template Scope Dimension`;
+
+
+update `Page Store Dimension` set `Webpage Properties`='{}' ;

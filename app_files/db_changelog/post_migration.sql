@@ -141,26 +141,14 @@ ALTER TABLE `Inventory Transaction Fact`
   ALTER TABLE `User Dimension` CHANGE `User Type` `User Type` ENUM('Staff','Supplier','Administrator','Warehouse','Contractor','Agent') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 
 
-
-ALTER TABLE `Order Dimension` DROP `Order Class`, drop `Order Checkout Submitted Payment Date`,drop `Order Checkout Completed Payment Date`,drop `Order XHTML Invoices`,drop `Order Store Code`,drop `Order XHTML Delivery Notes`,drop `Order Current XHTML Post Dispatch State`;
-ALTER TABLE `Order Dimension` DROP `Order Ship To Key To Deliver`, DROP `Order XHTML Ship Tos`, DROP `Order Ship To Country 2 Alpha Code`, DROP `Order Ship To World Region Code`, DROP `Order Ship To Town`, DROP `Order Ship To Postal Code`, DROP `Order Billing To Key To Bill`, DROP `Order XHTML Billing Tos`, DROP `Order Billing To Keys`, DROP `Order Billing To Country Code`, DROP `Order Billing To World Region Code`, DROP `Order Billing To Town`, DROP `Order Billing To Postal Code`;
-
-Drop table `Campaign`;
-Drop table `Campaign`;
-Drop table `Campaign`;
-Drop table `Campaign`;
+ALTER TABLE `Inventory Spanshot Fact` DROP `Quantity Open`, DROP `Quantity High`, DROP `Quantity Low`, DROP `Value At Cost Open`, DROP `Value At Cost High`, DROP `Value At Cost Low`, DROP `Value At Day Cost Open`, DROP `Value At Day Cost High`, DROP `Value At Day Cost Low`, DROP `Value Commercial Open`, DROP `Value Commercial High`, DROP `Value Commercial Low`;
+ALTER TABLE `Inventory Warehouse Spanshot Fact` DROP `Value At Cost Open`, DROP `Value At Cost High`, DROP `Value At Cost Low`, DROP `Value At Day Cost Open`, DROP `Value At Day Cost High`, DROP `Value At Day Cost Low`, DROP `Value Commercial Open`, DROP `Value Commercial High`, DROP `Value Commercial Low`;
 
 
+ update  `Inventory Transaction Fact` set `Inventory Transaction Section`='Leakage Detail' where `Inventory Transaction Type`='Adjust' and  `Inventory Transaction Section`='Audit';
+ update  `Inventory Transaction Fact` set `Inventory Transaction Section`='Lost' where `Inventory Transaction Type` in ('Broken','Lost');
+update  `Inventory Transaction Fact` set `Inventory Transaction Section`='In',`Inventory Transaction Type`='Found' where `Inventory Transaction Type`='Other Out' and `Inventory Transaction Quantity`>=0;
+update  `Inventory Transaction Fact` set `Inventory Transaction Section`='Lost' where `Inventory Transaction Type`='Other Out' and `Inventory Transaction Quantity`<0;
 
-DROP TABLE `Billing To Dimension`, `Shipping Notices Fact`, `Ship to Contact Dimension`, `Ship To Dimension`;
-
-Drop table `Campaign Deal Schema`, `Comment Dimension`;
-
-DROP TABLE `Organization Dimension`,`Company Area Department Bridge`, `Company Area Dimension`, `Company Department Dimension`, `Company Department Position Bridge`, `Company Position Dimension`, `Company Position Staff Bridge`;
-
-DROP TABLE `Address Bridge`, `Address Telecom Bridge`, `Company Bridge`, `Company Dimension`, `Company Old ID Bridge`, `Company Web Site Bridge`, `Contact Bridge`, `Contact Dimension`, `Contract Terms Dimension`, `Email Bridge`, `Email Dimension`, `Telecom Bridge`, `Telecom Dimension`;
-
-DROP TABLE `Email Campaign Content Bridge`, `Email Campaign Mailing List`, `Email Campaign Objective Dimension`, `Email Campaign Objective Link Bridge`, `Email Content Dimension`, `Email Content Paragraph Dimension`, `Email Credentials Dimension`, `Email Credentials Scope Bridge`, `Email Credentials Scope Mailbox`, `Email Credentials Site Bridge`, `Email Credentials Store Bridge`, `Email Credentials User Bridge`, `Email Link Click Fact`, `Email Link Dimension`, `Email Queue Attachement Dimension`, `Email Queue Dimension`, `Email Read Dimension`, `Email Send Dimension`, `Email Send Read Fact`, `Email Template Color Scheme Dimension`, `Email Template Header Image Dimension`, `Email Template Historic Color Scheme Dimension`, `Email Template Postcard Dimension`;
-
-Drop table `Page URL Dimension`,`Search Full Text Dimension`,`Page Store Search Query Dimension`,`Visitor Session Dimension`,`Visitor Dimension`;
-
+update  `Inventory Transaction Fact` set `Inventory Transaction Section`='Move Detail' where `Inventory Transaction Type` in ('Move In','Move Out');
+update  `Inventory Transaction Fact` set `Inventory Transaction Section`='NoDispatched' where `Inventory Transaction Type` in ('Failsale');

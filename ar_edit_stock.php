@@ -355,6 +355,8 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
 
                     }
 
+                 //   {"placement_data":[{"oif_key":"44589259","wk":"1","lk":"14158","l":"Unit 3","qty":"540"}]}
+
                     $parts_data[$row['Supplier Part Part SKU']] = ($min_date != '' ? gmdate('Y-m-d', $min_date) : '');
 
 
@@ -363,6 +365,9 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
                             $sql = sprintf(
                                 'update `Inventory Transaction Fact`  set `Inventory Transaction Amount`=%f   where `Inventory Transaction Key`=%d', $amount_paid * $placement_data['qty'] / $total_placed, $placement_data['oif_key']
                             );
+                            $db->exec($sql);
+
+                            $sql=sprintf('insert into `ITF POTF Costing Done Bridge`  values (%d,%d)  ',$placement_data['oif_key'],$row['Purchase Order Transaction Fact Key']);
                             $db->exec($sql);
 
 

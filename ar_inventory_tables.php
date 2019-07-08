@@ -606,7 +606,6 @@ function inventory_stock_history($_data, $db, $user, $account) {
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
-    //print $sql;
     $record_data = array();
 
     if ($result = $db->query($sql)) {
@@ -1101,25 +1100,25 @@ function supplier_parts($_data, $db, $user, $account) {
                 $part_status = '<i class="fal fa-box fa-fw " aria-hidden="true"></i> ';
             }
 
-/*
-            if ($data['Part Cost in Warehouse'] == '') {
-                $stock_value = '<span class=" error italic">'._('Unknown cost').'</span> <i class="error fa fa-fw fa-exclamation-circle"></i>';
+            /*
+                        if ($data['Part Cost in Warehouse'] == '') {
+                            $stock_value = '<span class=" error italic">'._('Unknown cost').'</span> <i class="error fa fa-fw fa-exclamation-circle"></i>';
 
 
-            } elseif ($data['Part Cost in Warehouse'] == 0) {
-                $stock_value = '<span class=" error italic">'._('Cost is zero').'</span> <i class="error fa fa-fw fa-exclamation-circle"></i>';
+                        } elseif ($data['Part Cost in Warehouse'] == 0) {
+                            $stock_value = '<span class=" error italic">'._('Cost is zero').'</span> <i class="error fa fa-fw fa-exclamation-circle"></i>';
 
 
-            } elseif ($data['Part Current On Hand Stock'] < 0) {
-                $stock_value = '<span class=" error italic">'._('Unknown stock').'</span> <i class="error fa fa-fw fa-exclamation-circle"></i>';
+                        } elseif ($data['Part Current On Hand Stock'] < 0) {
+                            $stock_value = '<span class=" error italic">'._('Unknown stock').'</span> <i class="error fa fa-fw fa-exclamation-circle"></i>';
 
 
-            } else {
-                $stock_value = money($data['Part Cost in Warehouse'] * $data['Part Current On Hand Stock'], $account->get('Account Currency'));
+                        } else {
+                            $stock_value = money($data['Part Cost in Warehouse'] * $data['Part Current On Hand Stock'], $account->get('Account Currency'));
 
 
-            }
-*/
+                        }
+            */
 
             if ($data['Part Next Deliveries Data'] == '') {
                 $next_deliveries_array = array();
@@ -1175,13 +1174,12 @@ function supplier_parts($_data, $db, $user, $account) {
             }
 
 
+            $reference = sprintf('<span class="link" onClick="change_view(\'supplier/%d/part/%d\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']);
+            if ($data['Supplier Part Reference'] != $data['Part Reference']) {
+                $reference .= '<br><span  class="link '.($data['Part Status'] == 'Not In Use' ? 'strikethrough error' : '').'  " onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$part_status.' '.$data['Part Reference'].'</span> ';
 
-            $reference=sprintf('<span class="link" onClick="change_view(\'supplier/%d/part/%d\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']);
-            if($data['Supplier Part Reference']!=$data['Part Reference']){
-                $reference.= '<br><span  class="link '.($data['Part Status'] == 'Not In Use'?'strikethrough error':'').'  " onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$part_status.' '.$data['Part Reference'].'</span> ';
-
-            }else{
-                $reference.= '<span  title="'._('Link to part').'" class="link margin_left_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$part_status.'</span> ';
+            } else {
+                $reference .= '<span  title="'._('Link to part').'" class="link margin_left_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$part_status.'</span> ';
 
             }
 
@@ -1195,19 +1193,16 @@ function supplier_parts($_data, $db, $user, $account) {
                 'id'   => (integer)$data['Supplier Part Key'],
                 'data' => '<span id="item_data_'.$data['Supplier Part Key'].'" class="item_data" data-key="'.$data['Supplier Part Key'].'" ></span>',
 
-                'supplier_code'    => sprintf('<span class="link" onClick="change_view(\'supplier/%d/\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Code']),
-                'part_reference'   => $data['Part Reference'],
-                'reference'        => $reference,
+                'supplier_code'  => sprintf('<span class="link" onClick="change_view(\'supplier/%d/\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Code']),
+                'part_reference' => $data['Part Reference'],
+                'reference'      => $reference,
 
 
-
-                'barcode'          => $data['Part Barcode Number'],
-                'barcode_sko'      => $data['Part SKO Barcode'],
-                'barcode_carton'      => $data['Part Carton Barcode'],
-                'weight_sko'      => ($data['Part Package Weight']!=''?weight($data['Part Package Weight'],'Kg',3,false,true):'<i class="fa fa-exclamation-circle error"></i>'),
-                'cbm'      => ($data['Supplier Part Carton CBM']!=''?$data['Supplier Part Carton CBM'].'m³':'<i class="fa fa-exclamation-circle error"></i>'),
-
-
+                'barcode'        => $data['Part Barcode Number'],
+                'barcode_sko'    => $data['Part SKO Barcode'],
+                'barcode_carton' => $data['Part Carton Barcode'],
+                'weight_sko'     => ($data['Part Package Weight'] != '' ? weight($data['Part Package Weight'], 'Kg', 3, false, true) : '<i class="fa fa-exclamation-circle error"></i>'),
+                'cbm'            => ($data['Supplier Part Carton CBM'] != '' ? $data['Supplier Part Carton CBM'].'m³' : '<i class="fa fa-exclamation-circle error"></i>'),
 
 
                 'description'    => '<span  data-field="Supplier Part Description"  data-item_class="item_Supplier_Part_Description" class="table_item_editable item_Supplier_Part_Description"  >'.$data['Supplier Part Description'].'</span>',
@@ -1224,23 +1219,23 @@ function supplier_parts($_data, $db, $user, $account) {
 				<div style="float:right;min-width:70px;text-align:center;" title="'._('Packages (SKOs) per carton').'" > <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div>
 				<div style="float:right;min-width:20px;text-align:right" title="'._('Units per SKO').'"><span>'.$data['Part Units Per Package'].'</span></div>
 				 '),
-                'stock'              => '<span class="'.($data['Part Current On Hand Stock'] < 0 ? 'error' : '').'">'.number(floor($data['Part Current On Hand Stock'])).'</span>',
+                'stock'          => '<span class="'.($data['Part Current On Hand Stock'] < 0 ? 'error' : '').'">'.number(floor($data['Part Current On Hand Stock'])).'</span>',
 
 
                 //'stock_value'        => $stock_value,
 
                 'dispatched'     => number($data['dispatched'], 0),
-                'dispatched_1yb' => '<span title="'.sprintf(_('%s dispatched same interval last year'),number($data['dispatched_1yb'])).'">'.delta($data['dispatched'], $data['dispatched_1yb']).'</span>',
+                'dispatched_1yb' => '<span title="'.sprintf(_('%s dispatched same interval last year'), number($data['dispatched_1yb'])).'">'.delta($data['dispatched'], $data['dispatched_1yb']).'</span>',
                 'sales'          => money($data['sales'], $account->get('Account Currency')),
-                'sales_1yb' => '<span title="'.sprintf(_('%s amount sold same interval last year'),money($data['sales_1yb'], $account->get('Account Currency'))).'">'.delta($data['sales'], $data['sales_1yb']).'</span>',
+                'sales_1yb'      => '<span title="'.sprintf(_('%s amount sold same interval last year'), money($data['sales_1yb'], $account->get('Account Currency'))).'">'.delta($data['sales'], $data['sales_1yb']).'</span>',
 
                 'sko_stock_value'      => $sko_stock_value,
                 'sko_commercial_value' => ($data['Part Commercial Value'] == '' ? '' : money($data['Part Commercial Value'], $account->get('Account Currency'))),
-                'stock_status'       => $stock_status,
-                'stock_status_label' => $stock_status_label,
-                'next_deliveries'    => $next_deliveries,
-                'available_forecast' => $available_forecast,
-                'dispatched_per_week'=>number($data['Part 1 Quarter Acc Dispatched'] * 4 / 52, 0)
+                'stock_status'         => $stock_status,
+                'stock_status_label'   => $stock_status_label,
+                'next_deliveries'      => $next_deliveries,
+                'available_forecast'   => $available_forecast,
+                'dispatched_per_week'  => number($data['Part 1 Quarter Acc Dispatched'] * 4 / 52, 0)
 
             );
 
@@ -2291,9 +2286,6 @@ function stock_history_day($_data, $db, $user, $account) {
 
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
-
-    //  print  $sql;
-
     $record_data = array();
 
     if ($result = $db->query($sql)) {
@@ -2307,7 +2299,7 @@ function stock_history_day($_data, $db, $user, $account) {
 
                 'stock'       => number($data['stock']),
                 'stock_value' => money($data['stock_value'], $account->get('Currency Code')),
-                'cost'        => ($data['stock'] > 0 ? money($data['stock_value'] / $data['stock'], $account->get('Currency Code')) : ''),
+                'cost'        => money($data['cost'], $account->get('Currency Code')),
                 'in'          => number($data['book_in']),
                 'sold'        => number($data['sold']),
                 'lost'        => number($data['lost']),
@@ -2348,50 +2340,57 @@ function stock_cost($_data, $db, $user, $account) {
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-    //print $sql;
+
     $record_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-//            print_r($data);
-
-
 
             $change = $data['Inventory Transaction Quantity'];
 
 
-            if($data['Inventory Transaction Amount'] ==0){
-                $cost_per_sko = money($cost_per_sko, $account->get('Account Currency Code'));
-            }else{
-                if($data['Inventory Transaction Quantity']!=0){
-                    $cost_per_sko =   money($data['Inventory Transaction Amount'] / $data['Inventory Transaction Quantity'] ,$account->get('Account Currency Code'));
+            if ($data['Inventory Transaction Amount'] == 0) {
+                $cost_per_sko = '-';
+            } else {
+                if ($data['Inventory Transaction Quantity'] != 0) {
+                    $cost_per_sko = ''.money($data['Inventory Transaction Amount'] / $data['Inventory Transaction Quantity'], $account->get('Account Currency Code'));
 
-                }else{
-                    $cost_per_sko='?';
+                } else {
+                    $cost_per_sko = '?';
                 }
             }
 
 
-
-/*
-            if ($data['Supplier Delivery Parent'] != '') {
-                $note = sprintf(
-                    '<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')" >%s</span>  ', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
-                );
-            } else {
-                $note = _('Stock audit').' '.$data['Note'];
-            }
-*/
+            /*
+                        if ($data['Supplier Delivery Parent'] != '') {
+                            $note = sprintf(
+                                '<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')" >%s</span>  ', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
+                            );
+                        } else {
+                            $note = _('Stock audit').' '.$data['Note'];
+                        }
+            */
             $note = $data['Note'];
 
-            $cost     = sprintf(
-                '<span  class="part_cost button"  data-itf_key="%d" data-cost="%s"  data-skos="%s"  data-currency_symbol="%s"  data-cost_per_sko="%s" onClick="open_edit_cost(this)">%s</span>', $data['Inventory Transaction Key'], $data['Inventory Transaction Amount'],
-                $data['Inventory Transaction Quantity'], $account->get('Account Currency Symbol'), $cost_per_sko, money($data['Inventory Transaction Amount'], $account->get('Account Currency Code'))
-            );
-            $sko_cost = sprintf(
-                '<span  class="part_cost_per_sko "  >%s</span>', $cost_per_sko
-            );
+
+            if ($data['costing_done']) {
+                $sko_cost = sprintf(
+                    '<span  class="part_cost_per_sko "  >%s</span>', $cost_per_sko
+                );
+                $cost     = sprintf(
+                    '<span  class="part_cost button"  data-itf_key="%d" data-cost="%s"  data-skos="%s"  data-currency_symbol="%s"  data-cost_per_sko="%s" onClick="open_edit_cost(this)">%s</span>', $data['Inventory Transaction Key'],
+                    $data['Inventory Transaction Amount'], $data['Inventory Transaction Quantity'], $account->get('Account Currency Symbol'), $cost_per_sko, money($data['Inventory Transaction Amount'], $account->get('Account Currency Code'))
+                );
+            } else {
+                $sko_cost = sprintf(
+                    '<i class="error fa fa-fw fa-exclamation-circle"></i> <span  class="part_cost_per_sko error italic"  >%s</span>  ', $cost_per_sko
+                );
+                $cost     = '<i class="error fa fa-question-circle "></i>';
+            }
+
+            //   ($data['costing_done']?'<i class="success fa fa-fw fa-tick"></i>':'<i class="error fa fa-fw fa-exclamation-circle"></i>');
+
 
             $record_data[] = array(
                 'id'       => (integer)$data['Inventory Transaction Key'],
@@ -2399,7 +2398,7 @@ function stock_cost($_data, $db, $user, $account) {
                 'delivery' => $note,
                 'skos'     => $change,
                 'cost'     => $cost,
-                'sko_cost' => $sko_cost
+                'sko_cost' => $sko_cost,
 
             );
 
@@ -3251,10 +3250,14 @@ function parts_weight_errors($_data, $db, $user) {
                     $status = '<span class="sko_weight_msg "><span class="error">'._('Missing weight').'</span></span>';
                     break;
                 case 'Underweight Web':
-                    $status = '<span class="sko_weight_msg "><span class="error">'.sprintf(_('Probably underweight <b>or</b> %s high'),'<span title="'._('Unit weight shown on website').'"><i class=" fal fa-weight-hanging"></i><i style="font-size: x-small" class="  fal fa-globe"></i></span>').'</span></span>';
+                    $status = '<span class="sko_weight_msg "><span class="error">'.sprintf(
+                            _('Probably underweight <b>or</b> %s high'), '<span title="'._('Unit weight shown on website').'"><i class=" fal fa-weight-hanging"></i><i style="font-size: x-small" class="  fal fa-globe"></i></span>'
+                        ).'</span></span>';
                     break;
                 case 'Overweight Web':
-                    $status = '<span class="sko_weight_msg "><span class="error">'.sprintf(_('Probably overweight <b>or</b> %s low'),'<span title="'._('Unit weight shown on website').'"><i class=" fal fa-weight-hanging"></i><i style="font-size: x-small" class="  fal fa-globe"></i></span>').'</span></span>';
+                    $status = '<span class="sko_weight_msg "><span class="error">'.sprintf(
+                            _('Probably overweight <b>or</b> %s low'), '<span title="'._('Unit weight shown on website').'"><i class=" fal fa-weight-hanging"></i><i style="font-size: x-small" class="  fal fa-globe"></i></span>'
+                        ).'</span></span>';
 
                     break;
                 case 'Underweight Cost':
@@ -3274,7 +3277,7 @@ function parts_weight_errors($_data, $db, $user) {
             $record_data[] = array(
                 'id'          => (integer)$data['Part SKU'],
                 'reference'   => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
-                'status'       => $status,
+                'status'      => $status,
                 'image'       => $image,
                 'description' => $data['Part Package Description'],
                 'weight'      => sprintf(

@@ -134,7 +134,7 @@ $smarty->assign('delivery_note', $delivery_note);
 $transactions = array();
 
 $sql = sprintf(
-    "SELECT `Part SKO Barcode`,`Order Quantity`,`Order Bonus Quantity`,`Part Reference`,`Part Package Description`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Inventory Transaction Quantity`,`Out of Stock`,`Not Found`,`No Picked Other`,`Inventory Transaction Type`,`Required`,OTF.`Product Code`,`Part XHTML Currently Used In`,ITF.`Part SKU` FROM `Inventory Transaction Fact` AS ITF LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=ITF.`Part SKU`) LEFT JOIN `Order Transaction Fact` OTF  ON (`Order Transaction Fact Key`=`Map To Order Transaction Fact Key`) 
+    "SELECT `Part SKO Barcode`,`Order Quantity`,`Order Bonus Quantity`,`Part Reference`,`Part Package Description`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Inventory Transaction Quantity`,`Out of Stock`,`Not Found`,`No Picked Other`,`Inventory Transaction Type`,`Required`,OTF.`Product Code`,ITF.`Part SKU` FROM `Inventory Transaction Fact` AS ITF LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=ITF.`Part SKU`) LEFT JOIN `Order Transaction Fact` OTF  ON (`Order Transaction Fact Key`=`Map To Order Transaction Fact Key`) 
 LEFT JOIN  `Product Dimension` PD ON (OTF.`Product ID`=PD.`Product ID`)  WHERE ITF.`Delivery Note Key`=%d AND `Inventory Transaction Type`!='Adjust' ORDER BY `Part Reference`  ",
     $delivery_note->id
 );

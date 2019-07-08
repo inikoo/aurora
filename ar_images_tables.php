@@ -70,7 +70,7 @@ function images($_data, $db, $user) {
 
             if ($data['Image Subject Is Public'] == 'Yes') {
                 $visibility   = sprintf('<i title="%s" class="fa fa-eye"></i>', _('Public'));
-                $image_server = 'i.php';
+                $image_server = 'wi.php';
             } else {
                 $visibility   = sprintf('<i title="%s" class="fa fa-eye-slash"></i>', _('Private'));
                 $image_server = 'image.php';

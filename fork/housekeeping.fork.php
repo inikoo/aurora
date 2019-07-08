@@ -54,10 +54,8 @@ function fork_housekeeping($job) {
             }
 
 
-        break;
+            break;
         case 'feedback':
-
-
 
 
             foreach ($data['feedback'] as $feedback) {
@@ -77,8 +75,7 @@ function fork_housekeeping($job) {
                 }
 
 
-
-              //  print_r($feedback_data);
+                //  print_r($feedback_data);
 
 
                 $sql = sprintf(
@@ -107,44 +104,40 @@ function fork_housekeeping($job) {
 
                         $feedback_otf_data = array(
                             'Feedback OTF Feedback Key' => $feedback_id,
-                            'Feedback OTF Original Key'=>'',
-                            'Feedback OTF Store Key'=>$data['store_key']
+                            'Feedback OTF Original Key' => '',
+                            'Feedback OTF Store Key'    => $data['store_key']
                         );
 
                         $sql = sprintf(
-                            'select `Inventory Transaction Key`,`Map To Order Transaction Fact Key` from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d',
-                            $feedback['original_itf']
+                            'select `Inventory Transaction Key`,`Map To Order Transaction Fact Key` from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d', $feedback['original_itf']
                         );
 
                         if ($result = $db->query($sql)) {
                             if ($row = $result->fetch()) {
 
-                                $feedback_itf_data['Feedback ITF Original Key'] =$row['Inventory Transaction Key'];
-                                $feedback_otf_data['Feedback OTF Original Key'] =$row['Map To Order Transaction Fact Key'];
+                                $feedback_itf_data['Feedback ITF Original Key'] = $row['Inventory Transaction Key'];
+                                $feedback_otf_data['Feedback OTF Original Key'] = $row['Map To Order Transaction Fact Key'];
 
 
                             }
                         }
 
                         $sql = sprintf(
-                            'select `Inventory Transaction Key`,`Map To Order Transaction Fact Key` from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d',
-                            $feedback['itf']
+                            'select `Inventory Transaction Key`,`Map To Order Transaction Fact Key` from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d', $feedback['itf']
                         );
 
                         if ($result = $db->query($sql)) {
                             if ($row = $result->fetch()) {
 
-                                $feedback_itf_data['Feedback ITF Post Operation Key'] =$row['Inventory Transaction Key'];
+                                $feedback_itf_data['Feedback ITF Post Operation Key'] = $row['Inventory Transaction Key'];
 
-                               if($row['Map To Order Transaction Fact Key']!=$feedback_otf_data['Feedback OTF Original Key'] )
-                                $feedback_otf_data['Feedback OTF Post Operation Key'] =$row['Map To Order Transaction Fact Key'];
-
+                                if ($row['Map To Order Transaction Fact Key'] != $feedback_otf_data['Feedback OTF Original Key']) {
+                                    $feedback_otf_data['Feedback OTF Post Operation Key'] = $row['Map To Order Transaction Fact Key'];
+                                }
 
 
                             }
                         }
-
-
 
 
                         $sql = sprintf(
@@ -169,7 +162,7 @@ function fork_housekeeping($job) {
 
                         $stmt = $db->prepare($sql);
 
-                      //  print_r($feedback_otf_data);
+                        //  print_r($feedback_otf_data);
 
                         $i = 1;
                         foreach ($feedback_otf_data as $key => $value) {
@@ -180,21 +173,15 @@ function fork_housekeeping($job) {
                         $stmt->execute();
 
 
-                    }
-                    elseif (isset($feedback['otf'])) {
-
-
+                    } elseif (isset($feedback['otf'])) {
 
 
                         $feedback_otf_data = array(
-                            'Feedback OTF Feedback Key' => $feedback_id,
-                            'Feedback OTF Original Key'=>$feedback['original_otf'],
-                            'Feedback OTF Store Key'=>$data['store_key'],
-                            'Feedback OTF Post Operation Key'=>$feedback['otf']
+                            'Feedback OTF Feedback Key'       => $feedback_id,
+                            'Feedback OTF Original Key'       => $feedback['original_otf'],
+                            'Feedback OTF Store Key'          => $data['store_key'],
+                            'Feedback OTF Post Operation Key' => $feedback['otf']
                         );
-
-
-
 
 
                         $sql = sprintf(
@@ -214,66 +201,51 @@ function fork_housekeeping($job) {
                         $stmt->execute();
 
                         $sql = sprintf(
-                            'select `Inventory Transaction Key` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key`=%d',
-                            $feedback['original_otf']
+                            'select `Inventory Transaction Key` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key`=%d', $feedback['original_otf']
                         );
 
-                        if ($result=$db->query($sql)) {
-                        		foreach ($result as $row) {
+                        if ($result = $db->query($sql)) {
+                            foreach ($result as $row) {
 
 
+                                $feedback_itf_data = array(
+                                    'Feedback ITF Feedback Key' => $feedback_id,
+                                    'Feedback ITF Original Key' => $row['Inventory Transaction Key'],
+                                );
 
 
-                                    $feedback_itf_data = array(
-                                        'Feedback ITF Feedback Key' => $feedback_id,
-                                        'Feedback ITF Original Key' => $row['Inventory Transaction Key'],
-                                    );
+                                $sql = sprintf(
+                                    "INSERT INTO `Feedback ITF Bridge` (%s) values (%s)", '`'.join('`,`', array_keys($feedback_itf_data)).'`', join(',', array_fill(0, count($feedback_itf_data), '?'))
+                                );
+
+                                $stmt = $db->prepare($sql);
 
 
+                                $i = 1;
+                                foreach ($feedback_itf_data as $key => $value) {
+                                    $stmt->bindValue($i, $value);
+                                    $i++;
+                                }
 
-                                    $sql = sprintf(
-                                        "INSERT INTO `Feedback ITF Bridge` (%s) values (%s)", '`'.join('`,`', array_keys($feedback_itf_data)).'`', join(',', array_fill(0, count($feedback_itf_data), '?'))
-                                    );
+                                $stmt->execute();
 
-                                    $stmt = $db->prepare($sql);
-
-
-                                    $i = 1;
-                                    foreach ($feedback_itf_data as $key => $value) {
-                                        $stmt->bindValue($i, $value);
-                                        $i++;
-                                    }
-
-                                    $stmt->execute();
-
-                        		}
-                        }else {
-                        		print_r($error_info=$db->errorInfo());
-                        		print "$sql\n";
-                        		exit;
+                            }
+                        } else {
+                            print_r($error_info = $db->errorInfo());
+                            print "$sql\n";
+                            exit;
                         }
 
 
-
-
-
-
-
-                    }
-                    elseif (isset($feedback['onptf'])) {
-
-
+                    } elseif (isset($feedback['onptf'])) {
 
 
                         $feedback_otf_data = array(
-                            'Feedback ONPTF Feedback Key' => $feedback_id,
-                            'Feedback ONPTF Original Key'=>$feedback['original_onptf'],
-                            'Feedback ONPTF Store Key'=>$data['store_key'],
-                            'Feedback ONPTF Post Operation Key'=>$feedback['onptf']
+                            'Feedback ONPTF Feedback Key'       => $feedback_id,
+                            'Feedback ONPTF Original Key'       => $feedback['original_onptf'],
+                            'Feedback ONPTF Store Key'          => $data['store_key'],
+                            'Feedback ONPTF Post Operation Key' => $feedback['onptf']
                         );
-
-
-
 
 
                         $sql = sprintf(
@@ -298,7 +270,6 @@ function fork_housekeeping($job) {
                 }
 
             }
-
 
 
             break;
@@ -330,12 +301,6 @@ function fork_housekeeping($job) {
                     $warehouse->update_inventory_snapshot($data['all_parts_min_date'], gmdate('Y-m-d'));
 
 
-
-
-
-
-
-
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
@@ -345,29 +310,33 @@ function fork_housekeeping($job) {
             break;
         case 'update_parts_stock_run':
 
-            //  print_r($data);
 
             foreach ($data['parts_data'] as $part_sku => $from_date) {
+
+
                 $part         = get_object('Part', $part_sku);
                 $part->editor = $data['editor'];
-                $part->update_stock_run();
-                $part->redo_inventory_snapshot_fact($from_date);
 
                 if ($account->get('Account Add Stock Value Type') == 'Last Price') {
                     // update if is last placement
 
 
                     $sql = sprintf(
-                        'select `Date`,(`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko from  `Inventory Transaction Fact` ITF  where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0 and  ( `Inventory Transaction Section`=\'In\' or ( `Inventory Transaction Type`=\'Adjust\' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d  order by `Date` desc, FIELD(`Inventory Transaction Type`, \'In\',\'Adjust\')  limit 1 ',
-                        $part->id
+                        'select `ITF POTF Costing Done POTF Key`,(`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko 
+from    `ITF POTF Costing Done Bridge` B  left join     `Inventory Transaction Fact` ITF   on  (B.`ITF POTF Costing Done ITF Key`=`Inventory Transaction Key`)  
+    left join `Purchase Order Transaction Fact` POTF on  (`Purchase Order Transaction Fact Key`=`ITF POTF Costing Done POTF Key`) 
+where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0   and  `Inventory Transaction Section`="In"    and ITF.`Part SKU`=%d    order by `Date` desc  limit 1 ', $part->id
                     );
 
-                    // print $sql;
+
+                    //  print "$sql\n";
 
                     if ($result = $db->query($sql)) {
                         foreach ($result as $row) {
 
-                            //  print_r($row);
+
+                            print_r($row);
+
 
                             $part->update_field_switcher('Part Cost in Warehouse', $row['value_per_sko'], 'no_history');
                         }
@@ -379,6 +348,20 @@ function fork_housekeeping($job) {
 
 
                 }
+
+
+            }
+
+
+            foreach ($data['parts_data'] as $part_sku => $from_date) {
+
+
+                $part         = get_object('Part', $part_sku);
+                $part->editor = $data['editor'];
+
+
+                $part->update_stock_run();
+                $part->redo_inventory_snapshot_fact($from_date);
 
 
             }
@@ -1124,7 +1107,6 @@ function fork_housekeeping($job) {
         }
 
 
-
         $customer->update_location_type();
         $store->update_customers_data();
 
@@ -1527,7 +1509,7 @@ function fork_housekeeping($job) {
             $customer = get_object('Customer', $data['customer_key']);
             $customer->update_invoices();
 
-            $store=get_object('Store',$customer->get('Store Key'));
+            $store = get_object('Store', $customer->get('Store Key'));
             $store->update_invoices();
 
 
@@ -2931,6 +2913,20 @@ function fork_housekeeping($job) {
 
             break;
 
+        case 'take_webpage_screenshot':
+
+            $webpage = get_object('Webpage', $data['webpage_key']);
+
+            $webpage->fork=true;
+
+            $webpage->update_screenshots();
+
+
+
+
+
+
+            break;
 
         default:
             break;
@@ -2941,4 +2937,4 @@ function fork_housekeeping($job) {
     return false;
 }
 
-?>
+

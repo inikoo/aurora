@@ -3,20 +3,23 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 26 October 2017 at 22:31:32 GMT+8, Plane Bali - Kuala Lumpur
- Copyright (c) 2016, Inikoo
+ Created: 08-07-2019 15:41:35 MYT, Kuala Lumpur, Malaysia
+ Copyright (c) 2019, Inikoo
 
  Version 3
 
 */
 
 require_once 'common.php';
-require_once 'utils/object_functions.php';
 
-$where='';
+
 $print_est = true;
 
-$sql = sprintf("SELECT count(*) AS num FROM `Part Dimension` %s", $where);
+
+
+$where = " where `Webpage State`='Online' and `Page Key`=453 ";
+
+$sql = sprintf("SELECT count(*) AS num FROM `Page Store Dimension` %s", $where);
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -31,19 +34,17 @@ if ($result = $db->query($sql)) {
 $lap_time0 = date('U');
 $contador  = 0;
 
-
-
-$sql = sprintf('SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`   ');
+$sql = sprintf(
+    "SELECT `Page Key` FROM `Page Store Dimension`  %s  ", $where
+);
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
+        $webpage = get_object('Webpage',$row['Page Key']);
 
 
-        $part = get_object('Part', $row['Part SKU']);
 
-
-        $part->update_stock_run();
-
+        $webpage->update_screenshots();
 
         $contador++;
         $lap_time1 = date('U');
@@ -54,6 +55,7 @@ if ($result = $db->query($sql)) {
                 )."h  ($contador/$total) \r";
         }
 
+
     }
 
 } else {
@@ -62,4 +64,4 @@ if ($result = $db->query($sql)) {
 }
 
 
-
+?>

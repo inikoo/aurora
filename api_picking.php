@@ -468,7 +468,6 @@ switch ($_REQUEST['action']) {
 
             )
         );
-
         $response = array(
             'state' => 'OK',
             'data'  => $delivery_note->get_update_metadata()

@@ -1714,8 +1714,7 @@ class Part extends Asset {
 
             case 'Part Cost in Warehouse':
 
-                //$old_value = $this->get('Part Cost in Warehouse');
-                //print 'xxxx';
+
                 $this->update_field($field, $value, $options);
                 //  print 'yyyy';
 
@@ -3303,7 +3302,7 @@ class Part extends Asset {
             $running_cost_per_sko = '';
 
             $sql = sprintf(
-                'SELECT `Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d   and  `Inventory Transaction Type`  ORDER BY `Date`   ',
+                'SELECT `Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d     ORDER BY `Date`   ',
                 $this->id
             );
 
@@ -3376,104 +3375,73 @@ class Part extends Asset {
         } else {
 
             $running_stock        = 0;
-            $running_stock_value  = 0;
-            $running_cost_per_sko = '';
+
 
             $sql = sprintf(
-                'SELECT `Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d   and  `Inventory Transaction Type`  ORDER BY `Date`   ',
+                'SELECT    ( select `ITF POTF Costing Done ITF Key` from `ITF POTF Costing Done Bridge` where `ITF POTF Costing Done ITF Key`=`Inventory Transaction Key`   ) as costing,  `Inventory Transaction Record Type`,`Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` 
+                FROM `Inventory Transaction Fact`   WHERE `Part SKU`=%d  ORDER BY `Date` ,`Inventory Transaction Key`  ',
                 $this->id
             );
 
-            //  print "$sql\n";
+
+
+
+             $costing=false;
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
-                    //print "=========\n";
-                    if (//!(
-                        // ($row['Inventory Transaction Type']=='Adjust' )
-                        // or
-                        // ($row['Inventory Transaction Section']=='In' and $row['Inventory Transaction Quantity']>0)
-                        // )
-
-                        !($row['Inventory Transaction Section'] == 'In' and $row['Inventory Transaction Quantity'] > 0) and $running_cost_per_sko != '') {
-
-                        // print $running_cost_per_sko."\n";
-                        // print_r($row);
-                        /*
-                                                $sql           = sprintf(
-                                                    'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%f  WHERE `Inventory Transaction Key`=%d ',
-                                                    $row['Inventory Transaction Quantity']*$running_cost_per_sko,
-
-                                                    $row['Inventory Transaction Key']
-                                                );
-                                                $this->db->exec($sql);
-                                                //  print "$sql\n";
-                        */
-                        $row['Inventory Transaction Amount'] = $row['Inventory Transaction Quantity'] * $running_cost_per_sko;
 
 
-                        // print $running_cost_per_sko."\n";
 
+                    if($row['costing']=='' and !$costing){
+                        $cost_per_sko=$this->get('Part Cost');
+                    }elseif($row['costing']>0  and $row['Inventory Transaction Quantity']>0 and $row['Inventory Transaction Amount']>0 ){
+                        $costing=true;
+                        $cost_per_sko= $row['Inventory Transaction Amount']/ $row['Inventory Transaction Quantity'];
+                    }
+
+
+                    if($row['Inventory Transaction Record Type']=='Movement'){
+                        $running_stock       = $running_stock + $row['Inventory Transaction Quantity'];
 
                     }
 
 
-                    // print_r($row);
-
-
-                    $running_stock       = $running_stock + $row['Inventory Transaction Quantity'];
-                    $running_stock_value = $running_stock_value + $row['Inventory Transaction Amount'];
-                    if ($running_stock == 0) {
-                        //$running_cost_per_sko='';
-                    } else {
-                        $running_cost_per_sko = $running_stock_value / $running_stock;
-                    }
+                    $running_stock_value=$running_stock*$cost_per_sko;
 
 
                     $sql = sprintf(
-                        'UPDATE `Inventory Transaction Fact` SET `Running Stock`=%f  WHERE `Inventory Transaction Key`=%d ', $running_stock,
-
+                        'UPDATE `Inventory Transaction Fact` SET `Running Stock`=%f,`Running Stock Value`=%f,`Running Cost per SKO`=%s  WHERE `Inventory Transaction Key`=%d ', $running_stock, $running_stock_value, prepare_mysql($cost_per_sko),
                         $row['Inventory Transaction Key']
                     );
+//print "$sql\n";
                     $this->db->exec($sql);
-                    // print "$sql\n";
+
+//        " where ( `Inventory Transaction Section`='In' or ( `Inventory Transaction Type`='Adjust' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d", $parameters['parent_key']
 
 
-                    //print "RR: $running_cost_per_sko \n-------\n";
+                        $sql = sprintf(
+                            'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%f  WHERE `Inventory Transaction Key`=%d ',
+                            $cost_per_sko*$row['Inventory Transaction Quantity'],
+                            $row['Inventory Transaction Key']
+                        );
+
+                        $this->db->exec($sql);
+
+
+
 
                 }
 
 
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
-            /*
 
-
-            $sql=sprintf('select `Date`,(`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko from  `Inventory Transaction Fact` ITF  where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0 and  ( `Inventory Transaction Section`=\'In\' or ( `Inventory Transaction Type`=\'Adjust\' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d  order by `Date` desc, FIELD(`Inventory Transaction Type`, \'In\',\'Adjust\')  limit 1 ',$this->id);
-
-           // print $sql;
-
-            if ($result=$this->db->query($sql)) {
-                foreach ($result as $row) {
-
-                    //  print_r($row);
-
-                    $this->update_field_switcher('Part Cost in Warehouse',$row['value_per_sko'],'no_history');
-                }
-            }else {
-                print_r($error_info=$this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-            */
         }
+
+
 
 
     }

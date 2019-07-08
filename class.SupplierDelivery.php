@@ -798,11 +798,10 @@ class SupplierDelivery extends DB_Table {
 
                 $this->fast_update(
                     array(
-                        'Supplier Delivery Dispatched Date'=> '',
-                        'Supplier Delivery State'=> $value,
+                        'Supplier Delivery Dispatched Date' => '',
+                        'Supplier Delivery State'           => $value,
                     )
                 );
-
 
 
                 $sql = sprintf(
@@ -977,10 +976,69 @@ class SupplierDelivery extends DB_Table {
 
                     }
 
+
+                    $operations = array('costing_operations');
+
+
+                    $manufacturer_key = 0;
+
+                    $sql = 'SELECT `Supplier Production Supplier Key` FROM `Supplier Production Dimension` left join `Supplier Dimension` on (`Supplier Key`=`Supplier Production Supplier Key`) WHERE `Supplier Type`!=?';
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array('Archived')
+                    );
+                    if ($row = $stmt->fetch()) {
+                        $manufacturer_key = $row['Supplier Production Supplier Key'];
+
+                    }
+                    if ($this->get('Supplier Delivery Parent') == 'Supplier' and $this->get('Supplier Delivery Parent Key') == $manufacturer_key) {
+
+
+                        $sql = sprintf(
+                            'select `Supplier Part Part SKU`,`Purchase Order Transaction Fact Key`,`Metadata` from `Purchase Order Transaction Fact`  POTF left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) 
+                                        where `Supplier Delivery Key`=%d   group by `Supplier Part Part SKU` ', $this->id
+                        );
+                        if ($result = $this->db->query($sql)) {
+
+                            foreach ($result as $row) {
+
+                                if ($row['Metadata'] != '') {
+                                    $metadata = json_decode($row['Metadata'], true);
+
+
+                                    if (isset($metadata['placement_data'])) {
+                                        foreach ($metadata['placement_data'] as $placement_data) {
+                                            $sql = sprintf('insert into `ITF POTF Costing Done Bridge`  values (%d,%d)  ', $placement_data['oif_key'], $row['Purchase Order Transaction Fact Key']);
+                                            $this->db->exec($sql);
+                                        }
+
+
+                                    }
+
+                                }
+
+                            }
+
+
+                        }
+
+
+                        $this->fast_update(
+                            array(
+                                'Supplier Delivery State'                => 'InvoiceChecked',
+                                'Supplier Delivery Invoice Checked Date' => gmdate('Y-m-d H:i:s'),
+                            )
+                        );
+
+                        $this->update_totals();
+
+                        $operations = array();
+
+                    }
+
+
                 }
-
-
-                $operations = array('costing_operations');
 
 
                 break;
@@ -1030,12 +1088,14 @@ class SupplierDelivery extends DB_Table {
 
                 if ($this->data['Supplier Delivery State'] == 'Costing') {
 
+
                     $this->fast_update(
                         array(
                             'Supplier Delivery State'                => $value,
                             'Supplier Delivery Invoice Checked Date' => $date,
                         )
                     );
+
 
                     $operations = array('');
 
@@ -1059,9 +1119,6 @@ class SupplierDelivery extends DB_Table {
                 $this->update_field(
                     'Supplier Delivery State', $value, 'no_history'
                 );
-
-
-
 
 
                 $sql = sprintf(
@@ -2039,7 +2096,6 @@ class SupplierDelivery extends DB_Table {
                 }
 
 
-
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -2116,8 +2172,7 @@ class SupplierDelivery extends DB_Table {
 
 
             $purchase_order = get_object(
-                'PurchaseOrder',
-                $this->get('Supplier Delivery Purchase Order Key')
+                'PurchaseOrder', $this->get('Supplier Delivery Purchase Order Key')
             );
 
             /*
