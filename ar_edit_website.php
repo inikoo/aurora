@@ -69,7 +69,7 @@ switch ($tipo) {
         );
 
 
-        save_webpage_content($data, $editor, $smarty, $db);
+        save_webpage_content($data, $editor, $account, $db);
         break;
     case 'update_website_styles':
         $data = prepare_values(
@@ -676,11 +676,10 @@ function save_header($data, $editor) {
 }
 
 
-function save_webpage_content($data, $editor, $smarty, $db) {
+function save_webpage_content($data, $editor, $account, $db) {
 
 
-    include_once('class.Page.php');
-    $webpage         = new Page($data['key']);
+    $webpage         = get_object('Webpage',$data['key']);
     $webpage->editor = $editor;
 
     $website         = get_object('Website', $webpage->get('Webpage Website Key'));
@@ -788,7 +787,7 @@ function save_webpage_content($data, $editor, $smarty, $db) {
     }
 
 
-        $webpage->reindex_items();
+    $webpage->reindex_items();
 
 
     $webpage->publish();
@@ -810,6 +809,16 @@ function save_webpage_content($data, $editor, $smarty, $db) {
     if (isset($overview_items_html)) {
         $response['overview_items_html'] = $overview_items_html;
     }
+
+
+    require_once 'utils/new_fork.php';
+    new_housekeeping_fork(
+        'au_housekeeping', array(
+        'type'      => 'take_webpage_screenshot',
+        'webpage_key' => $webpage->id,
+    ), $account->get('Account Code'), $db
+    );
+
 
 
     echo json_encode($response);

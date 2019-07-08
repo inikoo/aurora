@@ -186,4 +186,3 @@ function convert_units($value, $from, $to) {
 }
 
 
-?>

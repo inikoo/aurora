@@ -203,6 +203,14 @@ class Image extends DB_Table {
 
         $tmp_file = $data['upload_data']['tmp_name'];
 
+        if(!empty($data['fork'])){
+            $this->fork=true;
+            unset($data['fork']);
+        }else{
+            $this->fork=false;
+        }
+
+
         $data['Image File Size'] = filesize($tmp_file);
 
         $finfo = new finfo(FILEINFO_MIME_TYPE);
@@ -257,7 +265,15 @@ class Image extends DB_Table {
 
 
         $data['Image Path'] = 'img/db/'.$data['Image File Checksum'][0].'/'.$data['Image File Checksum'][1].'/'.$data['Image File Checksum'].'.'.$file_extension;
-        rename($tmp_file, $data['Image Path']);
+
+        if($this->fork){
+            $account=get_object('Account',1);
+            rename($tmp_file, preg_replace('/^img/','img_'.$account->get('Code'),$data['Image Path']));
+
+        }else{
+            rename($tmp_file, $data['Image Path']);
+
+        }
 
 
         $data['Image Creation Date'] = gmdate('Y-n-d H:i:s');
@@ -420,6 +436,22 @@ class Image extends DB_Table {
         $checksum   = $this->get('Image File Checksum');
         $image_path = $this->get('Image Path');
 
+        $current_cwd=getcwd();
+
+        if(isset($this->fork) and $this->fork){
+            $account=get_object('Account',1);
+
+            chdir('img_'.$account->get('Code'));
+            chdir('../');
+
+
+        }
+
+
+        $path_root='img';
+
+
+
         if (!preg_match('/^[a-f0-9]{32}$/i', $checksum)) {
             exit('wrong checksum');
         }
@@ -435,49 +467,53 @@ class Image extends DB_Table {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
-                if (!is_dir('img/public_db/'.$checksum[0])) {
-                    mkdir('img/public_db/'.$checksum[0]);
+                if (!is_dir($path_root.'/public_db/'.$checksum[0])) {
+                    mkdir($path_root.'/public_db/'.$checksum[0]);
                 }
 
 
-                if (!is_dir('img/public_db/'.$checksum[0].'/'.$checksum[1])) {
-                    mkdir('img/public_db/'.$checksum[0].'/'.$checksum[1]);
+                if (!is_dir($path_root.'/public_db/'.$checksum[0].'/'.$checksum[1])) {
+                    mkdir($path_root.'/public_db/'.$checksum[0].'/'.$checksum[1]);
                 }
 
 
-                chdir('img/public_db/'.$checksum[0].'/'.$checksum[1]);
 
-                //  print 'img/public_db/'.$checksum[0].'/'.$checksum[1]."\n";
+
+
+                chdir($path_root.'/public_db/'.$checksum[0].'/'.$checksum[1]);
+
+
+
 
                 $_tmp = preg_replace('/.*\//', '', $image_path);
 
                 if (!file_exists($_tmp)) {
 
                     if (!symlink(
-                        preg_replace('/img\/db/', '../../../db', $image_path), $_tmp
+                        preg_replace('/'.$path_root.'\/db/', '../../../db', $image_path), $_tmp
 
 
                     )) {
                         print getcwd()."\n";
-                        print preg_replace('/img\/db/', '../../../db', $image_path)."\n";
+                        print preg_replace('/'.$path_root.'\/db/', '../../../db', $image_path)."\n";
                         print "$_tmp\n";
-                        exit('can not create symlink');
+                        print ('can not create symlink');
                     }
                 }
 
 
-                chdir('../../../../');
+                chdir($current_cwd);
 
             } else {
 
 
-                $public_db_path = preg_replace('/img\/db/', 'img/public_sb', $image_path);
+                $public_db_path = preg_replace('/'.$path_root.'\/db/', $path_root.'/public_db', $image_path);
                 if (file_exists($public_db_path)) {
                     unlink($public_db_path);
                 }
 
 
-                $mask = 'img/public_cache/'.$checksum[0].'/'.$checksum[1]."/".$checksum."_*";
+                $mask = $path_root.'/public_cache/'.$checksum[0].'/'.$checksum[1]."/".$checksum."_*";
                 array_map("unlink", glob($mask));
 
 

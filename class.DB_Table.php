@@ -735,11 +735,19 @@ abstract class DB_Table extends stdClass {
             $table_full_name = $this->table_name.' Dimension';
         }
 
+        //todo fix after fixi Page Store Dimension
+        if($this->table_name=='Page'){
+            $table_full_name='Page Store Dimension';
+        }
+
+
+
         $key_field = $this->table_name." Key";
 
         $sql = sprintf(
             "UPDATE `%s` SET `%s`= JSON_SET(`%s`,'$.%s',?) WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
         );
+
 
 
         $stmt = $this->db->prepare($sql);
@@ -758,6 +766,12 @@ abstract class DB_Table extends stdClass {
         if ($table_full_name == '') {
             $table_full_name = $this->table_name.' Dimension';
         }
+
+        //todo fix after fix Page Store Dimension
+        if($this->table_name=='Page'){
+            $table_full_name='Page Store Dimension';
+        }
+
 
         $key_field = $this->table_name." Key";
 

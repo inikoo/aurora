@@ -35,6 +35,9 @@ trait ImageSubject {
             'editor'      => $this->editor
         );
 
+        if(!empty($this->fork)){
+            $data['fork']=true;
+        }
 
         if (!empty($raw_data['Image Subject Object Image Scope']) ) {
 
@@ -45,7 +48,6 @@ trait ImageSubject {
         } else {
             $object_image_scope = 'Default';
         }
-
 
         $image = new Image('find', $data, 'create');
         if ($image->id) {
@@ -117,6 +119,13 @@ trait ImageSubject {
         if ($image->id) {
             $subject_key = $this->id;
             $subject     = $this->table_name;
+
+
+            if(!empty($this->fork)){
+                $image->fork=$this->fork;
+            }else{
+                $image->fork=false;
+            }
 
             if ($this->table_name == 'Page') {
                 $subject = 'Webpage';

@@ -148,7 +148,7 @@ if ($_export_data['type'] == 'excel') {
 if ($_export_data['tipo'] == 'products') {
 
     $placeholders = array(
-        '[image_address]' => $account->get('Account System Public URL').'/i.php?id='
+        '[image_address]' => $account->get('Account System Public URL').'/wi.php?id='
     );
 
 

@@ -12,7 +12,7 @@
 $where      = "where true  ";
 $table
             = "`Inventory Transaction Fact` ITF left join `Part Dimension` P on (ITF.`Part SKU`=P.`Part SKU`) left join `Purchase Order Transaction Fact` POTF on (ITF.`Metadata`=POTF.`Purchase Order Transaction Fact Key`)
- left join `Supplier Delivery Dimension` SDD on (POTF.`Supplier Delivery Key`=SDD.`Supplier Delivery Key`) 
+ left join `Supplier Delivery Dimension` SDD on (POTF.`Supplier Delivery Key`=SDD.`Supplier Delivery Key`)  
  ";
 $filter_msg = '';
 $sql_type   = 'part';
@@ -24,7 +24,7 @@ $fields = '';
 if ($parameters['parent'] == 'part') {
 
     $where = sprintf(
-        " where ( `Inventory Transaction Section`='In' or ( `Inventory Transaction Type`='Adjust' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d", $parameters['parent_key']
+        " where   ( `Inventory Transaction Section`='In' or ( `Inventory Transaction Type`='Adjust' and `Inventory Transaction Quantity`>0  and `Location Key`>1 )  )  and ITF.`Part SKU`=%d", $parameters['parent_key']
     );
 
 
@@ -68,12 +68,14 @@ $order = '`Date` desc  ,`Inventory Transaction Key` desc ';
 $sql_totals
     = "select count(Distinct `Inventory Transaction Key`) as num from $table  $where  ";
 
+
+
 $fields
-    .= '`Date`,`Inventory Transaction Section`,`Inventory Transaction Key`,`Inventory Transaction Quantity`,`Warehouse Key`,`Running Stock`,
+    .= '`Date`,`Inventory Transaction Section`,`Inventory Transaction Key`,`Inventory Transaction Quantity`,`Warehouse Key`,`Running Stock`,(select  `ITF POTF Costing Done ITF Key`  from `ITF POTF Costing Done Bridge`  where `ITF POTF Costing Done ITF Key`=`Inventory Transaction Key` ) as costing_done,
 `Part Reference`,ITF.`Part SKU`,ITF.`Delivery Note Key`,ITF.`Location Key`,`Part Location Stock`,`Inventory Transaction Type`,ITF.`Metadata`,
 `Note`,ITF.`User Key`,`Supplier Delivery Public ID`,POTF.`Supplier Delivery Key`,POTF.`Purchase Order Transaction Fact Key`,`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,`Inventory Transaction Amount`
-'
+';
 
 
 
-?>
+

@@ -134,11 +134,10 @@ class Page extends DB_Table {
                             $this->data[$key] = $value;
                         }
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
+
+
+                $this->properties = json_decode($this->data['Webpage Properties'], true);
 
 
             } elseif ($this->type == 'Internal') {
@@ -320,7 +319,8 @@ class Page extends DB_Table {
         }
 
 
-        $data['Page Key'] = $this->id;
+        $data['Page Key']           = $this->id;
+        $data['Webpage Properties'] = '{}';
 
         $sql = sprintf(
             "INSERT INTO `Page Store Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($data)).'`', join(',', array_fill(0, count($data), '?'))
@@ -535,8 +535,6 @@ class Page extends DB_Table {
                 }
 
                 $this->load_scope();
-
-
 
 
                 $sql = sprintf(
@@ -1311,8 +1309,6 @@ class Page extends DB_Table {
     }
 
 
-
-
     function update_store_search() {
 
 
@@ -1407,7 +1403,6 @@ class Page extends DB_Table {
         $smarty_web->addPluginsDir('./smarty_plugins');
 
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
-
 
 
         $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
@@ -1806,7 +1801,14 @@ class Page extends DB_Table {
 
 
         switch ($field) {
+            case 'desktop_screenshot':
+            case 'mobile_screenshot':
+            case 'tablet_screenshot':
+            case 'full_webpage_screenshot':
 
+                $this->fast_update_json_field('Webpage Properties', preg_replace('/\s/', '_', $field), $value);
+
+                break;
             case 'Webpage See Also':
 
                 $this->update(
@@ -2174,8 +2176,6 @@ class Page extends DB_Table {
     }
 
 
-
-
     function publish($note = '') {
 
 
@@ -2247,48 +2247,41 @@ class Page extends DB_Table {
 
         $this->db->exec($sql);
 
-
-        if ($this->get('Webpage Scope') == 'Category Products') {
-
-
-            include_once 'class.Page.php';
+        /*
+                if ($this->get('Webpage Scope') == 'Category Products') {
 
 
-            $sql = sprintf('SELECT `Product Category Index Product ID` FROM `Product Category Index`    WHERE `Product Category Index Website Key`=%d', $this->id);
+                    include_once 'class.Page.php';
 
 
-            //print "$sql\n";
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-
-                    $webpage = new Page('scope', 'Product', $row['Product Category Index Product ID']);
-
-                    // print_r($webpage);
-                    //exit;
-
-                    if ($webpage->id) {
+                    $sql = sprintf('SELECT `Product Category Index Product ID` FROM `Product Category Index`    WHERE `Product Category Index Website Key`=%d', $this->id);
 
 
-                        // if ($webpage->get('Webpage Launch Date') == '') {
 
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
 
-                        //  print $webpage->get('Webpage Code')."\n";
+                            $webpage = new Page('scope', 'Product', $row['Product Category Index Product ID']);
 
-                        $webpage->publish();
-                        //  }
+                            if ($webpage->id) {
+
+                                $webpage->publish();
+                            }
+
+                        }
+                    } else {
+                        print_r($error_info = $this->db->errorInfo());
+                        print "$sql\n";
+                        exit;
                     }
 
+
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
+                else
 
+                  */
 
-        }
-        elseif ($this->get('Webpage Scope') == 'Product') {
+        if ($this->get('Webpage Scope') == 'Product') {
 
 
             if (isset($content_data['description_block']['content'])) {
@@ -2310,8 +2303,6 @@ class Page extends DB_Table {
         $this->db->exec($sql);
 
         $this->get_data('id', $this->id);
-
-
 
 
         $account = get_object('Account', 1);
@@ -2434,83 +2425,79 @@ class Page extends DB_Table {
             $category = new Category($this->get('Webpage Scope Key'));
 
 
+            $items = array();
 
 
-                $items = array();
-
-
-                $sql = sprintf(
-                    "SELECT P.`Product ID`  FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  
+            $sql = sprintf(
+                "SELECT P.`Product ID`  FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  
                     WHERE  `Category Key`=%d  AND `Product Web State` IN  ('For Sale','Out of Stock')   ORDER BY `Product Web State` ", $category->id
-                );
+            );
 
 
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
 
-                        $product = get_object('Public_Product', $row['Product ID']);
-                        $product->load_webpage();
-
-
-                        $items[] = array(
-                            'type'                    => 'product',
-                            'product_id'              => $product->id,
-                            'web_state'               => $product->get('Web State'),
-                            'price'                   => $product->get('Price'),
-                            'rrp'                     => $product->get('RRP'),
-                            'header_text'             => '',
-                            'code'                    => $product->get('Code'),
-                            'name'                    => $product->get('Name'),
-                            'link'                    => $product->webpage->get('URL'),
-                            'webpage_code'            => $product->webpage->get('Webpage Code'),
-                            'webpage_key'             => $product->webpage->id,
-                            'image_src'               => $product->get('Image'),
-                            'image_mobile_website'    => '',
-                            'image_website'           => '',
-                            'out_of_stock_class'      => $product->get('Out of Stock Class'),
-                            'out_of_stock_label'      => $product->get('Out of Stock Label'),
-                            'sort_code'               => $product->get('Code File As'),
-                            'sort_name'               => $product->get('Product Name'),
-                            'next_shipment_timestamp' => $product->get('Next Supplier Shipment Timestamp'),
-                            'category'                => $product->get('Family Code'),
-                            'raw_price'               => $product->get('Product Price'),
-                        );
+                    $product = get_object('Public_Product', $row['Product ID']);
+                    $product->load_webpage();
 
 
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
+                    $items[] = array(
+                        'type'                    => 'product',
+                        'product_id'              => $product->id,
+                        'web_state'               => $product->get('Web State'),
+                        'price'                   => $product->get('Price'),
+                        'rrp'                     => $product->get('RRP'),
+                        'header_text'             => '',
+                        'code'                    => $product->get('Code'),
+                        'name'                    => $product->get('Name'),
+                        'link'                    => $product->webpage->get('URL'),
+                        'webpage_code'            => $product->webpage->get('Webpage Code'),
+                        'webpage_key'             => $product->webpage->id,
+                        'image_src'               => $product->get('Image'),
+                        'image_mobile_website'    => '',
+                        'image_website'           => '',
+                        'out_of_stock_class'      => $product->get('Out of Stock Class'),
+                        'out_of_stock_label'      => $product->get('Out of Stock Label'),
+                        'sort_code'               => $product->get('Code File As'),
+                        'sort_name'               => $product->get('Product Name'),
+                        'next_shipment_timestamp' => $product->get('Next Supplier Shipment Timestamp'),
+                        'category'                => $product->get('Family Code'),
+                        'raw_price'               => $product->get('Product Price'),
+                    );
+
+
                 }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
 
 
-                $content_data = array(
-                    'blocks' => array(
+            $content_data = array(
+                'blocks' => array(
 
-                        array(
-                            'type'              => 'category_products',
-                            'label'             => _('Family'),
-                            'icon'              => 'fa-cubes',
-                            'show'              => 1,
-                            'top_margin'        => 20,
-                            'bottom_margin'     => 20,
-                            'item_headers'      => false,
-                            'items'             => $items,
-                            'sort'              => 'Manual',
-                            'new_first'         => true,
-                            'out_of_stock_last' => true,
-                        )
+                    array(
+                        'type'              => 'category_products',
+                        'label'             => _('Family'),
+                        'icon'              => 'fa-cubes',
+                        'show'              => 1,
+                        'top_margin'        => 20,
+                        'bottom_margin'     => 20,
+                        'item_headers'      => false,
+                        'items'             => $items,
+                        'sort'              => 'Manual',
+                        'new_first'         => true,
+                        'out_of_stock_last' => true,
                     )
+                )
 
-                );
-
-
-                $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-                $this->reindex_items();
-                $this->update_navigation();
+            );
 
 
+            $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
+            $this->reindex_items();
+            $this->update_navigation();
 
 
         } elseif ($this->get('Webpage Scope') == 'Category Categories') {
@@ -2586,110 +2573,107 @@ class Page extends DB_Table {
         } elseif ($this->get('Webpage Scope') == 'Product') {
 
 
-                $website = get_object('Website', $this->get('Webpage Website Key'));
+            $website = get_object('Website', $this->get('Webpage Website Key'));
 
 
-                switch ($website->get('Website Locale')) {
-                    case 'sk_SK':
-                        $title = 'Pozrite si tiež';
+            switch ($website->get('Website Locale')) {
+                case 'sk_SK':
+                    $title = 'Pozrite si tiež';
 
-                        break;
-                    case 'fr_FR':
-                        $title = 'Voir aussi';
+                    break;
+                case 'fr_FR':
+                    $title = 'Voir aussi';
 
-                        break;
-                    case 'it_IT':
-                        $title = 'Guarda anche';
+                    break;
+                case 'it_IT':
+                    $title = 'Guarda anche';
 
-                        break;
-                    case 'pl_PL':
-                        $title = 'Zobacz także';
+                    break;
+                case 'pl_PL':
+                    $title = 'Zobacz także';
 
-                        break;
-                    case 'cs_CZ':
-                        $title = 'Viz též';
+                    break;
+                case 'cs_CZ':
+                    $title = 'Viz též';
 
-                        break;
-                    case 'hu_HU':
-                        $title = 'Lásd még';
+                    break;
+                case 'hu_HU':
+                    $title = 'Lásd még';
 
-                        break;
-                    case 'de_DE':
+                    break;
+                case 'de_DE':
 
-                        $title = 'Siehe auch';
+                    $title = 'Siehe auch';
 
-                        break;
-                    default:
-                        $title = 'See also';
+                    break;
+                default:
+                    $title = 'See also';
+            }
+
+
+            $product    = get_object('Public_Product', $this->get('Webpage Scope Key'));
+            $image_data = $product->get('Image Data');
+
+
+            $image_gallery = array();
+            foreach ($product->get_image_gallery() as $image_item) {
+                if ($image_item['key'] != $image_data['key']) {
+                    $image_gallery[] = $image_item;
                 }
+            }
 
+            $content_data = array(
+                'blocks' => array(
+                    array(
+                        'type'            => 'product',
+                        'label'           => _('Product'),
+                        'icon'            => 'fa-cube',
+                        'show'            => 1,
+                        'top_margin'      => 20,
+                        'bottom_margin'   => 30,
+                        'text'            => '',
+                        'show_properties' => true,
 
-                $product    = get_object('Public_Product', $this->get('Webpage Scope Key'));
-                $image_data = $product->get('Image Data');
-
-
-                $image_gallery = array();
-                foreach ($product->get_image_gallery() as $image_item) {
-                    if ($image_item['key'] != $image_data['key']) {
-                        $image_gallery[] = $image_item;
-                    }
-                }
-
-                $content_data = array(
-                    'blocks' => array(
-                        array(
-                            'type'            => 'product',
-                            'label'           => _('Product'),
-                            'icon'            => 'fa-cube',
-                            'show'            => 1,
-                            'top_margin'      => 20,
-                            'bottom_margin'   => 30,
-                            'text'            => '',
-                            'show_properties' => true,
-
-                            'image'        => array(
-                                'key'           => $image_data['key'],
-                                'src'           => $image_data['src'],
-                                'caption'       => $image_data['caption'],
-                                'width'         => $image_data['width'],
-                                'height'        => $image_data['height'],
-                                'image_website' => $image_data['image_website']
-
-                            ),
-                            'other_images' => $image_gallery
-
+                        'image'        => array(
+                            'key'           => $image_data['key'],
+                            'src'           => $image_data['src'],
+                            'caption'       => $image_data['caption'],
+                            'width'         => $image_data['width'],
+                            'height'        => $image_data['height'],
+                            'image_website' => $image_data['image_website']
 
                         ),
-                        array(
-                            'type'              => 'see_also',
-                            'auto'              => true,
-                            'auto_scope'        => 'webpage',
-                            'auto_items'        => 5,
-                            'auto_last_updated' => '',
-                            'label'             => _('See also'),
-                            'icon'              => 'fa-link',
-                            'show'              => 1,
-                            'top_margin'        => 0,
-                            'bottom_margin'     => 40,
-                            'item_headers'      => false,
-                            'items'             => array(),
-                            'sort'              => 'Manual',
-                            'title'             => $title,
-                            'show_title'        => true
-                        )
+                        'other_images' => $image_gallery
+
+
+                    ),
+                    array(
+                        'type'              => 'see_also',
+                        'auto'              => true,
+                        'auto_scope'        => 'webpage',
+                        'auto_items'        => 5,
+                        'auto_last_updated' => '',
+                        'label'             => _('See also'),
+                        'icon'              => 'fa-link',
+                        'show'              => 1,
+                        'top_margin'        => 0,
+                        'bottom_margin'     => 40,
+                        'item_headers'      => false,
+                        'items'             => array(),
+                        'sort'              => 'Manual',
+                        'title'             => $title,
+                        'show_title'        => true
                     )
+                )
 
-                );
-
-
-                $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
-
-                $this->reindex_items();
-                $this->refill_see_also();
-                $this->update_navigation();
+            );
 
 
+            $this->update(array('Page Store Content Data' => json_encode($content_data)), 'no_history');
 
+            $this->reindex_items();
+            $this->refill_see_also();
+            $this->update_navigation();
 
 
         } else {
@@ -4350,7 +4334,6 @@ class Page extends DB_Table {
     }
 
 
-
     function get_field_label($field) {
 
 
@@ -4562,6 +4545,127 @@ class Page extends DB_Table {
 
     }
 
+
+    function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
+    }
+
+    function update_screenshots() {
+
+        include_once 'utils/screenshot_functions.php';
+
+
+        $tmp_file_root = sprintf('server_files/tmp/original_%d_%d', gmdate('U'), $this->id);
+
+        $cmd = sprintf('node node/screenshots.js --type="current_screenshots" --file_root="%s" --url="%s" &', $tmp_file_root, addslashes($this->get('Webpage URL')));
+        exec($cmd, $output);
+
+
+        $current_desktop_image_key = $this->properties('desktop_screenshot');
+        $current_tablet_image_key  = $this->properties('tablet_screenshot');
+        $current_mobile_image_key  = $this->properties('mobile_screenshot');
+        $current_full_webpage_image_key  = $this->properties('full_webpage_screenshot');
+
+
+        $desktop_image = process_screenshot($this, $tmp_file_root.'_desktop_screenshot.jpeg', 'Desktop');
+        $mobile_image  = process_screenshot($this, $tmp_file_root.'_mobile_screenshot.jpeg', 'Mobile');
+        $tablet_image  = process_screenshot($this, $tmp_file_root.'_tablet_screenshot.jpeg', 'Tablet');
+
+        $full_webpage_image  = process_screenshot($this, $tmp_file_root.'_full_webpage_thumbnail_screenshot.jpeg', 'Full Webpage Thumbnail');
+
+
+        
+        
+        
+
+        $this->update(
+            array(
+                'desktop_screenshot' => $desktop_image->id,
+                'mobile_screenshot'  => $mobile_image->id,
+                'tablet_screenshot'  => $tablet_image->id,
+                'full_webpage_screenshot'  => $full_webpage_image->id
+            ), 'no_history'
+        );
+
+        unlink($tmp_file_root.'_desktop_screenshot.jpeg');
+        unlink($tmp_file_root.'_mobile_screenshot.jpeg');
+        unlink($tmp_file_root.'_tablet_screenshot.jpeg');
+        unlink($tmp_file_root.'_full_webpage_thumbnail_screenshot.jpeg');
+
+        if ($current_desktop_image_key != $desktop_image->id) {
+
+            $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $current_desktop_image_key,
+                    $this->id,
+                    'Desktop Screenshot'
+                )
+            );
+            if ($row = $stmt->fetch()) {
+                $this->delete_image($row['Image Subject Key']);
+            }
+
+        }
+
+        if ($current_tablet_image_key != $tablet_image->id) {
+
+            $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $current_tablet_image_key,
+                    $this->id,
+                    'Tablet Screenshot'
+                )
+            );
+            if ($row = $stmt->fetch()) {
+                $this->delete_image($row['Image Subject Key']);
+            }
+
+        }
+
+        if ($current_mobile_image_key != $mobile_image->id) {
+
+            $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $current_mobile_image_key,
+                    $this->id,
+                    'Mobile Screenshot'
+                )
+            );
+            if ($row = $stmt->fetch()) {
+                $this->delete_image($row['Image Subject Key']);
+            }
+
+        }
+
+        if ($current_full_webpage_image_key != $full_webpage_image->id) {
+
+            $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $current_full_webpage_image_key,
+                    $this->id,
+                    'Full Webpage Thumbnail Screenshot'
+                )
+            );
+            if ($row = $stmt->fetch()) {
+                $this->delete_image($row['Image Subject Key']);
+            }
+
+        }
+
+
+    }
 
 }
 

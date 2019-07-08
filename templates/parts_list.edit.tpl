@@ -284,7 +284,7 @@
             var ratio = $(obj).find('.parts_per_product').val()
 
             if (ratio != '') {
-                ratio_validation = validate_signed_integer(ratio, 1000000)
+                ratio_validation = validate_number(ratio, 0,1000000)
 
                 if (ratio_validation.class == 'invalid') {
                     validation = 'invalid';
