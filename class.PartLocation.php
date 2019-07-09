@@ -658,10 +658,9 @@ class PartLocation extends DB_Table {
     function get_value_per_sko($date = '') {
 
 
-        if (!$date) {
+        if ($date=='') {
             $date = gmdate('Y-m-d H:i:s');
         }
-
 
         $account = get_object('Account', 1);
 
@@ -691,7 +690,7 @@ class PartLocation extends DB_Table {
 
             }
 
-            return $value;
+            return $value_per_sko;
 
 
         } else {
@@ -1702,8 +1701,13 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                     $dormant_1year = 'NA';
                 }
 
+                if($row['Date']==gmdate('Y-m-d')){
+                    $cost_per_sko = $this->part->get('Part Cost in Warehouse');
+                }else{
+                    $cost_per_sko = $this->get_value_per_sko($row['Date'].' 23:59:59');
+                }
 
-                $cost_per_sko = $this->get_value_per_sko($row['Date'].' 23:59:59');
+
 
                 $stock = $this->get_stock($row['Date'].' 23:59:59');
 
