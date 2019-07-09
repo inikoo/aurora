@@ -154,7 +154,10 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe)    or iss
     $webpage = get_object('Webpage', $webpage_key);
 
 
-    if (!$webpage->id) {
+
+
+
+    if (!$webpage->id  or ($webpage->get('Webpage Code')=='reset_pwd.sys' and !isset($is_reset) )  ) {
 
 
         $url = preg_replace('/^\//', '', $_SERVER['REQUEST_URI']);

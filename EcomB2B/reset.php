@@ -37,4 +37,3 @@ $is_reset=true;
 
 include 'display_webpage.php';
 
-?>
