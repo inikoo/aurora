@@ -2900,11 +2900,16 @@ class Page extends DB_Table {
 
 
         }
+
+
+
         if ($this->get('Webpage Launch Date') == '') {
             $this->update(array('Webpage Launch Date' => gmdate('Y-m-d H:i:s')), 'no_history');
             $msg = _('Webpage launched');
+            $publish_products=true;
         } else {
             $msg = _('Webpage published');
+            $publish_products=false;
         }
 
 
@@ -2935,7 +2940,7 @@ class Page extends DB_Table {
         $this->db->exec($sql);
 
 
-        if ($this->get('Webpage Scope') == 'Category Products') {
+        if ($this->get('Webpage Scope') == 'Category Products' and $publish_products) {
 
 
             include_once 'class.Page.php';
