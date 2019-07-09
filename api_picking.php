@@ -500,13 +500,13 @@ switch ($_REQUEST['action']) {
         $items = array();
 
         $sql =
-            sprintf('select * from `Inventory Transaction Fact` ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) left join `Location Dimension` L on (L.`Location Key`=ITF.`Location Key`)  where `Delivery Note Key`=%d ', $_REQUEST['delivery_note_key']);
+            sprintf('select `Inventory Transaction Key`,P.`Part SKU`,`Part Package Description`,`Part Package Weight`,`Required`,L.`Location Key` from `Inventory Transaction Fact` ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) left join `Location Dimension` L on (L.`Location Key`=ITF.`Location Key`)  where `Delivery Note Key`=%d ', $_REQUEST['delivery_note_key']);
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
                 $part_location_data = array();
-                $sql                = sprintf('select * from `Part Location Dimension`  where `Part SKU`=%d and `Location Key`=%d ', $row['Part SKU'], $row['Location Key']);
+                $sql                = sprintf('select `Quantity On Hand` from `Part Location Dimension`  where `Part SKU`=%d and `Location Key`=%d ', $row['Part SKU'], $row['Location Key']);
 
                 if ($result2 = $db->query($sql)) {
                     foreach ($result2 as $row2) {
