@@ -19,7 +19,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
 
-
     $request = preg_replace('/\/+/', '/', $request);
     if ($request == '/' or $request == '') {
         $request = 'dashboard';
