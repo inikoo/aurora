@@ -569,147 +569,160 @@ function change_view_if_has_link_class(element,_request, metadata){
 
 }
 
+
 function change_view(_request, metadata) {
 
-    /*
-        evt=window.event;
 
-        if (evt.type=='click' && evt.metaKey){
-
-
-
-            window.open('/'+_request, '_blank');
-            return;
-
+    $.urlParam = function(name,str){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(str);
+        if (results==null){
+            return null;
         }
-    */
+        else{
+            return results[1] || 0;
+        }
+    }
 
-    //console.log(websocket_connected)
+    var tmp='?__R__='+_request
 
+    _request=$.urlParam('__R__',tmp)
+    var tab=$.urlParam('tab',tmp)
+    var subtab=$.urlParam('subtab',tmp)
 
     if (metadata == undefined || !metadata ) {
         metadata = {};
     }
 
 
-    var request = "/ar_views.php?tipo=views&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_state=" + JSON.stringify(state)
+    var request_data= {
+        tipo: 'views', request: _request, metadata: JSON.stringify(metadata), old_state: JSON.stringify(state)
+    }
 
 
-
+    if (tab != null) {
+        request_data.tab=tab
+    }
+    if (subtab != null) {
+        request_data.subtab=subtab
+    }
 
     if (metadata.tab != undefined) {
-        request = request + '&tab=' + metadata.tab;
-    } else if (metadata.subtab != undefined) {
-        request = request + '&subtab=' + metadata.subtab;
+        request_data.tab=metadata.tab
+    }else if (metadata.subtab != undefined) {
+        request_data.subtab=metadata.subtab
     }
 
 
 
-    $.getJSON( request, {  } )
-        .done(function( data ) {
 
 
-            state = data.state;
-
-            //console.log(data.state)
-            if (typeof(data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
-                // $('#navigation').removeClass('hide')
-                $('#navigation').html(data.navigation);
-            } else {
-                // $('#navigation').addClass('hide')
-            }
-
-            if (typeof(data.tabs) != "undefined" && data.tabs !== null) {
-                $('#tabs').html(data.tabs);
-            }
-
-            if (typeof(data.menu) != "undefined" && data.menu !== null) {
-
-                $('#menu').html(data.menu);
+    $.ajax({
+        url: '/ar_views.php',
+        type: 'GET',
+        dataType: 'json',
+        data: request_data,
+        success: function(data) {
 
 
-            }
+            if(data.state==200) {
 
-            if (typeof(data.logout_label) != "undefined" && data.logout_label !== null) {
-                $('#logout_label').html(data.logout_label);
-
-
-            }
+                state = data.app_state;
 
 
-            if (typeof(data.view_position) != "undefined" && data.view_position !== null) {
-
-                $('#view_position').html(data.view_position);
-            }
-
-
-            if (typeof(data.object_showcase) != "undefined" && data.object_showcase !== null) {
-
-
-                if (data.object_showcase == '_') {
-                    $('#object_showcase').addClass('hide').html('')
+                if (typeof (data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
+                    // $('#navigation').removeClass('hide')
+                    $('#navigation').html(data.navigation);
                 } else {
-
-                    $('#object_showcase').removeClass('hide')
-                    $('#object_showcase').html(data.object_showcase);
+                    // $('#navigation').addClass('hide')
                 }
-            } else {
-                //  $('#object_showcase').addClass('hide')
+
+                if (typeof (data.tabs) != "undefined" && data.tabs !== null) {
+                    $('#tabs').html(data.tabs);
+                }
+
+                if (typeof (data.menu) != "undefined" && data.menu !== null) {
+
+                    $('#menu').html(data.menu);
+
+
+                }
+
+                if (typeof (data.logout_label) != "undefined" && data.logout_label !== null) {
+                    $('#logout_label').html(data.logout_label);
+
+
+                }
+
+
+                if (typeof (data.view_position) != "undefined" && data.view_position !== null) {
+
+                    $('#view_position').html(data.view_position);
+                }
+
+
+                if (typeof (data.object_showcase) != "undefined" && data.object_showcase !== null) {
+
+
+                    if (data.object_showcase == '_') {
+                        $('#object_showcase').addClass('hide').html('')
+                    } else {
+
+                        $('#object_showcase').removeClass('hide')
+                        $('#object_showcase').html(data.object_showcase);
+                    }
+                } else {
+                    //  $('#object_showcase').addClass('hide')
+                }
+
+                if (typeof (data.tab) != "undefined" && data.tab !== null) {
+                    $('#tab').html(data.tab);
+                }
+
+                if (typeof (data.structure) != "undefined" && data.structure !== null) {
+                    //console.log(data.structure)
+                    structure = data.structure
+                }
+
+                if (old_state_request == '') {
+                    old_state_request = data.app_state.request
+                }
+
+                if (metadata.post_operations == 'delivery_note.fast_track_packing') {
+
+                    $('#maintabs .tab').addClass('hide')
+
+
+                    $("div[id='tab_delivery_note.fast_track_packing']").removeClass('hide')
+                } else if (metadata.post_operations == 'delivery_note.fast_track_packing_off') {
+
+                    $('#maintabs .tab').removeClass('hide')
+
+
+                    $("div[id='tab_delivery_note.fast_track_packing']").addClass('hide')
+                }
+
+                if (state.title != undefined && state.title != '') {
+                    document.title = state.title;
+                } else {
+                    document.title = 'Aurora';
+                }
+
+
+                change_browser_history_state(data.app_state.request)
+                show_side_content($('#notifications').data('current_side_view'))
+            }
+            else{
+                swal({
+                    title: "Error A123"
+                });
             }
 
-
-            if (typeof(data.tab) != "undefined" && data.tab !== null) {
-
-
-                $('#tab').html(data.tab);
-            }
-
-
-
-            if (typeof(data.structure) != "undefined" && data.structure !== null) {
-                //console.log(data.structure)
-
-                structure = data.structure
-            }
-
-
-            if (old_state_request == '') {
-                old_state_request = data.state.request
-            }
+        }
+    });
 
 
 
 
-            if (metadata.post_operations == 'delivery_note.fast_track_packing') {
-
-                $('#maintabs .tab').addClass('hide')
-
-
-                $("div[id='tab_delivery_note.fast_track_packing']").removeClass('hide')
-            } else if (metadata.post_operations == 'delivery_note.fast_track_packing_off') {
-
-                $('#maintabs .tab').removeClass('hide')
-
-
-                $("div[id='tab_delivery_note.fast_track_packing']").addClass('hide')
-            }
-
-            if(state.title!=undefined && state.title!=''){
-                document.title = state.title;
-            }else{
-                document.title = 'Aurora';
-            }
-
-
-            change_browser_history_state(data.state.request)
-            show_side_content($('#notifications').data('current_side_view'))
-        })
-        .fail(function( jqxhr, textStatus, error ) {
-            var err = textStatus + ", " + error;
-            //console.log( "Request Failed: " + err );
-        });
-
-    // console.log(state)
 
 }
 
@@ -722,27 +735,7 @@ function decodeEntities(a) {
     return a
 }
 
-/*
- var decodeEntities = (function() {
 
-
- var element = document.createElement('div');
-
- function decodeHTMLEntities (str) {
- if(str && typeof str === 'string') {
- str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
- str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
- element.innerHTML = str;
- str = element.textContent;
- element.textContent = '';
- }
-
- return str;
- }
-
- return decodeHTMLEntities;
- })();
- */
 
 function htmlEncode(value) {
     return $('<div/>').text(value).html();
