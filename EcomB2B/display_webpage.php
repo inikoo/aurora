@@ -145,11 +145,8 @@ if (!(isset($is_unsubscribe) or isset($is_reset))) {
 if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe)    or isset($is_reset) ) {
 
 
-
     include_once 'utils/public_object_functions.php';
-
     include_once 'utils/natural_language.php';
-
 
     $webpage = get_object('Webpage', $webpage_key);
 
@@ -326,4 +323,3 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe)    or iss
 $smarty->display($template, $cache_id);
 
 
-?>
