@@ -58,8 +58,6 @@ function real_time_users($redis, $account, $user) {
             $date = strftime("%H:%M %Z", $timestamp);
 
 
-
-
             if ($user_key != $user->id) {
 
                 if ($_user['logged_in']) {
@@ -73,11 +71,23 @@ function real_time_users($redis, $account, $user) {
 
                     if (!empty($_user['web_location'])) {
                         $web_location = $_user['web_location'];
-                        $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td onclick="change_view(\''.$_user['request'].'\')" class="button">'.$web_location.'</td>';
+
+                        if (!empty($_user['request'])) {
+                            $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td onclick="change_view(\''.$_user['request'].'\')" class="button">'.$web_location.'</td>';
+
+                        } else {
+                            $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td >'.$web_location.' **</td>';
+
+                        }
+
 
                     } else {
-                        $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td onclick="change_view(\''.$_user['request'].'\')" class="button"><i class="fal fa-eye-evil"></i></td>';
+                        if (!empty($_user['request'])) {
+                            $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td onclick="change_view(\''.$_user['request'].'\')" class="button"><i class="fal fa-eye-evil"></i></td>';
+                        } else {
+                            $html .= '<tr><td>'.$icon.'</td><td>'.$_user['alias'].'</td><td ><i class="fal fa-eye-evil"></i> **</td>';
 
+                        }
                     }
                 } else {
                     $html .= '<tr><td><i class="far fa-fw fa-circle-notch error" title="'.$date.'"></i></td><td>'.$_user['alias'].'</td><td class="discreet error">'._('Log out').'</td>';
