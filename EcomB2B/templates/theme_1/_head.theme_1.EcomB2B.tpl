@@ -40,6 +40,8 @@
             ga('create', 'UA-100778677-1', 'auto', 'auTracker');
             ga('auTracker.require', 'ec');
             ga('auTracker.set', 'transport', 'beacon');
+            ga('set', 'dimension1', {$webpage->id});
+
             {if !empty($analytics_user_id)}
                 ga('auTracker.set', 'userId', '{$analytics_user_id}');
             {/if}
