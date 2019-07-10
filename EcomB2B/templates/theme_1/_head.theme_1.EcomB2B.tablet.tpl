@@ -37,8 +37,8 @@
             ga('create', 'UA-100778677-1', 'auto', 'auTracker');
             ga('auTracker.require', 'ec');
             ga('auTracker.set', 'transport', 'beacon');
-            ga('set', 'dimension1', {$webpage->id});
-            ga('set', 'dimension2', {$webpage->get('Webpage Website Key')});
+            ga('set', 'dimension1', '{$account_code}.{$webpage->id}');
+            ga('set', 'dimension2', '{$account_code}.{$webpage->get('Webpage Website Key')}');
             ga('set', 'dimension3', '{$account_code}');
             {if !empty($analytics_user_id)}
             ga('set', 'dimension4', '{$analytics_user_id}');
