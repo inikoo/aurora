@@ -46,7 +46,8 @@ switch ($tipo) {
     default:
         $response = array(
             'state' => 404,
-            'resp'  => 'Operation not found 2'
+            'resp'  => 'Operation not found 2',
+
         );
         echo json_encode($response);
 
@@ -705,7 +706,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     //if (isset($state['current_production'])) {$session->set('current_production', $state['current_production']);}
 
-    $response = array('state' => array());
+    $response = array('app_state' => array());
 
     list($state, $response['view_position']) = get_view_position(
         $db, $state, $user, $smarty, $account
@@ -1129,7 +1130,9 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     unset($state['warehouse']);
     unset($state['production']);
 
-    $response['state'] = $state;
+
+    $response['state']=200;
+    $response['app_state'] = $state;
 
 
     // print_r($response);
