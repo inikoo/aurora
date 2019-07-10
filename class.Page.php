@@ -2213,11 +2213,15 @@ class Page extends DB_Table {
 
 
         }
+
+
         if ($this->get('Webpage Launch Date') == '') {
             $this->update(array('Webpage Launch Date' => gmdate('Y-m-d H:i:s')), 'no_history');
-            $msg = _('Webpage launched');
+            $msg              = _('Webpage launched');
+            $publish_products = true;
         } else {
-            $msg = _('Webpage published');
+            $msg              = _('Webpage published');
+            $publish_products = false;
         }
 
 
@@ -2247,41 +2251,35 @@ class Page extends DB_Table {
 
         $this->db->exec($sql);
 
-        /*
-                if ($this->get('Webpage Scope') == 'Category Products') {
+
+        if ($this->get('Webpage Scope') == 'Category Products' and $publish_products) {
 
 
-                    include_once 'class.Page.php';
+            include_once 'class.Page.php';
 
 
-                    $sql = sprintf('SELECT `Product Category Index Product ID` FROM `Product Category Index`    WHERE `Product Category Index Website Key`=%d', $this->id);
+            $sql = sprintf('SELECT `Product Category Index Product ID` FROM `Product Category Index`    WHERE `Product Category Index Website Key`=%d', $this->id);
 
 
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
 
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
+                    $webpage = new Page('scope', 'Product', $row['Product Category Index Product ID']);
 
-                            $webpage = new Page('scope', 'Product', $row['Product Category Index Product ID']);
+                    if ($webpage->id) {
 
-                            if ($webpage->id) {
-
-                                $webpage->publish();
-                            }
-
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
+                        $webpage->publish();
                     }
 
-
                 }
-                else
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
 
-                  */
 
-        if ($this->get('Webpage Scope') == 'Product') {
+        } elseif ($this->get('Webpage Scope') == 'Product') {
 
 
             if (isset($content_data['description_block']['content'])) {
@@ -2295,6 +2293,7 @@ class Page extends DB_Table {
             $product->fast_update(array('Product Published Webpage Description' => $web_text));
 
         }
+
 
         $sql = sprintf(
             'UPDATE  `Webpage Related Product Bridge` SET  `Webpage Related Product Content Published Data`=`Webpage Related Product Content Data`,`Webpage Related Product Published Order`=`Webpage Related Product Order` WHERE `Webpage Related Product Page Key`=%d ',
@@ -4561,29 +4560,25 @@ class Page extends DB_Table {
         exec($cmd, $output);
 
 
-        $current_desktop_image_key = $this->properties('desktop_screenshot');
-        $current_tablet_image_key  = $this->properties('tablet_screenshot');
-        $current_mobile_image_key  = $this->properties('mobile_screenshot');
-        $current_full_webpage_image_key  = $this->properties('full_webpage_screenshot');
+        $current_desktop_image_key      = $this->properties('desktop_screenshot');
+        $current_tablet_image_key       = $this->properties('tablet_screenshot');
+        $current_mobile_image_key       = $this->properties('mobile_screenshot');
+        $current_full_webpage_image_key = $this->properties('full_webpage_screenshot');
 
 
         $desktop_image = process_screenshot($this, $tmp_file_root.'_desktop_screenshot.jpeg', 'Desktop');
         $mobile_image  = process_screenshot($this, $tmp_file_root.'_mobile_screenshot.jpeg', 'Mobile');
         $tablet_image  = process_screenshot($this, $tmp_file_root.'_tablet_screenshot.jpeg', 'Tablet');
 
-        $full_webpage_image  = process_screenshot($this, $tmp_file_root.'_full_webpage_thumbnail_screenshot.jpeg', 'Full Webpage Thumbnail');
+        $full_webpage_image = process_screenshot($this, $tmp_file_root.'_full_webpage_thumbnail_screenshot.jpeg', 'Full Webpage Thumbnail');
 
-
-        
-        
-        
 
         $this->update(
             array(
-                'desktop_screenshot' => $desktop_image->id,
-                'mobile_screenshot'  => $mobile_image->id,
-                'tablet_screenshot'  => $tablet_image->id,
-                'full_webpage_screenshot'  => $full_webpage_image->id
+                'desktop_screenshot'      => $desktop_image->id,
+                'mobile_screenshot'       => $mobile_image->id,
+                'tablet_screenshot'       => $tablet_image->id,
+                'full_webpage_screenshot' => $full_webpage_image->id
             ), 'no_history'
         );
 
