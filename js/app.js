@@ -40,7 +40,7 @@ $(document).ready(function () {
     })
 
 
- //   $(document).scannerDetection(function (value) {
+    //   $(document).scannerDetection(function (value) {
 //
 //        scanned_barcode(value)
 //    });
@@ -50,154 +50,154 @@ $(document).ready(function () {
 
 
 
-/*
+    /*
 
-    var    wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" + document.location.host + "/w3bs0012033";
+        var    wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" + document.location.host + "/w3bs0012033";
 
-    var connection = new autobahn.Connection({
-        url: wsuri,
-        realm: "aurora"
-    });
+        var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: "aurora"
+        });
 
-    connection.onopen = function (session, details) {
+        connection.onopen = function (session, details) {
 
-        function real_time (args) {
+            function real_time (args) {
 
-            var data=args[0]
-            for (var i in data.objects) {
-                if (state.object == data.objects[i].object && state.key == data.objects[i].key) {
-                    for (var j in data.objects[i].update_metadata.class_html) {
-                        $('.' + j).html(data.objects[i].update_metadata.class_html[j])
+                var data=args[0]
+                for (var i in data.objects) {
+                    if (state.object == data.objects[i].object && state.key == data.objects[i].key) {
+                        for (var j in data.objects[i].update_metadata.class_html) {
+                            $('.' + j).html(data.objects[i].update_metadata.class_html[j])
+                        }
+
+                        for (var key in  data.objects[i].update_metadata.hide) {
+                            $('.' + data.objects[i].update_metadata.hide[key]).addClass('hide')
+                        }
+
+                        for (var key in data.objects[i].update_metadata.show) {
+
+                            $('.' + data.objects[i].update_metadata.show[key]).removeClass('hide')
+                        }
                     }
+                }
 
-                    for (var key in  data.objects[i].update_metadata.hide) {
-                        $('.' + data.objects[i].update_metadata.hide[key]).addClass('hide')
-                    }
+                for (var i in data.sections) {
+                    if (state.section == data.sections[i].section ) {
+                        for (var j in data.sections[i].update_metadata.class_html) {
+                            $('.' + j).html(data.sections[i].update_metadata.class_html[j])
+                        }
 
-                    for (var key in data.objects[i].update_metadata.show) {
+                        for (var key in  data.sections[i].update_metadata.hide) {
+                            $('.' + data.sections[i].update_metadata.hide[key]).addClass('hide')
+                        }
 
-                        $('.' + data.objects[i].update_metadata.show[key]).removeClass('hide')
+                        for (var key in data.sections[i].update_metadata.show) {
+                            $('.' + data.sections[i].update_metadata.show[key]).removeClass('hide')
+                        }
                     }
                 }
             }
 
-            for (var i in data.sections) {
-                if (state.section == data.sections[i].section ) {
-                    for (var j in data.sections[i].update_metadata.class_html) {
-                        $('.' + j).html(data.sections[i].update_metadata.class_html[j])
+            function real_time_private (args) {
+
+                var _data=args[0]
+
+                for (var i in _data.progress_bar) {
+                    var data = _data.progress_bar[i]
+
+                    console.log(data)
+
+                    if (data.state == 'In Process') {
+
+                        $('#' + data.id + ' .export_download').addClass('hide')
+
+                        $('#' + data.id + ' .export_progress_bar_bg').removeClass('hide').html('&nbsp;' + data.progress_info)
+                        $('#' + data.id + ' .export_progress_bar').css('width', data.percentage).removeClass('hide').attr('title', data.progress).html('&nbsp;' + data.progress_info);
+
+
+                    } else if (data.state == 'Finish') {
+
+                        // console.log('#'+data.id+' .download_export')
+
+
+                        $('#' + data.id + ' .download_export').attr('href', '/download.php?file=' + data.download_key)
+                        $('#' + data.id + ' .export_download').removeClass('hide').attr('title', data.result_info).on( 'click',function () {
+
+                            download_exported_file(this)
+
+                        });
+                        $('#' + data.id + ' .export_progress_bar_bg').addClass('hide').html('')
+                        $('#' + data.id + ' .export_progress_bar').css('width', '0px').removeClass('hide').attr('title', '').html('')
+
+
+                        $('#' + data.id + ' .export_button').addClass('link').removeClass('disabled')
+
+
+                        $('#' + data.id + ' .field_export').addClass('button').removeClass('disabled')
+                        $('#' + data.id + ' .stop_export').addClass('hide')
+
                     }
 
-                    for (var key in  data.sections[i].update_metadata.hide) {
-                        $('.' + data.sections[i].update_metadata.hide[key]).addClass('hide')
-                    }
-
-                    for (var key in data.sections[i].update_metadata.show) {
-                        $('.' + data.sections[i].update_metadata.show[key]).removeClass('hide')
-                    }
                 }
+
             }
+
+
+            session.subscribe('real_time.'+$('#account_name').data('account_code').toLowerCase(), real_time).then(
+                function (sub) {
+                    console.log('subscribed to topic');
+                },
+                function (err) {
+                    console.log('failed to subscribe to topic', err);
+                }
+            );
+
+
+
+            session.subscribe('real_time.'+$('#account_name').data('account_code').toLowerCase()+'.'+$('#hello_user').data('user_key'), real_time_private).then(
+                function (sub) {
+                    console.log('subscribed to topic');
+                },
+                function (err) {
+                    console.log('failed to subscribe to topic', err);
+                }
+            );
+
+
+
+
+        };
+
+        connection.onclose = function (reason, details) {
+            console.log("Connection lost: " + reason);
+
+           // setTimeout(connection.open(), 1000);
         }
 
-        function real_time_private (args) {
+        connection.open();
 
-            var _data=args[0]
-
-            for (var i in _data.progress_bar) {
-                var data = _data.progress_bar[i]
-
-                console.log(data)
-
-                if (data.state == 'In Process') {
-
-                    $('#' + data.id + ' .export_download').addClass('hide')
-
-                    $('#' + data.id + ' .export_progress_bar_bg').removeClass('hide').html('&nbsp;' + data.progress_info)
-                    $('#' + data.id + ' .export_progress_bar').css('width', data.percentage).removeClass('hide').attr('title', data.progress).html('&nbsp;' + data.progress_info);
+    */
 
 
-                } else if (data.state == 'Finish') {
 
-                    // console.log('#'+data.id+' .download_export')
-
-
-                    $('#' + data.id + ' .download_export').attr('href', '/download.php?file=' + data.download_key)
-                    $('#' + data.id + ' .export_download').removeClass('hide').attr('title', data.result_info).on( 'click',function () {
-
-                        download_exported_file(this)
-
-                    });
-                    $('#' + data.id + ' .export_progress_bar_bg').addClass('hide').html('')
-                    $('#' + data.id + ' .export_progress_bar').css('width', '0px').removeClass('hide').attr('title', '').html('')
+    connect_websocket();
 
 
-                    $('#' + data.id + ' .export_button').addClass('link').removeClass('disabled')
-
-
-                    $('#' + data.id + ' .field_export').addClass('button').removeClass('disabled')
-                    $('#' + data.id + ' .stop_export').addClass('hide')
-
-                }
-
-            }
-
+    setInterval(function () {
+        if (!websocket_connected_connecting && !websocket_connected) {
+            connect_websocket();
         }
 
 
-        session.subscribe('real_time.'+$('#account_name').data('account_code').toLowerCase(), real_time).then(
-            function (sub) {
-                console.log('subscribed to topic');
-            },
-            function (err) {
-                console.log('failed to subscribe to topic', err);
-            }
-        );
+    }, 1000);
 
+    setInterval(function () {
 
+        if (websocket_connected) {
+            ws_connection.publish('ping', 'hi')
+        }
 
-        session.subscribe('real_time.'+$('#account_name').data('account_code').toLowerCase()+'.'+$('#hello_user').data('user_key'), real_time_private).then(
-            function (sub) {
-                console.log('subscribed to topic');
-            },
-            function (err) {
-                console.log('failed to subscribe to topic', err);
-            }
-        );
-
-
-
-
-    };
-
-    connection.onclose = function (reason, details) {
-        console.log("Connection lost: " + reason);
-
-       // setTimeout(connection.open(), 1000);
-    }
-
-    connection.open();
-
-*/
-
-
-
-        connect_websocket();
-
-
-        setInterval(function () {
-            if (!websocket_connected_connecting && !websocket_connected) {
-                connect_websocket();
-            }
-
-
-        }, 1000);
-
-        setInterval(function () {
-
-            if (websocket_connected) {
-                ws_connection.publish('ping', 'hi')
-            }
-
-        }, 60000);
+    }, 60000);
 
 
 
@@ -228,10 +228,10 @@ function connect_websocket(){
             websocket_connected=true;
 
 
-           // console.log('real_time.'+$('#account_name').data('account_code').toLowerCase())
+            // console.log('real_time.'+$('#account_name').data('account_code').toLowerCase())
 
             ws_connection.subscribe('real_time.'+$('#account_name').data('account_code').toLowerCase(), function(topic, data) {
-               // console.log(state.object)
+                // console.log(state.object)
                 for (var i in data.objects) {
 
 
@@ -293,7 +293,7 @@ function connect_websocket(){
                         }
 
                         for (var j in data.tabs[i].cell) {
-                           // console.log(j)
+                            // console.log(j)
                             $('#table .' + j).html(data.tabs[i].cell[j])
                         }
 
@@ -375,7 +375,7 @@ function change_browser_history_state(request) {
         request = '/' + request
     }
 
-     console.log(old_state_request + ' _> ' + request)
+    console.log(old_state_request + ' _> ' + request)
 
 
 
@@ -476,7 +476,7 @@ function get_widget_details(element, widget, metadata) {
 
 function change_menu_view(module){
 
-   // console.log(module)
+    // console.log(module)
 
     switch (module){
         case '_dashboard':
@@ -498,11 +498,11 @@ function change_menu_view(module){
             break;
 
         case 'delivery_notes':
-           // if(state.current_store){
-             //   change_view('delivery_notes/'+state.current_store)
+            // if(state.current_store){
+            //   change_view('delivery_notes/'+state.current_store)
             //}else{
-                change_view('delivery_notes/all/')
-          //  }
+            change_view('delivery_notes/all/')
+            //  }
             break;
 
         case 'products':
@@ -549,7 +549,7 @@ function change_menu_view(module){
         case 'account':
         case 'users':
         case 'agent_parts':
-           // console.log(module)
+            // console.log(module)
             change_view(module)
             break;
         case 'agent_client_orders':
@@ -576,150 +576,163 @@ function change_view_if_has_link_class(element,_request, metadata){
 
 }
 
+
 function change_view(_request, metadata) {
 
-    /*
-        evt=window.event;
 
-        if (evt.type=='click' && evt.metaKey){
-
-
-
-            window.open('/'+_request, '_blank');
-            return;
-
+    $.urlParam = function(name,str){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(str);
+        if (results==null){
+            return null;
         }
-    */
+        else{
+            return results[1] || 0;
+        }
+    }
 
-    //console.log(websocket_connected)
+    var tmp='?__R__='+_request
 
     $('#tabs').removeClass('hide')
 
 
+    _request=$.urlParam('__R__',tmp)
+    var tab=$.urlParam('tab',tmp)
+    var subtab=$.urlParam('subtab',tmp)
 
     if (metadata == undefined || !metadata ) {
         metadata = {};
     }
 
 
-    var request = "/ar_views.php?tipo=views&request=" + _request + '&metadata=' + JSON.stringify(metadata) + "&old_state=" + JSON.stringify(state)
+    var request_data= {
+        tipo: 'views', request: _request, metadata: JSON.stringify(metadata), old_state: JSON.stringify(state)
+    }
 
 
-
+    if (tab != null) {
+        request_data.tab=tab
+    }
+    if (subtab != null) {
+        request_data.subtab=subtab
+    }
 
     if (metadata.tab != undefined) {
-        request = request + '&tab=' + metadata.tab;
-    } else if (metadata.subtab != undefined) {
-        request = request + '&subtab=' + metadata.subtab;
+        request_data.tab=metadata.tab
+    }else if (metadata.subtab != undefined) {
+        request_data.subtab=metadata.subtab
     }
 
 
 
-    $.getJSON( request, {  } )
-        .done(function( data ) {
 
 
-            state = data.state;
-
-            //console.log(data.state)
-            if (typeof(data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
-                // $('#navigation').removeClass('hide')
-                $('#navigation').html(data.navigation);
-            } else {
-                // $('#navigation').addClass('hide')
-            }
-
-            if (typeof(data.tabs) != "undefined" && data.tabs !== null) {
-                $('#tabs').html(data.tabs);
-            }
-
-            if (typeof(data.menu) != "undefined" && data.menu !== null) {
-
-                $('#menu').html(data.menu);
+    $.ajax({
+        url: '/ar_views.php',
+        type: 'GET',
+        dataType: 'json',
+        data: request_data,
+        success: function(data) {
 
 
-            }
+            if(data.state==200) {
 
-            if (typeof(data.logout_label) != "undefined" && data.logout_label !== null) {
-                $('#logout_label').html(data.logout_label);
-
-
-            }
+                state = data.app_state;
 
 
-            if (typeof(data.view_position) != "undefined" && data.view_position !== null) {
-
-                $('#view_position').html(data.view_position);
-            }
-
-
-            if (typeof(data.object_showcase) != "undefined" && data.object_showcase !== null) {
-
-
-                if (data.object_showcase == '_') {
-                    $('#object_showcase').addClass('hide').html('')
+                if (typeof (data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
+                    // $('#navigation').removeClass('hide')
+                    $('#navigation').html(data.navigation);
                 } else {
-
-                    $('#object_showcase').removeClass('hide')
-                    $('#object_showcase').html(data.object_showcase);
+                    // $('#navigation').addClass('hide')
                 }
-            } else {
-                //  $('#object_showcase').addClass('hide')
+
+                if (typeof (data.tabs) != "undefined" && data.tabs !== null) {
+                    $('#tabs').html(data.tabs);
+                }
+
+                if (typeof (data.menu) != "undefined" && data.menu !== null) {
+
+                    $('#menu').html(data.menu);
+
+
+                }
+
+                if (typeof (data.logout_label) != "undefined" && data.logout_label !== null) {
+                    $('#logout_label').html(data.logout_label);
+
+
+                }
+
+
+                if (typeof (data.view_position) != "undefined" && data.view_position !== null) {
+
+                    $('#view_position').html(data.view_position);
+                }
+
+
+                if (typeof (data.object_showcase) != "undefined" && data.object_showcase !== null) {
+
+
+                    if (data.object_showcase == '_') {
+                        $('#object_showcase').addClass('hide').html('')
+                    } else {
+
+                        $('#object_showcase').removeClass('hide')
+                        $('#object_showcase').html(data.object_showcase);
+                    }
+                } else {
+                    //  $('#object_showcase').addClass('hide')
+                }
+
+                if (typeof (data.tab) != "undefined" && data.tab !== null) {
+                    $('#tab').html(data.tab);
+                }
+
+                if (typeof (data.structure) != "undefined" && data.structure !== null) {
+                    //console.log(data.structure)
+                    structure = data.structure
+                }
+
+                if (old_state_request == '') {
+                    old_state_request = data.app_state.request
+                }
+
+                if (metadata.post_operations == 'delivery_note.fast_track_packing') {
+
+                    $('#maintabs .tab').addClass('hide')
+
+
+                    $("div[id='tab_delivery_note.fast_track_packing']").removeClass('hide')
+                } else if (metadata.post_operations == 'delivery_note.fast_track_packing_off') {
+
+                    $('#maintabs .tab').removeClass('hide')
+
+
+                    $("div[id='tab_delivery_note.fast_track_packing']").addClass('hide')
+                }
+
+                if (state.title != undefined && state.title != '') {
+                    document.title = state.title;
+                } else {
+                    document.title = 'Aurora';
+                }
+
+
+                change_browser_history_state(data.app_state.request)
+                show_side_content($('#notifications').data('current_side_view'))
+            }
+            else{
+                swal({
+                    title: "Error A123"
+                });
             }
 
-
-            if (typeof(data.tab) != "undefined" && data.tab !== null) {
-
-
-                $('#tab').html(data.tab);
-            }
-
-
-
-            if (typeof(data.structure) != "undefined" && data.structure !== null) {
-                //console.log(data.structure)
-
-                structure = data.structure
-            }
-
-
-            if (old_state_request == '') {
-                old_state_request = data.state.request
-            }
+        }
+    });
 
 
 
 
-            if (metadata.post_operations == 'delivery_note.fast_track_packing') {
-
-                $('#maintabs .tab').addClass('hide')
-
-
-                $("div[id='tab_delivery_note.fast_track_packing']").removeClass('hide')
-            } else if (metadata.post_operations == 'delivery_note.fast_track_packing_off') {
-
-                $('#maintabs .tab').removeClass('hide')
-
-
-                $("div[id='tab_delivery_note.fast_track_packing']").addClass('hide')
-            }
-
-            if(state.title!=undefined && state.title!=''){
-                document.title = state.title;
-            }else{
-                document.title = 'Aurora';
-            }
-
-
-            change_browser_history_state(data.state.request)
-            show_side_content($('#notifications').data('current_side_view'))
-        })
-        .fail(function( jqxhr, textStatus, error ) {
-            var err = textStatus + ", " + error;
-            //console.log( "Request Failed: " + err );
-        });
-
-   // console.log(state)
 
 }
 
@@ -732,27 +745,7 @@ function decodeEntities(a) {
     return a
 }
 
-/*
- var decodeEntities = (function() {
 
-
- var element = document.createElement('div');
-
- function decodeHTMLEntities (str) {
- if(str && typeof str === 'string') {
- str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
- str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
- element.innerHTML = str;
- str = element.textContent;
- element.textContent = '';
- }
-
- return str;
- }
-
- return decodeHTMLEntities;
- })();
- */
 
 function htmlEncode(value) {
     return $('<div/>').text(value).html();
@@ -841,4 +834,3 @@ jQuery.fn.putCursorAtEnd = function () {
 function truncateWithEllipses(text, max) {
     return text.substr(0, max - 1) + (text.length > max ? '&hellip;' : '');
 }
-
