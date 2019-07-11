@@ -1139,7 +1139,7 @@ class Warehouse extends DB_Table {
                         if ($result3 = $this->db->query($sql)) {
                             if ($row3 = $result3->fetch()) {
 
-                            }else{
+                            } else {
                                 $dormant_1y_open_value_at_day += $row2['Value At Day Cost'];
                             }
 
@@ -1149,10 +1149,40 @@ class Warehouse extends DB_Table {
                     }
                 }
 
+                $parts_with_stock_left_1_year=0;
+                $sql = sprintf(
+                    "select  count(distinct `Part SKU`) as  num FROM `Inventory Spanshot Fact` WHERE `Warehouse Key`=%d AND `Date`=%s and `Inventory Spanshot Stock Left 1 Year Ago`>0 ", $this->id, prepare_mysql($row['Date'])
+
+                );
+
+                // print "$sql\n";
+
+                if ($result2 = $this->db->query($sql)) {
+                    if ($row2 = $result2->fetch()) {
+
+                        $parts_with_stock_left_1_year = $row['num'];
+                    }
+                }
+
+                $sql = sprintf(
+                    "select  count(distinct `Part SKU`) as  num FROM `Inventory Spanshot Fact` WHERE `Warehouse Key`=%d AND `Date`=%s and `Dormant 1 Year`='Yes' ", $this->id, prepare_mysql($row['Date'])
+
+                );
+
+                $parts_no_sales_1_year=0;
+
+                if ($result2 = $this->db->query($sql)) {
+                    if ($row2 = $result2->fetch()) {
+
+                        $parts_no_sales_1_year = $row['num'];
+                    }
+                }
+
 
                 $sql = sprintf(
                     "SELECT `Date`,
-			count(DISTINCT `Part SKU`) AS parts,`Date`, count(DISTINCT `Location Key`) AS locations,
+			count(DISTINCT `Part SKU`) AS parts,`Date`, 
+            count(DISTINCT `Location Key`) AS locations,
 			sum(`Value At Cost`) AS value_at_cost ,
 			sum(`Value At Day Cost`) AS value_at_day,
 			sum(`Value Commercial`) AS commercial_value,
@@ -1183,33 +1213,33 @@ class Warehouse extends DB_Table {
                                             
                                                  
                                                  `Dormant 1 Year Value At Day Cost`,
-				`Inventory Warehouse Spanshot In PO`,`Inventory Warehouse Spanshot In Other`,`Inventory Warehouse Spanshot Out Sales`,`Inventory Warehouse Spanshot Out Other`
+				`Inventory Warehouse Spanshot In PO`,`Inventory Warehouse Spanshot In Other`,`Inventory Warehouse Spanshot Out Sales`,`Inventory Warehouse Spanshot Out Other`,
+                                                 `Inventory Warehouse Spanshot Fact Dormant Parts`,`Inventory Warehouse Spanshot Fact Stock Left 1 Year Parts`
 
-				) VALUES (%s,%d,%d,%d  ,%f,%f,%f, %f, %f,%f,%f,%f) ON DUPLICATE KEY UPDATE
+				) VALUES (%s,%d,%d,%d  ,%f,%f,%f, %f, %f,%f,%f,%f,%d,%d) ON DUPLICATE KEY UPDATE
 					`Value At Cost`=%.2f, `Value At Day Cost`=%.2f,`Value Commercial`=%.2f,
 	
 			`Parts`=%d,`Locations`=%d,`Dormant 1 Year Value At Day Cost`=%.2f,
-			`Inventory Warehouse Spanshot In PO`=%.2f,`Inventory Warehouse Spanshot In Other`=%.2f,`Inventory Warehouse Spanshot Out Sales`=%.2f,`Inventory Warehouse Spanshot Out Other`=%.2f
+			`Inventory Warehouse Spanshot In PO`=%.2f,`Inventory Warehouse Spanshot In Other`=%.2f,`Inventory Warehouse Spanshot Out Sales`=%.2f,`Inventory Warehouse Spanshot Out Other`=%.2f,
+`Inventory Warehouse Spanshot Fact Dormant Parts`=%d,`Inventory Warehouse Spanshot Fact Stock Left 1 Year Parts`=%d
 			", prepare_mysql($row['Date']), $this->id, $row2['parts'], $row2['locations'],
 
                             $row2['value_at_cost'], $row2['value_at_day'], $row2['commercial_value'],
 
 
-                            $dormant_1y_open_value_at_day, $row2['amount_in_po'],
-                            $row2['amount_in_other'], $row2['amount_out_sales'], $row2['amount_out_other'],
+                            $dormant_1y_open_value_at_day, $row2['amount_in_po'], $row2['amount_in_other'], $row2['amount_out_sales'], $row2['amount_out_other'],
+                            $parts_no_sales_1_year,$parts_with_stock_left_1_year,
 
                             $row2['value_at_cost'], $row2['value_at_day'], $row2['commercial_value'],
 
 
-                            $row2['parts'], $row2['locations'],
-                            $dormant_1y_open_value_at_day, $row2['amount_in_po'], $row2['amount_in_other'], $row2['amount_out_sales'], $row2['amount_out_other']
-
+                            $row2['parts'], $row2['locations'], $dormant_1y_open_value_at_day, $row2['amount_in_po'], $row2['amount_in_other'], $row2['amount_out_sales'], $row2['amount_out_other'],
+$parts_no_sales_1_year,$parts_with_stock_left_1_year
 
                         );
 
 
                         $this->db->exec($sql);
-
 
 
                     }

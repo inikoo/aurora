@@ -25,15 +25,12 @@ require_once 'utils/object_functions.php';
 $db->exec('truncate `Inventory Warehouse Spanshot Fact`; truncate `Inventory Spanshot Fact`');
 
 
-$warehouse=get_object('Warehouse',1);
+$warehouse = get_object('Warehouse', 1);
 
 
 $from = date("Y-m-d", strtotime($warehouse->get('Warehouse Valid From')));
 $to   = date("Y-m-d", strtotime('now'));
 
-
-//$from=date("Y-m-d");
-//$to='2013-09-05';
 
 
 
@@ -48,11 +45,10 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
         $where = ' `Part SKU`=257';
-      $where = '  true';
+        $where = '  true';
 
-        $count = 0;
         $sql   = sprintf(
-            'SELECT `Part SKU` FROM `Part Dimension` WHERE %s  ORDER BY `Part SKU` ', $where
+            'SELECT `Part SKU` FROM `Part Dimension` WHERE %s  ORDER BY `Part SKU` desc ', $where
         );
 
         // print "$sql\n";
@@ -60,25 +56,13 @@ if ($result = $db->query($sql)) {
         if ($result2 = $db->query($sql)) {
             foreach ($result2 as $row2) {
 
-                //print "----".$row2['Part SKU']."\n";
 
-                $sql = sprintf(
-                    "SELECT `Location Key`  FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Type` LIKE 'Associate' AND  `Part SKU`=%d AND `Date`<=%s GROUP BY `Location Key`",
-                    $row2['Part SKU'], prepare_mysql($row['Date'].' 23:59:59')
-                );
+                $part = get_object('Part', $row2['Part SKU']);
+
+                $part->redo_inventory_snapshot_fact($row['Date'],$row['Date']);
 
 
-                if ($result3 = $db->query($sql)) {
-                    foreach ($result3 as $row3) {
-                        print $row['Date'].' '.$row2['Part SKU'].'_'.$row3['Location Key']."\r";
-
-                        $part_location = new PartLocation($row2['Part SKU'].'_'.$row3['Location Key']);
-                        $part_location->update_stock_history_date($row['Date']);
-
-
-                    }
-                }
-
+                print $row['Date'].' '.$part->id.' '.$part->get('Reference')."                          \r";
 
             }
         }
@@ -103,4 +87,4 @@ if ($result = $db->query($sql)) {
 }
 
 
-?>
+

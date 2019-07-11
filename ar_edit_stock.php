@@ -1614,7 +1614,6 @@ function itf_cost($account, $db, $user, $editor, $data, $smarty) {
                 '<span  class="part_cost_per_sko "  >%s</span>', money($cost_per_sko, $account->get('Account Currency Code'))
             );
 
-            // $part->redo_inventory_snapshot_fact();
 
             $response = array(
                 'state'                  => 200,
