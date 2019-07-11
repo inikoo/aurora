@@ -1925,9 +1925,7 @@ class Order extends DB_Table {
             $this->db->exec($sql);
             $public_id = $this->db->lastInsertId();
 
-            $invoice_public_id = sprintf(
-                $store->data['Store Invoice Public ID Format'], $public_id
-            );
+            $invoice_public_id = sprintf($store->data['Store Invoice Public ID Format'], $public_id);
             $file_as           = get_file_as($invoice_public_id);
 
         } else {

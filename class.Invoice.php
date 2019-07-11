@@ -1232,14 +1232,14 @@ class Invoice extends DB_Table {
 
 
 
+
             if($this->data['Invoice Net Amount Off']!=0 ){
 
 
-
                 if (isset($data[$this->data['Invoice Tax Code']] )) {
-                    $data[$this->data['Invoice Tax Code']] += $this->data['Invoice Net Amount Off'];
+                    $data[$this->data['Invoice Tax Code']] -= $this->data['Invoice Net Amount Off'];
                 } else {
-                    $data[$this->data['Invoice Tax Code']] = $this->data['Invoice Net Amount Off'];
+                    $data[$this->data['Invoice Tax Code']] = -$this->data['Invoice Net Amount Off'];
                 }
 
 
@@ -1247,12 +1247,11 @@ class Invoice extends DB_Table {
 
 
 
-
             $sql = sprintf(
                 "    INSERT INTO `Invoice Tax Dimension` (`Invoice Key`) VALUES (%d)", $this->id
             );
 
-            //print "$sql\n";
+          //  print "$sql\n";
 
             $this->db->exec($sql);
 
@@ -1880,9 +1879,9 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
 
             if (isset($data[$this->data['Invoice Tax Code']] )) {
-                $data[$this->data['Invoice Tax Code']] += $this->data['Invoice Net Amount Off'];
+                $data[$this->data['Invoice Tax Code']] -= $this->data['Invoice Net Amount Off'];
             } else {
-                $data[$this->data['Invoice Tax Code']] = $this->data['Invoice Net Amount Off'];
+                $data[$this->data['Invoice Tax Code']] = -$this->data['Invoice Net Amount Off'];
             }
 
 
