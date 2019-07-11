@@ -1231,12 +1231,10 @@ class Invoice extends DB_Table {
             }
 
 
+            if ($this->data['Invoice Net Amount Off'] != 0) {
 
 
-            if($this->data['Invoice Net Amount Off']!=0 ){
-
-
-                if (isset($data[$this->data['Invoice Tax Code']] )) {
+                if (isset($data[$this->data['Invoice Tax Code']])) {
                     $data[$this->data['Invoice Tax Code']] -= $this->data['Invoice Net Amount Off'];
                 } else {
                     $data[$this->data['Invoice Tax Code']] = -$this->data['Invoice Net Amount Off'];
@@ -1246,12 +1244,11 @@ class Invoice extends DB_Table {
             }
 
 
-
             $sql = sprintf(
                 "    INSERT INTO `Invoice Tax Dimension` (`Invoice Key`) VALUES (%d)", $this->id
             );
 
-          //  print "$sql\n";
+            //  print "$sql\n";
 
             $this->db->exec($sql);
 
@@ -1709,7 +1706,6 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         if (!$fix_mode) {
 
 
-
             if (!$is_refund) {
 
 
@@ -1825,8 +1821,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
     }
 
-    function update_tax_data(){
-
+    function update_tax_data() {
 
 
         $data = array();
@@ -1846,7 +1841,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
             print "$sql\n";
             exit;
         }
-
+        //  print_r($data);
 
         $sql = sprintf(
             "SELECT  `Tax Category Code`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Tax Category Code`  ", $this->id
@@ -1872,13 +1867,12 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         }
 
 
+        // print_r($data);
+
+        if ($this->data['Invoice Net Amount Off'] != 0) {
 
 
-        if($this->data['Invoice Net Amount Off']!=0 ){
-
-
-
-            if (isset($data[$this->data['Invoice Tax Code']] )) {
+            if (isset($data[$this->data['Invoice Tax Code']])) {
                 $data[$this->data['Invoice Tax Code']] -= $this->data['Invoice Net Amount Off'];
             } else {
                 $data[$this->data['Invoice Tax Code']] = -$this->data['Invoice Net Amount Off'];
@@ -1902,14 +1896,13 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         $this->db->exec($sql);
 
 
-
-
+        $total_tax = 0;
         foreach ($data as $tax_code => $amount) {
 
             $tax_category = get_object('Tax_Category', $tax_code);
             $tax          = round($tax_category->get('Tax Category Rate') * $amount, 2);
-
-            $is_base = 'Yes';
+            $total_tax    += $tax;
+            $is_base      = 'Yes';
 
             $sql = sprintf(
                 "    UPDATE `Invoice Tax Dimension` SET `%s`=%.2f WHERE `Invoice Key`=%d", addslashes($tax_code), $tax, $this->id
@@ -1918,8 +1911,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
             // print "$sql\n";
             $sql = sprintf(
                 "INSERT INTO `Invoice Tax Bridge` (`Invoice Key`,`Tax Code`,`Tax Amount`,`Tax Base`) VALUES   (%d,%s,%.2f,%s) 
-                ON DUPLICATE KEY UPDATE `Tax Amount`=%.2f, `Tax Base`=%s", $this->id, prepare_mysql($tax_code), $tax, prepare_mysql($is_base), $tax,
-                prepare_mysql($is_base)
+                ON DUPLICATE KEY UPDATE `Tax Amount`=%.2f, `Tax Base`=%s", $this->id, prepare_mysql($tax_code), $tax, prepare_mysql($is_base), $tax, prepare_mysql($is_base)
 
             );
             $this->db->exec($sql);
@@ -1929,8 +1921,19 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         }
 
 
+        $invoice_total = $total_tax + $this->data['Invoice Total Net Amount'];
 
 
+        $this->fast_update(
+            array(
+                'Invoice Total Tax Amount' => $total_tax,
+                'Invoice Total Amount'     => $invoice_total,
+
+            )
+
+        );
+
+        $this->update_payments_totals();
 
 
     }
