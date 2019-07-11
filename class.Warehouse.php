@@ -1160,7 +1160,7 @@ class Warehouse extends DB_Table {
                 if ($result2 = $this->db->query($sql)) {
                     if ($row2 = $result2->fetch()) {
 
-                        $parts_with_stock_left_1_year = $row['num'];
+                        $parts_with_stock_left_1_year = $row2['num'];
                     }
                 }
 
@@ -1174,7 +1174,7 @@ class Warehouse extends DB_Table {
                 if ($result2 = $this->db->query($sql)) {
                     if ($row2 = $result2->fetch()) {
 
-                        $parts_no_sales_1_year = $row['num'];
+                        $parts_no_sales_1_year = $row2['num'];
                     }
                 }
 
