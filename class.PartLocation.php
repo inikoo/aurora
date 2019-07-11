@@ -548,6 +548,7 @@ class PartLocation extends DB_Table {
         $stock = $this->get_stock();
 
 
+
         $value = $stock * $this->part->get('Part Cost in Warehouse');
 
         $this->data['Quantity On Hand']    = $stock;
@@ -632,6 +633,8 @@ class PartLocation extends DB_Table {
             "SELECT sum(`Inventory Transaction Quantity`) AS stock  from `Inventory Transaction Fact` WHERE  `Inventory Transaction Record Type`='Movement' and `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  ", prepare_mysql($date), $this->part_sku,
             $this->location_key
         );
+
+
 
 
         if ($result = $this->db->query($sql)) {
