@@ -2228,60 +2228,37 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $db->exec($sql);
 
 
-            return true;
 
-            include_once 'class.PartLocation.php';
-
-            $part_location = new PartLocation($data['part_sku'].'_'.$data['location_key']);
-
-            $date = gmdate('Y-m-d');
-
-            $part_location->update_stock_history_date($date);
-
-
-            $warehouse = get_object('Warehouse', $part_location->location->get('Location Warehouse Key'));
-            $warehouse->update_inventory_snapshot($date);
-
-
-            if ($part_location->get('Quantity On Hand') < 0) {
-
-                $suppliers = $part_location->part->get_suppliers();
-                foreach ($suppliers as $supplier_key) {
-                    $supplier_production = get_object('Supplier_Production', $supplier_key);
-
-                    if ($supplier_production->id) {
-                        $supplier_production->update_locations_with_errors();
-                    }
-                }
-            }
 
 
             break;
 
-        case 'create_today_ISF':
-
-            include_once 'class.PartLocation.php';
+        case 'redo_day_ISF':
 
 
-            $sql = sprintf(
-                "SELECT `Part SKU`,`Location Key` from `Part Location Dimension`"
+            $date= $data['date'];
+
+
+            $sql   = sprintf(
+                'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU` desc '
             );
 
+            // print "$sql\n";
 
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-
-                    $part_location = new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
-                    $part_location->update_stock_history_date(date("Y-m-d"));
+            if ($result2 = $db->query($sql)) {
+                foreach ($result2 as $row2) {
+                    $part = get_object('Part', $row2['Part SKU']);
+                    $part->redo_inventory_snapshot_fact($date,$date);
 
                 }
             }
 
+
             $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`');
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-                    $warehouse = get_object('Warehouse', $row['Warehouse Key']);
-                    $warehouse->update_inventory_snapshot(date("Y-m-d"));
+            if ($result2 = $db->query($sql)) {
+                foreach ($result2 as $row2) {
+                    $warehouse = new Warehouse($row2['Warehouse Key']);
+                    $warehouse->update_inventory_snapshot($row['Date']);
                 }
             } else {
                 print_r($error_info = $db->errorInfo());

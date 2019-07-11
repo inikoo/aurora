@@ -3435,7 +3435,8 @@ function create_time_series($account, $db, $data, $editor) {
 
 function create_isf($account, $db, $data, $editor) {
 
-
+//No longer in use
+    /*
     require_once 'utils/new_fork.php';
 
     $data['editor'] = $editor;
@@ -3451,7 +3452,7 @@ function create_isf($account, $db, $data, $editor) {
 
     );
     echo json_encode($response);
-
+*/
 
 }
 
