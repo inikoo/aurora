@@ -1889,7 +1889,7 @@ class DeliveryNote extends DB_Table {
 					%s,%s,%.2f,%f,%f,%f,
 
 					%s,%s,%d,%d,%d,%d,%s,%d,%d) ",
-                            "'Movement'", "'In'", prepare_mysql(''), prepare_mysql(''),
+                            "'Movement'", "'NoDispatched'", prepare_mysql(''), prepare_mysql(''),
 
                             $row['Inventory Transaction Weight'], prepare_mysql($date), prepare_mysql($date), $this->id, prepare_mysql($row['Part SKU']), $location_key,
 
