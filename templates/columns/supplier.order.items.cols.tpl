@@ -56,27 +56,7 @@ cell: "html"
 
 },
 
-{
-name: "other_deliveries_units",
-label: "{t}Other deliveries{/t}",
-editable: false,
-cell: "html"
 
-},
-{
-name: "other_deliveries_skos",
-label: "{t}Other deliveries{/t}",
-editable: false,
-cell: "html"
-
-},
-{
-name: "other_deliveries_cartons",
-label: "{t}Other deliveries{/t}",
-editable: false,
-cell: "html"
-
-},
 {
 name: "items_qty",
 label: "{t}Qty{/t}",
@@ -166,7 +146,6 @@ headerCell: integerHeaderCell
 
 ]
 
-//114.58
 
 
 function change_table_view(view, save_state) {
@@ -181,9 +160,9 @@ grid.columns.findWhere({ name: 'description_cartons'} ).set("renderable", false)
 
 
 
-grid.columns.findWhere({ name: 'other_deliveries_units'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'other_deliveries_skos'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'other_deliveries_cartons'} ).set("renderable", false)
+//grid.columns.findWhere({ name: 'other_deliveries_units'} ).set("renderable", false)
+//grid.columns.findWhere({ name: 'other_deliveries_skos'} ).set("renderable", false)
+//grid.columns.findWhere({ name: 'other_deliveries_cartons'} ).set("renderable", false)
 
 
 grid.columns.findWhere({ name: 'quantity_units'} ).set("renderable", false)
@@ -192,25 +171,25 @@ grid.columns.findWhere({ name: 'quantity_cartons'} ).set("renderable", false)
 
 if(view=='overview'){
 
-grid.columns.findWhere({ name: 'description_skos'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'description_units'} ).set("renderable", true)
 
 
 }else if(view=='cartons'){
 grid.columns.findWhere({ name: 'description_cartons'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'quantity_cartons'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'other_deliveries_cartons'} ).set("renderable", true)
+//grid.columns.findWhere({ name: 'other_deliveries_cartons'} ).set("renderable", true)
 
 }else if(view=='skos'){
 grid.columns.findWhere({ name: 'quantity_skos'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'description_skos'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'other_deliveries_skos'} ).set("renderable", true)
+//grid.columns.findWhere({ name: 'other_deliveries_skos'} ).set("renderable", true)
 
 
 }else if(view=='units'){
 grid.columns.findWhere({ name: 'description_units'} ).set("renderable", true)
 
 grid.columns.findWhere({ name: 'quantity_units'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'other_deliveries_units'} ).set("renderable", true)
+//grid.columns.findWhere({ name: 'other_deliveries_units'} ).set("renderable", true)
 
 }
 
