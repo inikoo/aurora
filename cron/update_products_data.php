@@ -33,12 +33,12 @@ print date('l jS \of F Y h:i:s A')."\n";
 //print "updated fiels from parts\n";
 //update_web_state($db);
 
-//update_categories_data($db);
+update_categories_data($db);
 
 //update_products_data($db);
 
 //update_products_next_shipment_date($db);
-
+exit;
 
 $sql = sprintf(
     "SELECT `Product ID` FROM `Product Dimension`  "
