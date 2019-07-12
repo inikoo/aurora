@@ -17,7 +17,7 @@ $tipo    = 'stock.history.day';
 $default = $user->get_tab_defaults($tab);
 
 $table_views = array(
-    'stock' => array(
+    'overview' => array(
         'label' => _('Stock'),
         'title' => _('Stock')
     ),

@@ -112,7 +112,7 @@ grid.columns.findWhere({ name: 'stock'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'cost'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'stock_value'} ).set("renderable", false)
 
-if(view=='stock'){
+if(view=='overview'){
 
 grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'cost'} ).set("renderable", true)
