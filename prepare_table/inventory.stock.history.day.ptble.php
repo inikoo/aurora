@@ -28,6 +28,9 @@ $fields = '';
 //}
 
 
+
+
+
 if ($parameters['parent'] == 'day') {
     $where = sprintf(" where `Date`=%s ", prepare_mysql($parameters['parent_key']));
 } else {
@@ -38,6 +41,11 @@ if (isset($extra_where)) {
     $where .= $extra_where;
 }
 
+
+
+if ($parameters['f_field'] == 'reference' and $f_value != '') {
+    $wheref .= " and  `Part Reference` like '".addslashes($f_value)."%'";
+}
 
 $_order = $order;
 $_dir   = $order_direction;
