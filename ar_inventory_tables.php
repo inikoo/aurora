@@ -2286,10 +2286,39 @@ function stock_history_day($_data, $db, $user, $account) {
 
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
+
+    $_datagms_1_year_back = gmdate('U', strtotime($parameters['parent_key'].' - 1 year'));
+
+
     $record_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
+
+
+
+            if (gmdate('U', strtotime($data['Part Valid From'])) > $_datagms_1_year_back) {
+
+                $no_sales_1_year       = '<span class="super_discreet"><i class="fal fa-seedling"></i></span>';
+                $stock_left_1_year_ago = '<span class="super_discreet"><i class="fal fa-seedling"></i></span>';
+
+
+            } else {
+                switch ($data['no_sales_1_year']) {
+                    case 'Yes':
+                        $no_sales_1_year = '<span class="error"><i class="fa fa-snooze"></i></span>';
+                        break;
+                    case 'No':
+                        $no_sales_1_year = '<span class="success"><i class="fa fa-check"></i></span>';
+                        break;
+                    case '':
+                        $no_sales_1_year = '<span class="error"><i class="fa fa-question"></i></span>';
+                        break;
+                    default:
+                        $no_sales_1_year = $data['no_sales_1_year'];
+                }
+                $stock_left_1_year_ago = ($data['stock_left_1_year_ago'] == '' ? '' : number($data['stock_left_1_year_ago']));
+            }
 
 
             $record_data[] = array(
@@ -2297,14 +2326,15 @@ function stock_history_day($_data, $db, $user, $account) {
 
                 'description' => $data['Part Package Description'],
 
-                'stock'       => number($data['stock']),
-                'stock_value' => money($data['stock_value'], $account->get('Currency Code')),
-                'cost'        => money($data['cost'], $account->get('Currency Code')),
-                'in'          => number($data['book_in']),
-                'sold'        => number($data['sold']),
-                'lost'        => number($data['lost']),
-                'given'       => number($data['given']),
-
+                'stock'                 => number($data['stock']),
+                'stock_value'           => money($data['stock_value'], $account->get('Currency Code')),
+                'cost'                  => money($data['cost'], $account->get('Currency Code')),
+                'in'                    => number($data['book_in']),
+                'sold'                  => number($data['sold']),
+                'lost'                  => number($data['lost']),
+                'given'                 => number($data['given']),
+                'stock_left_1_year_ago' => $stock_left_1_year_ago,
+                'no_sales_1_year'       => $no_sales_1_year
             );
 
 
