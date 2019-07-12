@@ -59,7 +59,7 @@ if ($result = $db->query($sql)) {
 
                 $part = get_object('Part', $row2['Part SKU']);
 
-                $part->redo_inventory_snapshot_fact($row['Date'],$row['Date']);
+                $part->update_part_inventory_snapshot_fact($row['Date'],$row['Date']);
 
 
                 print $row['Date'].' '.$part->id.' '.$part->get('Reference')."                          \r";
