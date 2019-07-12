@@ -5037,7 +5037,7 @@ class Part extends Asset {
 
     }
 
-    function redo_inventory_snapshot_fact($from = '',$to='') {
+    function update_part_inventory_snapshot_fact($from = '',$to='') {
 
         include_once "class.PartLocation.php";
         if ($from == '') {
@@ -5046,10 +5046,7 @@ class Part extends Asset {
         if ($to == '') {
             $to = ($this->get('Part Status') == 'Not In Use' ? $this->get('Part Valid To') : gmdate('Y-m-d H:i:s'));
         }
-        $sql = sprintf(
-            "DELETE FROM `Inventory Spanshot Fact` WHERE `Part SKU`=%d  AND (`Date`<%s  OR `Date`>%s  )", $this->sku, prepare_mysql($from), prepare_mysql($to)
-        );
-        $this->db->exec($sql);
+
 
         $sql = sprintf(
             "SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) ORDER BY `Date` DESC", prepare_mysql($from), prepare_mysql($to)

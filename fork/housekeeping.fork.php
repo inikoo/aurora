@@ -320,7 +320,7 @@ function fork_housekeeping($job) {
 
             foreach ($data['parts_data'] as $part_sku => $from_date) {
                 $part = get_object('Part', $part_sku);
-                $part->redo_inventory_snapshot_fact($from_date);
+                $part->update_part_inventory_snapshot_fact($from_date);
             }
 
             $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`');
@@ -412,7 +412,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
                 $part->update_stock_run();
-                $part->redo_inventory_snapshot_fact($from_date);
+                $part->update_part_inventory_snapshot_fact($from_date);
 
 
 
@@ -2248,7 +2248,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             if ($result2 = $db->query($sql)) {
                 foreach ($result2 as $row2) {
                     $part = get_object('Part', $row2['Part SKU']);
-                    $part->redo_inventory_snapshot_fact($date,$date);
+                    $part->update_part_inventory_snapshot_fact($date,$date);
 
                 }
             }
