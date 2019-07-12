@@ -666,7 +666,10 @@ trait ProductCategory {
             'Product Category Active Web Offline'      => $elements_active_web_status_numbers['Offline']
         );
 
-        $this->fast_update($update_data, 'Product Category Data');
+
+
+
+        $this->fast_update($update_data, 'Product Category Dimension');
 
 
         $this->get_data('id', $this->id);

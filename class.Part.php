@@ -5109,6 +5109,12 @@ class Part extends Asset {
                             prepare_mysql($row['Date'].' 23:59:59'), $this->id
                         );
 
+
+                        $sql              = sprintf(
+                            "SELECT sum(`Inventory Transaction Quantity`) as qty_out FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Inventory Transaction Record Type`='Movement'  and  `Inventory Transaction Quantity`<0  ", prepare_mysql($date_1yr_back.' 23:59:59'),
+                            prepare_mysql($row['Date'].' 23:59:59'), $this->id
+                        );
+
                         if ($result2 = $this->db->query($sql)) {
                             if ($row2 = $result2->fetch()) {
                                 $total_out_1_year = $row2['qty_out'];
@@ -5130,6 +5136,8 @@ class Part extends Asset {
                 }
 
 
+                //print "$stock_one_year_ago $total_out_1_year   = $total_stock  ||   $stock_left_1_year_ago   = ";
+                //exit;
 
 
 
@@ -5153,6 +5161,8 @@ class Part extends Asset {
                 } else {
                     $dormant_1year = 'NA';
                 }
+
+
 
                 $sql = sprintf(
                     'update `Inventory Spanshot Fact` set `Inventory Spanshot Stock Left 1 Year Ago`=%f ,`Dormant 1 Year`=%s where `Part SKU`=%d and `Date`=%s ',
