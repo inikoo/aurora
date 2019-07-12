@@ -72,9 +72,65 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 
+{
+name: "no_sales_1_year",
+label: "{t}Sales 1 year{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='no_sales_1_year'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ })
+
+},
+{
+name: "stock_left_1_year_ago",
+label: "{t}Stock older than 1 year{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='stock_left_1_year_ago'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"}),
+headerCell: integerHeaderCell
+
+},
 
 ]
 
-function change_table_view(view,save_state){
+
+function change_table_view(view, save_state) {
+
+$('.view').removeClass('selected');
+$('#view_'+view).addClass('selected');
+
+
+grid.columns.findWhere({ name: 'no_sales_1_year'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'stock_left_1_year_ago'} ).set("renderable", false)
+
+
+
+grid.columns.findWhere({ name: 'stock'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'cost'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'stock_value'} ).set("renderable", false)
+
+if(view=='stock'){
+
+grid.columns.findWhere({ name: 'stock'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'cost'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'stock_value'} ).set("renderable", true)
+
+
+}else if(view=='1_year'){
+grid.columns.findWhere({ name: 'no_sales_1_year'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'stock_left_1_year_ago'} ).set("renderable", true)
+
+}
+
+
+
+if(save_state){
+var request = "/ar_state.php?tipo=set_table_view&tab={$tab}&table_view=" + view
+
+$.getJSON(request, function(data) {});
+}
 
 }

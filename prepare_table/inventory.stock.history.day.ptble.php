@@ -63,7 +63,11 @@ if ($order == 'stock_value') {
     $order = 'lost';
 } elseif ($order == 'given') {
     $order = 'given';
-} else {
+} elseif ($order == 'stock_left_1_year_ago') {
+    $order = 'stock_left_1_year_ago';
+}elseif ($order == 'no_sales_1_year') {
+    $order = '`Dormant 1 Year`';
+}else {
     $order = '`Date`';
 
 }
@@ -73,7 +77,9 @@ $sql_totals = "select count(Distinct ISF.`Part SKU`) as num from $table  $where 
 
 
 $fields = "ISF.`Part SKU`,`Part Reference`,`Part Package Description`,sum(`Quantity On Hand`) as stock,sum(`Quantity Sold`) as sold,sum(`Quantity Lost`) as lost,sum(`Quantity On Hand`) as stock,sum(`Quantity Given`) as given,sum(`Quantity In`) as book_in,
-    sum(`Value At Cost`) as stock_value, `Inventory Spanshot Warehouse SKO Value` as cost ";
+    sum(`Value At Cost`) as stock_value, `Inventory Spanshot Warehouse SKO Value` as cost,
+     sum(`Inventory Spanshot Stock Left 1 Year Ago`) stock_left_1_year_ago,`Dormant 1 Year` as no_sales_1_year,`Part Valid From`
+     ";
 
 
 
