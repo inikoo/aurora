@@ -1350,7 +1350,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                 case 'Cancelled':
 
                     $this->update_field(
-                        'Purchase Order Locaked', 'Yes', 'no_history'
+                        'Purchase Order Locked', 'Yes', 'no_history'
                     );
 
                     $this->update_field(
@@ -1386,7 +1386,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
 
                     $this->update_field(
-                        'Purchase Order Locaked', 'Yes', 'no_history'
+                        'Purchase Order Locked', 'Yes', 'no_history'
                     );
 
                     $this->update_field(
