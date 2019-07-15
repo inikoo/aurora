@@ -77,31 +77,36 @@ if (isset($parameters['elements_type'])) {
             $_elements            = '';
             $num_elements_checked = 0;
 
-            foreach (
-                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-            ) {
+
+
+            foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value) {
                 $_value = $_value['selected'];
                 if ($_value) {
                     $num_elements_checked++;
 
-                    $_elements .= ",'".addslashes($_key)."'";
+                    if ($_key == 'InProcess') {
+                        $_elements .= ",'InProcess','Dispatched','Consolidated'";
+                    }if ($_key == 'Placed') {
+                        $_elements .= ",'Placed','Costing'";
+                    } else {
+
+                        $_elements .= ",'".addslashes($_key)."'";
+                    }
+
+
+
+
+
 
                 }
             }
+
+
 
             if ($_elements == '') {
                 $where .= ' and false';
             } elseif ($num_elements_checked < 6) {
 
-                //'InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked'
-               if ($_key == 'InProcess') {
-                    $_elements .= ",'InProcess','Dispatched','Consolidated'";
-                }if ($_key == 'Placed') {
-                    $_elements .= ",'Placed','Costing'";
-                } else {
-
-                    $_elements .= ",'".addslashes($_key)."'";
-                }
 
 
                 $_elements = preg_replace('/^,/', '', $_elements);
@@ -114,6 +119,7 @@ if (isset($parameters['elements_type'])) {
             break;
     }
 }
+
 
 
 if (($parameters['f_field'] == 'number') and $f_value != '') {
