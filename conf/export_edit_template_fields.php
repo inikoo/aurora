@@ -68,7 +68,7 @@ $export_edit_template_fields = array(
             'label'         => _('Unit label'),
             'checked'       => 0
         ),
-
+/*
         array(
             'default_value' => '',
             'show_for_new'  => true,
@@ -78,6 +78,7 @@ $export_edit_template_fields = array(
             'label'         => _('Units per SKO'),
             'checked'       => 0
         ),
+*/
         array(
             'default_value' => '',
             'show_for_new'  => true,
@@ -107,7 +108,7 @@ $export_edit_template_fields = array(
             'label'         => _('Part Carton Barcode'),
             'checked'       => 0
         ),
-
+/*
         array(
             'default_value' => '',
             'show_for_new'  => true,
@@ -117,6 +118,9 @@ $export_edit_template_fields = array(
             'label'         => _('SKOs per carton'),
             'checked'       => 0
         ),
+
+*/
+
         array(
             'default_value' => '',
             'show_for_new'  => true,
@@ -454,7 +458,7 @@ $export_edit_template_fields = array(
             'label'         => _('Unit recommended description').' ('._('website').')',
             'checked'       => 0
         ),
-
+/*
         array(
             'default_value' => '',
             'show_for_new'  => true,
@@ -473,6 +477,7 @@ $export_edit_template_fields = array(
             'label'         => _('SKOs per Carton'),
             'checked'       => 0
         ),
+*/
         array(
             'default_value' => '',
             'show_for_new'  => true,
