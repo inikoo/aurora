@@ -162,3 +162,5 @@ update  `Inventory Transaction Fact` set `Inventory Transaction Section`='NoDisp
 ALTER TABLE `Inventory Spanshot Fact` ADD `Inventory Spanshot Stock Left 1 Year Ago` FLOAT NULL DEFAULT '0' AFTER `Inventory Spanshot Warehouse SKO Value`;
 ALTER TABLE `Inventory Spanshot Fact` CHANGE `Dormant 1 Year` `Dormant 1 Year` ENUM('Yes','No','NA') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `Inventory Warehouse Spanshot Fact` ADD `Inventory Warehouse Spanshot Fact Dormant Parts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Inventory Warehouse Spanshot Out Other`, ADD `Inventory Warehouse Spanshot Fact Stock Left 1 Year Parts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Inventory Warehouse Spanshot Fact Dormant Parts`;
+ALTER TABLE `Inventory Transaction Fact` CHANGE `Waitng` `Waiting` FLOAT UNSIGNED NOT NULL DEFAULT '0';
+
