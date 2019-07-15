@@ -49,13 +49,13 @@ $options_yes_no = array(
 
 
 $options_symbols = array(
-    'none'            => _('None'),
+    'none'        => _('None'),
     'star'        => '&#9733; '._('Star'),
     'skull'       => '&#9760; '._('Skull'),
     'radioactive' => '&#9762; '._('Radioactive'),
     'peace'       => '&#9774; '._('Peace'),
     'sad'         => '&#9785; '._('Sad'),
-    'gear'       => '&#9881; '._('Gear'),
+    'gear'        => '&#9881; '._('Gear'),
     'love'        => '&#10084; '._('Love'),
 );
 
@@ -318,6 +318,24 @@ $part_fields[] = array(
     )
 );
 
+
+if ($object->get('Part Status') == 'In Process' and $object->get('Part Current On Hand Stock') == 0) {
+    $can_edit_units_per_package = true;
+
+    if ($object->get('Part Number Active Products') > 0 or $object->get('Part Number No Active Products') > 0) {
+        $warning_units_per_package = '<br><span class="warning"><fa class="fa fa-exclamation-triangle padding_right_5"></fa> '._("Products associated with part").'</span>';
+    }else{
+        $warning_units_per_package='';
+    }
+} else {
+    $warning_units_per_package  = '<br><span class="error"><fa class="fa fa-ban padding_right_5"></fa> '._("Part already in warehouse").'</span>';
+    $can_edit_units_per_package = false;
+
+}
+//todo remove this when we dedo the post stuff
+$warning_units_per_package='';
+$can_edit_units_per_package=false;
+
 $part_fields[] = array(
     'label' => ($supplier_part_scope
         ? _('Part stock keeping outer (SKO)')
@@ -330,14 +348,11 @@ $part_fields[] = array(
         array(
             'render' => (!($supplier_part_scope or $new) ? true : false),
 
-            'id'   => 'Part_Units_Per_Package',
-           // 'edit' => ($edit ? 'numeric' : ''),
-            'edit' => '',
+            'id'              => 'Part_Units_Per_Package',
+            'edit'            => ($can_edit_units_per_package ? 'numeric' : ''),
             'value'           => $object->get('Part Units Per Package'),
             'formatted_value' => $object->get('Units Per Package'),
-            'label'           => ucfirst(
-                $object->get_field_label('Part Units Per Package')
-            ),
+            'label'           => ucfirst($object->get_field_label('Part Units Per Package')).$warning_units_per_package,
             'invalid_msg'     => get_invalid_message('string'),
             'required'        => ($supplier_part_scope ? false : true),
             'type'            => 'value'
@@ -499,7 +514,7 @@ if (!$supplier_part_scope) {
     );
 }
 
-if ($account->get('Account Add Stock Value Type') == 'Last Price'  and false ) {
+if ($account->get('Account Add Stock Value Type') == 'Last Price' and false) {
 
     if (!($supplier_part_scope or $new)) {
 

@@ -24,18 +24,16 @@ update_parts_data($db);
 function update_parts_data($db) {
 
     $sql = sprintf(
-        'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Reference`="FO-P7" ORDER BY `Part SKU` DESC  '
+        'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Reference`="AFP01" ORDER BY `Part SKU` DESC  '
     );
-    $sql = sprintf(
-        'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`  DESC '
-    );
+    $sql = sprintf('SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`  DESC ');
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $part = new Part($row['Part SKU']);
 
-
-            $part->update_weight_status();
+            $part->update_products_data();
+          //  $part->update_weight_status();
 
            // $part->update_made_in_production_data();
             //$part->update_number_locations();
