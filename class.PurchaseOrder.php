@@ -1228,14 +1228,40 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                         $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
                     );
 
-                    $sql = sprintf(
-                        'UPDATE `Purchase Order Transaction Fact` SET 
-                            `Purchase Order Transaction State`=%s ,
-                            `Purchase Order Submitted Units`=NULL ,`Purchase Order Submitted Unit Cost`=NULL,`Purchase Order Submitted Units Per SKO`=NULL,`Purchase Order Submitted SKOs Per Carton`=NULL,`Purchase Order Submitted Unit Extra Cost Percentage`=NULL
-                            
-                            WHERE `Purchase Order Key`=%d ', prepare_mysql($value), $this->id
+
+
+
+                    $sql = 'select `Purchase Order Transaction Fact Key`,`Supplier Part Unit Cost`,`Supplier Part Unit Extra Cost`,`Purchase Order Ordering Units`,`Supplier Part Historic Key`  from `Purchase Order Transaction Fact` POTF left join `Supplier Part Dimension` SPD  on (POTF.`Supplier Part Key`=SPD.`Supplier Part Key`) where `Purchase Order Key`=?';
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array($this->id)
                     );
-                    $this->db->exec($sql);
+                    while ($row = $stmt->fetch()) {
+
+                        $sql = sprintf(
+                            'UPDATE `Purchase Order Transaction Fact` SET 
+                            `Purchase Order Transaction State`=%s ,
+                            `Purchase Order Submitted Units`=NULL ,`Purchase Order Submitted Unit Cost`=NULL,`Purchase Order Submitted Units Per SKO`=NULL,`Purchase Order Submitted SKOs Per Carton`=NULL,`Purchase Order Submitted Unit Extra Cost Percentage`=NULL,
+                                              `Purchase Order Net Amount`=%.2f ,`Purchase Order Extra Cost Amount`=%.2f ,`Supplier Part Historic Key`=%d 
+                            
+                            WHERE `Purchase Order Transaction Fact Key`=%d ', prepare_mysql($value),
+                            $row['Supplier Part Unit Cost'] * $row['Purchase Order Ordering Units'],
+                            $row['Supplier Part Unit Extra Cost'] * $row['Purchase Order Ordering Units'],
+                            $row['Supplier Part Historic Key'],
+
+                            $row['Purchase Order Transaction Fact Key']
+
+                    );
+                        $this->db->exec($sql);
+
+                    }
+
+
+
+
+
+
 
                     break;
 

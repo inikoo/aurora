@@ -4140,8 +4140,7 @@ class Part extends Asset {
 
     function get_current_formatted_value_at_current_cost() {
 
-        $a = floatval(3.000 * 3.575);
-        $a = round(3.575 + 3.575 + 3.575, 3);
+
 
         return money(
             $this->data['Part Current On Hand Stock'] * $this->data['Part Cost']

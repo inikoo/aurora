@@ -1487,7 +1487,7 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
 
 
     $sql = sprintf(
-        'select `Supplier Delivery Units`,`Supplier Delivery Key`,`Purchase Order Submitted Unit Extra Cost Percentage`,`Purchase Order Submitted Unit Cost`,`Supplier Part Unit Extra Cost Percentage`,`Purchase Order Transaction State`,`Purchase Order Key`,`Purchase Order Transaction Fact Key`,`Supplier Part Unit Cost`,`Purchase Order Submitted Units`,`Supplier Part Currency Code` from `Purchase Order Transaction Fact` POTF left join `Supplier Part Dimension` SPD  on (POTF.`Supplier Part Key`=SPD.`Supplier Part Key`) where `Purchase Order Transaction Fact Key`=%d ',
+        'select SPD.`Supplier Part Historic Key`,`Supplier Delivery Units`,`Supplier Delivery Key`,`Purchase Order Submitted Unit Extra Cost Percentage`,`Purchase Order Submitted Unit Cost`,`Supplier Part Unit Extra Cost Percentage`,`Purchase Order Transaction State`,`Purchase Order Key`,`Purchase Order Transaction Fact Key`,`Supplier Part Unit Cost`,`Purchase Order Submitted Units`,`Supplier Part Currency Code` from `Purchase Order Transaction Fact` POTF left join `Supplier Part Dimension` SPD  on (POTF.`Supplier Part Key`=SPD.`Supplier Part Key`) where `Purchase Order Transaction Fact Key`=%d ',
         $data['transaction_key']
     );
 
@@ -1507,6 +1507,8 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
             $unit_cost       = $row['Purchase Order Submitted Unit Cost'];
             $extra_unit_cost = $row['Supplier Part Unit Extra Cost Percentage'];
 
+            $supplier_part_historic_key = $row['Supplier Part Historic Key'];
+
             switch ($row['Purchase Order Transaction State']) {
 
                 case 'Cancelled':
@@ -1522,11 +1524,12 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
 
                     if ($data['type'] == 'cost') {
 
+                        //todo $supplier_part_historic_key is not necesary tru can be other this can be a mess, $supplier_part_historic_keys hould come from the UI
 
                         $sql = sprintf(
-                            'update `Purchase Order Transaction Fact` set `Purchase Order Submitted Unit Cost`=%.4f ,`Purchase Order Net Amount`=%.2f where `Purchase Order Transaction Fact Key`=%d  ',
+                            'update `Purchase Order Transaction Fact` set `Purchase Order Submitted Unit Cost`=%.4f ,`Purchase Order Net Amount`=%.2f, `Supplier Part Historic Key`=%d  where `Purchase Order Transaction Fact Key`=%d  ',
 
-                            $row['Supplier Part Unit Cost'], $net_amount,
+                            $row['Supplier Part Unit Cost'], $net_amount, $supplier_part_historic_key,
 
                             $row['Purchase Order Transaction Fact Key']
                         );
