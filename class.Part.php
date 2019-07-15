@@ -4834,6 +4834,8 @@ class Part extends Asset {
             exit;
         }
 
+
+
         $this->fast_update(
             array(
                 'Part Number Active Products'    => $active_products,

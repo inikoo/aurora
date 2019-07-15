@@ -266,6 +266,7 @@ if ($order == 'id') {
 }
 
 
+
 $sql_totals
     = "select count(Distinct P.`Part SKU`) as num from $table  $where  ";
 
