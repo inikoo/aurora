@@ -331,8 +331,8 @@ $part_fields[] = array(
             'render' => (!($supplier_part_scope or $new) ? true : false),
 
             'id'   => 'Part_Units_Per_Package',
-            'edit' => ($edit ? 'numeric' : ''),
-
+           // 'edit' => ($edit ? 'numeric' : ''),
+            'edit' => '',
             'value'           => $object->get('Part Units Per Package'),
             'formatted_value' => $object->get('Units Per Package'),
             'label'           => ucfirst(

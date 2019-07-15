@@ -356,7 +356,8 @@ $supplier_part_fields[] = array(
 
         array(
             'id'              => 'Supplier_Part_Packages_Per_Carton',
-            'edit'            => 'smallint_unsigned',
+          //  'edit'            => 'smallint_unsigned',
+            'edit'=>'',
             'value'           => ($new ? 1 : htmlspecialchars($object->get('Supplier Part Packages Per Carton'))),
             'formatted_value' => ($new ? 1 : $object->get('Packages Per Carton')),
             'label'           => ucfirst($object->get_field_label('Supplier Part Packages Per Carton')).'<div class="warning" style="line-height: normal;font-size: 80%;position: relative;top:-4px"> <i class="fa fa-exclamation-triangle yellow" title="'._(
