@@ -880,8 +880,8 @@
                 <td class="label">{t}Paid{/t}</td>
                 <td class="aright Payments_Amount">{$order->get('Payments Amount')}</td>
             </tr>
-            <tr class="total  Order_To_Pay_Amount {if $order->get('Order To Pay Amount')==0    }hide{/if} button"  absolute_amount="{$order->get('Order To Pay Amount Absolute')}" amount="{$order->get('Order To Pay Amount')}" onclick="try_to_pay(this)">
-                <td class="label">{if $order->get('Order To Pay Amount')>0}{t}To pay{/t}{else}To credit / refund{/if}</td>
+            <tr class="total strong  Order_To_Pay_Amount {if $order->get('Order To Pay Amount')==0    }hide{/if} button"  absolute_amount="{$order->get('Order To Pay Amount Absolute')}" amount="{$order->get('Order To Pay Amount')}" onclick="try_to_pay(this)">
+                <td class="label ">{if $order->get('Order To Pay Amount')>0}{t}To pay{/t}{else}To credit / refund{/if}</td>
                 <td class="aright To_Pay_Amount_Absolute   ">{$order->get('To Pay Amount Absolute')}</td>
             </tr>
             <tr class="total success  Order_Paid {if $order->get('Order To Pay Amount')!=0   or $order->get('Order Total Amount')==0  }hide{/if}">
