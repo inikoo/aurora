@@ -1218,9 +1218,7 @@ $elements_options = array(
                     'selected' => true
                 ),
                 'Cancelled'       => array(
-                    'label'    => _(
-                        'Cancelled'
-                    ),
+                    'label'    => _('Cancelled'),
                     'selected' => false
                 ),
             ),
@@ -1231,7 +1229,6 @@ $elements_options = array(
 
     ),
 
-    //'InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked'
 
     'supplier_deliveries' => array(
         'state' => array(
@@ -1270,7 +1267,71 @@ $elements_options = array(
 
     ),
 
-    //'InProcess','SubmittedAgent','Submitted','Inputted','Dispatched','Received','Checked','Placed','Cancelled'
+    'production_orders'     => array(
+        'state' => array(
+            'label' => _('State'),
+            'items' => array(
+
+
+                'InProcess'                   => array(
+                    'label'    => _('Planning'),
+                    'selected' => true
+                ),
+                'Manufacturing' => array(
+                    'label'    => _('Manufacturing'),
+                    'selected' => true
+                ),
+                'ReceivedChecked'             => array(
+                    'label'    => _('In quality control'),
+                    'selected' => true
+                ),
+                'Placed'                      => array(
+                    'label'    => _('Booked in'),
+                    'selected' => true
+                ),
+
+                'Cancelled'                   => array(
+                    'label'    => _('Cancelled'),
+                    'selected' => false
+                ),
+            ),
+
+
+        ),
+
+
+    ),
+
+    'production_deliveries' => array(
+        'state' => array(
+            'label' => _('State'),
+            'items' => array(
+                'InProcess'  => array(
+                    'label'    => _('Items manufactured'),
+                    'selected' => true
+                ),
+
+
+                'Checked'    => array(
+                    'label'    => _('Checked'),
+                    'selected' => true
+                ),
+                'Placed'     => array(
+                    'label'    => _('Booked in'),
+                    'selected' => true
+                ),
+
+                'Cancelled'  => array(
+                    'label'    => _('Cancelled'),
+                    'selected' => false
+                ),
+            ),
+
+
+        ),
+
+
+    ),
 
     'agent_client_orders'     => array(
         'state_agent' => array(

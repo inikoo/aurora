@@ -305,11 +305,40 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
             break;
 
+        case 'supplier':
+
+            $_parent = get_object($state['parent'], $state['parent_key']);
+
+
+            if ($_parent->get('Supplier Production') == 'Yes') {
+                if ($state['module'] == 'suppliers') {
+
+
+                    if ($state['section'] != 'delivery' and $state['section'] != 'supplier_part' and $state['section'] != 'order') {
+                        $state['request'] = preg_replace('/supplier\//', 'production/', $state['request']);
+                        $state['module']  = 'production';
+                        $state['section'] = 'dashboard';
+                        $state['tab']     = 'production.dashboard';
+                        $state['subtab']  = 'production.dashboard';
+                        $state['object']  = 'supplier_production';
+                        $_object          = get_object($state['object'], $state['key']);
+                    }
+
+
+                }
+
+
+            }
+
+            break;
+
         default:
             $_parent = get_object($state['parent'], $state['parent_key']);
 
 
     }
+
+
     $state['_parent'] = $_parent;
 
 
@@ -442,10 +471,78 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
         }
 
 
+        if($state['module']!='production') {
+
+            if ($state['object'] == 'supplier' and $_object->get('Supplier Production') == 'Yes') {
+
+
+                $state['request'] = 'production/'.$_object->id;
+                $state['module']  = 'production';
+                $state['section'] = 'dashboard';
+                $state['tab']     = 'production.dashboard';
+                $state['subtab']  = '';
+                $state['object']  = 'supplier_production';
+                $_object          = get_object($state['object'], $state['key']);
+
+
+            }
+
+
+            //print_r($state);
+
+            if ($state['object'] == 'purchase_order' and $_object->get('Purchase Order Production') == 'Yes') {
+
+
+                $state['request'] = 'production/'.$_object->get('Purchase Order Parent Key').'/order/'.$_object->id;
+
+                $state['module']     = 'production';
+                $state['section']    = 'order';
+                $state['tab']        = 'supplier.order.items';
+                $state['subtab']     = '';
+                $state['parent']     = 'supplier_production';
+                $state['parent_key'] = $_object->get('Purchase Order Parent Key');
+                $_parent             = get_object($state['parent'], $state['parent_key']);
+                $state['_parent']    = $_parent;
+                $state['section']    = 'order';
+
+
+            }
+
+
+            if ($state['object'] == 'supplierdelivery' and $_object->get('Supplier Delivery Production') == 'Yes') {
+
+
+                $state['request']    = 'production/'.$_object->get('Supplier Delivery Parent Key').'/delivery/'.$_object->id;
+                $state['module']     = 'production';
+                $state['parent']     = 'supplier_production';
+                $state['parent_key'] = $_object->get('Supplier Delivery Parent Key');
+                $_parent             = get_object($state['parent'], $state['parent_key']);
+                $state['_parent']    = $_parent;
+                $state['section']    = 'delivery';
+
+
+            }
+
+
+            if ($state['object'] == 'supplier_part' and $_object->get('Supplier Part Production') == 'Yes') {
+
+                $state['request'] = 'production/'.$_object->get('Supplier Part Supplier Key').'/part/'.$_object->id;
+                $state['module']  = 'production';
+                $state['parent']  = 'supplier_production';
+
+                $state['parent_key'] = $_object->get('Supplier Part Supplier Key');
+                $_parent             = get_object($state['parent'], $state['parent_key']);
+                $state['_parent']    = $_parent;
+                $state['section']    = 'production_part';
+
+
+            }
+        }
+        //  print_r($state);
+
         if (empty($store) and !empty($state['_parent']) and is_numeric($state['_parent']->get('Store Key'))) {
             $store = get_object('Store', $state['_parent']->get('Store Key'));
         }
-
 
         if (!$_object->id and $modules[$state['module']]['sections'][$state['section']]['type'] == 'object') {
 
@@ -491,6 +588,8 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                     $state['tab']     = 'supplier.history';
 
                 }
+
+
             } elseif ($state['object'] == 'invoice') {
                 $_object          = get_object('invoice_deleted', $state['key']);
                 $state['_object'] = $_object;
@@ -814,7 +913,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                 $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $web_location);
             } else {
                 $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '');
-               // $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $state['module'].' * '.$state['section']);
+                // $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $state['module'].' * '.$state['section']);
             }
 
         }
@@ -1101,7 +1200,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                 break;
             default:
                 $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '');
-               // $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $state['module'].' '.$state['section']);
+            // $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $state['module'].' '.$state['section']);
 
         }
 
@@ -1278,7 +1377,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'products_special_categories':
             include_once 'showcase/products_special_categories.show.php';
-            $html = get_products_special_categories_showcase(
+            $html         = get_products_special_categories_showcase(
                 $data, $smarty, $user, $db
             );
             $title        = _("Product's categories").' '.$data['store']->get('Code');
@@ -1287,13 +1386,13 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         case 'account':
             if ($data['module'] == 'products_server') {
                 include_once 'showcase/stores.show.php';
-                $html = get_stores_showcase($data, $smarty, $user, $db);
+                $html         = get_stores_showcase($data, $smarty, $user, $db);
                 $title        = _('Stores');
                 $web_location = '<i class="fal fa-fw fa-store"></i> '.$title;
             } else {
 
                 include_once 'showcase/account.show.php';
-                $html = get_account_showcase($data, $smarty, $user, $db);
+                $html         = get_account_showcase($data, $smarty, $user, $db);
                 $title        = _('Account');
                 $web_location = '<i class="fal fa-fw fa-toolbox"></i> '.$title;
             }
@@ -1321,8 +1420,8 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'supplier_part':
             include_once 'showcase/supplier_part.show.php';
-            $html  = get_supplier_part_showcase($data, $smarty, $user, $db);
-            $title = $data['_object']->get('Reference');
+            $html         = get_supplier_part_showcase($data, $smarty, $user, $db);
+            $title        = $data['_object']->get('Reference');
             $web_location = '<i class="fal fa-fw fa-hand-receiving"></i> '.$title;
 
             break;
@@ -1375,8 +1474,8 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'delivery_note':
             include_once 'showcase/delivery_note.show.php';
-            $html  = get_delivery_note_showcase($data, $smarty, $user, $db);
-            $title = $data['_object']->get('ID');
+            $html         = get_delivery_note_showcase($data, $smarty, $user, $db);
+            $title        = $data['_object']->get('ID');
             $web_location = '<i class="fal fa-fw fa-truck"></i> '.$title;
 
             break;
@@ -1386,15 +1485,13 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             $title = $data['_object']->get('Handle');
 
 
-
-            if($user->id==$data['_object']->id  and preg_match('/profile/',$data['request']) ){
+            if ($user->id == $data['_object']->id and preg_match('/profile/', $data['request'])) {
                 $web_location = '<i class="fal fa-fw fa-user-circle"></i> '._('Profile');
 
-            }else{
+            } else {
                 $web_location = '<i class="fal fa-fw fa-terminal"></i> '.$title;
 
             }
-
 
 
             break;
@@ -1463,46 +1560,46 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             if ($data['_object']->get('Category Scope') == 'Product') {
 
 
-
                 if ($data['_object']->id == $data['store']->get('Store Family Category Key')) {
-                    $html = '';
+                    $html         = '';
                     $title        = _('Families').' '.$data['store']->get('Code');
                     $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
-                } else if ($data['_object']->id == $data['store']->get('Store Department Category Key')) {
-                    $html = '';
-                    $title        = _('Departments').' '.$data['store']->get('Code');
-                    $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
-                } elseif ($data['_object']->get('Root Key') == $data['store']->get('Store Family Category Key')) {
-                    include_once 'showcase/family.show.php';
-                    $html = get_family_showcase($data, $smarty, $user, $db);
-                    $title        = $data['_object']->get('Code').' '.$data['store']->get('Code');
-                    $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
-                } elseif ($data['_object']->get('Root Key') == $data['store']->get('Store Department Category Key')) {
-                    include_once 'showcase/department.show.php';
-                    $html = get_department_showcase($data, $smarty, $user, $db);
-                    $title        = $data['_object']->get('Code').' '.$data['store']->get('Code');
-                    $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
                 } else {
+                    if ($data['_object']->id == $data['store']->get('Store Department Category Key')) {
+                        $html         = '';
+                        $title        = _('Departments').' '.$data['store']->get('Code');
+                        $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
+                    } elseif ($data['_object']->get('Root Key') == $data['store']->get('Store Family Category Key')) {
+                        include_once 'showcase/family.show.php';
+                        $html         = get_family_showcase($data, $smarty, $user, $db);
+                        $title        = $data['_object']->get('Code').' '.$data['store']->get('Code');
+                        $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
+                    } elseif ($data['_object']->get('Root Key') == $data['store']->get('Store Department Category Key')) {
+                        include_once 'showcase/department.show.php';
+                        $html         = get_department_showcase($data, $smarty, $user, $db);
+                        $title        = $data['_object']->get('Code').' '.$data['store']->get('Code');
+                        $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
+                    } else {
 
-                    $html = '';
-                    $title        = $data['_object']->get('Code').' '.$data['store']->get('Code');
-                    $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
+                        $html         = '';
+                        $title        = $data['_object']->get('Code').' '.$data['store']->get('Code');
+                        $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
+                    }
                 }
-
 
 
             } elseif ($data['_object']->get('Category Scope') == 'Part') {
 
                 if ($data['_object']->id == $account->get('Account Part Family Category Key')) {
                     include_once 'showcase/part_families.show.php';
-                    $html = get_part_familes_showcase($data, $smarty, $user, $db);
+                    $html         = get_part_familes_showcase($data, $smarty, $user, $db);
                     $title        = _("Families").' <i class="fal fa-fw fa-box"></i>';
                     $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
 
 
                 } elseif ($data['_object']->get('Root Key') == $account->get('Account Part Family Category Key')) {
                     include_once 'showcase/part_family.show.php';
-                    $html = get_part_family_showcase($data, $smarty, $user, $db);
+                    $html         = get_part_family_showcase($data, $smarty, $user, $db);
                     $title        = $data['_object']->get('Code').' <i class="fal fa-fw fa-box"></i>';
                     $web_location = '<i class="fal fa-fw fa-sitemap"></i> '.$title;
 
@@ -2400,7 +2497,28 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             break;
         case ('production'):
             require_once 'navigation/production.nav.php';
+
             switch ($data['section']) {
+                case ('delivery'):
+                    return get_delivery_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('order'):
+                    return get_purchase_order_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('production_supplier_orders'):
+                    return get_production_supplier_purchase_orders_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('production_supplier_deliveries'):
+                    return get_production_supplier_deliveries_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
                 case ('dashboard'):
                     return get_dashboard_navigation(
                         $data, $smarty, $user, $db, $account
@@ -2463,6 +2581,15 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('material'):
                     return get_material_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                case ('production_part.new'):
+                    return get_new_production_part_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('upload'):
+                    return get_upload_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
@@ -4130,6 +4257,88 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
             }
         }
+        elseif ($data['module'] == 'production') {
+            $_content['tabs']['supplier.delivery.items_done']['class'] = 'hide';
+            $_content['tabs']['supplier.delivery.costing']['class']    = 'hide';
+
+            $_content['tabs']['supplier.delivery.items_mismatch']['class'] = 'hide';
+            $_content['tabs']['supplier.delivery.items']['class']          = '';
+
+            switch ($data['_object']->get('Supplier Delivery State')) {
+
+
+                //'InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked'
+
+                case 'Costing':
+
+
+                    $_content['tabs']['supplier.delivery.costing']['class'] = '';
+                    $_content['tabs']['supplier.delivery.items']['class']   = 'hide';
+                    if ($data['tab'] == 'supplier.delivery.items' || $data['tab'] == 'supplier.delivery.items_done') {
+                        $data['tab'] = 'supplier.delivery.costing';
+
+                        $_content['tabs']['supplier.delivery.costing']['selected'] = true;
+                    }
+
+                    $_content['tabs']['supplier.delivery.items_mismatch']['class'] = '';
+
+
+                    break;
+                case 'InvoiceChecked':
+
+                    $_content['tabs']['supplier.delivery.items_done']['class'] = '';
+
+                    $_content['tabs']['supplier.delivery.costing']['class'] = 'hide';
+                    $_content['tabs']['supplier.delivery.items']['class']   = 'hide';
+                    if ($data['tab'] == 'supplier.delivery.costing' || $data['tab'] == 'supplier.delivery.items') {
+                        $data['tab'] = 'supplier.delivery.items_done';
+
+                        $_content['tabs']['supplier.delivery.items_done']['selected'] = true;
+                    }
+                    $_content['tabs']['supplier.delivery.items_mismatch']['class'] = '';
+
+                    break;
+                case 'Received':
+
+                    if ($data['tab'] == 'supplier.delivery.costing' || $data['tab'] == 'supplier.delivery.items_done') {
+                        $data['tab'] = 'supplier.delivery.items';
+
+                        $_content['tabs']['supplier.delivery.items']['selected'] = true;
+
+                    }
+
+                    if ($data['_object']->get('Supplier Delivery Number Received and Checked Items') > 0) {
+                        $_content['tabs']['supplier.delivery.items_mismatch']['class'] = '';
+
+                    }
+
+                    break;
+
+                case 'Placed':
+                case 'Checked':
+
+                    if ($data['tab'] == 'supplier.delivery.costing' || $data['tab'] == 'supplier.delivery.items_done') {
+                        $data['tab'] = 'supplier.delivery.items';
+
+                        $_content['tabs']['supplier.delivery.items']['selected'] = true;
+
+                    }
+                    $_content['tabs']['supplier.delivery.items_mismatch']['class'] = '';
+
+                    break;
+                default:
+                    if ($data['tab'] == 'supplier.delivery.costing' || $data['tab'] == 'supplier.delivery.items_done' || $data['tab'] == 'supplier.delivery.items_mismatch') {
+                        $data['tab'] = 'supplier.delivery.items';
+
+                        $_content['tabs']['supplier.delivery.items']['selected'] = true;
+
+                    }
+
+
+                    break;
+
+            }
+        }
     } elseif ($data['section'] == 'webpage') {
 
         if ($data['module'] == 'products') {
@@ -4707,8 +4916,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
             } elseif ($state['section'] == 'refund.new') {
-
-
 
 
                 $branch[] = array(

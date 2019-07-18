@@ -2,12 +2,13 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoD.com>
- Created: 5 July 2016 at 11:22:40 GMT+8, Kuala Lumpur, Malaysia
- Copyright (c) 2015, Inikoo
+ Created: 18-07-2019 16:27:08 MYT, Kuala Lumpur, Malaysia
+ Copyright (c) 2019, Inikoo
 
  Version 3
 
 */
+
 
 
 $group_by = '';
@@ -16,21 +17,10 @@ $wheref   = '';
 $currency = '';
 
 
-
-
-
 $where = 'where true ';
 $table = '`Supplier Delivery Dimension` D';
 
-if ($parameters['parent'] == 'account') {
-    $table = '`Supplier Delivery Dimension` D left join `Supplier Dimension` on (`Supplier Key`=`Supplier Delivery Parent Key`)   ';
-
-    $where = sprintf(
-        'where  `Supplier Delivery Parent`="Supplier" and  `Supplier Production`="No"  '
-    );
-
-
-}elseif ($parameters['parent'] == 'production') {
+if ($parameters['parent'] == 'production') {
     $table = '`Supplier Delivery Dimension` D left join `Supplier Dimension` on (`Supplier Key`=`Supplier Delivery Parent Key`)   ';
 
     $where = sprintf(
@@ -43,14 +33,6 @@ if ($parameters['parent'] == 'account') {
 
     $where = sprintf(
         'where  `Supplier Delivery Parent`="Supplier" and `Supplier Delivery Parent Key`=%d and  `Supplier Production`="Yes"  ', $parameters['parent_key']
-    );
-} elseif ($parameters['parent'] == 'supplier') {
-    $where = sprintf(
-        'where  `Supplier Delivery Parent`="Supplier" and `Supplier Delivery Parent Key`=%d  ', $parameters['parent_key']
-    );
-} elseif ($parameters['parent'] == 'agent') {
-    $where = sprintf(
-        'where  `Supplier Delivery Parent`="Agent" and `Supplier Delivery Parent Key`=%d  ', $parameters['parent_key']
     );
 } elseif ($parameters['parent'] == 'supplier_part') {
 
@@ -104,10 +86,12 @@ if (isset($parameters['elements_type'])) {
                 if ($_value) {
                     $num_elements_checked++;
 
+
+
                     if ($_key == 'InProcess') {
-                        $_elements .= ",'InProcess','Dispatched','Consolidated'";
+                        $_elements .= ",'InProcess','Dispatched','Consolidated','Received'";
                     }if ($_key == 'Placed') {
-                        $_elements .= ",'Placed','Costing'";
+                        $_elements .= ",'Placed','Costing','InvoiceChecked'";
                     } else {
 
                         $_elements .= ",'".addslashes($_key)."'";
@@ -119,7 +103,7 @@ if (isset($parameters['elements_type'])) {
 
             if ($_elements == '') {
                 $where .= ' and false';
-            } elseif ($num_elements_checked < 6) {
+            } elseif ($num_elements_checked < 4) {
 
 
 

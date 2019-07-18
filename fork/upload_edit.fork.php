@@ -24,6 +24,7 @@ function fork_upload_edit($job) {
     include_once 'external_libs/PHPExcel/Classes/PHPExcel/IOFactory.php';
 
 
+
     if (!$_data = get_fork_data($job)) {
         print "error reading fork data\n";
 
@@ -37,6 +38,8 @@ function fork_upload_edit($job) {
     $db                  = $_data['db'];
     $session             = $_data['session'];
 
+
+    print_r($fork_data);
 
     $account = new Account($db);
 
@@ -457,7 +460,6 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
     $editor['Date'] = gmdate('Y-m-d H:i:s');
 
     $parent->editor = $editor;
-
 
     switch ($data['object']) {
 

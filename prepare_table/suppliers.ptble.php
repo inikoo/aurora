@@ -13,94 +13,30 @@
 include_once 'utils/date_functions.php';
 
 $currency   = '';
-$where      = 'where true';
-$table
-            = '`Supplier Dimension` S left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
+$table      = '`Supplier Dimension` S left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
 $group_by   = '';
 $where_type = '';
 
 
-
-if (isset($parameters['awhere']) and $parameters['awhere']) {
-
-    $tmp = preg_replace('/\\\"/', '"', $parameters['awhere']);
-    $tmp = preg_replace('/\\\\\"/', '"', $tmp);
-    $tmp = preg_replace('/\'/', "\'", $tmp);
-
-    $raw_data              = json_decode($tmp, true);
-    $raw_data['store_key'] = $parameters['parent_key'];
-    include_once 'list_functions_supplier.php';
-    list($where, $table, $group_by) = suppliers_awhere($raw_data);
-
-
-}
-elseif ($parameters['parent'] == 'list') {
-
-
-    $sql = sprintf(
-        "SELECT * FROM `List Dimension` WHERE `List Key`=%d", $parameters['parent_key']
-    );
-
-    $res = mysql_query($sql);
-    if ($supplier_list_data = mysql_fetch_assoc($res)) {
-        $parameters['awhere'] = false;
-        if ($supplier_list_data['List Type'] == 'Static') {
-            $table
-                   = '`List Supplier Bridge` CB left join `Supplier Dimension` C  on (CB.`Supplier Key`=S.`Supplier Key`)';
-            $where = sprintf(
-                ' where `List Key`=%d ', $parameters['parent_key']
-            );
-
-        } else {
-
-            $tmp = preg_replace(
-                '/\\\"/', '"', $supplier_list_data['List Metadata']
-            );
-            $tmp = preg_replace('/\\\\\"/', '"', $tmp);
-            $tmp = preg_replace('/\'/', "\'", $tmp);
-
-            $raw_data = json_decode($tmp, true);
-
-            $raw_data['store_key'] = $supplier_list_data['List Parent Key'];
-            include_once 'utils/list_functions_supplier.php';
-
-            list($where, $table, $group_by) = suppliers_awhere($raw_data);
-
-
-        }
-
-    } else {
-        return;
-    }
-
-
-}
-elseif ($parameters['parent'] == 'category') {
+if ($parameters['parent'] == 'category') {
 
 
     $where = sprintf(
-        " where `Subject`='Supplier' and  `Category Key`=%d", $parameters['parent_key']
+        " where  S.`Supplier Production`='No' and  `Subject`='Supplier' and  `Category Key`=%d", $parameters['parent_key']
     );
-    $table
-           = ' `Category Bridge` C left join  `Supplier Dimension` S on (`Subject Key`=`Supplier Key`)  left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
+    $table = ' `Category Bridge` C left join  `Supplier Dimension` S on (`Subject Key`=`Supplier Key`)  left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
 
-}
-elseif ($parameters['parent'] == 'agent') {
+} elseif ($parameters['parent'] == 'agent') {
 
     $where = sprintf(
-        " where `Agent Supplier Agent Key`=%d", $parameters['parent_key']
+        " where  S.`Supplier Production`='No' and   `Agent Supplier Agent Key`=%d", $parameters['parent_key']
     );
-    $table
-           = ' `Agent Supplier Bridge` B left join  `Supplier Dimension` S on (`Agent Supplier Supplier Key`=`Supplier Key`)  left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
-}
-else {
+    $table = ' `Agent Supplier Bridge` B left join  `Supplier Dimension` S on (`Agent Supplier Supplier Key`=`Supplier Key`)  left join `Supplier Data`  D on (S.`Supplier Key`=D.`Supplier Key`)';
+} else {
 
-    $where = sprintf(" where true ");
+    $where = sprintf(" where  S.`Supplier Production`='No'  ");
 
 }
-
-
-
 
 
 if (isset($parameters['elements_type'])) {
@@ -147,9 +83,9 @@ $db_period = get_interval_db_name($parameters['f_period']);
 
 if (in_array(
     $db_period, array(
-    'Total',
-    '3 Year'
-)
+                  'Total',
+                  '3 Year'
+              )
 )) {
 } else {
     $fields_1yb = "`Supplier $db_period Acc 1Yb Invoiced Amount` as sales_1y";
@@ -185,9 +121,9 @@ if ($order == 'code') {
 
     if (in_array(
         $db_period, array(
-        'Total',
-        '3 Year'
-    )
+                      'Total',
+                      '3 Year'
+                  )
     )) {
 
         $order = "`Supplier $db_period Acc Invoiced Amount`";
@@ -195,8 +131,7 @@ if ($order == 'code') {
     } else {
 
 
-        $order
-            = "per $order_direction,`Supplier $db_period Acc Invoiced Amount` $order_direction";
+        $order = "per $order_direction,`Supplier $db_period Acc Invoiced Amount` $order_direction";
 
 
         $order_direction = '';
@@ -229,17 +164,13 @@ if ($order == 'code') {
 } elseif ($order == 'profit') {
     $order = "`Supplier $db_period Acc Profit`";
 } elseif ($order == 'delta_sales_year0') {
-    $order
-        = "(-1*(`Supplier Year To Day Acc Invoiced Amount`-`Supplier Year To Day Acc 1Yb Invoiced Amount`)/`Supplier Year To Day Acc 1Yb Invoiced Amount`)";
+    $order = "(-1*(`Supplier Year To Day Acc Invoiced Amount`-`Supplier Year To Day Acc 1Yb Invoiced Amount`)/`Supplier Year To Day Acc 1Yb Invoiced Amount`)";
 } elseif ($order == 'delta_sales_year1') {
-    $order
-        = "(-1*(`Supplier 2 Year Ago Invoiced Amount`-`Supplier 1 Year Ago Invoiced Amount`)/`Supplier 2 Year Ago Invoiced Amount`)";
+    $order = "(-1*(`Supplier 2 Year Ago Invoiced Amount`-`Supplier 1 Year Ago Invoiced Amount`)/`Supplier 2 Year Ago Invoiced Amount`)";
 } elseif ($order == 'delta_sales_year2') {
-    $order
-        = "(-1*(`Supplier 3 Year Ago Invoiced Amount`-`Supplier 2 Year Ago Invoiced Amount`)/`Supplier 3 Year Ago Invoiced Amount`)";
+    $order = "(-1*(`Supplier 3 Year Ago Invoiced Amount`-`Supplier 2 Year Ago Invoiced Amount`)/`Supplier 3 Year Ago Invoiced Amount`)";
 } elseif ($order == 'delta_sales_year3') {
-    $order
-        = "(-1*(`Supplier 4 Year Ago Invoiced Amount`-`Supplier 3 Year Ago Invoiced Amount`)/`Supplier 4 Year Ago Invoiced Amount`)";
+    $order = "(-1*(`Supplier 4 Year Ago Invoiced Amount`-`Supplier 3 Year Ago Invoiced Amount`)/`Supplier 4 Year Ago Invoiced Amount`)";
 } elseif ($order == 'sales_year1') {
     $order = "`Supplier 1 Year Ago Invoiced Amount`";
 } elseif ($order == 'sales_year2') {
@@ -251,17 +182,13 @@ if ($order == 'code') {
 } elseif ($order == 'sales_year0') {
     $order = "`Supplier Year To Day Acc Invoiced Amount`";
 } elseif ($order == 'delta_sales_quarter0') {
-    $order
-        = "(-1*(`Supplier Quarter To Day Acc Invoiced Amount`-`Supplier Quarter To Day Acc 1Yb Invoiced Amount`)/`Supplier Quarter To Day Acc 1Yb Invoiced Amount`)";
+    $order = "(-1*(`Supplier Quarter To Day Acc Invoiced Amount`-`Supplier Quarter To Day Acc 1Yb Invoiced Amount`)/`Supplier Quarter To Day Acc 1Yb Invoiced Amount`)";
 } elseif ($order == 'delta_sales_quarter1') {
-    $order
-        = "(-1*(`Supplier 2 Quarter Ago Invoiced Amount`-`Supplier 1 Quarter Ago Invoiced Amount`)/`Supplier 2 Quarter Ago Invoiced Amount`)";
+    $order = "(-1*(`Supplier 2 Quarter Ago Invoiced Amount`-`Supplier 1 Quarter Ago Invoiced Amount`)/`Supplier 2 Quarter Ago Invoiced Amount`)";
 } elseif ($order == 'delta_sales_quarter2') {
-    $order
-        = "(-1*(`Supplier 3 Quarter Ago Invoiced Amount`-`Supplier 2 Quarter Ago Invoiced Amount`)/`Supplier 3 Quarter Ago Invoiced Amount`)";
+    $order = "(-1*(`Supplier 3 Quarter Ago Invoiced Amount`-`Supplier 2 Quarter Ago Invoiced Amount`)/`Supplier 3 Quarter Ago Invoiced Amount`)";
 } elseif ($order == 'delta_sales_quarter3') {
-    $order
-        = "(-1*(`Supplier 4 Quarter Ago Invoiced Amount`-`Supplier 3 Quarter Ago Invoiced Amount`)/`Supplier 4 Quarter Ago Invoiced Amount`)";
+    $order = "(-1*(`Supplier 4 Quarter Ago Invoiced Amount`-`Supplier 3 Quarter Ago Invoiced Amount`)/`Supplier 4 Quarter Ago Invoiced Amount`)";
 } elseif ($order == 'sales_quarter1') {
     $order = "`Supplier 1 Quarter Ago Invoiced Amount`";
 } elseif ($order == 'sales_quarter2') {
@@ -276,15 +203,10 @@ if ($order == 'code') {
     $order = "S.`Supplier Key`";
 }
 
-$sql_totals
-    = "select count(Distinct S.`Supplier Key`) as num from $table  $where  $where_type";
+$sql_totals = "select count(Distinct S.`Supplier Key`) as num from $table  $where  $where_type";
 
 
-
-
-
-$fields
-    = "
+$fields = "
 S.`Supplier Key`,`Supplier Code`,`Supplier Name`,`Supplier Number Active Parts`,`Supplier Nickname`,
 `Supplier Location`,`Supplier Main Plain Email`,`Supplier Preferred Contact Number`,`Supplier Preferred Contact Number Formatted Number`,`Supplier Main Contact Name`,`Supplier Company Name`,
 `Supplier Number Parts`,`Supplier Number Surplus Parts`,`Supplier Number Optimal Parts`,`Supplier Number Low Parts`,`Supplier Number Critical Parts`,`Supplier Number Critical Parts`,`Supplier Number Out Of Stock Parts`,
@@ -303,4 +225,4 @@ S.`Supplier Key`,`Supplier Code`,`Supplier Name`,`Supplier Number Active Parts`,
 `Supplier 1 Year Ago Invoiced Amount`,`Supplier 2 Year Ago Invoiced Amount`,`Supplier 3 Year Ago Invoiced Amount`,`Supplier 4 Year Ago Invoiced Amount`,
 */
 
-?>
+

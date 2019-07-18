@@ -51,7 +51,7 @@ class PurchaseOrder extends DB_Table {
 
         $data['Purchase Order Creation Date']     = gmdate('Y-m-d H:i:s');
         $data['Purchase Order Last Updated Date'] = gmdate('Y-m-d H:i:s');
-        $data['Purchase Order Metadata'] = '{}';
+        $data['Purchase Order Metadata']          = '{}';
         //$data['Purchase Order Public ID']         = $this->get_next_public_id($parent);
 
 
@@ -240,7 +240,6 @@ class PurchaseOrder extends DB_Table {
             $this->id = $this->data['Purchase Order Key'];
 
 
-
             if ($this->data['Purchase Order Metadata'] == '') {
                 $this->metadata = array();
             } else {
@@ -299,10 +298,13 @@ class PurchaseOrder extends DB_Table {
             'Supplier Delivery Incoterm'            => $this->get('Purchase Order Incoterm'),
             'Supplier Delivery Port of Import'      => $this->get('Purchase Order Port of Import'),
             'Supplier Delivery Port of Export'      => $this->get('Purchase Order Port of Export'),
+            'Supplier Delivery Production'          => $this->get('Purchase Order Production'),
             'Supplier Delivery Purchase Order Key'  => $this->id,
             'Supplier Delivery Currency Exchange'   => currency_conversion(
                 $this->db, $this->get('Purchase Order Currency Code'), $account->get('Account Currency'), '- 15 minutes'
             ),
+
+
             //'Supplier Delivery Warehouse Key'=>$warehouse->id,
             //'Supplier Delivery Warehouse Metadata'=>json_encode($warehouse->data),
 
@@ -469,6 +471,10 @@ class PurchaseOrder extends DB_Table {
 
                 break;
 
+           case 'Submitted Formatted Date':
+               return strftime("%c", strtotime($this->get('Purchase Order Submitted Date')));
+
+                break;
             case 'Estimated Receiving Datetime':
 
 
@@ -742,49 +748,93 @@ class PurchaseOrder extends DB_Table {
 
             case ('State'):
 
-                //'InProcess','SubmittedAgent','Submitted','Editing_Submitted','Inputted','Dispatched','Received','Checked','Placed', 'Costing','InvoiceChecked'
+                if($this->data['Purchase Order Production']=='Yes'){
+                    switch ($this->data['Purchase Order State']) {
+                        case 'InProcess':
+                            return _('Planning');
+                            break;
+                        case 'SubmittedAgent':
+                        case 'Submitted':
+                            return _('Manufacturing');
+                            break;
+                        case 'Editing_Submitted':
+                            return _('Submitted').' ('._('editing').')';
+                            break;
+                        case 'Inputted':
+                            return _('Delivery in process');
+                            break;
+                        case 'Dispatched':
+                            return _('Delivery dispatched');
+                            break;
+                        case 'Received':
+                            return _('Received');
+                            break;
+                        case 'Checked':
+                            return _('Checked');
+                            break;
+                        case 'Placed':
+                            return _('Booked in');
+                            break;
+                        case 'Costing':
+                            return _('Booked in').' ('._('Review costing').')';
+                            break;
+                        case 'InvoiceChecked':
+                            return _('Booked in').' ('._('Costing done').')';
+                            break;
+                        case 'Cancelled':
+                            return _('Cancelled');
+                            break;
 
-                switch ($this->data['Purchase Order State']) {
-                    case 'InProcess':
-                        return _('In Process');
-                        break;
-                    case 'SubmittedAgent':
-                    case 'Submitted':
-                        return _('Submitted');
-                        break;
-                    case 'Editing_Submitted':
-                        return _('Submitted').' ('._('editing').')';
-                        break;
-                    case 'Inputted':
-                        return _('Delivery in process');
-                        break;
-                    case 'Dispatched':
-                        return _('Delivery dispatched');
-                        break;
-                    case 'Received':
-                        return _('Received');
-                        break;
-                    case 'Checked':
-                        return _('Checked');
-                        break;
-                    case 'Placed':
-                        return _('Booked in');
-                        break;
-                    case 'Costing':
-                        return _('Booked in').' ('._('Review costing').')';
-                        break;
-                    case 'InvoiceChecked':
-                        return _('Booked in').' ('._('Costing done').')';
-                        break;
-                    case 'Cancelled':
-                        return _('Cancelled');
-                        break;
+
+                        default:
+                            return $this->data['Purchase Order State'];
+                            break;
+                    }
+                }else{
+                    switch ($this->data['Purchase Order State']) {
+                        case 'InProcess':
+                            return _('In Process');
+                            break;
+                        case 'SubmittedAgent':
+                        case 'Submitted':
+                            return _('Submitted');
+                            break;
+                        case 'Editing_Submitted':
+                            return _('Submitted').' ('._('editing').')';
+                            break;
+                        case 'Inputted':
+                            return _('Delivery in process');
+                            break;
+                        case 'Dispatched':
+                            return _('Delivery dispatched');
+                            break;
+                        case 'Received':
+                            return _('Received');
+                            break;
+                        case 'Checked':
+                            return _('Checked');
+                            break;
+                        case 'Placed':
+                            return _('Booked in');
+                            break;
+                        case 'Costing':
+                            return _('Booked in').' ('._('Review costing').')';
+                            break;
+                        case 'InvoiceChecked':
+                            return _('Booked in').' ('._('Costing done').')';
+                            break;
+                        case 'Cancelled':
+                            return _('Cancelled');
+                            break;
 
 
-                    default:
-                        return $this->data['Purchase Order State'];
-                        break;
+                        default:
+                            return $this->data['Purchase Order State'];
+                            break;
+                    }
                 }
+
+
 
                 break;
 
@@ -907,7 +957,7 @@ class PurchaseOrder extends DB_Table {
 
             case 'payment terms':
 
-             return $this->metadata(preg_replace('/\s/', '_', $key));
+                return $this->metadata(preg_replace('/\s/', '_', $key));
             default:
 
 
@@ -1203,11 +1253,11 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
                     $this->fast_update(
                         array(
-                            'Purchase Order Submitted Date' => '',
-                            'Purchase Order Send Date'      => '',
-                            'Purchase Order Estimated Production Date' =>'',
-                            'Purchase Order Estimated Receiving Date' =>'',
-                            'Purchase Order State'          => $value,
+                            'Purchase Order Submitted Date'            => '',
+                            'Purchase Order Send Date'                 => '',
+                            'Purchase Order Estimated Production Date' => '',
+                            'Purchase Order Estimated Receiving Date'  => '',
+                            'Purchase Order State'                     => $value,
                         )
                     );
 
@@ -1229,9 +1279,8 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                     );
 
 
-
-
-                    $sql = 'select `Purchase Order Transaction Fact Key`,`Supplier Part Unit Cost`,`Supplier Part Unit Extra Cost`,`Purchase Order Ordering Units`,`Supplier Part Historic Key`  from `Purchase Order Transaction Fact` POTF left join `Supplier Part Dimension` SPD  on (POTF.`Supplier Part Key`=SPD.`Supplier Part Key`) where `Purchase Order Key`=?';
+                    $sql =
+                        'select `Purchase Order Transaction Fact Key`,`Supplier Part Unit Cost`,`Supplier Part Unit Extra Cost`,`Purchase Order Ordering Units`,`Supplier Part Historic Key`  from `Purchase Order Transaction Fact` POTF left join `Supplier Part Dimension` SPD  on (POTF.`Supplier Part Key`=SPD.`Supplier Part Key`) where `Purchase Order Key`=?';
 
                     $stmt = $this->db->prepare($sql);
                     $stmt->execute(
@@ -1245,22 +1294,15 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                             `Purchase Order Submitted Units`=NULL ,`Purchase Order Submitted Unit Cost`=NULL,`Purchase Order Submitted Units Per SKO`=NULL,`Purchase Order Submitted SKOs Per Carton`=NULL,`Purchase Order Submitted Unit Extra Cost Percentage`=NULL,
                                               `Purchase Order Net Amount`=%.2f ,`Purchase Order Extra Cost Amount`=%.2f ,`Supplier Part Historic Key`=%d 
                             
-                            WHERE `Purchase Order Transaction Fact Key`=%d ', prepare_mysql($value),
-                            $row['Supplier Part Unit Cost'] * $row['Purchase Order Ordering Units'],
-                            $row['Supplier Part Unit Extra Cost'] * $row['Purchase Order Ordering Units'],
+                            WHERE `Purchase Order Transaction Fact Key`=%d ', prepare_mysql($value), $row['Supplier Part Unit Cost'] * $row['Purchase Order Ordering Units'], $row['Supplier Part Unit Extra Cost'] * $row['Purchase Order Ordering Units'],
                             $row['Supplier Part Historic Key'],
 
                             $row['Purchase Order Transaction Fact Key']
 
-                    );
+                        );
                         $this->db->exec($sql);
 
                     }
-
-
-
-
-
 
 
                     break;

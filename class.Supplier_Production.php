@@ -284,5 +284,3 @@ class Supplier_Production extends Supplier {
 
 }
 
-
-?>

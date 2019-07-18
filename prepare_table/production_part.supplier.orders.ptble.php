@@ -17,48 +17,17 @@ $currency = '';
 
 
 $where = 'where true ';
-$table = '`Purchase Order Dimension`   ';
-
-if ($parameters['parent'] == 'account') {
-    $table = '`Purchase Order Dimension` O left join `Supplier Dimension` on (`Supplier Key`=`Purchase Order Parent Key`)   ';
-
-    $where = sprintf('where `Purchase Order Parent`="Supplier" and  `Supplier Production`="No"');
-
-}elseif ($parameters['parent'] == 'production') {
-    $table = '`Purchase Order Dimension` O left join `Supplier Dimension` on (`Supplier Key`=`Purchase Order Parent Key`)  ';
-
-    $where = sprintf('where `Purchase Order Parent`="Supplier" and `Supplier Production`="Yes"');
-
-} elseif ($parameters['parent'] == 'production_supplier' or $parameters['parent'] == 'supplier_production') {
-    $table = '`Purchase Order Dimension` O left join `Supplier Dimension` on (`Supplier Key`=`Purchase Order Parent Key`)   ';
+$table
+    = ' `Purchase Order Transaction Fact` POTF  left join  `Purchase Order Dimension` O on (POTF.`Purchase Order Key`=O.`Purchase Order Key`)
+	left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
+    left join  `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)';
+if ($parameters['parent'] == 'production_part') {
 
     $where = sprintf(
-        'where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d and `Supplier Production`="yes" ', $parameters['parent_key']
-    );
-
-
-}  elseif ($parameters['parent'] == 'supplier') {
-    $where = sprintf(
-        'where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d  ', $parameters['parent_key']
-    );
-} elseif ($parameters['parent'] == 'agent') {
-    $where = sprintf(
-        'where  `Purchase Order Parent`="Agent" and `Purchase Order Parent Key`=%d  ', $parameters['parent_key']
-    );
-} elseif ($parameters['parent'] == 'supplier_part') {
-    $table
-           = ' `Purchase Order Transaction Fact` POTF  left join  `Purchase Order Dimension` O on (POTF.`Purchase Order Key`=O.`Purchase Order Key`) ';
-    $where = sprintf(
-        'where `Supplier Part Key`=%d  ', $parameters['parent_key']
+        'where POTF.`Supplier Part Key`=%d  ', $parameters['parent_key']
     );
 } elseif ($parameters['parent'] == 'part') {
-    $table
-           = ' `Purchase Order Transaction Fact` POTF  left join  `Purchase Order Dimension` O on (POTF.`Purchase Order Key`=O.`Purchase Order Key`)
-	left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
 
-	 left join  `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)
-
-	 ';
     $where = sprintf('where `Part SKU`=%d  ', $parameters['parent_key']);
 } else {
     exit("unknown parent :".$parameters['parent']." \n");
@@ -118,40 +87,7 @@ if (isset($parameters['elements_type'])) {
                 $where .= ' and `Purchase Order State` in ('.$_elements.')';
             }
             break;
-        case('state_agent'):
-            $_elements            = '';
-            $num_elements_checked = 0;
 
-            foreach (
-                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-            ) {
-                $_value = $_value['selected'];
-                if ($_value) {
-                    $num_elements_checked++;
-
-                    if ($_key == 'InProcessbyClient') {
-                        $_elements .= ",'InProcess'";
-                    } elseif ($_key == 'InProcess') {
-                        $_elements .= ",'Submitted'";
-                    } elseif ($_key == 'Send') {
-                        $_elements .= ",'Dispatched','Received','Checked','Placed'";
-                    } else {
-
-                        $_elements .= ",'".addslashes($_key)."'";
-                    }
-                }
-            }
-
-            if ($_elements == '') {
-                $where .= ' and false';
-            } elseif ($num_elements_checked < 4) {
-
-
-                $_elements = preg_replace('/^,/', '', $_elements);
-
-                $where .= ' and `Purchase Order State` in ('.$_elements.')';
-            }
-            break;
 
     }
 }
@@ -197,7 +133,8 @@ if ($order == 'public_id') {
 
 $fields
     = '`Purchase Order Parent`,`Purchase Order Parent Key`,O.`Purchase Order Key`,`Purchase Order State`,`Purchase Order Public ID`,O.`Purchase Order Last Updated Date`,`Purchase Order Creation Date`,
-`Purchase Order Parent Code`,`Purchase Order Parent Name`,`Purchase Order Total Amount`,`Purchase Order Currency Code`,`Purchase Order Currency Exchange`
+`Purchase Order Parent Code`,`Purchase Order Parent Name`,`Purchase Order Total Amount`,`Purchase Order Currency Code`,`Purchase Order Currency Exchange`,
+`Purchase Order Transaction State`,`Purchase Order Ordering Units`,`Purchase Order Submitted Units`,`Part Units Per Package`,`Purchase Order Submitted Units Per SKO`
 ';
 
 $sql_totals
@@ -205,4 +142,4 @@ $sql_totals
 //print "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
-?>
+

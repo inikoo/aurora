@@ -39,6 +39,9 @@ $parameters = array(
 );
 
 
+
+
+
 if ($state['_object']->get('Supplier Type') != 'Archived') {
 
 
@@ -50,7 +53,7 @@ if ($state['_object']->get('Supplier Type') != 'Archived') {
         'new_item'         => array(
             'icon'      => 'plus',
             'title'     => _("New supplier's part"),
-            'reference' => "supplier/".$state['key']."/part/new"
+            'reference' => "production/".$state['key']."/part/new"
         ),
         'upload_items'     => array(
             'icon'         => 'plus',
@@ -58,7 +61,7 @@ if ($state['_object']->get('Supplier Type') != 'Archived') {
             'template_url' => '/upload_arrangement.php?object=supplier_part&parent=supplier&parent_key='.$state['key'],
 
             'tipo'        => 'edit_objects',
-            'parent'      => $state['object'],
+            'parent'      => 'supplier',
             'parent_key'  => $state['key'],
 
             'object'      => 'supplier_part',
@@ -73,6 +76,8 @@ if ($state['_object']->get('Supplier Type') != 'Archived') {
         ),
 
     );
+
+
     $smarty->assign('edit_table_dialog', $edit_table_dialog);
 
     $objects = 'supplier_part';
@@ -124,4 +129,3 @@ if ($state['_object']->get('Supplier Type') != 'Archived') {
 include 'utils/get_table_html.php';
 
 
-?>

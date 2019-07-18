@@ -1870,6 +1870,19 @@ $tab_defaults = array(
         'elements_type' => array_keys($elements_options['supplier_orders'])[0],
         'elements'      => $elements_options['supplier_orders']
     ),
+    'production_supplier.orders'                   => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+        'elements_type' => array_keys($elements_options['production_orders'])[0],
+        'elements'      => $elements_options['production_orders']
+    ),
     'supplier.deliveries'               => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
@@ -1882,6 +1895,19 @@ $tab_defaults = array(
         'period'        => 'all',
         'elements_type' => array_keys($elements_options['supplier_deliveries'])[0],
         'elements'      => $elements_options['supplier_deliveries']
+    ),
+    'production_supplier.deliveries'               => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+        'elements_type' => array_keys($elements_options['production_deliveries'])[0],
+        'elements'      => $elements_options['production_deliveries']
     ),
     'supplier.order.history'            => array(
         'view'          => 'overview',
@@ -2170,6 +2196,35 @@ $tab_defaults = array(
         'elements_type' => array_keys($elements_options['supplier_deliveries'])[0],
         'elements'      => $elements_options['supplier_deliveries']
     ),
+
+
+    'production_part.supplier.orders'     => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+        'elements_type' => array_keys($elements_options['production_orders'])[0],
+        'elements'      => $elements_options['production_orders']
+    ),
+    'production_part.supplier.deliveries' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+        'elements_type' => array_keys($elements_options['production_deliveries'])[0],
+        'elements'      => $elements_options['production_deliveries']
+    ),
+
 
 
     'agents'                  => array(

@@ -2,8 +2,8 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 12 May 2016 at 12:25:29 GMT+8, Kuala Lumpur, Malaysia
- Copyright (c) 2015, Inikoo
+ Created: 18-07-2019 17:16:49 MYT, Kuala Lumpur, Malaysia
+ Copyright (c) 2019, Inikoo
 
  Version 3
 
@@ -19,12 +19,7 @@ $currency = '';
 $where = 'where true ';
 $table = '`Purchase Order Dimension`   ';
 
-if ($parameters['parent'] == 'account') {
-    $table = '`Purchase Order Dimension` O left join `Supplier Dimension` on (`Supplier Key`=`Purchase Order Parent Key`)   ';
-
-    $where = sprintf('where `Purchase Order Parent`="Supplier" and  `Supplier Production`="No"');
-
-}elseif ($parameters['parent'] == 'production') {
+if ($parameters['parent'] == 'production') {
     $table = '`Purchase Order Dimension` O left join `Supplier Dimension` on (`Supplier Key`=`Purchase Order Parent Key`)  ';
 
     $where = sprintf('where `Purchase Order Parent`="Supplier" and `Supplier Production`="Yes"');
@@ -37,14 +32,6 @@ if ($parameters['parent'] == 'account') {
     );
 
 
-}  elseif ($parameters['parent'] == 'supplier') {
-    $where = sprintf(
-        'where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d  ', $parameters['parent_key']
-    );
-} elseif ($parameters['parent'] == 'agent') {
-    $where = sprintf(
-        'where  `Purchase Order Parent`="Agent" and `Purchase Order Parent Key`=%d  ', $parameters['parent_key']
-    );
 } elseif ($parameters['parent'] == 'supplier_part') {
     $table
            = ' `Purchase Order Transaction Fact` POTF  left join  `Purchase Order Dimension` O on (POTF.`Purchase Order Key`=O.`Purchase Order Key`) ';
@@ -95,46 +82,12 @@ if (isset($parameters['elements_type'])) {
 
                     if ($_key == 'InProcess') {
                         $_elements .= ",'InProcess','Editing_Submitted'";
-                    }elseif ($_key == 'SubmittedInputtedDispatched') {
-                        $_elements .= ",'Submitted','Inputted','Dispatched'";
-                    } elseif ($_key == 'ReceivedChecked') {
-                        $_elements .= ",'Received','Checked'";
-                    }  elseif ($_key == 'Placed') {
-                        $_elements .= ",'Placed','Costing'";
-                    } else {
-
-                        $_elements .= ",'".addslashes($_key)."'";
-                    }
-                }
-            }
-
-            if ($_elements == '') {
-                $where .= ' and false';
-            } elseif ($num_elements_checked < 6) {
-
-
-                $_elements = preg_replace('/^,/', '', $_elements);
-
-                $where .= ' and `Purchase Order State` in ('.$_elements.')';
-            }
-            break;
-        case('state_agent'):
-            $_elements            = '';
-            $num_elements_checked = 0;
-
-            foreach (
-                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-            ) {
-                $_value = $_value['selected'];
-                if ($_value) {
-                    $num_elements_checked++;
-
-                    if ($_key == 'InProcessbyClient') {
-                        $_elements .= ",'InProcess'";
-                    } elseif ($_key == 'InProcess') {
+                    }elseif ($_key == 'Manufacturing') {
                         $_elements .= ",'Submitted'";
-                    } elseif ($_key == 'Send') {
-                        $_elements .= ",'Dispatched','Received','Checked','Placed'";
+                    } elseif ($_key == 'ReceivedChecked') {
+                        $_elements .= ",'Received','Checked','Inputted','Dispatched'";
+                    }  elseif ($_key == 'Placed') {
+                        $_elements .= ",'Placed','Costing','InvoiceChecked'";
                     } else {
 
                         $_elements .= ",'".addslashes($_key)."'";
@@ -144,7 +97,7 @@ if (isset($parameters['elements_type'])) {
 
             if ($_elements == '') {
                 $where .= ' and false';
-            } elseif ($num_elements_checked < 4) {
+            } elseif ($num_elements_checked < 5) {
 
 
                 $_elements = preg_replace('/^,/', '', $_elements);
@@ -152,6 +105,7 @@ if (isset($parameters['elements_type'])) {
                 $where .= ' and `Purchase Order State` in ('.$_elements.')';
             }
             break;
+
 
     }
 }
