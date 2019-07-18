@@ -25,7 +25,7 @@ class SubjectSupplier extends Subject {
         $warehouse = get_object('Warehouse', $_data['warehouse_key']);
 
         $order_data = array(
-            'Purchase Order Parent'              => $this->table_name,
+            'Purchase Order Parent'              => ($this->table_name=='Supplier Production'?'Supplier':$this->table_name),
             'Purchase Order Parent Key'          => $this->id,
             'Purchase Order Parent Name'         => $this->get('Name'),
             'Purchase Order Parent Code'         => $this->get('Code'),
@@ -50,10 +50,10 @@ class SubjectSupplier extends Subject {
             'Purchase Order Warehouse Telephone'      => $warehouse->data['Warehouse Telephone'],
             'Purchase Order Warehouse Email'          => $warehouse->data['Warehouse Email'],
             'Purchase Order Account Number'           => $this->get('Account Number'),
-
-            'Purchase Order Terms and Conditions' => $this->get('Default PO Terms and Conditions'),
-            'Purchase Order Main Buyer Key'       => $staff->id,
-            'Purchase Order Main Buyer Name'      => $staff->get('Staff Name'),
+            'Purchase Order Production'               => ($this->get('Supplier Production') == 'Yes' ? 'Yes' : 'No'),
+            'Purchase Order Terms and Conditions'     => $this->get('Default PO Terms and Conditions'),
+            'Purchase Order Main Buyer Key'           => $staff->id,
+            'Purchase Order Main Buyer Name'          => $staff->get('Staff Name'),
 
             'Purchase Order Metadata' => json_encode(
                 array(

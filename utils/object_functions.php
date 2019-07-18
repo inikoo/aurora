@@ -341,6 +341,7 @@ function get_object($object_name, $key, $load_other_data = false) {
 
         case 'supplier_production':
         case 'supplierproduction':
+        case 'supplier production':
 
             require_once "class.Supplier_Production.php";
             $object = new Supplier_Production($key);

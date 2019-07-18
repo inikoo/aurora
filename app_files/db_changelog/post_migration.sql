@@ -164,3 +164,7 @@ ALTER TABLE `Inventory Spanshot Fact` CHANGE `Dormant 1 Year` `Dormant 1 Year` E
 ALTER TABLE `Inventory Warehouse Spanshot Fact` ADD `Inventory Warehouse Spanshot Fact Dormant Parts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Inventory Warehouse Spanshot Out Other`, ADD `Inventory Warehouse Spanshot Fact Stock Left 1 Year Parts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Inventory Warehouse Spanshot Fact Dormant Parts`;
 ALTER TABLE `Inventory Transaction Fact` CHANGE `Waitng` `Waiting` FLOAT UNSIGNED NOT NULL DEFAULT '0';
 
+update `Purchase Order Dimension` set `Purchase Order Production`='Yes' where `Purchase Order Parent`='Supplier' and `Purchase Order Parent Key`=6472;
+update `Supplier Delivery Dimension` set `Supplier Delivery Production`='Yes' where `Supplier Delivery Parent`='Supplier' and `Supplier Delivery Parent Key`=6472;
+
+update `Supplier Part Dimension` set `Supplier Part Production`='Yes' where   `Supplier Part Supplier Key`=6472;

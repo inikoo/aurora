@@ -71,8 +71,10 @@ function new_purchase_order(warehouse_key) {
 
         //console.log(data)
         if (data.state == 200) {
-            change_view($('#new_purchase_order').attr('parent') + '/' + $('#new_purchase_order').attr('parent_key') + '/order/' + data.new_id, {
-                tab: 'supplier.order.all_supplier_parts'
+
+
+            change_view(data.redirect, {
+                tab: 'supplier.order.items_in_process'
             })
 
         }

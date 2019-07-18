@@ -106,6 +106,9 @@ switch ($tipo) {
             } elseif ($data['state']['module'] == 'suppliers') {
                 search_suppliers($db, $account, $user, $data);
 
+            }elseif ($data['state']['module'] == 'production') {
+                search_production($db, $account, $user, $data);
+
             } elseif ($data['state']['module'] == 'delivery_notes') {
                 if ($data['state']['current_store']) {
                     $data['scope']     = 'store';

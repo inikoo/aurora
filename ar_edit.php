@@ -2345,11 +2345,18 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             $object = $parent->create_order($data['fields_data']);
 
-
             if (!$parent->error and $object->id) {
 
-                $pcard        = '';
+                $pcard = '';
                 $updated_data = array();
+
+                if($object->get('Purchase Order Production')=='Yes'){
+                    $redirect     = sprintf('production/%d/order/%d', $object->get('Purchase Order Parent Key'),$object->id);
+
+                }else{
+                    $redirect     = sprintf('%s/%d/order/%d', strtolower($object->get('Purchase Order Parent')), $object->get('Purchase Order Parent Key'),$object->id);
+
+                }
             }
             break;
         case 'SupplierDelivery':
@@ -3009,8 +3016,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
                 $pcard = '';
-
-
                 $redirect     = sprintf('prospects/%d/template/%d', $data['parent_key'], $object->id);
                 $updated_data = array();
             }
