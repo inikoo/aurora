@@ -17,7 +17,7 @@ $currency = '';
 
 
 $where = 'where true ';
-$table = '`Purchase Order Dimension`   ';
+$table = '`Purchase Order Dimension` O  ';
 
 if ($parameters['parent'] == 'account') {
     $table = '`Purchase Order Dimension` O left join `Supplier Dimension` on (`Supplier Key`=`Purchase Order Parent Key`)   ';

@@ -1638,7 +1638,6 @@ function order_items($_data, $db, $user, $account) {
 
     $purchase_order = get_object('PurchaseOrder', $_data['parameters']['parent_key']);
 
-
     include_once 'prepare_table/init.php';
 
     $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -1674,6 +1673,12 @@ function order_items($_data, $db, $user, $account) {
             } else {
                 $reference .= sprintf(
                     ', <span class="small link" onclick="change_view(\'part/%d\')" ><i class="far fa-box" title="%s"></i> </span>', $data['Part SKU'], _('Part reference is same as supplier product code')
+                );
+            }
+
+            if ($purchase_order->get('Purchase Order Parent') == 'Agent') {
+                $reference .= sprintf(
+                    '<br><span class="small link" onclick="change_view(\'supplier/%d\')" ><i class="fal fa-hand-holding-box" title="%s"></i> %s</span>', $data['Supplier Key'], _('Supplier').': '.$data['Supplier Name'], $data['Supplier Code']
                 );
             }
 
