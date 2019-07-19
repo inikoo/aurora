@@ -4590,7 +4590,14 @@ $modules = array(
                 'icon'      => 'tachometer',
                 'reference' => 'production/%d',
                 'tabs'      => array(
-                    'production.dashboard' => array()
+                    'production.dashboard' => array(
+                        'label' => _('Dashboard'),
+                        'icon'  => 'tachometer-alt'
+                    ),
+                    'production.sales.history' => array(
+                        'label' => _('Sales history'),
+                        'icon'  => 'th-list'
+                    )
                 )
             ),
 

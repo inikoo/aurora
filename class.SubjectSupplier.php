@@ -268,12 +268,20 @@ class SubjectSupplier extends Subject {
         }
 
 
+
+        if ($this->table_name == 'Supplier Production') {
+            $table_name = 'Supplier';
+        } else {
+            $table_name = $this->table_name;
+        }
+        
+
         switch ($key) {
 
 
             case 'Default Incoterm':
 
-                if ($this->get($this->table_name.' '.$key) == '' or $this->get($this->table_name.' '.$key) == 'No') {
+                if ($this->get($table_name.' '.$key) == '' or $this->get($table_name.' '.$key) == 'No') {
                     return array(
                         true,
                         '<span class="discreet italic">'._('Not set').'</span>'
@@ -281,7 +289,7 @@ class SubjectSupplier extends Subject {
                 } else {
                     return array(
                         true,
-                        $this->get($this->table_name.' '.$key)
+                        $this->get($table_name.' '.$key)
                     );
                 }
 
@@ -297,11 +305,7 @@ class SubjectSupplier extends Subject {
             case 'Supplier Number Todo Parts':
             case 'Agent Number Todo Parts':
 
-                if ($this->table_name == 'Supplier Production') {
-                    $table_name = 'Supplier';
-                } else {
-                    $table_name = $this->table_name;
-                }
+            
 
                 return array(
                     true,
@@ -310,7 +314,7 @@ class SubjectSupplier extends Subject {
                 breaak;
             case('Valid From'):
             case('Valid To'):
-                if ($this->get($this->table_name.' '.$key) == '') {
+                if ($this->get($table_name.' '.$key) == '') {
                     return array(
                         true,
                         ''
@@ -320,7 +324,7 @@ class SubjectSupplier extends Subject {
                         true,
                         strftime(
                             "%a, %e %b %y", strtotime(
-                                              $this->get($this->table_name.' '.$key).' +0:00'
+                                              $this->get($table_name.' '.$key).' +0:00'
                                           )
                         )
                     );
@@ -328,13 +332,13 @@ class SubjectSupplier extends Subject {
                 break;
             case ('Default Currency'):
 
-                if ($this->data[$this->table_name.' Default Currency Code'] != '') {
+                if ($this->data[$table_name.' Default Currency Code'] != '') {
 
 
                     $options_currencies = array();
                     $sql                = sprintf(
                         "SELECT `Currency Code`,`Currency Name`,`Currency Symbol` FROM kbase.`Currency Dimension` WHERE `Currency Code`=%s", prepare_mysql(
-                                                                                                                                               $this->data[$this->table_name.' Default Currency Code']
+                                                                                                                                               $this->data[$table_name.' Default Currency Code']
                                                                                                                                            )
                     );
 
@@ -350,7 +354,7 @@ class SubjectSupplier extends Subject {
                         } else {
                             return array(
                                 true,
-                                $this->data[$this->table_name.' Default Currency Code']
+                                $this->data[$table_name.' Default Currency Code']
                             );
                         }
                     } else {
@@ -366,7 +370,7 @@ class SubjectSupplier extends Subject {
 
                 break;
             case 'Average Delivery Days':
-                if ($this->data[$this->table_name.' Average Delivery Days'] == '') {
+                if ($this->data[$table_name.' Average Delivery Days'] == '') {
                     return array(
                         true,
                         ''
@@ -376,7 +380,7 @@ class SubjectSupplier extends Subject {
                 return array(
                     true,
                     number(
-                        $this->data[$this->table_name.' Average Delivery Days']
+                        $this->data[$table_name.' Average Delivery Days']
                     )
                 );
                 break;
@@ -384,7 +388,7 @@ class SubjectSupplier extends Subject {
 
 
                 include_once 'utils/natural_language.php';
-                if ($this->get($this->table_name.' Average Delivery Days') == '') {
+                if ($this->get($table_name.' Average Delivery Days') == '') {
                     return array(
                         true,
                         '<span class="italic very_discreet">'._('Unknown').'</span>'
@@ -394,14 +398,14 @@ class SubjectSupplier extends Subject {
                         true,
                         seconds_to_natural_string(
                             24 * 3600 * $this->get(
-                                $this->table_name.' Average Delivery Days'
+                                $table_name.' Average Delivery Days'
                             )
                         )
                     );
                 }
                 break;
             case 'Average Production Days':
-                if ($this->data[$this->table_name.' Average Production Days'] == '') {
+                if ($this->data[$table_name.' Average Production Days'] == '') {
                     return array(
                         true,
                         ''
@@ -411,7 +415,7 @@ class SubjectSupplier extends Subject {
                 return array(
                     true,
                     number(
-                        $this->data[$this->table_name.' Average Production Days']
+                        $this->data[$table_name.' Average Production Days']
                     )
                 );
                 break;
@@ -419,7 +423,7 @@ class SubjectSupplier extends Subject {
 
 
                 include_once 'utils/natural_language.php';
-                if ($this->get($this->table_name.' Average Production Days') == '') {
+                if ($this->get($table_name.' Average Production Days') == '') {
                     return array(
                         true,
                         '<span class="italic very_discreet">'._('Unknown').'</span>'
@@ -429,7 +433,7 @@ class SubjectSupplier extends Subject {
                         true,
                         seconds_to_natural_string(
                             24 * 3600 * $this->get(
-                                $this->table_name.' Average Production Days'
+                                $table_name.' Average Production Days'
                             )
                         )
                     );
@@ -438,11 +442,11 @@ class SubjectSupplier extends Subject {
 
             case 'Products Origin Country Code':
                 if ($this->get(
-                    $this->table_name.' Products Origin Country Code'
+                    $table_name.' Products Origin Country Code'
                 )) {
                     include_once 'class.Country.php';
                     $country = new Country(
-                        'code', $this->data[$this->table_name.' Products Origin Country Code']
+                        'code', $this->data[$table_name.' Products Origin Country Code']
                     );
 
                     return array(
@@ -468,7 +472,7 @@ class SubjectSupplier extends Subject {
             case('Stock Value'):
 
                 if (!is_numeric(
-                    $this->data[$this->table_name.' Stock Value']
+                    $this->data[$table_name.' Stock Value']
                 )) {
                     return array(
                         true,
@@ -478,7 +482,7 @@ class SubjectSupplier extends Subject {
                     return array(
                         true,
                         money(
-                            $this->data[$this->table_name.' Stock Value']
+                            $this->data[$table_name.' Stock Value']
                         )
                     );
                 }
@@ -490,7 +494,7 @@ class SubjectSupplier extends Subject {
             case('Parent Skip Checking'):
             case('Parent Automatic Placement Location'):
 
-                $field = preg_replace('/^Parent/', $this->table_name, $key);
+                $field = preg_replace('/^Parent/', $table_name, $key);
 
                 return array(
                     true,
@@ -501,11 +505,11 @@ class SubjectSupplier extends Subject {
             case 'Acc Ongoing Intervals Updated':
             case 'Acc Previous Intervals Updated':
 
-                if ($this->data[$this->table_name.' '.$key] == '') {
+                if ($this->data[$table_name.' '.$key] == '') {
                     $value = '';
                 } else {
 
-                    $value = strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($this->data[$this->table_name.' '.$key].' +0:00'));
+                    $value = strftime("%a %e %b %Y %H:%M:%S %Z", strtotime($this->data[$table_name.' '.$key].' +0:00'));
 
                 }
 
@@ -522,7 +526,7 @@ class SubjectSupplier extends Subject {
                     '/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit)$/', $key
                 )) {
 
-                    $field = $this->table_name.' '.$key;
+                    $field = $table_name.' '.$key;
 
                     return array(
                         true,
@@ -535,7 +539,7 @@ class SubjectSupplier extends Subject {
                     '/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Minify$/', $key
                 )) {
 
-                    $field = $this->table_name.' '.preg_replace(
+                    $field = $table_name.' '.preg_replace(
                             '/ Minify$/', '', $key
                         );
 
@@ -565,9 +569,10 @@ class SubjectSupplier extends Subject {
                     '/^(Last|Yesterday|Total|1|10|6|3|4|2|Year To|Quarter To|Month To|Today|Week To).*(Amount|Profit) Soft Minify$/', $key
                 )) {
 
-                    $field = $this->table_name.' '.preg_replace(
-                            '/ Soft Minify$/', '', $key
-                        );
+                    
+                    
+                    
+                    $field = $table_name.' '.preg_replace('/ Soft Minify$/', '', $key);
 
 
                     $suffix          = '';
@@ -588,7 +593,7 @@ class SubjectSupplier extends Subject {
                         '/^(Last|Yesterday|Total|1|10|6|3|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired)$/', $key
                     ) or $key == 'Current Stock') {
 
-                    $field = $this->table_name.' '.$key;
+                    $field = $table_name.' '.$key;
 
                     return array(
                         true,
@@ -601,7 +606,7 @@ class SubjectSupplier extends Subject {
                         '/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired) Minify$/', $key
                     ) or $key == 'Current Stock') {
 
-                    $field = $this->table_name.' '.preg_replace(
+                    $field = $table_name.' '.preg_replace(
                             '/ Minify$/', '', $key
                         );
 
@@ -627,7 +632,7 @@ class SubjectSupplier extends Subject {
                         '/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired) Soft Minify$/', $key
                     ) or $key == 'Current Stock') {
 
-                    $field = $this->table_name.' '.preg_replace(
+                    $field = $table_name.' '.preg_replace(
                             '/ Soft Minify$/', '', $key
                         );
 
