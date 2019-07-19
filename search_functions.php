@@ -548,7 +548,7 @@ function search_suppliers($db, $account, $user, $data) {
 
 
                     $results['P'.$row['Supplier Part Key']] = array(
-                        'label'   => '<i class="fa fa-stop fa-fw "></i> '.highlightkeyword(
+                        'label'   => '<i class="fal fa-hand-holding-box fa-fw "></i> '.highlightkeyword(
                                 sprintf('%s', $row['Supplier Part Reference']), $queries
                             ),
                         'details' => highlightkeyword($row['Supplier Part Description'], $queries),
@@ -1340,19 +1340,29 @@ function search_inventory($db, $account, $user, $data) {
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
 
+
                 if ($row['Part Status'] == 'Not In Use') {
-                    $status = '<i class="fa fa-square fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
+                    $status = '<i class="far fa-box fa-fw padding_right_5 very_discreet" title="'._('Discontinued').'"></i> ';
+                    $label='<span class="discreet">'.$row['Part Reference'].'</span>';
+                    $details='<span class="discreet">'.highlightkeyword($row['Part Package Description'], $queries).'</span> <span class="error">('._('Discontinued').')</span>';
 
                 } elseif ($row['Part Status'] == 'Discontinuing') {
-                    $status = '<i class="fa fa-square fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
+                    $status = '<i class="far fa-box fa-fw padding_right_5 discreet" aria-hidden="true"></i> ';
+                    $label='<span >'.$row['Part Reference'].'</span>';
+                    $details='<span >'.highlightkeyword($row['Part Package Description'], $queries).'</span> <span class="warning">('._('Discontinuing').')</span>';
+
 
                 } else {
-                    $status = '<i class="fa fa-square fa-fw padding_right_5" aria-hidden="true"></i> ';
+                    $status = '<i class="far fa-box fa-fw padding_right_5" aria-hidden="true"></i> ';
+                    $label=highlightkeyword($row['Part Reference'], $queries);
+                    $details=highlightkeyword($row['Part Package Description'], $queries);
+
                 }
 
+
                 $results['P'.$row['Part SKU']] = array(
-                    'label'   => $status.highlightkeyword(sprintf('%s', $row['Part Reference']), $queries),
-                    'details' => highlightkeyword($row['Part Package Description'], $queries),
+                    'label'   => $status.$label,
+                    'details' => $details,
                     'view'    => sprintf('part/%d', $row['Part SKU'])
 
 
@@ -4198,18 +4208,21 @@ function search_parts($db, $account, $data, $response_type = 'echo') {
             foreach ($result as $row) {
 
                 if ($row['Part Status'] == 'Not In Use') {
-                    $status = '<i class="fa fa-square fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
+                    $status = '<i class="far fa-box fa-fw padding_right_5 very_discreet" title="'._('Discontinued').'"></i> ';
+                    $label='<span class="very_discreet">'.$row['Part Package Description'].'</span>';
 
                 } elseif ($row['Part Status'] == 'Discontinuing') {
-                    $status = '<i class="fa fa-square fa-fw padding_right_5 very_discreet" aria-hidden="true"></i> ';
+                    $status = '<i class="far fa-box fa-fw padding_right_5 discreet" aria-hidden="true"></i> ';
+                    $label=highlightkeyword($row['Part Package Description'], $queries);
 
                 } else {
-                    $status = '<i class="fa fa-square fa-fw padding_right_5" aria-hidden="true"></i> ';
+                    $status = '<i class="far fa-box fa-fw padding_right_5" aria-hidden="true"></i> ';
+                    $label=highlightkeyword($row['Part Package Description'], $queries);
                 }
 
                 $results['P'.$row['Part SKU']] = array(
                     'label'     => $status.highlightkeyword(sprintf('%s', $row['Part Reference']), $queries),
-                    'details'   => highlightkeyword($row['Part Package Description'], $queries),
+                    'details'   => $label,
                     'view'      => sprintf('part/%d', $row['Part SKU']),
                     'sku'       => $row['Part SKU'],
                     'reference' => $row['Part Reference']
