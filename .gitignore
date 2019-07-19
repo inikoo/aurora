@@ -29,6 +29,7 @@ art/.DS_Store
 build/
 
 .DS_Store
+.directory
 
 deploy.tgz
 
