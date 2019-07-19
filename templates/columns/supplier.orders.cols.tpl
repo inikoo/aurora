@@ -23,6 +23,17 @@ editable: false,
 cell: Backgrid.HtmlCell.extend({
 })
 },
+
+{
+name: "user",
+label: "{t}Created by{/t}",
+renderable:true,
+sortType: "toggle",
+editable: false,
+cell: Backgrid.HtmlCell.extend({
+})
+},
+
 {
 name: "date",
 label: "{t}Date{/t}",
