@@ -1521,37 +1521,43 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $customer->editor = $editor;
 
 
-            $email_template_type      = get_object('Email_Template_Type', 'Delivery Confirmation|'.$order->get('Order Store Key'), 'code_store');
-            $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
-            $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
+
+            if($order->get('Order For Collection')=='No'){
+
+                $email_template_type      = get_object('Email_Template_Type', 'Delivery Confirmation|'.$order->get('Order Store Key'), 'code_store');
+                $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
+                $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
 
 
-            $send_data = array(
-                'Email_Template_Type' => $email_template_type,
-                'Email_Template'      => $email_template,
-                'Order'               => $order,
-                'Delivery_Note'       => $delivery_note,
+                $send_data = array(
+                    'Email_Template_Type' => $email_template_type,
+                    'Email_Template'      => $email_template,
+                    'Order'               => $order,
+                    'Delivery_Note'       => $delivery_note,
 
-            );
-
-
-            $published_email_template->send($customer, $send_data);
-
-
-            if ($published_email_template->sent) {
-
-
-                $stmt = $db->prepare("INSERT INTO `Order Sent Email Bridge` (`Order Sent Email Order Key`,`Order Sent Email Email Tracking Key`,`Order Sent Email Type`) VALUES (?, ?, ?)");
-                $stmt->execute(
-                    array(
-                        $order->id,
-                        $published_email_template->email_tracking->id,
-                        'Dispatch Notification'
-                    )
                 );
 
 
+                $published_email_template->send($customer, $send_data);
+
+
+                if ($published_email_template->sent) {
+
+
+                    $stmt = $db->prepare("INSERT INTO `Order Sent Email Bridge` (`Order Sent Email Order Key`,`Order Sent Email Email Tracking Key`,`Order Sent Email Type`) VALUES (?, ?, ?)");
+                    $stmt->execute(
+                        array(
+                            $order->id,
+                            $published_email_template->email_tracking->id,
+                            'Dispatch Notification'
+                        )
+                    );
+
+
+                }
             }
+
+
 
 
             break;
