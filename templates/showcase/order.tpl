@@ -221,12 +221,14 @@
             <div class="data_field  " style="padding:10px 0px 20px 0px;">
                 <div style="float:left;padding-bottom:20px;padding-right:20px" class="Delivery_Address">
                     <div style="margin-bottom:10px">
-                        <span class="{if $order->get('Order For Collection')=='Yes'}hide{/if}"><i class="   fa fa-truck fa-flip-horizontal button" aria-hidden="true""></i>{t}Deliver to{/t}</span>
-                        <span class="{if $order->get('Order For Collection')=='No'}hide{/if}"><i class="   far fa-hand-rock fa-flip-horizontal button" aria-hidden="true""></i>{t}Collection{/t}</span>
+                        <span class="deliver_to_label {if $order->get('Order For Collection')=='Yes'}hide{/if}"><i class="   fa fa-truck fa-flip-horizontal button" aria-hidden="true""></i>{t}Deliver to{/t}</span>
+                        <span class="for_collection_label {if $order->get('Order For Collection')=='No'}hide{/if}"><i class="   far fa-hand-holding-box  button" aria-hidden="true""></i>{t}Collection{/t}</span>
 
                     </div>
 
-                    <div class="small Order_Delivery_Address " style="max-width: 140px;">{$order->get('Order Delivery Address Formatted')}</div>
+                    <div class="small Order_Delivery_Address {if $order->get('Order For Collection')=='Yes'}hide{/if} "   style="max-width: 140px;">
+                        {$order->get('Order Delivery Address Formatted')}
+                    </div>
                 </div>
                 <div style="float:right;padding-bottom:20px;" class="Billing_Address">
                     <div style="margin-bottom:10px"><i class="fa fa-dollar-sign button" aria-hidden="true""></i>{t}Billed to{/t}</div>

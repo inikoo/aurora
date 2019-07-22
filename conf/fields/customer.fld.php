@@ -261,13 +261,9 @@ if ($new) {
                     'id'              => 'Customer_Delivery_Address',
                     'edit'            => ($_edit ? 'address' : ''),
                     'countries'       => $countries,
-                    'value'           => htmlspecialchars(
-                        $object->get('Customer Delivery Address')
-                    ),
+                    'value'           => htmlspecialchars($object->get('Customer Delivery Address')),
                     'formatted_value' => $object->get('Delivery Address'),
-                    'label'           => ucfirst(
-                        $object->get_field_label('Customer Delivery Address')
-                    ),
+                    'label'           => ucfirst($object->get_field_label('Customer Delivery Address')),
                     'invalid_msg'     => get_invalid_message('address'),
                     'required'        => false
                 ),
@@ -302,7 +298,8 @@ if ($new) {
     );
 
 
-} else {
+}
+else {
 
 
     $customer_fields = array();
@@ -846,4 +843,4 @@ if ($new) {
 }
 
 
-?>
+
