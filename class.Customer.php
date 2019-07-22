@@ -442,10 +442,10 @@ class Customer extends Subject {
             case 'Invoiced Net Amount':
 
 
-            if (!isset($this->store)) {
-                $store       = get_object('Store', $this->data['Customer Store Key']);
-                $this->store = $store;
-            }
+                if (!isset($this->store)) {
+                    $store       = get_object('Store', $this->data['Customer Store Key']);
+                    $this->store = $store;
+                }
 
 
                 return money(
@@ -460,8 +460,7 @@ class Customer extends Subject {
                 }
 
                 return money(
-                    $this->data['Customer Invoiced Net Amount']+ $this->data['Customer Refunded Net Amount']
-                    , $this->store->get('Store Currency Code')
+                    $this->data['Customer Invoiced Net Amount'] + $this->data['Customer Refunded Net Amount'], $this->store->get('Store Currency Code')
                 );
                 break;
             case('Total Net Per Order'):
@@ -894,7 +893,7 @@ class Customer extends Subject {
         $order_data['Order Invoice Address Locality']             = $this->data['Customer Invoice Address Locality'];
         $order_data['Order Invoice Address Administrative Area']  = $this->data['Customer Invoice Address Administrative Area'];
         $order_data['Order Invoice Address Country 2 Alpha Code'] = $this->data['Customer Invoice Address Country 2 Alpha Code'];
-        $order_data['Order Invoice Address Checksum']             = $this->data['Customer Invoice Address Recipient'];
+        $order_data['Order Invoice Address Checksum']             = $this->data['Customer Invoice Address Checksum'];
         $order_data['Order Invoice Address Formatted']            = $this->data['Customer Invoice Address Formatted'];
         $order_data['Order Invoice Address Postal Label']         = $this->data['Customer Invoice Address Postal Label'];
 
@@ -909,7 +908,7 @@ class Customer extends Subject {
         $order_data['Order Delivery Address Locality']             = $this->data['Customer Delivery Address Locality'];
         $order_data['Order Delivery Address Administrative Area']  = $this->data['Customer Delivery Address Administrative Area'];
         $order_data['Order Delivery Address Country 2 Alpha Code'] = $this->data['Customer Delivery Address Country 2 Alpha Code'];
-        $order_data['Order Delivery Address Checksum']             = $this->data['Customer Delivery Address Recipient'];
+        $order_data['Order Delivery Address Checksum']             = $this->data['Customer Delivery Address Checksum'];
         $order_data['Order Delivery Address Formatted']            = $this->data['Customer Delivery Address Formatted'];
         $order_data['Order Delivery Address Postal Label']         = $this->data['Customer Delivery Address Postal Label'];
 
@@ -1334,9 +1333,11 @@ class Customer extends Subject {
 
                 if (preg_match('/^Customer Other Delivery Address (\d+)/i', $field, $matches)) {
 
+
+
                     $customer_delivery_address_key = $matches[1];
                     $this->update_other_delivery_address(
-                        $customer_delivery_address_key, $field, json_decode($value, true), $options
+                        $customer_delivery_address_key, json_decode($value, true)
                     );
 
                     return;
@@ -1788,9 +1789,9 @@ class Customer extends Subject {
 
     }
 
-    function update_other_delivery_address($customer_delivery_address_key, $field, $fields, $options = '') {
+    function update_other_delivery_address($customer_delivery_address_key, $fields) {
 
-
+/*
         $sql = sprintf(
             "SELECT * FROM `Customer Other Delivery Address Dimension` WHERE `Customer Other Delivery Address Key`=%d ", $customer_delivery_address_key
         );
@@ -1799,19 +1800,16 @@ class Customer extends Subject {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
+*/
 
-        //print_r($address_data);
 
-
-        $address_fields           = array();
+        //$address_fields           = array();
         $updated_fields_number    = 0;
-        $updated_recipient_fields = false;
+        //$updated_recipient_fields = false;
         $updated_address_fields   = false;
+//
         foreach ($fields as $field => $value) {
 
 
@@ -1830,11 +1828,14 @@ class Customer extends Subject {
 
 
                 $updated_fields_number++;
+                /*
+
                 if ($field == 'Address Recipient' or $field == 'Address Organization') {
                     $updated_recipient_fields = true;
                 } else {
                     $updated_address_fields = true;
                 }
+                */
             }
         }
 
@@ -1844,22 +1845,29 @@ class Customer extends Subject {
         }
 
 
-        if ($this->updated or true) {
+        if ($this->updated) {
 
             include_once 'utils/get_addressing.php';
 
 
-            $address_fields = $this->get_other_delivery_address_fields(
-                $customer_delivery_address_key
-            );
+            $address_fields = $this->get_other_delivery_address_fields($customer_delivery_address_key);
+
+            // replace null to empty string do not remove
+
+            array_walk_recursive($address_fields,function(&$item){$item=strval($item);});
 
 
             $new_checksum = md5(json_encode($address_fields));
+
+
 
             $sql = sprintf(
                 'UPDATE `Customer Other Delivery Address Dimension` SET `Customer Other Delivery Address Checksum`=%s WHERE `Customer Other Delivery Address Key`=%d ', prepare_mysql($new_checksum, true), $customer_delivery_address_key
             );
             $this->db->exec($sql);
+
+            //print $sql;
+
 
             $store = get_object('Store', $this->get('Store Key'));
 
@@ -1964,9 +1972,73 @@ class Customer extends Subject {
         );
     }
 
+
+    function get_addresses_data() {
+
+
+        $address_data=array();
+
+
+        $address_data[$this->get('Customer Invoice Address Checksum')]=array(
+            'type'=>'invoice',
+            'formatted_value'=>preg_replace('/<br>/','',$this->get('Customer Invoice Address Formatted')),
+            'label'=>_('Current invoice address'),
+            'other_delivery_address_key'=>''
+
+
+        );
+
+        if($this->get('Customer Invoice Address Checksum')!=$this->get('Customer Delivery Address Checksum')){
+            $address_data[$this->get('Customer Delivery Address Checksum')]=array(
+                'type'=>'delivery',
+                'formatted_value'=>preg_replace('/<br>/','',$this->get('Customer Invoice Address Formatted')),
+                'label'=>_('Current delivery address'),
+                'other_delivery_address_key'=>''
+
+            );
+
+        }
+
+
+
+        $sql = sprintf(
+            "SELECT `Customer Other Delivery Address Checksum`,`Customer Other Delivery Address Key`,`Customer Other Delivery Address Formatted`,`Customer Other Delivery Address Label` FROM `Customer Other Delivery Address Dimension` WHERE `Customer Other Delivery Address Customer Key`=%d ORDER BY `Customer Other Delivery Address Key`",
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+
+
+
+
+            foreach ($result as $row) {
+
+
+                if(!array_key_exists($row['Customer Other Delivery Address Checksum'],$address_data)){
+                    $address_data[$row['Customer Other Delivery Address Checksum']] = array(
+                        'type'=>'other_delivery',
+                        'formatted_value' => $row['Customer Other Delivery Address Formatted'],
+                        'label'           => $row['Customer Other Delivery Address Label'],
+                        'other_delivery_address_key'=>$row['Customer Other Delivery Address Key']
+
+                    );
+                }
+
+
+            }
+
+        }
+
+
+        return $address_data;
+
+
+    }
+
     function get_other_delivery_addresses_data() {
         $sql = sprintf(
-            "SELECT `Customer Other Delivery Address Key`,`Customer Other Delivery Address Formatted`,`Customer Other Delivery Address Label` FROM `Customer Other Delivery Address Dimension` WHERE `Customer Other Delivery Address Customer Key`=%d ORDER BY `Customer Other Delivery Address Key`",
+            "SELECT `Customer Other Delivery Address Checksum`,`Customer Other Delivery Address Key`,`Customer Other Delivery Address Formatted`,`Customer Other Delivery Address Label` FROM `Customer Other Delivery Address Dimension` WHERE `Customer Other Delivery Address Customer Key`=%d ORDER BY `Customer Other Delivery Address Key`",
             $this->id
         );
 
@@ -1979,6 +2051,8 @@ class Customer extends Subject {
                     'value'           => $this->get('Customer Other Delivery Address '.$row['Customer Other Delivery Address Key']),
                     'formatted_value' => $row['Customer Other Delivery Address Formatted'],
                     'label'           => $row['Customer Other Delivery Address Label'],
+                    'checksum'        => $row['Customer Other Delivery Address Checksum'],
+
                 );
             }
 
@@ -3928,7 +4002,7 @@ class Customer extends Subject {
             }
 
             $date = gmdate('Y-m-d H:i:s');
-            $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+            $sql  = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
             $this->db->prepare($sql)->execute(
                 [
                     $date,

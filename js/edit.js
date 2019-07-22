@@ -925,11 +925,11 @@ function save_field(object, key, field) {
 
     var metadata = {};
 
-    //console.log(type)
+    console.log(type)
 
     if (type == 'date') {
         value = value + ' ' + $('#' + field + '_time').val()
-    } else if (type == 'address' || type == 'new_delivery_address') {
+    } else if (type == 'address' || type == 'new_delivery_address'  || type == 'other_delivery_address') {
         value = get_address_value(field)
     } else if (type == 'password' || type == 'password_with_confirmation' || type == 'password_with_confirmation_paranoid' || type == 'pin' || type == 'pin_with_confirmation' || type == 'pin_with_confirmation_paranoid') {
         value = sha256_digest(value)
@@ -1475,6 +1475,8 @@ function update_field(data) {
 
     }
 
+
+    console.log(type)
 
     if (data.value != undefined) {
 

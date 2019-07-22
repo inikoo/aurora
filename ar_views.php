@@ -471,7 +471,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
         }
 
 
-        if($state['module']!='production') {
+        if ($state['module'] != 'production') {
 
             if ($state['object'] == 'supplier' and $_object->get('Supplier Production') == 'Yes') {
 
@@ -4137,7 +4137,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
             }
 
 
-            if ($data['_object']->get('State Index') > 40 or $data['_object']->get('State Index') < 0) {
+            $order_state_index=$data['_object']->get('State Index');
+            if ( $order_state_index> 40 or $order_state_index < 0) {
 
                 $_content['tabs']['order.all_products']['class'] = 'hide';
 
@@ -4146,11 +4147,26 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                     $data['tab'] = 'order.items';
                 }
 
+            } elseif ($order_state_index == 10) {
+
+
+
+
+                $_content['tabs']['order.details']['class'] = 'hide';
+                $_content['tabs']['order.delivery_notes']['class'] = 'hide';
+                $_content['tabs']['order.invoices']['class'] = 'hide';
+                $_content['tabs']['order.sent_emails']['class'] = 'hide';
+
+
+                if ($data['tab'] == 'order.details' or  $data['tab'] == 'order.delivery_notes' or $data['tab'] == 'order.invoices' or $data['tab'] == 'order.sent_emails'   ) {
+                    $_content['tabs']['order.items']['selected'] = true;
+
+                    $data['tab'] = 'order.items';
+                }
             } else {
                 $_content['tabs']['order.all_products']['class'] = '';
-
-
             }
+
 
         } else {
             if ($data['_object']->get('Purchase Order State') == 'InProcess') {
@@ -4256,8 +4272,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                     break;
 
             }
-        }
-        elseif ($data['module'] == 'production') {
+        } elseif ($data['module'] == 'production') {
             $_content['tabs']['supplier.delivery.items_done']['class'] = 'hide';
             $_content['tabs']['supplier.delivery.costing']['class']    = 'hide';
 
