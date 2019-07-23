@@ -247,8 +247,6 @@ $smarty->assign(
 
 
 //$supplier->update_supplier_paid_ordered_parts();
-
-
 //$supplier->update_supplier_part_locations_to_replenish();
 
 
@@ -257,9 +255,6 @@ $smarty->assign('supplier_production',$supplier);
 $html = $smarty->fetch('production.kpi.tpl');
 
 
-
-
-//print_r($supplier);
 
 //$supplier->update_locations_with_errors();
 //$supplier->update_paid_ordered_parts();
