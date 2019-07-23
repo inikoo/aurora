@@ -170,6 +170,7 @@ if($store->get('Store Can Collect')=='Yes'){
 }
 
 $smarty->assign('can_collect', $store->get('Store Can Collect'));
+$smarty->assign('order', $object);
 
 
 $other_delivery_addresses_fields_directory = $smarty->fetch('order_delivery_addresses_directory.tpl');

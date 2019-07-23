@@ -14,7 +14,7 @@ include_once 'utils/invalid_messages.php';
 include_once 'conf/object_fields.php';
 
 
-if (!$user->can_view('orders') or !in_array($state['store']->id, $user->stores)  or $state['_object']->get('State Index')<=10  )      {
+if (!$user->can_view('orders') or !in_array($state['store']->id, $user->stores) or $state['_object']->get('State Index') <= 10) {
     $html = '';
 } else {
 
@@ -24,14 +24,16 @@ if (!$user->can_view('orders') or !in_array($state['store']->id, $user->stores) 
     $object_fields = get_object_fields($state['_object'], $db, $user, $smarty);
 
     $smarty->assign('object', $state['_object']);
+    $smarty->assign('order', $state['_object']);
+
     $smarty->assign('key', $state['key']);
 
     $smarty->assign('object_fields', $object_fields);
     $smarty->assign('state', $state);
 
 
-$customer=get_object('Customer',$state['_object']->get('Order Customer Key'));
-   
+    $customer = get_object('Customer', $state['_object']->get('Order Customer Key'));
+
 
     $smarty->assign('default_country', $state['store']->get('Store Home Country Code 2 Alpha'));
     $smarty->assign(
@@ -57,12 +59,8 @@ $customer=get_object('Customer',$state['_object']->get('Order Customer Key'));
                                     )
                                 )
     );
-    
-    
-    
+
 
     $html = $smarty->fetch('edit_object.tpl');
 }
 
-
-?>
