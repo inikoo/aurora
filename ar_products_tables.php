@@ -1583,13 +1583,18 @@ function shipping_zones($_data, $db, $user) {
 
 
 
-
             $record_data[] = array(
                 'id'          => (integer)$data['Shipping Zone Key'],
                 'code'        => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone/%d\')" >%s</span>', $data['Shipping Zone Store Key'], $data['Shipping Zone Key'], $data['Shipping Zone Code']),
                 'name'        => sprintf('<span >%s</span>', $data['Shipping Zone Name']),
                 'price'       => $price,
                 'territories' => $territories,
+                'customers'  => number($data['Shipping Zone Number Customers']),
+                'orders'  => number($data['Shipping Zone Number Orders']),
+                'amount'  => money($data['Shipping Zone Amount'],$data['Store Currency Code']),
+                'first_used'     => ($data['Shipping Zone First Used']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Shipping Zone First Used'].' +0:00')):''),
+                'last_used'     => ($data['Shipping Zone Last Used']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Shipping Zone Last Used'].' +0:00')):''),
+
 
             );
         }
@@ -1632,13 +1637,13 @@ function shipping_zones_schemas($_data, $db, $user) {
                     $type = sprintf('<i class="fa fa-play success margin_right_5" title="%s"></i> ',_('Current'));
                     break;
                 case 'InReserve':
-                    $type = '<i class="fa fa-pause discreet margin_right_5"></i> '._('In reserve');
+                    $type =  sprintf('<i class="fa fa-pause discreet margin_right_5" title="%s"></i> ',_('In reserve'));
                     break;
                 case 'Deal':
-                    $type = '<i class="fa fa-tag  margin_right_5"></i> '._('Offer');
+                    $type =  sprintf('<i class="fa fa-tag  margin_right_5" title="%s"></i> ',_('Offer'));
                     break;
                 case 'Discontinued':
-                    $type = '<i class="fa fa-skull discreet margin_right_5"></i> '._('Discontinued');
+                    $type =  sprintf('<i class="fa fa-skull discreet margin_right_5" title="%s"></i> ',_('Discontinued'));
                     break;
                 default:
 
@@ -1653,12 +1658,9 @@ function shipping_zones_schemas($_data, $db, $user) {
                 'zones'  => number($data['Shipping Zone Schema Number Zones']),
                 'customers'  => number($data['Shipping Zone Schema Number Customers']),
                 'orders'  => number($data['Shipping Zone Schema Number Orders']),
-
-
-
-
                 'first_used'     => ($data['Shipping Zone Schema First Used']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Shipping Zone Schema First Used'].' +0:00')):''),
                 'last_used'     => ($data['Shipping Zone Schema Last Used']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Shipping Zone Schema Last Used'].' +0:00')):''),
+                'amount'  => money($data['Shipping Zone Schema Amount'],$data['Store Currency Code']),
 
 
             );

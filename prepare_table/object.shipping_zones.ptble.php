@@ -61,9 +61,9 @@ if ($order == 'code') {
 }
 $table  = '`Shipping Zone Dimension` SZ left join `Shipping Zone Data` D on (D.`Shipping Zone Key`=SZ.`Shipping Zone Key`) left join `Store Dimension` S on (S.`Store Key`=SZ.`Shipping Zone Store Key`) ';
 $fields = "`Shipping Zone Price`,`Shipping Zone Territories`,SZ.`Shipping Zone Key`,`Shipping Zone Name`,`Shipping Zone Code`,`Shipping Zone Description`,`Shipping Zone Store Key`,S.`Store Code`,`Store Name`,`Shipping Zone Active`,`Shipping Zone Creation Date`,
-`Shipping Zone Total Acc Orders`,`Shipping Zone Total Acc Customers`,`Shipping Zone Total Acc Amount`";
+`Shipping Zone Number Orders`,`Shipping Zone Number Customers`,`Shipping Zone Amount`,`Shipping Zone First Used`,`Shipping Zone Last Used`,`Store Currency Code`";
 
 
 $sql_totals = "select count(*) as num from $table $where ";
 
-?>
+

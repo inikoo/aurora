@@ -410,12 +410,13 @@ function get_object($object_name, $key, $load_other_data = false) {
 
         case 'shipping_zone':
         case 'shippingzone':
-            require_once "class.Shipping_Zone.php";
+        case 'shipping zone':
+        require_once "class.Shipping_Zone.php";
             $object = new Shipping_Zone($key);
             break;
         case 'shipping_zone_schema':
         case 'shippingzoneschema':
-        case 'shipping zones chema':
+        case 'shipping zone schema':
             require_once "class.Shipping_Zone_Schema.php";
             $object = new Shipping_Zone_Schema($key);
             break;

@@ -2,15 +2,15 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 1 December 2018 at 14:18:05 GMT+8, Kuala Lumpur, Malaysia
- Copyright (c) 2018, Inikoo
+ Created: 23-07-2019 18:55:15 MYT, Kuala Lumpur, Malaysia
+ Copyright (c) 2019, Inikoo
 
  Version 3
 
 */
 
 
-$tab     = 'store.current_shipping_zones';
+$tab     = 'shipping_zone_schema.zones';
 $ar_file = 'ar_products_tables.php';
 $tipo    = 'shipping_zones';
 
@@ -30,7 +30,7 @@ $table_views = array(
 );
 
 $table_filters = array(
-    'name'         => array(
+    'name' => array(
         'label' => _('Name'),
         'title' => _('Name')
     )
@@ -38,20 +38,19 @@ $table_filters = array(
 );
 
 $parameters = array(
-    'parent'     => 'shipping_zone_schema',
-    'parent_key' => $state['_object']->properties['current_shipping_zone_schema'],
-    'store_key'     => $state['key'],
-    'store_currency'     => $state['_object']->get('Store Currency Code')
+    'parent'         => 'shipping_zone_schema',
+    'parent_key'     => $state['_object']->id,
+    'store_key'      => $state['store']->id,
+    'store_currency' => $state['store']->get('Store Currency Code')
 
 );
-
 
 
 $table_buttons   = array();
 $table_buttons[] = array(
     'icon'      => 'plus',
     'title'     => _('New shipping zone'),
-    'reference' => "store/".$state['key']."/shipping_zone_schema/".$state['_object']->properties['current_shipping_zone_schema']."/new"
+    'reference' => "store/".$state['key']."/shipping_zone_schema/".$state['_object']->id."/new"
 );
 $smarty->assign('table_buttons', $table_buttons);
 
@@ -59,4 +58,4 @@ $smarty->assign('table_buttons', $table_buttons);
 include 'utils/get_table_html.php';
 
 
-?>
+

@@ -462,13 +462,14 @@ class Store extends DB_Table {
                         'Shipping Zone Type'        => 'Failover',
                         'Shipping Zone Code'        => 'Other',
                         'Shipping Zone Name'        => _('Rest of the world'),
+                        'Shipping Zone Territories' => '{}',
                         'Shipping Zone Price'       => json_encode(
                             array(
                                 'type' => 'TBC',
 
                             )
                         ),
-                        'Shipping Zone Territories' => ''
+
                     )
                 );
 
@@ -2877,8 +2878,6 @@ class Store extends DB_Table {
 
 
             );
-
-
 
 
             $this->fast_update($data_to_update, 'Store Data');

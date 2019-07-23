@@ -1341,9 +1341,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'dashboard':
             $html = '';
-
             $web_location = '<i class="fal fa-fw fa-tachometer-alt"></i> '._('Dashboard');
-
             break;
 
         case 'upload':
@@ -1737,6 +1735,11 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/production_part.show.php';
             $html = get_production_part_showcase($data, $smarty);
             break;
+        case 'shipping_zone_schema':
+            $html = '';
+            $title        = $data['_object']->get('Label');
+            $web_location = '<i class="fal fa-fw fa-bring-front"></i> '._('Shipping schema');
+            break;
         default:
             $html = $data['object'].' -> '.$data['key'];
             break;
@@ -2014,10 +2017,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('email_tracking'):
                     return get_email_tracking_navigation($data, $smarty, $user, $db, $account, $account);
                     break;
+                case 'shipping_zone_schema':
+                    return get_shipping_zone_schema_navigation($data, $smarty, $user, $db, $account, $account);
+                    break;
 
-                // case ('newsletter'):
-                //    return get_email_campaign_navigation($data, $smarty, $user, $db, $account);
-                //   break;
 
             }
             break;

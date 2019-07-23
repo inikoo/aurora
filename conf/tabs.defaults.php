@@ -1160,6 +1160,14 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'label'
     ),
+    'shipping_zone_schema.zones' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'position',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => ''
+    ),
 
     'store.products'                              => array(
         'view'          => 'overview',

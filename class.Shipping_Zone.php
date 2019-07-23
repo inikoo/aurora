@@ -87,8 +87,8 @@ class Shipping_Zone extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT `Shipping Zone Key` FROM `Shipping Zone Dimension` WHERE  `Shipping Zone Store Key`=%d and `Shipping Zone Code`=%s   ",
-            $data['Shipping Zone Store Key'],
+            "SELECT `Shipping Zone Key` FROM `Shipping Zone Dimension` WHERE  `Shipping Zone Shipping Zone Schema Key`=%d and `Shipping Zone Code`=%s   ",
+            $data['Shipping Zone Shipping Zone Schema Key'],
             prepare_mysql($data['Shipping Zone Code'])
 
         );
@@ -108,8 +108,8 @@ class Shipping_Zone extends DB_Table {
 
         if (!$this->found) {
             $sql = sprintf(
-                "SELECT `Shipping Zone Key` FROM `Shipping Zone Dimension` WHERE  `Shipping Zone Store Key`=%d and `Shipping Zone Name`=%s   ",
-                $data['Shipping Zone Store Key'],
+                "SELECT `Shipping Zone Key` FROM `Shipping Zone Dimension` WHERE   `Shipping Zone Shipping Zone Schema Key`=%d and `Shipping Zone Name`=%s   ",
+                $data['Shipping Zone Shipping Zone Schema Key'],
                 prepare_mysql($data['Shipping Zone Name'])
 
             );
@@ -146,18 +146,24 @@ class Shipping_Zone extends DB_Table {
     function create($data) {
 
 
+        print_r($data);
+
+
+
         $data['Shipping Zone Creation Date'] = gmdate('Y-m-d H:i:s');
 
 
-        $data['Shipping Zone Territories'] = '{}';
+
 
 
         foreach ($data as $key => $value) {
-            if (array_key_exists($key, $data)) {
-                $data[$key] = _trim($value);
+            if (array_key_exists($key, $data) and is_string($value)) {
+             //   $data[$key] = _trim($value);
             }
         }
 
+        unset($data['Shipping Zone First Used']);
+        unset($data['Shipping Zone Last Used']);
 
 
         $sql = sprintf(
@@ -274,14 +280,12 @@ class Shipping_Zone extends DB_Table {
     }
 
 
-    function update_charge_usage() {
+    function update_usage() {
 
-        $orders    = 0;
-        $customers = 0;
-        $amount    = 0;
+
 
         $sql = sprintf(
-            "SELECT sum(`Transaction Net Amount`) as amount,count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order No Product Transaction Fact` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) WHERE `Transaction Type Key`=%d AND `Transaction Type`='Shipping Zones' AND `Order State` not in ('InBasket','Cancelled') ",
+            "SELECT min( O.`Order Date`) AS first,max( O.`Order Date`) AS last FROM `Order No Product Transaction Fact` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) LEFT  JOIN `Shipping Zone Dimension` SZ ON (SZ.`Shipping Zone Key`=B.`Transaction Type Key`)    WHERE `Transaction Type Key`=%d AND `Transaction Type`='Shipping' AND `Order State` not in ('InBasket','Cancelled') ",
             $this->id
 
         );
@@ -289,9 +293,37 @@ class Shipping_Zone extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
+               // print_r($row);
+
+                $this->fast_update(
+                    array(
+                        'Shipping Zone First Used' =>  $row['first'],
+                        'Shipping Zone Last Used' => $row['last'],
+                    ),'Shipping Zone Dimension'
+
+                );
+
+            }
+        }
+
+        $orders    = 0;
+        $customers = 0;
+        $amount    = 0;
+
+        $sql = sprintf(
+            "SELECT sum(`Transaction Net Amount`) as amount,count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order No Product Transaction Fact` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) WHERE `Transaction Type Key`=%d AND `Transaction Type`='Shipping' AND `Order State` not in ('InBasket','Cancelled') ",
+            $this->id
+
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+               // print_r($row);
                 $orders    = $row['orders'];
                 $customers = $row['customers'];
-                $amount    = $row['amount'];
+                $amount    = ($row['amount']==''?0:$row['amount']);
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -302,9 +334,9 @@ class Shipping_Zone extends DB_Table {
 
         $this->fast_update(
             array(
-                'Shipping Zone Total Acc Orders'    => $orders,
-                'Shipping Zone Total Acc Customers' => $customers,
-                'Shipping Zone Total Acc Amount'    => $amount,
+                'Shipping Zone Number Orders'    => $orders,
+                'Shipping Zone Number Customers' => $customers,
+                'Shipping Zone Amount'    => $amount,
             )
 
         );
