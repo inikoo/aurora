@@ -82,13 +82,14 @@ function fork_export_edit_template($job) {
 
                     break;
                 case 'supplier':
+                case 'supplier_production':
 
                     $sql_count = sprintf('SELECT count(*) AS num FROM `Supplier Part Dimension` WHERE `Supplier Part Supplier Key`=%d', $parent_key);
                     $sql_data  = sprintf('SELECT `Supplier Part Key` AS id FROM `Supplier Part Dimension` WHERE `Supplier Part Supplier Key`=%d', $parent_key);
 
                     break;
                 default:
-
+                    return true;
                     break;
             }
             break;
@@ -233,6 +234,11 @@ function fork_export_edit_template($job) {
             //   exit;
             break;
     }
+
+
+
+
+
 
 
     if ($result = $db->query($sql_count)) {

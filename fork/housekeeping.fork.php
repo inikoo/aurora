@@ -1511,6 +1511,11 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $store   = get_object('Store', $order->get('Store Key'));
 
 
+
+
+
+
+
             $store->update_orders();
             $account->update_orders();
 
@@ -1557,8 +1562,9 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 }
             }
 
-
-
+            $account->update_inventory_dispatched_data('ytd');
+            $account->update_inventory_dispatched_data('qtd');
+            $account->update_inventory_dispatched_data('all');
 
             break;
         case 'invoice_created':

@@ -414,6 +414,8 @@ class Account extends DB_Table {
             case 'Active Parts Number':
             case 'In Process Parts Number':
             case 'Discontinuing Parts Number':
+            case 'Discontinued Parts Number':
+
             case 'Active Parts Stock Surplus Number':
             case 'Active Parts Stock OK Number':
             case 'Active Parts Stock Low Number':
@@ -447,6 +449,9 @@ class Account extends DB_Table {
             case 'Percentage New Contacts With Orders':
                 return ($this->data['Account New Contacts'] == 0 ? '' : '('.percentage($this->data['Account '.preg_replace('/^Percentage /', '', $key)], $this->data['Account New Contacts'])).')';
 
+                break;
+            case 'Pretty Valid From':
+                return strftime("%a %e %b %Y", strtotime($this->data['Account Valid From'].' +0:00'));
                 break;
             default:
 
@@ -513,14 +518,14 @@ class Account extends DB_Table {
 
                     return $amount;
                 }
-                if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices|Number)$/', $key)) {
+                if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices|Distinct Parts Dispatched|Number)$/', $key)) {
 
                     $field = 'Account '.$key;
 
 
                     return number($this->data[$field]);
                 }
-                if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices) Minify$/', $key)) {
+                if (preg_match('/^(Orders|Last|Yesterday|Total|1|10|6|3|2|4|5|Year To|Quarter To|Month To|Today|Week To).*(Quantity Invoiced|Invoices|Distinct Parts Dispatched) Minify$/', $key)) {
 
                     $field = 'Account '.preg_replace('/ Minify$/', '', $key);
 
@@ -1589,6 +1594,53 @@ class Account extends DB_Table {
 
     }
 
+
+    function update_inventory_dispatched_data($interval, $this_year = true, $last_year = true) {
+
+
+        include_once 'utils/date_functions.php';
+        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb) = calculate_interval_dates($this->db, $interval);
+
+
+
+        if ($this_year) {
+
+            $inventory_dispatched_data = $this->get_inventory_dispatch_data($from_date, $to_date);
+
+
+            $data_to_update = array(
+
+                "Account $db_interval Acc Distinct Parts Dispatched" => $inventory_dispatched_data['distinct_parts_dispatched'],
+
+
+            );
+
+
+            $this->fast_update($data_to_update, 'Account Data');
+            //  exit();
+        }
+
+        if ($from_date_1yb and $last_year) {
+
+
+            $inventory_dispatched_data = $this->get_inventory_dispatch_data($from_date_1yb, $to_date_1yb);
+
+            $data_to_update = array(
+                "Account $db_interval Acc 1YB Distinct Parts Dispatched" => $inventory_dispatched_data['distinct_parts_dispatched'],
+
+
+            );
+
+
+            $this->fast_update($data_to_update, 'Account Data');
+
+
+        }
+
+
+    }
+
+
     function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
 
 
@@ -1611,9 +1663,7 @@ class Account extends DB_Table {
                 "Account $db_interval Acc Customers"                => $sales_data['customers'],
                 "Account $db_interval Acc Repeat Customers"         => $sales_data['repeat_customers'],
 
-                //  "Account DC $db_interval Acc Invoiced Amount"          => round($sales_data['dc_amount'], 2),
-                //  "Account DC $db_interval Acc Invoiced Discount Amount" => round($sales_data['dc_discount_amount'], 2),
-                //  "Account DC $db_interval Acc Profit"                   => round($sales_data['dc_profit'], 2)
+
             );
 
 
@@ -1636,9 +1686,7 @@ class Account extends DB_Table {
                 "Account $db_interval Acc 1YB Profit"                   => round($sales_data['profit'], 2),
                 "Account $db_interval Acc 1YB Customers"                => $sales_data['customers'],
                 "Account $db_interval Acc 1YB Repeat Customers"         => $sales_data['repeat_customers'],
-                //  "Account DC $db_interval Acc 1YB Invoiced Amount"          => round($sales_data['dc_amount'], 2),
-                //  "Account DC $db_interval Acc 1YB Invoiced Discount Amount" => round($sales_data['dc_discount_amount'], 2),
-                //  "Account DC $db_interval Acc 1YB Profit"                   => round($sales_data['dc_profit'], 2),
+
             );
 
 
@@ -1782,16 +1830,55 @@ class Account extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
-        // print_r($sales_data);
+
+        $sql = sprintf(
+            " SELECT COUNT(distinct `Part SKU`) AS distinct_parts_dispatched  FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Type` = 'Sale'   %s %s ", ($from_date ? sprintf('and `Date`>%s', prepare_mysql($from_date)) : ''),
+            ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $sales_data['distinct_parts_dispatched'] = $row['distinct_parts_dispatched'];
+
+
+            }
+        }
+
+
         return $sales_data;
+
+    }
+
+
+    function get_inventory_dispatch_data($from_date, $to_date) {
+
+        $inventory_dispatch_data = array(
+
+            'distinct_parts_dispatched' => 0
+
+        );
+
+
+        $sql = sprintf(
+            " SELECT COUNT(distinct `Part SKU`) AS distinct_parts_dispatched  FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Type` = 'Sale'   %s %s ", ($from_date ? sprintf('and `Date`>%s', prepare_mysql($from_date)) : ''),
+            ($to_date ? sprintf('and `Date`<%s', prepare_mysql($to_date)) : '')
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $inventory_dispatch_data['distinct_parts_dispatched'] = $row['distinct_parts_dispatched'];
+
+
+            }
+        }
+
+        return $inventory_dispatch_data;
 
 
     }
+
 
     function update_previous_years_data() {
 
@@ -1801,17 +1888,24 @@ class Account extends DB_Table {
             );
 
 
-            $data_to_update = array(
-                "Account $i Year Ago Invoiced Discount Amount" => $data_iy_ago['discount_amount'],
-                "Account $i Year Ago Invoiced Amount"          => $data_iy_ago['amount'],
-                "Account $i Year Ago Invoices"                 => $data_iy_ago['invoices'],
-                "Account $i Year Ago Refunds"                  => $data_iy_ago['refunds'],
-                "Account $i Year Ago Replacements"             => $data_iy_ago['replacements'],
-                "Account $i Year Ago Delivery Notes"           => $data_iy_ago['deliveries'],
-                "Account $i Year Ago Profit"                   => $data_iy_ago['profit'],
-
+            $data_inventory_iy_ago = $this->get_inventory_dispatch_data(
+                date('Y-01-01 00:00:00', strtotime('-'.$i.' year')), date('Y-01-01 00:00:00', strtotime('-'.($i - 1).' year'))
             );
 
+
+
+
+            $data_to_update = array(
+                "Account $i Year Ago Invoiced Discount Amount"  => $data_iy_ago['discount_amount'],
+                "Account $i Year Ago Invoiced Amount"           => $data_iy_ago['amount'],
+                "Account $i Year Ago Invoices"                  => $data_iy_ago['invoices'],
+                "Account $i Year Ago Refunds"                   => $data_iy_ago['refunds'],
+                "Account $i Year Ago Replacements"              => $data_iy_ago['replacements'],
+                "Account $i Year Ago Delivery Notes"            => $data_iy_ago['deliveries'],
+                "Account $i Year Ago Profit"                    => $data_iy_ago['profit'],
+                "Account $i Year Ago Distinct Parts Dispatched" => $data_inventory_iy_ago['distinct_parts_dispatched'],
+
+            );
 
             $this->fast_update($data_to_update, 'Account Data');
         }
@@ -1820,6 +1914,7 @@ class Account extends DB_Table {
 
 
     }
+
 
     function update_previous_quarters_data() {
 
@@ -1838,22 +1933,33 @@ class Account extends DB_Table {
                 $dates_1yb['start'], $dates_1yb['end']
             );
 
-            $data_to_update = array(
-                "Account $i Quarter Ago Invoiced Discount Amount" => $sales_data['discount_amount'],
-                "Account $i Quarter Ago Invoiced Amount"          => $sales_data['amount'],
-                "Account $i Quarter Ago Invoices"                 => $sales_data['invoices'],
-                "Account $i Quarter Ago Refunds"                  => $sales_data['refunds'],
-                "Account $i Quarter Ago Replacements"             => $sales_data['replacements'],
-                "Account $i Quarter Ago Delivery Notes"           => $sales_data['deliveries'],
-                "Account $i Quarter Ago Profit"                   => $sales_data['profit'],
+            $inventory_dispatch_data     = $this->get_inventory_dispatch_data(
+                $dates['start'], $dates['end']
+            );
+            $inventory_dispatch_data_1yb = $this->get_inventory_dispatch_data(
+                $dates_1yb['start'], $dates_1yb['end']
+            );
 
-                "Account $i Quarter Ago 1YB Invoiced Discount Amount" => $sales_data_1yb['discount_amount'],
-                "Account $i Quarter Ago 1YB Invoiced Amount"          => $sales_data_1yb['amount'],
-                "Account $i Quarter Ago 1YB Invoices"                 => $sales_data_1yb['invoices'],
-                "Account $i Quarter Ago 1YB Refunds"                  => $sales_data_1yb['refunds'],
-                "Account $i Quarter Ago 1YB Replacements"             => $sales_data_1yb['replacements'],
-                "Account $i Quarter Ago 1YB Delivery Notes"           => $sales_data_1yb['deliveries'],
-                "Account $i Quarter Ago 1YB Profit"                   => $sales_data_1yb['profit'],
+            $data_to_update = array(
+                "Account $i Quarter Ago Invoiced Discount Amount"  => $sales_data['discount_amount'],
+                "Account $i Quarter Ago Invoiced Amount"           => $sales_data['amount'],
+                "Account $i Quarter Ago Invoices"                  => $sales_data['invoices'],
+                "Account $i Quarter Ago Refunds"                   => $sales_data['refunds'],
+                "Account $i Quarter Ago Replacements"              => $sales_data['replacements'],
+                "Account $i Quarter Ago Delivery Notes"            => $sales_data['deliveries'],
+                "Account $i Quarter Ago Profit"                    => $sales_data['profit'],
+                "Account $i Quarter Ago Distinct Parts Dispatched" => $inventory_dispatch_data['distinct_parts_dispatched'],
+
+
+                "Account $i Quarter Ago 1YB Invoiced Discount Amount"  => $sales_data_1yb['discount_amount'],
+                "Account $i Quarter Ago 1YB Invoiced Amount"           => $sales_data_1yb['amount'],
+                "Account $i Quarter Ago 1YB Invoices"                  => $sales_data_1yb['invoices'],
+                "Account $i Quarter Ago 1YB Refunds"                   => $sales_data_1yb['refunds'],
+                "Account $i Quarter Ago 1YB Replacements"              => $sales_data_1yb['replacements'],
+                "Account $i Quarter Ago 1YB Delivery Notes"            => $sales_data_1yb['deliveries'],
+                "Account $i Quarter Ago 1YB Profit"                    => $sales_data_1yb['profit'],
+                "Account $i Quarter Ago 1YB Distinct Parts Dispatched" => $inventory_dispatch_data_1yb['distinct_parts_dispatched'],
+
             );
             $this->fast_update($data_to_update, 'Account Data');
         }
