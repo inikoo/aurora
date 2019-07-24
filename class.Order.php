@@ -699,7 +699,13 @@ class Order extends DB_Table {
                         $state = _('Dispatch Approved');
                         break;
                     case('Dispatched'):
-                        $state = _('Dispatched');
+
+                        if ($this->data['Order For Collection'] == 'Yes') {
+                            $state= _('Collected');
+                        } else {
+                            $state= _('Dispatched');
+                        }
+
                         break;
                     case('Cancelled'):
                         $state = _('Cancelled');

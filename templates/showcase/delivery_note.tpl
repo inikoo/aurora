@@ -88,7 +88,7 @@
 
         <li id="dispatched_node" class="li  {if $delivery_note->get('State Index')>=100  }complete{/if}  {if $delivery_note->get('State Index')<0 }hide{/if}   ">
             <div class="label">
-                <span class="state ">{t}Dispatched{/t} <span></i></span></span>
+                <span class="state ">{if $order->get('Order For Collection')=='Yes' }{t}Collected{/t}{else}{t}Dispatched{/t}{/if} <span></i></span></span>
             </div>
             <div class="timestamp">
                 <span class="Delivery_Note_Dispatched_Datetime">&nbsp;{$delivery_note->get('Dispatched Datetime')}</span>
@@ -234,10 +234,10 @@
 
 
                 <div id="dispatch_operations" class="order_operation {if $delivery_note->get('State Index')!=90    } hide{/if}">
-                    <div id="dispatch_operation" class="square_button right  " title="{t}Dispatch{/t}">
+                    <div id="dispatch_operation" class="square_button right  " title="{if $order->get('Order For Collection')=='Yes' }{t}Set as collected{/t}{else}{t}Dispatched{/t}{/if}">
 
 
-                        <i id="dispatch_save_buttons" class="fa button fa-paper-plane fa-fw {if $number_shippers>0 and  $delivery_note->get('Delivery Note Shipper Key')==''}very_discreet{/if}  " data-data='{  "field": "Delivery Note State","value": "Dispatched","dialog_name":"dispatch"}' aria-hidden="true"
+                        <i id="dispatch_save_buttons" class="fa button fa-paper-plane fa-fw {if $number_shippers>0 and  $order->get('Order For Collection')=='No'  and  $delivery_note->get('Delivery Note Shipper Key')==''}very_discreet{/if}  " data-data='{  "field": "Delivery Note State","value": "Dispatched","dialog_name":"dispatch"}' aria-hidden="true"
                            onclick="save_dispatch_dn(this)"></i>
 
 
@@ -348,7 +348,7 @@
                 </td>
             </tr>
 
-            <tr id="edit_shipper_tr" class="{if $number_shippers==0}hide{/if}">
+            <tr id="edit_shipper_tr" class="{if $number_shippers==0  or $order->get('Order For Collection')=='Yes'  }hide{/if}">
                 <td class="aleft">{t}Courier{/t}:</td>
                 <td class="aleft" colspan="3">
                     <div id="shipper" class="{if $delivery_note->get('Delivery Note Shipper Key')==''}hide{/if}">

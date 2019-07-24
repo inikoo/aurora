@@ -70,7 +70,7 @@
 
         <li id="dispatched_node" class="li  {if $order->get('State Index')>=100}complete{/if}">
             <div class="label">
-                <span class="state">{t}Dispatched{/t}</span>
+                <span class="state">{if $order->get('Order For Collection')=='Yes' }{t}Collected{/t}{else}{t}Dispatched{/t}{/if} </span>
             </div>
             <div class="timestamp">
                 <span>&nbsp;<span class="Order_Dispatched_Date"> {$order->get('Dispatched Date')}</span>
