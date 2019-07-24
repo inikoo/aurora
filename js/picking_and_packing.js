@@ -397,7 +397,7 @@ function save_dispatch_dn(element) {
 
     if($(element).hasClass('very_discreet')){
 
-        swal('{t}Courier not set{/t}', '{t}Select a courier{/t}', "error");
+        swal('Courier not set', 'Select a courier', "error");
 
         return;
     }

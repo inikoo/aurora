@@ -248,7 +248,6 @@ class DeliveryNote extends DB_Table {
         $part_index = 0;
 
 
-
         // print_r($part_list);
 
         foreach ($part_list as $part_data) {
@@ -288,7 +287,7 @@ class DeliveryNote extends DB_Table {
 					%f,%s,%s,%d,%s,%d,
 					%s,%s,%.2f,%f,%f,%f,
 
-					%s,%s,%d,%d,%d,%d,%s) ",  "'Info'", "'OIP'", prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']), prepare_mysql($picking_note),
+					%s,%s,%d,%d,%d,%d,%s) ", "'Info'", "'OIP'", prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']), prepare_mysql($picking_note),
 
                     $weight, prepare_mysql($this->get('Delivery Note Date')), prepare_mysql($this->get('Delivery Note Date')), $this->id, prepare_mysql($part_data['Part SKU']), $location_key,
 
@@ -522,7 +521,14 @@ class DeliveryNote extends DB_Table {
                         return _('Approved');
                         break;
                     case 'Dispatched':
-                        return _('Dispatched');
+                        if ($this->data['Delivery Note Dispatch Method'] == 'Collection') {
+                            return _('Collected');
+
+                        } else {
+                            return _('Dispatched');
+
+                        }
+
                         break;
                     case 'Cancelled':
                         return _('Cancelled');
@@ -564,7 +570,11 @@ class DeliveryNote extends DB_Table {
                         return _('Approved');
                         break;
                     case 'Dispatched':
-                        return _('Dispatched');
+                        if ($this->data['Delivery Note Dispatch Method'] == 'Collection') {
+                            return _('Collected');
+                        } else {
+                            return _('Dispatched');
+                        }
                         break;
                     case 'Cancelled':
                         return _('Cancelled');
@@ -692,19 +702,26 @@ class DeliveryNote extends DB_Table {
 
             case('Consignment'):
 
-                if ($this->data['Delivery Note Shipper Key'] != '') {
-                    $shipper     = $this->get('Shipper');
-                    $consignment = sprintf(
-                        '<span class="link" onclick="change_view(\'warehouse/%d/shippers/%d\' title="%s")">%s</span>', $this->data['Delivery Note Warehouse Key'], $this->data['Delivery Note Shipper Key'], $shipper->get('Name'), $shipper->get('Code')
 
-                    );
+                if ($this->data['Delivery Note Dispatch Method'] != 'Collection') {
 
-                    if ($this->data['Delivery Note Shipper Tracking'] != '') {
-                        $consignment .= ' '.$this->data['Delivery Note Shipper Tracking'];
+
+                    if ($this->data['Delivery Note Shipper Key'] != '') {
+                        $shipper     = $this->get('Shipper');
+                        $consignment = sprintf(
+                            '<span class="link" onclick="change_view(\'warehouse/%d/shippers/%d\' title="%s")">%s</span>', $this->data['Delivery Note Warehouse Key'], $this->data['Delivery Note Shipper Key'], $shipper->get('Name'), $shipper->get('Code')
+
+                        );
+
+                        if ($this->data['Delivery Note Shipper Tracking'] != '') {
+                            $consignment .= ' '.$this->data['Delivery Note Shipper Tracking'];
+                        }
+
+                    } else {
+                        $consignment = '<span class="discreet italic">'._('Courier not set').'</span>';
                     }
-
-                } else {
-                    $consignment = '<span class="discreet italic">'._('Courier not set').'</span>';
+                }else{
+                    $consignment=_('Collected by customer');
                 }
 
                 return $consignment;
@@ -1399,7 +1416,6 @@ class DeliveryNote extends DB_Table {
                 } else {
 
 
-
                     $history_data = array(
                         'History Abstract' => _('Replacement packed and closed'),
                         'History Details'  => '',
@@ -1408,9 +1424,7 @@ class DeliveryNote extends DB_Table {
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
 
 
-
                 }
-
 
 
                 new_housekeeping_fork(
@@ -1439,17 +1453,23 @@ class DeliveryNote extends DB_Table {
                 }
 
 
-                if(in_array($this->data['Delivery Note Type'],array('Replacement & Shortages', 'Replacement', 'Shortages'))){
+                if (in_array(
+                    $this->data['Delivery Note Type'], array(
+                    'Replacement & Shortages',
+                    'Replacement',
+                    'Shortages'
+                )
+                )) {
 
-                    if ( !( $this->get('State Index') == 80 or $this->get('State Index') == 90 )     ) {
+                    if (!($this->get('State Index') == 80 or $this->get('State Index') == 90)) {
                         $this->error = true;
                         $this->msg   = 'Replacement note must be closed or approved to dispatch';
 
                         return;
                     }
 
-                }else{
-                    if  ( $this->get('State Index') != 80    ) {
+                } else {
+                    if ($this->get('State Index') != 80) {
                         $this->error = true;
                         $this->msg   = 'Delivery note must be closed.';
 
@@ -1459,15 +1479,11 @@ class DeliveryNote extends DB_Table {
                 }
 
 
-
-
-
                 $this->update_field('Delivery Note Date Done Approved', '', 'no_history');
                 $this->update_field('Delivery Note State', 'Packed', 'no_history');
                 $this->update_field('Delivery Note Approved Done', 'No', 'no_history');
                 $this->update_field('Delivery Note Date', $date, 'no_history');
                 $this->update_field('Delivery Note Date Dispatched Approved', '', 'no_history');
-
 
 
                 $this->update_totals();
@@ -1536,9 +1552,7 @@ class DeliveryNote extends DB_Table {
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
 
 
-
                 }
-
 
 
                 new_housekeeping_fork(
@@ -1577,7 +1591,13 @@ class DeliveryNote extends DB_Table {
 
             case 'Approved':
 
-                if ($this->get('State Index') != 80 or  in_array($this->data['Delivery Note Type'] , array('Replacement & Shortages', 'Replacement', 'Shortages'))   ) {
+                if ($this->get('State Index') != 80 or in_array(
+                        $this->data['Delivery Note Type'], array(
+                        'Replacement & Shortages',
+                        'Replacement',
+                        'Shortages'
+                    )
+                    )) {
                     return;
                 }
                 $this->update_field('Delivery Note Date Dispatched Approved', $date, 'no_history');
@@ -1776,15 +1796,12 @@ class DeliveryNote extends DB_Table {
                 } else {
 
 
-
-
                     $history_data = array(
                         'History Abstract' => _('Replacement note dispatched'),
                         'History Details'  => '',
                     );
 
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
 
 
                 }
@@ -1808,7 +1825,6 @@ class DeliveryNote extends DB_Table {
 
                     return;
                 }
-
 
 
                 // todo before cancel the picked stock has to go some cleaver way back to locations, (making fork update_cancelled_delivery_note_products_sales_data section in delivery_note_cancelled fork obsolete? )
@@ -1859,7 +1875,10 @@ class DeliveryNote extends DB_Table {
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
 
-                        $sql = sprintf('UPDATE `Inventory Transaction Fact`  SET  `Inventory Transaction Record Type`="Movement",  `Inventory Transaction Type`="FailSale" , `Inventory Transaction Section`="NoDispatched"  WHERE `Inventory Transaction Key`=%d  ', $row['Inventory Transaction Key']);
+                        $sql = sprintf(
+                            'UPDATE `Inventory Transaction Fact`  SET  `Inventory Transaction Record Type`="Movement",  `Inventory Transaction Type`="FailSale" , `Inventory Transaction Section`="NoDispatched"  WHERE `Inventory Transaction Key`=%d  ',
+                            $row['Inventory Transaction Key']
+                        );
                         $this->db->exec($sql);
 
 
@@ -1888,8 +1907,7 @@ class DeliveryNote extends DB_Table {
 					%f,%s,%s,%d,%s,%d,
 					%s,%s,%.2f,%f,%f,%f,
 
-					%s,%s,%d,%d,%d,%d,%s,%d,%d) ",
-                            "'Movement'", "'NoDispatched'", prepare_mysql(''), prepare_mysql(''),
+					%s,%s,%d,%d,%d,%d,%s,%d,%d) ", "'Movement'", "'NoDispatched'", prepare_mysql(''), prepare_mysql(''),
 
                             $row['Inventory Transaction Weight'], prepare_mysql($date), prepare_mysql($date), $this->id, prepare_mysql($row['Part SKU']), $location_key,
 
@@ -2223,8 +2241,8 @@ class DeliveryNote extends DB_Table {
                     $transaction_value = $row['Part Cost'] * $qty;
 
                     $sql = sprintf(
-                        "UPDATE `Inventory Transaction Fact` SET `Out of Stock`=%f ,`Out of Stock Lost Amount`=%f ,`Date`=%s ,`Picker Key`=%s WHERE `Inventory Transaction Key`=%d  ", $qty, $transaction_value,
-                         prepare_mysql($date), prepare_mysql($data['picker_key']), $data['transaction_key']
+                        "UPDATE `Inventory Transaction Fact` SET `Out of Stock`=%f ,`Out of Stock Lost Amount`=%f ,`Date`=%s ,`Picker Key`=%s WHERE `Inventory Transaction Key`=%d  ", $qty, $transaction_value, prepare_mysql($date), prepare_mysql($data['picker_key']),
+                        $data['transaction_key']
                     );
 
                     $this->db->exec($sql);
@@ -2546,8 +2564,6 @@ class DeliveryNote extends DB_Table {
         $order->editor = $this->editor;
 
 
-
-
         $sql = sprintf(
             "DELETE FROM  `Delivery Note Dimension` WHERE `Delivery Note Key`=%d  ", $this->id
         );
@@ -2622,8 +2638,6 @@ class DeliveryNote extends DB_Table {
                     $out_of_stock = $row['Required'] + $row['Given'] + -$transaction['qty'];
 
 
-
-
                     if ($transaction['qty'] == 0) {
                         $transaction_type    = 'No Dispatched';
                         $transaction_section = 'NoDispatched';
@@ -2648,7 +2662,7 @@ class DeliveryNote extends DB_Table {
                                   WHERE `Inventory Transaction Key`=%d ',
 
                         prepare_mysql($date_picked), prepare_mysql($date_packed), prepare_mysql($date), $transaction['location_key'], prepare_mysql($transaction_type), prepare_mysql($transaction_section), $qty, $cost, $weight, $transaction['qty'], $transaction['qty'],
-                        $out_of_stock, $this->get('Delivery Note Assigned Picker Key'), $this->get('Delivery Note Assigned Packer Key'),  $transaction['transaction_key']
+                        $out_of_stock, $this->get('Delivery Note Assigned Picker Key'), $this->get('Delivery Note Assigned Packer Key'), $transaction['transaction_key']
                     );
 
 
