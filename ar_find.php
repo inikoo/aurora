@@ -30,15 +30,7 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
 
-    case 'new_order_options':
 
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'customer_key' => array('type' => 'key'),
-                     )
-        );
-        new_order_options($db, $data);
-        break;
     case 'new_purchase_order_options':
 
         $data = prepare_values(
@@ -244,6 +236,16 @@ switch ($tipo) {
 
 
         break;
+
+    case 'orders_in_process':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'customer_key' => array('type' => 'key'),
+                     )
+        );
+        orders_in_process($db, $data);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -274,7 +276,7 @@ function find_users($db, $data) {
     }
 
 
-   if (!empty($data['metadata']['for_mixed_recipients'])) {
+    if (!empty($data['metadata']['for_mixed_recipients'])) {
         $scope = 'for_mixed_recipients';
 
     } else {
@@ -307,14 +309,11 @@ function find_users($db, $data) {
                     $factor                       = $len_q / $len_name;
                     $candidates[$row['User Key']] = 500 * $factor;
                 }
-                }
+            }
         } else {
             print_r($error_info = $db->errorInfo());
             exit();
         }
-
-
-
 
 
         $sql = "SELECT `User Key`,`User Alias` FROM `User Dimension` WHERE  `User Active`='Yes' and `User Type` in ('Staff','Contractor') and  `User Alias`  REGEXP ? LIMIT 100 ";
@@ -336,13 +335,11 @@ function find_users($db, $data) {
                     $factor                       = $len_q / $len_name;
                     $candidates[$row['User Key']] = 50 * $factor;
                 }
-                }
+            }
         } else {
             print_r($error_info = $db->errorInfo());
             exit();
         }
-
-
 
 
     }
@@ -365,11 +362,11 @@ function find_users($db, $data) {
     }
 
 
-    $results      = array();
+    $results = array();
 
 
     $candidates = array_slice(array_keys($candidates), 0, $max_results);
-    $sql = 'SELECT `User Handle`,`User Key`,`User Alias`,`User Password Recovery Email` FROM `User Dimension`  WHERE `User Key` IN ('.implode(',', array_fill(1,count($candidates),'?')).')';
+    $sql        = 'SELECT `User Handle`,`User Key`,`User Alias`,`User Password Recovery Email` FROM `User Dimension`  WHERE `User Key` IN ('.implode(',', array_fill(1, count($candidates), '?')).')';
 
 
     $stmt = $db->prepare($sql);
@@ -379,10 +376,11 @@ function find_users($db, $data) {
         while ($row = $stmt->fetch()) {
 
 
-            if($scope=='for_mixed_recipients'){
-                $formatted_value=$row['User Alias'];
-            }else{
-                $formatted_value=$row['User Alias'].($row['User Password Recovery Email']==''?' <i class="fa padding_left_10 error fa-exclamation-circle"></i> <span class="error very_discreet italic">'._('No email set').'</span>':' <span class="italic padding_left_5 discreet">('.$row['User Password Recovery Email'].')</span>');
+            if ($scope == 'for_mixed_recipients') {
+                $formatted_value = $row['User Alias'];
+            } else {
+                $formatted_value = $row['User Alias'].($row['User Password Recovery Email'] == '' ? ' <i class="fa padding_left_10 error fa-exclamation-circle"></i> <span class="error very_discreet italic">'._('No email set').'</span>'
+                        : ' <span class="italic padding_left_5 discreet">('.$row['User Password Recovery Email'].')</span>');
             }
 
 
@@ -391,21 +389,19 @@ function find_users($db, $data) {
                 'description' => highlightkeyword($row['User Alias'], $queries),
 
                 'value'           => $row['User Key'],
-                'formatted_value' =>$formatted_value,
+                'formatted_value' => $formatted_value,
                 'metadata'        => array(
-                    'email'=>$row['User Password Recovery Email'],
-                    'handle'=>$row['User Handle']
+                    'email'  => $row['User Password Recovery Email'],
+                    'handle' => $row['User Handle']
                 )
 
 
             );
-            }
+        }
     } else {
         print_r($error_info = $db->errorInfo());
         exit();
     }
-
-
 
 
     $results_data = array(
@@ -625,7 +621,6 @@ function find_suppliers($db, $account, $memcache_ip, $data) {
 
 }
 
-
 function find_stores($db, $account, $memcache_ip, $data) {
 
 
@@ -820,7 +815,6 @@ function find_stores($db, $account, $memcache_ip, $data) {
 
 }
 
-
 function find_locations($db, $account, $memcache_ip, $data, $user) {
 
 
@@ -940,7 +934,6 @@ function find_locations($db, $account, $memcache_ip, $data, $user) {
     echo json_encode($response);
 
 }
-
 
 function find_warehouse_areas($db, $account, $memcache_ip, $data, $user) {
 
@@ -1095,7 +1088,6 @@ function find_warehouse_areas($db, $account, $memcache_ip, $data, $user) {
 
 }
 
-
 function find_customers($db, $account, $memcache_ip, $data, $user) {
 
 
@@ -1243,7 +1235,6 @@ function find_customers($db, $account, $memcache_ip, $data, $user) {
 
 }
 
-
 function find_customer_lists($db, $account, $memcache_ip, $data, $user) {
 
 
@@ -1361,7 +1352,6 @@ function find_customer_lists($db, $account, $memcache_ip, $data, $user) {
     echo json_encode($response);
 
 }
-
 
 function find_parts($db, $account, $memcache_ip, $data) {
 
@@ -1533,7 +1523,6 @@ function find_parts($db, $account, $memcache_ip, $data) {
     echo json_encode($response);
 
 }
-
 
 function find_products($db, $account, $memcache_ip, $data) {
 
@@ -1712,7 +1701,6 @@ function find_products($db, $account, $memcache_ip, $data) {
 function find_assets_on_sale($db, $account, $memcache_ip, $data) {
 
 
-
     $cache       = false;
     $max_results = 5;
     $user        = $data['user'];
@@ -1734,13 +1722,12 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
     $where = '';
 
 
-
     if (isset($data['metadata']['parent'])) {
         switch ($data['metadata']['parent']) {
             case 'Store':
             case 'store':
 
-                $where_product   = sprintf(
+                $where_product    = sprintf(
                     ' and `Product Store Key`=%d', $data['metadata']['parent_key']
                 );
                 $where_categories = sprintf(
@@ -1755,7 +1742,7 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
 
         switch ($data['parent']) {
             case 'store':
-                $where_product   = sprintf(
+                $where_product    = sprintf(
                     ' and `Product Store Key`=%d', $data['parent_key']
                 );
                 $where_categories = sprintf(
@@ -1784,8 +1771,6 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
     );
 
 
-
-
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
@@ -1802,13 +1787,11 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
             }
 
 
-
             if ($row['Product Availability State'] == 'OnDemand') {
-                $stock= ' ('._('on demand').')';
+                $stock = ' ('._('on demand').')';
             } else {
-                $stock=_('Stock').': '.number($row['Product Availability']);
+                $stock = _('Stock').': '.number($row['Product Availability']);
             }
-
 
 
             $candidates_data['P'.$row['Product ID']] = array(
@@ -1827,7 +1810,7 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
 
 
     $sql = sprintf(
-        "select `Category Key`,`Category Code`,`Category Label`,`Category Number Active Subjects`,`Category Subject` from `Category Dimension` where  `Category Code` like '%s%%' %s  %s limit $max_results ", $q, $where,$where_categories
+        "select `Category Key`,`Category Code`,`Category Label`,`Category Number Active Subjects`,`Category Subject` from `Category Dimension` where  `Category Code` like '%s%%' %s  %s limit $max_results ", $q, $where, $where_categories
     );
 
 
@@ -1915,13 +1898,11 @@ function find_assets_on_sale($db, $account, $memcache_ip, $data) {
             foreach ($result as $row) {
 
 
-
                 if ($row['Product Availability State'] == 'OnDemand') {
-                    $stock= _('On demand');
+                    $stock = _('On demand');
                 } else {
-                    $stock=_('Stock').': '.number($row['Product Availability']);
+                    $stock = _('Stock').': '.number($row['Product Availability']);
                 }
-
 
 
                 $results['P'.$row['Product ID']] = array(
@@ -2058,8 +2039,7 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
 
 
     $sql = sprintf(
-        "SELECT `Supplier Part Reference`,`Supplier Part Historic Key`,`Supplier Part Key`,`Part Reference`,`Supplier Part Description` %s WHERE %s `Supplier Part Reference` LIKE '%s%%'  ORDER BY `Supplier Part Reference` LIMIT %d ",
-        $table, $where, $q, $max_results
+        "SELECT `Supplier Part Reference`,`Supplier Part Historic Key`,`Supplier Part Key`,`Part Reference`,`Supplier Part Description` %s WHERE %s `Supplier Part Reference` LIKE '%s%%'  ORDER BY `Supplier Part Reference` LIMIT %d ", $table, $where, $q, $max_results
     );
 
 
@@ -2094,8 +2074,7 @@ function find_supplier_parts($db, $account, $memcache_ip, $data) {
 
 
     $sql = sprintf(
-        "SELECT `Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Part Reference`,`Part Reference`,`Supplier Part Description`   %s WHERE %s `Part Reference` LIKE '%s%%'  ORDER BY `Part Reference` LIMIT %d ",
-        $table, $where, $q, $max_results
+        "SELECT `Supplier Part Key`,`Supplier Part Historic Key`,`Supplier Part Reference`,`Part Reference`,`Supplier Part Description`   %s WHERE %s `Part Reference` LIKE '%s%%'  ORDER BY `Part Reference` LIMIT %d ", $table, $where, $q, $max_results
     );
 
     if ($result = $db->query($sql)) {
@@ -2665,13 +2644,13 @@ function find_countries($db, $account, $memcache_ip, $data) {
 }
 
 
-function number_orders_in_process($db, $data) {
+function orders_in_process($db, $data) {
 
     $number_orders_in_process = 0;
     $orders_list              = '';
     $msg                      = '';
     $sql                      = sprintf(
-        "SELECT `Purchase Order Key`,`Purchase Order Public ID`,`Purchase Order Store Key`  FROM `Purchase Order Dimension` WHERE `Purchase Order Customer Key`=%d AND `Purchase Order Current Dispatch State`='In Process'", $data['customer_key']
+        "SELECT `Order Key`,`Order Public ID`,`Order Store Key`  FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order State`='InBasket'", $data['customer_key']
     );
 
 
@@ -2680,9 +2659,10 @@ function number_orders_in_process($db, $data) {
 
 
             $orders_list .= sprintf(
-                ", <span class='link'  onClick=\"change_view('orders/%d/%d')\" >%s</span>", $row['Order store Key'], $row['Order Key'], $row['Order Public ID']
+                ", <span class='link'  onClick=\"change_view('orders/%d/%d')\" >%s</span>", $row['Order Store Key'], $row['Order Key'], $row['Order Public ID']
             );
             $number_orders_in_process++;
+            $order_public_id= $row['Order Public ID'];
 
             if ($number_orders_in_process == 10) {
                 break;
@@ -2690,11 +2670,7 @@ function number_orders_in_process($db, $data) {
 
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
-
 
     $orders_list = preg_replace('/^,\s*/', '', $orders_list);
 
@@ -2702,6 +2678,7 @@ function number_orders_in_process($db, $data) {
         $response = array(
             'state'             => 200,
             'orders_in_process' => $number_orders_in_process,
+            'clone_msg'         => _('New order will be created with this items'),
             'msg'               => ''
         );
         echo json_encode($response);
@@ -2710,20 +2687,18 @@ function number_orders_in_process($db, $data) {
 
     if ($number_orders_in_process == 1) {
         $orders_list = _('Current order in process').": ".$orders_list;
-        $msg         = _(
-            'This customer has already one order in process. Are you sure you want to create a new one?'
-        );
+        $msg         = _('This customer has already one order in process. Are you sure you want to create a new one?');
+        $clone_msg=sprintf(_('Order %s will be top up with this items'),'<b>'.$order_public_id.'</b>');
     } elseif ($number_orders_in_process > 1) {
         $orders_list = _('Current orders in process').": ".$orders_list;
-        $msg         = _(
-            'This customer has already several orders in process. Are you sure you want to create a new one?'
-        );
-
+        $msg         = _('This customer has already several orders in process. Are you sure you want to create a new one?');
+        $clone_msg=_("Can't clone this order because there is several orders in process");
     }
     $response = array(
         'state'             => 200,
         'orders_in_process' => $number_orders_in_process,
         'msg'               => $msg,
+        'clone_msg'         => $clone_msg,
         'orders_list'       => $orders_list
     );
     echo json_encode($response);

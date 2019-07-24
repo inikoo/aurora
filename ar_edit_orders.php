@@ -376,6 +376,14 @@ switch ($tipo) {
         );
         use_delivery_address_form_directory($data, $editor, $smarty, $db, $account, $user);
         break;
+    case 'clone_order':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'order_key' => array('type' => 'key'),
+                     )
+        );
+        clone_order($data, $editor, $smarty, $db, $account, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -384,6 +392,93 @@ switch ($tipo) {
         echo json_encode($response);
         exit;
         break;
+}
+
+
+function clone_order($data, $editor, $smarty, $db, $account, $user) {
+
+    $order    = get_object('Order', $data['order_key']);
+    $customer = get_object('Customer', $order->get('Order Customer Key'));
+
+    $target_order_key = $customer->get_order_in_process_key();
+
+    if ($target_order_key) {
+        $target_order = get_object('Order', $target_order_key);
+    }
+
+
+    if (!(isset($target_order) and $target_order->id)) {
+        $target_order = $customer->create_order('{}');
+    }
+
+    $target_items_data = array();
+    foreach ($target_order->get_items() as $_item) {
+
+        $target_items_data[$_item['product_id']] = $_item['qty'];
+
+    }
+
+
+
+    $items = $order->get_items();
+
+    foreach ($items as $item) {
+
+        if ($item['webpage_state'] == 'Online') {
+
+
+
+            if(array_key_exists($item['product_id'],$target_items_data) and $target_items_data[$item['product_id']]<=$item['qty']){
+                $skip=true;
+            }else{
+                $skip=false;
+            }
+
+
+
+            if(  $item['qty']>0   and  !$skip ){
+
+
+                $quantity = $item['qty'];
+
+
+                $dispatching_state = 'In Process';
+
+
+                $payment_state = 'Waiting Payment';
+
+
+                $product = get_object('Product', $item['product_id'] );
+                $data    = array(
+                    'date'                      => gmdate('Y-m-d H:i:s'),
+                    'item_historic_key'         => $product->get('Product Current Key'),
+                    'item_key'                  => $product->id,
+                    'Metadata'                  => '',
+                    'qty'                       => $quantity,
+                    'Current Dispatching State' => $dispatching_state,
+                    'Current Payment State'     => $payment_state
+                );
+
+
+                $target_order->update_item($data);
+
+
+            }
+
+        }
+
+
+    }
+
+
+    $response = array(
+        'state'        => 200,
+        'redirect'     => sprintf('orders/%d/%d',$target_order->get('Order Store Key'),$target_order->id),
+
+    );
+    echo json_encode($response);
+    exit;
+
 }
 
 
@@ -498,7 +593,7 @@ function use_delivery_address_form_directory($data, $editor, $smarty, $db, $acco
     }
     $metadata = array(
 
-        'class_html'             => array(
+        'class_html'     => array(
             'Order_State'                   => $order->get('State'),
             'Items_Net_Amount'              => $order->get('Items Net Amount'),
             'Shipping_Net_Amount'           => $order->get('Shipping Net Amount'),
@@ -516,28 +611,27 @@ function use_delivery_address_form_directory($data, $editor, $smarty, $db, $acco
             'Order_Number_items' => $order->get('Number Items')
 
         ),
-        'hide'                   => array('for_collection_label'),
-        'show'                   => array(
+        'hide'           => array('for_collection_label'),
+        'show'           => array(
             'deliver_to_label',
             'Order_Delivery_Address'
         ),
         //  'operations'    => $operations,
-        'state_index'            => $order->get('State Index'),
-        'to_pay'                 => $order->get('Order To Pay Amount'),
-        'total'                  => $order->get('Order Total Amount'),
-        'shipping'               => $order->get('Order Shipping Net Amount'),
-        'charges'                => $order->get('Order Charges Net Amount'),
-        'for_collection'         => $order->get('Order For Collection'),
-
+        'state_index'    => $order->get('State Index'),
+        'to_pay'         => $order->get('Order To Pay Amount'),
+        'total'          => $order->get('Order Total Amount'),
+        'shipping'       => $order->get('Order Shipping Net Amount'),
+        'charges'        => $order->get('Order Charges Net Amount'),
+        'for_collection' => $order->get('Order For Collection'),
 
 
     );
 
 
     $response = array(
-        'state'        => 200,
-        'metadata'     => $metadata,
-        'other_fields' => array(
+        'state'                                     => 200,
+        'metadata'                                  => $metadata,
+        'other_fields'                              => array(
             'Order_Delivery_Address' => array(
                 'field'           => 'Order_Delivery_Address',
                 'render'          => true,
@@ -547,16 +641,16 @@ function use_delivery_address_form_directory($data, $editor, $smarty, $db, $acco
 
             )
         ),
-        'Order_Delivery_Address_recipient' => $order->get('Order Delivery Address Recipient'),
-        'Order_Delivery_Address_organization' => $order->get('Order Delivery Address Organization'),
-        'Order_Delivery_Address_addressLine1' => $order->get('Order Delivery Address Line 1'),
-        'Order_Delivery_Address_addressLine2' => $order->get('Order Delivery Address Line 2'),
-        'Order_Delivery_Address_sortingCode' => $order->get('Order Delivery Address Sorting Code'),
-        'Order_Delivery_Address_postalCode' => $order->get('Order Delivery Address Postal Code'),
-        'Order_Delivery_Address_dependentLocality' => $order->get('Order Delivery Address Dependent Locality'),
-        'Order_Delivery_Address_locality' => $order->get('Order Delivery Address Locality'),
+        'Order_Delivery_Address_recipient'          => $order->get('Order Delivery Address Recipient'),
+        'Order_Delivery_Address_organization'       => $order->get('Order Delivery Address Organization'),
+        'Order_Delivery_Address_addressLine1'       => $order->get('Order Delivery Address Line 1'),
+        'Order_Delivery_Address_addressLine2'       => $order->get('Order Delivery Address Line 2'),
+        'Order_Delivery_Address_sortingCode'        => $order->get('Order Delivery Address Sorting Code'),
+        'Order_Delivery_Address_postalCode'         => $order->get('Order Delivery Address Postal Code'),
+        'Order_Delivery_Address_dependentLocality'  => $order->get('Order Delivery Address Dependent Locality'),
+        'Order_Delivery_Address_locality'           => $order->get('Order Delivery Address Locality'),
         'Order_Delivery_Address_administrativeArea' => $order->get('Order Delivery Address Administrative Area'),
-        'Order_Delivery_Address_country' => $order->get('Order Delivery Address Country 2 Alpha Code'),
+        'Order_Delivery_Address_country'            => $order->get('Order Delivery Address Country 2 Alpha Code'),
     );
     echo json_encode($response);
     exit;

@@ -1252,6 +1252,8 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
         $sections[$_section]['selected'] = true;
     }
 
+
+
     $right_buttons[] = array(
         'icon'  => 'sticky-note',
         'title' => _('Note for warehouse'),
@@ -1264,6 +1266,15 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
         'title' => _('Sticky note'),
         'class' => 'open_sticky_note  square_button right order_sticky_note '.($object->get('Sticky Note') == '' ? '' : 'hide')
     );
+
+    if($object->get('Order State')=='Dispatched' or  $object->get('Order State')=='Cancelled'){
+        $right_buttons[] = array(
+            'html_icon'  => '<i class="fal fa-clone"></i>',
+            'title' => _('Clone order'),
+            'class' => ' square_button right  clone_order_open_button '
+        );
+    }
+
 
 
     $title = _('Order').' <span class="id">'.$object->get('Order Public ID').'</span>';

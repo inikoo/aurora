@@ -62,7 +62,10 @@
              class=" {if isset($button.class)}{$button.class}{/if}  square_button right {if $smarty.foreach.right_buttons.first}border{/if}"
              {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"
              {/if}title="{$button.title}">
-            {if isset($button.pre_text)}{$button.pre_text}{/if} <i class="fa fa-{$button.icon} fa-fw "></i> {if isset($button.text)}{$button.text}{/if}
+            {if isset($button.pre_text)}{$button.pre_text}{/if}
+            {if !empty($button.icon)}<i class="fa fa-{$button.icon} fa-fw "></i>{/if}
+            {if !empty($button.html_icon)}{$button.html_icon}{/if}
+            {if isset($button.text)}{$button.text}{/if}
         </div>
     {/foreach}
 </div>
