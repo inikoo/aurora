@@ -4364,11 +4364,13 @@ $modules = array(
 
 
                 'tabs' => array(
+                    /*
                     'shipping_zone_schema.details' => array(
                         'label' => _('Settings'),
                         'icon'  => 'sliders-h',
                         'title' => _('Settings')
                     ),
+                    */
                     'shipping_zone_schema.zones'   => array(
                         'label' => _('Zones'),
                         'icon'  => 'layer-group',
@@ -4378,7 +4380,7 @@ $modules = array(
                             'field'  => 'Zones'
                         ),
                     ),
-
+/*
                     'shipping_zone_schema.orders'    => array(
                         'label' => _('Orders'),
                         'icon'  => 'shopping-cart',
@@ -4396,6 +4398,7 @@ $modules = array(
                             'field'  => 'Customers'
                         ),
                     ),
+*/
                     'shipping_zone_schema.history'   => array(
                         'title'         => _('History/Notes'),
                         'label'         => '',
