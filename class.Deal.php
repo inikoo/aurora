@@ -251,7 +251,6 @@ class Deal extends DB_Table {
 
         $terms = '';
 
-      //   print $this->data['Deal Terms Type'];
         switch ($this->data['Deal Terms Type']) {
 
 
@@ -339,7 +338,7 @@ class Deal extends DB_Table {
 
 
                 }else{
-
+                    $terms='<span title="'._('All orders').'">&#8704;</span>';
 
                 }
 

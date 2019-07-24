@@ -12,6 +12,11 @@
 
 $new = true;
 
+$shipping_deal_zones_schemas=$store->get_shipping_zones_schemas('Deal');
+
+
+
+$number_shipping_deal_zones_schemas=count($shipping_deal_zones_schemas);
 
 $options_trigger = array(
     'Order'    => _('Order'),
@@ -133,7 +138,7 @@ $object_fields[] = array(
 <span id="Deal_Type_Get_Item_Free_field" field_type="button_radio_options" field="Deal_Type_Get_Item_Free" onclick="toggle_deal_store_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(
                     _('Get product free'), '<span>2</span>', 1
                 ).'</span>
-<span id="Deal_Type_Shipping_Off_field" field_type="button_radio_options" field="Deal_Type_Shipping_Off" onclick="toggle_deal_store_deal_type(this)" class="button hide value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Discounted shipping').'  </span>
+<span id="Deal_Type_Shipping_Off_field" field_type="button_radio_options" field="Deal_Type_Shipping_Off" onclick="toggle_deal_store_deal_type(this)" class="button '.($number_shipping_deal_zones_schemas==0?'hide':'').' value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Discounted shipping').'  </span>
 </div>
 ',
             'label'    => _('Choose offer'),

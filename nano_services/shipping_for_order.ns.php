@@ -27,7 +27,7 @@ class shipping_for_order {
         include_once 'utils/get_addressing.php';
         include_once 'utils/object_functions.php';
 
-        $store = get_object('Store', $_data['Store Key']);
+        $shipping_zone_schema_key = $_data['shipping_zone_schema_key'];
 
 
         $country_code = $_data['Order Data']['Order Delivery Address Country 2 Alpha Code'];
@@ -39,63 +39,29 @@ class shipping_for_order {
         }
 
 
-        if ($store->id) {
-            $shipping_zone_schema_key = $store->properties['current_shipping_zone_schema'];
+        $sql = sprintf(
+            'select `Shipping Zone Key`,`Shipping Zone Code`,`Shipping Zone Price`,`Shipping Zone Territories` from `Shipping Zone Dimension` where `Shipping Zone Shipping Zone Schema Key`=%d and `Shipping Zone Type`="Normal"  order by `Shipping Zone Position` desc ',
+            $shipping_zone_schema_key
+        );
 
-            $sql = sprintf(
-                'select `Shipping Zone Key`,`Shipping Zone Code`,`Shipping Zone Price`,`Shipping Zone Territories` from `Shipping Zone Dimension` where `Shipping Zone Shipping Zone Schema Key`=%d and `Shipping Zone Type`="Normal"  order by `Shipping Zone Position` desc ',
-                $shipping_zone_schema_key
-            );
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
 
 
-                    $zone = get_zone_object(
-                        [
-                            'id'          => $row['Shipping Zone Key'],
-                            'label'       => $row['Shipping Zone Code'],
-                            'territories' => json_decode($row['Shipping Zone Territories'], true)
-                        ]
-                    );
+                $zone = get_zone_object(
+                    [
+                        'id'          => $row['Shipping Zone Key'],
+                        'label'       => $row['Shipping Zone Code'],
+                        'territories' => json_decode($row['Shipping Zone Territories'], true)
+                    ]
+                );
 
 
-                    $address = get_address_object();
-                    $address = $address
-                        ->withCountryCode($country_code)
-                        ->withPostalCode($post_code);
+                $address = get_address_object();
+                $address = $address->withCountryCode($country_code)->withPostalCode($post_code);
 
-                    if ($zone->match($address)) {
+                if ($zone->match($address)) {
 
-
-                        $shipping_price_data = json_decode($row['Shipping Zone Price'], true);
-
-
-                        $price_data = $this->get_price_from_method($shipping_price_data, $_data);
-
-                        $price_data['shipping_zone_key']        = $row['Shipping Zone Key'];
-                        $price_data['shipping_zone_schema_key'] = $shipping_zone_schema_key;
-
-                        return $price_data;
-
-                    }
-
-
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-
-            $sql = sprintf(
-                'select `Shipping Zone Key`,`Shipping Zone Code`,`Shipping Zone Price`,`Shipping Zone Territories` from `Shipping Zone Dimension` where `Shipping Zone Shipping Zone Schema Key`=%d and `Shipping Zone Type`="Failover"  ',
-                $shipping_zone_schema_key
-            );
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
 
                     $shipping_price_data = json_decode($row['Shipping Zone Price'], true);
 
@@ -106,10 +72,31 @@ class shipping_for_order {
                     $price_data['shipping_zone_schema_key'] = $shipping_zone_schema_key;
 
                     return $price_data;
+
                 }
+
+
             }
-        } else {
-            return false;
+        }
+
+
+        $sql = sprintf(
+            'select `Shipping Zone Key`,`Shipping Zone Code`,`Shipping Zone Price`,`Shipping Zone Territories` from `Shipping Zone Dimension` where `Shipping Zone Shipping Zone Schema Key`=%d and `Shipping Zone Type`="Failover"  ', $shipping_zone_schema_key
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                $shipping_price_data = json_decode($row['Shipping Zone Price'], true);
+
+
+                $price_data = $this->get_price_from_method($shipping_price_data, $_data);
+
+                $price_data['shipping_zone_key']        = $row['Shipping Zone Key'];
+                $price_data['shipping_zone_schema_key'] = $shipping_zone_schema_key;
+
+                return $price_data;
+            }
         }
 
 
@@ -172,4 +159,4 @@ class shipping_for_order {
 }
 
 
-?>
+

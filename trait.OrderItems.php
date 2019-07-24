@@ -434,6 +434,12 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
                 $show[] = 'Charges_Discount_Amount_tr';
             }
 
+            if ($this->get('Order Shipping Discount Amount') == 0) {
+                $hide[] = 'Shipping_Gross_Amount';
+            } else {
+                $show[] = 'Shipping_Gross_Amount';
+            }
+
 
             if ($this->get('Order Deal Amount Off') == 0) {
                 $hide[] = 'Deal_Amount_Off_tr';
@@ -458,6 +464,7 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
                     'Total_Amount_Account_Currency' => $this->get('Total Amount Account Currency'),
                     'To_Pay_Amount'                 => $this->get('To Pay Amount'),
                     'Payments_Amount'               => $this->get('Payments Amount'),
+                    'Shipping_Gross_Amount'         => $this->get('Shipping Gross Amount'),
 
                     'Profit_Amount'                  => $this->get('Profit Amount'),
                     'Order_Margin'                   => $this->get('Margin'),
@@ -466,8 +473,8 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
                     'Charges_Discount_Amount'        => $this->get('Charges Discount Amount'),
                     'Charges_Discount_Percentage'    => $this->get('Charges Discount Percentage'),
                     'Amount_Off_Discount_Percentage' => $this->get('Amount Off Percentage'),
-                    'To_Pay_Amount_Absolute'        => $this->get('To Pay Amount Absolute'),
-                    'Order_Estimated_Weight'        => $this->get('Estimated Weight'),
+                    'To_Pay_Amount_Absolute'         => $this->get('To Pay Amount Absolute'),
+                    'Order_Estimated_Weight'         => $this->get('Estimated Weight'),
 
 
                 ),
