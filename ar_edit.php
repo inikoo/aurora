@@ -274,20 +274,20 @@ switch ($tipo) {
 
                      )
         );
-        transfer_customer_credit_to($account, $db, $data, $editor,$user);
+        transfer_customer_credit_to($account, $db, $data, $editor, $user);
         break;
     case 'add_funds_to_customer_account':
         $data = prepare_values(
             $_REQUEST, array(
-                         'customer_key'        => array('type' => 'key'),
-                         'amount'              => array('type' => 'amount'),
-                         'note'                => array('type' => 'string'),
+                         'customer_key'            => array('type' => 'key'),
+                         'amount'                  => array('type' => 'amount'),
+                         'note'                    => array('type' => 'string'),
                          'credit_transaction_type' => array('type' => 'string'),
 
 
                      )
         );
-        add_funds_to_customer_account($account, $db, $data, $editor,$user);
+        add_funds_to_customer_account($account, $db, $data, $editor, $user);
         break;
 
 
@@ -995,7 +995,7 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 
         } elseif ($object->get_object_name() == 'Deal Campaign') {
 
-           // $response['request'] = sprintf('offers/%d/%s', $object->get('Deal Campaign Store Key'));
+            // $response['request'] = sprintf('offers/%d/%s', $object->get('Deal Campaign Store Key'));
 
         } elseif ($object->get_object_name() == 'Supplier Delivery') {
 
@@ -1249,14 +1249,43 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                 }
 
 
+                                //todo send shipping_deal_zones_schemas key from the UI and just test it if is valid
+
+                                $shipping_deal_zones_schemas        = $store->get_shipping_zones_schemas('Deal', 'objects');
+                                $number_shipping_deal_zones_schemas = count($shipping_deal_zones_schemas);
+
+                                if ($number_shipping_deal_zones_schemas == 0) {
+                                    $response = array(
+                                        'state' => 400,
+                                        'resp'  => 'there is no discounted shipping zone schema for this store'
+                                    );
+                                    echo json_encode($response);
+                                    exit;
+                                } elseif ($number_shipping_deal_zones_schemas > 1) {
+
+
+                                    $response = array(
+                                        'state' => 400,
+                                        'resp'  => 'there is more than one discounted shipping zone schema for this store'
+                                    );
+                                    echo json_encode($response);
+                                    exit;
+                                } else {
+
+                                    $shipping_deal_zones_schema = array_pop($shipping_deal_zones_schemas);
+
+                                }
+
+
                                 $new_component_data = array(
+
 
                                     'Deal Component Allowance Label'        => _('Discounted shipping'),
                                     'Deal Component Allowance Type'         => 'Shipping Off',
-                                    'Deal Component Allowance Target'       => 'Order',
+                                    'Deal Component Allowance Target'       => 'Shipping',
                                     'Deal Component Allowance Target Type'  => 'No Items',
-                                    'Deal Component Allowance Target Key'   => '',
-                                    'Deal Component Allowance Target Label' => '',
+                                    'Deal Component Allowance Target Key'   => $shipping_deal_zones_schema->id,
+                                    'Deal Component Allowance Target Label' => $shipping_deal_zones_schema->get('Label'),
                                     'Deal Component Allowance'              => 'Shipping Off'
                                 );
 
@@ -1382,14 +1411,43 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                 $deal_new_data['Deal Allowance Label'] = _('Discounted shipping');
 
 
+                                //todo send shipping_deal_zones_schemas key from the UI and just test it if is valid
+
+                                $shipping_deal_zones_schemas        = $store->get_shipping_zones_schemas('Deal', 'objects');
+                                $number_shipping_deal_zones_schemas = count($shipping_deal_zones_schemas);
+
+                                if ($number_shipping_deal_zones_schemas == 0) {
+                                    $response = array(
+                                        'state' => 400,
+                                        'resp'  => 'there is no discounted shipping zone schema for this store'
+                                    );
+                                    echo json_encode($response);
+                                    exit;
+                                } elseif ($number_shipping_deal_zones_schemas > 1) {
+
+
+                                    $response = array(
+                                        'state' => 400,
+                                        'resp'  => 'there is more than one discounted shipping zone schema for this store'
+                                    );
+                                    echo json_encode($response);
+                                    exit;
+                                } else {
+
+
+
+                                    $shipping_deal_zones_schema = array_pop($shipping_deal_zones_schemas);
+
+                                }
+
                                 $new_component_data = array(
 
                                     'Deal Component Allowance Label'        => _('Discounted shipping'),
                                     'Deal Component Allowance Type'         => 'Shipping Off',
-                                    'Deal Component Allowance Target'       => 'Order',
+                                    'Deal Component Allowance Target'       => 'Shipping',
                                     'Deal Component Allowance Target Type'  => 'No Items',
-                                    'Deal Component Allowance Target Key'   => '',
-                                    'Deal Component Allowance Target Label' => '',
+                                    'Deal Component Allowance Target Key'   => $shipping_deal_zones_schema->id,
+                                    'Deal Component Allowance Target Label' => $shipping_deal_zones_schema->get('Label'),
                                     'Deal Component Allowance'              => 'Shipping Off'
                                 );
 
@@ -1656,15 +1714,41 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                                 $deal_new_data['Deal Allowance Label'] = _('Discounted shipping');
 
+                                //todo send shipping_deal_zones_schemas key from the UI and just test it if is valid
+
+                                $shipping_deal_zones_schemas        = $store->get_shipping_zones_schemas('Deal', 'objects');
+                                $number_shipping_deal_zones_schemas = count($shipping_deal_zones_schemas);
+
+                                if ($number_shipping_deal_zones_schemas == 0) {
+                                    $response = array(
+                                        'state' => 400,
+                                        'resp'  => 'there is no discounted shipping zone schema for this store'
+                                    );
+                                    echo json_encode($response);
+                                    exit;
+                                } elseif ($number_shipping_deal_zones_schemas > 1) {
+
+
+                                    $response = array(
+                                        'state' => 400,
+                                        'resp'  => 'there is more than one discounted shipping zone schema for this store'
+                                    );
+                                    echo json_encode($response);
+                                    exit;
+                                } else {
+
+                                    $shipping_deal_zones_schema = array_pop($shipping_deal_zones_schemas);
+
+                                }
 
                                 $new_component_data = array(
 
                                     'Deal Component Allowance Label'        => _('Discounted shipping'),
                                     'Deal Component Allowance Type'         => 'Shipping Off',
-                                    'Deal Component Allowance Target'       => 'Order',
-                                    'Deal Component Allowance Target Type'  => 'Items',
-                                    'Deal Component Allowance Target Key'   => '',
-                                    'Deal Component Allowance Target Label' => '',
+                                    'Deal Component Allowance Target'       => 'Shipping',
+                                    'Deal Component Allowance Target Type'  => 'No Items',
+                                    'Deal Component Allowance Target Key'   => $shipping_deal_zones_schema->id,
+                                    'Deal Component Allowance Target Label' => $shipping_deal_zones_schema->get('Label'),
                                     'Deal Component Allowance'              => 'Shipping Off'
                                 );
 
@@ -2152,15 +2236,41 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                         $deal_new_data['Deal Terms']           = 1;
 
 
-                        $new_component_data = array(
+                        //todo send shipping_deal_zones_schemas key from the UI and just test it if is valid
 
+                        $shipping_deal_zones_schemas        = $store->get_shipping_zones_schemas('Deal', 'Objects');
+                        $number_shipping_deal_zones_schemas = count($shipping_deal_zones_schemas);
+
+                        if (count($number_shipping_deal_zones_schemas) == 0) {
+                            $response = array(
+                                'state' => 400,
+                                'resp'  => 'there is no discounted shipping zone schema for this store'
+                            );
+                            echo json_encode($response);
+                            exit;
+                        } elseif (count($number_shipping_deal_zones_schemas) > 1) {
+
+
+                            $response = array(
+                                'state' => 400,
+                                'resp'  => 'there is more than one discounted shipping zone schema for this store'
+                            );
+                            echo json_encode($response);
+                            exit;
+                        } else {
+
+                            $shipping_deal_zones_schema = array_pop($shipping_deal_zones_schemas);
+
+                        }
+
+                        $new_component_data = array(
 
                             'Deal Component Allowance Label'        => _('Discounted shipping'),
                             'Deal Component Allowance Type'         => 'Shipping Off',
-                            'Deal Component Allowance Target'       => 'Order',
-                            'Deal Component Allowance Target Type'  => 'Items',
-                            'Deal Component Allowance Target Key'   => '',
-                            'Deal Component Allowance Target Label' => '',
+                            'Deal Component Allowance Target'       => 'Shipping',
+                            'Deal Component Allowance Target Type'  => 'No Items',
+                            'Deal Component Allowance Target Key'   => $shipping_deal_zones_schema->id,
+                            'Deal Component Allowance Target Label' => $shipping_deal_zones_schema->get('Label'),
                             'Deal Component Allowance'              => 'Shipping Off'
                         );
 
@@ -2347,14 +2457,14 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             if (!$parent->error and $object->id) {
 
-                $pcard = '';
+                $pcard        = '';
                 $updated_data = array();
 
-                if($object->get('Purchase Order Production')=='Yes'){
-                    $redirect     = sprintf('production/%d/order/%d', $object->get('Purchase Order Parent Key'),$object->id);
+                if ($object->get('Purchase Order Production') == 'Yes') {
+                    $redirect = sprintf('production/%d/order/%d', $object->get('Purchase Order Parent Key'), $object->id);
 
-                }else{
-                    $redirect     = sprintf('%s/%d/order/%d', strtolower($object->get('Purchase Order Parent')), $object->get('Purchase Order Parent Key'),$object->id);
+                } else {
+                    $redirect = sprintf('%s/%d/order/%d', strtolower($object->get('Purchase Order Parent')), $object->get('Purchase Order Parent Key'), $object->id);
 
                 }
             }
@@ -2850,7 +2960,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $smarty->assign('object', $object);
 
 
-                $qr_code=json_encode(
+                $qr_code = json_encode(
                     array(
                         'url'    => $object->get('Address'),
                         'handle' => $object->get('Code'),
@@ -3015,7 +3125,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             if ($object->id) {
 
 
-                $pcard = '';
+                $pcard        = '';
                 $redirect     = sprintf('prospects/%d/template/%d', $data['parent_key'], $object->id);
                 $updated_data = array();
             }
@@ -3440,7 +3550,7 @@ function create_time_series($account, $db, $data, $editor) {
 
 function create_isf($account, $db, $data, $editor) {
 
-//No longer in use
+    //No longer in use
     /*
     require_once 'utils/new_fork.php';
 
@@ -3630,68 +3740,73 @@ function disassociate_category($account, $db, $data, $editor) {
 }
 
 
-function transfer_customer_credit_to($account, $db, $data, $editor,$user) {
+function transfer_customer_credit_to($account, $db, $data, $editor, $user) {
 
     include_once 'utils/currency_functions.php';
 
     $customer         = get_object('Customer', $data['customer_key']);
     $customer->editor = $editor;
 
-    $store         = get_object('Store', $customer->get('Store Key'));
+    $store = get_object('Store', $customer->get('Store Key'));
 
     $payment_account         = get_object('PaymentAccount', $data['payment_account_key']);
     $payment_account->editor = $editor;
 
-    $date=gmdate('Y-m-d H:i:s');
+    $date = gmdate('Y-m-d H:i:s');
 
 
-    if(!is_numeric($data['amount'])  or $data['amount']<=0  ){
-        $response = array('state' => 400,'msg'=>'invalid amount');
+    if (!is_numeric($data['amount']) or $data['amount'] <= 0) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'invalid amount'
+        );
         echo json_encode($response);
         exit;
     }
 
 
-    if($data['amount']>$customer->get('Customer Account Balance') ){
-        $response = array('state' => 400,'msg'=>'amount greater current customer credits');
+    if ($data['amount'] > $customer->get('Customer Account Balance')) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'amount greater current customer credits'
+        );
         echo json_encode($response);
         exit;
     }
 
 
-    $exchange=currency_conversion($db, $store->get('Store Currency Code'), $account->get('Account Currency Code'));
+    $exchange = currency_conversion($db, $store->get('Store Currency Code'), $account->get('Account Currency Code'));
 
     $payment_data = array(
-        'Payment Store Key'   => $customer->get('Store Key'),
+        'Payment Store Key' => $customer->get('Store Key'),
 
-        'Payment Customer Key'                   => $store->id,
-        'Payment Transaction Amount'             => -$data['amount'],
-        'Payment Currency Code'                  => $store->get('Store Currency Code'),
+        'Payment Customer Key'       => $store->id,
+        'Payment Transaction Amount' => -$data['amount'],
+        'Payment Currency Code'      => $store->get('Store Currency Code'),
 
-        'Payment Sender Email'                   => $customer->get('Customer Mail Plain Email'),
-        'Payment Sender Card Type'               => '',
-        'Payment Created Date'                   => $date,
-        'Payment Completed Date'                 => $date,
-        'Payment Last Updated Date'              => $date,
-        'Payment Transaction Status'             => 'Completed',
-        'Payment Transaction ID'                 => $data['reference'],
-        'Payment Method'                         => $payment_account->get('Payment Account Type'),
-        'Payment Location'                       => 'Customer',
-        'Payment Metadata'                       => '',
-        'Payment Submit Type'                    => 'Manual',
-        'Payment Currency Exchange Rate'         => $exchange,
-        'Payment User Key'                       => $user->id,
-        'Payment Type'=>'Return'
+        'Payment Sender Email'           => $customer->get('Customer Mail Plain Email'),
+        'Payment Sender Card Type'       => '',
+        'Payment Created Date'           => $date,
+        'Payment Completed Date'         => $date,
+        'Payment Last Updated Date'      => $date,
+        'Payment Transaction Status'     => 'Completed',
+        'Payment Transaction ID'         => $data['reference'],
+        'Payment Method'                 => $payment_account->get('Payment Account Type'),
+        'Payment Location'               => 'Customer',
+        'Payment Metadata'               => '',
+        'Payment Submit Type'            => 'Manual',
+        'Payment Currency Exchange Rate' => $exchange,
+        'Payment User Key'               => $user->id,
+        'Payment Type'                   => 'Return'
 
 
     );
-    $return = $payment_account->create_payment($payment_data);
+    $return       = $payment_account->create_payment($payment_data);
 
     $sql = sprintf(
         'INSERT INTO `Credit Transaction Fact` 
                     (`Credit Transaction Type`,`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Payment Key`) 
-                    VALUES ("Return",%s,%.2f,%s,%f,%d,%d) ', prepare_mysql($date), -$data['amount'], prepare_mysql($store->get('Store Currency Code')), $exchange,
-        $customer->id, $return->id
+                    VALUES ("Return",%s,%.2f,%s,%f,%d,%d) ', prepare_mysql($date), -$data['amount'], prepare_mysql($store->get('Store Currency Code')), $exchange, $customer->id, $return->id
 
 
     );
@@ -3702,12 +3817,12 @@ function transfer_customer_credit_to($account, $db, $data, $editor,$user) {
     $credit_key = $db->lastInsertId();
 
 
-
     $history_data = array(
-        'History Abstract' => '<i class="fa fa-reply"  title="'._('Customer credit returned').'" ></i> '.money($data['amount'], $store->get('Store Currency Code')).' <i class="fal fa-sack-dollar"></i>  <span class="link" onclick="change_view(\'payments/'.$store->id.'/'.$return->id.'\')">'.$return->get('Payment Transaction ID').'</span>'.($data['note'] != '' ? ', '.$data['note'] : ''),
+        'History Abstract' => '<i class="fa fa-reply"  title="'._('Customer credit returned').'" ></i> '.money($data['amount'], $store->get('Store Currency Code')).' <i class="fal fa-sack-dollar"></i>  <span class="link" onclick="change_view(\'payments/'.$store->id.'/'
+            .$return->id.'\')">'.$return->get('Payment Transaction ID').'</span>'.($data['note'] != '' ? ', '.$data['note'] : ''),
 
-        'History Details'  => '',
-        'Action'           => 'edited'
+        'History Details' => '',
+        'Action'          => 'edited'
     );
 
     $history_key = $customer->add_subject_history(
@@ -3724,10 +3839,8 @@ function transfer_customer_credit_to($account, $db, $data, $editor,$user) {
     $db->exec($sql);
 
 
-
     $customer->update_account_balance();
     $customer->update_credit_account_running_balances();
-
 
 
     $response = array('state' => 200);
@@ -3735,36 +3848,35 @@ function transfer_customer_credit_to($account, $db, $data, $editor,$user) {
 
 }
 
-function add_funds_to_customer_account($account, $db, $data, $editor,$user) {
+function add_funds_to_customer_account($account, $db, $data, $editor, $user) {
 
     include_once 'utils/currency_functions.php';
 
     $customer         = get_object('Customer', $data['customer_key']);
     $customer->editor = $editor;
 
-    $store         = get_object('Store', $customer->get('Store Key'));
+    $store = get_object('Store', $customer->get('Store Key'));
 
 
+    $date = gmdate('Y-m-d H:i:s');
 
-    $date=gmdate('Y-m-d H:i:s');
 
-
-    if(!is_numeric($data['amount'])  or $data['amount']<=0  ){
-        $response = array('state' => 400,'msg'=>'invalid amount');
+    if (!is_numeric($data['amount']) or $data['amount'] <= 0) {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'invalid amount'
+        );
         echo json_encode($response);
         exit;
     }
 
 
-
-
-    $exchange=currency_conversion($db, $store->get('Store Currency Code'), $account->get('Account Currency Code'));
+    $exchange = currency_conversion($db, $store->get('Store Currency Code'), $account->get('Account Currency Code'));
 
     $sql = sprintf(
         'INSERT INTO `Credit Transaction Fact` 
                     (`Credit Transaction Type`,`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`) 
-                    VALUES (%s,%s,%.2f,%s,%f,%d) ', prepare_mysql($data['credit_transaction_type']),prepare_mysql($date), $data['amount'], prepare_mysql($store->get('Store Currency Code')), $exchange,
-        $customer->id
+                    VALUES (%s,%s,%.2f,%s,%f,%d) ', prepare_mysql($data['credit_transaction_type']), prepare_mysql($date), $data['amount'], prepare_mysql($store->get('Store Currency Code')), $exchange, $customer->id
 
     );
 
@@ -3774,12 +3886,12 @@ function add_funds_to_customer_account($account, $db, $data, $editor,$user) {
     $credit_key = $db->lastInsertId();
 
 
-
     $history_data = array(
-        'History Abstract' => '<i class="fal fa-sign-in "  title="'._('Funds added to customer account').'" ></i> '.money($data['amount'], $store->get('Store Currency Code')).' <i class="fal  fa-mail-bulk"  title="'._('To pay for the shipping of a return').'" ></i>  '.($data['note'] != '' ? ', '.$data['note'] : ''),
+        'History Abstract' => '<i class="fal fa-sign-in "  title="'._('Funds added to customer account').'" ></i> '.money($data['amount'], $store->get('Store Currency Code')).' <i class="fal  fa-mail-bulk"  title="'._('To pay for the shipping of a return').'" ></i>  '
+            .($data['note'] != '' ? ', '.$data['note'] : ''),
 
-        'History Details'  => '',
-        'Action'           => 'edited'
+        'History Details' => '',
+        'Action'          => 'edited'
     );
 
     $history_key = $customer->add_subject_history(
@@ -3796,10 +3908,8 @@ function add_funds_to_customer_account($account, $db, $data, $editor,$user) {
     $db->exec($sql);
 
 
-
     $customer->update_account_balance();
     $customer->update_credit_account_running_balances();
-
 
 
     $response = array('state' => 200);

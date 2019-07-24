@@ -926,12 +926,24 @@
             </tr>
             <tr>
                 <td class="label" id="Shipping_Net_Amount_label">{t}Shipping{/t}</td>
-                <td class="aright "><span id="Shipping_Net_Amount_form" class="hide"><i id="set_shipping_as_auto" class="fa fa-magic button" onClick="set_shipping_as_auto()" aria-hidden="true"></i>  <input
+
+
+
+
+                <td class="aright ">
+
+                    <span class="{if $order->get('Order Shipping Discount Amount')==0}hide{/if} Shipping_Gross_Amount strikethrough">{$order->get('Shipping Gross Amount')}</span>
+
+                    <span id="Shipping_Net_Amount_form" class="hide"><i id="set_shipping_as_auto" class="fa fa-magic button" onClick="set_shipping_as_auto()" aria-hidden="true"></i>  <input
                                 value="{$order->get('Order Shipping Net Amount')}" ovalue="{$order->get('Order Shipping Net Amount')}" style="width: 100px" id="Shipping_Net_Amount_input"><i id="Shipping_Net_Amount_save"
                                                                                                                                                                                                class="fa fa-cloud save"
                                                                                                                                                                                                onClick="save_shipping_value()"
                                                                                                                                                                                                aria-hidden="true"></i> </span><span
-                            id="Shipping_Net_Amount" class="Shipping_Net_Amount {if $order->get('State Index')<90 and $order->get('State Index')>0}button{/if}">{$order->get('Shipping Net Amount')}<span></td>
+                            id="Shipping_Net_Amount" class="Shipping_Net_Amount {if $order->get('State Index')<90 and $order->get('State Index')>0}button{/if}">
+                        {$order->get('Shipping Net Amount')}
+
+
+                        <span></td>
             </tr>
             <tr class="Deal_Amount_Off_tr  {if $order->get('Order Deal Amount Off')==0}hide{/if}">
                 <td class="label">{t}Amount off{/t}</td>

@@ -46,9 +46,13 @@ switch ($_REQUEST['action']) {
         }
 
 
+        $store = get_object('Store', $_REQUEST['store_key']);
+        $shipping_zone_schema_key = $store->properties['current_shipping_zone_schema'];
+
 
         $_data = array(
-            'Store Key'  => $_REQUEST['store_key'],
+            'shipping_zone_schema_key'  => $shipping_zone_schema_key,
+
             'Order Data' => array(
                 'Order Items Net Amount'                      => (isset($_REQUEST['items_net_amount'])?$_REQUEST['items_net_amount']:0),
                 'Order Delivery Address Postal Code'          => (isset($_REQUEST['postal_code'])?$_REQUEST['postal_code']:''),

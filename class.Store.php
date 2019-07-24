@@ -3803,12 +3803,57 @@ class Store extends DB_Table {
 
     }
 
+
+    function get_shipping_zones_schemas($type = 'Current', $scope = 'keys') {
+
+        $shipping_zones_schemas = array();
+
+
+        switch ($type) {
+            case 'Current':
+                $where = 'and `Shipping Zone Schema Type`="Current" and `Shipping Zone Schema Store State`="Active"  ';
+                break;
+            case 'Deal':
+                $where = 'and `Shipping Zone Schema Type`="Deal" and `Shipping Zone Schema Store State`="Active"  ';
+                break;
+            case 'InReserve':
+                $where = 'and `Shipping Zone Schema Type`="InReserve" and `Shipping Zone Schema Store State`="Active"  ';
+                break;
+            case 'Active':
+                $where = 'and `Shipping Zone Schema Store State`="Active"  ';
+                break;
+            case 'Inactive':
+                $where = 'and `Shipping Zone Schema Store State`="Inactive"  ';
+                break;
+            default:
+                $where = '';
+
+        }
+
+        $sql = sprintf(
+            "SELECT  `Shipping Zone Schema Key` FROM `Shipping Zone Schema Dimension` WHERE `Shipping Zone Schema Store Key`=%d  %s ", $this->id, $where
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+                if ($scope == 'objects') {
+                    $shipping_zones_schemas[$row['Shipping Zone Schema Key']] = get_object('Shipping Zone Schema', $row['Shipping Zone Schema Key']);
+                } else {
+                    $shipping_zones_schemas[$row['Shipping Zone Schema Key']] = $row['Shipping Zone Schema Key'];
+                }
+
+
+            }
+        }
+
+
+        return $shipping_zones_schemas;
+
+    }
+
     function get_websites($scope = 'keys') {
 
-
-        if ($scope == 'objects') {
-            include_once 'class.Website.php';
-        }
 
         $sql = sprintf(
             "SELECT  `Website Key` FROM `Website Dimension` WHERE `Website Store Key`=%d ", $this->id
@@ -3820,16 +3865,13 @@ class Store extends DB_Table {
             foreach ($result as $row) {
 
                 if ($scope == 'objects') {
-                    $websites[$row['Website Key']] = new Website($row['Website Key']);
+                    $websites[$row['Website Key']] = get_object('Website', $row['Website Key']);
                 } else {
                     $websites[$row['Website Key']] = $row['Website Key'];
                 }
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
