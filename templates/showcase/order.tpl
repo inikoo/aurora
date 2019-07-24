@@ -171,7 +171,7 @@
     </ul>
 </div>
 
-<div id="order" class="order" style="display: flex;" data-object='{$object_data}' order_key="{$order->id}"  data-state_index="{$order->get('State Index')}" >
+<div id="order" class="order" style="display: flex;" data-object='{$object_data}' order_key="{$order->id}"  data-customer_key="{$order->get('Order Customer Key')}"  data-state_index="{$order->get('State Index')}" >
     <div class="block" style=" align-items: stretch;flex: 1">
         <div class="data_container" style="padding:5px 10px">
             <div class="data_field  " style="margin-bottom:10px">
@@ -1096,6 +1096,20 @@
     </div>
 </div>
 
+<div id="clone_order_dialog" class="hide" style="z-index: 2000;background-color: #fff; position:absolute;width: 300px;padding:  20px;border:1px solid #ccc">
+
+    <i style="position: absolute;top:5px;left:5px" class="fa fa-window-close button" onClick="close_clone_order()"></i>
+
+    <table style="width: 100%;">
+        <tr>
+            <td class="clone_order_msg"></td>
+        </tr>
+        <tr>
+            <td onClick="clone_order(this)" class="save valid changed">{t}Clone order{/t} <i class="fa fa-clone"></i> </td>
+        </tr>
+    </table>
+
+</div>
 
 <script>
 
@@ -1207,10 +1221,10 @@
                     }
 
                     if (data.metadata.to_pay <= 0) {
-  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
-} else {
-  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
-}
+                        $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+                    } else {
+                        $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+                    }
 
 
                     if (data.metadata.to_pay == 0) {
@@ -1690,5 +1704,106 @@
      console.log('to do')
 
     }
+
+    $(".clone_order_open_button").on( 'click',function () {
+        open_clone_order()
+    })
+
+
+    function close_clone_order(){
+        $('#clone_order_dialog').addClass('hide')
+    }
+
+    function open_clone_order() {
+
+
+        if (!$('.clone_order_open_button i').hasClass('fa-clone')) {
+            return;
+        }
+
+        $('.clone_order_open_button i').removeClass('fa-clone').addClass('fa-spinner fa-spin')
+
+
+        var request = '/ar_find.php?tipo=orders_in_process&customer_key=' + $('#order').data('customer_key')
+
+        $.getJSON(request, function (data) {
+
+            $('.clone_order_open_button i').addClass('fa-clone').removeClass('fa-spinner fa-spin')
+
+
+            $('#clone_order_dialog').find('.clone_order_msg').html(data.clone_msg)
+
+            if (data.orders_in_process > 1) {
+                $('#clone_order_dialog').find('.save').removeClass('valid').addClass('invalid')
+            }
+
+
+            $('#clone_order_dialog').removeClass('hide').offset({
+                top:  $('.clone_order_open_button').offset().top  + $('.clone_order_open_button').height(), left: $('.clone_order_open_button').offset().left-$('#clone_order_dialog').width()
+            })
+
+
+        })
+
+    }
+
+    function clone_order(element){
+
+        if($(element).hasClass('invalid')){
+            return ;
+        }
+
+        var icon=$(element).find('i')
+
+        if(icon.hasClass('wait')){
+            return ;
+        }
+
+        icon.addClass('wait fa-spinner fa-spin').removeClass('fa-clone')
+
+
+
+        var request = '/ar_edit_orders.php?tipo=clone_order&order_key='+ $('#order').attr('order_key')
+        console.log(request)
+        var form_data = new FormData();
+        form_data.append("tipo", 'clone_order')
+        form_data.append("order_key", $('#order').attr('order_key'))
+
+        var request = $.ajax({
+            url: "/ar_edit_orders.php",
+            data: form_data,
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            dataType: 'json'
+        })
+
+        request.done(function (data) {
+
+            if (data.state == 200) {
+               change_view(data.redirect)
+
+            }
+            else if (data.state == 400) {
+                alert(data.msg)
+
+
+            }
+        })
+
+        request.fail(function (jqXHR, textStatus) {
+            console.log(textStatus)
+
+            console.log(jqXHR.responseText)
+
+
+        });
+
+
+
+
+
+    }
+
 
 </script>

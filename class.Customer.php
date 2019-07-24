@@ -2090,10 +2090,6 @@ class Customer extends Subject {
 
                 $order_key = $row['Order Key'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
