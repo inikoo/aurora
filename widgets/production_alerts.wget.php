@@ -85,14 +85,14 @@ function get_production_alerts($supplier, $db, $account, $user, $smarty) {
     );
 
 
- //   if ($data['ok']) {
+    if ($data['ok']) {
 
 
         $smarty->assign('data', $data);
         $html .= $smarty->fetch(
             'dashboard/supplier.parts_to_replenish.dbard.tpl'
         );
-   // }
+    }
 
 
 
@@ -104,7 +104,12 @@ function get_production_alerts($supplier, $db, $account, $user, $smarty) {
         $supplier->get('Supplier Max Percentage Part Locations To Replenish')
 
     );
+    $data = get_widget_data(
+      0,0,2,3
+
+    );
     if ($data['ok']) {
+
 
 
         $smarty->assign('data', $data);
@@ -130,20 +135,19 @@ function get_widget_data($value, $total, $min, $max) {
         'min'       => '',
         'max'       => ''
     );
-
     $data['ok']    = true;
 
+    $data['value'] = $value;
+    $data['total'] = $total;
+
+
     if ($total == 0) {
-        $data['value'] = $value;
-        $data['total'] = 0;
         $percentage    = 1;
+        $data['total'] = 1;
+
     }else{
-        $data['value'] = $value;
-        $data['total'] = $total;
         $percentage    = $value / $total;
     }
-
-
 
 
     if ($percentage < $min) {
