@@ -68,7 +68,9 @@ switch ($tipo) {
     case 'orders_with_part':
         production_orders_with_part(get_table_parameters(), $db, $user, $account);
         break;
-
+    case 'replenishments':
+        replenishments(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -77,6 +79,74 @@ switch ($tipo) {
         echo json_encode($response);
         exit;
         break;
+}
+
+
+function replenishments($_data, $db, $user, $account) {
+
+
+    $rtext_label = 'replenishment';
+    include_once 'prepare_table/init.php';
+
+    $db->exec('SET SESSION group_concat_max_len = 1000000;');
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+    foreach ($db->query($sql) as $data) {
+
+        $locations_data = preg_split('/,/', $data['location_data']);
+
+
+        $stock = '<div border=0 style="xwidth:150px">';
+
+        foreach ($locations_data as $raw_location_data) {
+            if ($raw_location_data != '') {
+                $_locations_data = preg_split('/\:/', $raw_location_data);
+                if ($_locations_data[0] != $data['Location Key']) {
+                    $stock .= '<div style="clear:both">';
+                    $stock .= '<div style="float:left;min-width:100px;">
+<span class="link"  onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$_locations_data[0].'\')" >'.$_locations_data[1].'</span>
+</div><div style="float:left;min-width:100px;text-align:right">'.number($_locations_data[3]).'</div>';
+                    $stock .= '</div>';
+                }
+            }
+        }
+        $stock .= '</div>';
+
+
+        $adata[] = array(
+            'id'                    => (integer)$data['Location Key'],
+            'location'              => ($data['Warehouse Flag Key'] ? sprintf(
+                    '<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>', strtolower($data['Warehouse Flag Color']), $data['Warehouse Flag Label']
+                ) : '<i class="far fa-flag super_discreet" aria-hidden="true"></i>').' <span class="link" onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$data['Location Key'].'\')">'.$data['Location Code'].'</span>',
+            'part'                  => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
+            'other_locations_stock' => $stock,
+            'description'           => $data['Part Package Description'],
+            'quantity'              => number($data['Quantity On Hand']),
+            'ordered_quantity'      => number($data['ordered_quantity']),
+            'effective_stock'       => number($data['effective_stock']),
+            'recommended_quantity'  => ' <span class="padding_left_5">(<span style="display: inline-block;min-width: 20px;text-align: center">'.number($data['Minimum Quantity']).'</span>,<span style="display: inline-block;min-width: 25px;text-align: center">'.number(
+                    $data['Maximum Quantity']
+                ).'</span>)</span>'
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
 }
 
 

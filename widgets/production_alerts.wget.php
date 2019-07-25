@@ -85,14 +85,14 @@ function get_production_alerts($supplier, $db, $account, $user, $smarty) {
     );
 
 
-    if ($data['ok']) {
+ //   if ($data['ok']) {
 
 
         $smarty->assign('data', $data);
         $html .= $smarty->fetch(
             'dashboard/supplier.parts_to_replenish.dbard.tpl'
         );
-    }
+   // }
 
 
 
@@ -131,13 +131,20 @@ function get_widget_data($value, $total, $min, $max) {
         'max'       => ''
     );
 
-    if ($total == 0) {
-        return $data;
-    }
     $data['ok']    = true;
-    $data['value'] = $value;
-    $data['total'] = $total;
-    $percentage    = $value / $total;
+
+    if ($total == 0) {
+        $data['value'] = $value;
+        $data['total'] = 0;
+        $percentage    = 0;
+    }else{
+        $data['value'] = $value;
+        $data['total'] = $total;
+        $percentage    = $value / $total;
+    }
+
+
+
 
     if ($percentage < $min) {
         $data['color_min'] = '#84c535';
