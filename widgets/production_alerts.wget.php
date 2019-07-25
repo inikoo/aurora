@@ -136,7 +136,7 @@ function get_widget_data($value, $total, $min, $max) {
     if ($total == 0) {
         $data['value'] = $value;
         $data['total'] = 0;
-        $percentage    = 0;
+        $percentage    = 1;
     }else{
         $data['value'] = $value;
         $data['total'] = $total;
