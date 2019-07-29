@@ -7,14 +7,6 @@
  Version 2.0
 */
 
-if (!isset($_REQUEST['staff_key'])) {
-    $response = array(
-        'state' => 'Error',
-        'msg'   => 'staff_key needed'
-    );
-    echo json_encode($response);
-    exit;
-}
 
 
 if (!isset($_REQUEST['delivery_note_key'])) {
@@ -60,14 +52,6 @@ if (!is_numeric($_REQUEST['delivery_note_key']) or $_REQUEST['delivery_note_key'
     exit;
 }
 
-if (!is_numeric($_REQUEST['staff_key']) or $_REQUEST['staff_key'] <= 0) {
-    $response = array(
-        'state' => 'Error',
-        'msg'   => 'invalid staff_key: '.$_REQUEST['staff_key']
-    );
-    echo json_encode($response);
-    exit;
-}
 
 
 if (!is_numeric($_REQUEST['itf_key']) or $_REQUEST['itf_key'] <= 0) {
