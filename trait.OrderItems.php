@@ -218,7 +218,7 @@ trait OrderItems {
 VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
 	%d,%d,%s,%d,%d,
 	%s,%s,%s,%s,%s,
-	%.2f,%.2f,%.2f,%s,%f,%s,%.4f,'{}')   ", prepare_mysql($product->get('Product Department Category Key')), prepare_mysql($product->get('Product Department Category Key')), $bonus_quantity, prepare_mysql($order_type), $tax_rate, prepare_mysql($tax_code),
+	%.2f,%.2f,%.2f,%s,%f,%s,%.4f,'{}')   ", prepare_mysql($product->get('Product Department Category Key')), prepare_mysql($product->get('Product Family Category Key')), $bonus_quantity, prepare_mysql($order_type), $tax_rate, prepare_mysql($tax_code),
                         prepare_mysql($this->data['Order Currency']), $estimated_weight, prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gmdate('Y-m-d H:i:s')), $product->historic_id, $product->data['Product ID'], prepare_mysql($product->data['Product Code']), 0, 0,
                         prepare_mysql($data['Current Dispatching State']), prepare_mysql($data['Current Payment State']), prepare_mysql($this->data['Order Customer Key']), prepare_mysql($this->data['Order Key']), $quantity, $gross, 0, $gross,
                         prepare_mysql($this->data['Order Store Key']), $product->data['Product Units Per Case'], prepare_mysql($dn_key), $cost
