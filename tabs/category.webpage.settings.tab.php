@@ -21,13 +21,6 @@ include_once 'conf/object_fields.php';
 $category = $state['_object'];
 
 
-/*
-    $html = '<div style="padding:40px">'._("This category is not public").'</div>';
-
-    return;
-}
-
-*/
 
 
 $webpage=$category->get_webpage();
@@ -41,7 +34,11 @@ if(!$webpage->id){
 
 
 
-        $html='<div style="padding:40px"><span class="button save valid changed" onclick="create_webpage()"><i class="fa fa-plus" aria-hidden="true"></i> '._("Create web page").'</span></div>
+        if($category->get('Category Root Key')==$state['store']->get('Store Family Category Key')  and $category->get('Product Category Department Category Key')==''  ){
+            $html='<div class="error" style="padding:40px">'._("Web page can't be created if family has not been linked to a department").'</div>';
+
+        }else{
+            $html='<div style="padding:40px"><span class="button save valid changed" onclick="create_webpage()"><i class="fa fa-plus" aria-hidden="true"></i> '._("Create web page").'</span></div>
         <script>
         function create_webpage(){
         
@@ -64,10 +61,15 @@ if(!$webpage->id){
         </script>
         
         ';
+        }
 
 
 
-    //    $html='<div style="padding:40px">'._("This category has no webpage").'</div>';
+
+
+
+
+
 
 
     }else{
@@ -95,4 +97,4 @@ if ($category->get('Product Category Public')=='No') {
 }
 $html .= $smarty->fetch('edit_object.tpl');
 
-?>
+

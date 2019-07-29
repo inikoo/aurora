@@ -234,6 +234,8 @@ class Public_Product {
             case 'Product Unit Weight':
             case 'Product Barcode Number':
             case 'Product Code':
+            case 'Product Family Category Key':
+            case 'Product Department Category Key':
                 return $this->data[$key];
 
 

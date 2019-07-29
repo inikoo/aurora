@@ -4126,6 +4126,11 @@ $modules = array(
                     ),
 
 
+                    'category.mailshots'       => array(
+                        'label' => _('Mailshots'),
+                        'icon'  => 'bullhorn'
+                    ),
+
                     'category.history' => array(
                         'title'         => _('History/Notes'),
                         'label'         => '',

@@ -2435,6 +2435,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                 case 'Product Category Department Category Key':
 
+                    $hide=array();
+                    $show=array();
+
 
                     if ($value) {
 
@@ -2524,6 +2527,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         }
 
 
+                        $hide=array('no_department_warning');
+
+
                     } else {
                         if ($this->data['Product Category Department Category Key'] != '') {
 
@@ -2541,6 +2547,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                         $sql = sprintf('update `Product Dimension` set `Product Department Category Key`=NULL  where `Product Family Category Key`=%d  ', $this->id);
                         $this->db->exec($sql);
+
+
+                        $show=array('no_department_warning');
+
 
                     }
 
@@ -2566,7 +2576,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         'class_html' => array(
                             'Categories' => $categories,
 
-                        )
+                        ),
+                        'hide'=>$hide,
+                        'show'=>$show
                     );
 
 

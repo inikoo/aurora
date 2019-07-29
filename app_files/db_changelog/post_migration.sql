@@ -168,3 +168,6 @@ update `Purchase Order Dimension` set `Purchase Order Production`='Yes' where `P
 update `Supplier Delivery Dimension` set `Supplier Delivery Production`='Yes' where `Supplier Delivery Parent`='Supplier' and `Supplier Delivery Parent Key`=6472;
 
 update `Supplier Part Dimension` set `Supplier Part Production`='Yes' where   `Supplier Part Supplier Key`=6472;
+
+
+ALTER TABLE `Order Transaction Fact` ADD `OTF Webpage Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `OTF Category Department Key`;
