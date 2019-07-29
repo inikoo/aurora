@@ -36,6 +36,8 @@ exit;
 }
 
 
+/*
+
 if (!isset($_REQUEST['quantity'])) {
 $response = array(
 'state' => 'Error',
@@ -44,6 +46,8 @@ $response = array(
 echo json_encode($response);
 exit;
 }
+
+*/
 
 
 
@@ -75,6 +79,7 @@ if (!is_numeric($_REQUEST['itf_key']) or $_REQUEST['itf_key'] <= 0) {
     exit;
 }
 
+/*
 
 $qty = intval($_REQUEST['quantity']);
 
@@ -88,3 +93,5 @@ if ($qty < 0) {
     echo json_encode($response);
     exit;
 }
+
+*/

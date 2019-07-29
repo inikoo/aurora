@@ -385,13 +385,28 @@ switch ($_REQUEST['action']) {
         break;
 
 
-    case 'pick_item':
+    case 'update_delivery_note_item_status':
 
 
         include 'api.includes/parse_arguments_dn_item_operations.inc.php';
 
+        $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
 
 
+        $response = array(
+            'state' => 'OK',
+        );
+
+
+        echo json_encode($response);
+        exit;
+        break;
+
+
+    case 'pick_item':
+
+
+        include 'api.includes/parse_arguments_dn_item_operations.inc.php';
 
         $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
         $delivery_note->update_item_picked_quantity(
