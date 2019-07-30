@@ -407,13 +407,14 @@ switch ($_REQUEST['action']) {
 
 
         include 'api.includes/parse_arguments_dn_item_operations.inc.php';
+        include 'api.includes/parse_arguments_dn_item_operations_qty.inc.php';
 
         $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
         $delivery_note->update_item_picked_quantity(
             array(
                 'transaction_key' => $_REQUEST['itf_key'],
                 'qty'             => $qty,
-                'picker_key'      => $_REQUEST['staff_key'],
+                'picker_key'      => $user->get_staff_key()
 
             )
         );
