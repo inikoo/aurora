@@ -1320,11 +1320,11 @@ function find_customer_lists($db, $account, $memcache_ip, $data, $user) {
 
 
         $results[$list_key] = array(
-            'code'        => $candidates_data[$list_key]['List Type'].', '.sprintf(ngettext('%s customer', '%s customers', $candidates_data[$list_key]['Customers']), number($candidates_data[$list_key]['Customers'])),
-            'description' => highlightkeyword(
+            'code'        => $candidates_data[$list_key]['List Type'],
+            'description' =>
                 sprintf(
-                    '%s', $candidates_data[$list_key]['List Name']
-                ), $q
+                    '%s', highlightkeyword($candidates_data[$list_key]['List Name'],$q) .' <span class="discreet">('.sprintf(ngettext('%s customer', '%s customers', $candidates_data[$list_key]['Customers']), number($candidates_data[$list_key]['Customers'])).')</span>'
+
             ),
 
 

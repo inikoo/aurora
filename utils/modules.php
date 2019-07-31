@@ -568,13 +568,18 @@ $modules = array(
                 'type' => 'object',
                 'tabs' => array(
                     'list.details'   => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database',
-                        'title' => _('Details')
+                        'label' => _('Settings'),
+                        'icon'  => 'sliders-h',
+                        'title' => _('Settings')
                     ),
                     'customers.list' => array(
                         'label' => _('Customers'),
                         'icon'  => 'users',
+
+                    ),
+                    'customer_list.mailshots' => array(
+                        'label' => _('Mailshots'),
+                        'icon'  => 'bullhorn',
 
                     ),
                     'list.history'   => array(

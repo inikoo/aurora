@@ -973,6 +973,7 @@ function check_for_duplicates($data, $db, $user, $account) {
 
             break;
         case 'Email_Campaign':
+        case 'Mailshot':
 
 
 

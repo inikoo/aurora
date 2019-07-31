@@ -82,7 +82,7 @@ function hide_options(field) {
     $('#' + field + '_options').addClass('hide')
 }
 
-function get_form_validation_state(submitting) {
+function get_form_validation_state() {
 
     form_validation = 'valid';
 
@@ -92,8 +92,8 @@ function get_form_validation_state(submitting) {
        // console.log(index)
      //   console.log($(this).attr('id'))
 
-         //console.log(field)
-       // console.log($('#' + field + '_field').hasClass('valid'))
+        // console.log(field)
+        //console.log($('#' + field + '_field').hasClass('valid'))
 
         //console.log($(this).attr('field_type'))
 
@@ -104,6 +104,10 @@ function get_form_validation_state(submitting) {
         }else{
             if ($('#' + field + '_field').hasClass('invalid')) {
                 component_validation = 'invalid'
+
+
+                console.log(field)
+
             } else if ($('#' + field + '_field').hasClass('valid')) {
                 component_validation = 'valid'
             } else {
@@ -349,6 +353,8 @@ function save_new_object(object, form_type) {
                 var value = $('#' + field+'_field').val()
             }else if(field_type == 'asset') {
                 var value = $('#Asset_Key').val()
+            }else if(field_type == 'list') {
+                var value = $('#List_Key').val()
             }else {
                 var value = $('#' + field).val()
             }

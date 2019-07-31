@@ -175,6 +175,33 @@ $tab_defaults = array(
     ),
 
 
+    'customer_list.mailshots' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
+    ),
+
+    'product_category.mailshots' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
+    ),
+
+    'product.mailshots' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
+    ),
+
     'oss_notification.next_recipients' => array(
         'view'        => 'overview',
         'sort_key'    => 'name',
