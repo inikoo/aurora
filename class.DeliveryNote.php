@@ -2061,7 +2061,6 @@ class DeliveryNote extends DB_Table {
 
     function update_item_picked_quantity($data) {
 
-
         include_once('class.Location.php');
         include_once('class.PartLocation.php');
         include_once('utils/order_handing_functions.php');
@@ -2095,7 +2094,7 @@ class DeliveryNote extends DB_Table {
             if ($row = $result->fetch()) {
 
                 // print_r($row);
-
+                $qty=$row['Picked']+$qty;
 
                 $transaction_value = $row['Part Cost'] * $qty;
 
