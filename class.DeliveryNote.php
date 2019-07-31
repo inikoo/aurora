@@ -2109,12 +2109,12 @@ class DeliveryNote extends DB_Table {
                     return;
                 }
 
-                //if ($qty < $row['Packed']) {
-                //    $this->error = true;
-                //    $this->msg   = 'Error, trying to set as picked '.$qty.' more items than packed '.$row['Packed'];
+                if ($qty < $row['Packed']) {
+                    $this->error = true;
+                    $this->msg   = 'Error, trying to set as picked '.$qty.' less items than packed '.$row['Packed'];
 
-                //    return;
-                //}
+                    return;
+                }
 
 
                 //   $location = new Location($row['Location Key']);

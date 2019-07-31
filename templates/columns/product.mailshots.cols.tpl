@@ -1,0 +1,1 @@
+object.mailshots.cols.tpl
