@@ -9,12 +9,15 @@
 -->
 *}
 
-<input class=" Asset_Key" id="Asset_Key"  value="" type="hidden">
-<span class="Asset_Select" onclick="change_customer(this)"></span>
+{if isset($field.scope)}{assign "scope" $field.scope}{else}{assign "scope" ""}{/if}
+
+
+<input class="Asset_Key" id="Asset_Key"  value="" type="hidden">
+<span class="Asset_Select" onclick="change_asset(this)"></span>
 <input class="Asset_Select_value" value="" ovalue="" placeholder="{t}Product{/t}/{t}Category{/t}" parent_key="{$store_key}"  parent="store" scope="assets_on_sale">
 <div class="search_results_container">
     <table class="results" border="1">
-        <tr class="hide search_result_template" field="" value="" formatted_value="" onclick="select_dropdown_customer(this)">
+        <tr class="hide search_result_template" field="" value="" formatted_value="" onclick="select_dropdown_asset(this)">
             <td class="code"></td>
             <td style="width:85%" class="label"></td>
         </tr>
@@ -25,13 +28,13 @@
 <script>
     {if $mode=='new'}
 
-    change_customer_in_edit_selection()
+    change_asset_in_edit_selection()
     {/if}
 
 
 
 
-    function delayed_on_change_customers_dropdown_select_field(object, timeout) {
+    function delayed_on_change_assets_dropdown_select_field(object, timeout) {
         //var field = object.attr('id');
         //var field_element = $('#' + field);
         var new_value = $(object).val()
@@ -48,11 +51,11 @@
 
         object.data("timeout", setTimeout(function () {
 
-            get_customer_dropdown_select(object, new_value)
+            get_asset_dropdown_select(object, new_value)
         }, timeout));
     }
 
-    function get_customer_dropdown_select(object, new_value) {
+    function get_asset_dropdown_select(object, new_value) {
 
         var parent_key = $(object).attr('parent_key')
         var parent = $(object).attr('parent')
@@ -119,7 +122,7 @@
     }
 
 
-    function change_customer(element){
+    function change_asset(element){
         $(element).html('')
         $(element).closest('td').find('.Asset_Key').val('')
 
@@ -128,7 +131,7 @@
 
     }
 
-    function select_dropdown_customer(element) {
+    function select_dropdown_asset(element) {
 
 
 
@@ -143,9 +146,12 @@
         $(element).closest('td').find('.search_results_container').find('tr.result').remove()
 
 
-        on_change_customer_list(element)
+        on_change_asset_list(element)
 
 
+        {if $scope=='Mailshot'}
+        $('#Scope_Type_field').removeClass('hide').addClass('activated')
+        {/if}
 
     }
 
@@ -153,27 +159,27 @@
 
         var delay = 100;
         if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
-        delayed_on_change_customers_dropdown_select_field($(evt.target), delay)
+        delayed_on_change_assets_dropdown_select_field($(evt.target), delay)
     });
 
 
-    function change_customer_in_edit_selection() {
+    function change_asset_in_edit_selection() {
 
-      
-        on_change_customer_list()
+
+        on_change_asset_list()
 
     }
 
-    function save_this_customer_lists() {
+    function save_this_asset_lists() {
         save_field($('#fields').attr('object'), $('#fields').attr('key'), 'Product_Assets')
     }
 
 
-    $(document).on('input propertychange', '.customer_list_value', function (evt) {
-        on_change_customer_list()
+    $(document).on('input propertychange', '.asset_list_value', function (evt) {
+        on_change_asset_list()
     });
 
-    function on_change_customer_list(element) {
+    function on_change_asset_list(element) {
 
 
 
@@ -183,8 +189,8 @@
 
 
 
-    function post_save_product_customers(data) {
-        $('customers_list_items').html(data.update_metadata.customers_list_items)
+    function post_save_product_assets(data) {
+        $('assets_list_items').html(data.update_metadata.assets_list_items)
     }
 
 </script>

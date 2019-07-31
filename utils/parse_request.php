@@ -3170,6 +3170,10 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                                         }
 
 
+                                                    }elseif($view_path[4]=='new'){
+                                                        $object  = 'mailshot';
+                                                        $section = 'mailshot.new';
+                                                        $key     = 0;
                                                     }
 
                                                 }
@@ -3183,6 +3187,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 }
                             }
+
 
 
                         }
