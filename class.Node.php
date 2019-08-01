@@ -82,7 +82,7 @@ class nodes {
         $position = $this->get_position($parent);
 
         $fields['Category Parent Key'] = $parent;
-
+        $fields['Category Properties'] = '{}';
 
 
         $_keys                         = '';
@@ -110,7 +110,6 @@ class nodes {
         $_keys   = preg_replace('/^,/', '', $_keys);
 
         $sql = "insert into ".$this->table_name." ($_keys) values ($_values)";
-
 
 
         $this->db->exec($sql);
