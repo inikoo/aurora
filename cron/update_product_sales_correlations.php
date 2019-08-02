@@ -14,11 +14,9 @@ require_once 'common.php';
 $print_est = true;
 
 
-
-
 $where = 'where `Product ID`=971';
 $where = " where `Product Ignore Correlation`='No' ";
-$sql = sprintf(
+$sql   = sprintf(
     "SELECT count(*) AS num FROM `Product Dimension` %s", $where
 );
 if ($result = $db->query($sql)) {
@@ -33,13 +31,11 @@ $lap_time0 = date('U');
 $contador  = 0;
 
 
-
-
 $sql = sprintf("SELECT `Product ID` FROM `Product Dimension` %s order by RAND()", $where);
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-
-        $product->update_sales_correlations('Random',1000000);
+        $product = get_object('Product', $row['Product ID']);
+        $product->update_sales_correlations('Random', 1000000);
 
 
         $contador++;
