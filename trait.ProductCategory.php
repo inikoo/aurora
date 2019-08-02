@@ -1928,6 +1928,7 @@ trait ProductCategory {
         if ($this->get('Category Subject') == 'Product') {
 
             $field = 'OTF Category Family Key';
+            $type='Family';
 
             if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
                 $sql = sprintf(
@@ -1939,6 +1940,7 @@ trait ProductCategory {
             }
         } elseif ($this->get('Category Subject') == 'Category') {
             $field = 'OTF Category Department Key';
+            $type='Department';
 
             if ($this->get('Category Root Key') == $store->get('Store Department Category Key')) {
                 $sql = sprintf(
@@ -1971,36 +1973,15 @@ trait ProductCategory {
                     $all_A=0;
                     $all_B=0;
 
+
+
                     $sql = sprintf(
-                        "select `Customer Key` from `Order Transaction Fact` OTF  where `$field`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`", $this->id
+                        "select count(distinct `Customer Key`) as num  from `Order Transaction Fact` OTF  where `$field`=%d  and  `Order Transaction Type`='Order' ", $this->id
                     );
-
-
                     if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
-                            $sql = sprintf(
-                                "select `Order Transaction Fact Key` as num from `Order Transaction Fact` OTF where OTF.`Order Transaction Type`='Order'  and OTF.`$field`=%d and OTF.`Customer Key`=%d limit 1", $row2['Category Key'], $row['Customer Key']
-                            );
+                        if ($row = $result->fetch()) {
+                            $all_A=$row['num'] ;
 
-                            //print "$sql\n";
-                            $all_A++;
-
-                            $found = false;
-                            if ($result = $this->db->query($sql)) {
-                                if ($row = $result->fetch()) {
-                                    $found = true;
-
-                                }
-                            }
-
-
-                            if ($found) {
-                                $customers_AB++;
-                            } else {
-                                $customers_A++;
-
-                            }
-                            // print " $customers_A   $customers_AB \r ";
                         }
                     }
 
@@ -2009,10 +1990,62 @@ trait ProductCategory {
                     );
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
-                            $all_B=$row['num'];
-                            $customers_B = $row['num'] - $customers_AB;
+                            $all_B=$row['num'] ;
                         }
                     }
+
+
+                    if($all_A<$all_B){
+                        $sql = sprintf(
+                            "select `Customer Key` from `Order Transaction Fact` OTF  where `$field`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`", $this->id
+                        );
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+                                $sql = sprintf(
+                                    "select `Order Transaction Fact Key` as num from `Order Transaction Fact` OTF where OTF.`Order Transaction Type`='Order'  and OTF.`$field`=%d and OTF.`Customer Key`=%d limit 1", $row2['Category Key'], $row['Customer Key']
+                                );
+                                $found = false;
+                                if ($result = $this->db->query($sql)) {
+                                    if ($row = $result->fetch()) {
+                                        $found = true;
+                                    }
+                                }
+                                if ($found) {
+                                    $customers_AB++;
+                                } else {
+                                    $customers_A++;
+                                }
+                            }
+                        }
+
+                        $customers_B = $all_B - $customers_AB;
+
+                    }else{
+                        $sql = sprintf(
+                            "select `Customer Key` from `Order Transaction Fact` OTF  where `$field`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`", $row2['Category Key']
+                        );
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+                                $sql = sprintf(
+                                    "select `Order Transaction Fact Key` as num from `Order Transaction Fact` OTF where OTF.`Order Transaction Type`='Order'  and OTF.`$field`=%d and OTF.`Customer Key`=%d limit 1", $this->id, $row['Customer Key']
+                                );
+                                $found = false;
+                                if ($result = $this->db->query($sql)) {
+                                    if ($row = $result->fetch()) {
+                                        $found = true;
+                                    }
+                                }
+                                if ($found) {
+                                    $customers_AB++;
+                                } else {
+                                    $customers_B++;
+                                }
+                            }
+                        }
+
+                        $customers_A = $all_A - $customers_AB;
+                    }
+
 
                     $samples = min($all_A, $all_B);
 
@@ -2034,21 +2067,42 @@ trait ProductCategory {
 
 
                         $sql = sprintf(
-                            "insert into  `Product Category Sales Correlation` (`Category A Key`,`Category B Key`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ", $this->id, $row2['Category Key'],
-                            $person_correlation, $samples, $person_correlation, $samples
+                            "insert into `Product Category Sales Correlation` 
+                        ( `Product Category Sales Correlation Store Key`,`Product Category Sales Correlation Type`,`Category A Key`,`Category B Key`,`Correlation`,`Samples`,
+                        `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Category Sales Correlation Last Updated`
+                        ) 
+                            values (%d,%s,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Category Sales Correlation Last Updated`=%s",
+                            $this->get('Store Key'),prepare_mysql($type),
+                            
+                            $this->id, $row2['Category Key'],
+                            $person_correlation, $samples, $customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                            $person_correlation, $samples,$customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s'))
                         );
+
 
 
                         $this->db->exec($sql);
 
                         $sql = sprintf(
-                            "insert into  `Product Category Sales Correlation` (`Category A Key`,`Category B Key`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
+                            "insert into `Product Category Sales Correlation` 
+                        ( `Product Category Sales Correlation Store Key`,`Product Category Sales Correlation Type`,`Category A Key`,`Category B Key`,`Correlation`,`Samples`,
+                        `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Category Sales Correlation Last Updated`
+                        ) 
+                            values (%d,%s,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Category Sales Correlation Last Updated`=%s",
+                            $this->get('Store Key'),prepare_mysql($type),
 
-                            $row2['Category Key'], $this->id, $person_correlation, $samples, $person_correlation, $samples
+                            $row2['Category Key'],$this->id,
+                            $person_correlation, $samples, $customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                            $person_correlation, $samples,$customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s'))
                         );
 
 
+
                         $this->db->exec($sql);
+
+                      
+                        
+                        
                     } else {
                        // print $this->get('Code').' '.$row2['Category Code']." $customers_A $customers_B  $customers_AB \n ";
 
