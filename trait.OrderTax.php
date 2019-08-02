@@ -661,6 +661,39 @@ trait OrderTax {
                 }
 
 
+
+
+                if ($this->data['Order Delivery Address Country 2 Alpha Code'] == 'ES' and $this->data['Order Invoice Address Country 2 Alpha Code'] == 'ES' and preg_match(
+                        '/^(35|38|51|52)/', $this->data['Order Delivery Address Postal Code']
+                    ) and preg_match(
+                        '/^(35|38|51|52)/', $this->data['Order Invoice Address Postal Code']
+                    )) {
+
+                    return array(
+                        'code'       => $tax_category['Excluded']['code'],
+                        'name'       => $tax_category['Excluded']['name'],
+                        'rate'       => $tax_category['Excluded']['rate'],
+                        'state'      => 'outside EC',
+                        'operations' => '<div>'._('Outside EC fiscal area').'</div>'
+
+                    );
+                }
+
+                // new rule seems that is valid to ESP, E.g. billing to Madrid and shipping to canarias
+                if ($this->data['Order Delivery Address Country 2 Alpha Code'] == 'ES' and $this->data['Order Invoice Address Country 2 Alpha Code'] == 'ES' and preg_match(
+                        '/^(35|38|51|52)/', $this->data['Order Delivery Address Postal Code']
+                    )) {
+
+                    return array(
+                        'code'       => $tax_category['Excluded']['code'],
+                        'name'       => $tax_category['Excluded']['name'],
+                        'rate'       => $tax_category['Excluded']['rate'],
+                        'state'      => 'outside EC',
+                        'operations' => '<div>'._('Outside EC fiscal area').'</div>'
+
+                    );
+                }
+
                 //   print_r($tax_category);
 
 
