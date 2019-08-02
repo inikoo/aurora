@@ -39,11 +39,10 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $product = get_object('Product', $row['Product ID']);
 
-        $product->update_sales_correlations('Best Sellers', 100);
-        $product->update_sales_correlations('New', 100);
-
-        $product->update_sales_correlations('Random', 1000000);
-
+        //$product->update_sales_correlations('Best Sellers', 100);
+        //$product->update_sales_correlations('New', 100);
+        $product->update_sales_correlations();
+        //$product->update_sales_correlations('Random', 1000000);
 
         $contador++;
         $lap_time1 = date('U');

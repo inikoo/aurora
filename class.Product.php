@@ -3983,7 +3983,7 @@ class Product extends Asset {
                     "select P.`Product ID`,P.`Product Code` from `Product Dimension` P   where `Product Store Key`=%d and `Product Ignore Correlation`='No'    order by RAND()  limit %s ",
                     $this->data['Product Store Key'], $limit
                 );
-
+                break;
             case 'New':
 
                 $sql = sprintf(
