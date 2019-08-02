@@ -17,8 +17,7 @@ $print_est = true;
 
 
 $where = 'where `Product ID`=971';
-$where = '';
-//$where='where `Product Code` like "JBB-%"';
+$where = " where `Product Ignore Correlation`='No' ";
 $sql = sprintf(
     "SELECT count(*) AS num FROM `Product Dimension` %s", $where
 );
@@ -28,9 +27,6 @@ if ($result = $db->query($sql)) {
     } else {
         $total = 0;
     }
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
 }
 
 $lap_time0 = date('U');
@@ -39,13 +35,11 @@ $contador  = 0;
 
 
 
-$sql = sprintf('SELECT `Product ID` FROM `Product Dimension` ');
+$sql = sprintf("SELECT `Product ID` FROM `Product Dimension` %s order by RAND()", $where);
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
-        $product = get_object('Product', $row['Product ID']);
-        $product->update_sales_correlations('Random',200);
-        $product->update_sales_correlations();
+        $product->update_sales_correlations('Random',1000000);
 
 
         $contador++;
