@@ -175,8 +175,10 @@ ALTER TABLE `Category Dimension` ADD `Category Properties` JSON NULL DEFAULT NUL
 update `Category Dimension` set `Category Properties`='{}';
 ALTER TABLE `Product Dimension` ADD `Product Properties` JSON NULL DEFAULT NULL AFTER `Product Department Category Key`;
 update `Product Dimension` set `Product Properties`='{}';
+
 RENAME TABLE `Product Family Sales Correlation` TO `Product Category Sales Correlation`;
 ALTER TABLE `Product Category Sales Correlation` CHANGE `Family A Key` `Category A Key` MEDIUMINT(8) UNSIGNED NOT NULL, CHANGE `Family B Key` `Category B Key` MEDIUMINT(8) UNSIGNED NOT NULL;
 ALTER TABLE `Product Category Sales Correlation` CHANGE `Correlation` `Correlation` DOUBLE NOT NULL;
+
 ALTER TABLE `Product Category Dimension` ADD `Product Category Ignore Correlation` ENUM('Yes','No')  NULL DEFAULT 'No' AFTER `Product Category Status`, ADD INDEX (`Product Category Ignore Correlation`);
 ALTER TABLE `Product Dimension` ADD `Product Ignore Correlation` ENUM('Yes','No')  NULL DEFAULT 'No' , ADD INDEX (`Product Ignore Correlation`);

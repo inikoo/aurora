@@ -72,12 +72,12 @@ switch ($tipo) {
     case 'supplier_parts':
         supplier_parts(get_table_parameters(), $db, $user, $account);
         break;
-    case 'part_categories':
-        part_categories(get_table_parameters(), $db, $user, $account);
+    case 'part_families':
+        part_families(get_table_parameters(), $db, $user, $account);
         break;
-    case 'categories':
-        categories(get_table_parameters(), $db, $user);
-        break;
+  //  case 'categories':
+    //    categories(get_table_parameters(), $db, $user,$account);
+    //    break;
     case 'product_families':
         product_families(get_table_parameters(), $db, $user);
         break;
@@ -1344,7 +1344,7 @@ function barcodes($_data, $db, $user) {
 }
 
 
-function part_categories($_data, $db, $user, $account) {
+function part_families($_data, $db, $user, $account) {
 
 
     if ($_data['parameters']['parent_key'] == $account->get('Account Part Family Category Key')) {
@@ -1627,11 +1627,14 @@ function part_categories($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
-
-function categories($_data, $db, $user) {
+/*
+function categories($_data, $db, $user,$account) {
 
     $rtext_label = 'category';
     include_once 'prepare_table/init.php';
+
+    $currency   = $account->get('Account Currency');
+
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
@@ -1640,43 +1643,106 @@ function categories($_data, $db, $user) {
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
+//'NotInUse','InUse','InProcess','Discontinuing'
+            switch ($data['Part Category Status']) {
+                case 'InProcess':
+                    $status = _('In process');
+                    break;
+                case 'InUse':
+                    $status = _('Active');
+                    break;
 
-            switch ($data['Category Branch Type']) {
-                case 'Root':
-                    $level = _('Root');
+                case 'NotInUse':
+                    $status = _('Discontinued');
                     break;
-                case 'Head':
-                    $level = _('Head');
-                    break;
-                case 'Node':
-                    $level = _('Node');
+                case 'Discontinuing':
+                    $status = _('Discontinuing');
                     break;
                 default:
-                    $level = $data['Category Branch Type'];
+                    $status = $data['Part Category Status'];
                     break;
             }
-            $level = $data['Category Branch Type'];
 
 
             $record_data[] = array(
                 'id'                  => (integer)$data['Category Key'],
-                'store_key'           => (integer)$data['Category Store Key'],
-                'code'                => $data['Category Code'],
+                'code'                => sprintf('<span class="link" onclick="change_view(\'inventory/category/%d\')">%s</span>',$data['Category Key'],$data['Category Code']),
                 'label'               => $data['Category Label'],
-                'subjects'            => number(
-                    $data['Category Number Subjects']
+                'status'           => $status,
+                'parts'         => number($data['parts']),
+                'in_process'       => number($data['Part Category In Process Products']),
+                'active'           => number($data['Part Category Active Products']),
+                'suspended'        => number($data['Part Category Suspended Products']),
+                'discontinuing'    => number($data['Part Category Discontinuing Products']),
+                'discontinued'     => number($data['Part Category Discontinued Products']),
+                'sales'            => money($data['sales'], $data['Part Category Currency Code']),
+                'sales_1yb'        => delta($data['sales'], $data['sales_1yb']),
+                'dispatched'     => number($data['dispatched']),
+                'dispatched_1yb' => delta($data['dispatched'], $data['dispatched_1yb']),
+
+
+                'sales_year0' => sprintf(
+                    '<span>%s</span> %s', money($data['Part Category Year To Day Acc Invoiced Amount'], $data['Part Category Currency Code']),
+                    delta_icon($data["Part Category Year To Day Acc Invoiced Amount"], $data["Part Category Year To Day Acc 1YB Invoiced Amount"])
                 ),
-                'subjects_active'     => number(
-                    $data['Category Number Active Subjects']
+                'sales_year1' => sprintf(
+                    '<span>%s</span> %s', money($data['Part Category 1 Year Ago Invoiced Amount'], $data['Part Category Currency Code']), delta_icon($data["Part Category 1 Year Ago Invoiced Amount"], $data["Part Category 2 Year Ago Invoiced Amount"])
                 ),
-                'subjects_no_active'  => number(
-                    $data['Category Number No Active Subjects']
+                'sales_year2' => sprintf(
+                    '<span>%s</span> %s', money($data['Part Category 2 Year Ago Invoiced Amount'], $data['Part Category Currency Code']), delta_icon($data["Part Category 2 Year Ago Invoiced Amount"], $data["Part Category 3 Year Ago Invoiced Amount"])
                 ),
-                'level'               => $level,
-                'subcategories'       => number($data['Category Children']),
-                'percentage_assigned' => percentage(
-                    $data['Category Number Subjects'], ($data['Category Number Subjects'] + $data['Category Subjects Not Assigned'])
-                )
+                'sales_year3' => sprintf(
+                    '<span>%s</span> %s', money(
+                    $data['Part Category 3 Year Ago Invoiced Amount'], $data['Part Category Currency Code']
+                ), delta_icon(
+                        $data["Part Category 3 Year Ago Invoiced Amount"], $data["Part Category 4 Year Ago Invoiced Amount"]
+                    )
+                ),
+                'sales_year4' => sprintf(
+                    '<span>%s</span> %s', money(
+                    $data['Part Category 4 Year Ago Invoiced Amount'], $data['Part Category Currency Code']
+                ), delta_icon(
+                        $data["Part Category 4 Year Ago Invoiced Amount"], $data["Part Category 5 Year Ago Invoiced Amount"]
+                    )
+                ),
+
+                'sales_quarter0' => sprintf(
+                    '<span>%s</span> %s', money(
+                    $data['Part Category Quarter To Day Acc Invoiced Amount'], $data['Part Category Currency Code']
+                ), delta_icon(
+                        $data["Part Category Quarter To Day Acc Invoiced Amount"], $data["Part Category Quarter To Day Acc 1YB Invoiced Amount"]
+                    )
+                ),
+                'sales_quarter1' => sprintf(
+                    '<span>%s</span> %s', money(
+                    $data['Part Category 1 Quarter Ago Invoiced Amount'], $data['Part Category Currency Code']
+                ), delta_icon(
+                        $data["Part Category 1 Quarter Ago Invoiced Amount"], $data["Part Category 1 Quarter Ago 1YB Invoiced Amount"]
+                    )
+                ),
+                'sales_quarter2' => sprintf(
+                    '<span>%s</span> %s', money(
+                    $data['Part Category 2 Quarter Ago Invoiced Amount'], $data['Part Category Currency Code']
+                ), delta_icon(
+                        $data["Part Category 2 Quarter Ago Invoiced Amount"], $data["Part Category 2 Quarter Ago 1YB Invoiced Amount"]
+                    )
+                ),
+                'sales_quarter3' => sprintf(
+                    '<span>%s</span> %s', money(
+                    $data['Part Category 3 Quarter Ago Invoiced Amount'], $data['Part Category Currency Code']
+                ), delta_icon(
+                        $data["Part Category 3 Quarter Ago Invoiced Amount"], $data["Part Category 3 Quarter Ago 1YB Invoiced Amount"]
+                    )
+                ),
+                'sales_quarter4' => sprintf(
+                    '<span>%s</span> %s', money(
+                    $data['Part Category 4 Quarter Ago Invoiced Amount'], $data['Part Category Currency Code']
+                ), delta_icon(
+                        $data["Part Category 4 Quarter Ago Invoiced Amount"], $data["Part Category 4 Quarter Ago 1YB Invoiced Amount"]
+                    )
+                ),
+
+
             );
 
         }
@@ -1700,7 +1766,7 @@ function categories($_data, $db, $user) {
     );
     echo json_encode($response);
 }
-
+*/
 
 function category_all_available_parts($_data, $db, $user) {
 

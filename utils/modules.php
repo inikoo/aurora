@@ -5930,14 +5930,14 @@ $modules = array(
             ),
             'categories'        => array(
                 'type'      => 'navigation',
-                'label'     => _("Part's categories"),
+                'label'     => _("Part's families"),
                 'icon'      => 'sitemap',
                 'reference' => 'inventory/categories',
 
                 'tabs' => array(
-                    'parts.categories' => array(
+                    'part_families' => array(
                         'label' => _(
-                            "Part's categories"
+                            "Part's families"
                         )
                     ),
                 )

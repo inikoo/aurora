@@ -599,7 +599,6 @@ function categories($_data, $db, $user) {
 
             $record_data[] = array(
                 'id'                  => (integer)$data['Category Key'],
-                'store_key'           => (integer)$data['Category Store Key'],
                 'code'                => sprintf('<span class="link" onclick="change_view(\'products/%d/category/%d\')">%s</span>',
                                                  $data['Category Store Key'],
                                                  $data['Category Key'],
@@ -1144,7 +1143,12 @@ function product_categories_categories($_data, $db, $user) {
             $record_data[] = array(
                 'id'               => (integer)$data['Product Category Key'],
                 'store_key'        => (integer)$data['Category Store Key'],
-                'code'             => $data['Category Code'],
+
+                'code'                => sprintf('<span class="link" onclick="change_view(\'products/%d/category/%d\')">%s</span>',
+                                                 $data['Category Store Key'],
+                                                 $data['Category Key'],
+                                                 $data['Category Code']),
+
                 'label'            => $data['Category Label'],
                 'status'           => $status,
                 'products'         => number($data['products']),
@@ -1355,6 +1359,9 @@ function product_categories_products($_data, $db, $user) {
         $remove        = sprintf(
             '<span class="button" onClick="disassociate_category_from_table(this,%s,%d)"> <i class="fa fas padding_left_5 fa-unlink"></i> %s</span>', $parent->id, $data['Product Category Key'], _('Unlink')
         );
+
+
+
         $record_data[] = array(
             'id'                      => (integer)$data['Product Category Key'],
             'code'                    => $code,

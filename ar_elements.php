@@ -166,11 +166,11 @@ switch ($tab) {
         get_parts_elements($db, $data['parameters'], $user);
         break;
 
-    case 'category.part_categories':
+    case 'part_families':
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
 
 
-        get_part_categories_elements($db, $data['parameters'], $user);
+        get_part_families_elements($db, $data['parameters'], $user);
         break;
     case 'warehouse.locations':
     case 'warehouse_area.locations':
@@ -3196,7 +3196,7 @@ function get_ec_sales_list_elements($db, $parameters, $account) {
 }
 
 
-function get_part_categories_elements($db, $data, $user) {
+function get_part_families_elements($db, $data, $user) {
 
 
     $elements_numbers = array(
@@ -3212,7 +3212,7 @@ function get_part_categories_elements($db, $data, $user) {
 
 
     $table = '`Category Dimension` B left join `Part Category Dimension` PC on (B.`Category Key`=`Part Category Key`)';
-    $where = sprintf('where `Category Parent Key`=%d', $data['parent_key']);
+    $where = sprintf("where `Category Branch Type`='Head' and `Category Scope`='Part' ");
 
 
     $sql = sprintf("select count(*) as number,`Part Category Status` as element from $table $where  group by `Part Category Status` ");

@@ -654,6 +654,34 @@ $elements_options = array(
         ),
     ),
 
+
+    'part_families' => array(
+        'status' => array(
+            'label' => _('Status'),
+            'items' => array(
+                'InProcess'     => array(
+                    'label'    => _('In process'),
+                    'selected' => true
+                ),
+                'InUse'        => array(
+                    'label'    => _('Active'),
+                    'selected' => true
+                ),
+
+                'Discontinuing' => array(
+                    'label'    => _('Discontinuing'),
+                    'selected' => true
+                ),
+                'NotInUse'  => array(
+                    'label'    => _('Discontinued'),
+                    'selected' => false
+                )
+            )
+
+
+        ),
+    ),
+
     'parts' => array(
         'stock_status' => array(
             'label' => _('Stock status'),

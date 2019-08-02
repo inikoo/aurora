@@ -1,1 +1,0 @@
-category.ptble.php
