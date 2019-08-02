@@ -3956,13 +3956,13 @@ class Product extends Asset {
         switch ($type) {
             case 'Same Family':
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P  where `Product Store Key`=%d and `Product Ignore Correlation`='No'  and `Product Family Category Key`=%d order by `Product Total Acc Customers` desc  ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P  where `Product Store Key`=%d and `Product Ignore Correlation`='No'  and `Product Family Category Key`=%d  ",
                     $this->data['Product Store Key'], $this->data['Product Family Category Key']
                 );
                 break;
             case 'Exclude Same Family':
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P   where `Product Store Key`=%d and `Product Ignore Correlation`='No'  and `Product Family Category Key`!=%d order by `Product Total Acc Customers` desc  ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P   where `Product Store Key`=%d and `Product Ignore Correlation`='No'  and `Product Family Category Key`!=%d   ",
                     $this->data['Product Store Key'], $this->data['Product Family Category Key']
                 );
 
@@ -3980,10 +3980,16 @@ class Product extends Asset {
             case 'Random':
 
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P   where `Product Store Key`=%d and `Product Ignore Correlation`='No'  and `Product Status`='Active'  and `Product Public`='Yes'  order by RAND()  limit %s ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P   where `Product Store Key`=%d and `Product Ignore Correlation`='No'    order by RAND()  limit %s ",
                     $this->data['Product Store Key'], $limit
                 );
 
+            case 'New':
+
+                $sql = sprintf(
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P   where `Product Store Key`=%d and `Product Ignore Correlation`='No'   order by `Product ID` desc  limit %s ",
+                    $this->data['Product Store Key'], $limit
+                );
 
                 break;
             case 'Best Sellers':
