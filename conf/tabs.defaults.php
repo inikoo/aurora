@@ -2728,7 +2728,7 @@ $tab_defaults = array(
         'export_fields' => $export_fields['parts']
 
     ),
-    'category.part_categories'      => array(
+    'part_families'                    => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -2742,14 +2742,7 @@ $tab_defaults = array(
 
     ),
 
-    'parts.categories'                    => array(
-        'view'        => 'overview',
-        'sort_key'    => 'code',
-        'sort_order'  => 1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code'
-    ),
+
     'category.part.discontinued_subjects' => array(
         'view'        => 'overview',
         'sort_key'    => 'to',

@@ -2,26 +2,17 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 12 August 2016 at 18:40:41 GMT+8, Kuala Lumpur, Malaysia
+ Created: 02-08-2019 11:57:57 MYT , Kuala Lumpur, Malaysia
  Copyright (c) 2016, Inikoo
 
  Version 3
 
 */
 
+
 $group_by = '';
 
-switch ($parameters['parent']) {
-
-
-    case 'category':
-        $where = sprintf(
-            "where `Category Parent Key`=%d  ", $parameters['parent_key']
-        );
-        break;
-    default:
-        exit('error: unknown parent category: '.$parameters['parent']);
-}
+$where = sprintf("where `Category Branch Type`='Head' and `Category Scope`='Part' ");
 
 
 if (isset($parameters['f_period'])) {
@@ -29,9 +20,9 @@ if (isset($parameters['f_period'])) {
     $db_period = get_interval_db_name($parameters['f_period']);
     if (in_array(
         $db_period, array(
-        'Total',
-        '3 Year'
-    )
+                      'Total',
+                      '3 Year'
+                  )
     )) {
         $yb_fields = " '' as dispatched_1yb,'' as sales_1yb,";
 
@@ -110,9 +101,9 @@ if ($order == 'code') {
 } elseif ($order == 'active') {
     $order = "`Part Category Active`";
 }elseif ($order == 'discontinuing') {
- $order = "`Part Category Discontinuing`";
+    $order = "`Part Category Discontinuing`";
 }elseif ($order == 'discontinued') {
- $order = "`Part Category Discontinued`";
+    $order = "`Part Category Discontinued`";
 }
 
 
@@ -200,6 +191,3 @@ $table
     = '`Category Dimension` C left join `Part Category Dimension` D on (D.`Part Category Key`=C.`Category Key`)  left join `Part Category Data` PDC on (PDC.`Part Category Key`=C.`Category Key`) ';
 
 $sql_totals = "select count(distinct `Category Key`) as num from $table $where";
-
-
-?>

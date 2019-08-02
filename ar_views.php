@@ -7774,7 +7774,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         $category = $state['_parent'];
                         $branch[] = array(
                             'label'     => _(
-                                "Parts's categories"
+                                "Parts's families"
                             ),
                             'icon'      => 'sitemap',
                             'reference' => 'inventory/categories'
@@ -7879,7 +7879,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         $category = $state['_parent'];
                         $branch[] = array(
                             'label'     => _(
-                                "Parts's categories"
+                                "Parts's families"
                             ),
                             'icon'      => 'sitemap',
                             'reference' => 'inventory/categories'
@@ -8006,7 +8006,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     break;
                 case 'categories':
                     $branch[] = array(
-                        'label'     => _("Parts's categories"),
+                        'label'     => _("Parts's families"),
                         'icon'      => 'sitemap',
                         'reference' => ''
                     );
@@ -8014,7 +8014,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 case 'category':
                     $category = $state['_object'];
                     $branch[] = array(
-                        'label'     => _("Parts's categories"),
+                        'label'     => _("Parts's families"),
                         'icon'      => 'sitemap',
                         'reference' => 'inventory/categories'
                     );
@@ -8062,7 +8062,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 case 'main_category.new':
 
                     $branch[] = array(
-                        'label'     => _("Parts's categories"),
+                        'label'     => _("Parts's families"),
                         'icon'      => 'sitemap',
                         'reference' => 'inventory/categories'
                     );
@@ -8080,7 +8080,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         $category = $state['_parent'];
                         $branch[] = array(
                             'label'     => _(
-                                "Parts's categories"
+                                "Parts's families"
                             ),
                             'icon'      => 'sitemap',
                             'reference' => 'inventory/categories'
