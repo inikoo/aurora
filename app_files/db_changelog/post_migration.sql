@@ -187,3 +187,13 @@ ALTER TABLE `Product Dimension` ADD `Product Ignore Correlation` ENUM('Yes','No'
 truncate  `Product Category Sales Correlation`;
 ALTER TABLE `Product Category Sales Correlation` ADD `Product Category Sales Correlation Store Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Samples`, ADD `Product Category Sales Correlation Type` ENUM('Department','Family') NULL DEFAULT NULL AFTER `Product Category Sales Correlation Store Key`, ADD INDEX (`Product Category Sales Correlation Store Key`);
 ALTER TABLE `Product Category Sales Correlation` ADD `Customers A` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Product Category Sales Correlation Type`, ADD `Customers B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers A`, ADD `Customers AB` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers B`, ADD `Customers All A` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers AB`, ADD `Customers All B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers All A`, ADD `Product Category Sales Correlation Last Updated` DATETIME NULL DEFAULT NULL AFTER `Customers All B`;
+
+truncate  `Product Sales Correlation`;
+
+ALTER TABLE `Product Sales Correlation` ADD `Product Sales Correlation Store Key` SMALLINT UNSIGNED NULL DEFAULT NULL FIRST, ADD INDEX (`Product Sales Correlation Store Key`);
+ALTER TABLE `Product Sales Correlation` ADD `Customers A` SMALLINT UNSIGNED NULL DEFAULT NULL , ADD `Customers B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers A`, ADD `Customers AB` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers B`, ADD `Customers All A` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers AB`, ADD `Customers All B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers All A`, ADD `Product Sales Correlation Last Updated` DATETIME NULL DEFAULT NULL AFTER `Customers All B`;
+
+truncate  `Product Sales Anticorrelation`;
+
+ALTER TABLE `Product Sales Anticorrelation` ADD `Product Sales Anticorrelation Store Key` SMALLINT UNSIGNED NULL DEFAULT NULL FIRST, ADD INDEX (`Product Sales Anticorrelation Store Key`);
+ALTER TABLE `Product Sales Anticorrelation` ADD `Customers A` SMALLINT UNSIGNED NULL DEFAULT NULL , ADD `Customers B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers A`, ADD `Customers AB` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers B`, ADD `Customers All A` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers AB`, ADD `Customers All B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers All A`, ADD `Product Sales Anticorrelation Last Updated` DATETIME NULL DEFAULT NULL AFTER `Customers All B`;
