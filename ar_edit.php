@@ -997,7 +997,7 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 
             // $response['request'] = sprintf('offers/%d/%s', $object->get('Deal Campaign Store Key'));
 
-        } elseif ($object->get_object_name() == 'Supplier Delivery') {
+        }elseif ($object->get_object_name() == 'Supplier Delivery') {
 
             if ($user->get('User Type') == 'Agent') {
                 $response['request'] = 'agent_deliveries';
@@ -3006,7 +3006,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             }
             break;
         case 'EmailCampaign':
-            include_once 'class.EmailCampaign.php';
+        case 'Mailshot':
+
+        include_once 'class.EmailCampaign.php';
             $object = $parent->create_mailshot($data['fields_data']);
 
 

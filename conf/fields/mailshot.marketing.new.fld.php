@@ -51,7 +51,8 @@ $object_fields[] = array(
             'edit'     => 'custom',
             'value'    => '',
             'custom'   => '
-<div class="button_radio_options" class="Mailshot_Type value valid">
+<div class="button_radio_options" class="Mailshot_Type ">
+<input id="_Type" class="value  " field="_Type" type="hidden" value="" field_type="string" data-skip_validation="true"  >
 <span field_type="button_radio_options" field="Customer_List" onclick="toggle_mailshot_scope(this)" class="button " style="border:1px solid #ccc;padding:5px;margin:4px">'._('Customer list').'</span>
 <span field_type="button_radio_options" field="Product_Category" onclick="toggle_mailshot_scope(this)" class="button " style="border:1px solid #ccc;padding:5px;margin:4px">'._('Category/Product').'</span>
 </div>
@@ -90,6 +91,8 @@ $object_fields[] = array(
             'value'    => '',
             'custom'   => '
 <div class="button_radio_options">
+<input id="_Scope_Type" class="value  " field="_Scope_Type" type="hidden" value="" field_type="string" data-skip_validation="true"  >
+
 <span field_type="button_radio_options" field="Targeted" onclick="toggle_mailshot_scope_type(this)" class="button " style="border:1px solid #ccc;padding:5px;margin:4px">'._('Targeted').'</span>
 <span field_type="button_radio_options" field="Wide" onclick="toggle_mailshot_scope_type(this)" class="button " style="border:1px solid #ccc;padding:5px;margin:4px">'._('Spread').'</span>
 </div>

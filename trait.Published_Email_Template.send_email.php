@@ -323,27 +323,19 @@ trait Send_Email {
 
             $ses_client = $this->ses_clients[(rand(0, 1) == 0 ? 0 : 1)];
 
-            //$ses_client = $this->ses_clients[0];
+
 
 
             if ($send_raw) {
 
-                // print_r($request);
-
-
-                //  print "sened A\n";
                 $result = $ses_client->sendRawEmail($request);
 
             } else {
-                // print "sened B\n";
                 $result = $ses_client->sendEmail($request);
 
             }
 
 
-            //            print_r($result);
-
-            // exit('xx');
             $email_tracking->fast_update(
                 array(
                     "Email Tracking SES Id" => $result->get('MessageId'),
@@ -353,7 +345,7 @@ trait Send_Email {
             );
 
 
-            /*
+/*
 
                         $email_tracking->fast_update(
                             array(
@@ -363,7 +355,8 @@ trait Send_Email {
 
                             )
                         );
-            */ //usleep(100000);
+*/
+             //usleep(100000);
 
             //    sleep(1);
 

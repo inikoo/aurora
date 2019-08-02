@@ -16,8 +16,8 @@ $print_est = true;
 
 
 
-$where = 'where `Product ID`=971';
-$where = '';
+$where = 'where `Product ID`=110789';
+$where = 'where `Product Status`="Active"  and `Product Public`="Yes"  ';
 //$where='where `Product Code` like "JBB-%"';
 $sql = sprintf(
     "SELECT count(*) AS num FROM `Product Dimension` %s", $where
@@ -39,13 +39,12 @@ $contador  = 0;
 
 
 
-$sql = sprintf('SELECT `Product ID` FROM `Product Dimension` ');
+$sql = sprintf('SELECT `Product ID` FROM `Product Dimension`  %s order by RAND() ',$where);
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
         $product = get_object('Product', $row['Product ID']);
-        $product->update_sales_correlations('Random',200);
-        $product->update_sales_correlations();
+        $product->update_sales_correlations('Random',10);
 
 
         $contador++;
