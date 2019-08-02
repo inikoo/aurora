@@ -30,11 +30,17 @@ if ($result = $db->query($sql)) {
 $lap_time0 = date('U');
 $contador  = 0;
 
+$sql = sprintf("SELECT `Product ID` FROM `Product Dimension` P left join `Product DC Data` D on (P.`Product ID`=D.`Product ID`)  %s order by   `Product DC Total Acc Invoiced Amount` desc   ", $where);
+$sql = sprintf("SELECT `Product ID` FROM `Product Dimension`   %s order by `Product ID` desc limit 1000", $where);
+$sql = sprintf("SELECT `Product ID` FROM `Product Dimension`   %s order by RAND()", $where);
 
-$sql = sprintf("SELECT `Product ID` FROM `Product Dimension` %s order by RAND()", $where);
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $product = get_object('Product', $row['Product ID']);
+
+        //$product->update_sales_correlations('Best Sellers', 100);
+        //$product->update_sales_correlations('New', 100);
+
         $product->update_sales_correlations('Random', 1000000);
 
 
