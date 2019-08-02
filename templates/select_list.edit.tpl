@@ -11,7 +11,7 @@
 
 <input class=" List_Key" id="List_Key"  value="" type="hidden">
 <span class="List_Select" onclick="change_customer(this)"></span>
-<input class="List_Select_value" value="" ovalue="" placeholder="{t}List name{/t}" parent_key="{$store_key}"  parent="store" scope="lists">
+<input class="List_Select_value" value="" ovalue="" placeholder="{t}List name{/t}" parent_key="{$store_key}"  parent="store" scope="customer_lists">
 <div class="search_results_container">
     <table class="results" border="1">
         <tr class="hide search_result_template" field="" value="" formatted_value="" onclick="select_dropdown_customer(this)">
@@ -146,6 +146,13 @@
         on_change_list(element)
 
 
+        {if $mode=='new'}
+        var form_validation = get_form_validation_state()
+        process_form_validation(form_validation)
+
+        {/if}
+
+
 
     }
 
@@ -176,6 +183,7 @@
     });
 
     function on_change_list(element) {
+
 
 
 

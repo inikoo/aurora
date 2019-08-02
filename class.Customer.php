@@ -425,11 +425,7 @@ class Customer extends Subject {
             case('Send Email Marketing'):
             case('Send Postal Marketing'):
 
-                return $this->data['Customer '.$key] == 'Yes'
-                    ? _('Yes')
-                    : _(
-                        'No'
-                    );
+                return $this->data['Customer '.$key] == 'Yes' ? _('Yes') : _('No');
 
                 break;
             case("ID"):
@@ -1319,6 +1315,13 @@ class Customer extends Subject {
                 break;
 
 
+            case('Customer Send Newsletter'):
+            case('Customer Send Email Marketing'):
+                $this->update_field($field, $value, $options);
+                $this->update_customers_email_marketing_data();
+
+                break;
+
             default:
 
 
@@ -1332,7 +1335,6 @@ class Customer extends Subject {
 
 
                 if (preg_match('/^Customer Other Delivery Address (\d+)/i', $field, $matches)) {
-
 
 
                     $customer_delivery_address_key = $matches[1];
@@ -1791,25 +1793,25 @@ class Customer extends Subject {
 
     function update_other_delivery_address($customer_delivery_address_key, $fields) {
 
-/*
-        $sql = sprintf(
-            "SELECT * FROM `Customer Other Delivery Address Dimension` WHERE `Customer Other Delivery Address Key`=%d ", $customer_delivery_address_key
-        );
-        if ($result = $this->db->query($sql)) {
-            if ($address_data = $result->fetch()) {
+        /*
+                $sql = sprintf(
+                    "SELECT * FROM `Customer Other Delivery Address Dimension` WHERE `Customer Other Delivery Address Key`=%d ", $customer_delivery_address_key
+                );
+                if ($result = $this->db->query($sql)) {
+                    if ($address_data = $result->fetch()) {
 
 
-            }
-        }
+                    }
+                }
 
-*/
+        */
 
 
         //$address_fields           = array();
-        $updated_fields_number    = 0;
+        $updated_fields_number = 0;
         //$updated_recipient_fields = false;
-        $updated_address_fields   = false;
-//
+        $updated_address_fields = false;
+        //
         foreach ($fields as $field => $value) {
 
 
@@ -1854,11 +1856,14 @@ class Customer extends Subject {
 
             // replace null to empty string do not remove
 
-            array_walk_recursive($address_fields,function(&$item){$item=strval($item);});
+            array_walk_recursive(
+                $address_fields, function (&$item) {
+                $item = strval($item);
+            }
+            );
 
 
             $new_checksum = md5(json_encode($address_fields));
-
 
 
             $sql = sprintf(
@@ -1976,29 +1981,28 @@ class Customer extends Subject {
     function get_addresses_data() {
 
 
-        $address_data=array();
+        $address_data = array();
 
 
-        $address_data[$this->get('Customer Invoice Address Checksum')]=array(
-            'type'=>'invoice',
-            'formatted_value'=>preg_replace('/<br>/','',$this->get('Customer Invoice Address Formatted')),
-            'label'=>_('Current invoice address'),
-            'other_delivery_address_key'=>''
+        $address_data[$this->get('Customer Invoice Address Checksum')] = array(
+            'type'                       => 'invoice',
+            'formatted_value'            => preg_replace('/<br>/', '', $this->get('Customer Invoice Address Formatted')),
+            'label'                      => _('Current invoice address'),
+            'other_delivery_address_key' => ''
 
 
         );
 
-        if($this->get('Customer Invoice Address Checksum')!=$this->get('Customer Delivery Address Checksum')){
-            $address_data[$this->get('Customer Delivery Address Checksum')]=array(
-                'type'=>'delivery',
-                'formatted_value'=>preg_replace('/<br>/','',$this->get('Customer Invoice Address Formatted')),
-                'label'=>_('Current delivery address'),
-                'other_delivery_address_key'=>''
+        if ($this->get('Customer Invoice Address Checksum') != $this->get('Customer Delivery Address Checksum')) {
+            $address_data[$this->get('Customer Delivery Address Checksum')] = array(
+                'type'                       => 'delivery',
+                'formatted_value'            => preg_replace('/<br>/', '', $this->get('Customer Invoice Address Formatted')),
+                'label'                      => _('Current delivery address'),
+                'other_delivery_address_key' => ''
 
             );
 
         }
-
 
 
         $sql = sprintf(
@@ -2010,17 +2014,15 @@ class Customer extends Subject {
         if ($result = $this->db->query($sql)) {
 
 
-
-
             foreach ($result as $row) {
 
 
-                if(!array_key_exists($row['Customer Other Delivery Address Checksum'],$address_data)){
+                if (!array_key_exists($row['Customer Other Delivery Address Checksum'], $address_data)) {
                     $address_data[$row['Customer Other Delivery Address Checksum']] = array(
-                        'type'=>'other_delivery',
-                        'formatted_value' => $row['Customer Other Delivery Address Formatted'],
-                        'label'           => $row['Customer Other Delivery Address Label'],
-                        'other_delivery_address_key'=>$row['Customer Other Delivery Address Key']
+                        'type'                       => 'other_delivery',
+                        'formatted_value'            => $row['Customer Other Delivery Address Formatted'],
+                        'label'                      => $row['Customer Other Delivery Address Label'],
+                        'other_delivery_address_key' => $row['Customer Other Delivery Address Key']
 
                     );
                 }
@@ -4035,6 +4037,7 @@ class Customer extends Subject {
             )
         );
 
+        $this->update_customers_email_marketing_data();
 
         $history_data = array(
             'History Abstract' => $note,
@@ -4052,4 +4055,4 @@ class Customer extends Subject {
 }
 
 
-?>
+

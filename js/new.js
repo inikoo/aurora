@@ -84,62 +84,69 @@ function hide_options(field) {
 
 function get_form_validation_state() {
 
-    form_validation = 'valid';
 
-    $(".value").each(function (index) {
+    if($('#fields').attr('object')=='Mailshot'){
+        return get_mailshot_form_validation_state();
+    }else{
+        form_validation = 'valid';
 
-        var field = $(this).attr('field')
-       // console.log(index)
-     //   console.log($(this).attr('id'))
+        $(".value").each(function (index) {
 
-        // console.log(field)
-        //console.log($('#' + field + '_field').hasClass('valid'))
+            var field = $(this).attr('field')
+            // console.log(index)
+            //   console.log($(this).attr('id'))
 
-        //console.log($(this).attr('field_type'))
-
-
-        if($(this).attr('field_type')=='date_interval'){
-            component_validation = 'valid'
-
-        }else{
-            if ($('#' + field + '_field').hasClass('invalid')) {
-                component_validation = 'invalid'
+            console.log(field)
+            console.log($('#' + field + '_field').hasClass('valid'))
 
 
-                console.log(field)
 
-            } else if ($('#' + field + '_field').hasClass('valid')) {
+            if($(this).attr('field_type')=='date_interval'   ){
                 component_validation = 'valid'
-            } else {
-                component_validation = 'potentially_valid'
-                console.log($(this))
+
+            }else{
+                if ($('#' + field + '_field').hasClass('invalid')) {
+                    component_validation = 'invalid'
+
+
+
+                } else if ($('#' + field + '_field').hasClass('valid')) {
+                    component_validation = 'valid'
+                } else {
+                    component_validation = 'potentially_valid'
+                    console.log($(this).attr('field_type'))
+
+                    console.log(field)
+                }
             }
-        }
 
 
 
 
 
-        // if (component_validation != 'valid') console.log(field + ' ' + component_validation)
-        //if (component_validation == 'invalid' || component_validation == 'potentially_valid') 
-        if (component_validation == 'invalid') {
-            form_validation = 'invalid';
-        }
+            // if (component_validation != 'valid') console.log(field + ' ' + component_validation)
+            //if (component_validation == 'invalid' || component_validation == 'potentially_valid')
+            if (component_validation == 'invalid') {
+                form_validation = 'invalid';
+            }
 
-        if (form_validation == 'invalid') {
-            return;
-        }
+            if (form_validation == 'invalid') {
+                return;
+            }
 
-        if (component_validation == 'potentially_valid') {
-            form_validation = 'potentially_valid';
-        }
+            if (component_validation == 'potentially_valid') {
+                form_validation = 'potentially_valid';
+            }
 
 
-    });
+        });
 
-    console.log('val: '+form_validation)
+        console.log('val: '+form_validation)
 
-    return form_validation
+        return form_validation
+    }
+
+
 
 }
 

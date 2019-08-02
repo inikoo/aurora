@@ -151,6 +151,13 @@
 
         {if $scope=='Mailshot'}
         $('#Scope_Type_field').removeClass('hide').addClass('activated')
+
+        var form_validation = get_form_validation_state()
+        process_form_validation(form_validation)
+
+
+
+
         {/if}
 
     }

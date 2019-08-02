@@ -19,7 +19,6 @@ function get_email_campaign_showcase($data, $smarty, $user, $db) {
 
     $email_campaign = $data['_object'];
 
-
     if ($email_campaign->get('State Index') <= 40) {
         $email_campaign->update_estimated_recipients();
     }

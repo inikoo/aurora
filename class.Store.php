@@ -1767,6 +1767,25 @@ class Store extends DB_Table {
         }
     }
 
+
+    function update_customers_with_transactions() {
+
+        $customers_with_transactions = 0;
+        $sql                         = sprintf(
+            "select count(distinct `Customer Key`) as num  from `Order Transaction Fact` OTF  where `Store Key`=%d  and `Order Transaction Type`='Order' ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $customers_with_transactions = $row['num'];
+            }
+        }
+
+        $this->fast_update_json_field('Store Properties', 'customers_with_transactions', $customers_with_transactions);
+
+    }
+
     function update_customers_data() {
 
         $this->data['Store Contacts']                    = 0;
@@ -1795,10 +1814,6 @@ class Store extends DB_Table {
                 $this->data['Store Contacts Who Visit Website'] = 0;
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1811,10 +1826,6 @@ class Store extends DB_Table {
             if ($row = $result->fetch()) {
                 $this->data['Store New Contacts'] = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1827,10 +1838,6 @@ class Store extends DB_Table {
             if ($row = $result->fetch()) {
                 $this->data['Store New Contacts With Orders'] = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1848,10 +1855,6 @@ class Store extends DB_Table {
                 $this->data['Store Lost Contacts']   = $row['lost'];
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $sql = sprintf(
@@ -1866,10 +1869,6 @@ class Store extends DB_Table {
                 $this->data['Store Lost Contacts With Orders']   = $row['lost'];
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1898,9 +1897,46 @@ class Store extends DB_Table {
         $this->db->exec($sql);
 
 
+        $this->update_customers_email_marketing_data();
+
+
         $account = get_object('Account', 1);
         $account->update_customers_data();
 
+    }
+
+
+    function update_customers_email_marketing_data() {
+        $email_marketing_customers = 0;
+        $newsletters_customers     = 0;
+
+        $sql = "SELECT count(*) AS num FROM  `Customer Dimension` WHERE `Customer Store Key`=?  and `Customer Main Plain Email`!=''  and `Customer Send Email Marketing`='Yes' ";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array($this->id)
+        );
+        while ($row = $stmt->fetch()) {
+            $email_marketing_customers = $row['num'];
+
+        }
+
+        $this->fast_update_json_field('Store Properties', 'email_marketing_customers', $email_marketing_customers);
+
+
+        $sql = "SELECT count(*) AS num FROM  `Customer Dimension` WHERE `Customer Store Key`=?  and `Customer Main Plain Email`!=''  and `Customer Send Email Marketing`='Yes' ";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array($this->id)
+        );
+        while ($row = $stmt->fetch()) {
+            $newsletters_customers = $row['num'];
+
+        }
+        $this->fast_update_json_field('Store Properties', 'newsletters_customers', $newsletters_customers);
     }
 
     function update_new_customers() {

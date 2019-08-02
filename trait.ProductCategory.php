@@ -216,7 +216,7 @@ trait ProductCategory {
 
             }
             $date = gmdate('Y-m-d H:i:s');
-            $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+            $sql  = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
             $this->db->prepare($sql)->execute(
                 [
                     $date,
@@ -261,10 +261,10 @@ trait ProductCategory {
         if ($timeseries->get('Timeseries Scope') == 'Sales') {
 
 
-                $sql = sprintf(
-                    "SELECT count(DISTINCT `Invoice Key`)  AS invoices,count(DISTINCT `Customer Key`)  AS customers, round(ifnull(sum(`Order Transaction Amount`),0),2) AS net , 	round(ifnull(sum((`Order Transaction Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net FROM `Order Transaction Fact` WHERE `Product ID` IN (%s)  AND `Invoice Key`>0 AND  `Invoice Date`>=%s  AND   `Invoice Date`<=%s  ",
-                    $product_ids, prepare_mysql($date_frequency_period['from']), prepare_mysql($date_frequency_period['to'])
-                );
+            $sql = sprintf(
+                "SELECT count(DISTINCT `Invoice Key`)  AS invoices,count(DISTINCT `Customer Key`)  AS customers, round(ifnull(sum(`Order Transaction Amount`),0),2) AS net , 	round(ifnull(sum((`Order Transaction Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net FROM `Order Transaction Fact` WHERE `Product ID` IN (%s)  AND `Invoice Key`>0 AND  `Invoice Date`>=%s  AND   `Invoice Date`<=%s  ",
+                $product_ids, prepare_mysql($date_frequency_period['from']), prepare_mysql($date_frequency_period['to'])
+            );
 
             //print "$sql\n";
 
@@ -464,8 +464,8 @@ trait ProductCategory {
         if ($product_ids != '' and $this->get('Category Branch Type') != 'Root') {
 
 
-                $sql = sprintf(
-                    "SELECT
+            $sql = sprintf(
+                "SELECT
 		ifnull(count(DISTINCT `Customer Key`),0) AS customers,
 		ifnull(count(DISTINCT `Invoice Key`),0) AS invoices,
 		round(ifnull(sum( `Order Transaction Amount` +(  `Cost Supplier`/`Invoice Currency Exchange Rate`)  ),0),2) AS profit,
@@ -476,10 +476,9 @@ trait ProductCategory {
 		round(ifnull(sum((`Order Transaction Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net,
 		round(ifnull(sum((`Order Transaction Amount`+`Cost Supplier`)*`Invoice Currency Exchange Rate`),0),2) AS dc_profit
 		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` >0  AND  `Product ID` IN (%s) %s %s ", $product_ids, ($from_date ? sprintf('and `Invoice Date`>=%s', prepare_mysql($from_date)) : ''),
-                    ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
+                ($to_date ? sprintf('and `Invoice Date`<%s', prepare_mysql($to_date)) : '')
 
-                );
-
+            );
 
 
             //print "$sql\n";
@@ -655,18 +654,16 @@ trait ProductCategory {
 
 
         $update_data = array(
-            'Product Category Status'                 => $category_status,
-            'Product Category In Process Products'    => $elements_status_numbers['In Process'],
-            'Product Category Active Products'        => $elements_status_numbers['Active'],
-            'Product Category Suspended Products'     => $elements_status_numbers['Suspended'],
-            'Product Category Discontinuing Products' => $elements_status_numbers['Discontinuing'],
-            'Product Category Discontinued Products'  => $elements_status_numbers['Discontinued'],
+            'Product Category Status'                  => $category_status,
+            'Product Category In Process Products'     => $elements_status_numbers['In Process'],
+            'Product Category Active Products'         => $elements_status_numbers['Active'],
+            'Product Category Suspended Products'      => $elements_status_numbers['Suspended'],
+            'Product Category Discontinuing Products'  => $elements_status_numbers['Discontinuing'],
+            'Product Category Discontinued Products'   => $elements_status_numbers['Discontinued'],
             'Product Category Active Web For Sale'     => $elements_active_web_status_numbers['For Sale'],
             'Product Category Active Web Out of Stock' => $elements_active_web_status_numbers['Out of Stock'],
             'Product Category Active Web Offline'      => $elements_active_web_status_numbers['Offline']
         );
-
-
 
 
         $this->fast_update($update_data, 'Product Category Dimension');
@@ -1032,7 +1029,7 @@ trait ProductCategory {
                     */
 
 
-                    $image = get_object('Image',$product->get('product main image key'));
+                    $image = get_object('Image', $product->get('product main image key'));
 
                     $_image_filename = uniqid('tmp_ftc_image_bis_');
 
@@ -1235,7 +1232,7 @@ trait ProductCategory {
 
 
                         $product       = get_object('product', $row['Product ID']);
-                        $image         = get_object('Image',$product->get('Product Main Image Key'));
+                        $image         = get_object('Image', $product->get('Product Main Image Key'));
                         $image_375x250 = '';
                         if ($image->id) {
                             $_image_filename = uniqid('tmp_ftc_image_a_');
@@ -1837,7 +1834,8 @@ trait ProductCategory {
 
 
         $sql = sprintf(
-            "SELECT `Deal Component Key` FROM `Deal Component Dimension`  left join `Deal Campaign Dimension` on (`Deal Component Campaign Key`=`Deal Campaign Key`)   WHERE  `Deal Campaign Code`!='CU' and  `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d $where", $this->id
+            "SELECT `Deal Component Key` FROM `Deal Component Dimension`  left join `Deal Campaign Dimension` on (`Deal Component Campaign Key`=`Deal Campaign Key`)   WHERE  `Deal Campaign Code`!='CU' and  `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key`=%d $where",
+            $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -1894,7 +1892,178 @@ trait ProductCategory {
 
     }
 
+    function update_product_category_targeted_marketing_customers() {
+        include_once 'utils/asset_marketing_customers.php';
+
+        $store              = get_object('Store', $this->get('Store Key'));
+        $targeted_threshold = min($store->properties('email_marketing_customers') * .05, 500);
+
+
+        $estimated_recipients = count(get_targeted_categories_customers(array(), $this->db, $this->id, $targeted_threshold));
+        $this->fast_update_json_field('Category Properties', 'targeted_marketing_customers', $estimated_recipients);
+
+
+    }
+
+    function update_product_category_spread_marketing_customers() {
+        include_once 'utils/asset_marketing_customers.php';
+
+        $store                = get_object('Store', $this->get('Store Key'));
+        $targeted_threshold   = 4 * min($store->properties('email_marketing_customers') * .05, 500);
+        $estimated_recipients = count(get_spread_categories_customers(array(), $this->db, $this->id, $targeted_threshold));
+        $this->fast_update_json_field('Category Properties', 'spread_marketing_customers', $estimated_recipients);
+
+    }
+
+
+    function update_product_category_sales_correlations() {
+
+        if ($this->get('Product Category Ignore Correlation') == 'Yes') {
+            return;
+        }
+
+        $store = get_object('Store', $this->get('Store Key'));
+
+
+        if ($this->get('Category Subject') == 'Product') {
+
+            $field = 'OTF Category Family Key';
+
+            if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
+                $sql = sprintf(
+                    "select  `Category Key`,`Category Code` from `Category Dimension` left join `Product Category Dimension` on (`Category Key`=`Product Category Key`)  where  `Product Category Ignore Correlation`='No' and   `Category Branch Type`='Head' and `Category Root Key`=%d  and  `Category Key`>%d ",
+                    $store->get('Store Family Category Key'), $this->id
+                );
+            } else {
+                return;
+            }
+        } elseif ($this->get('Category Subject') == 'Category') {
+            $field = 'OTF Category Department Key';
+
+            if ($this->get('Category Root Key') == $store->get('Store Department Category Key')) {
+                $sql = sprintf(
+                    "select `Category Key`,`Category Code` from `Category Dimension` left join `Product Category Dimension` on (`Category Key`=`Product Category Key`)  where `Product Category Ignore Correlation`='No' and  `Category Branch Type`='Head' and `Category Root Key`= %d  and  `Category Key`>%d ",
+                    $store->get('Store Department Category Key'), $this->id
+                );
+            } else {
+                return;
+            }
+        } else {
+            return;
+        }
+
+
+        if ($result2 = $this->db->query($sql)) {
+
+            foreach ($result2 as $row2) {
+
+
+                if ($row2['Category Key'] != $this->id) {
+
+
+                    //  print_r($row2);
+
+                    $customers_A  = 0;
+                    $customers_AB = 0;
+                    $customers_B  = 0;
+
+
+                    $all_A=0;
+                    $all_B=0;
+
+                    $sql = sprintf(
+                        "select `Customer Key` from `Order Transaction Fact` OTF  where `$field`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`", $this->id
+                    );
+
+
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+                            $sql = sprintf(
+                                "select `Order Transaction Fact Key` as num from `Order Transaction Fact` OTF where OTF.`Order Transaction Type`='Order'  and OTF.`$field`=%d and OTF.`Customer Key`=%d limit 1", $row2['Category Key'], $row['Customer Key']
+                            );
+
+                            //print "$sql\n";
+                            $all_A++;
+
+                            $found = false;
+                            if ($result = $this->db->query($sql)) {
+                                if ($row = $result->fetch()) {
+                                    $found = true;
+
+                                }
+                            }
+
+
+                            if ($found) {
+                                $customers_AB++;
+                            } else {
+                                $customers_A++;
+
+                            }
+                            // print " $customers_A   $customers_AB \r ";
+                        }
+                    }
+
+                    $sql = sprintf(
+                        "select count(distinct `Customer Key`) as num  from `Order Transaction Fact` OTF  where `$field`=%d  and  `Order Transaction Type`='Order' ", $row2['Category Key']
+                    );
+                    if ($result = $this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $all_B=$row['num'];
+                            $customers_B = $row['num'] - $customers_AB;
+                        }
+                    }
+
+                    $samples = min($all_A, $all_B);
+
+                    if (($customers_AB + $customers_A + $customers_B) > 0) {
+                        $customers_zero = $store->properties('customers_with_transactions') - $customers_AB - $customers_A - $customers_B;
+
+
+                        $tmp  = ($customers_AB * $customers_zero) - ($customers_A * $customers_B);
+                        $tmp2 = sqrt(($customers_AB + $customers_A) * ($customers_B + $customers_zero) * ($customers_AB + $customers_B) * ($customers_A + $customers_zero));
+
+                        if ($tmp == 0 or $tmp2 == 0) {
+                            $person_correlation = 0;
+                        } else {
+                            $person_correlation = $tmp / $tmp2;
+                        }
+
+
+                       // print $this->get('Code').' '.$row2['Category Code']." $customers_A $customers_B  $customers_AB $customers_zero  $person_correlation\n ";
+
+
+                        $sql = sprintf(
+                            "insert into  `Product Category Sales Correlation` (`Category A Key`,`Category B Key`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ", $this->id, $row2['Category Key'],
+                            $person_correlation, $samples, $person_correlation, $samples
+                        );
+
+
+                        $this->db->exec($sql);
+
+                        $sql = sprintf(
+                            "insert into  `Product Category Sales Correlation` (`Category A Key`,`Category B Key`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
+
+                            $row2['Category Key'], $this->id, $person_correlation, $samples, $person_correlation, $samples
+                        );
+
+
+                        $this->db->exec($sql);
+                    } else {
+                       // print $this->get('Code').' '.$row2['Category Code']." $customers_A $customers_B  $customers_AB \n ";
+
+                    }
+
+
+                }
+
+            }
+
+
+        }
+    }
+
 
 }
 
-?>
+

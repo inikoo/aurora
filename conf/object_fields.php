@@ -26,7 +26,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
     $account = new Account($db);
     $edit    = true;
 
-
     switch ($object->get_object_name()) {
         case 'Email Campaign':// to delete this line
         case 'Mailshot':
@@ -41,6 +40,8 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
                 }
             }else{
+
+
                 switch ($object->get('Email Campaign Type')) {
                     case 'AbandonedCart':
                         include 'fields/mailshot.abandoned_cart.fld.php';
@@ -48,11 +49,15 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     case 'Marketing':
 
 
-                        if ($options['type'] == 'mailing_list') {
-                            include 'fields/mailshot.mailing_list.fld.php';
-                        } else {
+                   //     if ($options['type'] == 'mailing_list') {
+                   //         include 'fields/mailshot.mailing_list.fld.php';
+                   //     } else {
                             include 'fields/mailshot.marketing.fld.php';
-                        }
+                   //     }
+
+
+
+
 
 
                         break;

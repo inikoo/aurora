@@ -33,6 +33,23 @@ $print_est = true;
 print date('l jS \of F Y h:i:s A')."\n";
 
 
+
+$sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $store = new Store('id', $row['Store Key']);
+
+
+        $store->update_customers_with_transactions();
+
+
+
+
+    }
+
+}
+update_customers($db, $print_est);
+
 update_sales($db, $print_est);
 
 update_products($db, $print_est);
@@ -45,6 +62,8 @@ function update_orders($db, $print_est) {
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $store = new Store('id', $row['Store Key']);
+
+
 
             $store->load_acc_data();
             $store->update_orders();
@@ -71,9 +90,21 @@ function update_products($db, $print_est) {
             $store->update_product_data();
         }
 
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
+    }
+}
+
+
+function update_customers($db, $print_est) {
+
+    $sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $store = new Store('id', $row['Store Key']);
+
+            $store->load_acc_data();
+            $store->update_customers_data();
+        }
+
     }
 }
 

@@ -2269,12 +2269,9 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`');
             if ($result2 = $db->query($sql)) {
                 foreach ($result2 as $row2) {
-                    $warehouse = new Warehouse($row2['Warehouse Key']);
-                    $warehouse->update_inventory_snapshot($row['Date']);
+                    $warehouse = get_object('Warehouse',$row2['Warehouse Key']);
+                    $warehouse->update_inventory_snapshot($date);
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
             }
 
 
