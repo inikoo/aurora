@@ -3956,13 +3956,13 @@ class Product extends Asset {
         switch ($type) {
             case 'Same Family':
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Ignore Correlation`='No'  and `Product Family Category Key`=%d order by `Product Total Acc Customers` desc  ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P  where `Product Store Key`=%d and `Product Ignore Correlation`='No'  and `Product Family Category Key`=%d order by `Product Total Acc Customers` desc  ",
                     $this->data['Product Store Key'], $this->data['Product Family Category Key']
                 );
                 break;
             case 'Exclude Same Family':
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Ignore Correlation`='No'  and `Product Family Category Key`!=%d order by `Product Total Acc Customers` desc  ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P   where `Product Store Key`=%d and `Product Ignore Correlation`='No'  and `Product Family Category Key`!=%d order by `Product Total Acc Customers` desc  ",
                     $this->data['Product Store Key'], $this->data['Product Family Category Key']
                 );
 
@@ -3971,7 +3971,7 @@ class Product extends Asset {
             case 'Same Department':
 
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Ignore Correlation`='No' and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P  where `Product Store Key`=%d and `Product Ignore Correlation`='No'     limit %s ",
                     $this->data['Product Store Key'], $limit
                 );
 
@@ -3980,7 +3980,7 @@ class Product extends Asset {
             case 'Random':
 
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code`,`Product 1 Year Acc Customers` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Ignore Correlation`='No'  and `Product Status`='Active'  and `Product Public`='Yes'   and `Product 1 Year Acc Customers`>0 order by RAND()  limit %s ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P   where `Product Store Key`=%d and `Product Ignore Correlation`='No'  and `Product Status`='Active'  and `Product Public`='Yes'  order by RAND()  limit %s ",
                     $this->data['Product Store Key'], $limit
                 );
 
@@ -3989,7 +3989,7 @@ class Product extends Asset {
             case 'Best Sellers':
 
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code`,`Product 1 Year Acc Customers` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Ignore Correlation`='No'  and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
+                    "select P.`Product ID`,P.`Product Code`  from `Product Dimension` P left join `Product DC Data` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Ignore Correlation`='No'  order by `Product DC Total Acc Invoiced Amount` desc   limit %s ",
                     $this->data['Product Store Key'], $limit
                 );
 
@@ -4013,7 +4013,7 @@ class Product extends Asset {
 
         }
 
-
+        
         if ($result2 = $this->db->query($sql)) {
 
             foreach ($result2 as $row2) {
@@ -4129,21 +4129,45 @@ class Product extends Asset {
 
 
                                     if ($row4['num'] < $max_correlations) {
+
+
                                         $sql = sprintf(
-                                            "insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ", $this->id, $row2['Product ID'],
-                                            $person_correlation, $samples, $person_correlation, $samples
+                                            "insert into `Product Sales Correlation`  ( `Product Sales Correlation Store Key`,`Product A ID`,`Product B ID`,`Correlation`,`Samples`,`Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Sales Correlation Last Updated`) 
+                            values (%d,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Sales Correlation Last Updated`=%s",
+                                            $this->get('Store Key'),
+
+                                            $this->id, $row2['Product ID'],
+                                            $person_correlation, $samples, $customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                                            $person_correlation, $samples,$customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s'))
                                         );
 
 
+
+
                                         $this->db->exec($sql);
+
+
+
+
+
                                     } else {
                                         if ($row4['corr'] < $person_correlation) {
                                             $sql = sprintf("delete from `Product Sales Correlation` where `Product A ID`=%d  order by `Correlation` limit 1  ", $this->id);
                                             $this->db->exec($sql);
                                             $sql = sprintf(
-                                                "insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ", $this->id, $row2['Product ID'],
-                                                $person_correlation, $samples, $person_correlation, $samples
+                                                "insert into `Product Sales Correlation` 
+                        ( `Product Sales Correlation Store Key`,`Product A ID`,`Product B ID`,`Correlation`,`Samples`,
+                        `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Sales Correlation Last Updated`
+                        ) 
+                            values (%d,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Sales Correlation Last Updated`=%s",
+                                                $this->get('Store Key'),
+
+                                                $this->id, $row2['Product ID'],
+                                                $person_correlation, $samples, $customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                                                $person_correlation, $samples,$customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s'))
                                             );
+
+
                                             $this->db->exec($sql);
                                         }
 
@@ -4158,23 +4182,44 @@ class Product extends Asset {
                             if ($result4 = $this->db->query($sql)) {
                                 if ($row4 = $result4->fetch()) {
                                     if ($row4['num'] < $max_correlations) {
-                                        $sql = sprintf(
-                                            "insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
 
-                                            $row2['Product ID'], $this->id, $person_correlation, $samples, $person_correlation, $samples
+
+                                        $sql = sprintf(
+                                            "insert into `Product Sales Correlation` 
+                        ( `Product Sales Correlation Store Key`,`Product A ID`,`Product B ID`,`Correlation`,`Samples`,
+                        `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Sales Correlation Last Updated`
+                        ) 
+                            values (%d,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Sales Correlation Last Updated`=%s",
+                                            $this->get('Store Key'),
+
+                                            $row2['Product ID'],$this->id,
+                                            $person_correlation, $samples, $customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                                            $person_correlation, $samples,$customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s'))
                                         );
 
 
                                         $this->db->exec($sql);
+
+
+
                                     } else {
                                         if ($row4['corr'] < $person_correlation) {
                                             $sql = sprintf("delete from `Product Sales Correlation` where `Product A ID`=%d  order by `Correlation` limit 1  ", $row2['Product ID']);
                                             $this->db->exec($sql);
-                                            $sql = sprintf(
-                                                "insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
 
-                                                $row2['Product ID'], $this->id, $person_correlation, $samples, $person_correlation, $samples
+                                            $sql = sprintf(
+                                                "insert into `Product Sales Correlation` 
+                        ( `Product Sales Correlation Store Key`,`Product A ID`,`Product B ID`,`Correlation`,`Samples`,
+                        `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Sales Correlation Last Updated`
+                        ) 
+                            values (%d,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Sales Correlation Last Updated`=%s",
+                                                $this->get('Store Key'),
+
+                                                $row2['Product ID'],$this->id,
+                                                $person_correlation, $samples, $customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                                                $person_correlation, $samples,$customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s'))
                                             );
+
                                             $this->db->exec($sql);
                                         }
 
@@ -4196,9 +4241,23 @@ class Product extends Asset {
 
 
                                     if ($row4['num'] < $max_correlations) {
+                                        /*
                                         $sql = sprintf(
                                             "insert into  `Product Sales Anticorrelation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ", $this->id, $row2['Product ID'],
                                             $person_correlation, $samples, $person_correlation, $samples
+                                        );
+                                        */
+                                        $sql = sprintf(
+                                            "insert into `Product Sales Anticorrelation` 
+                        ( `Product Sales Anticorrelation Store Key`,`Product A ID`,`Product B ID`,`Correlation`,`Samples`,
+                        `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Sales Anticorrelation Last Updated`
+                        ) 
+                            values (%d,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Sales Anticorrelation Last Updated`=%s",
+                                            $this->get('Store Key'),
+
+                                            $this->id, $row2['Product ID'],
+                                            $person_correlation, $samples, $customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                                            $person_correlation, $samples,$customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s'))
                                         );
 
 
@@ -4207,11 +4266,24 @@ class Product extends Asset {
                                         if ($row4['corr'] > $person_correlation) {
                                             $sql = sprintf("delete from `Product Sales Anticorrelation` where `Product A ID`=%d  order by `Correlation` desc limit 1  ", $this->id);
                                             $this->db->exec($sql);
+
                                             $sql = sprintf(
-                                                "insert into  `Product Sales Anticorrelation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ", $this->id, $row2['Product ID'],
-                                                $person_correlation, $samples, $person_correlation, $samples
+                                                "insert into `Product Sales Anticorrelation` 
+                        ( `Product Sales Anticorrelation Store Key`,`Product A ID`,`Product B ID`,`Correlation`,`Samples`,
+                        `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Sales Anticorrelation Last Updated`
+                        ) 
+                            values (%d,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Sales Anticorrelation Last Updated`=%s",
+                                                $this->get('Store Key'),
+
+                                                $this->id, $row2['Product ID'],
+                                                $person_correlation, $samples, $customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                                                $person_correlation, $samples,$customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s'))
                                             );
+
+
                                             $this->db->exec($sql);
+
+
                                         }
 
                                     }
@@ -4226,23 +4298,43 @@ class Product extends Asset {
                                 if ($row4 = $result4->fetch()) {
                                     if ($row4['num'] < $max_correlations) {
                                         $sql = sprintf(
-                                            "insert into  `Product Sales Anticorrelation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
+                                            "insert into `Product Sales Anticorrelation` 
+                        ( `Product Sales Anticorrelation Store Key`,`Product A ID`,`Product B ID`,`Correlation`,`Samples`,
+                        `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Sales Anticorrelation Last Updated`
+                        ) 
+                            values (%d,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Sales Anticorrelation Last Updated`=%s",
+                                            $this->get('Store Key'),
 
-                                            $row2['Product ID'], $this->id, $person_correlation, $samples, $person_correlation, $samples
+                                            $row2['Product ID'],$this->id,
+                                            $person_correlation, $samples, $customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                                            $person_correlation, $samples,$customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s'))
                                         );
 
 
                                         $this->db->exec($sql);
+
+
                                     } else {
                                         if ($row4['corr'] > $person_correlation) {
                                             $sql = sprintf("delete from `Product Sales Anticorrelation` where `Product A ID`=%d  order by `Correlation` desc limit 1  ", $row2['Product ID']);
                                             $this->db->exec($sql);
-                                            $sql = sprintf(
-                                                "insert into  `Product Sales Anticorrelation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
 
-                                                $row2['Product ID'], $this->id, $person_correlation, $samples, $person_correlation, $samples
+                                            $sql = sprintf(
+                                                "insert into `Product Sales Anticorrelation` 
+                        ( `Product Sales Anticorrelation Store Key`,`Product A ID`,`Product B ID`,`Correlation`,`Samples`,
+                        `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Sales Anticorrelation Last Updated`
+                        ) 
+                            values (%d,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Sales Anticorrelation Last Updated`=%s",
+                                                $this->get('Store Key'),
+
+                                                $row2['Product ID'],$this->id,
+                                                $person_correlation, $samples, $customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                                                $person_correlation, $samples,$customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s'))
                                             );
+
+
                                             $this->db->exec($sql);
+
                                         }
 
                                     }
