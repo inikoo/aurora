@@ -465,13 +465,41 @@ trait OrderTax {
                 }
 
 
-                if (in_array(
-                    $this->data['Order Delivery Address Country 2 Alpha Code'], array(
-                                                                                  'GB',
-                                                                                  'XX',
-                                                                                  'IM'
-                                                                              )
-                )) {
+
+                if ($this->data['Order Delivery Address Country 2 Alpha Code'] == 'ES' and $this->data['Order Invoice Address Country 2 Alpha Code'] == 'ES' and preg_match(
+                        '/^(35|38|51|52)/', $this->data['Order Delivery Address Postal Code']
+                    ) and preg_match(
+                        '/^(35|38|51|52)/', $this->data['Order Invoice Address Postal Code']
+                    )) {
+
+                    return array(
+                        'code'       => $tax_category['Excluded']['code'],
+                        'name'       => $tax_category['Excluded']['name'],
+                        'rate'       => $tax_category['Excluded']['rate'],
+                        'state'      => 'outside EC',
+                        'operations' => '<div>'._('Outside EC fiscal area').'</div>'
+
+                    );
+                }
+
+                // new rule seems that is valid to ESP, E.g. billing to Madrid and shipping to canarias
+                if ($this->data['Order Delivery Address Country 2 Alpha Code'] == 'ES' and $this->data['Order Invoice Address Country 2 Alpha Code'] == 'ES' and preg_match(
+                        '/^(35|38|51|52)/', $this->data['Order Delivery Address Postal Code']
+                    )) {
+
+                    return array(
+                        'code'       => $tax_category['Excluded']['code'],
+                        'name'       => $tax_category['Excluded']['name'],
+                        'rate'       => $tax_category['Excluded']['rate'],
+                        'state'      => 'outside EC',
+                        'operations' => '<div>'._('Outside EC fiscal area').'</div>'
+
+                    );
+                }
+
+
+
+                if (in_array($this->data['Order Delivery Address Country 2 Alpha Code'], array('GB', 'XX', 'IM'))) {
 
                     return array(
                         'code'       => $tax_category['Standard']['code'],
@@ -481,13 +509,7 @@ trait OrderTax {
                         'operations' => ''
 
                     );
-                } elseif (in_array(
-                    $this->data['Order Invoice Address Country 2 Alpha Code'], array(
-                                                                                 'GBR',
-                                                                                 'UNK',
-                                                                                 'IM'
-                                                                             )
-                )) {
+                } elseif (in_array($this->data['Order Invoice Address Country 2 Alpha Code'], array('GBR', 'UNK', 'IM'))) {
 
                     return array(
                         'code'       => $tax_category['Standard']['code'],
@@ -496,9 +518,7 @@ trait OrderTax {
                         'state'      => 'billing to GBR',
                         'operations' => ''
                     );
-                } elseif (in_array(
-                    $this->data['Order Invoice Address Country 2 Alpha Code'], get_countries_EC_Fiscal_VAT_area($this->db)
-                )) {
+                } elseif (in_array($this->data['Order Invoice Address Country 2 Alpha Code'], get_countries_EC_Fiscal_VAT_area($this->db))) {
 
 
                     if ($this->data['Order Tax Number Valid'] == 'Yes') {
@@ -513,7 +533,8 @@ trait OrderTax {
 
                         );
 
-                    } else {
+                    }
+                    else {
 
                         if ($this->data['Order Tax Number'] == '') {
 
@@ -564,9 +585,7 @@ trait OrderTax {
                 } else {
 
 
-                    if (in_array(
-                        $this->data['Order Delivery Address Country 2 Alpha Code'], get_countries_EC_Fiscal_VAT_area($this->db)
-                    )) {
+                    if (in_array($this->data['Order Delivery Address Country 2 Alpha Code'], get_countries_EC_Fiscal_VAT_area($this->db))) {
 
 
                         return array(
