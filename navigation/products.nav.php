@@ -618,7 +618,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
             $title                = $category_title_label.'<span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
 
         } else {
-            $title = _('Departments');
+            $title = sprintf(_('%s departments'),$data['store']->get('Code'));
         }
 
     } elseif ($data['store']->get('Store Family Category Key') == $data['_object']->get('Category Root Key')) {
@@ -628,7 +628,8 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
             $title                = $category_title_label.'<span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
 
         } else {
-            $title = _('Families');
+            $title = sprintf(_('%s families'),$data['store']->get('Code'));
+
         }
 
 
@@ -641,7 +642,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
     }
 
 
-    if ($data['_object']->get('Product Category Status') != 'Active') {
+    if ($data['_object']->get('Category Branch Type')=='Head' and $data['_object']->get('Product Category Status') != 'Active') {
 
         $title .= ' ('.$data['_object']->get('Status').')';
     }

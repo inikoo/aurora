@@ -26,6 +26,9 @@ $_product = array(
         //  'product.webpage.analytics'      => 'product.webpage',
         'product.webpage.logbook'                              => 'product.webpage',
 
+
+        'product.sales_correlation'     => 'product.correlation',
+        'product.sales_anticorrelation' => 'product.correlation'
     ),
 
     'tabs' => array(
@@ -140,14 +143,24 @@ $_product = array(
             )
         ),
 
+        'product.correlation' => array(
+            'title'   => _('Sales correlations'),
+            'label'   => _('Correlations'),
+            'icon'    => 'project-diagram',
+            'subtabs' => array(
+                'product.sales_correlation'     => array(
+                    'label' => _('Sales correlation'),
+                    'icon'  => 'user',
 
-        /* To do
+                ),
+                'product.sales_anticorrelation' => array(
+                    'label' => _('Sales anticorrelation'),
+                    'icon'  => 'user-slash',
 
-        'product.offers'    => array(
-            'label' => _('Offers'),
-            'title' => _('Offers')
+
+                ),
+            )
         ),
-*/
 
 
         'product.history' => array(
@@ -182,6 +195,7 @@ $_product = array(
         ),
 
     )
+
 );
 
 $_service = array(
@@ -567,12 +581,12 @@ $modules = array(
             'list' => array(
                 'type' => 'object',
                 'tabs' => array(
-                    'list.details'   => array(
+                    'list.details'            => array(
                         'label' => _('Settings'),
                         'icon'  => 'sliders-h',
                         'title' => _('Settings')
                     ),
-                    'customers.list' => array(
+                    'customers.list'          => array(
                         'label' => _('Customers'),
                         'icon'  => 'users',
 
@@ -582,7 +596,7 @@ $modules = array(
                         'icon'  => 'bullhorn',
 
                     ),
-                    'list.history'   => array(
+                    'list.history'            => array(
                         'title' => _('History'),
                         'label' => '',
                         'icon'  => 'road',
@@ -4131,10 +4145,17 @@ $modules = array(
                     ),
 
 
-                    'category.mailshots'       => array(
+                    'category.mailshots' => array(
                         'label' => _('Mailshots'),
                         'icon'  => 'bullhorn'
                     ),
+
+                    'category.sales_correlation' => array(
+                        'title' => _('Sales correlations'),
+                        'label' => _('Correlations'),
+                        'icon'  => 'project-diagram',
+                    ),
+
 
                     'category.history' => array(
                         'title'         => _('History/Notes'),
@@ -4390,26 +4411,26 @@ $modules = array(
                             'field'  => 'Zones'
                         ),
                     ),
-/*
-                    'shipping_zone_schema.orders'    => array(
-                        'label' => _('Orders'),
-                        'icon'  => 'shopping-cart',
+                    /*
+                                        'shipping_zone_schema.orders'    => array(
+                                            'label' => _('Orders'),
+                                            'icon'  => 'shopping-cart',
 
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Orders'
-                        ),
-                    ),
-                    'shipping_zone_schema.customers' => array(
-                        'label'         => _('Customers'),
-                        'icon'          => 'users',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Customers'
-                        ),
-                    ),
-*/
-                    'shipping_zone_schema.history'   => array(
+                                            'quantity_data' => array(
+                                                'object' => '_object',
+                                                'field'  => 'Orders'
+                                            ),
+                                        ),
+                                        'shipping_zone_schema.customers' => array(
+                                            'label'         => _('Customers'),
+                                            'icon'          => 'users',
+                                            'quantity_data' => array(
+                                                'object' => '_object',
+                                                'field'  => 'Customers'
+                                            ),
+                                        ),
+                    */
+                    'shipping_zone_schema.history' => array(
                         'title'         => _('History/Notes'),
                         'label'         => '',
                         'quantity_data' => array(
@@ -4603,7 +4624,7 @@ $modules = array(
                 'icon'      => 'tachometer',
                 'reference' => 'production/%d',
                 'tabs'      => array(
-                    'production.dashboard' => array(
+                    'production.dashboard'     => array(
                         'label' => _('Dashboard'),
                         'icon'  => 'tachometer-alt'
                     ),
@@ -4627,7 +4648,7 @@ $modules = array(
 
             ),
             'production_part'  => array(
-                'type' => 'object',
+                'type'           => 'object',
                 'subtabs_parent' => array(
 
                     'production_part.supplier.orders'     => 'production_part.purchase_orders',
@@ -4657,7 +4678,6 @@ $modules = array(
                         'label' => _('List of tasks'),
                         'icon'  => 'tasks'
                     ),
-
 
 
                     'production_part.purchase_orders' => array(
