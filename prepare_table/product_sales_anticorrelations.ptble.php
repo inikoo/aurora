@@ -54,9 +54,9 @@ if ($order == 'code') {
 
 $fields =
 
-    "`Product Web Configuration`,`Product Number of Parts`,`Product Availability`,`Product Web State`,P.`Product ID`,P.`Product Code`,`Product Name`,`Product Store Key`,`Product Status`,`Correlation`,`Customers A`,`Customers B`,`Customers AB`,`Customers All A`,`Customers All B`,`Product Sales Correlation Last Updated`";
+    "`Product Web Configuration`,`Product Number of Parts`,`Product Availability`,`Product Web State`,P.`Product ID`,P.`Product Code`,`Product Name`,`Product Store Key`,`Product Status`,`Correlation`,`Customers A`,`Customers B`,`Customers AB`,`Customers All A`,`Customers All B`,`Product Sales Anticorrelation Last Updated`";
 $table
-    = ' `Product Sales Correlation`    left join  `Product Dimension` P   on (`Product B ID`=P.`Product ID`)   ';
+    = ' `Product Sales Anticorrelation`    left join  `Product Dimension` P   on (`Product B ID`=P.`Product ID`)   ';
 
 $sql_totals
     = "select count(distinct P.`Product ID`) as num from $table $where";
