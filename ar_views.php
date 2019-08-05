@@ -3864,75 +3864,91 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
     } elseif ($data['section'] == 'category') {
 
-        if ($data['_object']->get('Category Scope') == 'Product') {
+        if ($data['_object']->get('Category Scope') == 'Product'){
 
-            //   print_r($_content['tabs']);
-
-            if ($data['_object']->get('Category Branch Type') == 'Root') {
-
-                unset($_content['tabs']['category.sales']);
-                unset($_content['tabs']['category.webpage']);
-
-                if ($data['tab'] != 'category.details') {
-                    $_content['tabs']['category.categories']['selected'] = true;
-                    $data['tab']                                         = 'category.categories';
-
-                }
+            //  print_r($_content['tabs']);
 
 
-            }
-
-            if ($data['_object']->get('Category Subject') == 'Product') {
-                $_content['tabs']['category.subjects']['label'] = _('Products');
-                $_content['tabs']['category.subjects']['icon']  = 'cube';
 
 
-                if ($data['_object']->get('Root Key') == $data['store']->get('Store Family Category Key')) {
-                    $_content['tabs']['category.categories']['label'] = _('Families');
 
 
-                    if ($data['store']->get('Store Family Category Key') == $data['_object']->id) {
+                if ($data['_object']->get('Category Subject') == 'Product') {
 
-                        $_content['tabs']['category.webpage']['class']    = 'hide';
-                        $_content['tabs']['category.details']['class']    = 'hide';
-                        $_content['tabs']['category.categories']['class'] = 'hide';
 
-                        $_content['tabs']['category.categories']['selected'] = true;
-                        $data['tab']                                         = 'category.categories';
-                        $data['subtab']                                      = '';
-                        $_content['subtabs']                                 = array();
+
+                    $_content['tabs']['category.subjects']['label'] = _('Products');
+                    $_content['tabs']['category.subjects']['icon']  = 'cube';
+
+
+                    if ($data['_object']->get('Root Key') == $data['store']->get('Store Family Category Key')) {
+                        $_content['tabs']['category.categories']['label'] = _('Families');
+
+
+                        if ($data['store']->get('Store Family Category Key') == $data['_object']->id) {
+
+                            $_content['tabs']['category.webpage']['class']    = 'hide';
+                            $_content['tabs']['category.details']['class']    = 'hide';
+                            $_content['tabs']['category.customers']['class'] = 'hide';
+                            $_content['tabs']['category.sales']['class'] = 'hide';
+                            $_content['tabs']['category.mailshots']['class'] = 'hide';
+                            $_content['tabs']['category.deal_components']['class'] = 'hide';
+                            $_content['tabs']['category.sales_correlation']['class'] = 'hide';
+                            $_content['tabs']['category.images']['class'] = 'hide';
+                            $_content['tabs']['category.history']['class'] = 'hide';
+                            $_content['tabs']['category.categories']['class'] = 'hide';
+
+
+                            $_content['tabs']['category.categories']['selected'] = true;
+                            $data['tab']                                         = 'category.categories';
+                            $data['subtab']                                      = '';
+                            $_content['subtabs']                                 = array();
+
+                        }
+
 
                     }
-
-
-                }
-
-            } else {
-                if ($data['_object']->get('Root Key') == $data['store']->get('Store Department Category Key')) {
-                    $_content['tabs']['category.subjects']['label']   = _('Families');
-                    $_content['tabs']['category.categories']['label'] = _('Departments');
-
-
-                    if ($data['store']->get('Store Department Category Key') == $data['_object']->id) {
-
-                        $_content['tabs']['category.webpage']['class']    = 'hide';
-                        $_content['tabs']['category.details']['class']    = 'hide';
-                        $_content['tabs']['category.categories']['class'] = 'hide';
-
-                        $_content['tabs']['category.categories']['selected'] = true;
-                        $data['tab']                                         = 'category.categories';
-                        $data['subtab']                                      = '';
-                        $_content['subtabs']                                 = array();
-
-                    }
-
 
                 } else {
 
-                    $_content['tabs']['category.subjects']['label'] = _('Categories');
+
+
+                    if ($data['_object']->get('Root Key') == $data['store']->get('Store Department Category Key')) {
+                        $_content['tabs']['category.subjects']['label']   = _('Families');
+                        $_content['tabs']['category.categories']['label'] = _('Departments');
+
+
+                        if ($data['store']->get('Store Department Category Key') == $data['_object']->id) {
+
+                            $_content['tabs']['category.webpage']['class']    = 'hide';
+                            $_content['tabs']['category.details']['class']    = 'hide';
+                            $_content['tabs']['category.customers']['class'] = 'hide';
+                            $_content['tabs']['category.sales']['class'] = 'hide';
+                            $_content['tabs']['category.mailshots']['class'] = 'hide';
+                            $_content['tabs']['category.deal_components']['class'] = 'hide';
+                            $_content['tabs']['category.sales_correlation']['class'] = 'hide';
+                            $_content['tabs']['category.images']['class'] = 'hide';
+                            $_content['tabs']['category.history']['class'] = 'hide';
+                            $_content['tabs']['category.categories']['class'] = 'hide';
+
+
+                            $_content['tabs']['category.categories']['selected'] = true;
+                            $data['tab']                                         = 'category.categories';
+                            $data['subtab']                                      = '';
+                            $_content['subtabs']                                 = array();
+
+                        }
+
+
+                    } else {
+
+                        $_content['tabs']['category.subjects']['label'] = _('Categories');
+                    }
+
                 }
 
-            }
+
+
         } elseif ($data['_object']->get('Category Scope') == 'Part') {
 
             $_content['tabs']['category.customers']['class'] = 'hide';
