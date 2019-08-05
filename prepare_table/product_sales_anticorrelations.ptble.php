@@ -13,7 +13,7 @@ $group_by = '';
 
 
 $where = sprintf(
-    "where `Product A ID`=%d and `Correlation`<0  ", $parameters['parent_key']
+    "where `Product A ID`=%d ", $parameters['parent_key']
 );
 
 
