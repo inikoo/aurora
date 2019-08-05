@@ -56,8 +56,21 @@ switch ($tipo) {
     case 'manufacture_tasks':
         manufacture_tasks(get_table_parameters(), $db, $user, $account);
         break;
-
-
+    case 'production_deliveries':
+        production_deliveries(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'production_orders':
+        production_orders(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'deliveries_with_part':
+        production_deliveries_with_part(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'orders_with_part':
+        production_orders_with_part(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'replenishments':
+        replenishments(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -69,13 +82,80 @@ switch ($tipo) {
 }
 
 
+function replenishments($_data, $db, $user, $account) {
+
+
+    $rtext_label = 'replenishment';
+    include_once 'prepare_table/init.php';
+
+    $db->exec('SET SESSION group_concat_max_len = 1000000;');
+
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+    foreach ($db->query($sql) as $data) {
+
+        $locations_data = preg_split('/,/', $data['location_data']);
+
+
+        $stock = '<div border=0 style="xwidth:150px">';
+
+        foreach ($locations_data as $raw_location_data) {
+            if ($raw_location_data != '') {
+                $_locations_data = preg_split('/\:/', $raw_location_data);
+                if ($_locations_data[0] != $data['Location Key']) {
+                    $stock .= '<div style="clear:both">';
+                    $stock .= '<div style="float:left;min-width:100px;">
+<span class="link"  onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$_locations_data[0].'\')" >'.$_locations_data[1].'</span>
+</div><div style="float:left;min-width:100px;text-align:right">'.number($_locations_data[3]).'</div>';
+                    $stock .= '</div>';
+                }
+            }
+        }
+        $stock .= '</div>';
+
+
+        $adata[] = array(
+            'id'                    => (integer)$data['Location Key'],
+            'location'              => ($data['Warehouse Flag Key'] ? sprintf(
+                    '<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>', strtolower($data['Warehouse Flag Color']), $data['Warehouse Flag Label']
+                ) : '<i class="far fa-flag super_discreet" aria-hidden="true"></i>').' <span class="link" onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$data['Location Key'].'\')">'.$data['Location Code'].'</span>',
+            'part'                  => sprintf('<span class="link" onCLick="change_view(\'part/%d\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
+            'other_locations_stock' => $stock,
+            'description'           => $data['Part Package Description'],
+            'quantity'              => number($data['Quantity On Hand']),
+            'ordered_quantity'      => number($data['ordered_quantity']),
+            'effective_stock'       => number($data['effective_stock']),
+            'recommended_quantity'  => ' <span class="padding_left_5">(<span style="display: inline-block;min-width: 20px;text-align: center">'.number($data['Minimum Quantity']).'</span>,<span style="display: inline-block;min-width: 25px;text-align: center">'.number(
+                    $data['Maximum Quantity']
+                ).'</span>)</span>'
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
 function operatives($_data, $db, $user) {
 
     $rtext_label = 'operative';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
 
@@ -139,8 +219,7 @@ function manufacture_tasks($_data, $db, $user, $account) {
     $rtext_label = 'manufacture task';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
 
@@ -187,8 +266,7 @@ function suppliers($_data, $db, $user, $account) {
 
         if (!($_data['parameters']['parent'] == 'agent' and $_data['parameters']['parent_key'] == $user->get(
                 'User Parent Key'
-            ))
-        ) {
+            ))) {
             echo json_encode(
                 array(
                     'state' => 405,
@@ -218,8 +296,7 @@ function suppliers($_data, $db, $user, $account) {
     $rtext_label = 'supplier';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
 
@@ -230,8 +307,7 @@ function suppliers($_data, $db, $user, $account) {
 
             if ($_data['parameters']['parent'] == 'agent') {
                 $operations = sprintf(
-                    '<i agent_key="%d" supplier_key="%d"  class="fa fa-unlink button" aria-hidden="true"  onClick="bridge_supplier(this)" ></i>', $_data['parameters']['parent_key'],
-                    $data['Supplier Key']
+                    '<i agent_key="%d" supplier_key="%d"  class="fa fa-unlink button" aria-hidden="true"  onClick="bridge_supplier(this)" ></i>', $_data['parameters']['parent_key'], $data['Supplier Key']
                 );
             } else {
                 $operations = '';
@@ -344,8 +420,7 @@ function production_parts($_data, $db, $user, $account) {
     $rtext_label = 'production part';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
 
@@ -357,20 +432,16 @@ function production_parts($_data, $db, $user, $account) {
 
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
-                    $stock_status
-                        = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Optimal':
-                    $stock_status
-                        = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Low':
-                    $stock_status
-                        = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Critical':
-                    $stock_status
-                        = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Out_Of_Stock':
                     $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
@@ -380,8 +451,7 @@ function production_parts($_data, $db, $user, $account) {
 
                     break;
                 case 'Error':
-                    $stock_status
-                        = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
                     break;
                 default:
                     $stock_status = $data['Part Stock Status'];
@@ -483,8 +553,7 @@ function bill_of_materials($_data, $db, $user, $account) {
     $rtext_label = 'components';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
 
@@ -501,28 +570,22 @@ function bill_of_materials($_data, $db, $user, $account) {
 
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
-                    $stock_status
-                        = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Optimal':
-                    $stock_status
-                        = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Low':
-                    $stock_status
-                        = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Critical':
-                    $stock_status
-                        = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Out_Of_Stock':
-                    $stock_status
-                        = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Error':
-                    $stock_status
-                        = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
                     break;
                 default:
                     $stock_status = $data['Part Stock Status'];
@@ -589,8 +652,7 @@ function materials($_data, $db, $user, $account) {
     $rtext_label = 'components';
     include_once 'prepare_table/init.php';
 
-    $sql
-           = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
 
@@ -605,28 +667,22 @@ function materials($_data, $db, $user, $account) {
 
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
-                    $stock_status
-                        = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Optimal':
-                    $stock_status
-                        = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Low':
-                    $stock_status
-                        = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Critical':
-                    $stock_status
-                        = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Out_Of_Stock':
-                    $stock_status
-                        = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
                     break;
                 case 'Error':
-                    $stock_status
-                        = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
                     break;
                 default:
                     $stock_status = $data['Part Stock Status'];
@@ -672,4 +728,401 @@ function materials($_data, $db, $user, $account) {
 }
 
 
-?>
+function production_deliveries($_data, $db, $user) {
+    $rtext_label = 'production sheet';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+            switch ($data['Supplier Delivery State']) {
+                case 'InProcess':
+                case 'Consolidated':
+                case 'Dispatched':
+                case 'Received':
+                    $state = sprintf('%s', _('Items manufactured'));
+                    break;
+
+                case 'Checked':
+                    $state = sprintf('%s', _('Checked'));
+                    break;
+                case 'Placed':
+                case 'InvoiceChecked':
+                    $state = _('Booked in');
+                    break;
+                case 'Costing':
+                    $state = _('Booked in').', '._('checking costing');
+                    break;
+
+                case 'Cancelled':
+                    $state = sprintf('%s', _('Cancelled'));
+                    break;
+
+                default:
+                    $state = $data['Supplier Delivery State'];
+                    break;
+            }
+
+            $table_data[] = array(
+                'id' => (integer)$data['Supplier Delivery Key'],
+
+                'date'      => strftime("%e %b %Y", strtotime($data['Supplier Delivery Creation Date'].' +0:00')),
+                'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Last Updated Date'].' +0:00')),
+
+
+                'public_id' => sprintf(
+                    '<span class="link" onclick="change_view(\'/production/%d/delivery/%d\')" >%s</span>  ', $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
+                ),
+
+
+                'state'        => $state,
+                'total_amount' => money($data['Supplier Delivery Total Amount'], $data['Supplier Delivery Currency Code'])
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function production_orders($_data, $db, $user, $account) {
+
+    if (!$user->can_view('suppliers')) {
+        echo json_encode(
+            array(
+                'state' => 405,
+                'resp'  => 'Forbidden'
+            )
+        );
+        exit;
+    }
+
+
+    $rtext_label = 'job order';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $table_data = array();
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            switch ($data['Purchase Order State']) {
+
+
+                case 'InProcess':
+                    $state = _('Planning');
+                    break;
+                case 'SubmittedAgent':
+                case 'Submitted':
+                    $state = _('Manufacturing');
+                    break;
+                case 'Editing_Submitted':
+                    $state = _('Manufacturing').' ('._('editing').')';
+                    break;
+                case 'Inputted':
+                case 'Dispatched':
+                case 'Received':
+                    $state = _('In quality control');
+                    break;
+                case 'Checked':
+                    $state = _('In quality control').' ('._('Check done').')';
+                    break;
+                case 'Placed':
+                case 'InvoiceChecked':
+
+                $state = _('Booked in');
+                    break;
+                case 'Costing':
+
+                $state = _('Booked in').' ('._('Review costing').')';
+                    break;
+
+                case 'Cancelled':
+                    $state = _('Cancelled');
+                    break;
+                default:
+                    $state = $data['Purchase Order State'];
+                    break;
+            }
+
+
+            $table_data[] = array(
+                'id'           => (integer)$data['Purchase Order Key'],
+                'public_id'    => sprintf(
+                    '<span class="link" onclick="change_view(\'production/%d/order/%d\')" >%s</span>  ', $data['Purchase Order Parent Key'], $data['Purchase Order Key'],
+                    ($data['Purchase Order Public ID'] == '' ? '<i class="fa fa-exclamation-circle error"></i> <span class="very_discreet italic">'._('empty').'</span>' : $data['Purchase Order Public ID'])
+                ),
+                'date'         => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
+                'last_date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
+                'state'        => $state,
+                'total_amount' => money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code']),
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function production_deliveries_with_part($_data, $db, $user) {
+    $rtext_label = 'production sheet';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            switch ($data['Purchase Order Transaction State']) {
+
+
+                case 'InProcess':
+                    $state = _('Planning');
+                    break;
+                case 'SubmittedAgent':
+                case 'Submitted':
+                    $state = _('Manufacturing');
+                    break;
+                case 'Editing_Submitted':
+                    $state = _('Manufacturing').' ('._('editing').')';
+                    break;
+                case 'Inputted':
+                case 'Dispatched':
+                case 'Received':
+                    $state = _('In quality control');
+                    break;
+                case 'Checked':
+                    $state = _('In quality control').' ('._('Check done').')';
+                    break;
+                case 'Placed':
+                case 'InvoiceChecked':
+
+                    $state = _('Booked in');
+                    break;
+                case 'Costing':
+
+                    $state = _('Booked in').' ('._('Review costing').')';
+                    break;
+
+                case 'Cancelled':
+                    $state = _('Cancelled');
+                    break;
+                default:
+                    $state = $data['Purchase Order Transaction State'];
+                    break;
+            }
+
+
+
+            $table_data[] = array(
+                'id' => (integer)$data['Supplier Delivery Key'],
+
+                'date'      => strftime("%e %b %Y", strtotime($data['Supplier Delivery Creation Date'].' +0:00')),
+                'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Last Updated Date'].' +0:00')),
+
+
+                'public_id' => sprintf(
+                    '<span class="link" onclick="change_view(\'/production/%d/delivery/%d\')" >%s</span>  ', $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
+                ),
+
+
+                'state'        => $state,
+                //'total_amount' => money($data['Supplier Delivery Total Amount'], $data['Supplier Delivery Currency Code'])
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function production_orders_with_part($_data, $db, $user, $account) {
+
+    if (!$user->can_view('suppliers')) {
+        echo json_encode(
+            array(
+                'state' => 405,
+                'resp'  => 'Forbidden'
+            )
+        );
+        exit;
+    }
+
+
+    $rtext_label = 'job order';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $table_data = array();
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            switch ($data['Purchase Order Transaction State']) {
+
+
+                case 'InProcess':
+                    $state = _('Planning');
+                    break;
+                case 'SubmittedAgent':
+                case 'Submitted':
+                    $state = _('Manufacturing');
+                    break;
+                case 'Editing_Submitted':
+                    $state = _('Manufacturing').' ('._('editing').')';
+                    break;
+                case 'Inputted':
+                case 'Dispatched':
+                case 'Received':
+                    $state = _('In quality control');
+                    break;
+                case 'Checked':
+                    $state = _('In quality control').' ('._('Check done').')';
+                    break;
+                case 'Placed':
+                case 'InvoiceChecked':
+
+                    $state = _('Booked in');
+                    break;
+                case 'Costing':
+
+                    $state = _('Booked in').' ('._('Review costing').')';
+                    break;
+
+                case 'Cancelled':
+                    $state = _('Cancelled');
+                    break;
+                default:
+                    $state = $data['Purchase Order Transaction State'];
+                    break;
+            }
+
+
+            if($data['Purchase Order State']=='InProccess'){
+                $qty_units=number($data['Purchase Order Ordering Units']);
+                $qty_skos=number($data['Purchase Order Ordering Units']/$data['Part Units Per Package']);
+
+            }else{
+                $qty_units=number($data['Purchase Order Submitted Units']);
+                $qty_skos=number($data['Purchase Order Submitted Units']/$data['Purchase Order Submitted Units Per SKO']);
+
+            }
+
+
+
+            $table_data[] = array(
+                'id'           => (integer)$data['Purchase Order Key'],
+                'public_id'    => sprintf(
+                    '<span class="link" onclick="change_view(\'production/%d/order/%d\')" >%s</span>  ', $data['Purchase Order Parent Key'], $data['Purchase Order Key'],
+                    ($data['Purchase Order Public ID'] == '' ? '<i class="fa fa-exclamation-circle error"></i> <span class="very_discreet italic">'._('empty').'</span>' : $data['Purchase Order Public ID'])
+                ),
+                'date'         => strftime("%e %b %Y", strtotime($data['Purchase Order Creation Date'].' +0:00')),
+                'last_date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Purchase Order Last Updated Date'].' +0:00')),
+                'state'        => $state,
+                'qty_units'=>$qty_units,
+                'qty_skos'=>$qty_skos
+
+                //'total_amount' => money($data['Purchase Order Total Amount'], $data['Purchase Order Currency Code']),
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+

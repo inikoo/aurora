@@ -1235,7 +1235,7 @@ class Public_Customer extends DBW_Table {
         $order_data['Order Invoice Address Locality']             = $this->data['Customer Invoice Address Locality'];
         $order_data['Order Invoice Address Administrative Area']  = $this->data['Customer Invoice Address Administrative Area'];
         $order_data['Order Invoice Address Country 2 Alpha Code'] = $this->data['Customer Invoice Address Country 2 Alpha Code'];
-        $order_data['Order Invoice Address Checksum']             = $this->data['Customer Invoice Address Recipient'];
+        $order_data['Order Invoice Address Checksum']             = $this->data['Customer Invoice Address Checksum'];
         $order_data['Order Invoice Address Formatted']            = $this->data['Customer Invoice Address Formatted'];
         $order_data['Order Invoice Address Postal Label']         = $this->data['Customer Invoice Address Postal Label'];
 
@@ -1250,7 +1250,7 @@ class Public_Customer extends DBW_Table {
         $order_data['Order Delivery Address Locality']             = $this->data['Customer Delivery Address Locality'];
         $order_data['Order Delivery Address Administrative Area']  = $this->data['Customer Delivery Address Administrative Area'];
         $order_data['Order Delivery Address Country 2 Alpha Code'] = $this->data['Customer Delivery Address Country 2 Alpha Code'];
-        $order_data['Order Delivery Address Checksum']             = $this->data['Customer Delivery Address Recipient'];
+        $order_data['Order Delivery Address Checksum']             = $this->data['Customer Delivery Address Checksum'];
         $order_data['Order Delivery Address Formatted']            = $this->data['Customer Delivery Address Formatted'];
         $order_data['Order Delivery Address Postal Label']         = $this->data['Customer Delivery Address Postal Label'];
 

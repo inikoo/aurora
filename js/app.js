@@ -375,7 +375,6 @@ function change_browser_history_state(request) {
         request = '/' + request
     }
 
-    console.log(old_state_request + ' _> ' + request)
 
 
 
@@ -383,6 +382,7 @@ function change_browser_history_state(request) {
 
     if (old_state_request != request) {
 
+        console.log(old_state_request + ' -> ' + request)
 
 
 
@@ -638,6 +638,8 @@ function change_view(_request, metadata) {
 
                 state = data.app_state;
 
+
+                console.log(state)
 
                 if (typeof (data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
                     // $('#navigation').removeClass('hide')

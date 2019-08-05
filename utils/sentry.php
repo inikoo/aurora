@@ -3,7 +3,7 @@
 
  About:
  Author: Raul Perusquia <rulovico@gmail.com>
- Created: 10 November 2018 at 04:03:30 GMT+8, Kuala Lumpur, Malaysias
+ Created: 10 November 2018 at 04:03:30 GMT+8, Kuala Lumpur, Malaysia
 
  Copyright (c) 2017, Inikoo
 

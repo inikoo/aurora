@@ -385,20 +385,36 @@ switch ($_REQUEST['action']) {
         break;
 
 
-    case 'pick_item':
+    case 'update_delivery_note_item_status':
 
 
         include 'api.includes/parse_arguments_dn_item_operations.inc.php';
 
+        $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
 
 
+        $response = array(
+            'state' => 'OK',
+        );
+
+
+        echo json_encode($response);
+        exit;
+        break;
+
+
+    case 'pick_item':
+
+
+        include 'api.includes/parse_arguments_dn_item_operations.inc.php';
+        include 'api.includes/parse_arguments_dn_item_operations_qty.inc.php';
 
         $delivery_note = get_object('DeliveryNote', $_REQUEST['delivery_note_key']);
         $delivery_note->update_item_picked_quantity(
             array(
                 'transaction_key' => $_REQUEST['itf_key'],
                 'qty'             => $qty,
-                'picker_key'      => $_REQUEST['staff_key'],
+                'picker_key'      => $user->get_staff_key()
 
             )
         );
@@ -500,7 +516,7 @@ switch ($_REQUEST['action']) {
         $items = array();
 
         $sql =
-            sprintf('select `Inventory Transaction Key`,P.`Part SKU`,`Part Package Description`,`Part Package Weight`,`Required`,L.`Location Key` from `Inventory Transaction Fact` ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) left join `Location Dimension` L on (L.`Location Key`=ITF.`Location Key`)  where `Delivery Note Key`=%d ', $_REQUEST['delivery_note_key']);
+            sprintf('select `Part Reference`,`Inventory Transaction Key`,P.`Part SKU`,`Part Package Description`,`Part Package Weight`,`Required`+`Given` as Required , `Picked`,`Packed`,`Out of Stock`,`Waiting`,`No Authorized`,`Not Found`,`No Picked Other`,  L.`Location Key`,`Part SKO Barcode` from `Inventory Transaction Fact` ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) left join `Location Dimension` L on (L.`Location Key`=ITF.`Location Key`)  where `Delivery Note Key`=%d ', $_REQUEST['delivery_note_key']);
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
@@ -522,10 +538,6 @@ switch ($_REQUEST['action']) {
                     'part_location' => $part_location_data
                 );
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            //print "$sql\n";
-            exit;
         }
 
 

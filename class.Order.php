@@ -699,7 +699,13 @@ class Order extends DB_Table {
                         $state = _('Dispatch Approved');
                         break;
                     case('Dispatched'):
-                        $state = _('Dispatched');
+
+                        if ($this->data['Order For Collection'] == 'Yes') {
+                            $state= _('Collected');
+                        } else {
+                            $state= _('Dispatched');
+                        }
+
                         break;
                     case('Cancelled'):
                         $state = _('Cancelled');
@@ -849,6 +855,8 @@ class Order extends DB_Table {
             $date = gmdate('Y-m-d H:i:s');
         }
 
+        $hide=array();
+        $show=array();
 
         $account = get_object('Account', 1);
 
@@ -976,6 +984,8 @@ class Order extends DB_Table {
 
                     $this->update_totals();
 
+                    $hide=array();
+                    $show=array();
 
                     break;
                 case 'InProcess':
@@ -1713,7 +1723,9 @@ class Order extends DB_Table {
             'deliveries_xhtml'  => $deliveries_xhtml,
             'invoices_xhtml'    => $invoices_xhtml,
             'number_deliveries' => $number_deliveries,
-            'number_invoices'   => $number_invoices
+            'number_invoices'   => $number_invoices,
+            'hide'=>$hide,
+            'show'=>$show
         );
 
 
@@ -1923,9 +1935,7 @@ class Order extends DB_Table {
             $this->db->exec($sql);
             $public_id = $this->db->lastInsertId();
 
-            $invoice_public_id = sprintf(
-                $store->data['Store Invoice Public ID Format'], $public_id
-            );
+            $invoice_public_id = sprintf($store->data['Store Invoice Public ID Format'], $public_id);
             $file_as           = get_file_as($invoice_public_id);
 
         } else {

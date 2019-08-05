@@ -16,8 +16,17 @@ $tipo    = 'stock.history.day';
 
 $default = $user->get_tab_defaults($tab);
 
-$table_views = array();
+$table_views = array(
+    'overview' => array(
+        'label' => _('Stock'),
+        'title' => _('Stock')
+    ),
+    '1_year'    => array(
+        'label' => _('1 year'),
+        'title' => _('1 year')
+    ),
 
+);
 $table_filters = array(
 
     'reference'         => array(

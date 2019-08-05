@@ -537,21 +537,8 @@
 
         $('#take_order i').removeClass('fa-shopping-cart').addClass('fa-spinner fa-spin')
 
+        new_order();
 
-        var request = '/ar_find.php?tipo=number_orders_in_process&customer_key=' + $('#customer').attr('key')
-
-        $.getJSON(request, function (data) {
-
-
-            if (data.orders_in_process > 0) {
-                $('#take_order i').addClass('fa-shopping-cart').removeClass('fa-spinner fa-spin')
-
-            } else {
-                new_order();
-            }
-
-
-        })
 
     }
 

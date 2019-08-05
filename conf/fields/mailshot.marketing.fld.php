@@ -11,7 +11,13 @@
 */
 
 
-
+$options_scope = array(
+    'List'  => _('Customer list'),
+    'Category Target' => _('Category (Targeted)'),
+    'Category Wide' => _('Category (Spread out)'),
+    'Product Target' => _('Product (Targeted)'),
+    'Product Wide' => _('Product (Spread out)'),
+);
 
 $object_fields = array();
 
@@ -37,4 +43,3 @@ $object_fields[] = array(
 
 
 
-?>

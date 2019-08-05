@@ -218,7 +218,7 @@ function get_suppliers_category_navigation($data, $smarty, $user, $db, $account)
                 'title'     => _("Supplier's categories"),
                 'reference' => 'suppliers/categories'
             );
-            $tab               = 'parts.categories';
+            $tab               = 'supplier.categories';
             $parent_categories = '';
             break;
 

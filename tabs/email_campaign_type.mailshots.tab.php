@@ -66,7 +66,14 @@ if ($state['_object']->get('Code') == 'Newsletter') {
 
 } elseif ($state['_object']->get('Code') == 'Marketing') {
 
+    $table_buttons[] = array(
+        'icon'      => 'plus',
+        'title'     => _('New mailshot'),
+        'reference' => "marketing/".$state['parent_key']."/emails/".$state['key'].'/mailshot/new'
 
+    );
+
+/*
     $table_buttons[] = array(
         'icon'  => 'plus',
         'title' => _('New marketing mailshot'),
@@ -78,10 +85,9 @@ if ($state['_object']->get('Code') == 'Newsletter') {
         )
 
     );
+*/
 
-    $smarty->assign(
-        'js_code', 'js/injections/new_marketing_mailshot.'.(_DEVEL ? '' : 'min.').'js'
-    );
+  //  $smarty->assign('js_code', 'js/injections/new_marketing_mailshot.'.(_DEVEL ? '' : 'min.').'js');
 
 
 } elseif ($state['_object']->get('Code') == 'AbandonedCart') {

@@ -152,3 +152,42 @@ update  `Inventory Transaction Fact` set `Inventory Transaction Section`='Lost' 
 
 update  `Inventory Transaction Fact` set `Inventory Transaction Section`='Move Detail' where `Inventory Transaction Type` in ('Move In','Move Out');
 update  `Inventory Transaction Fact` set `Inventory Transaction Section`='NoDispatched' where `Inventory Transaction Type` in ('Failsale');
+
+ALTER TABLE `Inventory Spanshot Fact` ADD `Inventory Spanshot Stock Left 1 Year Ago` FLOAT NULL DEFAULT '0' AFTER `Inventory Spanshot Warehouse SKO Value`;
+ALTER TABLE `Inventory Spanshot Fact` CHANGE `Dormant 1 Year` `Dormant 1 Year` ENUM('Yes','No','NA') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `Inventory Warehouse Spanshot Fact` ADD `Inventory Warehouse Spanshot Fact Dormant Parts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Inventory Warehouse Spanshot Out Other`, ADD `Inventory Warehouse Spanshot Fact Stock Left 1 Year Parts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Inventory Warehouse Spanshot Fact Dormant Parts`;
+ALTER TABLE `Inventory Transaction Fact` CHANGE `Waitng` `Waiting` FLOAT UNSIGNED NOT NULL DEFAULT '0';
+
+update `Purchase Order Dimension` set `Purchase Order Production`='Yes' where `Purchase Order Parent`='Supplier' and `Purchase Order Parent Key`=6472;
+update `Supplier Delivery Dimension` set `Supplier Delivery Production`='Yes' where `Supplier Delivery Parent`='Supplier' and `Supplier Delivery Parent Key`=6472;
+
+update `Supplier Part Dimension` set `Supplier Part Production`='Yes' where   `Supplier Part Supplier Key`=6472;
+
+
+ALTER TABLE `Order Transaction Fact` ADD `OTF Webpage Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `OTF Category Department Key`;
+ALTER TABLE `Category Dimension` ADD `Category Properties` JSON NULL DEFAULT NULL AFTER `Category Number History Records`;
+update `Category Dimension` set `Category Properties`='{}';
+ALTER TABLE `Product Dimension` ADD `Product Properties` JSON NULL DEFAULT NULL AFTER `Product Department Category Key`;
+update `Product Dimension` set `Product Properties`='{}';
+
+RENAME TABLE `Product Family Sales Correlation` TO `Product Category Sales Correlation`;
+ALTER TABLE `Product Category Sales Correlation` CHANGE `Family A Key` `Category A Key` MEDIUMINT(8) UNSIGNED NOT NULL, CHANGE `Family B Key` `Category B Key` MEDIUMINT(8) UNSIGNED NOT NULL;
+ALTER TABLE `Product Category Sales Correlation` CHANGE `Correlation` `Correlation` DOUBLE NOT NULL;
+
+ALTER TABLE `Product Category Dimension` ADD `Product Category Ignore Correlation` ENUM('Yes','No')  NULL DEFAULT 'No' AFTER `Product Category Status`, ADD INDEX (`Product Category Ignore Correlation`);
+ALTER TABLE `Product Dimension` ADD `Product Ignore Correlation` ENUM('Yes','No')  NULL DEFAULT 'No' , ADD INDEX (`Product Ignore Correlation`);
+
+
+truncate  `Product Category Sales Correlation`;
+ALTER TABLE `Product Category Sales Correlation` ADD `Product Category Sales Correlation Store Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Samples`, ADD `Product Category Sales Correlation Type` ENUM('Department','Family') NULL DEFAULT NULL AFTER `Product Category Sales Correlation Store Key`, ADD INDEX (`Product Category Sales Correlation Store Key`);
+ALTER TABLE `Product Category Sales Correlation` ADD `Customers A` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Product Category Sales Correlation Type`, ADD `Customers B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers A`, ADD `Customers AB` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers B`, ADD `Customers All A` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers AB`, ADD `Customers All B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers All A`, ADD `Product Category Sales Correlation Last Updated` DATETIME NULL DEFAULT NULL AFTER `Customers All B`;
+
+truncate  `Product Sales Correlation`;
+
+ALTER TABLE `Product Sales Correlation` ADD `Product Sales Correlation Store Key` SMALLINT UNSIGNED NULL DEFAULT NULL FIRST, ADD INDEX (`Product Sales Correlation Store Key`);
+ALTER TABLE `Product Sales Correlation` ADD `Customers A` SMALLINT UNSIGNED NULL DEFAULT NULL , ADD `Customers B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers A`, ADD `Customers AB` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers B`, ADD `Customers All A` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers AB`, ADD `Customers All B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers All A`, ADD `Product Sales Correlation Last Updated` DATETIME NULL DEFAULT NULL AFTER `Customers All B`;
+
+truncate  `Product Sales Anticorrelation`;
+
+ALTER TABLE `Product Sales Anticorrelation` ADD `Product Sales Anticorrelation Store Key` SMALLINT UNSIGNED NULL DEFAULT NULL FIRST, ADD INDEX (`Product Sales Anticorrelation Store Key`);
+ALTER TABLE `Product Sales Anticorrelation` ADD `Customers A` SMALLINT UNSIGNED NULL DEFAULT NULL , ADD `Customers B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers A`, ADD `Customers AB` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers B`, ADD `Customers All A` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers AB`, ADD `Customers All B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers All A`, ADD `Product Sales Anticorrelation Last Updated` DATETIME NULL DEFAULT NULL AFTER `Customers All B`;

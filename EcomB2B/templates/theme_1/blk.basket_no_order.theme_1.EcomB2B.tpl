@@ -38,7 +38,7 @@
 <div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}"  style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
 
 
-    <div class="order_header  text_blocks  text_template_3">
+    <div class="hide order_header  text_blocks  text_template_3">
         <div class="text_block ">
                     <h5>
                         <i class="fa fa-fw fa-truck" aria-hidden="true"></i>
@@ -100,9 +100,9 @@
              
 
 <div class="clear"></div>
-    <div class="container">
+    <div class="container" style="margin-top: 120px;margin-bottom: 200px;text-align: center">
         <h3>
-        {if isset($content._no_products_ordered_yet) and $labels._no_products_ordered_yet!=''}{$labels._no_products_ordered_yet}{else}{t}No products has been ordered{/t}{/if}
+        {if isset($content._no_products_ordered_yet) and $labels._no_products_ordered_yet!=''}{$labels._no_products_ordered_yet}{else}{t}Empty basket{/t}{/if}
             </h3>
     </div>
 
@@ -116,7 +116,7 @@
 
 
 
-<div class="order_header container text_blocks  text_template_2">
+<div class="hide order_header container text_blocks  text_template_2">
 
     <div class="text_block">
 

@@ -3166,6 +3166,10 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                                         }
 
 
+                                                    }elseif($view_path[4]=='new'){
+                                                        $object  = 'mailshot';
+                                                        $section = 'mailshot.new';
+                                                        $key     = 0;
                                                     }
 
                                                 }
@@ -3179,6 +3183,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 }
                             }
+
 
 
                         }
@@ -3998,6 +4003,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 break;
 
             case 'production':
+
+
                 if (!$user->can_view('suppliers')) {
                     $module  = 'utils';
                     $section = 'forbidden';
@@ -4007,6 +4014,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 $module     = 'production';
                 $parent     = 'account';
                 $parent_key = 1;
+
 
                 if (isset($view_path[0])) {
 
@@ -4018,12 +4026,19 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         $object  = 'supplier_production';
                         $key     = $view_path[0];
 
+
                         if (isset($view_path[1])) {
                             if ($view_path[1] == 'manufacture_tasks') {
                                 $section = 'manufacture_tasks';
 
                             } elseif ($view_path[1] == 'operatives') {
                                 $section = 'operatives';
+
+                            }elseif ($view_path[1] == 'orders') {
+                                $section = 'production_supplier_orders';
+
+                            }elseif ($view_path[1] == 'deliveries') {
+                                $section = 'production_supplier_deliveries';
 
                             } elseif ($view_path[1] == 'batches') {
                                 $section = 'batches';
@@ -4034,12 +4049,61 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             } elseif ($view_path[1] == 'parts') {
                                 $section = 'production_parts';
 
-                            } elseif ($view_path[1] == 'part') {
+
+
+
+                                if (isset($view_path[2])) {
+                                    if ($view_path[2] == 'upload') {
+
+
+                                        $section = 'upload';
+                                        $object  = 'upload';
+
+
+                                        if (isset($view_path[3])) {
+
+                                            if (is_numeric($view_path[3])) {
+                                                $key = $view_path[3];
+                                            }
+
+                                        }
+
+
+                                    }
+                                }
+
+                            }elseif ($view_path[1] == 'delivery') {
+
+                                $parent     = 'supplier_production';
+                                $parent_key = $key;
+
+                                $section = 'delivery';
+                                if (isset($view_path[2])) {
+                                    if (is_numeric($view_path[2])) {
+                                        $object = 'supplier_delivery';
+                                        $key    = $view_path[2];
+                                    }
+                                }
+                            }elseif ($view_path[1] == 'order') {
+
+                                $parent     = 'supplier_production';
+                                $parent_key = $key;
+
+                                $section = 'order';
+                                if (isset($view_path[2])) {
+                                    if (is_numeric($view_path[2])) {
+                                        $object = 'purchase_order';
+                                        $key    = $view_path[2];
+                                    }
+                                }
+                            }
+                            elseif ($view_path[1] == 'part') {
 
                                 $section    = 'production_part';
                                 $parent     = 'supplier_production';
                                 $parent_key = $key;
                                 $object     = 'production_part';
+
                                 if (isset($view_path[2])) {
                                     if (is_numeric($view_path[2])) {
 
@@ -4154,6 +4218,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     $section = 'production.suppliers';
                     break;
                 }
+
+
                 break;
 
             case 'manufacture_task':

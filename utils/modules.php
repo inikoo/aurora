@@ -26,6 +26,9 @@ $_product = array(
         //  'product.webpage.analytics'      => 'product.webpage',
         //'product.webpage.logbook' => 'product.webpage',
 
+
+        'product.sales_correlation'     => 'product.correlation',
+        'product.sales_anticorrelation' => 'product.correlation'
     ),
 
     'tabs' => array(
@@ -147,14 +150,24 @@ $_product = array(
             )
         ),
 
+        'product.correlation' => array(
+            'title'   => _('Sales correlations'),
+            'label'   => _('Correlations'),
+            'icon'    => 'project-diagram',
+            'subtabs' => array(
+                'product.sales_correlation'     => array(
+                    'label' => _('Sales correlation'),
+                    'icon'  => 'user',
 
-        /* To do
+                ),
+                'product.sales_anticorrelation' => array(
+                    'label' => _('Sales anticorrelation'),
+                    'icon'  => 'user-slash',
 
-        'product.offers'    => array(
-            'label' => _('Offers'),
-            'title' => _('Offers')
+
+                ),
+            )
         ),
-*/
 
 
         'product.history' => array(
@@ -189,6 +202,7 @@ $_product = array(
         ),
 
     )
+
 );
 
 $_service = array(
@@ -575,13 +589,18 @@ $modules = array(
                 'type' => 'object',
                 'tabs' => array(
                     'list.details' => array(
-                        'label' => _('Data'),
-                        'icon' => 'database',
-                        'title' => _('Details')
+                        'label' => _('Settings'),
+                        'icon' => 'sliders-h',
+                        'title' => _('Settings')
                     ),
-                    'customers.list' => array(
+                    'customers.list'          => array(
                         'label' => _('Customers'),
                         'icon' => 'users',
+
+                    ),
+                    'customer_list.mailshots' => array(
+                        'label' => _('Mailshots'),
+                        'icon'  => 'bullhorn',
 
                     ),
                     'list.history' => array(
@@ -738,7 +757,7 @@ $modules = array(
 
                     ),
 
-                    'customer.deals'         => array(
+                    'customer.deals'             => array(
                         'label' => _('Discounts'),
                         'icon' => 'tags'
                     ),
@@ -2110,7 +2129,7 @@ $modules = array(
                         'icon' => 'layer-group',
                         'reference' => 'invoices/per_store',
                     ),
-                    'invoices.categories' => array(
+                    'invoices.categories'     => array(
                         'label' => _('Invoices per categories'),
                         'icon' => 'sitemap',
                         'reference' => 'invoices/category/all',
@@ -2120,7 +2139,7 @@ $modules = array(
                         'icon' => 'copy',
                         'reference' => 'invoices/all',
                     ),
-                    'deleted_invoices_server'     => array(
+                    'deleted_invoices_server' => array(
                         'label'     => _('All deleted invoices'),
                         'icon'      => 'ban',
                         'reference' => 'invoices/deleted/all',
@@ -2307,7 +2326,7 @@ $modules = array(
             ),
 
 
-            'invoice' => array(
+            'invoice'         => array(
                 'type' => 'object',
                 'tabs' => array(
                     'invoice.details' => array(
@@ -2411,7 +2430,7 @@ $modules = array(
             ),
 
 
-            'deleted_invoice' => array(
+            'deleted_invoice'  => array(
                 'type' => 'object',
                 'tabs' => array(
                     'deleted_invoice.items' => array(
@@ -2432,14 +2451,14 @@ $modules = array(
                 'icon'      => 'ban',
                 'reference' => 'invoices/deleted/%s',
                 'tabs'      => array(
-                    'deleted_invoices'         => array(
-                        'label'             => _('Deleted invoices'),
-                        'icon'              => 'ban',
+                    'deleted_invoices' => array(
+                        'label' => _('Deleted invoices'),
+                        'icon'  => 'ban',
                     ),
 
                 )
             ),
-            'payments' => array(
+            'payments'         => array(
                 'type' => 'navigation',
                 'label' => _('Payments'),
                 'icon' => 'credit-card',
@@ -3014,7 +3033,7 @@ $modules = array(
                         'label' => _('Plot')
                     ),
 
-                    'store.localization' => array(
+                    'store.localization'  => array(
                         'label'   => _('Localization'),
                         'icon'    => 'language',
                         'subtabs' => array(
@@ -3056,7 +3075,6 @@ $modules = array(
                 )
 
             ),
-
 
 
             'services' => array(
@@ -3104,7 +3122,6 @@ $modules = array(
                 )
 
             ),
-
 
 
 
@@ -3856,6 +3873,18 @@ $modules = array(
                     ),
 
 
+                    'category.mailshots' => array(
+                        'label' => _('Mailshots'),
+                        'icon'  => 'bullhorn'
+                    ),
+
+                    'category.sales_correlation' => array(
+                        'title' => _('Sales correlations'),
+                        'label' => _('Correlations'),
+                        'icon'  => 'project-diagram',
+                    ),
+
+
                     'category.history' => array(
                         'title' => _('History/Notes'),
                         'label' => '',
@@ -4071,12 +4100,13 @@ $modules = array(
 
 
                 'tabs' => array(
+                    /*
                     'shipping_zone_schema.details' => array(
                         'label' => _('Settings'),
                         'icon' => 'sliders-h',
                         'title' => _('Settings')
                     ),
-
+                    */
                     'shipping_zone_schema.zones'   => array(
                         'label' => _('Zones'),
                         'icon' => 'layer-group',
@@ -4086,24 +4116,25 @@ $modules = array(
                             'field' => 'Zones'
                         ),
                     ),
+                    /*
+                                        'shipping_zone_schema.orders' => array(
+                                            'label' => _('Orders'),
+                                            'icon' => 'shopping-cart',
 
-                    'shipping_zone_schema.orders' => array(
-                        'label' => _('Orders'),
-                        'icon' => 'shopping-cart',
-
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field' => 'Orders'
-                        ),
-                    ),
-                    'shipping_zone_schema.customers' => array(
-                        'label' => _('Customers'),
-                        'icon' => 'users',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field' => 'Customers'
-                        ),
-                    ),
+                                            'quantity_data' => array(
+                                                'object' => '_object',
+                                                'field' => 'Orders'
+                                            ),
+                                        ),
+                                        'shipping_zone_schema.customers' => array(
+                                            'label' => _('Customers'),
+                                            'icon' => 'users',
+                                            'quantity_data' => array(
+                                                'object' => '_object',
+                                                'field' => 'Customers'
+                                            ),
+                                        ),
+                    */
                     'shipping_zone_schema.history' => array(
                         'title' => _('History/Notes'),
                         'label' => '',
@@ -4235,7 +4266,7 @@ $modules = array(
                     ),
                 )
             ),
-            'products' => array(
+            'products'  => array(
                 'type' => 'navigation',
                 'label' => _('Products'),
                 'icon' => 'cube',
@@ -4298,7 +4329,14 @@ $modules = array(
                 'icon' => 'tachometer',
                 'reference' => 'production/%d',
                 'tabs' => array(
-                    'production.dashboard' => array()
+                    'production.dashboard'     => array(
+                        'label' => _('Dashboard'),
+                        'icon'  => 'tachometer-alt'
+                    ),
+                    'production.sales.history' => array(
+                        'label' => _('Sales history'),
+                        'icon'  => 'th-list'
+                    )
                 )
             ),
 
@@ -4315,8 +4353,12 @@ $modules = array(
 
             ),
             'production_part' => array(
-                'type' => 'object',
+                'type'           => 'object',
+                'subtabs_parent' => array(
 
+                    'production_part.supplier.orders'     => 'production_part.purchase_orders',
+                    'production_part.supplier.deliveries' => 'production_part.purchase_orders',
+                ),
 
                 'tabs' => array(
 
@@ -4340,6 +4382,25 @@ $modules = array(
                     'production_part.tasks' => array(
                         'label' => _('List of tasks'),
                         'icon' => 'tasks'
+                    ),
+
+
+                    'production_part.purchase_orders' => array(
+                        'label'   => _('Job orders / production sheets'),
+                        'icon'    => 'clipboard',
+                        'subtabs' => array(
+
+                            'production_part.supplier.orders'     => array(
+                                'label' => _('Job orders'),
+                                'icon'  => 'clipboard'
+                            ),
+                            'production_part.supplier.deliveries' => array(
+                                'label' => _("Production sheets"),
+                                'icon'  => 'clipboard-check'
+                            ),
+
+                        )
+
                     ),
 
                     'production_part.details' => array(
@@ -4419,9 +4480,7 @@ $modules = array(
                 'type' => 'new_object',
                 'tabs' => array(
                     'manufacture_task.new' => array(
-                        'label' => _(
-                            'New task'
-                        )
+                        'label' => _('New task')
                     ),
 
                 )
@@ -4431,29 +4490,158 @@ $modules = array(
 
             'operatives' => array(
                 'type' => 'navigation',
-                'label' => _('Operatives'),
-                'icon' => 'hand-rock',
+                'label' => _('Workers'),
+                'icon' => 'digging',
                 'reference' => 'production/%d/operatives',
                 'tabs' => array(
-                    'operatives' => array('label' => _('Operatives'))
+                    'operatives' => array('label' => _('Workers'))
                 )
 
 
             ),
 
-            /*
-            'settings'   => array(
+
+            'production_supplier_orders'     => array(
+                'type'      => 'navigation',
+                'label'     => _('Job orders'),
+                'icon'      => 'clipboard',
+                'reference' => 'production/%d/orders',
+                'tabs'      => array(
+                    'production_supplier.orders' => array()
+                )
+            ),
+            'production_supplier_deliveries' => array(
+                'type'      => 'navigation',
+                'label'     => _('Production sheets'),
+                'icon'      => 'clipboard-check',
+                'reference' => 'production/%d/deliveries',
+                'tabs'      => array(
+                    'production_supplier.deliveries' => array()
+                )
+            ),
+
+
+            'order' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'supplier.order.items'   => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+                    'supplier.order.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+
+
+                    'supplier.order.items_in_process' => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+
+                    'supplier.order.all_supplier_parts' => array(
+                        'label' => _("All supplier's products"),
+                        'icon'  => 'th-list'
+                    ),
+                    /*
+                                        'supplier.order.tac.editor' => array(
+                                            'label' => _('Terms and conditions'),
+                                            'icon'  => 'gavel',
+                                            'class' => ''
+                                        ),
+                    */
+                    'supplier.order.history'            => array(
+                        'label' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
+
+            ),
+
+            'deleted_order' => array(
+                'type' => 'object',
+                'tabs' => array(
+
+
+                    'deleted.supplier.order.items'   => array(
+                        'label' => _(
+                            'Items'
+                        ),
+                        'icon'  => 'bars'
+                    ),
+                    'deleted.supplier.order.history' => array(
+                        'label' => _(
+                            'History/Notes'
+                        ),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+
+                )
+
+            ),
+
+            'delivery' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'supplier.delivery.items'   => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+                    'supplier.delivery.costing' => array(
+                        'label' => _('Items').' ('._('Costing').')',
+                        'icon'  => 'bars'
+                    ),
+
+
+                    'supplier.delivery.items_mismatch' => array(
+                        'label' => _('Under/Over delivered items'),
+                        'icon'  => 'box-open'
+                    ),
+                    'supplier.delivery.items_done'     => array(
+                        'label' => _('Items'),
+                        'icon'  => 'bars'
+                    ),
+
+
+                    'supplier.delivery.details' => array(
+                        'label' => _('Settings'),
+                        'icon'  => 'sliders-h'
+                    ),
+
+                    'supplier.delivery.history'     => array(
+                        'label' => '',
+                        'title' => _('History/Notes'),
+                        'icon'  => 'road',
+                        'class' => 'right icon_only'
+                    ),
+                    'supplier.delivery.attachments' => array(
+                        'label'         => '',
+                        'title'         => _('Attachments'),
+                        'icon'          => 'paperclip',
+                        'class'         => 'right icon_only',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Attachments'
+                        ),
+                    ),
+                )
+
+            ),
+
+
+            'settings' => array(
                 'type'      => 'navigation',
                 'label'     => '',
-                'icon'      => 'sliders',
+                'icon'      => 'sliders-h',
                 'reference' => 'production/%d/settings',
                 'class'     => 'icon_only right',
                 'tabs'      => array(
                     'production.settings' => array(
-                        'label' => _(
-                            'General settings'
-                        ),
-                        'icon'  => 'sliders',
+                        'label' => _('General settings'),
+                        'icon'  => 'sliders-h',
                         'class' => ''
                     ),
 
@@ -4462,7 +4650,33 @@ $modules = array(
 
 
             ),
-            */
+
+
+            'upload' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'upload.records' => array(
+                        'label' => _(
+                            'Records'
+                        )
+                    ),
+
+
+                )
+
+            ),
+
+            'production_part.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'supplier_part.new' => array(
+                        'label' => _('New part')
+                    ),
+
+                )
+
+            ),
+
 
         )
     ),
@@ -4595,13 +4809,7 @@ $modules = array(
                         'label' => _("All supplier's products"),
                         'icon' => 'th-list'
                     ),
-                    /*
-                                        'supplier.order.tac.editor' => array(
-                                            'label' => _('Terms and conditions'),
-                                            'icon'  => 'gavel',
-                                            'class' => ''
-                                        ),
-                    */
+
                     'supplier.order.history' => array(
                         'label' => _('History/Notes'),
                         'icon' => 'road',
@@ -4983,7 +5191,7 @@ $modules = array(
 
                     'supplier_part.purchase_orders.purchase_orders' => 'supplier_part.purchase_orders',
                     'supplier_part.purchase_orders.delivery_notes' => 'supplier_part.purchase_orders',
-                    'supplier_part.purchase_orders.invoices' => 'supplier_part.purchase_orders',
+
                 ),
 
 
@@ -5015,11 +5223,6 @@ $modules = array(
                                     'Delivery Notes'
                                 )
                             ),
-                            'supplier_part.purchase_orders.invoices' => array(
-                                'label' => _(
-                                    'Invoices'
-                                )
-                            ),
 
                         )
 
@@ -5049,7 +5252,7 @@ $modules = array(
 
                     'supplier_part.purchase_orders.purchase_orders' => 'supplier_part.purchase_orders',
                     'supplier_part.purchase_orders.delivery_notes' => 'supplier_part.purchase_orders',
-                    'supplier_part.purchase_orders.invoices' => 'supplier_part.purchase_orders',
+
                 ),
 
 
@@ -5079,11 +5282,6 @@ $modules = array(
                             'supplier_part.purchase_orders.delivery_notes' => array(
                                 'label' => _(
                                     'Delivery Notes'
-                                )
-                            ),
-                            'supplier_part.purchase_orders.invoices' => array(
-                                'label' => _(
-                                    'Invoices'
                                 )
                             ),
 
@@ -5129,22 +5327,16 @@ $modules = array(
 
 
                     'supplier_part.purchase_orders' => array(
-                        'label' => _(
-                            'Purchase orders / deliveries'
-                        ),
+                        'label' => _('Purchase orders / deliveries'),
                         'icon' => 'clipboard',
                         'subtabs' => array(
 
                             'supplier_part.supplier.orders' => array(
-                                'label' => _(
-                                    'Purchase orders'
-                                ),
+                                'label' => _('Purchase orders'),
                                 'icon' => 'clipboard'
                             ),
                             'supplier_part.supplier.deliveries' => array(
-                                'label' => _(
-                                    "Supplier's deliveries"
-                                ),
+                                'label' => _("Supplier's deliveries"),
                                 'icon' => 'truck'
                             ),
 
@@ -5175,7 +5367,7 @@ $modules = array(
 
                     'supplier_part.purchase_orders.purchase_orders' => 'supplier_part.purchase_orders',
                     'supplier_part.purchase_orders.delivery_notes' => 'supplier_part.purchase_orders',
-                    'supplier_part.purchase_orders.invoices' => 'supplier_part.purchase_orders',
+
                 ),
 
 
@@ -5205,98 +5397,96 @@ $modules = array(
                                 'label' => _(
                                     'Delivery Notes'
                                 )
-                            ),
-                            'supplier_part.purchase_orders.invoices' => array(
-                                'label' => _(
-                                    'Invoices'
-                                )
-                            ),
 
-                        )
+                            )
 
-                    ),
+                        ),
 
-                    'supplier_part.images' => array(
-                        'label' => '',
-                        'title' => _('Images'),
-                        'icon' => 'camera-retro',
-                        'class' => 'right icon_only'
-                    ),
-                    'supplier_part.history' => array(
-                        'label' => '',
-                        'title' => _('History/Notes'),
-                        'icon' => 'road',
-                        'class' => 'right icon_only'
-                    ),
+                        'supplier_part.images' => array(
+                            'label' => '',
+                            'title' => _('Images'),
+                            'icon' => 'camera-retro',
+                            'class' => 'right icon_only'
+                        ),
+                        'supplier_part.history' => array(
+                            'label' => '',
+                            'title' => _('History/Notes'),
+                            'icon' => 'road',
+                            'class' => 'right icon_only'
+                        ),
 
 
-                )
-            ),
+                    )
+                ),
 
-            'supplier_part.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'supplier_part.new' => array(
-                        'label' => _(
-                            'New part'
-                        )
-                    ),
+                'supplier_part.new' => array(
+                    'type' => 'new_object',
+                    'tabs' => array(
+                        'supplier_part.new' => array(
+                            'label' => _(
+                                'New part'
+                            )
+                        ),
 
-                )
+                    )
 
-            ),
-            'supplier.user.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'supplier.user.new' => array(
-                        'label' => _(
-                            'New system user'
-                        )
-                    ),
+                ),
+                'supplier.user.new' => array(
+                    'type' => 'new_object',
+                    'tabs' => array(
+                        'supplier.user.new' => array(
+                            'label' => _(
+                                'New system user'
+                            )
+                        ),
 
-                )
+                    )
 
-            ),
-            'agent.user.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'agent.user.new' => array(
-                        'label' => _(
-                            'New system user'
-                        )
-                    ),
+                ),
+                'agent.user.new' => array(
+                    'type' => 'new_object',
+                    'tabs' => array(
+                        'agent.user.new' => array(
+                            'label' => _(
+                                'New system user'
+                            )
+                        ),
 
-                )
+                    )
 
-            ),
-
-
-            'timeseries_record' => array(
-                'type' => 'object',
-                'label' => '',
-                'showcase' => 'timeseries_record',
-
-                'tabs' => array(
-                    'supplier.timeseries_record.parts' => array(
-                        'label' => _('Parts'),
-                        'icon' => 'box',
-                        'class' => ''
-                    ),
-                    'supplier.timeseries_record.families' => array(
-                        'label' => _('Families'),
-                        'icon' => 'sitemap',
-                        'class' => ''
-                    ),
+                ),
 
 
-                )
+                'timeseries_record' => array(
+                    'type' => 'object',
+                    'label' => '',
+                    'showcase' => 'timeseries_record',
+
+                    'tabs' => array(
+                        'supplier.timeseries_record.parts' => array(
+                            'label' => _('Parts'),
+                            'icon' => 'box',
+                            'class' => ''
+                        ),
+                        'supplier.timeseries_record.families' => array(
+                            'label' => _('Families'),
+                            'icon' => 'sitemap',
+                            'class' => ''
+                        ),
 
 
-            ),
+                    )
 
+
+                ),
+
+
+            )
 
         )
     ),
+
+
     'warehouses_server' => array(
         'sections' => array(
 
@@ -5466,14 +5656,14 @@ $modules = array(
             ),
             'categories' => array(
                 'type' => 'navigation',
-                'label' => _("Part's categories"),
+                'label' => _("Part's families"),
                 'icon' => 'sitemap',
                 'reference' => 'inventory/categories',
 
                 'tabs' => array(
-                    'parts.categories' => array(
+                    'part_families' => array(
                         'label' => _(
-                            "Part's categories"
+                            "Part's families"
                         )
                     ),
                 )
@@ -5612,8 +5802,8 @@ $modules = array(
                     'part.stock.transactions' => 'part.stock',
                     'part.stock.history' => 'part.stock',
                     'part.stock.availability' => 'part.stock',
-                    'part.supplier.orders' => 'part.purchase_orders',
-                    'part.supplier.deliveries' => 'part.purchase_orders',
+                    'part.supplier.orders' => 'part.supplier_orders',
+                    'part.supplier.deliveries' => 'part.supplier_orders',
                     'part.stock.history' => 'part.stock',
                     'part.stock.transactions' => 'part.stock',
                     'part.stock.cost' => 'part.stock',
@@ -5697,7 +5887,7 @@ $modules = array(
                     ),
 
 
-                    'part.supplier.orders' => array(
+                    'part.supplier_orders' => array(
                         'label' => _(
                             'Purchase orders'
                         ),
@@ -5834,14 +6024,14 @@ $modules = array(
 
             ),
             /*
-			'transactions'=>array(
-				'type'=>'navigation', 'label'=>_('Stock Movements'), 'icon'=>'exchange', 'reference'=>'inventory/transactions',
-				'tabs'=>array(
-					'inventory.stock.transactions'=>array('label'=>_('Stock movements'))
+            'transactions'=>array(
+                'type'=>'navigation', 'label'=>_('Stock Movements'), 'icon'=>'exchange', 'reference'=>'inventory/transactions',
+                'tabs'=>array(
+                    'inventory.stock.transactions'=>array('label'=>_('Stock movements'))
 
-				)
-			),
-			*/
+                )
+            ),
+            */
 
             'upload' => array(
                 'type' => 'object',
@@ -6004,13 +6194,13 @@ $modules = array(
             ),
 
             /* to add
-			'categories'=>array('type'=>'navigation', 'label'=>_("Locations's categories"), 'icon'=>'sitemap', 'reference'=>'warehouse/%d/categories',
+            'categories'=>array('type'=>'navigation', 'label'=>_("Locations's categories"), 'icon'=>'sitemap', 'reference'=>'warehouse/%d/categories',
 
-				'tabs'=>array(
-					'locations.categories'=>array('label'=>_("Locations's categories")),
-				)
-			),
-			*/
+                'tabs'=>array(
+                    'locations.categories'=>array('label'=>_("Locations's categories")),
+                )
+            ),
+            */
             /*
                         'warehouse_areas' => array(
 
@@ -7203,19 +7393,18 @@ $modules = array(
                     ),
 
 
-                    'profile.history'       => array(
+                    'profile.history' => array(
                         'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
-                
 
 
                 )
             ),
 
-            'profile.api_key.new' => array(
+            'profile.api_key.new'     => array(
                 'type' => 'new_object',
                 'tabs' => array(
                     'user.api_key.new' => array(
@@ -7224,7 +7413,7 @@ $modules = array(
 
                 )
             ),
-            'profile.api_key'     => array(
+            'profile.api_key'         => array(
                 'type' => 'object',
                 'tabs' => array(
                     'user.api_key.details'  => array(
@@ -7243,7 +7432,7 @@ $modules = array(
 
                 )
             ),
-            'profile.deleted_api_key'  => array(
+            'profile.deleted_api_key' => array(
                 'type'     => 'object',
                 'showcase' => 'deleted_api_key',
                 'tabs'     => array(
@@ -8331,17 +8520,17 @@ $modules = array(
             ),
 
             /*
-			'settings'=>array(
-				'type'=>'navigation', 'label'=>'', 'icon'=>'sliders', 'reference'=>'suppliers/settings', 'class'=>'icon_only',
-				'tabs'=>array(
-					'suppliers.settings'=>array('label'=>_('Setting'), 'icon'=>'sliders', 'class'=>''),
+            'settings'=>array(
+                'type'=>'navigation', 'label'=>'', 'icon'=>'sliders', 'reference'=>'suppliers/settings', 'class'=>'icon_only',
+                'tabs'=>array(
+                    'suppliers.settings'=>array('label'=>_('Setting'), 'icon'=>'sliders', 'class'=>''),
 
 
-				)
+                )
 
 
-			),
-			*/
+            ),
+            */
         )
     ),
 

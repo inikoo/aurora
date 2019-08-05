@@ -16,14 +16,34 @@ $wheref   = '';
 $currency = '';
 
 
+
+
+
 $where = 'where true ';
 $table = '`Supplier Delivery Dimension` D';
 
 if ($parameters['parent'] == 'account') {
+    $table = '`Supplier Delivery Dimension` D left join `Supplier Dimension` on (`Supplier Key`=`Supplier Delivery Parent Key`)   ';
 
-    $where = sprintf('where true');
+    $where = sprintf(
+        'where  `Supplier Delivery Parent`="Supplier" and  `Supplier Production`="No"  '
+    );
 
 
+}elseif ($parameters['parent'] == 'production') {
+    $table = '`Supplier Delivery Dimension` D left join `Supplier Dimension` on (`Supplier Key`=`Supplier Delivery Parent Key`)   ';
+
+    $where = sprintf(
+        'where  `Supplier Delivery Parent`="Supplier"  and  `Supplier Production`="Yes"  '
+    );
+
+
+}elseif ($parameters['parent'] == 'production_supplier' or $parameters['parent'] == 'supplier_production') {
+    $table = '`Supplier Delivery Dimension` D left join `Supplier Dimension` on (`Supplier Key`=`Supplier Delivery Parent Key`)   ';
+
+    $where = sprintf(
+        'where  `Supplier Delivery Parent`="Supplier" and `Supplier Delivery Parent Key`=%d and  `Supplier Production`="Yes"  ', $parameters['parent_key']
+    );
 } elseif ($parameters['parent'] == 'supplier') {
     $where = sprintf(
         'where  `Supplier Delivery Parent`="Supplier" and `Supplier Delivery Parent Key`=%d  ', $parameters['parent_key']
@@ -77,31 +97,30 @@ if (isset($parameters['elements_type'])) {
             $_elements            = '';
             $num_elements_checked = 0;
 
-            foreach (
-                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-            ) {
+
+
+            foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value) {
                 $_value = $_value['selected'];
                 if ($_value) {
                     $num_elements_checked++;
 
-                    $_elements .= ",'".addslashes($_key)."'";
+                    if ($_key == 'InProcess') {
+                        $_elements .= ",'InProcess','Dispatched','Consolidated'";
+                    }if ($_key == 'Placed') {
+                        $_elements .= ",'Placed','Costing'";
+                    } else {
 
+                        $_elements .= ",'".addslashes($_key)."'";
+                    }
                 }
             }
+
+
 
             if ($_elements == '') {
                 $where .= ' and false';
             } elseif ($num_elements_checked < 6) {
 
-                //'InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked'
-               if ($_key == 'InProcess') {
-                    $_elements .= ",'InProcess','Dispatched','Consolidated'";
-                }if ($_key == 'Placed') {
-                    $_elements .= ",'Placed','Costing'";
-                } else {
-
-                    $_elements .= ",'".addslashes($_key)."'";
-                }
 
 
                 $_elements = preg_replace('/^,/', '', $_elements);
@@ -114,6 +133,7 @@ if (isset($parameters['elements_type'])) {
             break;
     }
 }
+
 
 
 if (($parameters['f_field'] == 'number') and $f_value != '') {
@@ -155,4 +175,4 @@ $sql_totals
     = "select count(Distinct D.`Supplier Delivery Key`) as num from $table $where ";
 //print $sql_totals;
 
-?>
+

@@ -570,14 +570,16 @@ class EmailCampaignType extends DB_Table {
     }
 
 
-    function create_mailshot($data=false) {
+    function create_mailshot($data = false) {
 
+        $update_state_to_composing = false;
+
+        include_once 'class.EmailCampaign.php';
 
         if ($this->get_estimated_recipients() > 0 or $this->data['Email Campaign Type Code'] == 'create_mailshot' or $this->data['Email Campaign Type Code'] == 'Marketing') {
-            include_once 'class.EmailCampaign.php';
             $email_campaign_data = array(
                 'Email Campaign Store Key'               => $this->data['Email Campaign Type Store Key'],
-                'Email Campaign Name'                    => (!empty($data['mail Campaign Name'])?$data['mail Campaign Name']:date('Y.m.d')),
+                'Email Campaign Name'                    => (!empty($data['Email Campaign Name']) ? $data['Email Campaign Name'] : date('Y.m.d')),
                 'Email Campaign Type'                    => $this->data['Email Campaign Type Code'],
                 'Email Campaign Email Template Type Key' => $this->id,
                 'editor'                                 => $this->editor
@@ -595,7 +597,58 @@ class EmailCampaignType extends DB_Table {
 
             } elseif ($this->data['Email Campaign Type Code'] == 'Marketing') {
 
+                if ($data[' Type'] == 'Customer_List') {
+                    $scope     = 'Customer_List';
+                    $scope_key = $data['List'];
+                } elseif ($data[' Type'] == 'Product_Category') {
+                    if (preg_match('/^P(\d+)/', $data['Asset'], $match)) {
 
+                        $scope                     = 'Product '.$data[' Scope Type'];
+                        $scope_key                 = $match[1];
+                        $update_state_to_composing = true;
+                    } elseif (preg_match('/^C(\d+)/', $data['Asset'], $match)) {
+
+
+                        if (empty($data[' Scope Type'])) {
+
+                            $data[' Scope Type'] = 'Targeted';
+
+                        }
+
+                        $scope                     = 'Category '.$data[' Scope Type'];
+                        $update_state_to_composing = true;
+                        $scope_key                 = $match[1];
+                        $category                  = get_object('Category', $scope_key);
+
+
+                        $data['Email Campaign Metadata'] = array(
+                            'description' => sprintf(
+                                '<span class="link" onclick="change_view(\'products/%d/category/%d\')" title="%s" ><i class="far fa-sitemap"></i> %s</span>', $category->get('Store Key'), $category->id,
+                                ($category->get('Category Subjects') == 'Products' ? _('Family') : _('Department')).': '.$category->get('Label'),
+
+                                $category->get('Code')
+                            )
+                        );
+
+
+                    } else {
+                        $this->error = true;
+
+                        return;
+                    }
+
+                }
+
+
+                $email_campaign_data = array(
+                    'Email Campaign Store Key'               => $this->data['Email Campaign Type Store Key'],
+                    'Email Campaign Name'                    => (!empty($data['Email Campaign Name']) ? $data['Email Campaign Name'] : date('Y.m.d')),
+                    'Email Campaign Type'                    => $this->data['Email Campaign Type Code'],
+                    'Email Campaign Scope'                   => $scope,
+                    'Email Campaign Scope Key'               => $scope_key,
+                    'Email Campaign Email Template Type Key' => $this->id,
+                    'editor'                                 => $this->editor
+                );
             } elseif ($this->data['Email Campaign Type Code'] == 'AbandonedCart') {
 
                 $metadata                                       = $this->get('Metadata');
@@ -610,12 +663,17 @@ class EmailCampaignType extends DB_Table {
 
             }
 
-            if(!empty($data['Email Campaign Metadata'])){
-                $email_campaign_data['Email Campaign Metadata']= $data['Email Campaign Metadata'];
+            if (!empty($data['Email Campaign Metadata'])) {
+                $email_campaign_data['Email Campaign Metadata'] = $data['Email Campaign Metadata'];
             }
 
 
+
             $email_campaign = new EmailCampaign('create', $email_campaign_data);
+
+            if ($update_state_to_composing) {
+                $email_campaign->update_state('ComposingEmail');
+            }
 
             return $email_campaign;
         } else {

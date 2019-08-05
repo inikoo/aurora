@@ -315,6 +315,9 @@ trait OrderBasketOperations {
 
 
         if ($updated_fields_number > 0) {
+
+
+
             $this->updated = true;
         }
 
@@ -360,24 +363,28 @@ trait OrderBasketOperations {
 
         include_once 'utils/get_addressing.php';
 
-        $new_checksum = md5(
-            json_encode(
-                array(
-                    'Address Recipient'            => $this->get($type.' Address Recipient'),
-                    'Address Organization'         => $this->get($type.' Address Organization'),
-                    'Address Line 1'               => $this->get($type.' Address Line 1'),
-                    'Address Line 2'               => $this->get($type.' Address Line 2'),
-                    'Address Sorting Code'         => $this->get($type.' Address Sorting Code'),
-                    'Address Postal Code'          => $this->get($type.' Address Postal Code'),
-                    'Address Dependent Locality'   => $this->get($type.' Address Dependent Locality'),
-                    'Address Locality'             => $this->get($type.' Address Locality'),
-                    'Address Administrative Area'  => $this->get($type.' Address Administrative Area'),
-                    'Address Country 2 Alpha Code' => $this->get($type.' Address Country 2 Alpha Code'),
-                )
-            )
+        $address_fields=array(
+            'Address Recipient'            => $this->get($type.' Address Recipient'),
+            'Address Organization'         => $this->get($type.' Address Organization'),
+            'Address Line 1'               => $this->get($type.' Address Line 1'),
+            'Address Line 2'               => $this->get($type.' Address Line 2'),
+            'Address Sorting Code'         => $this->get($type.' Address Sorting Code'),
+            'Address Postal Code'          => $this->get($type.' Address Postal Code'),
+            'Address Dependent Locality'   => $this->get($type.' Address Dependent Locality'),
+            'Address Locality'             => $this->get($type.' Address Locality'),
+            'Address Administrative Area'  => $this->get($type.' Address Administrative Area'),
+            'Address Country 2 Alpha Code' => $this->get($type.' Address Country 2 Alpha Code'),
         );
 
 
+        // replace null to empty string do not remove
+        array_walk_recursive($address_fields,function(&$item){$item=strval($item);});
+
+
+
+        $new_checksum = md5(
+            json_encode($address_fields)
+        );
 
 
         $this->update_field(
@@ -466,7 +473,7 @@ trait OrderBasketOperations {
 
 
 
-    function update_for_collection($value, $options) {
+    function update_for_collection($value, $options=false) {
 
         if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
             return;
@@ -558,5 +565,3 @@ trait OrderBasketOperations {
 }
 
 
-
-?>

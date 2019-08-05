@@ -418,7 +418,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
                 case 'Cancelled':
 
                     $this->update_field(
-                        'Agent Supplier Purchase Order Locaked', 'Yes', 'no_history'
+                        'Agent Supplier Purchase Order Locked', 'Yes', 'no_history'
                     );
 
                     $this->update_field(
@@ -449,7 +449,7 @@ left join `Supplier Part Historic Dimension` SPH on (POTF.`Supplier Part Histori
 
 
                     $this->update_field(
-                        'Agent Supplier Purchase Order Locaked', 'Yes', 'no_history'
+                        'Agent Supplier Purchase Order Locked', 'Yes', 'no_history'
                     );
 
                     $this->update_field(

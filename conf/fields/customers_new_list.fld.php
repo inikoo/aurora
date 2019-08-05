@@ -249,7 +249,7 @@ $object_fields[] = array(
             'edit'            => 'no_icon',
             'class'           => 'operation',
             'id'              => '',
-            'formatted_value' => '<span  class="calculate_number_list_items button super_discreet"  onclick="estimate_number_list_items()" >'._('Calculate number of customer the list will have').'</span><span class="calculated_number_list_items hide"></span>',
+            'formatted_value' => '<span  class="calculate_number_list_items button super_discreet"  onclick="estimate_number_list_items()" >'._('Calculate number of customer the list will have').'</span><span class="hide  calculating_number_list_items">'._('Calculating number of items').' <i class="fa fa-spinner fa-spin "></i></span><span class="calculated_number_list_items hide"></span>',
             'label'           => '',
             'required'        => false,
             'type'            => 'operation',
@@ -263,4 +263,4 @@ $object_fields[] = array(
 );
 
 
-?>
+

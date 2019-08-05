@@ -23,14 +23,12 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
     } else {
 
 
-
-        $smarty->assign('no_production_date_label', sprintf(_('No estimated %s'),'<i class="far fa-industry-alt"></i>'));
+        $smarty->assign('no_production_date_label', sprintf(_('No estimated %s'), '<i class="far fa-industry-alt"></i>'));
 
         $smarty->assign('order', $data['_object']);
 
 
-        //todo remove when we update PO totals correctly
-        $data['_object']->update_prices();
+
 
         $_parent = get_object(
             $data['_object']->get('Purchase Order Parent'), $data['_object']->get('Purchase Order Parent Key')
@@ -40,27 +38,24 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
 
 
         $smarty->assign(
-            'object_data',
-                             json_encode(
-                                 array(
-                                     'object'                        => $data['object'],
-                                     'key'                           => $data['key'],
-                                     'order_parent'                  => $data['_object']->get('Purchase Order Parent'),
-                                     'order_parent_key'              => $data['_object']->get('Purchase Order Parent Key'),
-                                     'tab'                           => $data['tab'],
-                                     'purchase_order_number'         => $data['_object']->get('Purchase Order Public ID'),
-                                     'skip_inputting'                => $_parent->get('Parent Skip Inputting'),
-                                     'skip_mark_as_dispatched'       => $_parent->get('Parent Skip Mark as Dispatched'),
-                                     'skip_mark_as_received'         => $_parent->get('Parent Skip Mark as Received'),
-                                     'skip_checking'                 => $_parent->get('Parent Skip Checking'),
+            'object_data', json_encode(
+                             array(
+                                 'object'                  => $data['object'],
+                                 'key'                     => $data['key'],
+                                 'order_parent'            => $data['_object']->get('Purchase Order Parent'),
+                                 'order_parent_key'        => $data['_object']->get('Purchase Order Parent Key'),
+                                 'tab'                     => $data['tab'],
+                                 'purchase_order_number'   => $data['_object']->get('Purchase Order Public ID'),
+                                 'skip_inputting'          => $_parent->get('Parent Skip Inputting'),
+                                 'skip_mark_as_dispatched' => $_parent->get('Parent Skip Mark as Dispatched'),
+                                 'skip_mark_as_received'   => $_parent->get('Parent Skip Mark as Received'),
+                                 'skip_checking'           => $_parent->get('Parent Skip Checking'),
 
 
-                                 )
                              )
+                         )
 
         );
-
-
 
 
         if ($data['_object']->get('Purchase Order Submitted Date') != '') {
@@ -82,10 +77,15 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
 
 
         if ($user->get('User Type') == 'Staff' or $user->get('User Type') == 'Contractor') {
-            return $smarty->fetch('showcase/supplier.order.tpl');
-        } elseif ($user->get('User Type') == 'Agent') {
 
-           // $data['_object']->create_agent_supplier_purchase_orders();
+            if ($data['_object']->get('Purchase Order Production') == 'Yes') {
+                return $smarty->fetch('showcase/production.purchase_order.tpl');
+
+            } else {
+                return $smarty->fetch('showcase/supplier.order.tpl');
+            }
+
+        } elseif ($user->get('User Type') == 'Agent') {
             return $smarty->fetch('showcase/client_order.tpl');
         }
     }
@@ -93,4 +93,4 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
 }
 
 
-?>
+

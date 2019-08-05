@@ -68,6 +68,12 @@ switch ($tab) {
         );
         get_supplier_deliveries_element_numbers($db, $data['parameters'], $user);
         break;
+    case 'production_supplier.deliveries':
+        $data = prepare_values(
+            $_REQUEST, array('parameters' => array('type' => 'json array'))
+        );
+        get_production_deliveries_element_numbers($db, $data['parameters'], $user);
+        break;
     case 'warehouse.returns':
         $data = prepare_values(
             $_REQUEST, array('parameters' => array('type' => 'json array'))
@@ -175,11 +181,11 @@ switch ($tab) {
         get_parts_elements($db, $data['parameters'], $user);
         break;
 
-    case 'category.part_categories':
+    case 'part_families':
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
 
 
-        get_part_categories_elements($db, $data['parameters'], $user);
+        get_part_families_elements($db, $data['parameters'], $user);
         break;
     case 'warehouse.locations':
     case 'warehouse_area.locations':
@@ -329,6 +335,16 @@ switch ($tab) {
 
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         get_supplier_orders_elements($db, $data['parameters'], $user);
+        break;
+    case 'production_supplier.orders':
+
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_production_orders_elements($db, $data['parameters'], $user);
+        break;
+    case 'production_part.supplier.orders':
+
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_production_orders_with_part_elements($db, $data['parameters'], $user);
         break;
     case 'agent.orders':
 
@@ -1479,7 +1495,6 @@ function get_customers_element_numbers($db, $data) {
 
 function get_suppliers_element_numbers($db, $data) {
 
-    global $user;
 
     $parent_key = $data['parent_key'];
 
@@ -1495,11 +1510,11 @@ function get_suppliers_element_numbers($db, $data) {
 
     switch ($data['parent']) {
         case 'account':
-            $where = sprintf(' where true ');
+            $where = sprintf(' where `Supplier Production`="No"  ');
             break;
         case 'agent':
             $where = sprintf(
-                " where `Agent Supplier Agent Key`=%d", $parent_key
+                " where `Supplier Production`='No' and `Agent Supplier Agent Key`=%d", $parent_key
             );
             $table = ' `Agent Supplier Bridge` B left join  `Supplier Dimension` S on (`Agent Supplier Supplier Key`=`Supplier Key`) ';
 
@@ -2283,15 +2298,25 @@ function get_supplier_orders_elements($db, $data) {
 
             break;
         case 'account':
-            $table = '`Purchase Order Dimension` O';
-            $where = sprintf('where  true');
+            $table = '`Purchase Order Dimension` O left join `Supplier Dimension` on (`Supplier Key`=`Purchase Order Parent Key`)   ';
+            $where = sprintf('where  `Purchase Order Parent`="Supplier" and `Supplier Production`="No"');
+            break;
+        case 'production':
+            $table = '`Purchase Order Dimension` O left join `Supplier Dimension` on (`Supplier Key`=`Purchase Order Parent Key`)  ';
+            $where = sprintf('where `Purchase Order Parent`="Supplier" and  `Supplier Production`="Yes"');
+            break;
+        case 'production_supplier':
+            $table = '`Purchase Order Dimension` O left join `Supplier Dimension` on (`Supplier Key`=`Purchase Order Parent Key`)  ';
+            $where = sprintf(
+                'where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d and  `Supplier Production`="Yes"', $parent_key
+            );
             break;
         default:
             exit ($data['parent']);
             break;
     }
 
-    $where_interval = prepare_mysql_dates($from, $to, '`Order Date`');
+    $where_interval = prepare_mysql_dates($from, $to, '`Purchase Order Creation Date`');
     $where_interval = $where_interval['mysql'];
 
 
@@ -2350,6 +2375,178 @@ function get_supplier_orders_elements($db, $data) {
 
 }
 
+
+function get_production_orders_elements($db, $data) {
+
+
+    list($db_interval, $from, $to, $from_date_1yb, $to_1yb) = calculate_interval_dates($db, $data['period'], $data['from'], $data['to']);
+
+
+    $parent_key = $data['parent_key'];
+
+
+    switch ($data['parent']) {
+
+        case 'production':
+            $table = '`Purchase Order Dimension` O left join `Supplier Dimension` on (`Supplier Key`=`Purchase Order Parent Key`)  ';
+            $where = sprintf('where `Purchase Order Parent`="Supplier" and  `Supplier Production`="Yes"');
+            break;
+        case 'production_supplier':
+            $table = '`Purchase Order Dimension` O left join `Supplier Dimension` on (`Supplier Key`=`Purchase Order Parent Key`)  ';
+            $where = sprintf(
+                'where  `Purchase Order Parent`="Supplier" and `Purchase Order Parent Key`=%d and  `Supplier Production`="Yes"', $parent_key
+            );
+            break;
+        default:
+            exit ($data['parent']);
+            break;
+    }
+
+    $where_interval = prepare_mysql_dates($from, $to, '`Purchase Order Creation Date`');
+    $where_interval = $where_interval['mysql'];
+
+
+    $elements_numbers = array(
+        'state' => array(
+
+            'InProcess'       => 0,
+            'Manufacturing'   => 0,
+            'ReceivedChecked' => 0,
+            'Placed'          => 0,
+            'Cancelled'       => 0
+        ),
+    );
+
+
+    //USE INDEX (`Main Source Type Store Key`)
+    $sql = sprintf(
+        "SELECT count(*) AS number,`Purchase Order State` AS element FROM %s %s %s GROUP BY `Purchase Order State` ", $table, $where, $where_interval
+    );
+
+
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+
+
+            if ($row['element'] == 'InProcess' or $row['element'] == 'Editing_Submitted') {
+                $element = 'InProcess';
+            } elseif ($row['element'] == 'Submitted' or $row['element'] == 'SubmittedAgent' ) {
+                $element = 'Manufacturing';
+            } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
+                $element = 'ReceivedChecked';
+            } elseif ($row['element'] == 'Placed' or $row['element'] == 'Costing' or $row['element'] == 'InvoiceChecked') {
+                $element = 'Placed';
+            } else {
+                $element = $row['element'];
+            }
+            if (isset($elements_numbers['state'][$element])) {
+                $elements_numbers['state'][$element] += $row['number'];
+            }
+        }
+    } else {
+        print "$sql";
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
+function get_production_orders_with_part_elements($db, $data) {
+
+
+    list($db_interval, $from, $to, $from_date_1yb, $to_1yb) = calculate_interval_dates($db, $data['period'], $data['from'], $data['to']);
+
+
+
+
+    $table
+        = ' `Purchase Order Transaction Fact` POTF  left join  `Purchase Order Dimension` O on (POTF.`Purchase Order Key`=O.`Purchase Order Key`)
+	left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
+    left join  `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)';
+
+    switch ($data['parent']) {
+
+        case 'production_part':
+            $where = sprintf(
+                'where POTF.`Supplier Part Key`=%d  ', $data['parent_key']
+            );            break;
+
+            break;
+        default:
+            exit ($data['parent']);
+            break;
+    }
+
+    $where_interval = prepare_mysql_dates($from, $to, '`Purchase Order Creation Date`');
+    $where_interval = $where_interval['mysql'];
+
+
+    $elements_numbers = array(
+        'state' => array(
+
+            'InProcess'       => 0,
+            'Manufacturing'   => 0,
+            'ReceivedChecked' => 0,
+            'Placed'          => 0,
+            'Cancelled'       => 0
+        ),
+    );
+
+
+    //USE INDEX (`Main Source Type Store Key`)
+    $sql = sprintf(
+        "SELECT count(*) AS number,`Purchase Order Transaction State` AS element FROM %s %s %s GROUP BY `Purchase Order Transaction State` ", $table, $where, $where_interval
+    );
+
+
+//'','','','Confirmed','ReceivedAgent','InDelivery','Inputted','Dispatched','Received','Checked','Placed','Cancelled'
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+
+
+            if ($row['element'] == 'InProcess' ) {
+                $element = 'InProcess';
+            } elseif ($row['element'] == 'Submitted' ) {
+                $element = 'Manufacturing';
+            } elseif ($row['element'] == 'InDelivery' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched' or $row['element'] == 'Received' or $row['element'] == 'Checked') {
+                $element = 'ReceivedChecked';
+            } elseif ($row['element'] == 'Placed' ) {
+                $element = 'Placed';
+            } else {
+                $element = $row['element'];
+            }
+            if (isset($elements_numbers['state'][$element])) {
+                $elements_numbers['state'][$element] += $row['number'];
+            }
+        }
+    } else {
+        print "$sql";
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
 
 function get_agent_orders_elements($db, $data) {
 
@@ -2518,12 +2715,56 @@ function get_supplier_deliveries_element_numbers($db, $data) {
     $where_interval = prepare_mysql_dates(
         $from, $to, '`Supplier Delivery Date`'
     );
-    $where_interval = $where_interval['mysql'];
 
     $table = '`Supplier Delivery Dimension`  SD  ';
     switch ($data['parent']) {
         case 'account':
-            $where = sprintf(' where true');
+            $table = '`Supplier Delivery Dimension` D left join `Supplier Dimension` on (`Supplier Key`=`Supplier Delivery Parent Key`)   ';
+
+            $where = sprintf(
+                'where  `Supplier Delivery Parent`="Supplier" and  `Supplier Production`="No"  '
+            );
+            break;
+        case 'production':
+            $table = '`Supplier Delivery Dimension` D left join `Supplier Dimension` on (`Supplier Key`=`Supplier Delivery Parent Key`)   ';
+
+            $where = sprintf(
+                'where  `Supplier Delivery Parent`="Supplier"  and  `Supplier Production`="Yes"  '
+            );
+            break;
+        case 'supplier_production':
+        case 'production_supplier':
+            $table = '`Supplier Delivery Dimension` D left join `Supplier Dimension` on (`Supplier Key`=`Supplier Delivery Parent Key`)   ';
+
+            $where = sprintf(
+                'where  `Supplier Delivery Parent`="Supplier" and `Supplier Delivery Parent Key`=%d   and  `Supplier Production`="Yes" ', $parent_key
+            );
+            break;
+        case 'supplier':
+            $where = sprintf(
+                'where  `Supplier Delivery Parent`="Supplier" and `Supplier Delivery Parent Key`=%d  ', $parent_key
+            );
+            break;
+        case 'agent':
+            $where = sprintf(
+                'where  `Supplier Delivery Parent`="Agent" and `Supplier Delivery Parent Key`=%d  ', $parent_key
+            );
+            break;
+        case 'supplier_part':
+            $table = ' `Purchase Order Transaction Fact` POTF  left join  `Supplier Delivery Dimension` D on (POTF.`Supplier Delivery Key`=D.`Supplier Delivery Key`) ';
+            $where = sprintf(
+                'where `Supplier Part Key`=%d  ', $parent_key
+            );
+            break;
+        case 'part':
+            $table = ' `Purchase Order Transaction Fact` POTF  left join  `Supplier Delivery Dimension` D on (POTF.`Supplier Delivery Key`=D.`Supplier Delivery Key`) 
+ left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
+
+	 left join  `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)
+
+	
+	';
+            $where = sprintf('where `Part SKU`=%d  ', $parent_key);
             break;
         default:
             $response = array(
@@ -2573,6 +2814,114 @@ function get_supplier_deliveries_element_numbers($db, $data) {
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
+    }
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
+
+
+function get_production_deliveries_element_numbers($db, $data) {
+
+
+    list(
+        $db_interval, $from, $to, $from_date_1yb, $to_1yb
+        ) = calculate_interval_dates(
+        $db, $data['period'], $data['from'], $data['to']
+    );
+
+    $parent_key     = $data['parent_key'];
+    $where_interval = prepare_mysql_dates(
+        $from, $to, '`Supplier Delivery Date`'
+    );
+
+    $table = '`Supplier Delivery Dimension`  SD  ';
+    switch ($data['parent']) {
+
+        case 'production':
+            $table = '`Supplier Delivery Dimension` D left join `Supplier Dimension` on (`Supplier Key`=`Supplier Delivery Parent Key`)   ';
+
+            $where = sprintf(
+                'where  `Supplier Delivery Parent`="Supplier"  and  `Supplier Production`="Yes"  '
+            );
+            break;
+        case 'supplier_production':
+        case 'production_supplier':
+            $table = '`Supplier Delivery Dimension` D left join `Supplier Dimension` on (`Supplier Key`=`Supplier Delivery Parent Key`)   ';
+
+            $where = sprintf(
+                'where  `Supplier Delivery Parent`="Supplier" and `Supplier Delivery Parent Key`=%d   and  `Supplier Production`="Yes" ', $parent_key
+            );
+            break;
+
+        case 'supplier_part':
+            $table = ' `Purchase Order Transaction Fact` POTF  left join  `Supplier Delivery Dimension` D on (POTF.`Supplier Delivery Key`=D.`Supplier Delivery Key`) ';
+            $where = sprintf(
+                'where `Supplier Part Key`=%d  ', $parent_key
+            );
+            break;
+        case 'part':
+            $table = ' `Purchase Order Transaction Fact` POTF  left join  `Supplier Delivery Dimension` D on (POTF.`Supplier Delivery Key`=D.`Supplier Delivery Key`) 
+ left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
+
+	 left join  `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)
+
+	
+	';
+            $where = sprintf('where `Part SKU`=%d  ', $parent_key);
+            break;
+        default:
+            $response = array(
+                'state' => 405,
+                'resp'  => 'product parent not found '.$data['parent']
+            );
+            echo json_encode($response);
+
+            return;
+    }
+
+
+    $elements_numbers = array(
+        'state' => array(
+            'InProcess' => 0,
+            'Checked'   => 0,
+            'Placed'    => 0,
+            'Cancelled' => 0,
+        ),
+    );
+
+    $sql = sprintf(
+        "SELECT count(*) AS number,`Supplier Delivery State` AS element FROM %s %s GROUP BY `Supplier Delivery State` ", $table, $where
+
+    );
+
+    //'InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked'
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+
+            if ($row['element'] == 'Consolidated' or $row['element'] == 'Dispatched' or $row['element'] == 'Received') {
+                $element = 'InProcess';
+            } elseif ($row['element'] == 'Placed' or $row['element'] == 'Costing' or $row['element'] == 'InvoiceChecked') {
+                $element = 'Placed';
+            } else {
+                $element = $row['element'];
+            }
+            if (isset($elements_numbers['state'][$element])) {
+                $elements_numbers['state'][$element] += $row['number'];
+            }
+
+
+        }
+    }
+
+    foreach ($elements_numbers['state'] as $key => $value) {
+        $elements_numbers['state'][$key] = number($value);
     }
 
     $response = array(
@@ -2829,7 +3178,7 @@ function get_ec_sales_list_elements($db, $parameters, $account) {
 }
 
 
-function get_part_categories_elements($db, $data, $user) {
+function get_part_families_elements($db, $data, $user) {
 
 
     $elements_numbers = array(
@@ -2845,7 +3194,7 @@ function get_part_categories_elements($db, $data, $user) {
 
 
     $table = '`Category Dimension` B left join `Part Category Dimension` PC on (B.`Category Key`=`Part Category Key`)';
-    $where = sprintf('where `Category Parent Key`=%d', $data['parent_key']);
+    $where = sprintf("where `Category Branch Type`='Head' and `Category Scope`='Part' ");
 
 
     $sql = sprintf("select count(*) as number,`Part Category Status` as element from $table $where  group by `Part Category Status` ");

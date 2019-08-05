@@ -202,10 +202,17 @@ if(fields_data['Assets']!='' ||  fields_data['Ordered Date From']!='' || fields_
 
 function estimate_number_list_items(){
 
+
+    $('.calculating_number_list_items').removeClass('hide')
+    $('.calculate_number_list_items').addClass('hide')
+    $('.calculated_number_list_items').addClass('hide')
+
     var form_data = new FormData();
 
     var fields_data = {};
     var re = new RegExp('_', 'g');
+
+
 
     $(".value").each(function (index) {
 
@@ -306,6 +313,9 @@ function estimate_number_list_items(){
     request.done(function (data) {
 
         $('.calculate_number_list_items').addClass('hide')
+        $('.calculating_number_list_items').addClass('hide')
+
+
 
         $('.calculated_number_list_items').removeClass('hide').html(data.text)
 

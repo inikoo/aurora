@@ -1397,11 +1397,13 @@ class Part extends Asset {
                         $status = '<span class=" error">'._('Missing weight').'</span>';
                         break;
                     case 'Underweight Web':
-                        $status = '<span class="error">'.sprintf(_('Probably underweight <b>or</b> %s high'),'<span title="'._('Unit weight shown on website').'"><i class=" fal fa-weight-hanging"></i><i style="font-size: x-small" class="  fal fa-globe"></i></span>').'</span>';
+                        $status = '<span class="error">'.sprintf(_('Probably underweight <b>or</b> %s high'), '<span title="'._('Unit weight shown on website').'"><i class=" fal fa-weight-hanging"></i><i style="font-size: x-small" class="  fal fa-globe"></i></span>')
+                            .'</span>';
 
                         break;
                     case 'Overweight Web':
-                        $status = '<span class="error">'.sprintf(_('Probably overweight <b>or</b> %s low'),'<span title="'._('Unit weight shown on website').'"><i class=" fal fa-weight-hanging"></i><i style="font-size: x-small" class="  fal fa-globe"></i></span>').'</span>';
+                        $status =
+                            '<span class="error">'.sprintf(_('Probably overweight <b>or</b> %s low'), '<span title="'._('Unit weight shown on website').'"><i class=" fal fa-weight-hanging"></i><i style="font-size: x-small" class="  fal fa-globe"></i></span>').'</span>';
 
                         break;
                     case 'Underweight Cost':
@@ -3374,62 +3376,53 @@ class Part extends Asset {
 
         } else {
 
-            $running_stock        = 0;
+            $running_stock = 0;
 
 
             $sql = sprintf(
                 'SELECT    ( select `ITF POTF Costing Done ITF Key` from `ITF POTF Costing Done Bridge` where `ITF POTF Costing Done ITF Key`=`Inventory Transaction Key`   ) as costing,  `Inventory Transaction Record Type`,`Date`,`Note`,`Running Stock`,`Inventory Transaction Key`, `Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Inventory Transaction Type`,`Location Key`,`Inventory Transaction Section`,`Running Cost per SKO`,`Running Stock Value`,`Running Cost per SKO` 
-                FROM `Inventory Transaction Fact`   WHERE `Part SKU`=%d  ORDER BY `Date` ,`Inventory Transaction Key`  ',
-                $this->id
+                FROM `Inventory Transaction Fact`   WHERE `Part SKU`=%d  ORDER BY `Date` ,`Inventory Transaction Key`  ', $this->id
             );
 
 
-
-
-             $costing=false;
+            $costing = false;
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
 
-
-
-                    if($row['costing']=='' and !$costing){
-                        $cost_per_sko=$this->get('Part Cost');
-                    }elseif($row['costing']>0  and $row['Inventory Transaction Quantity']>0 and $row['Inventory Transaction Amount']>0 ){
-                        $costing=true;
-                        $cost_per_sko= $row['Inventory Transaction Amount']/ $row['Inventory Transaction Quantity'];
+                    if ($row['costing'] == '' and !$costing) {
+                        $cost_per_sko = $this->get('Part Cost');
+                    } elseif ($row['costing'] > 0 and $row['Inventory Transaction Quantity'] > 0 and $row['Inventory Transaction Amount'] > 0) {
+                        $costing      = true;
+                        $cost_per_sko = $row['Inventory Transaction Amount'] / $row['Inventory Transaction Quantity'];
                     }
 
 
-                    if($row['Inventory Transaction Record Type']=='Movement'){
-                        $running_stock       = $running_stock + $row['Inventory Transaction Quantity'];
+                    if ($row['Inventory Transaction Record Type'] == 'Movement') {
+                        $running_stock = $running_stock + $row['Inventory Transaction Quantity'];
 
                     }
 
 
-                    $running_stock_value=$running_stock*$cost_per_sko;
+                    $running_stock_value = $running_stock * $cost_per_sko;
 
 
                     $sql = sprintf(
                         'UPDATE `Inventory Transaction Fact` SET `Running Stock`=%f,`Running Stock Value`=%f,`Running Cost per SKO`=%s  WHERE `Inventory Transaction Key`=%d ', $running_stock, $running_stock_value, prepare_mysql($cost_per_sko),
                         $row['Inventory Transaction Key']
                     );
-//print "$sql\n";
+                    //print "$sql\n";
                     $this->db->exec($sql);
 
-//        " where ( `Inventory Transaction Section`='In' or ( `Inventory Transaction Type`='Adjust' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d", $parameters['parent_key']
+                    //        " where ( `Inventory Transaction Section`='In' or ( `Inventory Transaction Type`='Adjust' and `Inventory Transaction Quantity`>0 and `Location Key`>1 )  )  and ITF.`Part SKU`=%d", $parameters['parent_key']
 
 
-                        $sql = sprintf(
-                            'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%f  WHERE `Inventory Transaction Key`=%d ',
-                            $cost_per_sko*$row['Inventory Transaction Quantity'],
-                            $row['Inventory Transaction Key']
-                        );
+                    $sql = sprintf(
+                        'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%f  WHERE `Inventory Transaction Key`=%d ', $cost_per_sko * $row['Inventory Transaction Quantity'], $row['Inventory Transaction Key']
+                    );
 
-                        $this->db->exec($sql);
-
-
+                    $this->db->exec($sql);
 
 
                 }
@@ -3438,10 +3431,7 @@ class Part extends Asset {
             }
 
 
-
         }
-
-
 
 
     }
@@ -4151,34 +4141,13 @@ class Part extends Asset {
 
     function get_current_formatted_value_at_current_cost() {
 
-        $a = floatval(3.000 * 3.575);
-        $a = round(3.575 + 3.575 + 3.575, 3);
+
 
         return money(
             $this->data['Part Current On Hand Stock'] * $this->data['Part Cost']
         );
     }
 
-    function update_stock_history() {
-
-
-        $sql = sprintf(
-            "SELECT `Location Key`  FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d GROUP BY `Location Key`", $this->sku
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $part_location = new PartLocation($this->sku.'_'.$row['Location Key']);
-                $part_location->update_stock_history();
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
 
     function update_stock_in_transactions() {
 
@@ -4799,6 +4768,8 @@ class Part extends Asset {
             exit;
         }
 
+
+
         $this->fast_update(
             array(
                 'Part Number Active Products'    => $active_products,
@@ -5001,26 +4972,17 @@ class Part extends Asset {
 
     }
 
-    function redo_inventory_snapshot_fact($from = '') {
+    function update_part_inventory_snapshot_fact($from = '',$to='') {
 
         include_once "class.PartLocation.php";
-
-
         if ($from == '') {
             $from = $this->get('Part Valid From');
         }
-
-        $to = ($this->get('Part Status') == 'Not In Use' ? $this->get('Part Valid To') : gmdate('Y-m-d H:i:s'));
-
-
-        $sql = sprintf(
-            "DELETE FROM `Inventory Spanshot Fact` WHERE `Part SKU`=%d  AND (`Date`<%s  OR `Date`>%s  )", $this->sku, prepare_mysql($from), prepare_mysql($to)
-        );
-        $this->db->exec($sql);
+        if ($to == '') {
+            $to = ($this->get('Part Status') == 'Not In Use' ? $this->get('Part Valid To') : gmdate('Y-m-d H:i:s'));
+        }
 
 
-        //$from='2016-03-18';
-        //$to='2016-03-18';
         $sql = sprintf(
             "SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) ORDER BY `Date` DESC", prepare_mysql($from), prepare_mysql($to)
         );
@@ -5035,25 +4997,118 @@ class Part extends Asset {
                 );
 
 
+                $total_stock = 0;
                 if ($result3 = $this->db->query($sql)) {
                     foreach ($result3 as $row3) {
-                        // print $row['Date'].' '.$this->id.'_'.$row3['Location Key']."\r";
 
-                        $part_location = new PartLocation($this->id.'_'.$row3['Location Key']);
-                        $part_location->update_stock_history_date($row['Date']);
+                        $part_location               = new PartLocation($this->id.'_'.$row3['Location Key']);
+                        $result_update_stock_history = $part_location->update_stock_history_date($row['Date']);
+
+                        if ($result_update_stock_history) {
+
+
+                            $total_stock += $result_update_stock_history['stock'];
+                        }
 
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
+
+
                 }
 
 
+                $stock_left_1_year_ago = 0;
+                if ($total_stock > 0) {
+
+                    $date_1yr_back = gmdate('Y-m-d', strtotime($row['Date'].' -1 year'));
+                    if (gmdate('U', strtotime($this->get('Part Valid From'))) < gmdate('U', strtotime($row['Date'].' -1 year'))) {
+
+
+                        $sql = sprintf(
+                            "SELECT `Location Key`  FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Type` LIKE 'Associate' AND  `Part SKU`=%d AND `Date`<=%s GROUP BY `Location Key`", $this->id, prepare_mysql($date_1yr_back.' 23:59:59')
+                        );
+
+                        $stock_one_year_ago = 0;
+
+                        if ($result3 = $this->db->query($sql)) {
+                            foreach ($result3 as $row3) {
+                                $part_location      = new PartLocation($this->id.'_'.$row3['Location Key']);
+                                $stock_one_year_ago += $part_location->get_stock($date_1yr_back.' 23:59:59');
+                            }
+                        }
+
+
+                        $total_out_1_year = 0;
+                        $sql              = sprintf(
+                            "SELECT sum(`Inventory Transaction Quantity`) as qty_out FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Inventory Transaction Section`='Out' ", prepare_mysql($date_1yr_back.' 23:59:59'),
+                            prepare_mysql($row['Date'].' 23:59:59'), $this->id
+                        );
+
+
+                        $sql              = sprintf(
+                            "SELECT sum(`Inventory Transaction Quantity`) as qty_out FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Inventory Transaction Record Type`='Movement'  and  `Inventory Transaction Quantity`<0  ", prepare_mysql($date_1yr_back.' 23:59:59'),
+                            prepare_mysql($row['Date'].' 23:59:59'), $this->id
+                        );
+
+                        if ($result2 = $this->db->query($sql)) {
+                            if ($row2 = $result2->fetch()) {
+                                $total_out_1_year = $row2['qty_out'];
+                            } else {
+                                $total_out_1_year = 0;
+                            }
+                        }
+
+                        $total_out_1_year=-1*$total_out_1_year;
+
+
+                        if ($stock_one_year_ago > 0 and $stock_one_year_ago > $total_out_1_year) {
+                            $stock_left_1_year_ago = $stock_one_year_ago - $total_out_1_year;
+                        }
+
+
+                    }
+
+                }
+
+
+                //print "$stock_one_year_ago $total_out_1_year   = $total_stock  ||   $stock_left_1_year_ago   = ";
+                //exit;
+
+
+
+
+
+                if (strtotime($this->data['Part Valid From']) <= strtotime($row['Date'].' 23:59:59 -1 year')) {
+
+                    $sql = sprintf(
+                        "SELECT `Inventory Transaction key`   FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Inventory Transaction Type`='Sale' AND `Date`>=%s AND `Date`<=%s  limit 1", $this->id,
+                        prepare_mysql(date("Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year'))), prepare_mysql($row['Date'].' 23:59:59')
+                    );
+
+                    $dormant_1year = 'Yes';
+                    if ($result3 = $this->db->query($sql)) {
+                        if ($row3 = $result3->fetch()) {
+                            $dormant_1year = 'No';
+                        }
+                    }
+
+
+                } else {
+                    $dormant_1year = 'NA';
+                }
+
+
+
+                $sql = sprintf(
+                    'update `Inventory Spanshot Fact` set `Inventory Spanshot Stock Left 1 Year Ago`=%f ,`Dormant 1 Year`=%s where `Part SKU`=%d and `Date`=%s ',
+                    $stock_left_1_year_ago,  prepare_mysql($dormant_1year),$this->id, prepare_mysql($row['Date'])
+                );
+
+                $this->db->exec($sql);
+
+
+
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -5184,7 +5239,7 @@ class Part extends Asset {
 
             if ($this->get('Part Cost') > 0 and $weight_status == 'OK' and $min_value > 0 and $min_value > ($this->get('Part Cost') / $this->get('Part Package Weight')) and $avg_weight * 10 < $this->get('Part Package Weight')) {
                 $weight_status = 'Overweight Cost';
-               // print $this->get('Reference')." $min_value  ".$this->get('Part Package Weight')." ".$this->get('Part Cost')."  ".($this->get('Part Cost') / $this->get('Part Package Weight'))."    \n";
+                // print $this->get('Reference')." $min_value  ".$this->get('Part Package Weight')." ".$this->get('Part Cost')."  ".($this->get('Part Cost') / $this->get('Part Package Weight'))."    \n";
 
             }
 
