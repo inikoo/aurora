@@ -197,8 +197,8 @@ function products($_data, $db, $user, $account) {
                 case 'Active':
                     $status = sprintf('<i class="fa fa-cube" aria-hidden="true" title="%s"></i>', _('Active'));
                     break;
-                case 'Suspended':
-                    $status = sprintf('<i class="fa fa-cube warning" aria-hidden="true" title="%s"></i>', _('Suspended'));
+                case 'Discontinuing':
+                    $status = sprintf('<i class="fa fa-cube warning" aria-hidden="true" title="%s"></i>', _('Discontinuing'));
                     break;
                 case 'Discontinued':
                     $status = sprintf('<i class="fa fa-cube very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinued'));
@@ -2217,8 +2217,8 @@ function product_sales_correlations($_data, $db, $user,$type) {
                 case 'Active':
                     $status = sprintf('<i class="fa fa-cube" aria-hidden="true" title="%s"></i>', _('Active'));
                     break;
-                case 'Suspended':
-                    $status = sprintf('<i class="fa fa-cube warning" aria-hidden="true" title="%s"></i>', _('Suspended'));
+                case 'Discontinuing':
+                    $status = sprintf('<i class="fa fa-cube warning" aria-hidden="true" title="%s"></i>', _('Discontinuing'));
                     break;
                 case 'Discontinued':
                     $status = sprintf('<i class="fa fa-cube very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinued'));
