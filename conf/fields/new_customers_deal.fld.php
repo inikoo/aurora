@@ -224,5 +224,3 @@ $object_fields[] = array(
 );
 
 
-
-?>

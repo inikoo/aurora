@@ -121,7 +121,7 @@
 
     function create_sales_history( parent_key) {
 
-
+// NO longer in use to be deleted
         var request = '/ar_edit.php?tipo=create_isf&key=' + parent_key
         console.log(request)
 

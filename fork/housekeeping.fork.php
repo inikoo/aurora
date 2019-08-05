@@ -291,7 +291,7 @@ function fork_housekeeping($job) {
 
             foreach ($data['parts_data'] as $part_sku => $from_date) {
                 $part = get_object('Part', $part_sku);
-                $part->redo_inventory_snapshot_fact($from_date);
+                $part->update_part_inventory_snapshot_fact($from_date);
             }
 
             $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`');
@@ -361,7 +361,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
                 $part->update_stock_run();
-                $part->redo_inventory_snapshot_fact($from_date);
+                $part->update_part_inventory_snapshot_fact($from_date);
 
 
             }
@@ -1459,6 +1459,11 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $store   = get_object('Store', $order->get('Store Key'));
 
 
+
+
+
+
+
             $store->update_orders();
             $account->update_orders();
 
@@ -1469,38 +1474,45 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $customer->editor = $editor;
 
 
-            $email_template_type      = get_object('Email_Template_Type', 'Delivery Confirmation|'.$order->get('Order Store Key'), 'code_store');
-            $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
-            $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
+
+            if($order->get('Order For Collection')=='No'){
+
+                $email_template_type      = get_object('Email_Template_Type', 'Delivery Confirmation|'.$order->get('Order Store Key'), 'code_store');
+                $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
+                $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
 
 
-            $send_data = array(
-                'Email_Template_Type' => $email_template_type,
-                'Email_Template'      => $email_template,
-                'Order'               => $order,
-                'Delivery_Note'       => $delivery_note,
+                $send_data = array(
+                    'Email_Template_Type' => $email_template_type,
+                    'Email_Template'      => $email_template,
+                    'Order'               => $order,
+                    'Delivery_Note'       => $delivery_note,
 
-            );
-
-
-            $published_email_template->send($customer, $send_data);
-
-
-            if ($published_email_template->sent) {
-
-
-                $stmt = $db->prepare("INSERT INTO `Order Sent Email Bridge` (`Order Sent Email Order Key`,`Order Sent Email Email Tracking Key`,`Order Sent Email Type`) VALUES (?, ?, ?)");
-                $stmt->execute(
-                    array(
-                        $order->id,
-                        $published_email_template->email_tracking->id,
-                        'Dispatch Notification'
-                    )
                 );
 
 
+                $published_email_template->send($customer, $send_data);
+
+
+                if ($published_email_template->sent) {
+
+
+                    $stmt = $db->prepare("INSERT INTO `Order Sent Email Bridge` (`Order Sent Email Order Key`,`Order Sent Email Email Tracking Key`,`Order Sent Email Type`) VALUES (?, ?, ?)");
+                    $stmt->execute(
+                        array(
+                            $order->id,
+                            $published_email_template->email_tracking->id,
+                            'Dispatch Notification'
+                        )
+                    );
+
+
+                }
             }
 
+            $account->update_inventory_dispatched_data('ytd');
+            $account->update_inventory_dispatched_data('qtd');
+            $account->update_inventory_dispatched_data('all');
 
             break;
         case 'invoice_created':
@@ -2174,64 +2186,38 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $db->exec($sql);
 
 
-            return true;
 
-            include_once 'class.PartLocation.php';
-
-            $part_location = new PartLocation($data['part_sku'].'_'.$data['location_key']);
-
-            $date = gmdate('Y-m-d');
-
-            $part_location->update_stock_history_date($date);
-
-
-            $warehouse = get_object('Warehouse', $part_location->location->get('Location Warehouse Key'));
-            $warehouse->update_inventory_snapshot($date);
-
-
-            if ($part_location->get('Quantity On Hand') < 0) {
-
-                $suppliers = $part_location->part->get_suppliers();
-                foreach ($suppliers as $supplier_key) {
-                    $supplier_production = get_object('Supplier_Production', $supplier_key);
-
-                    if ($supplier_production->id) {
-                        $supplier_production->update_locations_with_errors();
-                    }
-                }
-            }
 
 
             break;
 
-        case 'create_today_ISF':
-
-            include_once 'class.PartLocation.php';
+        case 'redo_day_ISF':
 
 
-            $sql = sprintf(
-                "SELECT `Part SKU`,`Location Key` from `Part Location Dimension`"
+            $date= $data['date'];
+
+
+            $sql   = sprintf(
+                'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU` desc '
             );
 
+            // print "$sql\n";
 
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-
-                    $part_location = new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
-                    $part_location->update_stock_history_date(date("Y-m-d"));
+            if ($result2 = $db->query($sql)) {
+                foreach ($result2 as $row2) {
+                    $part = get_object('Part', $row2['Part SKU']);
+                    $part->update_part_inventory_snapshot_fact($date,$date);
 
                 }
             }
 
+
             $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`');
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-                    $warehouse = get_object('Warehouse', $row['Warehouse Key']);
-                    $warehouse->update_inventory_snapshot(date("Y-m-d"));
+            if ($result2 = $db->query($sql)) {
+                foreach ($result2 as $row2) {
+                    $warehouse = get_object('Warehouse',$row2['Warehouse Key']);
+                    $warehouse->update_inventory_snapshot($date);
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
             }
 
 

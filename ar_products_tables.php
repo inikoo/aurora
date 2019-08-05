@@ -93,6 +93,15 @@ switch ($tipo) {
     case 'user_notifications':
         user_notifications(get_table_parameters(), $db, $user);
         break;
+    case 'category_correlations':
+        category_sales_correlations(get_table_parameters(), $db, $user);
+        break;
+    case 'product_correlations':
+        product_sales_correlations(get_table_parameters(), $db, $user,$type='correlation');
+        break;
+    case 'product_anticorrelations':
+        product_sales_correlations(get_table_parameters(), $db, $user,$type='anticorrelation');
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -188,11 +197,11 @@ function products($_data, $db, $user, $account) {
                 case 'Active':
                     $status = sprintf('<i class="fa fa-cube" aria-hidden="true" title="%s"></i>', _('Active'));
                     break;
-                case 'Suspended':
-                    $status = sprintf('<i class="fa fa-cube warning" aria-hidden="true" title="%s"></i>', _('Suspended'));
+                case 'Discontinuing':
+                    $status = sprintf('<i class="fa fa-cube warning" aria-hidden="true" title="%s"></i>', _('Discontinuing'));
                     break;
                 case 'Discontinued':
-                    $status = sprintf('<i class="fa fa-cube very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinued'));
+                    $status = sprintf('<i class="fal fa-cube very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinued'));
                     break;
                 case 'Suspended':
                     $status = sprintf('<i class="fa fa-cube error" aria-hidden="true" title="%s"></i>', _('Suspended'));
@@ -306,7 +315,7 @@ function products($_data, $db, $user, $account) {
                         '<span class="link" onClick="change_view(\'part/%d/product/%d\')" title="%s">%s</span>', $_data['parameters']['parent_key'], $data['Product ID'], '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>',
                         $data['Product Code']
                     );
-                    $name = number($data['Product Part Ratio'],5).' <i class="far fa-box" title="'.sprintf(_('Each outer pick %s part SKOs'), number($data['Product Part Ratio'])).'"></i> =  '.$data['Product Name'].($data['Product Units Per Case'] != 1
+                    $name = number($data['Product Part Ratio'], 5).' <i class="far fa-box" title="'.sprintf(_('Each outer pick %s part SKOs'), number($data['Product Part Ratio'])).'"></i> =  '.$data['Product Name'].($data['Product Units Per Case'] != 1
                             ? '<span class="discreet italic small">('.$data['Product Units Per Case'].' '._('units').')</span>' : '');
 
 
@@ -324,10 +333,10 @@ function products($_data, $db, $user, $account) {
 
                     break;
                 case 'category':
-                    if($data['Product Units Per Case']==1){
+                    if ($data['Product Units Per Case'] == 1) {
                         $name = '<span>'.$data['Product Name'].'</span>';
 
-                    }else{
+                    } else {
                         $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
 
                     }
@@ -336,10 +345,10 @@ function products($_data, $db, $user, $account) {
                     break;
                 default:
 
-                    if($data['Product Units Per Case']==1){
+                    if ($data['Product Units Per Case'] == 1) {
                         $name = '<span>'.$data['Product Name'].'</span>';
 
-                    }else{
+                    } else {
                         $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
 
                     }
@@ -599,11 +608,9 @@ function categories($_data, $db, $user) {
 
             $record_data[] = array(
                 'id'                  => (integer)$data['Category Key'],
-                'store_key'           => (integer)$data['Category Store Key'],
-                'code'                => sprintf('<span class="link" onclick="change_view(\'products/%d/category/%d\')">%s</span>',
-                                                 $data['Category Store Key'],
-                                                 $data['Category Key'],
-                                                 $data['Category Code']),
+                'code'                => sprintf(
+                    '<span class="link" onclick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Category Store Key'], $data['Category Key'], $data['Category Code']
+                ),
                 'label'               => $data['Category Label'],
                 'subjects'            => number(
                     $data['Category Number Subjects']
@@ -1054,8 +1061,7 @@ function parts($_data, $db, $user, $account) {
                 'stock_status'        => $stock_status,
                 'stock_status_label'  => $stock_status_label,
                 'stock'               => '<span  class="  '.($data['Part Current On Hand Stock'] < 0 ? 'error' : '').'">'.number(floor($data['Part Current On Hand Stock'])).'</span>  <i class="fa fa-fighter-jet padding_left_5 super_discreet  '.($data['Part On Demand']
-                    == 'Yes' ? ''
-                        : 'invisible').' " title='._('On demand').' aria-hidden="true"></i>     ',
+                    == 'Yes' ? '' : 'invisible').' " title='._('On demand').' aria-hidden="true"></i>     ',
                 'weeks_available'     => $weeks_available,
                 'dispatched_per_week' => $dispatched_per_week
             );
@@ -1142,9 +1148,13 @@ function product_categories_categories($_data, $db, $user) {
 
 
             $record_data[] = array(
-                'id'               => (integer)$data['Product Category Key'],
-                'store_key'        => (integer)$data['Category Store Key'],
-                'code'             => $data['Category Code'],
+                'id'        => (integer)$data['Product Category Key'],
+                'store_key' => (integer)$data['Category Store Key'],
+
+                'code' => sprintf(
+                    '<span class="link" onclick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Category Store Key'], $data['Category Key'], $data['Category Code']
+                ),
+
                 'label'            => $data['Category Label'],
                 'status'           => $status,
                 'products'         => number($data['products']),
@@ -1352,9 +1362,11 @@ function product_categories_products($_data, $db, $user) {
             '<span class="link" onClick="change_view(\'products/%d/category/%d>%d\')">%s</span>', $data['Category Store Key'], $parent->id, $data['Product Category Key'], $data['Category Code']
         );
 
-        $remove        = sprintf(
+        $remove = sprintf(
             '<span class="button" onClick="disassociate_category_from_table(this,%s,%d)"> <i class="fa fas padding_left_5 fa-unlink"></i> %s</span>', $parent->id, $data['Product Category Key'], _('Unlink')
         );
+
+
         $record_data[] = array(
             'id'                      => (integer)$data['Product Category Key'],
             'code'                    => $code,
@@ -1474,10 +1486,10 @@ function charges($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
 
-        if($data['Charge Active']=='Yes'){
-            $status='<i class="fa fa-play success"></i>';
-        }else{
-            $status='<i class="fa fa-pause error"></i>';
+        if ($data['Charge Active'] == 'Yes') {
+            $status = '<i class="fa fa-play success"></i>';
+        } else {
+            $status = '<i class="fa fa-pause error"></i>';
 
         }
 
@@ -1488,7 +1500,7 @@ function charges($_data, $db, $user) {
             'orders'    => number($data['Charge Total Acc Orders']),
             'customers' => number($data['Charge Total Acc Customers']),
             'amount'    => money($data['Charge Total Acc Amount'], $data['Store Currency Code']),
-            'status'=>$status
+            'status'    => $status
 
         );
 
@@ -1517,36 +1529,33 @@ function shipping_zones($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
 
-
     $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $record_data = array();
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-            $price='';
+            $price       = '';
             $territories = '';
 
-            $price_data       = json_decode($data['Shipping Zone Price'],true);
+            $price_data = json_decode($data['Shipping Zone Price'], true);
 
 
+            if ($data['Shipping Zone Territories'] != '') {
 
-            if($data['Shipping Zone Territories']!=''){
-
-                $territories_data       = json_decode($data['Shipping Zone Territories'],true);
-
+                $territories_data = json_decode($data['Shipping Zone Territories'], true);
 
 
                 //print_r($territories_data);
 
-                foreach($territories_data as $territory){
-                    $territories.='<img class="padding_left_5" style="width:20px" src="/art/flags/'.strtolower($territory['country_code']).'.gif"> '.$territory['country_code'];
+                foreach ($territories_data as $territory) {
+                    $territories .= '<img class="padding_left_5" style="width:20px" src="/art/flags/'.strtolower($territory['country_code']).'.gif"> '.$territory['country_code'];
 
-                    if(isset($territory['excluded_postal_codes'])){
-                        $territories.=' <span class="error small">(<i class="fa fa-map-marker-alt-slash error" title="'._('Exclude postal codes').'" ></i> '.$territory['excluded_postal_codes'].')</span> ';
+                    if (isset($territory['excluded_postal_codes'])) {
+                        $territories .= ' <span class="error small">(<i class="fa fa-map-marker-alt-slash error" title="'._('Exclude postal codes').'" ></i> '.$territory['excluded_postal_codes'].')</span> ';
                     }
-                    if(isset($territory['included_postal_codes'])){
-                        $territories.=' <span class="success small discreet" >(<i class="fa fa-map-marker-smile " title="'._('Include postal codes').'" ></i> '.$territory['included_postal_codes'].')</span> ';
+                    if (isset($territory['included_postal_codes'])) {
+                        $territories .= ' <span class="success small discreet" >(<i class="fa fa-map-marker-smile " title="'._('Include postal codes').'" ></i> '.$territory['included_postal_codes'].')</span> ';
                     }
 
                 }
@@ -1554,34 +1563,27 @@ function shipping_zones($_data, $db, $user) {
             }
 
 
-
-
-            switch ($price_data['type']){
+            switch ($price_data['type']) {
                 case 'Step Order Items Net Amount':
 
 
-                    $price.='<div class="as_table">';
-                    foreach($price_data['steps'] as $step){
-                        $price.='<div class="as_row">';
+                    $price .= '<div class="as_table">';
+                    foreach ($price_data['steps'] as $step) {
+                        $price .= '<div class="as_row">';
 
-                        $price.='<div class="as_cell  width_75"><span class="discreet">'._('Items').' <i class="fa fa-dollar-sign"></i></span> </div>';
+                        $price .= '<div class="as_cell  width_75"><span class="discreet">'._('Items').' <i class="fa fa-dollar-sign"></i></span> </div>';
 
-                        $to=($step['to']=='INF'?'<i class="fal fa-infinity"></i>':money($step['to'],$_data['parameters']['store_currency']));
+                        $to = ($step['to'] == 'INF' ? '<i class="fal fa-infinity"></i>' : money($step['to'], $_data['parameters']['store_currency']));
 
 
-                        $amount=($step['price']==0?'<span class="success ">'._('free').'</span>':'<span class="highlight">'.money($step['price'],$_data['parameters']['store_currency']).'</span>');
-                        $price.=' <div class="as_cell">'.money($step['from'],$_data['parameters']['store_currency']).'</div> <div class="as_cell align_center width_50"><i class="fal fa-arrow-right"></i> </div><div class="as_cell">'.$to.'</div> '  ;
-                        $price.='<div class="as_cell discreet align_center width_50"><i class="fal hide fa-equals"></i></div> <div  class="width_75 aright ">'.$amount.'</div>';
-                        $price.='</div>';
+                        $amount = ($step['price'] == 0 ? '<span class="success ">'._('free').'</span>' : '<span class="highlight">'.money($step['price'], $_data['parameters']['store_currency']).'</span>');
+                        $price  .= ' <div class="as_cell">'.money($step['from'], $_data['parameters']['store_currency']).'</div> <div class="as_cell align_center width_50"><i class="fal fa-arrow-right"></i> </div><div class="as_cell">'.$to.'</div> ';
+                        $price  .= '<div class="as_cell discreet align_center width_50"><i class="fal hide fa-equals"></i></div> <div  class="width_75 aright ">'.$amount.'</div>';
+                        $price  .= '</div>';
                     }
-                    $price.='</div>';
+                    $price .= '</div>';
                     break;
             }
-
-
-
-
-
 
 
             $record_data[] = array(
@@ -1590,6 +1592,12 @@ function shipping_zones($_data, $db, $user) {
                 'name'        => sprintf('<span >%s</span>', $data['Shipping Zone Name']),
                 'price'       => $price,
                 'territories' => $territories,
+                'customers'   => number($data['Shipping Zone Number Customers']),
+                'orders'      => number($data['Shipping Zone Number Orders']),
+                'amount'      => money($data['Shipping Zone Amount'], $data['Store Currency Code']),
+                'first_used'  => ($data['Shipping Zone First Used'] != '' ? strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Shipping Zone First Used'].' +0:00')) : ''),
+                'last_used'   => ($data['Shipping Zone Last Used'] != '' ? strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Shipping Zone Last Used'].' +0:00')) : ''),
+
 
             );
         }
@@ -1629,16 +1637,16 @@ function shipping_zones_schemas($_data, $db, $user) {
         foreach ($result as $data) {
             switch ($data['Shipping Zone Schema Type']) {
                 case 'Current':
-                    $type = sprintf('<i class="fa fa-play success margin_right_5" title="%s"></i> ',_('Current'));
+                    $type = sprintf('<i class="fa fa-play success margin_right_5" title="%s"></i> ', _('Current'));
                     break;
                 case 'InReserve':
-                    $type = '<i class="fa fa-pause discreet margin_right_5"></i> '._('In reserve');
+                    $type = sprintf('<i class="fa fa-pause discreet margin_right_5" title="%s"></i> ', _('In reserve'));
                     break;
                 case 'Deal':
-                    $type = '<i class="fa fa-tag  margin_right_5"></i> '._('Offer');
+                    $type = sprintf('<i class="fa fa-tag  margin_right_5" title="%s"></i> ', _('Offer'));
                     break;
                 case 'Discontinued':
-                    $type = '<i class="fa fa-skull discreet margin_right_5"></i> '._('Discontinued');
+                    $type = sprintf('<i class="fa fa-skull discreet margin_right_5" title="%s"></i> ', _('Discontinued'));
                     break;
                 default:
 
@@ -1647,18 +1655,15 @@ function shipping_zones_schemas($_data, $db, $user) {
 
 
             $record_data[] = array(
-                'id'    => (integer)$data['Shipping Zone Schema Key'],
-                'type'  => $type,
-                'label' => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone_schema/%d\')" >%s</span>', $data['Shipping Zone Schema Store Key'], $data['Shipping Zone Schema Key'], $data['Shipping Zone Schema Label']),
-                'zones'  => number($data['Shipping Zone Schema Number Zones']),
+                'id'         => (integer)$data['Shipping Zone Schema Key'],
+                'type'       => $type,
+                'label'      => sprintf('<span class="link" onClick="change_view(\'store/%d/shipping_zone_schema/%d\')" >%s</span>', $data['Shipping Zone Schema Store Key'], $data['Shipping Zone Schema Key'], $data['Shipping Zone Schema Label']),
+                'zones'      => number($data['Shipping Zone Schema Number Zones']),
                 'customers'  => number($data['Shipping Zone Schema Number Customers']),
-                'orders'  => number($data['Shipping Zone Schema Number Orders']),
-
-
-
-
-                'first_used'     => ($data['Shipping Zone Schema First Used']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Shipping Zone Schema First Used'].' +0:00')):''),
-                'last_used'     => ($data['Shipping Zone Schema Last Used']!=''?strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Shipping Zone Schema Last Used'].' +0:00')):''),
+                'orders'     => number($data['Shipping Zone Schema Number Orders']),
+                'first_used' => ($data['Shipping Zone Schema First Used'] != '' ? strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Shipping Zone Schema First Used'].' +0:00')) : ''),
+                'last_used'  => ($data['Shipping Zone Schema Last Used'] != '' ? strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Shipping Zone Schema Last Used'].' +0:00')) : ''),
+                'amount'     => money($data['Shipping Zone Schema Amount'], $data['Store Currency Code']),
 
 
             );
@@ -1988,8 +1993,6 @@ function user_notifications($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
 
-
-
         switch ($data['Email Campaign Type Code']) {
             case 'New Order':
                 $_type = _('New order');
@@ -2094,3 +2097,212 @@ function user_notifications($_data, $db, $user) {
     echo json_encode($response);
 }
 
+
+function category_sales_correlations($_data, $db, $user) {
+
+    include_once 'class.Category.php';
+    include_once 'class.Store.php';
+
+
+    // print_r($_data);
+
+    $parent = new Category($_data['parameters']['parent_key']);
+    $store  = new Store($parent->get('Category Store Key'));
+    if ($store->get('Store Family Category Key') == $parent->get(
+            'Category Root Key'
+        )) {
+        $rtext_label = 'family';
+    } elseif ($store->get('Store Department Category Key') == $parent->get(
+            'Category Root Key'
+        )) {
+        $rtext_label = 'department';
+    } else {
+        $rtext_label = 'category';
+    }
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+
+    $record_data = array();
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            switch ($data['Product Category Status']) {
+                case 'In Process':
+                    $status = _('In process');
+                    break;
+                case 'Active':
+                    $status = _('Active');
+                    break;
+                case 'Suspended':
+                    $status = _('Suspended');
+                    break;
+                case 'Discontinued':
+                    $status = _('Discontinued');
+                    break;
+                case 'Discontinuing':
+                    $status = _('Discontinuing');
+                    break;
+                default:
+                    $status = $data['Product Category Status'];
+                    break;
+            }
+
+
+            $record_data[] = array(
+                'id' => (integer)$data['Product Category Key'],
+
+                'code' => sprintf(
+                    '<span class="link" onclick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Category Store Key'], $data['Category Key'], $data['Category Code']
+                ),
+
+                'label'        => $data['Category Label'],
+                'status'       => $status,
+                'correlation'  => number($data['Correlation'], 5, true),
+                'customers_AB' => number($data['Customers AB']),
+                'customers_A'  => number($data['Customers A']),
+                'customers_B'  => number($data['Customers B']),
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print " <br>\n $sql \n";
+
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function product_sales_correlations($_data, $db, $user,$type) {
+
+    $rtext_label = 'correlations';
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+
+    $record_data = array();
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+            switch ($data['Product Status']) {
+                case 'Active':
+                    $status = sprintf('<i class="fa fa-cube" aria-hidden="true" title="%s"></i>', _('Active'));
+                    break;
+                case 'Discontinuing':
+                    $status = sprintf('<i class="fa fa-cube warning" aria-hidden="true" title="%s"></i>', _('Discontinuing'));
+                    break;
+                case 'Discontinued':
+                    $status = sprintf('<i class="fal fa-cube very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinued'));
+                    break;
+                case 'Suspended':
+                    $status = sprintf('<i class="fa fa-cube error" aria-hidden="true" title="%s"></i>', _('Suspended'));
+                    break;
+                default:
+                    $status = $data['Product Status'];
+                    break;
+            }
+
+
+            switch ($data['Product Web State']) {
+                case 'For Sale':
+                    $web_state = '<span class="'.(($data['Product Availability'] <= 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Online').'</span>'.($data['Product Web Configuration'] == 'Online Force For Sale'
+                            ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
+                    break;
+                case 'Out of Stock':
+
+
+                    $web_state = '<span  class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Out of Stock').'</span>'.($data['Product Web Configuration'] == 'Online Force Out of Stock'
+                            ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
+
+
+                    break;
+                case 'Discontinued':
+                    $web_state = _('Discontinued');
+                    break;
+                case 'Offline':
+
+                    if ($data['Product Status'] != 'Active') {
+                        $web_state = _('Offline');
+                    } else {
+
+                        $web_state = '<span class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Offline').'</span>'.($data['Product Status'] == 'Active'
+                                ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>' : '');
+                    }
+                    break;
+                default:
+                    $web_state = $data['Product Web State'];
+                    break;
+            }
+
+
+            $record_data[] = array(
+                'id' => (integer)$data['Product ID'],
+
+                'code' => sprintf(
+                    '<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $data['Product Store Key'], $data['Product ID'], $data['Product Code']
+                ),
+
+                'label'     => $data['Product Name'],
+                'status'    => $status,
+                'web_state' => $web_state,
+
+                'correlation'  => number($data['Correlation'], 5, true),
+                'customers_AB' => number($data['Customers AB']),
+                'customers_A'  => number($data['Customers A']),
+                'customers_B'  => number($data['Customers B']),
+
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print " <br>\n $sql \n";
+
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}

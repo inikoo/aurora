@@ -192,6 +192,8 @@
                     {elseif $edit=='customer'  } {include file="select_customer.edit.tpl" field=$field  mode='new'}
                     {elseif $edit=='customer_list'  } {include file="select_customer_list.edit.tpl" field=$field  mode='new'}
                     {elseif $edit=='asset'  } {include file="select_asset.edit.tpl" field=$field  mode='new'}
+                    {elseif $edit=='list'  } {include file="select_list.edit.tpl" field=$field  mode='new'}
+
                     {elseif $edit=='territories'  } {include file="territories.edit.tpl"  field=$field    mode='new'}
                     {elseif $edit=='territories'  } {include file="shipping_price_tier.edit.tpl"  field=$field    mode='new'}
 

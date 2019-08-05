@@ -22,7 +22,7 @@ if ($email_campaign->get('Email Campaign Type') == 'Marketing') {
         $state['_object'], $db, $user, $smarty, array(
                              'parent'        => $state['object'],
                              'parent_object' => $state['_object'],
-                             'new'           => true,
+                             'new'           => false,
                              'store_key'     => $state['_object']->get('Store Key'),
                              'scope'         => 'customers',
                              'type'          => ($email_campaign->get('State Index')<20?'mailing_list':'')

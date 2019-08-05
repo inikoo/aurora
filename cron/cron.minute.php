@@ -19,7 +19,8 @@ switch ($time) {
     case '00:00':
         new_housekeeping_fork(
             'au_housekeeping', array(
-            'type' => 'create_today_ISF',
+            'type' => 'redo_day_ISF',
+            'date' => gmdate('Y-m-d')
 
         ), $account->get('Account Code')
         );
@@ -327,21 +328,6 @@ switch ($time) {
 
         }
         break;
-    case '22:00':
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type' => 'update_active_parts_commercial_value'
-        ), $account->get('Account Code')
-        );
-        break;
-    case '05:00':
-
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type' => 'update_parts_cost'
-        ), $account->get('Account Code')
-        );
-        break;
     case '01:00':
 
         $sql = sprintf(
@@ -361,6 +347,34 @@ switch ($time) {
 
         }
         break;
+
+    case '03:00':
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type' => 'redo_day_ISF',
+            'date' => gmdate('Y-m-d',strtotime('Yesterday'))
+
+        ), $account->get('Account Code')
+        );
+        break;
+    case '05:00':
+
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type' => 'update_parts_cost'
+        ), $account->get('Account Code')
+        );
+        break;
+
+    case '22:00':
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type' => 'update_active_parts_commercial_value'
+        ), $account->get('Account Code')
+        );
+        break;
+
+
     default:
         $redis->zRemRangeByScore('_IU'.$account->get('Code'), 0, gmdate('U') - 600);
 

@@ -26,30 +26,47 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
     $account = new Account($db);
     $edit    = true;
 
-
     switch ($object->get_object_name()) {
-        case 'Email Campaign':// to deete this line
+        case 'Email Campaign':// to delete this line
         case 'Mailshot':
 
 
-            switch ($object->get('Email Campaign Type')) {
-                case 'AbandonedCart':
-                    include 'fields/mailshot.abandoned_cart.fld.php';
-                    break;
-                case 'Marketing':
+            if($options['new']){
 
 
-                    if ($options['type'] == 'mailing_list') {
-                        include 'fields/mailshot.mailing_list.fld.php';
-                    } else {
-                        include 'fields/mailshot.marketing.fld.php';
-                    }
+                switch($options['parent_object']->get('Email Campaign Type Code')){
+                    case 'Marketing':
+                        include 'fields/mailshot.marketing.new.fld.php';
+
+                }
+            }else{
 
 
-                    break;
-                default:
-                    include 'fields/mailshot.fld.php';
+                switch ($object->get('Email Campaign Type')) {
+                    case 'AbandonedCart':
+                        include 'fields/mailshot.abandoned_cart.fld.php';
+                        break;
+                    case 'Marketing':
+
+
+                   //     if ($options['type'] == 'mailing_list') {
+                   //         include 'fields/mailshot.mailing_list.fld.php';
+                   //     } else {
+                            include 'fields/mailshot.marketing.fld.php';
+                   //     }
+
+
+
+
+
+
+                        break;
+                    default:
+                        include 'fields/mailshot.fld.php';
+                }
             }
+
+
 
 
             return $object_fields;

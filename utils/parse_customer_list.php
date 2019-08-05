@@ -126,9 +126,16 @@ function parse_customer_list($data, $db) {
 
 
     if ($data['Assets'] != '') {
+
+
+        $store=get_object('Store',$data['store_key']);
+
         $tmp         = '';
         $product_ids = array();
+        $families = array();
+        $departments = array();
 
+        $categories = array();
 
         $asset_codes = preg_split('/\,/i', $data['Assets']);
 
@@ -154,9 +161,31 @@ function parse_customer_list($data, $db) {
             }
 
 
+            $sql = sprintf('select `Category Key` from `Category Dimension` where   `Category Branch Type`="Head"  and  `Category Code`=%s and `Category Root Key`=%d ', prepare_mysql($asset_code), $store->get('Store Family Category Key'));
+
+            // print $sql;
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $families[$row['Category Key']] = $row['Category Key'];
+                }
+            }
+
+
+            $sql = sprintf('select `Category Key` from `Category Dimension` where   `Category Branch Type`="Head"  and  `Category Code`=%s and `Category Root Key`=%d ', prepare_mysql($asset_code), $store->get('Store Department Category Key'));
+
+            // print $sql;
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+                    $departments[$row['Category Key']] = $row['Category Key'];
+                }
+            }
+
+
             $sql = sprintf(
-                'select `Subject Key` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Category Code`=%s and `Category Store Key`=%d and `Category Scope`="Product" and  `Category Subject`="Product"  ',
-                prepare_mysql($asset_code), $data['store_key']
+                'select `Subject Key` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Category Code`=%s and `Category Store Key`=%d and `Category Scope`="Product" and  `Category Subject`="Product" and `Category Root Key`!=%d  ',
+                prepare_mysql($asset_code), $data['store_key'],$store->get('Store Family Category Key')
             );
             //  print $sql;
             if ($result = $db->query($sql)) {
@@ -170,11 +199,11 @@ function parse_customer_list($data, $db) {
             }
 
             $sql = sprintf(
-                'select `Subject Key` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Category Code`=%s and `Category Store Key`=%d and `Category Scope`="Product" and  `Category Subject`="Category" ',
-                prepare_mysql($asset_code), $data['store_key']
+                'select `Subject Key` from `Category Dimension` C left join `Category Bridge` B on (B.`Category Key`=C.`Category Key`) where `Category Code`=%s and `Category Store Key`=%d and `Category Scope`="Product" and  `Category Subject`="Category"  and `Category Root Key`!=%d ',
+                prepare_mysql($asset_code), $data['store_key'],$store->get('Store Department Category Key')
             );
             //  print $sql;
-            $categories = array();
+
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
@@ -222,6 +251,25 @@ function parse_customer_list($data, $db) {
 
             $tmp .= sprintf(' and `Product ID` in (\'%s\') ', join("','", $product_ids));
         }
+
+        if (count($families) > 0) {
+            $with_otf = true;
+            $table    = '`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`)   ';
+            $group    = ' group by C.`Customer Key`';
+
+            $tmp .= sprintf(' and `OTF Category Family Key` in (\'%s\') ', join("','", $families));
+        }
+
+
+        if (count($departments) > 0) {
+            $with_otf = true;
+            $table    = '`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`)   ';
+            $group    = ' group by C.`Customer Key`';
+
+            $tmp .= sprintf(' and `OTF Department Family Key` in (\'%s\') ', join("','", $departments));
+        }
+
+
 
         $where .= $tmp;
 

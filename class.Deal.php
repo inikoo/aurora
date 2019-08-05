@@ -251,7 +251,6 @@ class Deal extends DB_Table {
 
         $terms = '';
 
-      //   print $this->data['Deal Terms Type'];
         switch ($this->data['Deal Terms Type']) {
 
 
@@ -339,9 +338,33 @@ class Deal extends DB_Table {
 
 
                 }else{
-
-
+                    $terms='';
                 }
+
+                $deal_terms_data = preg_split('/\;/', $this->get('Deal Terms'));
+
+
+
+                if (is_array($deal_terms_data) and count($deal_terms_data) == 2) {
+
+                    $amount       = $deal_terms_data[0];
+
+
+
+                    if ($amount == 0) {
+                        $terms.=' <span title="'._('All orders').'">&#8704; <i class="fal fa-shopping-cart"></i></span>';
+                    } else {
+
+                        $store = get_object('Store', $this->data['Deal Store Key']);
+
+                        $terms .= sprintf('<span><i class="fal fa-shopping-cart"></i> %s<i class="fal fa-arrow-from-bottom"></i> </span>', money($amount, $store->get('Store Currency Code')));
+                    }
+                } else {
+                    $terms .= 'Error';
+                }
+
+
+
 
 
                 break;

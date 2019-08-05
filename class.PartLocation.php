@@ -548,6 +548,7 @@ class PartLocation extends DB_Table {
         $stock = $this->get_stock();
 
 
+
         $value = $stock * $this->part->get('Part Cost in Warehouse');
 
         $this->data['Quantity On Hand']    = $stock;
@@ -632,6 +633,8 @@ class PartLocation extends DB_Table {
             "SELECT sum(`Inventory Transaction Quantity`) AS stock  from `Inventory Transaction Fact` WHERE  `Inventory Transaction Record Type`='Movement' and `Date`<=%s AND `Part SKU`=%d AND `Location Key`=%d  ", prepare_mysql($date), $this->part_sku,
             $this->location_key
         );
+
+
 
 
         if ($result = $this->db->query($sql)) {
@@ -1567,14 +1570,158 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
         if ($this->exist_on_date($date)) {
 
-            $this->update_stock_history_interval($date, $date);
-        } else {
+            global $session;
+
+
+
+            if($date==gmdate('Y-m-d')){
+                $cost_per_sko = $this->part->get('Part Cost in Warehouse');
+            }else{
+                $cost_per_sko = $this->get_value_per_sko($date.' 23:59:59');
+            }
+
+
+
+            $stock = $this->get_stock($date.' 23:59:59');
+
+
+            //ALTER TABLE `Inventory Spanshot Fact` ADD `Inventory Spanshot Stock Left 1 Year Ago` FLOAT NULL DEFAULT '0' AFTER `Inventory Spanshot Warehouse SKO Value`;
+
+            $value = $stock * $cost_per_sko;
+
+            list($sold, $sales_value) = $this->get_sales($date);
+            $in   = $this->get_in($date);
+            $lost = $this->get_lost($date);
+
+            list($amount_in_po, $amount_in_other, $amount_out_sales, $amount_out_other) = $this->get_amount_deltas($date);
+
+
+
+
+            //print "$cost_per_sko $stock $value";
+            //exit;
+
+
+            //  Remoev   ohlc
+            //  list($open, $high, $low, $close, $value_open, $value_high, $value_low, $value_close) = $this->get_ohlc($date);
+
+
+            //=====================================
+
+            $storing_cost  = 0;
+            $location_type = "Unknown";
+            $warehouse_key = $session->get('current_warehouse');
+
+
+            //$commercial_value_unit_cost=$this->part->get_unit_commercial_value($date.' 23:59:59');
+
+            if ($this->part->get('Part Commercial Value') == '') {
+                $commercial_value_unit_cost = $this->part->get('Part Unit Price');
+            } else {
+                $commercial_value_unit_cost = $this->part->get('Part Commercial Value');
+            }
+
+            $value_day_cost_unit_cost = $this->part->get('Part Cost in Warehouse');
+
+            $value_day_cost   = $stock * $value_day_cost_unit_cost;
+            $commercial_value = $stock * $commercial_value_unit_cost;
+
+            /*
+
+            $value_day_cost_open   = $open * $value_day_cost_unit_cost;
+            $commercial_value_open = $open * $commercial_value_unit_cost;
+
+            $value_day_cost_high   = $high * $value_day_cost_unit_cost;
+            $commercial_value_high = $high * $commercial_value_unit_cost;
+
+            $value_day_cost_low   = $low * $value_day_cost_unit_cost;
+            $commercial_value_low = $low * $commercial_value_unit_cost;
+
+*/
+
+
+            //print $date." $stock v: $value $value_day_cost_value  $commercial_value \n";
+            //print $date." $stock v: $value $value_open  $value_low $value_clos \n";
+
+            $sql = sprintf(
+                "INSERT INTO `Inventory Spanshot Fact` (
+			`Sold Amount`,
+			`Date`,
+			`Part SKU`,
+			`Warehouse Key`,`Location Key`,
+			`Quantity On Hand`,
+			`Value At Cost`,`Value At Day Cost`,`Value Commercial`,`Storing Cost`,
+			`Quantity Sold`,`Quantity In`,`Quantity Lost`,
+                   
+			`Location Type`,
+			`Inventory Spanshot Amount In PO`,
+			`Inventory Spanshot Amount In Other`,
+			`Inventory Spanshot Amount Out Sales`,
+			`Inventory Spanshot Amount Out Other`,`Inventory Spanshot Warehouse SKO Value`
+			) VALUES (
+			%.2f,%s,%d,%d,%d,%f,
+			%.2f ,%.2f,%.2f,%.2f ,
+			%f,
+			       
+			          %f,%f,
+			%s,
+			%.2f,%.2f,%.2f,%.2f,%f
+			) ON DUPLICATE KEY UPDATE
+			`Warehouse Key`=%d,`Quantity On Hand`=%f,`Value At Cost`=%.2f,`Sold Amount`=%.2f,`Value Commercial`=%.2f,`Value At Day Cost`=%.2f, `Storing Cost`=%.2f,`Quantity Sold`=%f,`Quantity In`=%f,`Quantity Lost`=%f,
+			                      
+			                          `Location Type`=%s ,`Sold Amount`=%.2f ,
+			`Inventory Spanshot Amount In PO`=%.2f,`Inventory Spanshot Amount In Other`=%.2f,`Inventory Spanshot Amount Out Sales`=%.2f,`Inventory Spanshot Amount Out Other`=%.2f,`Inventory Spanshot Warehouse SKO Value`=%f
+			"
+
+
+                , $sales_value, prepare_mysql($date), $this->part_sku, $warehouse_key, $this->location_key, $stock,
+
+                $value, $value_day_cost, $commercial_value, $storing_cost,
+
+                $sold, $in, $lost,
+
+                prepare_mysql($location_type),
+
+                $amount_in_po, $amount_in_other, $amount_out_sales, $amount_out_other, $cost_per_sko,
+
+
+                $warehouse_key, $stock, $value,
+
+                $sales_value, $commercial_value, $value_day_cost, $storing_cost,
+
+                $sold, $in, $lost,
+
+                prepare_mysql($location_type), $sales_value,  $amount_in_po, $amount_in_other, $amount_out_sales, $amount_out_other, $cost_per_sko
+
+
+            );
+            $this->db->exec($sql);
+
+            return array(
+                'stock'=>$stock,
+                'stock_value'=>$value,
+
+
+
+            );
+
+        }
+        else {
 
             $sql = sprintf(
                 "DELETE FROM `Inventory Spanshot Fact` WHERE `Part SKU`=%d AND `Location Key`=%d AND `Date`=%s", $this->part_sku, $this->location_key, prepare_mysql($date)
             );
             $this->db->exec($sql);
             //print "$sql\n";
+
+            return array(
+                'stock'=>0,
+                'stock_value'=>0,
+
+
+
+            );
+
         }
 
 
@@ -1670,164 +1817,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
     }
 
-    function update_stock_history_interval($from, $to) {
-        global $session;
 
-        $sql = sprintf(
-            "SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=%s AND `Date`<=%s ORDER BY `Date`", prepare_mysql($from), prepare_mysql($to)
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                if (strtotime($this->part->data['Part Valid From']) <= strtotime($row['Date'].' 23:59:59 -1 year')) {
-
-                    $sql = sprintf(
-                        "SELECT `Inventory Transaction key`   FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d AND `Location Key`=%d AND `Inventory Transaction Type`='Sale' AND `Date`>=%s AND `Date`<=%s  limit 1", $this->part->sku, $this->location->id,
-                        prepare_mysql(date("Y-m-d H:i:s", strtotime($row['Date'].' 23:59:59 -1 year'))), prepare_mysql($row['Date'].' 23:59:59')
-                    );
-
-                    $dormant_1year = 'Yes';
-                    if ($result3 = $this->db->query($sql)) {
-                        if ($row3 = $result3->fetch()) {
-                            $dormant_1year = 'No';
-                        }
-                    }
-
-
-                } else {
-                    $dormant_1year = 'NA';
-                }
-
-                if($row['Date']==gmdate('Y-m-d')){
-                    $cost_per_sko = $this->part->get('Part Cost in Warehouse');
-                }else{
-                    $cost_per_sko = $this->get_value_per_sko($row['Date'].' 23:59:59');
-                }
-
-
-
-                $stock = $this->get_stock($row['Date'].' 23:59:59');
-
-                $value = $stock * $cost_per_sko;
-
-                list($sold, $sales_value) = $this->get_sales($row['Date']);
-                $in   = $this->get_in($row['Date']);
-                $lost = $this->get_lost($row['Date']);
-
-                list($amount_in_po, $amount_in_other, $amount_out_sales, $amount_out_other) = $this->get_amount_deltas($row['Date']);
-
-
-                //print "$cost_per_sko $stock $value";
-                //exit;
-
-
-                //  Remoev   ohlc
-                //  list($open, $high, $low, $close, $value_open, $value_high, $value_low, $value_close) = $this->get_ohlc($row['Date']);
-
-
-                //=====================================
-
-                $storing_cost  = 0;
-                $location_type = "Unknown";
-                $warehouse_key = $session->get('current_warehouse');
-
-
-                //$commercial_value_unit_cost=$this->part->get_unit_commercial_value($row['Date'].' 23:59:59');
-
-                if ($this->part->get('Part Commercial Value') == '') {
-                    $commercial_value_unit_cost = $this->part->get('Part Unit Price');
-                } else {
-                    $commercial_value_unit_cost = $this->part->get('Part Commercial Value');
-                }
-
-                $value_day_cost_unit_cost = $this->part->get('Part Cost in Warehouse');
-
-                $value_day_cost   = $stock * $value_day_cost_unit_cost;
-                $commercial_value = $stock * $commercial_value_unit_cost;
-
-                /*
-
-                $value_day_cost_open   = $open * $value_day_cost_unit_cost;
-                $commercial_value_open = $open * $commercial_value_unit_cost;
-
-                $value_day_cost_high   = $high * $value_day_cost_unit_cost;
-                $commercial_value_high = $high * $commercial_value_unit_cost;
-
-                $value_day_cost_low   = $low * $value_day_cost_unit_cost;
-                $commercial_value_low = $low * $commercial_value_unit_cost;
-
-*/
-
-
-                //print $row['Date']." $stock v: $value $value_day_cost_value  $commercial_value \n";
-                //print $row['Date']." $stock v: $value $value_open  $value_low $value_clos \n";
-
-                $sql = sprintf(
-                    "INSERT INTO `Inventory Spanshot Fact` (
-			`Sold Amount`,
-			`Date`,
-			`Part SKU`,
-			`Warehouse Key`,`Location Key`,
-			`Quantity On Hand`,
-			`Value At Cost`,`Value At Day Cost`,`Value Commercial`,`Storing Cost`,
-			`Quantity Sold`,`Quantity In`,`Quantity Lost`,
-                   
-			`Location Type`,`Dormant 1 Year`,
-			`Inventory Spanshot Amount In PO`,
-			`Inventory Spanshot Amount In Other`,
-			`Inventory Spanshot Amount Out Sales`,
-			`Inventory Spanshot Amount Out Other`,`Inventory Spanshot Warehouse SKO Value`
-			) VALUES (
-			%.2f,%s,%d,%d,%d,%f,
-			%.2f ,%.2f,%.2f,%.2f ,
-			%f,
-			       
-			          %f,%f,
-			%s,%s,
-			%.2f,%.2f,%.2f,%.2f,%f
-			) ON DUPLICATE KEY UPDATE
-			`Warehouse Key`=%d,`Quantity On Hand`=%f,`Value At Cost`=%.2f,`Sold Amount`=%.2f,`Value Commercial`=%.2f,`Value At Day Cost`=%.2f, `Storing Cost`=%.2f,`Quantity Sold`=%f,`Quantity In`=%f,`Quantity Lost`=%f,
-			                      
-			                          `Location Type`=%s ,`Sold Amount`=%.2f ,`Dormant 1 Year`=%s,
-			`Inventory Spanshot Amount In PO`=%.2f,`Inventory Spanshot Amount In Other`=%.2f,`Inventory Spanshot Amount Out Sales`=%.2f,`Inventory Spanshot Amount Out Other`=%.2f,`Inventory Spanshot Warehouse SKO Value`=%f
-			"
-
-
-                    , $sales_value, prepare_mysql($row['Date']), $this->part_sku, $warehouse_key, $this->location_key, $stock,
-
-                    $value, $value_day_cost, $commercial_value, $storing_cost,
-
-                    $sold, $in, $lost,
-
-                    prepare_mysql($location_type), prepare_mysql($dormant_1year),
-
-                    $amount_in_po, $amount_in_other, $amount_out_sales, $amount_out_other, $cost_per_sko,
-
-
-                    $warehouse_key, $stock, $value,
-
-                    $sales_value, $commercial_value, $value_day_cost, $storing_cost,
-
-                    $sold, $in, $lost,
-
-                    prepare_mysql($location_type), $sales_value, prepare_mysql($dormant_1year), $amount_in_po, $amount_in_other, $amount_out_sales, $amount_out_other, $cost_per_sko
-
-
-                );
-                $this->db->exec($sql);
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
 
     function get_sales($date) {
 
@@ -1990,27 +1980,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
     }
 
-    function update_stock_history() {
 
-        $intervals = $this->get_history_intervals();
-        foreach ($intervals as $interval) {
-
-            $from = $interval['From'];
-            $to   = ($interval['To']
-                ? $interval['To']
-                : date(
-                    'Y-m-d', strtotime('now')
-                ));
-
-            $sql = sprintf(
-                "DELETE FROM `Inventory Spanshot Fact` WHERE `Part SKU`=%d AND `Location Key`=%d AND (`Date`<%s  OR `Date`>%s  )", $this->part_sku, $this->location_key, prepare_mysql($from), prepare_mysql($to)
-            );
-            $this->db->exec($sql);
-
-            $this->update_stock_history_interval($from, $to);
-        }
-
-    }
 
 
 }

@@ -19,19 +19,19 @@ $object_fields = get_object_fields(
                          'parent_object'       => $state['_parent'],
                          'new'                 => true,
                          'store_key'=>$state['_parent']->get('Store Key'),
-                         'scope'=>'customers'
                      )
 );
 $smarty->assign('state', $state);
 $smarty->assign('object', $state['_object']);
 
-$smarty->assign('object_name', 'Customers_List');
+$smarty->assign('object_name', 'Mailshot');
 $smarty->assign('object_fields', $object_fields);
 
+$smarty->assign('store_key', $state['_parent']->get('Store Key'));
 
 
-$smarty->assign('js_code', 'js/injections/customers_list.new.'.(_DEVEL ? '' : 'min.').'js');
+$smarty->assign('js_code', 'js/injections/mailshot.new.'.(_DEVEL ? '' : 'min.').'js');
 
 $html = $smarty->fetch('new_object.tpl');
 
-?>
+

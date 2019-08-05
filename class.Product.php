@@ -239,6 +239,8 @@ class Product extends Asset {
 
         if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();
+
+
             $this->get_data('id', $this->id);
 
             $sql = sprintf(
@@ -263,6 +265,9 @@ class Product extends Asset {
             );
 
             $this->new = true;
+
+
+            $this->fast_update(array('Property Properties' => '{}'));
 
 
             $this->update_historic_object();
@@ -665,7 +670,7 @@ class Product extends Asset {
 
                 foreach ($parts_data as $part_data) {
 
-                    $parts .= ', '.number($part_data['Ratio'],5).'x <span class="button " onClick="change_view(\'part/'.$part_data['Part']->id.'\')">'.$part_data['Part']->get('Reference').'</span>';
+                    $parts .= ', '.number($part_data['Ratio'], 5).'x <span class="button " onClick="change_view(\'part/'.$part_data['Part']->id.'\')">'.$part_data['Part']->get('Reference').'</span>';
 
 
                 }
@@ -958,16 +963,16 @@ class Product extends Asset {
 
 
                 $part_data = array(
-                    'Key'                   => $row['Product Part Key'],
-                    'Ratio'                 => $row['Product Part Ratio'],
-                    'Note'                  => $row['Product Part Note'],
-                    'Part SKU'              => $row['Product Part Part SKU'],
-                    'Part Reference'        => $row['Part Reference'],
-                    'Part Name' => $row['Part Recommended Product Unit Name'],
-                    'Part Units'            => $row['Part Units'],
-                    'Units'                 => floatval($row['Part Units']) * floatval($row['Product Part Ratio'])
+                    'Key'            => $row['Product Part Key'],
+                    'Ratio'          => $row['Product Part Ratio'],
+                    'Note'           => $row['Product Part Note'],
+                    'Part SKU'       => $row['Product Part Part SKU'],
+                    'Part Reference' => $row['Part Reference'],
+                    'Part Name'      => $row['Part Recommended Product Unit Name'],
+                    'Part Units'     => $row['Part Units'],
+                    'Units'          => floatval($row['Part Units']) * floatval($row['Product Part Ratio'])
 
-            );
+                );
 
 
                 if ($row['Product Part Linked Fields'] == '') {
@@ -3425,7 +3430,6 @@ class Product extends Asset {
         $this->fast_update(array('Product XHTML Parts' => $this->get('Parts')));
 
 
-
         $this->update_metadata = array(
             'class_html' => array(
                 'Package_Weight' => $this->get('Package Weight'),
@@ -3456,25 +3460,24 @@ class Product extends Asset {
         );
 
 
-      //  print $sql;
+        //  print $sql;
 
 
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
 
-        		  //  print_r($row);
+                //  print_r($row);
 
-                    if(is_numeric($row['Part Package Weight']) and $row['Part Package Weight']>0 ){
-                        $weight += $row['Part Package Weight']*$row['Product Part Ratio'];
+                if (is_numeric($row['Part Package Weight']) and $row['Part Package Weight'] > 0) {
+                    $weight += $row['Part Package Weight'] * $row['Product Part Ratio'];
 
-                    }
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+                }
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
 
 
         $this->fast_update(
@@ -3941,38 +3944,23 @@ class Product extends Asset {
 
     }
 
-    function update_sales_correlations($type = 'All', $limit = '100') {
+    function update_sales_correlations($type = 'All', $limit = '5') {
 
-        $max_correlations = 50;
+        $store = get_object('Store', $this->get('Store Key'));
 
-        $sql = sprintf("select count(distinct `Customer Key`) as num from  `Order Transaction Fact` where `Product ID`=%d and `Order Transaction Type`='Order' ", $this->id);
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-
-                if ($row['num'] < 5) {
-                    return;
-                }
-                $a_samples = $row['num'];
-                $a_length  = sqrt($a_samples);
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
+        $max_correlations = 100;
 
 
         switch ($type) {
             case 'Same Family':
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Status` in ('Active','Discontinuing') and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Category Key`=%d order by `Product Total Acc Customers` desc  ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P  where `Product Store Key`=%d and `Product Ignore Correlation`='No'  and `Product Family Category Key`=%d  ",
                     $this->data['Product Store Key'], $this->data['Product Family Category Key']
                 );
                 break;
             case 'Exclude Same Family':
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Status` in ('Active','Discontinuing') and `Product Web State`  in ('For Sale','Out of Stock') and `Product Family Category Key`!=%d order by `Product Total Acc Customers` desc  ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P   where `Product Store Key`=%d and `Product Ignore Correlation`='No'  and `Product Family Category Key`!=%d   ",
                     $this->data['Product Store Key'], $this->data['Product Family Category Key']
                 );
 
@@ -3981,7 +3969,31 @@ class Product extends Asset {
             case 'Same Department':
 
                 $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Status` in ('Active','Discontinuing') and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P  where `Product Store Key`=%d and `Product Ignore Correlation`='No'     limit %s ",
+                    $this->data['Product Store Key'], $limit
+                );
+
+
+                break;
+            case 'Random':
+
+                $sql = sprintf(
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P   where `Product Store Key`=%d and `Product Ignore Correlation`='No'    order by RAND()  limit %s ",
+                    $this->data['Product Store Key'], $limit
+                );
+                break;
+            case 'New':
+
+                $sql = sprintf(
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P   where `Product Store Key`=%d and `Product Ignore Correlation`='No'   order by `Product ID` desc  limit %s ",
+                    $this->data['Product Store Key'], $limit
+                );
+
+                break;
+            case 'Best Sellers':
+
+                $sql = sprintf(
+                    "select P.`Product ID`,P.`Product Code`  from `Product Dimension` P left join `Product DC Data` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Ignore Correlation`='No'  order by `Product DC Total Acc Invoiced Amount` desc   limit %s ",
                     $this->data['Product Store Key'], $limit
                 );
 
@@ -3989,162 +4001,405 @@ class Product extends Asset {
                 break;
             default:
 
-                $sql = sprintf(
-                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P left join `Product Data Dimension` D on (P.`Product ID`=D.`Product ID`)  where `Product Store Key`=%d and `Product Status` in ('Active','Discontinuing') and `Product Web State`  in ('For Sale','Out of Stock') and `Product 1 Year Acc Customers`>0  order by `Product 1 Year Acc Customers` desc  limit %s ",
-                    $this->data['Product Store Key'], $limit
-                );
-
-
-        }
-
-
-        print "$sql\n";
-
-        if ($result2 = $this->db->query($sql)) {
-            foreach ($result2 as $row2) {
-                if ($row2['Product ID'] == $this->id) {
-                    continue;
-                }
-
-
-                $sql = sprintf("select count(distinct `Customer Key`) as num from  `Order Transaction Fact` where `Product ID`=%d and `Order Transaction Type`='Order' ", $row2['Product ID']);
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        if ($row['num'] < 5) {
-                            continue;
-                        }
-
-                        $b_samples = $row['num'];
-                        $b_length  = sqrt($b_samples);
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-                $dot_product = 0;
-                $sql         = sprintf(
-                    "select `Customer Key` from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`", $this->id
-                );
+                $_families = array($this->get('Product Family Category Key'));
+                $sql       = sprintf('select `Category B Key` from `Product Category Sales Correlation` where `Category B Key`=%d  and `Correlation`>0 order by `Correlation` desc limit %s ', $this->get('Product Family Category Key'), $limit);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
-                        $sql = sprintf(
-                            "select count(`Order Transaction Fact Key`) as num from `Order Transaction Fact` OTF2 where OTF2.`Order Transaction Type`='Order' and OTF2.`Product ID`=%d and OTF2.`Customer Key`=%d", $row2['Product ID'], $row['Customer Key']
-                        );
-
-
-                        if ($result = $this->db->query($sql)) {
-                            if ($row = $result->fetch()) {
-                                $dot_product = $row['num'];
-                            }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
-                        }
-
-
+                        $_families[] = $row['Category B Key'];
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
-
-                if ($dot_product) {
-
-
-                    $normalization_factor = $a_length * $b_length;
-                    $correlation          = $dot_product / $normalization_factor;
-                    $normalization_factor = ceil($normalization_factor);
-                    //print $row2['Product ID'].' '.$row2['Product Code'].' '.$correlation." $normalization_factor   \n";
-
-                    $sql = sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ", $this->id);
-
-                    if ($result4 = $this->db->query($sql)) {
-                        if ($row4 = $result4->fetch()) {
+                $families = join(',', $_families);
+                $sql      = sprintf(
+                    "select P.`Product ID`,P.`Product Code` from `Product Dimension` P  where  `Product Ignore Correlation`='No' and `Product Family Category Key` in (%s) ", $families
+                );
 
 
-                            if ($row4['num'] < $max_correlations) {
-                                $sql = sprintf(
-                                    "insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ", $this->id, $row2['Product ID'], $correlation,
-                                    $normalization_factor, $correlation, $normalization_factor
-                                );
-
-
-                                $this->db->exec($sql);
-                            } else {
-                                if ($row4['corr'] < $correlation) {
-                                    $sql = sprintf("delete from `Product Sales Correlation` where `Product A ID`=%d  order by `Correlation` limit 1  ", $this->id);
-                                    $this->db->exec($sql);
-                                    $sql = sprintf(
-                                        "insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ", $this->id, $row2['Product ID'], $correlation,
-                                        $normalization_factor, $correlation, $normalization_factor
-                                    );
-                                    $this->db->exec($sql);
-                                }
-
-                            }
-
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
-
-
-                    $sql = sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ", $row2['Product ID']);
-
-                    if ($result4 = $this->db->query($sql)) {
-                        if ($row4 = $result4->fetch()) {
-                            if ($row4['num'] < $max_correlations) {
-                                $sql = sprintf(
-                                    "insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
-
-                                    $row2['Product ID'], $this->id, $correlation, $normalization_factor, $correlation, $normalization_factor
-                                );
-
-
-                                $this->db->exec($sql);
-                            } else {
-                                if ($row4['corr'] < $correlation) {
-                                    $sql = sprintf("delete from `Product Sales Correlation` where `Product A ID`=%d  order by `Correlation` limit 1  ", $row2['Product ID']);
-                                    $this->db->exec($sql);
-                                    $sql = sprintf(
-                                        "insert into  `Product Sales Correlation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ",
-
-                                        $row2['Product ID'], $this->id, $correlation, $normalization_factor, $correlation, $normalization_factor
-                                    );
-                                    $this->db->exec($sql);
-                                }
-
-                            }
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
-
-
-                }
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
+
+        
+        if ($result2 = $this->db->query($sql)) {
+
+            foreach ($result2 as $row2) {
+
+
+                if ($row2['Product ID'] != $this->id) {
+
+
+                    $customers_A  = 0;
+                    $customers_AB = 0;
+                    $customers_B  = 0;
+
+                    $all_A=0;
+                    $all_B=0;
+
+                    $sql = sprintf(
+                        "select count(distinct `Customer Key`) as num  from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order' ", $this->id
+                    );
+                    if ($result = $this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $all_A=$row['num'] ;
+
+                        }
+                    }
+
+                    $sql = sprintf(
+                        "select count(distinct `Customer Key`) as num  from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order' ", $row2['Product ID']
+                    );
+                    if ($result = $this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $all_B=$row['num'] ;
+                        }
+                    }
+
+
+                    if($all_A<$all_B){
+                        $sql = sprintf(
+                            "select `Customer Key` from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`", $this->id
+                        );
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+                                $sql = sprintf(
+                                    "select `Order Transaction Fact Key` as num from `Order Transaction Fact` OTF where OTF.`Order Transaction Type`='Order'  and OTF.`Product ID`=%d and OTF.`Customer Key`=%d limit 1", $row2['Product ID'], $row['Customer Key']
+                                );
+                                $found = false;
+                                if ($result = $this->db->query($sql)) {
+                                    if ($row = $result->fetch()) {
+                                        $found = true;
+                                    }
+                                }
+                                if ($found) {
+                                    $customers_AB++;
+                                } else {
+                                    $customers_A++;
+                                }
+                            }
+                        }
+
+                        $customers_B = $all_B - $customers_AB;
+
+                    }else{
+                        $sql = sprintf(
+                            "select `Customer Key` from `Order Transaction Fact` OTF  where `Product ID`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`", $row2['Product ID']
+                        );
+                        if ($result = $this->db->query($sql)) {
+                            foreach ($result as $row) {
+                                $sql = sprintf(
+                                    "select `Order Transaction Fact Key` as num from `Order Transaction Fact` OTF where OTF.`Order Transaction Type`='Order'  and OTF.`Product ID`=%d and OTF.`Customer Key`=%d limit 1", $this->id, $row['Customer Key']
+                                );
+                                $found = false;
+                                if ($result = $this->db->query($sql)) {
+                                    if ($row = $result->fetch()) {
+                                        $found = true;
+                                    }
+                                }
+                                if ($found) {
+                                    $customers_AB++;
+                                } else {
+                                    $customers_B++;
+                                }
+                            }
+                        }
+
+                        $customers_A = $all_A - $customers_AB;
+                    }
+
+                    $samples = min($all_A, $all_B);
+
+                    if (($customers_AB + $customers_A + $customers_B) > 0) {
+
+                        $customers_zero = $store->properties('customers_with_transactions') - $customers_AB - $customers_A - $customers_B;
+
+
+                        $tmp  = ($customers_AB * $customers_zero) - ($customers_A * $customers_B);
+                        $tmp2 = sqrt(($customers_AB + $customers_A) * ($customers_B + $customers_zero) * ($customers_AB + $customers_B) * ($customers_A + $customers_zero));
+
+                        if ($tmp == 0 or $tmp2 == 0) {
+                            $person_correlation = 0;
+                        } else {
+                            $person_correlation = $tmp / $tmp2;
+                        }
+
+
+                      //  print $this->get('Code').' '.$row2['Product Code']." $customers_A ($all_A)  $customers_B  ($all_B) |  $customers_AB $customers_zero  $person_correlation  \n ";
+
+                      //  exit;
+                        if ($person_correlation > 0) {
+
+                            $sql = sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ", $this->id);
+
+                            if ($result4 = $this->db->query($sql)) {
+                                if ($row4 = $result4->fetch()) {
+
+
+                                    if ($row4['num'] < $max_correlations) {
+
+
+                                        $sql = sprintf(
+                                            "insert into `Product Sales Correlation`  ( `Product Sales Correlation Store Key`,`Product A ID`,`Product B ID`,`Correlation`,`Samples`,`Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Sales Correlation Last Updated`) 
+                            values (%d,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Sales Correlation Last Updated`=%s",
+                                            $this->get('Store Key'),
+
+                                            $this->id, $row2['Product ID'],
+                                            $person_correlation, $samples, $customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                                            $person_correlation, $samples,$customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s'))
+                                        );
+
+
+
+
+                                        $this->db->exec($sql);
+
+
+
+
+
+                                    } else {
+                                        if ($row4['corr'] < $person_correlation) {
+                                            $sql = sprintf("delete from `Product Sales Correlation` where `Product A ID`=%d  order by `Correlation` limit 1  ", $this->id);
+                                            $this->db->exec($sql);
+                                            $sql = sprintf(
+                                                "insert into `Product Sales Correlation` 
+                        ( `Product Sales Correlation Store Key`,`Product A ID`,`Product B ID`,`Correlation`,`Samples`,
+                        `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Sales Correlation Last Updated`
+                        ) 
+                            values (%d,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Sales Correlation Last Updated`=%s",
+                                                $this->get('Store Key'),
+
+                                                $this->id, $row2['Product ID'],
+                                                $person_correlation, $samples, $customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                                                $person_correlation, $samples,$customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s'))
+                                            );
+
+
+                                            $this->db->exec($sql);
+                                        }
+
+                                    }
+
+                                }
+                            }
+
+
+                            $sql = sprintf("select min(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ", $row2['Product ID']);
+
+                            if ($result4 = $this->db->query($sql)) {
+                                if ($row4 = $result4->fetch()) {
+                                    if ($row4['num'] < $max_correlations) {
+
+
+                                        $sql = sprintf(
+                                            "insert into `Product Sales Correlation` 
+                        ( `Product Sales Correlation Store Key`,`Product A ID`,`Product B ID`,`Correlation`,`Samples`,
+                        `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Sales Correlation Last Updated`
+                        ) 
+                            values (%d,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Sales Correlation Last Updated`=%s",
+                                            $this->get('Store Key'),
+
+                                            $row2['Product ID'],$this->id,
+                                            $person_correlation, $samples, $customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                                            $person_correlation, $samples,$customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s'))
+                                        );
+
+
+                                        $this->db->exec($sql);
+
+
+
+                                    } else {
+                                        if ($row4['corr'] < $person_correlation) {
+                                            $sql = sprintf("delete from `Product Sales Correlation` where `Product A ID`=%d  order by `Correlation` limit 1  ", $row2['Product ID']);
+                                            $this->db->exec($sql);
+
+                                            $sql = sprintf(
+                                                "insert into `Product Sales Correlation` 
+                        ( `Product Sales Correlation Store Key`,`Product A ID`,`Product B ID`,`Correlation`,`Samples`,
+                        `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Sales Correlation Last Updated`
+                        ) 
+                            values (%d,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Sales Correlation Last Updated`=%s",
+                                                $this->get('Store Key'),
+
+                                                $row2['Product ID'],$this->id,
+                                                $person_correlation, $samples, $customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                                                $person_correlation, $samples,$customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s'))
+                                            );
+
+                                            $this->db->exec($sql);
+                                        }
+
+                                    }
+                                }
+                            }
+
+                            $sql=sprintf('delete from `Product Sales Anticorrelation` where `Product A ID`=%d and `Product B ID`=%d ',$this->id,$row2['Product ID']);
+                            $this->db->exec($sql);
+                            $sql=sprintf('delete from `Product Sales Anticorrelation` where `Product A ID`=%d and `Product B ID`=%d ',$row2['Product ID'],$this->id);
+                            $this->db->exec($sql);
+
+                        }elseif($person_correlation < 0){
+
+                            $sql = sprintf("select max(`Correlation`) as corr ,count(*) as num from `Product Sales Anticorrelation` where `Product A ID`=%d    ", $this->id);
+
+                            if ($result4 = $this->db->query($sql)) {
+                                if ($row4 = $result4->fetch()) {
+
+
+                                    if ($row4['num'] < $max_correlations) {
+                                        /*
+                                        $sql = sprintf(
+                                            "insert into  `Product Sales Anticorrelation` (`Product A ID`,`Product B ID`,`Correlation`,`Samples`) values (%d,%d,%f,%d) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d ", $this->id, $row2['Product ID'],
+                                            $person_correlation, $samples, $person_correlation, $samples
+                                        );
+                                        */
+                                        $sql = sprintf(
+                                            "insert into `Product Sales Anticorrelation` 
+                        ( `Product Sales Anticorrelation Store Key`,`Product A ID`,`Product B ID`,`Correlation`,`Samples`,
+                        `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Sales Anticorrelation Last Updated`
+                        ) 
+                            values (%d,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Sales Anticorrelation Last Updated`=%s",
+                                            $this->get('Store Key'),
+
+                                            $this->id, $row2['Product ID'],
+                                            $person_correlation, $samples, $customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                                            $person_correlation, $samples,$customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s'))
+                                        );
+
+
+                                        $this->db->exec($sql);
+                                    } else {
+                                        if ($row4['corr'] > $person_correlation) {
+                                            $sql = sprintf("delete from `Product Sales Anticorrelation` where `Product A ID`=%d  order by `Correlation` desc limit 1  ", $this->id);
+                                            $this->db->exec($sql);
+
+                                            $sql = sprintf(
+                                                "insert into `Product Sales Anticorrelation` 
+                        ( `Product Sales Anticorrelation Store Key`,`Product A ID`,`Product B ID`,`Correlation`,`Samples`,
+                        `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Sales Anticorrelation Last Updated`
+                        ) 
+                            values (%d,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Sales Anticorrelation Last Updated`=%s",
+                                                $this->get('Store Key'),
+
+                                                $this->id, $row2['Product ID'],
+                                                $person_correlation, $samples, $customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                                                $person_correlation, $samples,$customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s'))
+                                            );
+
+
+                                            $this->db->exec($sql);
+
+
+                                        }
+
+                                    }
+
+                                }
+                            }
+
+
+                            $sql = sprintf("select max(`Correlation`) as corr ,count(*) as num from `Product Sales Correlation` where `Product A ID`=%d    ", $row2['Product ID']);
+
+                            if ($result4 = $this->db->query($sql)) {
+                                if ($row4 = $result4->fetch()) {
+                                    if ($row4['num'] < $max_correlations) {
+                                        $sql = sprintf(
+                                            "insert into `Product Sales Anticorrelation` 
+                        ( `Product Sales Anticorrelation Store Key`,`Product A ID`,`Product B ID`,`Correlation`,`Samples`,
+                        `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Sales Anticorrelation Last Updated`
+                        ) 
+                            values (%d,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Sales Anticorrelation Last Updated`=%s",
+                                            $this->get('Store Key'),
+
+                                            $row2['Product ID'],$this->id,
+                                            $person_correlation, $samples, $customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                                            $person_correlation, $samples,$customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s'))
+                                        );
+
+
+                                        $this->db->exec($sql);
+
+
+                                    } else {
+                                        if ($row4['corr'] > $person_correlation) {
+                                            $sql = sprintf("delete from `Product Sales Anticorrelation` where `Product A ID`=%d  order by `Correlation` desc limit 1  ", $row2['Product ID']);
+                                            $this->db->exec($sql);
+
+                                            $sql = sprintf(
+                                                "insert into `Product Sales Anticorrelation` 
+                        ( `Product Sales Anticorrelation Store Key`,`Product A ID`,`Product B ID`,`Correlation`,`Samples`,
+                        `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Sales Anticorrelation Last Updated`
+                        ) 
+                            values (%d,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Sales Anticorrelation Last Updated`=%s",
+                                                $this->get('Store Key'),
+
+                                                $row2['Product ID'],$this->id,
+                                                $person_correlation, $samples, $customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s')),
+                                                $person_correlation, $samples,$customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s'))
+                                            );
+
+
+                                            $this->db->exec($sql);
+
+                                        }
+
+                                    }
+                                }
+                            }
+
+                            $sql=sprintf('delete from `Product Sales Correlation` where `Product A ID`=%d and `Product B ID`=%d ',$this->id,$row2['Product ID']);
+                            $this->db->exec($sql);
+                            $sql=sprintf('delete from `Product Sales Correlation` where `Product A ID`=%d and `Product B ID`=%d ',$row2['Product ID'],$this->id);
+                            $this->db->exec($sql);
+
+                        }else{
+                            $sql=sprintf('delete from `Product Sales Correlation` where `Product A ID`=%d and `Product B ID`=%d ',$this->id,$row2['Product ID']);
+                            $this->db->exec($sql);
+                            $sql=sprintf('delete from `Product Sales Correlation` where `Product A ID`=%d and `Product B ID`=%d ',$row2['Product ID'],$this->id);
+                            $this->db->exec($sql);
+                            $sql=sprintf('delete from `Product Sales Anticorrelation` where `Product A ID`=%d and `Product B ID`=%d ',$this->id,$row2['Product ID']);
+                            $this->db->exec($sql);
+                            $sql=sprintf('delete from `Product Sales Anticorrelation` where `Product A ID`=%d and `Product B ID`=%d ',$row2['Product ID'],$this->id);
+                            $this->db->exec($sql);
+
+                        }
+
+
+                    }
+                }
+            }
+
+
+        }
+    }
+
+
+    function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
+    }
+
+    function update_product_category_targeted_marketing_customers() {
+        include_once 'utils/asset_marketing_customers.php';
+
+        $store              = get_object('Store', $this->get('Store Key'));
+        $targeted_threshold = min($store->properties('email_marketing_customers') * .05, 500);
+
+
+        $estimated_recipients = count(get_targeted_product_customers(array(), $this->db, $this->id, $targeted_threshold));
+        $this->fast_update_json_field('Product Properties', 'targeted_marketing_customers', $estimated_recipients);
 
 
     }
 
+    function update_product_category_spread_marketing_customers() {
+        include_once 'utils/asset_marketing_customers.php';
+
+        $store                = get_object('Store', $this->get('Store Key'));
+        $targeted_threshold   = 4 * min($store->properties('email_marketing_customers') * .05, 500);
+        $estimated_recipients = count(get_targeted_product_customers(array(), $this->db, $this->id, $targeted_threshold));
+        $this->fast_update_json_field('Product Properties', 'spread_marketing_customers', $estimated_recipients);
+
+    }
 
 }
 
 
-?>
+

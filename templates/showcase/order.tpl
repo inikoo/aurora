@@ -70,7 +70,7 @@
 
         <li id="dispatched_node" class="li  {if $order->get('State Index')>=100}complete{/if}">
             <div class="label">
-                <span class="state">{t}Dispatched{/t}</span>
+                <span class="state">{if $order->get('Order For Collection')=='Yes' }{t}Collected{/t}{else}{t}Dispatched{/t}{/if} </span>
             </div>
             <div class="timestamp">
                 <span>&nbsp;<span class="Order_Dispatched_Date"> {$order->get('Dispatched Date')}</span>
@@ -171,7 +171,7 @@
     </ul>
 </div>
 
-<div id="order" class="order" style="display: flex;" data-object='{$object_data}' order_key="{$order->id}"  data-state_index="{$order->get('State Index')}" >
+<div id="order" class="order" style="display: flex;" data-object='{$object_data}' order_key="{$order->id}"  data-customer_key="{$order->get('Order Customer Key')}"  data-state_index="{$order->get('State Index')}" >
     <div class="block" style=" align-items: stretch;flex: 1">
         <div class="data_container" style="padding:5px 10px">
             <div class="data_field  " style="margin-bottom:10px">
@@ -221,12 +221,14 @@
             <div class="data_field  " style="padding:10px 0px 20px 0px;">
                 <div style="float:left;padding-bottom:20px;padding-right:20px" class="Delivery_Address">
                     <div style="margin-bottom:10px">
-                        <span class="{if $order->get('Order For Collection')=='Yes'}hide{/if}"><i class="   fa fa-truck fa-flip-horizontal button" aria-hidden="true""></i>{t}Deliver to{/t}</span>
-                        <span class="{if $order->get('Order For Collection')=='No'}hide{/if}"><i class="   far fa-hand-rock fa-flip-horizontal button" aria-hidden="true""></i>{t}Collection{/t}</span>
+                        <span class="deliver_to_label {if $order->get('Order For Collection')=='Yes'}hide{/if}"><i class="   fa fa-truck fa-flip-horizontal button" aria-hidden="true""></i>{t}Deliver to{/t}</span>
+                        <span class="for_collection_label {if $order->get('Order For Collection')=='No'}hide{/if}"><i class="   far fa-hand-holding-box  button" aria-hidden="true""></i>{t}Collection{/t}</span>
 
                     </div>
 
-                    <div class="small Order_Delivery_Address " style="max-width: 140px;">{$order->get('Order Delivery Address Formatted')}</div>
+                    <div class="small Order_Delivery_Address {if $order->get('Order For Collection')=='Yes'}hide{/if} "   style="max-width: 140px;">
+                        {$order->get('Order Delivery Address Formatted')}
+                    </div>
                 </div>
                 <div style="float:right;padding-bottom:20px;" class="Billing_Address">
                     <div style="margin-bottom:10px"><i class="fa fa-dollar-sign button" aria-hidden="true""></i>{t}Billed to{/t}</div>
@@ -880,8 +882,8 @@
                 <td class="label">{t}Paid{/t}</td>
                 <td class="aright Payments_Amount">{$order->get('Payments Amount')}</td>
             </tr>
-            <tr class="total  Order_To_Pay_Amount {if $order->get('Order To Pay Amount')==0    }hide{/if} button"  absolute_amount="{$order->get('Order To Pay Amount Absolute')}" amount="{$order->get('Order To Pay Amount')}" onclick="try_to_pay(this)">
-                <td class="label">{if $order->get('Order To Pay Amount')>0}{t}To pay{/t}{else}To credit / refund{/if}</td>
+            <tr class="total strong  Order_To_Pay_Amount {if $order->get('Order To Pay Amount')==0    }hide{/if} button"  absolute_amount="{$order->get('Order To Pay Amount Absolute')}" amount="{$order->get('Order To Pay Amount')}" onclick="try_to_pay(this)">
+                <td class="label ">{if $order->get('Order To Pay Amount')>0}{t}To pay{/t}{else}To credit / refund{/if}</td>
                 <td class="aright To_Pay_Amount_Absolute   ">{$order->get('To Pay Amount Absolute')}</td>
             </tr>
             <tr class="total success  Order_Paid {if $order->get('Order To Pay Amount')!=0   or $order->get('Order Total Amount')==0  }hide{/if}">
@@ -924,12 +926,24 @@
             </tr>
             <tr>
                 <td class="label" id="Shipping_Net_Amount_label">{t}Shipping{/t}</td>
-                <td class="aright "><span id="Shipping_Net_Amount_form" class="hide"><i id="set_shipping_as_auto" class="fa fa-magic button" onClick="set_shipping_as_auto()" aria-hidden="true"></i>  <input
+
+
+
+
+                <td class="aright ">
+
+                    <span class="{if $order->get('Order Shipping Discount Amount')==0}hide{/if} Shipping_Gross_Amount strikethrough">{$order->get('Shipping Gross Amount')}</span>
+
+                    <span id="Shipping_Net_Amount_form" class="hide"><i id="set_shipping_as_auto" class="fa fa-magic button" onClick="set_shipping_as_auto()" aria-hidden="true"></i>  <input
                                 value="{$order->get('Order Shipping Net Amount')}" ovalue="{$order->get('Order Shipping Net Amount')}" style="width: 100px" id="Shipping_Net_Amount_input"><i id="Shipping_Net_Amount_save"
                                                                                                                                                                                                class="fa fa-cloud save"
                                                                                                                                                                                                onClick="save_shipping_value()"
                                                                                                                                                                                                aria-hidden="true"></i> </span><span
-                            id="Shipping_Net_Amount" class="Shipping_Net_Amount {if $order->get('State Index')<90 and $order->get('State Index')>0}button{/if}">{$order->get('Shipping Net Amount')}<span></td>
+                            id="Shipping_Net_Amount" class="Shipping_Net_Amount {if $order->get('State Index')<90 and $order->get('State Index')>0}button{/if}">
+                        {$order->get('Shipping Net Amount')}
+
+
+                        <span></td>
             </tr>
             <tr class="Deal_Amount_Off_tr  {if $order->get('Order Deal Amount Off')==0}hide{/if}">
                 <td class="label">{t}Amount off{/t}</td>
@@ -1082,6 +1096,20 @@
     </div>
 </div>
 
+<div id="clone_order_dialog" class="hide" style="z-index: 2000;background-color: #fff; position:absolute;width: 300px;padding:  20px;border:1px solid #ccc">
+
+    <i style="position: absolute;top:5px;left:5px" class="fa fa-window-close button" onClick="close_clone_order()"></i>
+
+    <table style="width: 100%;">
+        <tr>
+            <td class="clone_order_msg"></td>
+        </tr>
+        <tr>
+            <td onClick="clone_order(this)" class="save valid changed">{t}Clone order{/t} <i class="fa fa-clone"></i> </td>
+        </tr>
+    </table>
+
+</div>
 
 <script>
 
@@ -1193,10 +1221,10 @@
                     }
 
                     if (data.metadata.to_pay <= 0) {
-  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
-} else {
-  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
-}
+                        $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+                    } else {
+                        $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+                    }
 
 
                     if (data.metadata.to_pay == 0) {
@@ -1676,5 +1704,106 @@
      console.log('to do')
 
     }
+
+    $(".clone_order_open_button").on( 'click',function () {
+        open_clone_order()
+    })
+
+
+    function close_clone_order(){
+        $('#clone_order_dialog').addClass('hide')
+    }
+
+    function open_clone_order() {
+
+
+        if (!$('.clone_order_open_button i').hasClass('fa-clone')) {
+            return;
+        }
+
+        $('.clone_order_open_button i').removeClass('fa-clone').addClass('fa-spinner fa-spin')
+
+
+        var request = '/ar_find.php?tipo=orders_in_process&customer_key=' + $('#order').data('customer_key')
+
+        $.getJSON(request, function (data) {
+
+            $('.clone_order_open_button i').addClass('fa-clone').removeClass('fa-spinner fa-spin')
+
+
+            $('#clone_order_dialog').find('.clone_order_msg').html(data.clone_msg)
+
+            if (data.orders_in_process > 1) {
+                $('#clone_order_dialog').find('.save').removeClass('valid').addClass('invalid')
+            }
+
+
+            $('#clone_order_dialog').removeClass('hide').offset({
+                top:  $('.clone_order_open_button').offset().top  + $('.clone_order_open_button').height(), left: $('.clone_order_open_button').offset().left-$('#clone_order_dialog').width()
+            })
+
+
+        })
+
+    }
+
+    function clone_order(element){
+
+        if($(element).hasClass('invalid')){
+            return ;
+        }
+
+        var icon=$(element).find('i')
+
+        if(icon.hasClass('wait')){
+            return ;
+        }
+
+        icon.addClass('wait fa-spinner fa-spin').removeClass('fa-clone')
+
+
+
+        var request = '/ar_edit_orders.php?tipo=clone_order&order_key='+ $('#order').attr('order_key')
+        console.log(request)
+        var form_data = new FormData();
+        form_data.append("tipo", 'clone_order')
+        form_data.append("order_key", $('#order').attr('order_key'))
+
+        var request = $.ajax({
+            url: "/ar_edit_orders.php",
+            data: form_data,
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            dataType: 'json'
+        })
+
+        request.done(function (data) {
+
+            if (data.state == 200) {
+               change_view(data.redirect)
+
+            }
+            else if (data.state == 400) {
+                alert(data.msg)
+
+
+            }
+        })
+
+        request.fail(function (jqXHR, textStatus) {
+            console.log(textStatus)
+
+            console.log(jqXHR.responseText)
+
+
+        });
+
+
+
+
+
+    }
+
 
 </script>

@@ -104,14 +104,20 @@ function get_production_alerts($supplier, $db, $account, $user, $smarty) {
         $supplier->get('Supplier Max Percentage Part Locations To Replenish')
 
     );
+
     if ($data['ok']) {
+
 
 
         $smarty->assign('data', $data);
         $html .= $smarty->fetch('dashboard/supplier.location_parts_to_replenish.dbard.tpl');
     }
 
+//L67D63zNu3bns5R5
+    //MNdv1paS6IZJ6b6f  <- inikoo
 
+    // pZv4DTV506Tr2ofS
+    //uwHg99f5IdEjRHTp FB
 
 
     return $html;
@@ -130,30 +136,46 @@ function get_widget_data($value, $total, $min, $max) {
         'min'       => '',
         'max'       => ''
     );
+    $data['ok']    = true;
+
+
 
     if ($total == 0) {
-        return $data;
-    }
-    $data['ok']    = true;
-    $data['value'] = $value;
-    $data['total'] = $total;
-    $percentage    = $value / $total;
 
-    if ($percentage < $min) {
+        $data['total'] = 1;
+        $data['value'] = 0;
         $data['color_min'] = '#84c535';
         $data['color_max'] = '#f7da40';
         $data['min']       = 0;
-        $data['max']       = $min;
+        $data['max']       = 1;
 
-    } else {
-        $data['color_min'] = '#f7da40';
-        $data['color_max'] = '#E0115F';
-        $data['min']       = $min;
-        $data['max']       = $max;
+        return $data;
+
+    }else{
+        $data['value'] = $value;
+        $data['total'] = $total;
+
+        $percentage    = $value / $total;
+        if ($percentage < $min) {
+            $data['color_min'] = '#84c535';
+            $data['color_max'] = '#f7da40';
+            $data['min']       = 0;
+            $data['max']       = $min;
+
+        } else {
+            $data['color_min'] = '#f7da40';
+            $data['color_max'] = '#E0115F';
+            $data['min']       = $min;
+            $data['max']       = $max;
+        }
+
+        return $data;
+
     }
 
-    return $data;
+
+
 }
 
 
-?>
+

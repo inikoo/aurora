@@ -15,7 +15,7 @@ include_once 'class.DB_Table.php';
 class Barcode extends DB_Table {
 
 
-    function Barcode($a1, $a2 = false, $a3 = false) {
+    function __construct($a1, $a2 = false, $a3 = false) {
 
         global $db;
         $this->db = $db;

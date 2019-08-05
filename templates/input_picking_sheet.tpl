@@ -126,14 +126,15 @@
         </td>
 
 
-        <td class="label" rowspan="2" style="padding: 0px 20px">
+        <td class="label {if $order->get('Order For Collection')=='Yes'}hide{/if}" rowspan="2" style="padding: 0px 20px">
+
 
             <div >
-                <input id="set_shipper" data-field="Delivery Note Shipper Key"  type="hidden" class="selected_shipper input_field" value="{if $store->settings('data_entry_picking_aid_default_shipper')>0}{$store->settings('data_entry_picking_aid_default_shipper')}{else}__none__{/if}">
+                <input id="set_shipper" data-field="Delivery Note Shipper Key"  type="hidden" class="selected_shipper input_field" value="{if $order->get('Order For Collection')=='No'}{if $store->settings('data_entry_picking_aid_default_shipper')>0}{$store->settings('data_entry_picking_aid_default_shipper')}{else}__none__{/if}{/if}">
                  <select class="shippers_options small" style="width: 200px">
-                    <option data-display="{t}Select courier{/t}" value="">{t}No courier{/t}</option>
+                    <option data-display="{t}Select courier{/t}"   {if $order->get('Order For Collection')=='Yes'}selected="selected"{/if}  value="">{t}No courier{/t}</option>
                     {foreach from=$shippers item=shipper}
-                        <option value="{$shipper.key}" {if $store->settings('data_entry_picking_aid_default_shipper')==$shipper.key}selected="selected"{/if} >{$shipper.code}</option>
+                        <option value="{$shipper.key}" {if $store->settings('data_entry_picking_aid_default_shipper')==$shipper.key  and $order->get('Order For Collection')=='No'  }selected="selected"{/if} >{$shipper.code}</option>
                     {/foreach}
 
 
@@ -143,6 +144,7 @@
             <div style="clear: both;padding-top: 10px">
             <input id="set_tracking_number" data-field="Delivery Note Shipper Tracking" class="tracking_number input_field field_to_check" placeholder="{t}Tracking number{/t}">
             </div>
+
         </td>
 
         <td class="label" rowspan="2" style="padding: 0px 20px">

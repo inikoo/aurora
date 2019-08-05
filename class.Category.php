@@ -298,6 +298,7 @@ class Category extends DB_Table {
 
 
 
+
         //todo  Move stuff from class.Node.php to here
         $nodes = new Nodes('`Category Dimension`');
         $nodes->add_new($data['Category Parent Key'], $data);
@@ -308,7 +309,6 @@ class Category extends DB_Table {
         if ($node_id) {
 
             $this->get_data('id', $node_id);
-            //print_r($this->data);
 
 
             /*
@@ -423,6 +423,7 @@ class Category extends DB_Table {
 
             }
 
+            $this->fast_update(array('Category Properties'=>'{}'));
 
             $history_data = array(
                 'Action'           => 'created',
@@ -442,6 +443,7 @@ class Category extends DB_Table {
 
 
         }
+
 
     }
 
@@ -2399,6 +2401,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                 case 'Product Category Department Category Key':
 
+                    $hide=array();
+                    $show=array();
+
 
                     if ($value) {
 
@@ -2488,6 +2493,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         }
 
 
+                        $hide=array('no_department_warning');
+
+
                     } else {
                         if ($this->data['Product Category Department Category Key'] != '') {
 
@@ -2505,6 +2513,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                         $sql = sprintf('update `Product Dimension` set `Product Department Category Key`=NULL  where `Product Family Category Key`=%d  ', $this->id);
                         $this->db->exec($sql);
+
+
+                        $show=array('no_department_warning');
+
 
                     }
 
@@ -2530,7 +2542,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         'class_html' => array(
                             'Categories' => $categories,
 
-                        )
+                        ),
+                        'hide'=>$hide,
+                        'show'=>$show
                     );
 
 

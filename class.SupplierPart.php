@@ -1715,7 +1715,7 @@ class SupplierPart extends DB_Table {
             return;
         }
 
-        $old_value = $this->get('Supplier Part Historic Key');
+        //$old_value = $this->get('Supplier Part Historic Key');
         $changed   = false;
 
         $sql = sprintf(
@@ -1773,30 +1773,14 @@ class SupplierPart extends DB_Table {
                 foreach ($result as $row) {
                     $purchase_order_keys[$row['Purchase Order Key']] = $row['Purchase Order Key'];
 
-                    $units_per_carton = $this->part->get(
-                            'Part Units Per Package'
-                        ) * $this->get('Supplier Part Packages Per Carton');
 
                     $sql = sprintf(
-                        'UPDATE `Purchase Order Transaction Fact` SET
-						  `Supplier Part Historic Key`=%d,
-						 `Purchase Order CBM`=%f,
-						 `Purchase Order Weight`=%f,
-						 `Purchase Order Net Amount`=%.2f
-						  WHERE `Purchase Order Transaction Fact Key`=%d', $this->get('Supplier Part Historic Key'),
-                        $row['Purchase Order Ordering Units'] * $this->get('Supplier Part Carton CBM') / $this->get('Supplier Part Packages Per Carton') / $this->part->get('Part Units Per Package'),
-                        $row['Purchase Order Ordering Units'] / $this->part->get('Part Units Per Package') * floatval($this->get('Part Package Weight')), $row['Purchase Order Ordering Units'] * $units_per_carton,
-
-                        $row['Purchase Order Transaction Fact Key']
+                        'UPDATE `Purchase Order Transaction Fact` SET `Supplier Part Historic Key`=%d WHERE `Purchase Order Transaction Fact Key`=%d', $this->get('Supplier Part Historic Key'), $row['Purchase Order Transaction Fact Key']
                     );
 
                     $this->db->exec($sql);
                 }
-                include_once 'class.PurchaseOrder.php';
-                foreach ($purchase_order_keys as $purchase_order_key) {
-                    $purchase_order = new PurchaseOrder($purchase_order_key);
-                    $purchase_order->update_totals();
-                }
+
 
             } else {
                 print_r($error_info = $this->db->errorInfo());

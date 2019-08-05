@@ -275,10 +275,19 @@ class SupplierDelivery extends DB_Table {
                         return _('Booked in');
                         break;
                     case 'Costing':
-                        return _('Booked in').', '._('checking costing');
+
+
+                            return _('Booked in').', '._('checking costing');
+
+
                         break;
                     case 'InvoiceChecked':
-                        return _('Booked in').', '._('costing done').' <i class="fa fa-check success"></i>';
+                        if($this->data['Supplier Delivery Production']=='Yes'){
+                            return _('Booked in');
+                        }else{
+                            return _('Booked in').', '._('costing done').' <i class="fa fa-check success"></i>';
+                        }
+
                         break;
                     case 'Cancelled':
                         return _('Cancelled');
@@ -1935,7 +1944,7 @@ class SupplierDelivery extends DB_Table {
         $this->update_state($this->get_state());
 
 
-        $operations = '';
+        $operations = array();
 
 
         if ($this->get('State Index') == 100) {

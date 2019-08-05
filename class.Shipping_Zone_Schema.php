@@ -146,7 +146,6 @@ class Shipping_Zone_Schema extends DB_Table {
     function create($data) {
 
 
-        $data['Shipping Zone Schema Created']=gmdate('Y-m-d H:i:s');
 
 
         $sql = sprintf(
@@ -271,6 +270,9 @@ class Shipping_Zone_Schema extends DB_Table {
         $data['Shipping Zone Position'] = $this->get('Shipping Zone Schema Number Zones')+1;
 
 
+
+
+
         $shipping_zone = new Shipping_Zone('find create', $data);
 
 
@@ -377,12 +379,11 @@ class Shipping_Zone_Schema extends DB_Table {
 
     function update_usage() {
 
-        $orders    = 0;
-        $customers = 0;
-        $amount    = 0;
+
+
 
         $sql = sprintf(
-            "SELECT sum(`Transaction Net Amount`) as amount,count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order No Product Transaction Fact` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) WHERE `Transaction Type Key`=%d AND `Transaction Type`='Shipping' AND `Order State` not in ('InBasket','Cancelled') ",
+            "SELECT min( O.`Order Date`) AS first,max( O.`Order Date`) AS last FROM `Order No Product Transaction Fact` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) LEFT  JOIN `Shipping Zone Dimension` SZ ON (SZ.`Shipping Zone Key`=B.`Transaction Type Key`)     WHERE `Shipping Zone Shipping Zone Schema Key`=%d AND `Transaction Type`='Shipping' AND `Order State` not in ('InBasket','Cancelled') ",
             $this->id
 
         );
@@ -390,21 +391,81 @@ class Shipping_Zone_Schema extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
+                $this->fast_update(
+                    array(
+                        'Shipping Zone Schema First Used' =>  $row['first'],
+                        'Shipping Zone Schema Last Used' => $row['last'],
+                    ),'Shipping Zone Schema Dimension'
+
+                );
+
+            }
+        }
+
+        $orders    = 0;
+        $customers = 0;
+        $amount    = 0;
+
+        $sql = sprintf(
+            "SELECT sum(`Transaction Net Amount`) as amount,count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order No Product Transaction Fact` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) LEFT  JOIN `Shipping Zone Dimension` SZ ON (SZ.`Shipping Zone Key`=B.`Transaction Type Key`)     WHERE `Shipping Zone Shipping Zone Schema Key`=%d AND `Transaction Type`='Shipping' AND `Order State` not in ('InBasket','Cancelled') ",
+            $this->id
+
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+
                 $orders    = $row['orders'];
                 $customers = $row['customers'];
-                $amount    = $row['amount'];
+                $amount    = ($row['amount']==''?0:$row['amount']);
+
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
         $this->fast_update(
             array(
+                'Shipping Zone Schema Number Orders' => $orders,
+                'Shipping Zone Schema Number Customers' => $customers,
+                'Shipping Zone Schema Amount'    => $amount,
+
+            ),'Shipping Zone Schema Dimension'
+
+        );
+
+
+
+/*
+        $orders    = 0;
+        $customers = 0;
+        $amount    = 0;
+
+        $sql = sprintf(
+            "SELECT sum(`Transaction Net Amount`) as amount,count( DISTINCT O.`Order Key`) AS orders,count( DISTINCT `Order Customer Key`) AS customers FROM `Order No Product Transaction Fact` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) LEFT  JOIN `Shipping Zone Dimension` SZ ON (SZ.`Shipping Zone Key`=B.`Transaction Type Key`)     WHERE `Shipping Zone Shipping Zone Schema Key`=%d AND `Transaction Type`='Shipping' AND `Order State` not in ('InBasket','Cancelled') ",
+            $this->id
+
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+
+                $orders    = $row['orders'];
+                $customers = $row['customers'];
+                $amount    = $row['amount'];
+            }
+        }
+
+
+
+
+        $this->fast_update(
+            array(
                 'Shipping Zone Schema Total Acc Submitted Orders'    => $orders,
-                'Shipping Zone Schema Total Acc Submitted Orders Customers' => $customers,
                 'Shipping Zone Schema Total Acc Submitted Orders Amount'    => $amount,
             ),'Shipping Zone Schema Data'
 
@@ -443,7 +504,7 @@ class Shipping_Zone_Schema extends DB_Table {
 
         );
 
-
+*/
     }
 
 

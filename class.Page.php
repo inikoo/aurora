@@ -853,15 +853,14 @@ class Page extends DB_Table {
 
 
                 $sql = sprintf(
-                    "SELECT * FROM `Product Family Sales Correlation` WHERE `Family A Key`=%d ORDER BY `Correlation` DESC ", $this->data['Webpage Scope Key']
+                    "SELECT `Category B Key`,`Correlation` FROM `Product Category Sales Correlation` WHERE `Category A Key`=%d ORDER BY `Correlation` DESC ", $this->data['Webpage Scope Key']
                 );
 
 
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
-                        $_family  = get_object('Category', $row['Family B Key']);
+                        $_family  = get_object('Category', $row['Category B Key']);
                         $_webpage = $_family->get_webpage();
-                        // and $_webpage->data['Page Stealth Mode'] == 'No'
                         if ($_webpage->id and $_webpage->data['Page State'] == 'Online') {
                             $see_also[$_webpage->id] = array(
                                 'type'     => 'Sales',
@@ -874,10 +873,6 @@ class Page extends DB_Table {
                             }
                         }
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
@@ -3227,13 +3222,13 @@ class Page extends DB_Table {
 
 
                 $sql = sprintf(
-                    "SELECT * FROM `Product Family Sales Correlation` WHERE `Family A Key`=%d ORDER BY `Correlation` DESC ", $this->data['Webpage Scope Key']
+                    "SELECT `Category B Key`,`Correlation` FROM `Product Category Sales Correlation` WHERE `Category A Key`=%d ORDER BY `Correlation` DESC ", $this->data['Webpage Scope Key']
                 );
 
 
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
-                        $_family  = get_object('Category', $row['Family B Key']);
+                        $_family  = get_object('Category', $row['Category B Key']);
                         $_webpage = $_family->get_webpage();
                         // and $_webpage->data['Page Stealth Mode'] == 'No'
                         if ($_webpage->id and $_webpage->data['Page State'] == 'Online') {
@@ -3248,10 +3243,6 @@ class Page extends DB_Table {
                             }
                         }
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 

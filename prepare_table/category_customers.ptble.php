@@ -16,41 +16,41 @@ $table    = '`Customer Dimension` C ';
 $group_by = ' group by OTF.`Customer Key` ';
 
 
+include_once 'class.Category.php';
+$category = new Category($parameters['parent_key']);
+
+if (!in_array($category->data['Category Store Key'], $user->stores)) {
+    return;
+}
+
+$store = get_object('store', $category->get('Store Key'));
+
+if ($store->get('Store Family Category Key') == $category->get('Category Root Key')) {
 
 
-
-    include_once 'class.Category.php';
-    $category = new Category($parameters['parent_key']);
-
-    if (!in_array($category->data['Category Store Key'], $user->stores)) {
-        return;
-    }
-
-    $store=get_object('store',$category->get('Store Key'));
-
-    if($store->get('Store Family Category Key')==$category->get('Category Root Key')){
+    $table = '`Order Transaction Fact` OTF  left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`)   ';
 
 
+    $fav = sprintf(
+        'select count(distinct `Customer Favourite Product Product ID`) from `Customer Favourite Product Fact` left join `Product Dimension` on (`Product ID`=`Customer Favourite Product Product ID`) where  `Customer Favourite Product Customer Key`=OTF.`Customer Key` and  `Product Family Category Key`=%d',
+        $parameters['parent_key']
+    );
 
-        $table = '`Order Transaction Fact` OTF  left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`)  left join `Product Dimension` P on (OTF.`Product ID`=P.`Product ID`)  ';
-
-
-        $fav=sprintf('select count(distinct `Customer Favourite Product Product ID`) from `Customer Favourite Product Fact` left join `Product Dimension` on (`Product ID`=`Customer Favourite Product Product ID`) where  `Customer Favourite Product Customer Key`=OTF.`Customer Key` and  `Product Family Category Key`=%d',$parameters['parent_key']);
-
-        $where = sprintf(' where  P.`Product Family Category Key`=%d ', $parameters['parent_key']);
-
+    $where = sprintf(' where  OTF.`OTF Category Family Key`=%d ', $parameters['parent_key']);
 
 
-    }elseif($store->get('Store Department Category Key')==$category->get('Category Root Key')){
-        $table = '`Order Transaction Fact` OTF  left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`)  left join `Product Dimension` P on (OTF.`Product ID`=P.`Product ID`)  ';
-        $fav=sprintf('select count(distinct `Customer Favourite Product Product ID`) from `Customer Favourite Product Fact` left join `Product Dimension` on (`Product ID`=`Customer Favourite Product Product ID`) where `Customer Favourite Product Customer Key`=OTF.`Customer Key` and `Product Department Category Key`=%d',$parameters['parent_key']);
+} elseif ($store->get('Store Department Category Key') == $category->get('Category Root Key')) {
+    $table = '`Order Transaction Fact` OTF  left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`)    ';
+    $fav   = sprintf(
+        'select count(distinct `Customer Favourite Product Product ID`) from `Customer Favourite Product Fact` left join `Product Dimension` on (`Product ID`=`Customer Favourite Product Product ID`) where `Customer Favourite Product Customer Key`=OTF.`Customer Key` and `Product Department Category Key`=%d',
+        $parameters['parent_key']
+    );
 
-        $where = sprintf(' where  P.`Product Department Category Key`=%d ', $parameters['parent_key']);
+    $where = sprintf(' where  OTF.`OTF Category Department Key`=%d ', $parameters['parent_key']);
 
-    }else{
-exit();
-    }
-
+} else {
+    exit();
+}
 
 
 $filter_msg = '';
@@ -95,18 +95,18 @@ if ($order == 'name') {
     $order = 'last_invoice';
 } elseif ($order == 'invoices') {
     $order = 'invoices';
-}elseif ($order == 'invoiced_amount') {
+} elseif ($order == 'invoiced_amount') {
     $order = 'invoiced_amount';
-}elseif ($order == 'basket_amount') {
+} elseif ($order == 'basket_amount') {
     $order = 'basket_amount';
-}elseif ($order == 'favourited') {
+} elseif ($order == 'favourited') {
     $order = 'favourited';
-}  else {
+} else {
     $order = '`Customer File As`';
 }
 
 
-$sql_totals = "select count(Distinct C.`Customer Key`) as num from $table  $where ";
+$sql_totals = "select count(Distinct OTF.`Customer Key`) as num from `Order Transaction Fact` OTF   $where ";
 
 
 $fields = " C.`Customer Key`,`Customer Name`,`Customer First Contacted Date`,`Customer Type by Activity`,`Customer Store Key`,`Customer Location` ,
@@ -120,6 +120,3 @@ $fields = " C.`Customer Key`,`Customer Name`,`Customer First Contacted Date`,`Cu
  
  ";
 
-
-//print "$sql_totals\n";
-?>

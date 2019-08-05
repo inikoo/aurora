@@ -148,7 +148,6 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 
     $object = $data['_object'];
 
-    $block_view = $data['section'];
 
 
     $left_buttons = array();
@@ -159,11 +158,9 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
         switch ($data['parent']) {
             case 'account':
                 $tab      = 'inventory.parts';
-                $_section = 'inventory';
                 break;
             case 'category':
                 $tab      = 'category.parts';
-                $_section = 'inventory';
                 break;
 
 
@@ -210,13 +207,7 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
         $next_title = '';
         $prev_key   = 0;
         $next_key   = 0;
-        $sql        = trim($sql_totals." $wheref");
 
-
-
-
-        if ($result2 = $db->query($sql)) {
-            if ($row2 = $result2->fetch() and $row2['num'] > 1) {
 
 
                 $sql = sprintf(
@@ -314,7 +305,7 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
                         $up_button = array(
                             'icon'      => 'arrow-up',
                             'title'     => _(
-                                "Parts's categories"
+                                "Parts's families"
                             ),
                             'reference' => 'inventory/category/'.$data['parent_key']
                         );
@@ -358,10 +349,7 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
                 }
 
 
-            }
 
-
-        }
 
     } else {
         $_section = 'inventory';
@@ -391,23 +379,33 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 
     if (count($supplier_parts) == 1) {
 
-        $supplier_part = array_values($supplier_parts)[0];
-        $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-hand-receiving button" title="'._('Supplier part').'" onCLick="change_view(\'/supplier/'
-            .$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')" ></i> <span class="Supplier_Part_Reference button"  onCLick="change_view(\'supplier/'
-            .$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Reference').'</small>';
+        if($object->get('Part Production')=='Yes'){
+            $supplier_part = array_values($supplier_parts)[0];
+            $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-industry button" title="'._('Supplier part').'" onCLick="change_view(\'/production/'
+                .$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')" ></i> <span class="Supplier_Part_Reference button"  onCLick="change_view(\'production/'
+                .$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Reference').'</small>';
+
+
+        }else{
+            $supplier_part = array_values($supplier_parts)[0];
+            $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-hand-receiving button" title="'._('Supplier part').'" onCLick="change_view(\'/supplier/'
+                .$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')" ></i> <span class="Supplier_Part_Reference button"  onCLick="change_view(\'supplier/'
+                .$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Reference').'</small>';
+
+
+        }
+
 
 
     } elseif (count($supplier_parts) == 0) {
         $title .= '<span class="small error padding_left_20">'._('No suppliers').'</span>';
 
     } elseif (count($supplier_parts) > 1) {
-        $title .= '<span class="small discreet padding_left_20">'._(
-                'Multiple suppliers'
-            ).'</span>';
+        $title .= '<span class="small discreet padding_left_20">'._('Multiple suppliers').'</span>';
 
     }
 
-
+/*
     $object->update_made_in_production_data();
 
 
@@ -417,7 +415,7 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
         }
     }
 
-
+*/
     $right_buttons[] = array(
         'icon'  => 'sticky-note',
         'title' => _('Sticky note'),
@@ -1164,7 +1162,7 @@ function get_categories_navigation($data, $smarty, $user, $db, $account) {
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _("Parts's Categories"),
+        'title'          => _("Parts's families"),
         'search'         => array(
             'show'        => true,
             'placeholder' => _('Search inventory')
@@ -1212,10 +1210,10 @@ function get_parts_category_navigation($data, $smarty, $user, $db, $account) {
 
             $up_button         = array(
                 'icon'      => 'arrow-up',
-                'title'     => _("Parts's Categories"),
+                'title'     => _("Parts's families"),
                 'reference' => 'inventory/categories'
             );
-            $tab               = 'parts.categories';
+            $tab               = 'part_families';
             $parent_categories = '';
             break;
 
@@ -1888,4 +1886,4 @@ function get_upload_navigation($data, $smarty, $user, $db) {
 }
 
 
-?>
+

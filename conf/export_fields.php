@@ -1386,6 +1386,16 @@ $export_fields = array(
             'label'   => _('SKO value'),
             'checked' => 1
         ),
+        array(
+            'name'    => '`Dormant 1 Year`',
+            'label'   => _('Dormant (No sales 1 year)'),
+            'checked' => 1
+        ),
+        array(
+            'name'    => '`Inventory Spanshot Stock Left 1 Year Ago`',
+            'label'   => _('Stock older than 1 year'),
+            'checked' => 1
+        ),
 
 
     ),

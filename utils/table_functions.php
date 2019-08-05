@@ -529,6 +529,14 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s deleted invoice', '%s deleted invoices', $total_records), number($total_records)
         );
+    } elseif ($record_label == 'production sheet') {
+        return sprintf(
+            ngettext('%s production sheet', '%s production sheets', $total_records), number($total_records)
+        );
+    } elseif ($record_label == 'job order') {
+        return sprintf(
+            ngettext('%s job order', '%s job orders', $total_records), number($total_records)
+        );
     } else {
         return sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)
@@ -1036,6 +1044,18 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
                 '%s deleted invoice of %s', '%s deleted invoices of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
+    } elseif ($record_label == 'production sheet') {
+        return sprintf(
+            ngettext(
+                '%s production sheet of %s', '%s production sheets of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    } elseif ($record_label == 'job order') {
+        return sprintf(
+            ngettext(
+                '%s job order of %s', '%s job orders of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
     } else {
         return sprintf(
             ngettext('%s record of %s', '%s records of %s', $total_with_filter), number($total_with_filter), number($total_no_filter)
@@ -1044,4 +1064,4 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
 }
 
 
-?>
+

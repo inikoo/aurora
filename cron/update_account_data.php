@@ -53,6 +53,9 @@ $account->update_previous_quarters_data();
 
 
 
+$account->update_inventory_dispatched_data('ytd');
+$account->update_inventory_dispatched_data('qt');
+$account->update_inventory_dispatched_data('all');
 
 
 $sql = sprintf("SELECT `Store Key` FROM `Store Dimension`");

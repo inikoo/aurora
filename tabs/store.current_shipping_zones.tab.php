@@ -22,7 +22,10 @@ $table_views = array(
         'label' => _('Overview'),
         'title' => _('Overview')
     ),
-  
+    'usage' => array(
+        'label' => _('Usage'),
+        'title' => _('Usage')
+    ),
 
 );
 

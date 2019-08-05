@@ -191,7 +191,9 @@
                         </div>
                     </div>
 
-                    <div id="set_mail_list_operations" class="email_campaign_operation  {if $email_campaign->get('State Index')!=20 or $email_campaign->get('Email Campaign Type')=='Newsletter' or $email_campaign->get('Email Campaign Type')=='AbandonedCart'   }hide{/if}">
+                    <div id="set_mail_list_operations" class="email_campaign_operation  {if $email_campaign->get('State Index')!=20 or $email_campaign->get('Email Campaign Type')=='Newsletter' or $email_campaign->get('Email Campaign Type')=='AbandonedCart'
+                    or ($email_campaign->get('Email Campaign Type')=='Marketing')
+                    }hide{/if}">
                         <div class="square_button left  " title="{t}Set mailing list{/t}">
                             <i class="fa fa-users button discreet" id="set_mail_list_save_buttons" aria-hidden="true" data-data='{  "field": "Email Campaign State","value": "InProcess","dialog_name":"set_mail_list"}'
                                onclick="save_email_campaign_operation(this)"></i>

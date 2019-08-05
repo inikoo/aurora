@@ -660,7 +660,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
             $title                = $category_title_label.'<span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
 
         } else {
-            $title = _('Departments');
+            $title = sprintf(_('%s departments'),$data['store']->get('Code'));
         }
 
     } elseif ($data['store']->get('Store Family Category Key') == $data['_object']->get('Category Root Key')) {
@@ -670,7 +670,8 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
             $title                = $category_title_label.'<span class="Category_Code id">'.$data['_object']->get('Code').'</span>';
 
         } else {
-            $title = _('Families');
+            $title = sprintf(_('%s families'),$data['store']->get('Code'));
+
         }
 
 
@@ -683,7 +684,7 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
     }
 
 
-    if ($data['_object']->get('Product Category Status') != 'Active') {
+    if ($data['_object']->get('Category Branch Type')=='Head' and $data['_object']->get('Product Category Status') != 'Active') {
 
         $title .= ' ('.$data['_object']->get('Status').')';
     }
@@ -2906,6 +2907,214 @@ function get_shipping_zone_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+function get_shipping_zone_schema_navigation($data, $smarty, $user, $db, $account) {
+
+
+    $object=$data['_object'];
+
+    $left_buttons = array();
+
+
+
+
+        switch ($data['parent']) {
+
+            case 'store':
+                $tab      = 'store.shipping_zones_schemas';
+                $_section = 'products';
+                break;
+
+
+        }
+
+
+        if (isset($_SESSION['table_state'][$tab])) {
+            $number_results  = $_SESSION['table_state'][$tab]['nr'];
+            $start_from      = 0;
+            $order           = $_SESSION['table_state'][$tab]['o'];
+            $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
+            $f_value         = $_SESSION['table_state'][$tab]['f_value'];
+            $parameters      = $_SESSION['table_state'][$tab];
+        } else {
+
+            $default                  = $user->get_tab_defaults($tab);
+            $number_results           = $default['rpp'];
+            $start_from               = 0;
+            $order                    = $default['sort_key'];
+            $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
+            $f_value                  = '';
+            $parameters               = $default;
+            $parameters['parent']     = $data['parent'];
+            $parameters['parent_key'] = $data['parent_key'];
+        }
+
+
+        include_once 'prepare_table/'.$tab.'.ptble.php';
+
+        $_order_field       = $order;
+        $order              = preg_replace('/^.*\.`/', '', $order);
+        $order              = preg_replace('/^`/', '', $order);
+        $order              = preg_replace('/`$/', '', $order);
+        $_order_field_value = $object->get($order);
+
+
+        $prev_title = '';
+        $next_title = '';
+        $prev_key   = 0;
+        $next_key   = 0;
+        $sql        = trim($sql_totals." $wheref");
+
+        if ($result2 = $db->query($sql)) {
+            if ($row2 = $result2->fetch()) {
+                if ($row2['num'] > 1) {
+
+
+                    $sql = sprintf(
+                        "select SZ.`Shipping Zone Schema Label` object_name,SZ.`Shipping Zone Schema Key` as object_key from $table   $where $wheref
+	                and ($_order_field < %s OR ($_order_field = %s AND SZ.`Shipping Zone Schema Key` < %d))  order by $_order_field desc , SZ.`Shipping Zone Schema Key`desc limit 1",
+
+                        prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+                    );
+
+
+                    if ($result = $db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $prev_key   = $row['object_key'];
+                            $prev_title = _("Shipping zone schema").' '.$row['object_name'];
+                        }
+                    } else {
+                        print_r($error_info = $db->errorInfo());
+                        print $sql;
+                        exit;
+                    }
+
+
+                    $sql = sprintf(
+                        "select  SZ.`Shipping Zone Schema Label` object_name,SZ.`Shipping Zone Schema Key` as object_key from $table   $where $wheref
+	                and ($_order_field  > %s OR ($_order_field  = %s AND SZ.`Shipping Zone Schema Key` > %d))  order by $_order_field   , SZ.`Shipping Zone Schema Key` limit 1", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+                    );
+
+                    if ($result = $db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            $next_key   = $row['object_key'];
+                            $next_title = _("Shipping zone schema").' '.$row['object_name'];
+
+                        }
+                    } else {
+                        print_r($error_info = $db->errorInfo());
+                        exit;
+                    }
+
+
+                    if ($order_direction == 'desc') {
+                        $_tmp1      = $prev_key;
+                        $_tmp2      = $prev_title;
+                        $prev_key   = $next_key;
+                        $prev_title = $next_title;
+                        $next_key   = $_tmp1;
+                        $next_title = $_tmp2;
+                    }
+
+
+                }
+
+
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+
+        if ($data['parent'] == 'store') {
+
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Store").' '.$data['_parent']->get('Code'),
+                'reference' => 'store/'.$data['_parent']->id
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'store/'.$data['_parent']->id.'/shipping_zone_schema/'.$prev_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'store/'.$data['_parent']->id.'/shipping_zone_schema/'.$next_key
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+
+            $sections = get_sections('products', $data['_parent']->id);
+            $_section = 'store';
+
+
+            $search_placeholder = _('Search products');
+
+
+        }
+
+
+
+
+    $right_buttons = array();
+    //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit store'), 'reference'=>'store/'.$data['store']->id.'/edit');
+    //$right_buttons[]=array('icon'=>'plus', 'title'=>_('New store'), 'id'=>"new_store");
+
+    $sections = get_sections('products', $data['store']->id);
+    $_section = 'products';
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+
+        'left_buttons'  => $left_buttons,
+        'right_buttons' => $right_buttons,
+        'title'         => _('Shipping schema').' <span class="id">'.$data['_object']->get('Label').'</span>',
+        'search'        => array(
+            'show'        => true,
+            'placeholder' => _('Search products').' '.$data['store']->get('Store Code')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
 
     $html = $smarty->fetch('navigation.tpl');
 
