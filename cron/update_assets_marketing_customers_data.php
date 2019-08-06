@@ -17,7 +17,7 @@ $print_est = true;
 
 
 $where = "where true";
-$where="where `Category Key`=434";
+//$where="where `Category Key`=434";
 
 $sql = sprintf(
     "select count(distinct `Category Key`) as num from `Category Dimension` $where and  `Category Scope`='Product' and `Category Branch Type`='Head' "
