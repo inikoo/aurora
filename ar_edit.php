@@ -3013,11 +3013,12 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             if (!$parent->error) {
+
                 $pcard        = '';
-                $updated_data = array(
-                    'store_key'               => $object->get('Email Campaign Store Key'),
-                    'email_template_type_key' => $object->get('Email Campaign Email Template Type Key'),
-                );
+                $redirect     = 'marketing/'.$object->get('Store Key').'/emails/'.$parent->id.'/mailshot/'.$object->id;
+                $redirect_metadata = array('tab' => 'mailshot.workshop');
+
+                $updated_data = array();
             }
             break;
         case 'Customer Poll Query':

@@ -360,7 +360,10 @@ class SubjectList extends DB_Table {
             $tmp = preg_replace('/\, $/', '', $tmp);
 
 
-            $conditions[] = $tmp;
+            if ($tmp != '') {
+                $conditions[] = $tmp;
+            }
+
 
         }
 
@@ -369,8 +372,8 @@ class SubjectList extends DB_Table {
             '
 <i title="%s" style="margin-right: 10px;position: relative;top:1px" class="%s fa fa-fw fa-newspaper" aria-hidden="true"></i> 
 <i title="%s" style="margin-right: 10px"  class=" %s fa fa-fw fa-envelope" aria-hidden="true"></i>  
-<i title="{t}Marketing by post{/t}" class="%s fa fa-fw fa-truck" aria-hidden="true"></i>', _('Newsletters'), ($data['Customer Send Newsletter'] == 'No' ? 'discreet error' : ''), _('Marketing by email'),
-            ($data['Customer Send Email Marketing'] == 'No' ? 'discreet error' : ''), _('Marketing by post'), ($data['Customer Send Postal Marketing'] == 'No' ? 'discreet error' : '')
+<i title="%s" class="%s fa fa-fw fa-truck" aria-hidden="true"></i>', _('Newsletters'), ($data['Customer Send Newsletter'] == 'No' ? 'discreet error' : ''), _('Marketing by email'), ($data['Customer Send Email Marketing'] == 'No' ? 'discreet error' : ''),
+            _('Marketing by post'), ($data['Customer Send Postal Marketing'] == 'No' ? 'discreet error' : '')
         );
 
 
@@ -491,7 +494,7 @@ class SubjectList extends DB_Table {
         //===
 
 
-        if ($data['Ordered Date From'] != '' and $data['Ordered Date To'] != '' and ( count($products_data) > 0 or count($categories_data) > 0)) {
+        if ($data['Ordered Date From'] != '' and $data['Ordered Date To'] != '' and (count($products_data) > 0 or count($categories_data) > 0)) {
 
 
             if ($data['Order State Basket'] == 'No' or $data['Order State Processing'] == 'No' or $data['Order State Dispatched'] == 'No' or $data['Order State Cancelled'] == 'No') {
@@ -532,8 +535,7 @@ class SubjectList extends DB_Table {
 
         //===
 
-return $conditions;
-
+        return $conditions;
 
 
     }
@@ -542,5 +544,3 @@ return $conditions;
 
 
 
-
-?>
