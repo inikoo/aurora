@@ -102,6 +102,9 @@ switch ($tipo) {
     case 'product_anticorrelations':
         product_sales_correlations(get_table_parameters(), $db, $user,$type='anticorrelation');
         break;
+    case 'webpages':
+        webpages(get_table_parameters(), $db, $user,$type='correlation');
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -2306,3 +2309,74 @@ function product_sales_correlations($_data, $db, $user,$type) {
     );
     echo json_encode($response);
 }
+
+
+
+function webpages($_data, $db, $user) {
+
+    $rtext_label = 'webpage';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    foreach ($db->query($sql) as $data) {
+
+        if ($data['Webpage State'] == 'Online') {
+            $state = '<i class="far fa-globe" aria-hidden="true"></i>';
+        } else {
+            $state = '<i class="far fa-globe very_discreet" aria-hidden="true"></i>';
+
+        }
+
+        switch ($data['Webpage Scope']) {
+            case 'Product':
+                $type = sprintf('<i class="fa fa-leaf" aria-hidden="true" title="" ></i>', _('Product'));
+                break;
+            case 'Info':
+                $type = sprintf('<i class="fa fa-info" aria-hidden="true" title="" ></i>', _('Info'));
+                break;
+            case 'Category Products':
+                $type = sprintf('<i class="fab fa-pagelines" aria-hidden="true" title="" ></i>', _('Products'));
+
+                break;
+            case 'Category Categories':
+                $type = sprintf('<i class="fa fa-tree" aria-hidden="true" title="" ></i>', _('Categories'));
+
+                break;
+            case 'Operations':
+                $type = sprintf('<i class="fa fa-keyboard" aria-hidden="true" title="" ></i>', _('Operations'));
+
+                break;
+            default:
+                $type = $data['Webpage State'];
+                break;
+        }
+
+        $adata[] = array(
+            'id'      => (integer)$data['Webpage Key'],
+            'code'    => sprintf('<span class="link" onclick="change_view(\'website/%d/page/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], $data['Webpage Code']),
+            'state'   => $state,
+            'type'    => $type,
+
+
+        );
+
+    }
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+

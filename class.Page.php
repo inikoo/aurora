@@ -1030,10 +1030,6 @@ class Page extends DB_Table {
 
                         }
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
@@ -1126,10 +1122,6 @@ class Page extends DB_Table {
                             }
 
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
                 }
 
@@ -3186,6 +3178,16 @@ class Page extends DB_Table {
                             'link'              => $see_also_page->get('Webpage URL'),
 
                         );
+
+                        $sql = "INSERT INTO `Product Webpage Bridge` (`Product Webpage Product ID`,`Product Webpage Webpage Key`,`Product Webpage Block`,`Product Webpage Type`) values (?,?,'see_also','link')";
+
+                        $stmt = $this->db->prepare($sql);
+                        $stmt->bindValue(1, $product->id);
+                        $stmt->bindValue(1, $this->id);
+
+                        $stmt->execute();
+
+
                         break;
                 }
             }

@@ -27,7 +27,7 @@ $table_views = array(
 );
 
 $table_filters = array(
-    'name'         => array(
+    'code'         => array(
         'label' => _('Code'),
         'title' => _('Webpage code')
     ),
@@ -44,4 +44,4 @@ $parameters = array(
 
 include 'utils/get_table_html.php';
 
-?>
+

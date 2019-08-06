@@ -4281,6 +4281,16 @@ $tab_defaults = array(
         'elements_type' => array_keys($elements_options['webpage_publishing_history'])[0],
         'elements'      => $elements_options['webpage_publishing_history']
     ),
+    'product.webpages' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code',
+        'f_period'      => 'ytd',
+
+    ),
     'product.webpage.logbook'  => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
