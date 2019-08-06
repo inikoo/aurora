@@ -8,6 +8,12 @@ ALTER TABLE `Image Subject Bridge` CHANGE `Image Subject Object` `Image Subject 
 ====== Done until here
 
 
+sudo find . -name '*.jpeg' -exec rm -f {} \;
+sudo find . -name '*.jpg' -exec rm -f {} \;
+sudo find . -name '*.png' -exec rm -f {} \;
+sudo find . -name '*.ico' -exec rm -f {} \;
+sudo find . -name '*.gif' -exec rm -f {} \;
+
 raul@geko:~/au/img$ sudo chmod g+s public_db/
 raul@geko:~/au/img$ sudo chmod g+s public_cache/
 raul@geko:~/au/img$ sudo chmod g+s db/
