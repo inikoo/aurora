@@ -45,14 +45,27 @@ $table_filters = array(
 $table_buttons = array();
 
 
+
+
+include_once 'class.EmailCampaignType.php';
+$email_campaign_type = new EmailCampaignType('code_store', 'Marketing', $state['_object']->get('List Parent Key'));
+
+
+
 $table_buttons[] = array(
     'icon'  => 'plus',
     'title' => _('New marketing mailshot'),
     'id'    => 'new_mailshot',
-    'attr'  => array(
-        'parent'     => 'Store',
-        'parent_key' => $state['_object']->get('Store Key'),
+    'class'=>'new_marketing_mailshot',
 
+    'attr'  => array(
+        'parent'     => 'EmailCampaignType',
+        'parent_key' => $email_campaign_type->id,
+        'scope'=>'Customer_List',
+        'list'=>$state['key'],
+        'asset'=>'',
+        'scope_type'=>'',
+        'name'=>date('Y.m.d ').' List '.$state['_object']->id,
     )
 
 );

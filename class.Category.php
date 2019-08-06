@@ -94,6 +94,8 @@ class Category extends DB_Table {
             $this->id = $this->data['Category Key'];
 
 
+            $this->properties = json_decode($this->data['Category Properties'], true);
+
             if ($this->data['Category Scope'] == 'Part') {
 
 
@@ -3734,6 +3736,12 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
     }
+
+
+    function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
+    }
+
 
 
 }

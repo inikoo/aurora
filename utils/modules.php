@@ -143,6 +143,10 @@ $_product = array(
             )
         ),
 
+        'product.mailshots'   => array(
+            'label' => _('Mailshots'),
+            'icon'  => 'bullhorn'
+        ),
         'product.correlation' => array(
             'title'   => _('Sales correlations'),
             'label'   => _('Correlations'),

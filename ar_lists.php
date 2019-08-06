@@ -74,9 +74,7 @@ function estimate_number_list_items($data, $db, $user, $smarty) {
 
 
 
-           // print_r($data);
-          //   print $sql;
-//exit;
+
             if ($result = $db->query($sql)) {
                 if ($row = $result->fetch()) {
                     $number_items = $row['num'];
@@ -103,7 +101,6 @@ function estimate_number_list_items($data, $db, $user, $smarty) {
             $sql = "select count(Distinct C.`Customer Key`) as num from $table  $where ";
 
 
-//          print $sql;
 
             if ($result = $db->query($sql)) {
                 if ($row = $result->fetch()) {

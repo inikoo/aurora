@@ -184,7 +184,7 @@ $tab_defaults = array(
         'f_field'     => 'name',
     ),
 
-    'product_category.mailshots' => array(
+    'category.mailshots' => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
         'sort_order'  => 1,
