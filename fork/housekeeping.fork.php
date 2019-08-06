@@ -54,10 +54,8 @@ function fork_housekeeping($job) {
             }
 
 
-        break;
+            break;
         case 'feedback':
-
-
 
 
             foreach ($data['feedback'] as $feedback) {
@@ -77,8 +75,7 @@ function fork_housekeeping($job) {
                 }
 
 
-
-              //  print_r($feedback_data);
+                //  print_r($feedback_data);
 
 
                 $sql = sprintf(
@@ -107,44 +104,40 @@ function fork_housekeeping($job) {
 
                         $feedback_otf_data = array(
                             'Feedback OTF Feedback Key' => $feedback_id,
-                            'Feedback OTF Original Key'=>'',
-                            'Feedback OTF Store Key'=>$data['store_key']
+                            'Feedback OTF Original Key' => '',
+                            'Feedback OTF Store Key'    => $data['store_key']
                         );
 
                         $sql = sprintf(
-                            'select `Inventory Transaction Key`,`Map To Order Transaction Fact Key` from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d',
-                            $feedback['original_itf']
+                            'select `Inventory Transaction Key`,`Map To Order Transaction Fact Key` from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d', $feedback['original_itf']
                         );
 
                         if ($result = $db->query($sql)) {
                             if ($row = $result->fetch()) {
 
-                                $feedback_itf_data['Feedback ITF Original Key'] =$row['Inventory Transaction Key'];
-                                $feedback_otf_data['Feedback OTF Original Key'] =$row['Map To Order Transaction Fact Key'];
+                                $feedback_itf_data['Feedback ITF Original Key'] = $row['Inventory Transaction Key'];
+                                $feedback_otf_data['Feedback OTF Original Key'] = $row['Map To Order Transaction Fact Key'];
 
 
                             }
                         }
 
                         $sql = sprintf(
-                            'select `Inventory Transaction Key`,`Map To Order Transaction Fact Key` from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d',
-                            $feedback['itf']
+                            'select `Inventory Transaction Key`,`Map To Order Transaction Fact Key` from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d', $feedback['itf']
                         );
 
                         if ($result = $db->query($sql)) {
                             if ($row = $result->fetch()) {
 
-                                $feedback_itf_data['Feedback ITF Post Operation Key'] =$row['Inventory Transaction Key'];
+                                $feedback_itf_data['Feedback ITF Post Operation Key'] = $row['Inventory Transaction Key'];
 
-                               if($row['Map To Order Transaction Fact Key']!=$feedback_otf_data['Feedback OTF Original Key'] )
-                                $feedback_otf_data['Feedback OTF Post Operation Key'] =$row['Map To Order Transaction Fact Key'];
-
+                                if ($row['Map To Order Transaction Fact Key'] != $feedback_otf_data['Feedback OTF Original Key']) {
+                                    $feedback_otf_data['Feedback OTF Post Operation Key'] = $row['Map To Order Transaction Fact Key'];
+                                }
 
 
                             }
                         }
-
-
 
 
                         $sql = sprintf(
@@ -169,7 +162,7 @@ function fork_housekeeping($job) {
 
                         $stmt = $db->prepare($sql);
 
-                      //  print_r($feedback_otf_data);
+                        //  print_r($feedback_otf_data);
 
                         $i = 1;
                         foreach ($feedback_otf_data as $key => $value) {
@@ -180,21 +173,15 @@ function fork_housekeeping($job) {
                         $stmt->execute();
 
 
-                    }
-                    elseif (isset($feedback['otf'])) {
-
-
+                    } elseif (isset($feedback['otf'])) {
 
 
                         $feedback_otf_data = array(
-                            'Feedback OTF Feedback Key' => $feedback_id,
-                            'Feedback OTF Original Key'=>$feedback['original_otf'],
-                            'Feedback OTF Store Key'=>$data['store_key'],
-                            'Feedback OTF Post Operation Key'=>$feedback['otf']
+                            'Feedback OTF Feedback Key'       => $feedback_id,
+                            'Feedback OTF Original Key'       => $feedback['original_otf'],
+                            'Feedback OTF Store Key'          => $data['store_key'],
+                            'Feedback OTF Post Operation Key' => $feedback['otf']
                         );
-
-
-
 
 
                         $sql = sprintf(
@@ -214,66 +201,51 @@ function fork_housekeeping($job) {
                         $stmt->execute();
 
                         $sql = sprintf(
-                            'select `Inventory Transaction Key` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key`=%d',
-                            $feedback['original_otf']
+                            'select `Inventory Transaction Key` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key`=%d', $feedback['original_otf']
                         );
 
-                        if ($result=$db->query($sql)) {
-                        		foreach ($result as $row) {
+                        if ($result = $db->query($sql)) {
+                            foreach ($result as $row) {
 
 
+                                $feedback_itf_data = array(
+                                    'Feedback ITF Feedback Key' => $feedback_id,
+                                    'Feedback ITF Original Key' => $row['Inventory Transaction Key'],
+                                );
 
 
-                                    $feedback_itf_data = array(
-                                        'Feedback ITF Feedback Key' => $feedback_id,
-                                        'Feedback ITF Original Key' => $row['Inventory Transaction Key'],
-                                    );
+                                $sql = sprintf(
+                                    "INSERT INTO `Feedback ITF Bridge` (%s) values (%s)", '`'.join('`,`', array_keys($feedback_itf_data)).'`', join(',', array_fill(0, count($feedback_itf_data), '?'))
+                                );
+
+                                $stmt = $db->prepare($sql);
 
 
+                                $i = 1;
+                                foreach ($feedback_itf_data as $key => $value) {
+                                    $stmt->bindValue($i, $value);
+                                    $i++;
+                                }
 
-                                    $sql = sprintf(
-                                        "INSERT INTO `Feedback ITF Bridge` (%s) values (%s)", '`'.join('`,`', array_keys($feedback_itf_data)).'`', join(',', array_fill(0, count($feedback_itf_data), '?'))
-                                    );
+                                $stmt->execute();
 
-                                    $stmt = $db->prepare($sql);
-
-
-                                    $i = 1;
-                                    foreach ($feedback_itf_data as $key => $value) {
-                                        $stmt->bindValue($i, $value);
-                                        $i++;
-                                    }
-
-                                    $stmt->execute();
-
-                        		}
-                        }else {
-                        		print_r($error_info=$db->errorInfo());
-                        		print "$sql\n";
-                        		exit;
+                            }
+                        } else {
+                            print_r($error_info = $db->errorInfo());
+                            print "$sql\n";
+                            exit;
                         }
 
 
-
-
-
-
-
-                    }
-                    elseif (isset($feedback['onptf'])) {
-
-
+                    } elseif (isset($feedback['onptf'])) {
 
 
                         $feedback_otf_data = array(
-                            'Feedback ONPTF Feedback Key' => $feedback_id,
-                            'Feedback ONPTF Original Key'=>$feedback['original_onptf'],
-                            'Feedback ONPTF Store Key'=>$data['store_key'],
-                            'Feedback ONPTF Post Operation Key'=>$feedback['onptf']
+                            'Feedback ONPTF Feedback Key'       => $feedback_id,
+                            'Feedback ONPTF Original Key'       => $feedback['original_onptf'],
+                            'Feedback ONPTF Store Key'          => $data['store_key'],
+                            'Feedback ONPTF Post Operation Key' => $feedback['onptf']
                         );
-
-
-
 
 
                         $sql = sprintf(
@@ -298,7 +270,6 @@ function fork_housekeeping($job) {
                 }
 
             }
-
 
 
             break;
@@ -330,12 +301,6 @@ function fork_housekeeping($job) {
                     $warehouse->update_inventory_snapshot($data['all_parts_min_date'], gmdate('Y-m-d'));
 
 
-
-
-
-
-
-
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
@@ -346,11 +311,7 @@ function fork_housekeeping($job) {
         case 'update_parts_stock_run':
 
 
-
             foreach ($data['parts_data'] as $part_sku => $from_date) {
-
-
-
 
 
                 $part         = get_object('Part', $part_sku);
@@ -360,20 +321,15 @@ function fork_housekeeping($job) {
                     // update if is last placement
 
 
-
-
-
-
                     $sql = sprintf(
                         'select `ITF POTF Costing Done POTF Key`,(`Inventory Transaction Amount`/`Inventory Transaction Quantity`) as value_per_sko 
 from    `ITF POTF Costing Done Bridge` B  left join     `Inventory Transaction Fact` ITF   on  (B.`ITF POTF Costing Done ITF Key`=`Inventory Transaction Key`)  
     left join `Purchase Order Transaction Fact` POTF on  (`Purchase Order Transaction Fact Key`=`ITF POTF Costing Done POTF Key`) 
-where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0   and  `Inventory Transaction Section`="In"    and ITF.`Part SKU`=%d    order by `Date` desc  limit 1 ',
-                        $part->id
+where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0   and  `Inventory Transaction Section`="In"    and ITF.`Part SKU`=%d    order by `Date` desc  limit 1 ', $part->id
                     );
 
 
-                  //  print "$sql\n";
+                    //  print "$sql\n";
 
                     if ($result = $db->query($sql)) {
                         foreach ($result as $row) {
@@ -394,26 +350,18 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                 }
 
 
-
-
             }
 
 
             foreach ($data['parts_data'] as $part_sku => $from_date) {
 
 
-
-
-
                 $part         = get_object('Part', $part_sku);
                 $part->editor = $data['editor'];
 
 
-
-
                 $part->update_stock_run();
                 $part->update_part_inventory_snapshot_fact($from_date);
-
 
 
             }
@@ -1511,11 +1459,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $store   = get_object('Store', $order->get('Store Key'));
 
 
-
-
-
-
-
             $store->update_orders();
             $account->update_orders();
 
@@ -1526,8 +1469,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $customer->editor = $editor;
 
 
-
-            if($order->get('Order For Collection')=='No'){
+            if ($order->get('Order For Collection') == 'No') {
 
                 $email_template_type      = get_object('Email_Template_Type', 'Delivery Confirmation|'.$order->get('Order Store Key'), 'code_store');
                 $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
@@ -1573,7 +1515,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $customer = get_object('Customer', $data['customer_key']);
             $customer->update_invoices();
 
-            $store=get_object('Store',$customer->get('Store Key'));
+            $store = get_object('Store', $customer->get('Store Key'));
             $store->update_invoices();
 
 
@@ -2229,8 +2171,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         case 'update_ISF':
 
 
-
-
             $date = gmdate('Y-m-d H:i:s');
             $sql  = sprintf(
                 'insert into `Stack BiKey Dimension` (`Stack BiKey Creation Date`,`Stack BiKey Last Update Date`,`Stack BiKey Operation`,`Stack BiKey Object Key One`,`Stack BiKey Object Key Two`) values (%s,%s,%s,%d,%d) 
@@ -2240,18 +2180,15 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $db->exec($sql);
 
 
-
-
-
             break;
 
         case 'redo_day_ISF':
 
 
-            $date= $data['date'];
+            $date = $data['date'];
 
 
-            $sql   = sprintf(
+            $sql = sprintf(
                 'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU` desc '
             );
 
@@ -2260,7 +2197,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             if ($result2 = $db->query($sql)) {
                 foreach ($result2 as $row2) {
                     $part = get_object('Part', $row2['Part SKU']);
-                    $part->update_part_inventory_snapshot_fact($date,$date);
+                    $part->update_part_inventory_snapshot_fact($date, $date);
 
                 }
             }
@@ -2269,7 +2206,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`');
             if ($result2 = $db->query($sql)) {
                 foreach ($result2 as $row2) {
-                    $warehouse = get_object('Warehouse',$row2['Warehouse Key']);
+                    $warehouse = get_object('Warehouse', $row2['Warehouse Key']);
                     $warehouse->update_inventory_snapshot($date);
                 }
             }
@@ -2953,7 +2890,79 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             break;
 
+        case 'update_marketing_customers':
 
+
+            $context = new ZMQContext();
+            $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+            $socket->connect("tcp://localhost:5555");
+
+            if ($data['object'] == 'category') {
+                $category = get_object('Category', $data['key']);
+
+                switch ($data['tipo']) {
+                    case 'targeted':
+                        $category->update_product_category_targeted_marketing_customers();
+                        $_customers      = ' ('.$category->properties('targeted_marketing_customers').' '._('customers').')';
+                        $update_metadata = array('new_targeted_mailshot' => _('Create precision mailshot').$_customers);
+                        break;
+                    case 'spread':
+                        $category->update_product_category_spread_marketing_customers();
+                        $_customers      = ' ('.$category->properties('spread_marketing_customers').' '._('customers').')';
+                        $update_metadata = array('new_spread_mailshot' => _('Create mail bomb').$_customers);
+                        break;
+                    case 'donut':
+                        $category->update_product_category_donut_marketing_customers();
+                        $_customers      = ' ('.$category->properties('donut_marketing_customers').' '._('customers').')';
+                        $update_metadata = array('new_donut_mailshot' => _('Create donut mailshot').$_customers);
+                        break;
+
+                }
+            } elseif ($data['object'] == 'product') {
+                $product = get_object('Product', $data['key']);
+
+                switch ($data['tipo']) {
+                    case 'targeted':
+                        $product->update_product_targeted_marketing_customers();
+                        $_customers      = ' ('.$product->properties('targeted_marketing_customers').' '._('customers').')';
+                        $update_metadata = array('new_targeted_mailshot' => _('Create precision mailshot').$_customers);
+                        break;
+                    case 'spread':
+                        $product->update_product_spread_marketing_customers();
+                        $_customers      = ' ('.$product->properties('spread_marketing_customers').' '._('customers').')';
+                        $update_metadata = array('new_spread_mailshot' => _('Create mail bomb').$_customers);
+
+                        break;
+                    case 'donut':
+                        $product->update_product_donut_marketing_customers();
+                        $_customers      = ' ('.$product->properties('donut_marketing_customers').' '._('customers').')';
+                        $update_metadata = array('new_donut_mailshot' => _('Create donut mailshot').$_customers);
+
+                        break;
+
+                }
+            }
+
+
+
+            $socket->send(
+                json_encode(
+                    array(
+                        'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+
+                        'objects' => array(
+                            array(
+                                'object'          => $data['object'],
+                                'key'             => $data['key'],
+                                'update_metadata' => array('titles' => $update_metadata)
+                            )
+                        )
+                    )
+                )
+            );
+
+
+            break;
         default:
             break;
 
@@ -2963,4 +2972,4 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
     return false;
 }
 
-?>
+

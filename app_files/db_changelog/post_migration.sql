@@ -172,9 +172,9 @@ update `Supplier Part Dimension` set `Supplier Part Production`='Yes' where   `S
 
 ALTER TABLE `Order Transaction Fact` ADD `OTF Webpage Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `OTF Category Department Key`;
 ALTER TABLE `Category Dimension` ADD `Category Properties` JSON NULL DEFAULT NULL AFTER `Category Number History Records`;
-update `Category Dimension` set `Category Properties`='{}';
+update `Category Dimension` set `Category Properties`='{}'  where  `Category Properties`='' or `Category Properties` is null  ;
 ALTER TABLE `Product Dimension` ADD `Product Properties` JSON NULL DEFAULT NULL AFTER `Product Department Category Key`;
-update `Product Dimension` set `Product Properties`='{}';
+update `Product Dimension` set `Product Properties`='{}'  where  `Product Properties`='' or `Product Properties` is null ;
 
 RENAME TABLE `Product Family Sales Correlation` TO `Product Category Sales Correlation`;
 ALTER TABLE `Product Category Sales Correlation` CHANGE `Family A Key` `Category A Key` MEDIUMINT(8) UNSIGNED NOT NULL, CHANGE `Family B Key` `Category B Key` MEDIUMINT(8) UNSIGNED NOT NULL;
