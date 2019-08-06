@@ -622,7 +622,7 @@ class EmailCampaign extends DB_Table {
                         case 'Product Targeted':
 
                             $product = get_object('Product',  $this->data['Email Campaign Scope Key']);
-                            if ($product->properties('targeted_marketing_customers') == '' or $product->properties('targeted_marketing_customers_last_updated') < (gmdate('U') + 3600)) {
+                            if ($product->properties('targeted_marketing_customers') == '' or $product->properties('targeted_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
                                 $product->update_product_targeted_marketing_customers();
                             }
                             $estimated_recipients = $product->properties('targeted_marketing_customers');
@@ -630,8 +630,8 @@ class EmailCampaign extends DB_Table {
                             break;
                         case 'Product Wide':
 
-                            $product = get_object('Product', $$this->data['Email Campaign Scope Key']);
-                            if ($product->properties('spread_marketing_customers') == '' or $product->properties('spread_marketing_customers_last_updated') < (gmdate('U') + 3600)) {
+                            $product = get_object('Product', $this->data['Email Campaign Scope Key']);
+                            if ($product->properties('spread_marketing_customers') == '' or $product->properties('spread_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
                                 $product->update_product_spread_marketing_customers();
                             }
                             $estimated_recipients = $product->properties('spread_marketing_customers');
@@ -640,7 +640,7 @@ class EmailCampaign extends DB_Table {
                         case 'Product Donut':
 
                             $product = get_object('Product',  $this->data['Email Campaign Scope Key']);
-                            if ($product->properties('donut_marketing_customers') == '' or $product->properties('donut_marketing_customers_last_updated') < (gmdate('U') + 3600)) {
+                            if ($product->properties('donut_marketing_customers') == '' or $product->properties('donut_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
                                 $product->update_product_donut_marketing_customers();
                             }
                             $estimated_recipients = $product->properties('donut_marketing_customers');
@@ -650,7 +650,7 @@ class EmailCampaign extends DB_Table {
                         case 'Category Targeted':
 
                             $category = get_object('Category',  $this->data['Email Campaign Scope Key']);
-                            if ($category->properties('targeted_marketing_customers') == '' or $category->properties('targeted_marketing_customers_last_updated') < (gmdate('U') + 3600)) {
+                            if ($category->properties('targeted_marketing_customers') == '' or $category->properties('targeted_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
                                 $category->update_product_category_targeted_marketing_customers();
                             }
                             $estimated_recipients = $category->properties('targeted_marketing_customers');
@@ -659,7 +659,7 @@ class EmailCampaign extends DB_Table {
                         case 'Category Wide':
 
                             $category = get_object('Category',  $this->data['Email Campaign Scope Key']);
-                            if ($category->properties('spread_marketing_customers') == '' or $category->properties('spread_marketing_customers_last_updated') < (gmdate('U') + 3600)) {
+                            if ($category->properties('spread_marketing_customers') == '' or $category->properties('spread_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
                                 $category->update_product_category_spread_marketing_customers();
                             }
                             $estimated_recipients = $category->properties('spread_marketing_customers');
@@ -668,7 +668,7 @@ class EmailCampaign extends DB_Table {
                         case 'Category Donut':
 
                             $category = get_object('Category',  $this->data['Email Campaign Scope Key']);
-                            if ($category->properties('donut_marketing_customers') == '' or $category->properties('donut_marketing_customers_last_updated') < (gmdate('U') + 3600)) {
+                            if ($category->properties('donut_marketing_customers') == '' or $category->properties('donut_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
                                 $category->update_product_category_donut_marketing_customers();
                             }
                             $estimated_recipients = $category->properties('donut_marketing_customers');
