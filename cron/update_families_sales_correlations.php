@@ -37,7 +37,7 @@ $lap_time0 = date('U');
 $contador  = 0;
 
 $sql = sprintf(
-    "select `Category Key` from `Category Dimension` $where and  `Category Scope`='Product' and `Category Subject`='Product' and `Category Branch Type`='Head' "
+    "select `Category Key` from `Category Dimension` $where and  `Category Scope`='Product' and `Category Subject`='Product' and `Category Branch Type`='Head' order by rand() "
 );
 
 
