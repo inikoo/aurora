@@ -41,7 +41,7 @@ if ($result = $db->query($sql)) {
 
         //$product->update_sales_correlations('Best Sellers', 100);
         //$product->update_sales_correlations('New', 100);
-        $product->update_sales_correlations();
+        $product->update_sales_correlations(20);
         //$product->update_sales_correlations('Random', 1000000);
 
         $contador++;
@@ -55,4 +55,5 @@ if ($result = $db->query($sql)) {
 
     }
 }
+
 

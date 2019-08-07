@@ -122,7 +122,6 @@ class EmailCampaign extends DB_Table {
         unset($raw_data['editor']);
 
 
-
         foreach ($raw_data as $key => $value) {
             if (array_key_exists($key, $data)) {
 
@@ -610,18 +609,17 @@ class EmailCampaign extends DB_Table {
                     include_once 'utils/asset_marketing_customers.php';
 
 
-
                     switch ($this->data['Email Campaign Scope']) {
                         case 'Customer_List':
 
-                            $list = get_object('List',  $this->data['Email Campaign Scope Key']);
+                            $list = get_object('List', $this->data['Email Campaign Scope Key']);
 
                             $estimated_recipients = $list->get('Number Items');
 
                             break;
                         case 'Product Targeted':
 
-                            $product = get_object('Product',  $this->data['Email Campaign Scope Key']);
+                            $product = get_object('Product', $this->data['Email Campaign Scope Key']);
                             if ($product->properties('targeted_marketing_customers') == '' or $product->properties('targeted_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
                                 $product->update_product_targeted_marketing_customers();
                             }
@@ -639,7 +637,7 @@ class EmailCampaign extends DB_Table {
                             break;
                         case 'Product Donut':
 
-                            $product = get_object('Product',  $this->data['Email Campaign Scope Key']);
+                            $product = get_object('Product', $this->data['Email Campaign Scope Key']);
                             if ($product->properties('donut_marketing_customers') == '' or $product->properties('donut_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
                                 $product->update_product_donut_marketing_customers();
                             }
@@ -649,7 +647,7 @@ class EmailCampaign extends DB_Table {
                             break;
                         case 'Category Targeted':
 
-                            $category = get_object('Category',  $this->data['Email Campaign Scope Key']);
+                            $category = get_object('Category', $this->data['Email Campaign Scope Key']);
                             if ($category->properties('targeted_marketing_customers') == '' or $category->properties('targeted_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
                                 $category->update_product_category_targeted_marketing_customers();
                             }
@@ -658,7 +656,7 @@ class EmailCampaign extends DB_Table {
 
                         case 'Category Wide':
 
-                            $category = get_object('Category',  $this->data['Email Campaign Scope Key']);
+                            $category = get_object('Category', $this->data['Email Campaign Scope Key']);
                             if ($category->properties('spread_marketing_customers') == '' or $category->properties('spread_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
                                 $category->update_product_category_spread_marketing_customers();
                             }
@@ -667,7 +665,7 @@ class EmailCampaign extends DB_Table {
                             break;
                         case 'Category Donut':
 
-                            $category = get_object('Category',  $this->data['Email Campaign Scope Key']);
+                            $category = get_object('Category', $this->data['Email Campaign Scope Key']);
                             if ($category->properties('donut_marketing_customers') == '' or $category->properties('donut_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
                                 $category->update_product_category_donut_marketing_customers();
                             }
@@ -675,7 +673,6 @@ class EmailCampaign extends DB_Table {
 
                             break;
                     }
-
 
 
                     break;
@@ -1307,7 +1304,7 @@ class EmailCampaign extends DB_Table {
 
 
             $targeted_threshold = min($store->properties('email_marketing_customers') * .05, 500);
-            $wide_threshold     = $targeted_threshold * 4;
+            $wide_threshold     = $targeted_threshold * 5;
 
             $customers = array();
 
@@ -1318,11 +1315,60 @@ class EmailCampaign extends DB_Table {
                 case 'Product Wide':
                     $customers = get_spread_product_customers($customers, $this->db, $this->data['Email Campaign Scope Key'], $wide_threshold);
                     break;
+                case 'Product Donut':
+
+                    $targeted_customers = get_targeted_product_customers($customers, $this->db, $this->data['Email Campaign Scope Key'], $targeted_threshold);
+                    $spread_customers   = get_spread_product_customers($customers, $this->db, $this->data['Email Campaign Scope Key'], $wide_threshold);
+                    $customers          = array_diff($spread_customers, $targeted_customers);
+                    break;
                 case 'Category Targeted':
                     $customers = get_targeted_category_customers($customers, $this->db, $this->data['Email Campaign Scope Key'], $targeted_threshold);
                     break;
                 case 'Category Wide':
                     $customers = get_spread_category_customers($customers, $this->db, $this->data['Email Campaign Scope Key'], $wide_threshold);
+                    break;
+                case 'Category Donut':
+                    $targeted_customers = get_targeted_category_customers($customers, $this->db, $this->data['Email Campaign Scope Key'], $targeted_threshold);
+                    $spread_customers   = get_spread_category_customers($customers, $this->db, $this->data['Email Campaign Scope Key'], $wide_threshold);
+                    $customers          = array_diff($spread_customers, $targeted_customers);
+                    break;
+                case 'Customer_List':
+
+                    $list = get_object('List', $this->data['Email Campaign Scope Key']);
+
+                    if ($list->get('List Type') == 'Static') {
+                        $table = '`List Customer Bridge` CB left join `Customer Dimension` C  on (CB.`Customer Key`=C.`Customer Key`)';
+                        $where = sprintf(
+                            ' where `List Key`=%d ', $list->id
+                        );
+
+                    } else {
+
+
+                        include_once 'utils/parse_customer_list.php';
+
+                        $_data              = json_decode($list->get('List Metadata'), true);
+                        $_data['store_key'] = $list->get('List Parent Key');
+
+                        list($table, $where, $group_by) = parse_customer_list($_data, $this->db);
+                        $where = sprintf(' where `Customer Store Key`=%d ', $list->get('List Parent Key')).$where;
+
+                    }
+
+                    $sql       = sprintf(
+                        'select C.`Customer Key` ,C.`Customer Main Plain Email` from  %s %s  and `Customer Send Email Marketing`="Yes" and `Customer Main Plain Email`!=""  ', $table, $where
+                    );
+                    $customers = array();
+                    if ($result = $this->db->query($sql)) {
+                        foreach ($result as $row) {
+
+
+                            $customers[$row['Customer Key']] = $row['Customer Main Plain Email'];
+
+                        }
+                    }
+
+
                     break;
             }
 

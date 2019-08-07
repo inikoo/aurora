@@ -391,6 +391,22 @@
     </div>
 
     <div class="order sent_email_data {if $email_campaign->get('State Index')!=100}hide{/if}">
+
+
+        <div class="block  " style="font-size:small;padding:5px 20px; align-items: stretch;flex: 4">
+
+
+            <div style="margin-bottom: 2px;text-align: left" class="_mailshot_scope   {if $email_campaign->metadata('description')==''}hide{/if}">
+                <span class="mailshot_scope">{$email_campaign->metadata('description')}</span>
+            </div>
+
+
+
+
+
+            <div style="clear:both"></div>
+        </div>
+
         <div>
             <label>{t}Sent{/t} <span onclick="create_second_wave_newsletter()" class="button margin_left_10 hide" style="border:1px solid #ccc;padding:3px 5px"><i class="fas fa-paper-plane discreet_on_hover"></i> {t}2nd wave{/t}</label>
             <div><span class="Email_Campaign_Sent">{$email_campaign->get('Sent')}</span></div>

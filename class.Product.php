@@ -4404,8 +4404,8 @@ class Product extends Asset {
         $spread_customers = get_spread_product_customers(array(), $this->db, $this->id, 5*$targeted_threshold);
 
 
-        $customer=array_diff($spread_customers,$targeted_customers);
-        $estimated_recipients=count($customer);
+        $customers=array_diff($spread_customers,$targeted_customers);
+        $estimated_recipients=count($customers);
 
         $this->fast_update_json_field('Product Properties', 'donut_marketing_customers', $estimated_recipients);
         $this->fast_update_json_field('Product Properties', 'donut_marketing_customers_last_updated', gmdate('U'));
