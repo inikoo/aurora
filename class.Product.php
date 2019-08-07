@@ -101,9 +101,10 @@ class Product extends Asset {
 
                     foreach ($row as $key => $value) {
                         $this->data[$key] = $value;
-                        $this->properties = json_decode($this->data['Product Properties'], true);
 
                     }
+                    $this->properties = json_decode($this->data['Product Properties'], true);
+
                 }
 
 
