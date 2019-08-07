@@ -371,5 +371,4 @@ if ($order == 'name') {
 
 $sql_totals = "select count(Distinct C.`Customer Key`) as num from $table  $where ";
 
-//print "$sql_totals\n";
-?>
+
