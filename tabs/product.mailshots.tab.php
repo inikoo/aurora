@@ -128,8 +128,8 @@ $table_buttons[] = array(
         'scope'      => 'Product_Category',
         'list'       => '',
         'asset'      => 'P'.$state['_object']->id,
-        'scope_type' => 'Wide',
-        'name'       => date('Y.m.d').' Bmb '.$state['_object']->get('Code'),
+        'scope_type' => 'Donut',
+        'name'       => date('Y.m.d').' Don '.$state['_object']->get('Code'),
 
     )
 

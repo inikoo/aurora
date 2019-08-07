@@ -630,11 +630,44 @@ class EmailCampaignType extends DB_Table {
 
 
                 } elseif ($data[' Type'] == 'Product_Category') {
+
+                    switch ($data[' Scope Type']) {
+                        case 'Targeted':
+                            $scope_type_label = sprintf('<i class="far fa-bullseye-arrow" title="%s"></i>', _('Precision mailshot'));
+                            break;
+                        case 'Wide':
+                            $scope_type_label = sprintf('<i class="fa fa-bomb" title="%s"></i>', _('Bomb mail'));
+                            break;
+                        case 'Donut':
+                            $scope_type_label = sprintf('<i class="fa fa-scrubber" title="%s"></i>', _('Donut mailshot'));
+                            break;
+
+                    }
+
+
+
+
                     if (preg_match('/^P(\d+)/', $data['Asset'], $match)) {
 
                         $scope                     = 'Product '.$data[' Scope Type'];
                         $scope_key                 = $match[1];
                         $update_state_to_composing = true;
+
+                        $product=get_object('Product',$scope_key);
+
+                        $data['Email Campaign Metadata'] = array(
+                            'description' => sprintf(
+                                $scope_type_label.' <i class="far fa-cube" title="'._('Product').'"></i> <span class="link" onclick="change_view(\'products/%d/%d\')" title="%s" >%s</span>', $product->get('Store Key'), $product->id,
+                                $product->get('Name'),
+
+                                $product->get('Code')
+                            )
+
+                        );
+
+                        $data['Email Campaign Metadata'] = json_encode($data['Email Campaign Metadata']);
+
+
                     } elseif (preg_match('/^C(\d+)/', $data['Asset'], $match)) {
 
 
@@ -650,18 +683,7 @@ class EmailCampaignType extends DB_Table {
                         $category                  = get_object('Category', $scope_key);
 
 
-                        switch ($data[' Scope Type']) {
-                            case 'Targeted':
-                                $scope_type_label = sprintf('<i class="far fa-bullseye-arrow" title="%s"></i>', _('Precision mailshot'));
-                                break;
-                            case 'Wide':
-                                $scope_type_label = sprintf('<i class="fa fa-bomb" title="%s"></i>', _('Bomb mail'));
-                                break;
-                            case 'Donut':
-                                $scope_type_label = sprintf('<i class="fa fa-scrubber" title="%s"></i>', _('Donut mailshot'));
-                                break;
 
-                        }
 
 
                         $data['Email Campaign Metadata'] = array(
