@@ -197,3 +197,5 @@ truncate  `Product Sales Anticorrelation`;
 
 ALTER TABLE `Product Sales Anticorrelation` ADD `Product Sales Anticorrelation Store Key` SMALLINT UNSIGNED NULL DEFAULT NULL FIRST, ADD INDEX (`Product Sales Anticorrelation Store Key`);
 ALTER TABLE `Product Sales Anticorrelation` ADD `Customers A` SMALLINT UNSIGNED NULL DEFAULT NULL , ADD `Customers B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers A`, ADD `Customers AB` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers B`, ADD `Customers All A` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers AB`, ADD `Customers All B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers All A`, ADD `Product Sales Anticorrelation Last Updated` DATETIME NULL DEFAULT NULL AFTER `Customers All B`;
+ALTER TABLE `Part Dimension` ADD `Part Main Supplier Part Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Part SKU`, ADD INDEX (`Part Main Supplier Part Key`);
+update `Part Dimension` set `Part Properties`='{}'  where  `Part Properties`='' or `Part Properties` is null  ;

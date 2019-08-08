@@ -952,9 +952,9 @@ class SupplierPart extends DB_Table {
                 );
 
 
-                if ($field == 'Supplier Part Packages Per Carton') {
-                    //$this->part->editor=$this->editor;
-                    //$this->part->update(array('Part SKOs per Carton skip update supplier part'=>$value));
+                if ($field == 'Supplier Part Packages Per Carton' and  $this->part->get('Part Main Supplier Part Key')==$this->id  ) {
+                    $this->part->editor=$this->editor;
+                    $this->part->update(array('Part SKOs per Carton'=>$value));
                 }
 
 
@@ -1419,12 +1419,12 @@ class SupplierPart extends DB_Table {
 
 
                 if ($this->part->data['Part Units Per Package'] != 1 and is_numeric($this->part->data['Part Units Per Package'])) {
-                    $value .= ' <span class="very_discreet">('.number(
+                    $value .= ' <span class="discreet italic">('.number(
                             $this->data['Supplier Part Packages Per Carton'] * $this->part->data['Part Units Per Package']
                         ).' '._('units').')</span>';
                 }
 
-                $value .= ' <span class="italic very_discreet">('.$this->part->data['Part SKOs per Carton'].' '._("SKOs per selling carton").')</span>';
+               // $value .= ' <span class="italic very_discreet">('.$this->part->data['Part SKOs per Carton'].' '._("SKOs per selling carton").')</span>';
 
 
                 return $value;
