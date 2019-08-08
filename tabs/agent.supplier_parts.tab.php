@@ -11,7 +11,7 @@
 
 
 $tab     = 'agent.supplier_parts';
-$ar_file = 'ar_inventory_tables.php';
+$ar_file = 'ar_suppliers_tables.php';
 $tipo    = 'supplier_parts';
 
 $default = $user->get_tab_defaults($tab);

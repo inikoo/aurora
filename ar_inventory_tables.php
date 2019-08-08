@@ -956,53 +956,6 @@ function supplier_parts($_data, $db, $user, $account) {
 
     include_once 'utils/currency_functions.php';
 
-    if ($user->get('User Type') == 'Agent') {
-        // $_data['parameters']['parent']=='supplier' and $_data['parameters']['parent_key']==$user->get('User Parent Key')
-        if (!$_data['parameters']['parent'] == 'supplier') {
-            echo json_encode(
-                array(
-                    'state' => 405,
-                    'resp'  => 'Forbidden'
-                )
-            );
-            exit;
-        } else {
-            $sql = sprintf(
-                'SELECT count(*) AS num FROM `Agent Supplier Bridge` WHERE `Agent Supplier Agent Key`=%d AND `Agent Supplier Supplier Key`=%d ', $user->get('User Parent Key'), $_data['parameters']['parent_key']
-            );
-
-            $ok = 0;
-            if ($result = $db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $ok = $row['num'];
-                }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
-            if ($ok == 0) {
-                echo json_encode(
-                    array(
-                        'state' => 405,
-                        'resp'  => 'Forbidden'
-                    )
-                );
-                exit;
-            }
-
-        }
-
-
-    } elseif (!$user->can_view('suppliers')) {
-        echo json_encode(
-            array(
-                'state' => 405,
-                'resp'  => 'Forbidden'
-            )
-        );
-        exit;
-    }
-
 
     $rtext_label = 'supplier part';
     include_once 'prepare_table/init.php';
@@ -1144,64 +1097,42 @@ function supplier_parts($_data, $db, $user, $account) {
 
             $next_deliveries = '<div border="0" style="font-size: small" class="as_table">'.$next_deliveries.'</div>';
 
-
-            if ($data['Part On Demand'] == 'Yes') {
-
-                $available_forecast = '<span >'.sprintf(
-                        '%s', '<span  title="'.sprintf("%s %s", number($data['Part Days Available Forecast'], 1), ngettext("day", "days", intval($data['Part Days Available Forecast']))).'">'.seconds_to_until($data['Part Days Available Forecast'] * 86400).'</span>'
-                    ).'</span>';
-
-                if ($data['Part Fresh'] == 'No') {
-                    $available_forecast .= ' <i class="fa fa-fighter-jet padding_left_5"  title="'._('On demand').'"></i>';
-                } else {
-                    $available_forecast = ' <i class="far fa-lemon padding_left_5"  title="'._('On demand').'"></i>';
-                }
-            } else {
-
-                if ($data['Part Days Available Forecast'] == 0) {
-                    $available_forecast = '';
-                } else {
-
-                    $available_forecast = '<span >'.sprintf(
-                            '%s', '<span  title="'.sprintf(
-                                    "%s %s", number($data['Part Days Available Forecast'], 1), ngettext(
-                                               "day", "days", intval($data['Part Days Available Forecast'])
-                                           )
-                                ).'">'.seconds_to_until($data['Part Days Available Forecast'] * 86400).'</span>'
-                        ).'</span>';
-
-                }
-            }
-
-
             $reference = sprintf('<span class="link" onClick="change_view(\'supplier/%d/part/%d\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']);
-            if ($data['Supplier Part Reference'] != $data['Part Reference']) {
-                $reference .= '<br><span  class="link '.($data['Part Status'] == 'Not In Use' ? 'strikethrough error' : '').'  " onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$part_status.' '.$data['Part Reference'].'</span> ';
 
-            } else {
-                $reference .= '<span  title="'._('Link to part').'" class="link margin_left_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$part_status.'</span> ';
+
+            $operations = '';
+
+            if ($data['Part Main Supplier Part Key'] ==$data['Supplier Part Key']) {
+
+
+                $principal='<i class="fa fa-trophy principal_'.$data['Supplier Part Key'].'"  title="'._('Preferred supplier').'"  ></i>';
+
+
+                $operations = '';
+            }else{
+
+                $principal='<i class="fal fa-snooze principal_'.$data['Supplier Part Key'].'" title="'._('Backup supplier').'"  ></i>';
+                $operations .= sprintf(
+                    '<div style="margin-bottom:10px"><span class="button" id="set_as_principal_supplier_part_button_%d" onClick="set_as_principal_supplier_part(%d,%d)">%s</span></div>',
+                    $data['Supplier Part Key'], $data['Supplier Part Part SKU'],$data['Supplier Part Key'], _('Set as').' <i class="fal fa-trophy padding_right_5"</i>'
+                );
+
 
             }
 
-            if ($data['Part Cost in Warehouse'] == '') {
-                $sko_stock_value = '<span class="super_discreet">'._('No set').'</span>';
-            } else {
-                $sko_stock_value = money($data['Part Cost in Warehouse'], $account->get('Account Currency'));
-            }
+
+
+
 
             $record_data[] = array(
                 'id'   => (integer)$data['Supplier Part Key'],
-                'data' => '<span id="item_data_'.$data['Supplier Part Key'].'" class="item_data" data-key="'.$data['Supplier Part Key'].'" ></span>',
+              //  'data' => '<span id="item_data_'.$data['Supplier Part Key'].'" class="item_data" data-key="'.$data['Supplier Part Key'].'" ></span>',
 
                 'supplier_code'  => sprintf('<span class="link" onClick="change_view(\'supplier/%d/\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Code']),
-                'part_reference' => $data['Part Reference'],
+                'principal'      => $principal,
+
                 'reference'      => $reference,
 
-
-                'barcode'        => $data['Part Barcode Number'],
-                'barcode_sko'    => $data['Part SKO Barcode'],
-                'barcode_carton' => $data['Part Carton Barcode'],
-                'weight_sko'     => ($data['Part Package Weight'] != '' ? weight($data['Part Package Weight'], 'Kg', 3, false, true) : '<i class="fa fa-exclamation-circle error"></i>'),
                 'cbm'            => ($data['Supplier Part Carton CBM'] != '' ? $data['Supplier Part Carton CBM'].'m³' : '<i class="fa fa-exclamation-circle error"></i>'),
 
 
@@ -1214,28 +1145,17 @@ function supplier_parts($_data, $db, $user, $account) {
                 'delivered_cost' => '<span title="'.$exchange_info.'">'.money(
                         $exchange * ($data['Supplier Part Unit Cost'] + $data['Supplier Part Unit Extra Cost']), $account->get('Account Currency')
                     ).'</span>',
-                'packing'        => '
-				 <div style="float:right;min-width:30px;;text-align:right" title="'._('Units per carton').'"><span class="discreet" >'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span></div>
-				<div style="float:right;min-width:70px;text-align:center;" title="'._('Packages (SKOs) per carton').'" > <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div>
-				<div style="float:right;min-width:20px;text-align:right" title="'._('Units per SKO').'"><span>'.$data['Part Units Per Package'].'</span></div>
+                'sko_per_carton'        => '
+				 <span title="'._('Units per carton').'"><i style="font-size: 80%;margin-right: 1px" class="fal fa-stop-circle very_discreet"></i><i style="position: relative;top:1px;margin-right: 3px" class="fal fa-times very_discreet"></i>'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>
+				<span class="discreet '.($data['Part Units Per Package']==1?'hide':'').' " title="'._('Packages (SKOs) per carton').'" > ('.$data['Supplier Part Packages Per Carton'].')</span>
+				</div>
 				 '),
-                'stock'          => '<span class="'.($data['Part Current On Hand Stock'] < 0 ? 'error' : '').'">'.number(floor($data['Part Current On Hand Stock'])).'</span>',
+
+                'operations'  => $operations,
 
 
-                //'stock_value'        => $stock_value,
-
-                'dispatched'     => number($data['dispatched'], 0),
-                'dispatched_1yb' => '<span title="'.sprintf(_('%s dispatched same interval last year'), number($data['dispatched_1yb'])).'">'.delta($data['dispatched'], $data['dispatched_1yb']).'</span>',
-                'sales'          => money($data['sales'], $account->get('Account Currency')),
-                'sales_1yb'      => '<span title="'.sprintf(_('%s amount sold same interval last year'), money($data['sales_1yb'], $account->get('Account Currency'))).'">'.delta($data['sales'], $data['sales_1yb']).'</span>',
-
-                'sko_stock_value'      => $sko_stock_value,
-                'sko_commercial_value' => ($data['Part Commercial Value'] == '' ? '' : money($data['Part Commercial Value'], $account->get('Account Currency'))),
-                'stock_status'         => $stock_status,
-                'stock_status_label'   => $stock_status_label,
                 'next_deliveries'      => $next_deliveries,
-                'available_forecast'   => $available_forecast,
-                'dispatched_per_week'  => number($data['Part 1 Quarter Acc Dispatched'] * 4 / 52, 0)
+
 
             );
 

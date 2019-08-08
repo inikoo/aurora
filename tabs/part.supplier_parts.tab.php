@@ -43,13 +43,18 @@ $parameters = array(
 $table_buttons   = array();
 $table_buttons[] = array(
     'icon'      => 'plus',
-    'title'     => _('New product'),
+    'title'     => _('New supplier'),
     'reference' => "part/".$state['key'].'/supplier_part/new'
 );
 $smarty->assign('table_buttons', $table_buttons);
 
 
+$smarty->assign(
+    'js_code', 'js/injections/edit_part_suppliers_parts.'.(_DEVEL ? '' : 'min.').'js'
+);
+
+
 include('utils/get_table_html.php');
 
 
-?>
+
