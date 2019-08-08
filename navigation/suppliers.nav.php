@@ -1285,8 +1285,16 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
+    if($data['_object']->part->get('Part Main Supplier Part Key')==$data['_object']->id){
+        $supplier_part_type_icon='<i class="fa fa-trophy" title="'._('Preferred supplier').'"></i>';
+    }else{
+        $supplier_part_type_icon='<i class="far fa-snooze" title="'._('Backup supplier').'"></i>';
+
+    }
+
+
     $title = _("Supplier's part").' <span class="id Supplier_Part_Reference">'.$data['_object']->get('Reference').'</span>';
-    $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-right padding_left_10"></i> <i class="fa fa-box button" title="'._('Part').'" onCLick="change_view(\'/part/'.$data['_object']->part->id
+    $title .= ' <small class="padding_left_20"> '.$supplier_part_type_icon.' <i class="fa fa-long-arrow-right "></i> <i class="fa fa-box button" title="'._('Part').'" onCLick="change_view(\'/part/'.$data['_object']->part->id
         .'\')" ></i> <span class="Part_Reference button"  onCLick="change_view(\'part/'.$data['_object']->part->id.'\')">'.$data['_object']->part->get(
             'Reference'
         ).'</small>';
