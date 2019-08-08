@@ -94,9 +94,9 @@ if (!$new) {
 
 $supplier_part_fields[] = array(
     'label' => ($show_full_label
-        ? _("Supplier's part description")
+        ? _("Supplier's part unit")
         : _(
-            'Description'
+            'Unit'
         )),
 
     'show_title' => true,
@@ -287,6 +287,51 @@ $supplier_part_fields[] = array(
 
 $supplier_part_fields[] = array(
     'label' => ($show_full_label
+        ? _("Supplier's part cartons")
+        : _(
+            'Cartons'
+        )),
+
+    'show_title' => true,
+    'fields'     => array(
+
+
+
+        array(
+            'id'              => 'Supplier_Part_Packages_Per_Carton',
+            'edit'            => 'smallint_unsigned',
+
+            'value'           => ($new ? 1 : htmlspecialchars($object->get('Supplier Part Packages Per Carton'))),
+            'formatted_value' => ($new ? 1 : $object->get('Packages Per Carton')),
+            'label'           => ucfirst($object->get_field_label('Supplier Part Packages Per Carton')),
+            'required'        => true,
+            'type'            => 'value'
+        ),
+
+
+        array(
+            'id'   => 'Supplier_Part_Carton_CBM',
+            'edit' => ($edit ? 'numeric' : ''),
+
+            'value'           => htmlspecialchars(
+                $object->get('Supplier Part Carton CBM')
+            ),
+            'formatted_value' => $object->get('Carton CBM'),
+            'label'           => ucfirst(
+                $object->get_field_label('Supplier Part Carton CBM')
+            ),
+            'placeholder'     => _('cubic meters'),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+
+
+    )
+);
+
+
+$supplier_part_fields[] = array(
+    'label' => ($show_full_label
         ? _("Supplier's part ordering")
         : _(
             'Ordering'
@@ -354,18 +399,7 @@ $supplier_part_fields[] = array(
 
         ),
 
-        array(
-            'id'              => 'Supplier_Part_Packages_Per_Carton',
-          //  'edit'            => 'smallint_unsigned',
-            'edit'=>'',
-            'value'           => ($new ? 1 : htmlspecialchars($object->get('Supplier Part Packages Per Carton'))),
-            'formatted_value' => ($new ? 1 : $object->get('Packages Per Carton')),
-            'label'           => ucfirst($object->get_field_label('Supplier Part Packages Per Carton')).'<div class="warning" style="line-height: normal;font-size: 80%;position: relative;top:-4px"> <i class="fa fa-exclamation-triangle yellow" title="'._(
-                    "This field is independent of parts's SKOs per selling carton"
-                ).'" aria-hidden="true"></i> '._("This field is independent of parts's SKOs per selling carton").'</div>',
-            'required'        => true,
-            'type'            => 'value'
-        ),
+
         array(
             'id'              => 'Supplier_Part_Minimum_Carton_Order',
             'edit'            => 'smallint_unsigned',
@@ -414,25 +448,15 @@ $supplier_part_fields[] = array(
             'required' => false,
             'type'     => 'value'
         ),
-        array(
-            'id'   => 'Supplier_Part_Carton_CBM',
-            'edit' => ($edit ? 'numeric' : ''),
 
-            'value'           => htmlspecialchars(
-                $object->get('Supplier Part Carton CBM')
-            ),
-            'formatted_value' => $object->get('Carton CBM'),
-            'label'           => ucfirst(
-                $object->get_field_label('Supplier Part Carton CBM')
-            ),
-            'placeholder'     => _('cubic meters'),
-            'required'        => false,
-            'type'            => 'value'
-        ),
 
 
     )
 );
+
+
+
+
 
 $supplier_part_fields[] = array(
     'label' => ($show_full_label
@@ -570,4 +594,4 @@ if ($new) {
 
 }
 
-?>
+

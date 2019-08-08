@@ -230,6 +230,7 @@ class Part extends Asset {
             $sql = "INSERT INTO `Part Data` (`Part SKU`) VALUES(".$this->id.");";
             $this->db->exec($sql);
 
+            $this->fast_update(array('Part Properties'=>'{}'));
 
             $this->get_data('id', $this->id);
 
@@ -2673,6 +2674,50 @@ class Part extends Asset {
             case 'Part Next Set Supplier Shipment':
                 $this->update_set_next_supplier_shipment($value, $options);
                 break;
+
+            case 'Part Main Supplier Part Key':
+                $old_value = $this->get('Part Main Supplier Part Key');
+
+                if ($old_value == $value) {
+                    return;
+                }
+
+                $supplier_part = get_object('Supplier Part', $value);
+                if (!$supplier_part->id) {
+                    $this->error = true;
+                    $this->msg   = 'invalid supplier part key';
+
+                }
+                if ($supplier_part->get('Supplier Part Part SKU') != $this->id) {
+                    $this->error = true;
+                    $this->msg   = 'wrong supplier part key';
+
+                }
+
+
+                $supplier = get_object('Supplier', $supplier_part->get('Supplier Part Supplier Key'));
+                $this->fast_update(array($field => $supplier_part->id));
+
+
+                $history_data = array(
+                    'History Abstract' => sprintf(
+                        _("Part main supplier set to %s"), '<span class="link" onClick="change_view(\'supplier/'.$supplier->id.'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Supplier Part Reference').'</span> (<span class="link" onClick="change_view(\'supplier/'.$supplier->id.'\')">'.$supplier->get('Code').'</span>)'
+                    ),
+                    'History Details'  => '',
+                    'Action'           => 'edited'
+                );
+
+                $this->add_subject_history(
+                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                );
+
+
+                $this->update_field('Part SKOs per Carton', $supplier_part->get('Supplier Part Packages Per Carton'), $options);
+
+                break;
+
+
+            /*
             case 'Part SKOs per Carton skip update supplier part':
                 $this->update_field('Part SKOs per Carton', $value, $options);
 
@@ -2686,25 +2731,24 @@ class Part extends Asset {
                 //}
 
                 break;
-
-            default:
-                $base_data = $this->base_data();
-
-
-                if (array_key_exists($field, $base_data)) {
-                    //print "$field $value  ".$this->data[$field]." \n";
-                    if ($value != $this->data[$field]) {
-
-                        if ($field == 'Part General Description' or $field == 'Part Health And Safety') {
-                            $options .= ' nohistory';
-                        }
-                        $this->update_field($field, $value, $options);
+            */ default:
+            $base_data = $this->base_data();
 
 
+            if (array_key_exists($field, $base_data)) {
+                //print "$field $value  ".$this->data[$field]." \n";
+                if ($value != $this->data[$field]) {
+
+                    if ($field == 'Part General Description' or $field == 'Part Health And Safety') {
+                        $options .= ' nohistory';
                     }
-                } elseif (array_key_exists($field, $this->base_data('Part Data'))) {
-                    $this->update_table_field($field, $value, $options, 'Part Data', 'Part Data', $this->id);
+                    $this->update_field($field, $value, $options);
+
+
                 }
+            } elseif (array_key_exists($field, $this->base_data('Part Data'))) {
+                $this->update_table_field($field, $value, $options, 'Part Data', 'Part Data', $this->id);
+            }
 
         }
 
@@ -4141,7 +4185,6 @@ class Part extends Asset {
     function get_current_formatted_value_at_current_cost() {
 
 
-
         return money(
             $this->data['Part Current On Hand Stock'] * $this->data['Part Cost']
         );
@@ -4547,9 +4590,9 @@ class Part extends Asset {
             case 'Part Recommended Packages Per Selling Outer':
                 $label = _('Recommended SKOs per selling outer');
                 break;
-            case 'Part SKOs per Carton':
-                $label = _('SKOs per selling carton');
-                break;
+            //case 'Part SKOs per Carton':
+            //    $label = _('SKOs per selling carton');
+            //    break;
             case 'Part Recommended Product Unit Name':
                 $label = _('Unit description');
                 break;
@@ -4835,7 +4878,6 @@ class Part extends Asset {
         }
 
 
-
         $this->fast_update(
             array(
                 'Part Number Active Products'    => $active_products,
@@ -5038,7 +5080,7 @@ class Part extends Asset {
 
     }
 
-    function update_part_inventory_snapshot_fact($from = '',$to='') {
+    function update_part_inventory_snapshot_fact($from = '', $to = '') {
 
         include_once "class.PartLocation.php";
         if ($from == '') {
@@ -5111,9 +5153,9 @@ class Part extends Asset {
                         );
 
 
-                        $sql              = sprintf(
-                            "SELECT sum(`Inventory Transaction Quantity`) as qty_out FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Inventory Transaction Record Type`='Movement'  and  `Inventory Transaction Quantity`<0  ", prepare_mysql($date_1yr_back.' 23:59:59'),
-                            prepare_mysql($row['Date'].' 23:59:59'), $this->id
+                        $sql = sprintf(
+                            "SELECT sum(`Inventory Transaction Quantity`) as qty_out FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Inventory Transaction Record Type`='Movement'  and  `Inventory Transaction Quantity`<0  ",
+                            prepare_mysql($date_1yr_back.' 23:59:59'), prepare_mysql($row['Date'].' 23:59:59'), $this->id
                         );
 
                         if ($result2 = $this->db->query($sql)) {
@@ -5124,7 +5166,7 @@ class Part extends Asset {
                             }
                         }
 
-                        $total_out_1_year=-1*$total_out_1_year;
+                        $total_out_1_year = -1 * $total_out_1_year;
 
 
                         if ($stock_one_year_ago > 0 and $stock_one_year_ago > $total_out_1_year) {
@@ -5139,9 +5181,6 @@ class Part extends Asset {
 
                 //print "$stock_one_year_ago $total_out_1_year   = $total_stock  ||   $stock_left_1_year_ago   = ";
                 //exit;
-
-
-
 
 
                 if (strtotime($this->data['Part Valid From']) <= strtotime($row['Date'].' 23:59:59 -1 year')) {
@@ -5164,14 +5203,11 @@ class Part extends Asset {
                 }
 
 
-
                 $sql = sprintf(
-                    'update `Inventory Spanshot Fact` set `Inventory Spanshot Stock Left 1 Year Ago`=%f ,`Dormant 1 Year`=%s where `Part SKU`=%d and `Date`=%s ',
-                    $stock_left_1_year_ago,  prepare_mysql($dormant_1year),$this->id, prepare_mysql($row['Date'])
+                    'update `Inventory Spanshot Fact` set `Inventory Spanshot Stock Left 1 Year Ago`=%f ,`Dormant 1 Year`=%s where `Part SKU`=%d and `Date`=%s ', $stock_left_1_year_ago, prepare_mysql($dormant_1year), $this->id, prepare_mysql($row['Date'])
                 );
 
                 $this->db->exec($sql);
-
 
 
             }

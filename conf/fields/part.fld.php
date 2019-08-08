@@ -465,6 +465,7 @@ $part_fields[] = array(
     )
 );
 
+/*
 if (!$supplier_part_scope) {
 
     $part_fields[] = array(
@@ -472,6 +473,7 @@ if (!$supplier_part_scope) {
 
         'show_title' => true,
         'fields'     => array(
+
             array(
 
                 'id'     => 'Part_SKOs_per_Carton',
@@ -513,6 +515,7 @@ if (!$supplier_part_scope) {
         )
     );
 }
+*/
 
 if ($account->get('Account Add Stock Value Type') == 'Last Price' and false) {
 
