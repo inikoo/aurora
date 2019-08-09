@@ -915,8 +915,18 @@ class SupplierPart extends DB_Table {
                 );
 
                 break;
+
+            case 'Supplier Part Carton Barcode':
+                $this->update_field($field, $value, $options);
+
+                if ($field == 'Supplier Part Packages Per Carton' and  $this->part->get('Part Main Supplier Part Key')==$this->id  ) {
+                    $this->part->editor=$this->editor;
+                    $this->part->update(array('art Carton Barcode'=>$value),$options);
+                }
+
+
+                break;
             case 'Supplier Part Packages Per Carton':
-            case 'Supplier Part Packages Per Carton skip update part':
 
 
                 if ($value == '') {
@@ -1541,7 +1551,7 @@ class SupplierPart extends DB_Table {
                 $extra_cost .= ' <span class="discreet">'.money($this->data['Supplier Part Unit Extra Cost'], $this->data['Supplier Part Currency Code']).'</span>';
 
 
-                return $extra_cost;
+                return $extra_cost.', <span class="italic discreet">'._('delivered unit cost').':</span> <span class="italic">'.$this->get('Unit Delivered Cost').'</span>';
 
             case 'Unit Extra Cost':
                 if ($this->data['Supplier Part Unit Extra Cost'] == '') {
@@ -1840,12 +1850,12 @@ class SupplierPart extends DB_Table {
 
 
     function get_field_label($field) {
-        global $account;
+
 
         switch ($field) {
 
             case 'Supplier Part Reference':
-                $label = _("supplier's part code");
+                $label = _("supplier's unit code");
                 break;
             case 'Supplier Part Cost':
                 $label = _('unit cost');
@@ -1894,10 +1904,10 @@ class SupplierPart extends DB_Table {
                 $label = _("outers (SKO) description");
                 break;
             case 'Supplier Part Description':
-                $label = _("supplier's part unit description");
+                $label = _("supplier's unit description");
                 break;
             case 'Part Unit Label':
-                $label = _("supplier's part unit label");
+                $label = _("supplier's unit label");
                 break;
             case 'Part Units Per Package':
                 $label = _("units per SKO");

@@ -1322,14 +1322,15 @@ class EmailCampaign extends DB_Table {
                     $customers          = array_diff($spread_customers, $targeted_customers);
                     break;
                 case 'Category Targeted':
-                    $customers = get_targeted_category_customers($customers, $this->db, $this->data['Email Campaign Scope Key'], $targeted_threshold);
+                    $customers = get_targeted_categories_customers($customers, $this->db, $this->data['Email Campaign Scope Key'], $targeted_threshold);
                     break;
                 case 'Category Wide':
-                    $customers = get_spread_category_customers($customers, $this->db, $this->data['Email Campaign Scope Key'], $wide_threshold);
+
+                    $customers = get_spread_categories_customers($customers, $this->db, $this->data['Email Campaign Scope Key'], $wide_threshold);
                     break;
                 case 'Category Donut':
-                    $targeted_customers = get_targeted_category_customers($customers, $this->db, $this->data['Email Campaign Scope Key'], $targeted_threshold);
-                    $spread_customers   = get_spread_category_customers($customers, $this->db, $this->data['Email Campaign Scope Key'], $wide_threshold);
+                    $targeted_customers = get_targeted_categories_customers($customers, $this->db, $this->data['Email Campaign Scope Key'], $targeted_threshold);
+                    $spread_customers   = get_spread_categories_customers($customers, $this->db, $this->data['Email Campaign Scope Key'], $wide_threshold);
                     $customers          = array_diff($spread_customers, $targeted_customers);
                     break;
                 case 'Customer_List':

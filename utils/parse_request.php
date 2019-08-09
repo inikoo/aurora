@@ -5825,6 +5825,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
     // print_r($_data);
 
+
+
     list($tab, $subtab) = parse_tabs($module, $section, $_data, $modules);
 
 
@@ -5913,8 +5915,9 @@ function parse_tabs($module, $section, $_data, $modules) {
         } else {
 
 
+
             if (!isset($modules[$module]['sections'][$section]['tabs']) or !is_array($modules[$module]['sections'][$section]['tabs']) or count($modules[$module]['sections'][$section]['tabs']) == 0) {
-                print "problem with M: $module S: $section";
+                print "problem with M: $module S: >$section<";
             }
 
 

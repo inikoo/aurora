@@ -5699,3037 +5699,6 @@ $modules = array(
                             )
 
                         ),
-
-                        'supplier_part.images'  => array(
-                            'label' => '',
-                            'title' => _('Images'),
-                            'icon'  => 'camera-retro',
-                            'class' => 'right icon_only'
-                        ),
-                        'supplier_part.history' => array(
-                            'label' => '',
-                            'title' => _('History/Notes'),
-                            'icon'  => 'road',
-                            'class' => 'right icon_only'
-                        ),
-
-
-                    )
-                ),
-
-                'supplier_part.new' => array(
-                    'type' => 'new_object',
-                    'tabs' => array(
-                        'supplier_part.new' => array(
-                            'label' => _(
-                                'New part'
-                            )
-                        ),
-
-                    )
-
-                ),
-                'supplier.user.new' => array(
-                    'type' => 'new_object',
-                    'tabs' => array(
-                        'supplier.user.new' => array(
-                            'label' => _(
-                                'New system user'
-                            )
-                        ),
-
-                    )
-
-                ),
-                'agent.user.new'    => array(
-                    'type' => 'new_object',
-                    'tabs' => array(
-                        'agent.user.new' => array(
-                            'label' => _(
-                                'New system user'
-                            )
-                        ),
-
-                    )
-
-                ),
-
-
-                'timeseries_record' => array(
-                    'type'     => 'object',
-                    'label'    => '',
-                    'showcase' => 'timeseries_record',
-
-                    'tabs' => array(
-                        'supplier.timeseries_record.parts'    => array(
-                            'label' => _('Parts'),
-                            'icon'  => 'box',
-                            'class' => ''
-                        ),
-                        'supplier.timeseries_record.families' => array(
-                            'label' => _('Families'),
-                            'icon'  => 'sitemap',
-                            'class' => ''
-                        ),
-
-
-                    )
-
-
-                ),
-
-
-            )
-
-        )
-    ),
-
-
-    'warehouses_server' => array(
-        'sections' => array(
-
-            'warehouses' => array(
-
-                'type'      => 'navigation',
-                'label'     => _('Warehouses'),
-                'title'     => _('Warehouses'),
-                'icon'      => 'map-maker',
-                'reference' => 'warehouses',
-                'tabs'      => array(
-                    'warehouses' => array()
-                )
-            ),
-
-            'returns' => array(
-                'type'      => 'navigation',
-                'label'     => _('Returns'),
-                'icon'      => 'backspace',
-                'reference' => 'returns/all',
-                'tabs'      => array(
-                    'returns_server' => array(
-                        'icon'  => 'backspace',
-                        'label' => _('Returns'),
-
-                    ),
-
-                    'returns_group_by_warehouse' => array(
-                        'label' => _('Group by warehouse'),
-                        'icon'  => 'layer-group',
-
-                    )
-                )
-            ),
-
-            'return' => array(
-                'type' => 'object',
-                'tabs' => array(
-
-                    'return.details' => array(
-                        'label' => _('Settings'),
-                        'icon'  => 'sliders-h'
-                    ),
-
-                    'return.items' => array(
-                        'label' => _('Items'),
-                        'icon'  => 'bars'
-                    ),
-
-                    'return.items_done' => array(
-                        'label' => _('Items'),
-                        'icon'  => 'bars'
-                    ),
-
-
-                    'return.history'     => array(
-                        'label' => '',
-                        'title' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-                    'return.attachments' => array(
-                        'label'         => '',
-                        'title'         => _('Attachments'),
-                        'icon'          => 'paperclip',
-                        'class'         => 'right icon_only',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number Attachments'
-                        ),
-                    ),
-                )
-
-            ),
-
-        )
-    ),
-
-    'inventory'  => array(
-        'sections' => array(
-
-            'dashboard' => array(
-                'type'      => 'navigation',
-                'title'     => _('Inventory dashboard'),
-                'label'     => _('Dashboard'),
-                'icon'      => 'tachometer',
-                'reference' => 'inventory/dashboard',
-                'tabs'      => array(
-                    'inventory.dashboard' => array('label' => _('Dashboard'))
-
-                )
-            ),
-
-
-            'inventory' => array(
-
-                'type'      => 'navigation',
-                'label'     => _('Inventory').' ('._('Parts').')',
-                'icon'      => 'boxes',
-                'reference' => 'inventory',
-                'tabs'      => array(
-                    'inventory.in_process_parts'    => array(
-                        'label' => _('In process'),
-                        'class' => 'discreet'
-                    ),
-                    'inventory.parts'               => array(
-                        'label' => _('Active')
-                    ),
-                    'inventory.discontinuing_parts' => array(
-                        'label' => _(
-                            'Discontinuing'
-                        ),
-                        'class' => 'discreet'
-                    ),
-                    'inventory.discontinued_parts'  => array(
-                        'label' => _(
-                            'Discontinued'
-                        ),
-                        'class' => 'very_discreet'
-                    ),
-
-                )
-            ),
-
-
-            'barcodes'          => array(
-                'type'      => 'navigation',
-                'label'     => _('Retail barcodes'),
-                'icon'      => 'barcode',
-                'reference' => 'inventory/barcodes',
-                'tabs'      => array(
-                    'inventory.barcodes' => array('label' => _('Barcodes'))
-
-                )
-            ),
-            'barcode'           => array(
-                'type'  => 'object',
-                'title' => _('Barcode'),
-                'tabs'  => array(
-                    'barcode.details' => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
-                    'barcode.history' => array(
-                        'label' => _('History'),
-                        'icon'  => 'road'
-                    ),
-
-                    'barcode.assets' => array(
-                        'label' => _('Products/Parts'),
-                        'icon'  => 'cube'
-                    ),
-
-                )
-            ),
-            'deleted_barcode'   => array(
-                'type'  => 'object',
-                'title' => _('Deleted barcode'),
-                'tabs'  => array(
-                    'barcode.history' => array(
-                        'label' => _('History'),
-                        'icon'  => 'road'
-                    ),
-
-
-                )
-            ),
-            'categories'        => array(
-                'type'      => 'navigation',
-                'label'     => _("Part's families"),
-                'icon'      => 'sitemap',
-                'reference' => 'inventory/categories',
-
-                'tabs' => array(
-                    'part_families' => array(
-                        'label' => _(
-                            "Part's families"
-                        )
-                    ),
-                )
-            ),
-            'main_category.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'main_category.new' => array(
-                        'label' => _(
-                            'New category'
-                        )
-                    ),
-
-                )
-
-            ),
-            'category'          => array(
-                'type'           => 'object',
-                'title'          => _('Category (Part)'),
-                'subtabs_parent' => array(
-
-                    'category.part.sales.plot'     => 'category.part.sales',
-                    'category.part.sales.history'  => 'category.part.sales',
-                    'category.part.sales.calendar' => 'category.part.sales',
-                    'category.part.sales.info'     => 'category.part.sales'
-
-                ),
-                'tabs'           => array(
-
-                    'category.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-
-                    'category.part.sales' => array(
-                        'label'   => _('Sales'),
-                        'icon'    => 'money-bill-alt',
-                        'subtabs' => array(
-                            'category.part.sales.plot'     => array(
-                                'label' => _(
-                                    'Plot'
-                                )
-                            ),
-                            'category.part.sales.history'  => array(
-                                'label' => _(
-                                    'Sales history'
-                                )
-                            ),
-                            'category.part.sales.calendar' => array(
-                                'label' => _(
-                                    'Calendar'
-                                )
-                            ),
-                            'category.part.sales.info'     => array(
-                                'label'   => '',
-                                'title'   => _('Sales data info'),
-                                'icon_v2' => 'fal fa-fw fa-chess-clock',
-                                'class'   => 'right icon_only'
-                            ),
-
-                        )
-
-                    ),
-
-                    'category.subjects' => array(
-                        'label'         => _('Parts'),
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Parts'
-                        ),
-                    ),
-
-                    'category.part.discontinued_subjects' => array(
-                        'label'         => _('Discontinued parts'),
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Discontinued'
-                        ),
-                    ),
-
-                    'category.categories'          => array(
-                        'label' => _(
-                            'Subcategories'
-                        )
-                    ),
-                    'part_family.part_locations'   => array(
-                        'label' => _('Parts locations')
-                    ),
-                    'part_family.product_families' => array(
-                        'label' => _('Product families')
-                    ),
-                    'part_family.products'         => array(
-                        'label' => _('Products'),
-                        'icon'  => 'cubes'
-                    ),
-
-                    'category.images'  => array(
-                        'title'         => _('Images'),
-                        'label'         => '',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number Images'
-                        ),
-                        'icon'          => 'camera-retro',
-                        'class'         => 'right icon_only'
-                    ),
-                    'category.history' => array(
-                        'title'         => _('History/Notes'),
-                        'label'         => '',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number History Records'
-                        ),
-
-
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    )
-
-
-                )
-
-            ),
-
-
-            'part' => array(
-                'type'           => 'object',
-                'title'          => _('Part'),
-                'subtabs_parent' => array(
-                    'part.sales.overview'      => 'part.sales',
-                    'part.sales.history'       => 'part.sales',
-                    'part.sales.products'      => 'part.sales',
-                    'part.stock.overview'      => 'part.stock',
-                    'part.stock.transactions'  => 'part.stock',
-                    'part.stock.history'       => 'part.stock',
-                    'part.stock.availability'  => 'part.stock',
-                    'part.supplier.orders'     => 'part.supplier_orders',
-                    'part.supplier.deliveries' => 'part.supplier_orders',
-                    'part.stock.history'       => 'part.stock',
-                    'part.stock.transactions'  => 'part.stock',
-                    'part.stock.cost'          => 'part.stock',
-                    'part.stock.history.plot'  => 'part.stock',
-                    'part.sales.plot'          => 'part.sales',
-                    'part.sales.history'       => 'part.sales',
-                    'part.sales.calendar'      => 'part.sales',
-                    'part.sales.info'          => 'part.sales',
-
-                ),
-
-
-                'tabs' => array(
-
-
-                    'part.details' => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
-
-
-                    'part.sales' => array(
-                        'label'   => _('Sales'),
-                        'icon'    => 'money-bill-alt',
-                        'subtabs' => array(
-                            'part.sales.plot'     => array(
-                                'label' => _(
-                                    'Plot'
-                                )
-                            ),
-                            'part.sales.history'  => array(
-                                'label' => _(
-                                    'Sales history'
-                                )
-                            ),
-                            'part.sales.calendar' => array(
-                                'label' => _(
-                                    'Calendar'
-                                )
-                            ),
-                            'part.sales.info'     => array(
-                                'label'   => '',
-                                'title'   => _('Sales data info'),
-                                'icon_v2' => 'fal fa-fw fa-chess-clock',
-                                'class'   => 'right icon_only'
-                            ),
-
-                        )
-
-                    ),
-
-                    'part.stock' => array(
-                        'label'   => _(
-                            'Stock History'
-                        ),
-                        'icon'    => 'area-chart',
-                        'subtabs' => array(
-                            'part.stock.history'      => array(
-                                'label' => _(
-                                    'Stock history'
-                                ),
-                                'icon'  => 'bars'
-                            ),
-                            'part.stock.history.plot' => array(
-                                'label' => _(
-                                    'Stock history chart'
-                                ),
-                                'icon'  => 'area-chart'
-                            ),
-                            'part.stock.transactions' => array(
-                                'label' => _('Stock movements'),
-                                'icon'  => 'exchange',
-                            ),
-                            'part.stock.cost'         => array(
-                                'label' => _('Stock cost'),
-                                'icon'  => 'fa-dollar-sign',
-                            ),
-                        )
-
-
-                    ),
-
-
-                    'part.supplier_orders' => array(
-                        'label'   => _(
-                            'Purchase orders'
-                        ),
-                        'icon'    => 'clipboard',
-                        'subtabs' => array(
-
-                            'part.supplier.orders'     => array(
-                                'label' => _(
-                                    'Purchase orders'
-                                ),
-                                'icon'  => 'clipboard'
-                            ),
-                            'part.supplier.deliveries' => array(
-                                'label' => _("Supplier's deliveries"),
-                                'icon'  => 'truck'
-                            ),
-
-                        )
-
-                    ),
-
-
-                    'part.supplier_parts' => array(
-                        'label'         => _(
-                            "Supplier's parts"
-                        ),
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number Supplier Parts'
-                        ),
-                        'icon'          => 'hand-receiving'
-                    ),
-
-                    'part.products' => array(
-                        'label'         => _('Products'),
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Products Numbers'
-                        ),
-                        'icon'          => 'cube'
-                    ),
-
-                    'part.locations'              => array(
-                        'label' => _('Locations'),
-                        'icon'  => 'inventory'
-                    ),
-                    'part.paid_orders_in_process' => array(
-                        'label' => '',
-                        'title' => _('Paid orders in process by customer services'),
-                        'icon'  => 'shopping-cart',
-                        'class' => 'right icon_only'
-                    ),
-                    'part.history'                => array(
-
-
-                        'title'         => _('History/Notes'),
-                        'label'         => '',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number History Records'
-                        ),
-
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-                    'part.images'                 => array(
-                        'title'         => _('Images'),
-                        'label'         => '',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number Images'
-                        ),
-                        'icon'          => 'camera-retro',
-                        'class'         => 'right icon_only'
-                    ),
-                    'part.attachments'            => array(
-                        'title'         => _('Attachments'),
-                        'label'         => '',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number Attachments'
-                        ),
-                        'icon'          => 'paperclip',
-                        'class'         => 'right icon_only'
-                    ),
-
-
-                )
-            ),
-
-            'part.new'   => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'part.new' => array(
-                        'label' => _(
-                            'new part'
-                        )
-                    ),
-
-                )
-
-            ),
-            'part.image' => array(
-                'type' => 'object',
-
-
-                'tabs' => array(
-
-
-                    'part.image.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-                    'part.image.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
-                        'icon'  => 'road'
-                    ),
-
-                )
-            ),
-
-            'part.attachment.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'part.attachment.new' => array(
-                        'label' => _(
-                            'new attachment'
-                        )
-                    ),
-
-                )
-
-            ),
-            'part.attachment'     => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'part.attachment.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-                    'part.attachment.history' => array(
-                        'label' => _(
-                            'History'
-                        ),
-                        'icon'  => 'clock'
-                    ),
-
-                )
-
-            ),
-            /*
-            'transactions'=>array(
-                'type'=>'navigation', 'label'=>_('Stock Movements'), 'icon'=>'exchange', 'reference'=>'inventory/transactions',
-                'tabs'=>array(
-                    'inventory.stock.transactions'=>array('label'=>_('Stock movements'))
-
-                )
-            ),
-            */
-
-            'upload' => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'upload.records' => array(
-                        'label' => _(
-                            'Records'
-                        )
-                    ),
-
-
-                )
-
-            ),
-
-            'supplier_part.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'part.supplier_part.new' => array(
-                        'label' => _(
-                            'New supplier part'
-                        )
-                    ),
-
-                )
-
-            ),
-            'stock_history'     => array(
-                'type'      => 'navigation',
-                'label'     => _('Stock History'),
-                'icon'      => 'scanner',
-                'reference' => 'inventory/stock_history',
-                'tabs'      => array(
-                    'inventory.stock.history' => array(
-                        'label' => _(
-                            'Stock history'
-                        )
-                    ),
-
-                    'inventory.stock.history.plot' => array(
-                        'label' => _(
-                            'Chart'
-                        ),
-                        'class' => 'right'
-                    ),
-
-
-                )
-            ),
-            'stock_history.day' => array(
-                'type' => '',
-                'tabs' => array(
-                    'inventory.stock.history.day' => array('label' => ''),
-
-
-                )
-            ),
-
-
-            'product' => $_product,
-
-            'product.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'product.new' => array(
-                        'label' => _(
-                            'New product'
-                        )
-                    ),
-
-                )
-
-            ),
-
-
-        )
-    ),
-    'warehouses' => array(
-        'sections' => array(
-
-
-            'dashboard'      => array(
-                'type'      => 'navigation',
-                'label'     => _('Dashboard'),
-                'icon'      => 'tachometer',
-                'reference' => 'warehouse/%d/dashboard',
-                'tabs'      => array(
-                    'warehouse.dashboard' => array('label' => _('Dashboard'))
-
-                )
-            ),
-            'warehouse'      => array(
-
-                'type'           => 'navigation',
-                'label'          => _('Warehouse'),
-                'title'          => _('Warehouse'),
-                'icon'           => 'warehouse-alt',
-                'reference'      => 'warehouse/%d',
-                'sections_class' => 'icon-only',
-
-                'tabs' => array(
-                    'warehouse.details'  => array(
-                        'label' => _('Settings'),
-                        'title' => _('Warehouse settings'),
-                        'icon'  => 'sliders-h'
-                    ),
-                    'warehouse.shippers' => array(
-                        'label' => _('Shipping companies'),
-                        'title' => _('Shipping companies'),
-                        'icon'  => 'truck-loading'
-                    ),
-
-                    'warehouse.history' => array(
-                        'label' => '',
-                        'title' => _('History'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-                    'warehouse.parts'   => array(
-                        'label' => _('Part-Locations'),
-                        'icon'  => 'pallet-alt',
-                        'class' => 'right'
-                    ),
-
-                )
-
-            ),
-            'warehouse_area' => array(
-
-                'type'      => 'object',
-                'label'     => _('Warehouse area'),
-                'icon'      => 'inventory',
-                'reference' => '',
-
-                'tabs' => array(
-                    'warehouse_area.details' => array(
-                        'label' => _('Settings'),
-                        'title' => _('Warehouse area settings'),
-                        'icon'  => 'sliders-h'
-                    ),
-
-                    'warehouse_area.locations' => array(
-                        'label' => _('Locations'),
-                        'icon'  => 'pallet'
-                    ),
-                    'warehouse_area.history'   => array(
-                        'label' => '',
-                        'title' => _('History'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-                    'warehouse_area.parts'     => array(
-                        'label' => _('Part-Locations'),
-                        'icon'  => 'pallet-alt',
-                        'class' => 'right'
-                    ),
-
-                )
-
-            ),
-
-            /* to add
-            'categories'=>array('type'=>'navigation', 'label'=>_("Locations's categories"), 'icon'=>'sitemap', 'reference'=>'warehouse/%d/categories',
-
-                'tabs'=>array(
-                    'locations.categories'=>array('label'=>_("Locations's categories")),
-                )
-            ),
-            */
-            /*
-                        'warehouse_areas' => array(
-
-                            'type'      => 'navigation',
-                            'label'     => _('Areas'),
-                            'title'     => _('Warehouse areas (Rankings, aisles, rooms)'),
-                            'icon'      => 'inventory',
-                            'reference' => 'warehouse/%d/areas',
-                            'tabs'      => array(
-
-
-
-
-                            )
-
-
-                        ),
-            */
-
-            'locations' => array(
-
-                'type'      => 'navigation',
-                'label'     => _('Locations'),
-                'icon'      => 'pallet',
-                'reference' => 'warehouse/%d/locations',
-                'tabs'      => array(
-
-
-                    'warehouse.locations' => array(
-                        'label'             => _('Locations'),
-                        'icon'              => 'pallet',
-                        'dynamic_reference' => 'warehouse/%d/locations',
-
-                    ),
-                    'warehouse.areas'     => array(
-                        'label'             => _('Warehouse areas'),
-                        'title'             => _('Warehouse areas (Rankings, aisles, rooms)'),
-                        'icon'              => 'inventory',
-                        'dynamic_reference' => 'warehouse/%d/areas',
-
-                    ),
-
-                )
-
-            ),
-
-
-            'shipper.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'shipper.new' => array(
-                        'label' => _('New shipping company')
-                    ),
-
-                )
-
-            ),
-
-
-            'warehouse.new'      => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'warehouse.new' => array(
-                        'label' => _('New warehouse')
-                    ),
-
-                )
-
-            ),
-            'warehouse_area.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'warehouse.new' => array(
-                        'label' => _('New warehouse area')
-                    ),
-
-                )
-
-            ),
-            'location'           => array(
-
-                'type'      => 'object',
-                'label'     => _('Location'),
-                'icon'      => 'map-sings',
-                'reference' => '',
-                'tabs'      => array(
-                    'location.details'            => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'title' => _(
-                            'Location detais'
-                        ),
-                        'icon'  => 'database'
-                    ),
-                    'location.parts'              => array(
-                        'label' => _(
-                            'Parts'
-                        ),
-                        'icon'  => 'box'
-                    ),
-                    'location.stock.transactions' => array(
-                        'label' => _(
-                            'Stock movements'
-                        ),
-                        'icon'  => 'exchange'
-                    ),
-
-                    'location.history' => array(
-                        'title'         => _('History'),
-                        'label'         => '',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number History Records'
-                        ),
-                        'icon'          => 'road',
-                        'class'         => 'right icon_only'
-                    ),
-
-
-                )
-
-            ),
-
-            'location.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'location.new' => array(
-                        'label' => _(
-                            'New location'
-                        )
-                    ),
-
-                )
-
-            ),
-
-            'deleted_location' => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'supplier.history' => array(
-                        'label' => _('History'),
-                        'icon'  => 'road'
-                    ),
-
-
-                )
-            ),
-
-            'main_category.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'main_category.new' => array(
-                        'label' => _(
-                            'New category'
-                        )
-                    ),
-
-                )
-
-            ),
-            'category'          => array(
-                'type' => 'object',
-
-                'tabs' => array(
-
-                    'category.details'   => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-                    'category.parts'     => array(
-                        'label' => _(
-                            'Parts'
-                        ),
-                        'icon'  => 'box'
-                    ),
-                    'category.locations' => array(
-                        'label' => _(
-                            'Locations'
-                        ),
-                        'icon'  => 'map-sings'
-                    ),
-
-                )
-
-            ),
-
-            'upload' => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'upload.records' => array(
-                        'label' => _('Records')
-                    ),
-
-
-                )
-
-            ),
-
-
-            'leakages' => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'stock_leakages'       => array(
-                        'label' => _('Leakages')
-                    ),
-                    'stock_leakages_setup' => array(
-                        'label' => '',
-                        'title' => _('Setup'),
-                        'icon'  => 'sliders',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-
-            ),
-
-            'timeseries_record' => array(
-                'type'     => 'object',
-                'label'    => '',
-                'showcase' => 'timeseries_record',
-
-                'tabs' => array(
-                    'warehouse.leakages.transactions' => array(
-                        'label' => _('Transactions'),
-                        'icon'  => 'fa-arrow-circle-right',
-                        'class' => ''
-                    )
-
-
-                )
-
-
-            ),
-
-            'shipper' => array(
-
-                'type'      => 'object',
-                'label'     => _('Shipping company'),
-                'icon'      => '',
-                'reference' => '',
-                'tabs'      => array(
-                    'shipper.details'      => array(
-                        'label' => _('Settings'),
-                        'title' => _('Settings'),
-                        'icon'  => 'slider-h'
-                    ),
-                    'shipper.consignments' => array(
-                        'label' => _('Consignments'),
-                        'icon'  => 'truck'
-                    ),
-
-                    'shipper.history' => array(
-                        'label' => _('History/Notes'),
-                        'title' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-
-            ),
-
-            'returns' => array(
-                'type'      => 'navigation',
-                'label'     => _('Returns'),
-                'icon'      => 'backspace',
-                'reference' => 'warehouse/%d/returns',
-                'tabs'      => array(
-                    'warehouse.returns' => array(
-                        'icon'  => 'backspace',
-                        'label' => _('Returns'),
-
-                    ),
-
-                )
-            ),
-
-            'return' => array(
-                'type' => 'object',
-                'tabs' => array(
-
-                    'return.details' => array(
-                        'label' => _('Settings'),
-                        'icon'  => 'sliders-h'
-                    ),
-
-                    'return.items' => array(
-                        'label' => _('Items'),
-                        'icon'  => 'bars'
-                    ),
-
-                    'return.items_done' => array(
-                        'label' => _('Items'),
-                        'icon'  => 'bars'
-                    ),
-
-
-                    'return.history'     => array(
-                        'label' => '',
-                        'title' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-                    'return.attachments' => array(
-                        'label'         => '',
-                        'title'         => _('Attachments'),
-                        'icon'          => 'paperclip',
-                        'class'         => 'right icon_only',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number Attachments'
-                        ),
-                    ),
-                )
-
-            ),
-
-        )
-    ),
-
-
-    'reports' => array(
-
-        'sections' => array(
-            'reports' => array(
-                'type'      => 'navigation',
-                'label'     => _('Activity/Performance'),
-                'title'     => _("Activity/Performance"),
-                'icon'      => 'thumbs-up',
-                'reference' => 'users',
-                'tabs'      => array(
-                    'reports' => array(),
-
-                )
-
-            ),
-
-            'performance' => array(
-                'type'      => 'navigation',
-                'label'     => _('Activity/Performance'),
-                'title'     => _("Activity/Performance"),
-                'icon'      => 'thumbs-up',
-                'reference' => 'users',
-                'tabs'      => array(
-                    'report.pp'            => array(
-                        'label'     => _(
-                            'Pickers & Packers'
-                        ),
-                        'title'     => _(
-                            'Pickers & Packers Report'
-                        ),
-                        'reference' => 'users'
-                    ),
-                    'report.outofstock'    => array(
-                        'label'     => _(
-                            "Out of Stock"
-                        ),
-                        'title'     => _(
-                            "Out of Stock"
-                        ),
-                        'reference' => 'users/'
-                    ),
-                    'report.top_customers' => array(
-                        'label'     => _('Top Customers'),
-                        'title'     => _('Top Customers'),
-                        'reference' => 'locations/%d/parts'
-                    ),
-
-                )
-
-            ),
-            'sales'       => array(
-                'type'      => 'navigation',
-                'label'     => _('Sales'),
-                'title'     => _("Sales"),
-                'icon'      => 'money-bill-alt',
-                'reference' => 'users',
-                'tabs'      => array(
-                    'sales'                  => array(
-                        'label' => _('Sales by store'),
-
-                    ),
-                    'sales_invoice_category' => array(
-                        'label' => _("Sales by invoices' categories"),
-
-                    ),
-
-
-                )
-
-            ),
-
-            'ec_sales_list' => array(
-                'type' => '',
-                'tabs' => array(
-                    'ec_sales_list' => array(),
-
-                )
-
-            ),
-
-            'pickers'               => array(
-                'type' => '',
-                'tabs' => array(
-                    'pickers' => array(),
-
-                )
-
-            ),
-            'packers'               => array(
-                'type' => '',
-                'tabs' => array(
-                    'packers' => array(),
-
-                )
-
-            ),
-            'sales_representatives' => array(
-                'type' => '',
-                'tabs' => array(
-                    'sales_representatives' => array(),
-
-                )
-
-            ),
-            'prospect_agents'       => array(
-                'type' => '',
-                'tabs' => array(
-                    'prospect_agents' => array(),
-
-                )
-
-            ),
-
-
-            'stock_given_free' => array(
-                'type' => '',
-                'tabs' => array(
-                    'stock_given_free' => array(),
-
-                )
-
-            ),
-            'lost_stock'       => array(
-                'type' => '',
-                'tabs' => array(
-                    'lost_stock' => array(),
-
-                )
-
-            ),
-
-
-            'report_orders' => array(
-                'type' => '',
-                'tabs' => array(
-                    'report_orders' => array(),
-
-                )
-
-            ),
-
-            'report_orders_components' => array(
-                'type' => '',
-                'tabs' => array(
-                    'report_orders_components' => array(),
-
-                )
-
-            ),
-
-            'report_delivery_notes' => array(
-                'type' => '',
-                'tabs' => array(
-                    'report_delivery_notes' => array(),
-
-                )
-
-            ),
-
-            'intrastat'          => array(
-                'type' => '',
-                'tabs' => array(
-                    'intrastat' => array(),
-
-                )
-
-            ),
-            'intrastat_orders'   => array(
-                'type' => '',
-                'tabs' => array(
-                    'intrastat_orders' => array(),
-
-                )
-
-            ),
-            'intrastat_products' => array(
-                'type' => '',
-                'tabs' => array(
-                    'intrastat_products' => array(),
-
-                )
-
-            ),
-
-            'billingregion_taxcategory'          => array(
-                'type' => '',
-                'tabs' => array(
-                    'billingregion_taxcategory' => array(),
-
-                )
-
-            ),
-            'billingregion_taxcategory.refunds'  => array(
-                'type' => '',
-                'tabs' => array(
-                    'billingregion_taxcategory.refunds' => array(),
-
-                )
-
-            ),
-            'billingregion_taxcategory.invoices' => array(
-                'type' => '',
-                'tabs' => array(
-                    'billingregion_taxcategory.invoices' => array(),
-
-                )
-
-            ),
-            'tax'                                => array(
-                'type'      => 'navigation',
-                'label'     => _(
-                    'Tax Reports'
-                ),
-                'title'     => _(
-                    "Tax Reports"
-                ),
-                'icon'      => 'legal',
-                'reference' => 'users',
-                'tabs'      => array(
-                    'report.notax'     => array(
-                        'label'     => _(
-                            'No Tax'
-                        ),
-                        'title'     => _(
-                            'No Tax Report'
-                        ),
-                        'reference' => 'users'
-                    ),
-                    'report.intrastat' => array(
-                        'label'     => _(
-                            "Intrastat"
-                        ),
-                        'title'     => _(
-                            "Intrastat"
-                        ),
-                        'reference' => 'users/'
-                    ),
-
-                )
-
-            ),
-
-            'sales_representative' => array(
-                'type' => 'object',
-
-
-                'tabs' => array(
-
-                    'sales_representative.customers' => array(
-                        'label' => _('Customers')
-                    ),
-                    'sales_representative.invoices'  => array(
-                        'label' => _('Invoices')
-                    ),
-
-                    'sales_representative.invoices_group_by_customer' => array(
-                        'label' => '',
-                        'title' => _('Invoices grouped by customers'),
-                        'icon'  => 'users-class',
-                        'class' => 'right icon_only'
-                    ),
-
-                    /*
-                    'sales_representative.prospects' => array(
-                        'label' => _('Prospects')
-                    ),
-                    */
-
-
-                )
-
-            ),
-
-            'prospect_agent' => array(
-                'type' => 'object',
-
-
-                'tabs' => array(
-                    'prospect_agent.prospects'   => array(
-                        'label' => _('Prospects')
-                    ),
-                    'prospect_agent.sent_emails' => array(
-                        'label' => _('Sent emails')
-                    ),
-                    //'prospect_agent.calls'  => array(
-                    //    'label' => _('Calls')
-                    //),
-
-
-                )
-
-            ),
-
-            'prospect_agent_email_tracking' => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'email_tracking.email' => array(
-                        'label' => _('Email'),
-                        'icon'  => 'envelope',
-                    ),
-
-                    'email_tracking.events' => array(
-                        'label' => _('Tracking'),
-                        'icon'  => 'stopwatch'
-                    ),
-
-
-                )
-            ),
-
-
-        )
-    ),
-    'hr'      => array(
-
-        'sections' => array(
-            'employees' => array(
-                'type'      => 'navigation',
-                'label'     => _('Employees'),
-                'title'     => _("Employees"),
-                'icon'      => 'hand-rock',
-                'reference' => 'hr',
-
-
-                'subtabs_parent' => array(
-                    'employees.uploads' => 'employees.history_uploads',
-                    'employees.history' => 'employees.history_uploads',
-
-
-                ),
-
-                'tabs' => array(
-                    'employees'         => array(
-                        'label' => _(
-                            'Employees'
-                        )
-                    ),
-                    'deleted.employees' => array(
-                        'label' => _(
-                            'Deleted employees'
-                        ),
-                        'icon'  => 'trash',
-                        'class' => 'right icon_only'
-                    ),
-                    'exemployees'       => array(
-                        'label' => _(
-                            'Ex employees'
-                        ),
-                        'title' => _(
-                            'Ex Employees'
-                        ),
-                        'class' => ''
-                    ),
-
-
-                )
-
-            ),
-
-            'contractors'      => array(
-                'type'      => 'navigation',
-                'label'     => _('Contractors'),
-                'icon'      => 'hand-spock',
-                'reference' => 'hr/contractors',
-                'tabs'      => array(
-                    'contractors'         => array('label' => _('Contractors')),
-                    'deleted.contractors' => array(
-                        'label' => _(
-                            'Deleted contractors'
-                        ),
-                        'icon'  => 'trash',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-
-
-            ),
-
-            /*
-              'salesmen'      => array(
-                  'type'      => 'navigation',
-                  'label'     => _('Account managers'),
-                  'icon'      => 'handshake',
-                  'reference' => 'hr/salesmen',
-                  'tabs'      => array(
-                      'salesmen'         => array('label' => _('Account managers')),
-
-
-                  )
-
-
-              ),
-
-  */
-            'overtimes'        => array(
-                'type'      => 'navigation',
-                'label'     => _('Overtimes'),
-                'icon'      => 'clock',
-                'reference' => 'hr/overtimes',
-                'tabs'      => array(
-                    'overtimes' => array('label' => _('Overtimes')),
-
-                )
-
-
-            ),
-            'organization'     => array(
-                'type'      => 'navigation',
-                'label'     => _('Organization'),
-                'title'     => _('Organization'),
-                'icon'      => 'sitemap',
-                'reference' => 'hr/organization',
-                'tabs'      => array(
-                    'organization.areas'       => array(
-                        'label' => _(
-                            'Working Areas'
-                        ),
-                        'class' => 'hide'
-                    ),
-                    'organization.departments' => array(
-                        'label' => _(
-                            'Company departments'
-                        ),
-                        'class' => 'hide'
-                    ),
-                    'organization.positions'   => array(
-                        'label' => _(
-                            'Job positions'
-                        )
-                    ),
-                    'organization.organigram'  => array(
-                        'label' => _(
-                            'Organizational chart'
-                        ),
-                        'class' => 'hide'
-                    ),
-
-
-                )
-            ),
-            'employee'         => array(
-                'type' => 'object',
-
-
-                'tabs' => array(
-                    'employee.details'                 => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-                    'employee.today_timesheet.records' => array(
-                        'label' => _(
-                            'Today timesheet'
-                        )
-                    ),
-                    'employee.timesheets'              => array(
-                        'label' => _(
-                            'Timesheets'
-                        )
-                    ),
-                    'employee.history'                 => array(
-                        'label' => _(
-                            'History, notes'
-                        ),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-                    'employee.images'                  => array(
-                        'label' => _(
-                            'Images'
-                        ),
-                        'icon'  => 'camera-retro',
-                        'class' => 'right icon_only'
-                    ),
-                    'employee.attachments'             => array(
-                        'label'         => _(
-                            'Attachments'
-                        ),
-                        'icon'          => 'paperclip',
-                        'class'         => 'right icon_only',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number Attachments'
-                        ),
-                    ),
-
-
-                )
-
-            ),
-            'deleted.employee' => array(
-                'type' => 'object',
-
-
-                'tabs' => array(
-                    'deleted.employee.history' => array(
-                        'label' => _(
-                            'History'
-                        ),
-                        'icon'  => 'sticky-note'
-                    ),
-
-
-                )
-
-            ),
-
-            'employee.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'employee.new' => array(
-                        'label' => _('new employee')
-                    ),
-
-                )
-
-            ),
-
-            'employee.attachment.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'employee.attachment.new' => array(
-                        'label' => _(
-                            'new attachment'
-                        )
-                    ),
-
-                )
-
-            ),
-            'employee.user.new'       => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'employee.user.new' => array(
-                        'label' => _(
-                            'new system user'
-                        )
-                    ),
-
-                )
-
-            ),
-            'contractor.user.new'     => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'contractor.user.new' => array(
-                        'label' => _(
-                            'new system user'
-                        )
-                    ),
-
-                )
-
-            ),
-
-            'employee.attachment' => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'employee.attachment.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-                    'employee.attachment.history' => array(
-                        'label' => _(
-                            'History'
-                        ),
-                        'icon'  => 'clock'
-                    ),
-
-                )
-
-            ),
-
-            'contractor'         => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'contractor.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-                    'contractor.history' => array(
-                        'label' => _(
-                            'History, notes'
-                        ),
-                        'icon'  => 'sticky-note'
-                    )
-
-                )
-
-            ),
-            'deleted.contractor' => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'deleted.contractor.history' => array(
-                        'label' => _(
-                            'History'
-                        ),
-                        'icon'  => 'sticky-note'
-                    ),
-
-
-                )
-
-            ),
-            'contractor.new'     => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'contractor.new' => array(
-                        'label' => _(
-                            'new contractor'
-                        )
-                    ),
-
-                )
-
-            ),
-
-            'timesheet' => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'timesheet.records' => array(
-                        'label' => _(
-                            'Clockings'
-                        )
-                    ),
-
-                )
-
-            ),
-
-            'timesheets' => array(
-                'type'      => 'navigation',
-                'icon'      => 'calendar',
-                'label'     => _('Calendar'),
-                'reference' => 'timesheets/day/'.date('Ymd'),
-                'tabs'      => array(
-                    'timesheets.months' => array(
-                        'label' => _(
-                            'Months'
-                        )
-                    ),
-
-                    'timesheets.weeks'     => array(
-                        'label' => _(
-                            'Weeks'
-                        )
-                    ),
-                    'timesheets.days'      => array(
-                        'label' => _(
-                            'Days'
-                        )
-                    ),
-                    'timesheets.employees' => array(
-                        'label' => _(
-                            "Employes'"
-                        )
-                    ),
-
-                    'timesheets.timesheets' => array(
-                        'label' => _(
-                            'Timesheets'
-                        )
-                    ),
-
-                )
-
-            ),
-
-
-            'new_timesheet_record' => array(
-                'type'      => 'new',
-                'label'     => _('New timesheet record'),
-                'title'     => _('New timesheet record'),
-                'icon'      => 'clock',
-                'reference' => 'hr/new_timesheet_record',
-                'tabs'      => array(
-                    'timesheet_record.new'    => array(
-                        'label' => _(
-                            'New timesheet record'
-                        ),
-                        'title' => _(
-                            'New timesheet record'
-                        )
-                    ),
-                    'timesheet_record.import' => array(
-                        'label' => _('Import'),
-                        'title' => _(
-                            'Import timesheet record'
-                        )
-                    ),
-                    'timesheet_record.api'    => array(
-                        'label' => _('API'),
-                        'title' => _('API')
-                    ),
-                    'timesheet_record.cancel' => array(
-                        'class' => 'right',
-                        'label' => _('Cancel'),
-                        'title' => _('Cancel'),
-                        'icon'  => 'sign-out fa-flip-horizontal'
-                    ),
-
-                )
-
-            ),
-
-
-            'position' => array(
-                'type' => 'object',
-
-
-                'tabs' => array(
-
-
-                    'position.employees' => array(
-                        'label' => _(
-                            'Employees'
-                        )
-                    ),
-
-
-                )
-
-            ),
-
-
-            'uploads'    => array(
-                'type' => '',
-                'tabs' => array(
-                    'uploads' => array(
-                        'label' => _(
-                            'Uploads'
-                        )
-                    ),
-
-                )
-
-            ),
-            'upload'     => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'upload.employees' => array(
-                        'label' => _(
-                            'Upload Records'
-                        )
-                    ),
-
-                )
-
-            ),
-            'hr.history' => array(
-                'type'      => 'navigation',
-                'label'     => '',
-                'icon'      => 'road',
-                'reference' => 'hr/history',
-                'class'     => 'icon_only right',
-                'tabs'      => array(
-                    'hr.history' => array(
-                        'label' => _('History'),
-                        'icon'  => 'road',
-                        'class' => ''
-                    ),
-                    'hr.uploads' => array(
-                        'label' => _('Uploads'),
-                        'icon'  => 'upload',
-                        'class' => ''
-                    ),
-
-
-                )
-
-
-            ),
-
-
-            'sales_representative' => array(
-                'type' => 'object',
-
-
-                'sales_representative' => array(
-
-                    'sales_representative.customers' => array(
-                        'label' => _('Customers')
-                    ),
-                    'sales_representative.invoices'  => array(
-                        'label' => _('Invoices')
-                    ),
-                    'sales_representative.prospects' => array(
-                        'label' => _('Prospects')
-                    ),
-
-
-                )
-
-            ),
-
-
-        )
-    ),
-    'profile' => array(
-
-
-        'sections' => array(
-            'profile' => array(
-                'type'      => 'object',
-                'label'     => '',
-                'title'     => '',
-                'icon'      => '',
-                'reference' => '',
-                'tabs'      => array(
-                    'profile.details' => array(
-                        'label' => _('Settings'),
-                        'icon'  => 'sliders-h'
-                    ),
-
-                    'user.login_history' => array(
-                        'label' => _(
-                            'Login history'
-                        ),
-                        'icon'  => 'sign-in'
-                    ),
-
-                    'profile.api_keys'      => array(
-                        'label' => _('API keys'),
-                        'icon'  => 'key'
-                    ),
-                    'profile.history'       => array(
-                        'label' => '',
-                        'title' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-                    'user.deleted_api_keys' => array(
-                        'icon'  => 'ban',
-                        'label' => _('Deleted API keys'),
-                        'title' => _('Deleted API keys'),
-                        'class' => 'right icon_only'
-                    ),
-
-
-                )
-            ),
-
-            'profile_admin' => array(
-                'type'      => 'object',
-                'label'     => '',
-                'title'     => '',
-                'icon'      => '',
-                'reference' => '',
-                'tabs'      => array(
-                    'profile.details' => array(
-                        'label' => _('Settings'),
-                        'icon'  => 'sliders-h'
-                    ),
-
-                    'user.login_history' => array(
-                        'label' => _(
-                            'Login history'
-                        ),
-                        'icon'  => 'sign-in'
-                    ),
-
-
-                    'profile.history' => array(
-                        'label' => '',
-                        'title' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-
-                )
-            ),
-
-            'profile.api_key.new'     => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'user.api_key.new' => array(
-                        'label' => _('New API')
-                    ),
-
-                )
-            ),
-            'profile.api_key'         => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'user.api_key.details'  => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
-                    'user.api_key.requests' => array(
-                        'label' => _('Requests'),
-                        'icon'  => 'arrow-circle-right'
-                    ),
-                    'user.api_key.history'  => array(
-                        'label' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-            ),
-            'profile.deleted_api_key' => array(
-                'type'     => 'object',
-                'showcase' => 'deleted_api_key',
-                'tabs'     => array(
-
-                    'api_key.history' => array(
-                        'label' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-
-                )
-            ),
-
-        )
-
-    ),
-
-
-    'users' => array(
-
-
-        'sections' => array(
-
-
-            'users' => array(
-                'type'      => 'navigation',
-                'label'     => _('Users').' ('._('All').')',
-                'icon'      => 'users-class',
-                'reference' => 'users',
-
-                'tabs' => array(
-                    'users'             => array(
-                        'label' => _('Users')
-                    ),
-                    'users_by_category' => array(
-                        'label' => _('Users categories')
-                    ),
-
-
-                    'deleted.users' => array(
-                        'label' => _('Deleted users'),
-                        'class' => 'right'
-                    ),
-                )
-            ),
-            /*
-            'groups' => array(
-                'type'  => 'navigation',
-                'label' => _('Groups'),
-                'icon'  => 'ball-pile',
-                'reference' => 'users/groups',
-                'tabs'  => array(
-                    'users.groups' => array(
-                        'label' => _('groups')
-                    ),
-                )
-            ),
-*/
-            'staff' => array(
-                'type'      => 'navigation',
-                'label'     => _('Employees'),
-                'icon'      => 'user-headset',
-                'reference' => 'users/staff',
-
-                'tabs' => array(
-                    'users.staff' => array(
-                        'label' => _('Users')
-                    ),
-
-                    'users.staff.login_history' => array(
-                        'label' => _('Login History')
-                    ),
-                    'deleted.staff.users'       => array(
-                        'label' => _('Deleted users'),
-                        'class' => 'right'
-                    ),
-                )
-            ),
-
-
-            'contractors' => array(
-                'type'      => 'navigation',
-                'label'     => _('Contractors'),
-                'icon'      => 'user-hard-hat',
-                'reference' => 'users/contractors',
-
-                'tabs' => array(
-                    'users.contractors' => array(
-                        'label' => _('Users')
-                    ),
-
-
-                    'users.contractors.login_history' => array(
-                        'label' => _('Login History')
-                    ),
-                    'deleted.contractors.users'       => array(
-                        'label' => _('Deleted users'),
-                        'class' => 'right'
-                    ),
-                )
-            ),
-
-
-            'suppliers' => array(
-                'type'      => 'navigation',
-                'label'     => _('Suppliers'),
-                'reference' => 'users/suppliers',
-
-                'icon' => 'hand-holding-box',
-                'tabs' => array(
-                    'users.suppliers' => array(
-                        'label' => _(
-                            'Suppliers'
-                        )
-                    ),
-                )
-            ),
-
-            'agents' => array(
-                'type'      => 'navigation',
-                'label'     => _('Agents'),
-                'icon'      => 'user-secret',
-                'reference' => 'users/agents',
-
-                'tabs' => array(
-                    'users.agents' => array(
-                        'label' => _(
-                            'Agents'
-                        )
-                    ),
-                )
-            ),
-            /*
-                        'others'      => array(
-                            'type'  => 'navigation',
-                            'label' => _('Other'),
-                            'icon'  => 'users-crown',
-                            'reference' => 'users/others',
-
-                            'tabs'  => array(
-                                'root.user' => array(
-                                    'label' => _('Root user')
-                                ),
-                                'warehouse.user' => array(
-                                    'label' => _('Warehouse user')
-                                ),
-                            )
-                        ),
-
-            */
-
-            'user' => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'user.details'       => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database',
-                        'title' => _(
-                            'Details'
-                        )
-                    ),
-                    'user.login_history' => array(
-                        'label' => _(
-                            'Login history'
-                        ),
-                        'title' => _('Login history'),
-                        'icon'  => 'sign-in'
-                    ),
-                    'user.api_keys'      => array(
-                        'label' => _('API keys'),
-                        'icon'  => 'key'
-                    ),
-
-
-                    'user.history'          => array(
-                        'label' => '',
-                        'title' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-                    'user.deleted_api_keys' => array(
-                        'icon'  => 'ban',
-                        'label' => _('Deleted API keys'),
-                        'title' => _('Deleted API keys'),
-                        'class' => 'right icon_only'
-                    ),
-
-
-                )
-            ),
-
-
-            'deleted.user' => array(
-                'type' => 'object',
-                'tabs' => array(
-
-                    'deleted.user.login_history' => array(
-                        'label' => _(
-                            'Login history'
-                        ),
-                        'title' => _(
-                            'Login history'
-                        )
-                    ),
-                    'deleted.user.history'       => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    )
-
-                )
-
-            ),
-
-
-            'user.api_key.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'user.api_key.new' => array(
-                        'label' => _(
-                            'New API'
-                        )
-                    ),
-
-                )
-            ),
-            'user.api_key'     => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'user.api_key.details'  => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
-                    'user.api_key.requests' => array(
-                        'label' => _('Requests'),
-                        'icon'  => 'arrow-circle-right'
-                    ),
-                    'user.api_key.history'  => array(
-                        'label' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-            ),
-            'deleted_api_key'  => array(
-                'type'     => 'object',
-                'showcase' => 'deleted_api_key',
-                'tabs'     => array(
-
-                    'api_key.history' => array(
-                        'label' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-
-                )
-            ),
-
-
-        )
-
-    ),
-
-    'account' => array(
-
-
-        'sections' => array(
-
-            'setup'               => array(
-                'type' => '',
-                'tabs' => array(
-                    'account.setup' => array(
-                        'label' => _(
-                            'Account set up'
-                        )
-                    ),
-                )
-            ),
-            'setup_error'         => array(
-                'type' => '',
-                'tabs' => array(
-                    'account.setup.error' => array('label' => ''),
-                )
-            ),
-            'setup_root_user'     => array(
-                'type' => '',
-                'tabs' => array(
-                    'account.setup.root_user' => array('label' => ''),
-                )
-            ),
-            'setup_account'       => array(
-                'type' => '',
-                'tabs' => array(
-                    'account.setup.account' => array('label' => ''),
-                )
-            ),
-            'setup_add_employees' => array(
-                'type' => '',
-                'tabs' => array(
-                    'account.setup.add_employees' => array('label' => ''),
-                )
-            ),
-            'setup_add_employee'  => array(
-                'type' => '',
-                'tabs' => array(
-                    'account.setup.add_employee' => array('label' => ''),
-                )
-            ),
-            'setup_add_warehouse' => array(
-                'type' => '',
-                'tabs' => array(
-                    'account.setup.add_warehouse' => array('label' => ''),
-                )
-            ),
-            'setup_add_store'     => array(
-                'type' => '',
-                'tabs' => array(
-                    'account.setup.add_store' => array('label' => ''),
-                )
-            ),
-
-            'account' => array(
-                'type'      => 'navigation',
-                'label'     => _('Account'),
-                'icon'      => 'star',
-                'reference' => 'account',
-
-                'tabs' => array(
-                    'account.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'title' => _(
-                            'Account details'
-                        )
-                    ),
-                )
-            ),
-
-
-            'orders_index' => array(
-                'type'      => '',
-                'label'     => _("Order's Index"),
-                'icon'      => 'bars',
-                'reference' => 'account/orders',
-                'tabs'      => array(
-                    'orders_index'          => array(
-                        'label' => _(
-                            "Overview"
-                        )
-                    ),
-                    'orders_server'         => array(
-                        'label' => _(
-                            "Orders list"
-                        )
-                    ),
-                    'delivery_notes_server' => array(
-                        'label' => _(
-                            "Delivery notes list"
-                        )
-                    ),
-                    'invoices_server'       => array(
-                        'label' => _(
-                            "Invoice list"
-                        )
-                    ),
-
-                )
-            ),
-            'data_sets'    => array(
-                'type'      => 'navigation',
-                'label'     => _('Data sets'),
-                'icon'      => 'align-left',
-                'reference' => 'account/data_sets',
-                'tabs'      => array(
-                    'data_sets' => array(
-                        'label' => _(
-                            'Data sets'
-                        )
-                    ),
-                )
-            ),
-            'isf'          => array(
-                'type' => '',
-                'tabs' => array(
-                    'data_sets.isf' => array(
-                        'label' => _(
-                            'Order transactions timeseries'
-                        )
-                    ),
-                )
-            ),
-            'osf'          => array(
-                'type' => '',
-                'tabs' => array(
-                    'data_sets.osf' => array(
-                        'label' => _(
-                            'Inventory transactions timeseries'
-                        )
-                    ),
-                )
-            ),
-            'images'       => array(
-                'type' => '',
-                'tabs' => array(
-                    'data_sets.images' => array(
-                        'label' => _(
-                            'Images'
-                        )
-                    ),
-                )
-            ),
-            'attachments'  => array(
-                'type' => '',
-                'tabs' => array(
-                    'data_sets.attachments' => array(
-                        'label' => _(
-                            'Attachments'
-                        )
-                    ),
-                )
-            ),
-            'uploads'      => array(
-                'type' => '',
-                'tabs' => array(
-                    'data_sets.uploads' => array(
-                        'label' => _(
-                            'Uploads'
-                        )
-                    ),
-                )
-            ),
-            'materials'    => array(
-                'type' => '',
-                'tabs' => array(
-                    'data_sets.materials' => array(
-                        'label' => _(
-                            'Materials'
-                        )
-                    ),
-                )
-            ),
-            'timeseries'   => array(
-                'type' => '',
-                'tabs' => array(
-                    'timeseries_types' => array(
-                        'icon'  => 'layer-group',
-                        'label' => _('Timeseries type')
-                    ),
-                    'timeseries'       => array(
-                        'icon'  => 'chart-line',
-                        'label' => _('Timeseries')
-                    ),
-                )
-            ),
-
-            'upload'   => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'upload.records' => array(
-                        'label' => _(
-                            'Records'
-                        )
-                    ),
-
-
-                )
-
-            ),
-            'material' => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'material.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-                    'material.parts'   => array(
-                        'label' => _(
-                            'Parts'
-                        )
-                    ),
-                    'material.history' => array(
-                        'label' => _(
-                            'History'
-                        ),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-
-                )
-
-            ),
-
-            'timeserie' => array(
-                'type' => '',
-
-
-                'tabs' => array(
-                    'timeserie.plot'    => array(
-                        'label' => _(
-                            'Plot'
-                        )
-                    ),
-                    'timeserie.records' => array(
-                        'label' => _(
-                            'Records'
-                        ),
-
-
-                    ),
-
-                )
-            ),
-            'settings'  => array(
-                'type'      => 'navigation',
-                'label'     => _('Settings'),
-                'icon'      => 'cog',
-                'reference' => 'account/settings',
-                'tabs'      => array(
-                    'account.settings' => array(
-                        'label' => _(
-                            'Settings'
-                        )
-                    ),
-                )
-            ),
-
-
-        )
-
-    ),
-    'utils'   => array(
-        'sections' => array(
-            'forbidden' => array(
-                'type'  => 'object',
-                'label' => _('Forbidden'),
-                'title' => _('Forbidden'),
-                'id'    => 'forbidden',
-                'tabs'  => array(
-                    'forbidden' => array()
-                )
-            ),
-            'not_found' => array(
-                'type'  => 'object',
-                'label' => _('Not found'),
-                'title' => _('Not found'),
-                'id'    => 'not_found',
-
-                'tabs' => array(
-                    'not_found' => array(),
-                )
-            ),
-
-
-            'fire' => array(
-                'type'  => 'object',
-                'label' => _('Fire'),
-                'icon'  => 'file',
-                'id'    => 'fire',
-
-                'tabs' => array(
-                    'fire' => array(),
-                )
-            ),
-
-        )
-    ),
-    'help'    => array(
-        'sections' => array(
-            'help' => array(
-                'type'  => 'object',
-                'label' => _('Help'),
-                'icon'  => 'shopping-cart',
-                'id'    => 'forbidden',
-                'tabs'  => array(
-                    'help' => array()
-                )
-            )
-        ),
-        'about'    => array(
-            'about' => array(
-                'type'  => 'object',
-                'label' => _('About'),
-                'icon'  => '',
-                'tabs'  => array(
-                    'about' => array()
-                )
-            )
-        )
-    ),
-
-
-    'agent_profile'   => array(
-        'sections' => array(
-            'profile' => array(
-                'type'  => 'object',
-                'label' => _('Profile'),
-                'icon'  => 'user_secret',
-                'id'    => '',
-                'tabs'  => array(
-                    'agent.details'   => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database',
-                        'title' => _(
-                            'Details'
-                        )
-                    ),
-                    'agent.suppliers' => array(
-                        'label' => _(
-                            "Agent's suppliers"
-                        ),
-                        'icon'  => 'hand-holding-box'
-                    ),
-
-                    'agent.supplier_parts' => array(
-                        'label' => _(
-                            "Agent's Parts"
-                        ),
-                        'icon'  => 'hand-receiving'
-                    ),
-                    'agent.orders'         => array(
-                        'label' => _(
-                            'Purchase orders'
-                        ),
-                        'icon'  => 'clipboard'
-                    ),
-                    'agent.deliveries'     => array(
-                        'label' => _(
-                            'Deliveries'
-                        ),
-                        'icon'  => 'truck'
-                    ),
-                    /*
-                    'agent.agent_orders'   => array(
-                        'label' => _(
-                            "Agent's PO"
-                        ),
-                        'icon'  => 'clipboard fa-flip-horizontal'
-                    ),
-*/
-                    'agent.history'        => array(
-                        'label' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-                    'agent.users'          => array(
-                        'label' => _(
-                            'System users'
-                        ),
-                        'icon'  => 'terminal',
-                        'class' => 'right icon_only'
-                    ),
-                )
-            )
-        ),
-    ),
-    'agent_suppliers' => array(
-
-
-        'sections' => array(
-
-            'suppliers' => array(
-
-                'type'      => 'navigation',
-                'label'     => _('Suppliers'),
-                'icon'      => 'hand-holding-box',
-                'reference' => 'suppliers',
-                'tabs'      => array('agent.suppliers' => array())
-
-
-            ),
-
-
-            'order_to_delete' => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'supplier.order.items'   => array(
-                        'label' => _(
-                            'Items'
-                        ),
-                        'icon'  => 'bars'
-                    ),
-                    'supplier.order.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-
-
-                    'supplier.order.tac.editor' => array(
-                        'label' => _(
-                            'Terms and conditions'
-                        ),
-                        'icon'  => 'gavel',
-                        'class' => ''
-                    ),
-                    'supplier.order.history'    => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-
-            ),
-
-            'deleted_order_to_delete' => array(
-                'type' => 'object',
-                'tabs' => array(
-
-
-                    'deleted.supplier.order.items'   => array(
-                        'label' => _(
-                            'Items'
-                        ),
-                        'icon'  => 'bars'
-                    ),
-                    'deleted.supplier.order.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-
-            ),
-
-            'deliveryto_delete' => array(
-                'type' => 'object',
-                'tabs' => array(
-
-                    'supplier.delivery.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-
-                    'supplier.delivery.items'   => array(
-                        'label' => _(
-                            'Items'
-                        ),
-                        'icon'  => 'bars'
-                    ),
-                    'supplier.delivery.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-
-            ),
-
-            'supplier'                => array(
-                'type'      => 'object',
-                'label'     => _('Supplier'),
-                'icon'      => 'hand-holding-box',
-                'reference' => 'supplier/%d',
-                'tabs'      => array(
-                    'supplier.details'        => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database',
-                        'title' => _('Details')
-                    ),
-                    'supplier.supplier_parts' => array(
-                        'label' => _(
-                            "Supplier's Parts"
-                        ),
-                        'icon'  => 'hand-receiving'
-                    ),
-                    'supplier.orders'         => array(
-                        'label' => _(
-                            'Purchase orders'
-                        ),
-                        'icon'  => 'clipboard'
-                    ),
-
-                    'supplier.history' => array(
-                        'label' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-                    'supplier.attachments' => array(
-                        'label'         => _('Attachments'),
-                        'icon'          => 'paperclip',
-                        'class'         => 'right icon_only',
-                        'quantity_data' => array(
-                            'object' => '_object',
-                            'field'  => 'Number Attachments'
-                        ),
-                    ),
-
-                )
-            ),
-            'supplier.new'            => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'supplier.new' => array(
-                        'label' => _(
-                            'New supplier'
-                        )
-                    ),
-
-                )
-
-            ),
-            'supplier.attachment.new' => array(
-                'type' => 'new_object',
-                'tabs' => array(
-                    'supplier.attachment.new' => array(
-                        'label' => _(
-                            'new attachment'
-                        )
-                    ),
-
-                )
-
-            ),
-            'supplier.attachment'     => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'supplier.attachment.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-                    'supplier.attachment.history' => array(
-                        'label' => _(
-                            'History'
-                        ),
-                        'icon'  => 'clock'
-                    ),
-
-                )
-
-            ),
-            'deleted_supplier'        => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'supplier.history' => array(
-                        'label' => _('History'),
-                        'icon'  => 'road'
-                    ),
-
-
-                )
-            ),
-
-            'supplier.order.item' => array(
-                'type'           => 'object',
-                'subtabs_parent' => array(
-
-                    'supplier_part.purchase_orders.purchase_orders' => 'supplier_part.purchase_orders',
-                    'supplier_part.purchase_orders.delivery_notes'  => 'supplier_part.purchase_orders',
-                    'supplier_part.purchase_orders.invoices'        => 'supplier_part.purchase_orders',
-                ),
-
-
-                'tabs' => array(
-
-
-                    'supplier.order.item.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-
-
-                    'supplier_part.purchase_orders' => array(
-                        'label'   => _(
-                            'Purchase Orders'
-                        ),
-                        'icon'    => 'clipboard',
-                        'class'   => 'right icon_only',
-                        'subtabs' => array(
-                            'supplier_part.purchase_orders.purchase_orders' => array(
-                                'label' => _(
-                                    'Purchase Orders'
-                                )
-                            ),
-                            'supplier_part.purchase_orders.delivery_notes'  => array(
-                                'label' => _(
-                                    'Delivery Notes'
-                                )
-                            ),
-                            'supplier_part.purchase_orders.invoices'        => array(
-                                'label' => _(
-                                    'Invoices'
-                                )
-                            ),
-
-                        )
-
-                    ),
-
-                    'supplier_part.images'  => array(
-                        'label' => '',
-                        'title' => _('Images'),
-                        'icon'  => 'camera-retro',
-                        'class' => 'right icon_only'
-                    ),
-                    'supplier_part.history' => array(
-                        'label' => '',
-                        'title' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-
-                )
-            ),
-
-
-            'supplier_part' => array(
-                'type'           => 'object',
-                'subtabs_parent' => array(
-
-                    'supplier_part.supplier.orders'     => 'supplier_part.purchase_orders',
-                    'supplier_part.supplier.deliveries' => 'supplier_part.purchase_orders',
-                ),
-
-
-                'tabs' => array(
-
-
-                    'supplier_part.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-
-
-                    'supplier_part.purchase_orders' => array(
-                        'label'   => _(
-                            'Purchase orders / deliveries'
-                        ),
-                        'icon'    => 'clipboard',
-                        'subtabs' => array(
-
-                            'supplier_part.supplier.orders'     => array(
-                                'label' => _(
-                                    'Purchase orders'
-                                ),
-                                'icon'  => 'clipboard'
-                            ),
-                            'supplier_part.supplier.deliveries' => array(
-                                'label' => _(
-                                    "Supplier's deliveries"
-                                ),
-                                'icon'  => 'truck'
-                            ),
-
-                        )
-
                     ),
                     'supplier_part.images'          => array(
                         'label' => '',
@@ -8748,77 +5717,12 @@ $modules = array(
                 )
             ),
 
-            'supplier_part.historic' => array(
-                'type'           => 'object',
-                'subtabs_parent' => array(
-
-                    'supplier_part.purchase_orders.purchase_orders' => 'supplier_part.purchase_orders',
-                    'supplier_part.purchase_orders.delivery_notes'  => 'supplier_part.purchase_orders',
-                    'supplier_part.purchase_orders.invoices'        => 'supplier_part.purchase_orders',
-                ),
-
-
-                'tabs' => array(
-
-
-                    'supplier_part.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-
-
-                    'supplier_part.purchase_orders' => array(
-                        'label'   => _(
-                            'Purchase Orders'
-                        ),
-                        'icon'    => 'clipboard',
-                        'subtabs' => array(
-                            'supplier_part.purchase_orders.purchase_orders' => array(
-                                'label' => _(
-                                    'Purchase Orders'
-                                )
-                            ),
-                            'supplier_part.purchase_orders.delivery_notes'  => array(
-                                'label' => _(
-                                    'Delivery Notes'
-                                )
-                            ),
-                            'supplier_part.purchase_orders.invoices'        => array(
-                                'label' => _(
-                                    'Invoices'
-                                )
-                            ),
-
-                        )
-
-                    ),
-
-                    'supplier_part.images'  => array(
-                        'label' => '',
-                        'title' => _('Images'),
-                        'icon'  => 'camera-retro',
-                        'class' => 'right icon_only'
-                    ),
-                    'supplier_part.history' => array(
-                        'label' => '',
-                        'title' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-
-                )
-            ),
 
             'supplier_part.new' => array(
                 'type' => 'new_object',
                 'tabs' => array(
                     'supplier_part.new' => array(
-                        'label' => _(
-                            'New part'
-                        )
+                        'label' => _('New part')
                     ),
 
                 )
@@ -8836,243 +5740,3338 @@ $modules = array(
                 )
 
             ),
+            'agent.user.new'    => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'agent.user.new' => array(
+                        'label' => _(
+                            'New system user'
+                        )
+                    ),
 
-            /*
-            'settings'=>array(
-                'type'=>'navigation', 'label'=>'', 'icon'=>'sliders', 'reference'=>'suppliers/settings', 'class'=>'icon_only',
-                'tabs'=>array(
-                    'suppliers.settings'=>array('label'=>_('Setting'), 'icon'=>'sliders', 'class'=>''),
+                )
+
+            ),
+
+
+            'timeseries_record' => array(
+                'type'     => 'object',
+                'label'    => '',
+                'showcase' => 'timeseries_record',
+
+                'tabs' => array(
+                    'supplier.timeseries_record.parts'    => array(
+                        'label' => _('Parts'),
+                        'icon'  => 'box',
+                        'class' => ''
+                    ),
+                    'supplier.timeseries_record.families' => array(
+                        'label' => _('Families'),
+                        'icon'  => 'sitemap',
+                        'class' => ''
+                    ),
 
 
                 )
 
 
+
+
+
+        )
+
+    )
+),
+
+
+    'warehouses_server' => array(
+    'sections' => array(
+
+        'warehouses' => array(
+
+            'type'      => 'navigation',
+            'label'     => _('Warehouses'),
+            'title'     => _('Warehouses'),
+            'icon'      => 'map-maker',
+            'reference' => 'warehouses',
+            'tabs'      => array(
+                'warehouses' => array()
+            )
+        ),
+
+        'returns' => array(
+            'type'      => 'navigation',
+            'label'     => _('Returns'),
+            'icon'      => 'backspace',
+            'reference' => 'returns/all',
+            'tabs'      => array(
+                'returns_server' => array(
+                    'icon'  => 'backspace',
+                    'label' => _('Returns'),
+
+                ),
+
+                'returns_group_by_warehouse' => array(
+                    'label' => _('Group by warehouse'),
+                    'icon'  => 'layer-group',
+
+                )
+            )
+        ),
+
+        'return' => array(
+            'type' => 'object',
+            'tabs' => array(
+
+                'return.details' => array(
+                    'label' => _('Settings'),
+                    'icon'  => 'sliders-h'
+                ),
+
+                'return.items' => array(
+                    'label' => _('Items'),
+                    'icon'  => 'bars'
+                ),
+
+                'return.items_done' => array(
+                    'label' => _('Items'),
+                    'icon'  => 'bars'
+                ),
+
+
+                'return.history'     => array(
+                    'label' => '',
+                    'title' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+                'return.attachments' => array(
+                    'label'         => '',
+                    'title'         => _('Attachments'),
+                    'icon'          => 'paperclip',
+                    'class'         => 'right icon_only',
+                    'quantity_data' => array(
+                        'object' => '_object',
+                        'field'  => 'Number Attachments'
+                    ),
+                ),
+            )
+
+        ),
+
+    )
+),
+
+    'inventory'  => array(
+    'sections' => array(
+
+        'dashboard' => array(
+            'type'      => 'navigation',
+            'title'     => _('Inventory dashboard'),
+            'label'     => _('Dashboard'),
+            'icon'      => 'tachometer',
+            'reference' => 'inventory/dashboard',
+            'tabs'      => array(
+                'inventory.dashboard' => array('label' => _('Dashboard'))
+
+            )
+        ),
+
+
+        'inventory' => array(
+
+            'type'      => 'navigation',
+            'label'     => _('Inventory').' ('._('Parts').')',
+            'icon'      => 'boxes',
+            'reference' => 'inventory',
+            'tabs'      => array(
+                'inventory.in_process_parts'    => array(
+                    'label' => _('In process'),
+                    'class' => 'discreet'
+                ),
+                'inventory.parts'               => array(
+                    'label' => _('Active')
+                ),
+                'inventory.discontinuing_parts' => array(
+                    'label' => _(
+                        'Discontinuing'
+                    ),
+                    'class' => 'discreet'
+                ),
+                'inventory.discontinued_parts'  => array(
+                    'label' => _(
+                        'Discontinued'
+                    ),
+                    'class' => 'very_discreet'
+                ),
+
+            )
+        ),
+
+
+        'barcodes'          => array(
+            'type'      => 'navigation',
+            'label'     => _('Retail barcodes'),
+            'icon'      => 'barcode',
+            'reference' => 'inventory/barcodes',
+            'tabs'      => array(
+                'inventory.barcodes' => array('label' => _('Barcodes'))
+
+            )
+        ),
+        'barcode'           => array(
+            'type'  => 'object',
+            'title' => _('Barcode'),
+            'tabs'  => array(
+                'barcode.details' => array(
+                    'label' => _('Data'),
+                    'icon'  => 'database'
+                ),
+                'barcode.history' => array(
+                    'label' => _('History'),
+                    'icon'  => 'road'
+                ),
+
+                'barcode.assets' => array(
+                    'label' => _('Products/Parts'),
+                    'icon'  => 'cube'
+                ),
+
+            )
+        ),
+        'deleted_barcode'   => array(
+            'type'  => 'object',
+            'title' => _('Deleted barcode'),
+            'tabs'  => array(
+                'barcode.history' => array(
+                    'label' => _('History'),
+                    'icon'  => 'road'
+                ),
+
+
+            )
+        ),
+        'categories'        => array(
+            'type'      => 'navigation',
+            'label'     => _("Part's families"),
+            'icon'      => 'sitemap',
+            'reference' => 'inventory/categories',
+
+            'tabs' => array(
+                'part_families' => array(
+                    'label' => _(
+                        "Part's families"
+                    )
+                ),
+            )
+        ),
+        'main_category.new' => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'main_category.new' => array(
+                    'label' => _(
+                        'New category'
+                    )
+                ),
+
+            )
+
+        ),
+        'category'          => array(
+            'type'           => 'object',
+            'title'          => _('Category (Part)'),
+            'subtabs_parent' => array(
+
+                'category.part.sales.plot'     => 'category.part.sales',
+                'category.part.sales.history'  => 'category.part.sales',
+                'category.part.sales.calendar' => 'category.part.sales',
+                'category.part.sales.info'     => 'category.part.sales'
+
             ),
-            */
+            'tabs'           => array(
+
+                'category.details' => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'icon'  => 'database'
+                ),
+
+                'category.part.sales' => array(
+                    'label'   => _('Sales'),
+                    'icon'    => 'money-bill-alt',
+                    'subtabs' => array(
+                        'category.part.sales.plot'     => array(
+                            'label' => _(
+                                'Plot'
+                            )
+                        ),
+                        'category.part.sales.history'  => array(
+                            'label' => _(
+                                'Sales history'
+                            )
+                        ),
+                        'category.part.sales.calendar' => array(
+                            'label' => _(
+                                'Calendar'
+                            )
+                        ),
+                        'category.part.sales.info'     => array(
+                            'label'   => '',
+                            'title'   => _('Sales data info'),
+                            'icon_v2' => 'fal fa-fw fa-chess-clock',
+                            'class'   => 'right icon_only'
+                        ),
+
+                    )
+
+                ),
+
+                'category.subjects' => array(
+                    'label'         => _('Parts'),
+                    'quantity_data' => array(
+                        'object' => '_object',
+                        'field'  => 'Parts'
+                    ),
+                ),
+
+                'category.part.discontinued_subjects' => array(
+                    'label'         => _('Discontinued parts'),
+                    'quantity_data' => array(
+                        'object' => '_object',
+                        'field'  => 'Discontinued'
+                    ),
+                ),
+
+                'category.categories'          => array(
+                    'label' => _(
+                        'Subcategories'
+                    )
+                ),
+                'part_family.part_locations'   => array(
+                    'label' => _('Parts locations')
+                ),
+                'part_family.product_families' => array(
+                    'label' => _('Product families')
+                ),
+                'part_family.products'         => array(
+                    'label' => _('Products'),
+                    'icon'  => 'cubes'
+                ),
+
+                'category.images'  => array(
+                    'title'         => _('Images'),
+                    'label'         => '',
+                    'quantity_data' => array(
+                        'object' => '_object',
+                        'field'  => 'Number Images'
+                    ),
+                    'icon'          => 'camera-retro',
+                    'class'         => 'right icon_only'
+                ),
+                'category.history' => array(
+                    'title'         => _('History/Notes'),
+                    'label'         => '',
+                    'quantity_data' => array(
+                        'object' => '_object',
+                        'field'  => 'Number History Records'
+                    ),
+
+
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                )
+
+
+            )
+
+        ),
+
+
+        'part' => array(
+            'type'           => 'object',
+            'title'          => _('Part'),
+            'subtabs_parent' => array(
+                'part.sales.overview'      => 'part.sales',
+                'part.sales.history'       => 'part.sales',
+                'part.sales.products'      => 'part.sales',
+                'part.stock.overview'      => 'part.stock',
+                'part.stock.transactions'  => 'part.stock',
+                'part.stock.history'       => 'part.stock',
+                'part.stock.availability'  => 'part.stock',
+                'part.supplier.orders'     => 'part.supplier_orders',
+                'part.supplier.deliveries' => 'part.supplier_orders',
+                'part.stock.history'       => 'part.stock',
+                'part.stock.transactions'  => 'part.stock',
+                'part.stock.cost'          => 'part.stock',
+                'part.stock.history.plot'  => 'part.stock',
+                'part.sales.plot'          => 'part.sales',
+                'part.sales.history'       => 'part.sales',
+                'part.sales.calendar'      => 'part.sales',
+                'part.sales.info'          => 'part.sales',
+
+            ),
+
+
+            'tabs' => array(
+
+
+                'part.details' => array(
+                    'label' => _('Data'),
+                    'icon'  => 'database'
+                ),
+
+
+                'part.sales' => array(
+                    'label'   => _('Sales'),
+                    'icon'    => 'money-bill-alt',
+                    'subtabs' => array(
+                        'part.sales.plot'     => array(
+                            'label' => _(
+                                'Plot'
+                            )
+                        ),
+                        'part.sales.history'  => array(
+                            'label' => _(
+                                'Sales history'
+                            )
+                        ),
+                        'part.sales.calendar' => array(
+                            'label' => _(
+                                'Calendar'
+                            )
+                        ),
+                        'part.sales.info'     => array(
+                            'label'   => '',
+                            'title'   => _('Sales data info'),
+                            'icon_v2' => 'fal fa-fw fa-chess-clock',
+                            'class'   => 'right icon_only'
+                        ),
+
+                    )
+
+                ),
+
+                'part.stock' => array(
+                    'label'   => _(
+                        'Stock History'
+                    ),
+                    'icon'    => 'area-chart',
+                    'subtabs' => array(
+                        'part.stock.history'      => array(
+                            'label' => _(
+                                'Stock history'
+                            ),
+                            'icon'  => 'bars'
+                        ),
+                        'part.stock.history.plot' => array(
+                            'label' => _(
+                                'Stock history chart'
+                            ),
+                            'icon'  => 'area-chart'
+                        ),
+                        'part.stock.transactions' => array(
+                            'label' => _('Stock movements'),
+                            'icon'  => 'exchange',
+                        ),
+                        'part.stock.cost'         => array(
+                            'label' => _('Stock cost'),
+                            'icon'  => 'fa-dollar-sign',
+                        ),
+                    )
+
+
+                ),
+
+
+                'part.supplier_orders' => array(
+                    'label'   => _(
+                        'Purchase orders'
+                    ),
+                    'icon'    => 'clipboard',
+                    'subtabs' => array(
+
+                        'part.supplier.orders'     => array(
+                            'label' => _(
+                                'Purchase orders'
+                            ),
+                            'icon'  => 'clipboard'
+                        ),
+                        'part.supplier.deliveries' => array(
+                            'label' => _("Supplier's deliveries"),
+                            'icon'  => 'truck'
+                        ),
+
+                    )
+
+                ),
+
+
+                'part.supplier_parts' => array(
+                    'label'         => _(
+                        "Supplier's parts"
+                    ),
+                    'quantity_data' => array(
+                        'object' => '_object',
+                        'field'  => 'Number Supplier Parts'
+                    ),
+                    'icon'          => 'hand-receiving'
+                ),
+
+                'part.products' => array(
+                    'label'         => _('Products'),
+                    'quantity_data' => array(
+                        'object' => '_object',
+                        'field'  => 'Products Numbers'
+                    ),
+                    'icon'          => 'cube'
+                ),
+
+                'part.locations'              => array(
+                    'label' => _('Locations'),
+                    'icon'  => 'inventory'
+                ),
+                'part.paid_orders_in_process' => array(
+                    'label' => '',
+                    'title' => _('Paid orders in process by customer services'),
+                    'icon'  => 'shopping-cart',
+                    'class' => 'right icon_only'
+                ),
+                'part.history'                => array(
+
+
+                    'title'         => _('History/Notes'),
+                    'label'         => '',
+                    'quantity_data' => array(
+                        'object' => '_object',
+                        'field'  => 'Number History Records'
+                    ),
+
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+                'part.images'                 => array(
+                    'title'         => _('Images'),
+                    'label'         => '',
+                    'quantity_data' => array(
+                        'object' => '_object',
+                        'field'  => 'Number Images'
+                    ),
+                    'icon'          => 'camera-retro',
+                    'class'         => 'right icon_only'
+                ),
+                'part.attachments'            => array(
+                    'title'         => _('Attachments'),
+                    'label'         => '',
+                    'quantity_data' => array(
+                        'object' => '_object',
+                        'field'  => 'Number Attachments'
+                    ),
+                    'icon'          => 'paperclip',
+                    'class'         => 'right icon_only'
+                ),
+
+
+            )
+        ),
+
+        'part.new'   => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'part.new' => array(
+                    'label' => _(
+                        'new part'
+                    )
+                ),
+
+            )
+
+        ),
+        'part.image' => array(
+            'type' => 'object',
+
+
+            'tabs' => array(
+
+
+                'part.image.details' => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'icon'  => 'database'
+                ),
+                'part.image.history' => array(
+                    'label' => _(
+                        'History/Notes'
+                    ),
+                    'icon'  => 'road'
+                ),
+
+            )
+        ),
+
+        'part.attachment.new' => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'part.attachment.new' => array(
+                    'label' => _(
+                        'new attachment'
+                    )
+                ),
+
+            )
+
+        ),
+        'part.attachment'     => array(
+            'type' => 'object',
+            'tabs' => array(
+                'part.attachment.details' => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'icon'  => 'database'
+                ),
+                'part.attachment.history' => array(
+                    'label' => _(
+                        'History'
+                    ),
+                    'icon'  => 'clock'
+                ),
+
+            )
+
+        ),
+        /*
+        'transactions'=>array(
+            'type'=>'navigation', 'label'=>_('Stock Movements'), 'icon'=>'exchange', 'reference'=>'inventory/transactions',
+            'tabs'=>array(
+                'inventory.stock.transactions'=>array('label'=>_('Stock movements'))
+
+            )
+        ),
+        */
+
+        'upload' => array(
+            'type' => 'object',
+            'tabs' => array(
+                'upload.records' => array(
+                    'label' => _(
+                        'Records'
+                    )
+                ),
+
+
+            )
+
+        ),
+
+        'supplier_part.new' => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'part.supplier_part.new' => array(
+                    'label' => _(
+                        'New supplier part'
+                    )
+                ),
+
+            )
+
+        ),
+        'stock_history'     => array(
+            'type'      => 'navigation',
+            'label'     => _('Stock History'),
+            'icon'      => 'scanner',
+            'reference' => 'inventory/stock_history',
+            'tabs'      => array(
+                'inventory.stock.history' => array(
+                    'label' => _(
+                        'Stock history'
+                    )
+                ),
+
+                'inventory.stock.history.plot' => array(
+                    'label' => _(
+                        'Chart'
+                    ),
+                    'class' => 'right'
+                ),
+
+
+            )
+        ),
+        'stock_history.day' => array(
+            'type' => '',
+            'tabs' => array(
+                'inventory.stock.history.day' => array('label' => ''),
+
+
+            )
+        ),
+
+
+        'product' => $_product,
+
+        'product.new' => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'product.new' => array(
+                    'label' => _(
+                        'New product'
+                    )
+                ),
+
+            )
+
+        ),
+
+
+    )
+),
+    'warehouses' => array(
+    'sections' => array(
+
+
+        'dashboard'      => array(
+            'type'      => 'navigation',
+            'label'     => _('Dashboard'),
+            'icon'      => 'tachometer',
+            'reference' => 'warehouse/%d/dashboard',
+            'tabs'      => array(
+                'warehouse.dashboard' => array('label' => _('Dashboard'))
+
+            )
+        ),
+        'warehouse'      => array(
+
+            'type'           => 'navigation',
+            'label'          => _('Warehouse'),
+            'title'          => _('Warehouse'),
+            'icon'           => 'warehouse-alt',
+            'reference'      => 'warehouse/%d',
+            'sections_class' => 'icon-only',
+
+            'tabs' => array(
+                'warehouse.details'  => array(
+                    'label' => _('Settings'),
+                    'title' => _('Warehouse settings'),
+                    'icon'  => 'sliders-h'
+                ),
+                'warehouse.shippers' => array(
+                    'label' => _('Shipping companies'),
+                    'title' => _('Shipping companies'),
+                    'icon'  => 'truck-loading'
+                ),
+
+                'warehouse.history' => array(
+                    'label' => '',
+                    'title' => _('History'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+                'warehouse.parts'   => array(
+                    'label' => _('Part-Locations'),
+                    'icon'  => 'pallet-alt',
+                    'class' => 'right'
+                ),
+
+            )
+
+        ),
+        'warehouse_area' => array(
+
+            'type'      => 'object',
+            'label'     => _('Warehouse area'),
+            'icon'      => 'inventory',
+            'reference' => '',
+
+            'tabs' => array(
+                'warehouse_area.details' => array(
+                    'label' => _('Settings'),
+                    'title' => _('Warehouse area settings'),
+                    'icon'  => 'sliders-h'
+                ),
+
+                'warehouse_area.locations' => array(
+                    'label' => _('Locations'),
+                    'icon'  => 'pallet'
+                ),
+                'warehouse_area.history'   => array(
+                    'label' => '',
+                    'title' => _('History'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+                'warehouse_area.parts'     => array(
+                    'label' => _('Part-Locations'),
+                    'icon'  => 'pallet-alt',
+                    'class' => 'right'
+                ),
+
+            )
+
+        ),
+
+        /* to add
+        'categories'=>array('type'=>'navigation', 'label'=>_("Locations's categories"), 'icon'=>'sitemap', 'reference'=>'warehouse/%d/categories',
+
+            'tabs'=>array(
+                'locations.categories'=>array('label'=>_("Locations's categories")),
+            )
+        ),
+        */
+        /*
+                    'warehouse_areas' => array(
+
+                        'type'      => 'navigation',
+                        'label'     => _('Areas'),
+                        'title'     => _('Warehouse areas (Rankings, aisles, rooms)'),
+                        'icon'      => 'inventory',
+                        'reference' => 'warehouse/%d/areas',
+                        'tabs'      => array(
+
+
+
+
+                        )
+
+
+                    ),
+        */
+
+        'locations' => array(
+
+            'type'      => 'navigation',
+            'label'     => _('Locations'),
+            'icon'      => 'pallet',
+            'reference' => 'warehouse/%d/locations',
+            'tabs'      => array(
+
+
+                'warehouse.locations' => array(
+                    'label'             => _('Locations'),
+                    'icon'              => 'pallet',
+                    'dynamic_reference' => 'warehouse/%d/locations',
+
+                ),
+                'warehouse.areas'     => array(
+                    'label'             => _('Warehouse areas'),
+                    'title'             => _('Warehouse areas (Rankings, aisles, rooms)'),
+                    'icon'              => 'inventory',
+                    'dynamic_reference' => 'warehouse/%d/areas',
+
+                ),
+
+            )
+
+        ),
+
+
+        'shipper.new' => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'shipper.new' => array(
+                    'label' => _('New shipping company')
+                ),
+
+            )
+
+        ),
+
+
+        'warehouse.new'      => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'warehouse.new' => array(
+                    'label' => _('New warehouse')
+                ),
+
+            )
+
+        ),
+        'warehouse_area.new' => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'warehouse.new' => array(
+                    'label' => _('New warehouse area')
+                ),
+
+            )
+
+        ),
+        'location'           => array(
+
+            'type'      => 'object',
+            'label'     => _('Location'),
+            'icon'      => 'map-sings',
+            'reference' => '',
+            'tabs'      => array(
+                'location.details'            => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'title' => _(
+                        'Location detais'
+                    ),
+                    'icon'  => 'database'
+                ),
+                'location.parts'              => array(
+                    'label' => _(
+                        'Parts'
+                    ),
+                    'icon'  => 'box'
+                ),
+                'location.stock.transactions' => array(
+                    'label' => _(
+                        'Stock movements'
+                    ),
+                    'icon'  => 'exchange'
+                ),
+
+                'location.history' => array(
+                    'title'         => _('History'),
+                    'label'         => '',
+                    'quantity_data' => array(
+                        'object' => '_object',
+                        'field'  => 'Number History Records'
+                    ),
+                    'icon'          => 'road',
+                    'class'         => 'right icon_only'
+                ),
+
+
+            )
+
+        ),
+
+        'location.new' => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'location.new' => array(
+                    'label' => _(
+                        'New location'
+                    )
+                ),
+
+            )
+
+        ),
+
+        'deleted_location' => array(
+            'type' => 'object',
+            'tabs' => array(
+                'supplier.history' => array(
+                    'label' => _('History'),
+                    'icon'  => 'road'
+                ),
+
+
+            )
+        ),
+
+        'main_category.new' => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'main_category.new' => array(
+                    'label' => _(
+                        'New category'
+                    )
+                ),
+
+            )
+
+        ),
+        'category'          => array(
+            'type' => 'object',
+
+            'tabs' => array(
+
+                'category.details'   => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'icon'  => 'database'
+                ),
+                'category.parts'     => array(
+                    'label' => _(
+                        'Parts'
+                    ),
+                    'icon'  => 'box'
+                ),
+                'category.locations' => array(
+                    'label' => _(
+                        'Locations'
+                    ),
+                    'icon'  => 'map-sings'
+                ),
+
+            )
+
+        ),
+
+        'upload' => array(
+            'type' => 'object',
+            'tabs' => array(
+                'upload.records' => array(
+                    'label' => _('Records')
+                ),
+
+
+            )
+
+        ),
+
+
+        'leakages' => array(
+            'type' => 'object',
+            'tabs' => array(
+                'stock_leakages'       => array(
+                    'label' => _('Leakages')
+                ),
+                'stock_leakages_setup' => array(
+                    'label' => '',
+                    'title' => _('Setup'),
+                    'icon'  => 'sliders',
+                    'class' => 'right icon_only'
+                ),
+
+            )
+
+        ),
+
+        'timeseries_record' => array(
+            'type'     => 'object',
+            'label'    => '',
+            'showcase' => 'timeseries_record',
+
+            'tabs' => array(
+                'warehouse.leakages.transactions' => array(
+                    'label' => _('Transactions'),
+                    'icon'  => 'fa-arrow-circle-right',
+                    'class' => ''
+                )
+
+
+            )
+
+
+        ),
+
+        'shipper' => array(
+
+            'type'      => 'object',
+            'label'     => _('Shipping company'),
+            'icon'      => '',
+            'reference' => '',
+            'tabs'      => array(
+                'shipper.details'      => array(
+                    'label' => _('Settings'),
+                    'title' => _('Settings'),
+                    'icon'  => 'slider-h'
+                ),
+                'shipper.consignments' => array(
+                    'label' => _('Consignments'),
+                    'icon'  => 'truck'
+                ),
+
+                'shipper.history' => array(
+                    'label' => _('History/Notes'),
+                    'title' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+
+            )
+
+        ),
+
+        'returns' => array(
+            'type'      => 'navigation',
+            'label'     => _('Returns'),
+            'icon'      => 'backspace',
+            'reference' => 'warehouse/%d/returns',
+            'tabs'      => array(
+                'warehouse.returns' => array(
+                    'icon'  => 'backspace',
+                    'label' => _('Returns'),
+
+                ),
+
+            )
+        ),
+
+        'return' => array(
+            'type' => 'object',
+            'tabs' => array(
+
+                'return.details' => array(
+                    'label' => _('Settings'),
+                    'icon'  => 'sliders-h'
+                ),
+
+                'return.items' => array(
+                    'label' => _('Items'),
+                    'icon'  => 'bars'
+                ),
+
+                'return.items_done' => array(
+                    'label' => _('Items'),
+                    'icon'  => 'bars'
+                ),
+
+
+                'return.history'     => array(
+                    'label' => '',
+                    'title' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+                'return.attachments' => array(
+                    'label'         => '',
+                    'title'         => _('Attachments'),
+                    'icon'          => 'paperclip',
+                    'class'         => 'right icon_only',
+                    'quantity_data' => array(
+                        'object' => '_object',
+                        'field'  => 'Number Attachments'
+                    ),
+                ),
+            )
+
+        ),
+
+    )
+),
+
+
+    'reports' => array(
+
+    'sections' => array(
+        'reports' => array(
+            'type'      => 'navigation',
+            'label'     => _('Activity/Performance'),
+            'title'     => _("Activity/Performance"),
+            'icon'      => 'thumbs-up',
+            'reference' => 'users',
+            'tabs'      => array(
+                'reports' => array(),
+
+            )
+
+        ),
+
+        'performance' => array(
+            'type'      => 'navigation',
+            'label'     => _('Activity/Performance'),
+            'title'     => _("Activity/Performance"),
+            'icon'      => 'thumbs-up',
+            'reference' => 'users',
+            'tabs'      => array(
+                'report.pp'            => array(
+                    'label'     => _(
+                        'Pickers & Packers'
+                    ),
+                    'title'     => _(
+                        'Pickers & Packers Report'
+                    ),
+                    'reference' => 'users'
+                ),
+                'report.outofstock'    => array(
+                    'label'     => _(
+                        "Out of Stock"
+                    ),
+                    'title'     => _(
+                        "Out of Stock"
+                    ),
+                    'reference' => 'users/'
+                ),
+                'report.top_customers' => array(
+                    'label'     => _('Top Customers'),
+                    'title'     => _('Top Customers'),
+                    'reference' => 'locations/%d/parts'
+                ),
+
+            )
+
+        ),
+        'sales'       => array(
+            'type'      => 'navigation',
+            'label'     => _('Sales'),
+            'title'     => _("Sales"),
+            'icon'      => 'money-bill-alt',
+            'reference' => 'users',
+            'tabs'      => array(
+                'sales'                  => array(
+                    'label' => _('Sales by store'),
+
+                ),
+                'sales_invoice_category' => array(
+                    'label' => _("Sales by invoices' categories"),
+
+                ),
+
+
+            )
+
+        ),
+
+        'ec_sales_list' => array(
+            'type' => '',
+            'tabs' => array(
+                'ec_sales_list' => array(),
+
+            )
+
+        ),
+
+        'pickers'               => array(
+            'type' => '',
+            'tabs' => array(
+                'pickers' => array(),
+
+            )
+
+        ),
+        'packers'               => array(
+            'type' => '',
+            'tabs' => array(
+                'packers' => array(),
+
+            )
+
+        ),
+        'sales_representatives' => array(
+            'type' => '',
+            'tabs' => array(
+                'sales_representatives' => array(),
+
+            )
+
+        ),
+        'prospect_agents'       => array(
+            'type' => '',
+            'tabs' => array(
+                'prospect_agents' => array(),
+
+            )
+
+        ),
+
+
+        'stock_given_free' => array(
+            'type' => '',
+            'tabs' => array(
+                'stock_given_free' => array(),
+
+            )
+
+        ),
+        'lost_stock'       => array(
+            'type' => '',
+            'tabs' => array(
+                'lost_stock' => array(),
+
+            )
+
+        ),
+
+
+        'report_orders' => array(
+            'type' => '',
+            'tabs' => array(
+                'report_orders' => array(),
+
+            )
+
+        ),
+
+        'report_orders_components' => array(
+            'type' => '',
+            'tabs' => array(
+                'report_orders_components' => array(),
+
+            )
+
+        ),
+
+        'report_delivery_notes' => array(
+            'type' => '',
+            'tabs' => array(
+                'report_delivery_notes' => array(),
+
+            )
+
+        ),
+
+        'intrastat'          => array(
+            'type' => '',
+            'tabs' => array(
+                'intrastat' => array(),
+
+            )
+
+        ),
+        'intrastat_orders'   => array(
+            'type' => '',
+            'tabs' => array(
+                'intrastat_orders' => array(),
+
+            )
+
+        ),
+        'intrastat_products' => array(
+            'type' => '',
+            'tabs' => array(
+                'intrastat_products' => array(),
+
+            )
+
+        ),
+
+        'billingregion_taxcategory'          => array(
+            'type' => '',
+            'tabs' => array(
+                'billingregion_taxcategory' => array(),
+
+            )
+
+        ),
+        'billingregion_taxcategory.refunds'  => array(
+            'type' => '',
+            'tabs' => array(
+                'billingregion_taxcategory.refunds' => array(),
+
+            )
+
+        ),
+        'billingregion_taxcategory.invoices' => array(
+            'type' => '',
+            'tabs' => array(
+                'billingregion_taxcategory.invoices' => array(),
+
+            )
+
+        ),
+        'tax'                                => array(
+            'type'      => 'navigation',
+            'label'     => _(
+                'Tax Reports'
+            ),
+            'title'     => _(
+                "Tax Reports"
+            ),
+            'icon'      => 'legal',
+            'reference' => 'users',
+            'tabs'      => array(
+                'report.notax'     => array(
+                    'label'     => _(
+                        'No Tax'
+                    ),
+                    'title'     => _(
+                        'No Tax Report'
+                    ),
+                    'reference' => 'users'
+                ),
+                'report.intrastat' => array(
+                    'label'     => _(
+                        "Intrastat"
+                    ),
+                    'title'     => _(
+                        "Intrastat"
+                    ),
+                    'reference' => 'users/'
+                ),
+
+            )
+
+        ),
+
+        'sales_representative' => array(
+            'type' => 'object',
+
+
+            'tabs' => array(
+
+                'sales_representative.customers' => array(
+                    'label' => _('Customers')
+                ),
+                'sales_representative.invoices'  => array(
+                    'label' => _('Invoices')
+                ),
+
+                'sales_representative.invoices_group_by_customer' => array(
+                    'label' => '',
+                    'title' => _('Invoices grouped by customers'),
+                    'icon'  => 'users-class',
+                    'class' => 'right icon_only'
+                ),
+
+                /*
+                'sales_representative.prospects' => array(
+                    'label' => _('Prospects')
+                ),
+                */
+
+
+            )
+
+        ),
+
+        'prospect_agent' => array(
+            'type' => 'object',
+
+
+            'tabs' => array(
+                'prospect_agent.prospects'   => array(
+                    'label' => _('Prospects')
+                ),
+                'prospect_agent.sent_emails' => array(
+                    'label' => _('Sent emails')
+                ),
+                //'prospect_agent.calls'  => array(
+                //    'label' => _('Calls')
+                //),
+
+
+            )
+
+        ),
+
+        'prospect_agent_email_tracking' => array(
+            'type' => 'object',
+            'tabs' => array(
+                'email_tracking.email' => array(
+                    'label' => _('Email'),
+                    'icon'  => 'envelope',
+                ),
+
+                'email_tracking.events' => array(
+                    'label' => _('Tracking'),
+                    'icon'  => 'stopwatch'
+                ),
+
+
+            )
+        ),
+
+
+    )
+),
+    'hr'      => array(
+
+    'sections' => array(
+        'employees' => array(
+            'type'      => 'navigation',
+            'label'     => _('Employees'),
+            'title'     => _("Employees"),
+            'icon'      => 'hand-rock',
+            'reference' => 'hr',
+
+
+            'subtabs_parent' => array(
+                'employees.uploads' => 'employees.history_uploads',
+                'employees.history' => 'employees.history_uploads',
+
+
+            ),
+
+            'tabs' => array(
+                'employees'         => array(
+                    'label' => _(
+                        'Employees'
+                    )
+                ),
+                'deleted.employees' => array(
+                    'label' => _(
+                        'Deleted employees'
+                    ),
+                    'icon'  => 'trash',
+                    'class' => 'right icon_only'
+                ),
+                'exemployees'       => array(
+                    'label' => _(
+                        'Ex employees'
+                    ),
+                    'title' => _(
+                        'Ex Employees'
+                    ),
+                    'class' => ''
+                ),
+
+
+            )
+
+        ),
+
+        'contractors'      => array(
+            'type'      => 'navigation',
+            'label'     => _('Contractors'),
+            'icon'      => 'hand-spock',
+            'reference' => 'hr/contractors',
+            'tabs'      => array(
+                'contractors'         => array('label' => _('Contractors')),
+                'deleted.contractors' => array(
+                    'label' => _(
+                        'Deleted contractors'
+                    ),
+                    'icon'  => 'trash',
+                    'class' => 'right icon_only'
+                ),
+
+            )
+
+
+        ),
+
+        /*
+          'salesmen'      => array(
+              'type'      => 'navigation',
+              'label'     => _('Account managers'),
+              'icon'      => 'handshake',
+              'reference' => 'hr/salesmen',
+              'tabs'      => array(
+                  'salesmen'         => array('label' => _('Account managers')),
+
+
+              )
+
+
+          ),
+
+*/
+        'overtimes'        => array(
+            'type'      => 'navigation',
+            'label'     => _('Overtimes'),
+            'icon'      => 'clock',
+            'reference' => 'hr/overtimes',
+            'tabs'      => array(
+                'overtimes' => array('label' => _('Overtimes')),
+
+            )
+
+
+        ),
+        'organization'     => array(
+            'type'      => 'navigation',
+            'label'     => _('Organization'),
+            'title'     => _('Organization'),
+            'icon'      => 'sitemap',
+            'reference' => 'hr/organization',
+            'tabs'      => array(
+                'organization.areas'       => array(
+                    'label' => _(
+                        'Working Areas'
+                    ),
+                    'class' => 'hide'
+                ),
+                'organization.departments' => array(
+                    'label' => _(
+                        'Company departments'
+                    ),
+                    'class' => 'hide'
+                ),
+                'organization.positions'   => array(
+                    'label' => _(
+                        'Job positions'
+                    )
+                ),
+                'organization.organigram'  => array(
+                    'label' => _(
+                        'Organizational chart'
+                    ),
+                    'class' => 'hide'
+                ),
+
+
+            )
+        ),
+        'employee'         => array(
+            'type' => 'object',
+
+
+            'tabs' => array(
+                'employee.details'                 => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'icon'  => 'database'
+                ),
+                'employee.today_timesheet.records' => array(
+                    'label' => _(
+                        'Today timesheet'
+                    )
+                ),
+                'employee.timesheets'              => array(
+                    'label' => _(
+                        'Timesheets'
+                    )
+                ),
+                'employee.history'                 => array(
+                    'label' => _(
+                        'History, notes'
+                    ),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+                'employee.images'                  => array(
+                    'label' => _(
+                        'Images'
+                    ),
+                    'icon'  => 'camera-retro',
+                    'class' => 'right icon_only'
+                ),
+                'employee.attachments'             => array(
+                    'label'         => _(
+                        'Attachments'
+                    ),
+                    'icon'          => 'paperclip',
+                    'class'         => 'right icon_only',
+                    'quantity_data' => array(
+                        'object' => '_object',
+                        'field'  => 'Number Attachments'
+                    ),
+                ),
+
+
+            )
+
+        ),
+        'deleted.employee' => array(
+            'type' => 'object',
+
+
+            'tabs' => array(
+                'deleted.employee.history' => array(
+                    'label' => _(
+                        'History'
+                    ),
+                    'icon'  => 'sticky-note'
+                ),
+
+
+            )
+
+        ),
+
+        'employee.new' => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'employee.new' => array(
+                    'label' => _('new employee')
+                ),
+
+            )
+
+        ),
+
+        'employee.attachment.new' => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'employee.attachment.new' => array(
+                    'label' => _(
+                        'new attachment'
+                    )
+                ),
+
+            )
+
+        ),
+        'employee.user.new'       => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'employee.user.new' => array(
+                    'label' => _(
+                        'new system user'
+                    )
+                ),
+
+            )
+
+        ),
+        'contractor.user.new'     => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'contractor.user.new' => array(
+                    'label' => _(
+                        'new system user'
+                    )
+                ),
+
+            )
+
+        ),
+
+        'employee.attachment' => array(
+            'type' => 'object',
+            'tabs' => array(
+                'employee.attachment.details' => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'icon'  => 'database'
+                ),
+                'employee.attachment.history' => array(
+                    'label' => _(
+                        'History'
+                    ),
+                    'icon'  => 'clock'
+                ),
+
+            )
+
+        ),
+
+        'contractor'         => array(
+            'type' => 'object',
+            'tabs' => array(
+                'contractor.details' => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'icon'  => 'database'
+                ),
+                'contractor.history' => array(
+                    'label' => _(
+                        'History, notes'
+                    ),
+                    'icon'  => 'sticky-note'
+                )
+
+            )
+
+        ),
+        'deleted.contractor' => array(
+            'type' => 'object',
+            'tabs' => array(
+                'deleted.contractor.history' => array(
+                    'label' => _(
+                        'History'
+                    ),
+                    'icon'  => 'sticky-note'
+                ),
+
+
+            )
+
+        ),
+        'contractor.new'     => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'contractor.new' => array(
+                    'label' => _(
+                        'new contractor'
+                    )
+                ),
+
+            )
+
+        ),
+
+        'timesheet' => array(
+            'type' => 'object',
+            'tabs' => array(
+                'timesheet.records' => array(
+                    'label' => _(
+                        'Clockings'
+                    )
+                ),
+
+            )
+
+        ),
+
+        'timesheets' => array(
+            'type'      => 'navigation',
+            'icon'      => 'calendar',
+            'label'     => _('Calendar'),
+            'reference' => 'timesheets/day/'.date('Ymd'),
+            'tabs'      => array(
+                'timesheets.months' => array(
+                    'label' => _(
+                        'Months'
+                    )
+                ),
+
+                'timesheets.weeks'     => array(
+                    'label' => _(
+                        'Weeks'
+                    )
+                ),
+                'timesheets.days'      => array(
+                    'label' => _(
+                        'Days'
+                    )
+                ),
+                'timesheets.employees' => array(
+                    'label' => _(
+                        "Employes'"
+                    )
+                ),
+
+                'timesheets.timesheets' => array(
+                    'label' => _(
+                        'Timesheets'
+                    )
+                ),
+
+            )
+
+        ),
+
+
+        'new_timesheet_record' => array(
+            'type'      => 'new',
+            'label'     => _('New timesheet record'),
+            'title'     => _('New timesheet record'),
+            'icon'      => 'clock',
+            'reference' => 'hr/new_timesheet_record',
+            'tabs'      => array(
+                'timesheet_record.new'    => array(
+                    'label' => _(
+                        'New timesheet record'
+                    ),
+                    'title' => _(
+                        'New timesheet record'
+                    )
+                ),
+                'timesheet_record.import' => array(
+                    'label' => _('Import'),
+                    'title' => _(
+                        'Import timesheet record'
+                    )
+                ),
+                'timesheet_record.api'    => array(
+                    'label' => _('API'),
+                    'title' => _('API')
+                ),
+                'timesheet_record.cancel' => array(
+                    'class' => 'right',
+                    'label' => _('Cancel'),
+                    'title' => _('Cancel'),
+                    'icon'  => 'sign-out fa-flip-horizontal'
+                ),
+
+            )
+
+        ),
+
+
+        'position' => array(
+            'type' => 'object',
+
+
+            'tabs' => array(
+
+
+                'position.employees' => array(
+                    'label' => _(
+                        'Employees'
+                    )
+                ),
+
+
+            )
+
+        ),
+
+
+        'uploads'    => array(
+            'type' => '',
+            'tabs' => array(
+                'uploads' => array(
+                    'label' => _(
+                        'Uploads'
+                    )
+                ),
+
+            )
+
+        ),
+        'upload'     => array(
+            'type' => 'object',
+            'tabs' => array(
+                'upload.employees' => array(
+                    'label' => _(
+                        'Upload Records'
+                    )
+                ),
+
+            )
+
+        ),
+        'hr.history' => array(
+            'type'      => 'navigation',
+            'label'     => '',
+            'icon'      => 'road',
+            'reference' => 'hr/history',
+            'class'     => 'icon_only right',
+            'tabs'      => array(
+                'hr.history' => array(
+                    'label' => _('History'),
+                    'icon'  => 'road',
+                    'class' => ''
+                ),
+                'hr.uploads' => array(
+                    'label' => _('Uploads'),
+                    'icon'  => 'upload',
+                    'class' => ''
+                ),
+
+
+            )
+
+
+        ),
+
+
+        'sales_representative' => array(
+            'type' => 'object',
+
+
+            'sales_representative' => array(
+
+                'sales_representative.customers' => array(
+                    'label' => _('Customers')
+                ),
+                'sales_representative.invoices'  => array(
+                    'label' => _('Invoices')
+                ),
+                'sales_representative.prospects' => array(
+                    'label' => _('Prospects')
+                ),
+
+
+            )
+
+        ),
+
+
+    )
+),
+    'profile' => array(
+
+
+    'sections' => array(
+        'profile' => array(
+            'type'      => 'object',
+            'label'     => '',
+            'title'     => '',
+            'icon'      => '',
+            'reference' => '',
+            'tabs'      => array(
+                'profile.details' => array(
+                    'label' => _('Settings'),
+                    'icon'  => 'sliders-h'
+                ),
+
+                'user.login_history' => array(
+                    'label' => _(
+                        'Login history'
+                    ),
+                    'icon'  => 'sign-in'
+                ),
+
+                'profile.api_keys'      => array(
+                    'label' => _('API keys'),
+                    'icon'  => 'key'
+                ),
+                'profile.history'       => array(
+                    'label' => '',
+                    'title' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+                'user.deleted_api_keys' => array(
+                    'icon'  => 'ban',
+                    'label' => _('Deleted API keys'),
+                    'title' => _('Deleted API keys'),
+                    'class' => 'right icon_only'
+                ),
+
+
+            )
+        ),
+
+        'profile_admin' => array(
+            'type'      => 'object',
+            'label'     => '',
+            'title'     => '',
+            'icon'      => '',
+            'reference' => '',
+            'tabs'      => array(
+                'profile.details' => array(
+                    'label' => _('Settings'),
+                    'icon'  => 'sliders-h'
+                ),
+
+                'user.login_history' => array(
+                    'label' => _(
+                        'Login history'
+                    ),
+                    'icon'  => 'sign-in'
+                ),
+
+
+                'profile.history' => array(
+                    'label' => '',
+                    'title' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+
+
+            )
+        ),
+
+        'profile.api_key.new'     => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'user.api_key.new' => array(
+                    'label' => _('New API')
+                ),
+
+            )
+        ),
+        'profile.api_key'         => array(
+            'type' => 'object',
+            'tabs' => array(
+                'user.api_key.details'  => array(
+                    'label' => _('Data'),
+                    'icon'  => 'database'
+                ),
+                'user.api_key.requests' => array(
+                    'label' => _('Requests'),
+                    'icon'  => 'arrow-circle-right'
+                ),
+                'user.api_key.history'  => array(
+                    'label' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+
+            )
+        ),
+        'profile.deleted_api_key' => array(
+            'type'     => 'object',
+            'showcase' => 'deleted_api_key',
+            'tabs'     => array(
+
+                'api_key.history' => array(
+                    'label' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+
+
+            )
+        ),
+
+    )
+
+),
+
+
+    'users' => array(
+
+
+    'sections' => array(
+
+
+        'users' => array(
+            'type'      => 'navigation',
+            'label'     => _('Users').' ('._('All').')',
+            'icon'      => 'users-class',
+            'reference' => 'users',
+
+            'tabs' => array(
+                'users'             => array(
+                    'label' => _('Users')
+                ),
+                'users_by_category' => array(
+                    'label' => _('Users categories')
+                ),
+
+
+                'deleted.users' => array(
+                    'label' => _('Deleted users'),
+                    'class' => 'right'
+                ),
+            )
+        ),
+        /*
+        'groups' => array(
+            'type'  => 'navigation',
+            'label' => _('Groups'),
+            'icon'  => 'ball-pile',
+            'reference' => 'users/groups',
+            'tabs'  => array(
+                'users.groups' => array(
+                    'label' => _('groups')
+                ),
+            )
+        ),
+*/
+        'staff' => array(
+            'type'      => 'navigation',
+            'label'     => _('Employees'),
+            'icon'      => 'user-headset',
+            'reference' => 'users/staff',
+
+            'tabs' => array(
+                'users.staff' => array(
+                    'label' => _('Users')
+                ),
+
+                'users.staff.login_history' => array(
+                    'label' => _('Login History')
+                ),
+                'deleted.staff.users'       => array(
+                    'label' => _('Deleted users'),
+                    'class' => 'right'
+                ),
+            )
+        ),
+
+
+        'contractors' => array(
+            'type'      => 'navigation',
+            'label'     => _('Contractors'),
+            'icon'      => 'user-hard-hat',
+            'reference' => 'users/contractors',
+
+            'tabs' => array(
+                'users.contractors' => array(
+                    'label' => _('Users')
+                ),
+
+
+                'users.contractors.login_history' => array(
+                    'label' => _('Login History')
+                ),
+                'deleted.contractors.users'       => array(
+                    'label' => _('Deleted users'),
+                    'class' => 'right'
+                ),
+            )
+        ),
+
+
+        'suppliers' => array(
+            'type'      => 'navigation',
+            'label'     => _('Suppliers'),
+            'reference' => 'users/suppliers',
+
+            'icon' => 'hand-holding-box',
+            'tabs' => array(
+                'users.suppliers' => array(
+                    'label' => _(
+                        'Suppliers'
+                    )
+                ),
+            )
+        ),
+
+        'agents' => array(
+            'type'      => 'navigation',
+            'label'     => _('Agents'),
+            'icon'      => 'user-secret',
+            'reference' => 'users/agents',
+
+            'tabs' => array(
+                'users.agents' => array(
+                    'label' => _(
+                        'Agents'
+                    )
+                ),
+            )
+        ),
+        /*
+                    'others'      => array(
+                        'type'  => 'navigation',
+                        'label' => _('Other'),
+                        'icon'  => 'users-crown',
+                        'reference' => 'users/others',
+
+                        'tabs'  => array(
+                            'root.user' => array(
+                                'label' => _('Root user')
+                            ),
+                            'warehouse.user' => array(
+                                'label' => _('Warehouse user')
+                            ),
+                        )
+                    ),
+
+        */
+
+        'user' => array(
+            'type' => 'object',
+            'tabs' => array(
+                'user.details'       => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'icon'  => 'database',
+                    'title' => _(
+                        'Details'
+                    )
+                ),
+                'user.login_history' => array(
+                    'label' => _(
+                        'Login history'
+                    ),
+                    'title' => _('Login history'),
+                    'icon'  => 'sign-in'
+                ),
+                'user.api_keys'      => array(
+                    'label' => _('API keys'),
+                    'icon'  => 'key'
+                ),
+
+
+                'user.history'          => array(
+                    'label' => '',
+                    'title' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+                'user.deleted_api_keys' => array(
+                    'icon'  => 'ban',
+                    'label' => _('Deleted API keys'),
+                    'title' => _('Deleted API keys'),
+                    'class' => 'right icon_only'
+                ),
+
+
+            )
+        ),
+
+
+        'deleted.user' => array(
+            'type' => 'object',
+            'tabs' => array(
+
+                'deleted.user.login_history' => array(
+                    'label' => _(
+                        'Login history'
+                    ),
+                    'title' => _(
+                        'Login history'
+                    )
+                ),
+                'deleted.user.history'       => array(
+                    'label' => _(
+                        'History/Notes'
+                    ),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                )
+
+            )
+
+        ),
+
+
+        'user.api_key.new' => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'user.api_key.new' => array(
+                    'label' => _(
+                        'New API'
+                    )
+                ),
+
+            )
+        ),
+        'user.api_key'     => array(
+            'type' => 'object',
+            'tabs' => array(
+                'user.api_key.details'  => array(
+                    'label' => _('Data'),
+                    'icon'  => 'database'
+                ),
+                'user.api_key.requests' => array(
+                    'label' => _('Requests'),
+                    'icon'  => 'arrow-circle-right'
+                ),
+                'user.api_key.history'  => array(
+                    'label' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+
+            )
+        ),
+        'deleted_api_key'  => array(
+            'type'     => 'object',
+            'showcase' => 'deleted_api_key',
+            'tabs'     => array(
+
+                'api_key.history' => array(
+                    'label' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+
+
+            )
+        ),
+
+
+    )
+
+),
+
+    'account' => array(
+
+
+    'sections' => array(
+
+        'setup'               => array(
+            'type' => '',
+            'tabs' => array(
+                'account.setup' => array(
+                    'label' => _(
+                        'Account set up'
+                    )
+                ),
+            )
+        ),
+        'setup_error'         => array(
+            'type' => '',
+            'tabs' => array(
+                'account.setup.error' => array('label' => ''),
+            )
+        ),
+        'setup_root_user'     => array(
+            'type' => '',
+            'tabs' => array(
+                'account.setup.root_user' => array('label' => ''),
+            )
+        ),
+        'setup_account'       => array(
+            'type' => '',
+            'tabs' => array(
+                'account.setup.account' => array('label' => ''),
+            )
+        ),
+        'setup_add_employees' => array(
+            'type' => '',
+            'tabs' => array(
+                'account.setup.add_employees' => array('label' => ''),
+            )
+        ),
+        'setup_add_employee'  => array(
+            'type' => '',
+            'tabs' => array(
+                'account.setup.add_employee' => array('label' => ''),
+            )
+        ),
+        'setup_add_warehouse' => array(
+            'type' => '',
+            'tabs' => array(
+                'account.setup.add_warehouse' => array('label' => ''),
+            )
+        ),
+        'setup_add_store'     => array(
+            'type' => '',
+            'tabs' => array(
+                'account.setup.add_store' => array('label' => ''),
+            )
+        ),
+
+        'account' => array(
+            'type'      => 'navigation',
+            'label'     => _('Account'),
+            'icon'      => 'star',
+            'reference' => 'account',
+
+            'tabs' => array(
+                'account.details' => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'title' => _(
+                        'Account details'
+                    )
+                ),
+            )
+        ),
+
+
+        'orders_index' => array(
+            'type'      => '',
+            'label'     => _("Order's Index"),
+            'icon'      => 'bars',
+            'reference' => 'account/orders',
+            'tabs'      => array(
+                'orders_index'          => array(
+                    'label' => _(
+                        "Overview"
+                    )
+                ),
+                'orders_server'         => array(
+                    'label' => _(
+                        "Orders list"
+                    )
+                ),
+                'delivery_notes_server' => array(
+                    'label' => _(
+                        "Delivery notes list"
+                    )
+                ),
+                'invoices_server'       => array(
+                    'label' => _(
+                        "Invoice list"
+                    )
+                ),
+
+            )
+        ),
+        'data_sets'    => array(
+            'type'      => 'navigation',
+            'label'     => _('Data sets'),
+            'icon'      => 'align-left',
+            'reference' => 'account/data_sets',
+            'tabs'      => array(
+                'data_sets' => array(
+                    'label' => _(
+                        'Data sets'
+                    )
+                ),
+            )
+        ),
+        'isf'          => array(
+            'type' => '',
+            'tabs' => array(
+                'data_sets.isf' => array(
+                    'label' => _(
+                        'Order transactions timeseries'
+                    )
+                ),
+            )
+        ),
+        'osf'          => array(
+            'type' => '',
+            'tabs' => array(
+                'data_sets.osf' => array(
+                    'label' => _(
+                        'Inventory transactions timeseries'
+                    )
+                ),
+            )
+        ),
+        'images'       => array(
+            'type' => '',
+            'tabs' => array(
+                'data_sets.images' => array(
+                    'label' => _(
+                        'Images'
+                    )
+                ),
+            )
+        ),
+        'attachments'  => array(
+            'type' => '',
+            'tabs' => array(
+                'data_sets.attachments' => array(
+                    'label' => _(
+                        'Attachments'
+                    )
+                ),
+            )
+        ),
+        'uploads'      => array(
+            'type' => '',
+            'tabs' => array(
+                'data_sets.uploads' => array(
+                    'label' => _(
+                        'Uploads'
+                    )
+                ),
+            )
+        ),
+        'materials'    => array(
+            'type' => '',
+            'tabs' => array(
+                'data_sets.materials' => array(
+                    'label' => _(
+                        'Materials'
+                    )
+                ),
+            )
+        ),
+        'timeseries'   => array(
+            'type' => '',
+            'tabs' => array(
+                'timeseries_types' => array(
+                    'icon'  => 'layer-group',
+                    'label' => _('Timeseries type')
+                ),
+                'timeseries'       => array(
+                    'icon'  => 'chart-line',
+                    'label' => _('Timeseries')
+                ),
+            )
+        ),
+
+        'upload'   => array(
+            'type' => 'object',
+            'tabs' => array(
+                'upload.records' => array(
+                    'label' => _(
+                        'Records'
+                    )
+                ),
+
+
+            )
+
+        ),
+        'material' => array(
+            'type' => 'object',
+            'tabs' => array(
+                'material.details' => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'icon'  => 'database'
+                ),
+                'material.parts'   => array(
+                    'label' => _(
+                        'Parts'
+                    )
+                ),
+                'material.history' => array(
+                    'label' => _(
+                        'History'
+                    ),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+
+
+            )
+
+        ),
+
+        'timeserie' => array(
+            'type' => '',
+
+
+            'tabs' => array(
+                'timeserie.plot'    => array(
+                    'label' => _(
+                        'Plot'
+                    )
+                ),
+                'timeserie.records' => array(
+                    'label' => _(
+                        'Records'
+                    ),
+
+
+                ),
+
+            )
+        ),
+        'settings'  => array(
+            'type'      => 'navigation',
+            'label'     => _('Settings'),
+            'icon'      => 'cog',
+            'reference' => 'account/settings',
+            'tabs'      => array(
+                'account.settings' => array(
+                    'label' => _(
+                        'Settings'
+                    )
+                ),
+            )
+        ),
+
+
+    )
+
+),
+    'utils'   => array(
+    'sections' => array(
+        'forbidden' => array(
+            'type'  => 'object',
+            'label' => _('Forbidden'),
+            'title' => _('Forbidden'),
+            'id'    => 'forbidden',
+            'tabs'  => array(
+                'forbidden' => array()
+            )
+        ),
+        'not_found' => array(
+            'type'  => 'object',
+            'label' => _('Not found'),
+            'title' => _('Not found'),
+            'id'    => 'not_found',
+
+            'tabs' => array(
+                'not_found' => array(),
+            )
+        ),
+
+
+        'fire' => array(
+            'type'  => 'object',
+            'label' => _('Fire'),
+            'icon'  => 'file',
+            'id'    => 'fire',
+
+            'tabs' => array(
+                'fire' => array(),
+            )
+        ),
+
+    )
+),
+    'help'    => array(
+    'sections' => array(
+        'help' => array(
+            'type'  => 'object',
+            'label' => _('Help'),
+            'icon'  => 'shopping-cart',
+            'id'    => 'forbidden',
+            'tabs'  => array(
+                'help' => array()
+            )
         )
     ),
+    'about'    => array(
+        'about' => array(
+            'type'  => 'object',
+            'label' => _('About'),
+            'icon'  => '',
+            'tabs'  => array(
+                'about' => array()
+            )
+        )
+    )
+),
+
+
+    'agent_profile'   => array(
+    'sections' => array(
+        'profile' => array(
+            'type'  => 'object',
+            'label' => _('Profile'),
+            'icon'  => 'user_secret',
+            'id'    => '',
+            'tabs'  => array(
+                'agent.details'   => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'icon'  => 'database',
+                    'title' => _(
+                        'Details'
+                    )
+                ),
+                'agent.suppliers' => array(
+                    'label' => _(
+                        "Agent's suppliers"
+                    ),
+                    'icon'  => 'hand-holding-box'
+                ),
+
+                'agent.supplier_parts' => array(
+                    'label' => _(
+                        "Agent's Parts"
+                    ),
+                    'icon'  => 'hand-receiving'
+                ),
+                'agent.orders'         => array(
+                    'label' => _(
+                        'Purchase orders'
+                    ),
+                    'icon'  => 'clipboard'
+                ),
+                'agent.deliveries'     => array(
+                    'label' => _(
+                        'Deliveries'
+                    ),
+                    'icon'  => 'truck'
+                ),
+                /*
+                'agent.agent_orders'   => array(
+                    'label' => _(
+                        "Agent's PO"
+                    ),
+                    'icon'  => 'clipboard fa-flip-horizontal'
+                ),
+*/
+                'agent.history'        => array(
+                    'label' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+                'agent.users'          => array(
+                    'label' => _(
+                        'System users'
+                    ),
+                    'icon'  => 'terminal',
+                    'class' => 'right icon_only'
+                ),
+            )
+        )
+    ),
+),
+    'agent_suppliers' => array(
+
+
+    'sections' => array(
+
+        'suppliers' => array(
+
+            'type'      => 'navigation',
+            'label'     => _('Suppliers'),
+            'icon'      => 'hand-holding-box',
+            'reference' => 'suppliers',
+            'tabs'      => array('agent.suppliers' => array())
+
+
+        ),
+
+
+        'order_to_delete' => array(
+            'type' => 'object',
+            'tabs' => array(
+                'supplier.order.items'   => array(
+                    'label' => _(
+                        'Items'
+                    ),
+                    'icon'  => 'bars'
+                ),
+                'supplier.order.details' => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'icon'  => 'database'
+                ),
+
+
+                'supplier.order.tac.editor' => array(
+                    'label' => _(
+                        'Terms and conditions'
+                    ),
+                    'icon'  => 'gavel',
+                    'class' => ''
+                ),
+                'supplier.order.history'    => array(
+                    'label' => _(
+                        'History/Notes'
+                    ),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+
+            )
+
+        ),
+
+        'deleted_order_to_delete' => array(
+            'type' => 'object',
+            'tabs' => array(
+
+
+                'deleted.supplier.order.items'   => array(
+                    'label' => _(
+                        'Items'
+                    ),
+                    'icon'  => 'bars'
+                ),
+                'deleted.supplier.order.history' => array(
+                    'label' => _(
+                        'History/Notes'
+                    ),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+
+            )
+
+        ),
+
+        'deliveryto_delete' => array(
+            'type' => 'object',
+            'tabs' => array(
+
+                'supplier.delivery.details' => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'icon'  => 'database'
+                ),
+
+                'supplier.delivery.items'   => array(
+                    'label' => _(
+                        'Items'
+                    ),
+                    'icon'  => 'bars'
+                ),
+                'supplier.delivery.history' => array(
+                    'label' => _(
+                        'History/Notes'
+                    ),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+
+            )
+
+        ),
+
+        'supplier'                => array(
+            'type'      => 'object',
+            'label'     => _('Supplier'),
+            'icon'      => 'hand-holding-box',
+            'reference' => 'supplier/%d',
+            'tabs'      => array(
+                'supplier.details'        => array(
+                    'label' => _('Data'),
+                    'icon'  => 'database',
+                    'title' => _('Details')
+                ),
+                'supplier.supplier_parts' => array(
+                    'label' => _(
+                        "Supplier's Parts"
+                    ),
+                    'icon'  => 'hand-receiving'
+                ),
+                'supplier.orders'         => array(
+                    'label' => _(
+                        'Purchase orders'
+                    ),
+                    'icon'  => 'clipboard'
+                ),
+
+                'supplier.history' => array(
+                    'label' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+
+                'supplier.attachments' => array(
+                    'label'         => _('Attachments'),
+                    'icon'          => 'paperclip',
+                    'class'         => 'right icon_only',
+                    'quantity_data' => array(
+                        'object' => '_object',
+                        'field'  => 'Number Attachments'
+                    ),
+                ),
+
+            )
+        ),
+        'supplier.new'            => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'supplier.new' => array(
+                    'label' => _(
+                        'New supplier'
+                    )
+                ),
+
+            )
+
+        ),
+        'supplier.attachment.new' => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'supplier.attachment.new' => array(
+                    'label' => _(
+                        'new attachment'
+                    )
+                ),
+
+            )
+
+        ),
+        'supplier.attachment'     => array(
+            'type' => 'object',
+            'tabs' => array(
+                'supplier.attachment.details' => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'icon'  => 'database'
+                ),
+                'supplier.attachment.history' => array(
+                    'label' => _(
+                        'History'
+                    ),
+                    'icon'  => 'clock'
+                ),
+
+            )
+
+        ),
+        'deleted_supplier'        => array(
+            'type' => 'object',
+            'tabs' => array(
+                'supplier.history' => array(
+                    'label' => _('History'),
+                    'icon'  => 'road'
+                ),
+
+
+            )
+        ),
+
+        'supplier.order.item' => array(
+            'type'           => 'object',
+            'subtabs_parent' => array(
+
+                'supplier_part.purchase_orders.purchase_orders' => 'supplier_part.purchase_orders',
+                'supplier_part.purchase_orders.delivery_notes'  => 'supplier_part.purchase_orders',
+                'supplier_part.purchase_orders.invoices'        => 'supplier_part.purchase_orders',
+            ),
+
+
+            'tabs' => array(
+
+
+                'supplier.order.item.details' => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'icon'  => 'database'
+                ),
+
+
+                'supplier_part.purchase_orders' => array(
+                    'label'   => _(
+                        'Purchase Orders'
+                    ),
+                    'icon'    => 'clipboard',
+                    'class'   => 'right icon_only',
+                    'subtabs' => array(
+                        'supplier_part.purchase_orders.purchase_orders' => array(
+                            'label' => _(
+                                'Purchase Orders'
+                            )
+                        ),
+                        'supplier_part.purchase_orders.delivery_notes'  => array(
+                            'label' => _(
+                                'Delivery Notes'
+                            )
+                        ),
+                        'supplier_part.purchase_orders.invoices'        => array(
+                            'label' => _(
+                                'Invoices'
+                            )
+                        ),
+
+                    )
+
+                ),
+
+                'supplier_part.images'  => array(
+                    'label' => '',
+                    'title' => _('Images'),
+                    'icon'  => 'camera-retro',
+                    'class' => 'right icon_only'
+                ),
+                'supplier_part.history' => array(
+                    'label' => '',
+                    'title' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+
+
+            )
+        ),
+
+
+        'supplier_part' => array(
+            'type'           => 'object',
+            'subtabs_parent' => array(
+
+                'supplier_part.supplier.orders'     => 'supplier_part.purchase_orders',
+                'supplier_part.supplier.deliveries' => 'supplier_part.purchase_orders',
+            ),
+
+
+            'tabs' => array(
+
+
+                'supplier_part.details' => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'icon'  => 'database'
+                ),
+
+
+                'supplier_part.purchase_orders' => array(
+                    'label'   => _(
+                        'Purchase orders / deliveries'
+                    ),
+                    'icon'    => 'clipboard',
+                    'subtabs' => array(
+
+                        'supplier_part.supplier.orders'     => array(
+                            'label' => _(
+                                'Purchase orders'
+                            ),
+                            'icon'  => 'clipboard'
+                        ),
+                        'supplier_part.supplier.deliveries' => array(
+                            'label' => _(
+                                "Supplier's deliveries"
+                            ),
+                            'icon'  => 'truck'
+                        ),
+
+                    )
+
+                ),
+                'supplier_part.images'          => array(
+                    'label' => '',
+                    'title' => _('Images'),
+                    'icon'  => 'camera-retro',
+                    'class' => 'right icon_only'
+                ),
+                'supplier_part.history'         => array(
+                    'label' => '',
+                    'title' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+
+
+            )
+        ),
+
+        'supplier_part.historic' => array(
+            'type'           => 'object',
+            'subtabs_parent' => array(
+
+                'supplier_part.purchase_orders.purchase_orders' => 'supplier_part.purchase_orders',
+                'supplier_part.purchase_orders.delivery_notes'  => 'supplier_part.purchase_orders',
+                'supplier_part.purchase_orders.invoices'        => 'supplier_part.purchase_orders',
+            ),
+
+
+            'tabs' => array(
+
+
+                'supplier_part.details' => array(
+                    'label' => _(
+                        'Data'
+                    ),
+                    'icon'  => 'database'
+                ),
+
+
+                'supplier_part.purchase_orders' => array(
+                    'label'   => _(
+                        'Purchase Orders'
+                    ),
+                    'icon'    => 'clipboard',
+                    'subtabs' => array(
+                        'supplier_part.purchase_orders.purchase_orders' => array(
+                            'label' => _(
+                                'Purchase Orders'
+                            )
+                        ),
+                        'supplier_part.purchase_orders.delivery_notes'  => array(
+                            'label' => _(
+                                'Delivery Notes'
+                            )
+                        ),
+                        'supplier_part.purchase_orders.invoices'        => array(
+                            'label' => _(
+                                'Invoices'
+                            )
+                        ),
+
+                    )
+
+                ),
+
+                'supplier_part.images'  => array(
+                    'label' => '',
+                    'title' => _('Images'),
+                    'icon'  => 'camera-retro',
+                    'class' => 'right icon_only'
+                ),
+                'supplier_part.history' => array(
+                    'label' => '',
+                    'title' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+
+
+            )
+        ),
+
+        'supplier_part.new' => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'supplier_part.new' => array(
+                    'label' => _(
+                        'New part'
+                    )
+                ),
+
+            )
+
+        ),
+        'supplier.user.new' => array(
+            'type' => 'new_object',
+            'tabs' => array(
+                'supplier.user.new' => array(
+                    'label' => _(
+                        'New system user'
+                    )
+                ),
+
+            )
+
+        ),
+
+        /*
+        'settings'=>array(
+            'type'=>'navigation', 'label'=>'', 'icon'=>'sliders', 'reference'=>'suppliers/settings', 'class'=>'icon_only',
+            'tabs'=>array(
+                'suppliers.settings'=>array('label'=>_('Setting'), 'icon'=>'sliders', 'class'=>''),
+
+
+            )
+
+
+        ),
+        */
+    )
+),
 
     'agent_client_orders' => array(
-        'sections' => array(
-            'orders' => array(
-                'type'      => 'navigation',
-                'label'     => _("Client's orders"),
-                'icon'      => 'shopping-cart',
-                'reference' => 'agent_orders',
-                'tabs'      => array(
-                    'agent.client_orders' => array()
-                )
-            ),
+    'sections' => array(
+        'orders' => array(
+            'type'      => 'navigation',
+            'label'     => _("Client's orders"),
+            'icon'      => 'shopping-cart',
+            'reference' => 'agent_orders',
+            'tabs'      => array(
+                'agent.client_orders' => array()
+            )
+        ),
 
 
-            'client_order' => array(
-                'type' => 'object',
-                'tabs' => array(
+        'client_order' => array(
+            'type' => 'object',
+            'tabs' => array(
 
-                    /*
-                    'client_order.details' => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
+                /*
+                'client_order.details' => array(
+                    'label' => _('Data'),
+                    'icon'  => 'database'
+                ),
+                */
+                'client_order.items' => array(
+                    'label' => _(
+                        'Items'
                     ),
-                    */
-                    'client_order.items' => array(
-                        'label' => _(
-                            'Items'
-                        ),
-                        'icon'  => 'bars'
+                    'icon'  => 'bars'
+                ),
+
+                'client_order.suppliers' => array(
+                    'label' => _("Supplier's individual orders"),
+                    'icon'  => 'layer-group'
+                ),
+
+                'client_order.history' => array(
+                    'label' => _(
+                        'History/Notes'
                     ),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
 
-                    'client_order.suppliers' => array(
-                        'label' => _("Supplier's individual orders"),
-                        'icon'  => 'layer-group'
+            )
+
+        ),
+
+        'agent_supplier_order' => array(
+            'type' => 'object',
+            'tabs' => array(
+
+                /*
+                'client_order.details' => array(
+                    'label' => _('Data'),
+                    'icon'  => 'database'
+                ),
+                */
+                'agent_supplier_order.items' => array(
+                    'label' => _(
+                        'Items'
                     ),
+                    'icon'  => 'bars'
+                ),
 
-                    'client_order.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
+
+                'agent_supplier_order.history' => array(
+                    'label' => _(
+                        'History/Notes'
                     ),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
 
-                )
+            )
 
-            ),
+        ),
 
-            'agent_supplier_order' => array(
-                'type' => 'object',
-                'tabs' => array(
+        'deleted_order' => array(
+            'type' => 'object',
+            'tabs' => array(
 
-                    /*
-                    'client_order.details' => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
+
+                'deleted.supplier.order.items'   => array(
+                    'label' => _(
+                        'Items'
                     ),
-                    */
-                    'agent_supplier_order.items' => array(
-                        'label' => _(
-                            'Items'
-                        ),
-                        'icon'  => 'bars'
+                    'icon'  => 'bars'
+                ),
+                'deleted.supplier.order.history' => array(
+                    'label' => _(
+                        'History/Notes'
                     ),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+
+            )
+
+        ),
 
 
-                    'agent_supplier_order.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-
-            ),
-
-            'deleted_order' => array(
-                'type' => 'object',
-                'tabs' => array(
-
-
-                    'deleted.supplier.order.items'   => array(
-                        'label' => _(
-                            'Items'
-                        ),
-                        'icon'  => 'bars'
-                    ),
-                    'deleted.supplier.order.history' => array(
-                        'label' => _(
-                            'History/Notes'
-                        ),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-
-            ),
-
-
-        )
-    ),
+    )
+),
 
     'agent_client_deliveries' => array(
-        'sections' => array(
-            'deliveries' => array(
-                'type'      => 'navigation',
-                'label'     => _("Deliveries"),
-                'icon'      => 'truck',
-                'reference' => 'delveries',
-                'tabs'      => array(
-                    'agent.deliveries' => array()
-                )
-            ),
+    'sections' => array(
+        'deliveries' => array(
+            'type'      => 'navigation',
+            'label'     => _("Deliveries"),
+            'icon'      => 'truck',
+            'reference' => 'delveries',
+            'tabs'      => array(
+                'agent.deliveries' => array()
+            )
+        ),
 
 
-            'agent_delivery' => array(
-                'type' => 'object',
-                'tabs' => array(
-                    'agent_delivery.details'            => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
-                    'agent_delivery.items_in_warehouse' => array(
-                        'label' => _('Items in warehouse'),
-                        'icon'  => 'warehouse-alt'
-                    ),
-                    'agent_delivery.items'              => array(
-                        'label' => _('Items'),
-                        'icon'  => 'bars'
-                    ),
+        'agent_delivery' => array(
+            'type' => 'object',
+            'tabs' => array(
+                'agent_delivery.details'            => array(
+                    'label' => _('Data'),
+                    'icon'  => 'database'
+                ),
+                'agent_delivery.items_in_warehouse' => array(
+                    'label' => _('Items in warehouse'),
+                    'icon'  => 'warehouse-alt'
+                ),
+                'agent_delivery.items'              => array(
+                    'label' => _('Items'),
+                    'icon'  => 'bars'
+                ),
 
-                    'agent_delivery.cartons' => array(
-                        'label' => _('Boxes'),
-                        'icon'  => 'boxes-alt'
-                    ),
-
-
-                    'agent_delivery.history' => array(
-                        'label' => '',
-                        'title' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-                )
-
-            ),
-
-            'deleted_order' => array(
-                'type' => 'object',
-                'tabs' => array(
+                'agent_delivery.cartons' => array(
+                    'label' => _('Boxes'),
+                    'icon'  => 'boxes-alt'
+                ),
 
 
-                    'deleted.supplier.order.items'   => array(
-                        'label' => _('Items'),
-                        'icon'  => 'bars'
-                    ),
-                    'deleted.supplier.order.history' => array(
-                        'label' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
+                'agent_delivery.history' => array(
+                    'label' => '',
+                    'title' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
 
-                )
+            )
 
-            ),
+        ),
+
+        'deleted_order' => array(
+            'type' => 'object',
+            'tabs' => array(
 
 
-        )
-    ),
+                'deleted.supplier.order.items'   => array(
+                    'label' => _('Items'),
+                    'icon'  => 'bars'
+                ),
+                'deleted.supplier.order.history' => array(
+                    'label' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
+
+            )
+
+        ),
+
+
+    )
+),
 
 
     'agent_parts' => array(
-        'sections' => array(
-            'parts' => array(
-                'type'      => 'navigation',
-                'label'     => _("Parts"),
-                'icon'      => 'hand-receiving',
-                'reference' => 'agent_parts',
-                'tabs'      => array(
-                    'agent.parts' => array()
-                )
-            ),
+    'sections' => array(
+        'parts' => array(
+            'type'      => 'navigation',
+            'label'     => _("Parts"),
+            'icon'      => 'hand-receiving',
+            'reference' => 'agent_parts',
+            'tabs'      => array(
+                'agent.parts' => array()
+            )
+        ),
 
 
-            'agent_part' => array(
-                'type' => 'object',
+        'agent_part' => array(
+            'type' => 'object',
 
 
-                'tabs' => array(
+            'tabs' => array(
 
 
-                    'supplier_part.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
+                'supplier_part.details' => array(
+                    'label' => _(
+                        'Data'
                     ),
+                    'icon'  => 'database'
+                ),
 
-                    'supplier_part.images'  => array(
-                        'label' => '',
-                        'title' => _('Images'),
-                        'icon'  => 'camera-retro',
-                        'class' => 'right icon_only'
-                    ),
-                    'supplier_part.history' => array(
-                        'label' => '',
-                        'title' => _('History/Notes'),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
-                    ),
-
-
-                )
-            ),
+                'supplier_part.images'  => array(
+                    'label' => '',
+                    'title' => _('Images'),
+                    'icon'  => 'camera-retro',
+                    'class' => 'right icon_only'
+                ),
+                'supplier_part.history' => array(
+                    'label' => '',
+                    'title' => _('History/Notes'),
+                    'icon'  => 'road',
+                    'class' => 'right icon_only'
+                ),
 
 
-        )
-    ),
+            )
+        ),
+
+
+    )
+),
 
 
 );

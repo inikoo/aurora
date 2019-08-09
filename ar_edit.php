@@ -562,10 +562,27 @@ function edit_field($account, $db, $editor, $data, $smarty) {
             } elseif ($field == 'Supplier Part Unit Cost') {
 
 
-                $cost = sprintf(
-                    '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>', $object->get('Supplier Part Key'), $object->get('Supplier Part Unit Cost'), $object->get('Supplier Part Currency Code'),
-                    money($object->get('Supplier Part Unit Cost'), $object->get('Supplier Part Currency Code'))
-                );
+                if($object->get_object_name()=='Part'){
+                    $main_supplier_part=get_object('Supplier_Part',$object->get('Part Main Supplier Part Key'));
+
+
+                    $cost = sprintf(
+                        '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>', $main_supplier_part->get('Supplier Part Key'), $main_supplier_part->get('Supplier Part Unit Cost'), $main_supplier_part->get('Supplier Part Currency Code'),
+                        money($main_supplier_part->get('Supplier Part Unit Cost'),
+                              $main_supplier_part->get('Supplier Part Currency Code'))
+                    );
+
+                }else{
+
+                    $cost = sprintf(
+                        '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>', $object->get('Supplier Part Key'), $object->get('Supplier Part Unit Cost'), $object->get('Supplier Part Currency Code'),
+                        money($object->get('Supplier Part Unit Cost'),
+                              $object->get('Supplier Part Currency Code'))
+                    );
+
+                }
+
+
 
 
                 $update_metadata['cost_cell'] = $cost;

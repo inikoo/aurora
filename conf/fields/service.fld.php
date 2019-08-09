@@ -585,18 +585,18 @@ $product_fields = array(
                 'type'            => 'value'
             ),
             array(
-                'id'              => 'Product_Hazard_Indentification_Number',
+                'id'              => 'Product_Hazard_Identification_Number',
                 'edit'            => ($part_edit ? 'string' : ''),
                 'render'          => ($new ? false : true),
                 'value'           => htmlspecialchars(
-                    $object->get('Product Hazard Indentification Number')
+                    $object->get('Product Hazard Identification Number')
                 ),
                 'formatted_value' => $object->get(
-                    'Hazard Indentification Number'
+                    'Hazard Identification Number'
                 ),
                 'label'           => ucfirst(
                         $object->get_field_label(
-                            'Product Hazard Indentification Number'
+                            'Product Hazard Identification Number'
                         )
                     ).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._(
                             'Linked to part value'
