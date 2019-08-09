@@ -3011,6 +3011,15 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         $section    = 'deal.new';
 
 
+                                    }elseif(is_numeric($view_path[2])){
+
+                                        $parent     = 'campaign';
+                                        $parent_key = $view_path[1];
+                                        $extra      = $view_path[0];
+                                        $object     = 'deal';
+                                        $key        = $view_path[2];
+                                        $section    = 'deal';
+
                                     }
 
                                 }
@@ -3046,7 +3055,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 }
 
-                            } elseif ($view_path[1] == 'vl'  or $view_path[1] == 'so' or $view_path[1] == 'fo' or $view_path[1] == 'ca' or $view_path[1] == 'cu' or $view_path[1] == 'vo') {
+                            } elseif ($view_path[1] == 'vl'  or $view_path[1] == 'so' or $view_path[1] == 'fo' or $view_path[1] == 'ca' or $view_path[1] == 'cu' ) {
 
                                 $section = 'campaign';
 
