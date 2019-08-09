@@ -183,6 +183,19 @@
 	{assign expected_payment $order->get('Expected Payment')}
 	{if $expected_payment!=''}<div style="font-size: 7pt;font-family: sans-serif;">{$expected_payment}</div>{/if}
 	<span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Notes{/t}:</span>
+
+
+	{if $dangerous_goods|@count gt 0}
+	<div style="padding-top: 1mm">
+	{foreach from=$dangerous_goods item=dangerous_good name=dangerous_goods}
+		{if $dangerous_good.un_number>1}<span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;">&nbsp;{$dangerous_good.un_number|strip_tags}&nbsp;</span> {/if}
+		{if $dangerous_good.part_packing_group!='None'}PG <b>{$dangerous_good.part_packing_group}</b> {/if}
+
+		({$dangerous_good.parts}) {if $smarty.foreach.dangerous_goods.last}{else},{/if}
+
+	{/foreach}
+	</div>
+	{/if}
 	{if $order->get('Order Delivery Sticky Note')!=''}<br> {$order->get('Order Delivery Sticky Note')|nl2br}<br>{/if}
 	<br> {$delivery_note->get('Delivery Note Warehouse Note')|nl2br}<br>
 </div>

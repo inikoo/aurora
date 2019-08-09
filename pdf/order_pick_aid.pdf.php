@@ -73,6 +73,21 @@ $smarty->assign('customer', $customer);
 $smarty->assign('delivery_note', $delivery_note);
 
 
+$dangerous_goods=array();
+$sql=sprintf(' select `Part UN Number` AS un_number ,`Part Packing Group`  AS part_packing_group,group_concat(`Part Reference`) as parts from  `Inventory Transaction Fact` ITF   LEFT JOIN `Part Dimension` Part ON  (Part.`Part SKU`=ITF.`Part SKU`) WHERE `Delivery Note Key`=?  and (`Part UN Number`!="" or `Part Packing Group`!="Noe" ) group by `Part UN Number`,`Part Packing Group`  ');
+
+$stmt = $db->prepare($sql);
+$stmt->execute(
+    array($delivery_note->id)
+);
+while ($row = $stmt->fetch()) {
+    if($row['un_number']>1 or $row['part_packing_group']!='None')
+    $dangerous_goods[]=$row;
+}
+$smarty->assign('dangerous_goods', $dangerous_goods);
+
+
+
 $transactions = array();
 
 

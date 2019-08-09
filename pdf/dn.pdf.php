@@ -60,6 +60,21 @@ $smarty->assign('consignment', ($consignment ? $delivery_note->get('Consignment'
 $smarty->assign('order', $order);
 
 
+$dangerous_goods=array();
+$sql=sprintf(' select `Part UN Number` AS un_number ,`Part Packing Group`  AS part_packing_group,group_concat(`Part Reference`) as parts from  `Inventory Transaction Fact` ITF   LEFT JOIN `Part Dimension` Part ON  (Part.`Part SKU`=ITF.`Part SKU`) WHERE `Delivery Note Key`=?  and (`Part UN Number`!="" or `Part Packing Group`!="Noe" ) group by `Part UN Number`,`Part Packing Group`  ');
+
+$stmt = $db->prepare($sql);
+$stmt->execute(
+    array($delivery_note->id)
+);
+while ($row = $stmt->fetch()) {
+    if($row['un_number']>1 or $row['part_packing_group']!='None')
+        $dangerous_goods[]=$row;
+}
+$smarty->assign('dangerous_goods', $dangerous_goods);
+
+
+
 $shipper_data = array();
 
 $sql    = sprintf(
@@ -108,8 +123,8 @@ $mpdf = new \Mpdf\Mpdf(
     [
         'tempDir'       => __DIR__.'/../server_files/pdf_tmp',
         'mode'          => 'utf-8',
-        'margin_left'   => 20,
-        'margin_right'  => 15,
+        'margin_left'   => 10,
+        'margin_right'  => 10,
         'margin_top'    => 38,
         'margin_bottom' => 25,
         'margin_header' => 10,
@@ -134,7 +149,11 @@ $smarty->assign('delivery_note', $delivery_note);
 $transactions = array();
 
 $sql = sprintf(
-    "SELECT `Part SKO Barcode`,`Order Quantity`,`Order Bonus Quantity`,`Part Reference`,`Part Package Description`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Inventory Transaction Quantity`,`Out of Stock`,`Not Found`,`No Picked Other`,`Inventory Transaction Type`,`Required`,OTF.`Product Code`,ITF.`Part SKU` FROM `Inventory Transaction Fact` AS ITF LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=ITF.`Part SKU`) LEFT JOIN `Order Transaction Fact` OTF  ON (`Order Transaction Fact Key`=`Map To Order Transaction Fact Key`) 
+    "SELECT `Part SKO Barcode`,`Order Quantity`,`Order Bonus Quantity`,`Part Reference`,`Part Package Description`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Inventory Transaction Quantity`,`Out of Stock`,`Not Found`,`No Picked Other`,`Inventory Transaction Type`,`Required`,OTF.`Product Code`,ITF.`Part SKU` ,
+       `Part UN Number` AS un_number,
+`Part Packing Group` AS part_packing_group
+       
+       FROM `Inventory Transaction Fact` AS ITF LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=ITF.`Part SKU`) LEFT JOIN `Order Transaction Fact` OTF  ON (`Order Transaction Fact Key`=`Map To Order Transaction Fact Key`) 
 LEFT JOIN  `Product Dimension` PD ON (OTF.`Product ID`=PD.`Product ID`)  WHERE ITF.`Delivery Note Key`=%d AND `Inventory Transaction Type`!='Adjust' ORDER BY `Part Reference`  ",
     $delivery_note->id
 );
