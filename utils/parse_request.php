@@ -3046,7 +3046,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 }
 
-                            } elseif ($view_path[1] == 'vl'  or $view_path[1] == 'so' or $view_path[1] == 'fo' or $view_path[1] == 'ca' or $view_path[1] == 'cu') {
+                            } elseif ($view_path[1] == 'vl'  or $view_path[1] == 'so' or $view_path[1] == 'fo' or $view_path[1] == 'ca' or $view_path[1] == 'cu' or $view_path[1] == 'vo') {
 
                                 $section = 'campaign';
 
