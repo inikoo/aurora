@@ -199,3 +199,11 @@ ALTER TABLE `Product Sales Anticorrelation` ADD `Product Sales Anticorrelation S
 ALTER TABLE `Product Sales Anticorrelation` ADD `Customers A` SMALLINT UNSIGNED NULL DEFAULT NULL , ADD `Customers B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers A`, ADD `Customers AB` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers B`, ADD `Customers All A` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers AB`, ADD `Customers All B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers All A`, ADD `Product Sales Anticorrelation Last Updated` DATETIME NULL DEFAULT NULL AFTER `Customers All B`;
 ALTER TABLE `Part Dimension` ADD `Part Main Supplier Part Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Part SKU`, ADD INDEX (`Part Main Supplier Part Key`);
 update `Part Dimension` set `Part Properties`='{}'  where  `Part Properties`='' or `Part Properties` is null  ;
+
+ALTER TABLE `Supplier Part Dimension` ADD `Supplier Part Carton Barcode` VARCHAR(64) NULL DEFAULT NULL AFTER `Supplier Part Carton CBM`;
+ALTER TABLE `Product Dimension` CHANGE `Product Hazard Indentification Number` `Product Hazard Identification Number` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `Part Dimension` CHANGE `Part Hazard Indentification Number` `Part Hazard Identification Number` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+DROP TABLE `Supplier Product Dimension`, `Supplier Product History Bridge`, `Supplier Product History Dimension`, `Supplier Product Part Dimension`, `Supplier Product Part List`;
+ALTER TABLE `Part Dimension` CHANGE `Part Recommended Packages Per Selling Outer` `Part Recommended Packages Per Selling Outer` FLOAT UNSIGNED NULL DEFAULT '1';
+
+

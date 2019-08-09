@@ -477,6 +477,9 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             $object->get_supplier_data();
 
+
+
+
             if ($user->get('User Type') != 'Agent') {
 
                 if ($options['parent'] == 'supplier') {
@@ -484,17 +487,18 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
                     $supplier = $options['parent_object'];
 
-                    include 'fields/supplier_part.fld.php';
+
 
 
                     if (isset($options['new'])) {
-                        $object = new Part(0);
-                        include 'fields/part.fld.php';
-                        $supplier_part_fields = array_merge(
-                            $supplier_part_fields, $part_fields
-                        );
-                    } else {
+                        $part= new Part(0);
 
+                        include 'fields/supplier_part.new.fld.php';
+
+
+
+                    } else {
+                        include 'fields/supplier_part.fld.php';
 
                         $operations = array(
                             'label'      => _('Operations'),
@@ -525,7 +529,8 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
                     return $supplier_part_fields;
-                } elseif ($options['parent'] == 'production') {
+                }
+                elseif ($options['parent'] == 'production') {
 
 
                     include 'fields/production_part.fld.php';
@@ -567,7 +572,8 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
                     return $supplier_part_fields;
-                } elseif ($options['parent'] == 'part') {
+                }
+                elseif ($options['parent'] == 'part') {
                     include 'fields/part.supplier_part.new.fld.php';
 
                     return $supplier_part_fields;

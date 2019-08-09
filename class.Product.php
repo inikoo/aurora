@@ -1118,7 +1118,7 @@ class Product extends Asset {
             case 'Product Proper Shipping Name':
                 $label = _('proper shipping name');
                 break;
-            case 'Product Hazard Indentification Number':
+            case 'Product Hazard Identification Number':
                 $label = _('hazard identification number');
                 break;
             case 'Product Materials':
@@ -3243,7 +3243,7 @@ class Product extends Asset {
             case 'Product UN Class':
             case 'Product Packing Group':
             case 'Product Proper Shipping Name':
-            case 'Product Hazard Indentification Number':
+            case 'Product Hazard Identification Number':
             case('Product Duty Rate'):
             case('Product CPNP Number'):
 

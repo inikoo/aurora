@@ -95,7 +95,7 @@ $export_edit_template_fields = array(
             'required'      => false,
             'header'        => 'SKO Barcode',
             'name'          => 'Part SKO Barcode',
-            'label'         => _('Part SKO Barcode').' ('._('stock control').')',
+            'label'         => _('SKO Barcode').' ('._('stock control').')',
             'checked'       => 0
         ),
 
@@ -104,8 +104,8 @@ $export_edit_template_fields = array(
             'show_for_new'  => true,
             'required'      => false,
             'header'        => 'Carton Barcode',
-            'name'          => 'Part Carton Barcode',
-            'label'         => _('Part Carton Barcode'),
+            'name'          => 'Supplier Part Carton Barcode',
+            'label'         => _('Carton Barcode').' ('._('stock control').')',
             'checked'       => 0
         ),
 
@@ -364,9 +364,9 @@ $export_edit_template_fields = array(
             'default_value' => '',
             'show_for_new'  => true,
             'required'      => false,
-            'header'        => 'Hazard indentification number',
-            'name'          => 'Part Part Hazard Indentification Number',
-            'label'         => _('Hazard indentification number'),
+            'header'        => 'Hazard identification number',
+            'name'          => 'Part Part Hazard Identification Number',
+            'label'         => _('Hazard identification number'),
             'checked'       => 0,
             'cell_type'     => 'string'
         ),
@@ -497,15 +497,8 @@ $export_edit_template_fields = array(
             'label'         => _('SKO barcode'),
             'checked'       => 0
         ),
-        array(
-            'default_value' => '',
-            'show_for_new'  => true,
-            'required'      => true,
-            'header'        => 'Part Carton Barcode',
-            'name'          => 'Part Carton Barcode',
-            'label'         => _('Carton barcode'),
-            'checked'       => 0
-        ),
+
+
         array(
             'default_value' => '',
             'show_for_new'  => true,
@@ -627,9 +620,9 @@ $export_edit_template_fields = array(
             'default_value' => '',
             'show_for_new'  => true,
             'required'      => false,
-            'header'        => 'Hazard indentification number',
-            'name'          => 'Part Hazard Indentification Number',
-            'label'         => _('Hazard indentification number'),
+            'header'        => 'Hazard identification number',
+            'name'          => 'Part Hazard Identification Number',
+            'label'         => _('Hazard identification number'),
             'checked'       => 0,
             'cell_type'     => 'string'
         ),

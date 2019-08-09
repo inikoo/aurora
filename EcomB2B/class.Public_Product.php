@@ -1380,7 +1380,7 @@ class Public_Product {
             case 'Product Proper Shipping Name':
                 $label = _('proper shipping name');
                 break;
-            case 'Product Hazard Indentification Number':
+            case 'Product Hazard Identification Number':
                 $label = _('hazard identification number');
                 break;
             case 'Product Materials':

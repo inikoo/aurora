@@ -30,6 +30,31 @@ $editor = array(
 );
 
 
+$sql = sprintf(
+    'SELECT `Part SKU` FROM `Part Dimension`   ORDER BY `Part SKU`  DESC '
+);
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $part = new Part($row['Part SKU']);
+
+        if($part->get('Part Carton Barcode')!=''){
+            $supplier_parts = $part->get_supplier_parts('objects');
+            foreach($supplier_parts as $supplier_part){
+                $supplier_part->fast_update(array('Supplier Part Carton Barcode'=>$part->get('Part Carton Barcode')));
+            }
+        }
+
+
+        if($part->get('Part Recommended Packages Per Selling Outer')==''){
+            $part->fast_update(array('Part Recommended Packages Per Selling Outer'=>1));
+
+        }
+
+
+    }
+}
+
 $print_est = true;
 
 
@@ -39,7 +64,7 @@ $sql = sprintf(
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-        $part           = new Part($row['Part SKU']);
+        $part = new Part($row['Part SKU']);
 
         $part->fast_update_json_field('Part Properties', preg_replace('/\s/', '_', 'old_sko_carton'), $part->get('Part SKOs per Carton'));
 
@@ -75,34 +100,33 @@ if ($result = $db->query($sql)) {
             $available = $supplier_parts;
         }
 
-        $tmp=array();
-        foreach($available as $supplier_part){
-            $tmp[]=$supplier_part->id;
+        $tmp = array();
+        foreach ($available as $supplier_part) {
+            $tmp[] = $supplier_part->id;
         }
 
-        $sql = sprintf('select `Purchase Order Last Updated Date`,`Supplier Part Key` from `Purchase Order Transaction Fact`  where `Supplier Part Key` in (%s)  order by `Purchase Order Last Updated Date`  desc limit 1 ',
+        $sql = sprintf(
+            'select `Purchase Order Last Updated Date`,`Supplier Part Key` from `Purchase Order Transaction Fact`  where `Supplier Part Key` in (%s)  order by `Purchase Order Last Updated Date`  desc limit 1 ',
 
-        join(',',$tmp)
+            join(',', $tmp)
         );
-       // print "$sql\n";
-        if ($result=$db->query($sql)) {
-        		foreach ($result as $row) {
-                   //print_r($row);
+        // print "$sql\n";
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+                //print_r($row);
 
-                    $part->update(array('Part Main Supplier Part Key' => $row['Supplier Part Key']));
-                    continue 2;
+                $part->update(array('Part Main Supplier Part Key' => $row['Supplier Part Key']));
+                continue 2;
 
-                }
-        }else {
-        		print_r($error_info=$db->errorInfo());
-        		print "$sql\n";
-        		exit;
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            print "$sql\n";
+            exit;
         }
-
 
 
         $part->update(array('Part Main Supplier Part Key' => array_pop($tmp)));
-
 
 
     }

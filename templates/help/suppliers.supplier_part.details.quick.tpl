@@ -54,7 +54,7 @@ About:
             <li><b>{t}UN class{/t}</b> <i>({t}optional{/t})</i> [{t}string{/t}]</li>
             <li><b>{t}Packing group{/t}</b> <i>({t}optional{/t})</i> [{t}string{/t}]</li>
             <li><b>{t}Proper shipping name{/t}</b> <i>({t}optional{/t})</i> [{t}string{/t}]</li>
-            <li><b>{t}Hazard indentification number{/t}</b> <i>({t}optional{/t})</i> [{t}string{/t}]</li>
+            <li><b>{t}Hazard Identification number{/t}</b> <i>({t}optional{/t})</i> [{t}string{/t}]</li>
 
 
         </ul>
