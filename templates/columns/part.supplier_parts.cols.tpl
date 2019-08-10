@@ -7,14 +7,24 @@ cell: "string",
 
 },
 
+{
+name: "principal",
+label: "",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({
+className: "width_20 align_center"
+})
+
+},
 
 {
 name: "status",
 label: "",
 editable: false,
-sortType: "toggle",
+sortable: false,
 cell: Backgrid.HtmlCell.extend({
-className: "width_20"
+className: "width_30 align_center"
 })
 
 },
@@ -71,16 +81,37 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
-}, {
-name: "packing",
-label: "{t}Packing{/t}",
+},
+{
+name: "sko_per_carton",
+title: '{t}Units (SKOs) per carton{/t}',
+label:'',
+html_label: '<i class="fal  fa-pallet"></i>',
 editable: false,
+renderable:false,
+
+defaultOrder:1,
 sortType: "toggle",
+{if $sort_key=='sko_per_carton'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
+headerCell: rightHeaderHtmlCell
+},
+
+
+{
+name: "operations",
+label: "",
+sortable: false,
+editable: false,
+cell: Backgrid.HtmlCell.extend({
+
+
+className: "width_100 aright padding_right_5"
+
+}),
+headerCell: rightHeaderHtmlCell
 
 }
-
 ]
 
 
@@ -92,13 +123,13 @@ $('#view_'+view).addClass('selected');
 
 grid.columns.findWhere({ name: 'cost'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'delivered_cost'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'packing'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'sko_per_carton'} ).set("renderable", false)
 
 if(view=='overview'){
 grid.columns.findWhere({ name: 'status'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'cost'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'delivered_cost'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'packing'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'sko_per_carton'} ).set("renderable", true)
 
 }
 if(save_state){

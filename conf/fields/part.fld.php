@@ -12,6 +12,9 @@
 
 include_once 'utils/static_data.php';
 
+$main_supplier_part=get_object('Supplier_Part',$object->get('Part Main Supplier Part Key'));
+$supplier=get_object('Supplier',$main_supplier_part->get('Supplier Part Supplier Key'));
+
 
 if (isset($options['new']) and $options['new']) {
     $new = true;
@@ -63,12 +66,12 @@ $options_symbols = array(
 
 
 $part_fields = array();
+$family = $object->get('Family');
 
 
-if (!($supplier_part_scope or $new)) {
 
     $part_fields[] = array(
-        'label'      => _('Status'),
+        'label'      => _('Status/Id'),
         'show_title' => true,
         'fields'     => array(
             array(
@@ -83,26 +86,6 @@ if (!($supplier_part_scope or $new)) {
                 'required'        => ($new ? false : true),
                 'type'            => 'skip'
             ),
-
-            array(
-                'render' => ($new ? false : true),
-                'id'     => 'Part_Symbol',
-                'edit'   => ($edit ? 'option' : ''),
-
-                'options'         => $options_symbols,
-                'value'           => htmlspecialchars($object->get('Part Symbol')),
-                'formatted_value' => $object->get('Symbol'),
-                'label'           => ucfirst($object->get_field_label('Part Symbol')),
-                'required'        => false,
-                'type'            => 'skip'
-            ),
-        )
-    );
-
-    $part_fields[] = array(
-        'label'      => ($supplier_part_scope ? _('Part Id') : _('Id')),
-        'show_title' => true,
-        'fields'     => array(
 
             array(
                 'id'                => 'Part_Reference',
@@ -126,14 +109,101 @@ if (!($supplier_part_scope or $new)) {
             ),
 
             array(
-                'id'              => 'Part_CPNP_Number',
-                'edit'            => ($edit ? 'string' : ''),
-                'value'           => htmlspecialchars(
-                    $object->get('Part CPNP Number')
-                ),
-                'formatted_value' => $object->get('CPNP Number'),
-                'label'           => ucfirst($object->get_field_label('Part CPNP Number')),
+                'render' => ($new ? false : true),
+                'id'     => 'Part_Symbol',
+                'edit'   => ($edit ? 'option' : ''),
+
+                'options'         => $options_symbols,
+                'value'           => htmlspecialchars($object->get('Part Symbol')),
+                'formatted_value' => $object->get('Symbol'),
+                'label'           => ucfirst($object->get_field_label('Part Symbol')),
                 'required'        => false,
+                'type'            => 'skip'
+            ),
+
+            array(
+                'id'                       => 'Part_Family_Category_Key',
+                'edit'                     => ($edit ? 'dropdown_select' : ''),
+                'scope'                    => 'part_families',
+                //'create_new'=>0,
+                'parent'                   => 'account',
+                'parent_key'               => 1,
+                'value'                    => ($family ? $family->id : ''),
+                'formatted_value'          => ($family ? $family->get('Code') : ''),
+                'stripped_formatted_value' => ($family ? $family->get('Code') : ''),
+                'label'                    => _('Family'),
+                'required'                 => false,
+                'placeholder'              => _("Part's family code"),
+                'invalid_msg'              => array(
+                    'not_found'  => _(
+                        "Part's family not found"
+                    ),
+                    'new_object' => _(
+                        "Part's family will be created"
+                    )
+                ),
+                'type'                     => 'value'
+
+            ),
+        )
+    );
+
+
+
+if(!$new) {
+
+    $part_fields[] = array(
+        'label' => _('Cost/Pricing'),
+
+        'show_title' => true,
+        'fields'     => array(
+
+
+            array(
+                'id'              => 'Part_Supplier_Part_Unit_Cost',
+                'edit'            => ($edit ? 'amount' : ''),
+                'value'           => htmlspecialchars($main_supplier_part->get('Supplier Part Unit Cost')),
+                'formatted_value' => $main_supplier_part->get('Unit Cost'),
+                'label'           => ucfirst($main_supplier_part->get_field_label('Supplier Part Unit Cost')),
+                'required'        => true,
+                'placeholder'     => sprintf(_('amount in %s '), $supplier->get('Default Currency Code')),
+
+                'type' => 'value'
+            ),
+            array(
+                'id'              => 'Part_Supplier_Part_Unit_Extra_Cost_Percentage',
+                'edit'            => 'percentage',
+                'value'           => htmlspecialchars($main_supplier_part->get('Supplier Part Unit Extra Cost Percentage')),
+                'formatted_value' => $main_supplier_part->get('Unit Extra Cost Percentage'),
+                'label'           => ucfirst($main_supplier_part->get_field_label('Supplier Part Unit Extra Cost Percentage')),
+                'required'        => false,
+                'placeholder'     => '%',
+                'type'            => 'value'
+            ),
+
+            array(
+                'id'     => 'Part_Unit_Price',
+                'edit'   => 'amount_margin',
+                'render' => (!($supplier_part_scope or $new) ? true : false),
+
+                'value'           => htmlspecialchars($object->get('Part Unit Price')),
+                'formatted_value' => $object->get('Unit Price'),
+                'label'           => ucfirst($object->get_field_label('Part Unit Price')),
+                'required'        => true,
+                'placeholder'     => sprintf(_('amount in %s or margin (%%)'), $account->get('Currency Code')),
+                'type'            => 'value'
+            ),
+            array(
+                'id'              => 'Part_Unit_RRP',
+                'edit'            => 'amount_margin',
+                'render'          => (!($supplier_part_scope or $new) ? true : false),
+                'value'           => htmlspecialchars($object->get('Part Unit RRP')),
+                'formatted_value' => $object->get('Unit RRP'),
+                'label'           => ucfirst($object->get_field_label('Part Unit RRP')),
+                'required'        => true,
+                'placeholder'     => sprintf(
+                    _('amount in %s or margin (%%)'), $account->get('Currency Code')
+                ),
                 'type'            => 'value'
             ),
 
@@ -141,45 +211,7 @@ if (!($supplier_part_scope or $new)) {
         )
     );
 
-
 }
-
-$family = $object->get('Family');
-
-
-$part_fields[] = array(
-    'label'      => _('Family'),
-    'show_title' => true,
-    'fields'     => array(
-        array(
-            'id'                       => 'Part_Family_Category_Key',
-            'edit'                     => ($edit ? 'dropdown_select' : ''),
-            'scope'                    => 'part_families',
-            //'create_new'=>0,
-            'parent'                   => 'account',
-            'parent_key'               => 1,
-            'value'                    => ($family ? $family->id : ''),
-            'formatted_value'          => ($family ? $family->get('Code') : ''),
-            'stripped_formatted_value' => ($family ? $family->get('Code') : ''),
-            'label'                    => _('Family'),
-            'required'                 => false,
-            'placeholder'              => _("Part's family code"),
-            'invalid_msg'              => array(
-                'not_found'  => _(
-                    "Part's family not found"
-                ),
-                'new_object' => _(
-                    "Part's family will be created"
-                )
-            ),
-            'type'                     => 'value'
-
-        ),
-
-
-    )
-);
-
 
 $part_fields[] = array(
     'label' => ($supplier_part_scope ? _('Part unit') : _('Unit')),
@@ -264,56 +296,6 @@ $part_fields[] = array(
         ),
 
 
-        array(
-            'id'     => 'Part_Unit_Price',
-            'edit'   => 'amount_margin',
-            'render' => (!($supplier_part_scope or $new) ? true : false),
-
-            'value'           => htmlspecialchars($object->get('Part Unit Price')),
-            'formatted_value' => $object->get('Unit Price'),
-            'label'           => ucfirst($object->get_field_label('Part Unit Price')),
-            'required'        => true,
-            'placeholder'     => sprintf(_('amount in %s or margin (%%)'), $account->get('Currency Code')),
-            'type'            => 'value'
-        ),
-        array(
-            'id'              => 'Part_Unit_RRP',
-            'edit'            => 'amount_margin',
-            'render'          => (!($supplier_part_scope or $new) ? true : false),
-            'value'           => htmlspecialchars($object->get('Part Unit RRP')),
-            'formatted_value' => $object->get('Unit RRP'),
-            'label'           => ucfirst($object->get_field_label('Part Unit RRP')),
-            'required'        => true,
-            'placeholder'     => sprintf(
-                _('amount in %s or margin (%%)'), $account->get('Currency Code')
-            ),
-            'type'            => 'value'
-        ),
-
-
-    )
-);
-
-
-$part_fields[] = array(
-    'label' => ($supplier_part_scope ? _('Selling outer') : _('Selling outer')),
-
-    'show_title' => true,
-    'fields'     => array(
-        array(
-            'render' => true,
-
-            'id'   => 'Part_Recommended_Packages_Per_Selling_Outer',
-            'edit' => ($edit ? 'numeric' : ''),
-
-            'value'           => $object->get('Part Recommended Packages Per Selling Outer'),
-            'formatted_value' => $object->get('Part Recommended Packages Per Selling Outer'),
-            'label'           => ucfirst($object->get_field_label('Part Recommended Packages Per Selling Outer')),
-            'invalid_msg'     => get_invalid_message('string'),
-            'required'        => false,
-            'type'            => 'value'
-        ),
-
 
     )
 );
@@ -357,6 +339,22 @@ $part_fields[] = array(
             'required'        => ($supplier_part_scope ? false : true),
             'type'            => 'value'
         ),
+
+
+        array(
+            'render' => true,
+
+            'id'   => 'Part_Recommended_Packages_Per_Selling_Outer',
+            'edit' => ($edit ? 'numeric' : ''),
+
+            'value'           => $object->get('Part Recommended Packages Per Selling Outer'),
+            'formatted_value' => $object->get('Part Recommended Packages Per Selling Outer'),
+            'label'           => ucfirst($object->get_field_label('Part Recommended Packages Per Selling Outer')),
+            'invalid_msg'     => get_invalid_message('string'),
+            'required'        => true,
+            'type'            => 'value'
+        ),
+
         array(
             'id'     => 'Part_SKO_Barcode',
             'edit'   => ($edit ? 'string' : ''),
@@ -409,7 +407,7 @@ $part_fields[] = array(
 
         ),
         array(
-            'render'          => (!($supplier_part_scope or $new) ? true : false),
+            'render'          => false,
             'id'              => 'Part_Package_Image',
             'edit'            => (($edit and !$supplier_part_scope) ? 'upload' : ''),
             'value'           => htmlspecialchars($object->get('Part Package Image')),
@@ -465,6 +463,7 @@ $part_fields[] = array(
     )
 );
 
+/*
 if (!$supplier_part_scope) {
 
     $part_fields[] = array(
@@ -472,6 +471,7 @@ if (!$supplier_part_scope) {
 
         'show_title' => true,
         'fields'     => array(
+
             array(
 
                 'id'     => 'Part_SKOs_per_Carton',
@@ -513,6 +513,7 @@ if (!$supplier_part_scope) {
         )
     );
 }
+*/
 
 if ($account->get('Account Add Stock Value Type') == 'Last Price' and false) {
 
@@ -548,7 +549,17 @@ $part_fields[] = array(
 
     'show_title' => true,
     'fields'     => array(
-
+        array(
+            'id'              => 'Part_CPNP_Number',
+            'edit'            => ($edit ? 'string' : ''),
+            'value'           => htmlspecialchars(
+                $object->get('Part CPNP Number')
+            ),
+            'formatted_value' => $object->get('CPNP Number'),
+            'label'           => ucfirst($object->get_field_label('Part CPNP Number')),
+            'required'        => false,
+            'type'            => 'value'
+        ),
         array(
             'id'   => 'Part_Materials',
             'edit' => ($edit ? 'textarea' : ''),
@@ -692,15 +703,15 @@ $part_fields[] = array(
             'type'            => 'value'
         ),
         array(
-            'id'   => 'Part_Hazard_Indentification_Number',
+            'id'   => 'Part_Hazard_Identification_Number',
             'edit' => ($edit ? 'string' : ''),
 
             'value'           => htmlspecialchars(
-                $object->get('Part Hazard Indentification Number')
+                $object->get('Part Hazard Identification Number')
             ),
-            'formatted_value' => $object->get('Hazard Indentification Number'),
+            'formatted_value' => $object->get('Hazard Identification Number'),
             'label'           => ucfirst(
-                $object->get_field_label('Part Hazard Indentification Number')
+                $object->get_field_label('Part Hazard Identification Number')
             ),
             'required'        => false,
             'type'            => 'value'

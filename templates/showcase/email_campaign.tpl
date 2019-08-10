@@ -123,6 +123,10 @@
         <div class="block estimated_recipients" style="padding:10px 20px; align-items: stretch;flex: 1">
 
 
+            <div style="margin-bottom: 10px" class="_mailshot_scope   {if $email_campaign->metadata('description')==''}hide{/if}">
+                <span class="mailshot_scope">{$email_campaign->metadata('description')}</span>
+            </div>
+
             <div class="estimated_recipients_pre_sent   {if $email_campaign->get('State Index')>=50}hide{/if}">
                 <span class="hide Email_Campaign_Number_Estimated_Emails">{$email_campaign->get('Email Campaign Number Estimated Emails')}</span>
                 <span>{t}Estimated recipients{/t}</span> <span class="strong Number_Estimated_Emails">{$email_campaign->get('Number Estimated Emails')}</span>
@@ -131,6 +135,8 @@
             <div class="estimated_recipients_post_sent   {if $email_campaign->get('State Index')<50}hide{/if}">
                 <span class="_Sent_Emails_Info">{$email_campaign->get('Sent Emails Info')}</span>
             </div>
+
+
 
             <div style="clear:both"></div>
         </div>
@@ -385,6 +391,22 @@
     </div>
 
     <div class="order sent_email_data {if $email_campaign->get('State Index')!=100}hide{/if}">
+
+
+        <div class="block  " style="font-size:small;padding:5px 20px; align-items: stretch;flex: 4">
+
+
+            <div style="margin-bottom: 2px;text-align: left" class="_mailshot_scope   {if $email_campaign->metadata('description')==''}hide{/if}">
+                <span class="mailshot_scope">{$email_campaign->metadata('description')}</span>
+            </div>
+
+
+
+
+
+            <div style="clear:both"></div>
+        </div>
+
         <div>
             <label>{t}Sent{/t} <span onclick="create_second_wave_newsletter()" class="button margin_left_10 hide" style="border:1px solid #ccc;padding:3px 5px"><i class="fas fa-paper-plane discreet_on_hover"></i> {t}2nd wave{/t}</label>
             <div><span class="Email_Campaign_Sent">{$email_campaign->get('Sent')}</span></div>

@@ -368,42 +368,49 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
 
     $title = _('Part').' <span class="id Part_Reference">'.$object->get('Part Reference').'</span>  <span class="Part_Symbol">'.$object->get('Symbol').'</span> ';
 
+    $supplier_part =get_object('Supplier_Part', $object->get('Part Main Supplier Part Key'));
+
+    if($supplier_part->id) {
+        if ($object->get('Part Production') == 'Yes') {
+
+            $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-industry button" title="'._('Supplier part').'" onCLick="change_view(\'/production/'.$supplier_part->get('Supplier Part Supplier Key').'/part/'
+                .$supplier_part->id.'\')" ></i> <span class="Supplier_Part_Reference button"  onCLick="change_view(\'production/'.$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Reference').'</small>';
+        } else {
+
+
+            $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-hand-receiving button" title="'._('Supplier part').'" onCLick="change_view(\'/supplier/'.$supplier_part->get('Supplier Part Supplier Key')
+                .'/part/'.$supplier_part->id.'\')" ></i> <span class="Supplier_Part_Reference button"  onCLick="change_view(\'supplier/'.$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Reference').'</small>';
+
+        }
+    }
+
+
     $supplier_parts = $object->get_supplier_parts('objects');
 
-    foreach ($supplier_parts as $key => $supplier_part) {
-        if ($supplier_part->get('Supplier Part Status') == 'Discontinued') {
+    foreach ($supplier_parts as $key => $_supplier_part) {
+        if ($_supplier_part->get('Supplier Part Status') == 'Discontinued') {
+            unset($supplier_parts[$key]);
+        }
+        if ($_supplier_part->id == $supplier_part->id) {
             unset($supplier_parts[$key]);
         }
     }
 
-
-    if (count($supplier_parts) == 1) {
-
-        if($object->get('Part Production')=='Yes'){
-            $supplier_part = array_values($supplier_parts)[0];
-            $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-industry button" title="'._('Supplier part').'" onCLick="change_view(\'/production/'
-                .$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')" ></i> <span class="Supplier_Part_Reference button"  onCLick="change_view(\'production/'
-                .$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Reference').'</small>';
-
-
-        }else{
-            $supplier_part = array_values($supplier_parts)[0];
-            $title .= ' <small class="padding_left_10"> <i class="fa fa-long-arrow-left padding_left_10"></i> <i class="fa fa-hand-receiving button" title="'._('Supplier part').'" onCLick="change_view(\'/supplier/'
-                .$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')" ></i> <span class="Supplier_Part_Reference button"  onCLick="change_view(\'supplier/'
-                .$supplier_part->get('Supplier Part Supplier Key').'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Reference').'</small>';
-
-
-        }
-
-
-
-    } elseif (count($supplier_parts) == 0) {
+    if( !$supplier_part->id and count($supplier_parts) == 0){
         $title .= '<span class="small error padding_left_20">'._('No suppliers').'</span>';
 
-    } elseif (count($supplier_parts) > 1) {
-        $title .= '<span class="small discreet padding_left_20">'._('Multiple suppliers').'</span>';
+    }elseif (count($supplier_parts) ==1) {
+        $title .= '<span class="very_small discreet padding_left_20"><i class="far fa-plus"></i> '._('other supplier').'</span>';
+
+
+    }elseif (count($supplier_parts)>0) {
+        $title .= '<span class="very_small discreet padding_left_20"><i class="far fa-plus"></i> '.sprintf(_('other %d suppliers'),count($supplier_parts) ).'</span>';
+
 
     }
+
+
+
 
 /*
     $object->update_made_in_production_data();

@@ -3,7 +3,7 @@
  Copyright (c) 2018, Inikoo
  Version 3.0*/
 
-$("#new_mailshot").on( 'click',function () {
+$(".new_marketing_mailshot").on( 'click',function () {
     new_mailshot(this)
 })
 
@@ -15,11 +15,15 @@ function new_mailshot(element) {
     var parent = $(element).attr('parent')
     var parent_key = $(element).attr('parent_key')
     var fields_data = {
-        'Email Campaign Type': 'Marketing'
+        ' Type': $(element).attr('scope'),
+        'List': $(element).attr('list'),
+        'Asset': $(element).attr('asset'),
+        'Email Campaign Name': $(element).attr('name'),
+        ' Scope Type': $(element).attr('scope_type'),
     };
 
 
-    //var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + parent + '&parent_key=' + parent_key + '&fields_data=' + JSON.stringify(fields_data)
+    var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + parent + '&parent_key=' + parent_key + '&fields_data=' + JSON.stringify(fields_data)
 
 
     var form_data = new FormData();
@@ -37,11 +41,10 @@ function new_mailshot(element) {
 
 
 
-        //console.log(data)
+        console.log(data)
         if (data.state == 200) {
 
-                change_view('email_campaign_type/' + data.updated_data.store_key + '/' + data.updated_data.email_template_type_key + '/mailshot/' + data.new_id, {
-                    tab: 'mailshot.details'})
+            change_view(data.redirect,data.redirect_metadata)
 
           
 

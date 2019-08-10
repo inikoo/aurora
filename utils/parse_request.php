@@ -3007,6 +3007,15 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         $section    = 'deal.new';
 
 
+                                    }elseif(is_numeric($view_path[2])){
+
+                                        $parent     = 'campaign';
+                                        $parent_key = $view_path[1];
+                                        $extra      = $view_path[0];
+                                        $object     = 'deal';
+                                        $key        = $view_path[2];
+                                        $section    = 'deal';
+
                                     }
 
                                 }
@@ -3042,7 +3051,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 }
 
-                            } elseif ($view_path[1] == 'vl'  or $view_path[1] == 'so' or $view_path[1] == 'fo' or $view_path[1] == 'ca' or $view_path[1] == 'cu') {
+                            } elseif ($view_path[1] == 'vl'  or $view_path[1] == 'so' or $view_path[1] == 'fo' or $view_path[1] == 'ca' or $view_path[1] == 'cu' ) {
 
                                 $section = 'campaign';
 
@@ -5821,6 +5830,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
     // print_r($_data);
 
+
+
     list($tab, $subtab) = parse_tabs($module, $section, $_data, $modules);
 
 
@@ -5909,8 +5920,9 @@ function parse_tabs($module, $section, $_data, $modules) {
         } else {
 
 
+
             if (!isset($modules[$module]['sections'][$section]['tabs']) or !is_array($modules[$module]['sections'][$section]['tabs']) or count($modules[$module]['sections'][$section]['tabs']) == 0) {
-                print "problem with M: $module S: $section";
+                print "problem with M: $module S: >$section<";
             }
 
 

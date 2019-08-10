@@ -1750,6 +1750,8 @@ function get_menu($data, $user, $smarty, $db, $account) {
 
 
 function get_navigation($user, $smarty, $data, $db, $account) {
+
+
     switch ($data['module']) {
 
         case ('dashboard'):
@@ -1947,6 +1949,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case 'shipping_zone_schema':
                     return get_shipping_zone_schema_navigation($data, $smarty, $user, $db, $account, $account);
                     break;
+
+                case ('mailshot.new'):
+                    return get_mailshot_new_navigation($data, $smarty, $user, $db, $account);
+                    break;
+
 
 
             }

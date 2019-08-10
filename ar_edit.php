@@ -562,10 +562,27 @@ function edit_field($account, $db, $editor, $data, $smarty) {
             } elseif ($field == 'Supplier Part Unit Cost') {
 
 
-                $cost = sprintf(
-                    '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>', $object->get('Supplier Part Key'), $object->get('Supplier Part Unit Cost'), $object->get('Supplier Part Currency Code'),
-                    money($object->get('Supplier Part Unit Cost'), $object->get('Supplier Part Currency Code'))
-                );
+                if($object->get_object_name()=='Part'){
+                    $main_supplier_part=get_object('Supplier_Part',$object->get('Part Main Supplier Part Key'));
+
+
+                    $cost = sprintf(
+                        '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>', $main_supplier_part->get('Supplier Part Key'), $main_supplier_part->get('Supplier Part Unit Cost'), $main_supplier_part->get('Supplier Part Currency Code'),
+                        money($main_supplier_part->get('Supplier Part Unit Cost'),
+                              $main_supplier_part->get('Supplier Part Currency Code'))
+                    );
+
+                }else{
+
+                    $cost = sprintf(
+                        '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>', $object->get('Supplier Part Key'), $object->get('Supplier Part Unit Cost'), $object->get('Supplier Part Currency Code'),
+                        money($object->get('Supplier Part Unit Cost'),
+                              $object->get('Supplier Part Currency Code'))
+                    );
+
+                }
+
+
 
 
                 $update_metadata['cost_cell'] = $cost;
@@ -3012,11 +3029,12 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             if (!$parent->error) {
+
                 $pcard        = '';
-                $updated_data = array(
-                    'store_key'               => $object->get('Email Campaign Store Key'),
-                    'email_template_type_key' => $object->get('Email Campaign Email Template Type Key'),
-                );
+                $redirect     = 'marketing/'.$object->get('Store Key').'/emails/'.$parent->id.'/mailshot/'.$object->id;
+                $redirect_metadata = array('tab' => 'mailshot.workshop');
+
+                $updated_data = array();
             }
             break;
         case 'Customer Poll Query':

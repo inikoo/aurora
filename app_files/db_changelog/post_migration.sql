@@ -166,9 +166,9 @@ update `Supplier Part Dimension` set `Supplier Part Production`='Yes' where   `S
 
 ALTER TABLE `Order Transaction Fact` ADD `OTF Webpage Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `OTF Category Department Key`;
 ALTER TABLE `Category Dimension` ADD `Category Properties` JSON NULL DEFAULT NULL AFTER `Category Number History Records`;
-update `Category Dimension` set `Category Properties`='{}';
+update `Category Dimension` set `Category Properties`='{}'  where  `Category Properties`='' or `Category Properties` is null  ;
 ALTER TABLE `Product Dimension` ADD `Product Properties` JSON NULL DEFAULT NULL AFTER `Product Department Category Key`;
-update `Product Dimension` set `Product Properties`='{}';
+update `Product Dimension` set `Product Properties`='{}'  where  `Product Properties`='' or `Product Properties` is null ;
 
 RENAME TABLE `Product Family Sales Correlation` TO `Product Category Sales Correlation`;
 ALTER TABLE `Product Category Sales Correlation` CHANGE `Family A Key` `Category A Key` MEDIUMINT(8) UNSIGNED NOT NULL, CHANGE `Family B Key` `Category B Key` MEDIUMINT(8) UNSIGNED NOT NULL;
@@ -191,3 +191,13 @@ truncate  `Product Sales Anticorrelation`;
 
 ALTER TABLE `Product Sales Anticorrelation` ADD `Product Sales Anticorrelation Store Key` SMALLINT UNSIGNED NULL DEFAULT NULL FIRST, ADD INDEX (`Product Sales Anticorrelation Store Key`);
 ALTER TABLE `Product Sales Anticorrelation` ADD `Customers A` SMALLINT UNSIGNED NULL DEFAULT NULL , ADD `Customers B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers A`, ADD `Customers AB` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers B`, ADD `Customers All A` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers AB`, ADD `Customers All B` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Customers All A`, ADD `Product Sales Anticorrelation Last Updated` DATETIME NULL DEFAULT NULL AFTER `Customers All B`;
+ALTER TABLE `Part Dimension` ADD `Part Main Supplier Part Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Part SKU`, ADD INDEX (`Part Main Supplier Part Key`);
+update `Part Dimension` set `Part Properties`='{}'  where  `Part Properties`='' or `Part Properties` is null  ;
+
+ALTER TABLE `Supplier Part Dimension` ADD `Supplier Part Carton Barcode` VARCHAR(64) NULL DEFAULT NULL AFTER `Supplier Part Carton CBM`;
+ALTER TABLE `Product Dimension` CHANGE `Product Hazard Indentification Number` `Product Hazard Identification Number` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `Part Dimension` CHANGE `Part Hazard Indentification Number` `Part Hazard Identification Number` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+DROP TABLE `Supplier Product Dimension`, `Supplier Product History Bridge`, `Supplier Product History Dimension`, `Supplier Product Part Dimension`, `Supplier Product Part List`;
+ALTER TABLE `Part Dimension` CHANGE `Part Recommended Packages Per Selling Outer` `Part Recommended Packages Per Selling Outer` FLOAT UNSIGNED NULL DEFAULT '1';
+
+
