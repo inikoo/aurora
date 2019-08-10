@@ -11,14 +11,28 @@
 
 $group='';
 
+
 switch ($parameters['parent']) {
     case('email_campaign_type'):
         $where = sprintf(
             ' where `Email Campaign Email Template Type Key`=%d', $parameters['parent_key']
         );
         break;
-
-
+    case('list'):
+        $where = sprintf(
+            ' where `Email Campaign Scope`="Customer_List" and  `Email Campaign Scope Key`=%d', $parameters['parent_key']
+        );
+        break;
+    case('category'):
+        $where = sprintf(
+            ' where `Email Campaign Scope` in ("Category Wide","Category Targeted","Category Donut") and  `Email Campaign Scope Key`=%d', $parameters['parent_key']
+        );
+        break;
+    case('product'):
+        $where = sprintf(
+            ' where `Email Campaign Scope` in ("Product Wide","Product Targeted","Product Donut") and  `Email Campaign Scope Key`=%d', $parameters['parent_key']
+        );
+        break;
     default:
         $where = 'where false';
 }

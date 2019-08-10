@@ -69,11 +69,9 @@ function parse_customer_list($data, $db) {
                 $country_code                 = addslashes(strtoupper($location));
                 $country_codes[$country_code] = $country_code;
 
-            } else {
+              } else {
                 $country = new Country('find', $location);
 
-                //   print_r($country);
-                //exit;
                 if ($country->id and $country->get('Country Code') != 'UNK') {
                     $country_codes[$country->get('Country 2 Alpha Code')] = $country->get('Country 2 Alpha Code');
                 }

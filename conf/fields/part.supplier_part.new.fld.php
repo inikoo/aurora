@@ -56,7 +56,7 @@ $supplier_part_fields[] = array(
         array(
             'id'   => 'Supplier_Part_Reference',
             'edit' => ($edit ? 'string' : ''),
-            'locked'          => ($part_scope ? 1 : 0),
+//            'locked'          => ($part_scope ? 1 : 0),
             'value'             => htmlspecialchars($object->get('Supplier Part Reference')),
             'formatted_value'   => $object->get('Reference'),
             'label'             => ucfirst($object->get_field_label('Supplier Part Reference')),
@@ -203,7 +203,7 @@ $supplier_part_fields[] = array(
         array(
             'id'              => 'Supplier_Part_Unit_Cost',
             'edit'            => ($edit ? 'amount' : ''),
-            'locked'          => ($part_scope ? 1 : 0),
+          //  'locked'          => ($part_scope ? 1 : 0),
             'value'           => htmlspecialchars($object->get('Supplier Part Unit Cost')),
             'formatted_value' => $object->get('Unit Cost'),
             'label'           => ucfirst(
@@ -241,7 +241,7 @@ $supplier_part_fields[] = array(
         array(
             'id'              => 'Supplier_Part_Unit_Extra_Cost_Percentage',
             'edit'            => 'percentage',
-            'locked'          => ($part_scope ? 1 : 0),
+            //'locked'          => ($part_scope ? 1 : 0),
             'value'           => htmlspecialchars(
                 $object->get('Supplier Part Unit Extra Cost Percentage')
             ),

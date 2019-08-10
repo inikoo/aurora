@@ -2,7 +2,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 06-08-2019 13:28:26 MYT, Kuala Lumpur, Malaysia
+ Created: 06-08-2019 11:57:44 MYT, Kuala Lumpur, Malaysia
  Copyright (c) 2018, Inikoo
 
  Version 3
@@ -17,7 +17,7 @@ $parameters = array(
 );
 
 
-$tab     = 'product.mailshots';
+$tab     = 'category.mailshots';
 $ar_file = 'ar_mailshots_tables.php';
 $tipo    = 'mailshots';
 
@@ -44,45 +44,41 @@ $table_filters = array(
 
 $table_buttons = array();
 
+
 include_once 'class.EmailCampaignType.php';
 $email_campaign_type = new EmailCampaignType('code_store', 'Marketing', $state['_object']->get('Store Key'));
 
-$disable=false;
 
-
-if ($state['_object']->properties('spread_marketing_customers') == '' or $state['_object']->properties('spread_marketing_customers_last_updated') < (gmdate('U') - 604800)) {
+if ( $state['_object']->properties('spread_marketing_customers') == '' or $state['_object']->properties('spread_marketing_customers_last_updated') < (gmdate('U') - 604800)) {
     $_customers = '';
+
     include_once 'utils/new_fork.php';
     $account = get_object('Account', 1);
     new_housekeeping_fork(
         'au_housekeeping', array(
         'type'   => 'update_marketing_customers',
         'tipo'   => 'spread',
-        'object' => 'product',
+        'object' => 'category',
         'key'    => $state['_object']->id,
     ), $account->get('Account Code')
     );
 
 } else {
     $_customers = ' ('.$state['_object']->properties('spread_marketing_customers').' '._('customers').')';
-    if($state['_object']->properties('spread_marketing_customers')==0){
-        $disable=true;
-
-    }
 }
+
 
 $table_buttons[] = array(
     'icon'  => 'bomb',
     'title' => _('Create mail bomb').$_customers,
     'id'    => 'new_spread_mailshot',
-    'class' => ' new_spread_mailshot '.($disable?'super_discreet':'new_marketing_mailshot'),
-
+    'class' => 'new_marketing_mailshot new_spread_mailshot',
     'attr'  => array(
         'parent'     => 'EmailCampaignType',
         'parent_key' => $email_campaign_type->id,
         'scope'      => 'Product_Category',
         'list'       => '',
-        'asset'      => 'P'.$state['_object']->id,
+        'asset'      => 'C'.$state['_object']->id,
         'scope_type' => 'Wide',
         'name'       => date('Y.m.d').' Bmb '.$state['_object']->get('Code'),
 
@@ -90,8 +86,6 @@ $table_buttons[] = array(
 
 );
 
-
-$disable=false;
 
 if ($state['_object']->properties('donut_marketing_customers') == '' or $state['_object']->properties('donut_marketing_customers_last_updated') < (gmdate('U') - 604800)) {
     $_customers = '';
@@ -101,33 +95,28 @@ if ($state['_object']->properties('donut_marketing_customers') == '' or $state['
         'au_housekeeping', array(
         'type'   => 'update_marketing_customers',
         'tipo'   => 'donut',
-        'object' => 'product',
+        'object' => 'category',
         'key'    => $state['_object']->id,
     ), $account->get('Account Code')
     );
 
 } else {
     $_customers = ' ('.$state['_object']->properties('donut_marketing_customers').' '._('customers').')';
-
-    if($state['_object']->properties('donut_marketing_customers')==0){
-        $disable=true;
-
-    }
-
 }
+
+
 $table_buttons[] = array(
     'icon'  => 'scrubber',
-    'title' => _('Create donut mailshot').' ('.$state['_object']->properties('donut_marketing_customers').' '._('customers').')',
+    'title' => _('Create donut mailshot').$_customers,
     'id'    => 'new_donut_mailshot',
-    'class' => 'new_donut_mailshot   '.($disable?'super_discreet':'new_marketing_mailshot'),
+    'class' => 'new_marketing_mailshot new_donut_mailshot',
 
-
-    'attr'  => array(
+    'attr' => array(
         'parent'     => 'EmailCampaignType',
         'parent_key' => $email_campaign_type->id,
         'scope'      => 'Product_Category',
         'list'       => '',
-        'asset'      => 'P'.$state['_object']->id,
+        'asset'      => 'C'.$state['_object']->id,
         'scope_type' => 'Donut',
         'name'       => date('Y.m.d').' Don '.$state['_object']->get('Code'),
 
@@ -135,7 +124,6 @@ $table_buttons[] = array(
 
 );
 
-$disable=false;
 
 if ($state['_object']->properties('targeted_marketing_customers') == '' or $state['_object']->properties('targeted_marketing_customers_last_updated') < (gmdate('U') - 604800)) {
     $_customers = '';
@@ -145,34 +133,30 @@ if ($state['_object']->properties('targeted_marketing_customers') == '' or $stat
         'au_housekeeping', array(
         'type'   => 'update_marketing_customers',
         'tipo'   => 'targeted',
-        'object' => 'product',
+        'object' => 'category',
         'key'    => $state['_object']->id,
     ), $account->get('Account Code')
     );
 
 } else {
     $_customers = ' ('.$state['_object']->properties('targeted_marketing_customers').' '._('customers').')';
-    if($state['_object']->properties('targeted_marketing_customers')==0){
-        $disable=true;
-
-    }
 }
 
 
 $table_buttons[] = array(
     'icon'  => 'bullseye-arrow',
-    'title' => _('Create precision mailshot').' ('.$state['_object']->properties('targeted_marketing_customers').' '._('customers').')',
+    'title' => _('Create precision mailshot').$_customers,
     'id'    => 'new_targeted_mailshot',
-    'class' => ' new_targeted_mailshot '.($disable?'super_discreet':'new_marketing_mailshot'),
+    'class' => 'new_marketing_mailshot new_targeted_mailshot',
 
-    'attr'  => array(
+    'attr' => array(
         'parent'     => 'EmailCampaignType',
         'parent_key' => $email_campaign_type->id,
         'scope'      => 'Product_Category',
         'list'       => '',
-        'asset'      => 'P'.$state['_object']->id,
+        'asset'      => 'C'.$state['_object']->id,
         'scope_type' => 'Targeted',
-        'name'       => date('Y.m.d ').' Pre '.$state['_object']->get('Code'),
+        'name'       => date('Y.m.d').' Pre '.$state['_object']->get('Code'),
 
     )
 
@@ -182,7 +166,6 @@ $table_buttons[] = array(
 $smarty->assign(
     'js_code', 'js/injections/new_marketing_mailshot.'.(_DEVEL ? '' : 'min.').'js'
 );
-
 
 
 $smarty->assign('table_buttons', $table_buttons);

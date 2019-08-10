@@ -1228,6 +1228,36 @@ trait ProductCategory {
 
     }
 
+
+    function update_product_category_donut_marketing_customers() {
+        include_once 'utils/asset_marketing_customers.php';
+
+        $store              = get_object('Store', $this->get('Store Key'));
+        $targeted_threshold = min($store->properties('email_marketing_customers') * .05, 500);
+
+
+        $targeted_customers = get_targeted_categories_customers(array(), $this->db, $this->id, $targeted_threshold);
+
+
+        $spread_customers = get_spread_categories_customers(array(), $this->db, $this->id, 5*$targeted_threshold);
+
+
+
+
+        $customer=array_diff($spread_customers,$targeted_customers);
+
+
+
+        $estimated_recipients=count($customer);
+
+
+
+        $this->fast_update_json_field('Category Properties', 'donut_marketing_customers', $estimated_recipients);
+        $this->fast_update_json_field('Category Properties', 'donut_marketing_customers_last_updated', gmdate('U'));
+
+
+    }
+
     function update_product_category_targeted_marketing_customers() {
         include_once 'utils/asset_marketing_customers.php';
 
@@ -1236,7 +1266,11 @@ trait ProductCategory {
 
 
         $estimated_recipients = count(get_targeted_categories_customers(array(), $this->db, $this->id, $targeted_threshold));
+
+
+
         $this->fast_update_json_field('Category Properties', 'targeted_marketing_customers', $estimated_recipients);
+        $this->fast_update_json_field('Category Properties', 'targeted_marketing_customers_last_updated', gmdate('U'));
 
 
     }
@@ -1245,9 +1279,11 @@ trait ProductCategory {
         include_once 'utils/asset_marketing_customers.php';
 
         $store                = get_object('Store', $this->get('Store Key'));
-        $targeted_threshold   = 4 * min($store->properties('email_marketing_customers') * .05, 500);
+        $targeted_threshold   = 5 * min($store->properties('email_marketing_customers') * .05, 500);
         $estimated_recipients = count(get_spread_categories_customers(array(), $this->db, $this->id, $targeted_threshold));
+
         $this->fast_update_json_field('Category Properties', 'spread_marketing_customers', $estimated_recipients);
+        $this->fast_update_json_field('Category Properties', 'spread_marketing_customers_last_updated', gmdate('U'));
 
     }
 
@@ -1264,7 +1300,7 @@ trait ProductCategory {
         if ($this->get('Category Subject') == 'Product') {
 
             $field = 'OTF Category Family Key';
-            $type='Family';
+            $type  = 'Family';
 
             if ($this->get('Category Root Key') == $store->get('Store Family Category Key')) {
                 $sql = sprintf(
@@ -1276,7 +1312,7 @@ trait ProductCategory {
             }
         } elseif ($this->get('Category Subject') == 'Category') {
             $field = 'OTF Category Department Key';
-            $type='Department';
+            $type  = 'Department';
 
             if ($this->get('Category Root Key') == $store->get('Store Department Category Key')) {
                 $sql = sprintf(
@@ -1306,9 +1342,8 @@ trait ProductCategory {
                     $customers_B  = 0;
 
 
-                    $all_A=0;
-                    $all_B=0;
-
+                    $all_A = 0;
+                    $all_B = 0;
 
 
                     $sql = sprintf(
@@ -1316,7 +1351,7 @@ trait ProductCategory {
                     );
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
-                            $all_A=$row['num'] ;
+                            $all_A = $row['num'];
 
                         }
                     }
@@ -1326,18 +1361,18 @@ trait ProductCategory {
                     );
                     if ($result = $this->db->query($sql)) {
                         if ($row = $result->fetch()) {
-                            $all_B=$row['num'] ;
+                            $all_B = $row['num'];
                         }
                     }
 
 
-                    if($all_A<$all_B){
+                    if ($all_A < $all_B) {
                         $sql = sprintf(
                             "select `Customer Key` from `Order Transaction Fact` OTF  where `$field`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`", $this->id
                         );
                         if ($result = $this->db->query($sql)) {
                             foreach ($result as $row) {
-                                $sql = sprintf(
+                                $sql   = sprintf(
                                     "select `Order Transaction Fact Key` as num from `Order Transaction Fact` OTF where OTF.`Order Transaction Type`='Order'  and OTF.`$field`=%d and OTF.`Customer Key`=%d limit 1", $row2['Category Key'], $row['Customer Key']
                                 );
                                 $found = false;
@@ -1356,13 +1391,13 @@ trait ProductCategory {
 
                         $customers_B = $all_B - $customers_AB;
 
-                    }else{
+                    } else {
                         $sql = sprintf(
                             "select `Customer Key` from `Order Transaction Fact` OTF  where `$field`=%d  and  `Order Transaction Type`='Order'  group by `Customer Key`", $row2['Category Key']
                         );
                         if ($result = $this->db->query($sql)) {
                             foreach ($result as $row) {
-                                $sql = sprintf(
+                                $sql   = sprintf(
                                     "select `Order Transaction Fact Key` as num from `Order Transaction Fact` OTF where OTF.`Order Transaction Type`='Order'  and OTF.`$field`=%d and OTF.`Customer Key`=%d limit 1", $this->id, $row['Customer Key']
                                 );
                                 $found = false;
@@ -1399,7 +1434,7 @@ trait ProductCategory {
                         }
 
 
-                       // print $this->get('Code').' '.$row2['Category Code']." $customers_A $customers_B  $customers_AB $customers_zero  $person_correlation\n ";
+                        // print $this->get('Code').' '.$row2['Category Code']." $customers_A $customers_B  $customers_AB $customers_zero  $person_correlation\n ";
 
 
                         $sql = sprintf(
@@ -1408,13 +1443,11 @@ trait ProductCategory {
                         `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Category Sales Correlation Last Updated`
                         ) 
                             values (%d,%s,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Category Sales Correlation Last Updated`=%s",
-                            $this->get('Store Key'),prepare_mysql($type),
+                            $this->get('Store Key'), prepare_mysql($type),
 
-                            $this->id, $row2['Category Key'],
-                            $person_correlation, $samples, $customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s')),
-                            $person_correlation, $samples,$customers_A,$customers_B,$customers_AB,$all_A, $all_B,prepare_mysql(gmdate('Y-m-d H:i:s'))
+                            $this->id, $row2['Category Key'], $person_correlation, $samples, $customers_A, $customers_B, $customers_AB, $all_A, $all_B, prepare_mysql(gmdate('Y-m-d H:i:s')), $person_correlation, $samples, $customers_A, $customers_B, $customers_AB,
+                            $all_A, $all_B, prepare_mysql(gmdate('Y-m-d H:i:s'))
                         );
-
 
 
                         $this->db->exec($sql);
@@ -1425,22 +1458,18 @@ trait ProductCategory {
                         `Customers A`, `Customers B`, `Customers AB`, `Customers All A`, `Customers All B`, `Product Category Sales Correlation Last Updated`
                         ) 
                             values (%d,%s,%d,%d,%f,%d,%d,%d,%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Correlation`=%f, `Samples`=%d , `Customers A`=%d , `Customers B`=%d , `Customers AB`=%d , `Customers All A`=%d , `Customers All B`=%d ,`Product Category Sales Correlation Last Updated`=%s",
-                            $this->get('Store Key'),prepare_mysql($type),
+                            $this->get('Store Key'), prepare_mysql($type),
 
-                            $row2['Category Key'],$this->id,
-                            $person_correlation, $samples, $customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s')),
-                            $person_correlation, $samples,$customers_B,$customers_A,$customers_AB,$all_B, $all_A,prepare_mysql(gmdate('Y-m-d H:i:s'))
+                            $row2['Category Key'], $this->id, $person_correlation, $samples, $customers_B, $customers_A, $customers_AB, $all_B, $all_A, prepare_mysql(gmdate('Y-m-d H:i:s')), $person_correlation, $samples, $customers_B, $customers_A, $customers_AB,
+                            $all_B, $all_A, prepare_mysql(gmdate('Y-m-d H:i:s'))
                         );
 
 
-
                         $this->db->exec($sql);
-
-
 
 
                     } else {
-                       // print $this->get('Code').' '.$row2['Category Code']." $customers_A $customers_B  $customers_AB \n ";
+                        // print $this->get('Code').' '.$row2['Category Code']." $customers_A $customers_B  $customers_AB \n ";
 
                     }
 

@@ -1178,6 +1178,7 @@ class Supplier extends SubjectSupplier {
                     $data['Part SKOs per Carton'] = $data['Supplier Part Packages Per Carton'];
 
                 }
+
                 $data['Part Production'] = $this->get('Supplier Production');
 
 

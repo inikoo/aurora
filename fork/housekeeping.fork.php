@@ -1459,11 +1459,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $store   = get_object('Store', $order->get('Store Key'));
 
 
-
-
-
-
-
             $store->update_orders();
             $account->update_orders();
 
@@ -1474,8 +1469,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $customer->editor = $editor;
 
 
-
-            if($order->get('Order For Collection')=='No'){
+            if ($order->get('Order For Collection') == 'No') {
 
                 $email_template_type      = get_object('Email_Template_Type', 'Delivery Confirmation|'.$order->get('Order Store Key'), 'code_store');
                 $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
@@ -2186,18 +2180,15 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $db->exec($sql);
 
 
-
-
-
             break;
 
         case 'redo_day_ISF':
 
 
-            $date= $data['date'];
+            $date = $data['date'];
 
 
-            $sql   = sprintf(
+            $sql = sprintf(
                 'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU` desc '
             );
 
@@ -2206,7 +2197,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             if ($result2 = $db->query($sql)) {
                 foreach ($result2 as $row2) {
                     $part = get_object('Part', $row2['Part SKU']);
-                    $part->update_part_inventory_snapshot_fact($date,$date);
+                    $part->update_part_inventory_snapshot_fact($date, $date);
 
                 }
             }
@@ -2215,7 +2206,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`');
             if ($result2 = $db->query($sql)) {
                 foreach ($result2 as $row2) {
-                    $warehouse = get_object('Warehouse',$row2['Warehouse Key']);
+                    $warehouse = get_object('Warehouse', $row2['Warehouse Key']);
                     $warehouse->update_inventory_snapshot($date);
                 }
             }
@@ -2898,6 +2889,81 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
             break;
+
+        case 'update_marketing_customers':
+
+
+            $context = new ZMQContext();
+            $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+            $socket->connect("tcp://localhost:5555");
+
+            if ($data['object'] == 'category') {
+                $category = get_object('Category', $data['key']);
+
+                switch ($data['tipo']) {
+                    case 'targeted':
+                        $category->update_product_category_targeted_marketing_customers();
+                        $_customers      = ' ('.$category->properties('targeted_marketing_customers').' '._('customers').')';
+                        $update_metadata = array('new_targeted_mailshot' => _('Create precision mailshot').$_customers);
+                        break;
+                    case 'spread':
+                        $category->update_product_category_spread_marketing_customers();
+                        $_customers      = ' ('.$category->properties('spread_marketing_customers').' '._('customers').')';
+                        $update_metadata = array('new_spread_mailshot' => _('Create mail bomb').$_customers);
+                        break;
+                    case 'donut':
+                        $category->update_product_category_donut_marketing_customers();
+                        $_customers      = ' ('.$category->properties('donut_marketing_customers').' '._('customers').')';
+                        $update_metadata = array('new_donut_mailshot' => _('Create donut mailshot').$_customers);
+                        break;
+
+                }
+            } elseif ($data['object'] == 'product') {
+                $product = get_object('Product', $data['key']);
+
+                switch ($data['tipo']) {
+                    case 'targeted':
+                        $product->update_product_targeted_marketing_customers();
+                        $_customers      = ' ('.$product->properties('targeted_marketing_customers').' '._('customers').')';
+                        $update_metadata = array('new_targeted_mailshot' => _('Create precision mailshot').$_customers);
+                        break;
+                    case 'spread':
+                        $product->update_product_spread_marketing_customers();
+                        $_customers      = ' ('.$product->properties('spread_marketing_customers').' '._('customers').')';
+                        $update_metadata = array('new_spread_mailshot' => _('Create mail bomb').$_customers);
+
+                        break;
+                    case 'donut':
+                        $product->update_product_donut_marketing_customers();
+                        $_customers      = ' ('.$product->properties('donut_marketing_customers').' '._('customers').')';
+                        $update_metadata = array('new_donut_mailshot' => _('Create donut mailshot').$_customers);
+
+                        break;
+
+                }
+            }
+
+
+
+            $socket->send(
+                json_encode(
+                    array(
+                        'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+
+                        'objects' => array(
+                            array(
+                                'object'          => $data['object'],
+                                'key'             => $data['key'],
+                                'update_metadata' => array('titles' => $update_metadata)
+                            )
+                        )
+                    )
+                )
+            );
+
+
+            break;
+
 
         case 'take_webpage_screenshot':
 

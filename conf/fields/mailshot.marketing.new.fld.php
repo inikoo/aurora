@@ -93,8 +93,10 @@ $object_fields[] = array(
 <div class="button_radio_options">
 <input id="_Scope_Type" class="value  " field="_Scope_Type" type="hidden" value="" field_type="string" data-skip_validation="true"  >
 
-<span field_type="button_radio_options" field="Targeted" onclick="toggle_mailshot_scope_type(this)" class="button " style="border:1px solid #ccc;padding:5px;margin:4px">'._('Targeted').'</span>
-<span field_type="button_radio_options" field="Wide" onclick="toggle_mailshot_scope_type(this)" class="button " style="border:1px solid #ccc;padding:5px;margin:4px">'._('Spread').'</span>
+<span field_type="button_radio_options" field="Targeted" onclick="toggle_mailshot_scope_type(this)" class="button " style="border:1px solid #ccc;padding:5px;margin:4px"><i class="fal fa-bullseye-arrow"></i> '._('Precision mailshot').'</span>
+<span field_type="button_radio_options" field="Donut" onclick="toggle_mailshot_scope_type(this)" class="button " style="border:1px solid #ccc;padding:5px;margin:4px"><i class="fal fa-scrubber"></i> '._('Donut mailshot').'</span>
+
+<span field_type="button_radio_options" field="Wide" onclick="toggle_mailshot_scope_type(this)" class="button " style="border:1px solid #ccc;padding:5px;margin:4px"><i class="fa fa-bomb"></i> '._('Mail bomb').'</span>
 </div>
 ',
             'label'    => _('Choose one'),

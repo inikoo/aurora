@@ -735,14 +735,36 @@ abstract class DB_Table extends stdClass {
             $table_full_name = $this->table_name.' Dimension';
         }
 
-        //todo fix after fixi Page Store Dimension
+        //todo fix after fix Page Store Dimension
         if($this->table_name=='Page'){
             $table_full_name='Page Store Dimension';
         }
 
 
+        if ($table_full_name == 'Part Dimension' or $table_full_name == 'Part Data') {
+            $key_field = 'Part SKU';
+        } elseif ($table_full_name == 'Product Dimension' or $table_full_name == 'Product Data' or $table_full_name == 'Product DC Data') {
+            $key_field = 'Product ID';
+        } elseif ($table_full_name == 'Supplier Production Dimension') {
+            $key_field = 'Supplier Production Supplier Key';
 
-        $key_field = $this->table_name." Key";
+        } elseif ($table_full_name == 'Page Store Dimension') {
+            $key_field = 'Page Key';
+
+        } elseif ($table_full_name == 'Product Category Data' or $table_full_name == 'Product Category DC Data' or $table_full_name == 'Product Category Dimension') {
+            $key_field = 'Product Category Key';
+
+        }elseif ($table_full_name == 'Part Category Data' or $table_full_name == 'Part Category Dimension') {
+            $key_field = 'Product Category Key';
+
+        } elseif ($table_full_name == 'Invoice Category Data' or $table_full_name == 'Invoice Category DC Data' or $table_full_name == 'Invoice Category Dimension') {
+            $key_field = 'Invoice Category Key';
+
+        } else {
+            $key_field = $this->table_name." Key";
+
+        }
+
 
         $sql = sprintf(
             "UPDATE `%s` SET `%s`= JSON_SET(`%s`,'$.%s',?) WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)
@@ -767,13 +789,37 @@ abstract class DB_Table extends stdClass {
             $table_full_name = $this->table_name.' Dimension';
         }
 
+
         //todo fix after fix Page Store Dimension
         if($this->table_name=='Page'){
             $table_full_name='Page Store Dimension';
         }
 
 
-        $key_field = $this->table_name." Key";
+        if ($table_full_name == 'Part Dimension' or $table_full_name == 'Part Data') {
+            $key_field = 'Part SKU';
+        } elseif ($table_full_name == 'Product Dimension' or $table_full_name == 'Product Data' or $table_full_name == 'Product DC Data') {
+            $key_field = 'Product ID';
+        } elseif ($table_full_name == 'Supplier Production Dimension') {
+            $key_field = 'Supplier Production Supplier Key';
+
+        } elseif ($table_full_name == 'Page Store Dimension') {
+            $key_field = 'Page Key';
+
+        } elseif ($table_full_name == 'Product Category Data' or $table_full_name == 'Product Category DC Data' or $table_full_name == 'Product Category Dimension') {
+            $key_field = 'Product Category Key';
+
+        }elseif ($table_full_name == 'Part Category Data' or $table_full_name == 'Part Category Dimension') {
+            $key_field = 'Product Category Key';
+
+        } elseif ($table_full_name == 'Invoice Category Data' or $table_full_name == 'Invoice Category DC Data' or $table_full_name == 'Invoice Category Dimension') {
+            $key_field = 'Invoice Category Key';
+
+        } else {
+            $key_field = $this->table_name." Key";
+
+        }
+
 
         $sql = sprintf(
             "UPDATE `%s` SET `%s`= JSON_REMOVE(`%s`,'$.%s') WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($field), addslashes($key), addslashes($key_field)

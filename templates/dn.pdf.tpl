@@ -128,13 +128,13 @@ div.inline { float:left; }
 
 	<table width="100%" style="font-family: sans-serif;" cellpadding="10">
 		<tr>
-			<td width="45%" style="border: 0.1mm solid #888888;"> <span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Delivery address{/t}:</span> 
+			<td width="40%" style="border: 0.1mm solid #888888;"> <span style="font-size: 7pt; color: #555555; font-family: sans-serif;">{t}Delivery address{/t}:</span>
 			<div>
 				{$delivery_note->get('Delivery Note Address Postal Label')|nl2br}
 			</div>
 			</td>
-			<td width="10%">&nbsp;</td>
-			<td width="45%" style="text-align: right">
+			<td width="5%">&nbsp;</td>
+			<td  style="text-align: right">
 
 				{assign expected_payment $order->get('Expected Payment')}
 				{if $expected_payment!=''}
@@ -150,7 +150,25 @@ div.inline { float:left; }
 			<div style="text-align: right;{if $consignment==''}display:none{/if}">
 				{t}Courier{/t}: <b> <span id="formatted_consignment">{$consignment|strip_tags}</span></span> </b>
 			</div>
+
+
+				{if $dangerous_goods|@count gt 0}
+					<div style="font-size: x-small"><br>
+						{foreach from=$dangerous_goods item=dangerous_good name=dangerous_goods}
+							{if $dangerous_good.un_number>1}<span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;">&nbsp;{$dangerous_good.un_number|strip_tags}&nbsp;</span> {/if}
+							{if $dangerous_good.part_packing_group!='None'}PG <b>{$dangerous_good.part_packing_group}</b> {/if}
+
+							({$dangerous_good.parts}) {if $smarty.foreach.dangerous_goods.last}{else},{/if}
+
+						{/foreach}
+					</div>
+				{/if}
+
 			</td>
+
+
+
+
 		</tr>
 	</table>
 	<br> 
@@ -171,7 +189,14 @@ div.inline { float:left; }
 						<barcode code="{$transaction['Part SKO Barcode']}" type="C128A" class="barcode" />
 					{/if}
 				</td>
-				<td style="text-align:left">{$transaction['Part Package Description']}<br/><small>{t}From product{/t}: <b>{$transaction['Product Code']}</b> {$transaction['Product Description']}  ({t}Ordered{/t}:{$transaction['Ordered']})</small> </td>
+				<td style="text-align:left">{$transaction['Part Package Description']}<br/><small>{t}From product{/t}: <b>{$transaction['Product Code']}</b> {$transaction['Product Description']}  ({t}Ordered{/t}:{$transaction['Ordered']})</small>
+
+					{if $transaction.un_number>1 or $transaction.part_packing_group!='None'}
+					{if $transaction.un_number>1}<span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;">&nbsp;{$transaction.un_number|strip_tags}&nbsp;</span> {/if}
+					{if $transaction.part_packing_group!='None'}PG <b>{$transaction.part_packing_group}</b> {/if}
+					{/if}
+
+				</td>
 
 				<td style="width:15%;text-align:right">{$transaction['Required']}</td>
 				<td style="width:15%;text-align:right"><b>{$transaction['dispatched']}</b></td>

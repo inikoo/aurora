@@ -61,6 +61,11 @@ class Product extends Asset {
             if ($this->data = $this->db->query($sql)->fetch()) {
                 $this->id          = $this->data['Product ID'];
                 $this->historic_id = $this->data['Product Current Key'];
+
+
+
+                $this->properties = json_decode($this->data['Product Properties'], true);
+
             }
         } elseif ($key == 'store_code') {
             $sql = sprintf(
@@ -77,6 +82,8 @@ class Product extends Asset {
             if ($this->data = $this->db->query($sql)->fetch()) {
                 $this->id          = $this->data['Product ID'];
                 $this->historic_id = $this->data['Product Current Key'];
+                $this->properties = json_decode($this->data['Product Properties'], true);
+
             }
         } elseif ($key == 'historic_key') {
             $sql = sprintf(
@@ -94,14 +101,16 @@ class Product extends Asset {
 
                     foreach ($row as $key => $value) {
                         $this->data[$key] = $value;
+
                     }
+                    $this->properties = json_decode($this->data['Product Properties'], true);
+
                 }
 
 
             }
         } else {
 
-            //sdasdas();
             exit ("wrong id in class.product get_data A :$key  ".$this->get('Code')." \n");
 
             return;
@@ -267,7 +276,11 @@ class Product extends Asset {
             $this->new = true;
 
 
-            $this->fast_update(array('Property Properties' => '{}'));
+            $this->fast_update(array('Product Properties' => '{}'));
+
+            $this->update_product_targeted_marketing_customers();
+
+            $this->update_product_spread_marketing_customers();
 
 
             $this->update_historic_object();
@@ -1103,7 +1116,7 @@ class Product extends Asset {
             case 'Product Proper Shipping Name':
                 $label = _('proper shipping name');
                 break;
-            case 'Product Hazard Indentification Number':
+            case 'Product Hazard Identification Number':
                 $label = _('hazard identification number');
                 break;
             case 'Product Materials':
@@ -3228,7 +3241,7 @@ class Product extends Asset {
             case 'Product UN Class':
             case 'Product Packing Group':
             case 'Product Proper Shipping Name':
-            case 'Product Hazard Indentification Number':
+            case 'Product Hazard Identification Number':
             case('Product Duty Rate'):
             case('Product CPNP Number'):
 
@@ -4376,7 +4389,31 @@ class Product extends Asset {
         return (isset($this->properties[$key]) ? $this->properties[$key] : '');
     }
 
-    function update_product_category_targeted_marketing_customers() {
+
+    function update_product_donut_marketing_customers() {
+        include_once 'utils/asset_marketing_customers.php';
+
+        $store              = get_object('Store', $this->get('Store Key'));
+        $targeted_threshold = min($store->properties('email_marketing_customers') * .05, 500);
+
+
+        $targeted_customers = get_targeted_product_customers(array(), $this->db, $this->id, $targeted_threshold);
+
+
+        $spread_customers = get_spread_product_customers(array(), $this->db, $this->id, 5*$targeted_threshold);
+
+
+        $customers=array_diff($spread_customers,$targeted_customers);
+        $estimated_recipients=count($customers);
+
+        $this->fast_update_json_field('Product Properties', 'donut_marketing_customers', $estimated_recipients);
+        $this->fast_update_json_field('Product Properties', 'donut_marketing_customers_last_updated', gmdate('U'));
+
+
+    }
+
+
+    function update_product_targeted_marketing_customers() {
         include_once 'utils/asset_marketing_customers.php';
 
         $store              = get_object('Store', $this->get('Store Key'));
@@ -4384,18 +4421,24 @@ class Product extends Asset {
 
 
         $estimated_recipients = count(get_targeted_product_customers(array(), $this->db, $this->id, $targeted_threshold));
+
+
+
         $this->fast_update_json_field('Product Properties', 'targeted_marketing_customers', $estimated_recipients);
+        $this->fast_update_json_field('Product Properties', 'targeted_marketing_customers_last_updated', gmdate('U'));
 
 
     }
 
-    function update_product_category_spread_marketing_customers() {
+    function update_product_spread_marketing_customers() {
         include_once 'utils/asset_marketing_customers.php';
 
         $store                = get_object('Store', $this->get('Store Key'));
-        $targeted_threshold   = 4 * min($store->properties('email_marketing_customers') * .05, 500);
-        $estimated_recipients = count(get_targeted_product_customers(array(), $this->db, $this->id, $targeted_threshold));
+        $targeted_threshold   = 5 * min($store->properties('email_marketing_customers') * .05, 500);
+        $estimated_recipients = count(get_spread_product_customers(array(), $this->db, $this->id, $targeted_threshold));
+
         $this->fast_update_json_field('Product Properties', 'spread_marketing_customers', $estimated_recipients);
+        $this->fast_update_json_field('Product Properties', 'spread_marketing_customers_last_updated', gmdate('U'));
 
     }
 

@@ -42,4 +42,4 @@ $smarty->assign('return_tab', $state['tab']);
 
 $html = $smarty->fetch('edit_table.tpl');
 
-?>
+

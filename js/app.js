@@ -243,6 +243,10 @@ function connect_websocket(){
                             $('.' + j).html(data.objects[i].update_metadata.class_html[j])
                         }
 
+                        for (var j in data.objects[i].update_metadata.titles) {
+                            $('.' + j).attr('title',data.objects[i].update_metadata.titles[j])
+                        }
+
                         for (var key in  data.objects[i].update_metadata.hide) {
                             $('.' + data.objects[i].update_metadata.hide[key]).addClass('hide')
                         }
@@ -250,6 +254,8 @@ function connect_websocket(){
                         for (var key in data.objects[i].update_metadata.show) {
                             $('.' + data.objects[i].update_metadata.show[key]).removeClass('hide')
                         }
+
+
 
                         for (var j in data.objects[i].update_metadata.add_class) {
                             //console.log(j)

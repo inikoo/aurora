@@ -15,7 +15,7 @@ $print_est = true;
 
 
 $where = 'where `Product ID`=971';
-$where = " where `Product Ignore Correlation`='No' ";
+$where = " where `Product Ignore Correlation`='No' and `Product Status` in ('Active','Discontinuing')  ";
 $sql   = sprintf(
     "SELECT count(*) AS num FROM `Product Dimension` %s", $where
 );
@@ -30,9 +30,9 @@ if ($result = $db->query($sql)) {
 $lap_time0 = date('U');
 $contador  = 0;
 
-$sql = sprintf("SELECT P.`Product ID` FROM `Product Dimension` P left join `Product DC Data` D on (P.`Product ID`=D.`Product ID`)  %s order by   `Product DC Total Acc Invoiced Amount` desc   ", $where);
-$sql = sprintf("SELECT `Product ID` FROM `Product Dimension`   %s order by `Product ID` desc limit 1000", $where);
-$sql = sprintf("SELECT `Product ID` FROM `Product Dimension`   %s order by RAND()", $where);
+$sql = sprintf("SELECT P.`Product ID` FROM `Product Dimension` P left join `Product DC Data` D on (P.`Product ID`=D.`Product ID`)  %s order by   `Product DC 1 Year Acc Invoiced Amount` desc   ", $where);
+//$sql = sprintf("SELECT `Product ID` FROM `Product Dimension`   %s order by `Product ID` desc limit 1000", $where);
+//$sql = sprintf("SELECT `Product ID` FROM `Product Dimension`   %s order by RAND()", $where);
 
 
 if ($result = $db->query($sql)) {
@@ -41,7 +41,7 @@ if ($result = $db->query($sql)) {
 
         //$product->update_sales_correlations('Best Sellers', 100);
         //$product->update_sales_correlations('New', 100);
-        $product->update_sales_correlations();
+        $product->update_sales_correlations(10);
         //$product->update_sales_correlations('Random', 1000000);
 
         $contador++;
@@ -55,4 +55,5 @@ if ($result = $db->query($sql)) {
 
     }
 }
+
 
