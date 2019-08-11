@@ -4405,7 +4405,7 @@ class Page extends DB_Table {
     function get_analytics_data($from, $to) {
 
 
-        include_once('utils/google_api.php');
+        include_once('utils/google_api_functions.php');
 
 
         list($url_base, $url_suffix) = preg_split('/\//', $this->get('URL'));

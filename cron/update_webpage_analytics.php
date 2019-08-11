@@ -45,6 +45,7 @@ if ($result = $db->query($sql)) {
 
 
         $webpage->update_analytics('Total');
+        exit;
         $webpage->update_analytics('Week To Day');
         $webpage->update_analytics('Month To Day');
         $webpage->update_analytics('Quarter To Day');
