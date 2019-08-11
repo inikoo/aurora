@@ -452,6 +452,7 @@ class Image extends DB_Table {
 
 
 
+
         if (!preg_match('/^[a-f0-9]{32}$/i', $checksum)) {
             exit('wrong checksum');
         }
@@ -466,6 +467,7 @@ class Image extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
 
                 if (!is_dir($path_root.'/public_db/'.$checksum[0])) {
                     mkdir($path_root.'/public_db/'.$checksum[0]);
@@ -488,6 +490,9 @@ class Image extends DB_Table {
                 $_tmp = preg_replace('/.*\//', '', $image_path);
 
                 if (!file_exists($_tmp)) {
+
+                    print '1>'.preg_replace('/'.$path_root.'\/db/', '../../../db', $image_path)."\n";
+                    print "2>$_tmp\n";
 
                     if (!symlink(
                         preg_replace('/'.$path_root.'\/db/', '../../../db', $image_path), $_tmp

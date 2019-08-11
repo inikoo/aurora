@@ -150,6 +150,8 @@ screenshots/
 testapi.php
 keyring/api.google.include.php
 keyring/api.secret.json
+keyring/google_api_key.json
+EcomB2B/keyring/google_api_key.json
 utils/api.secret.json
 cron/screenshots/*
 cron/testapi.php
