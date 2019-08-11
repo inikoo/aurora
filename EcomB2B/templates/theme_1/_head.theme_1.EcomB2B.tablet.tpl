@@ -37,14 +37,14 @@
             ga('create', 'UA-100778677-1', 'auto', 'auTracker');
             ga('auTracker.require', 'ec');
             ga('auTracker.set', 'transport', 'beacon');
-            ga('set', 'dimension1', '{$account_code}.{$webpage->id}');
-            ga('set', 'dimension2', '{$account_code}.{$webpage->get('Webpage Website Key')}');
-            ga('set', 'dimension3', '{$account_code}');
+            ga('auTracker.set', 'dimension1', '{$account_code}.{$webpage->id}');
+            ga('auTracker.set', 'dimension2', '{$account_code}.{$webpage->get('Webpage Website Key')}');
+            ga('auTracker/set', 'dimension3', '{$account_code}');
             {if !empty($analytics_user_id)}
-            ga('set', 'dimension4', '{$analytics_user_id}');
+            ga('auTracker/set', 'dimension4', '{$analytics_user_id}');
             ga('auTracker.set', 'userId', '{$analytics_user_id}');
             {else}
-            ga('set', 'dimension4', '{$account_code}.');
+            ga('auTracker.set', 'dimension4', '{$account_code}.');
             {/if}
             ga('auTracker.set', 'currencyCode', '{$store->get('Store Currency Code')}');
             {if  !empty($account_code)}
