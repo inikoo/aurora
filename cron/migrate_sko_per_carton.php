@@ -29,7 +29,7 @@ $editor = array(
 
 );
 
-
+/*
 $sql = sprintf(
     'SELECT `Part SKU` FROM `Part Dimension`   ORDER BY `Part SKU`  DESC '
 );
@@ -54,7 +54,7 @@ if ($result = $db->query($sql)) {
 
     }
 }
-
+*/
 $print_est = true;
 
 
