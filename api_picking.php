@@ -551,6 +551,29 @@ switch ($_REQUEST['action']) {
 
 
     case 'get_pending_deliveries_stats':
+        break;
+
+    case 'get_pending_deliveries':
+
+
+
+        $sql = 'select `Delivery Note Key`,`Delivery Note Customer Key`,`Delivery Note Type`,`Delivery Note Date Created`,`Delivery Note Estimated Weight`,`Delivery Note Store Key`,`Delivery Note ID`,`Delivery Note Customer Name`,`Store Code`,`Store Name`,`Delivery Note Number Ordered Parts` 
+        from `Delivery Note Dimension` D left join `Store Dimension` on (`Store Key`=`Delivery Note Store Key`) where `Delivery Note State`=? or `Delivery Note State`=?
+        ';
+
+        $deliveries=array();
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute(['Ready to be Picked','Picking']);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $deliveries[] = $row;
+        }
+
+
+        return array(
+            'state' => 'OK',
+            'data'  => $deliveries
+        );
 
 
         break;
