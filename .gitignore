@@ -146,3 +146,5 @@ node_modules/*
 img/*
 
 websocket_server/composer.lock
+/keyring/google_api_key.json
+/keyring/google_dns.php
