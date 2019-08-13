@@ -11,6 +11,43 @@
 */
 
 
+
+function initialize_webmasters(){
+
+    $KEY_FILE_LOCATION = 'keyring/google_api_key.json';
+
+    $client = new Google_Client();
+    $client->setApplicationName("Aurora Search Console");
+    $client->setAuthConfig($KEY_FILE_LOCATION);
+    $client->setScopes(['https://www.googleapis.com/auth/webmasters.readonly']);
+
+    return  new Google_Service_Webmasters($client);
+
+
+}
+
+
+
+function get_google_webmasters_report($webmasters,$website,$date_interval){
+
+
+    $query = new Google_Service_Webmasters_SearchAnalyticsQueryRequest();
+    $query->setDimensions(array('page'));
+    $query->setStartDate($date_interval['From']);
+    $query->setEndDate($date_interval['To']);
+
+
+
+
+
+    $response = $webmasters->searchanalytics->query(array($website), $query);
+
+    return $response;
+
+}
+
+
+
 /**
  * Initializes an Analytics Reporting API V4 service object.
  *
@@ -33,19 +70,6 @@ function initializeAnalytics() {
     return $analytics;
 }
 
-function initializeSearch() {
-
-    $KEY_FILE_LOCATION = 'keyring/google_api_key.json';
-
-
-    $client = new Google_Client();
-    $client->setApplicationName("Aurora Search Console");
-    $client->setAuthConfig($KEY_FILE_LOCATION);
-    $client->setScopes(['https://www.googleapis.com/auth/webmasters.readonly']);
-    $webmastersService = new Google_Service_Webmasters($client);
-
-    return $webmastersService;
-}
 
 function get_google_analytics_report($analytics, $google_analytics_view_id, $account_code,$website_key, $date_interval, $device) {
 
@@ -85,7 +109,7 @@ function get_google_analytics_report($analytics, $google_analytics_view_id, $acc
 
 
 
-    print $account_code.'.'.$website_key."\n";
+    //print $account_code.'.'.$website_key."\n";
 
     $segmentFilterClause = new Google_Service_AnalyticsReporting_SegmentFilterClause();
     $segmentFilterClause->setDimensionFilter($dimensionFilter);
