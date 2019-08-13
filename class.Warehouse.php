@@ -2114,7 +2114,7 @@ and `Part Distinct Locations`>1
 
         $sql = sprintf(
             'select count(*) as num, sum( if(`Delivery Note Weight Source`="Estimated",`Delivery Note Estimated Weight` ,`Delivery Note Weight`)  ) as weight,  `Delivery Note State` from `Delivery Note Dimension` 
-                where `Delivery Note Warehouse Key`=%d and ``  group by `Delivery Note State`', $this->id
+                where `Delivery Note Warehouse Key`=%d  group by `Delivery Note State`', $this->id
         );
 
         if ($result = $this->db->query($sql)) {

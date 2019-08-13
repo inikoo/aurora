@@ -221,7 +221,63 @@
             <span style="float:left;padding-left:10px;padding-top:5px" class="Delivery_Note_State"> {$delivery_note->get('State')} </span>
             <div id="forward_operations">
 
+                <div id="assign_picker_operations" class="order_operation {if $delivery_note->get('State Index')!=10}hide{/if}">
+                    <div class="square_button right" title="{t}Assign picker{/t}" >
+                        <i class="fal fa-chalkboard-teacher  "  aria-hidden="true" onclick="toggle_order_operation_dialog('assign_picker')"></i>
 
+
+
+                        <table id="assign_picker_dialog" border="0" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Assign picker{/t}</td>
+                            </tr>
+                            <tr class="top">
+                                <td class="label" colspan="2">
+                                    <input id="set_picker" type="hidden" data-field="Delivery Note Assigned Picker Key" class=" input_field" value="{$store->settings('data_entry_picking_aid_default_picker')}" has_been_valid="0"/>
+
+                                    <input id="set_picker_dropdown_select_label" field="set_picker" style="width:170px"  name="picker" autocomplete="off"
+                                           scope="employee" parent="account"
+                                           parent_key="1" class="dropdown_select"
+                                           data-metadata='{ "option":"only_working"}'
+                                           value="{if $delivery_note->get('Delivery Note Assigned Picker Key')>0 }{$delivery_note->get('Delivery Note Assigned Picker Name')}{else}{$store->get('data entry picking aid default picker')}{/if}"
+                                           has_been_valid="0"
+                                           placeholder="{t}Name{/t}"/>
+                                    <span id="set_picker_msg" class="msg"></span>
+
+                                    <div id="set_picker_results_container" class="search_results_container hide">
+
+                                        <table id="set_picker_results" border="0"  >
+
+                                            <tr class="hide" id="set_picker_search_result_template" field="" value=""
+                                                formatted_value="" onClick="select_dropdown_handler_for_fast_track_packing('picker',this)">
+                                                <td class="code"></td>
+                                                <td style="width:85%" class="label"></td>
+
+                                            </tr>
+                                        </table>
+
+                                    </div>
+                                    <script>
+                                        $("#set_picker_dropdown_select_label").on("input propertychange", function (evt) {
+
+                                            var delay = 100;
+                                            if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
+                                            delayed_on_change_dropdown_select_field($(this), delay)
+                                        });
+                                    </script>
+
+
+                                </td>
+                            </tr>
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('assign_picker')"></i></td>
+                                <td class="aright">
+                                    <span data-data='{  "field": "Delivery Note State","value": "Undo Packed Done","dialog_name":"assign_picker"}' id="assign_picker_save_buttons" class="valid save button"
+                                          onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
 
                 <div id="packed_done_operations" class="order_operation {if $delivery_note->get('State Index')!=70    }hide{/if}">
                     <div class="square_button right  " title="{t}Close boxes{/t}">
