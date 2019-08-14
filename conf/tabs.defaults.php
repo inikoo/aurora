@@ -3755,6 +3755,28 @@ $tab_defaults = array(
 
     ),
 
+
+    'intrastat_imports' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'country_code',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'commodity',
+        'from'        => '',
+        'to'          => '',
+        'period'      => 'last_m',
+
+
+        'invoices_vat'    => 1,
+        'invoices_no_vat' => 1,
+        'invoices_null'   => 1,
+
+        'export_fields' => $export_fields['intrastat']
+
+
+    ),
+
     'sales' => array(
         'view'        => 'overview',
         'sort_key'    => 'store',
@@ -3908,6 +3930,29 @@ $tab_defaults = array(
     ),
 
     'intrastat_products' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+        'f_period'    => 'ytd',
+
+
+    ),
+
+
+    'intrastat_deliveries' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'number',
+
+    ),
+
+    'intrastat_parts' => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,

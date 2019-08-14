@@ -7002,6 +7002,14 @@ $modules = array(
 
         ),
 
+        'intrastat_imports'          => array(
+            'type' => '',
+            'tabs' => array(
+                'intrastat_imports' => array(),
+
+            )
+
+        ),
         'intrastat'          => array(
             'type' => '',
             'tabs' => array(
@@ -7022,6 +7030,20 @@ $modules = array(
             'type' => '',
             'tabs' => array(
                 'intrastat_products' => array(),
+
+            )
+
+        ),
+        'intrastat_deliveries'   => array(
+            'type' => '',
+            'tabs' => array(
+                'intrastat_deliveries' => array(),
+            )
+        ),
+        'intrastat_parts' => array(
+            'type' => '',
+            'tabs' => array(
+                'intrastat_parts' => array(),
 
             )
 

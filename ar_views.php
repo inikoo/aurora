@@ -10314,7 +10314,14 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
             } elseif ($state['section'] == 'intrastat') {
                 $branch[] = array(
-                    'label'     => _('Intrastat'),
+                    'label'     => _('Intrastat exports'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            } elseif ($state['section'] == 'intrastat_imports') {
+                $branch[] = array(
+                    'label'     => _('Intrastat imports'),
                     'icon'      => '',
                     'reference' => ''
                 );
