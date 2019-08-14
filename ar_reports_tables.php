@@ -66,7 +66,9 @@ switch ($tipo) {
     case 'orders_components':
         dispatched_orders_components(get_table_parameters(), $db, $user, $account);
         break;
-
+    case 'intrastat_imports':
+        intrastat_imports(get_table_parameters(), $db, $user, $account);
+        break;
 
     case 'intrastat':
         intrastat(get_table_parameters(), $db, $user, $account);
@@ -74,11 +76,20 @@ switch ($tipo) {
     case 'intrastat_totals':
         intrastat_totals($db, $user, $account);
         break;
+    case 'intrastat_imports_totals':
+        intrastat_imports_totals($db, $user, $account);
+        break;
     case 'intrastat_orders':
         intrastat_orders(get_table_parameters(), $db, $user, $account);
         break;
     case 'intrastat_orders_totals':
         intrastat_orders_totals($db, $user, $account);
+        break;
+    case 'intrastat_deliveries':
+        intrastat_deliveries(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'intrastat_deliveries_totals':
+        intrastat_deliveries_totals($db, $user, $account);
         break;
 
     case 'ec_sales_list_totals':
@@ -91,6 +102,12 @@ switch ($tipo) {
         break;
     case 'intrastat_products':
         intrastat_products(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'intrastat_parts_totals':
+        intrastat_parts_totals($db, $user, $account);
+        break;
+    case 'intrastat_parts':
+        intrastat_parts(get_table_parameters(), $db, $user, $account);
         break;
     case 'billingregion_taxcategory':
         billingregion_taxcategory(get_table_parameters(), $db, $user, $account);
@@ -1282,11 +1299,7 @@ function intrastat_products($_data, $db, $user, $account) {
             );
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
-
 
     $sql  = "select $fields from $table $where $wheref $group_by";
     $stmt = $db->prepare($sql);
@@ -1296,6 +1309,57 @@ function intrastat_products($_data, $db, $user, $account) {
 
     $rtext = sprintf(
             ngettext('%s product', '%s products', $total_records), number($total_records)
+        ).' <span class="discreet">'.$rtext.'</span>';
+
+
+    //$rtext=preg_replace('/\(|\)/', '', $rtext);
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+function intrastat_parts($_data, $db, $user, $account) {
+
+    $rtext_label = 'part';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+            $adata[] = array(
+                'code'       => sprintf('<span class="link" onClick="change_view(\'part//%s\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
+                'name'       => $data['Part Unit Description'],
+                'units'      => number($data['Part Units Per Package']),
+                'price'      => money($data['Part Cost'], $account->get('Account Currency')),
+                'weight'     => weight($data['Part Package Weight']/$data['Part Units Per Package'], 'Kg', 2, false, true),
+                'units_send' => number($data['units_send']),
+            );
+
+        }
+    }
+
+    $sql  = "select $fields from $table $where $wheref $group_by";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+
+    $total_records = $stmt->rowCount();
+
+    $rtext = sprintf(
+            ngettext('%s part', '%s parts', $total_records), number($total_records)
         ).' <span class="discreet">'.$rtext.'</span>';
 
 
@@ -2921,4 +2985,79 @@ function stock_given_free($_data, $db, $user, $account) {
 }
 
 
-?>
+
+function intrastat_imports($_data, $db, $user, $account) {
+
+    $rtext_label = 'record';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    //print $sql;
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+           // print_r($data);
+
+
+            $adata[] = array(
+
+                'country_code' => $data['Supplier Contact Address Country 2 Alpha Code'],
+                // 'invoices'     => number($data['invoices']),
+
+                'period'      => $data['monthyear'],
+                'tariff_code' => $data['tariff_code'],
+                'value'       => money($data['value'], $account->get('Account Currency')),
+                'items'       => number(ceil($data['items'])),
+                'parts'    => sprintf(
+                    '<span class="link" onClick="change_view(\'report/intrastat_imports/parts/%s/%s\')" >%s</span>', $data['Supplier Contact Address Country 2 Alpha Code'], ($data['tariff_code'] == '' ? 'missing' : $data['tariff_code']), number($data['parts'])
+                ),
+                'deliveries'      => sprintf(
+                    '<span class="link" onClick="change_view(\'report/intrastat_imports/deliveries/%s/%s\')" >%s</span>', $data['Supplier Contact Address Country 2 Alpha Code'], ($data['tariff_code'] == '' ? 'missing' : $data['tariff_code']), number($data['orders'])
+                ),
+
+                'weight' => weight($data['weight'], 'Kg', 2, false, true),
+
+
+            );
+
+        }
+    } else {
+        print "$sql\n";
+
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $sql  = "select $fields from $table $where $wheref $group_by";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+
+    $total_records = $stmt->rowCount();
+
+    $rtext = sprintf(
+            ngettext('%s record', '%s records', $total_records), number($total_records)
+        ).' <span class="discreet">'.$rtext.'</span>';
+
+
+    //$rtext=preg_replace('/\(|\)/', '', $rtext);
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+

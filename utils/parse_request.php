@@ -18,7 +18,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     $request = $_data['request'];
 
 
-
     $request = preg_replace('/\/+/', '/', $request);
     if ($request == '/' or $request == '') {
         $request = 'dashboard';
@@ -3011,7 +3010,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         $section    = 'deal.new';
 
 
-                                    }elseif(is_numeric($view_path[2])){
+                                    } elseif (is_numeric($view_path[2])) {
 
                                         $parent     = 'campaign';
                                         $parent_key = $view_path[1];
@@ -3055,7 +3054,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                 }
 
-                            } elseif ($view_path[1] == 'vl'  or $view_path[1] == 'so' or $view_path[1] == 'fo' or $view_path[1] == 'ca' or $view_path[1] == 'cu' ) {
+                            } elseif ($view_path[1] == 'vl' or $view_path[1] == 'so' or $view_path[1] == 'fo' or $view_path[1] == 'ca' or $view_path[1] == 'cu') {
 
                                 $section = 'campaign';
 
@@ -3065,7 +3064,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 if (isset($view_path[2])) {
 
 
-                                    if(is_numeric($view_path[2])){
+                                    if (is_numeric($view_path[2])) {
 
                                         $parent     = 'campaign';
                                         $parent_key = $view_path[1];
@@ -3074,7 +3073,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         $key        = $view_path[2];
                                         $section    = 'deal';
 
-                                    }elseif ($view_path[2] == 'new') {
+                                    } elseif ($view_path[2] == 'new') {
 
                                         $parent     = 'campaign';
                                         $parent_key = $view_path[1];
@@ -3107,15 +3106,11 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
             case 'marketing':
 
 
-
-
                 if (!$user->can_view('marketing')) {
                     $module  = 'utils';
                     $section = 'forbidden';
                     break;
                 }
-
-
 
 
                 if (isset($view_path[0])) {
@@ -3129,7 +3124,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
                             if ($view_path[1] == 'emails') {
-                                $module = 'products';
+                                $module  = 'products';
                                 $section = 'marketing';
                                 if (isset($view_path[2])) {
                                     if (is_numeric($view_path[2])) {
@@ -3179,7 +3174,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                                         }
 
 
-                                                    }elseif($view_path[4]=='new'){
+                                                    } elseif ($view_path[4] == 'new') {
                                                         $object  = 'mailshot';
                                                         $section = 'mailshot.new';
                                                         $key     = 0;
@@ -3198,15 +3193,12 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             }
 
 
-
                         }
 
 
                     }
 
                 }
-
-
 
 
                 break;
@@ -4047,10 +4039,10 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             } elseif ($view_path[1] == 'operatives') {
                                 $section = 'operatives';
 
-                            }elseif ($view_path[1] == 'orders') {
+                            } elseif ($view_path[1] == 'orders') {
                                 $section = 'production_supplier_orders';
 
-                            }elseif ($view_path[1] == 'deliveries') {
+                            } elseif ($view_path[1] == 'deliveries') {
                                 $section = 'production_supplier_deliveries';
 
                             } elseif ($view_path[1] == 'batches') {
@@ -4061,8 +4053,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                             } elseif ($view_path[1] == 'parts') {
                                 $section = 'production_parts';
-
-
 
 
                                 if (isset($view_path[2])) {
@@ -4085,7 +4075,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                     }
                                 }
 
-                            }elseif ($view_path[1] == 'delivery') {
+                            } elseif ($view_path[1] == 'delivery') {
 
                                 $parent     = 'supplier_production';
                                 $parent_key = $key;
@@ -4097,7 +4087,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         $key    = $view_path[2];
                                     }
                                 }
-                            }elseif ($view_path[1] == 'order') {
+                            } elseif ($view_path[1] == 'order') {
 
                                 $parent     = 'supplier_production';
                                 $parent_key = $key;
@@ -4109,8 +4099,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         $key    = $view_path[2];
                                     }
                                 }
-                            }
-                            elseif ($view_path[1] == 'part') {
+                            } elseif ($view_path[1] == 'part') {
 
                                 $section    = 'production_part';
                                 $parent     = 'supplier_production';
@@ -5090,9 +5079,34 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                         }
 
-                    }
+                    } elseif ($view_path[0] == 'intrastat_imports') {
+                        $section = 'intrastat_imports';
 
+                        if (isset($view_path[1])) {
+                            if ($view_path[1] == 'deliveries') {
+
+                                if (isset($view_path[2]) and isset($view_path[3])) {
+
+                                    $section = 'intrastat_deliveries';
+
+
+                                    $extra = 'country_tariff_code|'.$view_path[2].'_'.$view_path[3];
+
+                                }
+
+
+                            } elseif ($view_path[1] == 'parts') {
+                                if (isset($view_path[2]) and isset($view_path[3])) {
+                                    $section = 'intrastat_parts';
+                                    $extra   = 'country_tariff_code|'.$view_path[2].'_'.$view_path[3];
+                                }
+                            }
+
+                        }
+
+                    }
                 }
+
                 break;
 
 
@@ -5835,7 +5849,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
     // print_r($_data);
 
 
-
     list($tab, $subtab) = parse_tabs($module, $section, $_data, $modules);
 
 
@@ -5922,7 +5935,6 @@ function parse_tabs($module, $section, $_data, $modules) {
             $tab = $tmp[$module][$section]['tab'];
 
         } else {
-
 
 
             if (!isset($modules[$module]['sections'][$section]['tabs']) or !is_array($modules[$module]['sections'][$section]['tabs']) or count($modules[$module]['sections'][$section]['tabs']) == 0) {
