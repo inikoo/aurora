@@ -2,7 +2,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 23 December 2017 at 11:45:36 GMT, Sheffield, UK
+ Created: 14-08-2019 20:35:53 MYT Kuala Lumpur, Malaysia
  Copyright (c) 2017, Inikoo
 
  Version 3
@@ -11,10 +11,10 @@
 
 
 if ($parameters['tariff_code'] == 'missing') {
-    $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and (`Product Tariff Code` is null or `Product Tariff Code`="")  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched"  and `Delivery Note Quantity`>0  ', prepare_mysql($parameters['country_code']));
+    $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and (`Part Tariff Code` is null or `Part Tariff Code`="")  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched"  and `Delivery Note Quantity`>0  ', prepare_mysql($parameters['country_code']));
 
 } else {
-    $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and `Product Tariff Code` like "%s%%"  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" and `Delivery Note Quantity`>0  ', prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code']));
+    $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and `Part Tariff Code` like "%s%%"  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" and `Delivery Note Quantity`>0  ', prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code']));
 
 }
 
@@ -43,38 +43,13 @@ if (isset($parameters['parent_period'])) {
 }
 
 
-if ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 1) {
-
-} elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 0) {
-    $where .= " and  I.`Invoice Key`>0  ";
-
-} elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 0) {
-    $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` not in ('EX','OUT') ";
-
-} elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 0) {
-    $where .= " and  I.`Invoice Key`>0  and I.`Invoice Tax Code` in ('EX','OUT') ";
-
-} elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 1) {
-    $where .= " and  I.`Invoice Key` is null  ";
-
-} elseif ($parameters['invoices_vat'] == 1 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 1) {
-    $where .= " and   (  I.`Invoice Key` is null  or   ( I.`Invoice Key`>0    and I.`Invoice Tax Code` not in ('EX','OUT') )  ) ";
-
-} elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 1 and $parameters['invoices_null'] == 1) {
-    $where .= " and   (  I.`Invoice Key` is null   or  I.`Invoice Tax Code` in ('EX','OUT')    ) ";
-
-} elseif ($parameters['invoices_vat'] == 0 and $parameters['invoices_no_vat'] == 0 and $parameters['invoices_null'] == 0) {
-    $where .= " and false ";
-
-}
-
 
 $wheref = '';
 if ($parameters['f_field'] == 'number' and $f_value != '') {
     $wheref .= " and  `Order Public ID` like '".addslashes($f_value)."%'    ";
-} elseif ($parameters['f_field'] == 'customer' and $f_value != '') {
+} elseif ($parameters['f_field'] == 'supplier' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Order Customer Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        ' and `Supplier Code` REGEXP "[[:<:]]%s" ', addslashes($f_value)
     );
 }
 
@@ -83,35 +58,35 @@ $_order = $order;
 $_dir   = $order_direction;
 
 if ($order == 'code') {
-    $order = '`Product Code File As`';
+    $order = '`Part Code File As`';
 } elseif ($order == 'name') {
-    $order = '`Product Name`';
+    $order = '`Part Name`';
 } elseif ($order == 'units') {
-    $order = '`Product Units Per Case`';
+    $order = '`Part Units Per Case`';
 } elseif ($order == 'store') {
     $order = '`Store Code`';
 } elseif ($order == 'price') {
-    $order = '`Product Price`/`Product Units Per Case`';
+    $order = '`Part Price`/`Part Units Per Case`';
 } elseif ($order == 'weight') {
-    $order = '`Product Package Weight`';
+    $order = '`Part Package Weight`';
 } elseif ($order == 'units_send') {
-    $order = 'sum(`Delivery Note Quantity`*`Product Units Per Case`) ';
+    $order = 'sum(`Delivery Note Quantity`*`Part Units Per Case`) ';
 } else {
 
-    $order = 'OTF.`Product ID`';
+    $order = 'OTF.`Part ID`';
 }
 
 
-$group_by = ' group by OTF.`Product ID` ';
+$group_by = ' group by OTF.`	Purchase Order Transaction Part SKU` ';
 
 $table =
-    ' `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`)  left join `Delivery Note Dimension` DN  on (OTF.`Delivery Note Key`=DN.`Delivery Note Key`) left join `Invoice Dimension` I  on (OTF.`Invoice Key`=I.`Invoice Key`) ';
+    ' `Order Transaction Fact` OTF left join `Part Dimension` P on (P.`Part SKU`=OTF.`Purchase Order Transaction Part SKU`) left join `Supplier Dimension` S on (S.`Supplier Key`=OTF.`Supplier Key`)  ';
 
 $sql_totals = "";
 
 
-$fields = "OTF.`Product ID`,P.`Product Code`,`Product Name`,`Product Store Key`,`Product Units Per Case`,`Product Tariff Code`,`Product Price`,`Order Currency Code`,`Product Package Weight`,`Store Code`,`Store Name`,
-sum(`Delivery Note Quantity`*`Product Units Per Case`) as units_send
+$fields = "OTF.`Part ID`,P.`Part Reference`,`Part Name`,`Part Store Key`,`Part Units Per Case`,`Part Tariff Code`,`Part Price`,`Order Currency Code`,`Part Package Weight`,
+sum(`Delivery Note Quantity`*`Part Units Per Case`) as units_send
 ";
 
 
