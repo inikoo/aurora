@@ -1270,6 +1270,69 @@ function intrastat_orders($_data, $db, $user, $account) {
 
 
 
+function intrastat_deliveries($_data, $db, $user, $account) {
+
+    $rtext_label = 'order';
+    include_once 'prepare_table/init.php';
+
+    $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $adata = array();
+
+    // print $sql;
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+            $adata[] = array(
+
+
+                'number'    => sprintf('<span class="link" onClick="change_view(\'orders/%s/%s\')" >%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']),
+                'customer'  => sprintf('<span class="link" onClick="change_view(\'customers/%s/%s\')" >%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
+                'date'      => strftime("%e %b %Y", strtotime($data['Delivery Note Date'].' +0:00')),
+                'amount'    => money($data['amount'], $data['Order Currency Code']),
+                'amount_ac' => money($data['amount_ac'], $account->get('Currency Code')),
+                'weight'    => weight($data['weight'], 'Kg', 2, false, true),
+                'parts'  => $data['parts']
+
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $sql  = "select $fields from $table $where $wheref $group_by";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+
+    $total_records = $stmt->rowCount();
+
+    $rtext = sprintf(
+            ngettext('%s order', '%s orders', $total_records), number($total_records)
+        ).' <span class="discreet">'.$rtext.'</span>';
+
+
+    //$rtext=preg_replace('/\(|\)/', '', $rtext);
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
 
 function intrastat_products($_data, $db, $user, $account) {
 
