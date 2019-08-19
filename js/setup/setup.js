@@ -248,7 +248,7 @@ function help() {
 
 $(document).ready(function () {
 
-
+console.log('caca');
     state = {
         module: '',
         section: '',

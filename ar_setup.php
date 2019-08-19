@@ -14,7 +14,14 @@ error_reporting(E_ALL);
 
 define("_DEVEL", isset($_SERVER['devel']));
 
+
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
+
+
 require_once 'vendor/autoload.php';
+include_once 'keyring/dns.php';
 
 
 require_once 'utils/general_functions.php';
@@ -24,10 +31,23 @@ require_once 'utils/table_functions.php';
 include_once 'utils/i18n.php';
 
 
+
+
+$memcached = new Memcached();
+$memcached->addServer($memcache_ip, 11211);
+
+
+$redis = new Redis();
+if ($redis->connect('127.0.0.1', 6379)) {
+    $redis_on = true;
+} else {
+    $redis_on = false;
+}
+
+
 date_default_timezone_set('UTC');
 
 
-include_once 'keyring/dns.php';
 include_once 'class.Account.php';
 include_once 'class.User.php';
 
@@ -44,9 +64,13 @@ $db = new PDO(
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
+$account = new Account($db);
 
-session_start();
 
+$sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
+$session        = new Session($sessionStorage);
+$session->start();
+$session->set('account', $account->get('Code'));
 
 require_once 'utils/modules.php';
 
@@ -256,6 +280,7 @@ function setup_root_user($data,$editor) {
 
 function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $metadata = false) {
 
+    global $session;
 
     $_tab    = $tab;
     $_subtab = $subtab;

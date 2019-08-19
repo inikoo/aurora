@@ -16,6 +16,12 @@ error_reporting(E_ALL);
 define("_DEVEL", isset($_SERVER['devel']));
 
 
+
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
+
+
 include_once 'keyring/dns.php';
 
 
@@ -23,11 +29,26 @@ require_once 'utils/general_functions.php';
 require_once 'utils/password_functions.php';
 require_once 'utils/system_functions.php';
 require_once 'utils/date_functions.php';
+require_once 'utils/object_functions.php';
 
 include_once 'utils/i18n.php';
 include_once 'class.User.php';
 require_once 'class.Data_Sets.php';
 include_once 'class.Category.php';
+
+
+
+$memcached = new Memcached();
+$memcached->addServer($memcache_ip, 11211);
+
+
+$redis = new Redis();
+if ($redis->connect('127.0.0.1', 6379)) {
+    $redis_on = true;
+} else {
+    $redis_on = false;
+}
+
 
 
 date_default_timezone_set('UTC');
@@ -56,10 +77,20 @@ $db = new PDO(
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
-session_start();
+//session_start();
+
+
+
 
 
 $account = new Account($db);
+
+
+$sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
+$session        = new Session($sessionStorage);
+$session->start();
+$session->set('account', $account->get('Code'));
+
 
 
 if (!$account->id) {
@@ -67,8 +98,8 @@ if (!$account->id) {
 
     // TODO get account create data from setup.inikoo.com
     $account_data = array(
-        'Account Code'              => 'AU',
-        'Account Name'              => 'Test',
+        'Account Code'              => 'IB',
+        'Account Name'              => 'Spain',
         'Account System Public URL' => 'au.bali',
         'Account Setup Metadata'    => json_encode(
             array(
@@ -205,6 +236,7 @@ if (!$account->id) {
 }
 
 
+
 // Create root user
 
 $setup_data = $account->get('Setup Metadata');
@@ -330,8 +362,8 @@ foreach ($setup_data['steps'] as $step_code => $step_data) {
     }
 }
 
+
 $smarty->assign('request', $request);
 $smarty->display("setup.tpl");
 
 
-?>

@@ -16,7 +16,6 @@
     {if !$is_devel}
         <script src="https://browser.sentry-cdn.com/5.4.0/bundle.min.js" crossorigin="anonymous">
         </script>
-    {if false}<script src="https://wchat.freshchat.com/js/widget.js"></script>{/if}
     {/if}
     <script src="/assets/aurora_libs.min.js?v190701"></script>
 
@@ -99,7 +98,9 @@
                     {$user->get('User Alias')}
                 </div>
             </div>
-            <div id="account_name" class="link Account_Name" data-user_handle="{$user->get('Handle')}" data-account_code="{$account->get('Account Code')}" onclick="change_view('account')">{$account->get('Account Name')}</div>
+            <div id="account_name" class="link Account_Name"
+                 data-user_handle="{$user->get('Handle')}" data-account_code="{$account->get('Account Code')}" onclick="change_view('account')">{$account->get('Account Name')}
+            </div>
             <div id="aurora_logo_small_screen">
                 <img src="/art/aurora_log_v2_orange_small.png"/>
             </div>

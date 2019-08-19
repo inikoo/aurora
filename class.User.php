@@ -985,15 +985,13 @@ class User extends DB_Table {
                     $this->groups_key_array[]             = $row['User Group Key'];
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
         $this->groups_key_list = preg_replace(
             '/^,/', '', $this->groups_key_list
         );
+
 
 
         $this->groups_read = true;
@@ -2071,9 +2069,6 @@ class User extends DB_Table {
                     );
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 

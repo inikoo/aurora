@@ -10,23 +10,24 @@
     <title>{t}Set up{/t}</title>
 
 
-    {if $_DEVEL}
-        <link href="/css/jquery-ui.css" rel="stylesheet">
-        <link href="/css/font-awesome.css" rel="stylesheet">
-        <link href="/css/intlTelInput.css" rel="stylesheet">
-        <link href="/css/d3fc.css" rel="stylesheet">
-        <link href="/css/backgrid.css" rel="stylesheet">
-        <link href="/css/backgrid-filter.css" rel="stylesheet">
-        <link href="/css/login.css" rel="stylesheet">
-        <script src="js/libs/jquery-2.2.1.js"></script>
-        <script src="js/libs/sha256.js"></script>
-        <script src="js/libs/aes.js"></script>
-        <script src="js/setup/login.setup.js"></script>
-    {else}
-        <link href="/css/libs.min.css" rel="stylesheet">
-        <link href="/css/login.min.css" rel="stylesheet">
-        <script src="js/login.setup.min.js"></script>
-    {/if}
+    <link href="/css/login.min.css?v=3" rel="stylesheet">
+
+
+    <script src="https://browser.sentry-cdn.com/5.4.0/bundle.min.js" crossorigin="anonymous">
+    </script>
+    <script>
+        Sentry.init({
+            dsn: 'https://6b74919f310546d2a64bbf7c856d0820@sentry.io/1482169'});
+    </script>
+
+
+    <script src="js/libs/jquery-2.2.1.js"></script>
+    <script src="js/libs/sha256.js"></script>
+    <script src="js/libs/aes.js"></script>
+    <script src="/js/libs/base64.js"></script>
+
+
+    <script src="js/setup/login.setup.js"></script>
 
 
 </head>
@@ -52,7 +53,7 @@
                        required>
             </div>
             <div class="form__field">
-                <button onclick="on_my_Submit()" >{t}Set up{/t}</button>
+                <button onclick="on_my_Submit()">{t}Set up{/t}</button>
             </div>
         </form>
         <div id="error_message" class="text--center error" style="visibility:{if $error==1}visible{else}hidden{/if}">
