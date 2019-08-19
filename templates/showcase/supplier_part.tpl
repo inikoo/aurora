@@ -102,7 +102,7 @@
 
                 </td>
                 <td>
-                    <a target="_blank"  title="{t}Carton label{/t}" href="/asset_label.php?object=supplier_part&key={$supplier_part->id}&type=carton"><i class="far fa-barcode-alt fa-fw padding_right_5" ></i></a> <span class="Part_Carton_Barcode" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part Carton Barcode')==''}<span class="discreet error italic">{t}Not set{/t}</span>{else}{$part->get('Part Carton Barcode')}{/if}</span>
+                    <a target="_blank"  title="{t}Carton label{/t}" href="/asset_label.php?object=supplier_part&key={$supplier_part->id}&type=carton"><i class="far fa-barcode-alt fa-fw padding_right_5" ></i></a> <span class="Supplier_Part_Carton_Barcode" data-label_no_set="{t}Not set{/t}" >{if $supplier_part->get('Supplier Part Carton Barcode')==''}<span class="discreet error italic">{t}Not set{/t}</span>{else}{$supplier_part->get('Supplier Part Carton Barcode')}{/if}</span>
 
 
                 </td>
