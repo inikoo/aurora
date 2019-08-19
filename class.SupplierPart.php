@@ -917,6 +917,9 @@ class SupplierPart extends DB_Table {
                 break;
 
             case 'Supplier Part Carton Barcode':
+
+
+
                 $this->update_field($field, $value, $options);
 
                 if ($field == 'Supplier Part Packages Per Carton' and  $this->part->get('Part Main Supplier Part Key')==$this->id  ) {
@@ -1230,9 +1233,7 @@ class SupplierPart extends DB_Table {
             case 'SKO Barcode':
 
                 return $this->part->get('SKO Barcode');
-            case 'Carton Barcode':
 
-                return $this->part->get('Carton Barcode');
             case 'Average Delivery':
 
 

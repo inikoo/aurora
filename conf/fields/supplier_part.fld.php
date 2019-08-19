@@ -616,7 +616,7 @@ $supplier_part_fields[] = array(
 
 
         array(
-            'id'     => 'Supplier_Part_SKO_Barcode',
+            'id'     => 'Supplier_Part_Carton_Barcode',
             'render' => true,
             'edit' => ($edit ? 'string' : ''),
             'value'             => htmlspecialchars($object->get('Supplier Part Carton Barcode')),
@@ -626,8 +626,8 @@ $supplier_part_fields[] = array(
             'server_validation' => json_encode(
                 array(
                     'tipo'       => 'check_for_duplicates',
-                    'parent'     => 'account',
-                    'parent_key' => 1,
+                    'parent'     => 'supplier',
+                    'parent_key' => $supplier->id,
                     'object'     => 'SupplierPart',
                     'key'        => $object->id
                 )

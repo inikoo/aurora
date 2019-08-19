@@ -1000,10 +1000,25 @@ function check_for_duplicates($data, $db, $user, $account) {
 
         case 'Supplier_Part':
         case 'Supplier Part':
-
-
+        case 'SupplierPart':
 
             switch ($field) {
+                case 'Supplier Part Carton Barcode':
+
+
+
+                    $invalid_msg              = _('Barcode used');
+                    $sql                      = sprintf(
+                        "SELECT `Supplier Part Key` AS `key` ,`Supplier Part Reference` AS field FROM `Supplier Part Dimension`  WHERE `Supplier Part Carton Barcode`=%s  and  `Supplier Part Supplier Key`=%d  ",
+                        prepare_mysql($data['value']), $data['parent_key']
+
+                    );
+
+
+                    $validation_sql_queries[] = array(
+                        'sql'         => $sql,
+                        'invalid_msg' => $invalid_msg
+                    );
                 case 'Supplier Part Reference':
 
 

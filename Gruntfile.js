@@ -279,6 +279,43 @@ module.exports = function (grunt) {
 
                 ], dest: 'assets/aurora.min.js',
 
+            }, aurora: {
+                options: {
+
+                    sourceMap: true,
+                },
+                src: [
+                    'js/common.js',
+                    'js/help.js',
+                    'js/keyboard_shortcuts.js',
+
+                    'js/edit.js',
+
+                   // 'js/mixed_recipients.edit.js',
+                    'js/search.js',
+                    'js/table.js',
+                    'js/validation.js',
+                   // 'js/pdf.js',
+                   // 'js/edit_webpage_edit.js',
+                    'js/new.js',
+                   // 'js/order.common.js',
+                   // 'js/email_campaign.common.js',
+                   // 'js/supplier.order.js',
+                    //'js/supplier.delivery.js',
+                   // 'js/part_locations.edit.js',
+                   // 'js/part_locations.edit_locations.js',
+                   // 'js/part_locations.stock_check.js',
+                   // 'js/part_locations.move_stock.js',
+                   // 'js/fast_track_packing.js',
+                   // 'js/sticky_notes.js',
+                   // 'js/picking_and_packing.js',
+                    'js/setup/setup.js'
+
+
+
+
+                ], dest: 'assets/aurora_setup.min.js',
+
             }
 
         },
@@ -409,6 +446,7 @@ module.exports = function (grunt) {
 
                 }
             },
+
             au_login: {
                 files: {
                     'css/login.min.css': [

@@ -7,55 +7,20 @@
     <link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon"/>
 
 
-    {if $_DEVEL}
-        <link href="/css/jquery-ui.css" rel="stylesheet">
-        <link href="/css/font-awesome.css" rel="stylesheet">
-        <link href="/css/intlTelInput.css" rel="stylesheet">
-
-        <link href="/css/countrySelect.css" rel="stylesheet">
-
-        <link href="/css/d3fc.css" rel="stylesheet">
-        <link href="/css/backgrid.css" rel="stylesheet">
-        <link href="/css/backgrid-filter.css" rel="stylesheet">
-        <link href="/css/app.css" rel="stylesheet">
-        <script src="/js/libs/jquery-2.2.1.js"></script>
-        <script src="/js/libs/jquery-ui.js"></script>
-        <script src="/js/libs/moment-with-locales.js"></script>
-        <script src="/js/libs/chrono.js"></script>
-        <script src="/js/libs/sha256.js"></script>
-        <script src="/js/libs/underscore.js"></script>
-        <script src="/js/libs/backbone.js"></script>
-        <script src="/js/libs/backbone.paginator.js"></script>
-        <script src="/js/libs/backgrid.js"></script>
-        <script src="/js/libs/backgrid-filter.js"></script>
-        <script src="/js/libs/intlTelInput-jquery.14.0.6.js"></script>
-        <script src="/js/libs/d3.js"></script>
-        <script src="/js/libs/d3fc.layout.js"></script>
-        <script src="/js/libs/d3fc.js"></script>
-        <script src="/js/keyboard_shortcuts.js"></script>
-        <script src="/js/search.js"></script>
-        <script src="/js/table.js"></script>
-        <script src="/js/validation.js"></script>
-        <script src="/js/edit.js"></script>
-        <script src="/js/new.js"></script>
-        <script src="/js/help.js"></script>
-        <script src="/js/setup/setup.js"></script>
-
-        <script src="/js/libs/countrySelect.js"></script>
-
-        <script src="/utils/country_data.js.php?locale={$locale}"></script>
+    <link href="/assets/au_app.min.css?v=190712" rel="stylesheet">
 
 
-    {else}
-        <link href="/build/css/libs.min.css" rel="stylesheet">
-        <link href="/build/css/app.min.css" rel="stylesheet">
-        <script src="/js/libs/countrySelect.js"></script>
+    <script src="/assets/aurora_libs.min.js?v190701"></script>
 
-        <script src="/utils/country_data.js.php?locale={$locale}"></script>
-        <script src="/build/js/libs.min.js"></script>
-        <script src="/build/js/app.min.js"></script>
-        <script src="/build/js/setup.min.js"></script>
-    {/if}
+    <script src="/assets/aurora_setup.min.js?v190817"></script>
+
+    <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
+
+
+
+
+
+
 
 
 </head>
@@ -77,7 +42,9 @@
 
                 </div>
             </div>
-            <div id="account_name" class="link Account_Name"></div>
+            <div id="account_name" class="link Account_Name">
+
+            </div>
 
 
             <div id="aurora_logo_small_screen">
