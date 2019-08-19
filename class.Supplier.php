@@ -1182,6 +1182,12 @@ class Supplier extends SubjectSupplier {
                 $data['Part Production'] = $this->get('Supplier Production');
 
 
+                $data['Part Main Supplier Part Key']=$supplier_part->id;
+
+
+
+
+
                 if (!$part_exist) {
 
 
@@ -1189,6 +1195,11 @@ class Supplier extends SubjectSupplier {
 
 
                     if ($part->new) {
+
+                        $part->fast_update(array('Part Carton Barcode'=>$supplier_part->get('Supplier Part Carton Barcode')));
+                        $part->fast_update(array('Part SKOs per Carton'=>$supplier_part->get('Supplier Part Packages Per Carton')));
+
+
 
                         $part->update(
                             array(

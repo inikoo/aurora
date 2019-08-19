@@ -924,7 +924,7 @@ class SupplierPart extends DB_Table {
 
                 if ($field == 'Supplier Part Packages Per Carton' and  $this->part->get('Part Main Supplier Part Key')==$this->id  ) {
                     $this->part->editor=$this->editor;
-                    $this->part->update(array('art Carton Barcode'=>$value),$options);
+                    $this->part->update(array('Part Carton Barcode'=>$value),$options);
                 }
 
 
