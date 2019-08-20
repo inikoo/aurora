@@ -45,6 +45,10 @@ $user_groups = array(
             'UC',
             'UD',
             'EV',
+            'EC',
+            'EV',
+            'EE',
+            'ED',
             'EC'
         )
     ),

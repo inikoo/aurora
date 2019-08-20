@@ -1579,10 +1579,6 @@ class Page extends DB_Table {
             $this->db->exec($sql);
 
 
-            $sql = sprintf(
-                "UPDATE `Page Product Dimension` SET `State`=%s WHERE `Page Key`=%d", prepare_mysql($this->data['Page State']), $this->id
-            );
-            $this->db->exec($sql);
 
 
             $sql = sprintf(
@@ -5391,11 +5387,7 @@ class Page extends DB_Table {
         $this->db->exec($sql);
 
 
-        $sql = sprintf(
-            "delete `Page Product Dimension` where `Page Key`=%d", $this->id
-        );
 
-        $this->db->exec($sql);
         $images = array();
         $sql    = sprintf(
             "SELECT `Image Key` FROM `Image Bridge` WHERE `Subject Type`='Page' AND `Subject Key`=%d", $this->id
