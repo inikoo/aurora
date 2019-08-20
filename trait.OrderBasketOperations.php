@@ -264,8 +264,8 @@ trait OrderBasketOperations {
 
         } else {
 
-            print_r($this->db->errorInfo());
-
+            $arr = $stmt->errorInfo();
+            print_r($arr);
             exit ("\n\n$sql\n\n  Error, can't  create order ");
         }
 
