@@ -43,12 +43,7 @@ switch ($parameters['parent']) {
             '  and `Page Parent Key`=%d  and `Page Store Section`="Family Catalogue"  ', $parameters['parent_key']
         );
         break;
-    case('product_form'):
-        $where .= sprintf(
-            '  and `Product ID`=%d   ', $parameters['parent_key']
-        );
-        $table .= ' left join `Page Product Dimension` PPD on (PPD.`Page Key`=P.`Page Key`)';
-        break;
+
     default:
 
 
