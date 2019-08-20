@@ -473,9 +473,9 @@ trait OrderTax {
                     )) {
 
                     return array(
-                        'code'       => $tax_category['Excluded']['code'],
-                        'name'       => $tax_category['Excluded']['name'],
-                        'rate'       => $tax_category['Excluded']['rate'],
+                        'code'       => $tax_category['Outside']['code'],
+                        'name'       => $tax_category['Outside']['name'],
+                        'rate'       => $tax_category['Outside']['rate'],
                         'state'      => 'outside EC',
                         'operations' => '<div>'._('Outside EC fiscal area').'</div>'
 
@@ -488,9 +488,9 @@ trait OrderTax {
                     )) {
 
                     return array(
-                        'code'       => $tax_category['Excluded']['code'],
-                        'name'       => $tax_category['Excluded']['name'],
-                        'rate'       => $tax_category['Excluded']['rate'],
+                        'code'       => $tax_category['Outside']['code'],
+                        'name'       => $tax_category['Outside']['name'],
+                        'rate'       => $tax_category['Outside']['rate'],
                         'state'      => 'outside EC',
                         'operations' => '<div>'._('Outside EC fiscal area').'</div>'
 
@@ -670,9 +670,9 @@ trait OrderTax {
                     )) {
 
                     return array(
-                        'code'       => $tax_category['Excluded']['code'],
-                        'name'       => $tax_category['Excluded']['name'],
-                        'rate'       => $tax_category['Excluded']['rate'],
+                        'code'       => $tax_category['Outside']['code'],
+                        'name'       => $tax_category['Outside']['name'],
+                        'rate'       => $tax_category['Outside']['rate'],
                         'state'      => 'outside EC',
                         'operations' => '<div>'._('Outside EC fiscal area').'</div>'
 
@@ -685,9 +685,9 @@ trait OrderTax {
                     )) {
 
                     return array(
-                        'code'       => $tax_category['Excluded']['code'],
-                        'name'       => $tax_category['Excluded']['name'],
-                        'rate'       => $tax_category['Excluded']['rate'],
+                        'code'       => $tax_category['Outside']['code'],
+                        'name'       => $tax_category['Outside']['name'],
+                        'rate'       => $tax_category['Outside']['rate'],
                         'state'      => 'outside EC',
                         'operations' => '<div>'._('Outside EC fiscal area').'</div>'
 
