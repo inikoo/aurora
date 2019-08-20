@@ -270,7 +270,7 @@ trait OrderBasketOperations {
             $arr = $stmt->errorInfo();
             print_r($arr);
 
-            print_r($this->data);
+            print_r($data);
 
             exit ("Error, can't  create order ");
         }
