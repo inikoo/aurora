@@ -266,7 +266,7 @@ trait OrderBasketOperations {
 
             $arr = $stmt->errorInfo();
             print_r($arr);
-            exit ("\n\n$sql\n\n  Error, can't  create order ");
+            exit ("Error, can't  create order ");
         }
 
 
