@@ -124,7 +124,11 @@
         </div>
 
         <div style="margin-left:10px;min-width:250px;min-height:50px;margin-top:5px">
+            {if $delivery_note->get('Delivery Note Dispatch Method')=='Collection'}
+                {t}For collection{/t}
+                {else}
             {$delivery_note->get('Delivery Note Address Formatted')}
+            {/if}
         </div>
 
 
