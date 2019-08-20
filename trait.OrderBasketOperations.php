@@ -79,6 +79,9 @@ trait OrderBasketOperations {
 
         }
 
+        if($this->data['Order Tax Name']==''){
+            $this->data['Order Tax Name']=0;
+        }
 
         $this->data['Order State']      = 'InBasket';
         $this->data['Order Current XHTML Payment State'] = _('Waiting for payment');
