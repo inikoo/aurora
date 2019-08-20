@@ -1086,6 +1086,13 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         $deliveries = $this->get_deliveries('objects');
 
 
+        foreach($deliveries as $_key=>$_value){
+            if($_value->get('Supplier Delivery State')=='Cancelled'){
+                unset($deliveries[$_key]);
+            }
+        }
+
+
         if (count($deliveries) > 0) {
 
 
