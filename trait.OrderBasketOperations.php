@@ -80,7 +80,7 @@ trait OrderBasketOperations {
         }
 
         if($this->data['Order Tax Name']==''){
-            $this->data['Order Tax Name']=0;
+        //    $this->data['Order Tax Name']=0;
         }
 
         $this->data['Order State']      = 'InBasket';
@@ -269,6 +269,9 @@ trait OrderBasketOperations {
 
             $arr = $stmt->errorInfo();
             print_r($arr);
+
+            print_r($this->data);
+
             exit ("Error, can't  create order ");
         }
 
