@@ -309,6 +309,26 @@ class Store extends DB_Table {
             $order_recursion_campaign = $this->create_campaign($order_recursion_campaign_data);
 
 
+            $deal_data = array(
+                'Deal Name'                          => 'Order Recursion Campaign',
+                'Deal Description'                   => "",
+                'Deal Term Allowances'               => "",
+                'Deal Term Allowances Label'         => "",
+                'Deal Trigger'                       => 'Order',
+                'Deal Trigger Key'                   => '0',
+                'Deal Trigger XHTML Label'           => '',
+                'Deal Terms Type'                    => 'Order Interval',
+                'Deal Terms Description'             => "last order within 30 days",
+                'Deal XHTML Terms Description Label' => "Reorder within 30 days to qualify",
+                'Deal Terms'                         => '30 day',
+                'Deal Terms Lock'                    => 'No',
+                'Deal Allowance Target Type'         => 'No Items'
+
+
+            );
+            $deal      = $order_recursion_campaign->create_deal($deal_data);
+
+
             $bulk_discounts_campaign_data = array(
                 'Deal Campaign Name' => 'Bulk discount',
                 'Deal Campaign Icon' => '<i class="far fa-ball-pile"></i>',
