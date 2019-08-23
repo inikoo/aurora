@@ -8506,9 +8506,7 @@ $modules = array(
                     'icon'  => 'bars'
                 ),
                 'deleted.supplier.order.history' => array(
-                    'label' => _(
-                        'History/Notes'
-                    ),
+                    'label' => _('History/Notes'),
                     'icon'  => 'road',
                     'class' => 'right icon_only'
                 ),
@@ -8557,16 +8555,13 @@ $modules = array(
                     'icon'  => 'database',
                     'title' => _('Details')
                 ),
-                'upplier.supplier_parts' => array(
-                    'label' => _(
-                        "Supplier's Parts"
-                    ),
+                'supplier.supplier_parts' => array(
+                    'label' => _("Supplier's Parts"),
                     'icon'  => 'hand-receiving'
                 ),
+
                 'supplier.orders'         => array(
-                    'label' => _(
-                        'Purchase orders'
-                    ),
+                    'label' => _('Purchase orders'),
                     'icon'  => 'clipboard'
                 ),
 
@@ -8721,7 +8716,7 @@ $modules = array(
             'tabs' => array(
 
 
-
+/*
                 'supplier_part.purchase_orders' => array(
                     'label'   => _('Purchase orders / deliveries'),
                     'icon'    => 'clipboard',
@@ -8739,6 +8734,8 @@ $modules = array(
                     )
 
                 ),
+
+*/
                 'supplier_part.images'          => array(
                     'label' => '',
                     'title' => _('Images'),
