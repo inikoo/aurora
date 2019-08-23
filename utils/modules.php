@@ -8721,31 +8721,18 @@ $modules = array(
             'tabs' => array(
 
 
-                'supplier_part.details' => array(
-                    'label' => _(
-                        'Data'
-                    ),
-                    'icon'  => 'database'
-                ),
-
 
                 'supplier_part.purchase_orders' => array(
-                    'label'   => _(
-                        'Purchase orders / deliveries'
-                    ),
+                    'label'   => _('Purchase orders / deliveries'),
                     'icon'    => 'clipboard',
                     'subtabs' => array(
 
                         'supplier_part.supplier.orders'     => array(
-                            'label' => _(
-                                'Purchase orders'
-                            ),
+                            'label' => _('Purchase orders'),
                             'icon'  => 'clipboard'
                         ),
                         'supplier_part.supplier.deliveries' => array(
-                            'label' => _(
-                                "Supplier's deliveries"
-                            ),
+                            'label' => _("Supplier's deliveries"),
                             'icon'  => 'truck'
                         ),
 

@@ -36,6 +36,7 @@
                     <i class="fal fa-fw fa-stop-circle" title="{t}Unit{/t}" ></i>
                 </td>
                 <td>
+                    <span class="italic small Unit_Label discreet">{$part->get('Unit Label')}</span>
 
                 </td>
 
