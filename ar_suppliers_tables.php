@@ -5200,6 +5200,8 @@ function supplier_parts($_data, $db, $user, $account) {
                         }
             */
 
+
+
             if ($data['Part Next Deliveries Data'] == '') {
                 $next_deliveries_array = array();
             } else {

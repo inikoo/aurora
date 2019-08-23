@@ -14,11 +14,11 @@
 
 $where = "where true  ";
 $table
-       = "`Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) left join `Supplier Dimension` S on (SP.`Supplier Part Supplier Key`=S.`Supplier Key`)  ";
+       = "`Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) left join `Part Data` PD on (PD.`Part SKU`=SP.`Supplier Part Part SKU`)  left join `Supplier Dimension` S on (SP.`Supplier Part Supplier Key`=S.`Supplier Key`)  ";
 
 $fields
     = '`Part SKO Barcode`,`Part Barcode Number`,`Part Status`,`Supplier Code`,`Supplier Part Unit Extra Cost`,`Supplier Part Key`,`Supplier Part Part SKU`,`Part Reference`,`Supplier Part Description`,`Supplier Part Supplier Key`,`Supplier Part Reference`,`Supplier Part Status`,`Supplier Part From`,`Supplier Part To`,`Supplier Part Unit Cost`,`Supplier Part Currency Code`,`Part Units Per Package`,`Supplier Part Packages Per Carton`,`Supplier Part Carton CBM`,`Supplier Part Minimum Carton Order`,
-`Part Current Stock`,`Part Stock Status`,`Part Status`,`Part Current On Hand Stock`,`Part Carton Barcode`
+`Part Current Stock`,`Part Stock Status`,`Part Status`,`Part Current On Hand Stock`,`Part Carton Barcode`,`Part Next Deliveries Data`,`Part On Demand`,`Part Days Available Forecast`,`Part Cost in Warehouse`,`Part Package Weight`,`Part Commercial Value`,`Part 1 Quarter Acc Dispatched`,0 as sales,0 as dispatched,0 as sales_1yb,0 as dispatched_1yb
 ';
 
 $filter_msg = '';
@@ -160,7 +160,3 @@ if ($order == 'part_description') {
 $sql_totals
     = "select count(Distinct SP.`Supplier Part Key`) as num from $table  $where  ";
 
-
-//print $sql_totals;
-
-?>

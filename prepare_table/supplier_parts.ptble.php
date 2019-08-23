@@ -9,7 +9,6 @@
 
 */
 
-
 $where = "where true  ";
 $table = "`Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) left join `Supplier Dimension` S on (SP.`Supplier Part Supplier Key`=S.`Supplier Key`)  left join `Part Data` D on (D.`Part SKU`=P.`Part SKU`) ";
 
