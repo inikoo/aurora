@@ -922,7 +922,7 @@ class SupplierPart extends DB_Table {
 
                 $this->update_field($field, $value, $options);
 
-                if ($field == 'Supplier Part Packages Per Carton' and  $this->part->get('Part Main Supplier Part Key')==$this->id  ) {
+                if (  $this->part->get('Part Main Supplier Part Key')==$this->id  ) {
                     $this->part->editor=$this->editor;
                     $this->part->update(array('Part Carton Barcode'=>$value),$options);
                 }
@@ -965,7 +965,7 @@ class SupplierPart extends DB_Table {
                 );
 
 
-                if ($field == 'Supplier Part Packages Per Carton' and  $this->part->get('Part Main Supplier Part Key')==$this->id  ) {
+                if ($this->part->get('Part Main Supplier Part Key')==$this->id  ) {
                     $this->part->editor=$this->editor;
                     $this->part->update(array('Part SKOs per Carton'=>$value));
                 }
