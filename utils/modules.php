@@ -8557,7 +8557,7 @@ $modules = array(
                     'icon'  => 'database',
                     'title' => _('Details')
                 ),
-                'supplier.supplier_parts' => array(
+                'upplier.supplier_parts' => array(
                     'label' => _(
                         "Supplier's Parts"
                     ),
