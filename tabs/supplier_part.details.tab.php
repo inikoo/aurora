@@ -60,4 +60,4 @@ $smarty->assign('js_code', 'js/injections/supplier_part_details.'.(_DEVEL ? '' :
 
 $html = $smarty->fetch('edit_object.tpl');
 
-?>
+
