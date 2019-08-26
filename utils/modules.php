@@ -8715,7 +8715,11 @@ $modules = array(
 
             'tabs' => array(
 
-
+                'agent_supplier_part.details'          => array(
+                    'label' => ('Data'),
+                    'title' => _('Data'),
+                    'icon'  => 'database',
+                ),
 /*
                 'supplier_part.purchase_orders' => array(
                     'label'   => _('Purchase orders / deliveries'),
