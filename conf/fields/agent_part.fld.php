@@ -95,7 +95,27 @@ $supplier_part_fields[] = array(
     'fields'     => array(
 
 
+        array(
+            'id'     => 'Part_SKO_Barcode',
+            'render' =>true,
+            //'render'=>true,
+            'edit' => ($edit ? 'string' : ''),
 
+            'value'             => htmlspecialchars($object->part->get('Part SKO Barcode')),
+            'formatted_value'   => $object->part->get('SKO Barcode'),
+            'label'             => _('SKO barcode').' ('._('stock control').')',
+            'required'          => false,
+            'server_validation' => json_encode(
+                array(
+                    'tipo'       => 'check_for_duplicates',
+                    'parent'     => 'account',
+                    'parent_key' => 1,
+                    'object'     => 'Part',
+                    'key'        => $object->part->id
+                )
+            ),
+            'type'              => 'value'
+        ),
 
 
         array(
