@@ -135,7 +135,7 @@
             </tr>
             <tr class="">
                 <td>{t}Minimum order (cartons){/t}</td>
-                <td class="aright">{$supplier_part->get('Minimum Carton Order')}</td>
+                <td class="aright Supplier_Part_Minimum_Carton_Order">{$supplier_part->get('Minimum Carton Order')}</td>
             </tr>
         </table>
 
