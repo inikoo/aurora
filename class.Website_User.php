@@ -224,7 +224,7 @@ class Website_User extends DB_Table {
 
     function delete() {
 
-        $sql = sprintf('DELETE FROM `Website User Dimension` WHERE `Website User Dimension`=%d ', $this->id);
+        $sql = sprintf('DELETE FROM `Website User Dimension` WHERE `Website User Key`=%d ', $this->id);
         $this->db->exec($sql);
 
         $sql = sprintf(
