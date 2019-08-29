@@ -17,9 +17,9 @@
         <script src="https://browser.sentry-cdn.com/5.4.0/bundle.min.js" crossorigin="anonymous">
         </script>
     {/if}
-    <script src="/assets/aurora_libs.min.js?v190701"></script>
+    <script src="/assets/aurora_libs.min.js?v190829"></script>
 
-    <script src="/assets/aurora.min.js?v190807"></script>
+    <script src="/assets/aurora.min.js?v190829"></script>
 
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 
@@ -106,7 +106,7 @@
             </div>
             <div id="menu"></div>
             <ul style="margin-top:5px">
-                {if $user->get('User Type')=='Staff' or $user->get('User Type')=='Contractor' }
+                {if  $user->can_view('users_reports')  }
                     <li onclick="change_view('/fire')"><i class="fa fa-fire fa-fw" style="color:orange;opacity:.8"></i><span id="fire_label" class="label"> {t}Fire{/t}</span>
                     </li>
                 {/if}

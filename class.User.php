@@ -71,10 +71,9 @@ class User extends DB_Table {
 
         if (preg_match('/create/i', $options)) {
             $create = true;
-        }else{
+        } else {
             $create = false;
         }
-
 
 
         $data = $this->base_data();
@@ -101,7 +100,6 @@ class User extends DB_Table {
         }
 
 
-
         if ($this->found) {
             $this->get_data('id', $this->found_key);
 
@@ -114,7 +112,6 @@ class User extends DB_Table {
 
 
     }
-
 
 
     function get_data($key, $data, $data2 = 'Staff') {
@@ -204,7 +201,7 @@ class User extends DB_Table {
         }
 
         $this->editor = $data['editor'];
-        unset( $data['editor']);
+        unset($data['editor']);
 
         if ($base_data['User Created'] == '') {
             $base_data['User Created'] = gmdate("Y-m-d H:i:s");
@@ -221,7 +218,6 @@ class User extends DB_Table {
 
             return;
         }
-
 
 
         $sql = sprintf(
@@ -289,8 +285,6 @@ class User extends DB_Table {
         $sql    = sprintf("INSERT INTO `User Dimension` %s %s", $keys, $values);
 
 
-
-
         if ($this->db->exec($sql)) {
 
             $user_id = $this->db->lastInsertId();
@@ -301,7 +295,7 @@ class User extends DB_Table {
 
             if ($this->get('User Type') == 'Administrator') {
 
-                $this->update(array('User Parent Key'=>$this->id),'no_history');
+                $this->update(array('User Parent Key' => $this->id), 'no_history');
 
                 $history_data = array(
                     'History Abstract' => sprintf(_('%s user record created'), $this->get('Handle')),
@@ -338,9 +332,12 @@ class User extends DB_Table {
                 );
                 $this->db->exec($sql);
                 $this->get_data('id', $this->id);
+
+                if (isset($data['User Permissions'])) {
+                    $this->update_permissions($data['User Permissions'], 'no_history');
+                }
+
             }
-
-
 
 
             return $this;
@@ -352,8 +349,6 @@ class User extends DB_Table {
         }
 
 
-
-
         $this->get_data('id', $user_id);
 
 
@@ -361,6 +356,7 @@ class User extends DB_Table {
 
     /**
      * @param $key
+     *
      * @return mixed
      */
     function get($key) {
@@ -374,7 +370,7 @@ class User extends DB_Table {
 
         switch ($key) {
             case('theme_raw'):
-                if(empty(json_decode($this->data['User Settings'],true))){
+                if (empty(json_decode($this->data['User Settings'], true))) {
                     return 'app_theme_default';
                 } else {
                     return json_decode($this->data['User Settings'])->theme;
@@ -412,8 +408,7 @@ class User extends DB_Table {
 
                     $stores = array();
                     $sql    = sprintf(
-                        "SELECT `Scope Key`,`Store Code`,`Store Name` AS `key` FROM `User Right Scope Bridge`  LEFT JOIN `Store Dimension` ON (`Store Key`=`Scope Key`) WHERE `User Key`=%d AND `Scope`='Store'",
-                        $this->id
+                        "SELECT `Scope Key`,`Store Code`,`Store Name` AS `key` FROM `User Right Scope Bridge`  LEFT JOIN `Store Dimension` ON (`Store Key`=`Scope Key`) WHERE `User Key`=%d AND `Scope`='Store'", $this->id
                     );
                     foreach ($this->db->query($sql) as $row) {
 
@@ -453,8 +448,7 @@ class User extends DB_Table {
 
                     $productions = array();
                     $sql         = sprintf(
-                        "SELECT `Scope Key`,`Supplier Code`,`Supplier Name` AS `key` FROM `User Right Scope Bridge`  LEFT JOIN `Supplier Dimension` ON (`Supplier Key`=`Scope Key`) WHERE `User Key`=%d AND `Scope`='Production'",
-                        $this->id
+                        "SELECT `Scope Key`,`Supplier Code`,`Supplier Name` AS `key` FROM `User Right Scope Bridge`  LEFT JOIN `Supplier Dimension` ON (`Supplier Key`=`Scope Key`) WHERE `User Key`=%d AND `Scope`='Production'", $this->id
                     );
                     foreach ($this->db->query($sql) as $row) {
 
@@ -489,8 +483,7 @@ class User extends DB_Table {
 
                     $websites = array();
                     $sql      = sprintf(
-                        "SELECT `Scope Key`,`Website Code`,`Website Name` AS `key` FROM `User Right Scope Bridge`  LEFT JOIN `Website Dimension` ON (`Website Key`=`Scope Key`) WHERE `User Key`=%d AND `Scope`='Website'",
-                        $this->id
+                        "SELECT `Scope Key`,`Website Code`,`Website Name` AS `key` FROM `User Right Scope Bridge`  LEFT JOIN `Website Dimension` ON (`Website Key`=`Scope Key`) WHERE `User Key`=%d AND `Scope`='Website'", $this->id
                     );
 
                     foreach ($this->db->query($sql) as $row) {
@@ -524,8 +517,7 @@ class User extends DB_Table {
 
                     $warehouses = array();
                     $sql        = sprintf(
-                        "SELECT `Scope Key`,`Warehouse Code`,`Warehouse Name` AS `key` FROM `User Right Scope Bridge`  LEFT JOIN `Warehouse Dimension` ON (`Warehouse Key`=`Scope Key`) WHERE `User Key`=%d AND `Scope`='Warehouse'",
-                        $this->id
+                        "SELECT `Scope Key`,`Warehouse Code`,`Warehouse Name` AS `key` FROM `User Right Scope Bridge`  LEFT JOIN `Warehouse Dimension` ON (`Warehouse Key`=`Scope Key`) WHERE `User Key`=%d AND `Scope`='Warehouse'", $this->id
                     );
 
                     foreach ($this->db->query($sql) as $row) {
@@ -633,17 +625,17 @@ class User extends DB_Table {
     }
 
     function get_groups() {
-        $groups = '';
-        $sql    = sprintf(
+        $this->groups = array();
+        $sql          = sprintf(
             "SELECT GROUP_CONCAT(`User Group Key`) AS groups FROM `User Group User Bridge` UGUB  WHERE UGUB.`User Key`=%d", $this->id
         );
         if ($row = $this->db->query($sql)->fetch()) {
-            $groups = $row['groups'];
+            $groups       = $row['groups'];
+            $this->groups = preg_split('/,/', $groups);
         }
 
-        return $groups;
+        return $this->groups;
     }
-
 
 
     function get_groups_formatted() {
@@ -738,7 +730,7 @@ class User extends DB_Table {
 
     function get_staff_key() {
 
-        if(!$this->id){
+        if (!$this->id) {
             return 0;
         }
 
@@ -776,6 +768,72 @@ class User extends DB_Table {
         $this->db->exec($sql);
     }
 
+
+    function update_permissions($value) {
+
+        $value = json_decode($value, true);
+
+
+        $groups = $value['user_groups'];
+        foreach ($groups as $key => $_value) {
+            if (!is_numeric($_value)) {
+                unset($groups[$key]);
+            }
+        }
+
+
+        $this->read_groups();
+
+
+        $old_groups = $this->groups_key_array;
+
+        $to_delete = array_diff($old_groups, $groups);
+        $to_add    = array_diff($groups, $old_groups);
+
+
+        $changed = 0;
+        if (count($to_delete) > 0) {
+            $changed += $this->delete_group($to_delete);
+
+        }
+        if (count($to_add) > 0) {
+            $changed += $this->add_group($to_add);
+
+        }
+        $this->read_groups();
+
+        if ($changed > 0) {
+            $this->updated   = true;
+            $this->new_value = array(
+                'groups' => $this->groups_key_array
+            );
+        }
+
+
+        //todo fix it if you offer multi warehouse or multi productions
+        $this->update_stores($value['stores']);
+
+        // todo here you can put the supplier production if you want
+        if (isset($groups[7]) or isset($groups[4])) {
+
+        }
+        $warehouses = array();
+        if (isset($groups[3]) or isset($groups[22]) or isset($groups[27]) or isset($groups[18]) or isset($groups[9])) {
+
+            $sql  = sprintf('select `Warehouse Key` from `Warehouse Dimension`');
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+            while ($row = $stmt->fetch()) {
+                $warehouses[] = $row['Warehouse Key'];
+            }
+
+        }
+
+        $this->update_warehouses($warehouses, false);
+
+    }
+
+
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
 
@@ -784,71 +842,21 @@ class User extends DB_Table {
         }
 
         switch ($field) {
+            case('Permissions'):
+                $this->update_permissions($value);
+
+                break;
             case('theme'):
-                $this->fast_update_json_field('User Settings',$field,$value);
+                $this->fast_update_json_field('User Settings', $field, $value);
 
                 break;
 
-            case('Staff Position'):
-
-                if (!in_array(
-                    $this->get('User Type'), array(
-                                               'Staff',
-                                               'Contractor'
-                                           )
-                )
-                ) {
-                    return;
-                }
-
-                include_once 'class.Staff.php';
-                $employee = new Staff($this->get('User Parent Key'));
-
-                if ($employee->id) {
-                    $employee->update_roles($value);
-                }
+            case('theme'):
+                $this->fast_update_json_field('User Settings', $field, $value);
 
                 break;
 
-            case('User Groups'):
-                $this->update_groups($value);
 
-
-                $this->other_fields_updated = array(
-                    'User_Stores'      => array(
-                        'field'  => 'User_Stores',
-                        'render' => $this->has_scope('Stores')
-                    ),
-                    'User_Warehouses'  => array(
-                        'field'  => 'User_Warehouses',
-                        'render' => $this->has_scope('Warehouses')
-                    ),
-                    'User_Websites'    => array(
-                        'field'  => 'User_Websites',
-                        'render' => $this->has_scope('Websites')
-                    ),
-                    'User_Productions' => array(
-                        'field'  => 'User_Productions',
-                        'render' => $this->has_scope('Productions')
-                    )
-
-
-                );
-
-
-                break;
-            case('User Stores'):
-                $this->update_stores($value);
-                break;
-            case('User Websites'):
-                $this->update_websites($value);
-                break;
-            case('User Warehouses'):
-                $this->update_warehouses($value);
-                break;
-            case('User Productions'):
-                $this->update_productions($value);
-                break;
             case('User Active'):
                 $this->update_active($value);
                 break;
@@ -858,20 +866,8 @@ class User extends DB_Table {
             case('User PIN'):
                 $this->update_pin($value, $options);
                 break;
-            case('groups'):
-                $this->update_groups($value);
-                break;
-            case('stores'):
-                $this->update_stores($value);
-                break;
-            case('websites'):
-                $this->update_websites($value);
-                break;
-            case('warehouses'):
-                $this->update_warehouses($value);
-                break;
 
-                break;
+
             case('User Handle'):
                 $old_value = $this->get('Handle');
                 $this->update_field($field, $value, $options);
@@ -914,52 +910,6 @@ class User extends DB_Table {
 
     }
 
-    function update_groups($value) {
-
-
-
-
-        $this->updated = false;
-
-        $groups = preg_split('/,/', $value);
-        foreach ($groups as $key => $value) {
-            if (!is_numeric($value)) {
-                unset($groups[$key]);
-            }
-        }
-
-
-        $this->read_groups();
-
-
-        $old_groups = $this->groups_key_array;
-
-        $to_delete = array_diff($old_groups, $groups);
-        $to_add    = array_diff($groups, $old_groups);
-
-
-        $changed = 0;
-        if (count($to_delete) > 0) {
-            $changed += $this->delete_group($to_delete);
-
-        }
-        if (count($to_add) > 0) {
-            $changed += $this->add_group($to_add);
-
-        }
-        $this->read_groups();
-
-        if ($changed > 0) {
-            $this->read_websites();
-            $this->updated   = true;
-            $this->new_value = array(
-                'websites' => $this->websites,
-                'groups'   => $this->groups_key_array
-            );
-        }
-
-
-    }
 
     function read_groups() {
 
@@ -991,7 +941,6 @@ class User extends DB_Table {
         $this->groups_key_list = preg_replace(
             '/^,/', '', $this->groups_key_list
         );
-
 
 
         $this->groups_read = true;
@@ -1027,11 +976,6 @@ class User extends DB_Table {
                     "INSERT INTO `%s History Bridge` VALUES (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key
                 );
                 $this->db->exec($sql);
-
-
-                //if ($group_key==10) {
-                // $this->update_groups('', 'no_history');
-                //}
 
 
             }
@@ -1083,34 +1027,15 @@ class User extends DB_Table {
         return $changed;
     }
 
-    function read_websites() {
-
-        $this->websites = array();
-        $sql            = sprintf(
-            "SELECT * FROM `User Right Scope Bridge` WHERE `User Key`=%d AND `Scope`='Website' ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $this->websites[] = $row['Scope Key'];
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
 
     function has_scope($scope) {
 
 
         $groups = $this->get_groups();
-        if ($groups != '') {
+        if (count($groups) > 0) {
             include 'conf/user_groups.php';
 
-            foreach (preg_split('/,/', $groups) as $group_key) {
+            foreach ($groups as $group_key) {
                 if (isset($user_groups[$group_key][$scope.'_Scope']) and $user_groups[$group_key][$scope.'_Scope']) {
                     return true;
                 }
@@ -1124,27 +1049,25 @@ class User extends DB_Table {
 
     }
 
-    function update_stores($value) {
+    function update_stores($stores) {
 
         $this->updated = false;
 
-        if ( !( $this->data['User Type'] == 'Staff' or  $this->data['User Type'] == 'Contractor' ) ) {
+        if (!($this->data['User Type'] == 'Staff' or $this->data['User Type'] == 'Contractor')) {
             $this->error = true;
 
             return;
         }
-        $stores = preg_split('/,/', $value);
-        foreach ($stores as $key => $value) {
-            if (!is_numeric($value)) {
+        foreach ($stores as $key => $_value) {
+            if (!is_numeric($_value)) {
                 unset($stores[$key]);
             }
         }
         $old_stores = preg_split('/,/', $this->get('User Stores'));
 
-        $old_formatted_stores = $this->get('Stores');
-        $to_delete            = array_diff($old_stores, $stores);
-        $to_add               = array_diff($stores, $old_stores);
-        $changed              = 0;
+        $to_delete = array_diff($old_stores, $stores);
+        $to_add    = array_diff($stores, $old_stores);
+        $changed   = 0;
 
 
         if (count($to_delete) > 0) {
@@ -1171,7 +1094,7 @@ class User extends DB_Table {
             $_changed = $this->db->exec($sql);
             $changed  += $_changed;
 
-            $store = get_object('Store',$store_key);
+            $store = get_object('Store', $store_key);
             if ($store->id and $_changed) {
                 $history_data = array(
                     'History Abstract'    => sprintf(
@@ -1201,7 +1124,7 @@ class User extends DB_Table {
         $changed = 0;
         foreach ($to_add as $scope_id) {
 
-            $store = get_object('Store',$scope_id);
+            $store = get_object('Store', $scope_id);
 
 
             if (!$store->id) {
@@ -1240,170 +1163,18 @@ class User extends DB_Table {
 
     }
 
-    function update_websites($value) {
-        $this->updated = false;
 
-        if ( !( $this->data['User Type'] == 'Staff' or  $this->data['User Type'] == 'Contractor' ) ) {
-            $this->error = true;
-
-            return;
-        }
-        $websites = preg_split('/,/', $value);
-        foreach ($websites as $key => $value) {
-            if (!is_numeric($value)) {
-                unset($websites[$key]);
-            }
-        }
-        $old_websites = preg_split('/,/', $this->get('User Websites'));
-
-        $old_formatted_websites = $this->get('Websites');
-        $to_delete              = array_diff($old_websites, $websites);
-        $to_add                 = array_diff($websites, $old_websites);
-        $changed                = 0;
-
-
-        if (count($to_delete) > 0) {
-            $changed += $this->delete_website($to_delete);
-        }
-        if (count($to_add) > 0) {
-            $changed += $this->add_website($to_add);
-        }
-
-        $number_websites = $this->get_number_websites();
-
-        if ($number_websites > 0) {
-            $sql = sprintf(
-                "SELECT `User Group Key` FROM `User Group Dimension` WHERE `User Group Name`='Webmaster' "
-            );
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $groups_changed = $this->add_group(
-                        array($row['User Group Key'])
-                    );
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
-
-
-        } else {
-            $this->read_groups();
-            $sql = sprintf(
-                "SELECT `User Group Key` FROM `User Group Dimension` WHERE `User Group Name`='Webmaster' "
-            );
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $groups_changed = $this->delete_group(
-                        array($row['User Group Key'])
-                    );
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
-
-
-        }
-
-
-        if ($changed > 0) {
-            $this->updated = true;
-        }
-
-    }
-
-    function delete_website($to_delete, $history = true) {
-
-        include_once 'class.Website.php';
-
-        $changed = 0;
-        foreach ($to_delete as $website_key) {
-
-            $sql      = sprintf(
-                "DELETE FROM `User Right Scope Bridge` WHERE `User Key`=%d AND `Scope Key`=%d AND `Scope`='Website' ", $this->id, $website_key
-            );
-            $_changed = $this->db->exec($sql);
-            $changed  += $_changed;
-
-            $website = new Website($website_key);
-            if ($website->id and $_changed) {
-                $history_data = array(
-                    'History Abstract'    => sprintf(_("User's rights for website %s were removed"), $website->get('Code')),
-                    'History Details'     => '',
-                    'Action'              => 'disassociate',
-                    'Indirect Object'     => 'Website',
-                    'Indirect Object Key' => $website->id
-                );
-                $history_key  = $this->add_history($history_data);
-                $sql          = sprintf(
-                    "INSERT INTO `%s History Bridge` VALUES (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key
-                );
-                $this->db->exec($sql);
-            }
-
-
-        }
-
-
-        return $changed;
-    }
-
-    function add_website($to_add, $history = true) {
-
-        include_once('class.Website.php');
-
-        $changed = 0;
-        foreach ($to_add as $scope_id) {
-
-            $website = new Website($scope_id);
-            if (!$website->id) {
-                continue;
-            }
-            $sql       = sprintf(
-                "INSERT INTO `User Right Scope Bridge`VALUES (%d,'Website',%d) ", $this->id, $scope_id
-            );
-            $update_op = $this->db->prepare($sql);
-            $update_op->execute();
-            $affected = $update_op->rowCount();
-
-            if ($affected > 0) {
-                $changed++;
-
-
-                $history_data = array(
-                    'History Abstract'    => sprintf(
-                        _("User's rights for website %s were granted"), $website->get(' Code')
-                    ),
-                    'History Details'     => '',
-                    'Action'              => 'disassociate',
-                    'Indirect Object'     => 'Website',
-                    'Indirect Object Key' => $website->id
-                );
-
-                $history_key = $this->add_history($history_data);
-                $sql         = sprintf(
-                    "INSERT INTO `%s History Bridge` VALUES (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key
-                );
-                $this->db->exec($sql);
-            }
-        }
-
-        return $changed;
-
-    }
-
-    function update_warehouses($value) {
+    function update_warehouses($warehouses, $history = true) {
 
         global $account;
         $this->updated = false;
 
-        if ( !( $this->data['User Type'] == 'Staff' or  $this->data['User Type'] == 'Contractor' ) ) {
+        if (!($this->data['User Type'] == 'Staff' or $this->data['User Type'] == 'Contractor')) {
             $this->error = true;
 
             return;
         }
-        $warehouses = preg_split('/,/', $value);
+
         foreach ($warehouses as $key => $value) {
             if (!is_numeric($value)) {
                 unset($warehouses[$key]);
@@ -1411,17 +1182,16 @@ class User extends DB_Table {
         }
         $old_warehouses = preg_split('/,/', $this->get('User Warehouses'));
 
-        $old_formatted_warehouses = $this->get('Warehouses');
-        $to_delete                = array_diff($old_warehouses, $warehouses);
-        $to_add                   = array_diff($warehouses, $old_warehouses);
-        $changed                  = 0;
+        $to_delete = array_diff($old_warehouses, $warehouses);
+        $to_add    = array_diff($warehouses, $old_warehouses);
+        $changed   = 0;
 
 
         if (count($to_delete) > 0) {
-            $changed += $this->delete_warehouse($to_delete);
+            $changed += $this->delete_warehouse($to_delete, $history);
         }
         if (count($to_add) > 0) {
-            $changed += $this->add_warehouse($to_add);
+            $changed += $this->add_warehouse($to_add, $history);
         }
 
         if ($changed > 0) {
@@ -1463,7 +1233,7 @@ class User extends DB_Table {
             $changed  += $_changed;
 
             $warehouse = new Warehouse($warehouse_key);
-            if ($warehouse->id and $_changed) {
+            if ($warehouse->id and $_changed and $history) {
                 $history_data = array(
                     'History Abstract'    => sprintf(
                         _("User's rights for warehouse %s were removed"), $warehouse->data['Warehouse Code']
@@ -1529,159 +1299,149 @@ class User extends DB_Table {
     }
 
 
-    //function get_number_warehouses() {
-    // return count($this->warehouses);
-    //}
+    /*
+        function update_productions($value) {
 
+            global $account;
+            include_once 'class.Supplier_Production.php';
 
-    // function get_number_stores() {
-    //  return count($this->stores);
-    // }
+            $this->updated = false;
 
+            if ( !( $this->data['User Type'] == 'Staff' or  $this->data['User Type'] == 'Contractor' ) ) {
+                $this->error = true;
 
-    // function get_number_websites() {
-    //  return count($this->websites);
-    // }
-
-    function update_productions($value) {
-
-        global $account;
-        include_once 'class.Supplier_Production.php';
-
-        $this->updated = false;
-
-        if ( !( $this->data['User Type'] == 'Staff' or  $this->data['User Type'] == 'Contractor' ) ) {
-            $this->error = true;
-
-            return;
-        }
-        $productions = preg_split('/,/', $value);
-        foreach ($productions as $key => $value) {
-            if (!is_numeric($value)) {
-                unset($productions[$key]);
+                return;
             }
-        }
-        $old_productions = preg_split('/,/', $this->get('User Productions'));
+            $productions = preg_split('/,/', $value);
+            foreach ($productions as $key => $value) {
+                if (!is_numeric($value)) {
+                    unset($productions[$key]);
+                }
+            }
+            $old_productions = preg_split('/,/', $this->get('User Productions'));
 
-        $old_formatted_productions = $this->get('Productions');
-        $to_delete                 = array_diff($old_productions, $productions);
-        $to_add                    = array_diff($productions, $old_productions);
-        $changed                   = 0;
-
-
-        if (count($to_delete) > 0) {
-            $changed += $this->delete_production_supplier($to_delete);
-        }
-        if (count($to_add) > 0) {
-            $changed += $this->add_production_supplier($to_add);
-        }
-
-        if ($changed > 0) {
-            $this->updated = true;
+            $old_formatted_productions = $this->get('Productions');
+            $to_delete                 = array_diff($old_productions, $productions);
+            $to_add                    = array_diff($productions, $old_productions);
+            $changed                   = 0;
 
 
-            if ($account->get('Productions') == 0 or $this->get_number_productions() == 0) {
-                $this->update(
-                    array('User Hooked Production Key' => ''), 'no_history'
-                );
-            } else {
+            if (count($to_delete) > 0) {
+                $changed += $this->delete_production_supplier($to_delete);
+            }
+            if (count($to_add) > 0) {
+                $changed += $this->add_production_supplier($to_add);
+            }
 
-                if ($account->get('Productions') == 1 and $this->get_number_productions() == 1) {
+            if ($changed > 0) {
+                $this->updated = true;
 
+
+                if ($account->get('Productions') == 0 or $this->get_number_productions() == 0) {
                     $this->update(
-                        array(
-                            'User Hooked Production Key' => $this->get(
-                                'User Productions'
-                            )
-                        ), 'no_history'
+                        array('User Hooked Production Key' => ''), 'no_history'
                     );
+                } else {
+
+                    if ($account->get('Productions') == 1 and $this->get_number_productions() == 1) {
+
+                        $this->update(
+                            array(
+                                'User Hooked Production Key' => $this->get(
+                                    'User Productions'
+                                )
+                            ), 'no_history'
+                        );
+                    }
+                }
+
+            }
+
+        }
+
+        function delete_production_supplier($to_delete, $history = true) {
+
+            $changed = 0;
+            foreach ($to_delete as $production_key) {
+
+                $sql      = sprintf(
+                    "DELETE FROM `User Right Scope Bridge` WHERE `User Key`=%d AND `Scope Key`=%d AND `Scope`='Production' ", $this->id, $production_key
+                );
+                $_changed = $this->db->exec($sql);
+                $changed  += $_changed;
+
+                $production = new Supplier_Production($production_key);
+                if ($production->id and $_changed) {
+                    $history_data = array(
+                        'History Abstract'    => sprintf(
+                            _(
+                                "User's rights for production supplier %s were removed"
+                            ), $production->get('Code')
+                        ),
+                        'History Details'     => '',
+                        'Action'              => 'disassociate',
+                        'Indirect Object'     => 'Supplier',
+                        'Indirect Object Key' => $production->id
+                    );
+                    $history_key  = $this->add_history($history_data);
+                    $sql          = sprintf(
+                        "INSERT INTO `%s History Bridge` VALUES (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key
+                    );
+                    $this->db->exec($sql);
+                }
+
+
+            }
+
+
+            return $changed;
+        }
+
+        function add_production_supplier($to_add, $history = true) {
+            $changed = 0;
+            foreach ($to_add as $scope_id) {
+
+                $production = new Supplier_Production($scope_id);
+                if (!$production->id) {
+                    continue;
+                }
+                $sql       = sprintf(
+                    "INSERT INTO `User Right Scope Bridge`VALUES (%d,'Production',%d) ", $this->id, $scope_id
+                );
+                $update_op = $this->db->prepare($sql);
+                $update_op->execute();
+                $affected = $update_op->rowCount();
+
+                if ($affected > 0) {
+                    $changed++;
+
+
+                    $history_data = array(
+                        'History Abstract'    => sprintf(
+                            _(
+                                "User's rights for production supplier %s were granted"
+                            ), $production->get('Code')
+                        ),
+                        'History Details'     => '',
+                        'Action'              => 'disassociate',
+                        'Indirect Object'     => 'Supplier',
+                        'Indirect Object Key' => $production->id
+                    );
+
+                    $history_key = $this->add_history($history_data);
+                    $sql         = sprintf(
+                        "INSERT INTO `%s History Bridge` VALUES (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key
+                    );
+                    $this->db->exec($sql);
                 }
             }
 
-        }
-
-    }
-
-    function delete_production_supplier($to_delete, $history = true) {
-
-        $changed = 0;
-        foreach ($to_delete as $production_key) {
-
-            $sql      = sprintf(
-                "DELETE FROM `User Right Scope Bridge` WHERE `User Key`=%d AND `Scope Key`=%d AND `Scope`='Production' ", $this->id, $production_key
-            );
-            $_changed = $this->db->exec($sql);
-            $changed  += $_changed;
-
-            $production = new Supplier_Production($production_key);
-            if ($production->id and $_changed) {
-                $history_data = array(
-                    'History Abstract'    => sprintf(
-                        _(
-                            "User's rights for production supplier %s were removed"
-                        ), $production->get('Code')
-                    ),
-                    'History Details'     => '',
-                    'Action'              => 'disassociate',
-                    'Indirect Object'     => 'Supplier',
-                    'Indirect Object Key' => $production->id
-                );
-                $history_key  = $this->add_history($history_data);
-                $sql          = sprintf(
-                    "INSERT INTO `%s History Bridge` VALUES (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key
-                );
-                $this->db->exec($sql);
-            }
-
+            return $changed;
 
         }
 
+        */
 
-        return $changed;
-    }
-
-    function add_production_supplier($to_add, $history = true) {
-        $changed = 0;
-        foreach ($to_add as $scope_id) {
-
-            $production = new Supplier_Production($scope_id);
-            if (!$production->id) {
-                continue;
-            }
-            $sql       = sprintf(
-                "INSERT INTO `User Right Scope Bridge`VALUES (%d,'Production',%d) ", $this->id, $scope_id
-            );
-            $update_op = $this->db->prepare($sql);
-            $update_op->execute();
-            $affected = $update_op->rowCount();
-
-            if ($affected > 0) {
-                $changed++;
-
-
-                $history_data = array(
-                    'History Abstract'    => sprintf(
-                        _(
-                            "User's rights for production supplier %s were granted"
-                        ), $production->get('Code')
-                    ),
-                    'History Details'     => '',
-                    'Action'              => 'disassociate',
-                    'Indirect Object'     => 'Supplier',
-                    'Indirect Object Key' => $production->id
-                );
-
-                $history_key = $this->add_history($history_data);
-                $sql         = sprintf(
-                    "INSERT INTO `%s History Bridge` VALUES (%d,%d,'No','No','Changes')", $this->table_name, $this->id, $history_key
-                );
-                $this->db->exec($sql);
-            }
-        }
-
-        return $changed;
-
-    }
 
     function update_active($value) {
         $this->updated = false;
@@ -1855,8 +1615,7 @@ class User extends DB_Table {
 
 
         if ($staff_key) {
-            $staff       = get_object('Staff',$staff_key);
-
+            $staff = get_object('Staff', $staff_key);
 
 
             $staff_email = $staff->get('Staff Email');
@@ -1874,7 +1633,7 @@ class User extends DB_Table {
         $staff_key  = $this->get_staff_key();
         if ($staff_key) {
             $staff      = new Staff($staff_key);
-            $staff_name =  $staff->get('Staff Name');
+            $staff_name = $staff->get('Staff Name');
         }
 
         return $staff_name;
@@ -1901,7 +1660,7 @@ class User extends DB_Table {
 
     function can_supervisor($tag, $tag_key = false) {
 
-        return $this->can_do('Manager', $tag, $tag_key);
+        return $this->can_do('Supervisor', $tag, $tag_key);
 
     }
 
@@ -2036,11 +1795,13 @@ class User extends DB_Table {
         include 'conf/user_groups.php';
         include 'conf/user_rights.php';
 
-        $this->rights_allow['View']   = array();
-        $this->rights_allow['Delete'] = array();
-        $this->rights_allow['Edit']   = array();
-        $this->rights_allow['Create'] = array();
-        $this->rights                 = array();
+        $this->rights_allow['View']       = array();
+        $this->rights_allow['Delete']     = array();
+        $this->rights_allow['Edit']       = array();
+        $this->rights_allow['Create']     = array();
+        $this->rights_allow['Supervisor'] = array();
+
+        $this->rights = array();
 
         if (!$this->groups_read) {
             $this->read_groups();
@@ -2133,7 +1894,6 @@ class User extends DB_Table {
 
         return $list;
     }
-
 
 
     function add_image($image_key, $options = false) {
@@ -2382,8 +2142,6 @@ class User extends DB_Table {
     }
 
 
-
-
     function update_table_export_field($table_key, $fields) {
 
 
@@ -2435,7 +2193,7 @@ class User extends DB_Table {
 
     function create_api_key($data) {
 
-        $data['API Key User Key']   = $this->id;
+        $data['API Key User Key'] = $this->id;
 
 
         $api_key = new API_Key('create', $data);
@@ -2454,9 +2212,8 @@ class User extends DB_Table {
         $metadata = json_encode($data);
 
         $sql = sprintf(
-            "INSERT INTO `User Deleted Dimension`  (`User Deleted Key`,`User Deleted Handle`,`User Deleted Alias`,`User Deleted Type`,`User Deleted Date`,`User Deleted Metadata`) VALUES (%d,%s,%s,%s,%s,%s) ",
-            $this->id, prepare_mysql($this->get('User Handle'), true), prepare_mysql($this->get('User Alias'), true), prepare_mysql($this->get('User Type'), true),
-            prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gzcompress($metadata, 9))
+            "INSERT INTO `User Deleted Dimension`  (`User Deleted Key`,`User Deleted Handle`,`User Deleted Alias`,`User Deleted Type`,`User Deleted Date`,`User Deleted Metadata`) VALUES (%d,%s,%s,%s,%s,%s) ", $this->id, prepare_mysql($this->get('User Handle'), true),
+            prepare_mysql($this->get('User Alias'), true), prepare_mysql($this->get('User Type'), true), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql(gzcompress($metadata, 9))
 
         );
 
@@ -2492,34 +2249,55 @@ class User extends DB_Table {
 
         $dashboard_items = array();
 
-        if ($this->data['User Type'] == 'Staff') {
-            //$dashboard_items[] = 'kpis';
 
+        if ($this->can_view('customers_reports')) {
             $dashboard_items[] = 'pending_orders_and_customers';
-            $dashboard_items[] = 'inventory_warehouse';
-            $dashboard_items[] = 'sales_overview';
 
-
-        } else {
-            if ($this->data['User Type'] == 'Contractor') {
-
-               // $dashboard_items[] = 'kpis';
-                $dashboard_items[] = 'pending_orders_and_customers';
-                $dashboard_items[] = 'inventory_warehouse';
-
-                $dashboard_items[] = 'sales_overview';
-                //$dashboard_items[] = 'customers';
-
-
-
-            } else {
-                if ($this->data['User Type'] == 'Administrator') {
-
-
-                }
-            }
         }
 
+        if ($this->can_view('inventory_reports')) {
+            $dashboard_items[] = 'inventory_warehouse';
+
+        }
+        if ($this->can_view('sales_reports')) {
+            $dashboard_items[] = 'sales_overview';
+
+        }
+
+
+        /*
+
+                if ($this->data['User Type'] == 'Staff') {
+                    //$dashboard_items[] = 'kpis';
+
+
+
+
+
+                    $dashboard_items[] = 'pending_orders_and_customers';
+                    $dashboard_items[] = 'inventory_warehouse';
+
+
+                } else {
+                    if ($this->data['User Type'] == 'Contractor') {
+
+                       // $dashboard_items[] = 'kpis';
+                        $dashboard_items[] = 'pending_orders_and_customers';
+                        $dashboard_items[] = 'inventory_warehouse';
+
+                        $dashboard_items[] = 'sales_overview';
+                        //$dashboard_items[] = 'customers';
+
+
+
+                    } else {
+                        if ($this->data['User Type'] == 'Administrator') {
+
+
+                        }
+                    }
+                }
+        */
 
         return $dashboard_items;
 

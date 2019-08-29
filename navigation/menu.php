@@ -54,7 +54,6 @@ if ($user->can_view('customers')) {
     }
 
 
-
 }
 
 if ($user->can_view('stores')) {
@@ -79,7 +78,6 @@ if ($user->can_view('stores')) {
             ''
         );
     }
-
 
 
 }
@@ -108,7 +106,6 @@ if ($user->can_view('orders')) {
     }
 
 
-
     $nav_menu[] = array(
         '<i class="button far fa-conveyor-belt-alt fa-fw"></i>',
         _('Delivering'),
@@ -121,6 +118,31 @@ if ($user->can_view('orders')) {
 }
 
 
+if ($user->can_view('orders')) {
+
+    if ($user->get('User Hooked Store Key')) {
+        $nav_menu[] = array(
+            '<i class="button fal fa-abacus fa-fw"></i>',
+            _('Accounting'),
+            'accounting/'.$user->get('User Hooked Store Key'),
+            'accounting',
+            'module',
+            ''
+        );
+    } else {
+
+
+        $nav_menu[] = array(
+            '<i class="button fal fa-abacus fa-fw"></i>',
+            _('Accounting'),
+            'invoices/per_store',
+            'accounting',
+            'module',
+            ''
+        );
+
+    }
+}
 if ($user->can_view('locations')) {
 
 
@@ -137,7 +159,7 @@ if ($user->can_view('locations')) {
     } elseif ($account->get('Account Warehouses') == 1) {
 
 
-        $sql = 'SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`=?';
+        $sql  = 'SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`=?';
         $stmt = $db->prepare($sql);
         $stmt->execute(
             array('Active')
@@ -239,8 +261,6 @@ if ($user->can_view('production') and $account->get('Account Manufacturers') > 0
         }
 
 
-
-
     } else {
         $nav_menu[] = array(
             '<i class="button far fa-industry fa-fw"></i>',
@@ -257,32 +277,6 @@ if ($user->can_view('production') and $account->get('Account Manufacturers') > 0
 }
 
 
-if ($user->can_view('orders')) {
-
-    if ($user->get('User Hooked Store Key')) {
-        $nav_menu[] = array(
-            '<i class="button fal fa-abacus fa-fw"></i>',
-            _('Accounting'),
-            'accounting/'.$user->get('User Hooked Store Key'),
-            'accounting',
-            'module',
-            ''
-        );
-    } else {
-
-
-        $nav_menu[] = array(
-            '<i class="button fal fa-abacus fa-fw"></i>',
-            _('Accounting'),
-            'invoices/per_store',
-            'accounting',
-            'module',
-            ''
-        );
-
-    }
-}
-
 if ($user->can_view('staff')) {
     $nav_menu[] = array(
         '<i class="button far fa-sitemap fa-fw"></i>',
@@ -295,7 +289,7 @@ if ($user->can_view('staff')) {
 }
 
 
-if ($user->can_view('reports')) {
+if ($user->can_view('sales_reports') or  $user->can_view('customers_reports') or  $user->can_view('suppliers_reports') or  $user->can_view('inventory_reports') or   $user->can_view('kpis_reports') or   $user->can_view('users_reports')   ) {
     $nav_menu[] = array(
         '<i class="button far fa-chart-line fa-fw"></i>',
         _('Reports'),

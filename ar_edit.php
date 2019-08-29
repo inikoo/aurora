@@ -1052,6 +1052,7 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
+
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
 

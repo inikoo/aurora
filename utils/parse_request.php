@@ -4923,11 +4923,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                 break;
             case 'reports':
-                if (!$user->can_view('reports')) {
-                    $module  = 'utils';
-                    $section = 'forbidden';
-                    break;
-                }
+
 
                 $module  = 'reports';
                 $section = 'reports';
@@ -4936,11 +4932,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
             case 'report':
-                if (!$user->can_view('reports')) {
-                    $module  = 'utils';
-                    $section = 'forbidden';
-                    break;
-                }
+
 
                 $module = 'reports';
 

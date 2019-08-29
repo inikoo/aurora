@@ -430,6 +430,10 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             if ($options['type'] == 'profile') {
                 include 'fields/profile.fld.php';
             } else {
+
+
+
+
                 include 'fields/user.system.fld.php';
             }
 
@@ -652,22 +656,42 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
         case 'Staff':
 
 
+            $stores = array();
+            $sql    = sprintf(
+                'SELECT `Store Code`,`Store Key`,`Store Name` FROM `Store Dimension` order by `Store Code` '
+            );
+            foreach ($db->query($sql) as $row) {
+                $stores[$row['Store Key']] = $row;
+            }
+
+
             if ($object->get('Staff Type') == 'Contractor') {
 
-                if (isset($options['type']) and $options['type'] == 'user') {
-                    include 'fields/user.system.fld.php';
-                } else {
-                    include 'fields/contractor.fld.php';
-                }
 
+                if(!empty($options['new'])){
+                    include 'fields/contractor.new.fld.php';
+
+                }else {
+
+
+                    if (isset($options['type']) and $options['type'] == 'user') {
+                        include 'fields/user.system.fld.php';
+                    } else {
+                        include 'fields/contractor.fld.php';
+                    }
+                }
             } else {
 
-                if (isset($options['type']) and $options['type'] == 'user') {
-                    include 'fields/user.system.fld.php';
-                } else {
-                    include 'fields/employee.fld.php';
-                }
+                if(!empty($options['new'])){
+                    include 'fields/employee.new.fld.php';
 
+                }else {
+
+
+
+                        include 'fields/employee.fld.php';
+
+                }
 
             }
 
