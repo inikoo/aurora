@@ -2271,7 +2271,6 @@ $(document).on('click', '.permissions .permission_type', function (evt) {
 
     console.log(icon)
 
-
     $('.permissions .save').addClass('changed valid')
     $('.permissions .updated_msg').addClass('hide')
 
