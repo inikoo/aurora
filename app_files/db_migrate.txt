@@ -42,3 +42,5 @@ ALTER TABLE `Category Dimension` DROP `Category Subject Key`;
 ALTER TABLE `Product History Dimension` DROP `Product History Last Updated`;
 
 
+DROP TABLE `Page Product Dimension`;
+DROP TABLE  `Contact Old ID Bridge`;

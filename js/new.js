@@ -319,6 +319,25 @@ function save_new_object(object, form_type) {
 
                 value = JSON.stringify(part_list_data)
 
+            }  else if (field_type == 'user_permissions') {
+                var user_groups = [];
+                var stores = [];
+
+                $('.permissions  .permission_type i').each(function (i, obj) {
+                    if ($(obj).hasClass('fa-check-square') || $(obj).hasClass('fa-dot-circle')  ) {
+                        user_groups.push($(obj).closest('.permission_type').data('group_id'))
+                    }
+
+                });
+                $('.permissions  .permission_store i').each(function (i, obj) {
+                    if ($(obj).hasClass('fa-check-square') || $(obj).hasClass('fa-dot-circle')  ) {
+                        stores.push($(obj).closest('.permission_store').data('store_key'))
+                    }
+
+                });
+
+                value = JSON.stringify({user_groups: user_groups, stores:stores})
+
             } else if (field_type == 'subscription') {
                 var icon = $(this).find('i')
                 if (icon.hasClass('fa-toggle-on')) {
@@ -350,8 +369,8 @@ function save_new_object(object, form_type) {
                 }
             } else if(field_type == 'toggle') {
 
-                console.log('#' + field+'_field')
-                console.log( '#' + field+'_toggle')
+                //console.log('#' + field+'_field')
+               // console.log( '#' + field+'_toggle')
 
                 var value = $('#' + field+'_field').find(  '.' + field+'_toggle').hasClass('fa-toggle-on')
             }else if(field_type == 'button_radio_options') {
@@ -393,10 +412,10 @@ function save_new_object(object, form_type) {
 
         // used only for debug
         var request = '/' + ar_file + '?tipo=' + (form_type != '' ? form_type : tipo) + '&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
-       // console.log(request)
+        console.log(request)
 
 
-        //return;
+
         //=====
         form_data.append("tipo", (form_type != '' ? form_type : tipo))
         form_data.append("object", object)

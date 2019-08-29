@@ -35,7 +35,7 @@ switch ($_REQUEST['action']) {
 
     case 'initialize':
 
-        $groups=preg_split('/,/',$user->get('User Groups') );
+        $groups=$user->get('User Groups');
 
         $type='Invalid';
         if(in_array(17,$groups)){

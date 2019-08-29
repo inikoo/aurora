@@ -146,7 +146,6 @@ if ($user->id) {
 
     $user->read_rights();
     $user->read_stores();
-    $user->read_websites();
     $user->read_warehouses();
 
     $redis->zadd('_IU'.$account->get('Code'), gmdate('U'), $user->id);

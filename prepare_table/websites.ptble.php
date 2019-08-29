@@ -9,21 +9,16 @@
 
 */
 
+$where = 'where true ';
 
-if (count($user->websites) == 0) {
-    $where = 'where false ';
-} else {
-    $where = 'where true ';
-}
 
 switch ($parameters['parent']) {
     case('store'):
-        $where .= sprintf(' and `Website Store Key`=%d and W.`Website Key` in (%s)', $parameters['parent_key'], join(',', $user->websites));
+        $where .= sprintf(' and `Website Store Key`=%d ', $parameters['parent_key']);
 
 
         break;
     default:
-        //$where .= sprintf(' and W.`Website Key` in (%s)', join(',', $user->websites));
         $where .= sprintf(' and true');
 
 

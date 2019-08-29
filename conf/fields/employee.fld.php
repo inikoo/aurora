@@ -87,7 +87,6 @@ foreach ($db->query($sql) as $row) {
 
 
 
-
 $_options_User_Groups=array();
 $options_User_Groups=array();
 
@@ -152,45 +151,7 @@ foreach ($db->query($sql) as $row) {
     );
 }
 
-//print_r($employee->system_user->get('User Groups'));
 
-
-if(is_object($employee->system_user)) {
-
-
-
-
-    foreach (preg_split('/,/', $employee->system_user->get('User Groups')) as $current_user_group_key) {
-        if (array_key_exists($current_user_group_key, $options_User_Groups)) {
-            $options_User_Groups[$current_user_group_key]['selected'] = true;
-        }
-    }
-
-    foreach (preg_split('/,/', $employee->system_user->get('User Stores')) as $key) {
-        if (array_key_exists($key, $options_Stores)) {
-            $options_Stores[$key]['selected'] = true;
-        }
-    }
-
-    foreach (preg_split('/,/', $employee->system_user->get('User Websites')) as $key) {
-        if (array_key_exists($key, $options_Websites)) {
-            $options_Websites[$key]['selected'] = true;
-        }
-    }
-
-    foreach (preg_split('/,/', $employee->system_user->get('User Warehouses')) as $key) {
-        if (array_key_exists($key, $options_Warehouses)) {
-            $options_Warehouses[$key]['selected'] = true;
-        }
-    }
-
-    foreach (preg_split('/,/', $employee->system_user->get('User Productions')) as $key) {
-        if (array_key_exists($key, $options_Productions)) {
-            $options_Productions[$key]['selected'] = true;
-        }
-    }
-
-}
 
 asort($options_Staff_Position);
 asort($options_Staff_Supervisor);
@@ -481,6 +442,8 @@ $object_fields = array(
 
 );
 
+
+
 if (!$new) {
     $object_fields[] = array(
         'label'      => _('Working hours & salary'),
@@ -515,6 +478,7 @@ if (!$new) {
 
         )
     );
+
 
     if ($employee->get('Staff User Key')) {
 
@@ -578,66 +542,18 @@ if (!$new) {
                 ),
 
 
-
                 array(
-                    'render' => ($employee->get('Staff User Active') == 'Yes' ? true : false),
-                    'id'              => 'Staff_User_Groups',
-                    'edit'            => 'option_multiple_choices',
-                    'value'           => $employee->system_user->get('User Groups'),
-                    'formatted_value' => $employee->system_user->get('Groups'),
-                    'options'         => $options_User_Groups,
-                    'label'           => ucfirst($object->get_field_label('User Groups')),
+                    'render'          => true,
+                    'id'              => 'Staff_User_Permissions',
+                    'edit'            => 'user_permissions',
+                    'stores'          => $stores,
+                    'value'           => '',
+                    'formatted_value' => '',
+                    'label'           => _('Permissions'),
+                    'required'        => false,
+                    'type'            => 'value'
                 ),
-                array(
-                    'render'=>$employee->system_user->has_scope('Stores'),
-                    'id'              => 'Staff_User_Stores',
-                    'edit'            => 'option_multiple_choices',
-                    'value'           => $employee->system_user->get('User Stores'),
-                    'formatted_value' => $employee->system_user->get('Stores'),
-                    'label'           => ucfirst($object->get_field_label('User Stores')),
-                    'options'         => $options_Stores,
-                    'required'        => false
 
-                ),
-                array(
-                    'render'=>$employee->system_user->has_scope('Websites'),
-                    'id'              => 'Staff_User_Websites',
-                    'edit'            => 'option_multiple_choices',
-                    'value'           => $employee->system_user->get('User Websites'),
-                    'formatted_value' => $employee->system_user->get('Websites'),
-                    'label'           => ucfirst($employee->get_field_label('User Websites')
-                    ),
-                    'options'         => $options_Websites,
-                    'required'        => false
-
-                ),
-                array(
-                    'render'=>$employee->system_user->has_scope('Warehouses'),
-                    'id'              => 'Staff_User_Warehouses',
-                    'edit'            => 'option_multiple_choices',
-                    'value'           => $employee->system_user->get('User Warehouses'),
-                    'formatted_value' => $employee->system_user->get('Warehouses'),
-                    'label'           => ucfirst($employee->get_field_label('User Warehouses')
-                    ),
-                    'options'         => $options_Warehouses,
-                    'required'        => false
-
-
-                ),
-                array(
-                    'render'=>$employee->system_user->has_scope('Productions'),
-                    'id'              => 'Staff_User_Productions',
-                    'edit'            => 'option_multiple_choices',
-                    'value'           => $employee->system_user->get('User Productions'),
-                    'formatted_value' => $employee->system_user->get('Productions'),
-                    'label'           => ucfirst($employee->get_field_label('User Productions')
-                    ),
-                    'options'         => $options_Productions,
-                    'required'        => false
-
-
-                )
-                
                 
 
             )
@@ -784,19 +700,18 @@ if (!$new) {
                 'required'          => false,
 
             ),
+
             array(
                 'render' => false,
-                'id'     => 'Staff_Position',
-                'edit'   => ($edit ? 'option_multiple_choices' : ''),
+                'id'     => 'Staff_User_Permissions',
+                'edit'   => 'user_permissions',
 
                 'value'           => '',
                 'formatted_value' => '',
-                'options'         => $options_Staff_Position,
-                'label'           => ucfirst($employee->get_field_label('Staff Position')),
+                'label'           => _('Permissions'),
                 'required'        => false,
                 'type'            => 'user_value'
             ),
-
 
             array(
                 'render' => false,
@@ -838,4 +753,4 @@ if (!$new) {
 
 }
 
-?>
+
