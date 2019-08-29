@@ -17,7 +17,7 @@
         <script src="https://browser.sentry-cdn.com/5.4.0/bundle.min.js" crossorigin="anonymous">
         </script>
     {/if}
-    <script src="/assets/aurora_libs.min.js?v190829"></script>
+    <script src="/assets/aurora_libs.min.js?v190829v4"></script>
 
     <script src="/assets/aurora.min.js?v190829v4"></script>
 
