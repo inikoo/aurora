@@ -4010,11 +4010,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
             case 'production':
 
 
-                if (!$user->can_view('suppliers')) {
-                    $module  = 'utils';
-                    $section = 'forbidden';
-                    break;
-                }
 
                 $module     = 'production';
                 $parent     = 'account';
