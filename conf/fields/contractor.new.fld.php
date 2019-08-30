@@ -12,6 +12,13 @@
 include 'conf/user_groups.php';
 
 
+if ($user->can_supervisor('users')) {
+    $edit_users = true;
+} else {
+    $edit_users = false;
+}
+
+
 if (isset($options['new']) and $options['new']) {
     $new = true;
 } else {

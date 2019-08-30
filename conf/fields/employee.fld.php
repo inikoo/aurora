@@ -12,6 +12,13 @@
 include 'conf/user_groups.php';
 
 
+if ($user->can_supervisor('users')) {
+    $edit_users = true;
+} else {
+    $edit_users = false;
+}
+
+
 if (isset($options['new']) and $options['new']) {
     $new = true;
 } else {
@@ -31,7 +38,7 @@ $account  = new Account();
 $employee->get_user();
 
 $options_Staff_Payment_Terms = array(
-    'Monthly'  => _('Monthly (fixed)'),
+    'Monthly' => _('Monthly (fixed)'),
     'PerHour' => _('Per hour (prorata)')
 );
 
@@ -65,7 +72,6 @@ foreach ($roles as $_key => $_data) {
 }
 
 
-
 foreach (preg_split('/,/', $employee->get('Staff Position')) as $current_position_key) {
     if (array_key_exists($current_position_key, $options_Staff_Position)) {
         $options_Staff_Position[$current_position_key]['selected'] = true;
@@ -86,21 +92,24 @@ foreach ($db->query($sql) as $row) {
 }
 
 
+$_options_User_Groups = array();
+$options_User_Groups  = array();
 
-$_options_User_Groups=array();
-$options_User_Groups=array();
-
-foreach($user_groups as $key=>$user_group){
-    $_options_User_Groups['x'. $user_group['Key']]=array('label'=>$user_group['Name'],'selected'=>false,'key'=>$user_group['Key']);
+foreach ($user_groups as $key => $user_group) {
+    $_options_User_Groups['x'.$user_group['Key']] = array(
+        'label'    => $user_group['Name'],
+        'selected' => false,
+        'key'      => $user_group['Key']
+    );
 }
 
 
-foreach($_options_User_Groups as $k => $d) {
+foreach ($_options_User_Groups as $k => $d) {
     $_tmp[$k] = $d['label'];
 }
 array_multisort($_tmp, SORT_ASC, $_options_User_Groups);
-foreach($_options_User_Groups as $_option){
-    $options_User_Groups[(string) $_option['key']]=$_option;
+foreach ($_options_User_Groups as $_option) {
+    $options_User_Groups[(string)$_option['key']] = $_option;
 }
 
 
@@ -112,7 +121,6 @@ foreach ($db->query($sql) as $row) {
         'selected' => false
     );
 }
-
 
 
 $options_Websites = array();
@@ -135,9 +143,6 @@ foreach ($db->query($sql) as $row) {
 }
 
 
-
-
-
 $options_Productions = array();
 $sql                 = sprintf(
     'SELECT `Supplier Production Supplier Key` AS `key`,`Supplier Name`,`Supplier Code` FROM `Supplier Production Dimension` SPD LEFT JOIN `Supplier Dimension` S ON (`Supplier Key`=`Supplier Production Supplier Key`)  '
@@ -150,7 +155,6 @@ foreach ($db->query($sql) as $row) {
         'selected' => false
     );
 }
-
 
 
 asort($options_Staff_Position);
@@ -226,8 +230,8 @@ $object_fields = array(
             ),
             array(
 
-                'id'   => 'Staff_Birthday',
-                'edit' => ($edit ? 'date' : ''),
+                'id'              => 'Staff_Birthday',
+                'edit'            => ($edit ? 'date' : ''),
                 'time'            => '00:00:00',
                 'value'           => $employee->get('Staff Birthday'),
                 'formatted_value' => $employee->get('Birthday'),
@@ -318,17 +322,17 @@ $object_fields = array(
         )
     ),
     array(
-        'label'      => ($contractor?_('Contractual service agreement'):_('Employment')),
+        'label'      => ($contractor ? _('Contractual service agreement') : _('Employment')),
         'show_title' => true,
         'class'      => 'edit_fields',
         'fields'     => array(
             array(
 
-                'id'   => 'Staff_Type',
-                'edit' => ($edit ? 'option' : ''),
-                'render'=>($new and $contractor?false:true),
-                'value'           => ($new ?  ($contractor? 'Contractor' : 'Employee') : $employee->get('Staff Type')),
-                'formatted_value' => ($new ? ($contractor? _('Contractor') : _('Employee'))  : $employee->get('Type')),
+                'id'              => 'Staff_Type',
+                'edit'            => ($edit ? 'option' : ''),
+                'render'          => ($new and $contractor ? false : true),
+                'value'           => ($new ? ($contractor ? 'Contractor' : 'Employee') : $employee->get('Staff Type')),
+                'formatted_value' => ($new ? ($contractor ? _('Contractor') : _('Employee')) : $employee->get('Type')),
                 'options'         => $options_Staff_Type,
                 'label'           => ucfirst(
                     $employee->get_field_label('Staff Type')
@@ -338,8 +342,8 @@ $object_fields = array(
             ),
 
             array(
-                'edit' => ($edit ? 'option' : ''),
-                'render'=>($new and $contractor?false:true),
+                'edit'   => ($edit ? 'option' : ''),
+                'render' => ($new and $contractor ? false : true),
 
                 'id'              => 'Staff_Currently_Working',
                 'value'           => ($new
@@ -409,7 +413,6 @@ $object_fields = array(
             ),
 
 
-
             array(
                 'id'              => 'Staff_Position',
                 'edit'            => 'option_multiple_choices',
@@ -441,7 +444,6 @@ $object_fields = array(
 
 
 );
-
 
 
 if (!$new) {
@@ -494,7 +496,7 @@ if (!$new) {
                 array(
 
                     'id'              => 'Staff_User_Active',
-                    'edit'            => 'option',
+                    'edit'            => ($edit_users ? 'option' : ''),
                     'value'           => $employee->get('Staff User Active'),
                     'formatted_value' => $employee->get('User Active'),
                     'options'         => $options_yn,
@@ -504,7 +506,7 @@ if (!$new) {
                 array(
 
                     'id'                => 'Staff_User_Handle',
-                    'edit'              => 'handle',
+                    'edit'              => ($edit_users ? 'handle' : ''),
                     'value'             => $employee->get('Staff User Handle'),
                     'formatted_value'   => $employee->get('User Handle'),
                     'label'             => ucfirst(
@@ -520,7 +522,7 @@ if (!$new) {
                     'render' => ($employee->get('Staff User Active') == 'Yes' ? true : false),
 
                     'id'              => 'Staff_User_Password',
-                    'edit'            => 'password',
+                    'edit'              => ($edit_users ? 'password' : ''),
                     'value'           => '',
                     'formatted_value' => '******',
                     'label'           => ucfirst(
@@ -532,7 +534,7 @@ if (!$new) {
                     'render' => ($employee->get('Staff User Active') == 'Yes' ? true : false),
 
                     'id'              => 'Staff_User_PIN',
-                    'edit'            => 'pin',
+                    'edit'              => ($edit_users ? 'pin' : ''),
                     'value'           => '',
                     'formatted_value' => '****',
                     'label'           => ucfirst(
@@ -543,7 +545,7 @@ if (!$new) {
 
 
                 array(
-                    'render'          => true,
+                    'render'              => ($edit_users ? true : false),
                     'id'              => 'Staff_User_Permissions',
                     'edit'            => 'user_permissions',
                     'stores'          => $stores,
@@ -554,36 +556,37 @@ if (!$new) {
                     'type'            => 'value'
                 ),
 
-                
 
             )
         );
 
     } else {
-        $object_fields[] = array(
-            'label'      => _('System user'),
-            'show_title' => true,
-            'class'      => 'edit_fields',
-            'fields'     => array(
-                array(
+        if($edit_users) {
+            $object_fields[] = array(
+                'label'      => _('System user'),
+                'show_title' => true,
+                'class'      => 'edit_fields',
+                'fields'     => array(
+                    array(
 
-                    'id'        => 'new_user',
-                    'class'     => 'new',
-                    'value'     => '',
-                    'label'     => _('Set up system user').' <i class="fa fa-plus new_button link"></i>',
-                    'reference' => 'employee/'.$employee->id.'/user/new'
-                ),
+                        'id'        => 'new_user',
+                        'class'     => 'new',
+                        'value'     => '',
+                        'label'     => _('Set up system user').' <i class="fa fa-plus new_button link"></i>',
+                        'reference' => 'employee/'.$employee->id.'/user/new'
+                    ),
 
-            )
-        );
+                )
 
+            );
+        }
     }
 
-    $from=date('y-m-d');
-    $from_locale=date('d/m/y');
-    $from_mmddyy=date('m/d/Y');
-    $to_locale='';
-    $to_mmddyy='';
+    $from        = date('y-m-d');
+    $from_locale = date('d/m/y');
+    $from_mmddyy = date('m/d/Y');
+    $to_locale   = '';
+    $to_mmddyy   = '';
 
     $operations = array(
         'label'      => _('Operations'),
@@ -592,28 +595,28 @@ if (!$new) {
         'fields'     => array(
 
             array(
-                'id'        => 'recalculate_timesheets',
-                'class'     => 'operation_date_interval',
-                'value'     => '',
-                'label'     => '<span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="show_choose_interval(this)" class="delete_object button">'._("Recalculate time sheets").' <i class="fa fa-sync new_button "></i></span>',
-                'reference' => '',
-                'type'      => 'date_interval',
-                'from'=>$from,
-                'from_locale'=>$from_locale,
-                'to_locale'=>$to_locale,
-                'from_mmddyy'=>$from_mmddyy,
-                'to_mmddyy'=>$to_mmddyy
+                'id'          => 'recalculate_timesheets',
+                'class'       => 'operation_date_interval',
+                'value'       => '',
+                'label'       => '<span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="show_choose_interval(this)" class="delete_object button">'._("Recalculate time sheets")
+                    .' <i class="fa fa-sync new_button "></i></span>',
+                'reference'   => '',
+                'type'        => 'date_interval',
+                'from'        => $from,
+                'from_locale' => $from_locale,
+                'to_locale'   => $to_locale,
+                'from_mmddyy' => $from_mmddyy,
+                'to_mmddyy'   => $to_mmddyy
             ),
-
 
 
             array(
                 'id'        => 'terminate_employment',
                 'class'     => 'operation',
-                'render'=>($object->get('Staff Currently Working')=='Yes'?true:false),
+                'render'    => ($object->get('Staff Currently Working') == 'Yes' ? true : false),
                 'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
-                    ).'", "key":"'.$object->id.'"}\' onClick="terminate_employment(this)" class="delete_object disabled">'._("Terminate employment").' <i class="fa fa-hand-scissors-o  fa-flip-horizontal new_button "></i></span>',
+                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                    .'"}\' onClick="terminate_employment(this)" class="delete_object disabled">'._("Terminate employment").' <i class="fa fa-hand-scissors-o  fa-flip-horizontal new_button "></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),
@@ -623,12 +626,11 @@ if (!$new) {
                 'id'        => 'delete_employee',
                 'class'     => 'operation',
                 'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
-                    ).'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete employee").' <i class="far fa-trash-alt new_button link"></i></span>',
+                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete employee").' <i class="far fa-trash-alt new_button link"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),
-
 
 
         )
@@ -743,9 +745,6 @@ if (!$new) {
                 'required'        => false,
 
             ),
-
-
-
 
 
         )

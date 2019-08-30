@@ -1009,6 +1009,7 @@ class Staff extends DB_Table {
             'SELECT `User Key` FROM `User Dimension` WHERE `User Type`=%s AND `User Parent Key`=%d ', prepare_mysql(($this->get('Staff Type') == 'Contractor' ? 'Contractor' : 'Staff')), $this->id
         );
 
+
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $this->system_user = get_object('User', $row['User Key']);

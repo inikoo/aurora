@@ -11,6 +11,11 @@
 
 include 'conf/user_groups.php';
 
+if ($user->can_supervisor('users')) {
+    $edit_users = true;
+} else {
+    $edit_users = false;
+}
 
 if (isset($options['new']) and $options['new']) {
     $new = true;
@@ -18,12 +23,6 @@ if (isset($options['new']) and $options['new']) {
     $new = false;
 }
 
-
-if (isset($options['contractor']) and $options['contractor']) {
-    $contractor = true;
-} else {
-    $contractor = false;
-}
 
 $employee = $object;
 $account  = new Account();
@@ -157,8 +156,6 @@ foreach ($db->query($sql) as $row) {
 }
 
 
-
-
 asort($options_Staff_Position);
 asort($options_Staff_Supervisor);
 asort($options_Staff_Type);
@@ -166,7 +163,7 @@ asort($options_Staff_Payment_Terms);
 
 asort($options_yn);
 
-$smarty->assign('stores',$stores);
+$smarty->assign('stores', $stores);
 
 $object_fields = array(
     array(
@@ -326,40 +323,32 @@ $object_fields = array(
         )
     ),
     array(
-        'label'      => ($contractor ? _('Contractual service agreement') : _('Employment')),
+        'label'      => _('Employment'),
         'show_title' => true,
         'class'      => 'edit_fields',
         'fields'     => array(
             array(
 
-                'id'              => 'Staff_Type',
-                'edit'            => ($edit ? 'option' : ''),
-                'render'          => ($new and $contractor ? false : true),
-                'value'           => ($new ? ($contractor ? 'Contractor' : 'Employee') : $employee->get('Staff Type')),
-                'formatted_value' => ($new ? ($contractor ? _('Contractor') : _('Employee')) : $employee->get('Type')),
+                'id'     => 'Staff_Type',
+                'edit'   => ($edit ? 'option' : ''),
+                'render' => true,
+
+
+                'value'           => $employee->get('Staff Type'),
+                'formatted_value' => $employee->get('Type'),
                 'options'         => $options_Staff_Type,
-                'label'           => ucfirst(
-                    $employee->get_field_label('Staff Type')
-                ),
+                'label'           => ucfirst($employee->get_field_label('Staff Type')),
                 'type'            => 'value',
                 'required'        => false,
             ),
 
             array(
                 'edit'   => ($edit ? 'option' : ''),
-                'render' => ($new and $contractor ? false : true),
+                'render' => true,
 
                 'id'              => 'Staff_Currently_Working',
-                'value'           => ($new
-                    ? 'Yes'
-                    : $employee->get(
-                        'Staff Currently Working'
-                    )),
-                'formatted_value' => ($new
-                    ? _('Yes')
-                    : $employee->get(
-                        'Currently Working'
-                    )),
+                'value'           => $employee->get('Staff Currently Working'),
+                'formatted_value' => $employee->get('Currently Working'),
                 'options'         => $options_yn,
                 'label'           => ucfirst(
                     $employee->get_field_label('Staff Currently Working')
@@ -368,7 +357,7 @@ $object_fields = array(
                 'required'        => false,
             ),
             array(
-                'render' => ($new ? false : true),
+                'render' => true,
                 'edit'   => ($edit ? 'date' : ''),
                 'id'     => 'Staff_Valid_From',
 
@@ -449,296 +438,115 @@ $object_fields = array(
 
 );
 
-if (!$new) {
-    $object_fields[] = array(
-        'label'      => _('Working hours & salary'),
-        'show_title' => true,
-        'class'      => 'edit_fields',
-        'fields'     => array(
-            array(
 
-                'id'              => 'Staff_Working_Hours',
-                'edit'            => 'working_hours',
-                'value'           => $employee->get('Staff Working Hours'),
-                'formatted_value' => $employee->get('Working Hours'),
-                'options'         => $options_Staff_Type,
-                'label'           => ucfirst(
-                    $employee->get_field_label('Staff Working Hours')
-                ),
-                'invalid_msg'     => get_invalid_message('working_hours'),
+$object_fields[] = array(
+    'label'      => _('System user'),
+    'show_title' => true,
+    'class'      => 'edit_fields',
+    'fields'     => array(
+
+
+        array(
+
+            'id'     => 'add_new_user',
+            'render' => false,
+
+            'class'    => '',
+            'value'    => '',
+            'label'    => _('Set up system user').' <i onClick="show_user_fields()" class="fa fa-plus new_button link"></i>',
+            'required' => false,
+            'type'     => 'util'
+        ),
+
+        array(
+            'id'       => 'dont_add_new_user',
+            'class'    => '',
+            'value'    => '',
+            'label'    => _("Don't set up system user").' <i onClick="hide_user_fields()" class="fa fa-minus new_button link"></i>',
+            'required' => false,
+            'type'     => 'util'
+        ),
+
+
+        array(
+            'render' => false,
+            'id'     => 'Staff_User_Active',
+            'edit'   => ($edit ? 'option' : ''),
+
+            'options'         => $options_yn,
+            'value'           => 'Yes',
+            'formatted_value' => _('Yes'),
+            'label'           => ucfirst(
+                $employee->get_field_label('Staff User Active')
             ),
-
-            array(
-
-                'id'              => 'Staff_Salary',
-                'edit'            => 'salary',
-                'value'           => $employee->get('Staff Salary'),
-                'formatted_value' => $employee->get('Salary'),
-                'label'           => ucfirst(
-                    $employee->get_field_label('Staff Salary')
-                ),
-                'invalid_msg'     => get_invalid_message('salary'),
-            )
-
-
-        )
-    );
-
-    if ($employee->get('Staff User Key')) {
-
-
-        $object_fields[] = array(
-            'label'      => _('System user').' <i  onClick="change_view(\'users/'.$employee->get(
-                    'Staff User Key'
-                ).'\')" class="fa fa-terminal link"></i>',
-            'show_title' => true,
-            'class'      => 'edit_fields',
-            'fields'     => array(
-
-                array(
-
-                    'id'              => 'Staff_User_Active',
-                    'edit'            => 'option',
-                    'value'           => $employee->get('Staff User Active'),
-                    'formatted_value' => $employee->get('User Active'),
-                    'options'         => $options_yn,
-                    'label'           => ucfirst($employee->get_field_label('Staff User Active')),
-                ),
-
-                array(
-
-                    'id'                => 'Staff_User_Handle',
-                    'edit'              => 'handle',
-                    'value'             => $employee->get('Staff User Handle'),
-                    'formatted_value'   => $employee->get('User Handle'),
-                    'label'             => ucfirst(
-                        $employee->get_field_label('Staff User Handle')
-                    ),
-                    'server_validation' => json_encode(
-                        array('tipo' => 'check_for_duplicates')
-                    ),
-                    'invalid_msg'       => get_invalid_message('handle'),
-                ),
-
-                array(
-                    'render' => ($employee->get('Staff User Active') == 'Yes' ? true : false),
-
-                    'id'              => 'Staff_User_Password',
-                    'edit'            => 'password',
-                    'value'           => '',
-                    'formatted_value' => '******',
-                    'label'           => ucfirst(
-                        $employee->get_field_label('Staff User Password')
-                    ),
-                    'invalid_msg'     => get_invalid_message('password'),
-                ),
-                array(
-                    'render' => ($employee->get('Staff User Active') == 'Yes' ? true : false),
-
-                    'id'              => 'Staff_User_PIN',
-                    'edit'            => 'pin',
-                    'value'           => '',
-                    'formatted_value' => '****',
-                    'label'           => ucfirst(
-                        $employee->get_field_label('Staff User PIN')
-                    ),
-                    'invalid_msg'     => get_invalid_message('pin'),
-                ),
-
-
-
-
-            )
-        );
-
-    } else {
-        $object_fields[] = array(
-            'label'      => _('System user'),
-            'show_title' => true,
-            'class'      => 'edit_fields',
-            'fields'     => array(
-                array(
-
-                    'id'        => 'new_user',
-                    'class'     => 'new',
-                    'value'     => '',
-                    'label'     => _('Set up system user').' <i class="fa fa-plus new_button link"></i>',
-                    'reference' => 'employee/'.$employee->id.'/user/new'
-                ),
-
-            )
-        );
-
-    }
-
-    $from        = date('y-m-d');
-    $from_locale = date('d/m/y');
-    $from_mmddyy = date('m/d/Y');
-    $to_locale   = '';
-    $to_mmddyy   = '';
-
-    $operations = array(
-        'label'      => _('Operations'),
-        'show_title' => true,
-        'class'      => 'operations',
-        'fields'     => array(
-
-            array(
-                'id'          => 'recalculate_timesheets',
-                'class'       => 'operation_date_interval',
-                'value'       => '',
-                'label'       => '<span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="show_choose_interval(this)" class="delete_object button">'._("Recalculate time sheets")
-                    .' <i class="fa fa-sync new_button "></i></span>',
-                'reference'   => '',
-                'type'        => 'date_interval',
-                'from'        => $from,
-                'from_locale' => $from_locale,
-                'to_locale'   => $to_locale,
-                'from_mmddyy' => $from_mmddyy,
-                'to_mmddyy'   => $to_mmddyy
+            'type'            => 'value',
+            'hidden'          => true
+        ),
+        array(
+            'render'            => true,
+            'id'                => 'Staff_User_Handle',
+            'edit'              => 'handle',
+            'value'             => $employee->get('Staff User Handle'),
+            'formatted_value'   => $employee->get('User Handle'),
+            'label'             => ucfirst(
+                $employee->get_field_label('Staff User Handle')
             ),
-
-
-            array(
-                'id'        => 'terminate_employment',
-                'class'     => 'operation',
-                'render'    => ($object->get('Staff Currently Working') == 'Yes' ? true : false),
-                'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                    .'"}\' onClick="terminate_employment(this)" class="delete_object disabled">'._("Terminate employment").' <i class="fa fa-hand-scissors-o  fa-flip-horizontal new_button "></i></span>',
-                'reference' => '',
-                'type'      => 'operation'
+            'server_validation' => json_encode(
+                array('tipo' => 'check_for_duplicates')
             ),
+            'invalid_msg'       => get_invalid_message('handle'),
+            'type'              => 'value',
+            'required'          => false,
 
+        ),
 
-            array(
-                'id'        => 'delete_employee',
-                'class'     => 'operation',
-                'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete employee").' <i class="far fa-trash-alt new_button link"></i></span>',
-                'reference' => '',
-                'type'      => 'operation'
+        array(
+            'render' => true,
+
+            'id'              => 'Staff_User_Password',
+            'edit'            => 'password',
+            'value'           => '',
+            'formatted_value' => '******',
+            'label'           => ucfirst(
+                $employee->get_field_label('Staff User Password')
             ),
+            'invalid_msg'     => get_invalid_message('password'),
+            'type'            => 'value',
+            'required'        => false,
 
 
-        )
+        ),
+        array(
+            'render'          => true,
+            'id'              => 'Staff_PIN',
+            'edit'            => 'pin',
+            'value'           => '',
+            'formatted_value' => '****',
+            'label'           => ucfirst($employee->get_field_label('Staff PIN')),
+            'invalid_msg'     => get_invalid_message('pin'),
+            'type'            => 'value',
+            'required'        => false,
 
-    );
-
-    $object_fields[] = $operations;
-
-
-} else {
-
-
-    $object_fields[] = array(
-        'label'      => _('System user'),
-        'show_title' => true,
-        'class'      => 'edit_fields',
-        'fields'     => array(
+        ),
 
 
-            array(
+        array(
+            'render' => ($edit_users ? true : false),
 
-                'id'     => 'add_new_user',
-                'render' => false,
-
-                'class'    => '',
-                'value'    => '',
-                'label'    => _('Set up system user').' <i onClick="show_user_fields()" class="fa fa-plus new_button link"></i>',
-                'required' => false,
-                'type'     => 'util'
-            ),
-
-            array(
-                'id'       => 'dont_add_new_user',
-                'class'    => '',
-                'value'    => '',
-                'label'    => _("Don't set up system user").' <i onClick="hide_user_fields()" class="fa fa-minus new_button link"></i>',
-                'required' => false,
-                'type'     => 'util'
-            ),
+            'id'              => 'Staff_User_Permissions',
+            'edit'            => 'user_permissions',
+            'stores'          => $stores,
+            'value'           => '',
+            'formatted_value' => '',
+            'label'           => _('Permissions'),
+            'required'        => false,
+            'type'            => 'value'
+        ),
 
 
-            array(
-                'render' => false,
-                'id'     => 'Staff_User_Active',
-                'edit'   => ($edit ? 'option' : ''),
-
-                'options'         => $options_yn,
-                'value'           => 'Yes',
-                'formatted_value' => _('Yes'),
-                'label'           => ucfirst(
-                    $employee->get_field_label('Staff User Active')
-                ),
-                'type'            => 'value',
-                'hidden'          => true
-            ),
-            array(
-                'render'            => true,
-                'id'                => 'Staff_User_Handle',
-                'edit'              => 'handle',
-                'value'             => $employee->get('Staff User Handle'),
-                'formatted_value'   => $employee->get('User Handle'),
-                'label'             => ucfirst(
-                    $employee->get_field_label('Staff User Handle')
-                ),
-                'server_validation' => json_encode(
-                    array('tipo' => 'check_for_duplicates')
-                ),
-                'invalid_msg'       => get_invalid_message('handle'),
-                'type'              => 'value',
-                'required'          => false,
-
-            ),
-
-            array(
-                'render' => true,
-
-                'id'              => 'Staff_User_Password',
-                'edit'            => 'password',
-                'value'           => '',
-                'formatted_value' => '******',
-                'label'           => ucfirst(
-                    $employee->get_field_label('Staff User Password')
-                ),
-                'invalid_msg'     => get_invalid_message('password'),
-                'type'            => 'value',
-                'required'        => false,
+    )
+);
 
 
-            ),
-            array(
-                'render'          => true,
-                'id'              => 'Staff_PIN',
-                'edit'            => 'pin',
-                'value'           => '',
-                'formatted_value' => '****',
-                'label'           => ucfirst($employee->get_field_label('Staff PIN')),
-                'invalid_msg'     => get_invalid_message('pin'),
-                'type'            => 'value',
-                'required'        => false,
-
-            ),
-
-
-            array(
-                'render'          => true,
-                'id'              => 'Staff_User_Permissions',
-                'edit'            => 'user_permissions',
-                'stores'          => $stores,
-                'value'           => '',
-                'formatted_value' => '',
-                'label'           => _('Permissions'),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-
-
-        )
-    );
-
-}
 
 

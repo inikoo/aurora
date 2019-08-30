@@ -685,13 +685,10 @@ if ($account->get('Account Country Code') == 'SVK') {
 
 $smarty->assign('extra_comments', $extra_comments);
 
-//if ($account->data['Apply Tax Method'] == 'Per Item') {
-//    $html = $smarty->fetch('invoice_tax_disaggregated.pdf.tpl');
 
-//} else {
 $html = $smarty->fetch('invoice.pdf.tpl');
 
-//}
+
 
 $html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');
 
