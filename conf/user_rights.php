@@ -142,7 +142,7 @@ $user_rights = array(
         'Right Name' => 'suppliers'
     ),
 
-    'BC' => array(
+    'BS' => array(
         'Right Type' => 'Supervisor',
         'Right Name' => 'suppliers'
     ),
