@@ -232,7 +232,7 @@ $user_rights = array(
         'Right Type' => 'View',
         'Right Name' => 'customers_reports'
     ),
-    'SRV'   => array(
+    'BRV'   => array(
         'Right Type' => 'View',
         'Right Name' => 'suppliers_reports'
     ),

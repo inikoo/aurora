@@ -337,7 +337,7 @@ $user_groups = array(
         'Edit'   => '',
         'Rights' => array(
             'BV',
-            'SRV',
+            'BRV',
 
         )
 
