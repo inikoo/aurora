@@ -12,7 +12,7 @@
 include 'conf/user_groups.php';
 
 
-if ($user->can_supervisor('users')) {
+if ($user->can_edit('users')) {
     $edit_users = true;
 } else {
     $edit_users = false;
