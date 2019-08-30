@@ -16,7 +16,6 @@ error_reporting(E_ALL);
 define("_DEVEL", isset($_SERVER['devel']));
 
 
-
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
@@ -37,7 +36,6 @@ require_once 'class.Data_Sets.php';
 include_once 'class.Category.php';
 
 
-
 $memcached = new Memcached();
 $memcached->addServer($memcache_ip, 11211);
 
@@ -48,7 +46,6 @@ if ($redis->connect('127.0.0.1', 6379)) {
 } else {
     $redis_on = false;
 }
-
 
 
 date_default_timezone_set('UTC');
@@ -62,7 +59,7 @@ if (!isset($_REQUEST['key']) or $_REQUEST['key'] == '') {
 
 include_once 'class.Account.php';
 
-$smarty               = new Smarty();
+$smarty = new Smarty();
 $smarty->setTemplateDir('templates');
 $smarty->setCompileDir('server_files/smarty/templates_c');
 $smarty->setCacheDir('server_files/smarty/cache');
@@ -80,9 +77,6 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 //session_start();
 
 
-
-
-
 $account = new Account($db);
 
 
@@ -92,24 +86,22 @@ $session->start();
 $session->set('account', $account->get('Code'));
 
 
-
 if (!$account->id) {
 
 
     // TODO get account create data from setup.inikoo.com
     $account_data = array(
-        'Account Code'              => 'IB',
+        'Account Code'              => 'ES',
         'Account Name'              => 'Spain',
         'Account System Public URL' => 'au.bali',
-        'Account Setup Metadata'    => json_encode(
+        'Account Country Code'      => 'ESP',
+        'Account Currency'          => 'EUR',
+        'Account Currency Symbol'   => '€',
+        'Account Timezone'          => 'Europe/Madrid',
+
+        'Account Setup Metadata' => json_encode(
             array(
-                'steps'     => array(
-                    'root_user'     => array('setup' => false),
-                    'setup_account'     => array('setup' => false),
-                    'add_employees' => array('setup' => false),
-                    'add_warehouse' => array('setup' => false),
-                    'add_store'     => array('setup' => false)
-                ),
+
                 'size'      => 'Big',
                 'instances' => array(
                     'Com',
@@ -117,7 +109,7 @@ if (!$account->id) {
                 )
             )
         ),
-        'editor'                    => array(
+        'editor'                 => array(
             'Author Name'  => 'Aurora',
             'Author Alias' => 'Aurora',
             'Author Type'  => '',
@@ -130,7 +122,7 @@ if (!$account->id) {
 
     // Create account
 
-    $account_data['Account Creation Date'] = gmdate('Y-m-d H:i:s');
+    $account_data['Account Valid From'] = gmdate('Y-m-d H:i:s');
     $account_data['Account Key']           = 1;
 
     $base_data     = array();
@@ -154,7 +146,7 @@ if (!$account->id) {
     foreach ($base_data as $key => $value) {
         $keys .= "`$key`,";
 
-        if ($key == 'Account Short Message' or $key == 'Account Menu Label') {
+        if ( $key == 'Account Menu Label') {
             $values .= prepare_mysql($value, false).",";
         } else {
             $values .= prepare_mysql($value).",";
@@ -170,8 +162,6 @@ if (!$account->id) {
         $account = new Account();
 
 
-
-
         $history_data = array(
             'History Abstract' => sprintf(_('%s account created'), $account->get('Account Code')),
             'History Details'  => '',
@@ -182,37 +172,28 @@ if (!$account->id) {
         );
 
 
-
         $account->add_subject_history($history_data, true, 'No', 'Changes', $account->get_object_name(), $account->id);
 
 
-
-
-
-    $sql = sprintf(
+        $sql = sprintf(
             "INSERT INTO `Account Data` ( `Account Key`) VALUES (%d)", $account->id
 
         );
 
 
-
         $db->exec($sql);
 
         $sql = sprintf(
-            "INSERT INTO `Payment Service Provider Dimension` ( `Payment Service Provider Code`, `Payment Service Provider Name`, `Payment Service Provider Type`) VALUES ('Accounts', %s, 'Account');",
-           prepare_mysql( _('Internal customers accounts'))
+            "INSERT INTO `Payment Service Provider Dimension` ( `Payment Service Provider Code`, `Payment Service Provider Name`, `Payment Service Provider Type`) VALUES ('Accounts', %s, 'Account');", prepare_mysql(_('Internal customers accounts'))
 
         );
         $db->exec($sql);
 
         $sql = sprintf(
-            "INSERT INTO `Payment Service Provider Dimension` ( `Payment Service Provider Code`, `Payment Service Provider Name`, `Payment Service Provider Type`) VALUES ('Cash', %s, 'Cash');",
-            prepare_mysql( _('Petty cash'))
+            "INSERT INTO `Payment Service Provider Dimension` ( `Payment Service Provider Code`, `Payment Service Provider Name`, `Payment Service Provider Type`) VALUES ('Cash', %s, 'Cash');", prepare_mysql(_('Petty cash'))
 
         );
         $db->exec($sql);
-
-
 
 
     } else {
@@ -221,7 +202,6 @@ if (!$account->id) {
         $smarty->display("setup.tpl");
         exit;
     }
-
 
 
     if ($account->id != 1) {
@@ -233,21 +213,9 @@ if (!$account->id) {
     }
 
 
-}
-
-
-
-// Create root user
-
-$setup_data = $account->get('Setup Metadata');
-$smarty->assign('setup_data', $setup_data);
-
-
-if (!$setup_data['steps']['root_user']['setup']) {
-
     $root_user_data = array(
         'User Handle'           => 'root',
-        'User Password'         => hash('sha256', generatePassword(10, 3)),
+        'User Password'         => hash('sha256', $_REQUEST['key']),
         'User PIN'              => hash('sha256', generatePassword(10, 3)),
         'User Active'           => 'Yes',
         'User Alias'            => 'Root',
@@ -267,6 +235,7 @@ if (!$setup_data['steps']['root_user']['setup']) {
 
     $user = new User('find', $root_user_data, 'create');
 
+
     if (!$user->id) {
 
 
@@ -279,10 +248,9 @@ if (!$setup_data['steps']['root_user']['setup']) {
     $user->add_group(array(1), false);
 
 
-
     require_once 'conf/data_sets.php';
 
-    $editor = array(
+    $editor          = array(
         'Author Name'  => $user->data['User Alias'],
         'Author Alias' => $user->data['User Alias'],
         'Author Type'  => $user->data['User Type'],
@@ -290,7 +258,7 @@ if (!$setup_data['steps']['root_user']['setup']) {
         'User Key'     => $user->id,
         'Date'         => gmdate('Y-m-d H:i:s')
     );
-    $account->editor=$editor;
+    $account->editor = $editor;
 
     foreach ($data_sets as $data_set_data) {
         $data_set_data['editor'] = $editor;
@@ -301,69 +269,58 @@ if (!$setup_data['steps']['root_user']['setup']) {
 
 
     $parts_fmap_data = array(
-        'Category Code'           => 'FMap',
-        'Category Label'          => 'Family Map',
-        'Category Scope'          => 'Part',
-        'Category Subject'        => 'Part',
+        'Category Code'    => 'FMap',
+        'Category Label'   => 'Family Map',
+        'Category Scope'   => 'Part',
+        'Category Subject' => 'Part',
 
 
     );
 
 
-    $fmap=$account->create_category($parts_fmap_data);
+    $fmap = $account->create_category($parts_fmap_data);
 
     $sr_cat_data = array(
-        'Category Code'           => 'SR',
-        'Category Label'          => 'SR',
-        'Category Scope'          => 'Invoice',
-        'Category Subject'        => 'Invoice',
+        'Category Code'    => 'SR',
+        'Category Label'   => 'SR',
+        'Category Scope'   => 'Invoice',
+        'Category Subject' => 'Invoice',
 
 
     );
 
 
-    $sr_cat=$account->create_category($sr_cat_data);
+    $sr_cat = $account->create_category($sr_cat_data);
 
-    $account->update(array(
-        'Account State' => 'RootUser',
-        'Account SR Category Key' => $sr_cat->id,
-        'Account Part Family Category Key' => $fmap->id,
-                     ), 'no_history');
+    $account->update(
+        array(
+            'Account State'                    => 'Active',
+            'Account SR Category Key'          => $sr_cat->id,
+            'Account Part Family Category Key' => $fmap->id,
+        ), 'no_history'
+    );
 
 
+    $_SESSION['logged_in']      = true;
+    $_SESSION['logged_in_page'] = 0;
+
+
+    $session->set('logged_in', true);
+    $session->set('logged_in_page', 0);
+    $session->set('user_key', $user->id);
+
+
+    $_SESSION['user_key']    = $user->id;
+    $_SESSION['text_locale'] = $user->get('User Preferred Locale');
+
+    $session->set('state', array());
+
+    header('Location: dashboard');
 
 
 } else {
-    $user = new User('Administrator');
+    exit();
 }
 
-
-$_SESSION['logged_in']      = true;
-$_SESSION['logged_in_page'] = 0;
-$_SESSION['user_key']       = $user->id;
-$_SESSION['text_locale']    = $user->get('User Preferred Locale');
-
-
-$smarty->assign('locale',$user->get('User Preferred Locale'));
-
-
-
-$session->set('current_store','');
-//$session->set('current_website','');
-$session->set('current_warehouse','');
-$session->set('current_production','');
-
-
-$request = 'account/setup/state';
-foreach ($setup_data['steps'] as $step_code => $step_data) {
-    if (!$step_data['setup']) {
-        $request = 'account/setup/'.$step_code;
-        break;
-    }
-}
-
-
-$smarty->assign('request', $request);
-$smarty->display("setup.tpl");
 
 

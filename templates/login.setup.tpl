@@ -1,4 +1,4 @@
-{if $_DEVEL}{strip}{/if}
+{strip}
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html
         PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -53,7 +53,7 @@
                        required>
             </div>
             <div class="form__field">
-                <button onclick="on_my_Submit()">{t}Set up{/t}</button>
+                <button onclick="document.getElementById("loginform").submit()">{t}Set up{/t}</button>
             </div>
         </form>
         <div id="error_message" class="text--center error" style="visibility:{if $error==1}visible{else}hidden{/if}">
@@ -64,6 +64,5 @@
 
 </body>
 </html>
-
-{if $_DEVEL}{/strip}{/if}
+{/strip}
 

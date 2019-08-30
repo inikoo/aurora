@@ -3,27 +3,6 @@
  Copyright (c) 2016, Inikoo
  Version 3.0*/
 
-var onmySubmit = function () {
-
-
-    var theform = document.getElementById("loginform");
-
-
-    theform.submit();
-
-
-}
-
-var submit_form_on_enter = function (e) {
-    var key;
-    if (window.event) Key = window.event.keyCode; //IE
-    else Key = e.which; //firefox
-    if (Key == 13) {
-        onmySubmit();
-
-    }
-};
-
 
 $(document).ready(function () {
 

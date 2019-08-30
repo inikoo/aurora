@@ -12,6 +12,13 @@
 include 'conf/user_groups.php';
 
 
+if ($user->can_supervisor('users')) {
+    $edit_users = true;
+} else {
+    $edit_users = false;
+}
+
+
 if (isset($options['new']) and $options['new']) {
     $new = true;
 } else {
@@ -22,6 +29,7 @@ if (isset($options['new']) and $options['new']) {
 $contractor = true;
 
 $employee = $object;
+$employee->get_user();
 $account  = new Account();
 
 $employee->get_user();
@@ -476,7 +484,7 @@ if (!$new) {
     );
 
 
-    if ($employee->system_user->id) {
+    if ( isset($employee->system_user) and is_object($employee->system_user) and $employee->system_user->id) {
 
 
         $object_fields[] = array(
@@ -490,7 +498,7 @@ if (!$new) {
                 array(
 
                     'id'              => 'Staff_User_Active',
-                    'edit'            => 'option',
+                    'edit'            => ($edit_users ? 'option' : ''),
                     'value'           => $employee->get('Staff User Active'),
                     'formatted_value' => $employee->get('User Active'),
                     'options'         => $options_yn,
@@ -500,7 +508,7 @@ if (!$new) {
                 array(
 
                     'id'                => 'Staff_User_Handle',
-                    'edit'              => 'handle',
+                    'edit'              => ($edit_users ? 'handle' : ''),
                     'value'             => $employee->get('Staff User Handle'),
                     'formatted_value'   => $employee->get('User Handle'),
                     'label'             => ucfirst(
@@ -516,7 +524,7 @@ if (!$new) {
                     'render' => ($employee->get('Staff User Active') == 'Yes' ? true : false),
 
                     'id'              => 'Staff_User_Password',
-                    'edit'            => 'password',
+                    'edit'              => ($edit_users ? 'password' : ''),
                     'value'           => '',
                     'formatted_value' => '******',
                     'label'           => ucfirst(
@@ -528,7 +536,7 @@ if (!$new) {
                     'render' => ($employee->get('Staff User Active') == 'Yes' ? true : false),
 
                     'id'              => 'Staff_User_PIN',
-                    'edit'            => 'pin',
+                    'edit'              => ($edit_users ? 'pin' : ''),
                     'value'           => '',
                     'formatted_value' => '****',
                     'label'           => ucfirst(
@@ -539,7 +547,7 @@ if (!$new) {
 
 
                 array(
-                    'render'          => true,
+                    'render'              => ($edit_users ? true : false),
                     'id'              => 'Staff_User_Permissions',
                     'edit'            => 'user_permissions',
                     'stores'          => $stores,
@@ -556,23 +564,26 @@ if (!$new) {
         );
 
     } else {
-        $object_fields[] = array(
-            'label'      => _('System user'),
-            'show_title' => true,
-            'class'      => 'edit_fields',
-            'fields'     => array(
-                array(
 
-                    'id'        => 'new_user',
-                    'class'     => 'new',
-                    'value'     => '',
-                    'label'     => _('Set up system user').' <i class="fa fa-plus new_button link"></i>',
-                    'reference' => 'employee/'.$employee->id.'/user/new'
-                ),
+        if($edit_users) {
 
-            )
-        );
+            $object_fields[] = array(
+                'label'      => _('System user'),
+                'show_title' => true,
+                'class'      => 'edit_fields',
+                'fields'     => array(
+                    array(
 
+                        'id'        => 'new_user',
+                        'class'     => 'new',
+                        'value'     => '',
+                        'label'     => _('Set up system user').' <i class="fa fa-plus new_button link"></i>',
+                        'reference' => 'employee/'.$employee->id.'/user/new'
+                    ),
+
+                )
+            );
+        }
     }
 
     $from=date('y-m-d');
