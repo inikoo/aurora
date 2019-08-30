@@ -53,7 +53,7 @@ if ($parameters['parent'] == 'purchase_order') {
 
 
     $fields .= sprintf(
-        ',(select `Purchase Order Ordering Units` from `Purchase Order Transaction Fact` POTF where POTF.`Purchase Order Key`=%d and POTF.`Supplier Part Key`=SP.`Supplier Part Key` ) as `Purchase Order Ordering Units`',
+        ',(select sum(`Purchase Order Ordering Units`) from `Purchase Order Transaction Fact` POTF where POTF.`Purchase Order Key`=%d and POTF.`Supplier Part Key`=SP.`Supplier Part Key` ) as `Purchase Order Ordering Units`',
         $parameters['parent_key']
     );
 
