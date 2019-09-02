@@ -56,11 +56,6 @@ if ($parameters['parent'] == 'customer' or $parameters['parent'] == 'order_custo
         ' where   B.`Staff Key`=%d   ', $parameters['parent_key']
     );
     $subject = 'Staff';
-} elseif ($parameters['parent'] == 'supplier_product') {
-    $where   = sprintf(
-        ' where   B.`Supplier Product ID`=%d   ', $parameters['parent_key']
-    );
-    $subject = 'Supplier Product';
 } elseif ($parameters['parent'] == 'account') {
     $where   = sprintf(' where  true  ');
     $subject = 'Account';
