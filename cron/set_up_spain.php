@@ -35,7 +35,7 @@ $editor = array(
 
 $counter=0;
 
-$sql  = sprintf('select * from sk.`Supplier Dimension` where `Supplier Type`="Free"  and false ');
+$sql  = sprintf('select * from sk.`Supplier Dimension` where `Supplier Type`="Free"  ');
 $stmt = $db->prepare($sql);
 $stmt->execute(
     array()
