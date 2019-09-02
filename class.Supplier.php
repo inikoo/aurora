@@ -1125,6 +1125,8 @@ class Supplier extends SubjectSupplier {
         $data['Supplier Part Status'] = 'Available';
 
 
+
+
         $supplier_part = new SupplierPart('find', $data, 'create');
 
 
@@ -1133,6 +1135,8 @@ class Supplier extends SubjectSupplier {
 
             if ($supplier_part->new) {
                 $this->new_object = true;
+
+
 
 
                 if($this->get('Supplier Production')=='Yes'){
@@ -1190,11 +1194,17 @@ class Supplier extends SubjectSupplier {
 
                 if (!$part_exist) {
 
+                   // print "====\n";
+                   // print_r($data);
 
                     $part = new Part('find', $data, 'create');
 
-
+                   // print_r($part);
                     if ($part->new) {
+
+
+
+
 
                         $part->fast_update(array('Part Carton Barcode'=>$supplier_part->get('Supplier Part Carton Barcode')));
                         $part->fast_update(array('Part SKOs per Carton'=>$supplier_part->get('Supplier Part Packages Per Carton')));
@@ -1238,6 +1248,8 @@ class Supplier extends SubjectSupplier {
 
                         $supplier_part->update(array('Supplier Part Part SKU' => $part->sku));
                         $supplier_part->get_data('id', $supplier_part->id);
+
+
 
 
                         $supplier_part->update_historic_object();

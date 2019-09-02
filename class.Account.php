@@ -666,10 +666,9 @@ class Account extends DB_Table {
         return $barcode;
     }
 
-    function create_warehouse($data) {
+    function create_warehouse($data, $no_history = false) {
 
         include_once 'class.Warehouse.php';
-        include_once 'class.User.php';
 
         $this->new_object = false;
 
@@ -680,11 +679,41 @@ class Account extends DB_Table {
 
         $warehouse = new Warehouse('find', $data, 'create');
 
+
         if ($warehouse->id) {
             $this->new_object_msg = $warehouse->msg;
 
 
             if ($warehouse->new) {
+
+
+                if (!$no_history) {
+
+                    $history_data = array(
+                        'History Abstract' => _('Warehouse created'),
+                        'History Details'  => '',
+                        'Action'           => 'created'
+                    );
+
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'Changes', $warehouse->get_object_name(), $warehouse->id
+                    );
+
+
+                    $history_data = array(
+                        'History Abstract' => sprintf(
+                            _('Warehouse (%s) created'), $warehouse->get('Name')
+                        ),
+                        'History Details'  => '',
+                        'Action'           => 'created'
+                    );
+
+                    $this->add_subject_history(
+                        $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                    );
+
+                }
+
                 $this->new_object = true;
 
 
@@ -700,31 +729,31 @@ class Account extends DB_Table {
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
 
+                            $_user = get_object('User', $row['User Key']);
 
-                            $_user = new User($row['User Key']);
                             $_user->read_rights();
-                            //   print_r($_user);
-
                             if ($_user->can_view('locations')) {
-
-                                //  print "xxx";
 
                                 $_user->add_warehouse(array($warehouse->id));
                             }
 
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
 
                 }
 
                 if (is_numeric($this->editor['User Key']) and $this->editor['User Key'] > 1) {
-                    $_user = new User($this->editor['User Key']);
-                    if ($_user->id) {
-                        $_user->add_warehouse(array($warehouse->id));
+                    $_user = get_object('User', $this->editor['User Key']);
+
+                    if (in_array(
+                        $_user->get('User Type'), array(
+                        'Staff',
+                        'Contractor'
+                    )
+                    )) {
+                        if ($_user->id) {
+                            $_user->add_warehouse(array($warehouse->id));
+                        }
                     }
                 }
 
@@ -1316,6 +1345,9 @@ class Account extends DB_Table {
     }
 
     function create_agent($data) {
+
+
+
         $this->new_employee = false;
 
         $data['editor'] = $this->editor;
@@ -1600,7 +1632,6 @@ class Account extends DB_Table {
 
         include_once 'utils/date_functions.php';
         list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb) = calculate_interval_dates($this->db, $interval);
-
 
 
         if ($this_year) {
@@ -1891,8 +1922,6 @@ class Account extends DB_Table {
             $data_inventory_iy_ago = $this->get_inventory_dispatch_data(
                 date('Y-01-01 00:00:00', strtotime('-'.$i.' year')), date('Y-01-01 00:00:00', strtotime('-'.($i - 1).' year'))
             );
-
-
 
 
             $data_to_update = array(

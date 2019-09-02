@@ -207,3 +207,13 @@ DROP TABLE `Supplier Product Dimension`, `Supplier Product History Bridge`, `Sup
 ALTER TABLE `Part Dimension` CHANGE `Part Recommended Packages Per Selling Outer` `Part Recommended Packages Per Selling Outer` FLOAT UNSIGNED NULL DEFAULT '1';
 
 
+ALTER TABLE `Agent Dimension`
+    DROP `Agent Main XHTML Address`,
+    DROP `Agent Main Plain Address`,
+    DROP `Agent Main Country Key`,
+    DROP `Agent Main Country Code`,
+    DROP `Agent Main Country`,
+    DROP `Agent Main Location`,
+    DROP `Agent Main XHTML Email`,
+    DROP `Agent Main Email Key`,
+    DROP `Agent Main Telephone Key`;
