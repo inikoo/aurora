@@ -1,3 +1,9 @@
+{*/*
+Author: Raul Perusquia <raul@inikoo.com>
+ Created: 6 March 2016 at 23:15:29 GMT+8, Yiwu, China
+ Copyright (c) 2016, Inikoo
+ Version 3.0
+*/*}
 {strip}
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html
@@ -27,7 +33,6 @@
     <script src="/js/libs/base64.js"></script>
 
 
-    <script src="js/setup/login.setup.js"></script>
 
 
 </head>
@@ -61,6 +66,22 @@
         </div>
     </div>
 </div>
+<script>
+
+    $(document).ready(function () {
+
+        $("#login__password").focus();
+
+
+        $("#error_message").animate({
+            opacity: 0,
+        }, 5000, function () {
+            $("#error_message").css('visibility', 'hidden')
+        });
+
+    })
+
+</script>
 
 </body>
 </html>

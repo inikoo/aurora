@@ -59,7 +59,7 @@ if ($order == 'code') {
 } elseif ($order == 'location') {
     $order = '`Agent Location`';
 } elseif ($order == 'email') {
-    $order = '`Agent Main XHTML Email`';
+    $order = '`Agent Main Plain Email`';
 } elseif ($order == 'telephone') {
     $order = '`Agent Preferred Contact Number Formatted Number`';
 } elseif ($order == 'contact') {

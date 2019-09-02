@@ -31,7 +31,7 @@ class Part extends Asset {
         }
 
         $this->table_name           = 'Part';
-        $this->ignore_fields        = array('Part Key');
+        $this->ignore_fields        = array('Part SKU');
         $this->trigger_discontinued = true;
 
         if (is_numeric($arg1) and !$arg2) {
@@ -125,8 +125,13 @@ class Part extends Asset {
         );
 
 
+        //print "$sql\n";
+
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
+                print_r($row);
+
                 $this->found     = true;
                 $this->found_key = $row['Part SKU'];
                 $this->get_data('id', $this->found_key);
@@ -151,7 +156,6 @@ class Part extends Asset {
 
         include_once 'class.Account.php';
         include_once 'class.Category.php';
-
 
         $account = new Account($this->db);
 
@@ -187,12 +191,27 @@ class Part extends Asset {
 
 
 
+
+
+
         $base_data = $this->base_data();
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
                 $base_data[$key] = _trim($value);
+
+
+
+
             }
         }
+
+        foreach ($base_data as $key => $value) {
+
+            if($value==''){
+                unset($base_data[$key]);
+            }
+        }
+
 
 
         //   $base_data['Part Available']='No';
@@ -201,8 +220,8 @@ class Part extends Asset {
         //   $base_data['Part XHTML Description']=strip_tags($base_data['Part XHTML Description']);
         //  }
 
-        //print_r($base_data);
-
+      //  print_r($base_data);
+/*
         $keys   = '(';
         $values = 'values(';
         foreach ($base_data as $key => $value) {
@@ -210,8 +229,7 @@ class Part extends Asset {
 
             if (in_array(
                 $key, array(
-                        'Part XHTML Next Supplier Shipment',
-                        'Part XHTML Picking Location'
+
                     )
             )) {
                 $values .= prepare_mysql($value, false).",";
@@ -226,10 +244,32 @@ class Part extends Asset {
 
         //print_r($base_data);
 
-        $sql = sprintf("INSERT INTO `Part Dimension` %s %s", $keys, $values);
+        $_sql = sprintf("INSERT INTO `Part Dimension` %s %s", $keys, $values);
+        print "$_sql\n";
 
 
-        if ($this->db->exec($sql)) {
+        */
+
+
+
+        $sql = sprintf(
+            "INSERT INTO `Part Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
+        );
+
+        $stmt = $this->db->prepare($sql);
+
+        $i = 1;
+        foreach ($base_data as $key => $value) {
+            $stmt->bindValue($i, $value);
+            $i++;
+        }
+
+
+
+
+      //  print "$sql\n";
+
+        if ($stmt->execute()) {
             $this->id  = $this->db->lastInsertId();
             $this->sku = $this->id;
             $this->new = true;

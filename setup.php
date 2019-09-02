@@ -301,6 +301,14 @@ if (!$account->id) {
     );
 
 
+
+    $warehouse_data=array(
+        'Warehouse Code'=>'W'
+    );
+    $account->create_warehouse($warehouse_data);
+
+
+
     $_SESSION['logged_in']      = true;
     $_SESSION['logged_in_page'] = 0;
 
