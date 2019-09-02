@@ -242,6 +242,24 @@ function fork_upload_edit($job) {
                 }
 
 
+
+                if($upload->get('Upload Parent')=='supplier_product'){
+
+                    $sql = sprintf(
+                        "UPDATE `Fork Dimension` SET `Fork State`='Finished' ,`Fork Finished Date`=NOW(),`Fork Result`=%s WHERE `Fork Key`=%d ", prepare_mysql('imported'), $fork_key
+                    );
+
+                    $db->exec($sql);
+
+                    $sql = sprintf(
+                        "UPDATE `Upload Dimension` SET  `Upload State`='Finished'  WHERE `Upload Key`=%d ", $upload->id
+                    );
+                    $db->exec($sql);
+
+                   return true;
+                }
+
+
                 $_data = array(
                     'parent'            => $upload->get('Upload Parent'),
                     'parent_key'        => $upload->get('Upload Parent Key'),
