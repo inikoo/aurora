@@ -31,9 +31,7 @@ $editor = array(
 );
 
 
-
-
-$counter=0;
+$counter = 0;
 
 $sql  = sprintf('select * from sk.`Supplier Dimension` where `Supplier Type`="Free"  ');
 $stmt = $db->prepare($sql);
@@ -41,7 +39,6 @@ $stmt->execute(
     array()
 );
 while ($row = $stmt->fetch()) {
-
 
 
     $editor['Date'] = gmdate('Y-m-d H:i:s');
@@ -71,145 +68,134 @@ while ($row = $stmt->fetch()) {
 
     $supplier_key = $supplier->id;
 
-   // print $supplier->get('Code')."\n";
+    // print $supplier->get('Code')."\n";
 
     if ($row['Supplier Main Plain Telephone'] != '') {
         $supplier->update(array('Supplier Main Plain Telephone' => $row['Supplier Main Plain Telephone']), 'no_history');
     }
 
 
-
-
-
-        $sql = sprintf(
-            'select * from sk.`Supplier Part Dimension` left join sk.`Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`) left join sk.`Category Dimension` on (`Category Key`=`Part Family Category Key`) where  `Part Status`="In Use" and  `Supplier Part Supplier Key`=?  order by `Part Reference`  '
+    $sql = sprintf(
+        'select * from sk.`Supplier Part Dimension` left join sk.`Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`) left join sk.`Category Dimension` on (`Category Key`=`Part Family Category Key`) where   `Supplier Part Supplier Key`=?  order by `Part SKU`  '
 
 
     );
 
 
-        $stmt2 = $db->prepare($sql);
-        $stmt2->execute(
-            array($row['Supplier Key'])
+    $stmt2 = $db->prepare($sql);
+    $stmt2->execute(
+        array($row['Supplier Key'])
+    );
+    while ($row2 = $stmt2->fetch()) {
+
+
+        $editor['Date'] = gmdate('Y-m-d H:i:s');
+
+        $supplier = get_object('Supplier', $supplier_key);
+
+        $supplier->editor = $editor;
+
+        $supplier_part_data = array(
+            'Supplier Part Reference'                     => $row2['Supplier Part Reference'],
+            'Supplier Part Description'                   => $row2['Supplier Part Description'],
+            'Part Family Category Code'                   => $row2['Category Code'],
+            'Part Reference'                              => $row2['Part Reference'],
+            'Part Unit Label'                             => $row2['Part Unit Label'],
+            'Part Units Per Package'                      => $row2['Part Units Per Package'],
+            'Part Package Description'                    => $row2['Part Package Description'],
+            'Part SKO Barcode'                            => $row2['Part SKO Barcode'],
+            'Supplier Part Carton Barcode'                => $row2['Supplier Part Carton Barcode'],
+            'Supplier Part Packages Per Carton'           => $row2['Supplier Part Packages Per Carton'],
+            'Part Recommended Packages Per Selling Outer' => $row2['Part Recommended Packages Per Selling Outer'],
+            'Supplier Part Status'                        => $row2['Supplier Part Status'],
+            'Supplier Part On Demand'                     => $row2['Supplier Part On Demand'],
+            'Supplier Part Minimum Carton Order'          => $row2['Supplier Part Minimum Carton Order'],
+            'Supplier Part Average Delivery Days'         => $row2['Supplier Part Average Delivery Days'],
+            'Supplier Part Carton CBM'                    => $row2['Supplier Part Carton CBM'],
+            'Supplier Part Unit Cost'                     => $row2['Supplier Part Unit Cost'],
+            'Supplier Part Unit Extra Cost Percentage'    => $row2['Supplier Part Unit Extra Cost Percentage'],
+            'Part Part Unit Price'                        => $row2['Part Unit Price'],
+            'Part Part Unit RRP'                          => $row2['Part Unit RRP'],
+            'Part Recommended Product Unit Name'          => $row2['Part Recommended Product Unit Name'],
+            'Part Barcode'                                => $row2['Part Barcode Number'],
+            'Part Part Unit Weight'                       => $row2['Part Unit Weight'],
+            'Part Part Unit Dimensions'                   => get_dimensions($row2['Part Unit Dimensions']),
+            'Part Part Package Weight'                    => $row2['Part Package Weight'],
+            'Part Part Package Dimensions'                => get_dimensions($row2['Part Package Dimensions']),
+            'Part Part Materials'                         => get_materials($row2['Part Materials']),
+            'Part Part Origin Country Code'               => $row2['Part Origin Country Code'],
+            'Part Part Tariff Code'                       => $row2['Part Tariff Code'],
+            'Part Part Duty Rate'                         => $row2['Part Duty Rate'],
+            'Part Part HTSUS Code'                        => $row2['Part HTSUS Code'],
+            'Part Part UN Number'                         => $row2['Part UN Number'],
+            'Part Part UN Class'                          => $row2['Part UN Class'],
+            'Part Part Packing Group'                     => $row2['Part Packing Group'],
+            'Part Part Proper Shipping Name'              => $row2['Part Proper Shipping Name'],
+            'Part Part Hazard Identification Number'      => $row2['Part Hazard Identification Number'],
+            'editor'                                      => $editor
         );
-        while ($row2 = $stmt2->fetch()) {
 
 
+        $supplier_part = $supplier->create_supplier_part_record($supplier_part_data, 'Yes');
 
-            $editor['Date'] = gmdate('Y-m-d H:i:s');
 
-            $supplier = get_object('Supplier', $supplier_key);
+        //  print_r($supplier_part);
 
-            $supplier->editor = $editor;
 
-            $supplier_part_data = array(
-                'Supplier Part Reference'                     => $row2['Supplier Part Reference'],
-                'Supplier Part Description'                   => $row2['Supplier Part Description'],
-                'Part Family Category Code'                   => $row2['Category Code'],
-                'Part Reference'                              => $row2['Part Reference'],
-                'Part Unit Label'                             => $row2['Part Unit Label'],
-                'Part Units Per Package'                      => $row2['Part Units Per Package'],
-                'Part Package Description'                    => $row2['Part Package Description'],
-                'Part SKO Barcode'                            => $row2['Part SKO Barcode'],
-                'Supplier Part Carton Barcode'                => $row2['Supplier Part Carton Barcode'],
-                'Supplier Part Packages Per Carton'           => $row2['Supplier Part Packages Per Carton'],
-                'Part Recommended Packages Per Selling Outer' => $row2['Part Recommended Packages Per Selling Outer'],
-                'Supplier Part Status'                        => $row2['Supplier Part Status'],
-                'Supplier Part On Demand'                     => $row2['Supplier Part On Demand'],
-                'Supplier Part Minimum Carton Order'          => $row2['Supplier Part Minimum Carton Order'],
-                'Supplier Part Average Delivery Days'         => $row2['Supplier Part Average Delivery Days'],
-                'Supplier Part Carton CBM'                    => $row2['Supplier Part Carton CBM'],
-                'Supplier Part Unit Cost'                     => $row2['Supplier Part Unit Cost'],
-                'Supplier Part Unit Extra Cost Percentage'    => $row2['Supplier Part Unit Extra Cost Percentage'],
-                'Part Part Unit Price'                        => $row2['Part Unit Price'],
-                'Part Part Unit RRP'                          => $row2['Part Unit RRP'],
-                'Part Recommended Product Unit Name'          => $row2['Part Recommended Product Unit Name'],
-                'Part Barcode'                                => $row2['Part Barcode Number'],
-                'Part Part Unit Weight'                       => $row2['Part Unit Weight'],
-                'Part Part Unit Dimensions'                   => get_dimensions($row2['Part Unit Dimensions']),
-                'Part Part Package Weight'                    => $row2['Part Package Weight'],
-                'Part Part Package Dimensions'                => get_dimensions($row2['Part Package Dimensions']),
-                'Part Part Materials'                         => get_materials($row2['Part Materials']),
-                'Part Part Origin Country Code'               => $row2['Part Origin Country Code'],
-                'Part Part Tariff Code'                       => $row2['Part Tariff Code'],
-                'Part Part Duty Rate'                         => $row2['Part Duty Rate'],
-                'Part Part HTSUS Code'                        => $row2['Part HTSUS Code'],
-                'Part Part UN Number'                         => $row2['Part UN Number'],
-                'Part Part UN Class'                          => $row2['Part UN Class'],
-                'Part Part Packing Group'                     => $row2['Part Packing Group'],
-                'Part Part Proper Shipping Name'              => $row2['Part Proper Shipping Name'],
-                'Part Part Hazard Identification Number'      => $row2['Part Hazard Identification Number'],
+        if (is_object($supplier_part)) {
+
+            print $supplier_part->get('Supplier Part Reference')."\n";
+
+            $sql = sprintf('select * from sk.`Image Dimension` left join sk.`Image Subject Bridge` on (`Image Key`=`Image Subject Image Key`)  where `Image Subject Object`="Part" and  `Image Subject Object Key`=?  ');
+
+
+            $stmt3 = $db->prepare($sql);
+            $stmt3->execute(
+                array($row2['Supplier Part Part SKU'])
             );
+            while ($row3 = $stmt3->fetch()) {
+                $editor['Date'] = gmdate('Y-m-d H:i:s');
+
+                $tmp_file = '/tmp/_image_'.$row3['Image Key'].'.'.$row3['Image File Format'];
+
+                file_put_contents($tmp_file, $row3['Image Data']);
 
 
 
-            $supplier_part = $supplier->create_supplier_part_record($supplier_part_data, 'Yes');
+                $image_data                  = array(
+                    'Upload Data'                      => array(
+                        'tmp_name' => $tmp_file,
+                        'type'     => $row3['Image File Format']
+                    ),
+                    'Image Filename'                   => $row3['Image Filename'],
+                    'Image Subject Object Image Scope' => 'Default',
 
 
-
-            if (is_object($supplier_part)) {
-                $counter++;
-                print $supplier_part->get('Supplier Part Reference')." *** \n";
-
-
-
-                if($counter>500){
-
-                    //print "stop";
-                    //exit();
-
-                }
-            }
-
-
-            //  print_r($supplier_part);
-
-
-            if (is_object($supplier_part)) {
-
-                print $supplier_part->get('Supplier Part Reference')."\n";
-
-                $sql = sprintf('select * from sk.`Image Dimension` left join sk.`Image Subject Bridge` on (`Image Key`=`Image Subject Image Key`)  where `Image Subject Object`="Part" and  `Image Subject Object Key`=?  ');
-
-
-                $stmt3 = $db->prepare($sql);
-                $stmt3->execute(
-                    array($row2['Supplier Part Part SKU'])
                 );
-                while ($row3 = $stmt3->fetch()) {
-                    $editor['Date'] = gmdate('Y-m-d H:i:s');
-
-                    $tmp_file = '/tmp/_image_'.$row3['Image Key'].'.'.$row3['Image File Format'];
-
-                    file_put_contents($tmp_file, $row3['Image Data']);
+                $supplier_part->part->editor = $editor;
 
 
-                    print $tmp_file;
+                $image = $supplier_part->part->add_image($image_data, 'no_history');
 
-                    $image_data                  = array(
-                        'Upload Data'                      => array(
-                            'tmp_name' => $tmp_file,
-                            'type'     => $row3['Image File Format']
-                        ),
-                        'Image Filename'                   => $row3['Image Filename'],
-                        'Image Subject Object Image Scope' => 'Default',
+                unlink($tmp_file);
 
 
-                    );
-                    $supplier_part->part->editor = $editor;
-
-
-                    $image = $supplier_part->part->add_image($image_data, 'no_history');
-
-                    unlink($tmp_file);
-                    print "* \n";
-
-
-                }
             }
 
+            if ($row2['Part Status'] == 'Not In Use') {
+                $supplier_part->part->update_status('Not In Use', 'no_history');
+
+            }
+
+            if ($row2['Part Status'] == 'Discontinuing') {
+                $supplier_part->part->update_status('Discontinuing', 'no_history');
+
+            }
 
         }
+
+
+    }
 
 
 }
@@ -287,8 +273,6 @@ while ($row = $stmt->fetch()) {
         $supplier = $agent->create_supplier($supplier_data);
 
 
-
-
         if ($row2['Supplier Main Plain Telephone'] != '') {
             $supplier->update(array('Supplier Main Plain Telephone' => $row2['Supplier Main Plain Telephone']), 'no_history');
         }
@@ -298,8 +282,7 @@ while ($row = $stmt->fetch()) {
         }
 
 
-        $sql = sprintf('select * from sk.`Supplier Part Dimension` left join sk.`Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`) left join sk.`Category Dimension` on (`Category Key`=`Part Family Category Key`) where  `Part Status`="In Use" and `Supplier Part Supplier Key`=?   ');
-
+        $sql = sprintf('select * from sk.`Supplier Part Dimension` left join sk.`Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`) left join sk.`Category Dimension` on (`Category Key`=`Part Family Category Key`) where  `Supplier Part Supplier Key`=?   ');
 
 
         $stmt4 = $db->prepare($sql);
@@ -346,6 +329,7 @@ while ($row = $stmt->fetch()) {
                 'Part Part Packing Group'                     => $row4['Part Packing Group'],
                 'Part Part Proper Shipping Name'              => $row4['Part Proper Shipping Name'],
                 'Part Part Hazard Identification Number'      => $row4['Part Hazard Identification Number'],
+                'editor'                                      => $editor
             );
 
 
@@ -386,6 +370,16 @@ while ($row = $stmt->fetch()) {
 
                     unlink($tmp_file);
 
+                    if ($row4['Part Status'] == 'Not In Use') {
+                        $supplier_part->part->update_status('Not In Use', 'no_history');
+
+                    }
+
+                    if ($row4['Part Status'] == 'Discontinuing') {
+                        $supplier_part->part->update_status('Discontinuing', 'no_history');
+
+                    }
+
 
                 }
 
@@ -399,14 +393,14 @@ while ($row = $stmt->fetch()) {
 
 }
 
-function get_materials($data){
+function get_materials($data) {
     if ($data == '') {
         return '';
     }
 
     $materials_data = json_decode($data, true);
 
-    $materials='';
+    $materials = '';
     foreach ($materials_data as $material_data) {
 
         if ($material_data['may_contain'] == 'Yes') {
@@ -440,7 +434,6 @@ function get_dimensions($data) {
     }
 
     $data = json_decode($data, true);
-
 
 
     include_once 'utils/units_functions.php';
