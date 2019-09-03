@@ -76,7 +76,7 @@ while ($row = $stmt->fetch()) {
 
 
     $sql = sprintf(
-        'select * from sk.`Supplier Part Dimension` left join sk.`Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`) left join sk.`Category Dimension` on (`Category Key`=`Part Family Category Key`) where   `Supplier Part Supplier Key`=?  order by `Part SKU`  '
+        'select * from sk.`Supplier Part Dimension` left join sk.`Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`) left join sk.`Category Dimension` on (`Category Key`=`Part Family Category Key`) where  `Part Status` ="In Use" and `Supplier Part Supplier Key`=?  order by `Part SKU`  '
 
 
     );
@@ -282,7 +282,7 @@ while ($row = $stmt->fetch()) {
         }
 
 
-        $sql = sprintf('select * from sk.`Supplier Part Dimension` left join sk.`Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`) left join sk.`Category Dimension` on (`Category Key`=`Part Family Category Key`) where  `Supplier Part Supplier Key`=?   ');
+        $sql = sprintf('select * from sk.`Supplier Part Dimension` left join sk.`Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`) left join sk.`Category Dimension` on (`Category Key`=`Part Family Category Key`) where  `Part Status` ="In Use" and  `Supplier Part Supplier Key`=?   ');
 
 
         $stmt4 = $db->prepare($sql);
