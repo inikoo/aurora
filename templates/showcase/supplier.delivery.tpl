@@ -481,7 +481,20 @@
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ">
 
+
+        <div class="node  Invoice_Info {if $delivery->get('State Index')!=110}hide{/if} " >
+                    <span class="node_label">
+                        <i class="fal fa-file-alt fa-fw  aria-hidden="true"></i>
+                        <span class="Formatted_Invoice_Public_ID margin_right_10">{$delivery->get('Formatted Invoice Public ID')}</span>
+                                                <span class="italic Formatted_Invoice_Date">{$delivery->get('Formatted Invoice Date')}</span>
+
+                    </span>
+
+
+        </div>
+
         <div style="clear:both">
+
         </div>
     </div>
     <div class="block " style="align-items: stretch;flex: 1;padding-top: 0px ">

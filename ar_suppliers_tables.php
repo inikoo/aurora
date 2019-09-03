@@ -1099,7 +1099,15 @@ function deliveries($_data, $db, $user) {
                     $state = _('Booked in').', '._('checking costing');
                     break;
                 case 'InvoiceChecked':
-                    $state = _('Booked in').', '._('costing done').' <i class="fa fa-check success"></i>';
+
+                    if($data['Supplier Delivery Invoice Public ID']!='' and $data['Supplier Delivery Invoice Date']!=''){
+                        $state= _('Booked in').', '._('costing done').' <i class="fa fa-check success"></i>';
+
+                    }else{
+                        $state= _('Booked in').', '._('costing done');
+
+                    }
+
                     break;
                 case 'Cancelled':
                     $state = sprintf('%s', _('Cancelled'));
