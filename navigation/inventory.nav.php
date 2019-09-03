@@ -400,11 +400,11 @@ function get_part_navigation($data, $smarty, $user, $db, $account) {
         $title .= '<span class="small error padding_left_20">'._('No suppliers').'</span>';
 
     }elseif (count($supplier_parts) ==1) {
-        $title .= '<span class="very_small discreet padding_left_20"><i class="far fa-plus"></i> '._('other supplier').'</span>';
+        $title .= '<span class="very_small discreet italic padding_left_20">('._('other supplier').')</span>';
 
 
     }elseif (count($supplier_parts)>0) {
-        $title .= '<span class="very_small discreet padding_left_20"><i class="far fa-plus"></i> '.sprintf(_('other %d suppliers'),count($supplier_parts) ).'</span>';
+        $title .= '<span class="very_small discreet italic padding_left_20">('.sprintf(_('other %d suppliers'),count($supplier_parts) ).')</span>';
 
 
     }

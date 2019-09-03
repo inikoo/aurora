@@ -29,13 +29,6 @@ foreach ($user_groups as $key => $user_group) {
     );
 }
 
-
-foreach (preg_split('/,/', $object->get('User Groups')) as $current_user_group_key) {
-    if (array_key_exists($current_user_group_key, $options_User_Groups)) {
-        $options_User_Groups[$current_user_group_key]['selected'] = true;
-    }
-}
-
 $options_locales = array();
 foreach ($available_locales as $locale) {
 
@@ -351,67 +344,15 @@ if (!$new) {
             'fields'     => array(
 
                 array(
-                    'id'              => 'User_Groups',
-                    'edit'            => 'option_multiple_choices',
-                    'value'           => $object->get('User Groups'),
-                    'formatted_value' => $object->get('Groups'),
-                    'options'         => $options_User_Groups,
-                    'label'           => ucfirst($object->get_field_label('User Groups')),
+                    'id'     => 'User_Permissions',
+                    'edit'   => 'user_permissions',
+
+                    'value'           => '',
+                    'formatted_value' => '',
+                    'label'           => _('Permissions'),
+                    'required'        => false,
+                    'type'            => 'user_value'
                 ),
-                array(
-                    'render'          => $object->has_scope('Stores'),
-                    'id'              => 'User_Stores',
-                    'edit'            => 'option_multiple_choices',
-                    'value'           => $object->get('User Stores'),
-                    'formatted_value' => $object->get('Stores'),
-                    'label'           => ucfirst(
-                        $object->get_field_label('User Stores')
-                    ),
-                    'options'         => $options_Stores,
-                    'required'        => false
-
-                ),
-                array(
-                    'render'          => $object->has_scope('Websites'),
-                    'id'              => 'User_Websites',
-                    'edit'            => 'option_multiple_choices',
-                    'value'           => $object->get('User Websites'),
-                    'formatted_value' => $object->get('Websites'),
-                    'label'           => ucfirst(
-                        $object->get_field_label('User Websites')
-                    ),
-                    'options'         => $options_Websites,
-                    'required'        => false
-
-                ),
-                array(
-                    'render'          => $object->has_scope('Warehouses'),
-                    'id'              => 'User_Warehouses',
-                    'edit'            => 'option_multiple_choices',
-                    'value'           => $object->get('User Warehouses'),
-                    'formatted_value' => $object->get('Warehouses'),
-                    'label'           => ucfirst(
-                        $object->get_field_label('User Warehouses')
-                    ),
-                    'options'         => $options_Warehouses,
-                    'required'        => false
-
-
-                ),
-                array(
-                    'render'          => $object->has_scope('Productions'),
-                    'id'              => 'User_Productions',
-                    'edit'            => 'option_multiple_choices',
-                    'value'           => $object->get('User Productions'),
-                    'formatted_value' => $object->get('Productions'),
-                    'label'           => ucfirst(
-                        $object->get_field_label('User Productions')
-                    ),
-                    'options'         => $options_Productions,
-                    'required'        => false
-
-
-                )
 
             )
 

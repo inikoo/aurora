@@ -277,15 +277,23 @@ class SupplierDelivery extends DB_Table {
                     case 'Costing':
 
 
-                            return _('Booked in').', '._('checking costing');
+                        return _('Booked in').', '._('checking costing');
 
 
                         break;
                     case 'InvoiceChecked':
-                        if($this->data['Supplier Delivery Production']=='Yes'){
+                        if ($this->data['Supplier Delivery Production'] == 'Yes') {
                             return _('Booked in');
-                        }else{
-                            return _('Booked in').', '._('costing done').' <i class="fa fa-check success"></i>';
+                        } else {
+
+                            if ($this->data['Supplier Delivery Invoice Public ID'] != '' and $this->data['Supplier Delivery Invoice Date'] != '') {
+                                return _('Booked in').', '._('costing done').' <i class="fa fa-check success"></i>';
+
+                            } else {
+                                return _('Booked in').', '._('costing done');
+
+                            }
+
                         }
 
                         break;
@@ -323,6 +331,8 @@ class SupplierDelivery extends DB_Table {
                         break;
                     case 'InvoiceChecked':
                         return _('Done');
+
+
                         break;
                     case 'Cancelled':
                         return _('Cancelled');
@@ -559,10 +569,41 @@ class SupplierDelivery extends DB_Table {
                 break;
 
 
+            case 'Formatted Invoice Public ID':
+                if ($this->data['Supplier Delivery Invoice Public ID'] == '') {
+
+                    if ($this->data['Supplier Delivery State'] == 'InvoiceChecked') {
+                        return sprintf('<span class="italic very_discreet" title="%s">%s</span>', _('Supplier delivery invoice number missing'), _('No invoice number'));
+                    } else {
+                        return '';
+
+                    }
+                }
+
+                return $this->data['Supplier Delivery Invoice Public ID'];
+
+                break;
+            case 'Formatted Invoice Date':
+                if ($this->data['Supplier Delivery Invoice Date'] == '') {
+
+                    if ($this->data['Supplier Delivery State'] == 'InvoiceChecked') {
+                        return sprintf('<span class="error discreet" title="%s">%s</span>', _('Supplier delivery invoice date missing'), _('Date missing'));
+                    } else {
+                        return '';
+
+                    }
+                }
+
+                return strftime("%e %b %Y", strtotime($this->data['Supplier Delivery Invoice Date'].' +0:00'));
+
+                break;
+
             case 'Estimated Receiving Date':
             case 'Creation Date':
             case 'Checked Date':
             case 'Dispatched Date':
+            case 'Invoice Date':
+
             case 'Placed Date':
             case 'Cancelled Date':
                 if ($this->data['Supplier Delivery '.$key] == '') {
@@ -750,6 +791,25 @@ class SupplierDelivery extends DB_Table {
             case 'Supplier Delivery Estimated Receiving Date':
                 $this->update_field($field, $value, $options);
                 $this->update_supplier_parts();
+
+                break;
+
+            case 'Supplier Delivery Invoice Date':
+            case 'Supplier Delivery Invoice Public ID':
+
+                $this->update_field($field, $value, $options);
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Formatted_Invoice_Public_ID' => $this->get('Formatted Invoice Public ID'),
+                        'Formatted_Invoice_Date'      => $this->get('Formatted Invoice Date'),
+                        'Supplier_Delivery_State'     => $this->get('State'),
+
+                    )
+                );
+
+
+
 
                 break;
             default:
@@ -2234,6 +2294,12 @@ class SupplierDelivery extends DB_Table {
                 break;
             case 'Supplier Delivery Dispatched Date':
                 $label = _('dispatched date');
+                break;
+            case 'Supplier Delivery Invoice Date':
+                $label = _('invoice date');
+                break;
+            case 'Supplier Delivery Invoice Public ID':
+                $label = _('Invoice number');
                 break;
             default:
                 $label = $field;

@@ -16,8 +16,17 @@ include_once 'conf/object_fields.php';
 include_once 'utils/invalid_messages.php';
 
 $employee = $state['_object'];
-$employee->get_user_data();
+$employee->get_user();
 
+
+$stores = array();
+$sql    = sprintf(
+    'SELECT `Store Code`,`Store Key`,`Store Name` FROM `Store Dimension` order by `Store Code` '
+);
+foreach ($db->query($sql) as $row) {
+    $stores[$row['Store Key']] = $row;
+}
+$smarty->assign('stores', $stores);
 
 $object_fields = get_object_fields($employee, $db, $user, $smarty);
 
@@ -57,9 +66,12 @@ $smarty->assign(
 );
 
 
+$smarty->assign('object', $employee);
+$smarty->assign('system_user', $state['_object']->system_user);
+
 $smarty->assign('state', $state);
 $smarty->assign('object_fields', $object_fields);
 $html = $smarty->fetch('edit_object.tpl');
 
 
-?>
+

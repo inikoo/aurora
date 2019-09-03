@@ -52,6 +52,7 @@ if ($result = $db->query($sql)) {
         // }
 
         $part->update_sales_from_invoices('1 Quarter',true,false);
+        $part->update_stock();
 
         $part->update_available_forecast();
 
@@ -74,4 +75,4 @@ if ($result = $db->query($sql)) {
 }
 
 
-?>
+

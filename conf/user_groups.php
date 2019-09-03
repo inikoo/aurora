@@ -10,272 +10,169 @@
  Version 3.0
 */
 
-/*
-to delete
-	4=>
-
-7=>array(
-		'Key'=>7,
-		'Name'=>_('Product Manager'),
-		'View'=>'','Edit'=>''
-	),
-		12=>array(
-		'Key'=>12,
-		'Name'=>_('Warehouse Manager'),
-		'View'=>'','Edit'=>''
-	),
-*/
-
+// 24 aug 2019
+// 9 will be transformed to store worker
+// 11 will be divided nin pickers and packers 24, 25
 
 $user_groups = array(
 
     1 => array(
-        'Key'    => 1,
+        'Key' => 1,
 
         'Name'   => _('Administrator'),
-        'View'   => '<i title="'._('Account').'" class="fa fa-star fa-fw"> <i title="'._('System users').'" class="fa fa-male fa-fw"> <i title="'._('Settings').'" class="fa fa-cog fa-fw"></i>',
-        'Edit'   => '<i title="'._('Account').'" class="fa fa-star fa-fw"> <i title="'._('System users').'" class="fa fa-male fa-fw"> <i title="'._('Settings').'" class="fa fa-cog fa-fw"></i>',
+        'View'   => '',
+        'Edit'   => '',
         'Rights' => array(
             'AV',
             'AE',
-            'AC',
-            'AD',
             'UV',
             'UE',
-            'UC',
-            'UD',
             'EV',
-            'EC'
+            'EE',
+
         )
     ),
-    2 => array(
-        'Key'              => 2,
-        'Name'             => _('Customer Services'),
-        'View'             => '<i title="'._('Customers').'" class="fa fa-users fa-fw"> <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i title="'._('Websites').'" class="far fa-globe fa-fw"></i> <i  title="'._('Products')
-            .'" class="fa fa-square fa-fw"></i>',
-        'Edit'             => '<i title="'._('Customers').'" class="fa fa-users fa-fw"> <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw">',
-        'Rights'           => array(
-            'CV',
-            'CE',
-            'CC',
-            'CD',
-            'SV',
-            'WV',
-            'PV',
-            'OV',
-            'OE',
-            'OC',
-            'OD'
 
-        ),
-        'Stores_Scope'     => true,
-        'Websites_Scope'   => true,
-        'Warehouses_Scope' => true
-
-
-    ),
-    3 => array(
-        'Key'              => 3,
-        'Name'             => _('Goods in (Stock control)'),
-        'View'             => '<i  title="'._('Products').'" class="fa fa-square fa-fw"></i> <i  title="'._('Inventory').'" class="fa fa-square fa-fw"></i> <i  title="'._(
-                'Warehouse (Locations)'
-            ).'" class="fa fa-th-large fa-fw"></i>',
-        'Edit'             => '<i  title="'._('Inventory').'" class="fa fa-square fa-fw"></i> <i  title="'._(
-                'Warehouse (Locations)'
-            ).'" class="fa fa-th-large fa-fw"></i>',
-        'Rights'           => array(
-            'SV',
-            'LV',
-            'LC',
-            'LD',
-            'LE',
-            'PV',
-            'PC',
-            'PD',
-            'PE'
-        ),
-        'Warehouses_Scope' => true
-
-    ),
-    4 => array(
-        'Key'               => 4,
-        'Name'              => _('Production operative'),
-        'View'              => '<i  title="'._('Production').'" class="fa fa-square fa-fw"></i>',
-        'Edit'              => '',
-        'Rights'            => array('FV'),
-        'Productions_Scope' => true,
-        'Warehouses_Scope'  => true
-
-    ),
-    5 => array(
-        'Key'    => 5,
-        'Name'   => _('Sales Intelligence'),
-        'View'   => '<i title="'._('Customers').'" class="fa fa-users fa-fw"> <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i title="'._('Websites').'" class="far fa-globe fa-fw"></i> <i title="'._('Marketing')
-            .'" class="fa fa-bullhorn fa-fw"></i> <i  title="'._('Products').'" class="fa fa-square fa-fw"></i>',
-        'Edit'   => '',
-        'Rights' => array()
-
-    ),
-    6 => array(
+    6  => array(
         'Key'    => 6,
         'Name'   => _('Human Resources'),
-        'View'   => '<i title="'._('Manpower').'" class="fa fa-hand-rock fa-fw"></i> ',
-        'Edit'   => '<i title="'._('Manpower').'"class="fa fa-hand-rock fa-fw"></i> ',
+        'View'   => '',
+        'Edit'   => '',
         'Rights' => array(
             'EV',
             'EE',
-            'ED',
-            'EC'
+
         )
 
     ),
+    20 => array(
+        'Key'    => 20,
+        'Name'   => _('Human Resources (Supervisor workers view)'),
+        'View'   => '',
+        'Edit'   => '',
+        'Rights' => array(
+            'EVW',
+
+        )
+
+    ),
+
+    8  => array(
+        'Key'    => 8,
+        'Name'   => _('Buyer'),
+        'View'   => '',
+        'Edit'   => '',
+        'Rights' => array(
+            'BV',
+            'BE',
+
+
+        )
+
+    ),
+    21 => array(
+        'Key'    => 21,
+        'Name'   => _('Buyer supervisor'),
+        'View'   => '',
+        'Edit'   => '',
+        'Rights' => array(
+            'BV',
+            'BE',
+            'BS'
+        )
+
+    ),
+
+
     7 => array(
         'Key'               => 7,
         'Name'              => _('Production manager'),
-        'View'              => '<i  title="'._('Inventory').'" class="fa fa-square fa-fw"></i> <i  title="'._(
-                'Warehouse (Locations)'
-            ).'" class="fa fa-th-large fa-fw"></i>',
+        'View'              => '',
         'Edit'              => '',
         'Rights'            => array(
             'LV',
             'PV',
             'FV',
             'FE',
-            'FC'
         ),
         'Productions_Scope' => true,
         'Warehouses_Scope'  => true
 
 
     ),
-    8 => array(
-        'Key'    => 8,
-        'Name'   => _('Buyer'),
-        'View'   => ' <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i title="'._('Websites').'" class="far fa-globe fa-fw"></i> <i  title="'._('Inventory').'" class="fa fa-square fa-fw"></i> <i title="'._('Suppliers')
-            .'" class="fa fa-industry fa-fw"></i>',
-        'Edit'   => '<i  title="'._('Inventory').'" class="fa fa-square fa-fw"></i> <i title="'._('Suppliers').'" class="fa fa-industry fa-fw"></i>',
-        'Rights' => array(
-            'BV',
-            'BE',
-            'BD',
-            'BC'
-        )
+
+    4 => array(
+        'Key'               => 4,
+        'Name'              => _('Production operative'),
+        'View'              => '',
+        'Edit'              => '',
+        'Rights'            => array('FV'),
+        'Productions_Scope' => true,
+        'Warehouses_Scope'  => true
 
     ),
-    9 => array(
-        'Key'          => 9,
-        'Name'         => _('Marketing'),
-        'View'         => '<i title="'._('Customers').'" class="fa fa-users fa-fw"> <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i title="'._('Websites').'" class="far fa-globe fa-fw"></i> <i title="'._('Marketing')
-            .'" class="fa fa-bullhorn fa-fw"></i> <i  title="'._('Products').'" class="fa fa-square fa-fw"></i> <i  title="'._(
-                'Inventory'
-            ).'" class="fa fa-square fa-fw"></i> <i title="'._('Suppliers').'" class="fa fa-industry fa-fw"></i>',
-        'Edit'         => '<i title="'._('Websites').'" class="far fa-globe fa-fw"></i> <i title="'._('Marketing').'" class="fa fa-bullhorn fa-fw"></i> <i  title="'._('Products').'" class="fa fa-square fa-fw"></i>',
-        'Rights'       => array(
-            'CV',
-            'SV',
-            'MV',
-            'ME',
-            'MC',
-            'MD'
-        ),
-        'Stores_Scope' => true
-    ),
 
-
-    10 => array(
-        'Key'            => 10,
-        'Name'           => _('Sales'),
-        'View'           => '<i title="'._('Websites').'" class="far fa-globe fa-fw"></i>',
-        'Edit'           => '<i title="'._('Websites').'" class="far fa-globe fa-fw"></i>',
-        'Rights'         => array(
-            'WV',
-            'WE',
-            'WD',
-            'WC',
-            'SV',
-            'SE',
-            'SD',
-            'SC'
-        ),
-        'Websites_Scope' => true,
-        'Stores_Scope'   => true
-
-    ),
-    11 => array(
-        'Key'              => 11,
-        'Name'             => _('Goods out'),
-        'View'             => ' <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i  title="'._('Inventory').'" class="fa fa-square fa-fw"></i> <i  title="'._(
-                'Warehouse (Locations)'
-            ).'" class="fa fa-th-large fa-fw"></i>',
+    3 => array(
+        'Key'              => 3,
+        'Name'             => _('Warehouse worker'),
+        'View'             => '',
         'Edit'             => '',
         'Rights'           => array(
-            'OV',
+            'SV',
+            'LV',
             'PV',
-            'LV'
+            'PLV',
+            'PLE',
+
         ),
         'Warehouses_Scope' => true
 
     ),
-    14 => array(
-        'Key'    => 14,
-        'Name'   => _('Financial Intelligence'),
-        'View'   => '<i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i title="'._('Marketing').'" class="fa fa-bullhorn fa-fw"></i> <i  title="'._('Products').'" class="fa fa-square fa-fw"></i> <i  title="'._('Inventory')
-            .'" class="fa fa-square fa-fw"></i> <i  title="'._(
-                'Warehouse (Locations)'
-            ).'" class="fa fa-th-large fa-fw"></i> <i title="'._('Suppliers').'" class="fa fa-industry fa-fw"></i> <i title="'._('Manpower').'" class="fa fa-hand-rock fa-fw"></i>',
-        'Edit'   => '',
-        'Rights' => array(
-            'RV',
-            'CV',
-            'OV',
-            'SV',
-            'MV'
-        )
-    ),
-    15 => array(
-        'Key'    => 15,
-        'Name'   => _('Supply Intelligence'),
-        'View'   => ' <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i  title="'._('Products').'" class="fa fa-square fa-fw"></i> <i  title="'._('Inventory').'" class="fa fa-square fa-fw"></i> <i  title="'._(
-                'Warehouse (Locations)'
-            ).'" class="fa fa-th-large fa-fw"></i> <i title="'._('Suppliers').'" class="fa fa-industry fa-fw"></i>',
-        'Edit'   => '',
-        'Rights' => array(
-            'RV',
-            'OV',
-            'BV',
-            'PV'
-        )
 
-    ),
-    16 => array(
-        'Key'              => 16,
-        'Name'             => _('Customer Services Manager'),
-        'View'             => '<i title="'._('Customers').'" class="fa fa-users fa-fw"> <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i title="'._('Websites').'" class="far fa-globe fa-fw"></i> <i  title="'._('Products')
-            .'" class="fa fa-square fa-fw"></i>',
-        'Edit'             => '<i title="'._('Customers').'" class="fa fa-users fa-fw"> <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw">',
+    22 => array(
+        'Key'              => 22,
+        'Name'             => _('Warehouse supervisor'),
+        'View'             => '',
+        'Edit'             => '',
         'Rights'           => array(
-            'CM',
-            'CV',
-            'CE',
-            'CC',
-            'CD',
             'SV',
-            'WV',
-            'PV'
+            'LV',
+            'LE',
+            'PV',
+            'PE',
+            'LS',
+            'PS',
+            'PLV',
+            'PLE',
+            'PLS',
 
         ),
-        'Stores_Scope'     => true,
-        'Websites_Scope'   => true,
         'Warehouses_Scope' => true
+
+    ),
+
+
+    23 => array(
+        'Key'          => 23,
+        'Name'         => _('Accounting'),
+        'View'         => '',
+        'Edit'         => '',
+        'Rights'       => array(
+            'SV',
+            'OV',
+            'CV',
+            'IS'
+        ),
+        'Stores_Scope' => true,
 
 
     ),
+
+
     17 => array(
         'Key'              => 17,
         'Name'             => _('Goods out manager'),
-        'View'             => ' <i title="'._('Orders').'" class="fa fa-shopping-cart fa-fw"> <i  title="'._('Inventory').'" class="fa fa-square fa-fw"></i> <i  title="'._(
-                'Warehouse (Locations)'
-            ).'" class="fa fa-th-large fa-fw"></i>',
+        'View'             => '',
         'Edit'             => '',
         'Rights'           => array(
             'OV',
@@ -289,7 +186,199 @@ $user_groups = array(
 
     ),
 
+    24 => array(
+        'Key'              => 24,
+        'Name'             => _('Picker'),
+        'View'             => '',
+        'Edit'             => '',
+        'Rights'           => array(
+            'OV',
+            'PV',
+            'LV'
+        ),
+        'Warehouses_Scope' => true
+
+    ),
+    25 => array(
+        'Key'              => 25,
+        'Name'             => _('Packer'),
+        'View'             => '',
+        'Edit'             => '',
+        'Rights'           => array(
+            'OV',
+            'PV',
+            'LV'
+        ),
+        'Warehouses_Scope' => true
+
+    ),
+
+
+    16 => array(
+        'Key'              => 16,
+        'Name'             => _('Customer services supervisor'),
+        'View'             => '',
+        'Edit'             => '',
+        'Rights'           => array(
+            'CS',
+            'CV',
+            'CE',
+            'SV',
+
+            'PV'
+
+        ),
+        'Stores_Scope'     => true,
+        'Websites_Scope'   => true,
+        'Warehouses_Scope' => true
+
+
+    ),
+
+    2 => array(
+        'Key'              => 2,
+        'Name'             => _('Customer Services'),
+        'View'             => '',
+        'Edit'             => '',
+        'Rights'           => array(
+            'CV',
+            'CE',
+
+            'SV',
+
+            'PV',
+            'OV',
+            'OE',
+
+
+        ),
+        'Stores_Scope'     => true,
+        'Websites_Scope'   => true,
+        'Warehouses_Scope' => true
+
+
+    ),
+
+
+    18 => array(
+        'Key'              => 16,
+        'Name'             => _('Store supervisor'),
+        'View'             => '',
+        'Edit'             => '',
+        'Rights'           => array(
+            'CV',
+            'SV',
+            'MV',
+            'ME',
+            'WE',
+            'WV',
+            'SS',
+            'MS',
+            'WS'
+
+        ),
+        'Stores_Scope'     => true,
+        'Websites_Scope'   => true,
+        'Warehouses_Scope' => true
+
+
+    ),
+
+    9 => array(
+        'Key'          => 9,
+        'Name'         => _('Store Worker'),
+        'View'         => '',
+        'Edit'         => '',
+        'Rights'       => array(
+            'CV',
+            'SV',
+            'MV',
+            'ME',
+            'WE',
+            'WV'
+
+        ),
+        'Stores_Scope' => true
+    ),
+
+
+    5  => array(
+        'Key'    => 5,
+        'Name'   => _('Sales'),
+        'View'   => '',
+        'Edit'   => '',
+        'Rights' => array(
+            'SV',
+            'PV',
+            'SRV'
+
+        )
+
+    ),
+    26 => array(
+        'Key'    => 26,
+        'Name'   => _('Customers and Orders'),
+        'View'   => '',
+        'Edit'   => '',
+        'Rights' => array(
+            'CV',
+            'OV',
+            'IV',
+            'DNV',
+            'CRV'
+
+        )
+
+    ),
+    28 => array(
+        'Key'    => 27,
+        'Name'   => _('Suppliers'),
+        'View'   => '',
+        'Edit'   => '',
+        'Rights' => array(
+            'BV',
+            'BRV',
+
+        )
+
+    ),
+    27 => array(
+        'Key'    => 27,
+        'Name'   => _('Inventory'),
+        'View'   => '',
+        'Edit'   => '',
+        'Rights' => array(
+            'LV',
+            'PV',
+            'IRV',
+
+        )
+
+    ),
+
+
+    14 => array(
+        'Key'    => 14,
+        'Name'   => _('KPIs'),
+        'View'   => '',
+        'Edit'   => '',
+        'Rights' => array(
+
+            'KRV'
+        )
+    ),
+    15 => array(
+        'Key'    => 15,
+        'Name'   => _('Users'),
+        'View'   => '',
+        'Edit'   => '',
+        'Rights' => array(
+            'URV',
+            'UV',
+            'UA'
+        )
+
+    ),
+
 
 );
-
-?>

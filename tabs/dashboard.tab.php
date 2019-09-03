@@ -90,6 +90,9 @@ foreach ($user->get_dashboard_items() as $item) {
       include_once 'widgets/parts_stock_status.wget.php';
         include_once 'widgets/inventory.wget.php';
 
+        $currency = 'account';
+
+
         if (isset($_SESSION['dashboard_state']['parts_stock_status']['parent'])) {
             $parent = $_SESSION['dashboard_state']['parts_stock_status']['parent'];
         } else {

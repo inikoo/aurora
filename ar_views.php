@@ -882,6 +882,7 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
 
     if ($state['object'] != '' and ($modules[$state['module']]['sections'][$state['section']]['type'] == 'object' or isset($modules[$state['module']]['sections'][$state['section']]['showcase']))) {
 
+
         if (isset($data['metadata']['reload_showcase']) or !($data['old_state']['module'] == $state['module'] and $data['old_state']['section'] == $state['section'] and $data['old_state']['object'] == $state['object'] and $data['old_state']['key'] == $state['key'])) {
 
 
@@ -900,6 +901,7 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
                 // $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $state['module'].' * '.$state['section']);
             }
 
+
         }
 
 
@@ -909,7 +911,7 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
         $response['object_showcase'] = '_';
 
 
-        // print_r($state);
+        //print_r($state);
 
         switch ($state['module']) {
 
@@ -1193,7 +1195,6 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
 
     $state['metadata'] = (isset($data['metadata']) ? $data['metadata'] : array());
 
-
     $response['tab'] = get_tab($db, $smarty, $user, $account, $state['tab'], $state['subtab'], $state, $data['metadata']);
 
 
@@ -1242,14 +1243,12 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
 
 
     if (file_exists('tabs/'.$actual_tab.'.tab.php')) {
-        //print 'tabs/'.$actual_tab.'.tab.php';
 
         include_once 'tabs/'.$actual_tab.'.tab.php';
     } else {
         $html = 'Tab Not found: >'.$actual_tab.'.tab.php<';
 
     }
-
 
     if (is_array($state) and !(preg_match('/\_edit$/', $tab) or preg_match('/\.wget$/', $_tab))) {
 
@@ -10266,7 +10265,14 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
             } elseif ($state['section'] == 'intrastat') {
                 $branch[] = array(
-                    'label'     => _('Intrastat'),
+                    'label'     => _('Intrastat exports'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            } elseif ($state['section'] == 'intrastat_imports') {
+                $branch[] = array(
+                    'label'     => _('Intrastat imports'),
                     'icon'      => '',
                     'reference' => ''
                 );

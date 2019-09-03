@@ -10,16 +10,22 @@
 */
 
 
-//print_r($parameters);
 
 $group_by = '';
 
 
 $table = '`User Dimension` U ';
 
-$where = sprintf(
-    " where  `User Type`!='Customer' "
-);
+switch ($parameters['parent']){
+    case 'agent':
+        $where = sprintf(" where  `User Type`='Agent' and `User Parent Key`=%d ",$parameters['parent_key']);
+        break;
+    default:
+        $where = sprintf(" where  `User Type`!='Customer' ");
+
+}
+
+
 
 
 $wheref = '';
@@ -34,31 +40,33 @@ if ($parameters['f_field'] == 'name' and $f_value != '') {
 }
 
 
-switch ($parameters['elements_type']) {
+if(isset($parameters['elements_type'])) {
 
-    case 'active':
-        $_elements      = '';
-        $count_elements = 0;
-        foreach (
-            $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-        ) {
-            if ($_value['selected']) {
-                $count_elements++;
-                $_elements .= ','.prepare_mysql($_key);
+    switch ($parameters['elements_type']) {
 
+        case 'active':
+            $_elements      = '';
+            $count_elements = 0;
+            foreach (
+                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
+            ) {
+                if ($_value['selected']) {
+                    $count_elements++;
+                    $_elements .= ','.prepare_mysql($_key);
+
+                }
             }
-        }
-        $_elements = preg_replace('/^\,/', '', $_elements);
-        if ($_elements == '') {
-            $where .= ' and false';
-        } elseif ($count_elements < 2) {
-            $where .= ' and `User Active` in ('.$_elements.')';
-        }
-        break;
+            $_elements = preg_replace('/^\,/', '', $_elements);
+            if ($_elements == '') {
+                $where .= ' and false';
+            } elseif ($count_elements < 2) {
+                $where .= ' and `User Active` in ('.$_elements.')';
+            }
+            break;
 
 
+    }
 }
-
 
 $_order = $order;
 $_dir   = $order_direction;

@@ -2,12 +2,21 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 24 June 2016 at 09:13:01 BST, Plane (London-Jakarta) , Indian Ocean
+ Created: 16 April 2016 at 20:20:53 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2016, Inikoo
 
  Version 3
 
 */
+
+include 'conf/user_groups.php';
+
+
+if ($user->can_edit('users')) {
+    $edit_users = true;
+} else {
+    $edit_users = false;
+}
 
 
 if (isset($options['new']) and $options['new']) {
@@ -16,7 +25,11 @@ if (isset($options['new']) and $options['new']) {
     $new = false;
 }
 
+
+$contractor = true;
+
 $employee = $object;
+$employee->get_user();
 $account  = new Account();
 
 $employee->get_user();
@@ -55,11 +68,10 @@ foreach ($roles as $_key => $_data) {
     }
 }
 
-foreach (
-    preg_split('/,/', $employee->get('Staff Position')) as $current_position_key
-) {
-    if (array_key_exists($current_position_key, $options_Staff_Position)) {
 
+
+foreach (preg_split('/,/', $employee->get('Staff Position')) as $current_position_key) {
+    if (array_key_exists($current_position_key, $options_Staff_Position)) {
         $options_Staff_Position[$current_position_key]['selected'] = true;
     }
 }
@@ -76,15 +88,7 @@ foreach ($db->query($sql) as $row) {
         'selected' => false
     );
 }
-asort($options_Staff_Position);
-asort($options_Staff_Supervisor);
-asort($options_Staff_Type);
-asort($options_Staff_Payment_Terms);
 
-asort($options_yn);
-
-
-include 'conf/user_groups.php';
 
 
 $_options_User_Groups=array();
@@ -112,6 +116,7 @@ foreach ($db->query($sql) as $row) {
         'selected' => false
     );
 }
+
 
 
 $options_Websites = array();
@@ -151,45 +156,13 @@ foreach ($db->query($sql) as $row) {
 }
 
 
-if(is_object($employee->system_user)) {
 
+asort($options_Staff_Position);
+asort($options_Staff_Supervisor);
+asort($options_Staff_Type);
+asort($options_Staff_Payment_Terms);
 
-
-
-    foreach (preg_split('/,/', $employee->system_user->get('User Groups')) as $current_user_group_key) {
-        if (array_key_exists($current_user_group_key, $options_User_Groups)) {
-            $options_User_Groups[$current_user_group_key]['selected'] = true;
-        }
-    }
-
-    foreach (preg_split('/,/', $employee->system_user->get('User Stores')) as $key) {
-        if (array_key_exists($key, $options_Stores)) {
-            $options_Stores[$key]['selected'] = true;
-        }
-    }
-
-    foreach (preg_split('/,/', $employee->system_user->get('User Websites')) as $key) {
-        if (array_key_exists($key, $options_Websites)) {
-            $options_Websites[$key]['selected'] = true;
-        }
-    }
-
-    foreach (preg_split('/,/', $employee->system_user->get('User Warehouses')) as $key) {
-        if (array_key_exists($key, $options_Warehouses)) {
-            $options_Warehouses[$key]['selected'] = true;
-        }
-    }
-
-    foreach (preg_split('/,/', $employee->system_user->get('User Productions')) as $key) {
-        if (array_key_exists($key, $options_Productions)) {
-            $options_Productions[$key]['selected'] = true;
-        }
-    }
-
-}
-
-
-
+asort($options_yn);
 
 $object_fields = array(
     array(
@@ -255,7 +228,37 @@ $object_fields = array(
                 'type'        => 'value'
 
             ),
+            array(
 
+                'id'   => 'Staff_Birthday',
+                'edit' => ($edit ? 'date' : ''),
+                'time'            => '00:00:00',
+                'value'           => $employee->get('Staff Birthday'),
+                'formatted_value' => $employee->get('Birthday'),
+                'label'           => ucfirst($employee->get_field_label('Staff Birthday')),
+                'invalid_msg'     => get_invalid_message('date'),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+            array(
+
+                'id'   => 'Staff_Official_ID',
+                'edit' => ($edit ? 'string' : ''),
+
+                'value'             => $employee->get('Staff Official ID'),
+                'label'             => ucfirst(
+                    $employee->get_field_label('Staff Official ID')
+                ),
+                'invalid_msg'       => get_invalid_message('string'),
+                'server_validation' => json_encode(
+                    array(
+                        'tipo'   => 'check_for_duplicates',
+                        'object' => ($employee->get('Staff Currently Working') == 'Yes' ? 'Staff' : 'ExStaff')
+                    )
+                ),
+                'required'          => false,
+                'type'              => 'value'
+            ),
             array(
 
                 'id'   => 'Staff_Email',
@@ -301,30 +304,35 @@ $object_fields = array(
                 'required'        => false,
                 'type'            => 'value'
             ),
+            array(
 
+                'id'   => 'Staff_Next_of_Kind',
+                'edit' => ($edit ? 'string' : ''),
+
+                'value'       => $employee->get('Staff Next of Kind'),
+                'label'       => ucfirst(
+                    $employee->get_field_label('Staff Next of Kind')
+                ),
+                'invalid_msg' => get_invalid_message('string'),
+                'required'    => false,
+                'type'        => 'value'
+
+            ),
 
         )
     ),
     array(
-        'label'      => _('Contract'),
+        'label'      => ($contractor?_('Contractual service agreement'):_('Employment')),
         'show_title' => true,
         'class'      => 'edit_fields',
         'fields'     => array(
             array(
 
                 'id'   => 'Staff_Type',
-                'edit' => ($new ? 'hidden' : ($edit ? 'option' : '')),
-
-                'value'           => ($new
-                    ? 'Contractor'
-                    : $employee->get(
-                        'Staff Type'
-                    )),
-                'formatted_value' => ($new
-                    ? _('Contractor')
-                    : $employee->get(
-                        'Type'
-                    )),
+                'edit' => ($edit ? 'option' : ''),
+                'render'=>($new and $contractor?false:true),
+                'value'           => ($new ?  ($contractor? 'Contractor' : 'Employee') : $employee->get('Staff Type')),
+                'formatted_value' => ($new ? ($contractor? _('Contractor') : _('Employee'))  : $employee->get('Type')),
                 'options'         => $options_Staff_Type,
                 'label'           => ucfirst(
                     $employee->get_field_label('Staff Type')
@@ -334,8 +342,8 @@ $object_fields = array(
             ),
 
             array(
-                'render' => false,
-                'edit'   => ($edit ? 'option' : ''),
+                'edit' => ($edit ? 'option' : ''),
+                'render'=>($new and $contractor?false:true),
 
                 'id'              => 'Staff_Currently_Working',
                 'value'           => ($new
@@ -346,13 +354,13 @@ $object_fields = array(
                 'formatted_value' => ($new
                     ? _('Yes')
                     : $employee->get(
-                        'Staff Currently Working'
+                        'Currently Working'
                     )),
                 'options'         => $options_yn,
                 'label'           => ucfirst(
                     $employee->get_field_label('Staff Currently Working')
                 ),
-                'type'            => 'value',
+                'type'            => '',
                 'required'        => false,
             ),
             array(
@@ -370,16 +378,17 @@ $object_fields = array(
                 'type'            => 'value',
                 'required'        => false,
             ),
+
             array(
                 'render' => ($new
                     ? false
                     : ($employee->get(
                         'Staff Currently Working'
                     ) == 'Yes' ? false : true)),
-                'edit'   => 'hidden',
+                'edit'   => ($edit ? 'date' : ''),
                 'id'     => 'Staff_Valid_To',
 
-                'time'            => '09:00:00',
+                'time'            => '18:00:00',
                 'value'           => $employee->get('Staff Valid To'),
                 'formatted_value' => $employee->get('Valid To'),
                 'label'           => ucfirst(
@@ -401,6 +410,19 @@ $object_fields = array(
                 ),
                 'required' => false,
                 'type'     => 'value'
+            ),
+
+
+
+            array(
+                'id'              => 'Staff_Position',
+                'edit'            => 'option_multiple_choices',
+                'value'           => $employee->get('Staff Position'),
+                'formatted_value' => $employee->get('Position'),
+                'options'         => $options_Staff_Position,
+                'label'           => ucfirst(
+                    $employee->get_field_label('Staff Position')
+                ),
             ),
             array(
                 //   'render'=>($employee->get('Staff Currently Working')=='Yes'?true:false),
@@ -424,9 +446,11 @@ $object_fields = array(
 
 );
 
+
+
 if (!$new) {
     $object_fields[] = array(
-        'label'      => _('Working hours & cost'),
+        'label'      => _('Working hours & salary'),
         'show_title' => true,
         'class'      => 'edit_fields',
         'fields'     => array(
@@ -459,9 +483,8 @@ if (!$new) {
         )
     );
 
-    if ($employee->get('Staff User Key')) {
 
-
+    if ( isset($employee->system_user) and is_object($employee->system_user) and $employee->system_user->id) {
 
 
         $object_fields[] = array(
@@ -475,30 +498,17 @@ if (!$new) {
                 array(
 
                     'id'              => 'Staff_User_Active',
-                    'edit'            => 'option',
+                    'edit'            => ($edit_users ? 'option' : ''),
                     'value'           => $employee->get('Staff User Active'),
                     'formatted_value' => $employee->get('User Active'),
                     'options'         => $options_yn,
-                    'label'           => ucfirst(
-                        $employee->get_field_label('Staff Active')
-                    ),
+                    'label'           => ucfirst($employee->get_field_label('Staff User Active')),
                 ),
-                /*
-                array(
-                    'id'              => 'Staff_Position',
-                    'edit'            => 'option_multiple_choices',
-                    'value'           => $employee->get('Staff Position'),
-                    'formatted_value' => $employee->get('Position'),
-                    'options'         => $options_Staff_Position,
-                    'label'           => ucfirst(
-                        $employee->get_field_label('Staff Position')
-                    ),
-                ),
-                */
+
                 array(
 
                     'id'                => 'Staff_User_Handle',
-                    'edit'              => 'handle',
+                    'edit'              => ($edit_users ? 'handle' : ''),
                     'value'             => $employee->get('Staff User Handle'),
                     'formatted_value'   => $employee->get('User Handle'),
                     'label'             => ucfirst(
@@ -514,7 +524,7 @@ if (!$new) {
                     'render' => ($employee->get('Staff User Active') == 'Yes' ? true : false),
 
                     'id'              => 'Staff_User_Password',
-                    'edit'            => 'password',
+                    'edit'              => ($edit_users ? 'password' : ''),
                     'value'           => '',
                     'formatted_value' => '******',
                     'label'           => ucfirst(
@@ -526,7 +536,7 @@ if (!$new) {
                     'render' => ($employee->get('Staff User Active') == 'Yes' ? true : false),
 
                     'id'              => 'Staff_User_PIN',
-                    'edit'            => 'pin',
+                    'edit'              => ($edit_users ? 'pin' : ''),
                     'value'           => '',
                     'formatted_value' => '****',
                     'label'           => ucfirst(
@@ -537,90 +547,50 @@ if (!$new) {
 
 
                 array(
-                    'render' => ($employee->get('Staff User Active') == 'Yes' ? true : false),
-                    'id'              => 'Staff_User_Groups',
-                    'edit'            => 'option_multiple_choices',
-                    'value'           => $employee->system_user->get('User Groups'),
-                    'formatted_value' => $employee->system_user->get('Groups'),
-                    'options'         => $options_User_Groups,
-                    'label'           => ucfirst($object->get_field_label('User Groups')),
+                    'render'              => ($edit_users ? true : false),
+                    'id'              => 'Staff_User_Permissions',
+                    'edit'            => 'user_permissions',
+                    'stores'          => $stores,
+                    'value'           => '',
+                    'formatted_value' => '',
+                    'label'           => _('Permissions'),
+                    'required'        => false,
+                    'type'            => 'value'
                 ),
-                array(
-                    'render'=>$employee->system_user->has_scope('Stores'),
-                    'id'              => 'Staff_User_Stores',
-                    'edit'            => 'option_multiple_choices',
-                    'value'           => $employee->system_user->get('User Stores'),
-                    'formatted_value' => $employee->system_user->get('Stores'),
-                    'label'           => ucfirst($object->get_field_label('User Stores')),
-                    'options'         => $options_Stores,
-                    'required'        => false
 
-                ),
-                array(
-                    'render'=>$employee->system_user->has_scope('Websites'),
-                    'id'              => 'Staff_User_Websites',
-                    'edit'            => 'option_multiple_choices',
-                    'value'           => $employee->system_user->get('User Websites'),
-                    'formatted_value' => $employee->system_user->get('Websites'),
-                    'label'           => ucfirst($employee->get_field_label('User Websites')
-                    ),
-                    'options'         => $options_Websites,
-                    'required'        => false
-
-                ),
-                array(
-                    'render'=>$employee->system_user->has_scope('Warehouses'),
-                    'id'              => 'Staff_User_Warehouses',
-                    'edit'            => 'option_multiple_choices',
-                    'value'           => $employee->system_user->get('User Warehouses'),
-                    'formatted_value' => $employee->system_user->get('Warehouses'),
-                    'label'           => ucfirst($employee->get_field_label('User Warehouses')
-                    ),
-                    'options'         => $options_Warehouses,
-                    'required'        => false
-
-
-                ),
-                array(
-                    'render'=>$employee->system_user->has_scope('Productions'),
-                    'id'              => 'Staff_User_Productions',
-                    'edit'            => 'option_multiple_choices',
-                    'value'           => $employee->system_user->get('User Productions'),
-                    'formatted_value' => $employee->system_user->get('Productions'),
-                    'label'           => ucfirst($employee->get_field_label('User Productions')
-                    ),
-                    'options'         => $options_Productions,
-                    'required'        => false
-
-
-                )
-
-
-
+                
 
             )
         );
 
     } else {
-        $object_fields[] = array(
-            'label'      => _('System user'),
-            'show_title' => true,
-            'class'      => 'edit_fields',
-            'fields'     => array(
-                array(
 
-                    'id'        => 'new_user',
-                    'class'     => 'new',
-                    'value'     => '',
-                    'label'     => _('Set up system user').' <i class="fa fa-plus new_button link"></i>',
-                    'reference' => 'contractor/'.$employee->id.'/user/new'
-                ),
+        if($edit_users) {
 
-            )
-        );
+            $object_fields[] = array(
+                'label'      => _('System user'),
+                'show_title' => true,
+                'class'      => 'edit_fields',
+                'fields'     => array(
+                    array(
 
+                        'id'        => 'new_user',
+                        'class'     => 'new',
+                        'value'     => '',
+                        'label'     => _('Set up system user').' <i class="fa fa-plus new_button link"></i>',
+                        'reference' => 'employee/'.$employee->id.'/user/new'
+                    ),
+
+                )
+            );
+        }
     }
 
+    $from=date('y-m-d');
+    $from_locale=date('d/m/y');
+    $from_mmddyy=date('m/d/Y');
+    $to_locale='';
+    $to_mmddyy='';
 
     $operations = array(
         'label'      => _('Operations'),
@@ -629,7 +599,35 @@ if (!$new) {
         'fields'     => array(
 
             array(
-                'id'        => 'delete_contractor',
+                'id'        => 'recalculate_timesheets',
+                'class'     => 'operation_date_interval',
+                'value'     => '',
+                'label'     => '<span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="show_choose_interval(this)" class="delete_object button">'._("Recalculate time sheets").' <i class="fa fa-sync new_button "></i></span>',
+                'reference' => '',
+                'type'      => 'date_interval',
+                'from'=>$from,
+                'from_locale'=>$from_locale,
+                'to_locale'=>$to_locale,
+                'from_mmddyy'=>$from_mmddyy,
+                'to_mmddyy'=>$to_mmddyy
+            ),
+
+
+
+            array(
+                'id'        => 'terminate_employment',
+                'class'     => 'operation',
+                'render'=>($object->get('Staff Currently Working')=='Yes'?true:false),
+                'value'     => '',
+                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
+                    ).'", "key":"'.$object->id.'"}\' onClick="terminate_employment(this)" class="delete_object disabled">'._("Terminate contract").' <i class="fa fa-hand-scissors-o  fa-flip-horizontal new_button "></i></span>',
+                'reference' => '',
+                'type'      => 'operation'
+            ),
+
+
+            array(
+                'id'        => 'delete_employee',
                 'class'     => 'operation',
                 'value'     => '',
                 'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name(
@@ -639,11 +637,13 @@ if (!$new) {
             ),
 
 
+
         )
 
     );
 
     $object_fields[] = $operations;
+
 
 } else {
 
@@ -707,21 +707,18 @@ if (!$new) {
                 'required'          => false,
 
             ),
+
             array(
                 'render' => false,
-                'id'     => 'Staff_Position',
-                'edit'   => ($edit ? 'option_multiple_choices' : ''),
+                'id'     => 'Staff_User_Permissions',
+                'edit'   => 'user_permissions',
 
                 'value'           => '',
                 'formatted_value' => '',
-                'options'         => $options_Staff_Position,
-                'label'           => ucfirst(
-                    $employee->get_field_label('Staff Position')
-                ),
+                'label'           => _('Permissions'),
                 'required'        => false,
                 'type'            => 'user_value'
             ),
-
 
             array(
                 'render' => false,
@@ -755,9 +752,12 @@ if (!$new) {
             ),
 
 
+
+
+
         )
     );
 
 }
 
-?>
+

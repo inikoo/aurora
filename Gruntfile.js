@@ -235,12 +235,7 @@ module.exports = function (grunt) {
                     //'js/libs/jquery.formatCurrency-1.4.0.min.js',
                     'js/libs/jquery.formatCurrency.js',
                     'js/libs/autobahn.v1.js',
-
-
-
-
-
-], dest: 'assets/aurora_libs.min.js',
+                ], dest: 'assets/aurora_libs.min.js',
 
             }, aurora: {
                 options: {
@@ -260,7 +255,7 @@ module.exports = function (grunt) {
                     'js/validation.js',
                     'js/pdf.js',
                     'js/edit_webpage_edit.js',
-                    'js/new.js',
+                     'js/new.js',
                     'js/order.common.js',
                     'js/email_campaign.common.js',
                     'js/supplier.order.js',
@@ -278,6 +273,27 @@ module.exports = function (grunt) {
 
 
                 ], dest: 'assets/aurora.min.js',
+
+            }, setup: {
+                options: {
+
+                    sourceMap: true,
+                },
+                src: [
+                    'js/common.js',
+                    'js/help.js',
+                    'js/keyboard_shortcuts.js',
+                    'js/edit.js',
+                    'js/search.js',
+                    'js/table.js',
+                    'js/validation.js',
+
+                    'js/setup/setup.js'
+
+
+
+
+                ], dest: 'assets/aurora_setup.min.js',
 
             }
 
@@ -409,6 +425,7 @@ module.exports = function (grunt) {
 
                 }
             },
+
             au_login: {
                 files: {
                     'css/login.min.css': [

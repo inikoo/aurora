@@ -189,6 +189,9 @@
                     {elseif $edit=='no_icon'  }
                      {$field.formatted_value}
                     {elseif $edit=='parts_list'  } {include file="parts_list.edit.tpl" field=$field parts_list=$object->get_parts_data(true) mode='new'}
+                    {elseif $edit=='user_permissions'  }
+                        {include file="user_permissions.edit.tpl" field=$field  user_key=0  user_groups=array() user_stores=array() mode='new'}
+
                     {elseif $edit=='customer'  } {include file="select_customer.edit.tpl" field=$field  mode='new'}
                     {elseif $edit=='customer_list'  } {include file="select_customer_list.edit.tpl" field=$field  mode='new'}
                     {elseif $edit=='asset'  } {include file="select_asset.edit.tpl" field=$field  mode='new'}

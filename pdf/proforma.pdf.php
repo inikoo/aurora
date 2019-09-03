@@ -437,13 +437,9 @@ if ($account->get('Account Country Code') == 'SVK') {
 
 $smarty->assign('extra_comments', $extra_comments);
 
-//if ($account->data['Apply Tax Method'] == 'Per Item') {
-//    $html = $smarty->fetch('order_tax_disaggregated.pdf.tpl');
 
-//} else {
 $html = $smarty->fetch('proforma.pdf.tpl');
 
-//}
 
 
 $mpdf->WriteHTML($html);

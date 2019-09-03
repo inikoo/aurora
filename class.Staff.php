@@ -78,6 +78,7 @@ class Staff extends DB_Table {
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Staff Key'];
+
         }
 
     }
@@ -293,9 +294,9 @@ class Staff extends DB_Table {
                 //print_r($this->user);
                 if ($this->create_user_error) {
                     $this->extra_msg = '<span class="warning"><i class="fa fa-exclamation-triangle"></i> '._("System user couldn't be created").' ('.$this->create_user_msg.')</span>';
+                    return;
                 }
-                $this->editor = $data['editor'];
-                $this->update_roles($data['Staff Position'], 'no_history');
+                $staff_user->editor = $data['editor'];
 
 
             }
@@ -816,6 +817,8 @@ class Staff extends DB_Table {
                 break;
             case('Position'):
                 $positions = '';
+                return $positions;
+                /*
                 include 'conf/roles.php';
 
                 $sql = sprintf(
@@ -841,6 +844,7 @@ class Staff extends DB_Table {
                 break;
             case('Supervisor'):
                 return $this->get_formatted_supervisors();
+                */
                 break;
 
             case ('Valid From'):
@@ -1005,18 +1009,17 @@ class Staff extends DB_Table {
             'SELECT `User Key` FROM `User Dimension` WHERE `User Type`=%s AND `User Parent Key`=%d ', prepare_mysql(($this->get('Staff Type') == 'Contractor' ? 'Contractor' : 'Staff')), $this->id
         );
 
+
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $this->system_user = get_object('User', $row['User Key']);
+                $this->system_user->read_stores();
+                $this->system_user->get_groups();
 
                 return $this->system_user;
             } else {
                 return false;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1126,138 +1129,8 @@ class Staff extends DB_Table {
 
     }
 
-    function update_roles($values, $options = '') {
 
 
-        $account = new Account();
-
-        $old_value = $this->get('Position');
-
-        $available_roles = array();
-
-
-        include 'conf/roles.php';
-        foreach ($roles as $_key => $_data) {
-            if (in_array(
-                $account->get('Setup Metadata')['size'], $_data['size']
-            )) {
-
-                foreach (
-                    $account->get('Setup Metadata')['instances'] as $instance
-                ) {
-                    if (in_array($instance, $_data['instances'])) {
-
-                        $available_roles[$_key] = array(
-                            'label'    => $_data['title'],
-                            'selected' => false
-                        );
-                        break;
-                    }
-                }
-            }
-        }
-
-
-        if ($values != '') {
-
-            foreach (preg_split('/,/', $values) as $selected_role) {
-
-                if (array_key_exists($selected_role, $available_roles)) {
-                    $available_roles[$selected_role]['selected'] = true;
-                }
-            }
-
-
-        }
-
-        // print_r($available_roles);
-
-
-        foreach ($available_roles as $key => $value) {
-            if ($value['selected']) {
-                $this->add_role($key);
-            } else {
-                $this->remove_role($key);
-            }
-        }
-
-
-        $this->update_user_groups();
-
-
-        $new_value = $this->get('Position');
-        $this->add_changelog_record(
-            'Staff Position', $old_value, $new_value, $options, $this->table_name, $this->id
-        );
-
-
-    }
-
-    function add_role($role_code) {
-        $updated = false;
-        $sql     = sprintf(
-            "INSERT INTO `Staff Role Bridge` (`Role Code`, `Staff Key`) VALUES (%s, %d)   ON DUPLICATE KEY UPDATE  `Role Code`= %s", prepare_mysql($role_code), $this->id, prepare_mysql($role_code)
-        );
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $this->updated = true;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql";
-            exit;
-        }
-
-
-    }
-
-    function remove_role($role_code) {
-
-        $sql = sprintf(
-            "DELETE FROM  `Staff Role Bridge` WHERE `Role Code`=%s AND `Staff Key`=%d", prepare_mysql($role_code), $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $this->updated = true;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql";
-            exit;
-        }
-    }
-
-    function update_user_groups() {
-        include 'conf/roles.php';
-
-        $groups = array();
-
-
-        foreach (preg_split('/,/', $this->get('Staff Position')) as $role_code) {
-            if (array_key_exists($role_code, $roles)) {
-
-
-                $groups = array_merge(
-                    $groups, $roles[$role_code]['user_groups']
-                );
-            }
-        }
-
-        $groups = join(',', array_unique($groups));
-
-
-        $this->get_user_data();
-
-        //print_r($this->data);
-        if (isset($this->data['Staff User Key']) and $this->data['Staff User Key']) {
-            $staff_user         = new User($this->data['Staff User Key']);
-            $staff_user->editor = $this->editor;
-            if ($staff_user->id) {
-                $staff_user->update_groups($groups);
-            }
-        }
-    }
 
     function create_timesheet_record($data) {
 
@@ -1470,9 +1343,7 @@ class Staff extends DB_Table {
             case('Staff Name'):
                 $this->update_name($value);
                 break;
-            case('Staff Position'):
-                $this->update_roles($value);
-                break;
+
             case('Staff Supervisor'):
                 $this->update_supervisors($value);
                 break;

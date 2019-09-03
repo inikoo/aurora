@@ -30,36 +30,11 @@ $editor = array(
 );
 
 
-$sql = sprintf(
-    'SELECT `Part SKU` FROM `Part Dimension`   ORDER BY `Part SKU`  DESC '
-);
-
-if ($result = $db->query($sql)) {
-    foreach ($result as $row) {
-        $part = new Part($row['Part SKU']);
-
-        if($part->get('Part Carton Barcode')!=''){
-            $supplier_parts = $part->get_supplier_parts('objects');
-            foreach($supplier_parts as $supplier_part){
-                $supplier_part->fast_update(array('Supplier Part Carton Barcode'=>$part->get('Part Carton Barcode')));
-            }
-        }
-
-
-        if($part->get('Part Recommended Packages Per Selling Outer')==''){
-            $part->fast_update(array('Part Recommended Packages Per Selling Outer'=>1));
-
-        }
-
-
-    }
-}
-
 $print_est = true;
 
 
 $sql = sprintf(
-    'SELECT `Part SKU` FROM `Part Dimension` where  `Part Main Supplier Part Key` is  null  ORDER BY `Part SKU`  DESC '
+    'SELECT `Part SKU` FROM `Part Dimension` where  `Part Main Supplier Part Key` is  null   ORDER BY `Part SKU`  DESC '
 );
 
 if ($result = $db->query($sql)) {
@@ -131,4 +106,26 @@ if ($result = $db->query($sql)) {
 
     }
 
+}
+
+
+
+
+$sql = sprintf(
+    'SELECT `Part SKU` FROM `Part Dimension`    ORDER BY `Part SKU`  DESC '
+);
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $part = new Part($row['Part SKU']);
+        $supplier_part=get_object('Supplier Part',$part->get('Part Main Supplier Part Key'));
+
+
+        $part->fast_update(array('Part Carton Barcode'=>$supplier_part->get('Supplier Part Carton Barcode')));
+        $part->fast_update(array('Part SKOs per Carton'=>$supplier_part->get('Supplier Part Packages Per Carton')));
+
+
+
+
+    }
 }

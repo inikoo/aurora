@@ -239,7 +239,7 @@ function contractors($_data, $db, $user) {
     $sql
         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-    //print $sql;
+   // print $sql;
 
     $adata = array();
     foreach ($db->query($sql) as $data) {
@@ -311,7 +311,7 @@ function contractors($_data, $db, $user) {
             'type'  => $type,
 
 
-            'supervisors' => $data['supervisors'],
+           // 'supervisors' => $data['supervisors'],
 
             'job_title'          => $data['Staff Job Title'],
             'user_login'         => $data['User Handle'],
@@ -328,7 +328,7 @@ function contractors($_data, $db, $user) {
                 )),
 
 
-            'roles' => $data['roles']
+            //'roles' => $data['roles']
         );
 
     }

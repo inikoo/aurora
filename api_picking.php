@@ -35,7 +35,7 @@ switch ($_REQUEST['action']) {
 
     case 'initialize':
 
-        $groups=preg_split('/,/',$user->get('User Groups') );
+        $groups=$user->get('User Groups');
 
         $type='Invalid';
         if(in_array(17,$groups)){
@@ -516,7 +516,7 @@ switch ($_REQUEST['action']) {
         $items = array();
 
         $sql =
-            sprintf('select `Part Reference`,`Inventory Transaction Key`,P.`Part SKU`,`Part Package Description`,`Part Package Weight`,`Required`+`Given` as Required , `Picked`,`Packed`,`Out of Stock`,`Waiting`,`No Authorized`,`Not Found`,`No Picked Other`,  L.`Location Key`,`Part SKO Barcode` from `Inventory Transaction Fact` ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) left join `Location Dimension` L on (L.`Location Key`=ITF.`Location Key`)  where `Delivery Note Key`=%d ', $_REQUEST['delivery_note_key']);
+            sprintf('select `Part Reference`,`Inventory Transaction Key`,P.`Part SKU`,`Part Package Description`,`Part Package Weight`,`Required`+`Given` as Required , `Picked`,`Packed`,`Out of Stock`,`Waiting`,`No Authorized`,`Not Found`,`No Picked Other`,  L.`Location Key`,L.`Location Code`,`Part SKO Barcode` from `Inventory Transaction Fact` ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) left join `Location Dimension` L on (L.`Location Key`=ITF.`Location Key`)  where `Delivery Note Key`=%d ', $_REQUEST['delivery_note_key']);
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
@@ -551,6 +551,29 @@ switch ($_REQUEST['action']) {
 
 
     case 'get_pending_deliveries_stats':
+        break;
+
+    case 'get_pending_deliveries':
+
+
+
+        $sql = 'select `Delivery Note Key`,`Delivery Note Customer Key`,`Delivery Note Type`,`Delivery Note Date Created`,`Delivery Note Estimated Weight`,`Delivery Note Store Key`,`Delivery Note ID`,`Delivery Note Customer Name`,`Store Code`,`Store Name`,`Delivery Note Number Ordered Parts` ,`Delivery Note State`
+        from `Delivery Note Dimension` D left join `Store Dimension` on (`Store Key`=`Delivery Note Store Key`) where `Delivery Note State`=? or `Delivery Note State`=?
+        ';
+
+        $deliveries=array();
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute(['Ready to be Picked','Picking']);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $deliveries[] = $row;
+        }
+
+
+        return array(
+            'state' => 'OK',
+            'data'  => $deliveries
+        );
 
 
         break;
@@ -622,7 +645,7 @@ switch ($_REQUEST['action']) {
 
 function get_deliveries($db,$state){
 
-    $sql = 'select `Delivery Note Key`,`Delivery Note Customer Key`,`Delivery Note Type`,`Delivery Note Date Created`,`Delivery Note Estimated Weight`,`Delivery Note Store Key`,`Delivery Note ID`,`Delivery Note Customer Name`,`Store Code`,`Store Name`,`Delivery Note Number Ordered Parts` 
+    $sql = 'select `Delivery Note Key`,`Delivery Note Customer Key`,`Delivery Note Type`,`Delivery Note Date Created`,`Delivery Note Estimated Weight`,`Delivery Note Store Key`,`Delivery Note ID`,`Delivery Note Customer Name`,`Store Code`,`Store Name`,`Delivery Note Number Ordered Parts` ,`Delivery Note Address Country 2 Alpha Code`,`Delivery Note Number Ordered Parts`
         from `Delivery Note Dimension` D left join `Store Dimension` on (`Store Key`=`Delivery Note Store Key`) where `Delivery Note State`=?
         ';
 

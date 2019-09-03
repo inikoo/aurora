@@ -41,6 +41,11 @@ function get_supplier_part_showcase($data, $smarty, $user, $db) {
     */
     $smarty->assign('supplier_part', $supplier_part);
     $smarty->assign('part', $part);
+
+    $supplier=get_object('Supplier',$supplier_part->get('Supplier Part Supplier Key'));
+    $smarty->assign('supplier', $supplier);
+
+
     //$smarty->assign('family_data', $family_data);
 
 

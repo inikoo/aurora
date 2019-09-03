@@ -917,11 +917,14 @@ class SupplierPart extends DB_Table {
                 break;
 
             case 'Supplier Part Carton Barcode':
+
+
+
                 $this->update_field($field, $value, $options);
 
-                if ($field == 'Supplier Part Packages Per Carton' and  $this->part->get('Part Main Supplier Part Key')==$this->id  ) {
+                if (  $this->part->get('Part Main Supplier Part Key')==$this->id  ) {
                     $this->part->editor=$this->editor;
-                    $this->part->update(array('art Carton Barcode'=>$value),$options);
+                    $this->part->update(array('Part Carton Barcode'=>$value),$options);
                 }
 
 
@@ -962,7 +965,7 @@ class SupplierPart extends DB_Table {
                 );
 
 
-                if ($field == 'Supplier Part Packages Per Carton' and  $this->part->get('Part Main Supplier Part Key')==$this->id  ) {
+                if ($this->part->get('Part Main Supplier Part Key')==$this->id  ) {
                     $this->part->editor=$this->editor;
                     $this->part->update(array('Part SKOs per Carton'=>$value));
                 }
@@ -974,9 +977,7 @@ class SupplierPart extends DB_Table {
 
                 $this->update_metadata = array(
                     'class_html' => array(
-                        'Carton_Weight'                     => $this->get(
-                            'Carton Weight'
-                        ),
+                        'Carton_Weight'                     => $this->get('Carton Weight'),
                         'Carton_Cost'                       => $this->get(
                             'Carton Cost'
                         ),
@@ -1230,9 +1231,7 @@ class SupplierPart extends DB_Table {
             case 'SKO Barcode':
 
                 return $this->part->get('SKO Barcode');
-            case 'Carton Barcode':
 
-                return $this->part->get('Carton Barcode');
             case 'Average Delivery':
 
 

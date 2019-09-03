@@ -367,7 +367,7 @@ function get_mobile_menu($data,$user, $smarty) {
     }
 
 
-    if ($user->can_view('reports')) {
+    if ($user->can_view('sales_reports') or  $user->can_view('customers_reports') or  $user->can_view('suppliers_reports') or  $user->can_view('inventory_reports') or   $user->can_view('kpis_reports') or   $user->can_view('users_reports')   ) {
         $nav_menu[] = array(
             '<i class="fa fa-line-chart fa-fw"></i>',
             _('Reports'),

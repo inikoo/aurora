@@ -79,6 +79,9 @@ trait OrderBasketOperations {
 
         }
 
+        if($this->data['Order Tax Name']==''){
+        //    $this->data['Order Tax Name']=0;
+        }
 
         $this->data['Order State']      = 'InBasket';
         $this->data['Order Current XHTML Payment State'] = _('Waiting for payment');
@@ -263,7 +266,13 @@ trait OrderBasketOperations {
 
 
         } else {
-            exit ("\n\n$sql\n\n  Error, can't  create order ");
+
+            $arr = $stmt->errorInfo();
+            print_r($arr);
+
+            print_r($data);
+
+            exit ("Error, can't  create order ");
         }
 
 

@@ -52,8 +52,6 @@ class Location extends DB_Table {
     function create($data) {
 
 
-
-
         $this->data = $this->base_data();
 
 
@@ -85,7 +83,6 @@ class Location extends DB_Table {
         }
 
 
-
         if (!$this->data['Location Max Volume']) {
             if ($this->data['Location Shape Type'] == 'Box' and is_numeric($this->data['Location Width']) and $this->data['Location Width'] > 0 and is_numeric($this->data['Location Deep']) and $this->data['Location Deep'] > 0 and is_numeric(
                     $this->data['Location Height']
@@ -99,9 +96,7 @@ class Location extends DB_Table {
 
 
         $sql = sprintf(
-            "INSERT INTO `Location Dimension` (%s) values (%s)",
-            '`'.join('`,`', array_keys($this->data)).'`',
-            join(',', array_fill(0, count($this->data), '?'))
+            "INSERT INTO `Location Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($this->data)).'`', join(',', array_fill(0, count($this->data), '?'))
         );
 
         $stmt = $this->db->prepare($sql);
@@ -117,18 +112,23 @@ class Location extends DB_Table {
             $this->id = $this->db->lastInsertId();
 
 
-            $history_data = array(
-                'History Abstract' => sprintf(_('%s location created'), $this->data['Location Code']),
-                'History Details'  => '',
-                'Action'           => 'created'
-            );
+            $this->get_data('id', $this->id);
 
-            $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
+            if ($this->data['Location Code'] != 'Unknown') {
+
+                $history_data = array(
+                    'History Abstract' => sprintf(_('%s location created'), $this->data['Location Code']),
+                    'History Details'  => '',
+                    'Action'           => 'created'
+                );
+
+                $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
+
+
+            }
 
 
             $this->new = true;
-
-            $this->get_data('id', $this->id);
 
 
             if ($this->data['Location Warehouse Area Key']) {
@@ -139,9 +139,7 @@ class Location extends DB_Table {
             }
 
 
-
             return $this;
-
 
 
         } else {
@@ -220,8 +218,6 @@ class Location extends DB_Table {
         }
 
 
-
-
         $stmt = $this->db->prepare($sql);
         if ($stmt->execute($arguments)) {
             if ($row = $stmt->fetch()) {
@@ -280,8 +276,7 @@ class Location extends DB_Table {
 
         $data = $this->base_data();
         foreach ($raw_data as $key => $val) {
-            /*       if(preg_match('/from supplier/',$options)) */
-            /* 	$_key=preg_replace('/^Location /i','',$key); */
+            /*       if(preg_match('/from supplier/',$options)) */ /* 	$_key=preg_replace('/^Location /i','',$key); */
             /*       else */
             $_key        = $key;
             $data[$_key] = $val;
@@ -642,8 +637,7 @@ class Location extends DB_Table {
             case 'Warehouse Area Key':
                 if (!$this->warehouse_area) {
                     $warehouse_area = get_object(
-                        'WarehouseArea',
-                        $this->data['Location Warehouse Area Key']
+                        'WarehouseArea', $this->data['Location Warehouse Area Key']
                     );
                 }
 
@@ -680,49 +674,47 @@ class Location extends DB_Table {
             }
 
             break;
-            */
-            default:
+            */ default:
 
-                if (array_key_exists($key, $this->data)) {
-                    return $this->data[$key];
+            if (array_key_exists($key, $this->data)) {
+                return $this->data[$key];
+            }
+
+            if (array_key_exists('Location '.$key, $this->data)) {
+                return $this->data['Location '.$key];
+            }
+
+
+            if (preg_match('/^warehouse area/i', $key)) {
+                if (!$this->warehouse_area) {
+                    $warehouse_area = get_object(
+                        'WarehouseArea', $this->data['Location Warehouse Area Key']
+                    );
                 }
 
-                if (array_key_exists('Location '.$key, $this->data)) {
-                    return $this->data['Location '.$key];
+                return $warehouse_area->get($key);
+            }
+            if (preg_match('/^warehouse/i', $key)) {
+                if (!$this->warehouse) {
+                    $warehouse = new Warehouse(
+                        $this->data['Location Warehouse Key']
+                    );
                 }
 
-
-                if (preg_match('/^warehouse area/i', $key)) {
-                    if (!$this->warehouse_area) {
-                        $warehouse_area = get_object(
-                            'WarehouseArea',
-                            $this->data['Location Warehouse Area Key']
-                        );
-                    }
-
-                    return $warehouse_area->get($key);
+                return $warehouse->get($key);
+            }
+            if (preg_match('/^shelf/i', $key)) {
+                if (!$this->data['Location Shelf Key']) {
+                    return false;
                 }
-                if (preg_match('/^warehouse/i', $key)) {
-                    if (!$this->warehouse) {
-                        $warehouse = new Warehouse(
-                            $this->data['Location Warehouse Key']
-                        );
-                    }
-
-                    return $warehouse->get($key);
-                }
-                if (preg_match('/^shelf/i', $key)) {
-                    if (!$this->data['Location Shelf Key']) {
-                        return false;
-                    }
-                    if (!$this->shelf) {
-                        $shelf = new Shelf($this->data['Location Shelf Key']);
-                    }
-
-                    return $shelf->get($key);
+                if (!$this->shelf) {
+                    $shelf = new Shelf($this->data['Location Shelf Key']);
                 }
 
-                return '';
+                return $shelf->get($key);
+            }
+
+            return '';
 
         }
 
@@ -790,7 +782,7 @@ class Location extends DB_Table {
         );
 
         if ($warehouse_area_key > 0) {
-           $new_area = get_object('warehouse_area', $warehouse_area_key);
+            $new_area = get_object('warehouse_area', $warehouse_area_key);
 
 
             $new_area->update_warehouse_area_locations();
@@ -1068,10 +1060,9 @@ class Location extends DB_Table {
                         case 'Location Mainly Used For':
                             $label = _('used for');
                             break;
-            */
-            case 'Location Warehouse Flag Key':
-                $label = _('flag');
-                break;
+            */ case 'Location Warehouse Flag Key':
+            $label = _('flag');
+            break;
             case 'Location Max Weight':
                 $label = _('max weight').' (Kg)';
                 break;

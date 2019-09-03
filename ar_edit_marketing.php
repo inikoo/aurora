@@ -272,6 +272,8 @@ function add_target_to_campaign($account, $db, $user, $editor, $data, $smarty) {
     if ($campaign->get('Deal Campaign Code') == 'OR') {
 
 
+
+
         $deal = $campaign->get_deals()[0];
 
 

@@ -296,13 +296,9 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
         foreach ($result as $row) {
 
             $amount_paid = (($data['items_data'][$row['Supplier Part Part SKU']][0] + $data['items_data'][$row['Supplier Part Part SKU']][1]) / $data['exchange']) + $data['items_data'][$row['Supplier Part Part SKU']][2];
-
-
             $sql = sprintf(
                 'update `Purchase Order Transaction Fact` set `Supplier Delivery Net Amount`=%.2f ,`Supplier Delivery Extra Cost Amount`=%.2f, `Supplier Delivery Extra Cost Account Currency Amount`=%.2f   where `Purchase Order Transaction Fact Key`=%d    ',
                 $data['items_data'][$row['Supplier Part Part SKU']][0], $data['items_data'][$row['Supplier Part Part SKU']][1], $data['items_data'][$row['Supplier Part Part SKU']][2],
-
-
                 $row['Purchase Order Transaction Fact Key']
 
             );

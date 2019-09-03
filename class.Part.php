@@ -31,7 +31,7 @@ class Part extends Asset {
         }
 
         $this->table_name           = 'Part';
-        $this->ignore_fields        = array('Part Key');
+        $this->ignore_fields        = array('Part SKU');
         $this->trigger_discontinued = true;
 
         if (is_numeric($arg1) and !$arg2) {
@@ -125,8 +125,13 @@ class Part extends Asset {
         );
 
 
+        //print "$sql\n";
+
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
+                print_r($row);
+
                 $this->found     = true;
                 $this->found_key = $row['Part SKU'];
                 $this->get_data('id', $this->found_key);
@@ -151,7 +156,6 @@ class Part extends Asset {
 
         include_once 'class.Account.php';
         include_once 'class.Category.php';
-
 
         $account = new Account($this->db);
 
@@ -181,55 +185,74 @@ class Part extends Asset {
         }
 
 
-        if (!isset($data['Part Recommended Packages Per Selling Outer']) ) {
+        if (!isset($data['Part Recommended Packages Per Selling Outer'])) {
             $data['Part Recommended Packages Per Selling Outer'] = 1;
         }
-
 
 
         $base_data = $this->base_data();
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
                 $base_data[$key] = _trim($value);
+
+
             }
         }
 
-
-        //   $base_data['Part Available']='No';
-
-        //  if ($base_data['Part XHTML Description']=='') {
-        //   $base_data['Part XHTML Description']=strip_tags($base_data['Part XHTML Description']);
-        //  }
-
-        //print_r($base_data);
-
-        $keys   = '(';
-        $values = 'values(';
         foreach ($base_data as $key => $value) {
-            $keys .= "`$key`,";
 
-            if (in_array(
-                $key, array(
-                        'Part XHTML Next Supplier Shipment',
-                        'Part XHTML Picking Location'
-                    )
-            )) {
-                $values .= prepare_mysql($value, false).",";
-
-            } else {
-
-                $values .= prepare_mysql($value).",";
+            if ($value == '') {
+                unset($base_data[$key]);
             }
         }
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
-
-        //print_r($base_data);
-
-        $sql = sprintf("INSERT INTO `Part Dimension` %s %s", $keys, $values);
 
 
-        if ($this->db->exec($sql)) {
+        /*
+                $keys   = '(';
+                $values = 'values(';
+                foreach ($base_data as $key => $value) {
+                    $keys .= "`$key`,";
+
+                    if (in_array(
+                        $key, array(
+
+                            )
+                    )) {
+                        $values .= prepare_mysql($value, false).",";
+
+                    } else {
+
+                        $values .= prepare_mysql($value).",";
+                    }
+                }
+                $keys   = preg_replace('/,$/', ')', $keys);
+                $values = preg_replace('/,$/', ')', $values);
+
+                //print_r($base_data);
+
+                $_sql = sprintf("INSERT INTO `Part Dimension` %s %s", $keys, $values);
+                print "$_sql\n";
+
+
+                */
+
+
+        $sql = sprintf(
+            "INSERT INTO `Part Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
+        );
+
+        $stmt = $this->db->prepare($sql);
+
+        $i = 1;
+        foreach ($base_data as $key => $value) {
+            $stmt->bindValue($i, $value);
+            $i++;
+        }
+
+
+        //  print "$sql\n";
+
+        if ($stmt->execute()) {
             $this->id  = $this->db->lastInsertId();
             $this->sku = $this->id;
             $this->new = true;
@@ -237,7 +260,7 @@ class Part extends Asset {
             $sql = "INSERT INTO `Part Data` (`Part SKU`) VALUES(".$this->id.");";
             $this->db->exec($sql);
 
-            $this->fast_update(array('Part Properties'=>'{}'));
+            $this->fast_update(array('Part Properties' => '{}'));
 
             $this->get_data('id', $this->id);
 
@@ -1075,7 +1098,7 @@ class Part extends Asset {
                 $price_other_info = '';
                 if ($this->data['Part Units Per Package'] != 1 and is_numeric($this->data['Part Units Per Package'])) {
                     $price_other_info = '('.money(
-                            $this->data['Part Unit Price'] * $this->data['Part Units Per Package']  * $this->data['Part Recommended Packages Per Selling Outer']  , $account->get('Account Currency')
+                            $this->data['Part Unit Price'] * $this->data['Part Units Per Package'] * $this->data['Part Recommended Packages Per Selling Outer'], $account->get('Account Currency')
                         ).' '._('per selling outer').'), ';
                 }
 
@@ -1395,7 +1418,19 @@ class Part extends Asset {
                 }
                 break;
             case 'Carton Weight':
-                return weight($this->data['Part Package Weight'] * $this->data['Part SKOs per Carton'], 'Kg', 0);
+
+
+                $weight = $this->data['Part Package Weight'] * $this->data['Part SKOs per Carton'];
+
+                if ($weight < 1) {
+                    return weight(ceil($this->data['Part Package Weight'] * $this->data['Part SKOs per Carton']), 'Kg', 0);
+
+                } else {
+                    return weight(round($this->data['Part Package Weight'] * $this->data['Part SKOs per Carton']), 'Kg', 0);
+
+                }
+
+
                 break;
             case 'Weight Status':
                 switch ($this->data['Part Package Weight Status']) {
@@ -1430,33 +1465,32 @@ class Part extends Asset {
 
             case 'Supplier Part Currency Code':
 
-                $main_supplier_part=get_object('Supplier_Part',$this->get('Part Main Supplier Part Key'));
-
+                $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
 
 
                 return $main_supplier_part->get('Supplier Part Currency Code');
                 break;
             case 'Part Supplier Part Unit Cost':
 
-                $main_supplier_part=get_object('Supplier_Part',$this->get('Part Main Supplier Part Key'));
+                $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
 
                 return $main_supplier_part->get('Supplier Part Unit Cost');
                 break;
             case 'Supplier Part Unit Cost':
 
-                $main_supplier_part=get_object('Supplier_Part',$this->get('Part Main Supplier Part Key'));
+                $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
 
                 return $main_supplier_part->get('Unit Cost');
                 break;
             case 'Part Supplier Part Unit Extra Cost Percentage':
 
-                $main_supplier_part=get_object('Supplier_Part',$this->get('Part Main Supplier Part Key'));
+                $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
 
                 return $main_supplier_part->get('Supplier Part Unit Extra Cost Percentage');
                 break;
             case 'Supplier Part Unit Extra Cost Percentage':
 
-                $main_supplier_part=get_object('Supplier_Part',$this->get('Part Main Supplier Part Key'));
+                $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
 
                 return $main_supplier_part->get('Unit Extra Cost Percentage');
                 break;
@@ -1746,23 +1780,18 @@ class Part extends Asset {
 
             case 'Part Supplier Part Unit Cost':
 
-                $main_supplier_part=get_object('Supplier_Part',$this->get('Part Main Supplier Part Key'));
-                $main_supplier_part->editor=$this->editor;
-                $main_supplier_part->update(array('Supplier Part Unit Cost'=>$value),$options);
-
-
-
+                $main_supplier_part         = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
+                $main_supplier_part->editor = $this->editor;
+                $main_supplier_part->update(array('Supplier Part Unit Cost' => $value), $options);
 
 
                 break;
 
             case 'Part Supplier Part Unit Extra Cost Percentage':
 
-                $main_supplier_part=get_object('Supplier_Part',$this->get('Part Main Supplier Part Key'));
-                $main_supplier_part->editor=$this->editor;
-                $main_supplier_part->update(array('Supplier Part Unit Extra Cost Percentage'=>$value),$options);
-
-
+                $main_supplier_part         = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
+                $main_supplier_part->editor = $this->editor;
+                $main_supplier_part->update(array('Supplier Part Unit Extra Cost Percentage' => $value), $options);
 
 
                 $this->update_metadata = array(
@@ -2780,7 +2809,9 @@ class Part extends Asset {
 
                 $history_data = array(
                     'History Abstract' => sprintf(
-                        _("Part main supplier set to %s"), '<span class="link" onClick="change_view(\'supplier/'.$supplier->id.'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Supplier Part Reference').'</span> (<span class="link" onClick="change_view(\'supplier/'.$supplier->id.'\')">'.$supplier->get('Code').'</span>)'
+                        _("Part main supplier set to %s"),
+                        '<span class="link" onClick="change_view(\'supplier/'.$supplier->id.'/part/'.$supplier_part->id.'\')">'.$supplier_part->get('Supplier Part Reference').'</span> (<span class="link" onClick="change_view(\'supplier/'.$supplier->id.'\')">'
+                        .$supplier->get('Code').'</span>)'
                     ),
                     'History Details'  => '',
                     'Action'           => 'edited'
@@ -4803,16 +4834,16 @@ class Part extends Asset {
                     array(
                         'Product Tariff Code' => $this->get('Part Tariff Code'),
                         'Product HTSUS Code'  => $this->get('Part HTSUS Code'),
-                        'Product Duty Rate'                     => $this->get('Part Duty Rate'),
-                        'Product Origin Country Code'           => $this->get('Part Origin Country Code'),
-                        'Product UN Number'                     => $this->get('Part UN Number'),
-                        'Product UN Class'                      => $this->get('Part UN Class'),
-                        'Product Packing Group'                 => $this->get('Part Packing Group'),
-                        'Product Proper Shipping Name'          => $this->get('Part Proper Shipping Name'),
+                        'Product Duty Rate'                    => $this->get('Part Duty Rate'),
+                        'Product Origin Country Code'          => $this->get('Part Origin Country Code'),
+                        'Product UN Number'                    => $this->get('Part UN Number'),
+                        'Product UN Class'                     => $this->get('Part UN Class'),
+                        'Product Packing Group'                => $this->get('Part Packing Group'),
+                        'Product Proper Shipping Name'         => $this->get('Part Proper Shipping Name'),
                         'Product Hazard Identification Number' => $this->get('Part Hazard Identification Number'),
-                        'Product Unit Weight'                   => $this->get('Part Unit Weight'),
-                        'Product Unit Dimensions'               => $this->get('Part Unit Dimensions'),
-                        'Product Materials'                     => $this->data['Part Materials'],
+                        'Product Unit Weight'                  => $this->get('Part Unit Weight'),
+                        'Product Unit Dimensions'              => $this->get('Part Unit Dimensions'),
+                        'Product Materials'                    => $this->data['Part Materials'],
                     )
                 );
 

@@ -541,6 +541,40 @@ function get_invoices_georegion_taxcategory_navigation($user, $smarty, $data, $t
 
 }
 
+
+
+function get_intrastat_imports_navigation($user, $smarty, $data) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = array();
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+    $title = _('Intrastat imports');
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search reports')
+        )
+    );
+    $smarty->assign('_content', $_content);
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
 function get_intrastat_navigation($user, $smarty, $data) {
 
 
@@ -552,7 +586,7 @@ function get_intrastat_navigation($user, $smarty, $data) {
         $sections[$data['section']]['selected'] = true;
     }
 
-    $title = _('Intrastat');
+    $title = _('Intrastat exports');
 
     $_content = array(
         'sections_class' => '',
