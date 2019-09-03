@@ -143,7 +143,11 @@ if ($user->can_view('orders')) {
 
     }
 }
+
+
+
 if ($user->can_view('locations')) {
+
 
 
     if ($user->get('User Hooked Warehouse Key')) {
@@ -173,6 +177,7 @@ if ($user->can_view('locations')) {
                 $warehouse_key = $row['Warehouse Key'];
             }
         }
+
 
         $nav_menu[] = array(
             '<i class="button far fa-warehouse-alt fa-fw"></i>',
