@@ -1405,7 +1405,7 @@ function intrastat_parts($_data, $db, $user, $account) {
         foreach ($result as $data) {
             $adata[] = array(
                 'code'       => sprintf('<span class="link" onClick="change_view(\'part//%s\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
-                'name'       => $data['Part Unit Description'],
+                'name'       => $data['Part Recommended Product Unit Name'],
                 'units'      => number($data['Part Units Per Package']),
                 'price'      => money($data['Part Cost'], $account->get('Account Currency')),
                 'weight'     => weight($data['Part Package Weight']/$data['Part Units Per Package'], 'Kg', 2, false, true),

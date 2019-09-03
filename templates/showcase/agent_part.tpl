@@ -92,19 +92,12 @@
                 <td>
                     <i class="fal fa-pallet fa-fw" title="{t}Carton{/t}" ></i>
                 </td>
-                {if $supplier_part->get('Supplier Part Units Per Carton')!=$part->get('Units Per Carton')  and $part->get('Units Per Carton')!='' }
-                    {assign "error_units_per_carton" 1}
-                {else}
-
-                    {assign "error_units_per_carton" 0}
-
-                {/if}
 
 
                 <td style="padding-left: 4px;padding-right: 4px" class="">
                     <span class="discreet {if $error_units_per_carton}error{/if}" title="{t}Units per carton{/t}">
                         <i class="fal  fa-stop-circle " style="font-size: 80%;margin-right: 1px" ></i><i class="fal  fa-times" style="position: relative;top:1px;margin-right: 3px"></i><span class="Supplier_Part_Units_Per_Carton">{$supplier_part->get('Supplier Part Units Per Carton')}</span>
-                        {if $error_units_per_carton} <i class="fal fa-not-equal"></i> {$part->get('Units Per Carton')} <i class="fas fa-exclamation-circle"></i> {/if}
+
                     </span>
 
                 </td>
