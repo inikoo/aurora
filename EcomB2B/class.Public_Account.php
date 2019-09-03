@@ -68,7 +68,6 @@ class Public_Account  {
             case 'Account Locale':
             case 'Account Country 2 Alpha Code':
             case 'Account Analytics ID':
-            case 'Apply Tax Method':
             case 'Account Country Code':
 
                 return $this->data[$key];

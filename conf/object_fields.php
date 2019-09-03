@@ -31,15 +31,15 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
         case 'Mailshot':
 
 
-            if($options['new']){
+            if ($options['new']) {
 
 
-                switch($options['parent_object']->get('Email Campaign Type Code')){
+                switch ($options['parent_object']->get('Email Campaign Type Code')) {
                     case 'Marketing':
                         include 'fields/mailshot.marketing.new.fld.php';
 
                 }
-            }else{
+            } else {
 
 
                 switch ($object->get('Email Campaign Type')) {
@@ -49,15 +49,11 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     case 'Marketing':
 
 
-                   //     if ($options['type'] == 'mailing_list') {
-                   //         include 'fields/mailshot.mailing_list.fld.php';
-                   //     } else {
-                            include 'fields/mailshot.marketing.fld.php';
-                   //     }
-
-
-
-
+                        //     if ($options['type'] == 'mailing_list') {
+                        //         include 'fields/mailshot.mailing_list.fld.php';
+                        //     } else {
+                        include 'fields/mailshot.marketing.fld.php';
+                        //     }
 
 
                         break;
@@ -65,8 +61,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                         include 'fields/mailshot.fld.php';
                 }
             }
-
-
 
 
             return $object_fields;
@@ -254,11 +248,8 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             if (isset($options['new'])) {
 
 
-
                 switch ($options['parent']) {
                     case 'campaign':
-
-
 
 
                         switch ($options['parent_object']->get('Deal Campaign Code')) {
@@ -418,6 +409,8 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             if ($options['type'] == 'profile') {
                 include 'fields/profile.fld.php';
             } else {
+
+
                 include 'fields/user.system.fld.php';
             }
 
@@ -466,8 +459,6 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             $object->get_supplier_data();
 
 
-
-
             if ($user->get('User Type') != 'Agent') {
 
                 if ($options['parent'] == 'supplier') {
@@ -476,13 +467,10 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     $supplier = $options['parent_object'];
 
 
-
-
                     if (isset($options['new'])) {
-                        $part= new Part(0);
+                        $part = new Part(0);
 
                         include 'fields/supplier_part.new.fld.php';
-
 
 
                     } else {
@@ -517,8 +505,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
                     return $supplier_part_fields;
-                }
-                elseif ($options['parent'] == 'production') {
+                } elseif ($options['parent'] == 'production') {
 
 
                     include 'fields/production_part.fld.php';
@@ -560,8 +547,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
 
                     return $supplier_part_fields;
-                }
-                elseif ($options['parent'] == 'part') {
+                } elseif ($options['parent'] == 'part') {
                     include 'fields/part.supplier_part.new.fld.php';
 
                     return $supplier_part_fields;
@@ -640,22 +626,38 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
         case 'Staff':
 
 
+            $stores = array();
+            $sql    = sprintf(
+                'SELECT `Store Code`,`Store Key`,`Store Name` FROM `Store Dimension` order by `Store Code` '
+            );
+            foreach ($db->query($sql) as $row) {
+                $stores[$row['Store Key']] = $row;
+            }
+
+
             if ($object->get('Staff Type') == 'Contractor') {
 
-                if (isset($options['type']) and $options['type'] == 'user') {
-                    include 'fields/user.system.fld.php';
-                } else {
-                    include 'fields/contractor.fld.php';
-                }
 
+                if (!empty($options['new'])) {
+                    include 'fields/contractor.new.fld.php';
+
+                } else {
+
+
+                    include 'fields/contractor.fld.php';
+
+                }
             } else {
 
-                if (isset($options['type']) and $options['type'] == 'user') {
-                    include 'fields/user.system.fld.php';
-                } else {
-                    include 'fields/employee.fld.php';
-                }
+                if (!empty($options['new'])) {
+                    include 'fields/employee.new.fld.php';
 
+                } else {
+
+
+                    include 'fields/employee.fld.php';
+
+                }
 
             }
 

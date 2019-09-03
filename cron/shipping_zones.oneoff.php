@@ -16,16 +16,13 @@ require_once 'utils/get_addressing.php';
 require_once 'class.Country.php';
 
 
-
+set_shipping_zones($db);
 create_deal_shipping_zones($db);
-
 
 
 //set_shipping_zones($db);
 //test_shipping_zones($db);
 //migrate_shipping_zones($db);
-
-
 
 
 function create_deal_shipping_zones($db) {
@@ -40,12 +37,11 @@ function create_deal_shipping_zones($db) {
     //$db->exec($sql);
 
     $sql = sprintf(
-        'SELECT `Store Key` FROM `Store Dimension`  '
+        'SELECT `Store Key` FROM `Store Dimension` where `Store Code`="HU" '
     );
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-            $store                = get_object('store', $row['Store Key']);
-
+            $store = get_object('store', $row['Store Key']);
 
 
             $shipping_zone_schema = $store->create_shipping_zone_schema(
@@ -61,17 +57,13 @@ function create_deal_shipping_zones($db) {
             );
 
 
-
-
-
-
             if (isset($shipping_zones_data[$store->get('Code')])) {
 
                 foreach (array_reverse($shipping_zones_data[$store->get('Code')]) as $_data) {
 
 
                     print_r($_data);
-                   $shipping_zone= $shipping_zone_schema->create_shipping_zone($_data);
+                    $shipping_zone = $shipping_zone_schema->create_shipping_zone($_data);
 
                 }
 
@@ -84,15 +76,10 @@ function create_deal_shipping_zones($db) {
 }
 
 
-
-
 //test_api($db);
 
 
 function test_api($db) {
-
-
-
 
 
     $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` where `Order Shipping Method`!="Set" and `Order For Collection`!="Yes"  and `Order Number Items`>0 and `Order Ship To Postal Code` like "J%%" ');
@@ -123,7 +110,7 @@ function test_api($db) {
                 }
 
 
-                $account=get_object('Account',1);
+                $account = get_object('Account', 1);
 
                 $country = new Country('code', $order->data['Order Ship To Country Code']);
 
@@ -136,18 +123,16 @@ function test_api($db) {
 
                 );
                 include_once 'keyring/nano.key.php';
-                $_key=json_decode($nano_keys,true);
+                $_key = json_decode($nano_keys, true);
 
 
-                $auth_key=array_keys($_key)[0].'.'.reset($_key);
+                $auth_key = array_keys($_key)[0].'.'.reset($_key);
 
 
                 $response = callAPI('GET', $account->get('Account System Public URL').'/api/nc', $auth_key, $data);
 
 
-
-                $shipping_data=json_decode($response,true)['data'];
-
+                $shipping_data = json_decode($response, true)['data'];
 
 
                 print $order->id.' '.$country->get('Country 2 Alpha Code')."\tPC: ".$order->get('Order Ship To Postal Code')."\t ".$order->get('Order Items Net Amount')."\t";
@@ -223,14 +208,13 @@ function test_shipping_zones($db) {
                     $country = new Country('code', $order->data['Order Ship To Country Code']);
 
 
-                    $store = get_object('Store', $order->get('Order Store Key'));
+                    $store                    = get_object('Store', $order->get('Order Store Key'));
                     $shipping_zone_schema_key = $store->properties['current_shipping_zone_schema'];
 
 
-
                     $_data = array(
-                        'shipping_zone_schema_key'  => $shipping_zone_schema_key,
-                        'Order Data' => array(
+                        'shipping_zone_schema_key' => $shipping_zone_schema_key,
+                        'Order Data'               => array(
                             'Order Items Net Amount'                      => $order->data['Order Items Net Amount'],
                             'Order Delivery Address Postal Code'          => $order->data['Order Ship To Postal Code'],
                             'Order Delivery Address Country 2 Alpha Code' => $country->get('Country 2 Alpha Code'),
@@ -289,14 +273,14 @@ function test_shipping_zones($db) {
 
             /*
                         if ($data_new_method[0] != $data_old_method[0]) {
-            
+
                             //  print_r($row);
-            
+
                             print_r($data_new_method);
                             print_r($data_old_method);
                             exit;
                         }
-            
+
             */
 
         }
@@ -352,11 +336,11 @@ function set_shipping_zones($db) {
     //$db->exec($sql);
 
     $sql = sprintf(
-        'SELECT `Store Key` FROM `Store Dimension` where `Store Code`="PL" '
+        'SELECT `Store Key` FROM `Store Dimension` where `Store Code`="HU" '
     );
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-            $store                = get_object('store', $row['Store Key']);
+            $store = get_object('store', $row['Store Key']);
 
 
             /*
@@ -377,7 +361,7 @@ function set_shipping_zones($db) {
 */
 
             $shipping_zone_schema_key = $store->properties['current_shipping_zone_schema'];
-            $shipping_zone_schema=get_object('shipping_zone_schema',$shipping_zone_schema_key);
+            $shipping_zone_schema     = get_object('shipping_zone_schema', $shipping_zone_schema_key);
 
 
             print_r($shipping_zone_schema);
@@ -388,7 +372,7 @@ function set_shipping_zones($db) {
 
                     print_r($_data);
 
-                   $shipping_zone_schema->create_shipping_zone($_data);
+                    $shipping_zone_schema->create_shipping_zone($_data);
                 }
 
 
@@ -402,648 +386,832 @@ function set_shipping_zones($db) {
 
 function get_discounted_shipping_zones_data($account_code) {
 
-    $shipping_zones_data =
-        array(
-            'AWEU' => array(
-                'SK' => array(
-                    array(
-                        'Shipping Zone Code'        => 'SK',
-                        'Shipping Zone Name'        => 'Slovensko',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 2.95
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+    $shipping_zones_data = array(
+        'AWEU' => array(
+            'SK' => array(
+                array(
+                    'Shipping Zone Code'        => 'SK',
+                    'Shipping Zone Name'        => 'Slovensko',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code' => 'SK'
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 2.95
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
+
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zóna 1',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 150,
-                                        'price' => 4.95
-                                    ),
-                                    array(
-                                        'from'  => 150,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'AT'
-                                ),
-                                array(
-                                    'country_code' => 'CZ'
-                                ),
-                                array(
-                                    'country_code' => 'DE'
-                                ),
-                                array(
-                                    'country_code' => 'HU'
-                                ),
-                                array(
-                                    'country_code' => 'PL'
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z2',
-                        'Shipping Zone Name'        => 'Zóna 2',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 250,
-                                        'price' => 7.95
-                                    ),
-                                    array(
-                                        'from'  => 250,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'FR'
-                                ),
-                                array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'LU'
-                                ),
-                                array(
-                                    'country_code' => 'NL'
-                                ),
-                                array(
-                                    'country_code' => 'HR'
-                                ),
-                                array(
-                                    'country_code' => 'DK'
-                                ),
-                                array(
-                                    'country_code' => 'IT'
-                                ),
-                                array(
-                                    'country_code' => 'SI'
-                                ),
-                                array(
-                                    'country_code' => 'GB'
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z3',
-                        'Shipping Zone Name'        => 'Zóna 3',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 500,
-                                        'price' => 14.95
-                                    ),
-                                    array(
-                                        'from'  => 500,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'BG'
-                                ),
-                                array(
-                                    'country_code' => 'EE'
-                                ),
-                                array(
-                                    'country_code' => 'FI'
-                                ),
-                                array(
-                                    'country_code' => 'SE'
-                                ),
-                                array(
-                                    'country_code' => 'IE'
-                                ),
-                                array(
-                                    'country_code' => 'LT'
-                                ),
-                                array(
-                                    'country_code' => 'LV'
-                                ),
-                                array(
-                                    'country_code' => 'PT'
-                                ),
-                                array(
-                                    'country_code' => 'RO'
-                                ),
-                                array(
-                                    'country_code' => 'ES'
-                                )
+                                'country_code' => 'SK'
                             )
                         )
                     )
                 ),
-                'AT' => array(
-
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 150,
-                                        'price' => 4.95
-                                    ),
-                                    array(
-                                        'from'  => 150,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zóna 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 150,
+                                    'price' => 4.95
+                                ),
+                                array(
+                                    'from'  => 150,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'SK'
-                                ),
-                                array(
-                                    'country_code' => 'AT'
-                                ),
-                                array(
-                                    'country_code' => 'CZ'
-                                ),
-                                array(
-                                    'country_code' => 'DE'
-                                ),
-                                array(
-                                    'country_code' => 'HU'
-                                ),
-                                array(
-                                    'country_code' => 'PL'
-                                )
+
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z2',
-                        'Shipping Zone Name'        => 'Zone 2',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 250,
-                                        'price' => 7.95
-                                    ),
-                                    array(
-                                        'from'  => 250,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
+                                'country_code' => 'AT'
+                            ),
                             array(
-                                array(
-                                    'country_code' => 'FR'
-                                ),
-                                array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'LU'
-                                ),
-                                array(
-                                    'country_code' => 'NL'
-                                ),
-                                array(
-                                    'country_code' => 'HR'
-                                ),
-                                array(
-                                    'country_code' => 'DK'
-                                ),
-                                array(
-                                    'country_code' => 'IT'
-                                ),
-                                array(
-                                    'country_code' => 'SI'
-                                ),
-                                array(
-                                    'country_code' => 'GB'
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z3',
-                        'Shipping Zone Name'        => 'Zone 3',
-                        'Shipping Zone Price'       => json_encode(
+                                'country_code' => 'CZ'
+                            ),
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 500,
-                                        'price' => 14.95
-                                    ),
-                                    array(
-                                        'from'  => 500,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
+                                'country_code' => 'DE'
+                            ),
                             array(
-                                array(
-                                    'country_code' => 'BG'
-                                ),
-                                array(
-                                    'country_code' => 'EE'
-                                ),
-                                array(
-                                    'country_code' => 'FI'
-                                ),
-                                array(
-                                    'country_code' => 'SE'
-                                ),
-                                array(
-                                    'country_code' => 'IE'
-                                ),
-                                array(
-                                    'country_code' => 'LT'
-                                ),
-                                array(
-                                    'country_code' => 'LV'
-                                ),
-                                array(
-                                    'country_code' => 'PT'
-                                ),
-                                array(
-                                    'country_code' => 'RO'
-                                ),
-                                array(
-                                    'country_code' => 'ES'
-                                )
+                                'country_code' => 'HU'
+                            ),
+                            array(
+                                'country_code' => 'PL'
                             )
                         )
                     )
                 ),
-                'EU' => array(
-
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 150,
-                                        'price' => 4.95
-                                    ),
-                                    array(
-                                        'from'  => 150,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zóna 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 250,
+                                    'price' => 7.95
+                                ),
+                                array(
+                                    'from'  => 250,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'SK'
-                                ),
-                                array(
-                                    'country_code' => 'AT'
-                                ),
-                                array(
-                                    'country_code' => 'CZ'
-                                ),
-                                array(
-                                    'country_code' => 'DE'
-                                ),
-                                array(
-                                    'country_code' => 'HU'
-                                ),
-                                array(
-                                    'country_code' => 'PL'
-                                )
+
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z2',
-                        'Shipping Zone Name'        => 'Zone 2',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 250,
-                                        'price' => 7.95
-                                    ),
-                                    array(
-                                        'from'  => 250,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
+                                'country_code' => 'FR'
+                            ),
                             array(
-                                array(
-                                    'country_code' => 'FR'
-                                ),
-                                array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'LU'
-                                ),
-                                array(
-                                    'country_code' => 'NL'
-                                ),
-                                array(
-                                    'country_code' => 'HR'
-                                ),
-                                array(
-                                    'country_code' => 'DK'
-                                ),
-                                array(
-                                    'country_code' => 'IT'
-                                ),
-                                array(
-                                    'country_code' => 'SI'
-                                ),
-                                array(
-                                    'country_code' => 'GB'
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z3',
-                        'Shipping Zone Name'        => 'Zone 3',
-                        'Shipping Zone Price'       => json_encode(
+                                'country_code' => 'BE'
+                            ),
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 500,
-                                        'price' => 14.95
-                                    ),
-                                    array(
-                                        'from'  => 500,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
+                                'country_code' => 'LU'
+                            ),
                             array(
-                                array(
-                                    'country_code' => 'BG'
-                                ),
-                                array(
-                                    'country_code' => 'EE'
-                                ),
-                                array(
-                                    'country_code' => 'FI'
-                                ),
-                                array(
-                                    'country_code' => 'SE'
-                                ),
-                                array(
-                                    'country_code' => 'IE'
-                                ),
-                                array(
-                                    'country_code' => 'LT'
-                                ),
-                                array(
-                                    'country_code' => 'LV'
-                                ),
-                                array(
-                                    'country_code' => 'PT'
-                                ),
-                                array(
-                                    'country_code' => 'RO'
-                                ),
-                                array(
-                                    'country_code' => 'ES'
-                                )
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'HR'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'GB'
                             )
                         )
                     )
                 ),
-                'CZ' => array(
-                    array(
-                        'Shipping Zone Code'        => 'CZ',
-                        'Shipping Zone Name'        => 'Czechia',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 2599,
-                                        'price' => 75.95
-                                    ),
-                                    array(
-                                        'from'  => 2599,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Zóna 3',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code' => 'CZ'
+                                    'from'  => 0,
+                                    'to'    => 500,
+                                    'price' => 14.95
+                                ),
+                                array(
+                                    'from'  => 500,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
+
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 3995,
-                                        'price' => 127.95
-                                    ),
-                                    array(
-                                        'from'  => 3995,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
+                                'country_code' => 'BG'
+                            ),
+                            array(
+                                'country_code' => 'EE'
+                            ),
+                            array(
+                                'country_code' => 'FI'
+                            ),
+                            array(
+                                'country_code' => 'SE'
+                            ),
+                            array(
+                                'country_code' => 'IE'
+                            ),
+                            array(
+                                'country_code' => 'LT'
+                            ),
+                            array(
+                                'country_code' => 'LV'
+                            ),
+                            array(
+                                'country_code' => 'PT'
+                            ),
+                            array(
+                                'country_code' => 'RO'
+                            ),
+                            array(
+                                'country_code' => 'ES'
                             )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+                        )
+                    )
+                )
+            ),
+            'AT' => array(
+
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code' => 'AT'
+                                    'from'  => 0,
+                                    'to'    => 150,
+                                    'price' => 4.95
                                 ),
                                 array(
-                                    'country_code' => 'SK'
-                                ),
-                                array(
-                                    'country_code' => 'DE'
-                                ),
-                                array(
-                                    'country_code' => 'HU'
-                                ),
-                                array(
-                                    'country_code' => 'PL'
+                                    'from'  => 150,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
+
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z2',
-                        'Shipping Zone Name'        => 'Zone 2',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 6450,
-                                        'price' => 210
-                                    ),
-                                    array(
-                                        'from'  => 6450,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
+                                'country_code' => 'SK'
+                            ),
+                            array(
+                                'country_code' => 'AT'
+                            ),
+                            array(
+                                'country_code' => 'CZ'
+                            ),
+                            array(
+                                'country_code' => 'DE'
+                            ),
+                            array(
+                                'country_code' => 'HU'
+                            ),
+                            array(
+                                'country_code' => 'PL'
                             )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zone 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code' => 'FR'
+                                    'from'  => 0,
+                                    'to'    => 250,
+                                    'price' => 7.95
                                 ),
                                 array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'LU'
-                                ),
-                                array(
-                                    'country_code' => 'NL'
-                                ),
-                                array(
-                                    'country_code' => 'HR'
-                                ),
-                                array(
-                                    'country_code' => 'DK'
-                                ),
-                                array(
-                                    'country_code' => 'IT'
-                                ),
-                                array(
-                                    'country_code' => 'SI'
-                                ),
-                                array(
-                                    'country_code' => 'GB'
+                                    'from'  => 250,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
+
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z3',
-                        'Shipping Zone Name'        => 'Zone 3',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 12900,
-                                        'price' => 390
-                                    ),
-                                    array(
-                                        'from'  => 12900,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
+                                'country_code' => 'FR'
+                            ),
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'LU'
+                            ),
+                            array(
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'HR'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'GB'
                             )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Zone 3',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 500,
+                                    'price' => 14.95
+                                ),
+                                array(
+                                    'from'  => 500,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BG'
+                            ),
+                            array(
+                                'country_code' => 'EE'
+                            ),
+                            array(
+                                'country_code' => 'FI'
+                            ),
+                            array(
+                                'country_code' => 'SE'
+                            ),
+                            array(
+                                'country_code' => 'IE'
+                            ),
+                            array(
+                                'country_code' => 'LT'
+                            ),
+                            array(
+                                'country_code' => 'LV'
+                            ),
+                            array(
+                                'country_code' => 'PT'
+                            ),
+                            array(
+                                'country_code' => 'RO'
+                            ),
+                            array(
+                                'country_code' => 'ES'
+                            )
+                        )
+                    )
+                )
+            ),
+            'EU' => array(
+
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 150,
+                                    'price' => 4.95
+                                ),
+                                array(
+                                    'from'  => 150,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'SK'
+                            ),
+                            array(
+                                'country_code' => 'AT'
+                            ),
+                            array(
+                                'country_code' => 'CZ'
+                            ),
+                            array(
+                                'country_code' => 'DE'
+                            ),
+                            array(
+                                'country_code' => 'HU'
+                            ),
+                            array(
+                                'country_code' => 'PL'
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zone 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 250,
+                                    'price' => 7.95
+                                ),
+                                array(
+                                    'from'  => 250,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'FR'
+                            ),
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'LU'
+                            ),
+                            array(
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'HR'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'GB'
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Zone 3',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 500,
+                                    'price' => 14.95
+                                ),
+                                array(
+                                    'from'  => 500,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BG'
+                            ),
+                            array(
+                                'country_code' => 'EE'
+                            ),
+                            array(
+                                'country_code' => 'FI'
+                            ),
+                            array(
+                                'country_code' => 'SE'
+                            ),
+                            array(
+                                'country_code' => 'IE'
+                            ),
+                            array(
+                                'country_code' => 'LT'
+                            ),
+                            array(
+                                'country_code' => 'LV'
+                            ),
+                            array(
+                                'country_code' => 'PT'
+                            ),
+                            array(
+                                'country_code' => 'RO'
+                            ),
+                            array(
+                                'country_code' => 'ES'
+                            )
+                        )
+                    )
+                )
+            ),
+            'CZ' => array(
+                array(
+                    'Shipping Zone Code'        => 'CZ',
+                    'Shipping Zone Name'        => 'Czechia',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 2599,
+                                    'price' => 75.95
+                                ),
+                                array(
+                                    'from'  => 2599,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'CZ'
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 3995,
+                                    'price' => 127.95
+                                ),
+                                array(
+                                    'from'  => 3995,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'AT'
+                            ),
+                            array(
+                                'country_code' => 'SK'
+                            ),
+                            array(
+                                'country_code' => 'DE'
+                            ),
+                            array(
+                                'country_code' => 'HU'
+                            ),
+                            array(
+                                'country_code' => 'PL'
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zone 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 6450,
+                                    'price' => 210
+                                ),
+                                array(
+                                    'from'  => 6450,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'FR'
+                            ),
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'LU'
+                            ),
+                            array(
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'HR'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'GB'
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Zone 3',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 12900,
+                                    'price' => 390
+                                ),
+                                array(
+                                    'from'  => 12900,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BG'
+                            ),
+                            array(
+                                'country_code' => 'EE'
+                            ),
+                            array(
+                                'country_code' => 'FI'
+                            ),
+                            array(
+                                'country_code' => 'SE'
+                            ),
+                            array(
+                                'country_code' => 'IE'
+                            ),
+                            array(
+                                'country_code' => 'LT'
+                            ),
+                            array(
+                                'country_code' => 'LV'
+                            ),
+                            array(
+                                'country_code' => 'PT'
+                            ),
+                            array(
+                                'country_code' => 'RO'
+                            ),
+                            array(
+                                'country_code' => 'ES'
+                            )
+                        )
+                    )
+                )
+            ),
+            'HU' => array(
+
+                array(
+                    'Shipping Zone Code'        => 'Z0',
+                    'Shipping Zone Name'        => 'Zone 0',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 30000,
+                                    'price' => 1250
+                                ),
+                                array(
+                                    'from'  => 30000,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'HU'
+                            ),
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zone 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 50000,
+                                    'price' => 1650
+                                ),
+                                array(
+                                    'from'  => 50000,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'AU'
+                            ),
+                            array(
+                                'country_code' => 'SK'
+                            ),
+                            array(
+                                'country_code' => 'CZ'
+                            ),
+                            array(
+                                'country_code' => 'DE'
+                            ),
+                            array(
+                                'country_code' => 'PL'
+                            ),
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Zone 3',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 80000,
+                                    'price' => 2450
+                                ),
+                                array(
+                                    'from'  => 80000,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'FR'
+                            ),
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'LU'
+                            ),
+                            array(
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'HR'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'GB'
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z4',
+                    'Shipping Zone Name'        => 'Zone 4',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 120000,
+                                    'price' => 4900
+                                ),
+                                array(
+                                    'from'  => 120000,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+
                             array(
                                 array(
                                     'country_code' => 'BG'
@@ -1075,6 +1243,453 @@ function get_discounted_shipping_zones_data($account_code) {
                                 array(
                                     'country_code' => 'ES'
                                 )
+                            )
+                        )
+
+                ),
+
+            ),
+        ),
+        'AW'   => array(
+            'UK' => array(
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zone 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 495,
+                                    'price' => 15
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code'          => 'GB',
+                                'included_postal_codes' => '/^((BT|IM|IV|KW|HS|ZE)\d+)|(AB(36|37|38|55|56)|FK(17|18|19|20|21)|PA[2-8][0-9]|PH(19|[2-5][0-9])|KA(27|28)|PO[3-4][0-9]|TR(21|22|23|24|25))\s.{3}$/',
+                                //
+
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 7.5
+                                ),
+                                array(
+                                    'from'  => 175,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code'          => 'GB',
+                                'excluded_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Zone 3',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 15
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 250,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 250,
+                                    'to'    => 495,
+                                    'price' => 35
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'JE'
+                            ),
+                            array(
+                                'country_code' => 'GG'
+                            ),
+                            array(
+                                'country_code'          => 'GB',
+                                'included_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
+
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z4',
+                    'Shipping Zone Name'        => 'Zone 4',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 10
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 495,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'IE'
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z5',
+                    'Shipping Zone Name'        => 'Zone 5',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 15
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 400,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 400,
+                                    'to'    => 750,
+                                    'price' => 35
+                                ),
+                                array(
+                                    'from'  => 750,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'FR'
+                            ),
+                            array(
+                                'country_code' => 'LX'
+                            ),
+                            array(
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'CZ'
+                            ),
+                            array(
+                                'country_code' => 'SK'
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z6',
+                    'Shipping Zone Name'        => 'Zone 6',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 20
+                                ),
+                                array(
+                                    'from'  => 175,
+                                    'to'    => 450,
+                                    'price' => 40
+                                ),
+                                array(
+                                    'from'  => 450,
+                                    'to'    => 975,
+                                    'price' => 60
+                                ),
+                                array(
+                                    'from'  => 975,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'AT'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'FI'
+                            ),
+                            array(
+                                'country_code' => 'DE'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'SE'
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z7',
+                    'Shipping Zone Name'        => 'Zone 7',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 175,
+                                    'to'    => 450,
+                                    'price' => 45
+                                ),
+                                array(
+                                    'from'  => 450,
+                                    'to'    => 975,
+                                    'price' => 65
+                                ),
+                                array(
+                                    'from'  => 975,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BG'
+                            ),
+                            array(
+                                'country_code' => 'EE'
+                            ),
+                            array(
+                                'country_code' => 'HU'
+                            ),
+                            array(
+                                'country_code' => 'LV'
+                            ),
+                            array(
+                                'country_code' => 'LT'
+                            ),
+                            array(
+                                'country_code' => 'PL'
+                            ),
+                            array(
+                                'country_code' => 'PT'
+                            ),
+                            array(
+                                'country_code' => 'RO'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'ES'
+                            )
+
+                        )
+                    )
+                ),
+
+
+            ),
+            'DE' => array(
+
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 350,
+                                    'price' => 14.95
+                                ),
+                                array(
+                                    'from'  => 350,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'DE'
+                            ),
+                            array(
+                                'country_code' => 'AT'
+                            ),
+                            array(
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'CZ'
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zone 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 495,
+                                    'price' => 18.85
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'LX'
+                            ),
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'FR'
+                            )
+                        )
+                    )
+                )
+
+
+            ),
+            'FR' => array(
+
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 495,
+                                    'price' => 18.85
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'FR'
+                            ),
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'LX'
                             )
                         )
                     )
@@ -1082,1175 +1697,728 @@ function get_discounted_shipping_zones_data($account_code) {
 
 
             ),
-            'AW'   => array(
-                'UK' => array(
-                    array(
-                        'Shipping Zone Code'        => 'Z2',
-                        'Shipping Zone Name'        => 'Zone 2',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 495,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
+            'IT' => array(
 
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code'          => 'GB',
-                                    'included_postal_codes' => '/^((BT|IM|IV|KW|HS|ZE)\d+)|(AB(36|37|38|55|56)|FK(17|18|19|20|21)|PA[2-8][0-9]|PH(19|[2-5][0-9])|KA(27|28)|PO[3-4][0-9]|TR(21|22|23|24|25))\s.{3}$/',
-                                    //
-
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 7.5
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code'          => 'GB',
-                                    'excluded_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z3',
-                        'Shipping Zone Name'        => 'Zone 3',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 250,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 250,
-                                        'to'    => 495,
-                                        'price' => 35
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'JE'
+                                    'from'  => 0,
+                                    'to'    => 495,
+                                    'price' => 14.95
                                 ),
                                 array(
-                                    'country_code' => 'GG'
-                                ),
-                                array(
-                                    'country_code'          => 'GB',
-                                    'included_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
-
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z4',
-                        'Shipping Zone Name'        => 'Zone 4',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 10
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 495,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'IE'
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
 
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z5',
-                        'Shipping Zone Name'        => 'Zone 5',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 400,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 400,
-                                        'to'    => 750,
-                                        'price' => 35
-                                    ),
-                                    array(
-                                        'from'  => 750,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'FR'
-                                ),
-                                array(
-                                    'country_code' => 'LX'
-                                ),
-                                array(
-                                    'country_code' => 'NL'
-                                ),
-                                array(
-                                    'country_code' => 'CZ'
-                                ),
-                                array(
-                                    'country_code' => 'SK'
-                                )
-
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z6',
-                        'Shipping Zone Name'        => 'Zone 6',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 20
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 450,
-                                        'price' => 40
-                                    ),
-                                    array(
-                                        'from'  => 450,
-                                        'to'    => 975,
-                                        'price' => 60
-                                    ),
-                                    array(
-                                        'from'  => 975,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'AT'
-                                ),
-                                array(
-                                    'country_code' => 'DK'
-                                ),
-                                array(
-                                    'country_code' => 'FI'
-                                ),
-                                array(
-                                    'country_code' => 'DE'
-                                ),
-                                array(
-                                    'country_code' => 'IT'
-                                ),
-                                array(
-                                    'country_code' => 'SE'
-                                )
-
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z7',
-                        'Shipping Zone Name'        => 'Zone 7',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 450,
-                                        'price' => 45
-                                    ),
-                                    array(
-                                        'from'  => 450,
-                                        'to'    => 975,
-                                        'price' => 65
-                                    ),
-                                    array(
-                                        'from'  => 975,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'BG'
-                                ),
-                                array(
-                                    'country_code' => 'EE'
-                                ),
-                                array(
-                                    'country_code' => 'HU'
-                                ),
-                                array(
-                                    'country_code' => 'LV'
-                                ),
-                                array(
-                                    'country_code' => 'LT'
-                                ),
-                                array(
-                                    'country_code' => 'PL'
-                                ),
-                                array(
-                                    'country_code' => 'PT'
-                                ),
-                                array(
-                                    'country_code' => 'RO'
-                                ),
-                                array(
-                                    'country_code' => 'SI'
-                                ),
-                                array(
-                                    'country_code' => 'ES'
-                                )
-
-                            )
-                        )
-                    ),
-
-
-                ),
-                'DE' => array(
-
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 350,
-                                        'price' => 14.95
-                                    ),
-                                    array(
-                                        'from'  => 350,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'DE'
-                                ),
-                                array(
-                                    'country_code' => 'AT'
-                                ),
-                                array(
-                                    'country_code' => 'NL'
-                                ),
-                                array(
-                                    'country_code' => 'DK'
-                                ),
-                                array(
-                                    'country_code' => 'CZ'
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z2',
-                        'Shipping Zone Name'        => 'Zone 2',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 495,
-                                        'price' => 18.85
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'LX'
-                                ),
-                                array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'FR'
-                                )
+                                'country_code' => 'IT'
                             )
                         )
                     )
-
-
                 ),
-                'FR' => array(
 
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 495,
-                                        'price' => 18.85
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
 
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+            ),
+            'PL' => array(
+
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code' => 'FR'
+                                    'from'  => 0,
+                                    'to'    => 1500,
+                                    'price' => 65
                                 ),
                                 array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'LX'
+                                    'from'  => 1500,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
+
                             )
                         )
                     ),
-
-
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'PL'
+                            )
+                        )
+                    )
                 ),
-                'IT' => array(
 
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 495,
-                                        'price' => 14.95
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
 
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+            ),
+            'HA' => array(
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zone 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code' => 'IT'
+                                    'from'  => 0,
+                                    'to'    => 495,
+                                    'price' => 15
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
+
                             )
                         )
                     ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code'          => 'GB',
+                                'included_postal_codes' => '/^((BT|IM|IV|KW|HS|ZE)\d+)|(AB(36|37|38|55|56)|FK(17|18|19|20|21)|PA[2-8][0-9]|PH(19|[2-5][0-9])|KA(27|28)|PO[3-4][0-9]|TR(21|22|23|24|25))\s.{3}$/',
+                                //
 
-
+                            )
+                        )
+                    )
                 ),
-                'PL' => array(
-
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 1500,
-                                        'price' => 65
-                                    ),
-                                    array(
-                                        'from'  => 1500,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code' => 'PL'
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 7.5
+                                ),
+                                array(
+                                    'from'  => 175,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
+
                             )
                         )
                     ),
-
-
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code'          => 'GB',
+                                'excluded_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
+                            )
+                        )
+                    )
                 ),
-                'HA' => array(
-                    array(
-                        'Shipping Zone Code'        => 'Z2',
-                        'Shipping Zone Name'        => 'Zone 2',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 495,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Zone 3',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code'          => 'GB',
-                                    'included_postal_codes' => '/^((BT|IM|IV|KW|HS|ZE)\d+)|(AB(36|37|38|55|56)|FK(17|18|19|20|21)|PA[2-8][0-9]|PH(19|[2-5][0-9])|KA(27|28)|PO[3-4][0-9]|TR(21|22|23|24|25))\s.{3}$/',
-                                    //
-
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 7.5
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code'          => 'GB',
-                                    'excluded_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z3',
-                        'Shipping Zone Name'        => 'Zone 3',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 250,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 250,
-                                        'to'    => 495,
-                                        'price' => 35
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'JE'
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 15
                                 ),
                                 array(
-                                    'country_code' => 'GG'
+                                    'from'  => 100,
+                                    'to'    => 250,
+                                    'price' => 25
                                 ),
                                 array(
-                                    'country_code'          => 'GB',
-                                    'included_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
-
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z4',
-                        'Shipping Zone Name'        => 'Zone 4',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 10
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 495,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+                                    'from'  => 250,
+                                    'to'    => 495,
+                                    'price' => 35
+                                ),
                                 array(
-                                    'country_code' => 'IE'
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
 
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z5',
-                        'Shipping Zone Name'        => 'Zone 5',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 400,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 400,
-                                        'to'    => 750,
-                                        'price' => 35
-                                    ),
-                                    array(
-                                        'from'  => 750,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
+                                'country_code' => 'JE'
+                            ),
                             array(
-                                array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'FR'
-                                ),
-                                array(
-                                    'country_code' => 'LX'
-                                ),
-                                array(
-                                    'country_code' => 'NL'
-                                ),
-                                array(
-                                    'country_code' => 'CZ'
-                                ),
-                                array(
-                                    'country_code' => 'SK'
-                                )
+                                'country_code' => 'GG'
+                            ),
+                            array(
+                                'country_code'          => 'GB',
+                                'included_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
 
                             )
                         )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z6',
-                        'Shipping Zone Name'        => 'Zone 6',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 20
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 450,
-                                        'price' => 40
-                                    ),
-                                    array(
-                                        'from'  => 450,
-                                        'to'    => 975,
-                                        'price' => 60
-                                    ),
-                                    array(
-                                        'from'  => 975,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'AT'
-                                ),
-                                array(
-                                    'country_code' => 'DK'
-                                ),
-                                array(
-                                    'country_code' => 'FI'
-                                ),
-                                array(
-                                    'country_code' => 'DE'
-                                ),
-                                array(
-                                    'country_code' => 'IT'
-                                ),
-                                array(
-                                    'country_code' => 'SE'
-                                )
-
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z7',
-                        'Shipping Zone Name'        => 'Zone 7',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 450,
-                                        'price' => 45
-                                    ),
-                                    array(
-                                        'from'  => 450,
-                                        'to'    => 975,
-                                        'price' => 65
-                                    ),
-                                    array(
-                                        'from'  => 975,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'BG'
-                                ),
-                                array(
-                                    'country_code' => 'EE'
-                                ),
-                                array(
-                                    'country_code' => 'HU'
-                                ),
-                                array(
-                                    'country_code' => 'LV'
-                                ),
-                                array(
-                                    'country_code' => 'LT'
-                                ),
-                                array(
-                                    'country_code' => 'PL'
-                                ),
-                                array(
-                                    'country_code' => 'PT'
-                                ),
-                                array(
-                                    'country_code' => 'RO'
-                                ),
-                                array(
-                                    'country_code' => 'SI'
-                                ),
-                                array(
-                                    'country_code' => 'ES'
-                                )
-
-                            )
-                        )
-                    ),
-
-
+                    )
                 ),
-                'AC' => array(
-                    array(
-                        'Shipping Zone Code'        => 'Z2',
-                        'Shipping Zone Name'        => 'Zone 2',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 495,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+                array(
+                    'Shipping Zone Code'        => 'Z4',
+                    'Shipping Zone Name'        => 'Zone 4',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code'          => 'GB',
-                                    'included_postal_codes' => '/^((BT|IM|IV|KW|HS|ZE)\d+)|(AB(36|37|38|55|56)|FK(17|18|19|20|21)|PA[2-8][0-9]|PH(19|[2-5][0-9])|KA(27|28)|PO[3-4][0-9]|TR(21|22|23|24|25))\s.{3}$/',
-                                    //
-
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 7.5
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code'          => 'GB',
-                                    'excluded_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z3',
-                        'Shipping Zone Name'        => 'Zone 3',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 250,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 250,
-                                        'to'    => 495,
-                                        'price' => 35
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'JE'
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 10
                                 ),
                                 array(
-                                    'country_code' => 'GG'
+                                    'from'  => 100,
+                                    'to'    => 495,
+                                    'price' => 25
                                 ),
                                 array(
-                                    'country_code'          => 'GB',
-                                    'included_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
-
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z4',
-                        'Shipping Zone Name'        => 'Zone 4',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 10
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 495,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'IE'
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
 
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z5',
-                        'Shipping Zone Name'        => 'Zone 5',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 400,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 400,
-                                        'to'    => 750,
-                                        'price' => 35
-                                    ),
-                                    array(
-                                        'from'  => 750,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
+                                'country_code' => 'IE'
                             )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'FR'
-                                ),
-                                array(
-                                    'country_code' => 'LX'
-                                ),
-                                array(
-                                    'country_code' => 'NL'
-                                ),
-                                array(
-                                    'country_code' => 'CZ'
-                                ),
-                                array(
-                                    'country_code' => 'SK'
-                                )
 
-                            )
                         )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z6',
-                        'Shipping Zone Name'        => 'Zone 6',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 20
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 450,
-                                        'price' => 40
-                                    ),
-                                    array(
-                                        'from'  => 450,
-                                        'to'    => 975,
-                                        'price' => 60
-                                    ),
-                                    array(
-                                        'from'  => 975,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'AT'
-                                ),
-                                array(
-                                    'country_code' => 'DK'
-                                ),
-                                array(
-                                    'country_code' => 'FI'
-                                ),
-                                array(
-                                    'country_code' => 'DE'
-                                ),
-                                array(
-                                    'country_code' => 'IT'
-                                ),
-                                array(
-                                    'country_code' => 'SE'
-                                )
-
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z7',
-                        'Shipping Zone Name'        => 'Zone 7',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 450,
-                                        'price' => 45
-                                    ),
-                                    array(
-                                        'from'  => 450,
-                                        'to'    => 975,
-                                        'price' => 65
-                                    ),
-                                    array(
-                                        'from'  => 975,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'BG'
-                                ),
-                                array(
-                                    'country_code' => 'EE'
-                                ),
-                                array(
-                                    'country_code' => 'HU'
-                                ),
-                                array(
-                                    'country_code' => 'LV'
-                                ),
-                                array(
-                                    'country_code' => 'LT'
-                                ),
-                                array(
-                                    'country_code' => 'PL'
-                                ),
-                                array(
-                                    'country_code' => 'PT'
-                                ),
-                                array(
-                                    'country_code' => 'RO'
-                                ),
-                                array(
-                                    'country_code' => 'SI'
-                                ),
-                                array(
-                                    'country_code' => 'ES'
-                                )
-
-                            )
-                        )
-                    ),
-
-
+                    )
                 ),
-            )
+                array(
+                    'Shipping Zone Code'        => 'Z5',
+                    'Shipping Zone Name'        => 'Zone 5',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 15
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 400,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 400,
+                                    'to'    => 750,
+                                    'price' => 35
+                                ),
+                                array(
+                                    'from'  => 750,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'FR'
+                            ),
+                            array(
+                                'country_code' => 'LX'
+                            ),
+                            array(
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'CZ'
+                            ),
+                            array(
+                                'country_code' => 'SK'
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z6',
+                    'Shipping Zone Name'        => 'Zone 6',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 20
+                                ),
+                                array(
+                                    'from'  => 175,
+                                    'to'    => 450,
+                                    'price' => 40
+                                ),
+                                array(
+                                    'from'  => 450,
+                                    'to'    => 975,
+                                    'price' => 60
+                                ),
+                                array(
+                                    'from'  => 975,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'AT'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'FI'
+                            ),
+                            array(
+                                'country_code' => 'DE'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'SE'
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z7',
+                    'Shipping Zone Name'        => 'Zone 7',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 175,
+                                    'to'    => 450,
+                                    'price' => 45
+                                ),
+                                array(
+                                    'from'  => 450,
+                                    'to'    => 975,
+                                    'price' => 65
+                                ),
+                                array(
+                                    'from'  => 975,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BG'
+                            ),
+                            array(
+                                'country_code' => 'EE'
+                            ),
+                            array(
+                                'country_code' => 'HU'
+                            ),
+                            array(
+                                'country_code' => 'LV'
+                            ),
+                            array(
+                                'country_code' => 'LT'
+                            ),
+                            array(
+                                'country_code' => 'PL'
+                            ),
+                            array(
+                                'country_code' => 'PT'
+                            ),
+                            array(
+                                'country_code' => 'RO'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'ES'
+                            )
+
+                        )
+                    )
+                ),
 
 
-        );
+            ),
+            'AC' => array(
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zone 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 495,
+                                    'price' => 15
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code'          => 'GB',
+                                'included_postal_codes' => '/^((BT|IM|IV|KW|HS|ZE)\d+)|(AB(36|37|38|55|56)|FK(17|18|19|20|21)|PA[2-8][0-9]|PH(19|[2-5][0-9])|KA(27|28)|PO[3-4][0-9]|TR(21|22|23|24|25))\s.{3}$/',
+                                //
+
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 7.5
+                                ),
+                                array(
+                                    'from'  => 175,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code'          => 'GB',
+                                'excluded_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Zone 3',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 15
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 250,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 250,
+                                    'to'    => 495,
+                                    'price' => 35
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'JE'
+                            ),
+                            array(
+                                'country_code' => 'GG'
+                            ),
+                            array(
+                                'country_code'          => 'GB',
+                                'included_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
+
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z4',
+                    'Shipping Zone Name'        => 'Zone 4',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 10
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 495,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'IE'
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z5',
+                    'Shipping Zone Name'        => 'Zone 5',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 15
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 400,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 400,
+                                    'to'    => 750,
+                                    'price' => 35
+                                ),
+                                array(
+                                    'from'  => 750,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'FR'
+                            ),
+                            array(
+                                'country_code' => 'LX'
+                            ),
+                            array(
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'CZ'
+                            ),
+                            array(
+                                'country_code' => 'SK'
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z6',
+                    'Shipping Zone Name'        => 'Zone 6',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 20
+                                ),
+                                array(
+                                    'from'  => 175,
+                                    'to'    => 450,
+                                    'price' => 40
+                                ),
+                                array(
+                                    'from'  => 450,
+                                    'to'    => 975,
+                                    'price' => 60
+                                ),
+                                array(
+                                    'from'  => 975,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'AT'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'FI'
+                            ),
+                            array(
+                                'country_code' => 'DE'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'SE'
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z7',
+                    'Shipping Zone Name'        => 'Zone 7',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 175,
+                                    'to'    => 450,
+                                    'price' => 45
+                                ),
+                                array(
+                                    'from'  => 450,
+                                    'to'    => 975,
+                                    'price' => 65
+                                ),
+                                array(
+                                    'from'  => 975,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BG'
+                            ),
+                            array(
+                                'country_code' => 'EE'
+                            ),
+                            array(
+                                'country_code' => 'HU'
+                            ),
+                            array(
+                                'country_code' => 'LV'
+                            ),
+                            array(
+                                'country_code' => 'LT'
+                            ),
+                            array(
+                                'country_code' => 'PL'
+                            ),
+                            array(
+                                'country_code' => 'PT'
+                            ),
+                            array(
+                                'country_code' => 'RO'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'ES'
+                            )
+
+                        )
+                    )
+                ),
+
+
+            ),
+        )
+
+
+    );
 
     return $shipping_zones_data[$account_code];
 
@@ -2258,2010 +2426,2194 @@ function get_discounted_shipping_zones_data($account_code) {
 
 function get_shipping_zones_data($account_code) {
 
-    $shipping_zones_data =
-        array(
-            'AWEU' => array(
-                'SK' => array(
-                    array(
-                        'Shipping Zone Code'        => 'SK',
-                        'Shipping Zone Name'        => 'Slovensko',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 150,
-                                        'price' => 4.95
-                                    ),
-                                    array(
-                                        'from'  => 150,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+    $shipping_zones_data = array(
+        'AWEU' => array(
+            'SK' => array(
+                array(
+                    'Shipping Zone Code'        => 'SK',
+                    'Shipping Zone Name'        => 'Slovensko',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code' => 'SK'
+                                    'from'  => 0,
+                                    'to'    => 150,
+                                    'price' => 4.95
+                                ),
+                                array(
+                                    'from'  => 150,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
+
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zóna 1',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 250,
-                                        'price' => 9.95
-                                    ),
-                                    array(
-                                        'from'  => 250,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'AT'
-                                ),
-                                array(
-                                    'country_code' => 'CZ'
-                                ),
-                                array(
-                                    'country_code' => 'DE'
-                                ),
-                                array(
-                                    'country_code' => 'HU'
-                                ),
-                                array(
-                                    'country_code' => 'PL'
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z2',
-                        'Shipping Zone Name'        => 'Zóna 2',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 350,
-                                        'price' => 14.95
-                                    ),
-                                    array(
-                                        'from'  => 350,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'FR'
-                                ),
-                                array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'LU'
-                                ),
-                                array(
-                                    'country_code' => 'NL'
-                                ),
-                                array(
-                                    'country_code' => 'HR'
-                                ),
-                                array(
-                                    'country_code' => 'DK'
-                                ),
-                                array(
-                                    'country_code' => 'IT'
-                                ),
-                                array(
-                                    'country_code' => 'SI'
-                                ),
-                                array(
-                                    'country_code' => 'GB'
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z3',
-                        'Shipping Zone Name'        => 'Zóna 3',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 795,
-                                        'price' => 29.95
-                                    ),
-                                    array(
-                                        'from'  => 795,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'BG'
-                                ),
-                                array(
-                                    'country_code' => 'EE'
-                                ),
-                                array(
-                                    'country_code' => 'FI'
-                                ),
-                                array(
-                                    'country_code' => 'SE'
-                                ),
-                                array(
-                                    'country_code' => 'IE'
-                                ),
-                                array(
-                                    'country_code' => 'LT'
-                                ),
-                                array(
-                                    'country_code' => 'LV'
-                                ),
-                                array(
-                                    'country_code' => 'PT'
-                                ),
-                                array(
-                                    'country_code' => 'RO'
-                                ),
-                                array(
-                                    'country_code' => 'ES'
-                                )
+                                'country_code' => 'SK'
                             )
                         )
                     )
                 ),
-                'AT' => array(
-
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 250,
-                                        'price' => 9.95
-                                    ),
-                                    array(
-                                        'from'  => 250,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zóna 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 250,
+                                    'price' => 9.95
+                                ),
+                                array(
+                                    'from'  => 250,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'SK'
-                                ),
-                                array(
-                                    'country_code' => 'AT'
-                                ),
-                                array(
-                                    'country_code' => 'CZ'
-                                ),
-                                array(
-                                    'country_code' => 'DE'
-                                ),
-                                array(
-                                    'country_code' => 'HU'
-                                ),
-                                array(
-                                    'country_code' => 'PL'
-                                )
+
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z2',
-                        'Shipping Zone Name'        => 'Zone 2',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 350,
-                                        'price' => 14.95
-                                    ),
-                                    array(
-                                        'from'  => 350,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
+                                'country_code' => 'AT'
+                            ),
                             array(
-                                array(
-                                    'country_code' => 'FR'
-                                ),
-                                array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'LU'
-                                ),
-                                array(
-                                    'country_code' => 'NL'
-                                ),
-                                array(
-                                    'country_code' => 'HR'
-                                ),
-                                array(
-                                    'country_code' => 'DK'
-                                ),
-                                array(
-                                    'country_code' => 'IT'
-                                ),
-                                array(
-                                    'country_code' => 'SI'
-                                ),
-                                array(
-                                    'country_code' => 'GB'
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z3',
-                        'Shipping Zone Name'        => 'Zone 3',
-                        'Shipping Zone Price'       => json_encode(
+                                'country_code' => 'CZ'
+                            ),
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 795,
-                                        'price' => 29.95
-                                    ),
-                                    array(
-                                        'from'  => 795,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
+                                'country_code' => 'DE'
+                            ),
                             array(
-                                array(
-                                    'country_code' => 'BG'
-                                ),
-                                array(
-                                    'country_code' => 'EE'
-                                ),
-                                array(
-                                    'country_code' => 'FI'
-                                ),
-                                array(
-                                    'country_code' => 'SE'
-                                ),
-                                array(
-                                    'country_code' => 'IE'
-                                ),
-                                array(
-                                    'country_code' => 'LT'
-                                ),
-                                array(
-                                    'country_code' => 'LV'
-                                ),
-                                array(
-                                    'country_code' => 'PT'
-                                ),
-                                array(
-                                    'country_code' => 'RO'
-                                ),
-                                array(
-                                    'country_code' => 'ES'
-                                )
+                                'country_code' => 'HU'
+                            ),
+                            array(
+                                'country_code' => 'PL'
                             )
                         )
                     )
                 ),
-                'EU' => array(
-
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 250,
-                                        'price' => 9.95
-                                    ),
-                                    array(
-                                        'from'  => 250,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zóna 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 350,
+                                    'price' => 14.95
+                                ),
+                                array(
+                                    'from'  => 350,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'SK'
-                                ),
-                                array(
-                                    'country_code' => 'AT'
-                                ),
-                                array(
-                                    'country_code' => 'CZ'
-                                ),
-                                array(
-                                    'country_code' => 'DE'
-                                ),
-                                array(
-                                    'country_code' => 'HU'
-                                ),
-                                array(
-                                    'country_code' => 'PL'
-                                )
+
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z2',
-                        'Shipping Zone Name'        => 'Zone 2',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 350,
-                                        'price' => 14.95
-                                    ),
-                                    array(
-                                        'from'  => 350,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
+                                'country_code' => 'FR'
+                            ),
                             array(
-                                array(
-                                    'country_code' => 'FR'
-                                ),
-                                array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'LU'
-                                ),
-                                array(
-                                    'country_code' => 'NL'
-                                ),
-                                array(
-                                    'country_code' => 'HR'
-                                ),
-                                array(
-                                    'country_code' => 'DK'
-                                ),
-                                array(
-                                    'country_code' => 'IT'
-                                ),
-                                array(
-                                    'country_code' => 'SI'
-                                ),
-                                array(
-                                    'country_code' => 'GB'
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z3',
-                        'Shipping Zone Name'        => 'Zone 3',
-                        'Shipping Zone Price'       => json_encode(
+                                'country_code' => 'BE'
+                            ),
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 795,
-                                        'price' => 29.95
-                                    ),
-                                    array(
-                                        'from'  => 795,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
+                                'country_code' => 'LU'
+                            ),
                             array(
-                                array(
-                                    'country_code' => 'BG'
-                                ),
-                                array(
-                                    'country_code' => 'EE'
-                                ),
-                                array(
-                                    'country_code' => 'FI'
-                                ),
-                                array(
-                                    'country_code' => 'SE'
-                                ),
-                                array(
-                                    'country_code' => 'IE'
-                                ),
-                                array(
-                                    'country_code' => 'LT'
-                                ),
-                                array(
-                                    'country_code' => 'LV'
-                                ),
-                                array(
-                                    'country_code' => 'PT'
-                                ),
-                                array(
-                                    'country_code' => 'RO'
-                                ),
-                                array(
-                                    'country_code' => 'ES'
-                                )
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'HR'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'GB'
                             )
                         )
                     )
                 ),
-                'CZ' => array(
-                    array(
-                        'Shipping Zone Code'        => 'CZ',
-                        'Shipping Zone Name'        => 'Czechia',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 3994.99,
-                                        'price' => 245
-                                    ),
-                                    array(
-                                        'from'  => 3994.99,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Zóna 3',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code' => 'CZ'
+                                    'from'  => 0,
+                                    'to'    => 795,
+                                    'price' => 29.95
+                                ),
+                                array(
+                                    'from'  => 795,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
+
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 6495,
-                                        'price' => 290
-                                    ),
-                                    array(
-                                        'from'  => 6495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
+                                'country_code' => 'BG'
+                            ),
+                            array(
+                                'country_code' => 'EE'
+                            ),
+                            array(
+                                'country_code' => 'FI'
+                            ),
+                            array(
+                                'country_code' => 'SE'
+                            ),
+                            array(
+                                'country_code' => 'IE'
+                            ),
+                            array(
+                                'country_code' => 'LT'
+                            ),
+                            array(
+                                'country_code' => 'LV'
+                            ),
+                            array(
+                                'country_code' => 'PT'
+                            ),
+                            array(
+                                'country_code' => 'RO'
+                            ),
+                            array(
+                                'country_code' => 'ES'
                             )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+                        )
+                    )
+                )
+            ),
+            'AT' => array(
+
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code' => 'AT'
+                                    'from'  => 0,
+                                    'to'    => 250,
+                                    'price' => 9.95
                                 ),
                                 array(
-                                    'country_code' => 'SK'
-                                ),
-                                array(
-                                    'country_code' => 'DE'
-                                ),
-                                array(
-                                    'country_code' => 'HU'
-                                ),
-                                array(
-                                    'country_code' => 'PL'
+                                    'from'  => 250,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
+
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z2',
-                        'Shipping Zone Name'        => 'Zone 2',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 8995,
-                                        'price' => 390
-                                    ),
-                                    array(
-                                        'from'  => 8995,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
+                                'country_code' => 'SK'
+                            ),
                             array(
-                                array(
-                                    'country_code' => 'FR'
-                                ),
-                                array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'LU'
-                                ),
-                                array(
-                                    'country_code' => 'NL'
-                                ),
-                                array(
-                                    'country_code' => 'HR'
-                                ),
-                                array(
-                                    'country_code' => 'DK'
-                                ),
-                                array(
-                                    'country_code' => 'IT'
-                                ),
-                                array(
-                                    'country_code' => 'SI'
-                                ),
-                                array(
-                                    'country_code' => 'GB'
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z3',
-                        'Shipping Zone Name'        => 'Zone 3',
-                        'Shipping Zone Price'       => json_encode(
+                                'country_code' => 'AT'
+                            ),
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 20495,
-                                        'price' => 790
-                                    ),
-                                    array(
-                                        'from'  => 20495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
+                                'country_code' => 'CZ'
+                            ),
                             array(
-                                array(
-                                    'country_code' => 'BG'
-                                ),
-                                array(
-                                    'country_code' => 'EE'
-                                ),
-                                array(
-                                    'country_code' => 'FI'
-                                ),
-                                array(
-                                    'country_code' => 'SE'
-                                ),
-                                array(
-                                    'country_code' => 'IE'
-                                ),
-                                array(
-                                    'country_code' => 'LT'
-                                ),
-                                array(
-                                    'country_code' => 'LV'
-                                ),
-                                array(
-                                    'country_code' => 'PT'
-                                ),
-                                array(
-                                    'country_code' => 'RO'
-                                ),
-                                array(
-                                    'country_code' => 'ES'
-                                )
+                                'country_code' => 'DE'
+                            ),
+                            array(
+                                'country_code' => 'HU'
+                            ),
+                            array(
+                                'country_code' => 'PL'
                             )
                         )
                     )
                 ),
-                'PL' => array(
-
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Strefa 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 1095,
-                                        'price' => 40
-                                    ),
-                                    array(
-                                        'from'  => 1095,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zone 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 350,
+                                    'price' => 14.95
+                                ),
+                                array(
+                                    'from'  => 350,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'AT'
-                                ),
-                                array(
-                                    'country_code' => 'SK'
-                                ),
-                                array(
-                                    'country_code' => 'CZ'
-                                ),
-                                array(
-                                    'country_code' => 'DE'
-                                ),
-                                array(
-                                    'country_code' => 'HU'
-                                ),
-                                array(
-                                    'country_code' => 'PL'
-                                )
+
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z2',
-                        'Shipping Zone Name'        => 'Strefa 2',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 1495,
-                                        'price' => 65
-                                    ),
-                                    array(
-                                        'from'  => 1495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
+                                'country_code' => 'FR'
+                            ),
                             array(
-                                array(
-                                    'country_code' => 'FR'
-                                ),
-                                array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'LU'
-                                ),
-                                array(
-                                    'country_code' => 'NL'
-                                ),
-                                array(
-                                    'country_code' => 'HR'
-                                ),
-                                array(
-                                    'country_code' => 'DK'
-                                ),
-                                array(
-                                    'country_code' => 'IT'
-                                ),
-                                array(
-                                    'country_code' => 'SI'
-                                ),
-                                array(
-                                    'country_code' => 'GB'
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z3',
-                        'Shipping Zone Name'        => 'Strefa 3',
-                        'Shipping Zone Price'       => json_encode(
+                                'country_code' => 'BE'
+                            ),
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 3945,
-                                        'price' => 130
-                                    ),
-                                    array(
-                                        'from'  => 3945,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
+                                'country_code' => 'LU'
+                            ),
                             array(
-                                array(
-                                    'country_code' => 'BG'
-                                ),
-                                array(
-                                    'country_code' => 'EE'
-                                ),
-                                array(
-                                    'country_code' => 'FI'
-                                ),
-                                array(
-                                    'country_code' => 'SE'
-                                ),
-                                array(
-                                    'country_code' => 'IE'
-                                ),
-                                array(
-                                    'country_code' => 'LT'
-                                ),
-                                array(
-                                    'country_code' => 'LV'
-                                ),
-                                array(
-                                    'country_code' => 'PT'
-                                ),
-                                array(
-                                    'country_code' => 'RO'
-                                ),
-                                array(
-                                    'country_code' => 'ES'
-                                )
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'HR'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'GB'
                             )
                         )
                     )
                 ),
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Zone 3',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 795,
+                                    'price' => 29.95
+                                ),
+                                array(
+                                    'from'  => 795,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BG'
+                            ),
+                            array(
+                                'country_code' => 'EE'
+                            ),
+                            array(
+                                'country_code' => 'FI'
+                            ),
+                            array(
+                                'country_code' => 'SE'
+                            ),
+                            array(
+                                'country_code' => 'IE'
+                            ),
+                            array(
+                                'country_code' => 'LT'
+                            ),
+                            array(
+                                'country_code' => 'LV'
+                            ),
+                            array(
+                                'country_code' => 'PT'
+                            ),
+                            array(
+                                'country_code' => 'RO'
+                            ),
+                            array(
+                                'country_code' => 'ES'
+                            )
+                        )
+                    )
+                )
+            ),
+            'EU' => array(
+
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 250,
+                                    'price' => 9.95
+                                ),
+                                array(
+                                    'from'  => 250,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'SK'
+                            ),
+                            array(
+                                'country_code' => 'AT'
+                            ),
+                            array(
+                                'country_code' => 'CZ'
+                            ),
+                            array(
+                                'country_code' => 'DE'
+                            ),
+                            array(
+                                'country_code' => 'HU'
+                            ),
+                            array(
+                                'country_code' => 'PL'
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zone 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 350,
+                                    'price' => 14.95
+                                ),
+                                array(
+                                    'from'  => 350,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'FR'
+                            ),
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'LU'
+                            ),
+                            array(
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'HR'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'GB'
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Zone 3',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 795,
+                                    'price' => 29.95
+                                ),
+                                array(
+                                    'from'  => 795,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BG'
+                            ),
+                            array(
+                                'country_code' => 'EE'
+                            ),
+                            array(
+                                'country_code' => 'FI'
+                            ),
+                            array(
+                                'country_code' => 'SE'
+                            ),
+                            array(
+                                'country_code' => 'IE'
+                            ),
+                            array(
+                                'country_code' => 'LT'
+                            ),
+                            array(
+                                'country_code' => 'LV'
+                            ),
+                            array(
+                                'country_code' => 'PT'
+                            ),
+                            array(
+                                'country_code' => 'RO'
+                            ),
+                            array(
+                                'country_code' => 'ES'
+                            )
+                        )
+                    )
+                )
+            ),
+            'CZ' => array(
+                array(
+                    'Shipping Zone Code'        => 'CZ',
+                    'Shipping Zone Name'        => 'Czechia',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 3994.99,
+                                    'price' => 245
+                                ),
+                                array(
+                                    'from'  => 3994.99,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'CZ'
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 6495,
+                                    'price' => 290
+                                ),
+                                array(
+                                    'from'  => 6495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'AT'
+                            ),
+                            array(
+                                'country_code' => 'SK'
+                            ),
+                            array(
+                                'country_code' => 'DE'
+                            ),
+                            array(
+                                'country_code' => 'HU'
+                            ),
+                            array(
+                                'country_code' => 'PL'
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zone 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 8995,
+                                    'price' => 390
+                                ),
+                                array(
+                                    'from'  => 8995,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'FR'
+                            ),
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'LU'
+                            ),
+                            array(
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'HR'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'GB'
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Zone 3',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 20495,
+                                    'price' => 790
+                                ),
+                                array(
+                                    'from'  => 20495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BG'
+                            ),
+                            array(
+                                'country_code' => 'EE'
+                            ),
+                            array(
+                                'country_code' => 'FI'
+                            ),
+                            array(
+                                'country_code' => 'SE'
+                            ),
+                            array(
+                                'country_code' => 'IE'
+                            ),
+                            array(
+                                'country_code' => 'LT'
+                            ),
+                            array(
+                                'country_code' => 'LV'
+                            ),
+                            array(
+                                'country_code' => 'PT'
+                            ),
+                            array(
+                                'country_code' => 'RO'
+                            ),
+                            array(
+                                'country_code' => 'ES'
+                            )
+                        )
+                    )
+                )
+            ),
+            'PL' => array(
+
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Strefa 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 1095,
+                                    'price' => 40
+                                ),
+                                array(
+                                    'from'  => 1095,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'AT'
+                            ),
+                            array(
+                                'country_code' => 'SK'
+                            ),
+                            array(
+                                'country_code' => 'CZ'
+                            ),
+                            array(
+                                'country_code' => 'DE'
+                            ),
+                            array(
+                                'country_code' => 'HU'
+                            ),
+                            array(
+                                'country_code' => 'PL'
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Strefa 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 1495,
+                                    'price' => 65
+                                ),
+                                array(
+                                    'from'  => 1495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'FR'
+                            ),
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'LU'
+                            ),
+                            array(
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'HR'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'GB'
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Strefa 3',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 3945,
+                                    'price' => 130
+                                ),
+                                array(
+                                    'from'  => 3945,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BG'
+                            ),
+                            array(
+                                'country_code' => 'EE'
+                            ),
+                            array(
+                                'country_code' => 'FI'
+                            ),
+                            array(
+                                'country_code' => 'SE'
+                            ),
+                            array(
+                                'country_code' => 'IE'
+                            ),
+                            array(
+                                'country_code' => 'LT'
+                            ),
+                            array(
+                                'country_code' => 'LV'
+                            ),
+                            array(
+                                'country_code' => 'PT'
+                            ),
+                            array(
+                                'country_code' => 'RO'
+                            ),
+                            array(
+                                'country_code' => 'ES'
+                            )
+                        )
+                    )
+                )
+            ),
+            'HU' => array(
+
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 50000,
+                                    'price' => 2500
+                                ),
+                                array(
+                                    'from'  => 50000,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'HU'
+                            ),
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zone 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 80000,
+                                    'price' => 3300
+                                ),
+                                array(
+                                    'from'  => 80000,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'AU'
+                            ),
+                            array(
+                                'country_code' => 'SK'
+                            ),
+                            array(
+                                'country_code' => 'CZ'
+                            ),
+                            array(
+                                'country_code' => 'DE'
+                            ),
+                            array(
+                                'country_code' => 'PL'
+                            ),
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Zone 3',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 120000,
+                                    'price' => 4900
+                                ),
+                                array(
+                                    'from'  => 120000,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'FR'
+                            ),
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'LU'
+                            ),
+                            array(
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'HR'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'GB'
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z4',
+                    'Shipping Zone Name'        => 'Zone 4',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 260000,
+                                    'price' => 9800
+                                ),
+                                array(
+                                    'from'  => 260000,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+
+                        array(
+                            array(
+                                'country_code' => 'BG'
+                            ),
+                            array(
+                                'country_code' => 'EE'
+                            ),
+                            array(
+                                'country_code' => 'FI'
+                            ),
+                            array(
+                                'country_code' => 'SE'
+                            ),
+                            array(
+                                'country_code' => 'IE'
+                            ),
+                            array(
+                                'country_code' => 'LT'
+                            ),
+                            array(
+                                'country_code' => 'LV'
+                            ),
+                            array(
+                                'country_code' => 'PT'
+                            ),
+                            array(
+                                'country_code' => 'RO'
+                            ),
+                            array(
+                                'country_code' => 'ES'
+                            )
+                        )
+                    )
+
+                ),
+            ),
+        ),
+        'AW'   => array(
+            'UK' => array(
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zone 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 495,
+                                    'price' => 15
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code'          => 'GB',
+                                'included_postal_codes' => '/^((BT|IM|IV|KW|HS|ZE)\d+)|(AB(36|37|38|55|56)|FK(17|18|19|20|21)|PA[2-8][0-9]|PH(19|[2-5][0-9])|KA(27|28)|PO[3-4][0-9]|TR(21|22|23|24|25))\s.{3}$/',
+                                //
+
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 7.5
+                                ),
+                                array(
+                                    'from'  => 175,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code'          => 'GB',
+                                'excluded_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Zone 3',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 15
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 250,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 250,
+                                    'to'    => 495,
+                                    'price' => 35
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'JE'
+                            ),
+                            array(
+                                'country_code' => 'GG'
+                            ),
+                            array(
+                                'country_code'          => 'GB',
+                                'included_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
+
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z4',
+                    'Shipping Zone Name'        => 'Zone 4',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 10
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 495,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'IE'
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z5',
+                    'Shipping Zone Name'        => 'Zone 5',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 15
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 400,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 400,
+                                    'to'    => 750,
+                                    'price' => 35
+                                ),
+                                array(
+                                    'from'  => 750,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'FR'
+                            ),
+                            array(
+                                'country_code' => 'LX'
+                            ),
+                            array(
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'CZ'
+                            ),
+                            array(
+                                'country_code' => 'SK'
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z6',
+                    'Shipping Zone Name'        => 'Zone 6',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 20
+                                ),
+                                array(
+                                    'from'  => 175,
+                                    'to'    => 450,
+                                    'price' => 40
+                                ),
+                                array(
+                                    'from'  => 450,
+                                    'to'    => 975,
+                                    'price' => 60
+                                ),
+                                array(
+                                    'from'  => 975,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'AT'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'FI'
+                            ),
+                            array(
+                                'country_code' => 'DE'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'SE'
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z7',
+                    'Shipping Zone Name'        => 'Zone 7',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 175,
+                                    'to'    => 450,
+                                    'price' => 45
+                                ),
+                                array(
+                                    'from'  => 450,
+                                    'to'    => 975,
+                                    'price' => 65
+                                ),
+                                array(
+                                    'from'  => 975,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BG'
+                            ),
+                            array(
+                                'country_code' => 'EE'
+                            ),
+                            array(
+                                'country_code' => 'HU'
+                            ),
+                            array(
+                                'country_code' => 'LV'
+                            ),
+                            array(
+                                'country_code' => 'LT'
+                            ),
+                            array(
+                                'country_code' => 'PL'
+                            ),
+                            array(
+                                'country_code' => 'PT'
+                            ),
+                            array(
+                                'country_code' => 'RO'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'ES'
+                            )
+
+                        )
+                    )
+                ),
+
 
             ),
-            'AW'   => array(
-                'UK' => array(
-                    array(
-                        'Shipping Zone Code'        => 'Z2',
-                        'Shipping Zone Name'        => 'Zone 2',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 495,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
+            'DE' => array(
 
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code'          => 'GB',
-                                    'included_postal_codes' => '/^((BT|IM|IV|KW|HS|ZE)\d+)|(AB(36|37|38|55|56)|FK(17|18|19|20|21)|PA[2-8][0-9]|PH(19|[2-5][0-9])|KA(27|28)|PO[3-4][0-9]|TR(21|22|23|24|25))\s.{3}$/',
-                                    //
-
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 7.5
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code'          => 'GB',
-                                    'excluded_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z3',
-                        'Shipping Zone Name'        => 'Zone 3',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 250,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 250,
-                                        'to'    => 495,
-                                        'price' => 35
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'JE'
+                                    'from'  => 0,
+                                    'to'    => 350,
+                                    'price' => 14.95
                                 ),
                                 array(
-                                    'country_code' => 'GG'
-                                ),
-                                array(
-                                    'country_code'          => 'GB',
-                                    'included_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
-
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z4',
-                        'Shipping Zone Name'        => 'Zone 4',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 10
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 495,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'IE'
+                                    'from'  => 350,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
 
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z5',
-                        'Shipping Zone Name'        => 'Zone 5',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 400,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 400,
-                                        'to'    => 750,
-                                        'price' => 35
-                                    ),
-                                    array(
-                                        'from'  => 750,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
+                                'country_code' => 'DE'
+                            ),
                             array(
-                                array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'FR'
-                                ),
-                                array(
-                                    'country_code' => 'LX'
-                                ),
-                                array(
-                                    'country_code' => 'NL'
-                                ),
-                                array(
-                                    'country_code' => 'CZ'
-                                ),
-                                array(
-                                    'country_code' => 'SK'
-                                )
-
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z6',
-                        'Shipping Zone Name'        => 'Zone 6',
-                        'Shipping Zone Price'       => json_encode(
+                                'country_code' => 'AT'
+                            ),
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 20
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 450,
-                                        'price' => 40
-                                    ),
-                                    array(
-                                        'from'  => 450,
-                                        'to'    => 975,
-                                        'price' => 60
-                                    ),
-                                    array(
-                                        'from'  => 975,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
+                                'country_code' => 'NL'
+                            ),
                             array(
-                                array(
-                                    'country_code' => 'AT'
-                                ),
-                                array(
-                                    'country_code' => 'DK'
-                                ),
-                                array(
-                                    'country_code' => 'FI'
-                                ),
-                                array(
-                                    'country_code' => 'DE'
-                                ),
-                                array(
-                                    'country_code' => 'IT'
-                                ),
-                                array(
-                                    'country_code' => 'SE'
-                                )
-
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z7',
-                        'Shipping Zone Name'        => 'Zone 7',
-                        'Shipping Zone Price'       => json_encode(
+                                'country_code' => 'DK'
+                            ),
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 450,
-                                        'price' => 45
-                                    ),
-                                    array(
-                                        'from'  => 450,
-                                        'to'    => 975,
-                                        'price' => 65
-                                    ),
-                                    array(
-                                        'from'  => 975,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'BG'
-                                ),
-                                array(
-                                    'country_code' => 'EE'
-                                ),
-                                array(
-                                    'country_code' => 'HU'
-                                ),
-                                array(
-                                    'country_code' => 'LV'
-                                ),
-                                array(
-                                    'country_code' => 'LT'
-                                ),
-                                array(
-                                    'country_code' => 'PL'
-                                ),
-                                array(
-                                    'country_code' => 'PT'
-                                ),
-                                array(
-                                    'country_code' => 'RO'
-                                ),
-                                array(
-                                    'country_code' => 'SI'
-                                ),
-                                array(
-                                    'country_code' => 'ES'
-                                )
-
-                            )
-                        )
-                    ),
-
-
-                ),
-                'DE' => array(
-
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 350,
-                                        'price' => 14.95
-                                    ),
-                                    array(
-                                        'from'  => 350,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'DE'
-                                ),
-                                array(
-                                    'country_code' => 'AT'
-                                ),
-                                array(
-                                    'country_code' => 'NL'
-                                ),
-                                array(
-                                    'country_code' => 'DK'
-                                ),
-                                array(
-                                    'country_code' => 'CZ'
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z2',
-                        'Shipping Zone Name'        => 'Zone 2',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 495,
-                                        'price' => 18.85
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'LX'
-                                ),
-                                array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'FR'
-                                )
+                                'country_code' => 'CZ'
                             )
                         )
                     )
-
-
                 ),
-                'FR' => array(
-
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 495,
-                                        'price' => 18.85
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zone 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code' => 'FR'
+                                    'from'  => 0,
+                                    'to'    => 495,
+                                    'price' => 18.85
                                 ),
                                 array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'LX'
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
+
                             )
                         )
                     ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'LX'
+                            ),
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'FR'
+                            )
+                        )
+                    )
+                )
 
 
+            ),
+            'FR' => array(
+
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 495,
+                                    'price' => 18.85
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'FR'
+                            ),
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'LX'
+                            )
+                        )
+                    )
                 ),
-                'IT' => array(
 
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 495,
-                                        'price' => 14.95
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
 
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+            ),
+            'IT' => array(
+
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code' => 'IT'
+                                    'from'  => 0,
+                                    'to'    => 495,
+                                    'price' => 14.95
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
+
                             )
                         )
                     ),
-
-
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'IT'
+                            )
+                        )
+                    )
                 ),
-                'PL' => array(
 
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 1500,
-                                        'price' => 65
-                                    ),
-                                    array(
-                                        'from'  => 1500,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
 
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+            ),
+            'PL' => array(
+
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code' => 'PL'
+                                    'from'  => 0,
+                                    'to'    => 1500,
+                                    'price' => 65
+                                ),
+                                array(
+                                    'from'  => 1500,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
+
                             )
                         )
                     ),
-
-
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'PL'
+                            )
+                        )
+                    )
                 ),
-                'HA' => array(
-                    array(
-                        'Shipping Zone Code'        => 'Z2',
-                        'Shipping Zone Name'        => 'Zone 2',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 495,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
 
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+
+            ),
+            'HA' => array(
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zone 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code'          => 'GB',
-                                    'included_postal_codes' => '/^((BT|IM|IV|KW|HS|ZE)\d+)|(AB(36|37|38|55|56)|FK(17|18|19|20|21)|PA[2-8][0-9]|PH(19|[2-5][0-9])|KA(27|28)|PO[3-4][0-9]|TR(21|22|23|24|25))\s.{3}$/',
-                                    //
-
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 7.5
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code'          => 'GB',
-                                    'excluded_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z3',
-                        'Shipping Zone Name'        => 'Zone 3',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 250,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 250,
-                                        'to'    => 495,
-                                        'price' => 35
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'JE'
+                                    'from'  => 0,
+                                    'to'    => 495,
+                                    'price' => 15
                                 ),
                                 array(
-                                    'country_code' => 'GG'
-                                ),
-                                array(
-                                    'country_code'          => 'GB',
-                                    'included_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
-
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z4',
-                        'Shipping Zone Name'        => 'Zone 4',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 10
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 495,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'IE'
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
 
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z5',
-                        'Shipping Zone Name'        => 'Zone 5',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 400,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 400,
-                                        'to'    => 750,
-                                        'price' => 35
-                                    ),
-                                    array(
-                                        'from'  => 750,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'FR'
-                                ),
-                                array(
-                                    'country_code' => 'LX'
-                                ),
-                                array(
-                                    'country_code' => 'NL'
-                                ),
-                                array(
-                                    'country_code' => 'CZ'
-                                ),
-                                array(
-                                    'country_code' => 'SK'
-                                )
+                                'country_code'          => 'GB',
+                                'included_postal_codes' => '/^((BT|IM|IV|KW|HS|ZE)\d+)|(AB(36|37|38|55|56)|FK(17|18|19|20|21)|PA[2-8][0-9]|PH(19|[2-5][0-9])|KA(27|28)|PO[3-4][0-9]|TR(21|22|23|24|25))\s.{3}$/',
+                                //
 
                             )
                         )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z6',
-                        'Shipping Zone Name'        => 'Zone 6',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 20
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 450,
-                                        'price' => 40
-                                    ),
-                                    array(
-                                        'from'  => 450,
-                                        'to'    => 975,
-                                        'price' => 60
-                                    ),
-                                    array(
-                                        'from'  => 975,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'AT'
-                                ),
-                                array(
-                                    'country_code' => 'DK'
-                                ),
-                                array(
-                                    'country_code' => 'FI'
-                                ),
-                                array(
-                                    'country_code' => 'DE'
-                                ),
-                                array(
-                                    'country_code' => 'IT'
-                                ),
-                                array(
-                                    'country_code' => 'SE'
-                                )
-
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z7',
-                        'Shipping Zone Name'        => 'Zone 7',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 450,
-                                        'price' => 45
-                                    ),
-                                    array(
-                                        'from'  => 450,
-                                        'to'    => 975,
-                                        'price' => 65
-                                    ),
-                                    array(
-                                        'from'  => 975,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'BG'
-                                ),
-                                array(
-                                    'country_code' => 'EE'
-                                ),
-                                array(
-                                    'country_code' => 'HU'
-                                ),
-                                array(
-                                    'country_code' => 'LV'
-                                ),
-                                array(
-                                    'country_code' => 'LT'
-                                ),
-                                array(
-                                    'country_code' => 'PL'
-                                ),
-                                array(
-                                    'country_code' => 'PT'
-                                ),
-                                array(
-                                    'country_code' => 'RO'
-                                ),
-                                array(
-                                    'country_code' => 'SI'
-                                ),
-                                array(
-                                    'country_code' => 'ES'
-                                )
-
-                            )
-                        )
-                    ),
-
-
+                    )
                 ),
-                'AC' => array(
-                    array(
-                        'Shipping Zone Code'        => 'Z2',
-                        'Shipping Zone Name'        => 'Zone 2',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 495,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
                                 array(
-                                    'country_code'          => 'GB',
-                                    'included_postal_codes' => '/^((BT|IM|IV|KW|HS|ZE)\d+)|(AB(36|37|38|55|56)|FK(17|18|19|20|21)|PA[2-8][0-9]|PH(19|[2-5][0-9])|KA(27|28)|PO[3-4][0-9]|TR(21|22|23|24|25))\s.{3}$/',
-                                    //
-
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z1',
-                        'Shipping Zone Name'        => 'Zone 1',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 7.5
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code'          => 'GB',
-                                    'excluded_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z3',
-                        'Shipping Zone Name'        => 'Zone 3',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 250,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 250,
-                                        'to'    => 495,
-                                        'price' => 35
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'JE'
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 7.5
                                 ),
                                 array(
-                                    'country_code' => 'GG'
-                                ),
-                                array(
-                                    'country_code'          => 'GB',
-                                    'included_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
-
-                                )
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z4',
-                        'Shipping Zone Name'        => 'Zone 4',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 10
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 495,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 495,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'IE'
+                                    'from'  => 175,
+                                    'to'    => 'INF',
+                                    'price' => 0
                                 )
 
                             )
                         )
                     ),
-                    array(
-                        'Shipping Zone Code'        => 'Z5',
-                        'Shipping Zone Name'        => 'Zone 5',
-                        'Shipping Zone Price'       => json_encode(
+                    'Shipping Zone Territories' => json_encode(
+                        array(
                             array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 100,
-                                        'price' => 15
-                                    ),
-                                    array(
-                                        'from'  => 100,
-                                        'to'    => 400,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 400,
-                                        'to'    => 750,
-                                        'price' => 35
-                                    ),
-                                    array(
-                                        'from'  => 750,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'BE'
-                                ),
-                                array(
-                                    'country_code' => 'FR'
-                                ),
-                                array(
-                                    'country_code' => 'LX'
-                                ),
-                                array(
-                                    'country_code' => 'NL'
-                                ),
-                                array(
-                                    'country_code' => 'CZ'
-                                ),
-                                array(
-                                    'country_code' => 'SK'
-                                )
-
+                                'country_code'          => 'GB',
+                                'excluded_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
                             )
                         )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z6',
-                        'Shipping Zone Name'        => 'Zone 6',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 20
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 450,
-                                        'price' => 40
-                                    ),
-                                    array(
-                                        'from'  => 450,
-                                        'to'    => 975,
-                                        'price' => 60
-                                    ),
-                                    array(
-                                        'from'  => 975,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'AT'
-                                ),
-                                array(
-                                    'country_code' => 'DK'
-                                ),
-                                array(
-                                    'country_code' => 'FI'
-                                ),
-                                array(
-                                    'country_code' => 'DE'
-                                ),
-                                array(
-                                    'country_code' => 'IT'
-                                ),
-                                array(
-                                    'country_code' => 'SE'
-                                )
-
-                            )
-                        )
-                    ),
-                    array(
-                        'Shipping Zone Code'        => 'Z7',
-                        'Shipping Zone Name'        => 'Zone 7',
-                        'Shipping Zone Price'       => json_encode(
-                            array(
-                                'type'  => 'Step Order Items Net Amount',
-                                'steps' => array(
-                                    array(
-                                        'from'  => 0,
-                                        'to'    => 175,
-                                        'price' => 25
-                                    ),
-                                    array(
-                                        'from'  => 175,
-                                        'to'    => 450,
-                                        'price' => 45
-                                    ),
-                                    array(
-                                        'from'  => 450,
-                                        'to'    => 975,
-                                        'price' => 65
-                                    ),
-                                    array(
-                                        'from'  => 975,
-                                        'to'    => 'INF',
-                                        'price' => 0
-                                    )
-
-                                )
-                            )
-                        ),
-                        'Shipping Zone Territories' => json_encode(
-                            array(
-                                array(
-                                    'country_code' => 'BG'
-                                ),
-                                array(
-                                    'country_code' => 'EE'
-                                ),
-                                array(
-                                    'country_code' => 'HU'
-                                ),
-                                array(
-                                    'country_code' => 'LV'
-                                ),
-                                array(
-                                    'country_code' => 'LT'
-                                ),
-                                array(
-                                    'country_code' => 'PL'
-                                ),
-                                array(
-                                    'country_code' => 'PT'
-                                ),
-                                array(
-                                    'country_code' => 'RO'
-                                ),
-                                array(
-                                    'country_code' => 'SI'
-                                ),
-                                array(
-                                    'country_code' => 'ES'
-                                )
-
-                            )
-                        )
-                    ),
-
-
+                    )
                 ),
-            )
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Zone 3',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 15
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 250,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 250,
+                                    'to'    => 495,
+                                    'price' => 35
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'JE'
+                            ),
+                            array(
+                                'country_code' => 'GG'
+                            ),
+                            array(
+                                'country_code'          => 'GB',
+                                'included_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
+
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z4',
+                    'Shipping Zone Name'        => 'Zone 4',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 10
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 495,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'IE'
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z5',
+                    'Shipping Zone Name'        => 'Zone 5',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 15
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 400,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 400,
+                                    'to'    => 750,
+                                    'price' => 35
+                                ),
+                                array(
+                                    'from'  => 750,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'FR'
+                            ),
+                            array(
+                                'country_code' => 'LX'
+                            ),
+                            array(
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'CZ'
+                            ),
+                            array(
+                                'country_code' => 'SK'
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z6',
+                    'Shipping Zone Name'        => 'Zone 6',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 20
+                                ),
+                                array(
+                                    'from'  => 175,
+                                    'to'    => 450,
+                                    'price' => 40
+                                ),
+                                array(
+                                    'from'  => 450,
+                                    'to'    => 975,
+                                    'price' => 60
+                                ),
+                                array(
+                                    'from'  => 975,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'AT'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'FI'
+                            ),
+                            array(
+                                'country_code' => 'DE'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'SE'
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z7',
+                    'Shipping Zone Name'        => 'Zone 7',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 175,
+                                    'to'    => 450,
+                                    'price' => 45
+                                ),
+                                array(
+                                    'from'  => 450,
+                                    'to'    => 975,
+                                    'price' => 65
+                                ),
+                                array(
+                                    'from'  => 975,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BG'
+                            ),
+                            array(
+                                'country_code' => 'EE'
+                            ),
+                            array(
+                                'country_code' => 'HU'
+                            ),
+                            array(
+                                'country_code' => 'LV'
+                            ),
+                            array(
+                                'country_code' => 'LT'
+                            ),
+                            array(
+                                'country_code' => 'PL'
+                            ),
+                            array(
+                                'country_code' => 'PT'
+                            ),
+                            array(
+                                'country_code' => 'RO'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'ES'
+                            )
+
+                        )
+                    )
+                ),
 
 
-        );
+            ),
+            'AC' => array(
+                array(
+                    'Shipping Zone Code'        => 'Z2',
+                    'Shipping Zone Name'        => 'Zone 2',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 495,
+                                    'price' => 15
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code'          => 'GB',
+                                'included_postal_codes' => '/^((BT|IM|IV|KW|HS|ZE)\d+)|(AB(36|37|38|55|56)|FK(17|18|19|20|21)|PA[2-8][0-9]|PH(19|[2-5][0-9])|KA(27|28)|PO[3-4][0-9]|TR(21|22|23|24|25))\s.{3}$/',
+                                //
+
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z1',
+                    'Shipping Zone Name'        => 'Zone 1',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 7.5
+                                ),
+                                array(
+                                    'from'  => 175,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code'          => 'GB',
+                                'excluded_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z3',
+                    'Shipping Zone Name'        => 'Zone 3',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 15
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 250,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 250,
+                                    'to'    => 495,
+                                    'price' => 35
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'JE'
+                            ),
+                            array(
+                                'country_code' => 'GG'
+                            ),
+                            array(
+                                'country_code'          => 'GB',
+                                'included_postal_codes' => '/^(JE|GY)\d+\s.{3}$/',
+
+                            )
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z4',
+                    'Shipping Zone Name'        => 'Zone 4',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 10
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 495,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 495,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'IE'
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z5',
+                    'Shipping Zone Name'        => 'Zone 5',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 100,
+                                    'price' => 15
+                                ),
+                                array(
+                                    'from'  => 100,
+                                    'to'    => 400,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 400,
+                                    'to'    => 750,
+                                    'price' => 35
+                                ),
+                                array(
+                                    'from'  => 750,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BE'
+                            ),
+                            array(
+                                'country_code' => 'FR'
+                            ),
+                            array(
+                                'country_code' => 'LX'
+                            ),
+                            array(
+                                'country_code' => 'NL'
+                            ),
+                            array(
+                                'country_code' => 'CZ'
+                            ),
+                            array(
+                                'country_code' => 'SK'
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z6',
+                    'Shipping Zone Name'        => 'Zone 6',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 20
+                                ),
+                                array(
+                                    'from'  => 175,
+                                    'to'    => 450,
+                                    'price' => 40
+                                ),
+                                array(
+                                    'from'  => 450,
+                                    'to'    => 975,
+                                    'price' => 60
+                                ),
+                                array(
+                                    'from'  => 975,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'AT'
+                            ),
+                            array(
+                                'country_code' => 'DK'
+                            ),
+                            array(
+                                'country_code' => 'FI'
+                            ),
+                            array(
+                                'country_code' => 'DE'
+                            ),
+                            array(
+                                'country_code' => 'IT'
+                            ),
+                            array(
+                                'country_code' => 'SE'
+                            )
+
+                        )
+                    )
+                ),
+                array(
+                    'Shipping Zone Code'        => 'Z7',
+                    'Shipping Zone Name'        => 'Zone 7',
+                    'Shipping Zone Price'       => json_encode(
+                        array(
+                            'type'  => 'Step Order Items Net Amount',
+                            'steps' => array(
+                                array(
+                                    'from'  => 0,
+                                    'to'    => 175,
+                                    'price' => 25
+                                ),
+                                array(
+                                    'from'  => 175,
+                                    'to'    => 450,
+                                    'price' => 45
+                                ),
+                                array(
+                                    'from'  => 450,
+                                    'to'    => 975,
+                                    'price' => 65
+                                ),
+                                array(
+                                    'from'  => 975,
+                                    'to'    => 'INF',
+                                    'price' => 0
+                                )
+
+                            )
+                        )
+                    ),
+                    'Shipping Zone Territories' => json_encode(
+                        array(
+                            array(
+                                'country_code' => 'BG'
+                            ),
+                            array(
+                                'country_code' => 'EE'
+                            ),
+                            array(
+                                'country_code' => 'HU'
+                            ),
+                            array(
+                                'country_code' => 'LV'
+                            ),
+                            array(
+                                'country_code' => 'LT'
+                            ),
+                            array(
+                                'country_code' => 'PL'
+                            ),
+                            array(
+                                'country_code' => 'PT'
+                            ),
+                            array(
+                                'country_code' => 'RO'
+                            ),
+                            array(
+                                'country_code' => 'SI'
+                            ),
+                            array(
+                                'country_code' => 'ES'
+                            )
+
+                        )
+                    )
+                ),
+
+
+            ),
+        )
+
+
+    );
 
     return $shipping_zones_data[$account_code];
 

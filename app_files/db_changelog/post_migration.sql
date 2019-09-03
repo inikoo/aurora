@@ -201,3 +201,46 @@ DROP TABLE `Supplier Product Dimension`, `Supplier Product History Bridge`, `Sup
 ALTER TABLE `Part Dimension` CHANGE `Part Recommended Packages Per Selling Outer` `Part Recommended Packages Per Selling Outer` FLOAT UNSIGNED NULL DEFAULT '1';
 
 
+ALTER TABLE `Agent Dimension`
+    DROP `Agent Main XHTML Address`,
+    DROP `Agent Main Plain Address`,
+    DROP `Agent Main Country Key`,
+    DROP `Agent Main Country Code`,
+    DROP `Agent Main Country`,
+    DROP `Agent Main Location`,
+    DROP `Agent Main XHTML Email`,
+    DROP `Agent Main Email Key`,
+    DROP `Agent Main Telephone Key`;
+
+
+
+ALTER TABLE `Part Dimension`
+    DROP `Part Currently Used In`,
+    DROP `Part XHTML Currently Supplied By`,
+    DROP `Part XHTML Description`,
+    DROP `Part Unit Description`,
+    DROP `Part Unit Dimensions Type`,
+    DROP `Part Unit Dimensions Display Units`,
+    DROP `Part Unit Dimensions Width`,
+    DROP `Part Unit Dimensions Depth`,
+    DROP `Part Unit Dimensions Diameter`,
+    DROP `Part Unit Dimensions Width Display`,
+    DROP `Part Unit Dimensions Depth Display`,
+    DROP `Part Unit Dimensions Length Display`,
+    DROP `Part Unit Dimensions Diameter Display`,
+    DROP `Part Unit Dimensions Volume`,
+    DROP `Part Unit XHTML Dimensions`,
+    DROP `Part Unit Materials`,
+    DROP `Part Unit XHTML Materials`,
+    DROP `Part Package Dimensions Type`,
+    DROP `Part Package Dimensions Display Units`,
+    DROP `Part Package Dimensions Width`,
+    DROP `Part Package Dimensions Depth`,
+    DROP `Part Package Dimensions Length`,
+    DROP `Part Package Dimensions Diameter`,
+    DROP `Part Package Dimensions Width Display`,
+    DROP `Part Package Dimensions Depth Display`,
+    DROP `Part Package Dimensions Length Display`,
+    DROP `Part Package Dimensions Diameter Display`,
+    DROP `Part Package Dimensions Volume`,
+    DROP `Part Package XHTML Dimensions`;

@@ -142,10 +142,18 @@
 
 			<div style="height: 5px;border:0px solid red;font-size: 5px">&nbsp;</div>
 
+			{if $delivery_note->get('Delivery Note Dispatch Method')=='Collection'}
+				<div style="margin-top: 10px;padding-top: 10px;">
+					<span class="address_label">{t}For collection{/t}:</span><br />
+				</div>
+				<div class="address_value"></div>
+			{else}
+
 			<div style="margin-top: 10px;padding-top: 10px;">
 			<span class="address_label">{t}Delivery Address{/t}:</span><br />
 			</div>
 			<div class="address_value">{$delivery_note->get('Delivery Note Address Postal Label')|nl2br}</div>
+			{/if}
 		</td>
 		<td width="10%">&nbsp;</td>
 		<td width="45%" style="border: 0.1mm solid #888888;font-size:9pt">

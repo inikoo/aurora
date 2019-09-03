@@ -21,14 +21,11 @@ $user_rights = array(
         'Right Type' => 'Edit',
         'Right Name' => 'users'
     ),
-    'UD' => array(
-        'Right Type' => 'Delete',
+    'UA' => array(
+        'Right Type' => 'Activity',
         'Right Name' => 'users'
     ),
-    'UC' => array(
-        'Right Type' => 'Create',
-        'Right Name' => 'users'
-    ),
+
 
     'AV' => array(
         'Right Type' => 'View',
@@ -38,14 +35,7 @@ $user_rights = array(
         'Right Type' => 'Edit',
         'Right Name' => 'account'
     ),
-    'AD' => array(
-        'Right Type' => 'Delete',
-        'Right Name' => 'account'
-    ),
-    'AC' => array(
-        'Right Type' => 'Create',
-        'Right Name' => 'account'
-    ),
+
 
     'EV' => array(
         'Right Type' => 'View',
@@ -55,17 +45,14 @@ $user_rights = array(
         'Right Type' => 'Edit',
         'Right Name' => 'staff'
     ),
-    'ED' => array(
-        'Right Type' => 'Delete',
-        'Right Name' => 'staff'
-    ),
     'EC' => array(
-        'Right Type' => 'Create',
+        'Right Type' => 'Supervisor',
         'Right Name' => 'staff'
     ),
 
-    'CM' => array(
-        'Right Type' => 'Manager',
+
+    'CS' => array(
+        'Right Type' => 'Supervisor',
         'Right Name' => 'customers'
     ),
 
@@ -77,14 +64,7 @@ $user_rights = array(
         'Right Type' => 'Edit',
         'Right Name' => 'customers'
     ),
-    'CD' => array(
-        'Right Type' => 'Delete',
-        'Right Name' => 'customers'
-    ),
-    'CC' => array(
-        'Right Type' => 'Create',
-        'Right Name' => 'customers'
-    ),
+
 
     'LV' => array(
         'Right Type' => 'View',
@@ -94,12 +74,9 @@ $user_rights = array(
         'Right Type' => 'Edit',
         'Right Name' => 'locations'
     ),
-    'LD' => array(
-        'Right Type' => 'Delete',
-        'Right Name' => 'locations'
-    ),
-    'LC' => array(
-        'Right Type' => 'Create',
+
+    'LS' => array(
+        'Right Type' => 'Supervisor',
         'Right Name' => 'locations'
     ),
 
@@ -111,13 +88,23 @@ $user_rights = array(
         'Right Type' => 'Edit',
         'Right Name' => 'parts'
     ),
-    'PD' => array(
-        'Right Type' => 'Delete',
+
+    'PS' => array(
+        'Right Type' => 'Supervisor',
         'Right Name' => 'parts'
     ),
-    'PC' => array(
-        'Right Type' => 'Create',
-        'Right Name' => 'parts'
+
+    'PLV' => array(
+        'Right Type' => 'View',
+        'Right Name' => 'stock'
+    ),
+    'PLE' => array(
+        'Right Type' => 'View',
+        'Right Name' => 'stock'
+    ),
+    'PLS' => array(
+        'Right Type' => 'Supervisor',
+        'Right Name' => 'stock'
     ),
 
     'SV' => array(
@@ -128,32 +115,24 @@ $user_rights = array(
         'Right Type' => 'Edit',
         'Right Name' => 'stores'
     ),
-    'SD' => array(
-        'Right Type' => 'Delete',
-        'Right Name' => 'stores'
-    ),
-    'SC' => array(
-        'Right Type' => 'Create',
-        'Right Name' => 'stores'
-    ),
 
+    'SS' => array(
+        'Right Type' => 'Supervisor',
+        'Right Name' => 'stores'
+    ),
     'WV' => array(
         'Right Type' => 'View',
         'Right Name' => 'sites'
     ),
+
     'WE' => array(
         'Right Type' => 'Edit',
         'Right Name' => 'sites'
     ),
-    'WD' => array(
-        'Right Type' => 'Delete',
+    'WS' => array(
+        'Right Type' => 'Supervisor',
         'Right Name' => 'sites'
     ),
-    'WC' => array(
-        'Right Type' => 'Create',
-        'Right Name' => 'sites'
-    ),
-
     'BV' => array(
         'Right Type' => 'View',
         'Right Name' => 'suppliers'
@@ -162,31 +141,37 @@ $user_rights = array(
         'Right Type' => 'Edit',
         'Right Name' => 'suppliers'
     ),
-    'BD' => array(
-        'Right Type' => 'Delete',
-        'Right Name' => 'suppliers'
-    ),
-    'BC' => array(
-        'Right Type' => 'Create',
+
+    'BS' => array(
+        'Right Type' => 'Supervisor',
         'Right Name' => 'suppliers'
     ),
 
-    'OV' => array(
+    'OV'  => array(
         'Right Type' => 'View',
         'Right Name' => 'orders'
     ),
-    'OE' => array(
+    'OE'  => array(
         'Right Type' => 'Edit',
         'Right Name' => 'orders'
     ),
-    'OD' => array(
-        'Right Type' => 'Delete',
+    'OS'  => array(
+        'Right Type' => 'Supervisor',
         'Right Name' => 'orders'
     ),
-    'OC' => array(
-        'Right Type' => 'Create',
-        'Right Name' => 'orders'
+    'DNV' => array(
+        'Right Type' => 'View',
+        'Right Name' => 'delivery_notes'
     ),
+    'DNE' => array(
+        'Right Type' => 'Edit',
+        'Right Name' => 'delivery_notes'
+    ),
+    'DNS' => array(
+        'Right Type' => 'Supervisor',
+        'Right Name' => 'delivery_notes'
+    ),
+
 
     'MV' => array(
         'Right Type' => 'View',
@@ -196,12 +181,8 @@ $user_rights = array(
         'Right Type' => 'Edit',
         'Right Name' => 'marketing'
     ),
-    'MD' => array(
-        'Right Type' => 'Delete',
-        'Right Name' => 'marketing'
-    ),
-    'MC' => array(
-        'Right Type' => 'Create',
+    'MS' => array(
+        'Right Type' => 'Supervisor',
         'Right Name' => 'marketing'
     ),
 
@@ -213,31 +194,60 @@ $user_rights = array(
         'Right Type' => 'Edit',
         'Right Name' => 'production'
     ),
-    'FD' => array(
-        'Right Type' => 'Delete',
-        'Right Name' => 'production'
-    ),
-    'FC' => array(
-        'Right Type' => 'Create',
-        'Right Name' => 'production'
-    ),
 
     'RV' => array(
         'Right Type' => 'View',
         'Right Name' => 'reports'
     ),
-    'AP'=> array(
+
+    'DNPiE' => array(
         'Right Type' => 'Edit',
         'Right Name' => 'assign_picker'
     ),
-    'DNPiE'=> array(
-        'Right Type' => 'Edit',
-        'Right Name' => 'assign_picker'
+    'PiV'   => array(
+        'Right Type' => 'View',
+        'Right Name' => 'pickers'
     ),
-   'PiV'=> array(
-    'Right Type' => 'View',
-    'Right Name' => 'pickers'
-)
+    'PaV'   => array(
+        'Right Type' => 'View',
+        'Right Name' => 'packers'
+    ),
+    'IS'    => array(
+        'Right Type' => 'Supervisor',
+        'Right Name' => 'accounting'
+    ),
+    'IE'    => array(
+        'Right Type' => 'Edit',
+        'Right Name' => 'accounting'
+    ),
+    'IV'    => array(
+        'Right Type' => 'View',
+        'Right Name' => 'accounting'
+    ),
+    'SRV'   => array(
+        'Right Type' => 'View',
+        'Right Name' => 'sales_reports'
+    ),
+    'CRV'   => array(
+        'Right Type' => 'View',
+        'Right Name' => 'customers_reports'
+    ),
+    'BRV'   => array(
+        'Right Type' => 'View',
+        'Right Name' => 'suppliers_reports'
+    ),
+    'IRV'   => array(
+        'Right Type' => 'View',
+        'Right Name' => 'inventory_reports'
+    ),
+    'KRV'   => array(
+        'Right Type' => 'View',
+        'Right Name' => 'kpis_reports'
+    ),
+    'URV'   => array(
+        'Right Type' => 'View',
+        'Right Name' => 'users_reports'
+    ),
 
 );
 

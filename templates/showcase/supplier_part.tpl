@@ -1,14 +1,15 @@
 <div class="sticky_notes" >
 {include file="sticky_note.tpl" value=$supplier_part->get('Sticky Note') object="Supplier_Part" key="{$supplier_part->id}" field="Supplier_Part_Sticky_Note"  }
 </div>
+
 <div class="name_and_categories">
-    <span class="strong"><span class="Supplier_Part_Description">{$supplier_part->get('Supplier Part Description')}</span>  </span>
-    <ul class="tags Categories" style="float:right">
-        {foreach from=$part->get_category_data() item=item key=key}
-            <li><span class="button" onclick="change_view('category/{$item.category_key}')"
-                      title="{$item.label}">{$item.code}</span></li>
-        {/foreach}
-    </ul>
+    <span class="strong"><span class="Supplier_Part_Reference margin_right_20">{$supplier_part->get('Supplier Part Reference')}</span>  <span class="Supplier_Part_Description">{$supplier_part->get('Supplier Part Description')}</span>   </span>
+
+    <div style="float: right;padding-right: 10px">
+
+        <span class="button" onclick="change_view('/supplier/{$supplier->id}')"> <i class="fa fa-hand-holding-box padding_right_5"></i><span class="link">{$supplier->get('Code')}</span></span>
+    </div>
+
     <div style="clear:both">
     </div>
 </div>
@@ -36,6 +37,7 @@
                     <i class="fal fa-fw fa-stop-circle" title="{t}Unit{/t}" ></i>
                 </td>
                 <td>
+                    <span class="italic small Unit_Label discreet">{$part->get('Unit Label')}</span>
 
                 </td>
 
@@ -84,25 +86,18 @@
                 <td>
                     <i class="fal fa-pallet fa-fw" title="{t}Carton{/t}" ></i>
                 </td>
-                {if $supplier_part->get('Supplier Part Units Per Carton')!=$part->get('Units Per Carton')  and $part->get('Units Per Carton')!='' }
-                    {assign "error_units_per_carton" 1}
-                {else}
-                    yyyy
-                    {assign "error_units_per_carton" 0}
 
-                {/if}
 
-                {$supplier_part->get('Supplier Part Units Per Carton')} {$part->get('Units Per Carton')}
 
                 <td style="padding-left: 4px;padding-right: 4px" class="">
-                    <span class="discreet {if $error_units_per_carton}error{/if}" title="{t}Units per carton{/t}">
+                    <span class="discreet " title="{t}Units per carton{/t}">
                         <i class="fal  fa-stop-circle " style="font-size: 80%;margin-right: 1px" ></i><i class="fal  fa-times" style="position: relative;top:1px;margin-right: 3px"></i><span class="Supplier_Part_Units_Per_Carton">{$supplier_part->get('Supplier Part Units Per Carton')}</span>
-                        {if $error_units_per_carton} <i class="fal fa-not-equal"></i> {$part->get('Units Per Carton')} <i class="fas fa-exclamation-circle"></i> {/if}
+
                     </span>
 
                 </td>
                 <td>
-                    <a target="_blank"  title="{t}Carton label{/t}" href="/asset_label.php?object=supplier_part&key={$supplier_part->id}&type=carton"><i class="far fa-barcode-alt fa-fw padding_right_5" ></i></a> <span class="Part_Carton_Barcode" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part Carton Barcode')==''}<span class="discreet error italic">{t}Not set{/t}</span>{else}{$part->get('Part Carton Barcode')}{/if}</span>
+                    <a target="_blank"  title="{t}Carton label{/t}" href="/asset_label.php?object=supplier_part&key={$supplier_part->id}&type=carton"><i class="far fa-barcode-alt fa-fw padding_right_5" ></i></a> <span class="Supplier_Part_Carton_Barcode" data-label_no_set="{t}Not set{/t}" >{if $supplier_part->get('Supplier Part Carton Barcode')==''}<span class="discreet error italic">{t}Not set{/t}</span>{else}{$supplier_part->get('Supplier Part Carton Barcode')}{/if}</span>
 
 
                 </td>
@@ -110,7 +105,7 @@
                     <span class="Carton_CBM">{$supplier_part->get('Carton CBM')}</span>
                 </td>
                 <td style="text-align: right">
-                    <span class="Carton_Weight">{$part->get('Carton Weight')}</span>
+                    <span class="Carton_Weight">{$supplier_part->get('Carton Weight')}</span>
                 </td>
             </tr>
 
@@ -118,10 +113,18 @@
 
         <table border="0" class="overview" style="">
 
+            <tr class="">
+                <td>{t}Cost{/t}</td>
+                <td class="aright">{$supplier_part->get('Unit Cost')}</td>
+            </tr>
 
             <tr class="">
                 <td>{t}Current landed cost{/t}</td>
                 <td class="aright">{$supplier_part->get('Unit Delivered Cost')}</td>
+            </tr>
+            <tr class="">
+                <td>{t}Minimum order (cartons){/t}</td>
+                <td class="aright Supplier_Part_Minimum_Carton_Order">{$supplier_part->get('Minimum Carton Order')}</td>
             </tr>
         </table>
 

@@ -50,4 +50,3 @@ $smarty->assign('js_code', 'js/injections/employee.'.(_DEVEL ? '' : 'min.').'js'
 
 $html = $smarty->fetch('new_object.tpl');
 
-?>

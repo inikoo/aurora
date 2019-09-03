@@ -149,9 +149,6 @@ class Warehouse extends DB_Table {
 
                 return;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -167,7 +164,6 @@ class Warehouse extends DB_Table {
     function create($data) {
 
 
-        global $account;
         $this->new = false;
         $base_data = $this->base_data();
 
@@ -208,16 +204,7 @@ class Warehouse extends DB_Table {
             $this->db->exec($sql);
 
 
-            /*
-            if (is_numeric($this->editor['User Key']) and $this->editor['User Key'] > 1) {
 
-                $sql = sprintf(
-                    "INSERT INTO `User Right Scope Bridge` VALUES(%d,'Warehouse',%d)", $this->editor['User Key'], $this->id
-                );
-                $this->db->exec($sql);
-
-            }
-    */
 
             $flags = array(
                 'Blue'   => _('Blue'),
@@ -249,42 +236,16 @@ class Warehouse extends DB_Table {
 
             $this->fast_update(
                 array(
-                    'Warehouse Unknown Location Key' => $unknown_location->id
+                    'Warehouse Unknown Location Key' => $unknown_location->id,
+                    'Warehouse Properties'=>'{}',
+                    'Warehouse Settings'=>'{}',
                 )
 
             );
 
 
-            /*
-              $this->create_location(array(
-                                         'Location Code'=>'LoadBay',
-                                         'Location Mainly Used For'=>'Loading'
-                                     ));
-            */
 
 
-            $history_data = array(
-                'History Abstract' => _('Warehouse created'),
-                'History Details'  => '',
-                'Action'           => 'created'
-            );
-
-            $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
-            );
-
-
-            $history_data = array(
-                'History Abstract' => sprintf(
-                    _('Warehouse (%s) created'), $this->get('Name')
-                ),
-                'History Details'  => '',
-                'Action'           => 'created'
-            );
-
-            $account->add_subject_history(
-                $history_data, true, 'No', 'Changes', $account->get_object_name(), $account->id
-            );
 
 
             return;
@@ -340,37 +301,7 @@ class Warehouse extends DB_Table {
             exit;
         }
 
-        /*
-                if (!isset($data['Location Mainly Used For']) or $data['Location Mainly Used For'] == '') {
 
-
-                    $this->error      = true;
-                    $this->msg        = _('Location used for missing');
-                    $this->error_code = 'location_mainly_used_for_missing';
-
-                    return;
-                }
-
-                if (!in_array(
-                    $data['Location Mainly Used For'], array(
-                                                         'Picking',
-                                                         'Storing',
-                                                         'Loading',
-                                                         'Displaying',
-                                                         'Other'
-                                                     )
-                )
-                ) {
-
-
-                    $this->error      = true;
-                    $this->msg        = _('Location used for not valid');
-                    $this->error_code = 'location_mainly_used_for_missing_not_valid';
-
-                    return;
-                }
-
-        */
 
         if (!empty($data['Location Flag Color'])) {
 
@@ -390,10 +321,6 @@ class Warehouse extends DB_Table {
                     $this->error_code = 'location_flag_color_not_valid';
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
         }
 
@@ -2114,7 +2041,7 @@ and `Part Distinct Locations`>1
 
         $sql = sprintf(
             'select count(*) as num, sum( if(`Delivery Note Weight Source`="Estimated",`Delivery Note Estimated Weight` ,`Delivery Note Weight`)  ) as weight,  `Delivery Note State` from `Delivery Note Dimension` 
-                where `Delivery Note Warehouse Key`=%d and ``  group by `Delivery Note State`', $this->id
+                where `Delivery Note Warehouse Key`=%d  group by `Delivery Note State`', $this->id
         );
 
         if ($result = $this->db->query($sql)) {

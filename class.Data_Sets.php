@@ -174,6 +174,9 @@ class Data_Sets extends DB_Table {
 
         global $dns_db;
 
+
+        $tables='';
+
         if ($this->data['Data Sets Code'] == 'Images') {
             $tables = '"Image Dimension"';
             $sql    = sprintf(

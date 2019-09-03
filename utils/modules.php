@@ -6692,6 +6692,14 @@ $modules = array(
 
         ),
 
+        'intrastat_imports'          => array(
+            'type' => '',
+            'tabs' => array(
+                'intrastat_imports' => array(),
+
+            )
+
+        ),
         'intrastat'          => array(
             'type' => '',
             'tabs' => array(
@@ -6712,6 +6720,20 @@ $modules = array(
             'type' => '',
             'tabs' => array(
                 'intrastat_products' => array(),
+
+            )
+
+        ),
+        'intrastat_deliveries'   => array(
+            'type' => '',
+            'tabs' => array(
+                'intrastat_deliveries' => array(),
+            )
+        ),
+        'intrastat_parts' => array(
+            'type' => '',
+            'tabs' => array(
+                'intrastat_parts' => array(),
 
             )
 
@@ -8174,9 +8196,7 @@ $modules = array(
                     'icon'  => 'bars'
                 ),
                 'deleted.supplier.order.history' => array(
-                    'label' => _(
-                        'History/Notes'
-                    ),
+                    'label' => _('History/Notes'),
                     'icon'  => 'road',
                     'class' => 'right icon_only'
                 ),
@@ -8226,15 +8246,12 @@ $modules = array(
                     'title' => _('Details')
                 ),
                 'supplier.supplier_parts' => array(
-                    'label' => _(
-                        "Supplier's Parts"
-                    ),
+                    'label' => _("Supplier's Parts"),
                     'icon'  => 'hand-receiving'
                 ),
+
                 'supplier.orders'         => array(
-                    'label' => _(
-                        'Purchase orders'
-                    ),
+                    'label' => _('Purchase orders'),
                     'icon'  => 'clipboard'
                 ),
 
@@ -8388,38 +8405,31 @@ $modules = array(
 
             'tabs' => array(
 
-
-                'supplier_part.details' => array(
-                    'label' => _(
-                        'Data'
-                    ),
-                    'icon'  => 'database'
+                'agent_supplier_part.details'          => array(
+                    'label' => ('Data'),
+                    'title' => _('Data'),
+                    'icon'  => 'database',
                 ),
-
-
+/*
                 'supplier_part.purchase_orders' => array(
-                    'label'   => _(
-                        'Purchase orders / deliveries'
-                    ),
+                    'label'   => _('Purchase orders / deliveries'),
                     'icon'    => 'clipboard',
                     'subtabs' => array(
 
                         'supplier_part.supplier.orders'     => array(
-                            'label' => _(
-                                'Purchase orders'
-                            ),
+                            'label' => _('Purchase orders'),
                             'icon'  => 'clipboard'
                         ),
                         'supplier_part.supplier.deliveries' => array(
-                            'label' => _(
-                                "Supplier's deliveries"
-                            ),
+                            'label' => _("Supplier's deliveries"),
                             'icon'  => 'truck'
                         ),
 
                     )
 
                 ),
+
+*/
                 'supplier_part.images'          => array(
                     'label' => '',
                     'title' => _('Images'),

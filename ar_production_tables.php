@@ -262,11 +262,10 @@ function manufacture_tasks($_data, $db, $user, $account) {
 function suppliers($_data, $db, $user, $account) {
 
 
-    if ($user->get('User Type') == 'Agent') {
 
-        if (!($_data['parameters']['parent'] == 'agent' and $_data['parameters']['parent_key'] == $user->get(
-                'User Parent Key'
-            ))) {
+
+
+        if (!$user->can_view('production')) {
             echo json_encode(
                 array(
                     'state' => 405,
@@ -276,21 +275,7 @@ function suppliers($_data, $db, $user, $account) {
             exit;
         }
 
-
-    } else {
-
-
-        if (!$user->can_view('suppliers')) {
-            echo json_encode(
-                array(
-                    'state' => 405,
-                    'resp'  => 'Forbidden'
-                )
-            );
-            exit;
-        }
-
-    }
+    
 
 
     $rtext_label = 'supplier';
@@ -811,17 +796,7 @@ function production_deliveries($_data, $db, $user) {
 
 function production_orders($_data, $db, $user, $account) {
 
-    if (!$user->can_view('suppliers')) {
-        echo json_encode(
-            array(
-                'state' => 405,
-                'resp'  => 'Forbidden'
-            )
-        );
-        exit;
-    }
-
-
+  
     $rtext_label = 'job order';
 
 
@@ -1009,7 +984,7 @@ function production_deliveries_with_part($_data, $db, $user) {
 
 function production_orders_with_part($_data, $db, $user, $account) {
 
-    if (!$user->can_view('suppliers')) {
+    if (!$user->can_view('production')) {
         echo json_encode(
             array(
                 'state' => 405,

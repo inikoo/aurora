@@ -97,7 +97,7 @@ if ($auth->is_authenticated()) {
 
     $_SESSION['user_key']    = $_user_key;
     $user                    = new User($_user_key);
-    $_SESSION['text_locale'] = $user->data['User Preferred Locale'];
+    $_SESSION['text_locale'] = $user->get('User Preferred Locale');
 
 
     $session->set('state', array());

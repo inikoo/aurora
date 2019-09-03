@@ -1922,7 +1922,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         ).sprintf(
                             ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
                         );
-                    $details  = _('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d', $part->sku).'</a> ('.$part->data['Part XHTML Description'].') '._(
+                    $details  = _('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d', $part->sku).'</a> ('.$part->data['Part Package Description'].') '._(
                             'disassociated with category'
                         ).sprintf(
                             ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
@@ -1937,7 +1937,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         ).sprintf(
                             ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
                         );
-                    $details  = _('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d', $part->sku).'</a> ('.$part->data['Part XHTML Description'].') '._(
+                    $details  = _('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d', $part->sku).'</a> ('.$part->data['Part Package Description'].') '._(
                             'disassociated with category'
                         ).sprintf(
                             ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
@@ -3045,7 +3045,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         $abstract = _('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('05%d', $part->sku).'</a> '._('associated with category').sprintf(
                                 ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
                             );
-                        $details  = _('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('05%d', $part->sku).'</a> ('.$part->data['Part XHTML Description'].') '._(
+                        $details  = _('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('05%d', $part->sku).'</a> ('.$part->data['Part Package Description'].') '._(
                                 'associated with category'
                             ).sprintf(
                                 ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']

@@ -29,7 +29,7 @@ $object_fields = get_object_fields(
 
 $smarty->assign('state', $state);
 $smarty->assign('object', $employee);
-$smarty->assign('object_name', $employee->get_object_name());
+$smarty->assign('object_name', 'Contractor');
 
 $smarty->assign('object_fields', $object_fields);
 
@@ -61,9 +61,3 @@ $html = $smarty->fetch('new_object.tpl');
 
 
 
-
-
-
-
-
-?>

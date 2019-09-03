@@ -11,7 +11,8 @@
 
 $tab     = 'intrastat';
 $ar_file = 'ar_reports_tables.php';
-$tipo    = 'intrastat';$smarty->assign('table_top_template', 'prospects.base_blueprints.tpl');
+$tipo    = 'intrastat';
+
 
 
 $default = $user->get_tab_defaults($tab);
@@ -58,4 +59,4 @@ $smarty->assign('table_top_template', 'control.intrastat.tpl');
 include 'utils/get_table_html.php';
 
 
-?>
+

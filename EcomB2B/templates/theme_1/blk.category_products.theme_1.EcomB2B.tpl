@@ -143,11 +143,16 @@
 
                 {elseif $item.type=='image'}
 
+                    {if $item.link!=''}
+                        <a href="{$item.link}">
+                    {/if}
 
-                    <img class="panel edit {$item.size_class}" size_class="{$item.size_class}" src="{if !preg_match('/^http/',$item.image_website)}{/if}{$item.image_website}"  data-image_website="{$item.image_website}"  data-src="{$item.image_src}"    link="{$item.link}"  alt="{$item.title}" />
+                    <img class="panel edit {$item.size_class}"  src="{if !preg_match('/^http/',$item.image_website)}{/if}{$item.image_website}"   alt="{$item.title}" />
+                            {if $item.link!=''}
+                                </a>
+                                {/if}
 
-
-                {elseif $item.type=='video'}
+                                {elseif $item.type=='video'}
 
                     <div class="panel  {$item.type} {$item.size_class}" size_class="{$item.size_class}" video_id="{$item.video_id}">
                         <iframe width="470" height="{if $data.item_headers}330{else}290{/if}" frameborder="0" allowfullscreen="" src="https://www.youtube.com/embed/{$item.video_id}?rel=0&amp;controls=0&amp;showinfo=0"></iframe>

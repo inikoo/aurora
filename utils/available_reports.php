@@ -73,7 +73,13 @@ $available_reports = array(
 
     ),
     'intrastat'             => array(
-        'Label'      => _('Intrastat'),
+        'Label'      => _('Intrastat exports'),
+        'Group'      => 'tax',
+        'GroupLabel' => _('Tax'),
+
+    ),
+    'intrastat_imports'             => array(
+        'Label'      => _('Intrastat imports'),
         'Group'      => 'tax',
         'GroupLabel' => _('Tax'),
 
@@ -90,4 +96,4 @@ $available_reports = array(
 );
 
 
-?>
+
