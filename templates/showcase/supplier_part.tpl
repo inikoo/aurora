@@ -1,14 +1,15 @@
 <div class="sticky_notes" >
 {include file="sticky_note.tpl" value=$supplier_part->get('Sticky Note') object="Supplier_Part" key="{$supplier_part->id}" field="Supplier_Part_Sticky_Note"  }
 </div>
+
 <div class="name_and_categories">
-    <span class="strong"><span class="Supplier_Part_Description">{$supplier_part->get('Supplier Part Description')}</span>  </span>
-    <ul class="tags Categories" style="float:right">
-        {foreach from=$part->get_category_data() item=item key=key}
-            <li><span class="button" onclick="change_view('category/{$item.category_key}')"
-                      title="{$item.label}">{$item.code}</span></li>
-        {/foreach}
-    </ul>
+    <span class="strong"><span class="Supplier_Part_Reference margin_right_20">{$supplier_part->get('Supplier Part Reference')}</span>  <span class="Supplier_Part_Description">{$supplier_part->get('Supplier Part Description')}</span>   </span>
+
+    <div style="float: right;padding-right: 10px">
+
+        <span class="button" onclick="change_view('/supplier/{$supplier->id}')"> <i class="fa fa-hand-holding-box padding_right_5"></i><span class="link">{$supplier->get('Code')}</span></span>
+    </div>
+
     <div style="clear:both">
     </div>
 </div>
@@ -87,7 +88,6 @@
                 </td>
 
 
-                {$supplier_part->get('Supplier Part Units Per Carton')} {$part->get('Units Per Carton')}
 
                 <td style="padding-left: 4px;padding-right: 4px" class="">
                     <span class="discreet " title="{t}Units per carton{/t}">
@@ -113,10 +113,18 @@
 
         <table border="0" class="overview" style="">
 
+            <tr class="">
+                <td>{t}Cost{/t}</td>
+                <td class="aright">{$supplier_part->get('Unit Cost')}</td>
+            </tr>
 
             <tr class="">
                 <td>{t}Current landed cost{/t}</td>
                 <td class="aright">{$supplier_part->get('Unit Delivered Cost')}</td>
+            </tr>
+            <tr class="">
+                <td>{t}Minimum order (cartons){/t}</td>
+                <td class="aright Supplier_Part_Minimum_Carton_Order">{$supplier_part->get('Minimum Carton Order')}</td>
             </tr>
         </table>
 
