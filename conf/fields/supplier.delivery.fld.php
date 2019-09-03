@@ -57,7 +57,46 @@ $object_fields = array(
 
         )
     ),
+    array(
+        'label'      => _('Invoice'),
+        'show_title' => true,
+        'fields'     => array(
+
+            array(
+                'id'                => 'Supplier_Delivery_Invoice_Public_ID',
+                'edit'              => ($edit ? 'string' : ''),
+                'value'             => htmlspecialchars(
+                    $object->get('Supplier Delivery Invoice Public ID')
+                ),
+                'formatted_value'   => $object->get('Invoice Public ID'),
+                'label'             => ucfirst($object->get_field_label('Supplier Delivery Invoice Public ID')),
+                'required'          => true,
+
+                'type'              => 'value'
+            ),
+
+            array(
+
+
+                'id'   => 'Supplier_Delivery_Invoice_Date',
+                'edit' => ($edit ? 'date' : ''),
+
+                'time'            => '00:00:00',
+                'value'           => $object->get('Supplier Delivery c Date'),
+                'formatted_value' => $object->get('Invoice Date'),
+                'label'           => ucfirst($object->get_field_label('Supplier Delivery Invoice Date')),
+                'invalid_msg'     => get_invalid_message('date'),
+                'required'        => false,
+                'type'            => 'value'
+
+
+            ),
+
+        )
+    ),
 );
+
+
 
 if( $object->get('Supplier Delivery Parent')!='Order'){
 
