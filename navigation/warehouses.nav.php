@@ -202,6 +202,9 @@ function get_warehouse_navigation($data, $smarty, $user, $db, $account) {
 
     $title = _('Warehouse').' <span  class="id Warehouse_Code" >'.$warehouse->get('Code').'</span>';
 
+
+
+
     if (!$user->can_view('locations')) {
 
 

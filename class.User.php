@@ -814,13 +814,18 @@ class User extends DB_Table {
         $this->update_stores($value['stores']);
 
         // todo here you can put the supplier production if you want
-        if (isset($groups[7]) or isset($groups[4])) {
+        if (in_array(7,$groups)  or  in_array(4,$groups) )  {
 
         }
         $warehouses = array();
-        if (isset($groups[3]) or isset($groups[22]) or isset($groups[27]) or isset($groups[18]) or isset($groups[9])) {
+
+
+
+
+        if (in_array(3,$groups)  or  in_array(22,$groups)  or in_array(27,$groups)  or in_array(18,$groups)   or in_array(9,$groups) ) {
 
             $sql  = sprintf('select `Warehouse Key` from `Warehouse Dimension`');
+
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
             while ($row = $stmt->fetch()) {
