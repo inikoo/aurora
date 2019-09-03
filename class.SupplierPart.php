@@ -977,9 +977,7 @@ class SupplierPart extends DB_Table {
 
                 $this->update_metadata = array(
                     'class_html' => array(
-                        'Carton_Weight'                     => $this->get(
-                            'Carton Weight'
-                        ),
+                        'Carton_Weight'                     => $this->get('Carton Weight'),
                         'Carton_Cost'                       => $this->get(
                             'Carton Cost'
                         ),
