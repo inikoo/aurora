@@ -130,10 +130,14 @@
 
                 {elseif $item.type=='image'}
 
+                {if $item.link!=''}
+                <a href="{$item.link}">
+                    {/if}
+                    <img class="panel edit {$item.size_class}"  src="{if !preg_match('/^http/',$item.image_website)}{/if}{$item.image_website}"   alt="{$item.title}" />
 
-                    <img class="panel edit {$item.size_class}" size_class="{$item.size_class}" src="{if !preg_match('/^http/',$item.image_website)}{/if}{$item.image_website}"  data-image_website="{$item.image_website}"  data-src="{$item.image_src}"    link="{$item.link}"  alt="{$item.title}" />
-
-
+                    {if $item.link!=''}
+                        </a>
+                    {/if}
                 {elseif $item.type=='video'}
 
                     <div class="panel  {$item.type} {$item.size_class}" size_class="{$item.size_class}" video_id="{$item.video_id}">
