@@ -60,6 +60,7 @@ while ($row = $stmt->fetch()) {
         'Supplier Contact Address locality'           => $row['Supplier Contact Address Locality'],
         'Supplier Contact Address administrativeArea' => $row['Supplier Contact Address Administrative Area'],
         'Supplier Contact Address country'            => $row['Supplier Contact Address Country 2 Alpha Code'],
+        'Supplier Order Public ID Format'             => $row['Supplier Code'].'%05d',
         'editor'                                      => $editor
 
     );
@@ -118,9 +119,9 @@ while ($row = $stmt->fetch()) {
             'Part Part Unit RRP'                          => $row2['Part Unit RRP'],
             'Part Recommended Product Unit Name'          => $row2['Part Recommended Product Unit Name'],
             'Part Barcode'                                => $row2['Part Barcode Number'],
-            'Part Part Unit Weight'                       => ($row2['Part Unit Weight']>0?$row2['Part Unit Weight']:''),
+            'Part Part Unit Weight'                       => ($row2['Part Unit Weight'] > 0 ? $row2['Part Unit Weight'] : ''),
             'Part Part Unit Dimensions'                   => get_dimensions($row2['Part Unit Dimensions']),
-            'Part Part Package Weight'                    => ($row2['Part Package Weight']>0?$row2['Part Package Weight']:''),
+            'Part Part Package Weight'                    => ($row2['Part Package Weight'] > 0 ? $row2['Part Package Weight'] : ''),
             'Part Part Package Dimensions'                => get_dimensions($row2['Part Package Dimensions']),
             'Part Part Materials'                         => get_materials($row2['Part Materials']),
             'Part Part Origin Country Code'               => $row2['Part Origin Country Code'],
@@ -159,7 +160,6 @@ while ($row = $stmt->fetch()) {
                 $tmp_file = '/tmp/_image_'.$row3['Image Key'].'.'.$row3['Image File Format'];
 
                 file_put_contents($tmp_file, $row3['Image Data']);
-
 
 
                 $image_data                  = array(
@@ -226,7 +226,9 @@ while ($row = $stmt->fetch()) {
         'Agent Contact Address locality'           => $row['Agent Contact Address Locality'],
         'Agent Contact Address administrativeArea' => $row['Agent Contact Address Administrative Area'],
         'Agent Contact Address country'            => $row['Agent Contact Address Country 2 Alpha Code'],
-        'editor'                                   => $editor
+        'Agent Order Public ID Format'             => $row['Agent Code'].'%05d',
+
+        'editor' => $editor
 
     );
 
@@ -265,7 +267,9 @@ while ($row = $stmt->fetch()) {
             'Supplier Contact Address locality'           => $row2['Supplier Contact Address Locality'],
             'Supplier Contact Address administrativeArea' => $row2['Supplier Contact Address Administrative Area'],
             'Supplier Contact Address country'            => $row2['Supplier Contact Address Country 2 Alpha Code'],
-            'editor'                                      => $editor
+            'Supplier Order Public ID Format'             => $row2['Supplier Code'].'%05d',
+
+            'editor' => $editor
 
         );
 
@@ -282,7 +286,9 @@ while ($row = $stmt->fetch()) {
         }
 
 
-        $sql = sprintf('select * from sk.`Supplier Part Dimension` left join sk.`Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`) left join sk.`Category Dimension` on (`Category Key`=`Part Family Category Key`) where  `Part Status` ="In Use" and  `Supplier Part Supplier Key`=?   ');
+        $sql = sprintf(
+            'select * from sk.`Supplier Part Dimension` left join sk.`Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`) left join sk.`Category Dimension` on (`Category Key`=`Part Family Category Key`) where  `Part Status` ="In Use" and  `Supplier Part Supplier Key`=?   '
+        );
 
 
         $stmt4 = $db->prepare($sql);
