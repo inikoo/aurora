@@ -3768,10 +3768,6 @@ $tab_defaults = array(
         'period'      => 'last_m',
 
 
-        'invoices_vat'    => 1,
-        'invoices_no_vat' => 1,
-        'invoices_null'   => 1,
-
         'export_fields' => $export_fields['intrastat']
 
 
