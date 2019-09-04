@@ -32,11 +32,6 @@ $parameters = array(
 
 
 
-if(!isset($default['invoices_vat']))$default['invoices_vat']=1;
-if(!isset($default['invoices_no_vat']))$default['invoices_no_vat']=1;
-if(!isset($default['invoices_null']))$default['invoices_null']=1;
-
-
 if(isset($_SESSION['table_state']['intrastat_imports'])){
     $smarty->assign('table_state',$_SESSION['table_state']['intrastat_imports']);
 
