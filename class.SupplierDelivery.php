@@ -794,10 +794,33 @@ class SupplierDelivery extends DB_Table {
 
                 break;
 
-            case 'Supplier Delivery Invoice Date':
             case 'Supplier Delivery Invoice Public ID':
 
                 $this->update_field($field, $value, $options);
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Formatted_Invoice_Public_ID' => $this->get('Formatted Invoice Public ID'),
+                        'Formatted_Invoice_Date'      => $this->get('Formatted Invoice Date'),
+                        'Supplier_Delivery_State'     => $this->get('State'),
+
+                    )
+                );
+
+
+
+
+                break;
+            case 'Supplier Delivery Invoice Date':
+
+                $this->update_field($field, $value, $options);
+
+
+                $sql='update `Purchase Order Transaction Fact` set `Purchase Order Transaction Invoice Date`=? where `Supplier Delivery Key`=? ';
+
+
+                $stmt= $this->db->prepare($sql);
+                $stmt->execute([$value,$this->id]);
 
                 $this->update_metadata = array(
                     'class_html' => array(

@@ -139,8 +139,20 @@ function reports($_data, $db, $user) {
 
     $adata = array();
 
+    $number_reports = 0;
 
     foreach ($available_reports as $key => $data) {
+
+
+        if ($data['Group'] == 'productivity' and !$user->can_view('kpis_reports')) {
+            continue;
+        }
+        if (($data['Group'] == 'sales' or $data['Group'] == 'tax') and !$user->can_view('sales_reports')) {
+            continue;
+        }
+        if ($data['Group'] == 'stock' and !$user->can_view('inventory_reports')) {
+            continue;
+        }
 
         $adata[] = array(
             'name'     => sprintf('<span class="link" onclick="change_view(\'/report/%s\')">%s</span>', $key, $data['Label']),
@@ -148,6 +160,7 @@ function reports($_data, $db, $user) {
             //     'section' => sprintf('<span class="link" onclick="change_view(\'/reports/%s\')">%s</span>', $data['Group'], $data['GroupLabel'])
 
         );
+        $number_reports++;
 
     }
 
@@ -164,7 +177,7 @@ function reports($_data, $db, $user) {
     }
 
 
-    $rtext = get_rtext('report', count($available_reports));
+    $rtext = get_rtext('report', $number_reports);
 
     $response = array(
         'resultset' => array(
@@ -901,6 +914,125 @@ sum(`Order Transaction Amount`*`Invoice Currency Exchange Rate`) as amount,
 }
 
 
+function intrastat_imports_totals($db, $user, $account) {
+
+    if (!$user->can_view('sales_reports')) {
+        return;
+    }
+    $sum_amount = 0;
+    $sum_weight = 0;
+    $sum_orders = 0;
+    $sum_parts  = 0;
+
+    // $parameters = $_SESSION['table_state']['intrastat_imports'];
+
+    include_once('class.Country.php');
+    $account_country     = new Country('code', $account->get('Account Country Code'));
+    $intrastat_countries = array(
+        'NL',
+        'BE',
+        'GB',
+        'BG',
+        'ES',
+        'IE',
+        'IT',
+        'AT',
+        'GR',
+        'CY',
+        'LV',
+        'LT',
+        'LU',
+        'MT',
+        'PT',
+        'PL',
+        'FR',
+        'RO',
+        'SE',
+        'DE',
+        'SK',
+        'SI',
+        'FI',
+        'DK',
+        'CZ',
+        'HU',
+        'EE'
+    );
+    $intrastat_countries = "'".implode("','", $intrastat_countries)."'";
+    $intrastat_countries = preg_replace('/,?\''.$account_country->get('Country 2 Alpha Code').'\'/', '', $intrastat_countries);
+    $intrastat_countries = preg_replace('/^,/', '', $intrastat_countries);
+
+    $where = ' where `Supplier Delivery Parent Country Code` in ('.$intrastat_countries
+        .')  and D.`Supplier Delivery Key` is not null and `Supplier Delivery State`="InvoiceChecked" and `Supplier Delivery Invoice Public ID` is not null and `Supplier Delivery Invoice Date` is not null  and `Supplier Delivery Placed Units`>0 ';
+
+
+    if (isset($_SESSION['table_state']['intrastat_imports']['period'])) {
+
+
+        include_once 'utils/date_functions.php';
+
+
+        list(
+            $db_interval, $from, $to, $from_date_1yb, $to_1yb
+            ) = calculate_interval_dates(
+            $db, $_SESSION['table_state']['intrastat_imports']['period'], $_SESSION['table_state']['intrastat_imports']['from'], $_SESSION['table_state']['intrastat_imports']['to']
+        );
+
+
+        $where_interval_dn = prepare_mysql_dates($from, $to, '`Purchase Order Transaction Invoice Date`');
+
+        $where .= $where_interval_dn['mysql'];
+
+
+    }
+
+
+    $sql = "select 
+count(distinct OTF.`Purchase Order Transaction Part SKU`) as parts,
+count(distinct OTF.`Supplier Delivery Key`) as orders,
+
+       sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery Currency Exchange`*( `Supplier Delivery Net Amount`+`Supplier Delivery Extra Cost Amount` ) ) as amount,
+
+	sum(`Supplier Delivery Placed Units`*`Part Package Weight`/`Part Units Per Package`) as weight 
+	
+  from    `Purchase Order Transaction Fact` OTF left join `Supplier Delivery Dimension` D on (OTF.`Supplier Delivery Key`=D.`Supplier Delivery Key`) left join `Part Dimension` P on (P.`Part SKU`=OTF.`Purchase Order Transaction Part SKU`) left join `Supplier Dimension` S on (S.`Supplier Key`=OTF.`Supplier Key`)  
+ 
+ 
+   $where
+  ";
+
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $sum_amount = $row['amount'];
+            $sum_weight = $row['weight'];
+            $sum_orders = $row['orders'];
+            $sum_parts  = $row['parts'];
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+    $totals   = array(
+        'total_amount' => money($sum_amount, $account->get('Account Currency')),
+        'total_weight' => weight($sum_weight, 'Kg', 0, false, true),
+        'total_orders' => number($sum_orders),
+        'total_parts'  => number($sum_parts),
+
+    );
+    $response = array(
+        'state'  => 200,
+        'totals' => $totals
+    );
+
+    echo json_encode($response);
+
+
+}
+
+
 function intrastat_orders_totals($db, $user, $account) {
 
     // print_r($_SESSION['table_state']['intrastat']);
@@ -1269,10 +1401,9 @@ function intrastat_orders($_data, $db, $user, $account) {
 }
 
 
-
 function intrastat_deliveries($_data, $db, $user, $account) {
 
-    $rtext_label = 'order';
+    $rtext_label = 'delivery';
     include_once 'prepare_table/init.php';
 
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
@@ -1284,16 +1415,29 @@ function intrastat_deliveries($_data, $db, $user, $account) {
 
         foreach ($result as $data) {
 
+            if($data['weight']<2){
+                $weight=weight($data['weight'], 'Kg', 1, false, true);
+
+            }else{
+                $weight=weight($data['weight'], 'Kg', 0, false, true);
+
+            }
+
+
+            $public_id=$data['Supplier Delivery Public ID'];
+            if($public_id!=$data['Supplier Delivery Public ID']){
+                $public_id.=' <span title="'._('Supplier invoice number').'">('.$data['Supplier Delivery Public ID'].')</span>';
+            }
+
             $adata[] = array(
 
 
-                'number'    => sprintf('<span class="link" onClick="change_view(\'orders/%s/%s\')" >%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']),
-                'customer'  => sprintf('<span class="link" onClick="change_view(\'customers/%s/%s\')" >%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
-                'date'      => strftime("%e %b %Y", strtotime($data['Delivery Note Date'].' +0:00')),
-                'amount'    => money($data['amount'], $data['Order Currency Code']),
-                'amount_ac' => money($data['amount_ac'], $account->get('Currency Code')),
-                'weight'    => weight($data['weight'], 'Kg', 2, false, true),
-                'parts'  => $data['parts']
+                'number'  => sprintf('<span class="link" onClick="change_view(\'%s/%s/delivery/%s\')" >%s</span>', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'],$public_id),
+                'supplier'  => sprintf('<span class="link" onClick="change_view(\'%s/%s\')" >%s</span>', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'],$data['Supplier Delivery Parent Name']),
+                'date'      => strftime("%e %b %Y", strtotime($data['Purchase Order Transaction Invoice Date'].' +0:00')),
+                'amount' => money($data['amount'], $account->get('Currency Code')),
+                'weight'    => $weight,
+                'parts'     => $data['parts']
 
             );
 
@@ -1311,7 +1455,7 @@ function intrastat_deliveries($_data, $db, $user, $account) {
     $total_records = $stmt->rowCount();
 
     $rtext = sprintf(
-            ngettext('%s order', '%s orders', $total_records), number($total_records)
+            ngettext('%s delivery', '%s deliveries', $total_records), number($total_records)
         ).' <span class="discreet">'.$rtext.'</span>';
 
 
@@ -1333,7 +1477,6 @@ function intrastat_deliveries($_data, $db, $user, $account) {
 }
 
 
-
 function intrastat_products($_data, $db, $user, $account) {
 
     $rtext_label = 'product';
@@ -1341,7 +1484,6 @@ function intrastat_products($_data, $db, $user, $account) {
 
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
-
 
 
     if ($result = $db->query($sql)) {
@@ -1356,7 +1498,7 @@ function intrastat_products($_data, $db, $user, $account) {
                 'name'       => $data['Product Name'],
                 'units'      => number($data['Product Units Per Case']),
                 'price'      => money($data['Product Price'] / $data['Product Units Per Case'], $data['Order Currency Code']),
-                'weight'     => weight($data['Product Package Weight']/$data['Product Units Per Case'], 'Kg', 2, false, true),
+                'weight'     => weight($data['Product Package Weight'] / $data['Product Units Per Case'], 'Kg', 2, false, true),
                 'units_send' => number($data['units_send']),
 
             );
@@ -1401,15 +1543,21 @@ function intrastat_parts($_data, $db, $user, $account) {
     $adata = array();
 
 
+
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
+
+            $units_per_sko=sprintf(' <span class="discreet italic small">(%d %s)</span>',$data['Part Units Per Package'],ngettext('unit/SKO','units/SKO',$data['Part Units Per Package']));
+
             $adata[] = array(
-                'code'       => sprintf('<span class="link" onClick="change_view(\'part//%s\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
-                'name'       => $data['Part Recommended Product Unit Name'],
+                'reference'       => sprintf('<span class="link" onClick="change_view(\'part//%s\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
+                'name'       => $data['Part Recommended Product Unit Name'].$units_per_sko,
                 'units'      => number($data['Part Units Per Package']),
-                'price'      => money($data['Part Cost'], $account->get('Account Currency')),
-                'weight'     => weight($data['Part Package Weight']/$data['Part Units Per Package'], 'Kg', 2, false, true),
-                'units_send' => number($data['units_send']),
+                'cost'      => money($data['Part Cost']/ $data['Part Units Per Package'], $account->get('Account Currency')),
+                'weight'     => weight($data['Part Package Weight'] / $data['Part Units Per Package'], 'Kg', 3, false, true),
+                'units_received' => number($data['units_received']),
+                'amount'      => money($data['amount'], $account->get('Account Currency')),
+
             );
 
         }
@@ -3048,7 +3196,6 @@ function stock_given_free($_data, $db, $user, $account) {
 }
 
 
-
 function intrastat_imports($_data, $db, $user, $account) {
 
     $rtext_label = 'record';
@@ -3057,32 +3204,37 @@ function intrastat_imports($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    //print $sql;
 
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
 
-           // print_r($data);
+            // print_r($data);
+            if($data['weight']<2){
+                $weight=weight($data['weight'], 'Kg', 1, false, true);
 
+               }else{
+                $weight=weight($data['weight'], 'Kg', 0, false, true);
+
+            }
 
             $adata[] = array(
 
-                'country_code' => $data['Supplier Contact Address Country 2 Alpha Code'],
+                'country_code' => $data['Supplier Delivery Parent Country Code'],
                 // 'invoices'     => number($data['invoices']),
 
                 'period'      => $data['monthyear'],
                 'tariff_code' => $data['tariff_code'],
                 'value'       => money($data['value'], $account->get('Account Currency')),
                 'items'       => number(ceil($data['items'])),
-                'parts'    => sprintf(
-                    '<span class="link" onClick="change_view(\'report/intrastat_imports/parts/%s/%s\')" >%s</span>', $data['Supplier Contact Address Country 2 Alpha Code'], ($data['tariff_code'] == '' ? 'missing' : $data['tariff_code']), number($data['parts'])
+                'parts'       => sprintf(
+                    '<span class="link" onClick="change_view(\'report/intrastat_imports/parts/%s/%s\')" >%s</span>', $data['Supplier Delivery Parent Country Code'], ($data['tariff_code'] == '' ? 'missing' : $data['tariff_code']), number($data['parts'])
                 ),
-                'deliveries'      => sprintf(
-                    '<span class="link" onClick="change_view(\'report/intrastat_imports/deliveries/%s/%s\')" >%s</span>', $data['Supplier Contact Address Country 2 Alpha Code'], ($data['tariff_code'] == '' ? 'missing' : $data['tariff_code']), number($data['orders'])
+                'deliveries'  => sprintf(
+                    '<span class="link" onClick="change_view(\'report/intrastat_imports/deliveries/%s/%s\')" >%s</span>', $data['Supplier Delivery Parent Country Code'], ($data['tariff_code'] == '' ? 'missing' : $data['tariff_code']), number($data['orders'])
                 ),
 
-                'weight' => weight($data['weight'], 'Kg', 2, false, true),
+                'weight' => $weight
 
 
             );
@@ -3124,3 +3276,168 @@ function intrastat_imports($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
+
+function intrastat_parts_totals($db, $user, $account) {
+
+
+    $sum_amount = 0;
+    $sum_weight = 0;
+    $sum_orders = 0;
+
+    $parameters = $_SESSION['table_state']['intrastat_parts'];
+
+
+
+    if ($parameters['tariff_code'] == 'missing') {
+        $where = sprintf(' where `Supplier Delivery Parent Country Code`=%s and (`Part Tariff Code` is null or `Part Tariff Code`="")  and D.`Supplier Delivery Key` is not null and `Supplier Delivery State`="InvoiceChecked" and `Supplier Delivery Invoice Public ID` is not null and `Supplier Delivery Invoice Date` is not null  and `Supplier Delivery Placed Units`>0  ', prepare_mysql($parameters['country_code']));
+
+    } else {
+        $where = sprintf(' where `Supplier Delivery Parent Country Code`=%s and `Part Tariff Code` like "%s%%"  and D.`Supplier Delivery Key` is not null and `Supplier Delivery State`="InvoiceChecked" and `Supplier Delivery Invoice Public ID` is not null and `Supplier Delivery Invoice Date` is not null  and `Supplier Delivery Placed Units`>0   ', prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code']));
+
+    }
+
+
+
+    if (isset($parameters['parent_period'])) {
+
+
+        include_once 'utils/date_functions.php';
+
+
+        list(
+            $db_interval, $from, $to, $from_date_1yb, $to_1yb
+            ) = calculate_interval_dates(
+            $db, $parameters['parent_period'], $parameters['parent_from'], $parameters['parent_to']
+        );
+
+
+        $where_interval_dn = prepare_mysql_dates($from, $to, '`Purchase Order Transaction Invoice Date`');
+
+        $where .= $where_interval_dn['mysql'];
+
+
+
+    }
+
+
+
+    $sql = "select  count(distinct OTF.`Supplier Delivery Key`) as orders, 
+sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery Currency Exchange`*( `Supplier Delivery Net Amount`+`Supplier Delivery Extra Cost Amount` ) ) as amount,
+	sum(`Supplier Delivery Placed Units`*`Part Package Weight`/`Part Units Per Package`) as weight  from `Purchase Order Transaction Fact` OTF left join `Supplier Delivery Dimension` D on (OTF.`Supplier Delivery Key`=D.`Supplier Delivery Key`) left join `Part Dimension` P on (P.`Part SKU`=OTF.`Purchase Order Transaction Part SKU`) left join `Supplier Dimension` S on (S.`Supplier Key`=OTF.`Supplier Key`)  
+ 
+ 
+   $where
+  ";
+
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $sum_amount = $row['amount'];
+            $sum_weight = $row['weight'];
+            $sum_orders = $row['orders'];
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+    $totals   = array(
+        'intrastat_products_total_amount' => money($sum_amount, $account->get('Account Currency')),
+        'intrastat_products_total_weight' => weight($sum_weight, 'Kg', 0, false, true),
+        'intrastat_products_total_orders' => number($sum_orders),
+
+    );
+    $response = array(
+        'state'  => 200,
+        'totals' => $totals
+    );
+
+    echo json_encode($response);
+
+
+}
+
+
+function intrastat_deliveries_totals($db, $user, $account) {
+
+
+    $sum_amount = 0;
+    $sum_weight = 0;
+    $sum_parts = 0;
+
+    $parameters = $_SESSION['table_state']['intrastat_deliveries'];
+
+
+
+    if ($parameters['tariff_code'] == 'missing') {
+        $where = sprintf(' where `Supplier Delivery Parent Country Code`=%s and (`Part Tariff Code` is null or `Part Tariff Code`="")  and D.`Supplier Delivery Key` is not null and `Supplier Delivery State`="InvoiceChecked" and `Supplier Delivery Invoice Public ID` is not null and `Supplier Delivery Invoice Date` is not null  and `Supplier Delivery Placed Units`>0  ', prepare_mysql($parameters['country_code']));
+
+    } else {
+        $where = sprintf(' where `Supplier Delivery Parent Country Code`=%s and `Part Tariff Code` like "%s%%"  and D.`Supplier Delivery Key` is not null and `Supplier Delivery State`="InvoiceChecked" and `Supplier Delivery Invoice Public ID` is not null and `Supplier Delivery Invoice Date` is not null  and `Supplier Delivery Placed Units`>0   ', prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code']));
+
+    }
+
+
+
+    if (isset($parameters['parent_period'])) {
+
+
+        include_once 'utils/date_functions.php';
+
+
+        list(
+            $db_interval, $from, $to, $from_date_1yb, $to_1yb
+            ) = calculate_interval_dates(
+            $db, $parameters['parent_period'], $parameters['parent_from'], $parameters['parent_to']
+        );
+
+
+        $where_interval_dn = prepare_mysql_dates($from, $to, '`Purchase Order Transaction Invoice Date`');
+
+        $where .= $where_interval_dn['mysql'];
+
+
+
+    }
+
+
+
+    $sql = "select  count(distinct OTF.`Purchase Order Transaction Part SKU`) as parts, 
+sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery Currency Exchange`*( `Supplier Delivery Net Amount`+`Supplier Delivery Extra Cost Amount` ) ) as amount,
+	sum(`Supplier Delivery Placed Units`*`Part Package Weight`/`Part Units Per Package`) as weight  from `Purchase Order Transaction Fact` OTF left join `Supplier Delivery Dimension` D on (OTF.`Supplier Delivery Key`=D.`Supplier Delivery Key`) left join `Part Dimension` P on (P.`Part SKU`=OTF.`Purchase Order Transaction Part SKU`) left join `Supplier Dimension` S on (S.`Supplier Key`=OTF.`Supplier Key`)  
+ 
+ 
+   $where
+  ";
+
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $sum_amount = $row['amount'];
+            $sum_weight = $row['weight'];
+            $sum_parts = $row['parts'];
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+    $totals   = array(
+        'intrastat_deliveries_total_amount' => money($sum_amount, $account->get('Account Currency')),
+        'intrastat_deliveries_total_weight' => weight($sum_weight, 'Kg', 0, false, true),
+        'intrastat_deliveries_total_parts' => number($sum_parts),
+
+    );
+    $response = array(
+        'state'  => 200,
+        'totals' => $totals
+    );
+
+    echo json_encode($response);
+
+
+}

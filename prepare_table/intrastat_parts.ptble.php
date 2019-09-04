@@ -11,10 +11,10 @@
 
 
 if ($parameters['tariff_code'] == 'missing') {
-    $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and (`Part Tariff Code` is null or `Part Tariff Code`="")  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched"  and `Delivery Note Quantity`>0  ', prepare_mysql($parameters['country_code']));
+    $where = sprintf(' where `Supplier Delivery Parent Country Code`=%s and (`Part Tariff Code` is null or `Part Tariff Code`="")  and D.`Supplier Delivery Key` is not null and `Supplier Delivery State`="InvoiceChecked" and `Supplier Delivery Invoice Public ID` is not null and `Supplier Delivery Invoice Date` is not null  and `Supplier Delivery Placed Units`>0  ', prepare_mysql($parameters['country_code']));
 
 } else {
-    $where = sprintf(' where `Delivery Note Address Country 2 Alpha Code`=%s and `Part Tariff Code` like "%s%%"  and DN.`Delivery Note Key` is not null and `Delivery Note State`="Dispatched" and `Delivery Note Quantity`>0  ', prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code']));
+    $where = sprintf(' where `Supplier Delivery Parent Country Code`=%s and `Part Tariff Code` like "%s%%"  and D.`Supplier Delivery Key` is not null and `Supplier Delivery State`="InvoiceChecked" and `Supplier Delivery Invoice Public ID` is not null and `Supplier Delivery Invoice Date` is not null  and `Supplier Delivery Placed Units`>0   ', prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code']));
 
 }
 
@@ -32,12 +32,10 @@ if (isset($parameters['parent_period'])) {
     );
 
 
-    $where_interval_invoice = prepare_mysql_dates($from, $to, 'I.`Invoice Date`');
-    $where_interval_dn      = prepare_mysql_dates($from, $to, '`Delivery Note Date`');
+    $where_interval_dn = prepare_mysql_dates($from, $to, '`Purchase Order Transaction Invoice Date`');
     $where .= $where_interval_dn['mysql'];
 
 
-   // $where .= " and ( (  I.`Invoice Key`>0  ".$where_interval_invoice['mysql']." ) or ( I.`Invoice Key` is NULL  ".$where_interval_dn['mysql']." ))  ";
 
 
 }
@@ -57,36 +55,39 @@ if ($parameters['f_field'] == 'number' and $f_value != '') {
 $_order = $order;
 $_dir   = $order_direction;
 
-if ($order == 'code') {
-    $order = '`Part Code File As`';
+if ($order == 'reference') {
+    $order = '`Part Reference`';
 } elseif ($order == 'name') {
-    $order = '`Part Name`';
+    $order = '`Part Recommended Product Unit Name`';
 } elseif ($order == 'units') {
-    $order = '`Part Units Per Case`';
-} elseif ($order == 'store') {
-    $order = '`Store Code`';
-} elseif ($order == 'price') {
-    $order = '`Part Price`/`Part Units Per Case`';
+    $order = '`Part Units Per Package`';
+} elseif ($order == 'cost') {
+    $order = '`Part Cost`/`Part Units Per Package`';
 } elseif ($order == 'weight') {
-    $order = '`Part Package Weight`';
-} elseif ($order == 'units_send') {
-    $order = 'sum(`Delivery Note Quantity`*`Part Units Per Case`) ';
+    $order = '`Part Package Weight`/`Part Units Per Package`';
+} elseif ($order == 'units_received') {
+    $order = 'sum(`Supplier Delivery Placed Units`)  ';
+} elseif ($order == 'amount') {
+    $order = 'sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery Currency Exchange`*( `Supplier Delivery Net Amount`+`Supplier Delivery Extra Cost Amount` ) )  ';
 } else {
 
-    $order = 'OTF.`Part ID`';
+    $order = '`Purchase Order Transaction Part SKU`';
 }
 
 
-$group_by = ' group by OTF.`	Purchase Order Transaction Part SKU` ';
+
+$group_by = 'group by OTF.`Purchase Order Transaction Part SKU` ';
 
 $table =
-    ' `Order Transaction Fact` OTF left join `Part Dimension` P on (P.`Part SKU`=OTF.`Purchase Order Transaction Part SKU`) left join `Supplier Dimension` S on (S.`Supplier Key`=OTF.`Supplier Key`)  ';
+    ' `Purchase Order Transaction Fact` OTF left join `Supplier Delivery Dimension` D on (OTF.`Supplier Delivery Key`=D.`Supplier Delivery Key`) left join `Part Dimension` P on (P.`Part SKU`=OTF.`Purchase Order Transaction Part SKU`) left join `Supplier Dimension` S on (S.`Supplier Key`=OTF.`Supplier Key`)  ';
 
 $sql_totals = "";
 
 
-$fields = "OTF.`Part ID`,P.`Part Reference`,`Part Name`,`Part Store Key`,`Part Units Per Case`,`Part Tariff Code`,`Part Price`,`Order Currency Code`,`Part Package Weight`,
-sum(`Delivery Note Quantity`*`Part Units Per Case`) as units_send
+$fields = "`Part SKU`,P.`Part Reference`,`Part Recommended Product Unit Name`,`Part Tariff Code`,`Part Package Weight`,`Part Units Per Package`,`Part Cost`,
+sum(`Supplier Delivery Placed Units`) as units_received,
+sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery Currency Exchange`*( `Supplier Delivery Net Amount`+`Supplier Delivery Extra Cost Amount` ) ) as amount,
+
 ";
 
 
