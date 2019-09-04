@@ -990,7 +990,6 @@ function intrastat_imports_totals($db, $user, $account) {
   ";
 
 
-    print $sql;
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
