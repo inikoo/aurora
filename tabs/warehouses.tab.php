@@ -43,11 +43,13 @@ $parameters = array(
 );
 
 $table_buttons   = array();
+/*
 $table_buttons[] = array(
     'icon'      => 'plus',
     'title'     => _('New warehouse'),
     'reference' => "warehouse/new"
 );
+*/
 $smarty->assign('table_buttons', $table_buttons);
 
 
