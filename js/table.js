@@ -1070,6 +1070,18 @@ function post_table_rendered(el) {
 
             get_intrastat_products_totals();
             break;
+        case 'get_intrastat_imports':
+
+            get_intrastat_imports_totals();
+            break;
+        case 'intrastat_deliveries':
+
+            get_intrastat_deliveries_totals();
+            break;
+        case 'intrastat_parts':
+
+            get_intrastat_parts_totals();
+            break;
         case 'ec_sales_list':
 
             get_ec_sales_list_totals();
