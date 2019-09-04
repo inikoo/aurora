@@ -994,7 +994,6 @@ function intrastat_imports_totals($db, $user, $account) {
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
 
-            print_r($row);
 
             $sum_amount = $row['amount'];
             $sum_weight = $row['weight'];
@@ -3276,7 +3275,7 @@ function intrastat_parts_totals($db, $user, $account) {
     $sum_weight = 0;
     $sum_orders = 0;
 
-    $parameters = $_SESSION['table_state']['intrastat_imports'];
+    $parameters = $_SESSION['table_state']['intrastat_parts'];
 
 
 
@@ -3359,7 +3358,7 @@ function intrastat_deliveries_totals($db, $user, $account) {
     $sum_weight = 0;
     $sum_parts = 0;
 
-    $parameters = $_SESSION['table_state']['intrastat_imports'];
+    $parameters = $_SESSION['table_state']['intrastat_deliveries'];
 
 
 
