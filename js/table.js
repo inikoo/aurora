@@ -1070,7 +1070,7 @@ function post_table_rendered(el) {
 
             get_intrastat_products_totals();
             break;
-        case 'get_intrastat_imports':
+        case 'intrastat_imports':
 
             get_intrastat_imports_totals();
             break;
