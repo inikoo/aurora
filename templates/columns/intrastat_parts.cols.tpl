@@ -17,17 +17,10 @@ renderable: false
 
 },
 
-{
-name: "store",
-label: "{t}Store{/t}",
 
-editable: false,
-sortType: "toggle",
-cell: Backgrid.HtmlCell.extend([])
-},
 {
-name: "code",
-label: "{t}Code{/t}   ",
+name: "reference",
+label: "{t}Reference{/t}   ",
 editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ })
@@ -43,20 +36,11 @@ editable: false,
 sortType: "toggle",
 cell: "html"
 },
-{
-name: "units",
-label: "{t}Units per outer{/t}",
-editable: false,
-sortType: "toggle",
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
-headerCell: integerHeaderCell
-
-},
 
 {
-name: "price",
-label: "{t}Unit price{/t}",
+name: "cost",
+label: "{t}Current unit cost{/t}",
 editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -76,8 +60,8 @@ headerCell: integerHeaderCell
 },
 
 {
-name: "units_send",
-label: "{t}Units send{/t}",
+name: "units_received",
+label: "{t}Units received{/t}",
 editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
@@ -85,7 +69,16 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
+{
+name: "amount",
+label: "{t}Amount{/t}",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
+headerCell: integerHeaderCell
+
+},
 
 ]
 

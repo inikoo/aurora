@@ -607,7 +607,7 @@ class User extends DB_Table {
             case('Staff Position'):
             case('Position'):
                 include_once 'class.Staff.php';
-                $employee = new Staff($this->get_staff_key());
+                $employee = get_object('Staff', $this->get_staff_key());
 
                 return $employee->get($key);
                 break;
@@ -750,7 +750,7 @@ class User extends DB_Table {
 
         } else {
 
-            $staff = new Staff($this->data['User Parent Key']);
+            $staff = get_object('Staff', $this->data['User Parent Key']);
             if ($staff->data['Staff Currently Working'] == 'Yes') {
                 $this->data['User Staff Type'] = 'Working';
 
@@ -814,17 +814,15 @@ class User extends DB_Table {
         $this->update_stores($value['stores']);
 
         // todo here you can put the supplier production if you want
-        if (in_array(7,$groups)  or  in_array(4,$groups) )  {
+        if (in_array(7, $groups) or in_array(4, $groups)) {
 
         }
         $warehouses = array();
 
 
+        if (in_array(3, $groups) or in_array(22, $groups) or in_array(27, $groups) or in_array(18, $groups) or in_array(9, $groups)) {
 
-
-        if (in_array(3,$groups)  or  in_array(22,$groups)  or in_array(27,$groups)  or in_array(18,$groups)   or in_array(9,$groups) ) {
-
-            $sql  = sprintf('select `Warehouse Key` from `Warehouse Dimension`');
+            $sql = sprintf('select `Warehouse Key` from `Warehouse Dimension`');
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
@@ -878,10 +876,8 @@ class User extends DB_Table {
                 $this->update_field($field, $value, $options);
                 switch ($this->data['User Type']) {
                     case 'Staff':
-                        include_once 'class.Staff.php';
-                        $staff         = new Staff(
-                            $this->data['User Parent Key']
-                        );
+
+                        $staff         = get_object('Staff', $this->data['User Parent Key']);
                         $staff->editor = $this->editor;
                         $staff->get_user_data();
                         $new_value = $this->get('Handle');
@@ -1237,7 +1233,8 @@ class User extends DB_Table {
             $_changed = $this->db->exec($sql);
             $changed  += $_changed;
 
-            $warehouse = new Warehouse($warehouse_key);
+            $warehouse = get_object('Warehouse', $warehouse_key);
+
             if ($warehouse->id and $_changed and $history) {
                 $history_data = array(
                     'History Abstract'    => sprintf(
@@ -1266,7 +1263,7 @@ class User extends DB_Table {
         $changed = 0;
         foreach ($to_add as $scope_id) {
 
-            $warehouse = new Warehouse($scope_id);
+            $warehouse = get_object('Warehouse', $scope_id);
             if (!$warehouse->id) {
                 continue;
             }
@@ -1464,8 +1461,8 @@ class User extends DB_Table {
 
         switch ($this->data['User Type']) {
             case 'Staff':
-                include_once 'class.Staff.php';
-                $staff         = new Staff($this->data['User Parent Key']);
+                $staff = get_object('Staff', $this->data['User Parent Key']);
+
                 $staff->editor = $this->editor;
                 $staff->get_user_data();
                 $new_value = $this->get('Active');
@@ -1507,8 +1504,8 @@ class User extends DB_Table {
 
         switch ($this->data['User Type']) {
             case 'Staff':
-                include_once 'class.Staff.php';
-                $staff         = new Staff($this->data['User Parent Key']);
+                $staff = get_object('Staff', $this->data['User Parent Key']);
+
                 $staff->editor = $this->editor;
                 $staff->get_user_data();
                 $staff->add_changelog_record(
@@ -1529,8 +1526,8 @@ class User extends DB_Table {
 
         switch ($this->data['User Type']) {
             case 'Staff':
-                include_once 'class.Staff.php';
-                $staff         = new Staff($this->data['User Parent Key']);
+                $staff = get_object('Staff', $this->data['User Parent Key']);
+
                 $staff->editor = $this->editor;
                 $staff->get_user_data();
                 $staff->update(array('Staff PIN' => $value));
@@ -1605,7 +1602,8 @@ class User extends DB_Table {
         $staff_alias = '';
         $staff_key   = $this->get_staff_key();
         if ($staff_key) {
-            $staff       = new Staff($staff_key);
+            $staff = get_object('Staff', $staff_key);
+
             $staff_alias = $staff->get('Staff Alias');
         }
 
@@ -1637,7 +1635,7 @@ class User extends DB_Table {
         $staff_name = '';
         $staff_key  = $this->get_staff_key();
         if ($staff_key) {
-            $staff      = new Staff($staff_key);
+            $staff      = get_object('Staff', $staff_key);
             $staff_name = $staff->get('Staff Name');
         }
 

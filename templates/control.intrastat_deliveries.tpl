@@ -53,18 +53,18 @@
 
         <tr>
             <td>{t}Parts{/t}</td>
-            <td class="aright " ><span class=" intrastat_orders_total_parts link" onclick="change_view('{$link_parts}')"></span></td>
+            <td class="aright " ><span class=" intrastat_deliveries_total_parts link" onclick="change_view('{$link_parts}')"></span></td>
 
         </tr>
 
         <tr>
             <td>{t}Amount{/t}</td>
-            <td class="aright intrastat_orders_total_amount"></td>
+            <td class="aright intrastat_deliveries_total_amount"></td>
         </tr>
 
         <tr>
             <td>{t}Weight{/t}</td>
-            <td class="aright intrastat_orders_total_weight"></td>
+            <td class="aright intrastat_deliveries_total_weight"></td>
         </tr>
 
     </table>
@@ -79,9 +79,8 @@
 
 
 
-
-    function get_intrastat_orders_totals() {
-        var request = "/ar_reports_tables.php?tipo=intrastat_imports_deliveries_totals"
+    function get_intrastat_deliveries_totals() {
+        var request = "/ar_reports_tables.php?tipo=intrastat_deliveries_totals"
         $.getJSON(request, function (data) {
             if (data.state == 200) {
                 for (key in data.totals) {

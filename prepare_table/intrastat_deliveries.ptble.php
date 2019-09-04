@@ -43,27 +43,30 @@ if (isset($parameters['parent_period'])) {
 
 
 $wheref = '';
-if ($parameters['f_field'] == 'reference' and $f_value != '') {
-    $wheref .= " and  `Part Reference` like '".addslashes($f_value)."%'    ";
+if ($parameters['f_field'] == 'number' and $f_value != '') {
+    $wheref .= " and  `Supplier Delivery Public ID` like '".addslashes($f_value)."%'    ";
+} elseif ($parameters['f_field'] == 'supplier' and $f_value != '') {
+    $wheref = sprintf(
+        ' and `Supplier Delivery Parent Code` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+    );
 }
+
 
 $_order = $order;
 $_dir   = $order_direction;
 
-if ($order == 'reference') {
-    $order = '`Part Reference`';
-} elseif ($order == 'name') {
-    $order = '`Part Recommended Product Unit Name`';
-} elseif ($order == 'units') {
-    $order = '`Part Units Per Package`';
-} elseif ($order == 'cost') {
-    $order = '`Part Cost`/`Part Units Per Package`';
+if ($order == 'amount') {
+    $order = 'amount ';
+} elseif ($order == 'parts') {
+    $order = 'parts ';
 } elseif ($order == 'weight') {
-    $order = '`Part Package Weight`/`Part Units Per Package`';
-} elseif ($order == 'units_received') {
-    $order = 'sum(`Supplier Delivery Placed Units`)  ';
-} elseif ($order == 'amount') {
-    $order = 'sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery Currency Exchange`*( `Supplier Delivery Net Amount`+`Supplier Delivery Extra Cost Amount` ) )  ';
+    $order = 'weight ';
+}elseif ($order == 'supplier') {
+    $order = '`Supplier Delivery Parent Name` ';
+} elseif ($order == 'number') {
+    $order = '`Supplier Delivery Public ID` ';
+} elseif ($order == 'date') {
+    $order = '`Purchase Order Transaction Invoice Date` ';
 } else {
 
     $order = '`Purchase Order Transaction Part SKU`';
@@ -71,17 +74,23 @@ if ($order == 'reference') {
 
 
 
-$group_by = 'group by OTF.`Purchase Order Transaction Part SKU` ';
+$group_by = 'group by OTF.`Supplier Delivery Key` ';
 
 $table =
-    ' `Purchase Order Transaction Fact` OTF left join `Supplier Delivery Dimension` D on (OTF.`Supplier Delivery Key`=D.`Supplier Delivery Key`) left join `Part Dimension` P on (P.`Part SKU`=OTF.`Purchase Order Transaction Part SKU`) left join `Supplier Dimension` S on (S.`Supplier Key`=OTF.`Supplier Key`)  ';
+    ' `Purchase Order Transaction Fact` OTF left join `Supplier Delivery Dimension` D on (OTF.`Supplier Delivery Key`=D.`Supplier Delivery Key`)   left join `Part Dimension` P on (P.`Part SKU`=OTF.`Purchase Order Transaction Part SKU`)   ';
 
 $sql_totals = "";
 
 
-$fields = "`Part SKU`,P.`Part Reference`,`Part Recommended Product Unit Name`,`Part Tariff Code`,`Part Package Weight`,`Part Units Per Package`,`Part Cost`,
-sum(`Supplier Delivery Placed Units`) as units_received,
-sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery Currency Exchange`*( `Supplier Delivery Net Amount`+`Supplier Delivery Extra Cost Amount` ) ) as amount
+$fields = "`Supplier Delivery Parent Key`,`Supplier Delivery Parent Code`,`Supplier Delivery Parent Name`,`Purchase Order Transaction Invoice Date`,
+sum(`Supplier Delivery Placed Units`) as units_received,`Supplier Delivery Public ID`,`Supplier Delivery Parent`,
+sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery Currency Exchange`*( `Supplier Delivery Net Amount`+`Supplier Delivery Extra Cost Amount` ) ) as amount,
+
+
+	sum(`Supplier Delivery Placed Units`*`Part Package Weight`/`Part Units Per Package`) as weight ,
+	count(distinct OTF.`Purchase Order Transaction Part SKU`) as parts,OTF.`Supplier Delivery Key`
+
+
 
 ";
 

@@ -36,9 +36,9 @@ $parameters = array(
     'parent_key'      => $state['parent_key'],
     'country_code'    => $__data[0],
     'tariff_code'     => $__data[1],
-    'parent_period'   => (!empty($_SESSION['table_state']['intrastat']['period']) ? $_SESSION['table_state']['intrastat']['period'] : 'last_m'),
-    'parent_from'     => (!empty($_SESSION['table_state']['intrastat']['from']) ? $_SESSION['table_state']['intrastat']['from'] : ''),
-    'parent_to'       => (!empty($_SESSION['table_state']['intrastat']['to']) ? $_SESSION['table_state']['intrastat']['to'] : ''),
+    'parent_period'   => (!empty($_SESSION['table_state']['intrastat']['period']) ? $_SESSION['table_state']['intrastat_imports']['period'] : 'last_m'),
+    'parent_from'     => (!empty($_SESSION['table_state']['intrastat']['from']) ? $_SESSION['table_state']['intrastat_imports']['from'] : ''),
+    'parent_to'       => (!empty($_SESSION['table_state']['intrastat']['to']) ? $_SESSION['table_state']['intrastat_imports']['to'] : ''),
  
 
 );

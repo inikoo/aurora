@@ -8,6 +8,9 @@
  Version 3
 
 */
+
+exit('todo');
+
 include_once 'utils/invalid_messages.php';
 
 
@@ -23,4 +26,4 @@ $smarty->assign('object_fields', $object_fields);
 
 $html = $smarty->fetch('new_object.tpl');
 
-?>
+

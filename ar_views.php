@@ -2407,6 +2407,15 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('intrastat_products'):
                     return get_intrastat_products_navigation($user, $smarty, $data);
                     break;
+                case ('intrastat_imports'):
+                    return get_intrastat_imports_navigation($user, $smarty, $data);
+                    break;
+                case ('intrastat_parts'):
+                    return get_intrastat_parts_navigation($user, $smarty, $data);
+                    break;
+                case ('intrastat_deliveries'):
+                    return get_intrastat_deliveries_navigation($user, $smarty, $data);
+                    break;
                 case ('tax'):
                     return get_tax_navigation($user, $smarty, $data);
                     break;
@@ -10366,6 +10375,99 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 $branch[] = array(
                     'label'     => _('Orders')."; $__data[0], $_tariff_code  $_period",
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            } elseif ($state['section'] == 'intrastat_parts') {
+                $branch[] = array(
+                    'label'     => _('Intrastat imports'),
+                    'icon'      => '',
+                    'reference' => 'report/intrastat_imports'
+                );
+
+
+                $_data  = preg_split('/\|/', $state['extra']);
+                $__data = preg_split('/\_/', $_data[1]);
+
+                $_parameters = array(
+
+                    'period' => (!empty($_SESSION['table_state']['intrastat_imports']['period']) ? $_SESSION['table_state']['intrastat_imports']['period'] : 'last_m'),
+                    'from'   => (!empty($_SESSION['table_state']['intrastat_imports']['from']) ? $_SESSION['table_state']['intrastat_imports']['from'] : ''),
+                    'to'     => (!empty($_SESSION['table_state']['intrastat_imports']['to']) ? $_SESSION['table_state']['intrastat_imports']['to'] : '')
+
+
+                );
+
+
+                include_once 'utils/date_functions.php';
+
+                list(
+                    $db_interval, $from, $to, $from_date_1yb, $to_1yb
+                    ) = calculate_interval_dates(
+                    $db, $_parameters['period'], $_parameters['from'], $_parameters['to']
+                );
+
+                $_from   = strftime('%d %b %Y', strtotime($from));
+                $_to     = strftime('%d %b %Y', strtotime($to));
+                $_period = '';
+                if ($_from != $_to) {
+                    $_period .= " ($_from-$_to)";
+                } else {
+                    $_period .= " ($_from)";
+                }
+
+                $_tariff_code = ($__data[1] == 'missing' ? _('commodity code missing') : $__data[1]);
+
+                $branch[] = array(
+                    'label'     => _('Parts')."; $__data[0], $_tariff_code  $_period",
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+
+            } elseif ($state['section'] == 'intrastat_deliveries') {
+                $branch[] = array(
+                    'label'     => _('Intrastat imports'),
+                    'icon'      => '',
+                    'reference' => 'report/intrastat_imports'
+                );
+
+
+                $_data  = preg_split('/\|/', $state['extra']);
+                $__data = preg_split('/\_/', $_data[1]);
+
+                $_parameters = array(
+
+                    'period' => (!empty($_SESSION['table_state']['intrastat_imports']['period']) ? $_SESSION['table_state']['intrastat_imports']['period'] : 'last_m'),
+                    'from'   => (!empty($_SESSION['table_state']['intrastat_imports']['from']) ? $_SESSION['table_state']['intrastat_imports']['from'] : ''),
+                    'to'     => (!empty($_SESSION['table_state']['intrastat_imports']['to']) ? $_SESSION['table_state']['intrastat_imports']['to'] : '')
+
+
+                );
+
+
+                include_once 'utils/date_functions.php';
+
+                list(
+                    $db_interval, $from, $to, $from_date_1yb, $to_1yb
+                    ) = calculate_interval_dates(
+                    $db, $_parameters['period'], $_parameters['from'], $_parameters['to']
+                );
+
+                $_from   = strftime('%d %b %Y', strtotime($from));
+                $_to     = strftime('%d %b %Y', strtotime($to));
+                $_period = '';
+                if ($_from != $_to) {
+                    $_period .= " ($_from-$_to)";
+                } else {
+                    $_period .= " ($_from)";
+                }
+
+                $_tariff_code = ($__data[1] == 'missing' ? _('commodity code missing') : $__data[1]);
+
+                $branch[] = array(
+                    'label'     => _('Deliveries')."; $__data[0], $_tariff_code  $_period",
                     'icon'      => '',
                     'reference' => ''
                 );

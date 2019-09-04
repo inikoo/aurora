@@ -17,9 +17,9 @@
         <script src="https://browser.sentry-cdn.com/5.4.0/bundle.min.js" crossorigin="anonymous">
         </script>
     {/if}
-    <script src="/assets/aurora_libs.min.js?v190829v4"></script>
+    <script src="/assets/aurora_libs.min.js?v190904v2"></script>
 
-    <script src="/assets/aurora.min.js?v190829v4"></script>
+    <script src="/assets/aurora.min.js?v190904v2"></script>
 
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 

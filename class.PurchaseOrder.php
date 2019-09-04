@@ -294,13 +294,15 @@ class PurchaseOrder extends DB_Table {
             'Supplier Delivery Parent Email'        => $this->get('Purchase Order Parent Email'),
             'Supplier Delivery Parent Telephone'    => $this->get('Purchase Order Parent Telephone'),
             'Supplier Delivery Parent Address'      => $this->get('Purchase Order Parent Address'),
-            'Supplier Delivery Currency Code'       => $this->get('Purchase Order Currency Code'),
-            'Supplier Delivery Incoterm'            => $this->get('Purchase Order Incoterm'),
-            'Supplier Delivery Port of Import'      => $this->get('Purchase Order Port of Import'),
-            'Supplier Delivery Port of Export'      => $this->get('Purchase Order Port of Export'),
-            'Supplier Delivery Production'          => $this->get('Purchase Order Production'),
-            'Supplier Delivery Purchase Order Key'  => $this->id,
-            'Supplier Delivery Currency Exchange'   => currency_conversion(
+            'Supplier Delivery Parent Country Code' => $this->get('Purchase Order Parent Country Code'),
+
+            'Supplier Delivery Currency Code'      => $this->get('Purchase Order Currency Code'),
+            'Supplier Delivery Incoterm'           => $this->get('Purchase Order Incoterm'),
+            'Supplier Delivery Port of Import'     => $this->get('Purchase Order Port of Import'),
+            'Supplier Delivery Port of Export'     => $this->get('Purchase Order Port of Export'),
+            'Supplier Delivery Production'         => $this->get('Purchase Order Production'),
+            'Supplier Delivery Purchase Order Key' => $this->id,
+            'Supplier Delivery Currency Exchange'  => currency_conversion(
                 $this->db, $this->get('Purchase Order Currency Code'), $account->get('Account Currency'), '- 15 minutes'
             ),
 
@@ -471,8 +473,8 @@ class PurchaseOrder extends DB_Table {
 
                 break;
 
-           case 'Submitted Formatted Date':
-               return strftime("%c", strtotime($this->get('Purchase Order Submitted Date')));
+            case 'Submitted Formatted Date':
+                return strftime("%c", strtotime($this->get('Purchase Order Submitted Date')));
 
                 break;
             case 'Estimated Receiving Datetime':
@@ -748,7 +750,7 @@ class PurchaseOrder extends DB_Table {
 
             case ('State'):
 
-                if($this->data['Purchase Order Production']=='Yes'){
+                if ($this->data['Purchase Order Production'] == 'Yes') {
                     switch ($this->data['Purchase Order State']) {
                         case 'InProcess':
                             return _('Planning');
@@ -790,7 +792,7 @@ class PurchaseOrder extends DB_Table {
                             return $this->data['Purchase Order State'];
                             break;
                     }
-                }else{
+                } else {
                     switch ($this->data['Purchase Order State']) {
                         case 'InProcess':
                             return _('In Process');
@@ -833,7 +835,6 @@ class PurchaseOrder extends DB_Table {
                             break;
                     }
                 }
-
 
 
                 break;
@@ -1086,8 +1087,8 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         $deliveries = $this->get_deliveries('objects');
 
 
-        foreach($deliveries as $_key=>$_value){
-            if($_value->get('Supplier Delivery State')=='Cancelled'){
+        foreach ($deliveries as $_key => $_value) {
+            if ($_value->get('Supplier Delivery State') == 'Cancelled') {
                 unset($deliveries[$_key]);
             }
         }
@@ -1251,7 +1252,6 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
         $operations = array();
 
 
-
         if ($old_value != $value) {
             switch ($value) {
                 case 'InProcess':
@@ -1285,8 +1285,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                     );
 
 
-                    $sql =
-                        'select `Purchase Order Transaction Fact Key`,`Supplier Part Unit Cost`,`Supplier Part Unit Extra Cost`,`Purchase Order Ordering Units`,SPD.`Supplier Part Historic Key`  
+                    $sql = 'select `Purchase Order Transaction Fact Key`,`Supplier Part Unit Cost`,`Supplier Part Unit Extra Cost`,`Purchase Order Ordering Units`,SPD.`Supplier Part Historic Key`  
                                 from `Purchase Order Transaction Fact` POTF left join `Supplier Part Dimension` SPD  on (POTF.`Supplier Part Key`=SPD.`Supplier Part Key`) where `Purchase Order Key`=?';
 
                     $stmt = $this->db->prepare($sql);
@@ -1308,8 +1307,6 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
 
                         );
                         $this->db->exec($sql);
-
-
 
 
                     }
@@ -1393,8 +1390,8 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                                 $sql = sprintf(
                                     'update `Purchase Order Transaction Fact` set `Purchase Order Submitted Units`=%f ,`Purchase Order Submitted Unit Cost`=%f,`Purchase Order Submitted Units Per SKO`=%d,`Purchase Order Submitted SKOs Per Carton`=%d ,`Purchase Order Submitted Unit Extra Cost Percentage`=%f ,`Supplier Part Historic Key`=%d where `Purchase Order Transaction Fact Key`=%d   ',
 
-                                    $row['Purchase Order Ordering Units'], $supplier_part->get('Supplier Part Unit Cost'), $supplier_part->part->get('Part Units Per Package'), $supplier_part->get('Supplier Part Packages Per Carton'), $extra_cost_percentage,$supplier_part->get('Supplier Part Historic Key'),
-                                    $row['Purchase Order Transaction Fact Key']
+                                    $row['Purchase Order Ordering Units'], $supplier_part->get('Supplier Part Unit Cost'), $supplier_part->part->get('Part Units Per Package'), $supplier_part->get('Supplier Part Packages Per Carton'), $extra_cost_percentage,
+                                    $supplier_part->get('Supplier Part Historic Key'), $row['Purchase Order Transaction Fact Key']
                                 );
 
                                 // print "$sql\n";

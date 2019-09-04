@@ -33,6 +33,7 @@ class SubjectSupplier extends Subject {
             'Purchase Order Parent Email'        => $this->get('Main Plain Email'),
             'Purchase Order Parent Telephone'    => $this->get('Preferred Contact Number Formatted Number'),
             'Purchase Order Parent Address'      => $this->get('Contact Address Formatted'),
+            'Purchase Order Parent Country Code'      => $this->get('Contact Address Country 2 Alpha Code'),
 
             'Purchase Order Currency Code'  => $this->get('Default Currency Code'),
             'Purchase Order Incoterm'       => $this->get($this->table_name.' Default Incoterm'),
