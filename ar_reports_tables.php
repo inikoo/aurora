@@ -986,18 +986,7 @@ function intrastat_imports_totals($db, $user, $account) {
     }
 
 
-    $sql = "select 
-count(distinct OTF.`Purchase Order Transaction Part SKU`) as parts,
-count(distinct OTF.`Supplier Delivery Key`) as orders,
-
-       sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery Currency Exchange`*( `Supplier Delivery Net Amount`+`Supplier Delivery Extra Cost Amount` ) ) as amount,
-
-	sum(`Supplier Delivery Placed Units`*`Part Package Weight`/`Part Units Per Package`) as weight 
-	
-  from    `Purchase Order Transaction Fact` OTF left join `Supplier Delivery Dimension` D on (OTF.`Supplier Delivery Key`=D.`Supplier Delivery Key`) left join `Part Dimension` P on (P.`Part SKU`=OTF.`Purchase Order Transaction Part SKU`) left join `Supplier Dimension` S on (S.`Supplier Key`=OTF.`Supplier Key`)  
- 
- 
-   $where
+    $sql = "select  count(distinct OTF.`Purchase Order Transaction Part SKU`) as parts,count(distinct OTF.`Supplier Delivery Key`) as orders,sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery Currency Exchange`*( `Supplier Delivery Net Amount`+`Supplier Delivery Extra Cost Amount` ) ) as amount,sum(`Supplier Delivery Placed Units`*`Part Package Weight`/`Part Units Per Package`) as weight  from    `Purchase Order Transaction Fact` OTF left join `Supplier Delivery Dimension` D on (OTF.`Supplier Delivery Key`=D.`Supplier Delivery Key`) left join `Part Dimension` P on (P.`Part SKU`=OTF.`Purchase Order Transaction Part SKU`) left join `Supplier Dimension` S on (S.`Supplier Key`=OTF.`Supplier Key`)  $where
   ";
 
 
@@ -1005,6 +994,9 @@ count(distinct OTF.`Supplier Delivery Key`) as orders,
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
+
+            print_r($row);
+
             $sum_amount = $row['amount'];
             $sum_weight = $row['weight'];
             $sum_orders = $row['orders'];
