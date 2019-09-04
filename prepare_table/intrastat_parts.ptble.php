@@ -43,14 +43,9 @@ if (isset($parameters['parent_period'])) {
 
 
 $wheref = '';
-if ($parameters['f_field'] == 'number' and $f_value != '') {
-    $wheref .= " and  `Order Public ID` like '".addslashes($f_value)."%'    ";
-} elseif ($parameters['f_field'] == 'supplier' and $f_value != '') {
-    $wheref = sprintf(
-        ' and `Supplier Code` REGEXP "[[:<:]]%s" ', addslashes($f_value)
-    );
+if ($parameters['f_field'] == 'reference' and $f_value != '') {
+    $wheref .= " and  `Part Reference` like '".addslashes($f_value)."%'    ";
 }
-
 
 $_order = $order;
 $_dir   = $order_direction;
@@ -86,7 +81,7 @@ $sql_totals = "";
 
 $fields = "`Part SKU`,P.`Part Reference`,`Part Recommended Product Unit Name`,`Part Tariff Code`,`Part Package Weight`,`Part Units Per Package`,`Part Cost`,
 sum(`Supplier Delivery Placed Units`) as units_received,
-sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery Currency Exchange`*( `Supplier Delivery Net Amount`+`Supplier Delivery Extra Cost Amount` ) ) as amount,
+sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery Currency Exchange`*( `Supplier Delivery Net Amount`+`Supplier Delivery Extra Cost Amount` ) ) as amount
 
 ";
 

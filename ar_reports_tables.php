@@ -1543,7 +1543,6 @@ function intrastat_parts($_data, $db, $user, $account) {
     $adata = array();
 
 
-
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
