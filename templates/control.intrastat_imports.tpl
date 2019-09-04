@@ -65,7 +65,6 @@
 <script>
 
 
-    get_intrastat_imports_totals();
 
     function get_intrastat_imports_totals() {
         var request = "/ar_reports_tables.php?tipo=intrastat_imports_totals"

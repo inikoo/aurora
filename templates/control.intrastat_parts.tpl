@@ -75,10 +75,9 @@
 
 
 
-    get_intrastat_products_totals()
 
 
-    function get_intrastat_products_totals() {
+    function get_intrastat_parts_totals() {
         var request = "/ar_reports_tables.php?tipo=intrastat_parts_totals"
         $.getJSON(request, function (data) {
             if (data.state == 200) {

@@ -77,10 +77,9 @@
 
 
 
-    get_intrastat_orders_totals();
 
 
-    function get_intrastat_orders_totals() {
+    function get_intrastat_deliveries_totals() {
         var request = "/ar_reports_tables.php?tipo=intrastat_deliveries_totals"
         $.getJSON(request, function (data) {
             if (data.state == 200) {
