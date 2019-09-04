@@ -53,7 +53,7 @@ headerCell: integerHeaderCell
 },
 {
 name: "parts",
-label: "{t}Part{/t}",
+label: "{t}Parts{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
@@ -63,7 +63,7 @@ headerCell: integerHeaderCell
 },
 {
 name: "items",
-label: "{t}Units send{/t}",
+label: "{t}Units received{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
