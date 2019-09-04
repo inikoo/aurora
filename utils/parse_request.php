@@ -5042,6 +5042,15 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                         }
                     } elseif ($view_path[0] == 'intrastat') {
+
+
+                        if (!$user->can_view('sales_reports')) {
+                            $module  = 'utils';
+                            $section = 'forbidden';
+                            break;
+                        }
+
+
                         $section = 'intrastat';
 
                         if (isset($view_path[1])) {
@@ -5067,6 +5076,14 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         }
 
                     } elseif ($view_path[0] == 'intrastat_imports') {
+
+
+                        if (!$user->can_view('sales_reports')) {
+                            $module  = 'utils';
+                            $section = 'forbidden';
+                            break;
+                        }
+
                         $section = 'intrastat_imports';
 
                         if (isset($view_path[1])) {

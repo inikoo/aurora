@@ -250,3 +250,11 @@ ALTER TABLE `Part Dimension`
     DROP `Part Package Dimensions Diameter Display`,
     DROP `Part Package Dimensions Volume`,
     DROP `Part Package XHTML Dimensions`;
+
+
+update  `Purchase Order Dimension` O left join `Supplier Dimension` D on (O.`Purchase Order Parent Key`=D.`Supplier Key`) set `Purchase Order Parent Country Code`=`Supplier Contact Address Country 2 Alpha Code` where `Purchase Order Parent`='Supplier';
+update  `Purchase Order Dimension` O left join `Agent Dimension` D on (O.`Purchase Order Parent Key`=D.`Agent Key`) set `Purchase Order Parent Country Code`=`Agent Contact Address Country 2 Alpha Code` where `Purchase Order Parent`='Agent';
+update  `Supplier Delivery Dimension` O left join `Supplier Dimension` D on (O.`Supplier Delivery Parent Key`=D.`Supplier Key`) set `Supplier Delivery Parent Country Code`=`Supplier Contact Address Country 2 Alpha Code` where `Supplier Delivery Parent`='Supplier';
+update  `Supplier Delivery Dimension` O left join `Agent Dimension` D on (O.`Supplier Delivery Parent Key`=D.`Agent Key`) set `Supplier Delivery Parent Country Code`=`Agent Contact Address Country 2 Alpha Code` where `Supplier Delivery Parent`='Agent';
+
+

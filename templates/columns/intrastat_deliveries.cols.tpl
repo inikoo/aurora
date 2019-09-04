@@ -35,22 +35,22 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 }, {
-name: "customer",
-label: "{t}Customer{/t}",
+name: "supplier",
+label: "{t}Supplier/Agent{/t}",
 sortType: "toggle",
 editable: false,
 cell: Backgrid.HtmlCell.extend({})
 },
  {
-name: "products",
-label: "{t}Products{/t}",
+name: "parts",
+label: "{t}Parts{/t}",
 sortable: false,
 editable: false,
 cell: Backgrid.HtmlCell.extend({})
 },
 {
 name: "amount",
-label: "{t}Amount net{/t}",
+label: "{t}Amount{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
@@ -58,16 +58,7 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
-{
-name: "amount_ac",
-label: "{$account->get('Account Currency')}",
-editable: false,
-defaultOrder:1,
-sortType: "toggle",
-{if $sort_key=='amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
-cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
-headerCell: integerHeaderCell
-},
+
 {
 name: "weight",
 label: "{t}Weight{/t}",
