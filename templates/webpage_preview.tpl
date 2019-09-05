@@ -392,4 +392,12 @@
     }
 
 
+    $('.webpage_showcase').addClass('hide')
+
+    $('.hide_webpage_editor').removeClass('hide')
+    $('.show_webpage_editor').addClass('hide')
+    $('#tabs').addClass('hide')
+
+
+
 </script>
