@@ -14,7 +14,6 @@ if($user->can_view('stores') or $user->can_view('accounting')){
 
 }else{
     $where = "where false";
-
 }
 
 
