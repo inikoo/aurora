@@ -55,10 +55,7 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
     $store_key = $category->data['Category Store Key'];
 
 }  elseif ($parameters['parent'] == 'store') {
-    if (is_numeric($parameters['parent_key']) and in_array(
-            $parameters['parent_key'], $user->stores
-        )
-    ) {
+    if (is_numeric($parameters['parent_key'])  and ($user->can_view('stores') or  $user->can_view('accounting'))  ) {
         $where = sprintf(
             ' where  `Invoice Store Key`=%d ', $parameters['parent_key']
         );
