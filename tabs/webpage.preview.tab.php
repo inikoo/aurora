@@ -30,9 +30,6 @@ if (!$webpage->id) {
 $theme = $website->get('Website Theme');
 
 
-
-
-
 $smarty->assign('theme', $theme);
 $smarty->assign('webpage', $webpage);
 $smarty->assign('website', $website);
@@ -42,18 +39,16 @@ $smarty->assign('content', $webpage->get('Content Data'));
 $smarty->assign('metadata', $webpage->get('Scope MetaData'));
 
 
+include_once 'conf/webpage_blocks.php';
+$blocks = get_webpage_blocks();
 
 
-    include_once 'conf/webpage_blocks.php';
-    $blocks = get_webpage_blocks();
+if (!$state['store']->get('Reviews Settings')) {
+    unset($blocks['reviews']);
+}
+$smarty->assign('blocks', $blocks);
 
-
-    if (!$state['store']->get('Reviews Settings')) {
-        unset($blocks['reviews']);
-    }
-    $smarty->assign('blocks', $blocks);
-
-    $smarty->assign('control_template', $theme.'/control.webpage_blocks.'.$theme.'.tpl');
+$smarty->assign('control_template', $theme.'/control.webpage_blocks.'.$theme.'.tpl');
 
 
 // print_r( $webpage->get('Content Data'));
