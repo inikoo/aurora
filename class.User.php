@@ -290,6 +290,7 @@ class User extends DB_Table {
             $user_id = $this->db->lastInsertId();
             $this->get_data('id', $user_id);
 
+        $this->fast_update(array('User Settings'=>'{}'));
 
             $this->new = true;
 
