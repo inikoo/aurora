@@ -482,7 +482,6 @@ function get_widget_details(element, widget, metadata) {
 
 function change_menu_view(module){
 
-    // console.log(module)
 
     switch (module){
         case '_dashboard':
@@ -504,11 +503,8 @@ function change_menu_view(module){
             break;
 
         case 'delivery_notes':
-            // if(state.current_store){
-            //   change_view('delivery_notes/'+state.current_store)
-            //}else{
+
             change_view('delivery_notes/all/')
-            //  }
             break;
 
         case 'products':

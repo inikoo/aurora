@@ -83,7 +83,7 @@ if ($user->can_view('stores')) {
     $nav_menu[] = array(
         '<i class="button far fa-globe fa-fw"></i>',
         _('Websites'),
-        'stores',
+        'websites',
         'websites',
         'module',
         ''

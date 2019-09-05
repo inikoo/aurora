@@ -491,8 +491,8 @@ class Image extends DB_Table {
 
                 if (!file_exists($_tmp)) {
 
-                    print '1>'.preg_replace('/'.$path_root.'\/db/', '../../../db', $image_path)."\n";
-                    print "2>$_tmp\n";
+                    //print '1>'.preg_replace('/'.$path_root.'\/db/', '../../../db', $image_path)."\n";
+                    //print "2>$_tmp\n";
 
                     if (!symlink(
                         preg_replace('/'.$path_root.'\/db/', '../../../db', $image_path), $_tmp

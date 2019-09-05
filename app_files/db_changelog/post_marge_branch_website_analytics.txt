@@ -58,3 +58,5 @@ update `Page Store Dimension` set `Webpage Properties`='{}' ;
 php migrate_images.php
 
 php redo_public_image_db.php
+
+
