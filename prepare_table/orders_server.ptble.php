@@ -20,23 +20,12 @@ $where = 'where true" ';
 $table = '`Order Dimension` O left join `Store Dimension` S on (S.`Store Key`=O.`Order Store Key`) left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
 
 
+if($user->can_view('stores') or $user->can_view('accounting')){
+    $where = "where true";
 
-        if (count($user->stores) == 0) {
-            $where = ' where false';
-        } else {
-
-            if($user->stores==''){
-                $where = 'where false';
-            }else{
-                $where = sprintf('where  `Order Store Key` in (%s)  ', join(',', $user->stores));
-
-            }
-
-
-        }
-
-
-
+}else{
+    $where = "where false";
+}
 
 
 
