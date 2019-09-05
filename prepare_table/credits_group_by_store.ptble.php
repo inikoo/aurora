@@ -9,13 +9,13 @@
 
 */
 
+if($user->can_view('stores') or $user->can_view('accounting')){
+    $where = "where true";
 
-if (count($user->stores) == 0) {
+}else{
     $where = "where false";
-} else {
-
-    $where = sprintf("where S.`Store Key` in (%s)", join(',', $user->stores));
 }
+
 
 $wheref = '';
 if ($parameters['f_field'] == 'name' and $f_value != '') {
@@ -62,4 +62,4 @@ $fields
 $sql_totals = "select count(*) as num from $table $where ";
 
 
-?>
+

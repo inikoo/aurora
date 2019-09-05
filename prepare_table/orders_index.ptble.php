@@ -10,11 +10,10 @@
 */
 
 
-if (count($user->stores) == 0) {
+if($user->can_view('stores') or $user->can_view('accounting')){
+    $where = "where true";
+}else{
     $where = "where false";
-} else {
-
-    $where = sprintf("where S.`Store Key` in (%s)", join(',', $user->stores));
 }
 
 $wheref = '';
