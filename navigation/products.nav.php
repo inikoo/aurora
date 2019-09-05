@@ -1293,12 +1293,23 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
 
 
 
+
     $right_buttons[] = array(
         'icon'  => 'sticky-note',
         'title' => _('Sticky note'),
         'class' => 'open_sticky_note  square_button right object_sticky_note  '.($object->get('Sticky Note') == '' ? '' : 'hide')
     );
 
+
+
+
+    $right_buttons[] = array(
+        'html_icon'  => '<i class="far fa-browser"></i>',
+
+        'reference'=>'website/'.$data['store']->get('Store Website Key').'/online/webpage/'.$data['_object']->get('Product Webpage Key'),
+        'title' => _('Webpage'),
+        'class'=>'button'
+    );
 
     $_content = array(
         'sections_class' => '',
