@@ -10,3 +10,4 @@
 
 
 
+$html = $smarty->fetch('dashboard/website.analytics.dbard.tpl');

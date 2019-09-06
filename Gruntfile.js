@@ -187,9 +187,12 @@ module.exports = function (grunt) {
                     'js/libs/svg-dial.js',
                     'js/libs/countrySelect.js',
                     'js/libs/intlTelInput-jquery.14.0.6.js',
-                    'js/libs/d3.js',
-                    'js/libs/d3fc.layout.js',
-                    'js/libs/d3fc.js',
+
+                    //'js/libs/d3.js',
+                    //'js/libs/d3fc.layout.js',
+                    //'js/libs/d3fc.js',
+
+
                     'js/libs/sweetalert2.all.min.js',
                     'js/libs/tooltipster.bundle.min.js',
                     'js/libs/jquery-qrcode-0.14.0.min.js',
