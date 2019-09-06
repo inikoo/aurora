@@ -3,11 +3,13 @@
  About:
  Author: Raul Perusquia <raul@inikoo.com>
  Refurbished: 30 September 2015 20:13:47 BST, Sheffield, UK
- Copyright (c) 2015, Inikoo
+ Copyright (c) 2019, Inikoo
 
  Version 3
 
 */
+
+
 
 
 include_once 'utils/date_functions.php';
@@ -15,11 +17,9 @@ include_once 'utils/date_functions.php';
 $where      = "where `Feedback Supplier`='Yes' ";
 
 $filter_msg = '';
-$filter_msg = '';
 $wheref     = '';
 
-$fields = '';
-
+$group_by=' group by P.`Part SKU` ';
 
 
 
@@ -70,21 +70,23 @@ $_dir   = $order_direction;
 if ($order == 'reference') {
     $order = 'P.`Part Reference`';
 }elseif ($order == 'date') {
-    $order = '`Feedback Date`';
-}elseif ($order == 'author') {
-    $order = '`User Alias`';
+    $order = 'max(`Feedback Date`)';
+}elseif ($order == 'number_feedback') {
+    $order = 'count(*) ';
 }else {
 
     $order = 'P.`Part SKU`';
 }
 
 $table
-    = "`Feedback ITF Bridge` FIB  left join `Feedback Dimension` FD on (FD.`Feedback Key`=FIB.`Feedback ITF Feedback Key`) left join `Inventory Transaction Fact` ITF on   (`Inventory Transaction Key`=`Feedback ITF Original Key`)  left join `Part Dimension` P on (ITF.`Part SKU`=P.`Part SKU`)  left join `User Dimension` U on (U.`User Key`=`Feedback User Key`) ";
+    = "`Feedback ITF Bridge` FIB  left join `Feedback Dimension` FD on (FD.`Feedback Key`=FIB.`Feedback ITF Feedback Key`) left join `Inventory Transaction Fact` ITF on   (`Inventory Transaction Key`=`Feedback ITF Original Key`)  left join `Part Dimension` P on (ITF.`Part SKU`=P.`Part SKU`) ";
 
 $sql_totals
-    = "select count(*) as num from $table  $where  ";
+    = "select count(distinct P.`Part SKU`) as num from $table  $where  ";
+
+
 
 $fields="
-`User Alias`,`Part Reference`,P.`Part SKU`,`Feedback Date`,`Feedback Key`,`Feedback Message`
+`Part Reference`,P.`Part SKU`,max(`Feedback Date`) as date,count(*) as number_feedback,sum(-`Inventory Transaction Amount`) as amount
 ";
 

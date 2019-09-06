@@ -105,6 +105,12 @@ switch ($tipo) {
     case 'feedback':
         feedback(get_table_parameters(), $db, $user, $account);
         break;
+    case 'feedback_per_part':
+        feedback_per_part(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'feedback_per_part_family':
+        feedback_per_part_family(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -3322,7 +3328,7 @@ function parts_weight_errors($_data, $db, $user) {
 }
 
 
-function feedback($_data, $db, $user) {
+function feedback($_data, $db, $user,$account) {
 
 
     $rtext_label = 'feedback message';
@@ -3343,8 +3349,105 @@ function feedback($_data, $db, $user) {
                 'date'      => strftime(
                     "%a %e %b %Y %H:%M:%S %Z ", strtotime($data['Feedback Date']." +00:00")
                 ),
-                'note'     => $data['Feedback Message'],
+                'note'      => $data['Feedback Message'],
                 'author'    => $data['User Alias'],
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function feedback_per_part($_data, $db, $user,$account) {
+
+
+    $rtext_label = 'feedback message';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction  limit $start_from,$number_results";
+
+    //print $sql;
+    $record_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            $record_data[] = array(
+                'id'              => (integer)$data['Part SKU'],
+                'reference'       => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+                'date'            => strftime("%a %e %b %Y %H:%M:%S %Z ", strtotime($data['date']." +00:00")),
+                'number_feedback' => number($data['number_feedback']),
+                'amount' => money($data['amount'],$account->get('Account Currency'))
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+function feedback_per_part_family($_data, $db, $user,$account) {
+
+
+    $rtext_label = 'feedback message';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction  limit $start_from,$number_results";
+
+    //print $sql;
+    $record_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            $record_data[] = array(
+                'id'              => (integer)$data['Category Key'],
+                'code'       => sprintf('<span class="link" onClick="change_view(\'category/%d\')">%s</span>', $data['Category Key'], $data['Category Code']),
+                'date'            => strftime("%a %e %b %Y %H:%M:%S %Z ", strtotime($data['date']." +00:00")),
+                'number_feedback' => number($data['number_feedback']),
+                'amount' => money($data['amount'],$account->get('Account Currency'))
 
             );
 
