@@ -5908,7 +5908,16 @@ $modules = array(
             )
         ),
 
+        'feedback'          => array(
+            'type'      => 'navigation',
+            'label'     => _('Complains'),
+            'icon'      => 'poop',
+            'reference' => 'inventory/feedback',
+            'tabs'      => array(
+                'inventory.feedback' => array('label' => _('Complains'))
 
+            )
+        ),
         'barcodes'          => array(
             'type'      => 'navigation',
             'label'     => _('Retail barcodes'),
