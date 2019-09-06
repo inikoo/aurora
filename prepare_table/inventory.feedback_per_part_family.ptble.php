@@ -11,7 +11,7 @@
 
 include_once 'utils/date_functions.php';
 
-$where      = "where `Feedback Supplier`='Yes' ";
+$where      = "where `Feedback Supplier`='Yes' and `Category Key`>0  ";
 
 $filter_msg = '';
 $wheref     = '';
