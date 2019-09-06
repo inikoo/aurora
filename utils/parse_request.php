@@ -3858,6 +3858,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                         } elseif ($view_path[0] == 'barcodes') {
                             $section = 'barcodes';
+                        } elseif ($view_path[0] == 'feedback') {
+                            $section = 'feedback';
                         } elseif ($view_path[0] == 'barcode') {
                             $section = 'barcode';
                             $object  = 'barcode';

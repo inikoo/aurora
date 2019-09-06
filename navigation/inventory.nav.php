@@ -1894,3 +1894,41 @@ function get_upload_navigation($data, $smarty, $user, $db) {
 
 
 
+function get_feedback_navigation($data, $smarty, $user, $db, $account) {
+
+
+
+    $left_buttons = array();
+
+
+    $right_buttons = array();
+    $sections      = get_sections('inventory');
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+    $title = '<i class="far fa-poop"></i> '._('Complains');
+
+    $_content = array(
+
+        'sections_class' => '',
+        'sections'       => $sections,
+
+        'left_buttons'  => $left_buttons,
+        'right_buttons' => $right_buttons,
+        'title'         => $title,
+        'search'        => array(
+            'show'        => true,
+            'placeholder' => _('Search inventory')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
