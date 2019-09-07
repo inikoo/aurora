@@ -334,6 +334,8 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
 
 
 
+
+
         if ($state['object'] == 'campaign' and !is_numeric($state['key'])) {
 
             $_object = get_object('campaign_code-store_key', $state['key'].'|'.$state['parent_key']);
@@ -432,6 +434,9 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
         if ($state['object'] == 'website' and $state['tab'] != 'website.new') {
 
 
+            $store=get_object('Store',$_object->get('Website Store Key'));
+
+
             $state['current_website'] = $state['key'];
             if ($state['_parent'] == 'store' and !$state['_parent']->get('Store Website Key')) {
                 $state = array(
@@ -453,7 +458,6 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
 
 
         }
-
 
         if ($state['module'] != 'production') {
 
@@ -746,6 +750,8 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
     //    $production = $state['_object'];
     // }
     //print microtime_float()-$timer."<br>\n";$timer=microtime_float();
+
+
 
 
     $state['store']      = $store;
