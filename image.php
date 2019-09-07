@@ -33,8 +33,6 @@ if(empty($_SESSION['logged_in'])){
 }
 
 
-
-
 use \Gumlet\ImageResize;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 
