@@ -133,14 +133,6 @@ switch ($tab) {
 
 
 
-    case 'website.nodes':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'parameters' => array('type' => 'json array')
-                     )
-        );
-        get_webnodes_element_numbers($db, $data['parameters'], $user);
-        break;
     case 'campaigns':
         $data = prepare_values(
             $_REQUEST, array(
@@ -3900,6 +3892,101 @@ function get_users_elements($db, $user_type) {
 }
 
 
+
+function get_orders_control_panel_numbers($tipo, $db, $data, $user, $account) {
+    $elements_numbers = array(
+        'location' => array(
+            'Domestic' => 0,
+            'Export'   => 0,
+        )
+    );
+    switch ($tipo) {
+        case 'orders.website':
+            $where = 'where `Order State`="InBasket" ';
+            break;
+        case 'orders.in_process.paid':
+            $where = 'where `Order State`="InProcess"  and `Order To Pay Amount`<=0 ';
+            break;
+        case 'orders.in_process.not_paid':
+            $where = 'where `Order State`="InProcess"   and `Order To Pay Amount`>0 ';
+            break;
+        case 'orders.in_warehouse_no_alerts':
+            $where = 'where (`Order State`="InWarehouse" or `Order Replacement State`="InWarehouse"  ) and `Order Delivery Note Alert`!="Yes" ';
+            break;
+        case 'orders.in_warehouse_with_alerts':
+            $where = 'where (`Order State`="InWarehouse" or `Order Replacement State`="InWarehouse"  ) and `Order Delivery Note Alert`="Yes" ';
+            break;
+        case 'orders.packed_done':
+            $where = 'where  (`Order State`="PackedDone" or `Order Replacement State`="PackedDone" ) ';
+            break;
+        case 'orders.approved':
+            $where = 'where `Order State`="Approved"  ';
+            break;
+        case 'orders.dispatched_today':
+            $where =sprintf( 'where ((`Order State`="Dispatched" and `Order Dispatched Date`>%s ) or (`Order Replacement State`="Dispatched" and `Order Post Transactions Dispatched Date`>%s )) ',
+                             prepare_mysql(gmdate('Y-m-d 00:00:00')),  prepare_mysql(gmdate('Y-m-d 00:00:00'))
+            );
+            break;
+        default:
+            print $tipo;
+            exit;
+    }
+    if ($data['parent'] == 'store') {
+        if (is_numeric($data['parent_key']) and in_array(
+                $data['parent_key'], $user->stores
+            )) {
+            $where .= sprintf(' and  `Order Store Key`=%d ', $data['parent_key']);
+            $store        = get_object('store', $data['parent_key']);
+            $home_country = $store->get('Store Home Country Code 2 Alpha');
+        } else {
+            $where .= sprintf(' and  false');
+        }
+    } elseif ($data['parent'] == 'account') {
+        $home_country = $account->get('Account Country 2 Alpha Code');
+        if (is_numeric($data['parent_key']) and in_array($data['parent_key'], $user->stores)) {
+            if (count($user->stores) == 0) {
+                $where .= ' and false';
+            } else {
+                $where .= sprintf('and  `Order Store Key` in (%s)  ', join(',', $user->stores));
+            }
+        }
+    }
+    $sql = "select count(*) as number from `Order Dimension` O $where and `Order Invoice Address Country 2 Alpha Code`!=? ";
+    //print $sql;
+    $stmt = $db->prepare($sql);
+    if ($stmt->execute(
+        array(
+            $home_country
+        )
+    )) {
+        while ($row = $stmt->fetch()) {
+            $elements_numbers['location']['Export'] = number($row['number']);
+        }
+    } else {
+        print_r($error_info = $stmt->errorInfo());
+        exit();
+    }
+    $sql = "select count(*) as number from `Order Dimension` O $where and `Order Invoice Address Country 2 Alpha Code`=?  ";
+    $stmt = $db->prepare($sql);
+    if ($stmt->execute(
+        array(
+            $home_country
+        )
+    )) {
+        while ($row = $stmt->fetch()) {
+            $elements_numbers['location']['Domestic'] = number($row['number']);
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit();
+    }
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+}
+
 function get_all_users_elements($db) {
 
 
@@ -3980,4 +4067,4 @@ function get_category_deal_components_element_numbers($db, $data, $user) {
 }
 
 
-?>
+
