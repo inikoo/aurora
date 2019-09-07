@@ -133,11 +133,14 @@ class Page extends DB_Table {
                         foreach ($row2 as $key => $value) {
                             $this->data[$key] = $value;
                         }
+
+                        $this->properties = json_decode($this->data['Webpage Properties'], true);
+
+
                     }
                 }
 
 
-                $this->properties = json_decode($this->data['Webpage Properties'], true);
 
 
             } elseif ($this->type == 'Internal') {
