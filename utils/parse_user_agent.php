@@ -30,10 +30,12 @@ function parse_user_agent($user_agent, $db) {
             return $row;
         } else {
 
-            $api_keys = array('0a9e3c8c96088cb8ff064b367b745ec5','cf650a3f6ddb20f6607dbbc0971118b6','dd625d60f17d9ef132af8a047c40219b','025f50035435b123fbdd0701e0bc2b72');
+            include 'keyring/currency_exchange_api_keys.php';
 
-            $api_key=$api_keys[array_rand($api_keys)];
-            $url     = 'https://api.whatismybrowser.com/api/v2/user_agent_parse';
+
+            $api_key = $useer_agent_api_keys['whatismybrowser'][array_rand($useer_agent_api_keys['whatismybrowser'])];
+
+            $url = 'https://api.whatismybrowser.com/api/v2/user_agent_parse';
             # -- Set up HTTP Headers
             $headers = [
                 'X-API-KEY: '.$api_key,
@@ -84,7 +86,8 @@ function parse_user_agent($user_agent, $db) {
                 'insert into kbase.`User Agent` (`User Agent Hash`,`User Agent`,`Software`,`Software Details`,`Device`,`OS Code`,`Data`,`Icon`) values (%s,%s,%s,%s,%s,%s,%s,%s) ', prepare_mysql($user_agent_hash), prepare_mysql($result_json['parse']['user_agent']),
                 prepare_mysql($result_json['parse']['simple_software_string']), prepare_mysql($result_json['parse']['simple_sub_description_string']), prepare_mysql($result_json['parse']['simple_operating_platform_string']),
                 prepare_mysql($result_json['parse']['operating_system_name_code']), prepare_mysql(
-                    json_encode($result_json)), prepare_mysql($icon)
+                    json_encode($result_json)
+                ), prepare_mysql($icon)
 
 
             );
