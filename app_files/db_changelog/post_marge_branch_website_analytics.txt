@@ -38,7 +38,6 @@ ALTER TABLE `Image Dimension` CHANGE `Last Modify Date` `Image Creation Date` DA
 
 ALTER TABLE `Image Subject Bridge` ADD `Image Subject Metadata` JSON NULL DEFAULT NULL AFTER `Image Subject Date`;
 update `Image Subject Bridge` set `Image Subject Metadata`='{}';
-Drop table `Image Bridge`;
 
 
 
@@ -55,10 +54,11 @@ update `Image Subject Bridge` set `Image Subject Is Public`='No' where `Image Su
  update `Image Subject Bridge` set `Image Subject Object Image Scope`='Profile' where `Image Subject Object`='Staff';
  update `Image Subject Bridge` set `Image Subject Object Image Scope`='Marketing' where `Image Subject Object` in ('Category','Part','Product') and `Image Subject Object Image Scope`='Default' ;
   update `Image Subject Bridge` set `Image Subject Object Image Scope`='Footer' where `Image Subject Object` in ('Website') and `Image Subject Object Image Scope`!='Default' ;
-DROP TABLE `Template Dimension`, `Template Scope Dimension`;
 
 
 update `Page Store Dimension` set `Webpage Properties`='{}' ;
+
+
 
 
 
@@ -69,3 +69,5 @@ time php7.2 post_migrate_images.php
 time php7.2 redo_public_image_db.php
 
 
+Drop table `Image Bridge`;
+DROP TABLE `Template Dimension`, `Template Scope Dimension`;
