@@ -249,6 +249,11 @@ $user_rights = array(
         'Right Name' => 'users_reports'
     ),
 
+    'EVW'   => array(
+        'Right Type' => 'View',
+        'Right Name' => 'workers_hr'
+    ),
+
 );
 
 
