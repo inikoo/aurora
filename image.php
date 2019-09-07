@@ -64,11 +64,7 @@ if ($redis->connect('127.0.0.1', 6379)) {
     $redis_on = false;
 }
 
-//$cache_file = 'image_cache/'.$image_key.'_'.$size.($size_r!=''?'_'.$size_r:'');
-
 $image_code = 'i.'.DNS_ACCOUNT_CODE.'.'.$image_key.'_'.$size_r;
-
-
 
 if ($redis->exists($image_code)  ) {
 
@@ -86,14 +82,7 @@ if ($redis->exists($image_code)  ) {
         header("Cache-Control: max-age=$seconds_to_cache");
         header('Content-Length: ' . filesize($image_filename));
 
-
-
-
         readfile($image_filename);
-
-
-
-
         exit();
     }
 
