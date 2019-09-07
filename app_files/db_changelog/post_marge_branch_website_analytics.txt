@@ -7,6 +7,10 @@ ALTER TABLE `Image Subject Bridge` CHANGE `Image Subject Object` `Image Subject 
 
 ====== Done until here
 
+
+mkdir img
+
+
 cd au/img
 
 sudo find . -name '*.jpeg' -exec rm -f {} \;
@@ -55,8 +59,13 @@ DROP TABLE `Template Dimension`, `Template Scope Dimension`;
 
 
 update `Page Store Dimension` set `Webpage Properties`='{}' ;
-php migrate_images.php
 
-php redo_public_image_db.php
+
+
+
+time php7.2 migrate_images.php
+time php7.2 post_migrate_images.php
+
+time php7.2 redo_public_image_db.php
 
 
