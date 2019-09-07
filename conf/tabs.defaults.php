@@ -2700,6 +2700,39 @@ $tab_defaults = array(
         'export_fields' => $export_fields['parts']
 
     ),
+    'inventory.feedback'    => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => -1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'f_period'      => 'ytd',
+
+
+    ),
+    'inventory.feedback_per_part'    => array(
+        'view'          => 'overview',
+        'sort_key'      => 'number_feedback',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'f_period'      => 'ytd',
+
+
+    ),
+    'inventory.feedback_per_part_family'    => array(
+        'view'          => 'overview',
+        'sort_key'      => 'number_feedback',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'f_period'      => 'ytd',
+
+
+    ),
     'part_families'                    => array(
         'view'          => 'overview',
         'sort_key'      => 'id',

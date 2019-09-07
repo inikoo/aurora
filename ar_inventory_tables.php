@@ -75,7 +75,7 @@ switch ($tipo) {
     case 'part_families':
         part_families(get_table_parameters(), $db, $user, $account);
         break;
-  //  case 'categories':
+    //  case 'categories':
     //    categories(get_table_parameters(), $db, $user,$account);
     //    break;
     case 'product_families':
@@ -101,6 +101,15 @@ switch ($tipo) {
         break;
     case 'part_locations':
         part_locations(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'feedback':
+        feedback(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'feedback_per_part':
+        feedback_per_part(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'feedback_per_part_family':
+        feedback_per_part_family(get_table_parameters(), $db, $user, $account);
         break;
     default:
         $response = array(
@@ -1102,38 +1111,35 @@ function supplier_parts($_data, $db, $user, $account) {
 
             $operations = '';
 
-            if ($data['Part Main Supplier Part Key'] ==$data['Supplier Part Key']) {
+            if ($data['Part Main Supplier Part Key'] == $data['Supplier Part Key']) {
 
 
-                $principal='<i class="fa fa-trophy principal_'.$data['Supplier Part Key'].'"  title="'._('Preferred supplier').'"  ></i>';
+                $principal = '<i class="fa fa-trophy principal_'.$data['Supplier Part Key'].'"  title="'._('Preferred supplier').'"  ></i>';
 
 
                 $operations = '';
-            }else{
+            } else {
 
-                $principal='<i class="fal fa-snooze principal_'.$data['Supplier Part Key'].'" title="'._('Backup supplier').'"  ></i>';
+                $principal  = '<i class="fal fa-snooze principal_'.$data['Supplier Part Key'].'" title="'._('Backup supplier').'"  ></i>';
                 $operations .= sprintf(
-                    '<div style="margin-bottom:10px"><span class="button" id="set_as_principal_supplier_part_button_%d" onClick="set_as_principal_supplier_part(%d,%d)">%s</span></div>',
-                    $data['Supplier Part Key'], $data['Supplier Part Part SKU'],$data['Supplier Part Key'], _('Set as').' <i class="fal fa-trophy padding_right_5"</i>'
+                    '<div style="margin-bottom:10px"><span class="button" id="set_as_principal_supplier_part_button_%d" onClick="set_as_principal_supplier_part(%d,%d)">%s</span></div>', $data['Supplier Part Key'], $data['Supplier Part Part SKU'],
+                    $data['Supplier Part Key'], _('Set as').' <i class="fal fa-trophy padding_right_5"</i>'
                 );
 
 
             }
 
 
-
-
-
             $record_data[] = array(
-                'id'   => (integer)$data['Supplier Part Key'],
-              //  'data' => '<span id="item_data_'.$data['Supplier Part Key'].'" class="item_data" data-key="'.$data['Supplier Part Key'].'" ></span>',
+                'id' => (integer)$data['Supplier Part Key'],
+                //  'data' => '<span id="item_data_'.$data['Supplier Part Key'].'" class="item_data" data-key="'.$data['Supplier Part Key'].'" ></span>',
 
-                'supplier_code'  => sprintf('<span class="link" onClick="change_view(\'supplier/%d/\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Code']),
-                'principal'      => $principal,
+                'supplier_code' => sprintf('<span class="link" onClick="change_view(\'supplier/%d/\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Code']),
+                'principal'     => $principal,
 
-                'reference'      => $reference,
+                'reference' => $reference,
 
-                'cbm'            => ($data['Supplier Part Carton CBM'] != '' ? $data['Supplier Part Carton CBM'].'m³' : '<i class="fa fa-exclamation-circle error"></i>'),
+                'cbm' => ($data['Supplier Part Carton CBM'] != '' ? $data['Supplier Part Carton CBM'].'m³' : '<i class="fa fa-exclamation-circle error"></i>'),
 
 
                 'description'    => '<span  data-field="Supplier Part Description"  data-item_class="item_Supplier_Part_Description" class="table_item_editable item_Supplier_Part_Description"  >'.$data['Supplier Part Description'].'</span>',
@@ -1145,16 +1151,17 @@ function supplier_parts($_data, $db, $user, $account) {
                 'delivered_cost' => '<span title="'.$exchange_info.'">'.money(
                         $exchange * ($data['Supplier Part Unit Cost'] + $data['Supplier Part Unit Extra Cost']), $account->get('Account Currency')
                     ).'</span>',
-                'sko_per_carton'        => '
-				 <span title="'._('Units per carton').'"><i style="font-size: 80%;margin-right: 1px" class="fal fa-stop-circle very_discreet"></i><i style="position: relative;top:1px;margin-right: 3px" class="fal fa-times very_discreet"></i>'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>
-				<span class="discreet '.($data['Part Units Per Package']==1?'hide':'').' " title="'._('Packages (SKOs) per carton').'" > ('.$data['Supplier Part Packages Per Carton'].')</span>
+                'sko_per_carton' => '
+				 <span title="'._('Units per carton').'"><i style="font-size: 80%;margin-right: 1px" class="fal fa-stop-circle very_discreet"></i><i style="position: relative;top:1px;margin-right: 3px" class="fal fa-times very_discreet"></i>'
+                    .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>
+				<span class="discreet '.($data['Part Units Per Package'] == 1 ? 'hide' : '').' " title="'._('Packages (SKOs) per carton').'" > ('.$data['Supplier Part Packages Per Carton'].')</span>
 				</div>
 				 '),
 
-                'operations'  => $operations,
+                'operations' => $operations,
 
 
-                'next_deliveries'      => $next_deliveries,
+                'next_deliveries' => $next_deliveries,
 
 
             );
@@ -2282,7 +2289,6 @@ function stock_history_day($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
 
-
             if (gmdate('U', strtotime($data['Part Valid From'])) > $_datagms_1_year_back) {
 
                 $no_sales_1_year       = '<span class="super_discreet"><i class="fal fa-seedling"></i></span>';
@@ -3321,3 +3327,149 @@ function parts_weight_errors($_data, $db, $user) {
     echo json_encode($response);
 }
 
+
+function feedback($_data, $db, $user,$account) {
+
+
+    $rtext_label = 'feedback message';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+    $record_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            $record_data[] = array(
+                'id'        => (integer)$data['Feedback Key'],
+                'reference' => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+                'date'      => strftime(
+                    "%a %e %b %Y %H:%M:%S %Z ", strtotime($data['Feedback Date']." +00:00")
+                ),
+                'note'      => $data['Feedback Message'],
+                'author'    => $data['User Alias'],
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function feedback_per_part($_data, $db, $user,$account) {
+
+
+    $rtext_label = 'feedback message';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction  limit $start_from,$number_results";
+
+    //print $sql;
+    $record_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            $record_data[] = array(
+                'id'              => (integer)$data['Part SKU'],
+                'reference'       => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+                'date'            => strftime("%a %e %b %Y %H:%M:%S %Z ", strtotime($data['date']." +00:00")),
+                'number_feedback' => number($data['number_feedback']),
+                'amount' => money($data['amount'],$account->get('Account Currency'))
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+function feedback_per_part_family($_data, $db, $user,$account) {
+
+
+    $rtext_label = 'feedback message';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction  limit $start_from,$number_results";
+
+    //print $sql;
+    $record_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            $record_data[] = array(
+                'id'              => (integer)$data['Category Key'],
+                'code'       => sprintf('<span class="link" onClick="change_view(\'category/%d\')">%s</span>', $data['Category Key'], $data['Category Code']),
+                'date'            => strftime("%a %e %b %Y %H:%M:%S %Z ", strtotime($data['date']." +00:00")),
+                'number_feedback' => number($data['number_feedback']),
+                'amount' => money($data['amount'],$account->get('Account Currency'))
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}

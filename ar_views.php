@@ -2805,6 +2805,16 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
+                case ('feedback'):
+                    return get_feedback_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
+                case ('feedback_item'):
+                    return get_feedback_item_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
             }
 
             break;
