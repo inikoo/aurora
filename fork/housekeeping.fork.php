@@ -99,6 +99,7 @@ function fork_housekeeping($job) {
                             'd3' => array(
                                 array(
                                     'type' => 'current_website_users',
+                                    'website_key'=>$data['session_data']['website_key'],
                                     'data' => $real_time_website_users_data
                                 )
                             )
