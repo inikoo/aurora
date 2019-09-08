@@ -37,7 +37,8 @@ function connect_websocket(){
 
                            console.log(data)
                            console.log(data.d3[i])
-                           console.log(data.d3[i]['total_users'])
+                           console.log(data.d3[i]['data'])
+                           console.log(data.d3[i]['data']['total_users'])
 
                            website_analytics_render_website_users_pie(
                                data.d3[i]['data'].total_users,
