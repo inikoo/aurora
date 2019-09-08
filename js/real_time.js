@@ -34,6 +34,11 @@ function connect_websocket(){
 
                 for (var i in data.d3) {
                        if(data.d3[i]['type']=='current_website_users'){
+
+                           console.log(data)
+                           console.log(data.d3[i])
+                           console.log(data.d3[i]['total_users'])
+
                            website_analytics_render_website_users_pie(
                                data.d3[i]['data'].total_users,
                                data.d3[i]['data'].users
