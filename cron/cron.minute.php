@@ -385,7 +385,7 @@ switch ($time) {
             array()
         );
         while ($row = $stmt->fetch()) {
-            $redis->zRemRangeByScore('_WU'.$account->get('Code').'|'.$row['Website Key'], 0, gmdate('U') - 300);
+           // $redis->zRemRangeByScore('_WU'.$account->get('Code').'|'.$row['Website Key'], 0, gmdate('U') - 300);
         }
 
         break;
