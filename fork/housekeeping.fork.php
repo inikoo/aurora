@@ -70,7 +70,7 @@ function fork_housekeeping($job) {
                     array()
                 );
                 while ($row = $stmt->fetch()) {
-                    $redis->zRemRangeByScore('_WU'.$account->get('Code').'|'.$row['Website Key'], 0, gmdate('U'));
+                  //  $redis->zRemRangeByScore('_WU'.$account->get('Code').'|'.$row['Website Key'], 0, gmdate('U'));
                 }
 
 
@@ -79,7 +79,7 @@ function fork_housekeeping($job) {
 
                 $redis->zadd($key, gmdate('U'), $_key);
                 $redis->set($_key, json_encode($webuser_data));
-                $redis->expire($_key, 300);
+                $redis->expire($_key, 3000);
 
 
             }
