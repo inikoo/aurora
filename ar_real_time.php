@@ -138,6 +138,8 @@ function real_time_website_users($data, $redis, $account, $user) {
     $users_mobile=0;
     $users_tablet=0;
 
+    $users=array();
+
     foreach ($real_time_users as $_key => $timestamp) {
         $website_user=$redis->get($_key);
         if($website_user){
@@ -155,7 +157,7 @@ function real_time_website_users($data, $redis, $account, $user) {
 
             }
 
-
+            $users[]=$website_user;
           //  print_r($website_user);
 
         }
@@ -172,7 +174,9 @@ function real_time_website_users($data, $redis, $account, $user) {
             array('device'=>'mobile','users'=>$users_mobile),
             array('device'=>'tablet','users'=>$users_tablet),
 
-        )
+        ),
+        'real_time_users'=>$real_time_users,
+        'users_data'=>$users
     );
     echo json_encode($response);
     exit;
