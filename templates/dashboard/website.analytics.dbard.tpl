@@ -51,6 +51,13 @@
 
     ;
 
+
+    svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr('font-size', '4em')
+        .attr('y', 20)
+
+
     $(".current_users").data('svg',svg)
     $(".current_users").data('pie',pie)
 
@@ -68,10 +75,6 @@
 
 
     })
-
-
-
-
 
 
 
