@@ -35,10 +35,7 @@ function connect_websocket(){
                 for (var i in data.d3) {
                        if(data.d3[i]['type']=='current_website_users'){
 
-                           console.log(data)
-                           console.log(data.d3[i])
-                           console.log(data.d3[i]['data'])
-                           console.log(data.d3[i]['data']['total_users'])
+
 
                            website_analytics_render_website_users_pie(
                                data.d3[i]['data'].total_users,
@@ -187,9 +184,6 @@ function connect_websocket(){
 
 }
 
-
-
-
 function website_analytics_render_website_users_pie(total,values) {
 
 
@@ -201,11 +195,10 @@ function website_analytics_render_website_users_pie(total,values) {
 
 
 
-    svg.append("text")
-        .attr("text-anchor", "middle")
-        .attr('font-size', '4em')
-        .attr('y', 20)
-        .text(total);
+
+
+
+    svg.selectAll("text").text(total);
 
 
     var path = svg.selectAll("path");
