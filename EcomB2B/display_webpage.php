@@ -123,6 +123,21 @@ if (isset($is_homepage)) {
 }
 
 
+if ($logged_in) {
+    include_once 'utils/new_fork.php';
+    new_housekeeping_fork(
+        'au_housekeeping', array(
+        'type'         => 'website_user_visit',
+        'server_data'  => $_SERVER,
+        'session_data' => $_SESSION,
+        'webpage_key'  => $webpage_key,
+        'device'=>$detected_device
+    ), DNS_ACCOUNT_CODE
+    );
+
+}
+
+
 $cache_id = $_SESSION['website_key'].'|'.$webpage_key.'|'.($logged_in ? 'in' : 'out');
 
 $template = $theme.'/webpage_blocks.'.$theme.'.'.$website_type.$template_suffix.'.tpl';
@@ -142,7 +157,7 @@ if (!(isset($is_unsubscribe) or isset($is_reset))) {
 }
 
 
-if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe)    or isset($is_reset) ) {
+if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset($is_reset)) {
 
 
     include_once 'utils/public_object_functions.php';
@@ -151,10 +166,7 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe)    or iss
     $webpage = get_object('Webpage', $webpage_key);
 
 
-
-
-
-    if (!$webpage->id  or ($webpage->get('Webpage Code')=='reset_pwd.sys' and !isset($is_reset) )  ) {
+    if (!$webpage->id or ($webpage->get('Webpage Code') == 'reset_pwd.sys' and !isset($is_reset))) {
 
 
         $url = preg_replace('/^\//', '', $_SERVER['REQUEST_URI']);
@@ -194,14 +206,14 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe)    or iss
     $smarty->assign('sumo_code', $website->get('Website Sumo Code'));
 
 
-    $one_signal=$website->get('Website One Signal Code');
+    $one_signal = $website->get('Website One Signal Code');
 
 
-    if($one_signal!=''){
-        $one_signal_data=preg_split('/,/',$one_signal);
+    if ($one_signal != '') {
+        $one_signal_data = preg_split('/,/', $one_signal);
 
         $smarty->assign('one_signal_id', $one_signal_data[0]);
-        $smarty->assign('one_signal_key',$one_signal_data[1]);
+        $smarty->assign('one_signal_key', $one_signal_data[1]);
 
 
     }
@@ -217,7 +229,6 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe)    or iss
 
 
     $smarty->assign('logged_in', $logged_in);
-
 
 
     if ($logged_in) {
@@ -310,8 +321,6 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe)    or iss
     $smarty->assign('webpage', $webpage);
     $smarty->assign('content', $webpage->get('Content Data'));
     $smarty->assign('settings', $website_settings);
-
-
 
 
     //print $template;

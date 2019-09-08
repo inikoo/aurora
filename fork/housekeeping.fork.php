@@ -22,7 +22,74 @@ function fork_housekeeping($job) {
     switch ($data['type']) {
 
 
+        case 'website_user_visit':
+
+            include_once 'utils/detect_agent.php';
+            include_once 'utils/parse_user_agent.php';
+
+            include_once 'utils/ip_geolocation.php';
+
+            $ip               = ip();
+            $user_agent_data  = parse_user_agent($data['server_data']['HTTP_USER_AGENT'], $db);
+            $geolocation_data = get_ip_geolocation(trim($ip), $db);
+
+            $webpage_data = array();
+            $sql          = 'select `Webpage Code`,`Webpage Scope`,`Webpage Scope Key` from `Page Store Dimension` where `Page Key`=? ';
+            $stmt         = $db->prepare($sql);
+            $stmt->execute(
+                array($data['webpage_key'])
+            );
+            if ($row = $stmt->fetch()) {
+                $webpage_data = $row;
+            }
+
+            //  print_r($user_agent_data);
+            //  print_r($geolocation_data);
+            //  print_r($webpage_data);
+            //print_r($data);
+
+            $webuser_data = array(
+                'os'      => $user_agent_data['OS Code'],
+                'app'     => $user_agent_data['Software'].($user_agent_data['Software Details'] != '' ? ' ('.$user_agent_data['Software Details'].')' : ''),
+                'icon'    => $user_agent_data['Icon'],
+                'device'  => $data['device'],
+                'webpage' => $webpage_data
+
+            );
+
+
+            $redis = new Redis();
+
+
+            if ($redis->connect('127.0.0.1', 6379)) {
+
+
+                $sql  = 'select `Website Key` from `Website Dimension`';
+                $stmt = $db->prepare($sql);
+                $stmt->execute(
+                    array()
+                );
+                while ($row = $stmt->fetch()) {
+                    $redis->zRemRangeByScore('_WU'.$account->get('Code').'|'.$row['Website Key'], 0, gmdate('U'));
+                }
+
+
+                $key  = '_WU'.$account->get('Code').'|'.$data['session_data']['website_key'];
+                $_key = '_WUO'.$account->get('Code').'|'.$data['session_data']['customer_key'];
+
+                $redis->zadd($key, gmdate('U'), $_key);
+                $redis->set($_key, json_encode($webuser_data));
+                $redis->expire($_key, 300);
+
+
+            }
+            print_r($webuser_data);
+
+            break;
+
+
         case 'update_basket_orders':
+
 
             $date = gmdate('Y-m-d H:i:s');
 
@@ -2944,7 +3011,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             }
 
 
-
             $socket->send(
                 json_encode(
                     array(
@@ -2969,13 +3035,9 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             $webpage = get_object('Webpage', $data['webpage_key']);
 
-            $webpage->fork=true;
+            $webpage->fork = true;
 
             $webpage->update_screenshots();
-
-
-
-
 
 
             break;

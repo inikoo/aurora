@@ -10,6 +10,7 @@
 */
 
 require_once 'common.php';
+require_once 'utils/ar_common.php';
 
 
 if (!isset($_REQUEST['tipo'])) {
@@ -28,7 +29,16 @@ switch ($tipo) {
     case 'users':
         real_time_users($redis, $account, $user);
         break;
+    case 'website_users':
 
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'website_key' => array('type' => 'key'),
+
+                     )
+        );
+        real_time_website_users($data, $redis, $account, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -117,3 +127,56 @@ function real_time_users($redis, $account, $user) {
 
 
 }
+
+
+function real_time_website_users($data, $redis, $account, $user) {
+
+    $real_time_users = $redis->ZREVRANGE('_WU'.$account->get('Code').'|'.$data['website_key'], 0, 100, 'WITHSCORES');
+
+
+    $users_desktop=0;
+    $users_mobile=0;
+    $users_tablet=0;
+
+    foreach ($real_time_users as $_key => $timestamp) {
+        $website_user=$redis->get($_key);
+        if($website_user){
+            $website_user=json_decode($website_user,true);
+
+            if($website_user['device']=='desktop'){
+                $users_desktop++;
+            }
+
+            if($website_user['device']=='mobile'){
+                $users_mobile++;
+            }
+            if($website_user['device']=='tablet'){
+                $users_tablet++;
+
+            }
+
+
+          //  print_r($website_user);
+
+        }
+    }
+
+
+   $total_users=$users_desktop+$users_mobile+$users_tablet;
+
+    $response = array(
+        'state' => 200,
+        'total_users'=>$total_users,
+        'users'=>array(
+            array('device'=>'desktop','users'=>$users_desktop),
+            array('device'=>'mobile','users'=>$users_mobile),
+            array('device'=>'tablet','users'=>$users_tablet),
+
+        )
+    );
+    echo json_encode($response);
+    exit;
+
+
+}
+

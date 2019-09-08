@@ -378,6 +378,16 @@ switch ($time) {
     default:
         $redis->zRemRangeByScore('_IU'.$account->get('Code'), 0, gmdate('U') - 600);
 
+
+        $sql='select `Website Key` from `Website Dimension`';
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array()
+        );
+        while ($row = $stmt->fetch()) {
+            $redis->zRemRangeByScore('_WU'.$account->get('Code').'|'.$row['Website Key'], 0, gmdate('U') - 300);
+        }
+
         break;
 }
 

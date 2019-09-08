@@ -9,5 +9,5 @@
 */
 
 
-
+$smarty->assign('website',$state['_object']);
 $html = $smarty->fetch('dashboard/website.analytics.dbard.tpl');

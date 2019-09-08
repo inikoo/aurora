@@ -19,7 +19,6 @@ function open_new_delivery() {
 
 
     var request = '/ar_find.php?tipo=new_agent_delivery_options&parent=' + $('#new_agent_delivery').attr('parent') + '&parent_key=' + $('#new_agent_delivery').attr('parent_key')
-console.log(request)
     $.getJSON(request, function (data) {
 
 
