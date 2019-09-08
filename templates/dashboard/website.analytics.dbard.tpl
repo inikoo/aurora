@@ -17,7 +17,7 @@
 
    </style>
 
-<div class="current_users">
+<div class="current_website_users_{$website->id}">
 
 </div>
 <script>
@@ -68,6 +68,7 @@
 
 
         website_analytics_render_website_users_pie(
+            {$website->id},
             data.total_users,
             data.users
         )
