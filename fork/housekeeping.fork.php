@@ -26,6 +26,7 @@ function fork_housekeeping($job) {
 
             include_once 'utils/detect_agent.php';
             include_once 'utils/parse_user_agent.php';
+            require_once 'utils/real_time_functions.php';
 
             include_once 'utils/ip_geolocation.php';
 
@@ -70,7 +71,7 @@ function fork_housekeeping($job) {
                     array()
                 );
                 while ($row = $stmt->fetch()) {
-                   $redis->zRemRangeByScore('_WU'.$account->get('Code').'|'.$row['Website Key'], 0, gmdate('U')-300);
+                    $redis->zRemRangeByScore('_WU'.$account->get('Code').'|'.$row['Website Key'], 0, gmdate('U') - 300);
                 }
 
 
@@ -82,8 +83,35 @@ function fork_housekeeping($job) {
                 $redis->expire($_key, 300);
 
 
+                $real_time_website_users_data = get_website_users_read_time_data($redis, $account, $data['session_data']['website_key']);
+
+
+                $context = new ZMQContext();
+                $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+                $socket->connect("tcp://localhost:5555");
+
+
+                $socket->send(
+                    json_encode(
+                        array(
+                            'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+
+                            'd3' => array(
+                                array(
+                                    'type' => 'current_website_users',
+                                    'data' => $real_time_website_users_data
+                                )
+                            )
+
+                        )
+                    )
+                );
+
+
+
+
             }
-           // print_r($webuser_data);
+            // print_r($webuser_data);
 
             break;
 

@@ -33,7 +33,12 @@ function connect_websocket(){
                 // console.log(state.object)
 
                 for (var i in data.d3) {
-
+                       if(data.d3[i]['type']=='current_website_users'){
+                           website_analytics_render_website_users_pie(
+                               data.d3[i]['type']['data'].total_users,
+                               data.d3[i]['type']['data'].users
+                           )
+                       }
                 }
 
 

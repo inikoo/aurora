@@ -3,7 +3,7 @@
  About:
  Author: Raul Perusquia <raul@inikoo.com>
  Created: 24-06-2019 14:04:25 MYT Kuala Lumpur , Malaysia
- Copyright (c) 2015, Inikoo
+ Copyright (c) 2019, Inikoo
 
  Version 3
 
@@ -11,6 +11,7 @@
 
 require_once 'common.php';
 require_once 'utils/ar_common.php';
+require_once 'utils/real_time_functions.php';
 
 
 if (!isset($_REQUEST['tipo'])) {
@@ -131,54 +132,11 @@ function real_time_users($redis, $account, $user) {
 
 function real_time_website_users($data, $redis, $account, $user) {
 
-    $real_time_users = $redis->ZREVRANGE('_WU'.$account->get('Code').'|'.$data['website_key'], 0, 100, 'WITHSCORES');
+    $real_time_website_users_data=get_website_users_read_time_data($redis,$account,$data['website_key']);
+    $real_time_website_users_data['state']=200;
 
 
-    $users_desktop=0;
-    $users_mobile=0;
-    $users_tablet=0;
-
-    $users=array();
-
-    foreach ($real_time_users as $_key => $timestamp) {
-        $website_user=$redis->get($_key);
-        if($website_user){
-            $website_user=json_decode($website_user,true);
-
-            if($website_user['device']=='desktop'){
-                $users_desktop++;
-            }
-
-            if($website_user['device']=='mobile'){
-                $users_mobile++;
-            }
-            if($website_user['device']=='tablet'){
-                $users_tablet++;
-
-            }
-
-            $users[]=$website_user;
-          //  print_r($website_user);
-
-        }
-    }
-
-
-   $total_users=$users_desktop+$users_mobile+$users_tablet;
-
-    $response = array(
-        'state' => 200,
-        'total_users'=>$total_users,
-        'users'=>array(
-            array('device'=>'desktop','users'=>$users_desktop),
-            array('device'=>'mobile','users'=>$users_mobile),
-            array('device'=>'tablet','users'=>$users_tablet),
-
-        ),
-        'real_time_users'=>$real_time_users,
-        'users_data'=>$users
-    );
-    echo json_encode($response);
+    echo json_encode($real_time_website_users_data);
     exit;
 
 
