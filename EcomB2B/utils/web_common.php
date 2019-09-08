@@ -10,10 +10,6 @@
  Version 2.0
 */
 
-
-
-
-
 function get_device() {
     require_once 'external_libs/mobile_detect/Mobile_Detect.php';
     $detect = new Mobile_Detect;
@@ -32,7 +28,6 @@ function get_device() {
 
 return array($detected_device,$template_suffix);
 }
-
 
 function get_logged_in(){
 
@@ -149,6 +144,3 @@ function set_locate($website,&$smarty){
     setlocale(LC_TIME, $locale);
 
 }
-
-
-?>

@@ -138,8 +138,6 @@ function register($db, $website, $data, $editor, $account) {
                 'type'         => 'customer_registered',
                 'customer_key' => $customer->id,
                 'website_key'  => $website->id
-
-
             ), $account->get('Account Code')
             );
 

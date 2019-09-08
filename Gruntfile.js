@@ -270,7 +270,9 @@ module.exports = function (grunt) {
                     'js/fast_track_packing.js',
                     'js/sticky_notes.js',
                     'js/picking_and_packing.js',
-                    'js/app.js'
+                    'js/app.js',
+                    'js/real_time.js'
+
 
 
 
@@ -512,7 +514,7 @@ module.exports = function (grunt) {
                     debug: true,
                     releases_to_keep: '3',
                     exclude: ['keyring', 'external_libs', 'server_files','vendor','base_dirs','img_*'],
-                    after_deploy: 'cd /home/fork/fork/current && ln -s /home/fork/composer/current/vendor vendor && ln -s /home/fork/external_libs/current/ external_libs && ln -s /home/fork/keyring/ keyring  && ln -s /home/fork/base_dirs/ base_dirs '
+                    after_deploy: 'cd /home/fork/fork/current && ln -s /home/fork/composer/current/vendor vendor && ln -s /home/fork/external_libs/current/ external_libs && ln -s /home/fork/keyring/ keyring  && ln -s /home/fork/base_dirs/ base_dirs && cp -av  /home/fork/img/* . '
                 }
             }, fork_external_libs: {
                 options: {

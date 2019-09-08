@@ -26,8 +26,6 @@ if ($redis->connect('127.0.0.1', 6379)) {
 
 
 session_start();
-
-
 if (empty($_SESSION['website_key'])) {
 
 
