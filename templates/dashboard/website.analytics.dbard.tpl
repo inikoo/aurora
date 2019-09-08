@@ -40,7 +40,7 @@
         .innerRadius(radius - 60)
         .outerRadius(radius - 30);
 
-    var svg = d3.select(".current_users").append("svg")
+    var svg = d3.select(".current_website_users_{$website->id}").append("svg")
         .attr("width", width)
         .attr("height", height)
         .append("g")
@@ -58,8 +58,8 @@
         .attr('y', 20)
 
 
-    $(".current_users").data('svg',svg)
-    $(".current_users").data('pie',pie)
+    $(".current_website_users_{$website->id}").data('svg',svg)
+    $(".current_website_users_{$website->id}").data('pie',pie)
 
 
     var request = '/ar_real_time.php?tipo=website_users&website_key={$website->id}'
