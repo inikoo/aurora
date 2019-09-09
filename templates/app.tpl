@@ -24,7 +24,7 @@
 
     <script src="/assets/aurora_libs.min.js?v190904v5"></script>
 
-    <script src="/assets/aurora.min.js?v1909009v2"></script>
+    <script src="/assets/aurora.min.js?v1909009v3"></script>
 
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 

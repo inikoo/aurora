@@ -48,12 +48,12 @@ $(document).on('change', '.image_upload_from_iframe', function (e) {
 
         }, success: function (data) {
 
-            // console.log(data)
+            console.log(data)
 
             if (data.state == '200') {
 
 
-
+console.log(element.attr('name'))
                 switch (element.attr('name')) {
 
                     case 'logo':
@@ -73,7 +73,7 @@ $(document).on('change', '.image_upload_from_iframe', function (e) {
                     case 'category_categories':
                     case 'category_products':
 
-                        var img_element = $('#image_control_panel').find('.image_upload').data('img')
+                        var img_element = $('#image_control_panel').find('.image_upload_from_iframe').data('img')
                         $(img_element).attr('src', '/wi.php?id='+data.img_key);
                         $(img_element).data('src', '/wi.php?id='+data.img_key);
 
@@ -84,7 +84,9 @@ $(document).on('change', '.image_upload_from_iframe', function (e) {
                         $(img_element).data('src', '/wi.php?id='+data.img_key);
                         break;
                     case 'blackboard_image':
-                        var img_element = $('#image_control_panel').find('.image_upload').data('img')
+                        var img_element = $('#image_control_panel').find('.image_upload_from_iframe').data('img')
+
+                        console.log(img_element)
 
 
                         $(img_element).resizable('destroy')

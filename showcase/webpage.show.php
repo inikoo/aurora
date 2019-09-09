@@ -13,17 +13,14 @@
 function get_webpage_showcase($data, $smarty) {
 
 
-
     $webpage = $data['_object'];
 
 
-
- //   print_r($webpage->get('Content Data'));
+    //   print_r($webpage->get('Content Data'));
 
     if (!$webpage->id) {
         return "";
     }
-
 
 
     if ($data['_object']->deleted) {
@@ -31,9 +28,9 @@ function get_webpage_showcase($data, $smarty) {
 
         $smarty->assign('webpage', $webpage);
 
-    }else{
+    } else {
 
-        $website=get_object('Website',$webpage->get('Webpage Website Key'));
+        $website = get_object('Website', $webpage->get('Webpage Website Key'));
 
 
         switch ($webpage->get('Webpage Scope')) {
@@ -55,17 +52,7 @@ function get_webpage_showcase($data, $smarty) {
                 $category = get_object('Category', $webpage->get('Webpage Scope Key'));
                 $smarty->assign('category', $category);
 
-
-                if($data['store']->get('Store Department Category Key')==$category->get('Category Root Key')){
-                    $template = 'showcase/webpage.department.tpl';
-
-                }else{
-
-
-
-                    $template = 'showcase/webpage.category.tpl';
-
-                }
+                $template = 'showcase/webpage.category_categories.tpl';
 
                 break;
             default:
@@ -76,11 +63,9 @@ function get_webpage_showcase($data, $smarty) {
     }
 
 
-
     return $smarty->fetch($template);
 
 
 }
 
 
-?>

@@ -567,8 +567,8 @@ function create_webpage($data, $editor, $smarty, $db) {
 
         $response = array(
             'state'       => 200,
-            'webpage_key' => $webpage_key
-
+            'webpage_key' => $webpage_key,
+            'request' =>'website/'.$website->id.'/webpage/'.$webpage_key
 
         );
     } else {
