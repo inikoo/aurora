@@ -16,6 +16,7 @@ require_once 'common.php';
 $print_est = true;
 
 
+$where = " where `Webpage State`='Online' and `Webpage Scope` in ('Category Categories') ";
 
 $where = " where `Webpage State`='Online' ";
 
@@ -42,9 +43,11 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $webpage = get_object('Webpage',$row['Page Key']);
 
+        if(!$webpage->properties('desktop_screenshot')){
+            $webpage->update_screenshots();
+        }
 
 
-        $webpage->update_screenshots();
 
         $contador++;
         $lap_time1 = date('U');
