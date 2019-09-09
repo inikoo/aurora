@@ -16,8 +16,9 @@
 }
 
     table.current_website_users{
-        float: left;margin-left: 50px;margin-top: 40px;
-        border-top:1px solid #999
+        float: left;margin-left: 0px;margin-top: 40px;
+        border-top:1px solid #999;
+        width: 850px;
     }
     table.current_website_users td{
         padding:2px 15px;border-bottom:1px solid #ccc
@@ -96,6 +97,8 @@ table.current_website_users .location img{
 
         $.each(  data.users_data, function( key, user_data ) {
             table.append('<tr>' +
+                '<td class="device"><i class="far '+user_data.icon+'"</i></td>' +
+
                 '<td class="location">'+user_data.location+'</td>' +
                 '<td class="customer">'+user_data.customer+'</td>' +
                 '<td class="amount" data-amount="'+user_data.order_net+'">'+user_data.order_net_formatted+'</td>' +
