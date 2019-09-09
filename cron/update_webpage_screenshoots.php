@@ -16,11 +16,11 @@ require_once 'common.php';
 $print_est = true;
 
 
-$where = " where `Webpage State`='Online' and `Webpage Scope` in ('Category Categories') ";
+$where = " where  `Website Status`='Active' and  `Webpage State`='Online' and `Webpage Scope` in ('Category Categories') ";
 
-$where = " where `Webpage State`='Online' ";
+$where = " where  `Website Status`='Active' and  `Webpage State`='Online' ";
 
-$sql = sprintf("SELECT count(*) AS num FROM `Page Store Dimension` %s  order by rand()", $where);
+$sql = sprintf("SELECT count(*) AS num FROM `Page Store Dimension`  left join `Website Dimension`  on (`Website Key`=`Webpage Website Key`)   %s  ", $where);
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
@@ -35,8 +35,7 @@ if ($result = $db->query($sql)) {
 $lap_time0 = date('U');
 $contador  = 0;
 
-$sql = sprintf(
-    "SELECT `Page Key` FROM `Page Store Dimension`  %s  ", $where
+    $sql = sprintf("SELECT `Page Key` FROM `Page Store Dimension`  left join `Website Dimension`  on (`Website Key`=`Webpage Website Key`)   %s  order by rand()", $where
 );
 
 if ($result = $db->query($sql)) {
