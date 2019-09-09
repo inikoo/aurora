@@ -552,10 +552,6 @@ class Public_Customer extends DBW_Table {
 
                 $order_key = $row['Order Key'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 

@@ -20,6 +20,12 @@
 <div class="current_website_users_{$website->id}">
 
 </div>
+
+<table class="current_website_users_table_{$website->id}}">
+
+</table>
+
+
 <script>
 
 
