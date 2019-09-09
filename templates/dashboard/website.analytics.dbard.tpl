@@ -28,7 +28,15 @@ table.current_website_users .location img{
    position: relative;top:1px
 }
 
-   </style>
+table.current_website_users .device{
+    text-align: center;width: 30px;
+}
+
+table.current_website_users .amount{
+    text-align: right;padding-right: 50px;
+}
+
+</style>
 
 <div style="width:330px;float: left;" class="current_website_users_{$website->id}">
 
@@ -97,7 +105,7 @@ table.current_website_users .location img{
 
         $.each(  data.users_data, function( key, user_data ) {
             table.append('<tr>' +
-                '<td class="device"><i class="far '+user_data.icon+'"</i></td>' +
+                '<td class="device"><i class="far fa-fw '+user_data.icon+'"</i></td>' +
 
                 '<td class="location">'+user_data.location+'</td>' +
                 '<td class="customer">'+user_data.customer+'</td>' +
