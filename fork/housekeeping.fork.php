@@ -177,7 +177,7 @@ function fork_housekeeping($job) {
 
 
             }
-
+exit;
 
             break;
 

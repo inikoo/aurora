@@ -15,14 +15,25 @@
     font-family: Ubuntu, "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;
 }
 
+    table.current_website_users{
+        float: left;margin-left: 50px;margin-top: 40px;
+        border-top:1px solid #999
+    }
+    table.current_website_users td{
+        padding:2px 15px;border-bottom:1px solid #ccc
+    }
+
+table.current_website_users .location img{
+   position: relative;top:1px
+}
+
    </style>
 
-<div class="current_website_users_{$website->id}">
+<div style="width:330px;float: left;" class="current_website_users_{$website->id}">
 
 </div>
 
-<table class="current_website_users_table_{$website->id}}">
-
+<table class="current_website_users current_website_users_table_{$website->id}">
 </table>
 
 
@@ -79,6 +90,21 @@
             data.users
         )
 
+
+        var table=$('.current_website_users_table_{$website->id}')
+
+
+        $.each(  data.users_data, function( key, user_data ) {
+            table.append('<tr>' +
+                '<td class="location"><img src="/art/flags/'+user_data.flag+'.gif" /> '+user_data.location+'</td>' +
+                '<td class="customer"> '+user_data.customer+'</td>' +
+                '<td class="amount" data-amount="'+user_data.order_net+'"> '+user_data.order_net_formatted+'</td>' +
+                '<td class="webpage"> '+user_data.webpage_label+'</td>' +
+
+                '</tr>')
+        });
+
+//
 
 
     })
