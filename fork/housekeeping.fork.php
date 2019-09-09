@@ -52,11 +52,13 @@ function fork_housekeeping($job) {
             );
 
 
-            if ($geolocation_data['Country Code'] == '') {
-                $webuser_data['flag']     = 'xx';
-                $webuser_data['location'] = '<span class="italic very_discreet">'._('secret').'</span>';
+            if ($geolocation_data['Location'] == '') {
+                $webuser_data['location'] = '<img src="/art/flags/xx.gif"> <span class="italic very_discreet">'._('Unknown').'</span>';
 
             } else {
+                $webuser_data['location'] =$geolocation_data['Location'];
+               /*
+
                 $webuser_data['flag']     = strtolower($geolocation_data['Country Code']);
                 $webuser_data['location'] = $geolocation_data['Town'];
                 if ($geolocation_data['Region Name'] != '') {
@@ -67,6 +69,7 @@ function fork_housekeeping($job) {
                     }
                 }
 
+               */
 
             }
 
