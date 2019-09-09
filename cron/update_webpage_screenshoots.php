@@ -20,7 +20,7 @@ $where = " where `Webpage State`='Online' and `Webpage Scope` in ('Category Cate
 
 $where = " where `Webpage State`='Online' ";
 
-$sql = sprintf("SELECT count(*) AS num FROM `Page Store Dimension` %s", $where);
+$sql = sprintf("SELECT count(*) AS num FROM `Page Store Dimension` %s  order by rand()", $where);
 if ($result = $db->query($sql)) {
     if ($row = $result->fetch()) {
         $total = $row['num'];
