@@ -96,15 +96,15 @@ table.current_website_users .location img{
 
         $.each(  data.users_data, function( key, user_data ) {
             table.append('<tr>' +
-                '<td class="location"><img src="/art/flags/'+user_data.flag+'.gif" /> '+user_data.location+'</td>' +
-                '<td class="customer"> '+user_data.customer+'</td>' +
-                '<td class="amount" data-amount="'+user_data.order_net+'"> '+user_data.order_net_formatted+'</td>' +
+                '<td class="location">'+user_data.location+'</td>' +
+                '<td class="customer">'+user_data.customer+'</td>' +
+                '<td class="amount" data-amount="'+user_data.order_net+'">'+user_data.order_net_formatted+'</td>' +
                 '<td class="webpage"> '+user_data.webpage_label+'</td>' +
 
                 '</tr>')
         });
 
-//
+
 
 
     })
