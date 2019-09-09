@@ -4561,6 +4561,8 @@ class Page extends DB_Table {
 
 
         $cmd = sprintf('node node/screenshots.js --type="current_screenshots" --file_root="%s" --url="%s" &', $tmp_file_root, addslashes($url));
+
+
         exec($cmd, $output);
 
 
