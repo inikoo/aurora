@@ -123,19 +123,19 @@ if (isset($is_homepage)) {
 }
 
 
-$is_devel=preg_match('/bali|sasi|sakoi|geko/', gethostname());
+$is_devel = preg_match('/bali|sasi|sakoi|geko/', gethostname());
 
-if(isset($_REQUEST['snapshot'])){
+if (isset($_REQUEST['snapshot'])) {
     require 'keyring/key.php';
 
-    if(  $_REQUEST['snapshot']==md5(VKEY.'||'.date('Ymd') )){
+    if ($_REQUEST['snapshot'] == md5(VKEY.'||'.date('Ymd'))) {
 
-        $is_devel=1;
+        $is_devel = 1;
     }
 
-    if( isset($_REQUEST['logged_in']) and  $_REQUEST['logged_in'] ){
+    if (isset($_REQUEST['logged_in']) and $_REQUEST['logged_in']) {
 
-        $logged_in=1;
+        $logged_in                        = 1;
         $_SESSION['logged_in']            = true;
         $_SESSION['customer_key']         = 0;
         $_SESSION['website_user_key']     = 0;
@@ -143,20 +143,22 @@ if(isset($_REQUEST['snapshot'])){
     }
 
 
-
 }
-
 
 
 if ($logged_in) {
     include_once 'utils/new_fork.php';
+
+    include_once 'utils/detect_agent.php';
+
     new_housekeeping_fork(
         'au_housekeeping', array(
         'type'         => 'website_user_visit',
         'server_data'  => $_SERVER,
         'session_data' => $_SESSION,
         'webpage_key'  => $webpage_key,
-        'device'=>$detected_device
+        'ip'           => ip(),
+        'device'       => $detected_device
     ), DNS_ACCOUNT_CODE
     );
 
@@ -168,9 +170,6 @@ $cache_id = $_SESSION['website_key'].'|'.$webpage_key.'|'.($logged_in ? 'in' : '
 $template = $theme.'/webpage_blocks.'.$theme.'.'.$website_type.$template_suffix.'.tpl';
 
 $smarty->assign('is_devel', $is_devel);
-
-
-
 
 
 $smarty->assign('cache_id', $cache_id);

@@ -30,7 +30,8 @@ function fork_housekeeping($job) {
 
             include_once 'utils/ip_geolocation.php';
 
-            $ip               = ip();
+
+            $ip               = (isset($data['ip'])?$data['ip']:'localhost');
             $user_agent_data  = parse_user_agent($data['server_data']['HTTP_USER_AGENT'], $db);
             $geolocation_data = get_ip_geolocation(trim($ip), $db);
 
@@ -41,34 +42,33 @@ function fork_housekeeping($job) {
             //print_r($data);
 
             $webuser_data = array(
-                'os'     => $user_agent_data['OS Code'],
-                'app'    => $user_agent_data['Software'].($user_agent_data['Software Details'] != '' ? ' ('.$user_agent_data['Software Details'].')' : ''),
-                'icon'   => $user_agent_data['Icon'],
-                'device' => $data['device'],
+                'os'           => $user_agent_data['OS Code'],
+                'app'          => $user_agent_data['Software'].($user_agent_data['Software Details'] != '' ? ' ('.$user_agent_data['Software Details'].')' : ''),
+                'icon'         => $user_agent_data['Icon'],
+                'device'       => $data['device'],
+                'ip'           => $ip,
+                'geo_location' => $geolocation_data
 
             );
 
 
             if ($geolocation_data['Country Code'] == '') {
-                $webuser_data['flag'] = 'xx';
+                $webuser_data['flag']     = 'xx';
                 $webuser_data['location'] = '<span class="italic very_discreet">'._('secret').'</span>';
 
             } else {
-                $webuser_data['flag'] = strtolower($geolocation_data['Country Code']);
+                $webuser_data['flag']     = strtolower($geolocation_data['Country Code']);
                 $webuser_data['location'] = $geolocation_data['Town'];
                 if ($geolocation_data['Region Name'] != '') {
-                    if($webuser_data['location']!=''){
-                        $webuser_data['location'] .=' ('.$geolocation_data['Region Name'].')';
-                    }else{
+                    if ($webuser_data['location'] != '') {
+                        $webuser_data['location'] .= ' ('.$geolocation_data['Region Name'].')';
+                    } else {
                         $webuser_data['location'] = $geolocation_data['Region Name\''];
                     }
                 }
 
 
-
-
             }
-
 
 
             $sql  = 'select `Webpage Code`, `Webpage Scope` ,`Webpage Scope Key`,`Webpage URL` ,`Page Key`  from `Page Store Dimension` where `Page Key`=? ';
@@ -177,7 +177,7 @@ function fork_housekeeping($job) {
 
 
             }
-exit;
+
 
             break;
 
