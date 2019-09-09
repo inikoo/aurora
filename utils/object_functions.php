@@ -320,12 +320,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Upload.php";
             $object = new Upload($key);
             break;
-        case 'node':
-        case 'website node':
-        case 'websitenode':
-            require_once "class.WebsiteNode.php";
-            $object = new WebsiteNode($key);
-            break;
+
         case 'purchaseorderitem':
 
             $sql = sprintf(

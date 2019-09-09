@@ -3,6 +3,26 @@
  Copyright (c) 2017, Inikoo
  Version 3.0*/
 
+$(document).on('click', '.create_category_webpage', function (e) {
+
+    var request = '/ar_edit_website.php?tipo=create_webpage&parent=category&parent_key='+$(this).find('i').data('category_key')
+
+
+    $.getJSON(request, function (data) {
+
+        if (data.state == 200) {
+
+            change_view(data.request)
+
+        }
+
+    })
+})
+
+
+
+
+
 
 $(document).on('click', '.delete_block', function (e) {
 

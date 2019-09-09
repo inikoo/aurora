@@ -703,14 +703,25 @@ function get_products_category_navigation($data, $smarty, $user, $db) {
     );
 
 
-    $right_buttons[] = array(
-        'icon_class'  => 'far',
+    if($data['_object']->get('Product Category Webpage Key')>0){
+        $right_buttons[] = array(
 
-        'icon'  => 'browser',
-        'reference'=>'website/'.$data['store']->get('Store Website Key').'/online/webpage/'.$data['_object']->get('Product Category Webpage Key'),
-        'title' => _('Webpage'),
-        'class'=>'button'
-    );
+            'icon'  => 'browser',
+            'reference'=>'website/'.$data['store']->get('Store Website Key').'/webpage/'.$data['_object']->get('Product Category Webpage Key'),
+            'title' => _('Webpage'),
+            'class'=>'button'
+        );
+    }else{
+        $right_buttons[] = array(
+            'html_icon'  => '<i data-category_key="'.$data['_object']->id.'" class="fal fa-browser"></i>',
+
+            'title' => _('Create webpage'),
+            'id'=>'create_website',
+            'class'=>'button create_category_webpage'
+        );
+    }
+
+
 
 
 
