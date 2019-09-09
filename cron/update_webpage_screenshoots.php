@@ -17,7 +17,7 @@ $print_est = true;
 
 
 
-$where = " where `Webpage State`='Online' and `Page Key`=469 ";
+$where = " where `Webpage State`='Online' ";
 
 $sql = sprintf("SELECT count(*) AS num FROM `Page Store Dimension` %s", $where);
 if ($result = $db->query($sql)) {
@@ -58,10 +58,6 @@ if ($result = $db->query($sql)) {
 
     }
 
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
 }
-
 
 
