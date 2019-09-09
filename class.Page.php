@@ -4539,12 +4539,28 @@ class Page extends DB_Table {
 
     function update_screenshots() {
 
+
+        if(in_array($this->get('Website Code'),array('reset_pwd.sys','profile.sys','basket.sys','checkout.sys','thanks.sys')  )){
+            return;
+        }
+
         include_once 'utils/screenshot_functions.php';
 
 
         $tmp_file_root = sprintf('server_files/tmp/original_%d_%d', gmdate('U'), $this->id);
 
-        $cmd = sprintf('node node/screenshots.js --type="current_screenshots" --file_root="%s" --url="%s" &', $tmp_file_root, addslashes($this->get('Webpage URL')));
+
+        $url=$this->get('Webpage URL').'?snapshot='.md5(VKEY.'||'.date('Ymd'));
+
+
+
+
+        if(!($this->get('Website Code')=='home_logout.sys' or $this->get('Website Code')=='register.sys') ){
+            $url.='&logged_in=1';
+        }
+
+
+        $cmd = sprintf('node node/screenshots.js --type="current_screenshots" --file_root="%s" --url="%s" &', $tmp_file_root, addslashes($url));
         exec($cmd, $output);
 
 
