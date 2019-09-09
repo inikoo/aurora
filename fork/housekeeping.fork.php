@@ -34,29 +34,95 @@ function fork_housekeeping($job) {
             $user_agent_data  = parse_user_agent($data['server_data']['HTTP_USER_AGENT'], $db);
             $geolocation_data = get_ip_geolocation(trim($ip), $db);
 
-            $webpage_data = array();
-            $sql          = 'select `Webpage Code`,`Webpage Scope`,`Webpage Scope Key` from `Page Store Dimension` where `Page Key`=? ';
-            $stmt         = $db->prepare($sql);
-            $stmt->execute(
-                array($data['webpage_key'])
-            );
-            if ($row = $stmt->fetch()) {
-                $webpage_data = $row;
-            }
 
             //  print_r($user_agent_data);
-            //  print_r($geolocation_data);
+            //print_r($geolocation_data);
             //  print_r($webpage_data);
             //print_r($data);
 
             $webuser_data = array(
-                'os'      => $user_agent_data['OS Code'],
-                'app'     => $user_agent_data['Software'].($user_agent_data['Software Details'] != '' ? ' ('.$user_agent_data['Software Details'].')' : ''),
-                'icon'    => $user_agent_data['Icon'],
-                'device'  => $data['device'],
-                'webpage' => $webpage_data
+                'os'     => $user_agent_data['OS Code'],
+                'app'    => $user_agent_data['Software'].($user_agent_data['Software Details'] != '' ? ' ('.$user_agent_data['Software Details'].')' : ''),
+                'icon'   => $user_agent_data['Icon'],
+                'device' => $data['device'],
 
             );
+
+
+            if ($geolocation_data['Country Code'] == '') {
+                $webuser_data['flag'] = 'xx';
+                $webuser_data['location'] = '<span class="italic very_discreet">'._('secret').'</span>';
+
+            } else {
+                $webuser_data['flag'] = strtolower($geolocation_data['Country Code']);
+                $webuser_data['location'] = $geolocation_data['Town'];
+                if ($geolocation_data['Region Name'] != '') {
+                    if($webuser_data['location']!=''){
+                        $webuser_data['location'] .=' ('.$geolocation_data['Region Name'].')';
+                    }else{
+                        $webuser_data['location'] = $geolocation_data['Region Name\''];
+                    }
+                }
+
+
+
+
+            }
+
+
+
+            $sql  = 'select `Webpage Code`, `Webpage Scope` ,`Webpage Scope Key`,`Webpage URL` ,`Page Key`  from `Page Store Dimension` where `Page Key`=? ';
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array($data['webpage_key'])
+            );
+            if ($row = $stmt->fetch()) {
+
+                $webpage_label = $row['Webpage Code'];
+                if ($row['Webpage Code'] == 'home.sys') {
+                    $webpage_label = '<i class="far fa-home"></i> '._('Home');
+                }
+
+                $webuser_data['webpage_label'] = $webpage_label;
+                $webuser_data['webpage_key']   = $row['Page Key'];
+                $webuser_data['webpage_url']   = $row['Webpage URL'];
+
+            }
+
+            $sql  = 'select `Customer Name`, `Customer Key` ,`Store Currency Code` from `Customer Dimension` left join `Store Dimension` on (`Store Key`=`Customer Store Key`)  where `Customer Key`=? ';
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array($data['session_data']['customer_key'])
+            );
+            if ($row = $stmt->fetch()) {
+
+
+                $webuser_data['customer']     = $row['Customer Name'];
+                $webuser_data['customer_key'] = $row['Customer Key'];
+                $store_currency               = $row['Store Currency Code'];
+
+            }
+
+            $sql = "SELECT `Order Key`,`Order Total Net Amount`,`Order Currency`,`Order Public ID` FROM `Order Dimension` WHERE `Order Customer Key`=? AND `Order State`='InBasket' ";
+
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array($data['session_data']['customer_key'])
+            );
+            if ($row = $stmt->fetch()) {
+
+
+                $webuser_data['order_net']           = $row['Order Total Net Amount'];
+                $webuser_data['order_net_formatted'] = money($row['Order Total Net Amount'], $row['Order Currency']);
+                $webuser_data['order_public_id']     = $row['Order Public ID'];
+                $webuser_data['order_key']           = $row['Order Key'];
+
+            } else {
+                $webuser_data['order_net']           = 0;
+                $webuser_data['order_net_formatted'] = money(0, $store_currency);
+                $webuser_data['order_public_id']     = '';
+                $webuser_data['order_key']           = '';
+            }
 
 
             $redis = new Redis();
@@ -84,7 +150,8 @@ function fork_housekeeping($job) {
 
 
                 $real_time_website_users_data = get_website_users_read_time_data($redis, $account, $data['session_data']['website_key']);
-
+                //print_r($real_time_website_users_data);
+                //exit;
 
                 $context = new ZMQContext();
                 $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
@@ -98,9 +165,9 @@ function fork_housekeeping($job) {
 
                             'd3' => array(
                                 array(
-                                    'type' => 'current_website_users',
-                                    'website_key'=>$data['session_data']['website_key'],
-                                    'data' => $real_time_website_users_data
+                                    'type'        => 'current_website_users',
+                                    'website_key' => $data['session_data']['website_key'],
+                                    'data'        => $real_time_website_users_data
                                 )
                             )
 
@@ -109,10 +176,8 @@ function fork_housekeeping($job) {
                 );
 
 
-
-
             }
-            // print_r($webuser_data);
+
 
             break;
 
