@@ -43,6 +43,18 @@ if ($result = $db->query($sql)) {
         $webpage = get_object('Webpage',$row['Page Key']);
 
         if(!$webpage->properties('desktop_screenshot')){
+
+            $url=$webpage->get('Webpage URL').'?snapshot='.md5(VKEY.'||'.date('Ymd'));
+
+
+
+
+            if(!($webpage->get('Website Code')=='home_logout.sys' or $webpage->get('Website Code')=='register.sys') ){
+                $url.='&logged_in=1';
+            }
+
+            print "$url\n";
+
             $webpage->update_screenshots();
         }
 
