@@ -4544,6 +4544,10 @@ class Page extends DB_Table {
             return;
         }
 
+        if($this->get('Webpage URL')==''){
+            return;
+        }
+
         include_once 'utils/screenshot_functions.php';
 
 
