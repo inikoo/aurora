@@ -593,7 +593,7 @@ class Supplier extends SubjectSupplier {
             case 'Number Deliveries':
             case 'Number Invoices':
             case 'Number Parts':
-            case 'Number Attachments':
+            case 'Number Images':
 
                 return number($this->data['Supplier '.$key]);
                 break;

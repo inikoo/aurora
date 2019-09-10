@@ -2,8 +2,19 @@
     {include file="sticky_note.tpl" value=$supplier->get('Sticky Note') object="Supplier" key="{$supplier->id}" field="Supplier_Sticky_Note"  }
 </div>
 
-<div class="subject_profile" style="padding-top:10px">
+<div class="subject_profile supplier_subject_showcase " style="padding-top:10px">
 
+    <div class="data_container block picture" stye="float:left">
+
+        <div class="data_container">
+            {assign "image_key" $supplier->get_main_image_key()}
+            <div id="main_image" style="width: 180px;height: 180px;" class="wraptocenter main_image {if $image_key==''}hide{/if}">
+                <img style="max-width: 170px;max-height: 170px;" src="/{if $image_key}image.php?id={$image_key}&amp;s=170x170{else}art/nopic.png{/if}"> </span>
+            </div>
+            {include file='upload_main_image.tpl' object='Supplier' parent_object_scope="Profile"  key=$supplier->id class="{if $image_key!=''}hide{/if}"}
+        </div>
+
+    </div>
 
     <div id="contact_data">
         <div style="width:100%">
@@ -17,6 +28,10 @@
 
 
         </div>
+
+
+
+
         <div class="data_container" style="clear:both">
 
 
@@ -30,6 +45,8 @@
                 {/foreach}
 
             </div>
+
+
 
 
             <div class="data_field">
