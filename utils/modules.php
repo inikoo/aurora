@@ -4975,6 +4975,17 @@ $modules = array(
                         'class' => 'right icon_only'
                     ),
 
+                    'agent.images' => array(
+                        'title'         => _('Images'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Images'
+                        ),
+                        'icon'          => 'camera-alt',
+                        'class'         => 'right icon_only'
+                    ),
+
 
                 )
             ),
@@ -5111,6 +5122,17 @@ $modules = array(
                             'field'  => 'Number Attachments'
                         ),
                         'icon'          => 'paperclip',
+                        'class'         => 'right icon_only'
+                    ),
+
+                    'supplier.images' => array(
+                        'title'         => _('Images'),
+                        'label'         => '',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Images'
+                        ),
+                        'icon'          => 'camera-alt',
                         'class'         => 'right icon_only'
                     ),
 

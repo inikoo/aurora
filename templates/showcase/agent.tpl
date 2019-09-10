@@ -1,6 +1,19 @@
-<div class="subject_profile" style="padding-top:10px">
-    <div id="contact_data">
+<div class="subject_profile supplier_subject_showcase" style="padding-top:10px">
+
+    <div class="data_container block picture" stye="float:left">
+
         <div class="data_container">
+            {assign "image_key" $agent->get_main_image_key()}
+            <div id="main_image" style="width: 180px;height: 180px;" class="wraptocenter main_image {if $image_key==''}hide{/if}">
+                <img style="max-width: 170px;max-height: 170px;" src="/{if $image_key}image.php?id={$image_key}&amp;s=170x170{else}art/nopic.png{/if}"> </span>
+            </div>
+            {include file='upload_main_image.tpl' object='Agent' parent_object_scope="Profile"  key=$agent->id class="{if $image_key!=''}hide{/if}"}
+        </div>
+
+    </div>
+
+    <div id="contact_data">
+        <div class="data_container" style="max-width: 440px">
             <div class="data_field">
                 <h1>
                     {$agent->get('Name')}
@@ -23,7 +36,7 @@
                 </div>
             </div>
         </div>
-        <div class="data_container">
+        <div class="data_container" style="max-width: 275px">
             <div id="Agent_Main_Plain_Email_display"
                  class="data_field   {if !$agent->get('Agent Main Plain Email')}hide{/if}">
                 <i class="fa fa-fw fa-at"></i> <span
@@ -87,8 +100,8 @@
         <div style="clear:both">
         </div>
     </div>
-    <div id="info">
-        <div id="overviews">
+    <div id="info" >
+        <div id="overviews" style="width: 275px;min-width: auto">
             <table border="0" class="overview">
                 <tr>
                     <td>{t}Suppliers{/t}:</td>
@@ -154,3 +167,4 @@
     email_width_hack();
 
 </script>
+

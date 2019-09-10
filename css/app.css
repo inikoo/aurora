@@ -1763,6 +1763,13 @@ table.totals .total td {
   max-width: 270px;
   max-height: 270px; }
 
+.supplier_subject_showcase .wraptocenter {
+  width: 180px;
+  height: 180px; }
+.supplier_subject_showcase .wraptocenter img {
+  max-width: 170px;
+  max-height: 170px; }
+
 textarea {
   position: relative;
   padding: 4px 6px;

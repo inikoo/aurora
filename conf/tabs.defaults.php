@@ -1827,6 +1827,14 @@ $tab_defaults = array(
         'elements_type' => array_keys($elements_options['supplier_history'])[0],
         'elements'      => $elements_options['supplier_history']
     ),
+    'supplier.images'        => array(
+        'view'        => 'overview',
+        'sort_key'    => 'image_order',
+        'sort_order'  => 0,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'caption'
+    ),
     'supplier.supplier_parts' => array(
         'view'          => 'overview',
         'sort_key'      => 'reference',
@@ -2252,6 +2260,14 @@ $tab_defaults = array(
         'f_field'       => 'note',
         'elements_type' => array_keys($elements_options['agent_history'])[0],
         'elements'      => $elements_options['agent_history']
+    ),
+    'agent.images'        => array(
+        'view'        => 'overview',
+        'sort_key'    => 'image_order',
+        'sort_order'  => 0,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'caption'
     ),
     'agent.suppliers'         => array(
         'view'          => 'overview',

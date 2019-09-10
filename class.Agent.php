@@ -272,6 +272,12 @@ class Agent extends SubjectSupplier {
 
         switch ($key) {
 
+
+            case 'Number Images':
+
+                return number($this->data['Agent '.$key]);
+                break;
+
             default;
 
                 if (array_key_exists($key, $this->data)) {

@@ -11,9 +11,11 @@
 
 
 include_once 'class.Subject.php';
+require_once 'trait.ImageSubject.php';
 
 
 class SubjectSupplier extends Subject {
+    use ImageSubject;
 
     function create_order($_data) {
 

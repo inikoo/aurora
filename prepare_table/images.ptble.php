@@ -38,6 +38,16 @@ switch ($parameters['parent']) {
             " where `Image Subject Object`='Category' and `Image Subject Object Key`=%d", $parameters['parent_key']
         );
         break;
+    case 'supplier':
+        $where = sprintf(
+            " where `Image Subject Object`='Supplier' and `Image Subject Object Key`=%d", $parameters['parent_key']
+        );
+        break;
+    case 'agent':
+        $where = sprintf(
+            " where `Image Subject Object`='Agent' and `Image Subject Object Key`=%d", $parameters['parent_key']
+        );
+        break;
     case 'account':
         // $table='`Image Dimension` I ';
         $where = ' where true';
