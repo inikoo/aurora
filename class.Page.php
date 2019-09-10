@@ -17,6 +17,8 @@ include_once 'class.Image.php';
 include_once 'trait.ImageSubject.php';
 include_once 'trait.NotesSubject.php';
 
+use Nesk\Puphpeteer\Puppeteer;
+
 
 class Page extends DB_Table {
     use ImageSubject, NotesSubject;
@@ -139,8 +141,6 @@ class Page extends DB_Table {
 
                     }
                 }
-
-
 
 
             } elseif ($this->type == 'Internal') {
@@ -1449,8 +1449,6 @@ class Page extends DB_Table {
             );
 
             $this->db->exec($sql);
-
-
 
 
             $sql = sprintf(
@@ -4187,7 +4185,6 @@ class Page extends DB_Table {
         $this->db->exec($sql);
 
 
-
         $images = array();
         $sql    = sprintf(
             "SELECT `Image Subject Image Key` FROM  `Image Subject Bridge` WHERE `Image Subject Object`='Webpage' AND `Image Subject Object Key`=%d", $this->id
@@ -4537,14 +4534,22 @@ class Page extends DB_Table {
         return (isset($this->properties[$key]) ? $this->properties[$key] : '');
     }
 
-    function update_screenshots() {
+    function update_screenshots($type = 'current') {
 
 
-        if(in_array($this->get('Website Code'),array('reset_pwd.sys','profile.sys','basket.sys','checkout.sys','thanks.sys')  )){
+        if (in_array(
+            $this->get('Website Code'), array(
+                                          'reset_pwd.sys',
+                                          'profile.sys',
+                                          'basket.sys',
+                                          'checkout.sys',
+                                          'thanks.sys'
+                                      )
+        )) {
             return;
         }
 
-        if($this->get('Webpage URL')==''){
+        if ($this->get('Webpage URL') == '') {
             return;
         }
 
@@ -4554,121 +4559,258 @@ class Page extends DB_Table {
         $tmp_file_root = sprintf('server_files/tmp/original_%d_%d', gmdate('U'), $this->id);
 
 
-        $url=$this->get('Webpage URL').'?snapshot='.md5(VKEY.'||'.date('Ymd'));
+        $url = $this->get('Webpage URL').'?snapshot='.md5(VKEY.'||'.date('Ymd'));
 
 
-
-
-        if(!($this->get('Website Code')=='home_logout.sys' or $this->get('Website Code')=='register.sys') ){
-            $url.='&logged_in=1';
+        if (!($this->get('Website Code') == 'home_logout.sys' or $this->get('Website Code') == 'register.sys')) {
+            $url .= '&logged_in=1';
         }
 
 
-        $cmd = sprintf('node node/screenshots.js --type="current_screenshots" --file_root="%s" --url="%s" &', $tmp_file_root, addslashes($url));
-
-
-        exec($cmd, $output);
-
-
-        $current_desktop_image_key      = $this->properties('desktop_screenshot');
-        $current_tablet_image_key       = $this->properties('tablet_screenshot');
-        $current_mobile_image_key       = $this->properties('mobile_screenshot');
-        $current_full_webpage_image_key = $this->properties('full_webpage_screenshot');
-
-
-        $desktop_image = process_screenshot($this, $tmp_file_root.'_desktop_screenshot.jpeg', 'Desktop');
-        $mobile_image  = process_screenshot($this, $tmp_file_root.'_mobile_screenshot.jpeg', 'Mobile');
-        $tablet_image  = process_screenshot($this, $tmp_file_root.'_tablet_screenshot.jpeg', 'Tablet');
-
-        $full_webpage_image = process_screenshot($this, $tmp_file_root.'_full_webpage_thumbnail_screenshot.jpeg', 'Full Webpage Thumbnail');
-
-
-        $this->update(
+        $puppeteer = new Puppeteer;
+        $browser   = $puppeteer->launch(
             array(
-                'desktop_screenshot'      => $desktop_image->id,
-                'mobile_screenshot'       => $mobile_image->id,
-                'tablet_screenshot'       => $tablet_image->id,
-                'full_webpage_screenshot' => $full_webpage_image->id
-            ), 'no_history'
+                'headless' => true,
+                'args'     => array(
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox'
+                )
+            )
         );
 
-        unlink($tmp_file_root.'_desktop_screenshot.jpeg');
-        unlink($tmp_file_root.'_mobile_screenshot.jpeg');
-        unlink($tmp_file_root.'_tablet_screenshot.jpeg');
-        unlink($tmp_file_root.'_full_webpage_thumbnail_screenshot.jpeg');
 
-        if ($current_desktop_image_key != $desktop_image->id) {
-
-            $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
-
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute(
+        if ($type == 'current') {
+            $page = $browser->newPage();
+            $page->setViewport(
                 array(
-                    $current_desktop_image_key,
-                    $this->id,
-                    'Desktop Screenshot'
+                    'width'  => 1366,
+                    'height' => 1024
                 )
             );
-            if ($row = $stmt->fetch()) {
-                $this->delete_image($row['Image Subject Key']);
-            }
+            $page->goto(
+                $url, array(
+                        'timeout'   => 120000,
+                        'waitUntil' => 'networkidle0'
+                    )
+            );
 
-        }
 
-        if ($current_tablet_image_key != $tablet_image->id) {
+            $page->screenshot(
+                [
+                    'path' => $tmp_file_root.'_desktop_screenshot.jpeg',
+                    'type' => 'jpeg'
+                ]
+            );
+            $page->screenshot(
+                [
+                    'path'     => $tmp_file_root.'_full_webpage_thumbnail_screenshot.jpeg',
+                    'type'     => 'jpeg',
+                    'fullPage' => true
+                ]
+            );
+            $page->close();
 
-            $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
-
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute(
+            $page = $browser->newPage();
+            $page->emulate(
                 array(
-                    $current_tablet_image_key,
-                    $this->id,
-                    'Tablet Screenshot'
+                    'userAgent' => 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
+
+                    'viewport' => array(
+                        'width'             => 375,
+                        'height'            => 667,
+                        'deviceScaleFactor' => 2,
+                        'isMobile'          => true,
+                        'hasTouch'          => true,
+                        'isLandscape'       => false
+                    )
                 )
             );
-            if ($row = $stmt->fetch()) {
-                $this->delete_image($row['Image Subject Key']);
-            }
 
-        }
+            $page->goto(
+                $url, array(
+                        'timeout'   => 120000,
+                        'waitUntil' => 'networkidle0'
+                    )
+            );
 
-        if ($current_mobile_image_key != $mobile_image->id) {
 
-            $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
+            $page->screenshot(
+                [
+                    'path' => $tmp_file_root.'_mobile_screenshot.jpeg',
+                    'type' => 'jpeg'
+                ]
+            );
 
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute(
+            $page->close();
+
+
+            $page = $browser->newPage();
+            $page->emulate(
                 array(
-                    $current_mobile_image_key,
-                    $this->id,
-                    'Mobile Screenshot'
+                    'userAgent' => 'Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) Version/11.0 Mobile/15A5341f Safari/604.1',
+
+                    'viewport' => array(
+                        'width'             => 1024,
+                        'height'            => 768,
+                        'deviceScaleFactor' => 2,
+                        'isMobile'          => true,
+                        'hasTouch'          => true,
+                        'isLandscape'       => true
+                    )
                 )
             );
-            if ($row = $stmt->fetch()) {
-                $this->delete_image($row['Image Subject Key']);
-            }
 
-        }
 
-        if ($current_full_webpage_image_key != $full_webpage_image->id) {
-
-            $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
-
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute(
-                array(
-                    $current_full_webpage_image_key,
-                    $this->id,
-                    'Full Webpage Thumbnail Screenshot'
-                )
+            $page->goto(
+                $url, array(
+                        'timeout'   => 120000,
+                        'waitUntil' => 'networkidle0'
+                    )
             );
-            if ($row = $stmt->fetch()) {
-                $this->delete_image($row['Image Subject Key']);
+
+
+            $page->screenshot(
+                [
+                    'path' => $tmp_file_root.'_tablet_screenshot.jpeg',
+                    'type' => 'jpeg'
+                ]
+            );
+
+
+            $browser->close();
+
+            /*.
+            exit;
+
+            $cmd = sprintf('node node/screenshots.js --type="current_screenshots" --file_root="%s" --url="%s" &', $tmp_file_root, addslashes($url));
+
+
+            exec($cmd, $output);
+    */
+
+
+            $current_desktop_image_key      = $this->properties('desktop_screenshot');
+            $current_tablet_image_key       = $this->properties('tablet_screenshot');
+            $current_mobile_image_key       = $this->properties('mobile_screenshot');
+            $current_full_webpage_image_key = $this->properties('full_webpage_screenshot');
+
+
+            $desktop_image      = process_screenshot($this, $tmp_file_root.'_desktop_screenshot.jpeg', 'Desktop');
+            $mobile_image       = process_screenshot($this, $tmp_file_root.'_mobile_screenshot.jpeg', 'Mobile');
+            $tablet_image       = process_screenshot($this, $tmp_file_root.'_tablet_screenshot.jpeg', 'Tablet');
+            $full_webpage_image = process_screenshot($this, $tmp_file_root.'_full_webpage_thumbnail_screenshot.jpeg', 'Full Webpage Thumbnail');
+
+            /*
+                        print $desktop_image->id."\n";
+                        print $mobile_image->id."\n";
+                        print $tablet_image->id."\n";
+                        print $full_webpage_image->id."\n";
+
+            */
+            $this->update(
+                array(
+                    'desktop_screenshot'      => $desktop_image->id,
+                    'mobile_screenshot'       => $mobile_image->id,
+                    'tablet_screenshot'       => $tablet_image->id,
+                    'full_webpage_screenshot' => $full_webpage_image->id
+                ), 'no_history'
+            );
+
+            unlink($tmp_file_root.'_desktop_screenshot.jpeg');
+            unlink($tmp_file_root.'_mobile_screenshot.jpeg');
+            unlink($tmp_file_root.'_tablet_screenshot.jpeg');
+            unlink($tmp_file_root.'_full_webpage_thumbnail_screenshot.jpeg');
+
+            if ($current_desktop_image_key != $desktop_image->id) {
+
+                $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
+
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $current_desktop_image_key,
+                        $this->id,
+                        'Desktop Screenshot'
+                    )
+                );
+                if ($row = $stmt->fetch()) {
+                    $this->delete_image($row['Image Subject Key']);
+                }
+
             }
 
+            if ($current_tablet_image_key != $tablet_image->id) {
+
+                $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
+
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $current_tablet_image_key,
+                        $this->id,
+                        'Tablet Screenshot'
+                    )
+                );
+                if ($row = $stmt->fetch()) {
+                    $this->delete_image($row['Image Subject Key']);
+                }
+
+            }
+
+            if ($current_mobile_image_key != $mobile_image->id) {
+
+                $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
+
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $current_mobile_image_key,
+                        $this->id,
+                        'Mobile Screenshot'
+                    )
+                );
+                if ($row = $stmt->fetch()) {
+                    $this->delete_image($row['Image Subject Key']);
+                }
+
+            }
+
+            if ($current_full_webpage_image_key != $full_webpage_image->id) {
+
+                $sql = 'select `Image Subject Key`  from `Image Subject Bridge` where `Image Subject Image Key`=? and `Image Subject Object`="Webpage" and `Image Subject Object Key`=? and `Image Subject Object Image Scope`=? ';
+
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $current_full_webpage_image_key,
+                        $this->id,
+                        'Full Webpage Thumbnail Screenshot'
+                    )
+                );
+                if ($row = $stmt->fetch()) {
+                    $this->delete_image($row['Image Subject Key']);
+                }
+
+            }
+        } elseif ($type == 'history') {
+            /*
+             *
+             *
+            async function history_screenshots() {
+                let browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
+                let page = await browser.newPage();
+                await page.setViewport({ width: 1366, height: 1024 });
+                await page.goto(url , {timeout: 1200000,waitUntil: 'networkidle0'});
+                await page.screenshot({ path: `${file_root}_desktop_full_screenshot.jpeg`, type: 'jpeg', fullPage: true});
+                await page.close();
+
+                await browser.close();
+            }
+             *
+             */
         }
 
+        exit;
 
     }
 

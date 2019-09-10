@@ -35,29 +35,26 @@ if ($result = $db->query($sql)) {
 $lap_time0 = date('U');
 $contador  = 0;
 
-    $sql = sprintf("SELECT `Page Key` FROM `Page Store Dimension`  left join `Website Dimension`  on (`Website Key`=`Webpage Website Key`)   %s  order by rand()", $where
+$sql = sprintf(
+    "SELECT `Page Key` FROM `Page Store Dimension`  left join `Website Dimension`  on (`Website Key`=`Webpage Website Key`)   %s  order by rand()", $where
 );
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-        $webpage = get_object('Webpage',$row['Page Key']);
+        $webpage = get_object('Webpage', $row['Page Key']);
 
-        if(!$webpage->properties('desktop_screenshot')){
+        if (!$webpage->properties('desktop_screenshot')) {
 
-            $url=$webpage->get('Webpage URL').'?snapshot='.md5(VKEY.'||'.date('Ymd'));
-
-
+            $url = $webpage->get('Webpage URL').'?snapshot='.md5(VKEY.'||'.date('Ymd'));
 
 
-            if(!($webpage->get('Website Code')=='home_logout.sys' or $webpage->get('Website Code')=='register.sys') ){
-                $url.='&logged_in=1';
+            if (!($webpage->get('Website Code') == 'home_logout.sys' or $webpage->get('Website Code') == 'register.sys')) {
+                $url .= '&logged_in=1';
             }
 
-            print "$url\n";
 
             $webpage->update_screenshots();
         }
-
 
 
         $contador++;

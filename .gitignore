@@ -102,9 +102,6 @@ vendor/*
 EcomB2B/vendor/*
 websocket_server/vendor/*
 
-composer.lock
-
-EcomB2B/composer.lock
 
 keyring/dns_remote.php
 cron/x.php
