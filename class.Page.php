@@ -18,6 +18,7 @@ include_once 'trait.ImageSubject.php';
 include_once 'trait.NotesSubject.php';
 
 use Nesk\Puphpeteer\Puppeteer;
+use Nesk\Rialto\Exceptions\Node;
 
 
 class Page extends DB_Table {
@@ -4584,12 +4585,17 @@ class Page extends DB_Table {
                     'height' => 1024
                 )
             );
-            $page->goto(
-                $url, array(
-                        'timeout'   => 120000,
-                        'waitUntil' => 'networkidle0'
-                    )
-            );
+
+            try {
+                $page->tryCatch->goto(
+                    $url, array(
+                            'timeout'   => 120000,
+                            'waitUntil' => 'networkidle0'
+                        )
+                );
+            } catch (Node\Exception $exception) {
+                return false;
+            }
 
 
             $page->screenshot(
@@ -4623,12 +4629,17 @@ class Page extends DB_Table {
                 )
             );
 
-            $page->goto(
-                $url, array(
-                        'timeout'   => 120000,
-                        'waitUntil' => 'networkidle0'
-                    )
-            );
+
+            try {
+                $page->tryCatch->goto(
+                    $url, array(
+                            'timeout'   => 120000,
+                            'waitUntil' => 'networkidle0'
+                        )
+                );
+            } catch (Node\Exception $exception) {
+                return false;
+            }
 
 
             $page->screenshot(
@@ -4658,12 +4669,16 @@ class Page extends DB_Table {
             );
 
 
-            $page->goto(
-                $url, array(
-                        'timeout'   => 120000,
-                        'waitUntil' => 'networkidle0'
-                    )
-            );
+            try {
+                $page->tryCatch->goto(
+                    $url, array(
+                            'timeout'   => 120000,
+                            'waitUntil' => 'networkidle0'
+                        )
+                );
+            } catch (Node\Exception $exception) {
+                return false;
+            }
 
 
             $page->screenshot(
@@ -4807,7 +4822,7 @@ class Page extends DB_Table {
              */
         }
 
-
+        return true;
 
     }
 
