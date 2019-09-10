@@ -53,7 +53,7 @@ if ($result = $db->query($sql)) {
                 $url.='&logged_in=1';
             }
 
-            print "$url\n";
+            //print "$url\n";
 
             $webpage->update_screenshots();
         }
