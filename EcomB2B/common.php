@@ -207,27 +207,6 @@ if (!$is_cached) {
     $smarty->assign('language', $language);
 
 
-    /*
-
-        if (!isset($_SESSION['set_currency']) or !array_key_exists($_SESSION['set_currency'], $valid_currencies)) {
-
-            $set_currency                      = $store->get('Store Currency Code');
-            $_SESSION['set_currency']          = $set_currency;
-            $_SESSION['set_currency_exchange'] = 1;
-
-
-        } else {
-
-            if ($_SESSION['set_currency'] != $store->get('Store Currency Code')) {
-                $set_currency_exchange = currency_conversion($store->get('Store Currency Code'), $_SESSION['set_currency']);
-            } else {
-                $set_currency_exchange = 1;
-            }
-            $_SESSION['set_currency_exchange'] = $set_currency_exchange;
-
-        }
-
-    */
 
     $locale = $website->get('Website Locale').'.UTF-8';
 
