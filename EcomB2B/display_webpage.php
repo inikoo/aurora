@@ -125,6 +125,8 @@ if (isset($is_homepage)) {
 
 $is_devel = preg_match('/bali|sasi|sakoi|geko/', gethostname());
 
+
+
 if (isset($_REQUEST['snapshot'])) {
     require 'keyring/key.php';
 
@@ -146,7 +148,7 @@ if (isset($_REQUEST['snapshot'])) {
 }
 
 
-if ($logged_in) {
+if ($logged_in and !$is_devel) {
     include_once 'utils/new_fork.php';
 
 
