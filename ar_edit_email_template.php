@@ -376,8 +376,7 @@ function send_test_email($data, $smarty) {
     }
 
 
-
-    $ses_clients   = array();
+    $ses_clients = array();
     /*
     $ses_clients[] = SesClient::factory(
         array(
@@ -446,10 +445,13 @@ function send_test_email($data, $smarty) {
     $_source   = "=?utf-8?B?$from_name?= <$sender_email_address>";
 
 
-    $request                                    = array();
-    $request['Source']                          = $_source;
-    $request['Destination']['ToAddresses']      = array($data['email']);
-    $request['Message']['Subject']['Data']      = $email_template->get('Email Template Subject');
+    $subject = strtr($email_template->get('Email Template Subject'), $placeholders);
+
+    $request                               = array();
+    $request['Source']                     = $_source;
+    $request['Destination']['ToAddresses'] = array($data['email']);
+    $request['Message']['Subject']['Data'] = '=?utf-8?B?'.base64_encode($subject).'?=';
+
     $request['Message']['Body']['Text']['Data'] = strtr($email_template->get('Email Template Text'), $placeholders);
 
 
@@ -527,8 +529,6 @@ function send_test_email($data, $smarty) {
 
 
     try {
-
-
 
 
         $ses_client = $ses_clients[0];
@@ -649,9 +649,6 @@ function save_email_template_text_part($data, $editor, $smarty, $db) {
 }
 
 
-
-
-
 function auto_save_email_template($data, $editor, $smarty, $db) {
 
 
@@ -689,10 +686,7 @@ function auto_save_email_template($data, $editor, $smarty, $db) {
     echo json_encode($response);
 
 
-
 }
-
-
 
 
 function publish_email_template($data, $editor, $smarty, $db) {
@@ -700,8 +694,6 @@ function publish_email_template($data, $editor, $smarty, $db) {
 
     $email_template         = get_object('Email_Template', $data['email_template_key']);
     $email_template->editor = $editor;
-
-
 
 
     $email_template->fast_update(
@@ -716,7 +708,6 @@ function publish_email_template($data, $editor, $smarty, $db) {
     );
 
 
-
     $checksum = md5(($email_template->get('Email Template Type') == 'Text' ? '' : $email_template->get('Email Template Editing JSON')).'|'.$email_template->get('Email Template Text').'|'.$email_template->get('Email Template Subject'));
     $email_template->fast_update(array('Email Template Editing Checksum' => $checksum));
 
@@ -729,10 +720,9 @@ function publish_email_template($data, $editor, $smarty, $db) {
             $mailshot         = get_object('Mailshot', $email_template->get('Email Template Scope Key'));
             $mailshot->editor = $editor;
 
-            if($mailshot->get('State Index')<=20){
+            if ($mailshot->get('State Index') <= 20) {
                 $mailshot->update_state('Ready');
             }
-
 
 
             $smarty->assign('data', $email_template->get('Published Info'));
