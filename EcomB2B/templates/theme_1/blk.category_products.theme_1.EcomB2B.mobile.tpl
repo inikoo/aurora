@@ -33,7 +33,7 @@
                            data-list="Family"
                            onclick="go_product(this); return !ga.loaded;"
 
-                           style="z-index: 10000;"><img src="{$item.image_mobile_website}" alt="{$item.name|escape}"></a>
+                           style="z-index: 10000;"><img style="height: auto" src="{$item.image_mobile_website}" alt="{$item.name|escape}"></a>
 
                          <a class="go_product" href="{$item.link}"
 
