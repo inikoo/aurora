@@ -170,6 +170,8 @@ trait Send_Email {
         }
 
         $subject   = $this->get_email_subject();
+        $subject = strtr($subject, $this->placeholders);
+
         $html_part = $this->get_email_html($email_tracking, $recipient, $data, $smarty, $localised_labels);
         $text_part = $this->get_email_plain_text();
 
@@ -270,7 +272,8 @@ trait Send_Email {
             ];
 
 
-        } else {
+        }
+        else {
             $request                               = array();
             $request['Source']                     = $_source;
             $request['Destination']['ToAddresses'] = array($to_address);
