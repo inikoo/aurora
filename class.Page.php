@@ -25,10 +25,7 @@ class Page extends DB_Table {
 
     var $new = false;
     var $logged = false;
-    var $snapshots_taken = 0;
-    var $set_title = false;
-    var $set_currency = 'GBP';
-    var $set_currency_exchange = 1;
+
     var $deleted = false;
 
     /** @var PDO */

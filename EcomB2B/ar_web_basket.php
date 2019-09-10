@@ -155,7 +155,6 @@ function update_item($_data, $customer, $order, $editor, $db) {
     }
 
 
-    //$order->set_display_currency($_SESSION['set_currency'],$_SESSION['set_currency_exchange']);
 
 
 
