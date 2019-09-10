@@ -30,11 +30,11 @@ function connect_websocket() {
         ws_connection.subscribe('real_time.' + $('#account_name').data('account_code').toLowerCase(), function (topic, data) {
 
 
-
             for (var i in data.d3) {
                 if (data.d3[i]['type'] == 'current_website_users') {
                     if (state.tab == 'website.analytics' && state.key == data.d3[i]['website_key']) {
                         website_analytics_render_website_users_pie(data.d3[i]['website_key'], data.d3[i]['data'].total_users, data.d3[i]['data'].users)
+                        website_analytics_render_website_users_table(data.d3[i]['website_key'], data.d3[i]['data'].users_data)
                     }
 
 
@@ -300,3 +300,47 @@ function website_analytics_render_website_users_pie(website_key, total, values) 
 
 
 }
+
+
+function website_analytics_render_website_users_table(website_key, web_users_data) {
+
+    var table = $('.current_website_users_table_' + website_key)
+
+
+    var to_delete_customer_keys = [];
+    $('.current_website_users_table_' + website_key + ' tr').each(function (index) {
+
+        to_delete_customer_keys.push($(this).data('customer_key'))
+    });
+
+
+    console.log(to_delete_customer_keys)
+    $.each(web_users_data, function (key, data) {
+
+        to_delete_customer_keys.splice($.inArray(data.customer_key, to_delete_customer_keys), 1);
+
+        var tr = table.find('tr.rt_wu_' + data.customer_key)
+        if (tr.length) {
+
+            tr.find('.webpage').html(data.webpage_label)
+            tr.find('.amount').html(data.order_net_formatted)
+
+        } else {
+
+            table.append('<tr data-customer_key="' + data.customer_key + '"  class="rt_wu_' + data.customer_key + '">' + '<td class="device"><i class="far fa-fw ' + data.icon + '"</i></td>' +
+
+                '<td class="location">' + data.location + '</td>' + '<td class="customer">' + data.customer + '</td>' + '<td class="amount" data-amount="' + data.order_net + '">' + data.order_net_formatted + '</td>' + '<td class="webpage"> ' + data.webpage_label + '</td>' +
+
+                '</tr>')
+        }
+    });
+
+
+
+
+    $.each(to_delete_customer_keys, function (index, to_delete_customer_key) {
+        table.find('.rt_wu_' + to_delete_customer_key).remove()
+    });
+
+}
+
