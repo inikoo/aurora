@@ -30,8 +30,13 @@ function fork_housekeeping($job) {
 
             include_once 'utils/ip_geolocation.php';
 
+            if (!empty($data['server_data']['HTTP_CF_CONNECTING_IP'])) {
+                $ip = $data['server_data']['HTTP_CF_CONNECTING_IP'];// this only works if we use Cloudfare
 
-            $ip               = (isset($data['ip']) ? $data['ip'] : 'localhost');
+            } else {
+                $ip = 'localhost';
+
+            }
             $user_agent_data  = parse_user_agent($data['server_data']['HTTP_USER_AGENT'], $db);
             $geolocation_data = get_ip_geolocation(trim($ip), $db);
 
@@ -89,20 +94,33 @@ function fork_housekeeping($job) {
             );
             if ($row = $stmt->fetch()) {
 
-                $webpage_label = $row['Webpage Code'];
+
                 if ($row['Webpage Code'] == 'home.sys') {
                     $webpage_label = '<i class="far fa-home"></i> '._('Home');
                 } elseif ($row['Webpage Code'] == 'basket.sys') {
                     $webpage_label = '<i class="far fa-shopping-basket"></i> '._('Basket');
+                } elseif ($row['Webpage Code'] == 'checkout.sys') {
+                    $webpage_label = '<i class="far fa-scanner-keyboard"></i> '._('Checkout');
+                } elseif ($row['Webpage Code'] == 'thanks.sys') {
+                    $webpage_label = '<i class="far fa-glass-cheers"></i> '._('Sale completed');
+                } elseif ($row['Webpage Scope'] == 'Product') {
+                    $webpage_label = '<i class="fal fa-cube"></i> '.strtolower($row['Webpage Code']);
+                } elseif ($row['Webpage Scope'] == 'Category Products') {
+                    $webpage_label = '<i class="fal fa-cubes"></i> '.strtolower($row['Webpage Code']);
+                } elseif ($row['Webpage Scope'] == 'Category Categories') {
+                    $webpage_label = '<i class="fal fa-folder-tree"></i> '.strtolower($row['Webpage Code']);
+                } else {
+                    $webpage_label = strtolower($row['Webpage Code']);
                 }
 
-                $webuser_data['webpage_label'] = $webpage_label;
+
+                $webuser_data['webpage_label'] = sprintf('<span class="button" onclick="change_view(\'website/%d/webpage/%d\')">%s</span>',$data['session_data']['website_key'],$data['webpage_key'],$webpage_label);
                 $webuser_data['webpage_key']   = $row['Page Key'];
                 $webuser_data['webpage_url']   = $row['Webpage URL'];
 
             }
 
-            $sql  = 'select `Customer Name`, `Customer Key` ,`Store Currency Code` from `Customer Dimension` left join `Store Dimension` on (`Store Key`=`Customer Store Key`)  where `Customer Key`=? ';
+            $sql  = 'select `Customer Store Key`,`Customer Name`, `Customer Key`  from `Customer Dimension`   where `Customer Key`=? ';
             $stmt = $db->prepare($sql);
             $stmt->execute(
                 array($data['session_data']['customer_key'])
@@ -110,13 +128,12 @@ function fork_housekeeping($job) {
             if ($row = $stmt->fetch()) {
 
 
-                $webuser_data['customer']     = $row['Customer Name'];
-                $webuser_data['customer_key'] = $row['Customer Key'];
-                $store_currency               = $row['Store Currency Code'];
+                $webuser_data['customer_label'] = sprintf('<span class="button" onclick="change_view(\'customers/%d/%d\')">%s</span>', $row['Customer Store Key'], $row['Customer Key'], $row['Customer Name']);
+                $webuser_data['customer_key']   = $row['Customer Key'];
 
             }
 
-            $sql = "SELECT `Order Key`,`Order Total Net Amount`,`Order Currency`,`Order Public ID` FROM `Order Dimension` WHERE `Order Customer Key`=? AND `Order State`='InBasket' ";
+            $sql = "SELECT `Order Key`,`Order Total Net Amount`,`Order Currency`,`Order Public ID` ,`Order Store Key` FROM `Order Dimension` WHERE `Order Customer Key`=? AND `Order State`='InBasket' ";
 
             $stmt = $db->prepare($sql);
             $stmt->execute(
@@ -126,15 +143,13 @@ function fork_housekeeping($job) {
 
 
                 $webuser_data['order_net']           = $row['Order Total Net Amount'];
-                $webuser_data['order_net_formatted'] = money($row['Order Total Net Amount'], $row['Order Currency']);
-                $webuser_data['order_public_id']     = $row['Order Public ID'];
-                $webuser_data['order_key']           = $row['Order Key'];
+                $webuser_data['order_net_formatted']      = sprintf('<span title="%s" class="button" onclick="change_view(\'orders/%d/%d\')">%s</span>', $row['Order Public ID'],$row['Order Store Key'], $row['Order Key'], money($row['Order Total Net Amount'], $row['Order Currency']));
+
 
             } else {
-                $webuser_data['order_net']           = 0;
-                $webuser_data['order_net_formatted'] = '<span class="very_discreet">'.money(0, $store_currency).'</span>';
-                $webuser_data['order_public_id']     = '';
-                $webuser_data['order_key']           = '';
+                $webuser_data['order_net']           = '';
+                $webuser_data['order_net_formatted'] = '';
+
             }
 
 
@@ -195,7 +210,8 @@ function fork_housekeeping($job) {
             break;
 
 
-        case 'update_basket_orders':
+        case
+        'update_basket_orders':
 
 
             $date = gmdate('Y-m-d H:i:s');
