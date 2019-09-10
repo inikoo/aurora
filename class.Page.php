@@ -4807,7 +4807,7 @@ class Page extends DB_Table {
              */
         }
 
-        exit;
+
 
     }
 
