@@ -180,8 +180,8 @@ function digest_website_content_data_blocks($content_data) {
                             $image_mobile_website = $item['image_src'];
                             if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
                                 $image_key = $matches[1];
-
-                                $image_mobile_website = 'wi.php?s=340x214id='.$image_key;
+//340x214id
+                                $image_mobile_website = 'wi.php?s='.get_image_size($image_key,340,214,'height').'&id='.$image_key;
 
                             }
 

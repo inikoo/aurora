@@ -31,7 +31,7 @@
                            data-analytics='{ "id": "{$item.code}", "name": "{$item.name|escape:'quotes'}",{if isset($item.category)} "category": "{$item.category}",{/if}{if isset($item.raw_price)} "price": "{$item.raw_price}",{/if}"list": "Family", "position":{$counter}}'
                            data-list="Products"
                            onclick="go_product(this); return !ga.loaded;"
-                        ><img src="{$item.image_mobile_website}" alt="{$item.name|escape}"></a>
+                        ><img style="height: auto" src="{$item.image_mobile_website}" alt="{$item.name|escape}"></a>
                          <a class="go_product" href="{$item.link}"
                             data-analytics='{ "id": "{$item.code}", "name": "{$item.name|escape:'quotes'}",{if isset($item.category)} "category": "{$item.category}",{/if}{if isset($item.raw_price)} "price": "{$item.raw_price}",{/if}"list": "Family", "position":{$counter}}'
                             data-list="Products"
