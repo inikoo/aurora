@@ -30,13 +30,16 @@ function fork_housekeeping($job) {
 
             include_once 'utils/ip_geolocation.php';
 
+            $ip = 'unknown';
             if (!empty($data['server_data']['HTTP_CF_CONNECTING_IP'])) {
-                $ip = $data['server_data']['HTTP_CF_CONNECTING_IP'];// this only works if we use Cloudfare
+                $ip = $data['server_data']['HTTP_CF_CONNECTING_IP'];
 
-            } else {
-                $ip = 'localhost';
+            } elseif (!empty($data['server_data']['REMOTE_ADDR'])) {
+                $ip = $data['server_data']['REMOTE_ADDR'];
 
             }
+
+
             $user_agent_data  = parse_user_agent($data['server_data']['HTTP_USER_AGENT'], $db);
             $geolocation_data = get_ip_geolocation(trim($ip), $db);
 
@@ -96,13 +99,17 @@ function fork_housekeeping($job) {
 
 
                 if ($row['Webpage Code'] == 'home.sys') {
-                    $webpage_label = '<i class="far fa-home"></i> '._('Home');
+                    $webpage_label = '<i class="fal fa-home"></i> '._('Home');
                 } elseif ($row['Webpage Code'] == 'basket.sys') {
-                    $webpage_label = '<i class="far fa-shopping-basket"></i> '._('Basket');
+                    $webpage_label = '<i class="fal fa-shopping-basket"></i> '._('Basket');
                 } elseif ($row['Webpage Code'] == 'checkout.sys') {
-                    $webpage_label = '<i class="far fa-scanner-keyboard"></i> '._('Checkout');
+                    $webpage_label = '<i class="fal fa-scanner-keyboard"></i> '._('Checkout');
                 } elseif ($row['Webpage Code'] == 'thanks.sys') {
-                    $webpage_label = '<i class="far fa-glass-cheers"></i> '._('Sale completed');
+                    $webpage_label = '<i class="fal fa-glass-cheers"></i> '._('Sale completed');
+                } elseif ($row['Webpage Code'] == 'search.sys') {
+                    $webpage_label = '<i class="fal fa-search"></i> '._('Search');
+                }elseif ($row['Webpage Code'] == 'not_found.sys') {
+                    $webpage_label = '<i class="fal fa-compass-slash"></i> '._('Not found');
                 } elseif ($row['Webpage Scope'] == 'Product') {
                     $webpage_label = '<i class="fal fa-cube"></i> '.strtolower($row['Webpage Code']);
                 } elseif ($row['Webpage Scope'] == 'Category Products') {
@@ -114,7 +121,7 @@ function fork_housekeeping($job) {
                 }
 
 
-                $webuser_data['webpage_label'] = sprintf('<span class="button" onclick="change_view(\'website/%d/webpage/%d\')">%s</span>',$data['session_data']['website_key'],$data['webpage_key'],$webpage_label);
+                $webuser_data['webpage_label'] = sprintf('<span class="button" onclick="change_view(\'website/%d/webpage/%d\')">%s</span>', $data['session_data']['website_key'], $data['webpage_key'], $webpage_label);
                 $webuser_data['webpage_key']   = $row['Page Key'];
                 $webuser_data['webpage_url']   = $row['Webpage URL'];
 
@@ -143,7 +150,8 @@ function fork_housekeeping($job) {
 
 
                 $webuser_data['order_net']           = $row['Order Total Net Amount'];
-                $webuser_data['order_net_formatted']      = sprintf('<span title="%s" class="button" onclick="change_view(\'orders/%d/%d\')">%s</span>', $row['Order Public ID'],$row['Order Store Key'], $row['Order Key'], money($row['Order Total Net Amount'], $row['Order Currency']));
+                $webuser_data['order_net_formatted'] =
+                    sprintf('<span title="%s" class="button" onclick="change_view(\'orders/%d/%d\')">%s</span>', $row['Order Public ID'], $row['Order Store Key'], $row['Order Key'], money($row['Order Total Net Amount'], $row['Order Currency']));
 
 
             } else {
