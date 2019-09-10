@@ -53,9 +53,12 @@ if ($result = $db->query($sql)) {
                 $url.='&logged_in=1';
             }
 
-            //print "$url\n";
+            try {
+                $webpage->update_screenshots();
+            } catch (Exception $e) {
+                print "error $url\n";
+            }
 
-            $webpage->update_screenshots();
         }
 
 
