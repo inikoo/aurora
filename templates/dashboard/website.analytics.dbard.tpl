@@ -100,28 +100,16 @@ table.current_website_users .amount{
         )
 
 
-        var table=$('.current_website_users_table_{$website->id}')
+        website_analytics_render_website_users_table(
+                {$website->id},
+            data.users_data
+        )
 
-
-        $.each(  data.users_data, function( key, user_data ) {
-            table.append('<tr>' +
-                '<td class="device"><i class="far fa-fw '+user_data.icon+'"</i></td>' +
-
-                '<td class="location">'+user_data.location+'</td>' +
-                '<td class="customer">'+user_data.customer+'</td>' +
-                '<td class="amount" data-amount="'+user_data.order_net+'">'+user_data.order_net_formatted+'</td>' +
-                '<td class="webpage"> '+user_data.webpage_label+'</td>' +
-
-                '</tr>')
-        });
 
 
 
 
     })
-
-
-
 
 
 

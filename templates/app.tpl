@@ -22,7 +22,7 @@
     {/if}
     <script src="https://d3js.org/d3.v4.min.js"></script>
 
-    <script src="/assets/aurora_libs.min.js?v190904v5"></script>
+    <script src="/assets/aurora_libs.min.js?v190910"></script>
 
     <script src="/assets/aurora.min.js?v1909009v3"></script>
 

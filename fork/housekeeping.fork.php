@@ -31,7 +31,7 @@ function fork_housekeeping($job) {
             include_once 'utils/ip_geolocation.php';
 
 
-            $ip               = (isset($data['ip'])?$data['ip']:'localhost');
+            $ip               = (isset($data['ip']) ? $data['ip'] : 'localhost');
             $user_agent_data  = parse_user_agent($data['server_data']['HTTP_USER_AGENT'], $db);
             $geolocation_data = get_ip_geolocation(trim($ip), $db);
 
@@ -47,29 +47,38 @@ function fork_housekeeping($job) {
                 'icon'         => $user_agent_data['Icon'],
                 'device'       => $data['device'],
                 'ip'           => $ip,
-                'geo_location' => $geolocation_data
+                'geo_location' => $geolocation_data,
+                'server_data'  => $data['server_data']
 
             );
 
 
             if ($geolocation_data['Location'] == '') {
-                $webuser_data['location'] = '<img src="/art/flags/xx.gif"> <span class="italic very_discreet">'._('Unknown').'</span>';
 
-            } else {
-                $webuser_data['location'] =$geolocation_data['Location'];
-               /*
+                if (!empty($data['server_data']['HTTP_CF_IPCOUNTRY'])) {
+                    $webuser_data['location'] = '<img src="/art/flags/'.strtolower($data['server_data']['HTTP_CF_IPCOUNTRY']).'.gif">';
 
-                $webuser_data['flag']     = strtolower($geolocation_data['Country Code']);
-                $webuser_data['location'] = $geolocation_data['Town'];
-                if ($geolocation_data['Region Name'] != '') {
-                    if ($webuser_data['location'] != '') {
-                        $webuser_data['location'] .= ' ('.$geolocation_data['Region Name'].')';
-                    } else {
-                        $webuser_data['location'] = $geolocation_data['Region Name\''];
-                    }
+                } else {
+                    $webuser_data['location'] = '<img src="/art/flags/xx.gif"> <span class="italic very_discreet">'._('Unknown').'</span>';
+
                 }
 
-               */
+
+            } else {
+                $webuser_data['location'] = $geolocation_data['Location'];
+                /*
+
+                 $webuser_data['flag']     = strtolower($geolocation_data['Country Code']);
+                 $webuser_data['location'] = $geolocation_data['Town'];
+                 if ($geolocation_data['Region Name'] != '') {
+                     if ($webuser_data['location'] != '') {
+                         $webuser_data['location'] .= ' ('.$geolocation_data['Region Name'].')';
+                     } else {
+                         $webuser_data['location'] = $geolocation_data['Region Name\''];
+                     }
+                 }
+
+                */
 
             }
 
@@ -84,6 +93,8 @@ function fork_housekeeping($job) {
                 $webpage_label = $row['Webpage Code'];
                 if ($row['Webpage Code'] == 'home.sys') {
                     $webpage_label = '<i class="far fa-home"></i> '._('Home');
+                } elseif ($row['Webpage Code'] == 'basket.sys') {
+                    $webpage_label = '<i class="far fa-shopping-basket"></i> '._('Basket');
                 }
 
                 $webuser_data['webpage_label'] = $webpage_label;
@@ -122,7 +133,7 @@ function fork_housekeeping($job) {
 
             } else {
                 $webuser_data['order_net']           = 0;
-                $webuser_data['order_net_formatted'] = money(0, $store_currency);
+                $webuser_data['order_net_formatted'] = '<span class="very_discreet">'.money(0, $store_currency).'</span>';
                 $webuser_data['order_public_id']     = '';
                 $webuser_data['order_key']           = '';
             }
