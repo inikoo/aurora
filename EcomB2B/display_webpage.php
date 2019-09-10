@@ -149,7 +149,6 @@ if (isset($_REQUEST['snapshot'])) {
 if ($logged_in) {
     include_once 'utils/new_fork.php';
 
-    include_once 'utils/detect_agent.php';
 
     new_housekeeping_fork(
         'au_housekeeping', array(
@@ -157,7 +156,6 @@ if ($logged_in) {
         'server_data'  => $_SERVER,
         'session_data' => $_SESSION,
         'webpage_key'  => $webpage_key,
-        'ip'           => ip(),
         'device'       => $detected_device
     ), DNS_ACCOUNT_CODE
     );
