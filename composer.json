@@ -18,7 +18,8 @@
         "google/apiclient": "^2.0",
         "gumlet/php-image-resize": "1.9.*",
         "spatie/image-optimizer": "^1.1",
-        "sentry/sdk": "2.0.3"
+        "sentry/sdk": "2.0.3",
+        "nesk/puphpeteer": "^1.6"
 
 
     }

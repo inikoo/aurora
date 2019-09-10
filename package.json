@@ -41,5 +41,7 @@
     "grunt-ssh-deploy": "^0.4.1",
     "puppeteer": "^1.19.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@nesk/puphpeteer": "^1.6.0"
+  }
 }

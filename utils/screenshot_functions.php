@@ -115,8 +115,9 @@ function process_screenshot($webpage,$filename,$type){
         )
     );
 
-
-
+    if (file_exists($resized_image_filename)) {
+        unlink($resized_image_filename);
+    }
     return $image;
 
 
