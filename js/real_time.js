@@ -326,7 +326,6 @@ function website_analytics_render_website_users_table(website_key, web_users_dat
             tr.find('.amount').html(data.order_net_formatted)
 
         } else {
-
             table.append('<tr data-customer_key="' + data.customer_key + '"  class="rt_wu_' + data.customer_key + '">' + '<td class="device">' + data.device_label + '</td>' +
 
                 '<td class="location">' + data.location + '</td>' + '<td class="customer">' + data.customer_label + '</td>' + '<td class="amount" data-amount="' + data.order_net + '">' + data.order_net_formatted + '</td>' + '<td class="webpage"> ' + data.webpage_label + '</td>' +
