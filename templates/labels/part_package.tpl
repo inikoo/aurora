@@ -7,7 +7,7 @@
     <table style='font-size:3mm;margin-top:.75mm;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;' border="0">
         <tr>
             <td style=" text-align: center;vertical-align:bottom;padding:1px 5px 5px 5px;">
-                    <b> {$part->get('Reference')}</b> {$part->get('Package Description')}
+                <span style="background: black;color: white;padding 2mm">&emsp;<b style="">{$part->get('Reference')}</b>&emsp;</span> <b>{$part->get('Units Per Package')}x</b> {$part->get('Recommended Product Unit Name')}
 
             </td>
         </tr>
