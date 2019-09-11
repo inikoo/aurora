@@ -135,14 +135,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Page($key);
 
             break;
-        case 'page_version':
-        case 'webpage_version':
-        case 'webpage version':
-            include_once 'class.WebpageVersion.php';
 
-            $object = new WebpageVersion($key);
-
-            break;
         case 'warehouse':
             include_once 'class.Warehouse.php';
             $object = new Warehouse($key);
@@ -519,6 +512,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once('class.Data_Sets.php');
             $object = new Data_Sets('code', $key);
             break;
+
         default:
             exit('need to complete E1: x>>>>|'.strtolower($object_name).'|<<<<++>>'.$load_other_data."<\n");
             break;
