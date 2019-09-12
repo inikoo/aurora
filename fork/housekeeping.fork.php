@@ -205,7 +205,17 @@ function fork_housekeeping($job) {
                                     'website_key' => $data['session_data']['website_key'],
                                     'data'        => $real_time_website_users_data
                                 )
-                            )
+                            ),
+                            'tabs' => array(
+                                array(
+                                    'tab'   => 'websites',
+
+                                    'cell' => array(
+                                        'website_rt_user_'.$data['session_data']['website_key'] => count($real_time_website_users_data['real_time_users'])
+                                    )
+                                )
+
+                            ),
 
                         )
                     )
