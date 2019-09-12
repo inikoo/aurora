@@ -1423,6 +1423,32 @@ $elements_options = array(
 
     ),
 
+
+    'websites' => array(
+        'status' => array(
+            'label' => _('Status'),
+            'items' => array(
+                'Active'     => array(
+                    'label'    => _('Live'),
+                    'selected' => true
+                ),
+                'InProcess'   => array(
+                    'label'    => _('In construction'),
+                    'selected' => false
+                ),
+
+                'Closed'    => array(
+                    'label'    => _('Closed'),
+                    'selected' => false
+                )
+
+
+            )
+
+
+        )
+    ),
+
     'webpages' => array(
         'state' => array(
             'label' => _('State'),

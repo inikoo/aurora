@@ -31,6 +31,10 @@ $table_views = array(
         'label' => _('Overview'),
         'title' => _('Overview')
     ),
+    'webpages'   => array(
+        'label' => _('Webpages'),
+        'title' => _('Webpages')
+    ),
     'gsc'  => array(
         'label' => _('Organic search'),
         'title' => _('Organic search (Google)')
