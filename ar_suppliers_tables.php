@@ -2562,7 +2562,7 @@ function delivery_items_mismatch($_data, $db, $user, $account) {
             }
 
 
-            $description_skos = $data['Part Units Per Package'].'' $data['Part Package Description'].'<br/> 
+            $description_skos = $data['Part Units Per Package'].'x '.$data['Part Recommended Product Unit Name'].'<br/> 
              <span class="discreet">'.sprintf(_('Packed in <b>%ds</b>'), $data['Part Units Per Package']).' <span class="" title="'._('SKOs per carton').'">, sko/C: <b>'.$data['Supplier Part Packages Per Carton'].'</b></span>';
 
 
