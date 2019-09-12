@@ -50,6 +50,7 @@ function get_google_webmasters_report($webmasters, $domain, $date_interval, $dim
 
         echo 'Caught exception:  '.$tries.' '.$e->getMessage();
 
+        exit;
         //sleep(10*$tries);
         //return get_google_webmasters_report($webmasters, $domain, $date_interval, $dimensions,$tries);
 
