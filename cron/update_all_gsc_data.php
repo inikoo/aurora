@@ -12,7 +12,6 @@
 require_once 'common.php';
 require_once 'utils/google_api_functions.php';
 require_once 'keyring/google_dns.php';
-require_once 'class.Page.php';
 
 $webmasters = initialize_webmasters();
 
@@ -29,7 +28,7 @@ while ($row = $stmt->fetch()) {
 
 
 }
-
+sleep(20);
 
 $sql       = 'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=? AND `Date`<=? order by `Date`';
 $stmt_date = $db->prepare($sql);
@@ -61,8 +60,11 @@ while ($row_date = $stmt_date->fetch()) {
 
 
         get_gsc_webpage($db, $webmasters, $domain, $date_interval, $row['Website Key']);
+
         get_gsc_website_queries($db, $webmasters, $domain, $date_interval, $row['Website Key']);
+
         get_gsc_webpage_queries($db, $webmasters, $domain, $date_interval, $row['Website Key']);
+        sleep(20);
 
     }
 
