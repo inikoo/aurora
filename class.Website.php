@@ -255,7 +255,6 @@ class Website extends DB_Table {
             $this->create_header($header_data);
 
 
-
             include 'conf/webpage_types.php';
             foreach ($webpage_types as $webpage_type) {
                 $sql = sprintf(
@@ -644,7 +643,6 @@ class Website extends DB_Table {
     }
 
 
-
     function create_system_webpage($data) {
 
 
@@ -727,7 +725,6 @@ class Website extends DB_Table {
         if ($data['Webpage Scope'] == 'HomepageToLaunch') {
             $page->publish();
         }
-
 
 
         $this->new_page     = $page->new;
@@ -1120,8 +1117,6 @@ class Website extends DB_Table {
         $webpage_type->update_number_webpages();
 
 
-
-
         if ($page->new) {
             $page->update_see_also();
         }
@@ -1226,7 +1221,6 @@ class Website extends DB_Table {
 
 
         $webpage_type->update_number_webpages();
-
 
 
         if ($page->new) {
@@ -1491,8 +1485,31 @@ class Website extends DB_Table {
 
     }
 
+    function update_gsc_data() {
+
+        $sql  = 'select `Website GSCD Clicks`,`Website GSCD Impressions`,`Website GSCD CTR`,`Website GSCD Position` from `Website GSC Data` where `Website GSCD Interval`=? and `Website GSCD Website Key`=?  ';
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                '1 Quarter',
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $this->fast_update(
+                array(
+                    'Website GSC Clicks'      => $row['Website GSCD Clicks'],
+                    'Website GSC Impressions' => $row['Website GSCD Impressions'],
+                    'Website GSC CTR'         => $row['Website GSCD CTR'],
+                    'Website GSC Position'    => $row['Website GSCD Position'],
+
+                ), 'Website Data'
+            );
+        }
+
+    }
 
 }
 
 
-?>
+
