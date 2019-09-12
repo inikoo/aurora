@@ -46,7 +46,7 @@ function get_google_webmasters_report($webmasters, $domain, $date_interval, $dim
         return $data;
     } catch (Exception $e) {
 
-        print_r($e);
+       // print_r($e);
 
         echo 'Caught exception:  '.$tries.' '.$e->getMessage();
         echo 'Caught exception code:  '.$tries.' '.$e->getCode();
