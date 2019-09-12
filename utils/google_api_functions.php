@@ -464,7 +464,7 @@ function get_gsc_website($db, $webmasters, $domain, $date_interval, $website_key
     );
 
     foreach ($gsc_data as $gsc_row) {
-        //print_r($gsc_row);
+
 
         if (in_array(
             $type, array(
@@ -518,7 +518,28 @@ function get_gsc_website($db, $webmasters, $domain, $date_interval, $website_key
                      '1 Month'
                  )
         )) {
+            $sql = 'INSERT INTO `Website GSC Data` (`Website GSCD Website Key`, `Website GSCD Interval`,`Website GSCD Clicks`,`Website GSCD Impressions`,`Website GSCD CTR`,`Website GSCD Position`) 
+    VALUES(?,?,?,?,?,?)
+    ON DUPLICATE KEY UPDATE `Website GSCD Clicks`=?,`Website GSCD Impressions`=?,`Website GSCD CTR`=?,`Website GSCD Position`=?';
 
+            //print $sql;
+
+
+            $stmt2 = $db->prepare($sql);
+            $stmt2->execute(
+                array(
+                    $website_key,
+                    $type,
+                    $gsc_row['clicks'],
+                    $gsc_row['impressions'],
+                    $gsc_row['ctr'],
+                    $gsc_row['position'],
+                    $gsc_row['clicks'],
+                    $gsc_row['impressions'],
+                    $gsc_row['ctr'],
+                    $gsc_row['position']
+                )
+            );
         }
 
     }
@@ -590,6 +611,31 @@ function get_gsc_website_queries($db, $webmasters, $domain, $date_interval, $web
         )
         )) {
 
+
+            $sql  = 'INSERT INTO `Website Query GSC Data` (`Website Query GSCD Query`,`Website Query GSCD Website Key`, `Website Query GSCD Interval`, `Website Query GSCD Clicks`,`Website Query GSCD Impressions`,`Website Query GSCD CTR`,`Website Query GSCD Position`) 
+    VALUES(?,?,?,?,?,?,?)
+    ON DUPLICATE KEY UPDATE `Website Query GSCD Clicks`=?,`Website Query GSCD Impressions`=?,`Website Query GSCD CTR`=?,`Website Query GSCD Position`=?';
+
+            //print $sql;
+
+
+            $stmt2 = $db->prepare($sql);
+            $stmt2->execute(
+                array(
+                    $gsc_row['keys'][0],
+                    $website_key,
+                    $type,
+                    $gsc_row['clicks'],
+                    $gsc_row['impressions'],
+                    $gsc_row['ctr'],
+                    $gsc_row['position'],
+                    $gsc_row['clicks'],
+                    $gsc_row['impressions'],
+                    $gsc_row['ctr'],
+                    $gsc_row['position']
+                )
+            );
+            
         }
 
     }
@@ -668,6 +714,33 @@ function get_gsc_webpage($db, $webmasters, $domain, $date_interval, $website_key
             )
             )) {
 
+                $sql = 'INSERT INTO `Webpage GSC Data` (`Webpage GSCD Website Key`,`Webpage GSCD Webpage Key`, `Webpage GSCD Interval`,`Webpage GSCD Clicks`,`Webpage GSCD Impressions`,`Webpage GSCD CTR`,`Webpage GSCD Position`) 
+    VALUES(?,?,?,?   ,?,?,?)
+    ON DUPLICATE KEY UPDATE `Webpage GSCD Clicks`=?,`Webpage GSCD Impressions`=?,`Webpage GSCD CTR`=?,`Webpage GSCD Position`=?';
+
+                //print $sql;
+
+
+                $stmt3 = $db->prepare($sql);
+                $stmt3->execute(
+                    array(
+                        $website_key,
+                        $webpage_key,
+                        $type,
+
+                        $gsc_webpage_data_row['clicks'],
+                        $gsc_webpage_data_row['impressions'],
+                        $gsc_webpage_data_row['ctr'],
+                        $gsc_webpage_data_row['position'],
+
+                        $gsc_webpage_data_row['clicks'],
+                        $gsc_webpage_data_row['impressions'],
+                        $gsc_webpage_data_row['ctr'],
+                        $gsc_webpage_data_row['position']
+                    )
+                );
+                
+                
             }
 
         }
@@ -750,6 +823,31 @@ function get_gsc_webpage_queries($db, $webmasters, $domain, $date_interval, $web
                 '1 Month'
             )
             )) {
+                $sql  = 'INSERT INTO `Webpage Query GSC Data` (`Webpage Query GSCD Query`,`Webpage Query GSCD Website Key`,`Webpage Query GSCD Webpage Key`, `Webpage Query GSCD Interval`, `Webpage Query GSCD Clicks`,`Webpage Query GSCD Impressions`,`Webpage Query GSCD CTR`,`Webpage Query GSCD Position`) 
+    VALUES(?,?,?,?,?,?,?,?)
+    ON DUPLICATE KEY UPDATE `Webpage Query GSCD Clicks`=?,`Webpage Query GSCD Impressions`=?,`Webpage Query GSCD CTR`=?,`Webpage Query GSCD Position`=?';
+
+                //print $sql;
+
+
+                $stmt3 = $db->prepare($sql);
+                $stmt3->execute(
+                    array(
+                        $gsc_webpage_data_row['keys'][1],
+                        $website_key,
+                        $webpage_key,
+                        $type,
+                        $gsc_webpage_data_row['clicks'],
+                        $gsc_webpage_data_row['impressions'],
+                        $gsc_webpage_data_row['ctr'],
+                        $gsc_webpage_data_row['position'],
+
+                        $gsc_webpage_data_row['clicks'],
+                        $gsc_webpage_data_row['impressions'],
+                        $gsc_webpage_data_row['ctr'],
+                        $gsc_webpage_data_row['position']
+                    )
+                );
 
             }
 
