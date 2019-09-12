@@ -16,12 +16,6 @@ $tipo    = 'websites';
 
 
 
-if($account->get('Account Warehouses')==0){
-
-    $html='<div style="padding:20px">'.sprintf(_('Warehouse missing, set it up %s'),'<span class="marked_link" onClick="change_view(\'/warehouse/new\')" >'._('here').'</span>').'</div>';
-    return;
-}
-
 if($account->get('Account Stores')==0){
 
     $html='<div style="padding:20px">'.sprintf(_('There are not stores, create one %s'),'<span class="marked_link" onClick="change_view(\'/store/new\')" >'._('here').'</span>').'</div>';
@@ -31,16 +25,35 @@ if($account->get('Account Stores')==0){
 $default = $user->get_tab_defaults($tab);
 
 
-$table_views = array();
+
+$table_views = array(
+    'overview' => array(
+        'label' => _('Overview'),
+        'title' => _('Overview')
+    ),
+    'gsc'  => array(
+        'label' => _('Organic search'),
+        'title' => _('Organic search (Google)')
+    ),
+    'ga' => array(
+        'label' => _('Analytics'),
+        'title' => _('Analytics'),
+    ),
+    'users'   => array(
+        'label' => _('Registered customers'),
+        'title' => _('Registered customers')
+    )
+
+);
 
 $table_filters = array(
     'code' => array(
         'label' => _('Code'),
-        'title' => _('Store code')
+        'title' => _('Website code')
     ),
     'name' => array(
         'label' => _('Name'),
-        'title' => _('Store name')
+        'title' => _('Website name')
     ),
 
 );
@@ -54,4 +67,4 @@ $parameters = array(
 include('utils/get_table_html.php');
 
 
-?>
+

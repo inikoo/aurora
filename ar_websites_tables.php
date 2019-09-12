@@ -48,11 +48,9 @@ switch ($tipo) {
         blocks(get_table_parameters(), $db, $user);
         break;
     case 'websites':
-        websites(get_table_parameters(), $db, $user);
+        websites(get_table_parameters(), $db, $user,$account,$redis);
         break;
-    case 'nodes':
-        nodes(get_table_parameters(), $db, $user);
-        break;
+
     case 'versions':
         versions(get_table_parameters(), $db, $user);
         break;
@@ -221,7 +219,7 @@ function search_history($_data, $db, $user) {
 }
 
 
-function websites($_data, $db, $user) {
+function websites($_data, $db, $user,$account,$redis) {
 
     $rtext_label = 'website';
     include_once 'prepare_table/init.php';
@@ -233,11 +231,15 @@ function websites($_data, $db, $user) {
     foreach ($db->query($sql) as $data) {
 
 
+
+
         $adata[] = array(
             'id'                            => (integer)$data['Website Key'],
-            'code'                          => sprintf('<span class="link" onclick="change_view(\'website/%d\')">%s</span>', $data['Website Key'], $data['Website Code']),
+            'code'                          => sprintf('<span class="link" title="%s" onclick="change_view(\'website/%d\')">%s</span>', $data['Website Name'],$data['Website Key'], $data['Website Code']),
             'name'                          => sprintf('<span class="link" onclick="change_view(\'website/%d\')">%s</span>', $data['Website Key'], $data['Website Name']),
             'url'                           => '<a href="https://'.$data['Website URL'].'" target="_blank"> <i class="fal fa-external-link-alt padding_right_10"></i> </a> '.$data['Website URL'],
+
+            'online_users'=>count($redis->ZREVRANGE('_WU'.$account->get('Code').'|'.$data['Website Key'], 0, 10000)),
             'users'                         => number($data['Website Total Acc Users']),
             'visitors'                      => number($data['Website Total Acc Visitors']),
             'requests'                      => number($data['Website Total Acc Requests']),

@@ -20,5 +20,6 @@ $stmt->execute(
 while ($row = $stmt->fetch()) {
     $website = get_object('Website', $row['Website Key']);
     $website->update_gsc_data();
+    $website->update_users_data();
 
 }

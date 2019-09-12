@@ -24,7 +24,7 @@ function fork_housekeeping($job) {
 
         case 'website_user_visit':
 
-            include_once 'utils/detect_agent.php';
+            include_once 'utils/network_functions.php';
             include_once 'utils/parse_user_agent.php';
             require_once 'utils/real_time_functions.php';
 
@@ -1297,6 +1297,10 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         $customer->editor     = $data['editor'];
         $store->editor        = $data['editor'];
         $website_user->editor = $data['editor'];
+
+
+
+
 
 
         if ($customer->get('Customer Tax Number') != '') {

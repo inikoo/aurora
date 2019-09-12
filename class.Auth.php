@@ -130,13 +130,9 @@ class Auth {
                     } else {
                         $this->pass['time'] = 'Yes';
                     }
-                    //if (ip()!=$ip) {
-                    //	$pass_tests=false;
-                    //	$this->pass['main_reason']='ip';
-                    //	$this->pass['ip']='No';
-                    //} else {
+
                     $this->pass['ip'] = 'Yes';
-                    //}
+
                     if ($this->ikey != $ikey) {
                         $pass_tests                = false;
                         $this->pass['main_reason'] = 'ikey';
@@ -175,7 +171,7 @@ class Auth {
     function create_user_log() {
 
 
-        $ip   = ip();
+        $ip   = ip_from_cloudfare();
         $date = gmdate('Y-m-d H:i:s');
         $sql  = sprintf(
             "INSERT INTO `User Log Dimension` (`User Key`,`Session ID`, `IP`, `Start Date`,`Last Visit Date`, `Logout Date`) VALUES (%d, %s, %s, %s,%s, %s)",
@@ -219,7 +215,7 @@ class Auth {
 
     function log_failed_login() {
         $date = gmdate("Y-m-d H:i:s");
-        $ip   = ip();
+        $ip   = ip_from_cloudfare();
         $sql  = sprintf(
             "INSERT INTO `User Failed Log Dimension` VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", prepare_mysql($this->handle), prepare_mysql($this->log_page), prepare_mysql($this->pass['handle_key']),
             prepare_mysql($date), prepare_mysql($ip), prepare_mysql($this->pass['main_reason']), prepare_mysql($this->pass['handle']), prepare_mysql($this->pass['password']),
@@ -355,7 +351,7 @@ class Auth {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
-                $ip                 = ip();
+                $ip                 = ip_from_cloudfare();
                 $date               = gmdate('Y-m-d H:i:s');
                 $this->user_log_key = $row['User Log Key'];
 
@@ -414,7 +410,7 @@ class Auth {
         if ($same_ip) {
 
             $sql .= sprintf(
-                " and `IP`=%s", prepare_mysql(ip())
+                " and `IP`=%s", prepare_mysql(ip_from_cloudfare())
             );
         }
 
@@ -465,7 +461,7 @@ class Auth {
         $sql                       =
             sprintf("SELECT `User Key`,`Valid Until`,`MasterKey Key`,`Used`,`Fails Already Used`,`Fails Expired`  FROM `MasterKey Dimension` M  WHERE `Key`=%s  ", prepare_mysql($data));
 
-        //  if ($same_ip) {$sql.=sprintf(" and `IP`=%s",prepare_mysql(ip()));}
+        //  if ($same_ip) {$sql.=sprintf(" and `IP`=%s",prepare_mysql(ip_from_cloudfare()));}
 
 
         if ($result = $this->db->query($sql)) {

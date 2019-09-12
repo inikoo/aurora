@@ -58,11 +58,11 @@ if ($account->id and $account->get('Account State') == 'Active') {
     set_locale($account->get('Account Locale').'.UTF-8');
 
     require_once 'utils/general_functions.php';
-    require_once 'utils/detect_agent.php';
+    require_once 'utils/network_functions.php';
     require_once "utils/aes.php";
 
 
-    $Sk = "skstart|".(date('U') + 3600)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
+    $Sk = "skstart|".(date('U') + 3600)."|".ip_from_cloudfare()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
     $St = AESEncryptCtr($Sk, SKEY, 256);
     $smarty->assign('st', $St);
 
