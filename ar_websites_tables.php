@@ -250,7 +250,7 @@ function websites($_data, $db, $user, $account, $redis) {
             'name' => sprintf('<span class="link" onclick="change_view(\'website/%d\')">%s</span>', $data['Website Key'], $data['Website Name']),
             'url'  => '<a href="https://'.$data['Website URL'].'" target="_blank"> <i class="fal fa-external-link-alt padding_right_10"></i> </a> '.$data['Website URL'],
 
-            'online_users' => ($data['Website Status']=='Active'?count($redis->ZREVRANGE('_WU'.$account->get('Code').'|'.$data['Website Key'], 0, 10000)):''),
+            'online_users' => '<span class="website_rt_user_'.$data['Website Key'].'">'.($data['Website Status']=='Active'?count($redis->ZREVRANGE('_WU'.$account->get('Code').'|'.$data['Website Key'], 0, 10000)):'').'</span>',
             'users'        => number($data['Website Total Acc Users']),
             'visitors'     => number($data['Website Total Acc Visitors']),
             'requests'     => number($data['Website Total Acc Requests']),
