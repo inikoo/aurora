@@ -1514,7 +1514,9 @@ $tab_defaults = array(
         'sort_order'  => 1,
         'rpp'         => 100,
         'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code'
+        'f_field'     => 'code',
+        'elements_type' => array_keys($elements_options['websites'])[0],
+        'elements'      => $elements_options['websites'],
     ),
     'website.webpages' => array(
         'view'          => 'overview',

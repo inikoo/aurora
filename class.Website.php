@@ -721,6 +721,8 @@ class Website extends DB_Table {
 
 
         $webpage_type->update_number_webpages();
+        $this->update_website_webpages_data();
+
 
         if ($data['Webpage Scope'] == 'HomepageToLaunch') {
             $page->publish();
@@ -889,26 +891,32 @@ class Website extends DB_Table {
         }
     }
 
-    function update_webpages() {
+    function update_website_webpages_data() {
         $sql             = sprintf(
-            'SELECT count(*) AS number FROM `Webpage Dimension` WHERE `Webpage Website Key`=%d', $this->id
+            'SELECT `Webpage State`,count(*) AS number FROM `Page Store Dimension` WHERE `Webpage Website Key`=%d  group by `Webpage State`', $this->id
         );
-        $number_webpages = 0;
-
+        $number_online_webpages = 0;
+        $number_offline_webpages=0;
+        $number_in_process_webpages=0;
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $number_webpages = $row['number'];
-
+                if($row['Webpage State']=='Online'){
+                    $number_online_webpages = $row['number'];
+                }elseif($row['Webpage State']=='Offline'){
+                    $number_offline_webpages = $row['number'];
+                }elseif($row['Webpage State']=='InProcess'){
+                    $number_in_process_webpages = $row['number'];
+                }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
-
-        $this->update(
-            array('Website Number Pages' => $number_webpages), 'no_history'
+        $this->fast_update(
+            array(
+                'Website Number Online Webpages' => $number_online_webpages,
+                'Website Number Offline Webpages' => $number_offline_webpages,
+                'Website Number In Process Webpages' => $number_in_process_webpages,
+            ), 'Website Data'
         );
 
 
@@ -1115,7 +1123,7 @@ class Website extends DB_Table {
         //  print_r($category->get('Category Subject'));
 
         $webpage_type->update_number_webpages();
-
+        $this->update_website_webpages_data();
 
         if ($page->new) {
             $page->update_see_also();
@@ -1221,7 +1229,7 @@ class Website extends DB_Table {
 
 
         $webpage_type->update_number_webpages();
-
+        $this->update_website_webpages_data();
 
         if ($page->new) {
             $page->update_see_also();
@@ -1504,7 +1512,7 @@ class Website extends DB_Table {
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             array(
-                '1 Quarter',
+                '1 Month',
                 $this->id
             )
         );

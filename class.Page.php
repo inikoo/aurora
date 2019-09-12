@@ -1485,12 +1485,10 @@ class Page extends DB_Table {
                         $webpage->publish();
                     }
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
+            $website=get_object('Website',$this->data['Webpage Website Key']);
+            $website->update_website_webpages_data();
 
             $this->updated = true;
 
@@ -4233,7 +4231,7 @@ class Page extends DB_Table {
 
         if (array_key_exists('Webpage Website Key', $this->data)) {
             $website = get_object('website', $this->data['Webpage Website Key']);
-            $website->update_webpages();
+            $website->update_website_webpages_data();
         }
 
 

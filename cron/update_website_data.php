@@ -20,6 +20,19 @@ $stmt->execute(
 while ($row = $stmt->fetch()) {
     $website = get_object('Website', $row['Website Key']);
     $website->update_gsc_data();
+
+
+}
+
+
+$sql  = 'select `Website Key`,`Website URL` from `Website Dimension`';
+$stmt = $db->prepare($sql);
+$stmt->execute(
+    array()
+);
+while ($row = $stmt->fetch()) {
+    $website = get_object('Website', $row['Website Key']);
     $website->update_users_data();
+    $website->update_website_webpages_data();
 
 }

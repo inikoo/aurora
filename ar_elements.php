@@ -434,6 +434,10 @@ switch ($tab) {
         );
         parts_weight_errors($db, $data['parameters'], $user);
         break;
+    case 'websites':
+        $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
+        get_websites_elements($db, $data['parameters'], $account, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -568,59 +572,6 @@ function warehouse_leakages_transactions($db, $data, $user) {
     foreach ($db->query($sql) as $row) {
 
         $elements_numbers['type']['found'] = number($row['number']);
-
-    }
-
-
-    $response = array(
-        'state'            => 200,
-        'elements_numbers' => $elements_numbers
-    );
-    echo json_encode($response);
-
-
-}
-
-function get_webnodes_element_numbers($db, $data, $user) {
-
-
-    $elements_numbers = array(
-        'status' => array(
-            'Online'  => 0,
-            'Offline' => 0,
-        ),
-
-    );
-
-
-    switch ($data['parent']) {
-        case 'website':
-            $where = sprintf(
-                ' where `Website Node Website Key`=%d  ', $data['parent_key']
-            );
-            break;
-        case 'node':
-            $where = sprintf(
-                ' where `	Website Node Parent Key`=%d  ', $data['parent_key']
-            );
-            break;
-        default:
-            $response = array(
-                'state' => 405,
-                'resp'  => 'customer parent not found '.$data['parent']
-            );
-            echo json_encode($response);
-
-            return;
-    }
-
-
-    $sql = sprintf(
-        "select count(*) as number,`Website Node Status` as element from `Website Node Dimension` D $where  group by `Website Node Status` "
-    );
-    foreach ($db->query($sql) as $row) {
-
-        $elements_numbers['status'][$row['element']] = number($row['number']);
 
     }
 
@@ -4067,4 +4018,45 @@ function get_category_deal_components_element_numbers($db, $data, $user) {
 }
 
 
+
+function get_websites_elements($db, $data, $account,$user) {
+
+
+    $elements_numbers = array(
+        'status' => array(
+            'Active'  => 0,
+            'InProcess' => 0,
+            'Closed' => 0,
+        ),
+
+    );
+
+
+    switch ($data['parent']) {
+        case 'store':
+            $where = sprintf(' where `Website Store Key`=%d ', $data['parent_key']);
+            break;
+        default:
+            $where = sprintf('');
+    }
+
+
+    $sql = sprintf(
+        "select count(*) as number,`Website Status` as element from `Website Dimension` D $where  group by `Website Status` "
+    );
+    foreach ($db->query($sql) as $row) {
+
+        $elements_numbers['status'][$row['element']] = number($row['number']);
+
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}
 
