@@ -30,6 +30,12 @@ function get_google_webmasters_report($webmasters, $domain, $date_interval, $dim
 
     $tries++;
 
+    if($tries>20){
+        print "Max number of tries \n";
+        exit();
+    }
+
+
     try {
 
         $query = new Google_Service_Webmasters_SearchAnalyticsQueryRequest();
@@ -48,12 +54,20 @@ function get_google_webmasters_report($webmasters, $domain, $date_interval, $dim
 
        // print_r($e);
 
-        echo 'Caught exception:  '.$tries.' '.$e->getMessage();
-        echo 'Caught exception code:  '.$tries.' '.$e->getCode();
 
-        exit;
-        //sleep(10*$tries);
-        //return get_google_webmasters_report($webmasters, $domain, $date_interval, $dimensions,$tries);
+
+        if($e->getCode()==429){
+            sleep(10*$tries);
+            return get_google_webmasters_report($webmasters, $domain, $date_interval, $dimensions,$tries);
+        }else{
+            echo 'Caught exception:  '.$tries.' '.$e->getMessage();
+            echo 'Caught exception code:  '.$tries.' '.$e->getCode();
+
+            exit;
+
+        }
+
+
 
     }
 
@@ -594,7 +608,7 @@ function get_gsc_webpage($db, $webmasters, $domain, $date_interval, $website_key
     foreach ($gsc_webpage_data as $gsc_webpage_data_row) {
         $url = $gsc_webpage_data_row['keys'][0];
 
-        $webpage_key = parse_url_to_webpage_key($url, $domain, $website_key);
+        $webpage_key = parse_url_to_webpage_key($db,$url, $domain, $website_key);
 
         if ($webpage_key) {
             if (in_array(
@@ -676,7 +690,7 @@ function get_gsc_webpage_queries($db, $webmasters, $domain, $date_interval, $web
     foreach ($gsc_webpage_data as $gsc_webpage_data_row) {
         $url = $gsc_webpage_data_row['keys'][0];
 
-        $webpage_key = parse_url_to_webpage_key($url, $domain, $website_key);
+        $webpage_key = parse_url_to_webpage_key($db,$url, $domain, $website_key);
 
         if ($webpage_key) {
 
@@ -745,7 +759,7 @@ function get_gsc_webpage_queries($db, $webmasters, $domain, $date_interval, $web
     }
 }
 
-function parse_url_to_webpage_key($url, $domain, $website_key) {
+function parse_url_to_webpage_key($db,$url, $domain, $website_key) {
 
     if (preg_match('/attachment\.php/', $url)) {
         return 0;
@@ -762,12 +776,21 @@ function parse_url_to_webpage_key($url, $domain, $website_key) {
         $code = 'home_logout.sys';
     }
 
-    $webpage = new Page('website_code', $website_key, $code);
-
-    if (!$webpage->id) {
-        // print "Not found: $url $code\n";
+    $webpage_key=0;
+    $sql = "SELECT `Page Key` FROM `Page Store Dimension` PS WHERE `Webpage Code`=? AND PS.`Webpage Website Key`=? ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array($code,$website_key)
+    );
+    while ($row = $stmt->fetch()) {
+        $webpage_key=$row['Page Key'];
     }
 
-    return $webpage->id;
+
+    if (!$webpage_key) {
+       // print "Not found: $url $code\n";
+    }
+
+    return $webpage_key;
 
 }
