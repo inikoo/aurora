@@ -26,21 +26,34 @@ function initialize_webmasters() {
 }
 
 
-function get_google_webmasters_report($webmasters, $domain, $date_interval, $dimensions) {
+function get_google_webmasters_report($webmasters, $domain, $date_interval, $dimensions, $tries = 0) {
+
+    $tries++;
+
+    try {
+
+        $query = new Google_Service_Webmasters_SearchAnalyticsQueryRequest();
+        $query->setDimensions($dimensions);
+        $query->setStartDate($date_interval['From']);
+        $query->setEndDate($date_interval['To']);
+
+        $query->setRowLimit("25000");
 
 
-    $query = new Google_Service_Webmasters_SearchAnalyticsQueryRequest();
-    $query->setDimensions($dimensions);
-    $query->setStartDate($date_interval['From']);
-    $query->setEndDate($date_interval['To']);
+        $response = $webmasters->searchanalytics->query(array('sc-domain:'.$domain), $query);
+        $data     = $response->getRows();
 
-    $query->setRowLimit("25000");
+        return $data;
+    } catch (Exception $e) {
 
+        print_r($e);
 
-    $response = $webmasters->searchanalytics->query(array('sc-domain:'.$domain), $query);
-    $data     = $response->getRows();
+        echo 'Caught exception:  '.$tries.' '.$e->getMessage();
 
-    return $data;
+        //sleep(10*$tries);
+        //return get_google_webmasters_report($webmasters, $domain, $date_interval, $dimensions,$tries);
+
+    }
 
 }
 
@@ -382,9 +395,11 @@ function get_gsc_website_dates($db, $webmasters, $domain, $website_key) {
         'To'   => date('Y-m-d')
     );
 
+
     $gsc_data = get_google_webmasters_report(
         $webmasters, $domain, $date_interval, array('date')
     );
+
 
     foreach ($gsc_data as $gsc_row) {
         //print_r($gsc_row);
@@ -392,9 +407,9 @@ function get_gsc_website_dates($db, $webmasters, $domain, $website_key) {
         $date = $gsc_row['keys'][0];
 
 
-        $sql = 'INSERT INTO `Website GSC Timeseries` (`Website GSC Website Key`, `Website GSC Type`, `Website GSC Date`,`Website GSC Clicks`,`Website GSC Impressions`,`Website GSC CTR`,`Website GSC Position`) 
+        $sql = 'INSERT INTO `Website GSC Timeseries` (`Website GSCT Website Key`, `Website GSCT Frequency`, `Website GSCT Date`,`Website GSCT Clicks`,`Website GSCT Impressions`,`Website GSCT CTR`,`Website GSCT Position`) 
     VALUES(?,?,?,?,?,?,?  )
-    ON DUPLICATE KEY UPDATE `Website GSC Clicks`=?,`Website GSC Impressions`=?,`Website GSC CTR`=?,`Website GSC Position`=?';
+    ON DUPLICATE KEY UPDATE `Website GSCT Clicks`=?,`Website GSCT Impressions`=?,`Website GSCT CTR`=?,`Website GSCT Position`=?';
 
         //print $sql;
 
@@ -423,14 +438,9 @@ function get_gsc_website_dates($db, $webmasters, $domain, $website_key) {
 }
 
 
-function get_gsc_website($db, $webmasters, $domain, $date_interval, $website_key, $anchor_date = '') {
+function get_gsc_website($db, $webmasters, $domain, $date_interval, $website_key, $type = 'Day') {
 
 
-    if ($anchor_date) {
-        $date = $anchor_date;
-    } else {
-        $date = $date_interval['From'];
-    }
 
 
     $gsc_data = get_google_webmasters_report(
@@ -440,31 +450,60 @@ function get_gsc_website($db, $webmasters, $domain, $date_interval, $website_key
     foreach ($gsc_data as $gsc_row) {
         //print_r($gsc_row);
 
+        if (in_array(
+            $type, array(
+                     'Day',
+                     'Month',
+                     'Week',
+                     'Quarter',
+                     'Year'
+                 )
+        )) {
 
-        $sql = 'INSERT INTO `Website GSC Timeseries` (`Website GSC Website Key`, `Website GSC Type`, `Website GSC Date`,`Website GSC Clicks`,`Website GSC Impressions`,`Website GSC CTR`,`Website GSC Position`) 
+            $date = $date_interval['From'];
+
+            $sql = 'INSERT INTO `Website GSC Timeseries` (`Website GSCT Website Key`, `Website GSCT Frequency`, `Website GSCT Date`,`Website GSCT Clicks`,`Website GSCT Impressions`,`Website GSCT CTR`,`Website GSCT Position`) 
     VALUES(?,?,?,?,?,?,?  )
-    ON DUPLICATE KEY UPDATE `Website GSC Clicks`=?,`Website GSC Impressions`=?,`Website GSC CTR`=?,`Website GSC Position`=?';
+    ON DUPLICATE KEY UPDATE `Website GSCT Clicks`=?,`Website GSCT Impressions`=?,`Website GSCT CTR`=?,`Website GSCT Position`=?';
 
-        //print $sql;
+            //print $sql;
 
 
-        $stmt2 = $db->prepare($sql);
-        $stmt2->execute(
-            array(
-                $website_key,
-                'Day',
-                $date,
-                $gsc_row['clicks'],
-                $gsc_row['impressions'],
-                $gsc_row['ctr'],
-                $gsc_row['position'],
-                $gsc_row['clicks'],
-                $gsc_row['impressions'],
-                $gsc_row['ctr'],
-                $gsc_row['position']
-            )
-        );
+            $stmt2 = $db->prepare($sql);
+            $stmt2->execute(
+                array(
+                    $website_key,
+                    $type,
+                    $date,
+                    $gsc_row['clicks'],
+                    $gsc_row['impressions'],
+                    $gsc_row['ctr'],
+                    $gsc_row['position'],
+                    $gsc_row['clicks'],
+                    $gsc_row['impressions'],
+                    $gsc_row['ctr'],
+                    $gsc_row['position']
+                )
+            );
 
+        } elseif (in_array(
+            $type, array(
+                     'Total',
+                     'Last Month',
+                     'Last Week',
+                     'Yesterday',
+                     'Week To Day',
+                     'Today',
+                     'Quarter To Day',
+                     'Month To Day',
+                     'Year To Day',
+                     '1 Year',
+                     '1 Quarter',
+                     '1 Month'
+                 )
+        )) {
+
+        }
 
     }
 
@@ -472,14 +511,7 @@ function get_gsc_website($db, $webmasters, $domain, $date_interval, $website_key
 }
 
 
-function get_gsc_website_queries($db, $webmasters, $domain, $date_interval, $website_key, $anchor_date = '') {
-
-
-    if ($anchor_date) {
-        $date = $anchor_date;
-    } else {
-        $date = $date_interval['From'];
-    }
+function get_gsc_website_queries($db, $webmasters, $domain, $date_interval, $website_key, $type = 'Day') {
 
 
     $gsc_data = get_google_webmasters_report(
@@ -487,34 +519,62 @@ function get_gsc_website_queries($db, $webmasters, $domain, $date_interval, $web
     );
 
     foreach ($gsc_data as $gsc_row) {
-        //print_r($gsc_row);
 
+        if (in_array(
+            $type, array(
+            'Day',
+            'Month',
+            'Week',
+            'Quarter',
+            'Year'
+        )
+        )) {
 
-        $sql = 'INSERT INTO `Website Query GSC Timeseries` (`Website Query GSC Query`,`Website Query GSC Website Key`, `Website Query GSC Type`, `Website Query GSC Date`,`Website Query GSC Clicks`,`Website Query GSC Impressions`,`Website Query GSC CTR`,`Website Query GSC Position`) 
+            $date = $date_interval['From'];
+            $sql  = 'INSERT INTO `Website Query GSC Timeseries` (`Website Query GSCT Query`,`Website Query GSCT Website Key`, `Website Query GSCT Frequency`, `Website Query GSCT Date`,`Website Query GSCT Clicks`,`Website Query GSCT Impressions`,`Website Query GSCT CTR`,`Website Query GSCT Position`) 
     VALUES(?,?,?,?, ?,?,?,?  )
-    ON DUPLICATE KEY UPDATE `Website Query GSC Clicks`=?,`Website Query GSC Impressions`=?,`Website Query GSC CTR`=?,`Website Query GSC Position`=?';
+    ON DUPLICATE KEY UPDATE `Website Query GSCT Clicks`=?,`Website Query GSCT Impressions`=?,`Website Query GSCT CTR`=?,`Website Query GSCT Position`=?';
 
-        //print $sql;
+            //print $sql;
 
 
-        $stmt2 = $db->prepare($sql);
-        $stmt2->execute(
-            array(
-                $gsc_row['keys'][0],
-                $website_key,
-                'Day',
-                $date,
-                $gsc_row['clicks'],
-                $gsc_row['impressions'],
-                $gsc_row['ctr'],
-                $gsc_row['position'],
-                $gsc_row['clicks'],
-                $gsc_row['impressions'],
-                $gsc_row['ctr'],
-                $gsc_row['position']
-            )
-        );
+            $stmt2 = $db->prepare($sql);
+            $stmt2->execute(
+                array(
+                    $gsc_row['keys'][0],
+                    $website_key,
+                    $type,
+                    $date,
+                    $gsc_row['clicks'],
+                    $gsc_row['impressions'],
+                    $gsc_row['ctr'],
+                    $gsc_row['position'],
+                    $gsc_row['clicks'],
+                    $gsc_row['impressions'],
+                    $gsc_row['ctr'],
+                    $gsc_row['position']
+                )
+            );
 
+
+        } elseif (in_array(
+            $type, array(
+            'Total',
+            'Last Month',
+            'Last Week',
+            'Yesterday',
+            'Week To Day',
+            'Today',
+            'Quarter To Day',
+            'Month To Day',
+            'Year To Day',
+            '1 Year',
+            '1 Quarter',
+            '1 Month'
+        )
+        )) {
+
+        }
 
     }
 
@@ -522,17 +582,11 @@ function get_gsc_website_queries($db, $webmasters, $domain, $date_interval, $web
 }
 
 
-function get_gsc_webpage($db, $webmasters, $domain, $date_interval, $website_key, $anchor_date = '') {
+function get_gsc_webpage($db, $webmasters, $domain, $date_interval, $website_key, $type = 'Day') {
 
     $gsc_webpage_data = get_google_webmasters_report(
         $webmasters, $domain, $date_interval, array('page')
     );
-
-    if ($anchor_date) {
-        $date = $anchor_date;
-    } else {
-        $date = $date_interval['From'];
-    }
 
 
     foreach ($gsc_webpage_data as $gsc_webpage_data_row) {
@@ -541,37 +595,64 @@ function get_gsc_webpage($db, $webmasters, $domain, $date_interval, $website_key
         $webpage_key = parse_url_to_webpage_key($url, $domain, $website_key);
 
         if ($webpage_key) {
+            if (in_array(
+                $type, array(
+                'Day',
+                'Month',
+                'Week',
+                'Quarter',
+                'Year'
+            )
+            )) {
 
+                $date = $date_interval['From'];
 
-            $sql = 'INSERT INTO `Webpage GSC Timeseries` (`Webpage GSC Website Key`,`Webpage GSC Webpage Key`, `Webpage GSC Type`, `Webpage GSC Date`,`Webpage GSC Clicks`,`Webpage GSC Impressions`,`Webpage GSC CTR`,`Webpage GSC Position`) 
+                $sql = 'INSERT INTO `Webpage GSC Timeseries` (`Webpage GSCT Website Key`,`Webpage GSCT Webpage Key`, `Webpage GSCT Frequency`, `Webpage GSCT Date`,`Webpage GSCT Clicks`,`Webpage GSCT Impressions`,`Webpage GSCT CTR`,`Webpage GSCT Position`) 
     VALUES(?,?,?,?   ,?,?,?,?)
-    ON DUPLICATE KEY UPDATE `Webpage GSC Clicks`=?,`Webpage GSC Impressions`=?,`Webpage GSC CTR`=?,`Webpage GSC Position`=?';
+    ON DUPLICATE KEY UPDATE `Webpage GSCT Clicks`=?,`Webpage GSCT Impressions`=?,`Webpage GSCT CTR`=?,`Webpage GSCT Position`=?';
 
-            //print $sql;
+                //print $sql;
 
 
-            $stmt3 = $db->prepare($sql);
-            $stmt3->execute(
-                array(
-                    $website_key,
-                    $webpage_key,
-                    'Day',
-                    $date,
+                $stmt3 = $db->prepare($sql);
+                $stmt3->execute(
+                    array(
+                        $website_key,
+                        $webpage_key,
+                        $type,
+                        $date,
 
-                    $gsc_webpage_data_row['clicks'],
-                    $gsc_webpage_data_row['impressions'],
-                    $gsc_webpage_data_row['ctr'],
-                    $gsc_webpage_data_row['position'],
+                        $gsc_webpage_data_row['clicks'],
+                        $gsc_webpage_data_row['impressions'],
+                        $gsc_webpage_data_row['ctr'],
+                        $gsc_webpage_data_row['position'],
 
-                    $gsc_webpage_data_row['clicks'],
-                    $gsc_webpage_data_row['impressions'],
-                    $gsc_webpage_data_row['ctr'],
-                    $gsc_webpage_data_row['position']
-                )
-            );
+                        $gsc_webpage_data_row['clicks'],
+                        $gsc_webpage_data_row['impressions'],
+                        $gsc_webpage_data_row['ctr'],
+                        $gsc_webpage_data_row['position']
+                    )
+                );
 
-            //print_r($stmt3->errorInfo());
+                //print_r($stmt3->errorInfo());
+            } elseif (in_array(
+                $type, array(
+                'Total',
+                'Last Month',
+                'Last Week',
+                'Yesterday',
+                'Week To Day',
+                'Today',
+                'Quarter To Day',
+                'Month To Day',
+                'Year To Day',
+                '1 Year',
+                '1 Quarter',
+                '1 Month'
+            )
+            )) {
 
+            }
 
         }
 
@@ -580,7 +661,7 @@ function get_gsc_webpage($db, $webmasters, $domain, $date_interval, $website_key
 }
 
 
-function get_gsc_webpage_queries($db, $webmasters, $domain, $date_interval, $website_key, $anchor_date = '') {
+function get_gsc_webpage_queries($db, $webmasters, $domain, $date_interval, $website_key, $type = 'Day') {
 
     $gsc_webpage_data = get_google_webmasters_report(
         $webmasters, $domain, $date_interval, array(
@@ -588,12 +669,6 @@ function get_gsc_webpage_queries($db, $webmasters, $domain, $date_interval, $web
                        'query'
                    )
     );
-
-    if ($anchor_date) {
-        $date = $anchor_date;
-    } else {
-        $date = $date_interval['From'];
-    }
 
 
     foreach ($gsc_webpage_data as $gsc_webpage_data_row) {
@@ -604,35 +679,63 @@ function get_gsc_webpage_queries($db, $webmasters, $domain, $date_interval, $web
         if ($webpage_key) {
 
 
-            $sql = 'INSERT INTO `Webpage Query GSC Timeseries` (`Webpage Query GSC Query`,`Webpage Query GSC Website Key`,`Webpage Query GSC Webpage Key`, `Webpage Query GSC Type`, `Webpage Query GSC Date`,`Webpage Query GSC Clicks`,`Webpage Query GSC Impressions`,`Webpage Query GSC CTR`,`Webpage Query GSC Position`) 
+            if (in_array(
+                $type, array(
+                'Day',
+                'Month',
+                'Week',
+                'Quarter',
+                'Year'
+            )
+            )) {
+
+                $date = $date_interval['From'];
+                $sql  = 'INSERT INTO `Webpage Query GSC Timeseries` (`Webpage Query GSCT Query`,`Webpage Query GSCT Website Key`,`Webpage Query GSCT Webpage Key`, `Webpage Query GSCT Frequency`, `Webpage Query GSCT Date`,`Webpage Query GSCT Clicks`,`Webpage Query GSCT Impressions`,`Webpage Query GSCT CTR`,`Webpage Query GSCT Position`) 
     VALUES(?,?,?,?,?,?,?,?,?)
-    ON DUPLICATE KEY UPDATE `Webpage Query GSC Clicks`=?,`Webpage Query GSC Impressions`=?,`Webpage Query GSC CTR`=?,`Webpage Query GSC Position`=?';
+    ON DUPLICATE KEY UPDATE `Webpage Query GSCT Clicks`=?,`Webpage Query GSCT Impressions`=?,`Webpage Query GSCT CTR`=?,`Webpage Query GSCT Position`=?';
 
-            //print $sql;
+                //print $sql;
 
 
-            $stmt3 = $db->prepare($sql);
-            $stmt3->execute(
-                array(
-                    $gsc_webpage_data_row['keys'][1],
-                    $website_key,
-                    $webpage_key,
-                    'Day',
-                    $date,
-                    $gsc_webpage_data_row['clicks'],
-                    $gsc_webpage_data_row['impressions'],
-                    $gsc_webpage_data_row['ctr'],
-                    $gsc_webpage_data_row['position'],
+                $stmt3 = $db->prepare($sql);
+                $stmt3->execute(
+                    array(
+                        $gsc_webpage_data_row['keys'][1],
+                        $website_key,
+                        $webpage_key,
+                        $type,
+                        $date,
+                        $gsc_webpage_data_row['clicks'],
+                        $gsc_webpage_data_row['impressions'],
+                        $gsc_webpage_data_row['ctr'],
+                        $gsc_webpage_data_row['position'],
 
-                    $gsc_webpage_data_row['clicks'],
-                    $gsc_webpage_data_row['impressions'],
-                    $gsc_webpage_data_row['ctr'],
-                    $gsc_webpage_data_row['position']
-                )
-            );
+                        $gsc_webpage_data_row['clicks'],
+                        $gsc_webpage_data_row['impressions'],
+                        $gsc_webpage_data_row['ctr'],
+                        $gsc_webpage_data_row['position']
+                    )
+                );
 
-            //print_r($stmt3->errorInfo());
+                //print_r($stmt3->errorInfo());
+            } elseif (in_array(
+                $type, array(
+                'Total',
+                'Last Month',
+                'Last Week',
+                'Yesterday',
+                'Week To Day',
+                'Today',
+                'Quarter To Day',
+                'Month To Day',
+                'Year To Day',
+                '1 Year',
+                '1 Quarter',
+                '1 Month'
+            )
+            )) {
 
+            }
 
         }
 
@@ -660,7 +763,7 @@ function parse_url_to_webpage_key($url, $domain, $website_key) {
     $webpage = new Page('website_code', $website_key, $code);
 
     if (!$webpage->id) {
-        print "Not found: $url $code\n";
+        // print "Not found: $url $code\n";
     }
 
     return $webpage->id;

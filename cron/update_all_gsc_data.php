@@ -14,6 +14,8 @@ require_once 'utils/google_api_functions.php';
 require_once 'keyring/google_dns.php';
 require_once 'class.Page.php';
 
+$webmasters = initialize_webmasters();
+
 
 $sql  = 'select `Website Key`,`Website URL` from `Website Dimension` where `Website Status`="Active"';
 $stmt = $db->prepare($sql);
@@ -23,23 +25,39 @@ $stmt->execute(
 while ($row = $stmt->fetch()) {
 
     $domain     = preg_replace('/^www\./', '', $row['Website URL']);
-    $webmasters = initialize_webmasters();
     get_gsc_website_dates($db, $webmasters, $domain, $row['Website Key']);
 
 
-    $sql = 'select `Website GSC Date` from `Website GSC Timeseries` where `Website GSC Website Key`=? and `Website GSC Type`="Day"   ';
+}
 
 
-    $stmt2 = $db->prepare($sql);
-    $stmt2->execute(
-        array($row['Website Key'])
+$sql       = 'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=? AND `Date`<=? order by `Date`';
+$stmt_date = $db->prepare($sql);
+$stmt_date->execute(
+    array(
+        date('Y-m-d', strtotime('now -16 months')),
+        date('Y-m-d')
+    )
+);
+while ($row_date = $stmt_date->fetch()) {
+
+    $date_interval = array(
+        'From' => $row_date['Date'],
+        'To'   => $row_date['Date'],
     );
-    while ($row2 = $stmt2->fetch()) {
 
-        $date_interval = array(
-            'From' => $row2['Website GSC Date'],
-            'To'   => $row2['Website GSC Date'],
-        );
+
+
+    $sql  = 'select `Website Key`,`Website URL` from `Website Dimension` where `Website Status`="Active"';
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array()
+    );
+    while ($row = $stmt->fetch()) {
+
+        $domain     = preg_replace('/^www\./', '', $row['Website URL']);
+
+
 
 
         get_gsc_webpage($db, $webmasters, $domain, $date_interval, $row['Website Key']);
@@ -50,4 +68,6 @@ while ($row = $stmt->fetch()) {
 
 
 }
+
+
 
