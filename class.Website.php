@@ -1408,7 +1408,20 @@ class Website extends DB_Table {
     }
 
     function update_users_data() {
-        // todo collect user/customers stats here, call when a user is created
+
+        $users=0;
+        $sql='select count(*) as num from `Website User Dimension` where `Website User Website Key`=? and `Website User Has Login`="Yes"  ';
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array($this->id)
+        );
+        while ($row = $stmt->fetch()) {
+            $users=$row['num'];
+        }
+
+
+
+        $this->fast_update(array('Website Total Acc Users'=>$users),'Website Data');
 
     }
 

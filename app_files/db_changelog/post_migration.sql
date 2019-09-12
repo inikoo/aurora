@@ -252,3 +252,8 @@ update  `Supplier Delivery Dimension` O left join `Supplier Dimension` D on (O.`
 update  `Supplier Delivery Dimension` O left join `Agent Dimension` D on (O.`Supplier Delivery Parent Key`=D.`Agent Key`) set `Supplier Delivery Parent Country Code`=`Agent Contact Address Country 2 Alpha Code` where `Supplier Delivery Parent`='Agent';
 
 
+update `Website User Dimension` WUD left join old_dw.`User Dimension` U on (`User Parent Key`=`Website User Customer Key`) set `Website User Has Login`='Yes' where  `User Type`='Customer'  and U.`User Login Count`>0;
+update `Website User Dimension` WUD left join old_dw.`User Dimension` U on (`User Parent Key`=`Website User Customer Key`) set `Website User Has Login`='Yes' where  `User Type`='Customer'  and U.`User Sessions Count`>0;
+update `Website User Dimension` WUD left join old_dw.`User Dimension` U on (`User Parent Key`=`Website User Customer Key`) set `Website User Has Login`='Yes' where  `User Type`='Customer'  and U.`User Requests Count`>0;
+update `Website User Dimension` WUD left join `History Dimension` C on (`Subject Key`=`Website User Customer Key`) set `Website User Has Login`='Yes' where  `Subject`='Customer'  and  `Author Name`='Customer' and `History Abstract` like '% registered';
+delete from `History Dimension` where `Subject`='Customer' and `Author Name`='Customer' and `History Abstract` like 'Website user %';

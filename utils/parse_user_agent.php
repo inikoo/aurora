@@ -434,27 +434,3 @@ function check_if_is_tablet($userAgent) {
 
     return false;
 }
-
-/*
-function replace_icons_in_user_agent_data(){
-
-      $sql = sprintf('select * from kbase.`User Agent` ');
-      if ($result=$db->query($sql)) {
-              foreach ($result as $row) {
-                  $icon=get_user_agent_icon($row['OS Code'],$row['Device'],$row['User Agent']);
-                  $sql=sprintf('update kbase.`User Agent` set `Icon`=%s where `User Agent Hash`=%s ',prepare_mysql($icon),prepare_mysql($row['User Agent Hash']));
-                  $db->exec($sql);
-              }
-      }else {
-              print_r($error_info=$db->errorInfo());
-              print "$sql\n";
-              exit;
-      }
-
-
-
-
-
-}
- */
-?>

@@ -60,10 +60,10 @@ class Public_Store {
 
         if ($this->data = $this->db->query($sql)->fetch()) {
 
-            $this->id   = $this->data['Store Key'];
-            $this->code = $this->data['Store Code'];
-            $this->properties=json_decode($this->data['Store Properties'],true);
-            $this->settings=json_decode($this->data['Store Settings'],true);
+            $this->id         = $this->data['Store Key'];
+            $this->code       = $this->data['Store Code'];
+            $this->properties = json_decode($this->data['Store Properties'], true);
+            $this->settings   = json_decode($this->data['Store Settings'], true);
         }
 
 
@@ -79,7 +79,7 @@ class Public_Store {
             $limit = preg_split('/-/', $pages);
 
 
-            if (is_array($limit) and count($limit) == 2 and is_numeric($limit[0]) and is_numeric($limit[1])    ) {
+            if (is_array($limit) and count($limit) == 2 and is_numeric($limit[0]) and is_numeric($limit[1])) {
                 switch ($type) {
                     case 'departments':
                         $sql = sprintf(
@@ -292,6 +292,7 @@ class Public_Store {
 
             if ($customer->new) {
 
+                include_once 'utils/network_functions.php';
 
                 $website = get_object('website', $this->get('Store Website Key'));
 
@@ -307,6 +308,23 @@ class Public_Store {
 
                 $this->new_website_user = $website_user->new;
 
+
+                $website_user->fast_update(
+                    array(
+                        `Website User Has Login`     => 'Yes',
+
+                    )
+                );
+
+                $website_user->fast_update(
+                    array(
+                        `Website User Login Count`   => 1,
+                        'Website User Last Login'    => gmdate('Y-m-d H:i:s'),
+                        'Website User Last Login IP' => ip_from_cloudfare()
+                    ),'Website User Data'
+                );
+
+
                 $customer->update(array('Customer Website User Key' => $website_user->id), 'no_history');
 
 
@@ -318,8 +336,6 @@ class Public_Store {
                     'editor'           => $this->editor
                 ), $account->get('Account Code')
                 );
-
-
 
 
             } else {

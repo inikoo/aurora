@@ -44,7 +44,7 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 include_once 'utils/i18n.php';
 require_once 'utils/general_functions.php';
-require_once 'utils/detect_agent.php';
+require_once 'utils/network_functions.php';
 require_once "utils/aes.php";
 
 

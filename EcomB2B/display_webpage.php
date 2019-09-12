@@ -54,7 +54,7 @@ if (isset($is_homepage)) {
 
 } elseif (isset($is_reset)) {
     include_once 'utils/public_object_functions.php';
-    include_once 'utils/detect_agent.php';
+    include_once 'utils/network_functions.php';
 
     $website = get_object('Website', $_SESSION['website_key']);
 
@@ -92,7 +92,7 @@ if (isset($is_homepage)) {
 
 } elseif (isset($is_unsubscribe)) {
     include_once 'utils/public_object_functions.php';
-    include_once 'utils/detect_agent.php';
+    include_once 'utils/network_functions.php';
 
     $website = get_object('Website', $_SESSION['website_key']);
 

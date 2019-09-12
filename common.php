@@ -20,7 +20,7 @@ require_once 'utils/natural_language.php';
 require_once 'utils/date_functions.php';
 require_once 'utils/object_functions.php';
 require_once 'utils/system_functions.php';
-require_once 'utils/detect_agent.php';
+require_once 'utils/network_functions.php';
 require_once "utils/aes.php";
 require_once "class.Account.php";
 require_once "class.User.php";

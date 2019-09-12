@@ -15,7 +15,6 @@ require_once 'utils/natural_language.php';
 require_once 'utils/date_functions.php';
 require_once 'utils/object_functions.php';
 require_once 'utils/ip_geolocation.php';
-require_once 'utils/parse_user_agent.php';
 require_once 'utils/natural_language.php';
 
 

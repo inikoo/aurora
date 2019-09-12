@@ -39,7 +39,9 @@ class WebAuth {
     function log_login($authentication_type, $website_key, $web_user_key, $customer_key) {
 
 
-        $ip   = $this->ip();
+        include_once 'utils/network_functions.php';
+
+        $ip   = ip_from_cloudfare();
         $date = gmdate('Y-m-d H:i:s');
         $sql  = sprintf(
             "INSERT INTO `Website User Log Dimension` (`Website User Log User Key`,`Website User Log Session ID`, `Website User Log IP`, `Website User Log Start Date`,`Website User Log Last Visit Date`, `Website User Log Logout Date`,`Website User Log Website Key`) VALUES (%d, %s, %s, %s,%s,%s,%d)",
@@ -99,175 +101,6 @@ class WebAuth {
 
     }
 
-    function ip() {
-        global $REMOTE_ADDR;
-        global $HTTP_X_FORWARDED_FOR, $HTTP_X_FORWARDED, $HTTP_FORWARDED_FOR, $HTTP_FORWARDED;
-        global $HTTP_VIA, $HTTP_X_COMING_FROM, $HTTP_COMING_FROM;
-        // Get some server/environment variables values
-
-        $direct_ip = '';
-        if (empty($REMOTE_ADDR)) {
-            if (!empty($_SERVER) && isset($_SERVER['REMOTE_ADDR'])) {
-                $REMOTE_ADDR = $_SERVER['REMOTE_ADDR'];
-            } else {
-                if (!empty($_ENV) && isset($_ENV['REMOTE_ADDR'])) {
-                    $REMOTE_ADDR = $_ENV['REMOTE_ADDR'];
-                } else {
-                    if (@getenv('REMOTE_ADDR')) {
-                        $REMOTE_ADDR = getenv('REMOTE_ADDR');
-                    }
-                }
-            }
-        } // end if
-        if (empty($HTTP_X_FORWARDED_FOR)) {
-            if (!empty($_SERVER) && isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $HTTP_X_FORWARDED_FOR = $_SERVER['HTTP_X_FORWARDED_FOR'];
-            } else {
-                if (!empty($_ENV) && isset($_ENV['HTTP_X_FORWARDED_FOR'])) {
-                    $HTTP_X_FORWARDED_FOR = $_ENV['HTTP_X_FORWARDED_FOR'];
-                } else {
-                    if (@getenv('HTTP_X_FORWARDED_FOR')) {
-                        $HTTP_X_FORWARDED_FOR = getenv('HTTP_X_FORWARDED_FOR');
-                    }
-                }
-            }
-        } // end if
-        if (empty($HTTP_X_FORWARDED)) {
-            if (!empty($_SERVER) && isset($_SERVER['HTTP_X_FORWARDED'])) {
-                $HTTP_X_FORWARDED = $_SERVER['HTTP_X_FORWARDED'];
-            } else {
-                if (!empty($_ENV) && isset($_ENV['HTTP_X_FORWARDED'])) {
-                    $HTTP_X_FORWARDED = $_ENV['HTTP_X_FORWARDED'];
-                } else {
-                    if (@getenv('HTTP_X_FORWARDED')) {
-                        $HTTP_X_FORWARDED = getenv('HTTP_X_FORWARDED');
-                    }
-                }
-            }
-        } // end if
-        if (empty($HTTP_FORWARDED_FOR)) {
-            if (!empty($_SERVER) && isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-                $HTTP_FORWARDED_FOR = $_SERVER['HTTP_FORWARDED_FOR'];
-            } else {
-                if (!empty($_ENV) && isset($_ENV['HTTP_FORWARDED_FOR'])) {
-                    $HTTP_FORWARDED_FOR = $_ENV['HTTP_FORWARDED_FOR'];
-                } else {
-                    if (@getenv('HTTP_FORWARDED_FOR')) {
-                        $HTTP_FORWARDED_FOR = getenv('HTTP_FORWARDED_FOR');
-                    }
-                }
-            }
-        } // end if
-        if (empty($HTTP_FORWARDED)) {
-            if (!empty($_SERVER) && isset($_SERVER['HTTP_FORWARDED'])) {
-                $HTTP_FORWARDED = $_SERVER['HTTP_FORWARDED'];
-            } else {
-                if (!empty($_ENV) && isset($_ENV['HTTP_FORWARDED'])) {
-                    $HTTP_FORWARDED = $_ENV['HTTP_FORWARDED'];
-                } else {
-                    if (@getenv('HTTP_FORWARDED')) {
-                        $HTTP_FORWARDED = getenv('HTTP_FORWARDED');
-                    }
-                }
-            }
-        } // end if
-        if (empty($HTTP_VIA)) {
-            if (!empty($_SERVER) && isset($_SERVER['HTTP_VIA'])) {
-                $HTTP_VIA = $_SERVER['HTTP_VIA'];
-            } else {
-                if (!empty($_ENV) && isset($_ENV['HTTP_VIA'])) {
-                    $HTTP_VIA = $_ENV['HTTP_VIA'];
-                } else {
-                    if (@getenv('HTTP_VIA')) {
-                        $HTTP_VIA = getenv('HTTP_VIA');
-                    }
-                }
-            }
-        } // end if
-        if (empty($HTTP_X_COMING_FROM)) {
-            if (!empty($_SERVER) && isset($_SERVER['HTTP_X_COMING_FROM'])) {
-                $HTTP_X_COMING_FROM = $_SERVER['HTTP_X_COMING_FROM'];
-            } else {
-                if (!empty($_ENV) && isset($_ENV['HTTP_X_COMING_FROM'])) {
-                    $HTTP_X_COMING_FROM = $_ENV['HTTP_X_COMING_FROM'];
-                } else {
-                    if (@getenv('HTTP_X_COMING_FROM')) {
-                        $HTTP_X_COMING_FROM = getenv('HTTP_X_COMING_FROM');
-                    }
-                }
-            }
-        } // end if
-        if (empty($HTTP_COMING_FROM)) {
-            if (!empty($_SERVER) && isset($_SERVER['HTTP_COMING_FROM'])) {
-                $HTTP_COMING_FROM = $_SERVER['HTTP_COMING_FROM'];
-            } else {
-                if (!empty($_ENV) && isset($_ENV['HTTP_COMING_FROM'])) {
-                    $HTTP_COMING_FROM = $_ENV['HTTP_COMING_FROM'];
-                } else {
-                    if (@getenv('HTTP_COMING_FROM')) {
-                        $HTTP_COMING_FROM = getenv('HTTP_COMING_FROM');
-                    }
-                }
-            }
-        } // end if
-
-        // Gets the default ip sent by the user
-        if (!empty($REMOTE_ADDR)) {
-            $direct_ip = $REMOTE_ADDR;
-        }
-
-        // Gets the proxy ip sent by the user
-        $proxy_ip = '';
-        if (!empty($HTTP_X_FORWARDED_FOR)) {
-            $proxy_ip = $HTTP_X_FORWARDED_FOR;
-        } else {
-            if (!empty($HTTP_X_FORWARDED)) {
-                $proxy_ip = $HTTP_X_FORWARDED;
-            } else {
-                if (!empty($HTTP_FORWARDED_FOR)) {
-                    $proxy_ip = $HTTP_FORWARDED_FOR;
-                } else {
-                    if (!empty($HTTP_FORWARDED)) {
-                        $proxy_ip = $HTTP_FORWARDED;
-                    } else {
-                        if (!empty($HTTP_VIA)) {
-                            $proxy_ip = $HTTP_VIA;
-                        } else {
-                            if (!empty($HTTP_X_COMING_FROM)) {
-                                $proxy_ip = $HTTP_X_COMING_FROM;
-                            } else {
-                                if (!empty($HTTP_COMING_FROM)) {
-                                    $proxy_ip = $HTTP_COMING_FROM;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } // end if... else if...
-
-        // Returns the true IP if it has been found, else FALSE
-        if (empty($proxy_ip)) {
-            // True IP without proxy
-            if ($direct_ip == '::1') {
-                $direct_ip = 'localhost';
-            }
-
-            return $direct_ip;
-        } else {
-            $is_ip = preg_match(
-                '|^([0-9]{1,3}\.){3,3}[0-9]{1,3}|', $proxy_ip, $regs
-            );
-            if ($is_ip && (count($regs) > 0)) {
-                // True IP behind a proxy
-                return $regs[0];
-            } else {
-                // Can't define IP: there is a proxy but we don't have
-                // information about the true IP
-                return 'unknown';
-            }
-        } // end if... else...
-    }
 
     function authenticate_from_login($handle, $password, $website) {
 
@@ -363,8 +196,11 @@ class WebAuth {
     }
 
     function log_failed_login($type, $handle, $website_user_key, $main_reason, $customer_key, $website_key) {
+
+        include_once 'utils/network_functions.php';
+
         $date = gmdate("Y-m-d H:i:s");
-        $ip   = $this->ip();
+        $ip   = ip_from_cloudfare();
         $sql  = sprintf(
             "INSERT INTO `Website Failed Log Dimension` 
 (

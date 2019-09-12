@@ -393,7 +393,7 @@ function authenticate($db) {
 
 function log_api_key_access_failure($db, $api_key_key, $fail_type, $fail_reason) {
 
-    include_once 'utils/detect_agent.php';
+    include_once 'utils/network_functions.php';
 
     $fail_code = hash('crc32', $fail_reason, false);
     $method    = $_SERVER['REQUEST_METHOD'];
@@ -419,7 +419,7 @@ function log_api_key_access_failure($db, $api_key_key, $fail_type, $fail_reason)
 
 function log_api_key_access_success($db, $api_key_key, $success_reason, $debug = '') {
 
-    include_once 'utils/detect_agent.php';
+    include_once 'utils/network_functions.php';
 
     $success_code = hash('crc32', $success_reason, false);
 

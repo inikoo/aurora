@@ -15,7 +15,7 @@ include_once 'utils/public_object_functions.php';
 
 include_once 'utils/natural_language.php';
 include_once 'utils/general_functions.php';
-include_once 'utils/detect_agent.php';
+include_once 'utils/network_functions.php';
 
 
 session_start();
