@@ -54,6 +54,9 @@ $smarty->assign('control_template', $theme.'/control.webpage_blocks.'.$theme.'.t
 // print_r( $webpage->get('Content Data'));
 
 
+$navigation=json_decode($webpage->properties('navigation'),true);
+$smarty->assign('navigation', $navigation);
+
 $html = '';
 if ($webpage->get('Webpage Scope') == 'Category Categories' or $webpage->get('Webpage Scope') == 'Category Products') {
 

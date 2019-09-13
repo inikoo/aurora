@@ -252,7 +252,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
 
     }
 
-    $title = $icon.' <span class="id Webpage_Code">'.strtolower($object->get('Code')).'</span>';
+    $title = $icon.' <span class="id Webpage_Code">'.$object->get('Name').'</span> <span style="font-weight:200;padding-left:10px;font-family: \'Courier New\', Courier, monospace">'.strtolower($object->get('Code')).'</span>';
 
 
     if (preg_match('/online/', $data['request'])) {
@@ -535,9 +535,10 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
             break;
         case 'Category Products':
             $right_buttons[] = array(
-                'icon'      => 'cubes',
+                'icon'      => 'folder-open',
                 'reference' => 'products/'.$object->get('Webpage Store Key').'/category/'.$object->get('Webpage Scope Key'),
                 'title'     => _('Family'),
+
                 'class'     => 'button'
             );
             break;
