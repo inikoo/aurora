@@ -8704,4 +8704,8 @@ h2.dashboard {
   font-size: 28px;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
 
+.url {
+  font-weight: 200;
+  font-family: 'Courier New', Courier, monospace; }
+
 /*# sourceMappingURL=app.css.map */

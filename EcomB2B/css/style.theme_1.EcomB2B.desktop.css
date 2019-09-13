@@ -699,6 +699,10 @@ h6 {
   font-size: 17px;
   line-height: 15px; }
 
+.url {
+  font-weight: 200;
+  font-family: 'Courier New', Courier, monospace; }
+
 .info {
   color: #007fff; }
 

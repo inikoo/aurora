@@ -21,10 +21,6 @@ $_product = array(
         'product.customers'                                    => 'product.customers',
         'product.customers.favored'                            => 'product.customers',
         'product.back_to_stock_notification_request.customers' => 'product.customers',
-        //'product.webpage.settings' => 'product.webpage',
-        //'webpage.preview' => 'product.webpage',
-        //  'product.webpage.analytics'      => 'product.webpage',
-        //'product.webpage.logbook' => 'product.webpage',
 
 
         'product.sales_correlation'     => 'product.correlation',
@@ -43,37 +39,12 @@ $_product = array(
             'icon'  => 'globe',
             'title' => _('Webpages')
         ),
-        /*
-        'product.webpage' => array(
-            'label' => _('Website'),
-            'icon' => 'globe',
-            'subtabs' => array(
-                'product.webpage.settings' => array(
-                    'label' => _('Settings'),
-                    'icon' => 'sliders'
-                ),
 
-                'webpage.preview' => array(
-                    'label' => _('Workshop'),
-                    'icon' => 'wrench'
-                ),
-                'product.webpage.logbook' => array(
-                    'label' => _('Logbook'),
-                    'icon' => 'road'
-                ),
-                //    'product.webpage.analytics'  => array(
-                //        'label' => _('Analytics')
-                //    ),
-
-
-            )
-        ),
-*/
-        'product.history'  => array(
+        'product.history' => array(
             'label' => _('History, notes'),
             'icon'  => 'sticky-note'
         ),
-        'product.sales'    => array(
+        'product.sales'   => array(
             'label'   => _('Sales'),
             'title'   => _('Sales'),
             'icon'    => 'money-bill-alt',
@@ -102,7 +73,7 @@ $_product = array(
 
             )
         ),
-        'product.orders'   => array(
+        'product.orders'  => array(
             'label'         => _('Orders'),
             'icon'          => 'shopping-cart',
             'quantity_data' => array(
@@ -2723,41 +2694,6 @@ $modules = array(
                 )
             ),
 
-            'page' => array(
-                'type' => 'object',
-                'tabs' => array(
-
-
-                    'page.analytics' => array(
-                        'label' => _(
-                            'Analytics'
-                        ),
-                        'icon'  => 'line-chart'
-                    ),
-                    'page.details'   => array(
-                        'label' => _('Data'),
-                        'icon'  => 'database'
-                    ),
-                    'page.versions'  => array(
-                        'label' => _(
-                            'Versions'
-                        ),
-                        'icon'  => 'code-fork'
-                    ),
-                    'page.preview'   => array(
-                        'label' => _(
-                            'Preview'
-                        ),
-                        'icon'  => 'eye'
-                    ),
-                    'page.blocks'    => array(
-                        'label' => _(
-                            'Blocks'
-                        ),
-                        'icon'  => 'align-justify'
-                    ),
-                )
-            ),
 
             'page_version' => array(
                 'type' => 'object',
@@ -2784,84 +2720,6 @@ $modules = array(
 
                 )
             ),
-
-            'website.node' => array(
-                'type' => 'object',
-
-                'subtabs_parent' => array(
-                    'website.node.analytics.pageviews' => 'website.node.analytics',
-                    'website.node.analytics.users'     => 'website.node.analytics',
-                    'website.node.page.preview'        => 'website.node.page',
-                    'website.node.page.versions'       => 'website.node.page',
-
-
-                ),
-
-
-                'tabs' => array(
-
-
-                    'website.node.analytics' => array(
-                        'label' => _(
-                            'Analytics'
-                        ),
-                        'icon'  => 'line-chart',
-
-                        'subtabs' => array(
-                            'website.node.analytics.pageviews' => array(
-                                'label' => _(
-                                    'Pageviews'
-                                ),
-                                'icon'  => ''
-                            ),
-                            'website.node.analytics.users'     => array(
-                                'label' => _(
-                                    'Users'
-                                ),
-                                'icon'  => 'terminal'
-                            ),
-
-                        )
-                    ),
-                    'website.node.details'   => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database'
-                    ),
-
-                    'website.node.page'  => array(
-                        'label'   => _(
-                            'Webpage'
-                        ),
-                        'icon'    => 'file',
-                        'subtabs' => array(
-                            'website.node.page.preview'  => array(
-                                'label' => _(
-                                    'Preview'
-                                ),
-                                'icon'  => 'eye'
-                            ),
-                            'website.node.page.versions' => array(
-                                'label' => _(
-                                    'Versions'
-                                ),
-                                'icon'  => 'code-fork',
-
-                            )
-
-                        ),
-
-                    ),
-                    'website.node.nodes' => array(
-                        'label' => _(
-                            'Subnodes'
-                        ),
-                        'icon'  => 'pagelines'
-                    ),
-                )
-            ),
-
             'website.user' => array(
                 'type' => 'object',
                 'tabs' => array(
@@ -2940,6 +2798,10 @@ $modules = array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
+                    'webpage.assets' => array(
+                        'label' => _('Asset links'),
+                        'icon'  => 'grip-horizontal'
+                    ),
                     'webpage.preview' => array(
                         'label' => _('Workshop'),
                         'icon'  => 'wrench',
@@ -2948,19 +2810,15 @@ $modules = array(
 
                     'webpage.analytics' => array(
                         'label' => _('Analytics'),
-                        'icon'  => 'line-chart',
+                        'icon'  => 'analytics',
 
                         'subtabs' => array(
                             'webpage.pageviews' => array(
-                                'label' => _(
-                                    'Pageviews'
-                                ),
+                                'label' => _('Pageviews'),
                                 'icon'  => 'eye'
                             ),
                             'webpage.users'     => array(
-                                'label' => _(
-                                    'Users'
-                                ),
+                                'label' => _('Users'),
                                 'icon'  => 'terminal'
                             ),
 
@@ -5625,11 +5483,11 @@ $modules = array(
                 'tabs'      => array(
 
 
-                    'inventory.feedback' => array(
+                    'inventory.feedback'                 => array(
                         'label' => _('Issues'),
                         'icon'  => 'poop'
                     ),
-                    'inventory.feedback_per_part' => array(
+                    'inventory.feedback_per_part'        => array(
                         'label' => _('Issues group by part'),
                     ),
                     'inventory.feedback_per_part_family' => array(
