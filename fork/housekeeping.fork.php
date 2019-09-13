@@ -53,9 +53,9 @@ function fork_housekeeping($job) {
                 'os'           => $user_agent_data['OS Code'],
                 'device'       => $data['device'],
                 'device_label' => sprintf('<i title="%s" class="far fa-fw %s"></i>', $user_agent_data['Software'].($user_agent_data['Software Details'] != '' ? ' ('.$user_agent_data['Software Details'].')' : ''), $user_agent_data['Icon']),
-                'ip'           => $ip,
-                'geo_location' => $geolocation_data,
-                'server_data'  => $data['server_data']
+                //'ip'           => $ip,
+                //'geo_location' => $geolocation_data,
+                //'server_data'  => $data['server_data']
 
             );
 
