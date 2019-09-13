@@ -1726,6 +1726,16 @@ $tab_defaults = array(
         'f_period'    => 'all',
 
     ),
+    'webpage.assets'  => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+        'f_period'    => 'ytd',
+
+    ),
     'marketing_server'       => array(
         'view'        => 'overview',
         'sort_key'    => 'id',

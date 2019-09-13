@@ -257,3 +257,8 @@ update `Website User Dimension` WUD left join old_dw.`User Dimension` U on (`Use
 update `Website User Dimension` WUD left join old_dw.`User Dimension` U on (`User Parent Key`=`Website User Customer Key`) set `Website User Has Login`='Yes' where  `User Type`='Customer'  and U.`User Requests Count`>0;
 update `Website User Dimension` WUD left join `History Dimension` C on (`Subject Key`=`Website User Customer Key`) set `Website User Has Login`='Yes' where  `Subject`='Customer'  and  `Author Name`='Customer' and `History Abstract` like '% registered';
 delete from `History Dimension` where `Subject`='Customer' and `Author Name`='Customer' and `History Abstract` like 'Website user %';
+
+update  `Website Webpage Scope Map` O left join `Product Category Dimension` D on (O.`Website Webpage Scope Scope Key`=D.`Product Category Key`) set `Website Webpage Scope Scope Website Key`=`Product Category Webpage Key` where `Website Webpage Scope Scope`='Category';
+update  `Website Webpage Scope Map` O left join `Product Dimension` D on (O.`Website Webpage Scope Scope Key`=D.`Product ID`) set `Website Webpage Scope Scope Website Key`=`Product Webpage Key` where `Website Webpage Scope Scope`='Product';
+
+ALTER TABLE `Website Webpage Scope Map` ADD `Website Webpage Scope Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Website Webpage Scope Key`);

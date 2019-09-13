@@ -735,9 +735,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                         $parent_key = $view_path[0];
 
 
-
-
-
                                     }
                                 }
                             }
@@ -1140,10 +1137,10 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                             if (isset($view_path[3]) and in_array(
                                     $view_path[3], array(
-                                    'online',
-                                    'in_process',
-                                    'offline'
-                                )
+                                                     'online',
+                                                     'in_process',
+                                                     'offline'
+                                                 )
                                 )) {
 
                                 $parent     = 'webpage_type';
@@ -1193,6 +1190,26 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                         if (is_numeric($view_path[2])) {
                             $key = $view_path[2];
+
+                            if (isset($view_path[3])) {
+                                if ($view_path[3] == 'asset') {
+                                    $parent     = 'webpage';
+                                    $parent_key = $view_path[2];
+                                    if (isset($view_path[4])) {
+                                        if (is_numeric($view_path[4])) {
+
+                                            $key = $view_path[4];
+
+
+
+                                        }
+                                    }
+
+
+                                }
+                            }
+
+
                         } elseif ($view_path[2] == 'new') {
                             $section = 'webpage.new';
                         }
@@ -4006,7 +4023,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 break;
 
             case 'production':
-
 
 
                 $module     = 'production';

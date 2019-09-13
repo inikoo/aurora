@@ -252,7 +252,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
 
     }
 
-    $title = $icon.' <span class="id Webpage_Code">'.$object->get('Name').'</span> <span style="font-weight:200;padding-left:10px;font-family: \'Courier New\', Courier, monospace">'.strtolower($object->get('Code')).'</span>';
+    $title = $icon.' <span class="id Webpage_Code">'.$object->get('Name').'</span> <span class="url" style="padding-left:10px">'.strtolower($object->get('Code')).'</span>';
 
 
     if (preg_match('/online/', $data['request'])) {
@@ -315,6 +315,9 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
             case 'website':
                 $tab = 'website.webpages';
                 break;
+            case 'webpage':
+                $tab = 'webpage.assets';
+                break;
 
         }
     }
@@ -327,6 +330,13 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
         $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
         $f_value         = $_SESSION['table_state'][$tab]['f_value'];
         $parameters      = $_SESSION['table_state'][$tab];
+
+
+        if($tab == 'webpage.assets'){
+            $parameters['parent_key']=$data['_parent']->id;
+        }
+
+
     } else {
 
         $default                  = $user->get_tab_defaults($tab);
@@ -343,6 +353,9 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
     include_once 'prepare_table/'.$tab.'.ptble.php';
 
 
+
+
+
     $order = preg_replace('/Webpage Key/', 'Page Key', $order);
 
 
@@ -352,7 +365,28 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
     $order              = preg_replace('/^.*\.`/', '', $order);
     $order              = preg_replace('/^`/', '', $order);
     $order              = preg_replace('/`$/', '', $order);
-    $_order_field_value = $object->get($order);
+
+
+    if($order=='Website Webpage Scope Webpage Index'){
+
+        $sql='select `Website Webpage Scope Webpage Index` from `Website Webpage Scope Map` where `Website Webpage Scope Scope Website Key`=? and `Website Webpage Scope Webpage Key`=? ';
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array($object->id,$data['_parent']->id)
+        );
+        if ($row = $stmt->fetch()) {
+            $_order_field_value=$row['Website Webpage Scope Webpage Index'];
+        }else{
+            $_order_field_value='';
+        }
+
+
+    }else{
+        $_order_field_value = $object->get($order);
+
+    }
+
+
 
 
     $prev_title = '';
@@ -367,6 +401,8 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
 
         prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
     );
+
+
 
 
     if ($result = $db->query($sql)) {
@@ -385,6 +421,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
         "select `Webpage Code` object_name,`Page Key` as object_key from %s %s %s
 	                and ($_order_field  > %s OR ($_order_field  = %s AND `Page Key` > %d))  order by $_order_field   , `Page Key`  limit 1", $table, $where, $wheref, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
     );
+
 
 
     if ($result = $db->query($sql)) {
@@ -499,7 +536,52 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
             }
 
             break;
+        case 'webpage':
 
+
+            $up_button = array(
+                'icon'      => 'arrow-up',
+                'title'     => _("Webpage").' ('.$data['_parent']->get('Code').')',
+                'reference' => 'website/'.$object->get('Webpage Website Key').'/'.$request_prefix.'webpage/'.$data['_parent']->id
+            );
+
+            if ($prev_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-left',
+                    'title'     => $prev_title,
+                    'reference' => 'website/'.$object->get('Webpage Website Key').'/'.$request_prefix.'webpage/'.$data['_parent']->id.'/asset/'.$prev_key
+
+
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-left disabled',
+                    'title' => ''
+                );
+
+            }
+            $left_buttons[] = $up_button;
+
+
+            if ($next_key) {
+                $left_buttons[] = array(
+                    'icon'      => 'arrow-right',
+                    'title'     => $next_title,
+                    'reference' => 'website/'.$object->get('Webpage Website Key').'/'.$request_prefix.'webpage/'.$data['_parent']->id.'/asset/'.$next_key
+
+                );
+
+            } else {
+                $left_buttons[] = array(
+                    'icon'  => 'arrow-right disabled',
+                    'title' => '',
+                    'url'   => ''
+                );
+
+            }
+
+            break;
     }
 
 
@@ -539,7 +621,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
                 'reference' => 'products/'.$object->get('Webpage Store Key').'/category/'.$object->get('Webpage Scope Key'),
                 'title'     => _('Family'),
 
-                'class'     => 'button'
+                'class' => 'button'
             );
             break;
         case 'Product':

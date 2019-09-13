@@ -1544,30 +1544,38 @@ class Page extends DB_Table {
 
     }
 
+
     function reindex_items() {
 
         $this->updated = false;
 
+        $block_index = 0;
 
         $content_data = $this->get('Content Data');
+
+        $sql = sprintf(
+            'DELETE FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  ', $this->id
+        );
+        $this->db->exec($sql);
+
         if (isset($content_data['blocks'])) {
             foreach ($content_data['blocks'] as $block_key => $block) {
-
+                $block_index++;
                 switch ($block['type']) {
                     case 'category_products':
-                        $this->reindex_category_products();
+                        $this->reindex_category_products($block_index);
                         break;
                     case 'category_categories':
-                        $this->reindex_category_categories();
+                        $this->reindex_category_categories($block_index);
                         break;
                     case 'products':
-                        $this->reindex_products();
+                        $this->reindex_products($block_index);
                         break;
                     case 'product':
                         $this->reindex_product();
                         break;
                     case 'see_also':
-                        $this->reindex_see_also();
+                        $this->reindex_see_also($block_index);
                         break;
 
                 }
@@ -1575,6 +1583,7 @@ class Page extends DB_Table {
 
             }
         }
+        $this->reindex_webpage_scope_map();
         $this->updated = true;
 
 
@@ -1617,7 +1626,31 @@ class Page extends DB_Table {
 
     }
 
-    function reindex_category_products() {
+    function reindex_webpage_scope_map() {
+        $index = 0;
+        $sql   = 'select `Website Webpage Scope Key` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=?  order by `Website Webpage Block Index`,`Website Webpage Scope Index`  ';
+        $stmt  = $this->db->prepare($sql);
+        $stmt->execute(
+            array($this->id)
+        );
+
+        while ($row = $stmt->fetch()) {
+            $index++;
+            $sql = 'update `Website Webpage Scope Map` set `Website Webpage Scope Webpage Index`=? where `Website Webpage Scope Key`=? ';
+
+
+            $this->db->prepare($sql)->execute(
+                [
+                    $index,
+                    $row['Website Webpage Scope Key']
+                ]
+            );
+
+
+        }
+    }
+
+    function reindex_category_products($block_index) {
 
         $content_data = $this->get('Content Data');
 
@@ -1777,8 +1810,9 @@ class Page extends DB_Table {
         foreach ($content_data['blocks'][$block_key]['items'] as $item) {
             if ($item['type'] == 'product') {
                 $sql = sprintf(
-                    'INSERT INTO `Website Webpage Scope Map` (`Website Webpage Scope Website Key`,`Website Webpage Scope Webpage Key`,`Website Webpage Scope Scope`,`Website Webpage Scope Scope Key`,`Website Webpage Scope Type`,`Website Webpage Scope Index`) VALUES (%d,%d,%s,%d,%s,%d) ',
-                    $this->get('Webpage Website Key'), $this->id, prepare_mysql('Product'), $item['product_id'], prepare_mysql('Category_Products_Item'), $index
+                    'INSERT INTO `Website Webpage Scope Map` (`Website Webpage Block Index`,`Website Webpage Scope Scope Website Key`,
+                    `Website Webpage Scope Website Key`,`Website Webpage Scope Webpage Key`,`Website Webpage Scope Scope`,`Website Webpage Scope Scope Key`,`Website Webpage Scope Type`,`Website Webpage Scope Index`) 
+                    VALUES (%d,%d,%d,%d,%s,%d,%s,%d) ', $block_index, $item['webpage_key'], $this->get('Webpage Website Key'), $this->id, prepare_mysql('Product'), $item['product_id'], prepare_mysql('Category_Products_Item'), $index
 
                 );
 
@@ -3203,7 +3237,6 @@ class Page extends DB_Table {
                         'select `Page Key` from `Page Store Dimension` WP left join `Webpage Type Dimension` WTD  on (WP.`Webpage Type Key`=`WTD`.`Webpage Type Key`)  where `Webpage Type Code`="Cats"  and `Webpage State`!="Offline"  and `Page Key`!=?  and `Webpage Website Key`=?   order by `Webpage Code` desc,`Page Key` desc ';
 
 
-
                     $stmt2 = $this->db->prepare($sql);
                     $stmt2->execute(
                         array(
@@ -3275,9 +3308,11 @@ class Page extends DB_Table {
         if (!isset($content_data['blocks'])) {
             return;
         }
-
+        $block_index = 0;
         foreach ($content_data['blocks'] as $_block_key => $_block) {
+            $block_index++;
             if ($_block['type'] == 'see_also') {
+
                 $block_key   = $_block_key;
                 $block_found = true;
                 break;
@@ -3370,7 +3405,8 @@ class Page extends DB_Table {
 
         }
 
-        $this->reindex_see_also();
+        $this->reindex_see_also($block_index);
+        $this->reindex_webpage_scope_map();
 
 
     }
@@ -3713,7 +3749,7 @@ class Page extends DB_Table {
 
     }
 
-    function reindex_see_also() {
+    function reindex_see_also($block_index) {
 
         $content_data = $this->get('Content Data');
         $block_found  = false;
@@ -3834,10 +3870,6 @@ class Page extends DB_Table {
                     } else {
                         unset($content_data['blocks'][$block_key]['items'][$item_key]);
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
             }
@@ -3917,7 +3949,7 @@ class Page extends DB_Table {
 
 
         $this->update_field_switcher('Page Store Content Data', json_encode($content_data), 'no_history');
-        $sql = sprintf('DELETE FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND `Website Webpage Scope Type` IN  ("See_Also_Category_Manual","See_Also_Category_Auto","See_Also_Product_Manual","See_Also_Product_Auto") ', $this->id);
+        $sql = sprintf('DELETE FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND `Website Webpage Block Index`=%d ', $this->id,$block_index);
         $this->db->exec($sql);
 
         $index = 0;
@@ -3927,8 +3959,8 @@ class Page extends DB_Table {
 
 
             $sql = sprintf(
-                'INSERT INTO `Website Webpage Scope Map` (`Website Webpage Scope Website Key`,`Website Webpage Scope Webpage Key`,`Website Webpage Scope Scope`,`Website Webpage Scope Scope Key`,`Website Webpage Scope Type`,`Website Webpage Scope Index`) VALUES (%d,%d,%s,%d,%s,%d) ',
-                $this->get('Webpage Website Key'), $this->id, prepare_mysql(capitalize($item['type'])), ($item['type'] == 'category' ? $item['category_key'] : $item['product_id']),
+                'INSERT INTO `Website Webpage Scope Map` (`Website Webpage Block Index`,`Website Webpage Scope Scope Website Key`,`Website Webpage Scope Website Key`,`Website Webpage Scope Webpage Key`,`Website Webpage Scope Scope`,`Website Webpage Scope Scope Key`,`Website Webpage Scope Type`,`Website Webpage Scope Index`) VALUES (%d,%d,%d,%d,%s,%d,%s,%d) ',
+                $block_index, $item['webpage_key'], $this->get('Webpage Website Key'), $this->id, prepare_mysql(capitalize($item['type'])), ($item['type'] == 'category' ? $item['category_key'] : $item['product_id']),
                 prepare_mysql('See_Also_'.capitalize($item['type']).'_'.($block['auto'] ? 'Auto' : 'Manual')), $index
 
             );
@@ -3943,7 +3975,7 @@ class Page extends DB_Table {
 
     }
 
-    function reindex_category_categories() {
+    function reindex_category_categories($block_index) {
 
         include_once('utils/image_functions.php');
 
@@ -4129,8 +4161,8 @@ class Page extends DB_Table {
                 foreach ($section['items'] as $item_key => $item) {
                     if ($item['type'] == 'category') {
                         $sql = sprintf(
-                            'INSERT INTO `Website Webpage Scope Map` (`Website Webpage Scope Website Key`,`Website Webpage Scope Webpage Key`,`Website Webpage Scope Scope`,`Website Webpage Scope Scope Key`,`Website Webpage Scope Type`,`Website Webpage Scope Index`) VALUES (%d,%d,%s,%d,%s,%d) ',
-                            $this->get('Webpage Website Key'), $this->id, prepare_mysql('Category'), $item['category_key'], prepare_mysql($item['item_type']), $index
+                            'INSERT INTO `Website Webpage Scope Map` (`Website Webpage Block Index`,`Website Webpage Scope Scope Website Key`,`Website Webpage Scope Website Key`,`Website Webpage Scope Webpage Key`,`Website Webpage Scope Scope`,`Website Webpage Scope Scope Key`,`Website Webpage Scope Type`,`Website Webpage Scope Index`) VALUES (%d,%d,%d,%d,%s,%d,%s,%d) ',
+                            $block_index, $item['webpage_key'], $this->get('Webpage Website Key'), $this->id, prepare_mysql('Category'), $item['category_key'], prepare_mysql($item['item_type']), $index
 
                         );
                         //print "$sql\n";
@@ -4148,7 +4180,7 @@ class Page extends DB_Table {
 
     }
 
-    function reindex_products() {
+    function reindex_products($block_index) {
         $content_data = $this->get('Content Data');
         $block_found  = false;
         foreach ($content_data['blocks'] as $_block_key => $_block) {
@@ -4218,8 +4250,8 @@ class Page extends DB_Table {
         foreach ($content_data['blocks'][$block_key]['items'] as $item) {
 
             $sql = sprintf(
-                'INSERT INTO `Website Webpage Scope Map` (`Website Webpage Scope Website Key`,`Website Webpage Scope Webpage Key`,`Website Webpage Scope Scope`,`Website Webpage Scope Scope Key`,`Website Webpage Scope Type`,`Website Webpage Scope Index`) VALUES (%d,%d,%s,%d,%s,%d) ',
-                $this->get('Webpage Website Key'), $this->id, prepare_mysql('Product'), $item['product_id'], prepare_mysql('Products_Item'), $index
+                'INSERT INTO `Website Webpage Scope Map` (`Website Webpage Block Index`,`Website Webpage Scope Scope Website Key`,`Website Webpage Scope Website Key`,`Website Webpage Scope Webpage Key`,`Website Webpage Scope Scope`,`Website Webpage Scope Scope Key`,`Website Webpage Scope Type`,`Website Webpage Scope Index`) VALUES (%d,%d,%d,%d,%s,%d,%s,%d) ',
+                $block_index, $item['webpage_key'], $this->get('Webpage Website Key'), $this->id, prepare_mysql('Product'), $item['product_id'], prepare_mysql('Products_Item'), $index
 
             );
             // print "$sql\n";
@@ -4557,10 +4589,6 @@ class Page extends DB_Table {
 
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
