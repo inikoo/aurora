@@ -729,8 +729,16 @@ function webpages_in_process($_data, $db, $user) {
 
         }
 
-        $type_label = $webpage_types[$data['Webpage Type Code']]['title'];
-        $type_icon  = $webpage_types[$data['Webpage Type Code']]['icon'];
+
+        if(isset($webpage_types[$data['Webpage Type Code']])){
+            $type_label = $webpage_types[$data['Webpage Type Code']]['title'];
+            $type_icon  = $webpage_types[$data['Webpage Type Code']]['icon'];
+        }else{
+            $type_label = '';
+            $type_icon  = '';
+        }
+
+
         $type       = sprintf('<i class="fa fa-fw %s padding_left_10" aria-hidden="true" title="%s" ></i>', $type_icon, $type_label);
 
 

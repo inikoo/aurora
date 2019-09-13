@@ -33,6 +33,13 @@ function get_webpage_showcase($data, $smarty) {
         $website = get_object('Website', $webpage->get('Webpage Website Key'));
 
 
+
+        $navigation=json_decode($webpage->properties('navigation'),true);
+        $smarty->assign('navigation', $navigation);
+
+        $smarty->assign('navigation', $navigation);
+
+
         switch ($webpage->get('Webpage Scope')) {
             case 'Product':
 
@@ -46,11 +53,17 @@ function get_webpage_showcase($data, $smarty) {
                 $category = get_object('Category', $webpage->get('Webpage Scope Key'));
                 $smarty->assign('category', $category);
 
+
+
                 $template = 'showcase/webpage.category_products.tpl';
                 break;
             case 'Category Categories':
                 $category = get_object('Category', $webpage->get('Webpage Scope Key'));
                 $smarty->assign('category', $category);
+
+
+
+
 
                 $template = 'showcase/webpage.category_categories.tpl';
 

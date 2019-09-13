@@ -442,6 +442,23 @@ class Page extends DB_Table {
 
                 return $this->data['Webpage '.$key];
                 break;
+            case 'Icon':
+
+                switch ($this->data['Webpage Scope']) {
+                    case 'Product':
+                        return 'cube';
+                        break;
+                    case 'Category Products':
+                        return 'folder-open';
+                        break;
+                    case 'Category Categories':
+                        return 'folder-tree';
+                        break;
+                    default:
+                        return '';
+                }
+
+                break;
             case 'State Icon':
 
                 switch ($this->data['Webpage State']) {
@@ -1487,7 +1504,7 @@ class Page extends DB_Table {
                 }
             }
 
-            $website=get_object('Website',$this->data['Webpage Website Key']);
+            $website = get_object('Website', $this->data['Webpage Website Key']);
             $website->update_website_webpages_data();
 
             $this->updated = true;
@@ -2678,6 +2695,13 @@ class Page extends DB_Table {
     }
 
     function update_navigation() {
+        $this->update_public_navigation();
+        $this->update_internal_navigation();
+
+    }
+
+
+    function update_public_navigation() {
 
         $navigation_data = array(
             'show'        => false,
@@ -2715,7 +2739,9 @@ class Page extends DB_Table {
                     'link'        => 'https://'.$website->get('Website URL'),
                     'label'       => '<i class="fa fa-home"></i>',
                     'label_short' => '<i class="fa fa-home"></i>',
-                    'title'       => _('Home')
+                    'title'       => _('Home'),
+                    'type'        => 'home'
+
                 );
 
 
@@ -2725,6 +2751,9 @@ class Page extends DB_Table {
                         'label'       => $parent_webpage->get('Name'),
                         'label_short' => $parent_webpage->get('Webpage Code'),
                         'title'       => $parent_webpage->get('Webpage Browser Title'),
+                        'type'        => 'Category Categories',
+                        'icon'        => 'folder-tree',
+                        'key'         => $parent_webpage->id
                     );
                 }
 
@@ -2833,6 +2862,9 @@ class Page extends DB_Table {
                         'label'       => $prev_category_webpage->get('Name'),
                         'label_short' => $prev_category_webpage->get('Webpage Code'),
                         'title'       => $prev_category_webpage->get('Webpage Browser Title'),
+                        'type'        => 'Category Products',
+                        'icon'        => 'folder-open',
+                        'key'         => $prev_category_webpage->id
                     );
                 }
 
@@ -2846,6 +2878,9 @@ class Page extends DB_Table {
                         'label'       => $next_category_webpage->get('Name'),
                         'label_short' => $next_category_webpage->get('Webpage Code'),
                         'title'       => $next_category_webpage->get('Webpage Browser Title'),
+                        'type'        => 'Category Products',
+                        'icon'        => 'folder-open',
+                        'key'         => $prev_category_webpage->id
                     );
                 }
 
@@ -2923,6 +2958,10 @@ class Page extends DB_Table {
                             'label'       => $grandparent_webpage->get('Name'),
                             'label_short' => $grandparent_webpage->get('Webpage Code'),
                             'title'       => $grandparent_webpage->get('Webpage Browser Title'),
+                            'type'        => 'Category Categories',
+                            'icon'        => 'folder-tree',
+                            'key'         => $grandparent_webpage->id
+
                         );
                     }
 
@@ -2932,6 +2971,9 @@ class Page extends DB_Table {
                         'label'       => $parent_webpage->get('Name'),
                         'label_short' => $parent_webpage->get('Webpage Code'),
                         'title'       => $parent_webpage->get('Webpage Browser Title'),
+                        'type'        => 'Category Products',
+                        'icon'        => 'folder-open',
+                        'key'         => $parent_webpage->id
                     );
                 }
 
@@ -3041,6 +3083,9 @@ class Page extends DB_Table {
                         'label'       => $prev_product_webpage->get('Name'),
                         'label_short' => $prev_product_webpage->get('Webpage Code'),
                         'title'       => $prev_product_webpage->get('Webpage Browser Title'),
+                        'type'        => 'Product',
+                        'icon'        => 'cube',
+                        'key'         => $prev_product_webpage->id
                     );
                 }
 
@@ -3054,6 +3099,9 @@ class Page extends DB_Table {
                         'label'       => $next_product_webpage->get('Name'),
                         'label_short' => $next_product_webpage->get('Webpage Code'),
                         'title'       => $next_product_webpage->get('Webpage Browser Title'),
+                        'type'        => 'Product',
+                        'icon'        => 'cube',
+                        'key'         => $next_product_webpage->id
                     );
                 }
 
@@ -3080,6 +3128,138 @@ class Page extends DB_Table {
 
 
         }
+
+
+    }
+
+
+    function update_internal_navigation() {
+
+
+        $navigation = $this->get('Navigation Data');
+        array_shift($navigation['breadcrumbs']);
+
+        switch ($this->get('Webpage Scope')) {
+            case 'Category Categories':
+
+
+                $sql  =
+                    'select `Page Key` from `Page Store Dimension` WP left join `Webpage Type Dimension` WTD  on (WP.`Webpage Type Key`=`WTD`.`Webpage Type Key`)  where `Webpage Type Code`="Cats"  and `Webpage State`!="Offline" and `Page Key`!=?  and `Webpage Website Key`=? and `Webpage Code`>? order by `Webpage Code`,`Page Key` ';
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id,
+                        $this->data['Webpage Website Key'],
+
+                        strtolower($this->data['Webpage Code'])
+                    )
+                );
+
+
+                if ($row = $stmt->fetch()) {
+
+
+                    $next_key = $row['Page Key'];
+
+                } else {
+                    $sql   =
+                        'select `Page Key` from `Page Store Dimension` WP left join `Webpage Type Dimension` WTD  on (WP.`Webpage Type Key`=`WTD`.`Webpage Type Key`)  where `Webpage Type Code`="Cats"  and `Webpage State`!="Offline"  and `Page Key`!=?  and `Webpage Website Key`=?   order by `Webpage Code`,`Page Key` ';
+                    $stmt2 = $this->db->prepare($sql);
+                    $stmt2->execute(
+                        array(
+                            $this->id,
+                            $this->data['Webpage Website Key']
+                        )
+                    );
+                    if ($row2 = $stmt2->fetch()) {
+                        $next_key = $row2['Page Key'];
+
+                    } else {
+
+                    }
+                }
+
+                $sql  =
+                    'select `Page Key`,`Webpage Code` from `Page Store Dimension` WP left join `Webpage Type Dimension` WTD  on (WP.`Webpage Type Key`=`WTD`.`Webpage Type Key`)  where `Webpage Type Code`="Cats"  and `Webpage State`!="Offline" and `Page Key`!=?  and `Webpage Website Key`=? and `Webpage Code`<? order by `Webpage Code` desc ,`Page Key` desc  ';
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->id,
+                        $this->data['Webpage Website Key'],
+
+                        strtolower($this->data['Webpage Code'])
+                    )
+                );
+
+                $stmt->errorInfo();
+
+                if ($row = $stmt->fetch()) {
+
+
+                    $prev_key = $row['Page Key'];
+
+                } else {
+                    $sql =
+                        'select `Page Key` from `Page Store Dimension` WP left join `Webpage Type Dimension` WTD  on (WP.`Webpage Type Key`=`WTD`.`Webpage Type Key`)  where `Webpage Type Code`="Cats"  and `Webpage State`!="Offline"  and `Page Key`!=?  and `Webpage Website Key`=?   order by `Webpage Code` desc,`Page Key` desc ';
+
+
+                    print $sql;
+
+                    $stmt2 = $this->db->prepare($sql);
+                    $stmt2->execute(
+                        array(
+                            $this->id,
+                            $this->data['Webpage Website Key']
+                        )
+                    );
+                    if ($row2 = $stmt2->fetch()) {
+                        $prev_key = $row2['Page Key'];
+
+                    } else {
+
+                    }
+                }
+
+
+                if ($prev_key) {
+
+                    $prev_category_webpage = get_object('Webpage', $prev_key);
+                    $prev                  = array(
+                        'link'        => $prev_category_webpage->get('Webpage URL'),
+                        'label'       => $prev_category_webpage->get('Name'),
+                        'label_short' => $prev_category_webpage->get('Webpage Code'),
+                        'title'       => $prev_category_webpage->get('Webpage Browser Title'),
+                        'type'        => 'Category Products',
+                        'icon'        => 'folder-open',
+                        'key'         => $prev_category_webpage->id
+                    );
+                }
+
+
+                if ($next_key) {
+
+                    $next_category_webpage = get_object('Webpage', $next_key);
+                    $next                  = array(
+                        'link'        => $next_category_webpage->get('Webpage URL'),
+                        'label'       => $next_category_webpage->get('Name'),
+                        'label_short' => $next_category_webpage->get('Webpage Code'),
+                        'title'       => $next_category_webpage->get('Webpage Browser Title'),
+                        'type'        => 'Category Products',
+                        'icon'        => 'folder-open',
+                        'key'         => $prev_category_webpage->id
+                    );
+                }
+
+
+                $navigation['prev'] = $prev;
+                $navigation['next'] = $next;
+
+                break;
+
+        }
+
+
+        $this->fast_update_json_field('Webpage Properties', 'navigation', json_encode($navigation));
 
 
     }
