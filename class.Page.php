@@ -3176,7 +3176,7 @@ class Page extends DB_Table {
 
                         $stmt = $this->db->prepare($sql);
                         $stmt->bindValue(1, $product->id);
-                        $stmt->bindValue(1, $this->id);
+                        $stmt->bindValue(2, $this->id);
 
                         $stmt->execute();
 

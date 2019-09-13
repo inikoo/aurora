@@ -1247,7 +1247,7 @@ class Website extends DB_Table {
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(1, $product->id);
-        $stmt->bindValue(1, $page->id);
+        $stmt->bindValue(2, $page->id);
 
         $stmt->execute();
 
