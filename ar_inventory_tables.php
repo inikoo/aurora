@@ -3334,7 +3334,7 @@ function parts_weight_errors($_data, $db, $user) {
 function feedback($_data, $db, $user,$account) {
 
 
-    $rtext_label = 'feedback message';
+    $rtext_label = 'issue';
     include_once 'prepare_table/init.php';
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -3383,7 +3383,7 @@ function feedback($_data, $db, $user,$account) {
 function feedback_per_part($_data, $db, $user,$account) {
 
 
-    $rtext_label = 'feedback message';
+    $rtext_label = 'issue';
     include_once 'prepare_table/init.php';
 
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction  limit $start_from,$number_results";
@@ -3432,7 +3432,7 @@ function feedback_per_part($_data, $db, $user,$account) {
 function feedback_per_part_family($_data, $db, $user,$account) {
 
 
-    $rtext_label = 'feedback message';
+    $rtext_label = 'issue';
     include_once 'prepare_table/init.php';
 
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction  limit $start_from,$number_results";

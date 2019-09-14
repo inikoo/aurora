@@ -2927,6 +2927,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('upload'):
                     return get_upload_navigation($data, $smarty, $user, $db, $account);
                     break;
+                case ('feedback'):
+                    return get_feedback_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
 
 
             }
@@ -8241,8 +8246,21 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
                     $branch[] = array(
+                        'label'     => '<span class="id Warehouse_Code">'._('Warehouse').' '.$state['warehouse']->get('Code').'</span>',
+                        'icon'      => 'warehouse-alt',
+                        'reference' => ''
+                    );
+                    break;
+                case 'feedback':
+
+                    $branch[] = array(
                         'label'     => '<span class="id Warehouse_Code">'.$state['warehouse']->get('Code').'</span>',
                         'icon'      => 'warehouse-alt',
+                        'reference' => 'warehouse/'.$state['parent_key']
+                    );
+                    $branch[] = array(
+                        'label'     => _('Issues'),
+                        'icon'      => 'poop',
                         'reference' => ''
                     );
                     break;

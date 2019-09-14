@@ -2335,4 +2335,35 @@ function get_upload_navigation($data, $smarty, $user, $db) {
 
 }
 
-?>
+
+
+function get_feedback_navigation($data, $smarty, $user, $db) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = get_sections('warehouses', $data['key']);
+    $sections['feedback']['selected'] = true;
+
+
+    $_content = array(
+
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => _('Issues'),
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search warehouse')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+

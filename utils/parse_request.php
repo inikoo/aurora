@@ -3324,6 +3324,11 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 $section = 'dashboard';
 
 
+                            }elseif ($view_path[1] == 'feedback') {
+
+                                $section = 'feedback';
+
+
                             } elseif ($view_path[1] == 'delivery_notes') {
                                 //===
 
