@@ -12,13 +12,75 @@
 
 include_once 'utils/date_functions.php';
 
-$where      = "where `Feedback Supplier`='Yes' ";
 
-$filter_msg = '';
+$table
+    = "`Feedback ITF Bridge` FIB  left join `Feedback Dimension` FD on (FD.`Feedback Key`=FIB.`Feedback ITF Feedback Key`) left join `Inventory Transaction Fact` ITF on   (`Inventory Transaction Key`=`Feedback ITF Original Key`)  
+    
+    left join `Part Dimension` P on (ITF.`Part SKU`=P.`Part SKU`)  
+     left join `Supplier Part Dimension` SPD on (SPD.`Supplier Part Part SKU`=P.`Part SKU`)  
+    left join `User Dimension` U on (U.`User Key`=`Feedback User Key`) ";
+
+$fields="
+`User Alias`,`Part Reference`,P.`Part SKU`,`Feedback Date`,`Feedback Key`,`Feedback Message`,`Supplier Part Key`,`Supplier Part Reference`,`Supplier Part Supplier Key`,`Supplier Part Part SKU`,`Part Status`
+";
+
+
+switch($parameters['parent']) {
+case 'supplier':
+    $where      = sprintf("where `Feedback Supplier`='Yes'  and `Supplier Key`=%d ",$parameters['parent_key']);
+
+    break;
+    case 'supplier_part':
+        $where      = sprintf("where `Feedback Supplier`='Yes'  and `Supplier Part Key`=%d ",$parameters['parent_key']);
+
+        break;
+    case 'part':
+        $where      = sprintf("where `Feedback Supplier`='Yes'  and ITF.`Part SKU`=%d ",$parameters['parent_key']);
+
+        break;
+    case 'category':
+
+
+        $table
+            = "`Feedback ITF Bridge` FIB  left join `Feedback Dimension` FD on (FD.`Feedback Key`=FIB.`Feedback ITF Feedback Key`)
+             left join `Inventory Transaction Fact` ITF on   (`Inventory Transaction Key`=`Feedback ITF Original Key`)  
+    
+    left join `Part Dimension` P on (ITF.`Part SKU`=P.`Part SKU`)  
+     left join `Category Dimension` C on (C.`Category Key`=P.`Part Family Category Key`)
+    left join `User Dimension` U on (U.`User Key`=`Feedback User Key`) ";
+
+        $fields="
+`User Alias`,`Part Reference`,P.`Part SKU`,`Feedback Date`,`Feedback Key`,`Feedback Message`,`Part Status`
+";
+
+
+        $where      = sprintf("where `Feedback Supplier`='Yes'  and `Part Family Category Key`=%d ",$parameters['parent_key']);
+
+        break;
+    case 'account':
+        $where      = sprintf("where `Feedback Supplier`='Yes' ");
+
+        $table
+            = "`Feedback ITF Bridge` FIB  left join `Feedback Dimension` FD on (FD.`Feedback Key`=FIB.`Feedback ITF Feedback Key`)
+             left join `Inventory Transaction Fact` ITF on   (`Inventory Transaction Key`=`Feedback ITF Original Key`)  
+    
+    left join `Part Dimension` P on (ITF.`Part SKU`=P.`Part SKU`)  
+    left join `User Dimension` U on (U.`User Key`=`Feedback User Key`) ";
+
+        $fields="
+`User Alias`,`Part Reference`,P.`Part SKU`,`Feedback Date`,`Feedback Key`,`Feedback Message`,`Part Status`
+";
+
+
+        break;
+    default:
+    break;
+}
+
+
 $filter_msg = '';
 $wheref     = '';
 
-$fields = '';
 
 
 
@@ -78,13 +140,7 @@ if ($order == 'reference') {
     $order = 'P.`Part SKU`';
 }
 
-$table
-    = "`Feedback ITF Bridge` FIB  left join `Feedback Dimension` FD on (FD.`Feedback Key`=FIB.`Feedback ITF Feedback Key`) left join `Inventory Transaction Fact` ITF on   (`Inventory Transaction Key`=`Feedback ITF Original Key`)  left join `Part Dimension` P on (ITF.`Part SKU`=P.`Part SKU`)  left join `User Dimension` U on (U.`User Key`=`Feedback User Key`) ";
 
 $sql_totals
     = "select count(*) as num from $table  $where  ";
-
-$fields="
-`User Alias`,`Part Reference`,P.`Part SKU`,`Feedback Date`,`Feedback Key`,`Feedback Message`
-";
 

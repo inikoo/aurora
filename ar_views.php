@@ -7965,7 +7965,13 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
 
                     break;
-
+                case 'feedback':
+                    $branch[] = array(
+                        'label'     => _('Issues'),
+                        'icon'      => 'poop',
+                        'reference' => ''
+                    );
+                    break;
                 case 'barcodes':
                     $branch[] = array(
                         'label'     => _('Barcodes'),

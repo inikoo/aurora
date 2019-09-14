@@ -135,6 +135,9 @@ switch ($tipo) {
     case 'delivery.items_mismatch':
         delivery_items_mismatch(get_table_parameters(), $db, $user, $account);
         break;
+    case 'feedback':
+        feedback(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -5352,3 +5355,69 @@ function supplier_parts($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
+
+function feedback($_data, $db, $user,$account) {
+
+
+    $rtext_label = 'feedback message';
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+    $record_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            if ($data['Part Status'] == 'Not In Use') {
+                $part_status = '<i class="fal fa-box fa-fw  error strikethrough" title="'._('Discontinued').'"></i> ';
+
+            } elseif ($data['Part Status'] == 'Discontinuing') {
+                $part_status = '<i class="fal fa-box fa-fw  error" title="'._('Discontinuing').'"></i> ';
+
+            } else {
+                $part_status = '<i class="fal fa-box fa-fw " aria-hidden="true"></i> ';
+            }
+
+            $reference = sprintf('<span class="link" onClick="change_view(\'supplier/%d/part/%d\')" >%s</span>', $data['Supplier Part Supplier Key'], $data['Supplier Part Key'], $data['Supplier Part Reference']);
+            if ($data['Supplier Part Reference'] != $data['Part Reference']) {
+                $reference .= '<br><span  class="link '.($data['Part Status'] == 'Not In Use' ? 'strikethrough error' : '').'  " onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$part_status.' '.$data['Part Reference'].'</span> ';
+
+            } else {
+                $reference .= '<span  title="'._('Link to part').'" class="link margin_left_10" onClick="change_view(\'part/'.$data['Supplier Part Part SKU'].'\')">'.$part_status.'</span> ';
+
+            }
+
+            $record_data[] = array(
+                'id'        => (integer)$data['Feedback Key'],
+                'reference' => $reference,
+                'date'      => strftime("%a %e %b %Y", strtotime($data['Feedback Date']." +00:00")),
+                'note'      => $data['Feedback Message'],
+                'author'    => $data['User Alias'],
+
+            );
+
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}

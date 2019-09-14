@@ -499,7 +499,7 @@ function stock_transactions($_data, $db, $user) {
 
                             ($parameters['parent'] == 'part'
                                 ? sprintf(
-                                    '<i class="fa fa-square" aria-hidden="true"></i> %s', $data['Part Reference']
+                                    '<i class="fa fa-box" aria-hidden="true"></i> %s', $data['Part Reference']
                                 )
                                 : sprintf(
                                     '<span class="button" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span>', $data['Part SKU'], $data['Part Reference']

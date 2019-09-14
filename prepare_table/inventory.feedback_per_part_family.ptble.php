@@ -45,7 +45,10 @@ if ($order == 'code') {
 }
 
 $table
-    = "`Feedback ITF Bridge` FIB  left join `Feedback Dimension` FD on (FD.`Feedback Key`=FIB.`Feedback ITF Feedback Key`) left join `Inventory Transaction Fact` ITF on   (`Inventory Transaction Key`=`Feedback ITF Original Key`)  left join `Part Dimension` P on (ITF.`Part SKU`=P.`Part SKU`)   left join `Category Dimension` C on (C.`Category Key`=P.`Part Family Category Key`) ";
+    = "`Feedback ITF Bridge` FIB  left join `Feedback Dimension` FD on (FD.`Feedback Key`=FIB.`Feedback ITF Feedback Key`) left join 
+    `Inventory Transaction Fact` ITF on   (`Inventory Transaction Key`=`Feedback ITF Original Key`)  left join 
+    `Part Dimension` P on (ITF.`Part SKU`=P.`Part SKU`)  
+     left join `Category Dimension` C on (C.`Category Key`=P.`Part Family Category Key`) ";
 
 $sql_totals
     = "select count(distinct `Category Key`) as num from $table  $where  ";
