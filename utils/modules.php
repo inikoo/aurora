@@ -6379,7 +6379,6 @@ $modules = array(
                 )
 
             ),
-
             'returns' => array(
                 'type'      => 'navigation',
                 'label'     => _('Returns'),
@@ -6389,6 +6388,20 @@ $modules = array(
                     'warehouse.returns' => array(
                         'icon'  => 'backspace',
                         'label' => _('Returns'),
+
+                    ),
+
+                )
+            ),
+            'feedback' => array(
+                'type'      => 'navigation',
+                'label'     => _('Issues'),
+                'icon'      => 'poop',
+                'reference' => 'warehouse/%d/feedback',
+                'tabs'      => array(
+                    'warehouse.feedback' => array(
+                        'icon'  => 'poop',
+                        'label' => _('Issues'),
 
                     ),
 

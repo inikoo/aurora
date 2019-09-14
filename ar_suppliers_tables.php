@@ -5359,7 +5359,7 @@ function supplier_parts($_data, $db, $user, $account) {
 function feedback($_data, $db, $user,$account) {
 
 
-    $rtext_label = 'feedback message';
+    $rtext_label = 'issue';
     include_once 'prepare_table/init.php';
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";

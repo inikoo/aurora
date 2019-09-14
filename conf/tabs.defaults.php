@@ -2728,6 +2728,17 @@ $tab_defaults = array(
         'export_fields' => $export_fields['parts']
 
     ),
+    'warehouse.feedback'    => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => -1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'f_period'      => 'ytd',
+
+
+    ),
     'inventory.feedback'    => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
