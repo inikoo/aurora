@@ -4931,6 +4931,11 @@ $modules = array(
                         ),
                         'icon'          => 'hand-receiving'
                     ),
+                    'supplier.feedback' => array(
+                        'label'         => _("Issues"),
+
+                        'icon'          => 'poop'
+                    ),
                     'supplier.orders'         => array(
                         'label'         => _(
                             'Purchase orders'
@@ -5187,10 +5192,13 @@ $modules = array(
 
 
                     'supplier_part.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
+                        'label' => _('Data'),
                         'icon'  => 'database'
+                    ),
+
+                    'supplier_part.feedback' => array(
+                        'label' => _('Issues'),
+                        'icon'  => 'poop'
                     ),
 
 
@@ -5579,9 +5587,7 @@ $modules = array(
                 'tabs'           => array(
 
                     'category.details' => array(
-                        'label' => _(
-                            'Data'
-                        ),
+                        'label' => _('Data'),
                         'icon'  => 'database'
                     ),
 
@@ -5614,7 +5620,10 @@ $modules = array(
                         )
 
                     ),
-
+                    'part_category.feedback'                => array(
+                        'label'         => _('Issues'),
+                        'icon'  => 'poop',
+                    ),
                     'category.subjects' => array(
                         'label'         => _('Parts'),
                         'quantity_data' => array(
@@ -5623,6 +5632,7 @@ $modules = array(
                         ),
                     ),
 
+
                     'category.part.discontinued_subjects' => array(
                         'label'         => _('Discontinued parts'),
                         'quantity_data' => array(
@@ -5630,6 +5640,8 @@ $modules = array(
                             'field'  => 'Discontinued'
                         ),
                     ),
+
+
 
                     'category.categories'          => array(
                         'label' => _(
@@ -5640,11 +5652,12 @@ $modules = array(
                         'label' => _('Parts locations')
                     ),
                     'part_family.product_families' => array(
-                        'label' => _('Product families')
+                        'label' => _('Product families'),
+                        'icon'  => 'cubes'
                     ),
                     'part_family.products'         => array(
                         'label' => _('Products'),
-                        'icon'  => 'cubes'
+                        'icon'  => 'cube'
                     ),
 
                     'category.images'  => array(
@@ -5741,10 +5754,8 @@ $modules = array(
                     ),
 
                     'part.stock' => array(
-                        'label'   => _(
-                            'Stock History'
-                        ),
-                        'icon'    => 'area-chart',
+                        'label'   => _('Stock History'),
+                        'icon'    => 'scanner',
                         'subtabs' => array(
                             'part.stock.history'      => array(
                                 'label' => _(
@@ -5770,7 +5781,10 @@ $modules = array(
 
 
                     ),
-
+                    'part.feedback'                => array(
+                        'label'         => _('Issues'),
+                        'icon'  => 'poop',
+                    ),
 
                     'part.supplier_orders' => array(
                         'label'   => _(
@@ -5815,26 +5829,14 @@ $modules = array(
                         'icon'          => 'cube'
                     ),
 
-                    'part.locations'              => array(
-                        'label' => _('Locations'),
-                        'icon'  => 'inventory'
-                    ),
-                    'part.paid_orders_in_process' => array(
-                        'label' => '',
-                        'title' => _('Paid orders in process by customer services'),
-                        'icon'  => 'shopping-cart',
-                        'class' => 'right icon_only'
-                    ),
+
                     'part.history'                => array(
-
-
                         'title'         => _('History/Notes'),
                         'label'         => '',
                         'quantity_data' => array(
                             'object' => '_object',
                             'field'  => 'Number History Records'
                         ),
-
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
@@ -5857,6 +5859,12 @@ $modules = array(
                         ),
                         'icon'          => 'paperclip',
                         'class'         => 'right icon_only'
+                    ),
+                    'part.locations'              => array(
+                        'title' => _('Locations'),
+                        'label'         => '',
+                        'icon'  => 'inventory',
+                        'class' => 'right icon_only'
                     ),
 
 

@@ -2739,6 +2739,50 @@ $tab_defaults = array(
 
 
     ),
+    'supplier.feedback'    => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => -1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'f_period'      => 'ytd',
+
+
+    ),
+    'part.feedback'    => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => -1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'f_period'      => 'ytd',
+
+
+    ),
+    'part_category.feedback'    => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => -1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'f_period'      => 'ytd',
+
+
+    ),
+    'supplier_part.feedback'    => array(
+        'view'          => 'overview',
+        'sort_key'      => 'date',
+        'sort_order'    => -1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'f_period'      => 'ytd',
+
+
+    ),
     'inventory.feedback_per_part'    => array(
         'view'          => 'overview',
         'sort_key'      => 'number_feedback',

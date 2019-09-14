@@ -111,6 +111,9 @@ switch ($tipo) {
     case 'feedback_per_part_family':
         feedback_per_part_family(get_table_parameters(), $db, $user, $account);
         break;
+
+
+
     default:
         $response = array(
             'state' => 405,
@@ -213,7 +216,7 @@ function parts($_data, $db, $user, $type, $account) {
                 $status = _('Active');
             } elseif ($data['Part Status'] == 'Discontinuing') {
                 $status             = _('Discontinuing');
-                $stock_status       = '<i class="fa fa-square warning fa-fw" aria-hidden="true"></i>';
+                $stock_status       = '<i class="fa fa-box warning fa-fw" aria-hidden="true"></i>';
                 $stock_status_label = _('Discontinuing');
             } elseif ($data['Part Status'] == 'Not In Use') {
                 $status = _('Discontinued');
@@ -3336,7 +3339,7 @@ function feedback($_data, $db, $user,$account) {
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-    //print $sql;
+
     $record_data = array();
 
     if ($result = $db->query($sql)) {
@@ -3346,9 +3349,7 @@ function feedback($_data, $db, $user,$account) {
             $record_data[] = array(
                 'id'        => (integer)$data['Feedback Key'],
                 'reference' => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
-                'date'      => strftime(
-                    "%a %e %b %Y %H:%M:%S %Z ", strtotime($data['Feedback Date']." +00:00")
-                ),
+                'date'      => strftime("%a %e %b %Y", strtotime($data['Feedback Date']." +00:00")),
                 'note'      => $data['Feedback Message'],
                 'author'    => $data['User Alias'],
 
@@ -3378,6 +3379,7 @@ function feedback($_data, $db, $user,$account) {
 }
 
 
+
 function feedback_per_part($_data, $db, $user,$account) {
 
 
@@ -3396,7 +3398,7 @@ function feedback_per_part($_data, $db, $user,$account) {
             $record_data[] = array(
                 'id'              => (integer)$data['Part SKU'],
                 'reference'       => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
-                'date'            => strftime("%a %e %b %Y %H:%M:%S %Z ", strtotime($data['date']." +00:00")),
+                'date'            => strftime("%a %e %b %Y", strtotime($data['date']." +00:00")),
                 'number_feedback' => number($data['number_feedback']),
                 'amount' => money($data['amount'],$account->get('Account Currency'))
 
@@ -3445,7 +3447,7 @@ function feedback_per_part_family($_data, $db, $user,$account) {
             $record_data[] = array(
                 'id'              => (integer)$data['Category Key'],
                 'code'       => sprintf('<span class="link" onClick="change_view(\'category/%d\')">%s</span>', $data['Category Key'], $data['Category Code']),
-                'date'            => strftime("%a %e %b %Y %H:%M:%S %Z ", strtotime($data['date']." +00:00")),
+                'date'            => strftime("%a %e %b %Y", strtotime($data['date']." +00:00")),
                 'number_feedback' => number($data['number_feedback']),
                 'amount' => money($data['amount'],$account->get('Account Currency'))
 

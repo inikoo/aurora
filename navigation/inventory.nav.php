@@ -1907,7 +1907,7 @@ function get_feedback_navigation($data, $smarty, $user, $db, $account) {
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;
     }
-    $title = '<i class="far fa-poop"></i> '._('Complains');
+    $title = '<i class="far fa-poop"></i> '._('Issues');
 
     $_content = array(
 
