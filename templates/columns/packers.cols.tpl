@@ -86,6 +86,33 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
+
+
+{
+name: "issues",
+label:'',
+html_label: '<i style="color:saddlebrown" class="fa  discreet fa-poop"></i>',
+title: "{t}Customer reported issues{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='issues'}deliveries: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: rightHeaderHtmlCell
+},
+{
+name: "issues_percentage",
+label:'',
+html_label: '<i style="color:" class="far  discreet fa-poop"></i>%',
+title: "{t}Percentage deliveries with customer reported issues{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='issues_percentage'}deliveries: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: rightHeaderHtmlCell
+},
+{*/*
 {
 name: "deliveries_with_errors",
 label: "{t}Errors{/t} (D)",
@@ -130,6 +157,7 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
+*/*}
 
 ]
 

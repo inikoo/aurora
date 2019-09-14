@@ -990,7 +990,6 @@ function intrastat_imports_totals($db, $user, $account) {
   ";
 
 
-
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
 
@@ -1407,29 +1406,29 @@ function intrastat_deliveries($_data, $db, $user, $account) {
 
         foreach ($result as $data) {
 
-            if($data['weight']<2){
-                $weight=weight($data['weight'], 'Kg', 1, false, true);
+            if ($data['weight'] < 2) {
+                $weight = weight($data['weight'], 'Kg', 1, false, true);
 
-            }else{
-                $weight=weight($data['weight'], 'Kg', 0, false, true);
+            } else {
+                $weight = weight($data['weight'], 'Kg', 0, false, true);
 
             }
 
 
-            $public_id=$data['Supplier Delivery Public ID'];
-            if($public_id!=$data['Supplier Delivery Public ID']){
-                $public_id.=' <span title="'._('Supplier invoice number').'">('.$data['Supplier Delivery Public ID'].')</span>';
+            $public_id = $data['Supplier Delivery Public ID'];
+            if ($public_id != $data['Supplier Delivery Public ID']) {
+                $public_id .= ' <span title="'._('Supplier invoice number').'">('.$data['Supplier Delivery Public ID'].')</span>';
             }
 
             $adata[] = array(
 
 
-                'number'  => sprintf('<span class="link" onClick="change_view(\'%s/%s/delivery/%s\')" >%s</span>', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'],$public_id),
-                'supplier'  => sprintf('<span class="link" onClick="change_view(\'%s/%s\')" >%s</span>', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'],$data['Supplier Delivery Parent Name']),
-                'date'      => strftime("%e %b %Y", strtotime($data['Purchase Order Transaction Invoice Date'].' +0:00')),
-                'amount' => money($data['amount'], $account->get('Currency Code')),
-                'weight'    => $weight,
-                'parts'     => $data['parts']
+                'number'   => sprintf('<span class="link" onClick="change_view(\'%s/%s/delivery/%s\')" >%s</span>', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'], $public_id),
+                'supplier' => sprintf('<span class="link" onClick="change_view(\'%s/%s\')" >%s</span>', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Parent Name']),
+                'date'     => strftime("%e %b %Y", strtotime($data['Purchase Order Transaction Invoice Date'].' +0:00')),
+                'amount'   => money($data['amount'], $account->get('Currency Code')),
+                'weight'   => $weight,
+                'parts'    => $data['parts']
 
             );
 
@@ -1538,16 +1537,16 @@ function intrastat_parts($_data, $db, $user, $account) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
-            $units_per_sko=sprintf(' <span class="discreet italic small">(%d %s)</span>',$data['Part Units Per Package'],ngettext('unit/SKO','units/SKO',$data['Part Units Per Package']));
+            $units_per_sko = sprintf(' <span class="discreet italic small">(%d %s)</span>', $data['Part Units Per Package'], ngettext('unit/SKO', 'units/SKO', $data['Part Units Per Package']));
 
             $adata[] = array(
-                'reference'       => sprintf('<span class="link" onClick="change_view(\'part//%s\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
-                'name'       => $data['Part Recommended Product Unit Name'].$units_per_sko,
-                'units'      => number($data['Part Units Per Package']),
-                'cost'      => money($data['Part Cost']/ $data['Part Units Per Package'], $account->get('Account Currency')),
-                'weight'     => weight($data['Part Package Weight'] / $data['Part Units Per Package'], 'Kg', 3, false, true),
+                'reference'      => sprintf('<span class="link" onClick="change_view(\'part//%s\')" >%s</span>', $data['Part SKU'], $data['Part Reference']),
+                'name'           => $data['Part Recommended Product Unit Name'].$units_per_sko,
+                'units'          => number($data['Part Units Per Package']),
+                'cost'           => money($data['Part Cost'] / $data['Part Units Per Package'], $account->get('Account Currency')),
+                'weight'         => weight($data['Part Package Weight'] / $data['Part Units Per Package'], 'Kg', 3, false, true),
                 'units_received' => number($data['units_received']),
-                'amount'      => money($data['amount'], $account->get('Account Currency')),
+                'amount'         => money($data['amount'], $account->get('Account Currency')),
 
             );
 
@@ -1835,17 +1834,11 @@ function pickers($_data, $db, $user, $account) {
             $total_dp += ($row['units']);
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
-
 
     if ($total_dp == 0) {
         $total_dp = 1;
     }
-
 
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
@@ -1855,20 +1848,21 @@ function pickers($_data, $db, $user, $account) {
 
         foreach ($result as $data) {
 
-
             $adata[] = array(
 
-                'name'                              => $data['Staff Name'],
-                'deliveries'                        => number($data['deliveries']),
-                'deliveries_with_errors'            => number($data['deliveries_with_errors']),
-                'deliveries_with_errors_percentage' => percentage($data['deliveries_with_errors'], $data['deliveries']),
-                'picks_with_errors'                 => number($data['picks_with_errors']),
-                'picks_with_errors_percentage'      => percentage($data['picks_with_errors_percentage'], 1),
-                'picked'                            => number($data['picked'], 0),
-                'dp'                                => number($data['dp']),
-                'dp_percentage'                     => percentage($data['dp'], $total_dp),
-                'hrs'                               => number($data['hrs'], 1, true),
-                'dp_per_hour'                       => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
+                'name'              => $data['Staff Name'],
+                'deliveries'        => number($data['deliveries']),
+                'issues'            => number($data['issues']),
+                'issues_percentage' => percentage($data['issues'], $data['dp']),
+                //'deliveries_with_errors'            => number($data['deliveries_with_errors']),
+                //'deliveries_with_errors_percentage' => percentage($data['deliveries_with_errors'], $data['deliveries']),
+                //'picks_with_errors'                 => number($data['picks_with_errors']),
+                //'picks_with_errors_percentage'      => percentage($data['picks_with_errors_percentage'], 1),
+                'picked'            => number($data['picked'], 0),
+                'dp'                => number($data['dp']),
+                'dp_percentage'     => percentage($data['dp'], $total_dp),
+                'hrs'               => number($data['hrs'], 1, true),
+                'dp_per_hour'       => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
 
             );
 
@@ -1915,10 +1909,6 @@ function packers($_data, $db, $user, $account) {
             $total_dp += ($row['units']);
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
 
@@ -1938,17 +1928,19 @@ function packers($_data, $db, $user, $account) {
 
             $adata[] = array(
 
-                'name'                              => $data['Staff Name'],
-                'deliveries'                        => number($data['deliveries']),
-                'packed'                            => number($data['packed'], 0),
-                'dp'                                => number($data['dp']),
-                'dp_percentage'                     => percentage($data['dp'], $total_dp),
-                'hrs'                               => number($data['hrs'], 1, true),
-                'dp_per_hour'                       => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
-                'deliveries_with_errors'            => number($data['deliveries_with_errors']),
-                'deliveries_with_errors_percentage' => percentage($data['deliveries_with_errors'], $data['deliveries']),
-                'picks_with_errors'                 => number($data['picks_with_errors']),
-                'picks_with_errors_percentage'      => percentage($data['picks_with_errors_percentage'], 1),
+                'name'              => $data['Staff Name'],
+                'deliveries'        => number($data['deliveries']),
+                'packed'            => number($data['packed'], 0),
+                'dp'                => number($data['dp']),
+                'dp_percentage'     => percentage($data['dp'], $total_dp),
+                'hrs'               => number($data['hrs'], 1, true),
+                'dp_per_hour'       => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
+                'issues'            => number($data['issues']),
+                'issues_percentage' => percentage($data['issues'], $data['dp']),
+                //'deliveries_with_errors'            => number($data['deliveries_with_errors']),
+                //'deliveries_with_errors_percentage' => percentage($data['deliveries_with_errors'], $data['deliveries']),
+                //'picks_with_errors'                 => number($data['picks_with_errors']),
+                //'picks_with_errors_percentage'      => percentage($data['picks_with_errors_percentage'], 1),
 
 
             );
@@ -3201,11 +3193,11 @@ function intrastat_imports($_data, $db, $user, $account) {
         foreach ($result as $data) {
 
             // print_r($data);
-            if($data['weight']<2){
-                $weight=weight($data['weight'], 'Kg', 1, false, true);
+            if ($data['weight'] < 2) {
+                $weight = weight($data['weight'], 'Kg', 1, false, true);
 
-               }else{
-                $weight=weight($data['weight'], 'Kg', 0, false, true);
+            } else {
+                $weight = weight($data['weight'], 'Kg', 0, false, true);
 
             }
 
@@ -3278,15 +3270,19 @@ function intrastat_parts_totals($db, $user, $account) {
     $parameters = $_SESSION['table_state']['intrastat_parts'];
 
 
-
     if ($parameters['tariff_code'] == 'missing') {
-        $where = sprintf(' where `Supplier Delivery Parent Country Code`=%s and (`Part Tariff Code` is null or `Part Tariff Code`="")  and D.`Supplier Delivery Key` is not null and `Supplier Delivery State`="InvoiceChecked" and `Supplier Delivery Invoice Public ID` is not null and `Supplier Delivery Invoice Date` is not null  and `Supplier Delivery Placed Units`>0  ', prepare_mysql($parameters['country_code']));
+        $where = sprintf(
+            ' where `Supplier Delivery Parent Country Code`=%s and (`Part Tariff Code` is null or `Part Tariff Code`="")  and D.`Supplier Delivery Key` is not null and `Supplier Delivery State`="InvoiceChecked" and `Supplier Delivery Invoice Public ID` is not null and `Supplier Delivery Invoice Date` is not null  and `Supplier Delivery Placed Units`>0  ',
+            prepare_mysql($parameters['country_code'])
+        );
 
     } else {
-        $where = sprintf(' where `Supplier Delivery Parent Country Code`=%s and `Part Tariff Code` like "%s%%"  and D.`Supplier Delivery Key` is not null and `Supplier Delivery State`="InvoiceChecked" and `Supplier Delivery Invoice Public ID` is not null and `Supplier Delivery Invoice Date` is not null  and `Supplier Delivery Placed Units`>0   ', prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code']));
+        $where = sprintf(
+            ' where `Supplier Delivery Parent Country Code`=%s and `Part Tariff Code` like "%s%%"  and D.`Supplier Delivery Key` is not null and `Supplier Delivery State`="InvoiceChecked" and `Supplier Delivery Invoice Public ID` is not null and `Supplier Delivery Invoice Date` is not null  and `Supplier Delivery Placed Units`>0   ',
+            prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code'])
+        );
 
     }
-
 
 
     if (isset($parameters['parent_period'])) {
@@ -3307,9 +3303,7 @@ function intrastat_parts_totals($db, $user, $account) {
         $where .= $where_interval_dn['mysql'];
 
 
-
     }
-
 
 
     $sql = "select  count(distinct OTF.`Supplier Delivery Key`) as orders, 
@@ -3356,20 +3350,24 @@ function intrastat_deliveries_totals($db, $user, $account) {
 
     $sum_amount = 0;
     $sum_weight = 0;
-    $sum_parts = 0;
+    $sum_parts  = 0;
 
     $parameters = $_SESSION['table_state']['intrastat_deliveries'];
 
 
-
     if ($parameters['tariff_code'] == 'missing') {
-        $where = sprintf(' where `Supplier Delivery Parent Country Code`=%s and (`Part Tariff Code` is null or `Part Tariff Code`="")  and D.`Supplier Delivery Key` is not null and `Supplier Delivery State`="InvoiceChecked" and `Supplier Delivery Invoice Public ID` is not null and `Supplier Delivery Invoice Date` is not null  and `Supplier Delivery Placed Units`>0  ', prepare_mysql($parameters['country_code']));
+        $where = sprintf(
+            ' where `Supplier Delivery Parent Country Code`=%s and (`Part Tariff Code` is null or `Part Tariff Code`="")  and D.`Supplier Delivery Key` is not null and `Supplier Delivery State`="InvoiceChecked" and `Supplier Delivery Invoice Public ID` is not null and `Supplier Delivery Invoice Date` is not null  and `Supplier Delivery Placed Units`>0  ',
+            prepare_mysql($parameters['country_code'])
+        );
 
     } else {
-        $where = sprintf(' where `Supplier Delivery Parent Country Code`=%s and `Part Tariff Code` like "%s%%"  and D.`Supplier Delivery Key` is not null and `Supplier Delivery State`="InvoiceChecked" and `Supplier Delivery Invoice Public ID` is not null and `Supplier Delivery Invoice Date` is not null  and `Supplier Delivery Placed Units`>0   ', prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code']));
+        $where = sprintf(
+            ' where `Supplier Delivery Parent Country Code`=%s and `Part Tariff Code` like "%s%%"  and D.`Supplier Delivery Key` is not null and `Supplier Delivery State`="InvoiceChecked" and `Supplier Delivery Invoice Public ID` is not null and `Supplier Delivery Invoice Date` is not null  and `Supplier Delivery Placed Units`>0   ',
+            prepare_mysql($parameters['country_code']), addslashes($parameters['tariff_code'])
+        );
 
     }
-
 
 
     if (isset($parameters['parent_period'])) {
@@ -3390,9 +3388,7 @@ function intrastat_deliveries_totals($db, $user, $account) {
         $where .= $where_interval_dn['mysql'];
 
 
-
     }
-
 
 
     $sql = "select  count(distinct OTF.`Purchase Order Transaction Part SKU`) as parts, 
@@ -3408,7 +3404,7 @@ sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery C
         if ($row = $result->fetch()) {
             $sum_amount = $row['amount'];
             $sum_weight = $row['weight'];
-            $sum_parts = $row['parts'];
+            $sum_parts  = $row['parts'];
 
         }
     } else {
@@ -3420,7 +3416,7 @@ sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery C
     $totals   = array(
         'intrastat_deliveries_total_amount' => money($sum_amount, $account->get('Account Currency')),
         'intrastat_deliveries_total_weight' => weight($sum_weight, 'Kg', 0, false, true),
-        'intrastat_deliveries_total_parts' => number($sum_parts),
+        'intrastat_deliveries_total_parts'  => number($sum_parts),
 
     );
     $response = array(
