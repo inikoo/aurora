@@ -81,7 +81,7 @@ function get_widget_details($db, $smarty, $user, $account, $modules) {
 }
 
 
-function get_view($db, $smarty, $user, $account, $modules,$redis) {
+function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
     global $session;
@@ -202,8 +202,8 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
             //$state['current_website'] = $_parent->id;
 
 
-            $store                  = get_object('Store', $_parent->get('Website Store Key'));
-            $state['current_store'] = $store->id;
+            $store                    = get_object('Store', $_parent->get('Website Store Key'));
+            $state['current_store']   = $store->id;
             $state['current_website'] = $_parent->id;
 
             break;
@@ -211,7 +211,7 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
             $_parent = get_object('Webpage', $state['parent_key']);
             $website = get_object('Website', $_parent->get('Webpage Website Key'));
             //$state['current_website'] = $website->id;
-            $website = $website;
+            $website                  = $website;
             $state['current_website'] = $website->id;
 
             break;
@@ -231,10 +231,10 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
             break;
         case 'category':
 
-            $_parent = get_object('Category',$state['parent_key']);
+            $_parent = get_object('Category', $state['parent_key']);
 
             if ($_parent->get('Category Scope') == 'Product' or $_parent->get('Category Scope') == 'Customer') {
-                $store = get_object('Store',$_parent->get('Store Key'));
+                $store = get_object('Store', $_parent->get('Store Key'));
 
             }
 
@@ -333,9 +333,6 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
     if ($state['object'] != '') {
 
 
-
-
-
         if ($state['object'] == 'campaign' and !is_numeric($state['key'])) {
 
             $_object = get_object('campaign_code-store_key', $state['key'].'|'.$state['parent_key']);
@@ -351,7 +348,7 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
         if (is_numeric($_object->get('Store Key'))) {
 
 
-            $store                  = get_object('Store',$_object->get('Store Key'));
+            $store                  = get_object('Store', $_object->get('Store Key'));
             $state['current_store'] = $store->id;
         }
 
@@ -368,7 +365,7 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
 
 
             include_once 'class.Website.php';
-            $website = new Website($_object->get('Website Key'));
+            $website                  = new Website($_object->get('Website Key'));
             $state['current_website'] = $website->id;
         }
 
@@ -434,7 +431,7 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
         if ($state['object'] == 'website' and $state['tab'] != 'website.new') {
 
 
-            $store=get_object('Store',$_object->get('Website Store Key'));
+            $store = get_object('Store', $_object->get('Website Store Key'));
 
 
             $state['current_website'] = $state['key'];
@@ -750,8 +747,6 @@ function get_view($db, $smarty, $user, $account, $modules,$redis) {
     //    $production = $state['_object'];
     // }
     //print microtime_float()-$timer."<br>\n";$timer=microtime_float();
-
-
 
 
     $state['store']      = $store;
@@ -1329,7 +1324,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
 
             break;
         case 'dashboard':
-            $html = '';
+            $html         = '';
             $web_location = '<i class="fal fa-fw fa-tachometer-alt"></i> '._('Dashboard');
             break;
 
@@ -1725,7 +1720,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             $html = get_production_part_showcase($data, $smarty);
             break;
         case 'shipping_zone_schema':
-            $html = '';
+            $html         = '';
             $title        = $data['_object']->get('Label');
             $web_location = '<i class="fal fa-fw fa-bring-front"></i> '._('Shipping schema');
             break;
@@ -1958,7 +1953,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('mailshot.new'):
                     return get_mailshot_new_navigation($data, $smarty, $user, $db, $account);
                     break;
-
 
 
             }
@@ -2567,8 +2561,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             require_once 'navigation/suppliers.nav.php';
 
             switch ($data['section']) {
-                case ('settings'):
-                    return get_settings_navigation(
+                case ('dashboard'):
+                    return get_dashboard_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
@@ -2700,6 +2694,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     break;
                 case ('supplier_delivery.attachment'):
                     return get_supplier_delivery_attachment_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('settings'):
+                    return get_settings_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
                     break;
             }
 
@@ -3843,89 +3842,82 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
     } elseif ($data['section'] == 'category') {
 
-        if ($data['_object']->get('Category Scope') == 'Product'){
+        if ($data['_object']->get('Category Scope') == 'Product') {
 
             //  print_r($_content['tabs']);
 
 
+            if ($data['_object']->get('Category Subject') == 'Product') {
 
 
+                $_content['tabs']['category.subjects']['label'] = _('Products');
+                $_content['tabs']['category.subjects']['icon']  = 'cube';
 
 
-                if ($data['_object']->get('Category Subject') == 'Product') {
+                if ($data['_object']->get('Root Key') == $data['store']->get('Store Family Category Key')) {
+                    $_content['tabs']['category.categories']['label'] = _('Families');
 
 
+                    if ($data['store']->get('Store Family Category Key') == $data['_object']->id) {
 
-                    $_content['tabs']['category.subjects']['label'] = _('Products');
-                    $_content['tabs']['category.subjects']['icon']  = 'cube';
-
-
-                    if ($data['_object']->get('Root Key') == $data['store']->get('Store Family Category Key')) {
-                        $_content['tabs']['category.categories']['label'] = _('Families');
-
-
-                        if ($data['store']->get('Store Family Category Key') == $data['_object']->id) {
-
-                            $_content['tabs']['category.webpage']['class']    = 'hide';
-                            $_content['tabs']['category.details']['class']    = 'hide';
-                            $_content['tabs']['category.customers']['class'] = 'hide';
-                            $_content['tabs']['category.sales']['class'] = 'hide';
-                            $_content['tabs']['category.mailshots']['class'] = 'hide';
-                            $_content['tabs']['category.deal_components']['class'] = 'hide';
-                            $_content['tabs']['category.sales_correlation']['class'] = 'hide';
-                            $_content['tabs']['category.images']['class'] = 'hide';
-                            $_content['tabs']['category.history']['class'] = 'hide';
-                            $_content['tabs']['category.categories']['class'] = 'hide';
+                        $_content['tabs']['category.webpage']['class']           = 'hide';
+                        $_content['tabs']['category.details']['class']           = 'hide';
+                        $_content['tabs']['category.customers']['class']         = 'hide';
+                        $_content['tabs']['category.sales']['class']             = 'hide';
+                        $_content['tabs']['category.mailshots']['class']         = 'hide';
+                        $_content['tabs']['category.deal_components']['class']   = 'hide';
+                        $_content['tabs']['category.sales_correlation']['class'] = 'hide';
+                        $_content['tabs']['category.images']['class']            = 'hide';
+                        $_content['tabs']['category.history']['class']           = 'hide';
+                        $_content['tabs']['category.categories']['class']        = 'hide';
 
 
-                            $_content['tabs']['category.categories']['selected'] = true;
-                            $data['tab']                                         = 'category.categories';
-                            $data['subtab']                                      = '';
-                            $_content['subtabs']                                 = array();
-
-                        }
-
+                        $_content['tabs']['category.categories']['selected'] = true;
+                        $data['tab']                                         = 'category.categories';
+                        $data['subtab']                                      = '';
+                        $_content['subtabs']                                 = array();
 
                     }
 
-                } else {
-
-
-
-                    if ($data['_object']->get('Root Key') == $data['store']->get('Store Department Category Key')) {
-                        $_content['tabs']['category.subjects']['label']   = _('Families');
-                        $_content['tabs']['category.categories']['label'] = _('Departments');
-
-
-                        if ($data['store']->get('Store Department Category Key') == $data['_object']->id) {
-
-                            $_content['tabs']['category.webpage']['class']    = 'hide';
-                            $_content['tabs']['category.details']['class']    = 'hide';
-                            $_content['tabs']['category.customers']['class'] = 'hide';
-                            $_content['tabs']['category.sales']['class'] = 'hide';
-                            $_content['tabs']['category.mailshots']['class'] = 'hide';
-                            $_content['tabs']['category.deal_components']['class'] = 'hide';
-                            $_content['tabs']['category.sales_correlation']['class'] = 'hide';
-                            $_content['tabs']['category.images']['class'] = 'hide';
-                            $_content['tabs']['category.history']['class'] = 'hide';
-                            $_content['tabs']['category.categories']['class'] = 'hide';
-
-
-                            $_content['tabs']['category.categories']['selected'] = true;
-                            $data['tab']                                         = 'category.categories';
-                            $data['subtab']                                      = '';
-                            $_content['subtabs']                                 = array();
-
-                        }
-
-
-                    } else {
-
-                        $_content['tabs']['category.subjects']['label'] = _('Categories');
-                    }
 
                 }
 
+            } else {
+
+
+                if ($data['_object']->get('Root Key') == $data['store']->get('Store Department Category Key')) {
+                    $_content['tabs']['category.subjects']['label']   = _('Families');
+                    $_content['tabs']['category.categories']['label'] = _('Departments');
+
+
+                    if ($data['store']->get('Store Department Category Key') == $data['_object']->id) {
+
+                        $_content['tabs']['category.webpage']['class']           = 'hide';
+                        $_content['tabs']['category.details']['class']           = 'hide';
+                        $_content['tabs']['category.customers']['class']         = 'hide';
+                        $_content['tabs']['category.sales']['class']             = 'hide';
+                        $_content['tabs']['category.mailshots']['class']         = 'hide';
+                        $_content['tabs']['category.deal_components']['class']   = 'hide';
+                        $_content['tabs']['category.sales_correlation']['class'] = 'hide';
+                        $_content['tabs']['category.images']['class']            = 'hide';
+                        $_content['tabs']['category.history']['class']           = 'hide';
+                        $_content['tabs']['category.categories']['class']        = 'hide';
+
+
+                        $_content['tabs']['category.categories']['selected'] = true;
+                        $data['tab']                                         = 'category.categories';
+                        $data['subtab']                                      = '';
+                        $_content['subtabs']                                 = array();
+
+                    }
+
+
+                } else {
+
+                    $_content['tabs']['category.subjects']['label'] = _('Categories');
+                }
+
+            }
 
 
         } elseif ($data['_object']->get('Category Scope') == 'Part') {
@@ -4135,8 +4127,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
             }
 
 
-            $order_state_index=$data['_object']->get('State Index');
-            if ( $order_state_index> 40 or $order_state_index < 0) {
+            $order_state_index = $data['_object']->get('State Index');
+            if ($order_state_index > 40 or $order_state_index < 0) {
 
                 $_content['tabs']['order.all_products']['class'] = 'hide';
 
@@ -4148,15 +4140,13 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
             } elseif ($order_state_index == 10) {
 
 
-
-
-                $_content['tabs']['order.details']['class'] = 'hide';
+                $_content['tabs']['order.details']['class']        = 'hide';
                 $_content['tabs']['order.delivery_notes']['class'] = 'hide';
-                $_content['tabs']['order.invoices']['class'] = 'hide';
-                $_content['tabs']['order.sent_emails']['class'] = 'hide';
+                $_content['tabs']['order.invoices']['class']       = 'hide';
+                $_content['tabs']['order.sent_emails']['class']    = 'hide';
 
 
-                if ($data['tab'] == 'order.details' or  $data['tab'] == 'order.delivery_notes' or $data['tab'] == 'order.invoices' or $data['tab'] == 'order.sent_emails'   ) {
+                if ($data['tab'] == 'order.details' or $data['tab'] == 'order.delivery_notes' or $data['tab'] == 'order.invoices' or $data['tab'] == 'order.sent_emails') {
                     $_content['tabs']['order.items']['selected'] = true;
 
                     $data['tab'] = 'order.items';
@@ -4551,7 +4541,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 function get_view_position($db, $state, $user, $smarty, $account) {
 
     $branch = array();
-    //$branch=array(array('label'=>'<span >'._('Home').'</span>', 'icon'=>'home', 'reference'=>'/dashboard'));
 
     switch ($state['module']) {
         case 'dashboard':
@@ -6016,7 +6005,13 @@ function get_view_position($db, $state, $user, $smarty, $account) {
             }
             break;
         case 'suppliers':
-            if ($state['section'] == 'suppliers') {
+            if ($state['section'] == 'dashboard') {
+                $branch[] = array(
+                    'label'     => _("Supplier's dashboard"),
+                    'icon'      => 'tachometer-alt',
+                    'reference' => 'dashboard'
+                );
+            } elseif ($state['section'] == 'suppliers') {
                 $branch[] = array(
                     'label'     => _('Suppliers'),
                     'icon'      => 'hand-holding-box',

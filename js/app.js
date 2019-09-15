@@ -371,7 +371,7 @@ function change_menu_view(module){
             change_view('inventory/dashboard')
             break;
         case 'suppliers':
-            change_view('suppliers')
+            change_view('suppliers/dashboard')
             break;
         case 'production':
             if(state.current_production){

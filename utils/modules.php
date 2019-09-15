@@ -4538,6 +4538,20 @@ $modules = array(
 				)
 			),
             */
+
+
+
+            'dashboard' => array(
+
+                'type'      => 'navigation',
+                'label'     => _('Dashboard'),
+                'icon'      => 'tachometer-alt',
+                'reference' => 'suppliers/dashboard',
+                'tabs'      => array('suppliers.dashboard' => array())
+
+
+            ),
+
             'suppliers' => array(
 
                 'type'      => 'navigation',
@@ -8054,6 +8068,9 @@ $modules = array(
 
 
         'sections' => array(
+
+
+
 
             'suppliers' => array(
 

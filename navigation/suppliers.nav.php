@@ -10,6 +10,43 @@
  Version 3.0
 */
 
+
+
+function get_dashboard_navigation($data, $smarty, $user, $db) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = get_sections('inventory');
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+
+    $_content = array(
+
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => _("Supplier's dashboard"),
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search supplier')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+
 function get_suppliers_navigation($data, $smarty, $user, $db, $account) {
 
 
