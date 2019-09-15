@@ -404,6 +404,57 @@ class Account extends DB_Table {
             case 'Label Signature':
                 return nl2br($this->data['Account Label Signature']);
                 break;
+
+            case 'Active Suppliers Parts Stock Surplus Number':
+            case 'Active Suppliers Parts Stock OK Number':
+            case 'Active Suppliers Parts Stock Low Number':
+            case 'Active Suppliers Parts Stock Critical Number':
+            case 'Active Suppliers Parts Stock Zero Number':
+
+            case 'Active Suppliers Parts Stock Surplus Deliveries Number':
+            case 'Active Suppliers Parts Stock OK Deliveries Number':
+            case 'Active Suppliers Parts Stock Low Deliveries Number':
+            case 'Active Suppliers Parts Stock Critical Deliveries Number':
+            case 'Active Suppliers Parts Stock Zero Deliveries Number':
+
+                return number($this->data['Account '.preg_replace('/Suppliers /', '', $key)] - $this->data['Account '.preg_replace('/Suppliers /', 'Production ', $key)]);
+                break;
+
+            case 'Active Suppliers Parts Stock Surplus Stock Value Minify':
+            case 'Active Suppliers Parts Stock OK Stock Value Minify':
+            case 'Active Suppliers Parts Stock Low Stock Value Minify':
+            case 'Active Suppliers Parts Stock Critical Stock Value Minify':
+            case 'Active Suppliers Parts Stock Error Stock Value Minify':
+            case 'Active Suppliers Parts Stock Zero Stock Value Minify':
+
+
+                $field = 'Account '.preg_replace('/ Minify$/', '', $key);
+
+                $_value=($this->data[preg_replace('/Suppliers /', '', $field)]-$this->data[preg_replace('/Suppliers /', 'Production ', $field)]);
+                
+                $suffix          = '';
+                $fraction_digits = 'NO_FRACTION_DIGITS';
+                if ($_value >= 1000000) {
+                    $suffix          = 'M';
+                    $fraction_digits = 'DOUBLE_FRACTION_DIGITS';
+                    $_amount         = $_value / 1000000;
+                } elseif ($_value >= 10000) {
+                    $suffix  = 'K';
+                    $_amount = $_value / 1000;
+                } elseif ($_value > 100) {
+                    $fraction_digits = 'SINGLE_FRACTION_DIGITS';
+                    $suffix          = 'K';
+                    $_amount         = $_value / 1000;
+                } else {
+                    $_amount = $_value;
+                }
+
+                $amount = money($_amount, $this->get('Account Currency'), $locale = false, $fraction_digits).$suffix;
+
+                return $amount;
+
+                break;
+
             case 'Contacts':
             case 'New Contacts':
             case 'Contacts With Orders':
@@ -421,6 +472,7 @@ class Account extends DB_Table {
             case 'Active Parts Stock Low Number':
             case 'Active Parts Stock Critical Number':
             case 'Active Parts Stock Zero Number':
+
             case 'Active Parts Stock Surplus Deliveries Number':
             case 'Active Parts Stock OK Deliveries Number':
             case 'Active Parts Stock Low Deliveries Number':
@@ -428,16 +480,16 @@ class Account extends DB_Table {
             case 'Active Parts Stock Zero Deliveries Number':
 
 
-            case 'Active Active Production Stock Surplus Number':
-            case 'Active Active Production Stock OK Number':
-            case 'Active Active Production Stock Low Number':
-            case 'Active Active Production Stock Critical Number':
-            case 'Active Active Production Stock Zero Number':
-            case 'Active Active Production Stock Surplus Deliveries Number':
-            case 'Active Active Production Stock OK Deliveries Number':
-            case 'Active Active Production Stock Low Deliveries Number':
-            case 'Active Active Production Stock Critical Deliveries Number':
-            case 'Active Active Production Stock Zero Deliveries Number':
+            case 'Active Production Stock Surplus Number':
+            case 'Active Production Stock OK Number':
+            case 'Active Production Stock Low Number':
+            case 'Active Production Stock Critical Number':
+            case 'Active Production Stock Zero Number':
+            case 'Active Production Stock Surplus Deliveries Number':
+            case 'Active Production Stock OK Deliveries Number':
+            case 'Active Production Stock Low Deliveries Number':
+            case 'Active Production Stock Critical Deliveries Number':
+            case 'Active Production Stock Zero Deliveries Number':
 
 
                 return number($this->data['Account '.$key]);
@@ -747,9 +799,9 @@ class Account extends DB_Table {
 
                     if (in_array(
                         $_user->get('User Type'), array(
-                        'Staff',
-                        'Contractor'
-                    )
+                                                    'Staff',
+                                                    'Contractor'
+                                                )
                     )) {
                         if ($_user->id) {
                             $_user->add_warehouse(array($warehouse->id));
@@ -1345,7 +1397,6 @@ class Account extends DB_Table {
     }
 
     function create_agent($data) {
-
 
 
         $this->new_employee = false;

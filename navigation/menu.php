@@ -233,7 +233,7 @@ if ($user->can_view('suppliers')) {
     $nav_menu[] = array(
         '<i class="button far fa-hand-holding-box fa-fw"></i>',
         _('Suppliers'),
-        'suppliers',
+        'suppliers/dashboard',
         'suppliers',
         'module',
         ''

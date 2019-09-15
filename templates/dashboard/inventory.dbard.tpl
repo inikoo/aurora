@@ -10,7 +10,7 @@
 *}
 
 
-<div id="dashboard_customers" style="margin-top:5px;padding:0px" class="dashboard">
+<div id="dashboard_inventory" style="margin-top:5px;padding:0px" class="dashboard">
 
     <input id="inventory_parent" type="hidden" value="{$parent}">
 
@@ -63,7 +63,7 @@
 
 
 
-    function get_dashboard_customers_data(parent,  currency) {
+    function get_dashboard_inventory_data(parent,  currency) {
 
         var request = "/ar_dashboard.php?tipo=inventory&parent=" + parent 
         console.log(request)
@@ -73,9 +73,6 @@
             $('#inventory_parent').val(parent)
 
             for (var record in r.data) {
-
-                console.log(record)
-                console.log(r.data[record].value)
 
                 $('.' + record).html(r.data[record].value)
 

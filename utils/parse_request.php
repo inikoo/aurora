@@ -1201,7 +1201,6 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                             $key = $view_path[4];
 
 
-
                                         }
                                     }
 
@@ -3324,7 +3323,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 $section = 'dashboard';
 
 
-                            }elseif ($view_path[1] == 'feedback') {
+                            } elseif ($view_path[1] == 'feedback') {
 
                                 $section = 'feedback';
 
@@ -4282,9 +4281,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
             case 'suppliers':
 
-                if ($user->get('User Type') == 'Staff' or $user->get(
-                        'User Type'
-                    ) == 'Contractor') {
+                if ($user->get('User Type') == 'Staff' or $user->get('User Type') == 'Contractor') {
                     if (!$user->can_view('suppliers')) {
                         $module  = 'utils';
                         $section = 'forbidden';
@@ -4301,6 +4298,11 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             $object  = 'category';
                             $key     = '';
                             $section = 'categories';
+
+                        } elseif ($view_path[0] == 'dashboard') {
+                            $object  = 'account';
+                            $key     = 1;
+                            $section = 'dashboard';
 
                         } elseif ($view_path[0] == 'settings') {
                             $object  = 'account';
