@@ -268,12 +268,18 @@ class Image extends DB_Table {
 
         if($this->fork){
             $account=get_object('Account',1);
-            rename($tmp_file, preg_replace('/^img/','img_'.$account->get('Code'),$data['Image Path']));
+            $destination_path= preg_replace('/^img/','img_'.$account->get('Code'),$data['Image Path']);
 
         }else{
-            rename($tmp_file, $data['Image Path']);
-
+            $destination_path= $data['Image Path'];
         }
+
+
+        copy($tmp_file,$destination_path);
+        chmod($destination_path,0664);
+        unlink($tmp_file);
+
+
 
 
         $data['Image Creation Date'] = gmdate('Y-n-d H:i:s');
