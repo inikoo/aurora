@@ -118,16 +118,16 @@ if ($row = $stmt->fetch()) {
         $image->resizeToBestFit($w, $h);
         $image->save($cached_image_path);
 
-        if (file_exists($cached_image_path)) {
+        if (!file_exists($cached_image_path)) {
             usleep(1000);
         }
-        if (file_exists($cached_image_path)) {
+        if (!file_exists($cached_image_path)) {
             usleep(2000);
         }
-        if (file_exists($cached_image_path)) {
+        if (!file_exists($cached_image_path)) {
             usleep(3000);
         }
-        if (file_exists($cached_image_path)) {
+        if (!file_exists($cached_image_path)) {
             usleep(100000);
         }
     } else {
@@ -138,16 +138,16 @@ if ($row = $stmt->fetch()) {
     $optimizerChain = OptimizerChainFactory::create();
     $optimizerChain->optimize($cached_image_path);
 
-    if (file_exists($cached_image_path)) {
+    if (!file_exists($cached_image_path)) {
         usleep(1000);
     }
-    if (file_exists($cached_image_path)) {
+    if (!file_exists($cached_image_path)) {
         usleep(2000);
     }
-    if (file_exists($cached_image_path)) {
+    if (!file_exists($cached_image_path)) {
         usleep(3000);
     }
-    if (file_exists($cached_image_path)) {
+    if (!file_exists($cached_image_path)) {
         usleep(100000);
     }
 

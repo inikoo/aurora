@@ -7,13 +7,61 @@
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
+30 17-23 * * * inikoo sh -c "cd /home/inikoo/sk.au/cron; php7.2 get_current_ECB_exchange_rates.php"
 
-5-59/15 * * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron; php5.6 stack_product_web_state_legacy.php >> /home/inikoo/stack.log"
-*/15 * * * * inikoo sh -c "cd /home/inikoo/aw.au/cron; php7.2 stack_full_after_part_stock_update_legacy.php  >> /home/inikoo/stack.log"
+#todo delete this and do it cron.minute =====
+
+0 3 * * * inikoo sh -c "cd /home/inikoo/aw.au/cron; php7.2 update_current_gsc_data.php"
+20 3 * * * inikoo sh -c "cd /home/inikoo/sk.au/cron; php7.2 update_current_gsc_data.php"
+40 3 * * * inikoo sh -c "cd /home/inikoo/es.au/cron; php7.2 update_current_gsc_data.php"
+
+
+
+
+#todo delete this and do it with stalk or fork =====
+
+30 * * * * inikoo sh -c "cd /home/inikoo/aw.au/cron; php7.2 update_shipping_zones_data.php"
+30 * * * * inikoo sh -c "cd /home/inikoo/sk.au/cron; php7.2 update_shipping_zones_data.php"
+#=======
+
+* * * * * inikoo sh -c "date >> /tmp/test_date1"
+*/5 * * * * inikoo sh -c "cd /home/inikoo/aw.au/cron; php7.2 get_dropshipping_customers.php  >> /home/inikoo/ds_customer.log"
+*/2 * * * * inikoo sh -c "cd /home/inikoo/aw.au/cron; php7.2 get_dropshipping_products.php  >> /home/inikoo/ds_products.log"
+*/10 * * * * inikoo sh -c "cd /home/inikoo/aw.au/cron; php7.2 get_dropshipping_orders.php  >> /home/inikoo/ds_orders.log"
+
+
+
+
+
+#5-59/15 * * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron; php5.6 stack_product_web_state_legacy.php >> /home/inikoo/stack.log"
+
+#*/5 * * * * inikoo sh -c "cd /home/inikoo/aw.au/cron; php7.2 stack_full_after_part_stock_update_legacy.php  >> /home/inikoo/stack.log"
 */5 * * * * inikoo sh -c "cd /home/inikoo/aw.au/cron; php7.2 stack_part_stock_in_paid_orders.php  >> /home/inikoo/stack.log"
+
+
+30 * * * * inikoo sh -c "cd /home/inikoo/aw.au/cron; php7.2 stack_timeseries_stats.php  >> /home/inikoo/stack.log"
+30 * * * * inikoo sh -c "cd /home/inikoo/sk.au/cron; php7.2 stack_timeseries_stats.php  >> /home/inikoo/stack.log"
+
+
+0 */6 * * * inikoo sh -c "cd /home/inikoo/aw.au/cron; php7.2 stack_data_sets_stats  >> /home/inikoo/stack.log"
+0 */6 * * * inikoo sh -c "cd /home/inikoo/sk.au/cron; php7.2 stack_data_sets_stats  >> /home/inikoo/stack.log"
+
+
+
 
 */2 * * * * inikoo sh -c "cd /home/inikoo/aw.au/cron; php7.2 stack_reindex_webpages.php  >> /home/inikoo/stack.log"
 */2 * * * * inikoo sh -c "cd /home/inikoo/sk.au/cron; php7.2 stack_reindex_webpages.php  >> /home/inikoo/stack.log"
+
+
+*/2 * * * * inikoo sh -c "cd /home/inikoo/aw.au/cron; php7.2 stack_deals_usage.php  >> /home/inikoo/stack.log"
+*/2 * * * * inikoo sh -c "cd /home/inikoo/sk.au/cron; php7.2 stack_deals_usage.php  >> /home/inikoo/stack.log"
+
+*/2 * * * * inikoo sh -c "cd /home/inikoo/aw.au/cron; php7.2 stack_update_orders_in_basket.php  >> /home/inikoo/stack.log"
+*/2 * * * * inikoo sh -c "cd /home/inikoo/sk.au/cron; php7.2 stack_update_orders_in_basket.php  >> /home/inikoo/stack.log"
+
+*/2 * * * * inikoo sh -c "cd /home/inikoo/aw.au/cron; php7.2 stack_update_orders_in_basket_low_priority.php  >> /home/inikoo/stack.log"
+*/2 * * * * inikoo sh -c "cd /home/inikoo/sk.au/cron; php7.2 stack_update_orders_in_basket_low_priority.php  >> /home/inikoo/stack.log"
+#* * * * * inikoo sh -c "date >> /tmp/test_date2"
 
 
 */5 * * * * inikoo sh -c "cd /home/inikoo/aw.au/cron; php7.2 stack_part_sales.php  >> /home/inikoo/stack.log"
@@ -48,49 +96,38 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 
 
-0  19  * * * inikoo bash /home/inikoo/read_drop.sh
-
-* * * * * inikoo sh -c "cd aw.au/cron/;php5.6 cron.minute.php"
-* * * * * inikoo sh -c "cd sk.au/cron/;php5.6 cron.minute.php >> /tmp/cron_minute.txt"
-
-#0 0 * * * inikoo sh -c "cd sk.au/cron/;php5.6 update_assets_sales_diary.php"
-0 0 * * 1 inikoo sh -c "cd sk.au/cron/;php5.6 update_assets_sales_weekly.php"
-0 0 1 * *  inikoo sh -c "cd sk.au/cron/;php5.6 update_assets_sales_montly.php"
-0 0 1 1 *  inikoo sh -c "cd sk.au/cron/;php5.6 update_assets_sales_yearly.php"
-0 0 1 1,4,7,10 *   inikoo sh -c "cd sk.au/cron/;php5.6 update_assets_sales_quartely.php"
-1 0 * * * inikoo sh -c "cd sk.au/cron/;php5.6 update_yesterday_families_timeseries.php"
-1 0 * * * inikoo sh -c "cd sk.au/cron/;php5.6 update_yesterday_part_categories_timeseries.php"
-1 0 * * * inikoo sh -c "cd sk.au/cron/;php5.6 update_yesterday_stores_timeseries.php"
-1 0 * * * inikoo sh -c "cd sk.au/cron/;php5.6 update_current_period_suppliers_timeseries.php"
 
 
-0 1 * * * inikoo sh -c "cd sk.au/cron/;php5.6 create_timesheets.php"
-0 1 * * * inikoo sh -c "cd aw.au/cron/;php5.6 create_timesheets.php"
+* * * * * inikoo sh -c "cd aw.au/cron/;php7.2 cron.minute.php >> /tmp/cron_minute.txt"
+* * * * * inikoo sh -c "cd sk.au/cron/;php7.2 cron.minute.php >> /tmp/cron_minute.txt"
 
 
-0 23 * * * inikoo sh -c "cd aw.au/cron/;php5.6 fix_amount_in.php"
-0 19 * * * inikoo sh -c "cd aw.au/cron/;php5.6 fix_amount_in_bis.php"
-0 12 * * * inikoo sh -c "cd aw.au/cron/;php5.6 fix_amount_in_bis.php"
-0 15 * * * inikoo sh -c "cd aw.au/cron/;php5.6 fix_amount_in_bis.php"
+0 0 * * 1 inikoo sh -c "cd sk.au/cron/;php7.2 update_assets_sales_weekly.php"
+0 0 1 * *  inikoo sh -c "cd sk.au/cron/;php7.2 update_assets_sales_montly.php"
+0 0 1 1 *  inikoo sh -c "cd sk.au/cron/;php7.2 update_assets_sales_yearly.php"
+0 0 1 1,4,7,10 *   inikoo sh -c "cd sk.au/cron/;php7.2 update_assets_sales_quartely.php"
+1 0 * * * inikoo sh -c "cd sk.au/cron/;php7.2 update_yesterday_families_timeseries.php"
+1 0 * * * inikoo sh -c "cd sk.au/cron/;php7.2 update_yesterday_part_categories_timeseries.php"
+1 0 * * * inikoo sh -c "cd sk.au/cron/;php7.2 update_yesterday_stores_timeseries.php"
+1 0 * * * inikoo sh -c "cd sk.au/cron/;php7.2 update_current_period_suppliers_timeseries.php"
+
+
+0 1 * * * inikoo sh -c "cd sk.au/cron/;php7.2 create_timesheets.php"
+0 1 * * * inikoo sh -c "cd aw.au/cron/;php7.2 create_timesheets.php"
+
+
+
 
 
 
 #remove from here after migration 
 
 
-0 * * * * inikoo sh -c "cd aw.au/cron/;php5.6 set_sales_representatives.oneoff.php"
 
-#0 */4 * * * inikoo sh -c "cd aw.au/cron/;php5.6 update_products_availability.php"
+#5 1 * * * inikoo sh -c "cd sk.au/cron/;php5.6 update_stores_sales.php"
 
-
-
-#*/30 * * * * inikoo sh -c "cd aw.au/cron/;php5.6 fix_add_inventory_transaction_key_in_picking_errors.oneoff.php"
-
-0 22 * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts/; php5.6 update_invoice_categories.php"
-5 1 * * * inikoo sh -c "cd sk.au/cron/;php5.6 update_stores_sales.php"
-
-*/15 * * * * inikoo sh -c "cd sk.au/cron/;php5.6 clean_unknown_part_locations.php"
-*/15 * * * * inikoo sh -c "cd aw.au/cron/;php5.6 clean_unknown_part_locations.php"
+*/15 * * * * inikoo sh -c "cd sk.au/cron/;php7.2 clean_unknown_part_locations.php"
+*/15 * * * * inikoo sh -c "cd aw.au/cron/;php7.2 clean_unknown_part_locations.php"
 
 #*/20 * * * * inikoo sh -c "cd /home/inikoo/aw.au/cron/;php5.6 fix_discontinuing_parts.php"
 
@@ -100,26 +137,26 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 # end remove
 
 # remove this when implemented corretly in code
-0 * * * * inikoo sh -c "cd aw.au/cron/;php5.6 clean_unknown_part_locations.php"
-0 * * * * inikoo sh -c "cd sk.au/cron/;php5.6 clean_unknown_part_locations.php"
+#0 * * * * inikoo sh -c "cd aw.au/cron/;php5.6 clean_unknown_part_locations.php"
+#0 * * * * inikoo sh -c "cd sk.au/cron/;php5.6 clean_unknown_part_locations.php"
 # end remove
 
 
 
-0 0 * * * inikoo sh -c "cd aw.au/cron/;php5.6 update_assets_sales_diary.php"
-0 0 * * 1 inikoo sh -c "cd aw.au/cron/;php5.6 update_assets_sales_weekly.php"
-0 0 1 * *  inikoo sh -c "cd aw.au/cron/;php5.6 update_assets_sales_montly.php"
-0 0 1 1 *  inikoo sh -c "cd aw.au/cron/;php5.6 update_assets_sales_yearly.php"
-0 0 1 1,4,7,10 *   inikoo sh -c "cd aw.au/cron/;php5.6 update_assets_sales_quartely.php"
-1 0 * * * inikoo sh -c "cd aw.au/cron/;php5.6 update_yesterday_families_timeseries.php"
-1 0 * * * inikoo sh -c "cd aw.au/cron/;php5.6 update_yesterday_part_categories_timeseries.php"
-1 0 * * * inikoo sh -c "cd aw.au/cron/;php5.6 update_yesterday_stores_timeseries.php"
-1 0 * * * inikoo sh -c "cd aw.au/cron/;php5.6 update_current_period_suppliers_timeseries.php"
+
+0 0 * * 1 inikoo sh -c "cd aw.au/cron/;php7.2 update_assets_sales_weekly.php"
+0 0 1 * *  inikoo sh -c "cd aw.au/cron/;php7.2 update_assets_sales_montly.php"
+0 0 1 1 *  inikoo sh -c "cd aw.au/cron/;php7.2 update_assets_sales_yearly.php"
+0 0 1 1,4,7,10 *   inikoo sh -c "cd aw.au/cron/;php7.2 update_assets_sales_quartely.php"
+1 0 * * * inikoo sh -c "cd aw.au/cron/;php7.2 update_yesterday_families_timeseries.php"
+1 0 * * * inikoo sh -c "cd aw.au/cron/;php7.2 update_yesterday_part_categories_timeseries.php"
+1 0 * * * inikoo sh -c "cd aw.au/cron/;php7.2 update_yesterday_stores_timeseries.php"
+1 0 * * * inikoo sh -c "cd aw.au/cron/;php7.2 update_current_period_suppliers_timeseries.php"
 
 
 2-59/20 * * * * inikoo sh -c "cd /home/inikoo/aw.au/cron/;php5.6 update_stores_orders_data.php"
-3-59/20  * * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts; php5.6 upgrade_orders.php ;"
-0 */2 * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts/; php5.6 upgrade_orders_full.php ;"
+#3-59/20  * * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts; php5.6 upgrade_orders.php ;"
+#0 */2 * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts/; php5.6 upgrade_orders_full.php ;"
 
 
 
@@ -134,15 +171,15 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 */15  *  * * *  inikoo sh -c "cd /home/inikoo/awr/mantenence/currency_exchange;php5.6 fix_exchange_value.php; cd /home/inikoo/awr/mantenence/scripts; php5.6 update_sales_overview.php;"
 #0,30  *  * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/currency_exchange;php5.6 fix_exchange_value.php; cd /home/inikoo/aw/mantenence/scripts; php5.6 update_sales_overview.php;"
 #30 0 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php5.6 update_pages_last_period.php;php5.6 update_pages.php;update_sites.php;"
-0 0,2    * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php5.6 update_deals_status_from_dates.php;php5.6 update_orders_in_basket_deals.php"
+#0 0,2    * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php5.6 update_deals_status_from_dates.php;php5.6 update_orders_in_basket_deals.php"
 #0 20 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php5.6 get_sites_timeseries.php"
 #30 14,17,20 * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts; php5.6 fix_pages_add_images_tags.php"
-0 18 * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts; php5.6 gold_reward_remainder.php"
+#0 18 * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts; php5.6 gold_reward_remainder.php"
 0 19 * * *  inikoo sh -c "cd /home/inikoo/awr/mantenence/scripts; php5.6 gold_reward_remainder.php"
-0 12 * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts; php5.6 send_email_site_reminder.php"
+#0 12 * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts; php5.6 send_email_site_reminder.php"
 0 12 * * *  inikoo sh -c "cd /home/inikoo/awr/mantenence/scripts; php5.6 send_email_site_reminder.php"
 
-0 *    * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php5.6 get_currency_exchange.php"
+#0 *    * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php5.6 get_currency_exchange.php"
 #30 0 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/scripts;php5.6 update_pages_last_period.php;php5.6 update_pages.php;update_sites.php;"
 0 0  * * *  inikoo sh -c "cd /home/inikoo/awr/mantenence/scripts;php5.6 update_deals_status_from_dates.php;php5.6 update_orders_in_basket_deals.php"
 #0 20 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/scripts;php5.6 get_sites_timeseries.php"
@@ -168,7 +205,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 #45 * * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron ;php5.6 update_part_categories_sales.php >> /tmp/inikoo/out.part_cats_sales.aw"
 45 * * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/cron ;php5.6 update_part_categories_sales.php >> /tmp/inikoo/out.part_cats_sales.awr"
 
-0 4    * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/cron;php5.6 update_customers_data.php >> /tmp/inikoo/out.customers_data.aw"
+#0 4    * * *  inikoo sh -c "cd /home/inikoo/aw/mantenence/cron;php5.6 update_customers_data.php >> /tmp/inikoo/out.customers_data.aw"
 0 4    * * *  inikoo sh -c "cd /home/inikoo/awr/mantenence/cron;php5.6 update_customers_data.php >> /tmp/inikoo/out.customers_data.awr"
 
 #0 0 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron ;php5.6 update_for_sale_products_sales.php >> /tmp/inikoo/out.product_sales.aw"
@@ -176,22 +213,22 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 #0 0 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/cron ;php5.6 update_supplier_product_sales.php >> /tmp/inikoo/out.prod_sup_sales.aw"
 0 0 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/cron; php5.6 update_supplier_product_sales.php >> /tmp/inikoo/out.prod_sup_sales.awr"
 
-55 11,23 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php5.6 update_order_snapshot.php"
+#55 11,23 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php5.6 update_order_snapshot.php"
 55 11,23 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/scripts;php5.6 update_order_snapshot.php"
 #58 9,11,20,23 * * * inikoo sh -c "cd /home/inikoo/aw/mantenence/scripts;php5.6 update_stock_history.php"
 58 9,11,17,23 * * * inikoo sh -c "cd /home/inikoo/awr/mantenence/scripts;php5.6 update_stock_history.php"
 
-#58 9,11,20,23 * * * inikoo sh -c "cd /home/inikoo/aw.au/cron/;php5.6 create_today_ISF.php"
+#58 9,11,20,23 * * * inikoo sh -c "cd /home/inikoo/aw.au/cron/;php7.2 create_today_ISF.php"
 
 
-* * * * * inikoo sh -c "date >> /tmp/test_date7"
+
 # m h dom mon dow command
-* * * * * inikoo curl -m 10 'https://plus.site24x7.com/cron/us_00cd5caecb7c81bc09d511caaf5739f2/cron/start'; /path/script.sh && curl -m 10 'https://plus.site24x7.com/cron/us_00cd5caecb7c81bc09d511caaf5739f2/cron/end'
+#* * * * * inikoo curl -m 10 'https://plus.site24x7.com/cron/us_00cd5caecb7c81bc09d511caaf5739f2/cron/start'; /path/script.sh && curl -m 10 'https://plus.site24x7.com/cron/us_00cd5caecb7c81bc09d511caaf5739f2/cron/end'
 
 0 3 * * * root find /home/drop/www/var/session -name 'sess_*' -type f -mtime +10 -exec rm {} \;
 * 2 * * * drop sh -c "cd /home/drop/www/;php5.6 cron.php"
 
-
+* * * * * inikoo sh -c "date >> /tmp/test_date8"
 
 # m h dom mon dow user	command
 17 *	* * *	root    cd / && run-parts --report /etc/cron.hourly
