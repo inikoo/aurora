@@ -67,41 +67,6 @@ class Public_Webpage {
 
     }
 
-    function get_see_also() {
-
-
-        include_once('class.Public_Webpage.php');
-
-        $see_also = array();
-        $sql      = sprintf(
-            "SELECT `Page Store See Also Key`,`Correlation Type`,`Correlation Value` FROM  `Page Store See Also Bridge` WHERE `Page Store Key`=%d ORDER BY `Correlation Value` DESC ", $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $see_also_page = new Public_Webpage($row['Page Store See Also Key']);
-
-
-                if ($see_also_page->id) {
-
-                    $see_also[] = $see_also_page;
-
-
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $see_also;
-
-    }
-
 
     function get($key, $arg1 = '') {
 

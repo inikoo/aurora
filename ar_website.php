@@ -91,11 +91,9 @@ function see_also($data, $db, $user, $smarty) {
     $webpage = get_object('Webpage', $data['webpage_key']);
 
 
-    // $see_also=array();
     $html = '';
 
-    //print $data['number_items'];
-    // print_r($webpage->get_related_webpages_key($data['number_items']));
+
     foreach ($webpage->get_related_webpages_key($data['number_items']) as $webpage_key) {
 
 

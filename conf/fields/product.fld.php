@@ -639,33 +639,10 @@ foreach ($product_fields as $key=>$object_field) {
             ),
 
 
-            /*
-            array(
-                'id'              => 'Webpage_See_Also',
-                'render' => ($new ? false : true),
-                'edit'            => 'webpage_see_also',
-                'value'           => '',
-                'formatted_value' => $object->get('Webpage See Also'),
-                'label'           => _('See also links'),
-                'required'        => false,
-                'type'            => ''
-            ),
-*/
-            /*
-                array(
-                    'id'=>'Webpage_Related_Products',
-                    'edit'=>'webpage_related_products',
-                    'value'=>'' ,
-                    'formatted_value'=>$object->get('Webpage Related Products') ,
-                    'label'=>_('Related products links'),
-                    'required'=>false,
-                    'type'=>''
-                )
-    */
 
 
 )
-)
+);
 
 
-?>
+

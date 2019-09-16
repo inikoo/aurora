@@ -65,7 +65,7 @@ $_dir   = $order_direction;
 
 
 if ($order == 'code') {
-    $order = '`Page Code`';
+    $order = '`Webpage Code`';
 } elseif ($order == 'url') {
     $order = '`Page URL`';
 } elseif ($order == 'period_users') {

@@ -8913,54 +8913,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
                     break;
-                case 'website.node':
 
-
-                    if ($state['parent'] == 'node') {
-                        $branch[] = array(
-                            'label'     => $state['website']->get(
-                                'Code'
-                            ),
-                            'icon'      => 'sitemap',
-                            'reference' => 'website/'.$state['website']->id
-                        );
-
-                        if ($state['_object']->get('Website Node Parent Key') != $state['_object']->id) {
-                            $node_branches = array();
-                            $node_branches = create_node_breadcrumbs(
-                                $db, $state['_object']->get(
-                                'Website Node Parent Key'
-                            ), $node_branches
-                            );
-                            $branch        = array_merge(
-                                $branch, $node_branches
-                            );
-                        }
-
-                    } else {
-                        $branch[] = array(
-                            'label'     => $state['website']->get(
-                                'Code'
-                            ),
-                            'icon'      => 'globe',
-                            'reference' => 'website/'.$state['website']->id
-                        );
-
-                    }
-
-                    $branch[] = array(
-                        'label'     => '<span class="id Webpage_Name">'.$state['_object']->webpage->get('Name').'</span>',
-                        'icon'      => ($state['_object']->get(
-                            'Website Node Icon'
-                        ) == ''
-                            ? 'file'
-                            : $state['_object']->get(
-                                'Website Node Icon'
-                            )),
-                        'reference' => ''
-                    );
-
-                    break;
                 case 'page':
 
                     $branch[] = array(
@@ -11167,47 +11120,3 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 }
 
-
-function create_node_breadcrumbs($db, $node_key, $branch) {
-
-    include_once 'utils/text_functions.php';
-
-    $sql = sprintf(
-        'SELECT `Website Node Parent Key`,`Website Node Key`,`Website Node Website Key`,`Webpage Code`,`Webpage Name`,`Website Node Icon` FROM `Website Node Dimension` LEFT JOIN `Webpage Dimension` ON (`Website Node Webpage Key`=`Webpage Key`)  WHERE `Website Node Key`=%d',
-        $node_key
-    );
-
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
-
-
-            array_unshift(
-                $branch, array(
-                           'label'     => trimStringToFullWord(
-                               16, $row['Webpage Name']
-                           ),
-                           'icon'      => ($row['Website Node Icon'] == '' ? 'file' : $row['Website Node Icon']),
-                           'reference' => 'website/'.$row['Website Node Website Key'].'/node/'.$row['Website Node Key']
-                       )
-            );
-            if ($row['Website Node Parent Key'] == $node_key) {
-                return $branch;
-            } else {
-
-                $branch = create_node_breadcrumbs(
-                    $db, $row['Website Node Parent Key'], $branch
-                );
-
-                return $branch;
-            }
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print $sql;
-        exit;
-    }
-
-}
-
-
-?>

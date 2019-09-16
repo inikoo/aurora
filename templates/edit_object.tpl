@@ -418,14 +418,7 @@
 
                                 {elseif $edit=='mixed_recipients'  }
                                     {include file="mixed_recipients.edit.tpl" field_id=$field.id mixed_recipients=$object->get(preg_replace('/_/',' ',$field.id)) mode='edit'}
-                                {elseif $edit=='webpage_see_also'  }
-                                    <div class="webpage_see_also_editor">
-                                        {include file="webpage_see_also.edit.tpl"  data=$object->get_see_also_data() mode='edit'}
-                                    </div>
-                                {elseif $edit=='webpage_related_products'  }
-                                    <div class="webpage_related_products_editor">
-                                        {include file="webpage_related_products.edit.tpl"  data=$object->get_related_products_data() mode='edit'}
-                                    </div>
+
                                 {elseif $edit=='textarea'  }
                                     <textarea id="{$field.id}" class="input_field hide"
                                               has_been_valid="0">{$field.value}</textarea>

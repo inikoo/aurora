@@ -484,19 +484,7 @@ function edit_field($account, $db, $editor, $data, $smarty) {
                     'parts_list_items.edit.tpl'
                 );
 
-            } elseif ($field == 'Webpage See Also') {
-                $smarty->assign('data', $object->get_see_also_data());
-                $smarty->assign('mode', 'edit');
-
-                $update_metadata['webpage_see_also_editor'] = $smarty->fetch('webpage_see_also.edit.tpl');
-
-            } elseif ($field == 'Webpage Related Products') {
-                $smarty->assign('data', $object->get_related_products_data());
-                $smarty->assign('mode', 'edit');
-
-                $update_metadata['webpage_related_products_editor'] = $smarty->fetch('webpage_related_products.edit.tpl');
-
-            } elseif ($field == 'Part Cost in Warehouse') {
+            }  elseif ($field == 'Part Cost in Warehouse') {
 
 
                 include_once 'utils/new_fork.php';

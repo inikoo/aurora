@@ -413,25 +413,7 @@ class Public_Product {
                 break;
 
 
-            case 'Webpage Related Products':
-            case 'Related Products':
 
-                $related_products_data = $this->webpage->get_related_products_data();
-                $related_products      = '';
-
-
-                foreach ($related_products_data['links'] as $link) {
-                    $related_products .= $link['code'].', ';
-                }
-
-                $related_products = preg_replace(
-                    '/, $/', '', $related_products
-                );
-
-                return $related_products;
-
-
-                break;
 
             case 'Webpage Key':
                 if (!is_object($this->webpage)) {
@@ -441,32 +423,7 @@ class Public_Product {
                 return $this->webpage->id;
 
                 break;
-            case 'Webpage See Also':
-            case 'See Also':
 
-                if (!is_object($this->webpage)) {
-                    $this->load_webpage();
-                }
-
-                $see_also_data = $this->webpage->get_see_also_data();
-                $see_also      = '';
-                if ($see_also_data['type'] == 'Auto') {
-                    $see_also = _('Automatic').': ';
-                }
-
-                if (count($see_also_data['links']) == 0) {
-                    $see_also .= ', '._('none');
-                } else {
-                    foreach ($see_also_data['links'] as $link) {
-                        $see_also .= $link['code'].', ';
-                    }
-                }
-                $see_also = preg_replace('/, $/', '', $see_also);
-
-                return $see_also;
-
-
-                break;
 
             case 'Webpage Name':
                 if (!is_object($this->webpage)) {
@@ -476,22 +433,7 @@ class Public_Product {
                 return $this->webpage->get('Webpage Name');
 
                 break;
-            case 'Website Node Parent Key':
-                if (!is_object($this->webpage)) {
-                    $this->load_webpage();
-                }
 
-                return $this->webpage->get('Found In Page Key');
-
-                break;
-            case 'Product Website Node Parent Key':
-                if (!is_object($this->webpage)) {
-                    $this->load_webpage();
-                }
-
-                return $this->webpage->get('Page Found In Page Key');
-
-                break;
 
             case 'Price':
 
