@@ -95,7 +95,7 @@
 
 
                 <td style="padding-left: 4px;padding-right: 4px" class="">
-                    <span class="discreet {if $error_units_per_carton}error{/if}" title="{t}Units per carton{/t}">
+                    <span class="discreet  title="{t}Units per carton{/t}">
                         <i class="fal  fa-stop-circle " style="font-size: 80%;margin-right: 1px" ></i><i class="fal  fa-times" style="position: relative;top:1px;margin-right: 3px"></i><span class="Supplier_Part_Units_Per_Carton">{$supplier_part->get('Supplier Part Units Per Carton')}</span>
 
                     </span>
