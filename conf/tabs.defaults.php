@@ -1759,7 +1759,7 @@ $tab_defaults = array(
     ),
 
     'suppliers.supplier_parts.surplus' => array(
-        'view'          => 'overview',
+        'view'          => 'reorder',
         'sort_key'      => 'id',
         'sort_order'    => 1,
         'rpp'           => 100,
@@ -1772,7 +1772,7 @@ $tab_defaults = array(
 
     ),
     'suppliers.supplier_parts.ok' => array(
-        'view'          => 'overview',
+        'view'          => 'reorder',
         'sort_key'      => 'id',
         'sort_order'    => 1,
         'rpp'           => 100,
@@ -1786,7 +1786,7 @@ $tab_defaults = array(
     ),
 
     'suppliers.supplier_parts.low' => array(
-        'view'          => 'overview',
+        'view'          => 'reorder',
         'sort_key'      => 'id',
         'sort_order'    => 1,
         'rpp'           => 100,
@@ -1797,7 +1797,7 @@ $tab_defaults = array(
         'export_fields' => $export_fields['supplier_parts']
     ),
     'suppliers.supplier_parts.critical' => array(
-        'view'          => 'overview',
+        'view'          => 'reorder',
         'sort_key'      => 'id',
         'sort_order'    => 1,
         'rpp'           => 100,
@@ -1808,7 +1808,7 @@ $tab_defaults = array(
         'export_fields' => $export_fields['supplier_parts']
     ),
     'suppliers.supplier_parts.out_of_stock' => array(
-        'view'          => 'overview',
+        'view'          => 'reorder',
         'sort_key'      => 'id',
         'sort_order'    => 1,
         'rpp'           => 100,
