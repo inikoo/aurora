@@ -240,7 +240,6 @@ class Customer extends Subject {
         }
 
 
-
     }
 
     function get($key, $arg1 = false) {
@@ -1319,7 +1318,9 @@ class Customer extends Subject {
             case('Customer Send Newsletter'):
             case('Customer Send Email Marketing'):
                 $this->update_field($field, $value, $options);
-                $this->update_customers_email_marketing_data();
+
+                $store = get_object('Store', $this->data['Customer Store Key']);
+                $store->update_customers_email_marketing_data();
 
                 break;
 
@@ -4039,7 +4040,9 @@ class Customer extends Subject {
             )
         );
 
-        $this->update_customers_email_marketing_data();
+
+        $store = get_object('Store', $this->data['Customer Store Key']);
+        $store->update_customers_email_marketing_data();
 
         $history_data = array(
             'History Abstract' => $note,
@@ -4055,6 +4058,8 @@ class Customer extends Subject {
 
 
 }
+
+
 
 
 
