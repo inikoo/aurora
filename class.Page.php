@@ -2247,7 +2247,7 @@ class Page extends DB_Table {
 
 
         if ($this->get('Webpage Launch Date') == '') {
-            $this->update(array('Webpage Launch Date' => gmdate('Y-m-d H:i:s')), 'no_history');
+            $this->fast_update(array('Webpage Launch Date' => gmdate('Y-m-d H:i:s')));
             $msg              = _('Webpage launched');
             $publish_products = true;
         } else {
