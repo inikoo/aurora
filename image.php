@@ -174,7 +174,7 @@ if ($row = $stmt->fetch()) {
         usleep(  100000 );
     }
 
-    chmod($cached_image_path,0664);
+    //chmod($cached_image_path,0664);
 
 
     $redis->set(
