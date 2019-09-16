@@ -1329,7 +1329,7 @@ class Product extends Asset {
         if ($this->get('Product Number of Parts') > 0) {
 
             $sql = sprintf(
-                " SELECT `Part Reference`,`Part On Demand`,`Part Stock State`,`Part Current On Hand Stock`-`Part Current Stock In Process`-`Part Current Stock Ordered Paid` AS stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio` FROM     `Product Part Bridge` B LEFT JOIN   `Part Dimension` P   ON (P.`Part SKU`=B.`Product Part Part SKU`)   WHERE B.`Product Part Product ID`=%d   ",
+                " SELECT `Part Reference`,`Part On Demand`,`Part Stock Status`,`Part Current On Hand Stock`-`Part Current Stock In Process`-`Part Current Stock Ordered Paid` AS stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio` FROM     `Product Part Bridge` B LEFT JOIN   `Part Dimension` P   ON (P.`Part SKU`=B.`Product Part Part SKU`)   WHERE B.`Product Part Product ID`=%d   ",
                 $this->id
             );
 
@@ -1357,16 +1357,16 @@ class Product extends Asset {
                     }
 
 
-                    if ($row['Part Stock State'] == 'Error') {
+                    if ($row['Part Stock Status'] == 'Error') {
                         $tipo = 'Error';
-                    } elseif ($row['Part Stock State'] == 'OutofStock' and $tipo != 'Error') {
+                    } elseif ($row['Part Stock Status'] == 'Out_Of_Stock' and $tipo != 'Error') {
                         $tipo = 'OutofStock';
-                    } elseif ($row['Part Stock State'] == 'VeryLow' and $tipo != 'Error' and $tipo != 'OutofStock') {
+                    } elseif ($row['Part Stock Status'] == 'Critical' and $tipo != 'Error' and $tipo != 'OutofStock') {
                         $tipo = 'VeryLow';
                     } else {
-                        if ($row['Part Stock State'] == 'Low' and $tipo != 'Error' and $tipo != 'OutofStock' and $tipo != 'VeryLow') {
+                        if ($row['Part Stock Status'] == 'Low' and $tipo != 'Error' and $tipo != 'OutofStock' and $tipo != 'VeryLow') {
                             $tipo = 'Low';
-                        } elseif ($row['Part Stock State'] == 'Normal' and $tipo == 'Excess') {
+                        } elseif ($row['Part Stock Status'] == 'Optimal' and $tipo == 'Excess') {
                             $tipo = 'Normal';
                         }
                     }
