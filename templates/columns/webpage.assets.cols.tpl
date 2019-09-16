@@ -22,6 +22,8 @@ className: "width_30 align_center"
 name: "code",
 label: "{t}Code{/t}",
 editable: false,
+sortType: "toggle",
+
 cell: Backgrid.HtmlCell.extend({ })
 },
 
@@ -29,13 +31,17 @@ cell: Backgrid.HtmlCell.extend({ })
 name: "name",
 label: "{t}Name{/t}",
 editable: false,
+sortType: "toggle",
+
 cell: Backgrid.HtmlCell.extend({ })
 },
 
 {
 name: "type",
-label: "{t}Location{/t}",
+label: "{t}Type{/t}",
 editable: false,
+sortType: "toggle",
+
 cell: Backgrid.HtmlCell.extend({ })
 },
 

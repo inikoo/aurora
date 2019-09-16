@@ -399,7 +399,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
 
     if ($order == 'Website Webpage Scope Webpage Index') {
 
-        $sql  = 'select `Website Webpage Scope Webpage Index` from `Website Webpage Scope Map` where `Website Webpage Scope Scope Website Key`=? and `Website Webpage Scope Webpage Key`=? ';
+        $sql  = 'select `Website Webpage Scope Webpage Index` from `Website Webpage Scope Map` where `Website Webpage Scope Scope Webpage Key`=? and `Website Webpage Scope Webpage Key`=? ';
         $stmt = $db->prepare($sql);
         $stmt->execute(
             array(

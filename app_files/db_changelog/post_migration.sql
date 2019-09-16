@@ -266,3 +266,5 @@ update  `Website Webpage Scope Map` O left join `Product Dimension` D on (O.`Web
 ALTER TABLE `Website Webpage Scope Map` ADD `Website Webpage Scope Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Website Webpage Scope Key`);
 
 ALTER TABLE `Part Dimension` DROP `Part Stock State`;
+
+ALTER TABLE `Website Webpage Scope Map` CHANGE `Website Webpage Scope Scope Website Key` `Website Webpage Scope Scope Webpage Key` MEDIUMINT(8) UNSIGNED NULL DEFAULT NULL;

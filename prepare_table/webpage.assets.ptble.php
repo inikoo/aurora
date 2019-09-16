@@ -10,7 +10,7 @@
 */
 
 
-$table = '`Website Webpage Scope Map`  left join  `Page Store Dimension` on (`Website Webpage Scope Scope Website Key`=`Page Key`)   ';
+$table = '`Website Webpage Scope Map`  left join  `Page Store Dimension` on (`Website Webpage Scope Scope Webpage Key`=`Page Key`)   ';
 
 $where = sprintf('where `Webpage State`="Online"  and `Website Webpage Scope Webpage Key`=%d ',$parameters['parent_key']);
 

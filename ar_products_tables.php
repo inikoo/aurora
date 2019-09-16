@@ -97,13 +97,13 @@ switch ($tipo) {
         category_sales_correlations(get_table_parameters(), $db, $user);
         break;
     case 'product_correlations':
-        product_sales_correlations(get_table_parameters(), $db, $user,$type='correlation');
+        product_sales_correlations(get_table_parameters(), $db, $user, $type = 'correlation');
         break;
     case 'product_anticorrelations':
-        product_sales_correlations(get_table_parameters(), $db, $user,$type='anticorrelation');
+        product_sales_correlations(get_table_parameters(), $db, $user, $type = 'anticorrelation');
         break;
     case 'webpages':
-        webpages(get_table_parameters(), $db, $user,$type='correlation');
+        webpages(get_table_parameters(), $db, $user, $type = 'correlation');
         break;
     default:
         $response = array(
@@ -2200,7 +2200,7 @@ function category_sales_correlations($_data, $db, $user) {
 }
 
 
-function product_sales_correlations($_data, $db, $user,$type) {
+function product_sales_correlations($_data, $db, $user, $type) {
 
     $rtext_label = 'correlations';
 
@@ -2311,7 +2311,6 @@ function product_sales_correlations($_data, $db, $user,$type) {
 }
 
 
-
 function webpages($_data, $db, $user) {
 
     $rtext_label = 'webpage';
@@ -2331,35 +2330,60 @@ function webpages($_data, $db, $user) {
 
         }
 
+
         switch ($data['Webpage Scope']) {
             case 'Product':
-                $type = sprintf('<i class="fa fa-leaf" aria-hidden="true" title="" ></i>', _('Product'));
-                break;
-            case 'Info':
-                $type = sprintf('<i class="fa fa-info" aria-hidden="true" title="" ></i>', _('Info'));
+                $scope = sprintf('<i class="fal fa-cube" title="%s" ></i>', _('Product'));
                 break;
             case 'Category Products':
-                $type = sprintf('<i class="fab fa-pagelines" aria-hidden="true" title="" ></i>', _('Products'));
-
+                $scope = sprintf('<i class="fal fa-folder-open" aria-hidden="true" title="" ></i>', _('Family'));
                 break;
+
             case 'Category Categories':
-                $type = sprintf('<i class="fa fa-tree" aria-hidden="true" title="" ></i>', _('Categories'));
+                $scope = sprintf('<i class="fal fa-folder-tree" aria-hidden="true" title="" ></i>', _('Categories'));
 
                 break;
-            case 'Operations':
-                $type = sprintf('<i class="fa fa-keyboard" aria-hidden="true" title="" ></i>', _('Operations'));
 
-                break;
             default:
-                $type = $data['Webpage State'];
+                $scope = '';
+                break;
+        }
+        switch ($data['Website Webpage Scope Type']) {
+            case 'Guest':
+                $type = _('Guest');
+                break;
+            case 'Category_Products_Item':
+                $type = _("Family's product").' <i class="fal padding_left_5 fa-cart-plus"></i>';
+                break;
+            case 'Products_Item':
+                $type = _('Related product').' <i class="fal padding_left_5 fa-cart-plus"></i>';
+                break;
+            case 'See_Also_Category_Auto':
+            case 'See_Also_Product_Auto':
+                $type = _('See also').' <i class="fal padding_left_5 fa-robot"></i>';
+                break;
+            case 'See_Also_Category_Manual':
+            case 'See_Also_Product_Manual':
+                $type = _('See also').' <i class="fal padding_left_5 fa-brain"></i>';
+                break;
+            case 'Product_Main_Webpage':
+                $type = _('Product webpage').' <i class="padding_left_5 fal fa-browser"></i>';
+                break;
+
+            default:
+                $type = $data['Website Webpage Scope Type'];
                 break;
         }
 
+
         $adata[] = array(
-            'id'      => (integer)$data['Webpage Key'],
-            'code'    => sprintf('<span class="link" onclick="change_view(\'website/%d/page/%d\')">%s</span>', $data['Webpage Website Key'], $data['Webpage Key'], $data['Webpage Code']),
-            'state'   => $state,
-            'type'    => $type,
+            'id'   => (integer)$data['Website Webpage Scope Key'],
+            'code' => sprintf('<span class="link" onclick="change_view(\'website/%d/webpage/%d\')">%s</span>', $data['Webpage Website Key'], $data['Page Key'], $data['Webpage Code']),
+            'name' => $data['Webpage Name'],
+
+            'state' => $state,
+            'type'  => $type,
+            'scope' => $scope,
 
 
         );
