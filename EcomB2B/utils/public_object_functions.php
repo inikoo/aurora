@@ -18,8 +18,8 @@ function get_object($object_name, $key, $load_other_data = false) {
     }
 
 
-    if($load_other_data!=''){
-        $load_other_data='-'.$load_other_data;
+    if ($load_other_data != '') {
+        $load_other_data = '-'.$load_other_data;
 
     }
 
@@ -71,7 +71,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Public_Delivery_Note.php';
             $object = new Public_Delivery_Note($key);
             break;
-       
+
         case 'website':
             include_once 'class.Public_Website.php';
 
@@ -106,12 +106,9 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.TaxCategory.php";
             $object = new TaxCategory($key);
             break;
-
-
-
         case 'tax_category-key':
             require_once "class.TaxCategory.php";
-            $object = new TaxCategory('key',$key);
+            $object = new TaxCategory('key', $key);
             break;
         case 'deal':
             require_once "class.Public_Deal.php";
@@ -134,21 +131,16 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Public_Customer_Poll_Query_Option.php";
             $object = new Customer_Poll_Query_Option($key);
             break;
-
-
         case 'email_template_type':
             require_once "class.EmailCampaignType.php";
             $object = new EmailCampaignType($key);
             break;
-
-
-
         case 'email_template_type-code_store':
             include_once 'class.EmailCampaignType.php';
 
-            $keys=preg_split('/\|/',$key);
+            $keys = preg_split('/\|/', $key);
 
-            $object = new EmailCampaignType('code_store', $keys[0],$keys[1]);
+            $object = new EmailCampaignType('code_store', $keys[0], $keys[1]);
             break;
         case 'email_tracking':
             require_once "class.Email_Tracking.php";
@@ -157,6 +149,10 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'charge':
             require_once "class.Public_Charge.php";
             $object = new Public_Charge($key);
+            break;
+        case 'public_webpage-scope_product':
+            include_once 'class.Public_Webpage.php';
+            $object = new  Public_Webpage('scope', 'Product', $key);
             break;
         default:
             exit('need to complete Pub  E1: >'.strtolower($object_name.' '.$load_other_data)."<\n");
@@ -170,4 +166,3 @@ function get_object($object_name, $key, $load_other_data = false) {
 }
 
 
-?>

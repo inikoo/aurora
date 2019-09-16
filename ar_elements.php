@@ -3882,18 +3882,29 @@ function get_orders_control_panel_numbers($tipo, $db, $data, $user, $account) {
             print $tipo;
             exit;
     }
+
+    $home_country = $account->get('Account Country 2 Alpha Code');
+
+
     if ($data['parent'] == 'store') {
-        if (is_numeric($data['parent_key']) and in_array(
-                $data['parent_key'], $user->stores
-            )) {
+        $where .= sprintf(' and  `Order Store Key`=%d ', $data['parent_key']);
+        $store        = get_object('store', $data['parent_key']);
+        $home_country = $store->get('Store Home Country Code 2 Alpha');
+        /*
+        if (is_numeric($data['parent_key']) and in_array($data['parent_key'], $user->stores)) {
             $where .= sprintf(' and  `Order Store Key`=%d ', $data['parent_key']);
             $store        = get_object('store', $data['parent_key']);
             $home_country = $store->get('Store Home Country Code 2 Alpha');
         } else {
             $where .= sprintf(' and  false');
         }
+        */
+
+
     } elseif ($data['parent'] == 'account') {
-        $home_country = $account->get('Account Country 2 Alpha Code');
+        $where .= ' and true';
+        /*
+
         if (is_numeric($data['parent_key']) and in_array($data['parent_key'], $user->stores)) {
             if (count($user->stores) == 0) {
                 $where .= ' and false';
@@ -3901,6 +3912,8 @@ function get_orders_control_panel_numbers($tipo, $db, $data, $user, $account) {
                 $where .= sprintf('and  `Order Store Key` in (%s)  ', join(',', $user->stores));
             }
         }
+
+        */
     }
     $sql = "select count(*) as number from `Order Dimension` O $where and `Order Invoice Address Country 2 Alpha Code`!=? ";
     //print $sql;
