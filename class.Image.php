@@ -276,7 +276,7 @@ class Image extends DB_Table {
 
 
         copy($tmp_file,$destination_path);
-        chmod($destination_path,0664);
+        //chmod($destination_path,0664);
         unlink($tmp_file);
 
 
