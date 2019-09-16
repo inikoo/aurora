@@ -815,9 +815,9 @@ function show_webpage_editor(){
     $('.hide_webpage_editor').removeClass('hide')
     $('.show_webpage_editor').addClass('hide')
 
+    change_tab('webpage.preview',{ reload:true})
 
 
-    change_tab('webpage.preview')
     $('#tabs').addClass('hide')
 
 }
@@ -828,7 +828,7 @@ function hide_webpage_editor(){
     $('.hide_webpage_editor').addClass('hide')
     $('.show_webpage_editor').removeClass('hide')
 
-    change_tab('webpage.analytics')
+    change_tab('webpage.assets',{ reload:true})
     $('#tabs').removeClass('hide')
 
 }

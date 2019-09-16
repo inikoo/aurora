@@ -3778,6 +3778,8 @@ function search_webpages($db, $account, $user, $data) {
 */
 
 
+
+
     $results_data = false;
     if (!$results_data or true) {
 
@@ -3794,6 +3796,9 @@ function search_webpages($db, $account, $user, $data) {
             $sql = sprintf(
                 "select `Page Key`,`Webpage Code`,`Webpage Name` ,`Webpage State` from `Page Store Dimension` where true $where_store and `Webpage Code` like '%s%%' limit 20 ", $q
             );
+
+
+
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
 

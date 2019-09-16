@@ -749,6 +749,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     //print microtime_float()-$timer."<br>\n";$timer=microtime_float();
 
 
+
     $state['store']      = $store;
     $state['website']    = $website;
     $state['warehouse']  = $warehouse;
@@ -802,13 +803,30 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     }
 
 
-    if ($data['old_state']['module'] != $state['module'] or $data['old_state']['section'] != $state['section'] or $data['old_state']['parent_key'] != $state['parent_key'] or $data['old_state']['key'] != $state['key'] or $reload
-        or isset($data['metadata']['reload_showcase'])
+    if ($data['old_state']['module'] != $state['module']
+        or $data['old_state']['section'] != $state['section']
+        or $data['old_state']['parent_key'] != $state['parent_key']
+        or $data['old_state']['key'] != $state['key'] or $reload
+        or isset($data['metadata']['reload_showcase']
+
+        )
 
     ) {
 
 
-        $response['navigation'] = get_navigation($user, $smarty, $state, $db, $account);
+        $_navigation=get_navigation($user, $smarty, $state, $db, $account);
+
+
+
+        if(is_array($_navigation)){
+            $response['navigation'] = $_navigation[0];
+            $response['web_navigation'] = $_navigation[1];
+        }else{
+            $response['navigation'] = $_navigation;
+            $response['web_navigation'] = '';
+
+        }
+
 
     }
     if ($reload) {
@@ -1756,7 +1774,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
         case ('dashboard'):
             require_once 'navigation/dashboard.nav.php';
-
             return get_dashboard_navigation($data, $smarty, $user, $db, $account);
             break;
         case ('products_server'):
@@ -2311,6 +2328,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             require_once 'navigation/websites.nav.php';
 
             switch ($data['section']) {
+
+
                 case 'analytics':
                 case 'settings':
                 case 'workshop':
@@ -8827,6 +8846,34 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
             }
             switch ($state['section']) {
+                case 'analytics':
+                    $branch[] = array(
+                        'label'     => '<span class="id Website_Code">'.$state['website']->get('Code'),
+                        'icon'      => 'analytics',
+                        'reference' => '',
+                    );
+                    break;
+                case 'workshop':
+                    $branch[] = array(
+                        'label'     => '<span class="id Website_Code">'.$state['website']->get('Code').'</span> '._('workshop'),
+                        'icon'      => 'drafting-compass',
+                        'reference' => ''
+                    );
+                    break;
+                case 'web_users':
+                    $branch[] = array(
+                        'label'     => '<span class="id Website_Code">'.$state['website']->get('Code').'</span> '._('eegistered users'),
+                        'icon'      => 'users-class',
+                        'reference' => ''
+                    );
+                    break;
+                case 'settings':
+                    $branch[] = array(
+                        'label'     => '<span class="id Website_Code">'.$state['website']->get('Code').'</span> '._('settings'),
+                        'icon'      => 'sliders-h',
+                        'reference' => ''
+                    );
+                    break;
                 case 'website':
 
 
@@ -8855,7 +8902,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                     $branch[] = array(
                         'label'     => '<span class="id Website_Code">'.$state['website']->get('Code').'</span> <i class="fa fa-files" aria-hidden="true"></i>',
-                        'icon'      => 'globe',
+                        'icon'      => 'browser',
                         'reference' => 'website/'.$state['website']->id
                     );
 

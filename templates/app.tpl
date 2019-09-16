@@ -10,7 +10,7 @@
 
     <link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon"/>
 
-    <link href="/assets/au_app.min.css?v=190910v3" rel="stylesheet">
+    <link href="/assets/au_app.min.css?v=190916" rel="stylesheet">
 
 
     {if !$is_devel}
@@ -24,7 +24,7 @@
 
     <script src="/assets/aurora_libs.min.js?v190910v3"></script>
 
-    <script src="/assets/aurora.min.js?v190916"></script>
+    <script src="/assets/aurora.min.js?v190916v2"></script>
 
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 
@@ -134,6 +134,7 @@
         </div>
         <div id="app_main">
             <div id="navigation"></div>
+            <div id="web_navigation"></div>
             <div id="object_showcase"></div>
             <div id="tabs"></div>
             <div id="tab"></div>

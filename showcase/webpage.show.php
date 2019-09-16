@@ -37,7 +37,6 @@ function get_webpage_showcase($data, $smarty) {
         $navigation=json_decode($webpage->properties('navigation'),true);
         $smarty->assign('navigation', $navigation);
 
-        $smarty->assign('navigation', $navigation);
 
 
         switch ($webpage->get('Webpage Scope')) {

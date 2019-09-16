@@ -40,144 +40,6 @@ $(document).ready(function () {
     })
 
 
-    //   $(document).scannerDetection(function (value) {
-//
-//        scanned_barcode(value)
-//    });
-
-
-
-
-
-
-    /*
-
-        var    wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" + document.location.host + "/w3bs0012033";
-
-        var connection = new autobahn.Connection({
-            url: wsuri,
-            realm: "aurora"
-        });
-
-        connection.onopen = function (session, details) {
-
-            function real_time (args) {
-
-                var data=args[0]
-                for (var i in data.objects) {
-                    if (state.object == data.objects[i].object && state.key == data.objects[i].key) {
-                        for (var j in data.objects[i].update_metadata.class_html) {
-                            $('.' + j).html(data.objects[i].update_metadata.class_html[j])
-                        }
-
-                        for (var key in  data.objects[i].update_metadata.hide) {
-                            $('.' + data.objects[i].update_metadata.hide[key]).addClass('hide')
-                        }
-
-                        for (var key in data.objects[i].update_metadata.show) {
-
-                            $('.' + data.objects[i].update_metadata.show[key]).removeClass('hide')
-                        }
-                    }
-                }
-
-                for (var i in data.sections) {
-                    if (state.section == data.sections[i].section ) {
-                        for (var j in data.sections[i].update_metadata.class_html) {
-                            $('.' + j).html(data.sections[i].update_metadata.class_html[j])
-                        }
-
-                        for (var key in  data.sections[i].update_metadata.hide) {
-                            $('.' + data.sections[i].update_metadata.hide[key]).addClass('hide')
-                        }
-
-                        for (var key in data.sections[i].update_metadata.show) {
-                            $('.' + data.sections[i].update_metadata.show[key]).removeClass('hide')
-                        }
-                    }
-                }
-            }
-
-            function real_time_private (args) {
-
-                var _data=args[0]
-
-                for (var i in _data.progress_bar) {
-                    var data = _data.progress_bar[i]
-
-                    console.log(data)
-
-                    if (data.state == 'In Process') {
-
-                        $('#' + data.id + ' .export_download').addClass('hide')
-
-                        $('#' + data.id + ' .export_progress_bar_bg').removeClass('hide').html('&nbsp;' + data.progress_info)
-                        $('#' + data.id + ' .export_progress_bar').css('width', data.percentage).removeClass('hide').attr('title', data.progress).html('&nbsp;' + data.progress_info);
-
-
-                    } else if (data.state == 'Finish') {
-
-                        // console.log('#'+data.id+' .download_export')
-
-
-                        $('#' + data.id + ' .download_export').attr('href', '/download.php?file=' + data.download_key)
-                        $('#' + data.id + ' .export_download').removeClass('hide').attr('title', data.result_info).on( 'click',function () {
-
-                            download_exported_file(this)
-
-                        });
-                        $('#' + data.id + ' .export_progress_bar_bg').addClass('hide').html('')
-                        $('#' + data.id + ' .export_progress_bar').css('width', '0px').removeClass('hide').attr('title', '').html('')
-
-
-                        $('#' + data.id + ' .export_button').addClass('link').removeClass('disabled')
-
-
-                        $('#' + data.id + ' .field_export').addClass('button').removeClass('disabled')
-                        $('#' + data.id + ' .stop_export').addClass('hide')
-
-                    }
-
-                }
-
-            }
-
-
-            session.subscribe('real_time.'+$('#account_name').data('account_code').toLowerCase(), real_time).then(
-                function (sub) {
-                    console.log('subscribed to topic');
-                },
-                function (err) {
-                    console.log('failed to subscribe to topic', err);
-                }
-            );
-
-
-
-            session.subscribe('real_time.'+$('#account_name').data('account_code').toLowerCase()+'.'+$('#hello_user').data('user_key'), real_time_private).then(
-                function (sub) {
-                    console.log('subscribed to topic');
-                },
-                function (err) {
-                    console.log('failed to subscribe to topic', err);
-                }
-            );
-
-
-
-
-        };
-
-        connection.onclose = function (reason, details) {
-            console.log("Connection lost: " + reason);
-
-           // setTimeout(connection.open(), 1000);
-        }
-
-        connection.open();
-
-    */
-
 
 
     connect_websocket();
@@ -418,6 +280,8 @@ function change_view_if_has_link_class(element,_request, metadata){
 function change_view(_request, metadata) {
 
 
+
+
     $.urlParam = function(name,str){
         var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(str);
         if (results==null){
@@ -476,18 +340,20 @@ function change_view(_request, metadata) {
 
                 state = data.app_state;
 
-
                 console.log(state)
 
                 if (typeof (data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
-                    // $('#navigation').removeClass('hide')
                     $('#navigation').html(data.navigation);
-                } else {
-                    // $('#navigation').addClass('hide')
+                }
+                if (typeof (data.web_navigation) != "undefined" && data.web_navigation !== null && data.web_navigation != '') {
+                    $('#web_navigation').html(data.web_navigation);
+                }else{
+                    $('#web_navigation').html('')
                 }
 
                 if (typeof (data.tabs) != "undefined" && data.tabs !== null) {
                     $('#tabs').html(data.tabs);
+
                 }
 
                 if (typeof (data.menu) != "undefined" && data.menu !== null) {
@@ -523,6 +389,8 @@ function change_view(_request, metadata) {
                 } else {
                     //  $('#object_showcase').addClass('hide')
                 }
+
+
 
                 if (typeof (data.tab) != "undefined" && data.tab !== null) {
                     $('#tab').html(data.tab);
