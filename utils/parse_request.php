@@ -4299,7 +4299,12 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             $key     = '';
                             $section = 'categories';
 
-                        } elseif ($view_path[0] == 'dashboard') {
+                        } elseif ($view_path[0] == 'supplier_parts') {
+                            $object  = 'account';
+                            $key     = 1;
+                            $section = 'supplier_parts';
+
+                        }  elseif ($view_path[0] == 'dashboard') {
                             $object  = 'account';
                             $key     = 1;
                             $section = 'dashboard';

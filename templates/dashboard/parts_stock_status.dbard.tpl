@@ -43,7 +43,7 @@
         <div>
              <span class="Active_Parts_Stock_Surplus_Stock_Value_Minify " title="{t}Stock value{/t}">{$object->get('Active Parts Stock Surplus Stock Value Minify')}</span>
 
-            | <i class="fa fa-fw fa-truck" title="{t}Current purchase orders{/t}"></i> <span class="Active_Parts_Stock_Surplus_Deliveries_Number " title="{t}Current purchase orders{/t}">{$object->get('Active Parts Stock Surplus Deliveries Number')}</span>
+            | <i class="fa fa-fw fa-truck" title="{t}Parts within a purchase order{/t}"></i> <span class="Active_Parts_Stock_Surplus_Deliveries_Number " title="{t}Parts within a purchase order{/t}">{$object->get('Active Parts Stock Surplus Deliveries Number')}</span>
 
         </div>
     </li>
@@ -53,7 +53,7 @@
         <div>
             <span class="Active_Parts_Stock_OK_Stock_Value_Minify " title="{t}Stock value{/t}">{$object->get('Active Parts Stock OK Stock Value Minify')}</span>
 
-            | <i class="fa fa-fw fa-truck" title="{t}Current purchase orders{/t}"></i> <span class="Active_Parts_Stock_OK_Deliveries_Number " title="{t}Current purchase orders{/t}">{$object->get('Active Parts Stock OK Deliveries Number')}</span>
+            | <i class="fa fa-fw fa-truck" title="{t}Parts within a purchase order{/t}"></i> <span class="Active_Parts_Stock_OK_Deliveries_Number " title="{t}Parts within a purchase order{/t}">{$object->get('Active Parts Stock OK Deliveries Number')}</span>
 
         </div>
     </li>
@@ -64,7 +64,7 @@
         <div>
             <span class="Active_Parts_Stock_Low_Stock_Value_Minify " title="{t}Stock value{/t}">{$object->get('Active Parts Stock Low Stock Value Minify')}</span>
 
-            | <i class="fa fa-fw fa-truck" title="{t}Current purchase orders{/t}"></i> <span class="Active_Parts_Stock_Low_Deliveries_Number " title="{t}Current purchase orders{/t}">{$object->get('Active Parts Stock Low Deliveries Number')}</span>
+            | <i class="fa fa-fw fa-truck" title="{t}Parts within a purchase order{/t}"></i> <span class="Active_Parts_Stock_Low_Deliveries_Number " title="{t}Parts within a purchase order{/t}">{$object->get('Active Parts Stock Low Deliveries Number')}</span>
 
         </div>
     </li>
@@ -75,7 +75,7 @@
         <div>
             <span class="Active_Parts_Stock_Critical_Stock_Value_Minify " title="{t}Stock value{/t}">{$object->get('Active Parts Stock Critical Stock Value Minify')}</span>
 
-            | <i class="fa fa-fw fa-truck" title="{t}Current purchase orders{/t}"></i> <span class="Active_Parts_Stock_Critical_Deliveries_Number " title="{t}Current purchase orders{/t}">{$object->get('Active Parts Stock Critical Deliveries Number')}</span>
+            | <i class="fa fa-fw fa-truck" title="{t}Parts within a purchase order{/t}"></i> <span class="Active_Parts_Stock_Critical_Deliveries_Number " title="{t}Parts within a purchase order{/t}">{$object->get('Active Parts Stock Critical Deliveries Number')}</span>
 
         </div>
     </li>
@@ -84,7 +84,7 @@
         <span>{t}Out of stock{/t}</span>
         <div class="title"><span class="Active_Parts_Stock_Zero_Number button" onclick="change_view('inventory' , { 'tab':'inventory.parts',  'parameters':{ elements_type:'stock_status' } ,element:{ stock_status:{ Surplus:'',Optimal:'',Low:'',Critical:'',Error:'',Out_Of_Stock:1}} } )"  title="{t}Number of out of stock parts{/t}">{$object->get('Active Parts Stock Zero Number')}</span></div>
         <div>
-             <i class="fa fa-fw fa-truck" title="{t}Current purchase orders{/t}"></i> <span class="Active_Parts_Stock_Zero_Deliveries_Number " title="{t}Current purchase orders{/t}">{$object->get('Active Parts Stock Zero Deliveries Number')}</span>
+             <i class="fa fa-fw fa-truck" title="{t}Parts within a purchase order{/t}"></i> <span class="Active_Parts_Stock_Zero_Deliveries_Number " title="{t}Parts within a purchase order{/t}">{$object->get('Active Parts Stock Zero Deliveries Number')}</span>
 
         </div>
     </li>

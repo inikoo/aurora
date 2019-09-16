@@ -360,8 +360,9 @@ class Supplier extends SubjectSupplier {
 
         switch ($field) {
             case 'payment terms':
+            case 'cooling order interval days':
+            case 'minimum_order_amount':
                 $this->fast_update_json_field('Supplier Metadata', preg_replace('/\s/', '_', $field), $value);
-
                 break;
             case 'Supplier Contact Address':
 

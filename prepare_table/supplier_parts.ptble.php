@@ -9,6 +9,8 @@
 
 */
 
+
+
 $where = "where true  ";
 $table = "`Supplier Part Dimension` SP  left join `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`) left join `Supplier Dimension` S on (SP.`Supplier Part Supplier Key`=S.`Supplier Key`)  left join `Part Data` D on (D.`Part SKU`=P.`Part SKU`) ";
 
@@ -19,12 +21,29 @@ $filter_msg = '';
 $wheref     = '';
 
 
+
+
 if ($parameters['parent'] == 'supplier' or $parameters['parent'] == 'supplier_production') {
     $where = sprintf(
         " where  `Supplier Part Supplier Key`=%d", $parameters['parent_key']
     );
 
 } elseif ($parameters['parent'] == 'account') {
+
+
+
+    if($parameters['tab']=='suppliers.supplier_parts.surplus'){
+        $where =  " where  `Part Stock Status`='Surplus' and `Supplier Production`='No' and `Part Status`='In Use'  ";
+    }elseif($parameters['tab']=='suppliers.supplier_parts.ok'){
+        $where =  " where  `Part Stock Status`='Optimal' and `Supplier Production`='No'  and `Part Status`='In Use' ";
+    }elseif($parameters['tab']=='suppliers.supplier_parts.low'){
+        $where =  " where  `Part Stock Status`='Low' and `Supplier Production`='No'  and `Part Status`='In Use'  ";
+    }elseif($parameters['tab']=='suppliers.supplier_parts.critical'){
+        $where =  " where  `Part Stock Status`='Critical' and `Supplier Production`='No'  and `Part Status`='In Use' ";
+    }elseif($parameters['tab']=='suppliers.supplier_parts.out_of_stock'){
+        $where =  " where  `Part Stock Status`='Out_Of_Stock' and `Supplier Production`='No'  and `Part Status`='In Use' ";
+    }
+
 
 } elseif ($parameters['parent'] == 'part') {
     $where = sprintf(

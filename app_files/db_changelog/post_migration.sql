@@ -262,3 +262,5 @@ update  `Website Webpage Scope Map` O left join `Product Category Dimension` D o
 update  `Website Webpage Scope Map` O left join `Product Dimension` D on (O.`Website Webpage Scope Scope Key`=D.`Product ID`) set `Website Webpage Scope Scope Website Key`=`Product Webpage Key` where `Website Webpage Scope Scope`='Product';
 
 ALTER TABLE `Website Webpage Scope Map` ADD `Website Webpage Scope Key` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`Website Webpage Scope Key`);
+
+ALTER TABLE `Part Dimension` DROP `Part Stock State`;
