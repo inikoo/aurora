@@ -4502,8 +4502,8 @@ $tab_defaults = array(
     ),
     'product.webpages' => array(
         'view'          => 'overview',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
+        'sort_key'      => 'type',
+        'sort_order'    => -1,
         'rpp'           => 100,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',

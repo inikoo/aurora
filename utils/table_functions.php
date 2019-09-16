@@ -175,6 +175,10 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s website', '%s websites', $total_records), number($total_records)
         );
+    }elseif ($record_label == 'webpage') {
+        return sprintf(
+            ngettext('%s webpage', '%s webpages', $total_records), number($total_records)
+        );
     } elseif ($record_label == 'warehouse') {
         return sprintf(
             ngettext('%s warehouse', '%s warehouses', $total_records), number($total_records)
@@ -449,6 +453,10 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s country', '%s countries', $total_records), number($total_records)
         );
+    } elseif ($record_label == 'issue') {
+        return sprintf(
+            ngettext('%s issue', '%s issues', $total_records), number($total_records)
+        );
     } elseif ($record_label == 'api key') {
         return sprintf(
             ngettext('%s Api key', '%s API keys', $total_records), number($total_records)
@@ -620,10 +628,22 @@ function get_rtext_with_filter($record_label, $total_with_filter, $total_no_filt
                 "%s supplier's part of %s", "%s supplier's parts of %s", $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
-    } elseif ($record_label == 'website') {
+    } elseif ($record_label == 'webpage') {
+        return sprintf(
+            ngettext(
+                '%s webpage of %s', '%s webpage of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    }elseif ($record_label == 'website') {
         return sprintf(
             ngettext(
                 '%s website of %s', '%s websites of %s', $total_with_filter
+            ), number($total_with_filter), number($total_no_filter)
+        );
+    }elseif ($record_label == 'issue') {
+        return sprintf(
+            ngettext(
+                '%s issue of %s', '%s issues of %s', $total_with_filter
             ), number($total_with_filter), number($total_no_filter)
         );
     } elseif ($record_label == 'warehouse') {

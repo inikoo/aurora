@@ -233,26 +233,26 @@ function websites($_data, $db, $user, $account, $redis) {
     foreach ($db->query($sql) as $data) {
 
 
-        switch ($data['Website Status']){
+        switch ($data['Website Status']) {
             case 'Active':
-                $status=sprintf('<a href="https://%s" target="_blank"><i title="%s" class="fal success fa-broadcast-tower"></i></a>',$data['Website URL'],_('Live'));
+                $status = sprintf('<a href="https://%s" target="_blank"><i title="%s" class="fal success fa-broadcast-tower"></i></a>', $data['Website URL'], _('Live'));
                 break;
             case 'InProcess':
-                $status=sprintf('<i title="%s" class="fal fa-drafting-compass"></i>',_('In construction'));
+                $status = sprintf('<i title="%s" class="fal fa-drafting-compass"></i>', _('In construction'));
                 break;
             case 'Closed':
-                $status=sprintf('<i title="%s" class="fa error fa-do-not-enter"></i>',_('Closed'));
+                $status = sprintf('<i title="%s" class="fa error fa-do-not-enter"></i>', _('Closed'));
                 break;
         }
 
         $adata[] = array(
-            'id'   => (integer)$data['Website Key'],
-            'status'=>$status,
-            'code' => sprintf('<span class="link" title="%s" onclick="change_view(\'website/%d\')">%s</span>', $data['Website Name'], $data['Website Key'], $data['Website Code']),
-            'name' => sprintf('<span class="link" onclick="change_view(\'website/%d\')">%s</span>', $data['Website Key'], $data['Website Name']),
-            'url'  => '<a href="https://'.$data['Website URL'].'" target="_blank"> <i class="fal fa-external-link-alt padding_right_10"></i> </a> '.$data['Website URL'],
+            'id'     => (integer)$data['Website Key'],
+            'status' => $status,
+            'code'   => sprintf('<span class="link" title="%s" onclick="change_view(\'website/%d\')">%s</span>', $data['Website Name'], $data['Website Key'], $data['Website Code']),
+            'name'   => sprintf('<span class="link" onclick="change_view(\'website/%d\')">%s</span>', $data['Website Key'], $data['Website Name']),
+            'url'    => '<a href="https://'.$data['Website URL'].'" target="_blank"> <i class="fal fa-external-link-alt padding_right_10"></i> </a> '.$data['Website URL'],
 
-            'online_users' => '<span class="website_rt_user_'.$data['Website Key'].'">'.($data['Website Status']=='Active'?count($redis->ZREVRANGE('_WU'.$account->get('Code').'|'.$data['Website Key'], 0, 10000)):'').'</span>',
+            'online_users' => '<span class="website_rt_user_'.$data['Website Key'].'">'.($data['Website Status'] == 'Active' ? count($redis->ZREVRANGE('_WU'.$account->get('Code').'|'.$data['Website Key'], 0, 10000)) : '').'</span>',
             'users'        => number($data['Website Total Acc Users']),
             'visitors'     => number($data['Website Total Acc Visitors']),
             'requests'     => number($data['Website Total Acc Requests']),
@@ -267,10 +267,10 @@ function websites($_data, $db, $user, $account, $redis) {
             'out_of_stock_percentage'       => percentage($data['Website Number Out of Stock Products'], $data['Website Number Products']),
 
 
-            'gsc_clicks' => number($data['Website GSC Clicks']),
+            'gsc_clicks'      => number($data['Website GSC Clicks']),
             'gsc_impressions' => number($data['Website GSC Impressions']),
-            'gsc_ctr' => percentage($data['Website GSC CTR'],1,2),
-            'gsc_position' => round($data['Website GSC Position']),
+            'gsc_ctr'         => percentage($data['Website GSC CTR'], 1, 2),
+            'gsc_position'    => round($data['Website GSC Position']),
 
 
             //'email_reminders_customers'=>number($data['Website Number Back in Stock Reminder Customers']),
@@ -711,7 +711,6 @@ function webpages($_data, $db, $user) {
 }
 
 
-
 function webpages_in_process($_data, $db, $user) {
 
     $rtext_label = 'webpage in_process';
@@ -733,16 +732,16 @@ function webpages_in_process($_data, $db, $user) {
         }
 
 
-        if(isset($webpage_types[$data['Webpage Type Code']])){
+        if (isset($webpage_types[$data['Webpage Type Code']])) {
             $type_label = $webpage_types[$data['Webpage Type Code']]['title'];
             $type_icon  = $webpage_types[$data['Webpage Type Code']]['icon'];
-        }else{
+        } else {
             $type_label = '';
             $type_icon  = '';
         }
 
 
-        $type       = sprintf('<i class="fa fa-fw %s padding_left_10" aria-hidden="true" title="%s" ></i>', $type_icon, $type_label);
+        $type = sprintf('<i class="fa fa-fw %s padding_left_10" aria-hidden="true" title="%s" ></i>', $type_icon, $type_label);
 
 
         $adata[] = array(
@@ -998,8 +997,6 @@ function webpage_types($_data, $db, $user) {
 }
 
 
-
-
 function webpage_assets($_data, $db, $user) {
 
     $rtext_label = 'webpage';
@@ -1036,25 +1033,28 @@ function webpage_assets($_data, $db, $user) {
                 $scope = '';
                 break;
         }
-//ENUM('Category_Products_Item','Guest','Products_Item','See_Also_Category_Auto','See_Also_Category_Manual','See_Also_Product_Auto','See_Also_Product_Manual','Subject') NOT NULL
+
         switch ($data['Website Webpage Scope Type']) {
             case 'Guest':
                 $type = _('Guest');
                 break;
             case 'Category_Products_Item':
-                $type = _("Family's product").' <i class="fal fa-cart-plus"></i>';
+                $type = _("Family's product").' <i class="fal padding_left_5 fa-cart-plus"></i>';
                 break;
             case 'Products_Item':
-                $type = _('Related product').' <i class="fal fa-cart-plus"></i>';
+                $type = _('Related product').' <i class="fal padding_left_5 fa-cart-plus"></i>';
                 break;
             case 'See_Also_Category_Auto':
-                $type = _('See also').' <i class="fal fa-robot"></i>';
+            case 'See_Also_Product_Auto':
+                $type = _('See also').' <i class="fal padding_left_5 fa-robot"></i>';
                 break;
             case 'See_Also_Category_Manual':
-                $type = _('See also').' <i class="fal fa-brain"></i>';
+            case 'See_Also_Product_Manual':
+                $type = _('See also').' <i class="fal padding_left_5 fa-brain"></i>';
                 break;
-
-
+            case 'Product_Main_Webpage':
+                $type = _('Product webpage').' <i class="padding_left_5 fal fa-browser"></i>';
+                break;
 
             default:
                 $type = $data['Website Webpage Scope Type'];
@@ -1062,13 +1062,13 @@ function webpage_assets($_data, $db, $user) {
         }
 
         $adata[] = array(
-            'id'    => (integer)$data['Webpage Key'],
-            'code'  => sprintf('<span class="link url" onclick="change_view(\'website/%d/webpage/%d/asset/%d\')">%s</span>', $data['Webpage Website Key'], $parameters['parent_key'] , $data['Webpage Key'], strtolower($data['Webpage Code'])),
+            'id'   => (integer)$data['Webpage Key'],
+            'code' => sprintf('<span class="link url" onclick="change_view(\'website/%d/webpage/%d/asset/%d\')">%s</span>', $data['Webpage Website Key'], $parameters['parent_key'], $data['Webpage Key'], strtolower($data['Webpage Code'])),
             'name' => $data['Webpage Name'],
 
             'state' => $state,
             'type'  => $type,
-            'scope'  => $scope,
+            'scope' => $scope,
 
 
         );

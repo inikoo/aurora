@@ -11,8 +11,8 @@
 
 //$period_tag=get_interval_db_name($parameters['f_period']);
 
-
-$table = '`Webpage Dimension` P';
+$where=sprintf(' where `Website Webpage Scope Scope`="Product" and `Website Webpage Scope Scope Key`=%d  ',$parameters['parent_key']);
+$table = '`Website Webpage Scope Map` WWSM  left join `Page Store Dimension` P on (`Website Webpage Scope Webpage Key`=`Page Key`)  '   ;
 
 $group = '';
 
@@ -35,15 +35,14 @@ if ($order == 'code') {
 if ($order == 'name') {
     $order = '`Webpage Name`';
 } else {
-    $order = 'P.`Webpage Key`';
+    $order = 'P.`Page Key`';
 }
 
 
 $sql_totals
-    = "select count(Distinct P.`Webpage Key`) as num from $table  $where  ";
+    = "select count(Distinct P.`Page Key`) as num from $table  $where  ";
 
 $fields
     = "
-`Webpage Key`,`Webpage Code`,`Webpage Name`,`Webpage Display Probability`
+`Page Key`,`Webpage Code`,`Webpage Name`,`Webpage State`,`Webpage Scope`,`Webpage Website Key`,`Website Webpage Scope Key`,`Website Webpage Scope Type`
 ";
-
