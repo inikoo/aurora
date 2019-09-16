@@ -15,7 +15,7 @@
 
     <li class="flex-item ">
         <span>{t}Surplus{/t}</span>
-        <div class="title"><span class="Active_Parts_Stock_Surplus_Number button"  onclick="change_view('suppliers.supplier_parts' , { 'subtab':'suppliers.supplier_parts.surplus',  } )"   title="{t}Number active parts with surplus stock{/t}">{$account->get('Active Suppliers Parts Stock Surplus Number')}</span></div>
+        <div class="title"><span class="Active_Parts_Stock_Surplus_Number button"  onclick="change_view('suppliers/supplier_parts' , { 'subtab':'suppliers.supplier_parts.surplus',  } )"   title="{t}Number active parts with surplus stock{/t}">{$account->get('Active Suppliers Parts Stock Surplus Number')}</span></div>
         <div>
              <span class="Active_Parts_Stock_Surplus_Stock_Value_Minify " title="{t}Stock value{/t}">{$account->get('Active Suppliers Parts Stock Surplus Stock Value Minify')}</span>
 
