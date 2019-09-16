@@ -81,7 +81,7 @@ switch ($tipo) {
 
                 if ($data['state']['current_website']) {
                     $data['scope']     = 'website';
-                    $data['scope_key'] = $data['state']['current_store'];
+                    $data['scope_key'] = $data['state']['current_website'];
                 } else {
                     $data['scope'] = 'websites';
                 }

@@ -10,7 +10,6 @@
  Version 3.0
 */
 
-
 function get_websites_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -71,10 +70,44 @@ function get_website_navigation($data, $smarty, $user, $db, $account) {
 
     $sections_class = '';
 
+    $sections_class = '';
+    switch ($website->get('Website Status')){
+        case 'Active':
+            $status_class='success';
+            break;
+        case 'InProcess':
+            $status_class='discreet';
+            break;
+        case 'Maintenance':
+            $status_class='warning';
+            break;
+        case 'Closed':
+            $status_class='discreet error';
+            break;
+    }
+
+
 
     switch ($data['section']) {
+        case 'analytics':
+
+            $title         = '<i class="fal fa-fw fa-globe padding_right_5 '.$status_class.' " ></i> <span class="id">'.$website->get('Name').'</span> <span class="url small padding_left_10">'.$website->get('URL').'</span>';
+            $link          = '';
+            $right_buttons = array(
+                array(
+                    'icon'     => 'store-alt',
+                    'title'    => $store->get('Name'),
+                    'click'    => "change_view('/store/".$store->id."')",
+                    'pre_text' => $store->get('Code'),
+                    'class'    => 'text'
+                )
+            );
+
+
+            break;
         case 'web_users':
-            $title         = sprintf(_('Website %s registered users'), ' <span class="id">'.$website->get('Code').'</span>');
+            $title         = '<i class="fal fa-fw fa-users-class padding_right_5  " ></i> <span class="id">'.$website->get('Name').'</span> <span class="  padding_left_10">'._('Registered users').'</span>';
+
             $link          = 'settings';
             $right_buttons = array(
                 array(
@@ -88,7 +121,7 @@ function get_website_navigation($data, $smarty, $user, $db, $account) {
 
             break;
         case 'settings':
-            $title         = sprintf(_('Website %s settings'), ' <span class="id">'.$website->get('Code').'</span>');
+            $title         = '<i class="fal fa-fw fa-globe padding_right_5 '.$status_class.' " ></i> <span class="Website_Name id">'.$website->get('Name').'</span> <span class="Website_cpde small padding_left_10">('.$website->get('Code').')</span> <span class="Website_URL url small padding_left_10">'.$website->get('URL').'</span>';
             $link          = 'settings';
             $right_buttons = array(
                 array(
@@ -101,7 +134,7 @@ function get_website_navigation($data, $smarty, $user, $db, $account) {
             );
             break;
         case 'workshop':
-            $title         = sprintf(_('Website %s workshop'), ' <span class="id">'.$website->get('Code').'</span>');
+            $title         = '<i class="fal fa-fw fa-globe padding_right_5 '.$status_class.' " ></i> <span class="id">'.$website->get('Name').'</span> <span class=" padding_left_10">'._('Workshop').'</span>';
             $link          = 'workshop';
             $right_buttons = array(
                 array(
@@ -142,7 +175,7 @@ function get_website_navigation($data, $smarty, $user, $db, $account) {
 
 
     list($prev_key, $next_key) = get_prev_next(
-        $website->get('Website Store Key'), $user->stores
+        $website->get('Website Store Key'), $websites
     );
 
 
@@ -193,7 +226,7 @@ function get_website_navigation($data, $smarty, $user, $db, $account) {
     );
 
 
-    $sections = get_sections('websites', $website->get('Store Key'));
+    $sections = get_sections('websites', $website->id);
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;
     }
@@ -332,8 +365,8 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
         $parameters      = $_SESSION['table_state'][$tab];
 
 
-        if($tab == 'webpage.assets'){
-            $parameters['parent_key']=$data['_parent']->id;
+        if ($tab == 'webpage.assets') {
+            $parameters['parent_key'] = $data['_parent']->id;
         }
 
 
@@ -353,40 +386,38 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
     include_once 'prepare_table/'.$tab.'.ptble.php';
 
 
-
-
-
     $order = preg_replace('/Webpage Key/', 'Page Key', $order);
 
 
     $_order_field = $order;
 
 
-    $order              = preg_replace('/^.*\.`/', '', $order);
-    $order              = preg_replace('/^`/', '', $order);
-    $order              = preg_replace('/`$/', '', $order);
+    $order = preg_replace('/^.*\.`/', '', $order);
+    $order = preg_replace('/^`/', '', $order);
+    $order = preg_replace('/`$/', '', $order);
 
 
-    if($order=='Website Webpage Scope Webpage Index'){
+    if ($order == 'Website Webpage Scope Webpage Index') {
 
-        $sql='select `Website Webpage Scope Webpage Index` from `Website Webpage Scope Map` where `Website Webpage Scope Scope Website Key`=? and `Website Webpage Scope Webpage Key`=? ';
+        $sql  = 'select `Website Webpage Scope Webpage Index` from `Website Webpage Scope Map` where `Website Webpage Scope Scope Website Key`=? and `Website Webpage Scope Webpage Key`=? ';
         $stmt = $db->prepare($sql);
         $stmt->execute(
-            array($object->id,$data['_parent']->id)
+            array(
+                $object->id,
+                $data['_parent']->id
+            )
         );
         if ($row = $stmt->fetch()) {
-            $_order_field_value=$row['Website Webpage Scope Webpage Index'];
-        }else{
-            $_order_field_value='';
+            $_order_field_value = $row['Website Webpage Scope Webpage Index'];
+        } else {
+            $_order_field_value = '';
         }
 
 
-    }else{
+    } else {
         $_order_field_value = $object->get($order);
 
     }
-
-
 
 
     $prev_title = '';
@@ -401,8 +432,6 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
 
         prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
     );
-
-
 
 
     if ($result = $db->query($sql)) {
@@ -421,7 +450,6 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
         "select `Webpage Code` object_name,`Page Key` as object_key from %s %s %s
 	                and ($_order_field  > %s OR ($_order_field  = %s AND `Page Key` > %d))  order by $_order_field   , `Page Key`  limit 1", $table, $where, $wheref, prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
     );
-
 
 
     if ($result = $db->query($sql)) {
@@ -447,6 +475,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
 
     switch ($data['parent']) {
         case 'website':
+            $website=$data['_parent'];
 
 
             $up_button = array(
@@ -493,6 +522,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
             break;
         case 'webpage_type':
 
+            $website=get_object('Website',$object->get('Webpage Website Key'));
 
             $up_button = array(
                 'icon'      => 'arrow-up',
@@ -538,6 +568,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
             break;
         case 'webpage':
 
+            $website=get_object('Website',$object->get('Webpage Website Key'));
 
             $up_button = array(
                 'icon'      => 'arrow-up',
@@ -585,6 +616,9 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
+    $navigation=json_decode($object->properties('navigation'),true);
+    $smarty->assign('navigation', $navigation);
+
     $sections = get_sections('websites', $object->get('Webpage Website Key'));
     if (isset($sections[$block_view])) {
         $sections[$block_view]['selected'] = true;
@@ -606,6 +640,8 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
         'class'    => 'text width_150  hide  hide_webpage_editor'
     );
 
+    $webpage_navigation=false;
+
     switch ($object->get('Webpage Scope')) {
         case 'Category Categories':
             $right_buttons[] = array(
@@ -614,6 +650,9 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
                 'title'     => _('Department'),
                 'class'     => 'button'
             );
+            $smarty->assign('webpage', $object);
+            $smarty->assign('website', $website);
+            $webpage_navigation=true;
             break;
         case 'Category Products':
             $right_buttons[] = array(
@@ -623,6 +662,9 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
 
                 'class' => 'button'
             );
+            $smarty->assign('webpage', $object);
+            $smarty->assign('website', $website);
+            $webpage_navigation=true;
             break;
         case 'Product':
             $right_buttons[] = array(
@@ -631,6 +673,11 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
                 'title'     => _('Product'),
                 'class'     => 'button'
             );
+
+            $smarty->assign('webpage', $object);
+            $smarty->assign('website', $website);
+            $webpage_navigation=true;
+
             break;
         default:
             //$title.=$object->get('Webpage Scope');
@@ -652,9 +699,13 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
     );
     $smarty->assign('_content', $_content);
 
-    $html = $smarty->fetch('navigation.tpl');
 
-    return $html;
+
+
+    return array(
+        $smarty->fetch('navigation.tpl'),
+        ($webpage_navigation?$smarty->fetch('webpage_navigation.tpl'):'')
+    );
 
 }
 
@@ -924,6 +975,7 @@ function get_webpages_navigation($data, $smarty, $user, $db, $account) {
 
     $sections_class = '';
     $title          = _('Web pages').' <span class="id">'.$website->get('Code').'</span>';
+    $title         = '<i class="fal fa-fw fa-browser padding_right_5  " ></i> <span class="id">'.$website->get('Name').'</span> <span class="  padding_left_10">'._('Web pages').'</span>';
 
     $left_buttons = array();
 

@@ -9,7 +9,6 @@
 -->
 *}
 
-{include file="webpage_navigation.tpl"}
 
 
 <div style="padding:20px 20px 10px 20px;border-bottom:1px solid #ccc;" class="control_panel"  data-webpage_key="{$webpage->id}"  >

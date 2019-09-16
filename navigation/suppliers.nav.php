@@ -17,7 +17,7 @@ function get_dashboard_navigation($data, $smarty, $user, $db) {
 
     $left_buttons  = array();
     $right_buttons = array();
-    $sections      = get_sections('inventory');
+    $sections      = get_sections('suppliers');
 
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;

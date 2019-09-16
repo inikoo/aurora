@@ -12,7 +12,6 @@
 
 <div class="webpage_showcase" style="padding: 0px">
 
-    {include file="webpage_navigation.tpl"}
 
 
     <div class="container" style="min-height:200px;padding:5px 0px">
