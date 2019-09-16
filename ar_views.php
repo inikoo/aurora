@@ -2585,6 +2585,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
                     break;
+                case ('supplier_parts'):
+                    return get_supplier_parts_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
                 case ('supplier'):
                     return get_supplier_navigation(
                         $data, $smarty, $user, $db, $account

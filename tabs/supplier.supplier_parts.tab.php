@@ -52,7 +52,7 @@ $default = $user->get_tab_defaults($tab);
 $table_filters = array(
     'reference' => array(
         'label' => _('Reference'),
-        'title' => _('Part reference')
+        'label' => _('Reference'),
     ),
 
 );

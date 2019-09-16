@@ -66,7 +66,7 @@ function search_suppliers($db, $account, $user, $data) {
 
 
             $sql = sprintf(
-                "SELECT `Supplier Key`,`Supplier Code`,`Supplier Type` FROM `Supplier Dimension` WHERE  `Supplier Production`='No' and `Supplier Code` LIKE '%s%%' LIMIT 20 ", $q
+                "SELECT `Supplier Key`,`Supplier Code`,`Supplier Type` FROM `Supplier Dimension` WHERE  ``Supplier Production`='No'` and `Supplier Code` LIKE '%s%%' LIMIT 20 ", $q
             );
 
 

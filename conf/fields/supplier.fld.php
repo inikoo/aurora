@@ -429,6 +429,16 @@ if ($object->get('Supplier Type') != 'Archived') {
                 'type'            => 'value'
             ),
 
+            array(
+                'id'              => 'cooling_order_interval_days',
+                'edit'            => ($edit ? 'mediumint_unsigned' : ''),
+                'value'           => htmlspecialchars($object->get('cooling order interval days')),
+                'formatted_value' => $object->get('cooling order interval days'),
+                'label'           => ucfirst($object->get_field_label('cooling order interval days')),
+                'required'        => false,
+                'type'            => 'value'
+            ),
+
 
         )
     );

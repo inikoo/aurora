@@ -1,0 +1,1 @@
+supplier_parts.cols.tpl

@@ -2798,7 +2798,7 @@ $modules = array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
-                    'webpage.assets' => array(
+                    'webpage.assets'  => array(
                         'label' => _('Asset links'),
                         'icon'  => 'grip-horizontal'
                     ),
@@ -4540,7 +4540,6 @@ $modules = array(
             */
 
 
-
             'dashboard' => array(
 
                 'type'      => 'navigation',
@@ -4573,20 +4572,69 @@ $modules = array(
                     'agents' => array()
                 )
             ),
+            /*
+
+                        'categories' => array(
+                            'type'      => 'navigation',
+                            'label'     => _('Categories'),
+                            'title'     => _('Categories'),
+                            'icon'      => 'sitemap',
+                            'reference' => 'suppliers/categories',
+                            'tabs'      => array(
+                                'suppliers.categories' => array()
+                            )
+
+                        ),
+            */
+
+            'supplier_parts' => array(
+                'type'           => 'navigation',
+                'subtabs_parent' => array(
+
+                    'suppliers.supplier_parts.surplus'      => 'suppliers.supplier_parts',
+                    'suppliers.supplier_parts.ok'           => 'suppliers.supplier_parts',
+                    'suppliers.supplier_parts.low'          => 'suppliers.supplier_parts',
+                    'suppliers.supplier_parts.critical'     => 'suppliers.supplier_parts',
+                    'suppliers.supplier_parts.out_of_stock' => 'suppliers.supplier_parts',
 
 
-            'categories' => array(
-                'type'      => 'navigation',
-                'label'     => _('Categories'),
-                'title'     => _('Categories'),
-                'icon'      => 'sitemap',
-                'reference' => 'suppliers/categories',
-                'tabs'      => array(
-                    'suppliers.categories' => array()
+                ),
+                'label'          => _("Supplier's parts"),
+                'title'          => _("Supplier's parts"),
+                'icon'           => 'hand-receiving',
+                'reference'      => 'suppliers/supplier_parts',
+                'tabs'           => array(
+                    'suppliers.supplier_parts' => array(
+                        'label'   => _("Supplier's parts"),
+                        'icon'    => 'hand-receiving',
+                        'subtabs' => array(
+                            'suppliers.supplier_parts.surplus' => array(
+                                'label' => _('Surplus')
+                            ),
+                            'suppliers.supplier_parts.ok'      => array(
+                                'label' => _('OK')
+                            ),
+                            'suppliers.supplier_parts.low'     => array(
+                                'label' => _('Low')
+                            ),
+
+                            'suppliers.supplier_parts.critical'     => array(
+                                'label' => _('Critical')
+                            ),
+                            'suppliers.supplier_parts.out_of_stock' => array(
+                                'label' => _('Out of stock')
+                            ),
+
+                        )
+                    ),
+                    'suppliers.categories'    => array(
+                        'label' => _('Categories'),
+                        'icon'  => 'sitemap',
+
+                    )
                 )
 
             ),
-
 
             'main_category.new' => array(
                 'type' => 'new_object',
@@ -4945,10 +4993,10 @@ $modules = array(
                         ),
                         'icon'          => 'hand-receiving'
                     ),
-                    'supplier.feedback' => array(
-                        'label'         => _("Issues"),
+                    'supplier.feedback'       => array(
+                        'label' => _("Issues"),
 
-                        'icon'          => 'poop'
+                        'icon' => 'poop'
                     ),
                     'supplier.orders'         => array(
                         'label'         => _(
@@ -5605,7 +5653,7 @@ $modules = array(
                         'icon'  => 'database'
                     ),
 
-                    'category.part.sales' => array(
+                    'category.part.sales'    => array(
                         'label'   => _('Sales'),
                         'icon'    => 'money-bill-alt',
                         'subtabs' => array(
@@ -5634,11 +5682,11 @@ $modules = array(
                         )
 
                     ),
-                    'part_category.feedback'                => array(
-                        'label'         => _('Issues'),
+                    'part_category.feedback' => array(
+                        'label' => _('Issues'),
                         'icon'  => 'poop',
                     ),
-                    'category.subjects' => array(
+                    'category.subjects'      => array(
                         'label'         => _('Parts'),
                         'quantity_data' => array(
                             'object' => '_object',
@@ -5654,7 +5702,6 @@ $modules = array(
                             'field'  => 'Discontinued'
                         ),
                     ),
-
 
 
                     'category.categories'          => array(
@@ -5767,7 +5814,7 @@ $modules = array(
 
                     ),
 
-                    'part.stock' => array(
+                    'part.stock'    => array(
                         'label'   => _('Stock History'),
                         'icon'    => 'scanner',
                         'subtabs' => array(
@@ -5795,8 +5842,8 @@ $modules = array(
 
 
                     ),
-                    'part.feedback'                => array(
-                        'label'         => _('Issues'),
+                    'part.feedback' => array(
+                        'label' => _('Issues'),
                         'icon'  => 'poop',
                     ),
 
@@ -5844,17 +5891,17 @@ $modules = array(
                     ),
 
 
-                    'part.history'                => array(
+                    'part.history'     => array(
                         'title'         => _('History/Notes'),
                         'label'         => '',
                         'quantity_data' => array(
                             'object' => '_object',
                             'field'  => 'Number History Records'
                         ),
-                        'icon'  => 'road',
-                        'class' => 'right icon_only'
+                        'icon'          => 'road',
+                        'class'         => 'right icon_only'
                     ),
-                    'part.images'                 => array(
+                    'part.images'      => array(
                         'title'         => _('Images'),
                         'label'         => '',
                         'quantity_data' => array(
@@ -5864,7 +5911,7 @@ $modules = array(
                         'icon'          => 'camera-retro',
                         'class'         => 'right icon_only'
                     ),
-                    'part.attachments'            => array(
+                    'part.attachments' => array(
                         'title'         => _('Attachments'),
                         'label'         => '',
                         'quantity_data' => array(
@@ -5874,9 +5921,9 @@ $modules = array(
                         'icon'          => 'paperclip',
                         'class'         => 'right icon_only'
                     ),
-                    'part.locations'              => array(
+                    'part.locations'   => array(
                         'title' => _('Locations'),
-                        'label'         => '',
+                        'label' => '',
                         'icon'  => 'inventory',
                         'class' => 'right icon_only'
                     ),
@@ -6366,7 +6413,7 @@ $modules = array(
 
             ),
 
-            'shipper' => array(
+            'shipper'  => array(
 
                 'type'      => 'object',
                 'label'     => _('Shipping company'),
@@ -6393,7 +6440,7 @@ $modules = array(
                 )
 
             ),
-            'returns' => array(
+            'returns'  => array(
                 'type'      => 'navigation',
                 'label'     => _('Returns'),
                 'icon'      => 'backspace',
@@ -8068,8 +8115,6 @@ $modules = array(
 
 
         'sections' => array(
-
-
 
 
             'suppliers' => array(

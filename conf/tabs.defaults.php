@@ -1757,6 +1757,68 @@ $tab_defaults = array(
         'elements'      => $elements_options['suppliers']
 
     ),
+
+    'suppliers.supplier_parts.surplus' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'f_period'      => 'ytd',
+
+        'export_fields' => $export_fields['supplier_parts']
+
+
+    ),
+    'suppliers.supplier_parts.ok' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'f_period'      => 'ytd',
+
+        'export_fields' => $export_fields['supplier_parts']
+
+
+    ),
+
+    'suppliers.supplier_parts.low' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'f_period'      => 'ytd',
+
+        'export_fields' => $export_fields['supplier_parts']
+    ),
+    'suppliers.supplier_parts.critical' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'f_period'      => 'ytd',
+
+        'export_fields' => $export_fields['supplier_parts']
+    ),
+    'suppliers.supplier_parts.out_of_stock' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'reference',
+        'f_period'      => 'ytd',
+
+        'export_fields' => $export_fields['supplier_parts']
+    ),
+
     'category.suppliers'     => array(
         'view'        => 'overview',
         'sort_key'    => 'formatted_id',

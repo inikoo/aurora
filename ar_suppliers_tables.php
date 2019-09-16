@@ -33,6 +33,7 @@ switch ($tipo) {
     case 'supplier_parts':
         supplier_parts(get_table_parameters(), $db, $user, $account);
         break;
+
     case 'parts_to_replenish_picking_location':
         part_locations_to_replenish_picking_location(get_table_parameters(), $db, $user);
         break;
@@ -5047,6 +5048,8 @@ function supplier_parts($_data, $db, $user, $account) {
 
     include_once 'utils/currency_functions.php';
 
+
+
     if ($user->get('User Type') == 'Agent') {
         // $_data['parameters']['parent']=='supplier' and $_data['parameters']['parent_key']==$user->get('User Parent Key')
         if (!$_data['parameters']['parent'] == 'supplier') {
@@ -5095,10 +5098,14 @@ function supplier_parts($_data, $db, $user, $account) {
     }
 
 
+
     $rtext_label = 'supplier part';
     include_once 'prepare_table/init.php';
 
     $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+
+
     $record_data = array();
 
 
