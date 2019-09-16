@@ -392,7 +392,7 @@ class Website extends DB_Table {
             }
 
             if ($type == 'Webpage') {
-                $sql = sprintf("SELECT `Page Key` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d AND `Page Code`=%s  ", $this->id, prepare_mysql($code.$suffix));
+                $sql = sprintf("SELECT `Page Key` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d AND `Webpage Code`=%s  ", $this->id, prepare_mysql($code.$suffix));
             } elseif ($type == 'Footer') {
                 $sql = sprintf(
                     "SELECT `Website Footer Key` FROM `Website Footer Dimension`  WHERE `Website Footer Website Key`=%d AND `Website Footer Code`=%s  ", $this->id, prepare_mysql($code.$suffix)
@@ -683,7 +683,6 @@ class Website extends DB_Table {
 
         $page_data = array(
 
-            'Page Code'                => $data['Webpage Code'],
             'Page URL'                 => $this->data['Website URL'].'/'.strtolower($data['Webpage Code']),
             'Page Type'                => 'Store',
             'Page Store Key'           => $this->get('Website Store Key'),
@@ -1062,7 +1061,6 @@ class Website extends DB_Table {
 
 
         $page_data = array(
-            'Page Code'                => $page_code,
             'Page URL'                 => $this->data['Website URL'].'/'.strtolower($page_code),
             'Page Type'                => 'Store',
             'Page Store Key'           => $category->get('Category Store Key'),
@@ -1125,9 +1123,7 @@ class Website extends DB_Table {
         $webpage_type->update_number_webpages();
         $this->update_website_webpages_data();
 
-        if ($page->new) {
-            $page->update_see_also();
-        }
+
 
         $this->new_page     = $page->new;
         $this->new_page_key = $page->id;
@@ -1180,7 +1176,6 @@ class Website extends DB_Table {
 
 
         $page_data = array(
-            'Page Code'                => $page_code,
             'Page URL'                 => $this->data['Website URL'].'/'.strtolower($page_code),
             'Page Type'                => 'Store',
             'Page Store Key'           => $product->get('Product Store Key'),
@@ -1231,9 +1226,7 @@ class Website extends DB_Table {
         $webpage_type->update_number_webpages();
         $this->update_website_webpages_data();
 
-        if ($page->new) {
-            $page->update_see_also();
-        }
+
 
         $this->new_page     = $page->new;
         $this->new_page_key = $page->id;

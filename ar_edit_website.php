@@ -199,22 +199,6 @@ switch ($tipo) {
         break;
 
 
-    case 'update_webpage_related_product':
-
-
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'webpage_key' => array('type' => 'key'),
-
-                         'key'   => array('type' => 'key'),
-                         'type'  => array('type' => 'string'),
-                         'value' => array('type' => 'string')
-
-
-                     )
-        );
-        update_webpage_related_product($data, $editor, $db);
-        break;
 
     case 'edit_webpage':
         $data = prepare_values(
@@ -232,15 +216,6 @@ switch ($tipo) {
 
 
 
-    case 'refresh_webpage_see_also':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'key' => array('type' => 'key')
-                     )
-        );
-        refresh_webpage_see_also($account, $db, $user, $editor, $data, $smarty);
-
-        break;
 
     case 'launch_website':
         $data = prepare_values(
@@ -261,35 +236,6 @@ switch ($tipo) {
         break;
 }
 
-
-function refresh_webpage_see_also($account, $db, $user, $editor, $data, $smarty) {
-
-
-    $object         = get_object('webpage', $data['key']);
-    $object->editor = $editor;
-
-
-    $see_also = $object->update_see_also();
-
-    $see_also_data = $object->get_see_also_data();
-
-    $links = '';
-    foreach ($see_also_data['links'] as $link) {
-        $links .= sprintf(
-            '<tr class="webpage_tr"><td></td><td>%s</td></tr>', $link['code']
-        );
-
-    }
-
-
-    $response = array(
-        'state'                 => 200,
-        'links'                 => $links,
-        'see_also_last_updated' => $see_also_data['last_updated']
-    );
-    echo json_encode($response);
-
-}
 
 function edit_webpage($data, $editor, $db) {
 
@@ -326,55 +272,6 @@ function edit_webpage($data, $editor, $db) {
 }
 
 
-function update_webpage_related_product($data, $editor, $db) {
-
-    // todo migrate to Webpage & WebpageVersion classes
-    include_once('class.Page.php');
-    $webpage = new Page($data['webpage_key']);
-
-    $sql = sprintf(
-        'SELECT `Webpage Related Product Key`,`Webpage Related Product Content Data` FROM `Webpage Related Product Bridge` WHERE `Webpage Related Product Key`=%d ', $data['key']
-    );
-
-
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
-            if ($row['Webpage Related Product Content Data'] == '') {
-                $product_content_data = array('header_text' => '');
-            } else {
-
-                $product_content_data = json_decode($row['Webpage Related Product Content Data'], true);
-
-            }
-
-            $product_content_data[$data['type']] = $data['value'];
-
-
-            $sql = sprintf(
-                'UPDATE `Webpage Related Product Bridge` SET `Webpage Related Product Content Data`=%s   WHERE `Webpage Related Product Key`=%d ', prepare_mysql(json_encode($product_content_data)), $row['Webpage Related Product Key']
-            );
-            $db->exec($sql);
-
-
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
-    }
-
-
-    $response = array(
-        'state'   => 200,
-        'content' => (isset($data['value']) ? $data['value'] : ''),
-        'publish' => $webpage->get('Publish')
-
-
-    );
-    echo json_encode($response);
-
-
-}
 
 function publish_webpage($data, $editor, $db) {
 

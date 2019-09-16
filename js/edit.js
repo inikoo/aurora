@@ -209,14 +209,7 @@ function open_edit_field(object, key, field) {
             $('#' + field + '_save_button').removeClass('hide')
 
             break;
-        case 'webpage_see_also':
-            $('#webpage_see_also').removeClass('hide')
-            $('#' + field + '_save_button').removeClass('hide')
-            break;
-        case 'webpage_related_products':
-            $('#webpage_related_products').removeClass('hide')
-            $('#' + field + '_save_button').removeClass('hide')
-            break;
+
         default:
 
     }
@@ -479,12 +472,7 @@ function close_edit_field(field) {
         case 'mixed_recipients':
             $('#' + field + '_container').find('.mixed_recipients_container').addClass('hide')
             break;
-        case 'webpage_see_also':
-            $('#webpage_see_also').addClass('hide')
-            break;
-        case 'webpage_related_products':
-            $('#webpage_related_products').addClass('hide')
-            break;
+
         default:
 
     }
@@ -965,52 +953,6 @@ function save_field(object, key, field) {
 
         value = JSON.stringify(part_list_data)
 
-    } else if (type == 'webpage_see_also') {
-        var webpage_see_also = {};
-
-        if ($('#see_also_type').hasClass('fa-toggle-on')) {
-            webpage_see_also['type'] = 'Auto'
-        } else {
-            webpage_see_also['type'] = 'Manual'
-        }
-        webpage_see_also['number_links'] = $('#see_also_number_links').val()
-
-        webpage_see_also['manual_links'] = [];
-        $('#manual_links  input.webpage_key').each(function (i, obj) {
-
-
-            if (!$(obj).closest('tr').hasClass('very_discreet')) {
-
-                if ($(obj).val() != '') {
-                    webpage_see_also['manual_links'].push($(obj).val())
-                }
-            }
-
-        });
-
-
-        value = JSON.stringify(webpage_see_also)
-        console.log(value)
-
-    } else if (type == 'webpage_related_products') {
-
-
-        webpage_related_products = [];
-        $('#webpage_related_products  input.product_id').each(function (i, obj) {
-
-
-            if (!$(obj).closest('tr').hasClass('very_discreet')) {
-
-                if ($(obj).val() != '') {
-                    webpage_related_products.push($(obj).val())
-                }
-            }
-
-        });
-
-
-        value = JSON.stringify(webpage_related_products)
-
     } else if (type == 'mixed_recipients') {
 
         external_emails = [];
@@ -1216,14 +1158,7 @@ function post_save_actions(field, data) {
             })
 
             break;
-        case 'Webpage_See_Also':
-            $('.webpage_see_also_editor').html(data.update_metadata.webpage_see_also_editor)
 
-            break;
-        case 'Webpage_Related_Products':
-            $('.webpage_related_products_editor').html(data.update_metadata.webpage_related_products_editor)
-
-            break;
         case 'User_Preferred_Locale':
             change_view(state.request, {
                 'reload': true

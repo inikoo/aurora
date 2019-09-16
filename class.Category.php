@@ -720,43 +720,7 @@ class Category extends DB_Table {
 
 
 
-                    case 'Webpage Related Products':
 
-                        $related_products_data = $this->webpage->get_related_products_data();
-                        $related_products      = '';
-
-
-                        foreach ($related_products_data['links'] as $link) {
-                            $related_products .= $link['code'].', ';
-                        }
-
-                        $related_products = preg_replace('/, $/', '', $related_products);
-
-                        return $related_products;
-
-
-                        break;
-                    case 'Webpage See Also':
-
-                        $see_also_data = $this->webpage->get_see_also_data();
-                        $see_also      = '';
-                        if ($see_also_data['type'] == 'Auto') {
-                            $see_also = _('Automatic').': ';
-                        }
-
-                        if (count($see_also_data['links']) == 0) {
-                            $see_also .= ', '._('none');
-                        } else {
-                            foreach ($see_also_data['links'] as $link) {
-                                $see_also .= $link['code'].', ';
-                            }
-                        }
-                        $see_also = preg_replace('/, $/', '', $see_also);
-
-                        return $see_also;
-
-
-                        break;
 
                     case 'Category Webpage Meta Description':
                     case 'Webpage Meta Description':
@@ -775,16 +739,6 @@ class Category extends DB_Table {
 
 
                         return $this->webpage->get('Webpage Name');
-
-                        break;
-                    case 'Website Node Parent Key':
-
-                        return $this->webpage->get('Found In Page Key');
-
-                        break;
-                    case 'Category Website Node Parent Key':
-
-                        return $this->webpage->get('Page Found In Page Key');
 
                         break;
 
@@ -2432,25 +2386,8 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                                 }
                             }
 
-                            $sql = sprintf(
-                                'SELECT `Category Webpage Index Webpage Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Category Key`=%d  GROUP BY `Category Webpage Index Webpage Key` ', $old_parent_category->id
-                            );
 
-                            if ($result = $this->db->query($sql)) {
-                                foreach ($result as $row) {
-                                    $webpage         = get_object('Webpage', $row['Category Webpage Index Webpage Key']);
-                                    $webpage->editor = $this->editor;
 
-                                    $webpage->reindex_items();
-                                    if ($webpage->updated) {
-                                        $webpage->publish();
-                                    }
-                                }
-                            } else {
-                                print_r($error_info = $this->db->errorInfo());
-                                print "$sql\n";
-                                exit;
-                            }
 
 
                             $webpage = $new_parent_category->get_webpage();
@@ -2465,28 +2402,10 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                                 }
                             }
 
-                            $sql = sprintf(
-                                'SELECT `Category Webpage Index Webpage Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Category Key`=%d  GROUP BY `Category Webpage Index Webpage Key` ', $new_parent_category->id
-                            );
 
 
-                            if ($result = $this->db->query($sql)) {
-                                foreach ($result as $row) {
 
-                                    $webpage         = get_object('Webpage', $row['Category Webpage Index Webpage Key']);
-                                    $webpage->editor = $this->editor;
-
-                                    $webpage->reindex_items();
-                                    if ($webpage->updated) {
-                                        $webpage->publish();
-                                    }
-                                }
-                            } else {
-                                print_r($error_info = $this->db->errorInfo());
-                                print "$sql\n";
-                                exit;
-                            }
-
+                            //todo Urgent update navigation of products
 
                             $sql = sprintf('update `Product Dimension` set `Product Department Category Key`=%d  where `Product Family Category Key`=%d  ', $new_parent_category->id, $this->id);
                             $this->db->exec($sql);
@@ -2592,25 +2511,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         }
 
 
-                        $sql = sprintf(
-                            'SELECT `Category Webpage Index Webpage Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Category Key`=%d  GROUP BY `Category Webpage Index Webpage Key` ', $this->id
-                        );
-
-
-                        if ($result = $this->db->query($sql)) {
-                            foreach ($result as $row) {
-                                $webpage         = get_object('Webpage', $row['Category Webpage Index Webpage Key']);
-                                $webpage->editor = $this->editor;
-                                $webpage->reindex_items();
-                                if ($webpage->updated) {
-                                    //    $webpage->publish();
-                                }
-                            }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
-                        }
 
 
                     }
@@ -2620,55 +2520,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     if ($value == 'No') {
 
 
-                        //if ($this->webpage->id) {
-                        //    $this->webpage->unpublish();
-                        //}
 
 
-                        $sql = sprintf(
-                            'SELECT `Category Webpage Index Webpage Key`,`Category Webpage Index Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Category Key`=%d  ', $this->id
-                        );
 
-
-                        if ($result = $this->db->query($sql)) {
-                            foreach ($result as $row) {
-                                $webpage         = get_object('Webpage', $row['Category Webpage Index Webpage Key']);
-                                $webpage->editor = $this->editor;
-                                $sql             = sprintf('DELETE FROM `Category Webpage Index` WHERE `Category Webpage Index Key`=%d', $row['Category Webpage Index Key']);
-                                $this->db->exec($sql);
-
-                                $webpage->reindex_items();
-
-                            }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
-                        }
-
-
-                        $sql = sprintf(
-                            'SELECT `Category Webpage Index Webpage Key`,`Category Webpage Index Key` FROM `Category Webpage Index` WHERE `Category Webpage Index Parent Category Key`=%d   GROUP BY `Category Webpage Index Webpage Key`', $this->id
-                        );
-
-
-                        if ($result = $this->db->query($sql)) {
-                            foreach ($result as $row) {
-
-                                $webpage         = get_object('Webpage', $row['Category Webpage Index Webpage Key']);
-                                $webpage->editor = $this->editor;
-
-                                $sql = sprintf('DELETE FROM `Category Webpage Index` WHERE `Category Webpage Index Webpage Key`=%d', $row['Category Webpage Index Webpage Key']);
-                                $this->db->exec($sql);
-
-                                //$webpage->update(array('Page State' => 'Offline'));
-
-                            }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
-                        }
 
 
 
@@ -2828,83 +2682,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
 
-                case 'Category Webpage Meta Description':
-                case 'Webpage Meta Description':
-                    if (!is_object($this->webpage)) {
-                        $this->get_webpage();
-                    }
 
 
-                    $this->webpage->update(
-                        array(
-                            'Webpage Meta Description' => $value
-                        ), $options
-                    );
 
-
-                    $this->updated = $this->webpage->updated;
-
-                    break;
-
-                case 'Webpage See Also':
-                    if (!is_object($this->webpage)) {
-                        $this->get_webpage();
-                    }
-                    $this->webpage->update(
-                        array(
-                            'See Also' => $value
-                        ), $options
-                    );
-
-                    $this->updated = $this->webpage->updated;
-
-                    break;
-                case 'Webpage Related Products':
-                    $this->get_webpage();
-                    $this->webpage->update(
-                        array(
-                            'Related Products' => $value
-                        ), $options
-                    );
-
-                    $this->updated = $this->webpage->updated;
-
-                    break;
-                case 'Category Webpage Name':
-                    $this->get_webpage();
-
-
-                    $this->webpage->update(
-                        array(
-
-                            'Webpage Name' => $value
-                        ), $options
-                    );
-
-                    $this->updated = $this->webpage->updated;
-
-                    break;
-
-                case 'Category Webpage Browser Title':
-                    if (!is_object($this->webpage)) {
-                        $this->get_webpage();
-                    }
-
-                    $this->webpage->update(array('Webpage Browser Title' => $value), $options);
-                    $this->updated = $this->webpage->updated;
-
-                    break;
-
-                case 'Category Website Node Parent Key':
-                    $this->get_webpage();
-                    $this->get_webpage();
-                    $this->webpage->update(
-                        array('Found In' => array($value)), $options
-                    );
-
-                    $this->updated = true;
-
-                    break;
 
 
                 default:
