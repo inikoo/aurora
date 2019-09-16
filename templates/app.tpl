@@ -116,9 +116,11 @@
                     <li onclick="change_view('/fire')"><i class="fa fa-fire fa-fw" style="color:orange;opacity:.8"></i><span id="fire_label" class="label"> {t}Fire{/t}</span>
                     </li>
                 {/if}
+                {*
                 <li title="{t}Share screen{/t}"><a href="https://get.teamviewer.com/txww6bm" target="_blank"><i class="far fa-desktop fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label"
                                                                                                                                                                                                 class="label"> {t}Share screen{/t}</span></a>
                 </li>
+                *}
                 <li class="hide" title="{t}Help{/t}" onclick="window.fcWidget.open(); return false;"><i class="fas fa-headset fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Online chat{/t}</span>
                 </li>
                 <li title="{t}Help{/t}" onclick="FreshWidget.show(); return false;"><i class="fal fa-hands-helping fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label"

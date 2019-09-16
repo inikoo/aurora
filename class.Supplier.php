@@ -83,7 +83,7 @@ class Supplier extends SubjectSupplier {
             $this->id = $this->data['Supplier Key'];
 
 
-            if (empty($this->data['Supplier Metadata'] )) {
+            if (empty($this->data['Supplier Metadata'])) {
                 $this->metadata = array();
             } else {
                 $this->metadata = json_decode(
@@ -359,11 +359,12 @@ class Supplier extends SubjectSupplier {
 
 
         switch ($field) {
-            case 'payment terms':
-            case 'cooling order interval days':
-            case 'minimum_order_amount':
-                $this->fast_update_json_field('Supplier Metadata', preg_replace('/\s/', '_', $field), $value);
+            case 'Supplier cooling order interval days':
+            case 'Supplier minimum order amount':
+                $this->fast_update_json_field('Supplier Metadata', preg_replace('/^Supplier_/', '', preg_replace('/\s/', '_', $field)), $value);
                 break;
+            case 'payment terms':
+
             case 'Supplier Contact Address':
 
 
@@ -587,6 +588,37 @@ class Supplier extends SubjectSupplier {
 
         switch ($key) {
 
+            case 'Supplier cooling order interval days':
+            case 'Supplier minimum order amount':
+
+
+
+            return $this->metadata(preg_replace('/\s/','_',preg_replace('/^Supplier /', '', $key)));
+                break;
+            case 'minimum order amount':
+
+               // print_r($this->metadata);
+//print preg_replace('/\s/','_',$key);
+
+                $_value=$this->metadata(preg_replace('/\s/','_',$key));
+                if(is_numeric($_value)){
+                    return money($_value,$this->data['Supplier Default Currency Code']);
+
+                }
+
+                break;
+            case 'cooling order interval days':
+
+                // print_r($this->metadata);
+                //print preg_replace('/\s/','_',$key);
+
+                $_value=$this->metadata(preg_replace('/\s/','_',$key));
+                if(is_numeric($_value)){
+                    return number($_value,$this->data['Supplier Default Currency Code']);
+
+                }
+
+                break;
             case 'Number System Users':
             case 'Number Attachments':
             case 'Number Purchase Orders':
@@ -1126,8 +1158,6 @@ class Supplier extends SubjectSupplier {
         $data['Supplier Part Status'] = 'Available';
 
 
-
-
         $supplier_part = new SupplierPart('find', $data, 'create');
 
 
@@ -1138,9 +1168,7 @@ class Supplier extends SubjectSupplier {
                 $this->new_object = true;
 
 
-
-
-                if($this->get('Supplier Production')=='Yes'){
+                if ($this->get('Supplier Production') == 'Yes') {
 
                     $sql = "INSERT INTO `Supplier Part Production Dimension` (`Supplier Part Key`) VALUES (?)";
                     $this->db->prepare($sql)->execute([$supplier_part->id]);
@@ -1187,29 +1215,22 @@ class Supplier extends SubjectSupplier {
                 $data['Part Production'] = $this->get('Supplier Production');
 
 
-                $data['Part Main Supplier Part Key']=$supplier_part->id;
-
-
-
+                $data['Part Main Supplier Part Key'] = $supplier_part->id;
 
 
                 if (!$part_exist) {
 
-                   // print "====\n";
-                   // print_r($data);
+                    // print "====\n";
+                    // print_r($data);
 
                     $part = new Part('find', $data, 'create');
 
-                   // print_r($part);
+                    // print_r($part);
                     if ($part->new) {
 
 
-
-
-
-                        $part->fast_update(array('Part Carton Barcode'=>$supplier_part->get('Supplier Part Carton Barcode')));
-                        $part->fast_update(array('Part SKOs per Carton'=>$supplier_part->get('Supplier Part Packages Per Carton')));
-
+                        $part->fast_update(array('Part Carton Barcode' => $supplier_part->get('Supplier Part Carton Barcode')));
+                        $part->fast_update(array('Part SKOs per Carton' => $supplier_part->get('Supplier Part Packages Per Carton')));
 
 
                         $part->update(
@@ -1249,8 +1270,6 @@ class Supplier extends SubjectSupplier {
 
                         $supplier_part->update(array('Supplier Part Part SKU' => $part->sku));
                         $supplier_part->get_data('id', $supplier_part->id);
-
-
 
 
                         $supplier_part->update_historic_object();
@@ -1637,6 +1656,12 @@ class Supplier extends SubjectSupplier {
                 break;
             case 'Supplier Average Production Days':
                 $label = _('production time (days)');
+                break;
+            case 'Supplier cooling order interval days':
+                $label = _('Cooling period between orders (days)');
+                break;
+            case 'Supplier minimum order amount':
+                $label = _('Minimum order');
                 break;
             case 'Supplier Default Currency Code':
                 $label = _('currency');
@@ -2157,7 +2182,7 @@ class Supplier extends SubjectSupplier {
             }
 
             $date = gmdate('Y-m-d H:i:s');
-            $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
+            $sql  = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
             $this->db->prepare($sql)->execute(
                 [
                     $date,
@@ -2316,7 +2341,6 @@ class Supplier extends SubjectSupplier {
 
 
     }
-
 
 
 }

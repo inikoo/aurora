@@ -429,15 +429,6 @@ if ($object->get('Supplier Type') != 'Archived') {
                 'type'            => 'value'
             ),
 
-            array(
-                'id'              => 'cooling_order_interval_days',
-                'edit'            => ($edit ? 'mediumint_unsigned' : ''),
-                'value'           => htmlspecialchars($object->get('cooling order interval days')),
-                'formatted_value' => $object->get('cooling order interval days'),
-                'label'           => ucfirst($object->get_field_label('cooling order interval days')),
-                'required'        => false,
-                'type'            => 'value'
-            ),
 
 
         )
@@ -497,149 +488,57 @@ if ($object->get('Supplier Type') != 'Archived') {
 
 
     if ($options['parent'] != 'agent') {
-        $object_fields[] = array(
-            'label'      => _('Delivery'),
-            'show_title' => false,
-            'fields'     => array(
+        /*
+     $object_fields[] = array(
+         'label'      => _('Delivery'),
+         'show_title' => false,
+         'fields'     => array(
 
 
 
 
-                array(
-                    'id'   => 'Supplier_Default_Port_of_Export',
-                    'edit' => ($edit ? 'string' : ''),
 
-                    'value'           => $object->get(
-                        'Supplier Default Port of Export'
-                    ),
-                    'formatted_value' => $object->get('Default Port of Export'),
-                    'label'           => ucfirst(
-                        $object->get_field_label(
-                            'Supplier Default Port of Export'
-                        )
-                    ),
-                    'required'        => false,
-                    'type'            => 'value'
-                ),
-                array(
-                    'id'   => 'Supplier_Default_Port_of_Import',
-                    'edit' => ($edit ? 'string' : ''),
+         )
+     );
 
-                    'value'           => $object->get(
-                        'Supplier Default Port of Import'
-                    ),
-                    'formatted_value' => $object->get('Default Port of Import'),
-                    'label'           => ucfirst(
-                        $object->get_field_label(
-                            'Supplier Default Port of Import'
-                        )
-                    ),
-                    'required'        => false,
-                    'type'            => 'value'
-                ),
-
-            )
-        );
-        $object_fields[] = array(
-            'label'      => _('Terms and conditions'),
-            'show_title' => false,
-            'fields'     => array(
+     $object_fields[] = array(
+         'label'      => _('Terms and conditions'),
+         'show_title' => false,
+         'fields'     => array(
 
 
 
 
-                array(
-                    'id'              => 'Supplier_Default_PO_Terms_and_Conditions',
-                    'edit'            => ($edit ? 'editor' : ''),
-                    'class'           => 'editor',
-                    'editor_data'     => array(
-                        'id'      => 'Supplier_Default_PO_Terms_and_Conditions',
-                        'content' => $object->get(
-                            'Supplier Default PO Terms and Conditions'
-                        ),
 
-                        'data' => base64_encode(
-                            json_encode(
-                                array(
-                                    'mode'     => 'edit_object',
-                                    'field'    => 'Supplier_Default_PO_Terms_and_Conditions',
-                                    'plugins'  => array(
-                                        'align',
-                                        'draggable',
-                                        'image',
-                                        'link',
-                                        'save',
-                                        'entities',
-                                        'emoticons',
-                                        'fullscreen',
-                                        'lineBreaker',
-                                        'table',
-                                        'codeView',
-                                        'codeBeautifier'
-                                    ),
-                                    'metadata' => array(
-                                        'tipo'   => 'edit_field',
-                                        'object' => 'Supplier',
-                                        'key'    => $object->id,
-                                        'field'  => 'Supplier Default PO Terms and Conditions',
-
-
-                                    )
-                                )
-                            )
-                        )
-
-                    ),
-                    'value'           => $object->get(
-                        'Supplier Default PO Terms and Conditions'
-                    ),
-                    'formatted_value' => $object->get(
-                        'Default PO Terms and Conditions'
-                    ),
-                    'label'           => ucfirst(
-                        $object->get_field_label(
-                            'Supplier Default PO Terms and Conditions'
-                        )
-                    ),
-                    'required'        => false,
-                    'type'            => 'value'
-                ),
-                array(
-                    'id'   => 'Supplier_Show_Warehouse_TC_in_PO',
-                    'edit' => ($edit ? 'option' : ''),
-
-                    'options'         => $options_yn,
-                    'value'           => ($new
-                        ? 'Yes'
-                        : $object->get(
-                            'Supplier Show Warehouse TC in PO'
-                        )),
-                    'formatted_value' => ($new
-                        ? _('Yes')
-                        : $object->get(
-                            'Show Warehouse TC in PO'
-                        )),
-                    'label'           => ucfirst(
-                        $object->get_field_label(
-                            'Supplier Show Warehouse TC in PO'
-                        )
-                    ),
-                    'required'        => false,
-                    'type'            => 'value'
-                ),
-
-
-            )
-        );
-
+         )
+     );
+*/
         $object_fields[] = array(
             'label'      => _('Purchase order settings'),
             'show_title' => false,
             'fields'     => array(
 
 
+                array(
+                    'id'              => 'Supplier_minimum_order_amount',
+                    'edit'            => ($edit ? 'mediumint_unsigned' : ''),
+                    'value'           => htmlspecialchars($object->get('Supplier minimum order amount')),
+                    'formatted_value' => $object->get('minimum order amount'),
+                    'label'           => ucfirst($object->get_field_label('Supplier minimum order amount')),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'              => 'Supplier_cooling_order_interval_days',
+                    'edit'            => ($edit ? 'amount' : ''),
+                    'value'           => htmlspecialchars($object->get('Supplier cooling order interval days')),
+                    'formatted_value' => $object->get('cooling order interval days'),
+                    'label'           => ucfirst($object->get_field_label('Supplier cooling order interval days')),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
 
-
+/*
                 array(
                     'id'              => 'Supplier_Skip_Inputting',
                     'edit'            => ($edit ? 'option' : ''),
@@ -726,7 +625,7 @@ if ($object->get('Supplier Type') != 'Archived') {
                     'type'            => ''
                 ),
 
-
+*/
                 array(
                     'edit'     => ($edit ? 'string' : ''),
                     'id'       => 'Supplier_Order_Public_ID_Format',
@@ -750,6 +649,122 @@ if ($object->get('Supplier Type') != 'Archived') {
 
 
                 ),
+
+
+                array(
+                    'id'              => 'Supplier_Default_PO_Terms_and_Conditions',
+                    'edit'            => ($edit ? 'editor' : ''),
+                    'class'           => 'editor',
+                    'editor_data'     => array(
+                        'id'      => 'Supplier_Default_PO_Terms_and_Conditions',
+                        'content' => $object->get(
+                            'Supplier Default PO Terms and Conditions'
+                        ),
+
+                        'data' => base64_encode(
+                            json_encode(
+                                array(
+                                    'mode'     => 'edit_object',
+                                    'field'    => 'Supplier_Default_PO_Terms_and_Conditions',
+                                    'plugins'  => array(
+                                        'align',
+                                        'draggable',
+                                        'image',
+                                        'link',
+                                        'save',
+                                        'entities',
+                                        'emoticons',
+                                        'fullscreen',
+                                        'lineBreaker',
+                                        'table',
+                                        'codeView',
+                                        'codeBeautifier'
+                                    ),
+                                    'metadata' => array(
+                                        'tipo'   => 'edit_field',
+                                        'object' => 'Supplier',
+                                        'key'    => $object->id,
+                                        'field'  => 'Supplier Default PO Terms and Conditions',
+
+
+                                    )
+                                )
+                            )
+                        )
+
+                    ),
+                    'value'           => $object->get(
+                        'Supplier Default PO Terms and Conditions'
+                    ),
+                    'formatted_value' => $object->get(
+                        'Default PO Terms and Conditions'
+                    ),
+                    'label'           => ucfirst(
+                        $object->get_field_label(
+                            'Supplier Default PO Terms and Conditions'
+                        )
+                    ),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'   => 'Supplier_Show_Warehouse_TC_in_PO',
+                    'edit' => ($edit ? 'option' : ''),
+
+                    'options'         => $options_yn,
+                    'value'           => ($new
+                        ? 'Yes'
+                        : $object->get(
+                            'Supplier Show Warehouse TC in PO'
+                        )),
+                    'formatted_value' => ($new
+                        ? _('Yes')
+                        : $object->get(
+                            'Show Warehouse TC in PO'
+                        )),
+                    'label'           => ucfirst(
+                        $object->get_field_label(
+                            'Supplier Show Warehouse TC in PO'
+                        )
+                    ),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+
+
+                array(
+                    'id'   => 'Supplier_Default_Port_of_Export',
+                    'edit' => ($edit ? 'string' : ''),
+
+                    'value'           => $object->get(
+                        'Supplier Default Port of Export'
+                    ),
+                    'formatted_value' => $object->get('Default Port of Export'),
+                    'label'           => ucfirst(
+                        $object->get_field_label(
+                            'Supplier Default Port of Export'
+                        )
+                    ),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'   => 'Supplier_Default_Port_of_Import',
+                    'edit' => ($edit ? 'string' : ''),
+
+                    'value'           => $object->get(
+                        'Supplier Default Port of Import'
+                    ),
+                    'formatted_value' => $object->get('Default Port of Import'),
+                    'label'           => ucfirst(
+                        $object->get_field_label(
+                            'Supplier Default Port of Import'
+                        )
+                    ),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+
 
             )
         );
