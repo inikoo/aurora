@@ -252,71 +252,6 @@ function file_size($bytes) {
     return $bytes;
 }
 
-function get_file_as_old($code) {
-    $ncode = $code;
-    $c     = preg_split('/\-/', $code);
-    if (count($c) == 2) {
-        if (is_numeric($c[1])) {
-            $ncode = sprintf("%s-%05d", strtolower($c[0]), $c[1]);
-        } else {
-            if (preg_match('/^[^\d]+\d+$/', $c[1])) {
-                if (preg_match('/\d*$/', $c[1], $match_num) and preg_match(
-                        '/^[^\d]*/', $c[1], $match_alpha
-                    )
-                ) {
-                    $ncode = sprintf(
-                        "%s-%s%05d", strtolower($c[0]), strtolower($match_alpha[0]), $match_num[0]
-                    );
-
-                    return $ncode;
-                }
-            }
-            if (preg_match('/^\d+[^\d]+$/', $c[1])) {
-                if (preg_match('/^\d*/', $c[1], $match_num) and preg_match(
-                        '/[^\d]*$/', $c[1], $match_alpha
-                    )
-                ) {
-                    $ncode = sprintf(
-                        "%s-%05d%s", strtolower($c[0]), $match_num[0], strtolower($match_alpha[0])
-                    );
-
-                    return $ncode;
-                }
-            }
-
-
-            $ncode = sprintf("%s-%s", strtolower($c[0]), strtolower($c[1]));
-        }
-
-    }
-    if (count($c) == 3) {
-        if (is_numeric($c[1]) and is_numeric($c[2])) {
-            $ncode = sprintf("%s-%05d-%05d", strtolower($c[0]), $c[1], $c[2]);
-
-            return $ncode;
-        }
-        if (!is_numeric($c[1]) and is_numeric($c[2])) {
-            $ncode = sprintf(
-                "%s-%s-%05d", strtolower($c[0]), strtolower($c[1]), $c[2]
-            );
-
-            return $ncode;
-        }
-        if (is_numeric($c[1]) and !is_numeric($c[2])) {
-            $ncode = sprintf(
-                "%s-%05d-%s", strtolower($c[0]), $c[1], strtolower($c[2])
-            );
-
-            return $ncode;
-        }
-
-
-    }
-
-
-    return $ncode;
-}
-
 function get_file_as($StartCode) {
 
     $PaddingAmount = 4;
@@ -747,4 +682,4 @@ function translate_written_number($string) {
 }
 
 
-?>
+

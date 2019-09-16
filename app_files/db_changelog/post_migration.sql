@@ -170,6 +170,8 @@ update `Category Dimension` set `Category Properties`='{}'  where  `Category Pro
 ALTER TABLE `Product Dimension` ADD `Product Properties` JSON NULL DEFAULT NULL AFTER `Product Department Category Key`;
 update `Product Dimension` set `Product Properties`='{}'  where  `Product Properties`='' or `Product Properties` is null ;
 
+update `Supplier Dimension` set `Supplier Metadata`='{}'  where  `Supplier Metadata`='' or `Supplier Metadata` is null ;
+
 RENAME TABLE `Product Family Sales Correlation` TO `Product Category Sales Correlation`;
 ALTER TABLE `Product Category Sales Correlation` CHANGE `Family A Key` `Category A Key` MEDIUMINT(8) UNSIGNED NOT NULL, CHANGE `Family B Key` `Category B Key` MEDIUMINT(8) UNSIGNED NOT NULL;
 ALTER TABLE `Product Category Sales Correlation` CHANGE `Correlation` `Correlation` DOUBLE NOT NULL;

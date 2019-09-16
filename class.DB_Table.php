@@ -777,6 +777,7 @@ abstract class DB_Table extends stdClass {
         $stmt->bindParam(2, $this->id);
         $stmt->execute();
 
+
         $this->get_data('id', $this->id);
 
 
