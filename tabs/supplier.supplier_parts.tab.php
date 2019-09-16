@@ -36,7 +36,7 @@ if ($user->get('User Type') == 'Agent') {
             'label' => _('Part sales'),
             'title' => _('Sales of associated part (include other suppliers)')
         ),
-        'reorder'  => array('label' => _('Part (re)stock')),
+        'reorder'  => array('label' => _('Reorder')),
 
     );
 

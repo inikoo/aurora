@@ -14,19 +14,18 @@ $tab = 'suppliers.supplier_parts.low';
 
 
 $table_views = array(
+    'reorder'  => array('label' => _('Reorder')),
+
     'overview' => array(
         'label' => _('Overview'),
-        'title' => _('Overview')
     ),
     'barcodes' => array('label' => _("Barcode/Weight/CMB")),
     'parts'    => array(
         'label' => _('Part sales'),
         'title' => _('Sales of associated part (include other suppliers)')
     ),
-    'reorder'  => array('label' => _('Part (re)stock')),
 
 );
-
 
 $ar_file = 'ar_suppliers_tables.php';
 $tipo    = 'supplier_parts';
