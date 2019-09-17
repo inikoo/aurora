@@ -29,7 +29,7 @@ $editor = array(
 
 print date('l jS \of F Y h:i:s A')."\n";
 
-update_fields_from_parts();
+update_fields_from_parts($db);
 //update_fields_from_parts($db);
 //print "updated fiels from parts\n";
 //update_web_state($db);
