@@ -100,12 +100,12 @@ function get_users_read_time_data($redis, $account) {
                 }
 
                 $real_time_users[] = array(
-                    'logged_in',
-                    $icon,
-                    $_user['alias'],
-                    $_user['request'],
-                    $_user['web_location'],
-                    $_user['web_location']
+                    'user_key'=>$user_key,
+                    'type'=>'logged_in',
+                    'icon'=>$icon,
+                    'alias'=>$_user['alias'],
+                    'request'=>$_user['request'],
+                    'web_location'=>$_user['web_location'],
                 );
 
 
@@ -115,10 +115,12 @@ function get_users_read_time_data($redis, $account) {
 
 
                 $real_time_users[] = array(
-                    'logged_out',
-                    $icon,
-                    $_user['alias'],
-
+                    'user_key'=>$user_key,
+                    'type'=>'logged_out',
+                    'icon'=>$icon,
+                    'alias'=>$_user['alias'],
+                    'request'=>'',
+                    'web_location'=>''
                 );
 
 

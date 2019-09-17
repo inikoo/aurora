@@ -31,6 +31,10 @@ function connect_websocket() {
 
 
 
+            if(data.iu!=undefined){
+                render_real_time_users_table(data.iu)
+            }
+
             for (var i in data.d3) {
                 if (data.d3[i]['type'] == 'current_website_users') {
                     if (state.tab == 'website.analytics' && state.key == data.d3[i]['website_key']) {
@@ -338,6 +342,50 @@ function website_analytics_render_website_users_table(website_key, web_users_dat
 
     $.each(to_delete_customer_keys, function (index, to_delete_customer_key) {
         table.find('.rt_wu_' + to_delete_customer_key).remove()
+    });
+
+}
+
+
+
+function  render_real_time_users_table(users_data) {
+
+
+    var table = $('.real_time_users_table')
+
+
+    var to_delete_user_keys = [];
+    $('.real_time_users_table  tr').each(function (index) {
+
+        to_delete_user_keys.push($(this).data('user_key'))
+    });
+
+
+    $.each(users_data, function (key, data) {
+
+        to_delete_user_keys.splice($.inArray(data.user_key, to_delete_user_keys), 1);
+
+        var tr = table.find('tr.rt_u_' + data.user_key)
+        if (tr.length) {
+
+            tr.find('.icon').html(data.webpage_label)
+            tr.find('.web_location').html(data.web_location).attr("onclick",'onclick="change_view(\''+data.request+'\')"');
+            tr.find('.web_location').html(data.web_location)
+
+        } else {
+
+
+            table.append('<tr data-user_key="' + data.user_key + '"  class="rt_u_' + data.user_key + '">' + '<td class="icon">' + data.icon + '</td>' +
+
+                '<td class="alias">' + data.alias + '</td>' + '<td class="web_location"  class="button" onclick="change_view(\''+data.request+'\')" >' + data.web_location + '</td>' +
+
+                '</tr>')
+        }
+    });
+
+
+    $.each(to_delete_user_keys, function (index, to_delete_user_key) {
+        table.find('.rt_u_' + to_delete_user_key).remove()
     });
 
 }

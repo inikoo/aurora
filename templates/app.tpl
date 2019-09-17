@@ -24,7 +24,7 @@
 
     <script src="/assets/aurora_libs.min.js?v190910v3"></script>
 
-    <script src="/assets/aurora.min.js?v190916v2"></script>
+    <script src="/assets/aurora.min.js?v190918v2"></script>
 
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 
@@ -173,7 +173,11 @@
                 {t}Active users{/t}
             </div>
 
-            <div class="content"></div>
+            <div class="content">
+                <table  class="real_time_users_table ">
+                </table>
+
+            </div>
         </div>
 
 
