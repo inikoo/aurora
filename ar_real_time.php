@@ -53,6 +53,15 @@ switch ($tipo) {
 
 function real_time_users($redis, $account, $user) {
 
+
+    $response = array(
+        'state' => 200,
+        'users_data'  => get_users_read_time_data($redis, $account)
+    );
+    echo json_encode($response);
+    exit;
+
+    /*
     $html            = '<table class="real_time_users">';
     $real_time_users = $redis->ZREVRANGE('_IU'.$account->get('Code'), 0, 100, 'WITHSCORES');
 
@@ -125,7 +134,7 @@ function real_time_users($redis, $account, $user) {
     );
     echo json_encode($response);
     exit;
-
+*/
 
 }
 

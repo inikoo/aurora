@@ -93,12 +93,7 @@ function get_real_time_users() {
     var request = "/ar_real_time.php?tipo=users";
 
     $.getJSON(request, function (data) {
-
-
-        $('.real_time_users.side_content  .content').html(data.html).removeClass('hide');
-
-
-
+        render_real_time_users_table(data.users_data)
 
     })
 

@@ -393,16 +393,6 @@ $redis->zRemRangeByScore('_IU'.$account->get('Code'), 0, gmdate('U') - 600);
 $real_time_users=get_users_read_time_data($redis, $account);
 
 
-$socket->send(
-    json_encode(
-        array(
-            'channel' => 'real_time.'.strtolower($account->get('Account Code')),
-
-            'iu' => $real_time_users
-
-        )
-    )
-);
 
 
 $sql  = 'select `Website Key` from `Website Dimension`';
@@ -410,31 +400,39 @@ $stmt = $db->prepare($sql);
 $stmt->execute(
     array()
 );
+
+
+$real_time_website_users=array();
 while ($row = $stmt->fetch()) {
     $deleted_values = $redis->zRemRangeByScore('_WU'.$account->get('Code').'|'.$row['Website Key'], 0, gmdate('U') - 300);
     if ($deleted_values > 0) {
         $real_time_website_users_data = get_website_users_read_time_data($redis, $account, $row['Website Key']);
-        $socket->send(
-            json_encode(
-                array(
-                    'channel' => 'real_time.'.strtolower($account->get('Account Code')),
 
-                    'd3' => array(
-                        array(
-                            'type'        => 'current_website_users',
-                            'website_key' => $row['Website Key'],
-                            'data'        => $real_time_website_users_data
-                        )
-                    )
-
-                )
-            )
+        $real_time_website_users[]=array(
+            'type'        => 'current_website_users',
+            'website_key' => $row['Website Key'],
+            'data'        => $real_time_website_users_data
         );
+
+
     }
 
 
 }
 
+
+
+$socket->send(
+    json_encode(
+        array(
+            'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+
+            'iu' => $real_time_users,
+            'd3' => $real_time_website_users
+
+        )
+    )
+);
 
 send_periodic_email_mailshots($time, $db, $account);
 
