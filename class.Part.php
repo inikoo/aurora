@@ -575,28 +575,7 @@ class Part extends Asset {
 
     }
 
-    function get_main_supplier_part_key() {
 
-        $main_supplier_part_key = false;
-
-        $sql  = 'SELECT `Supplier Part Key` FROM `Supplier Part Dimension` WHERE `Supplier Part Part SKU`=? ';
-        $stmt = $this->db->prepare($sql);
-        if ($stmt->execute(
-            array(
-                $this->id
-            )
-        )) {
-            if ($row = $stmt->fetch()) {
-                $main_supplier_part_key = $row['Supplier Part Key'];
-            }
-        } else {
-            print_r($error_info = $stmt->errorInfo());
-            exit();
-        }
-
-        return $main_supplier_part_key;
-
-    }
 
     function get_supplier_parts($scope = 'keys') {
 
@@ -1417,21 +1396,7 @@ class Part extends Asset {
                     return json_decode($this->data['Part Next Deliveries Data'], true);
                 }
                 break;
-            case 'Carton Weight':
 
-
-                $weight = $this->data['Part Package Weight'] * $this->data['Part SKOs per Carton'];
-
-                if ($weight < 1) {
-                    return weight(ceil($this->data['Part Package Weight'] * $this->data['Part SKOs per Carton']), 'Kg', 0);
-
-                } else {
-                    return weight(round($this->data['Part Package Weight'] * $this->data['Part SKOs per Carton']), 'Kg', 0);
-
-                }
-
-
-                break;
             case 'Weight Status':
                 switch ($this->data['Part Package Weight Status']) {
                     case 'Missing':
@@ -1462,12 +1427,16 @@ class Part extends Asset {
 
                 return $status;
                 break;
-
-            case 'Supplier Part Currency Code':
-
+            case 'Carton Weight':
                 $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
-
-
+                return $main_supplier_part->get('Carton Weight');
+                break;
+            case 'Carton CBM':
+                $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
+                return $main_supplier_part->get('Carton CBM');
+                break;
+            case 'Supplier Part Currency Code':
+                $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
                 return $main_supplier_part->get('Supplier Part Currency Code');
                 break;
             case 'Part Supplier Part Unit Cost':

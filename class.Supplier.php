@@ -591,14 +591,9 @@ class Supplier extends SubjectSupplier {
             case 'Supplier cooling order interval days':
             case 'Supplier minimum order amount':
 
-
-
-            return $this->metadata(preg_replace('/\s/','_',preg_replace('/^Supplier /', '', $key)));
+                return $this->metadata(preg_replace('/\s/','_',preg_replace('/^Supplier /', '', $key)));
                 break;
             case 'minimum order amount':
-
-               // print_r($this->metadata);
-//print preg_replace('/\s/','_',$key);
 
                 $_value=$this->metadata(preg_replace('/\s/','_',$key));
                 if(is_numeric($_value)){
@@ -609,8 +604,7 @@ class Supplier extends SubjectSupplier {
                 break;
             case 'cooling order interval days':
 
-                // print_r($this->metadata);
-                //print preg_replace('/\s/','_',$key);
+
 
                 $_value=$this->metadata(preg_replace('/\s/','_',$key));
                 if(is_numeric($_value)){

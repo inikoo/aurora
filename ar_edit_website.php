@@ -707,7 +707,7 @@ function save_webpage_content($data, $editor, $account, $db) {
         $response['overview_items_html'] = $overview_items_html;
     }
 
-
+/*
     require_once 'utils/new_fork.php';
     new_housekeeping_fork(
         'au_housekeeping', array(
@@ -715,7 +715,7 @@ function save_webpage_content($data, $editor, $account, $db) {
         'webpage_key' => $webpage->id,
     ), $account->get('Account Code'), $db
     );
-
+*/
 
 
     echo json_encode($response);

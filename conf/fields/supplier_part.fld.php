@@ -405,11 +405,9 @@ $warning_units_per_package='';
 $can_edit_units_per_package=false;
 
 $supplier_part_fields[] = array(
-    'label' => ($show_full_label
-        ? _('Units packed in').' ('._("Part SKO").')'
-        : _(
-            'SKO'
-        )),
+    'label' => 'SKO <span class="small">('._('Units packed in').')</span>',
+
+
 
     'show_title' => true,
     'fields'     => array(
@@ -542,16 +540,12 @@ $supplier_part_fields[] = array(
         array(
             'id'   => 'Part_Package_Weight',
             'edit' => ($edit ? 'numeric' : ''),
-
             'value'           => $object->part->get('Part Package Weight'),
             'formatted_value' => $object->part->get('Package Weight'),
-            'label'           => ucfirst(
-                $object->part->get_field_label('Part Package Weight')
-            ),
+            'label'           => ucfirst($object->part->get_field_label('Part Package Weight')),
             'invalid_msg'     => get_invalid_message('numeric'),
             'required'        => false,
             'placeholder'     => 'Kg',
-
             'type' => 'value'
         ),
         array(
@@ -575,11 +569,7 @@ $supplier_part_fields[] = array(
 
 
 $supplier_part_fields[] = array(
-    'label' => ($show_full_label
-        ? _("Supplier's part cartons")
-        : _(
-            'Cartons'
-        )),
+    'label' =>_('Cartons'),
 
     'show_title' => true,
     'fields'     => array(
@@ -601,19 +591,24 @@ $supplier_part_fields[] = array(
         array(
             'id'   => 'Supplier_Part_Carton_CBM',
             'edit' => ($edit ? 'numeric' : ''),
-
-            'value'           => htmlspecialchars(
-                $object->get('Supplier Part Carton CBM')
-            ),
+            'value'           => htmlspecialchars($object->get('Supplier Part Carton CBM')),
             'formatted_value' => $object->get('Carton CBM'),
-            'label'           => ucfirst(
-                $object->get_field_label('Supplier Part Carton CBM')
-            ),
+            'label'           => ucfirst($object->get_field_label('Supplier Part Carton CBM')),
             'placeholder'     => _('cubic meters'),
             'required'        => false,
             'type'            => 'value'
         ),
-
+        array(
+            'id'   => 'Supplier_Part_Carton_Weight',
+            'edit' => ($edit ? 'numeric' : ''),
+            'value'           => $object->get('Supplier Part Carton Weight'),
+            'formatted_value' => $object->get('Carton Weight'),
+            'label'           => ucfirst($object->get_field_label('Supplier Part Carton Weight')),
+            'invalid_msg'     => get_invalid_message('numeric'),
+            'required'        => false,
+            'placeholder'     => 'Kg',
+            'type' => 'value'
+        ),
 
         array(
             'id'     => 'Supplier_Part_Carton_Barcode',

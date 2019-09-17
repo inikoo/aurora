@@ -56,7 +56,8 @@ class SupplierPart extends DB_Table {
         }
 
         if ($this->data = $this->db->query($sql)->fetch()) {
-            $this->id   = $this->data['Supplier Part Key'];
+            $this->id         = $this->data['Supplier Part Key'];
+            $this->properties = json_decode($this->data['Supplier Part Properties'], true);
 
             $this->part = get_object('Part', $this->data['Supplier Part Part SKU'], false, $this->db);
         }
@@ -192,7 +193,7 @@ class SupplierPart extends DB_Table {
 
 
         if (preg_match('/\%$/', $base_data['Supplier Part Unit Extra Cost Percentage'])) {
-            $base_data['Supplier Part Unit Extra Cost Percentage'] = floatval(preg_replace('/\%$/', '', $base_data['Supplier Part Unit Extra Cost Percentage']) )/ 100;
+            $base_data['Supplier Part Unit Extra Cost Percentage'] = floatval(preg_replace('/\%$/', '', $base_data['Supplier Part Unit Extra Cost Percentage'])) / 100;
             // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
         }
 
@@ -216,7 +217,11 @@ class SupplierPart extends DB_Table {
 
 
         if ($this->db->exec($sql)) {
-            $this->id  = $this->db->lastInsertId();
+            $this->id = $this->db->lastInsertId();
+
+            $this->fast_update(array('Supplier Part Properties' => '{}'));
+
+
             $this->msg = "Supplier part added";
             $this->get_data('id', $this->id);
 
@@ -264,8 +269,21 @@ class SupplierPart extends DB_Table {
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
         $field = preg_replace('/^Part Part /', 'Part ', $field);
+
         switch ($field) {
 
+            case 'Supplier Part Carton Weight':
+
+                $this->fast_update_json_field('Supplier Part Properties', strtolower(preg_replace('/^Supplier_Part_/', '', preg_replace('/\s/', '_', $field))), $value);
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Carton_Weight'=>$this->get('Carton Weight')
+
+                    )
+                );
+
+                break;
 
             case 'Supplier Part Units Per Carton':
 
@@ -888,9 +906,7 @@ class SupplierPart extends DB_Table {
 
                 $this->update_metadata = array(
                     'class_html' => array(
-                        'Carton_Weight'                   => $this->get(
-                            'Carton Weight'
-                        ),
+                        'Carton_Net_Weight'               => $this->get('Carton Net Weight'),
                         'Carton_Cost'                     => $this->get(
                             'Carton Cost'
                         ),
@@ -919,12 +935,11 @@ class SupplierPart extends DB_Table {
             case 'Supplier Part Carton Barcode':
 
 
-
                 $this->update_field($field, $value, $options);
 
-                if (  $this->part->get('Part Main Supplier Part Key')==$this->id  ) {
-                    $this->part->editor=$this->editor;
-                    $this->part->update(array('Part Carton Barcode'=>$value),$options);
+                if ($this->part->get('Part Main Supplier Part Key') == $this->id) {
+                    $this->part->editor = $this->editor;
+                    $this->part->update(array('Part Carton Barcode' => $value), $options);
                 }
 
 
@@ -965,9 +980,9 @@ class SupplierPart extends DB_Table {
                 );
 
 
-                if ($this->part->get('Part Main Supplier Part Key')==$this->id  ) {
-                    $this->part->editor=$this->editor;
-                    $this->part->update(array('Part SKOs per Carton'=>$value));
+                if ($this->part->get('Part Main Supplier Part Key') == $this->id) {
+                    $this->part->editor = $this->editor;
+                    $this->part->update(array('Part SKOs per Carton' => $value));
                 }
 
 
@@ -977,7 +992,7 @@ class SupplierPart extends DB_Table {
 
                 $this->update_metadata = array(
                     'class_html' => array(
-                        'Carton_Weight'                     => $this->get('Carton Weight'),
+                        'Carton_Net_Weight'                 => $this->get('Carton Net Weight'),
                         'Carton_Cost'                       => $this->get(
                             'Carton Cost'
                         ),
@@ -999,11 +1014,11 @@ class SupplierPart extends DB_Table {
 
 
                 if (preg_match('/\s*\%\s*$/', $value)) {
-                    $value = preg_replace('/\s*\%\s*/', '', $value) ;
+                    $value = preg_replace('/\s*\%\s*/', '', $value);
 
-                    if(is_numeric($value)){
-                        $value=$value/100;
-                    }else{
+                    if (is_numeric($value)) {
+                        $value = $value / 100;
+                    } else {
                         $this->error = true;
                         $this->msg   = sprintf(
                             _('Invalid extra cost (%s)'), $value
@@ -1017,9 +1032,6 @@ class SupplierPart extends DB_Table {
                 if ($value == '') {
                     $value = 0;
                 }
-
-
-
 
 
                 if (!is_numeric($value) or $value < 0) {
@@ -1066,11 +1078,11 @@ class SupplierPart extends DB_Table {
             case 'Supplier Part Unit Extra Cost':
 
                 if (preg_match('/\s*\%\s*$/', $value)) {
-                    $value = preg_replace('/\s*\%\s*/', '', $value) ;
+                    $value = preg_replace('/\s*\%\s*/', '', $value);
 
-                    if(is_numeric($value)){
-                        $value=$value/100;
-                    }else{
+                    if (is_numeric($value)) {
+                        $value = $value / 100;
+                    } else {
                         $this->error = true;
                         $this->msg   = sprintf(
                             _('Invalid extra cost (%s)'), $value
@@ -1085,8 +1097,6 @@ class SupplierPart extends DB_Table {
                 if ($value == '') {
                     $value = 0;
                 }
-
-
 
 
                 if (!is_numeric($value) or $value < 0) {
@@ -1205,7 +1215,8 @@ class SupplierPart extends DB_Table {
 
             case 'Supplier Code':
 
-                $supplier=get_object('Supplier',$this->data['Supplier Part Supplier Key']);
+                $supplier = get_object('Supplier', $this->data['Supplier Part Supplier Key']);
+
                 return $supplier->get('Code');
                 break;
             case 'Supplier Key':
@@ -1286,18 +1297,46 @@ class SupplierPart extends DB_Table {
 
 
                 break;
-            case 'Carton Weight':
+            case 'Carton Net Weight':
 
                 return weight(
                     $this->part->data['Part Package Weight'] * $this->data['Supplier Part Packages Per Carton']
                 );
                 break;
-            case 'Carton Weight Approx':
+            case 'Carton Net Weight Approx':
 
                 return weight(
                     ceil($this->part->data['Part Package Weight'] * $this->data['Supplier Part Packages Per Carton'])
                 );
                 break;
+            case 'Supplier Part Carton Weight':
+
+                return $this->properties('carton_weight');
+
+                break;
+            case 'Carton Weight':
+
+                $carton_weight = $this->properties('carton_weight');
+                if (is_numeric($carton_weight) and $carton_weight > 0) {
+                    return weight($carton_weight);
+                } else {
+                    return '';
+                }
+
+                break;
+            case 'Carton Weight Approx':
+                $carton_weight = $this->properties('carton_weight');
+                if (is_numeric($carton_weight) and $carton_weight > 0) {
+                    return weight(
+                        ceil($carton_weight)
+                    );
+                } else {
+                    return '';
+                }
+
+                break;
+
+
             case 'SKO Weight':
                 return $this->part->get('Package Weight');
                 break;
@@ -1433,7 +1472,7 @@ class SupplierPart extends DB_Table {
                         ).' '._('units').')</span>';
                 }
 
-               // $value .= ' <span class="italic very_discreet">('.$this->part->data['Part SKOs per Carton'].' '._("SKOs per selling carton").')</span>';
+                // $value .= ' <span class="italic very_discreet">('.$this->part->data['Part SKOs per Carton'].' '._("SKOs per selling carton").')</span>';
 
 
                 return $value;
@@ -1690,10 +1729,10 @@ class SupplierPart extends DB_Table {
 
             case 'Available to Make up':
 
-                if(!empty($this->data['Supplier Part Available to Make up'])){
+                if (!empty($this->data['Supplier Part Available to Make up'])) {
                     return number($this->data['Supplier Part Available to Make up']);
 
-                }else{
+                } else {
                     return '?';
                 }
 
@@ -1718,6 +1757,10 @@ class SupplierPart extends DB_Table {
         return '';
     }
 
+    function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
+    }
+
     function update_historic_object() {
 
         if (!$this->id) {
@@ -1725,7 +1768,7 @@ class SupplierPart extends DB_Table {
         }
 
         //$old_value = $this->get('Supplier Part Historic Key');
-        $changed   = false;
+        $changed = false;
 
         $sql = sprintf(
             'SELECT `Supplier Part Historic Key` FROM `Supplier Part Historic Dimension` WHERE
@@ -1912,13 +1955,16 @@ class SupplierPart extends DB_Table {
                 $label = _("units per SKO");
                 break;
             case 'Supplier Part On Demand':
-                $label = _('On demand');
+                $label = _('on demand');
                 break;
             case 'Supplier Part Fresh':
-                $label = _('Make to order');
+                $label = _('make to order');
                 break;
             case 'Part Recommended Product Unit Name':
-                $label = _('Unit recommended description');
+                $label = _('unit recommended description');
+                break;
+            case 'Supplier Part Carton Weight':
+                $label = _('carton weight');
                 break;
             default:
                 $label = $field;
@@ -1928,7 +1974,6 @@ class SupplierPart extends DB_Table {
         return $label;
 
     }
-
 
 
     function get_next_deliveries_data() {

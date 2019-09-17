@@ -3178,11 +3178,14 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
         case 'take_webpage_screenshot':
 
+
+
+
             $webpage = get_object('Webpage', $data['webpage_key']);
 
             $webpage->fork = true;
 
-            $webpage->update_screenshots();
+            //$webpage->update_screenshots();
 
 
             break;
