@@ -598,7 +598,6 @@ function edit_field($account, $db, $editor, $data, $smarty) {
                 $smarty->assign('customer', $object);
 
                 $other_delivery_addresses = $object->get_other_delivery_addresses_data();
-
                 $smarty->assign('other_delivery_addresses', $other_delivery_addresses);
 
 
@@ -735,12 +734,12 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty) {
             $smarty->assign('customer', $object);
             $directory_field = 'other_delivery_addresses';
 
-            $directory          = $smarty->fetch(
-                'delivery_addresses_directory.tpl'
-            );
-            $items_in_directory = count(
-                $object->get_other_delivery_addresses_data()
-            );
+            $other_delivery_addresses = $object->get_addresses_data();
+
+            $smarty->assign('other_delivery_addresses', $other_delivery_addresses);
+
+            $directory          = $smarty->fetch('delivery_addresses_directory.tpl');
+            $items_in_directory = count($object->get_other_delivery_addresses_data());
             $action             = ($object->updated ? 'set_main_delivery_address' : '');
             $value              = $object->get('Customer Delivery Address');
         } else {
@@ -831,9 +830,10 @@ function delete_object_component($account, $db, $user, $editor, $data, $smarty) 
                 $smarty->assign('customer', $object);
                 $directory_field = 'other_delivery_addresses';
 
-                $directory          = $smarty->fetch(
-                    'delivery_addresses_directory.tpl'
-                );
+                $other_delivery_addresses = $object->get_other_delivery_addresses_data();
+                $smarty->assign('other_delivery_addresses', $other_delivery_addresses);
+
+                $directory          = $smarty->fetch('delivery_addresses_directory.tpl');
                 $items_in_directory = count(
                     $object->get_other_delivery_addresses_data()
                 );
