@@ -1649,7 +1649,7 @@ class Supplier extends SubjectSupplier {
                 $label = _('delivery time (days)');
                 break;
             case 'Supplier Average Production Days':
-                $label = _('production time (days)');
+                $label = _('production waiting time (days)');
                 break;
             case 'Supplier cooling order interval days':
                 $label = _('Cooling period between orders (days)');

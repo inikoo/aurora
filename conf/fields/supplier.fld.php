@@ -524,7 +524,7 @@ if ($object->get('Supplier Type') != 'Archived') {
                     'edit'            => ($edit ? 'mediumint_unsigned' : ''),
                     'value'           => htmlspecialchars($object->get('Supplier minimum order amount')),
                     'formatted_value' => $object->get('minimum order amount'),
-                    'label'           => ucfirst($object->get_field_label('Supplier minimum order amount')),
+                    'label'           => ucfirst($object->get_field_label('Supplier minimum order amount')).' ('.$object->get('Default Currency Code').')',
                     'required'        => false,
                     'type'            => 'value'
                 ),
