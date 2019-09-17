@@ -20,6 +20,17 @@
             vertical-align: top;
         }
 
+        .supplier td {
+            border-left: 0.1mm solid #000000;
+            border-right: 0.1mm solid #000000;
+            border-bottom: 0.1mm solid #000000;
+            border-top: 0.1mm solid #000000;
+
+            padding-bottom: 4px;
+            padding-top: 5px;
+            font-size: 8pt;
+        }
+
         .items td {
             border-left: 0.1mm solid #000000;
             border-right: 0.1mm solid #000000;
@@ -260,17 +271,29 @@
 <table class="items" width="100%" style="font-size: 9pt; border-collapse: collapse;" cellpadding="8">
     <thead>
     <tr>
+        {if  $purchase_order->get('Purchase Order Currency Code')=='IDR'}
+            <td style="width:12%;text-align:left">{t}Reference{/t}</td>
+            <td style="text-align:left">{t}Unit description{/t}</td>
+            <td style="width:20%;text-align:right">{t}Quantity ordered{/t}</td>
+            <td style="width:12.5%;text-align:right">{t}Unit cost{/t}</td>
+
+            <td style="width:16%;text-align:right">{t}Amount{/t}</td>
+         {else}
         <td style="width:12%;text-align:left">{t}Reference{/t}</td>
         <td style="text-align:left">{t}Unit description{/t}</td>
         <td style="width:22%;text-align:right">{t}Quantity ordered{/t}</td>
         <td style="width:10%;text-align:right">{t}Unit cost{/t}</td>
 
         <td style="width:15%;text-align:right">{t}Amount{/t}</td>
-
+        {/if}
     </tr>
     </thead>
     <tbody>
     {foreach from=$transactions item=transaction name=products}
+
+
+        {if $transaction.type=='item'}
+
         <tr class="{if $smarty.foreach.products.last}last{/if}">
             <td style="text-align:left">{$transaction.reference}</td>
             <td style="text-align:left">{$transaction.description}</td>
@@ -278,6 +301,12 @@
             <td style="text-align:right">{$transaction.unit_cost}</td>
             <td style="text-align:right">{$transaction.amount}</td>
         </tr>
+        {elseif $transaction.type=='supplier' and  $purchase_order->get('Purchase Order Parent')=='Agent'}
+            <tr class="supplier">
+                <td colspan=5 style="text-align:left"><b>{$transaction.name}</b>  {if $transaction.telephone!=''}<span style="font-size: 8pt">&nbsp;&nbsp; &#x260F;{$transaction.telephone}</span>{/if}</td>
+
+            </tr>
+        {/if}
     {/foreach}
     </tbody>
 
@@ -286,7 +315,7 @@
 
     <tr class="total">
         <td colspan="4"><b>{t}Total items{/t}</b></td>
-        <td><b>{$purchase_order->get('Items Net Amount')}</b></td>
+        <td><b>{$total_items_amount}</b></td>
     </tr>
 
     </tbody>
