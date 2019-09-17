@@ -430,6 +430,7 @@ function money($amount, $currency = '', $locale = false, $option = '') {
 
     $formatted_money=preg_replace('/\s?PLN\s?/','zł',$formatted_money);
     $formatted_money=preg_replace('/\s?CZK\s?/','Kč ',$formatted_money);
+    $formatted_money=preg_replace('/\s?IDR\s?/','Rp',$formatted_money);
 
     return $formatted_money;
 }
