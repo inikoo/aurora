@@ -1428,7 +1428,6 @@ function get_part_product_navigation($data, $smarty, $user, $db, $account) {
 
     $object = $data['_object'];
 
-    $block_view = $data['section'];
 
 
     $left_buttons = array();
@@ -1639,6 +1638,7 @@ function get_part_product_navigation($data, $smarty, $user, $db, $account) {
     }
 
 
+
     $right_buttons[] = array(
         'icon'  => 'sticky-note',
         'title' => _('Sticky note'),
@@ -1647,6 +1647,15 @@ function get_part_product_navigation($data, $smarty, $user, $db, $account) {
     );
 
 
+    if($data['_object']->get('Product Webpage Key')>0) {
+        $right_buttons[] = array(
+            'html_icon' => '<i class="far fa-browser"></i>',
+
+            'reference' => 'website/'.$data['store']->get('Store Website Key').'/online/webpage/'.$data['_object']->get('Product Webpage Key'),
+            'title'     => _('Webpage'),
+            'class'     => 'button'
+        );
+    }
 
     $_content = array(
         'sections_class' => '',
