@@ -368,7 +368,7 @@ function  render_real_time_users_table(users_data) {
         var tr = table.find('tr.rt_u_' + data.user_key)
         if (tr.length) {
 
-            tr.find('.icon').html(data.webpage_label)
+            tr.find('.icon').html(data.icon)
             tr.find('.web_location').html(data.web_location).attr("onclick",'onclick="change_view(\''+data.request+'\')"');
             tr.find('.web_location').html(data.web_location)
 
