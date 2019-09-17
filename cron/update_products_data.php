@@ -201,7 +201,7 @@ function update_fields_from_parts($db) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-            $part = new Part($row['Part SKU']);
+            $part = get_object('Part',$row['Part SKU']);
             print $part->id."\r";
             $part->updated_linked_products();
 
@@ -217,4 +217,4 @@ function update_fields_from_parts($db) {
 }
 
 
-?>
+
