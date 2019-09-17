@@ -1964,7 +1964,7 @@ class SupplierPart extends DB_Table {
                 $label = _('unit recommended description');
                 break;
             case 'Supplier Part Carton Weight':
-                $label = _('carton weight');
+                $label = _('carton gross weight');
                 break;
             default:
                 $label = $field;

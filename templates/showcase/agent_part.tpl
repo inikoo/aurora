@@ -110,7 +110,7 @@
                     <span class="Carton_CBM">{$supplier_part->get('Carton CBM')}</span>
                 </td>
                 <td style="text-align: right">
-                    <span class="Carton_Weight">{$part->get('Carton Weight')}</span>
+                    <span class="Carton_Weight" title="{t}Carton gross weight{/t}">{$part->get('Carton Weight')}</span>
                 </td>
             </tr>
 

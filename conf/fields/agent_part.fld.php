@@ -182,7 +182,17 @@ $supplier_part_fields[] = array(
             'required'        => false,
             'type'            => 'value'
         ),
-
+        array(
+            'id'   => 'Supplier_Part_Carton_Weight',
+            'edit' => ($edit ? 'numeric' : ''),
+            'value'           => $object->get('Supplier Part Carton Weight'),
+            'formatted_value' => $object->get('Carton Weight'),
+            'label'           => ucfirst($object->get_field_label('Supplier Part Carton Weight')),
+            'invalid_msg'     => get_invalid_message('numeric'),
+            'required'        => false,
+            'placeholder'     => 'Kg',
+            'type' => 'value'
+        ),
 
         array(
             'id'     => 'Supplier_Part_Carton_Barcode',
