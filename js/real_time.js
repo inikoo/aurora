@@ -30,6 +30,7 @@ function connect_websocket() {
         ws_connection.subscribe('real_time.' + $('#account_name').data('account_code').toLowerCase(), function (topic, data) {
 
 
+
             for (var i in data.d3) {
                 if (data.d3[i]['type'] == 'current_website_users') {
                     if (state.tab == 'website.analytics' && state.key == data.d3[i]['website_key']) {
