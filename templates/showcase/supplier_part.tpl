@@ -75,7 +75,7 @@
                     <span class="SKO_Dimensions">{$supplier_part->get('SKO Dimensions')}</span>
                 </td>
                 <td style="text-align: right">
-                    <span class="Package_Weight">{$part->get('Package Weight')}</span>
+                    <span class="Package_Weight" title="{t}SKO weight{/t}">{$part->get('Package Weight')}</span>
                 </td>
 
 
@@ -102,10 +102,10 @@
 
                 </td>
                 <td style="">
-                    <span class="Carton_CBM">{$supplier_part->get('Carton CBM')}</span>
+                    <span class="Carton_CBM" title="{t}Carton CBM{/t}">{$supplier_part->get('Carton CBM')}</span>
                 </td>
                 <td style="text-align: right">
-                    <span class="Carton_Weight">{$supplier_part->get('Carton Weight')}</span>
+                    <span class="Carton_Weight" title="{t}Carton gross weight{/t}">{$supplier_part->get('Carton Weight')}</span>
                 </td>
             </tr>
 

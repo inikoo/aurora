@@ -692,15 +692,15 @@
 
                 </td>
                 <td>
-                    {if $part->get('Part Number Supplier Parts')==1}<a target="_blank"  title="{t}Carton label{/t}" href="/asset_label.php?object=supplier_part&key={$part->get_main_supplier_part_key()}&type=carton"><i class="far fa-barcode-alt fa-fw padding_right_5" ></i></a>{/if} <span class="Part_Carton_Barcode" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part Carton Barcode')==''}<span class="discreet error italic">{t}Not set{/t}</span>{else}{$part->get('Part Carton Barcode')}{/if}</span>
+                    {if $part->get('Part Number Supplier Parts')==1}<a target="_blank"  title="{t}Carton label{/t}" href="/asset_label.php?object=supplier_part&key={$part->get('Part Main Supplier Part Key')}&type=carton"><i class="far fa-barcode-alt fa-fw padding_right_5" ></i></a>{/if} <span class="Part_Carton_Barcode" data-label_no_set="{t}Not set{/t}" >{if $part->get('Part Carton Barcode')==''}<span class="discreet error italic">{t}Not set{/t}</span>{else}{$part->get('Part Carton Barcode')}{/if}</span>
 
 
                 </td>
                 <td style="text-align: right">
-                    <span class="Carton_Weight italic"  title="{t}Carton weight (approx.){/t}"  >{$part->get('Carton Weight')}</span>
+                    <span class="Carton_Weight "  title="{t}Carton gross weight{/t}"  >{$part->get('Carton Weight')}</span>
                 </td>
                 <td style="text-align: right">
-                    <span class="Carton_CBM">{$part->get('Carton CBM')}</span>
+                    <span class="Carton_CBM" title="{t}Carton CBM{/t}">{$part->get('Carton CBM')}</span>
                 </td>
             </tr>
 

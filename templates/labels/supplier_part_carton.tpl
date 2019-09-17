@@ -10,6 +10,8 @@
 *}
 
 <style>
+    .top td{
+        font-size: 1.5mm;color:#000; text-align: center;vertical-align:bottom;padding:0px 5px 2px 5px;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;}
 .labels td{
    font-size: 2mm;color:#000; text-align: center;vertical-align:bottom;padding:4px 5px 0px 5px;border-top:.1mm solid #000;font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;}
 .data td{
@@ -20,7 +22,11 @@
 
 
 
-    <table style="margin-top:.75mm;width: 100%; border-collapse: collapse;" >
+    <table style="margin-top:.3mm;width: 100%; border-collapse: collapse;" >
+        <tr class="top" >
+            <td colspan="4" style="padding-top: 2px"> Commercialised by {$account->get('Code')} </td>
+
+        </tr>
         <tr class="labels">
             <td >Reference
             </td>
@@ -106,13 +112,13 @@
 
             </td>
             <td >
-                Carton weight
+                Net weight
+            </td>
+            <td >
+                Gross weight
             </td>
             <td >
                 Origin
-            </td>
-            <td >
-                Commercialised by
             </td>
         </tr>
 
@@ -122,13 +128,13 @@
 
             </td>
             <td  >
-                <b>{$supplier_part->get('Carton Weight Approx')}</b>
+                <b>{$supplier_part->get('Carton Net Weight Approx')}</b>
             </td>
             <td  >
-                <b>{$supplier_part->part->get('Part Origin Country Code')}</b>
+                <b>{$supplier_part->get('Carton Weight')}</b>
             </td>
             <td  >
-                <b> {$account->get('Code')}</b>
+                <b>{$supplier_part->part->get('Part Origin Country Code')|strtoupper}</b>
             </td>
         </tr>
 

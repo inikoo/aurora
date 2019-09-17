@@ -268,3 +268,4 @@ ALTER TABLE `Website Webpage Scope Map` ADD `Website Webpage Scope Key` INT UNSI
 ALTER TABLE `Part Dimension` DROP `Part Stock State`;
 
 ALTER TABLE `Website Webpage Scope Map` CHANGE `Website Webpage Scope Scope Website Key` `Website Webpage Scope Scope Webpage Key` MEDIUMINT(8) UNSIGNED NULL DEFAULT NULL;
+update `Supplier Part Dimension` set `Supplier Part Properties`='{}'  where  `Supplier Part Properties`='' or `Supplier Part Properties` is null ;

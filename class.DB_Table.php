@@ -771,11 +771,11 @@ abstract class DB_Table extends stdClass {
         );
 
 
-
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(1, $value);
         $stmt->bindParam(2, $this->id);
         $stmt->execute();
+
 
 
         $this->get_data('id', $this->id);
