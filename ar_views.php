@@ -113,6 +113,8 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     );
 
 
+    $old_weblocation=(isset($data['old_state']['module'])?$data['old_state']['module']:'').'|'.(isset($data['old_state']['section'])?$data['old_state']['section']:'');
+
     //if (isset($data['metadata']['help']) and $data['metadata']['help']) {
     //    get_help($data, $modules, $db);
     //    return;
@@ -1216,6 +1218,29 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     $response['tab'] = get_tab($db, $smarty, $user, $account, $state['tab'], $state['subtab'], $state, $data['metadata']);
 
+    if($old_weblocation!=$state['module'].'|'.$state['section']){
+
+        $context = new ZMQContext();
+        $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+        $socket->connect("tcp://localhost:5555");
+
+        require_once 'utils/real_time_functions.php';
+        $real_time_users=get_users_read_time_data($redis, $account);
+
+
+        $socket->send(
+            json_encode(
+                array(
+                    'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+
+                    'iu' => $real_time_users,
+
+                )
+            )
+        );
+
+    }
+
 
     unset($state['_object']);
     unset($state['_parent']);
@@ -1231,6 +1256,11 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     unset($state['website']);
     unset($state['warehouse']);
     unset($state['production']);
+
+
+
+
+
     $response['state'] = 200;
 
     $response['app_state'] = $state;
