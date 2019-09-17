@@ -1218,7 +1218,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     $response['tab'] = get_tab($db, $smarty, $user, $account, $state['tab'], $state['subtab'], $state, $data['metadata']);
 
-    if($old_weblocation!=$state['module'].'|'.$state['section']){
+    if($old_weblocation!=(isset($state['module'])?$state['module']:'').'|'.(isset($state['section'])?$state['section']:'')){
 
         $context = new ZMQContext();
         $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
