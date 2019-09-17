@@ -46,6 +46,7 @@ ALTER TABLE `Website Dimension` CHANGE `Website Settings` `Website Settings` JSO
 update `Image Subject Bridge` set `Image Subject Object`='Website' where `Image Subject Object` ='';
 update `Image Subject Bridge` set `Image Subject Is Public`='Yes' where `Image Subject Object` in ('Website');
 update `Image Subject Bridge` set `Image Subject Is Public`='No' where `Image Subject Object` in ('Part');
+update `Image Subject Bridge` set `Image Subject Is Public`='Yes',`Image Subject Object Image Scope`='Marketing' where `Image Subject Object` in ('Product');
 
  update `Image Subject Bridge` left join  `Category Dimension` on (`Category Key`=`Image Subject Object Key`) set `Image Subject Is Public`='Yes'  where `Image Subject Object`='Category' and `Category Scope`='Product'  ;
 
