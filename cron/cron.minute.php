@@ -16,7 +16,6 @@ require_once 'utils/new_fork.php';
 $time = gmdate('H:i');
 
 
-
 switch ($time) {
     case '00:00':
         new_housekeeping_fork(
@@ -354,7 +353,7 @@ switch ($time) {
         new_housekeeping_fork(
             'au_housekeeping', array(
             'type' => 'redo_day_ISF',
-            'date' => gmdate('Y-m-d',strtotime('Yesterday'))
+            'date' => gmdate('Y-m-d', strtotime('Yesterday'))
 
         ), $account->get('Account Code')
         );
@@ -383,31 +382,38 @@ switch ($time) {
         break;
 }
 
+$context = new ZMQContext();
+$socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+$socket->connect("tcp://localhost:5555");
 
 require_once 'utils/real_time_functions.php';
 
 $redis->zRemRangeByScore('_IU'.$account->get('Code'), 0, gmdate('U') - 600);
 
+$real_time_users=get_users_read_time_data($redis, $account);
 
-$sql='select `Website Key` from `Website Dimension`';
+
+$socket->send(
+    json_encode(
+        array(
+            'channel' => 'real_time.'.strtolower($account->get('Account Code')),
+
+            'iu' => $real_time_users
+
+        )
+    )
+);
+
+
+$sql  = 'select `Website Key` from `Website Dimension`';
 $stmt = $db->prepare($sql);
 $stmt->execute(
     array()
 );
 while ($row = $stmt->fetch()) {
-    $deleted_values=$redis->zRemRangeByScore('_WU'.$account->get('Code').'|'.$row['Website Key'], 0, gmdate('U') - 300);
-
-
-
-
-    if($deleted_values>0) {
+    $deleted_values = $redis->zRemRangeByScore('_WU'.$account->get('Code').'|'.$row['Website Key'], 0, gmdate('U') - 300);
+    if ($deleted_values > 0) {
         $real_time_website_users_data = get_website_users_read_time_data($redis, $account, $row['Website Key']);
-
-        $context = new ZMQContext();
-        $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-        $socket->connect("tcp://localhost:5555");
-
-
         $socket->send(
             json_encode(
                 array(
@@ -428,9 +434,6 @@ while ($row = $stmt->fetch()) {
 
 
 }
-
-
-
 
 
 send_periodic_email_mailshots($time, $db, $account);
