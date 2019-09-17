@@ -114,6 +114,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
     $old_weblocation=(isset($data['old_state']['module'])?$data['old_state']['module']:'').'|'.(isset($data['old_state']['section'])?$data['old_state']['section']:'');
+    $redis->zadd('_IU'.$account->get('Code'), gmdate('U'), $user->id);
 
     //if (isset($data['metadata']['help']) and $data['metadata']['help']) {
     //    get_help($data, $modules, $db);
