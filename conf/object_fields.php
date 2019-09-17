@@ -448,7 +448,17 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             if (isset($options['type']) and $options['type'] == 'user') {
                 include 'fields/user.system.fld.php';
             } else {
-                include 'fields/supplier.fld.php';
+
+
+
+                if ($user->get('User Type') == 'Agent') {
+                    include 'fields/agent_supplier.fld.php';
+
+                }else{
+                    include 'fields/supplier.fld.php';
+
+                }
+
             }
 
             return $object_fields;
