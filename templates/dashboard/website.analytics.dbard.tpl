@@ -38,13 +38,20 @@ table.current_website_users .amount{
 
 </style>
 
-<div style="width:330px;float: left;" class="current_website_users_{$website->id}">
+
+
+
+<div style="clear:both;">
+
+<div style="width:330px;float: left;" class="current_users current_website_users_{$website->id}">
 
 </div>
 
-<table class="current_website_users current_website_users_table_{$website->id}">
+<table  class="current_website_users current_website_users_table_{$website->id}">
 </table>
 
+    <div style="clear: both"></div>
+</div>
 
 <script>
 
