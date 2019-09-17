@@ -26,6 +26,7 @@ class Image extends DB_Table {
     var $new = false;
     var $deleted = false;
     var $found_key = 0;
+    public $fork = false;
 
 
     public $editor = array(
@@ -455,6 +456,7 @@ class Image extends DB_Table {
 
 
         $path_root='img';
+
 
 
 

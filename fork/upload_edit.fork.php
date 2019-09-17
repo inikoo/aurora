@@ -514,7 +514,7 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
 
 
             }
-
+            $parent->fork=true;
 
             $object = $parent->create_product($data['fields_data']);
             //print_r($object);
