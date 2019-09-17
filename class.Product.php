@@ -14,6 +14,8 @@ include_once 'class.Asset.php';
 
 class Product extends Asset {
 
+    public $fork = false;
+
     function __construct($arg1 = false, $arg2 = false, $arg3 = false, $_db = false) {
 
         if (!$_db) {

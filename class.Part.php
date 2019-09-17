@@ -19,6 +19,7 @@ class Part extends Asset {
 
     public $sku = false;
     public $locale = 'en_GB';
+    public $fork = false;
 
     function __construct($arg1, $arg2 = false, $arg3 = false, $_db = false) {
 
@@ -4798,6 +4799,7 @@ class Part extends Asset {
 
             if (count($product->get_parts()) == 1) {
                 $product->editor = $this->editor;
+                $product->fork = $this->fork;
 
                 $product->fast_update(
                     array(

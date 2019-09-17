@@ -17,6 +17,7 @@ class Store extends DB_Table {
 
 
     public $smarty;
+    public $fork;
 
     function __construct($a1, $a2 = false, $a3 = false, $_db = false) {
 
@@ -29,6 +30,7 @@ class Store extends DB_Table {
 
         $this->table_name    = 'Store';
         $this->ignore_fields = array('Store Key');
+        $this->fork=false;
 
         if (is_numeric($a1) and !$a2) {
             $this->get_data('id', $a1);
@@ -3795,8 +3797,8 @@ class Store extends DB_Table {
 
                 if ($product->get('Product Number of Parts') == 1) {
                     foreach ($product->get_parts('objects') as $part) {
-
-
+                        $part->editor=$this->editor;
+                        $part->fork=$this->fork;
                         $part->updated_linked_products();
                     }
                 }
