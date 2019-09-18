@@ -1778,6 +1778,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         case 'newsletter':
             include_once 'showcase/email_campaign.show.php';
             $html = get_email_campaign_showcase($data, $smarty, $user, $db, $account);
+            $web_location = '<i class="fal fa-fw fa-newsletter"></i> '.(strlen($data['_object']->get('Name'))>17?substr($data['_object']->get('Name'),0,20).'&hellip;':$data['_object']->get('Name'));
 
             break;
 
