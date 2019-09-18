@@ -290,7 +290,7 @@ class User extends DB_Table {
             $user_id = $this->db->lastInsertId();
             $this->get_data('id', $user_id);
 
-        $this->fast_update(array('User Settings'=>'{}'));
+            $this->fast_update(array('User Settings' => '{}'));
 
             $this->new = true;
 
@@ -784,8 +784,6 @@ class User extends DB_Table {
 
 
         $this->read_groups();
-
-
         $old_groups = $this->groups_key_array;
 
         $to_delete = array_diff($old_groups, $groups);
@@ -834,6 +832,48 @@ class User extends DB_Table {
         }
 
         $this->update_warehouses($warehouses, false);
+        $this->update_rights();
+    }
+
+    function update_rights() {
+
+        $rights = array();
+        include 'conf/user_groups.php';
+
+
+        foreach ($this->get_groups() as $group_key) {
+
+
+            if (isset($user_groups[$group_key])) {
+                $rights = array_merge($rights, $user_groups[$group_key]['Rights']);
+
+            } else {
+
+
+                $sql  = 'delete  FROM `User Group User Bridge`   WHERE `User Group Key`=:key';
+                $stmt = $this->db->prepare($sql);
+                $stmt->bindParam(':key', $group_key, PDO::PARAM_INT);
+                $stmt->execute();
+
+            }
+
+        }
+        $sql  = 'delete FROM `User Rights Bridge`  WHERE `User Key`=:user_key';
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':user_key', $this->id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        if ($this->data['User Active'] == 'Yes') {
+            foreach ($rights as $right_code) {
+                $sql  = 'insert into `User Rights Bridge` (`User Key`,`Right Code`) values (:user_key,:right_code) ';
+                $stmt = $this->db->prepare($sql);
+                $stmt->bindParam(':user_key', $this->id, PDO::PARAM_INT);
+                $stmt->bindParam(':right_code', $right_code, PDO::PARAM_STR);
+
+                $stmt->execute();
+            }
+        }
+
 
     }
 
@@ -1477,6 +1517,7 @@ class User extends DB_Table {
                 break;
         }
 
+        $this->update_rights();
 
         $this->other_fields_updated = array(
             'User_Password' => array(
@@ -1665,6 +1706,8 @@ class User extends DB_Table {
     function can_supervisor($tag, $tag_key = false) {
 
         return $this->can_do('Supervisor', $tag, $tag_key);
+
+
 
     }
 
@@ -1858,6 +1901,10 @@ class User extends DB_Table {
                 $this->rights_allow['Create'][$right_data['Right Name']] = 1;
                 $this->rights[$right_data['Right Name']]['Create']       = 'Create';
             }
+            if ($right_data['Right Type'] == 'Supervisor') {
+                $this->rights_allow['Supervisor'][$right_data['Right Name']] = 1;
+                $this->rights[$right_data['Right Name']]['Supervisor']       = 'Supervisor';
+            }
 
 
         }
@@ -1898,10 +1945,6 @@ class User extends DB_Table {
 
         return $list;
     }
-
-
-
-
 
 
     function get_tab_defaults($tab) {

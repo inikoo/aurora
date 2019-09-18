@@ -224,7 +224,6 @@ $user_groups = array(
             'CV',
             'CE',
             'SV',
-
             'PV'
 
         ),

@@ -271,7 +271,8 @@ module.exports = function (grunt) {
                     'js/sticky_notes.js',
                     'js/picking_and_packing.js',
                     'js/app.js',
-                    'js/real_time.js'
+                    'js/real_time.js',
+                    'js/customers.js'
 
 
 

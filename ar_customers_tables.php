@@ -1886,7 +1886,7 @@ function customer_notifications($_data, $db, $user) {
 function credit_blockchain($_data, $db, $user,$account) {
 
 
-
+//'Payment','Adjust','Cancel','Return','PayReturn','AddFunds'
 
     $rtext_label = 'transaction';
 
@@ -1901,7 +1901,6 @@ function credit_blockchain($_data, $db, $user,$account) {
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
-
 
             $note='';
             switch ($data['Credit Transaction Type']){
@@ -1942,11 +1941,27 @@ function credit_blockchain($_data, $db, $user,$account) {
                     $note=$data['History Abstract'];
 
                     break;
-                case 'PayReturn':
-                    $type=_('Credited to pay for return postage');
+                case 'MoneyBack':
+                case 'RemoveFundsOther':
+                    $type=_('Withdraw');
                     $note=$data['History Abstract'];
 
                     break;
+                case 'PayReturn':
+                case 'Compensation':
+                case 'AddFundsOther':
+                    $type=_('Deposit');
+                    $note=$data['History Abstract'];
+
+                    break;
+
+                case 'TransferOut':
+                case 'TransferIn':
+                    $type=_('Transfer');
+                    $note=$data['History Abstract'];
+
+                    break;
+
                 case 'Adjust':
                     $type=_('Adjust');
                     $note=$data['History Abstract'];

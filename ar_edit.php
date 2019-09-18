@@ -283,13 +283,21 @@ switch ($tipo) {
                          'amount'                  => array('type' => 'amount'),
                          'note'                    => array('type' => 'string'),
                          'credit_transaction_type' => array('type' => 'string'),
-
-
                      )
         );
-        add_funds_to_customer_account($account, $db, $data, $editor, $user);
+        edit_customer_account_amount('add_funds', $account, $db, $data, $editor, $user);
         break;
-
+    case 'remove_funds_to_customer_account':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'customer_key'            => array('type' => 'key'),
+                         'amount'                  => array('type' => 'amount'),
+                         'note'                    => array('type' => 'string'),
+                         'credit_transaction_type' => array('type' => 'string'),
+                     )
+        );
+        edit_customer_account_amount('remove_funds', $account, $db, $data, $editor, $user);
+        break;
 
     default:
         $response = array(
@@ -484,7 +492,7 @@ function edit_field($account, $db, $editor, $data, $smarty) {
                     'parts_list_items.edit.tpl'
                 );
 
-            }  elseif ($field == 'Part Cost in Warehouse') {
+            } elseif ($field == 'Part Cost in Warehouse') {
 
 
                 include_once 'utils/new_fork.php';
@@ -550,27 +558,26 @@ function edit_field($account, $db, $editor, $data, $smarty) {
             } elseif ($field == 'Supplier Part Unit Cost') {
 
 
-                if($object->get_object_name()=='Part'){
-                    $main_supplier_part=get_object('Supplier_Part',$object->get('Part Main Supplier Part Key'));
+                if ($object->get_object_name() == 'Part') {
+                    $main_supplier_part = get_object('Supplier_Part', $object->get('Part Main Supplier Part Key'));
 
 
                     $cost = sprintf(
-                        '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>', $main_supplier_part->get('Supplier Part Key'), $main_supplier_part->get('Supplier Part Unit Cost'), $main_supplier_part->get('Supplier Part Currency Code'),
-                        money($main_supplier_part->get('Supplier Part Unit Cost'),
-                              $main_supplier_part->get('Supplier Part Currency Code'))
+                        '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>', $main_supplier_part->get('Supplier Part Key'), $main_supplier_part->get('Supplier Part Unit Cost'),
+                        $main_supplier_part->get('Supplier Part Currency Code'), money(
+                            $main_supplier_part->get('Supplier Part Unit Cost'), $main_supplier_part->get('Supplier Part Currency Code')
+                        )
                     );
 
-                }else{
+                } else {
 
                     $cost = sprintf(
-                        '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>', $object->get('Supplier Part Key'), $object->get('Supplier Part Unit Cost'), $object->get('Supplier Part Currency Code'),
-                        money($object->get('Supplier Part Unit Cost'),
-                              $object->get('Supplier Part Currency Code'))
+                        '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>', $object->get('Supplier Part Key'), $object->get('Supplier Part Unit Cost'), $object->get('Supplier Part Currency Code'), money(
+                                                                                                                                   $object->get('Supplier Part Unit Cost'), $object->get('Supplier Part Currency Code')
+                                                                                                                               )
                     );
 
                 }
-
-
 
 
                 $update_metadata['cost_cell'] = $cost;
@@ -1002,7 +1009,7 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 
             // $response['request'] = sprintf('offers/%d/%s', $object->get('Deal Campaign Store Key'));
 
-        }elseif ($object->get_object_name() == 'Supplier Delivery') {
+        } elseif ($object->get_object_name() == 'Supplier Delivery') {
 
             if ($user->get('User Type') == 'Agent') {
                 $response['request'] = 'agent_deliveries';
@@ -1038,7 +1045,6 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 
 
 function new_object($account, $db, $user, $editor, $data, $smarty) {
-
 
 
     $parent         = get_object($data['parent'], $data['parent_key']);
@@ -1439,7 +1445,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     echo json_encode($response);
                                     exit;
                                 } else {
-
 
 
                                     $shipping_deal_zones_schema = array_pop($shipping_deal_zones_schemas);
@@ -2359,8 +2364,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             //$data['fields_data']['user'] = $user;
 
 
-            $data['fields_data']['Webpage Type']              = 'Info';
-            $data['fields_data']['Webpage Scope']             = 'Info';
+            $data['fields_data']['Webpage Type']  = 'Info';
+            $data['fields_data']['Webpage Scope'] = 'Info';
 
             $object = $parent->create_system_webpage($data['fields_data']);
 
@@ -3013,14 +3018,14 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
         case 'EmailCampaign':
         case 'Mailshot':
 
-        include_once 'class.EmailCampaign.php';
+            include_once 'class.EmailCampaign.php';
             $object = $parent->create_mailshot($data['fields_data']);
 
 
             if (!$parent->error) {
 
-                $pcard        = '';
-                $redirect     = 'marketing/'.$object->get('Store Key').'/emails/'.$parent->id.'/mailshot/'.$object->id;
+                $pcard             = '';
+                $redirect          = 'marketing/'.$object->get('Store Key').'/emails/'.$parent->id.'/mailshot/'.$object->id;
                 $redirect_metadata = array('tab' => 'mailshot.workshop');
 
                 $updated_data = array();
@@ -3653,7 +3658,7 @@ function edit_image($account, $db, $user, $editor, $data, $smarty) {
 
                                 $product         = get_object('Product', $row['Product ID']);
                                 $product->editor = $editor;
-                                $product->link_image($row['Image Subject Image Key'],'Marketing');
+                                $product->link_image($row['Image Subject Image Key'], 'Marketing');
 
                             }
 
@@ -3856,7 +3861,17 @@ function transfer_customer_credit_to($account, $db, $data, $editor, $user) {
 
 }
 
-function add_funds_to_customer_account($account, $db, $data, $editor, $user) {
+function edit_customer_account_amount($operation_type, $account, $db, $data, $editor, $user) {
+
+
+    if (!$user->can_supervisor('accounting')) {
+        $response = array(
+            'state' => 400,
+            'msg'   => "Restricted operation, you don't have authorisation to do this"
+        );
+        echo json_encode($response);
+        exit;
+    }
 
     include_once 'utils/currency_functions.php';
 
@@ -3879,6 +3894,11 @@ function add_funds_to_customer_account($account, $db, $data, $editor, $user) {
     }
 
 
+    if ($operation_type == 'remove_funds') {
+        $data['amount'] = -$data['amount'];
+    }
+
+
     $exchange = currency_conversion($db, $store->get('Store Currency Code'), $account->get('Account Currency Code'));
 
     $sql = sprintf(
@@ -3893,10 +3913,46 @@ function add_funds_to_customer_account($account, $db, $data, $editor, $user) {
 
     $credit_key = $db->lastInsertId();
 
+    $note = '';
+    if ($operation_type == 'remove_funds') {
+        switch ($data['credit_transaction_type']) {
+            case 'MoneyBack':
+                $note = '<i class="fal fa-download "  title="'._('Funds withdrawn from customer account').'" ></i> '.money(-$data['amount'], $store->get('Store Currency Code')).' <i class="fal fa-user-minus"  title="'._('Customer wanted they money back').'" ></i>  '
+                    .($data['note'] != '' ? ', '.$data['note'] : '');
+                break;
+            case 'TransferOut':
+                $note = '<i class="fal fa-download "  title="'._('Funds withdrawn from customer account').'" ></i> '.money(-$data['amount'], $store->get('Store Currency Code')).' <i class="fal fa-exchange"  title="'._('Transfer funds other account').'" ></i>  '
+                    .($data['note'] != '' ? ', '.$data['note'] : '');
+                break;
+            case 'RemoveFundsOther':
+                $note = '<i class="fal fa-download "  title="'._('Funds withdrawn from customer account').'" ></i> '.money(-$data['amount'], $store->get('Store Currency Code'))
+                    .($data['note'] != '' ? ', '.$data['note'] : '');
+                break;
+        }
+
+    } else {
+        switch ($data['credit_transaction_type']) {
+            case 'PayReturn':
+                $note = '<i class="fal fa-upload "  title="'._('Funds added to customer account').'" ></i> '.money($data['amount'], $store->get('Store Currency Code')).' <i class="fal fa-mailbox"  title="'._('Money add to customer account to pay for postage of a return').'" ></i>  '
+                    .($data['note'] != '' ? ', '.$data['note'] : '');
+                break;
+            case 'Compensation':
+                $note = '<i class="fal fa-upload "  title="'._('Funds added to customer account').'" ></i> '.money($data['amount'], $store->get('Store Currency Code')).' <i class="fal fa-angry"  title="'._('Compensation to customer').'" ></i>  '
+                    .($data['note'] != '' ? ', '.$data['note'] : '');
+                break;
+            case 'TransferIn':
+                $note = '<i class="fal fa-upload "  title="'._('Funds added to customer account').'" ></i> '.money($data['amount'], $store->get('Store Currency Code')).' <i class="fal fa-exchange"  title="'._('Transfer funds other account').'" ></i>  '
+                    .($data['note'] != '' ? ', '.$data['note'] : '');
+                break;
+            case 'AddFundsOther':
+                $note = '<i class="fal fa-upload "  title="'._('Funds added to customer account').'" ></i> '.money($data['amount'], $store->get('Store Currency Code'))
+                    .($data['note'] != '' ? ', '.$data['note'] : '');
+                break;
+        }
+    }
 
     $history_data = array(
-        'History Abstract' => '<i class="fal fa-sign-in "  title="'._('Funds added to customer account').'" ></i> '.money($data['amount'], $store->get('Store Currency Code')).' <i class="fal  fa-mail-bulk"  title="'._('To pay for the shipping of a return').'" ></i>  '
-            .($data['note'] != '' ? ', '.$data['note'] : ''),
+        'History Abstract' => $note,
 
         'History Details' => '',
         'Action'          => 'edited'
