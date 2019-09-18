@@ -113,7 +113,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     );
 
 
-    $old_weblocation=(isset($data['old_state']['module'])?$data['old_state']['module']:'').'|'.(isset($data['old_state']['section'])?$data['old_state']['section']:'');
+    $old_weblocation = (isset($data['old_state']['module']) ? $data['old_state']['module'] : '').'|'.(isset($data['old_state']['section']) ? $data['old_state']['section'] : '');
     $redis->zadd('_IU'.$account->get('Code'), gmdate('U'), $user->id);
 
     //if (isset($data['metadata']['help']) and $data['metadata']['help']) {
@@ -752,7 +752,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     //print microtime_float()-$timer."<br>\n";$timer=microtime_float();
 
 
-
     $state['store']      = $store;
     $state['website']    = $website;
     $state['warehouse']  = $warehouse;
@@ -806,26 +805,22 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     }
 
 
-    if ($data['old_state']['module'] != $state['module']
-        or $data['old_state']['section'] != $state['section']
-        or $data['old_state']['parent_key'] != $state['parent_key']
-        or $data['old_state']['key'] != $state['key'] or $reload
-        or isset($data['metadata']['reload_showcase']
+    if ($data['old_state']['module'] != $state['module'] or $data['old_state']['section'] != $state['section'] or $data['old_state']['parent_key'] != $state['parent_key'] or $data['old_state']['key'] != $state['key'] or $reload or isset(
+            $data['metadata']['reload_showcase']
 
         )
 
     ) {
 
 
-        $_navigation=get_navigation($user, $smarty, $state, $db, $account);
+        $_navigation = get_navigation($user, $smarty, $state, $db, $account);
 
 
-
-        if(is_array($_navigation)){
-            $response['navigation'] = $_navigation[0];
+        if (is_array($_navigation)) {
+            $response['navigation']     = $_navigation[0];
             $response['web_navigation'] = $_navigation[1];
-        }else{
-            $response['navigation'] = $_navigation;
+        } else {
+            $response['navigation']     = $_navigation;
             $response['web_navigation'] = '';
 
         }
@@ -898,8 +893,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     list($state, $response['tabs']) = get_tabs($state, $db, $account, $modules, $user, $smarty, $requested_tab);// todo only calculate when is subtabs in the section
 
 
-    //  print_r($state);
-
     $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'request', $state['request']);
 
     if ($state['object'] != '' and ($modules[$state['module']]['sections'][$state['section']]['type'] == 'object' or isset($modules[$state['module']]['sections'][$state['section']]['showcase']))) {
@@ -919,7 +912,34 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
             if ($web_location != '') {
                 $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $web_location);
             } else {
-                $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '');
+
+
+                switch ($state['module']) {
+                    case 'products':
+                        switch ($state['section']) {
+                            case 'email_campaign_type':
+
+
+                                switch ($state['_object']->get('Email Campaign Type Code')) {
+                                    case 'Newsletter':
+                                        $web_location= '<i class="fal fa-fw fa-newspaper"></i> '._('Newsletters');
+                                        break;
+                                    case 'Marketing':
+                                        $web_location= '<i class="fal fa-fw fa-bullhorn"></i> '._('Mailshots');
+                                        break;
+                                }
+
+                                break;
+                        }
+                        break;
+
+                }
+
+
+
+
+
+                $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $web_location);
                 // $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $state['module'].' * '.$state['section']);
             }
 
@@ -933,8 +953,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
         $response['object_showcase'] = '_';
 
 
-        //print_r($state);
-
         switch ($state['module']) {
 
             case 'inventory':
@@ -944,7 +962,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
                         break;
                     case 'dashboard':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-tachometer"></i> '._("Inventory dashboard"));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-tachometer"></i> '._("Dashboard"));
                         break;
                     case 'categories':
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-sitemap"></i> '._("Part's categories"));
@@ -993,6 +1011,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                 }
                 break;
             case 'products':
+
                 switch ($state['section']) {
                     case 'marketing':
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-bullhorn"></i> '._("Marketing").' '.$store->get('Code'));
@@ -1003,9 +1022,9 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                     case 'categories':
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-sitemap"></i> '._("Products's categories").' '.$store->get('Code'));
                         break;
+
                     default:
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-cubes"></i> '._('Products').' '.$store->get('Code'));
-
                 }
                 break;
             case 'customers':
@@ -1256,14 +1275,14 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     $response['tab'] = get_tab($db, $smarty, $user, $account, $state['tab'], $state['subtab'], $state, $data['metadata']);
 
-    if($old_weblocation!=(isset($state['module'])?$state['module']:'').'|'.(isset($state['section'])?$state['section']:'')){
+    if ($old_weblocation != (isset($state['module']) ? $state['module'] : '').'|'.(isset($state['section']) ? $state['section'] : '')) {
 
         $context = new ZMQContext();
         $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
         $socket->connect("tcp://localhost:5555");
 
         require_once 'utils/real_time_functions.php';
-        $real_time_users=get_users_read_time_data($redis, $account);
+        $real_time_users = get_users_read_time_data($redis, $account);
 
 
         $socket->send(
@@ -1294,9 +1313,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     unset($state['website']);
     unset($state['warehouse']);
     unset($state['production']);
-
-
-
 
 
     $response['state'] = 200;
@@ -1389,6 +1405,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         );
     }
 
+
     switch ($showcase) {
         case 'material':
             include_once 'showcase/material.show.php';
@@ -1420,8 +1437,12 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'purchase_order':
             include_once 'showcase/supplier.order.show.php';
-            $html  = get_supplier_order_showcase($data, $smarty, $user, $db);
-            $title = $data['_object']->get('Public ID');
+            $html         = get_supplier_order_showcase($data, $smarty, $user, $db);
+            $title        = $data['_object']->get('Public ID');
+            $web_location = '<i class="fal fa-fw fa-clipboard"></i> '.$data['_object']->get('Public ID');
+            if ($data['module'] == 'production') {
+                $web_location .= ' <i class="fal fa-fw fa-industry"></i>';
+            }
 
             break;
         case 'campaign':
@@ -1711,6 +1732,15 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             }
             $title = $data['_object']->get('Public ID');
 
+            if ($data['module'] == 'production') {
+                $web_location = '<i class="fal fa-fw fa-clipboard-check"></i> '.$data['_object']->get('Public ID');
+
+                $web_location .= ' <i class="fal fa-fw fa-industry"></i>';
+            } else {
+                $web_location = '<i class="fal fa-fw fa-truck"></i> '.$data['_object']->get('Public ID');
+
+            }
+
 
             break;
         case 'position':
@@ -1741,11 +1771,14 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
         case 'mailshot':
             include_once 'showcase/email_campaign.show.php';
             $html = get_email_campaign_showcase($data, $smarty, $user, $db, $account);
+            $web_location = '<i class="fal fa-fw fa-mail-bulk"></i> '.(strlen($data['_object']->get('Name'))>17?substr($data['_object']->get('Name'),0,20).'&hellip;':$data['_object']->get('Name'));
+
             break;
 
         case 'newsletter':
             include_once 'showcase/email_campaign.show.php';
             $html = get_email_campaign_showcase($data, $smarty, $user, $db, $account);
+
             break;
 
         case 'api_key':
@@ -1842,6 +1875,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
         case ('dashboard'):
             require_once 'navigation/dashboard.nav.php';
+
             return get_dashboard_navigation($data, $smarty, $user, $db, $account);
             break;
         case ('products_server'):
