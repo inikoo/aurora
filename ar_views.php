@@ -1206,6 +1206,43 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                 }
 
                 break;
+            case 'production':
+                switch ($state['section']) {
+                    case 'dashboard':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-tachometer-alt"></i> '._('Production'));
+                        break;
+                    case 'materials':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-industry"></i> '._('Materials'));
+                        break;
+                    case 'production_parts':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-industry"></i> '._('Parts'));
+                        break;
+                    case 'manufacture_tasks':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-industry"></i> '._('Manufacture tasks'));
+                        break;
+                    case 'production_supplier_orders':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-industry"></i> '._('Job orders'));
+                        break;
+                    case 'production_supplier_deliveries':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-industry"></i> '._('Production sheets'));
+                        break;
+                    case 'settings':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-industry"></i> '._('Settings'));
+                        break;
+                    default:
+
+                }
+            case 'utils':
+                switch ($state['section']) {
+                    case 'fire':
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-fire"></i> '._('Fire'));
+                        break;
+
+                    default:
+
+                }
+
+                break;
             default:
                 $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '');
             // $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $state['module'].' '.$state['section']);
