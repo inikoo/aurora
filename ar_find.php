@@ -225,6 +225,7 @@ switch ($tipo) {
             case 'users':
                 find_users($db, $data);
                 break;
+
             default:
                 $response = array(
                     'state' => 405,
@@ -246,6 +247,17 @@ switch ($tipo) {
         );
         orders_in_process($db, $data);
         break;
+
+    case 'users_with_right':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'right' => array('type' => 'string'),
+
+                     )
+        );
+        users_with_right($db, $data);
+        break;
+
     default:
         $response = array(
             'state' => 405,
@@ -256,6 +268,25 @@ switch ($tipo) {
         break;
 }
 
+function users_with_right($db, $data){
+
+    $users_data=array();
+    $sql='select U.`User Key`,`User Alias`,`User Inikoo Rep` as UIR from `User Dimension` U left join `User Rights Bridge` URB on (URB.`User Key`=U.`User Key`) where `Right Code`=?  ';
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array($data['right'])
+    );
+    while ($row = $stmt->fetch()) {
+        $users_data[]=$row;
+    }
+
+    $response = array(
+        'state'   => 200,
+        'users_data' => $users_data
+    );
+    echo json_encode($response);
+
+}
 
 function find_users($db, $data) {
 

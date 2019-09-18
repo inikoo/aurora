@@ -6808,6 +6808,7 @@ $modules = array(
               ),
 
     */
+            /*
             'overtimes'        => array(
                 'type'      => 'navigation',
                 'label'     => _('Overtimes'),
@@ -6820,6 +6821,7 @@ $modules = array(
 
 
             ),
+
             'organization'     => array(
                 'type'      => 'navigation',
                 'label'     => _('Organization'),
@@ -6854,6 +6856,7 @@ $modules = array(
 
                 )
             ),
+             */
             'employee'         => array(
                 'type' => 'object',
 

@@ -93,7 +93,26 @@
         <div id="overviews">
             <table border="0" class="overview" style="">
                 <tr id="account_balance_tr" class="main">
-                    <td id="account_balance_label">{t}Account Balance{/t} <i data-labels='{ "yes_text_no_stock":"{t}Unlock{/t}", "no_text_no_stock":"{t}Close{/t}", "title":"{t}Restricted operation{/t}","text":"{t}Please ask for authorisation before adding funds to customer account{/t}"}'  onclick="open_fund_credit(this)" class="button very_discreet_on_hover fa margin_left_5 small  fa-lock" title="{t}Add money to customer balance{/t}"></i></td>
+                    <td id="account_balance_label">{t}Account Balance{/t}
+
+                        {if $user->can_supervisor('accounting')}
+                            <span  onclick="show_edit_credit_dialog('add_funds')" class="button margin_left_5  " title="{t}Add money to customer balance{/t}">
+                                <i class="fal fa-upload"></i>
+                            </span>
+                            <span  onclick="show_edit_credit_dialog('remove_funds')" class="button margin_left_5  " title="{t}Withdraw money to customer balance{/t}">
+                                <i class="fal fa-download"></i>
+                            </span>
+
+                    {else}
+                    <span data-labels='{ "footer":"{t}Authorised users{/t}: ","title":"{t}Restricted operation{/t}","text":"{t}Please ask an authorised user to add funds to customer account{/t}"}'  onclick="unauthorized_open_fund_credit(this)" class="button margin_left_5  " title="{t}Add money to customer balance{/t} ({t}locked{/t})">
+                        <i class="fal fa-upload very_discreet"></i> <i class="fal fa-download very_discreet"></i>
+                    </span>
+
+                    {/if}
+
+                    </td>
+
+
                     <td id="account_balance" class="aright "><span onclick="change_tab('customer.credit_blockchain')" class="very_discreet_on_hover small padding_right_10 button"><i class="fal fa-code-commit "></i> {$customer->get('Customer Number Credit Transactions')}</span>
 
                     {if $customer->get('Customer Account Balance')>0}
@@ -247,7 +266,7 @@
 </div>
 
 
-<div  class="add_funds_to_customer_account table_new_fields hide">
+<div  class="add_funds_to_customer_account edit_funds_to_customer_account table_new_fields hide" data-operation_type="add_funds">
 
     <div style="align-items: stretch;flex: 1;padding:0px;border-bottom: 1px solid #ccc;position: relative">
 
@@ -258,7 +277,7 @@
                 <td colspan="3" style="border-bottom:1px solid #ccc;padding-left: 20px">
                     <i  class="fa fa-window-close margin_right_20 fa-flip-horizontal button" aria-hidden="true" onclick="close_fund_credit()"></i>
 
-                    <span class="strong"> {t}Add funds to account{/t}</span>
+                    <span class="strong"> {t}Add funds to customer credit account{/t}</span> <span class="italic padding_left_10">({t}Will increase account balance{/t})</span>
 
 
                 </td>
@@ -270,9 +289,18 @@
                 <td style="padding-left: 20px">
                     <div class="add_funds_to_customer_account_type_buttons">
 
-                        <div id="_fund_type_button" class="button fund_type_button unselectable  super_discreet " onclick="select_fund_type(this)    "
+                        <div  class="button fund_type_button unselectable  very_discreet " onclick="select_fund_type(this)    "
                              data-type="PayReturn"
                              style="border:1px solid #ccc;padding:10px;5px;margin-bottom:2px">{t}Pay for the shipping of a return{/t}</div>
+                        <div class="button fund_type_button unselectable  very_discreet " onclick="select_fund_type(this)    "
+                             data-type="Compensation"
+                             style="border:1px solid #ccc;padding:10px;5px;margin-bottom:2px">{t}Compensate customer{/t}</div>
+                        <div class="button fund_type_button unselectable  very_discreet " onclick="select_fund_type(this)    "
+                             data-type="TransferIn"
+                             style="border:1px solid #ccc;padding:10px;5px;margin-bottom:2px">{t}Transfer from other customer account{/t}</div>
+                        <div class="button fund_type_button unselectable  very_discreet " onclick="select_fund_type(this)    "
+                             data-type="AddFundsOther"
+                             style="border:1px solid #ccc;padding:10px;5px;margin-bottom:2px">{t}Other reason{/t}</div>
 
 
                     </div>
@@ -284,18 +312,18 @@
                 <td  class="add_funds_to_customer_fields" style="padding-left:30px;width: 500px;padding-top: 10px;padding-bottom: 10px">
                     <table >
                         <tr>
-                            <td> {t}Amount{/t}</td>
-                            <td style="padding-left:20px"><input style="width: 150px;" disabled=true class="add_funds_to_customer_field  amount " placeholder="{t}Amount{/t}"></td>
+                            <td> {t}Amount to deposit{/t}</td>
+                            <td style="padding-left:20px"><input style="width: 150px;" disabled=true class="add_funds_to_customer_field edit_funds_to_customer_field  amount " placeholder="{t}Amount{/t}"></td>
                         </tr>
 
                         <tr>
                             <td >  {t}Private note{/t}</td>
-                            <td style="padding-left:20px"><textarea style="width: 300px;height: 60px" disabled=true class="add_funds_to_customer_field note"  ></textarea></td>
+                            <td style="padding-left:20px"><textarea style="width: 300px;height: 60px" disabled=true class="add_funds_to_customer_field edit_funds_to_customer_field note"  ></textarea></td>
                         </tr>
                     </table>
                 </td>
 
-                <td  class="buttons save save_add_funds_to_customer_account" onclick="save_add_funds_to_customer_account()"><span>{t}Save{/t}</span> <i class=" fa fa-cloud " aria-hidden="true"></i></td>
+                <td  class="buttons save save_add_funds_to_customer_account" onclick="save_edit_funds_to_customer_account('add_funds')"><span>{t}Save{/t}</span> <i class=" fa fa-cloud " aria-hidden="true"></i></td>
             </tr>
 
         </table>
@@ -303,214 +331,73 @@
 </div>
 
 
+<div  class="remove_funds_to_customer_account edit_funds_to_customer_account table_new_fields hide" data-operation_type="remove_funds" >
+
+    <div style="align-items: stretch;flex: 1;padding:0px;border-bottom: 1px solid #ccc;position: relative">
+
+
+        <table border="0" style="float:right;width:100%;">
+
+            <tr>
+                <td colspan="3" style="border-bottom:1px solid #ccc;padding-left: 20px">
+                    <i  class="fa fa-window-close margin_right_20 fa-flip-horizontal button" aria-hidden="true" onclick="close_fund_credit()"></i>
+
+                    <span class="strong"> {t}Withdraw funds from customer credit account{/t}</span> <span class="italic padding_left_10">{t}Will decrease account balance{/t}</span>
+
+
+                </td>
+            </tr>
+
+            <tr>
+
+
+                <td style="padding-left: 20px">
+                    <div class="remove_funds_to_customer_account_type_buttons customer_account_type_buttons"  >
+
+
+                        <div class="button fund_type_button unselectable  very_discreet " onclick="select_fund_type(this)    "
+                             data-type="MoneyBack"
+                             style="border:1px solid #ccc;padding:10px;5px;margin-bottom:2px">{t}Customer want money back{/t}</div>
+                        <div class="button fund_type_button unselectable  very_discreet " onclick="select_fund_type(this)    "
+                             data-type="TransferOut"
+                             style="border:1px solid #ccc;padding:10px;5px;margin-bottom:2px">{t}Transfer to other customer account{/t}</div>
+                        <div class="button fund_type_button unselectable  very_discreet " onclick="select_fund_type(this)    "
+                             data-type="RemoveFundsOther"
+                             style="border:1px solid #ccc;padding:10px;5px;margin-bottom:2px">{t}Other reason{/t}</div>
+
+
+                    </div>
+                    <input type="hidden" class="remove_funds_to_customer_account_type" value="">
+
+
+                </td>
+
+                <td  class="remove_funds_to_customer_fields" style="padding-left:30px;width: 500px;padding-top: 10px;padding-bottom: 10px">
+                    <table >
+                        <tr>
+                            <td> {t}Withdraw amount{/t}</td>
+                            <td style="padding-left:20px"><input style="width: 150px;" disabled=true class="remove_funds_to_customer_field edit_funds_to_customer_field  amount " placeholder="{t}Amount{/t}"></td>
+                        </tr>
+
+                        <tr>
+                            <td >  {t}Private note{/t}</td>
+                            <td style="padding-left:20px"><textarea style="width: 300px;height: 60px" disabled=true class="remove_funds_to_customer_field edit_funds_to_customer_field note"  ></textarea></td>
+                        </tr>
+                    </table>
+                </td>
+
+                <td  class="buttons save save_remove_funds_to_customer_account" onclick="save_edit_funds_to_customer_account('remove_funds')"><span>{t}Save{/t}</span> <i class=" fa fa-cloud " aria-hidden="true"></i></td>
+            </tr>
+
+        </table>
+    </div>
+</div>
+
 
 <script>
 
-    function close_fund_credit(){
-        $('.add_funds_to_customer_account').addClass('hide')
-    }
 
-    function open_fund_credit(element){
 
-
-
-        if($(element).hasClass('fa-lock')){
-
-            var _labels = $(element).data('labels');
-
-
-            swal({
-                title: _labels.title,
-                text: _labels.text,
-                type: "warning",
-                showCloseButton: true,
-                showCancelButton: true,
-                cancelButtonText:_labels.no_text_no_stock,
-                confirmButtonText:_labels.yes_text_no_stock
-
-            }).then(function (result) {
-
-                console.log(result)
-
-                if (result.value) {
-                    $(element).removeClass('fa-lock very_discreet_on_hover').addClass('fa-plus')
-                }else{
-
-
-                }
-            });
-
-
-        }else{
-            show_fund_credit();
-
-            $('#_fund_type_button').trigger('click');
-
-        }
-    }
-
-    function show_fund_credit() {
-
-
-        if ($('.add_funds_to_customer_account').hasClass('hide')) {
-
-            $('.add_funds_to_customer_account').removeClass('hide')
-
-
-
-            $(".add_funds_to_customer_field").attr("disabled", true);
-            $(".add_funds_to_customer_fields").addClass("just_hinted").val('');
-
-
-
-        }
-
-    }
-
-    function select_fund_type(element) {
-
-
-
-        $('.fund_type_button').removeClass('selected').addClass('super_discreet')
-        $(element).addClass('selected').removeClass('super_discreet')
-
-
-        //console.log(settings)
-        $('.add_funds_to_customer_account_type').val($(element).data('type'))
-
-        $(".add_funds_to_customer_field").attr("disabled", false);
-        $(".add_funds_to_customer_fields").removeClass("just_hinted")
-
-
-
-            $('.add_funds_to_customer_field.amount').focus()
-
-
-    }
-
-    $(document).on('input propertychange', '.add_funds_to_customer_field', function (evt) {
-
-        validate_add_funds_to_customer();
-    })
-
-
-    function validate_add_funds_to_customer() {
-
-
-        var invalid=false;
-        var valid=false;
-
-        if($('.add_funds_to_customer_field.note').val()!=''){
-            valid=true
-        }
-
-        if( !validate_number($('.add_funds_to_customer_field.amount').val(), 0, 999999999) ){
-            $('.add_funds_to_customer_field.amount').removeClass('invalid')
-
-
-
-        }else{
-            invalid=true
-            valid=false
-            $('.add_funds_to_customer_field.amount').addClass('invalid')
-
-        }
-
-
-        $('.save_add_funds_to_customer_account').addClass('changed');
-
-
-
-        if(invalid){
-            $('.save_add_funds_to_customer_account').addClass('invalid ').removeClass('valid')
-
-        }else{
-
-            if(valid){
-                $('.save_add_funds_to_customer_account').addClass('valid').removeClass('invalid')
-
-            }else{
-                $('.save_add_funds_to_customer_account').removeClass('invalid valid')
-
-            }
-
-
-        }
-
-
-    }
-
-
-
-    function save_add_funds_to_customer_account() {
-
-
-
-
-
-        if ($('.save_add_funds_to_customer_account').hasClass('wait')   ||  !$('.save_add_funds_to_customer_account').hasClass('valid')  ) {
-            return;
-        }
-        $('.save_add_funds_to_customer_account').addClass('wait')
-
-        $('.save_add_funds_to_customer_account i').removeClass('fa-cloud').addClass('fa-spinner fa-spin');
-
-
-        var ajaxData = new FormData();
-
-        ajaxData.append("tipo", 'add_funds_to_customer_account')
-
-        ajaxData.append("customer_key", $('#customer').attr('key'))
-        ajaxData.append("credit_transaction_type", $('.add_funds_to_customer_account_type').val())
-        ajaxData.append("amount", $('.add_funds_to_customer_field.amount').val())
-
-        ajaxData.append("note", $('.add_funds_to_customer_field.note').val())
-
-
-
-        $.ajax({
-            url: "/ar_edit.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
-            }, success: function (data) {
-
-
-
-
-                $('.save_add_funds_to_customer_account').removeClass('wait')
-
-
-                //console.log(data)
-
-                if (data.state == '200') {
-
-                    close_fund_credit();
-
-                    change_view(state.request, { 'reload_showcase': 1})
-                    if (state.tab == 'customer.credit_blockchain' || state.tab=='customer.history' ) {
-                        rows.fetch({
-                            reset: true
-                        });
-                    }
-
-                    $('.save_add_funds_to_customer_account i').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
-
-
-
-                } else if (data.state == '400') {
-                    $('.save_add_funds_to_customer_account i').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
-
-                    swal("Error!", data.msg, "error")
-                }
-
-
-            }, error: function () {
-                $('.save_add_funds_to_customer_account').removeClass('wait')
-                $('.save_add_funds_to_customer_account i').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
-
-            }
-        });
-
-
-    }
 
 
 
