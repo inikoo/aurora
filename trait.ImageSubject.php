@@ -200,9 +200,8 @@ trait ImageSubject {
                 case 'Category':
                     if($object_image_scope=='Marketing') {
 
-                        if ($this->get('Category Scope') == 'Product') {
                             $is_public = 'Yes';
-                        }
+
 
                     }
                     break;
