@@ -185,6 +185,12 @@ trait ImageSubject {
                     }
 
                     break;
+                case 'Part':
+                    if($object_image_scope=='Marketing'){
+                        $is_public = 'Yes';
+                    }
+
+                    break;
                 case 'Webpage':
                     $is_public = 'Yes';
                     break;
