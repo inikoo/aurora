@@ -30,24 +30,23 @@ $parameters = array(
 
 $smarty->assign(
     'upload_file', array(
-        'tipo'       => 'upload_images',
-        'parent'     => $state['object'],
-        'parent_key' => $state['key'],
-        'object'     => 'image',
-        'label'      => _('Upload image')
-    )
+                     'tipo'       => 'upload_images',
+                     'parent'     => $state['object'],
+                     'parent_key' => $state['key'],
+                     'object'     => 'image',
+                     'scope'      => 'Marketing',
+                     'label'      => _('Upload image')
+                 )
 );
 
 
 $smarty->assign(
 
-    'js_code',
-    array(
-        'js/injections/edit_images.'.(_DEVEL ? '' : 'min.').'js',
-        'js/injections/images_popups.'.(_DEVEL ? '' : 'min.').'js'
+    'js_code', array(
+                 'js/injections/edit_images.'.(_DEVEL ? '' : 'min.').'js',
+                 'js/injections/images_popups.'.(_DEVEL ? '' : 'min.').'js'
 
-    )
-
+             )
 
 
 );
@@ -55,4 +54,4 @@ $smarty->assign(
 
 include 'utils/get_table_html.php';
 
-?>
+

@@ -30,25 +30,29 @@ $parameters = array(
 
 $smarty->assign(
     'upload_file', array(
-        'tipo'       => 'upload_images',
-        'parent'     => $state['object'],
-        'parent_key' => $state['key'],
-        'object'     => 'image',
-        'label'      => _('Upload image')
+                     'tipo'       => 'upload_images',
+                     'parent'     => $state['object'],
+                     'parent_key' => $state['key'],
+                     'object'     => 'image',
+                     'scope'      => 'Marketing',
+                     'label'      => _('Upload image')
+                 )
+);
+
+
+$image_scope_options = array(
+    array(
+        'label' => _('SKO image'),
+        'value' => 'SKO'
+    ),
+    array(
+        'label' => _('Marketing'),
+        'value' => 'Marketing'
     )
-);
-
-
-
-$image_scope_options=array(
-    array(
-        'label'=>_('SKO image'),'value'=>'SKO'),
-    array(
-        'label'=>_('Marketing'),'value'=>'Marketing')
 
 );
 
-$smarty->assign('image_scope_options',$image_scope_options);
+$smarty->assign('image_scope_options', $image_scope_options);
 
 $smarty->assign('aux_templates', array('edit_images.tpl'));
 
@@ -57,7 +61,5 @@ $smarty->assign(
     'js_code', 'js/injections/edit_images.'.(_DEVEL ? '' : 'min.').'js'
 );
 
-
 include 'utils/get_table_html.php';
 
-?>
