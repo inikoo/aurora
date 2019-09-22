@@ -280,6 +280,8 @@ update `Invoice Dimension` set `Invoice Tax Number Validation Date`=NULL where `
 update `Invoice Dimension` left join `Order Dimension` on (`Order Key`=`Invoice Order Key`)  set `Invoice Tax Number Validation Source`=`Order Tax Number Validation Source`;
 update `Invoice Dimension` left join `Order Dimension` on (`Order Key`=`Invoice Order Key`)  set `Invoice Tax Number Validation Message`=`Order Tax Number Validation Message`;
 
+update `Order Dimension` set `Order Metadata`='{}'  where  `Order Metadata`='' or `Order Metadata` is null ;
+
 UPDATE `Order Dimension` SET `Order Metadata`= JSON_SET(`Order Metadata`,'$.tax_name',ifnull(`Order Tax Name`,'')) ;
 UPDATE `Order Dimension` SET `Order Metadata`= JSON_SET(`Order Metadata`,'$.why_tax',ifnull(`Order Tax Selection Type`,'')) ;
 ALTER TABLE `Order Dimension` DROP `Order Tax Name`, DROP `Order Tax Operations`, DROP `Order Tax Selection Type` , drop `Order Apply Auto Customer Account Payment`   ;

@@ -178,7 +178,7 @@ class Invoice extends DB_Table {
 
 
                     $sql = sprintf(
-                        'SELECT * FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Order Transaction Fact Key`=%d AND `Order Transaction Type`="Order" ', $this->data['Invoice Order Key'], $transaction['id']
+                        "SELECT * FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Order Transaction Fact Key`=%d AND `Order Transaction Type`='Order'", $this->data['Invoice Order Key'], $transaction['id']
                     );
 
                     if ($result = $this->db->query($sql)) {
@@ -224,7 +224,8 @@ class Invoice extends DB_Table {
 
 
                     $sql = sprintf(
-                        'SELECT * FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Order Transaction Fact Key`=%d AND `Order Transaction Type`="Order" ', $this->data['Invoice Order Key'], $transaction['id']
+                        "SELECT * FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Order Transaction Fact Key`=%d AND `Order Transaction Type`='Order' ", $this->data['Invoice Order Key'], $transaction['id']
+
                     );
 
                     if ($result = $this->db->query($sql)) {
@@ -693,7 +694,7 @@ class Invoice extends DB_Table {
         $payments = 0;
 
         $sql = sprintf(
-            'SELECT sum(`Payment Transaction Amount`) AS amount  FROM `Order Payment Bridge` B LEFT JOIN `Payment Dimension` P  ON (B.`Payment Key`=P.`Payment Key`) WHERE `Invoice Key`=%d AND `Payment Transaction Status`="Completed" ', $this->id
+            "SELECT sum(`Payment Transaction Amount`) AS amount  FROM `Order Payment Bridge` B LEFT JOIN `Payment Dimension` P  ON (B.`Payment Key`=P.`Payment Key`) WHERE `Invoice Key`=%d AND `Payment Transaction Status`='Completed'", $this->id
         );
 
         // print $sql;
@@ -777,7 +778,8 @@ class Invoice extends DB_Table {
                         );
 
                     } else {
-                        $date = strftime("%e %b %Y", strtotime($this->data['Invoice Tax Number Validation Date'].' +0:00')
+                        $date = strftime(
+                            "%e %b %Y", strtotime($this->data['Invoice Tax Number Validation Date'].' +0:00')
                         );
                     }
                 } else {
@@ -799,7 +801,8 @@ class Invoice extends DB_Table {
                         );
                     } elseif ($this->data['Invoice Tax Number Valid'] == 'API_Down') {
                         return sprintf(
-                            '<i style="margin-right: 0px"  class="fal fa-question-circle discreet" title="'._('Validity is unknown').'"> </i> <span class="discreet" title="'.$title.'">%s</span> %s', $this->data['Invoice Tax Number'],' <i  title="'._('Online validation service down').'" class="fa fa-wifi-slash error"></i>'
+                            '<i style="margin-right: 0px"  class="fal fa-question-circle discreet" title="'._('Validity is unknown').'"> </i> <span class="discreet" title="'.$title.'">%s</span> %s', $this->data['Invoice Tax Number'],
+                            ' <i  title="'._('Online validation service down').'" class="fa fa-wifi-slash error"></i>'
                         );
                     } else {
                         return sprintf(
@@ -2019,10 +2022,6 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
             foreach ($result as $row) {
                 $_category_keys[$row['Category Key']] = $row['Category Key'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -2072,7 +2071,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         } else {
 
             $sql = sprintf(
-                "DELETE FROM `Order Transaction Fact`  WHERE    `Invoice Key`=%d   ", $this->id
+                "DELETE FROM `Order Transaction Fact`  WHERE   `Invoice Key`=%d   ", $this->id
             );
             $this->db->exec($sql);
             $sql = sprintf(
@@ -2119,20 +2118,24 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
                 $dn = get_object('DeliveryNote', $order->get('Order Delivery Note Key'));
 
+                if ($dn->id) {
+                    $dn->fast_update(
+                        array(
+                            'Delivery Note Invoiced'                    => 'No',
+                            'Delivery Note Invoiced Net DC Amount'      => 0,
+                            'Delivery Note Invoiced Shipping DC Amount' => 0
 
-                $dn->fast_update(
-                    array(
-                        'Delivery Note Invoiced'                    => 'No',
-                        'Delivery Note Invoiced Net DC Amount'      => 0,
-                        'Delivery Note Invoiced Shipping DC Amount' => 0
-
-                    )
-                );
-
-                $order->update_state('Invoice Deleted', $options = '', $metadata = array('note' => $note));
+                        )
+                    );
+                }
+                if ($order->id) {
+                    $order->update_state('Invoice Deleted', $options = '', $metadata = array('note' => $note));
+                }
             } else {
 
-                $order->update_totals();
+                if ($order->id) {
+                    $order->update_totals();
+                }
             }
         }
 
@@ -2171,8 +2174,13 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         ), $account->get('Account Code')
         );
 
+        if($order->id){
+            return sprintf('/orders/%d/%d', $store_key, $order->id);
 
-        return sprintf('/orders/%d/%d', $order->get('Store Key'), $order->id);
+        }else{
+            return sprintf('/orders/%d', $store_key);
+
+        }
 
     }
 
@@ -2376,8 +2384,6 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
             }
 
 
-
-
         }
 
     }
@@ -2446,6 +2452,9 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
 
         $xhtml_address = $formatter->format($address);
+
+
+
 
 
         $xhtml_address = preg_replace('/class="address-line1"/', 'class="address-line1 street-address"', $xhtml_address);

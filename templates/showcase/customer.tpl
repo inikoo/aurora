@@ -9,27 +9,34 @@
 <div id="customer" class="subject_profile" key="{$customer->id}" store_key="{$customer->get('Store Key')}">
 
 
-    <div id="contact_data">
+    <div style="float: left;width: 590px;">
 
-        <div class="  {if $customer->get('Customer Name')|strlen <50 }hide{/if}" ">
+        <div class="{if $customer->get('Customer Name')|strlen <50 }hide{/if}">
             <h1 style="margin-bottom: 0px;position: relative;top:-10px" class="Customer_Name ">{$customer->get('Customer Name')}</h1>
         </div>
-        <div class="data_container">
+        <div class="data_container" >
 
-            <div class="data_field">
-                <i title="{t}Contact name{/t}" class="fa fa-fw  fa-male"></i> <span
-                        class="Customer_Main_Contact_Name">{$customer->get('Customer Main Contact Name')}</span>
+            <div class="data_field" style="min-width: 270px;">
+                <i title="{t}Contact name{/t}" class="fa fa-fw  fa-male"></i><span class="Customer_Main_Contact_Name">{$customer->get('Customer Main Contact Name')}</span>
             </div>
-            <div class="data_field Customer_Tax_Number_display {if !$customer->get('Customer Tax Number')}hide{/if}">
-                <i title="{t}Tax number{/t}" class="fal fa-fw fa-passport"></i></i> <span
+            <div class="data_field Customer_Tax_Number_display {if !$customer->get('Customer Tax Number')}hide{/if}" style="min-width: 270px;">
+                <i title="{t}Tax number{/t}" class="fal fa-fw fa-passport"></i></i><span
                         class="Customer_Tax_Number_Formatted">{$customer->get('Tax Number Formatted')}</span>
             </div>
-            <div class="data_field Customer_Registration_Number_display {if !$customer->get('Customer Registration Number')}hide{/if}">
-                <i title="{t}Registration number{/t}" class="fal fa-fw fa-id-card"></i></i> <span
+            <div class="data_field Customer_Registration_Number_display {if !$customer->get('Customer Registration Number')}hide{/if}" style="min-width: 270px;">
+                <i title="{t}Registration number{/t}" class="fal fa-fw fa-id-card"></i><span
                         class="Customer_Registration_Number">{$customer->get('Registration Number')}</span>
             </div>
+
+            <div style="min-height:80px;float:left;width:28px">
+                <i class="fa fa-fw fa-map-marker-alt"></i>
+            </div>
+            <div class="Contact_Address" style="float:left;min-width:242px">
+                {$customer->get('Contact Address')}
+            </div>
+
         </div>
-        <div class="data_container">
+        <div class="data_container" >
             <div id="Customer_Main_Plain_Email_display"
                  class="data_field   {if !$customer->get('Customer Main Plain Email')}hide{/if}">
                 <i class="fa fa-fw fa-at"></i> <span
@@ -84,19 +91,16 @@
         <div style="clear:both">
         </div>
         <div class="data_container">
-            <div style="min-height:80px;float:left;width:28px">
-                <i class="fa fa-map-marker-alt"></i>
-            </div>
-            <div class="Contact_Address" style="float:left;min-width:272px">
-                {$customer->get('Contact Address')}
-            </div>
+
         </div>
 
 
         <div style="clear:both">
         </div>
     </div>
-    <div id="info">
+
+
+    <div style="float: right;width: 300px;">
         <div id="overviews">
             <table border="0" class="overview" style="">
                 <tr id="account_balance_tr" class="main">
@@ -170,40 +174,46 @@
             </table>
 
 
-      {if $customer->get('Customer Orders')>0}
-                <table class="overview">
-                    {if $customer->get('Customer Type by Activity')=='Lost'}
-                        <tr>
-                            <td><span style="color:white;background:black;padding:1px 10px">{t}Lost Customer{/t}</span>
-                            </td>
-                        </tr>
-                    {/if} {if $customer->get('Customer Type by Activity')=='Losing'}
-                        <tr>
-                            <td>
-                                <span style="color:white;background:black;padding:1px 10px">{t}Warning!, loosing customer{/t}</span>
-                            </td>
-                        </tr>
-                    {/if}
-                    <tr>
-                        <td class="text"> {if $customer->get('Customer Number Invoices')==1}
-                            <p>
-                                {$customer->get('Name')} {t}has been invoiced once{/t}.
-                            </p>
-                            {elseif $customer->get('Customer Number Invoices')>1 } {$customer->get('Name')} {t}has been invoiced{/t}
-                            <b>{$customer->get('Orders Invoiced')}</b> {if $customer->get('Customer Type by Activity')=='Lost'}{t}times{/t}{else}{t}times so far{/t}{/if}, {t}which amounts to a total of{/t} <b>{$customer->get('Invoiced Net Amount')}</b> <span class="very_discreet error {if $customer->get('Customer Refunded Net Amount')==0}hide{/if} ">({$customer->get('Absolute Refunded Net Amount')} {t}refunded{/t})</span> {t}plus tax{/t}
-                            ({t}an average of{/t} {$customer->get('Total Net Per Order')} {t}per order{/t}
-                            ). {if $customer->get('Customer Orders')}
-                            </p>
-                            <p>
-                                {if $customer->get('Customer Type by Activity')=='Lost'}{t}This customer used to place an order every{/t}{else}{t}This customer usually places an order every{/t}{/if} {$customer->get('Order Interval')}
-                                .{/if} {else} Customer has not place any order yet. {/if}
-                            </p>
-                        </td>
-                    </tr>
-                </table>
-            {/if}
+
         </div>
     </div>
+    <div style="float: right;width: 310px;;margin-right: 20px">
+
+        {if $customer->get('Customer Orders')>0}
+            <table class="overview">
+                {if $customer->get('Customer Type by Activity')=='Lost'}
+                    <tr>
+                        <td><span style="color:white;background:black;padding:1px 10px">{t}Lost Customer{/t}</span>
+                        </td>
+                    </tr>
+                {/if} {if $customer->get('Customer Type by Activity')=='Losing'}
+                    <tr>
+                        <td>
+                            <span style="color:white;background:black;padding:1px 10px">{t}Warning!, loosing customer{/t}</span>
+                        </td>
+                    </tr>
+                {/if}
+                <tr>
+                    <td class="text"> {if $customer->get('Customer Number Invoices')==1}
+                        <p>
+                            {$customer->get('Name')} {t}has been invoiced once{/t}.
+                        </p>
+                        {elseif $customer->get('Customer Number Invoices')>1 } {$customer->get('Name')} {t}has been invoiced{/t}
+                        <b>{$customer->get('Orders Invoiced')}</b> {if $customer->get('Customer Type by Activity')=='Lost'}{t}times{/t}{else}{t}times so far{/t}{/if}, {t}which amounts to a total of{/t} <b>{$customer->get('Invoiced Net Amount')}</b> <span class="very_discreet error {if $customer->get('Customer Refunded Net Amount')==0}hide{/if} ">({$customer->get('Absolute Refunded Net Amount')} {t}refunded{/t})</span> {t}plus tax{/t}
+                        ({t}an average of{/t} {$customer->get('Total Net Per Order')} {t}per order{/t}
+                        ). {if $customer->get('Customer Orders')}
+                        </p>
+                        <p>
+                            {if $customer->get('Customer Type by Activity')=='Lost'}{t}This customer used to place an order every{/t}{else}{t}This customer usually places an order every{/t}{/if} {$customer->get('Order Interval')}
+                            .{/if} {else} Customer has not place any order yet. {/if}
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        {/if}
+
+    </div>
+
     <div style="clear:both">
     </div>
 </div>

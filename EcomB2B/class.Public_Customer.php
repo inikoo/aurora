@@ -466,24 +466,25 @@ class Public_Customer extends DBW_Table {
             $this->table_name.' '.$type.' Address Checksum', $new_checksum, 'no_history'
         );
 
+        include_once 'class.Public_Account.php';
+
+        $account = new Public_Account();
+        $locale  = $account->get('Account Locale');
+
 
         if ($type == 'Delivery') {
-            include_once 'class.Public_Account.php';
-            $account = new Public_Account();
             $country = $account->get('Account Country 2 Alpha Code');
-            $locale  = $account->get('Account Locale');
         } else {
 
             if ($this->get('Store Key')) {
                 include_once 'class.Public_Store.php';
                 $store   = new Public_Store($this->get('Store Key'));
                 $country = $store->get('Store Home Country Code 2 Alpha');
-                $locale  = $store->get('Store Locale');
+                //$locale  = $store->get('Store Locale');
             } else {
                 include_once 'class.Public_Account.php';
-                $account = new Public_Account();
                 $country = $account->get('Account Country 2 Alpha Code');
-                $locale  = $account->get('Account Locale');
+//                $locale  = $account->get('Account Locale');
             }
         }
 
