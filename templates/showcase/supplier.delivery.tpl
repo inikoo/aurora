@@ -484,7 +484,7 @@
 
         <div class="node  Invoice_Info {if $delivery->get('State Index')!=110}hide{/if} " >
                     <span class="node_label">
-                        <i class="fal fa-file-alt fa-fw  aria-hidden="true"></i>
+                        <i class="fal fa-file-invoice-dollar fa-fw  aria-hidden="true"></i>
                         <span class="Formatted_Invoice_Public_ID margin_right_10">{$delivery->get('Formatted Invoice Public ID')}</span>
                                                 <span class="italic Formatted_Invoice_Date">{$delivery->get('Formatted Invoice Date')}</span>
 

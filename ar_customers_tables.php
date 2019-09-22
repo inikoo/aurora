@@ -1917,7 +1917,7 @@ function credit_blockchain($_data, $db, $user,$account) {
                         if($data['Invoice Key'] and $data['Invoice Type']=='Refund'){
                             $type=_('Credited from refund');
 
-                            $note.=sprintf(' <span class="error padding_left_10"> <i class="fal fa-file-alt error"></i> <span class="link error" onclick="change_view(\'invoices/%d/%d\')" >%s</span></span>',$data['Order Store Key'],$data['Invoice Key'],$data['Invoice Public ID']);
+                            $note.=sprintf(' <span class="error padding_left_10"> <i class="fal fa-file-invoice-dollar error"></i> <span class="link error" onclick="change_view(\'invoices/%d/%d\')" >%s</span></span>',$data['Order Store Key'],$data['Invoice Key'],$data['Invoice Public ID']);
 
                         }else{
 

@@ -562,10 +562,10 @@ function fork_asset_sales($job) {
             update_invoice_products_sales_data($db, $account, $data);
 
             break;
-        case 'update_deleted_invoice_products_sales_data':
+        case 'update_edited_invoice_products_sales_data':
 
 
-            update_deleted_invoice_products_sales_data($db, $data, $account);
+            update_edited_invoice_products_sales_data($db, $data, $account);
 
 
 
@@ -980,7 +980,7 @@ function update_invoice_products_sales_data_reaL_time($db, $account, $data) {
 }
 
 
-function update_deleted_invoice_products_sales_data($db, $data) {
+function update_edited_invoice_products_sales_data($db, $data) {
 
     global $editor;
 

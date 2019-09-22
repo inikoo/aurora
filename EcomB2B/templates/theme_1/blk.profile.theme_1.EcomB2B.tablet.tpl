@@ -815,7 +815,7 @@
                         },
                     mobile:
                         {
-                            required: true,
+                            required: false,
 
                         },
 
@@ -1115,11 +1115,13 @@
                     complete: function () {
                     }, success: function (data) {
 
-                        console.log(data)
 
                         if (data.state == '200') {
 
 
+                            for (var key in data.metadata.class_html) {
+                                $('.' + key).html(data.metadata.class_html[key])
+                            }
 
 
                         } else if (data.state == '400') {

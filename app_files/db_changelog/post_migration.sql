@@ -269,3 +269,17 @@ ALTER TABLE `Part Dimension` DROP `Part Stock State`;
 
 ALTER TABLE `Website Webpage Scope Map` CHANGE `Website Webpage Scope Scope Website Key` `Website Webpage Scope Scope Webpage Key` MEDIUMINT(8) UNSIGNED NULL DEFAULT NULL;
 update `Supplier Part Dimension` set `Supplier Part Properties`='{}'  where  `Supplier Part Properties`='' or `Supplier Part Properties` is null ;
+
+ALTER TABLE `Invoice Dimension` ADD `Invoice Tax Number Validation Message` TEXT NULL DEFAULT NULL AFTER `Invoice Tax Number Valid`;
+ALTER TABLE `Invoice Dimension` ADD `Invoice Tax Number Validation Source` ENUM('Online', 'Staff') NULL DEFAULT NULL AFTER `Invoice Tax Number Valid`;
+
+update `Customer Dimension` set `Customer Tax Number Validation Date`=NULL where `Customer Tax Number Validation Date`='0000-00-00 00:00:00';
+update `Order Dimension` set `Order Tax Number Validation Date`=NULL where `Order Tax Number Validation Date`='0000-00-00 00:00:00';
+update `Invoice Dimension` set `Invoice Tax Number Validation Date`=NULL where `Invoice Tax Number Validation Date`='0000-00-00 00:00:00';
+
+update `Invoice Dimension` left join `Order Dimension` on (`Order Key`=`Invoice Order Key`)  set `Invoice Tax Number Validation Source`=`Order Tax Number Validation Source`;
+update `Invoice Dimension` left join `Order Dimension` on (`Order Key`=`Invoice Order Key`)  set `Invoice Tax Number Validation Message`=`Order Tax Number Validation Message`;
+
+UPDATE `Order Dimension` SET `Order Metadata`= JSON_SET(`Order Metadata`,'$.tax_name',ifnull(`Order Tax Name`,'')) ;
+UPDATE `Order Dimension` SET `Order Metadata`= JSON_SET(`Order Metadata`,'$.why_tax',ifnull(`Order Tax Selection Type`,'')) ;
+ALTER TABLE `Order Dimension` DROP `Order Tax Name`, DROP `Order Tax Operations`, DROP `Order Tax Selection Type` , drop `Order Apply Auto Customer Account Payment`   ;

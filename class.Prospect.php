@@ -768,7 +768,7 @@ class Prospect extends Subject {
                         $history_data = array(
                             'History Abstract' => sprintf(
                                 _('Prospect has been invoiced, %s'),
-                                '<span class="button padding_left_5" onClick="change_view(\'invoices/'.$invoice->get('Invoice Store Key').'/'.$invoice->id.'\')"><i class="fa fa-file-alt "></i> <span class="link">'.$invoice->get('Invoice Public ID').'</span></span>'
+                                '<span class="button padding_left_5" onClick="change_view(\'invoices/'.$invoice->get('Invoice Store Key').'/'.$invoice->id.'\')"><i class="fa fa-file-invoice-dollar "></i> <span class="link">'.$invoice->get('Invoice Public ID').'</span></span>'
                             ),
 
 

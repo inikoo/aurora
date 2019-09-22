@@ -146,4 +146,3 @@ function get_order_showcase($data, $smarty, $user, $db) {
 }
 
 
-?>

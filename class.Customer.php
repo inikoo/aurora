@@ -149,15 +149,7 @@ class Customer extends Subject {
 
     function create($raw_data, $address_raw_data) {
 
-        /*
-                $this->data = $this->base_data();
-                foreach ($raw_data as $key => $value) {
-                    if (array_key_exists($key, $this->data)) {
-                        $this->data[$key] = _trim($value);
-                    }
-                }
 
-        */
         $this->editor = $raw_data['editor'];
         unset($raw_data['editor']);
 
@@ -167,33 +159,28 @@ class Customer extends Subject {
         $raw_data['Customer Metadata']             = '{}';
 
 
-        $keys   = '';
-        $values = '';
+        unset($raw_data['Customer Lost Date']);
+        unset($raw_data['First Invoiced Order Date']);
+        unset($raw_data['Customer Last Invoiced Order Date']);
+        unset($raw_data['Customer Tax Number Validation Date']);
+        unset($raw_data['Customer Last Order Date']);
+        unset($raw_data['Customer First Order Date']);
+
+
+        $sql = sprintf(
+            "INSERT INTO `Customer Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($raw_data)).'`', join(',', array_fill(0, count($raw_data), '?'))
+        );
+
+        $stmt = $this->db->prepare($sql);
+
+        $i = 1;
         foreach ($raw_data as $key => $value) {
-            $keys .= ",`".$key."`";
-            if (in_array(
-                $key, array(
-                        'Customer First Contacted Date',
-                        'Customer Lost Date',
-                        'Customer First Invoiced Order Date',
-                        'Customer Last Invoiced Order Date',
-                        'Customer Tax Number Validation Date',
-                        'Customer Last Order Date',
-                        'Customer First Order Date'
-                    )
-            )) {
-                $values .= ','.prepare_mysql($value, true);
-            } else {
-                $values .= ','.prepare_mysql($value, false);
-            }
+            $stmt->bindValue($i, $value);
+            $i++;
         }
-        $values = preg_replace('/^,/', '', $values);
-        $keys   = preg_replace('/^,/', '', $keys);
-
-        $sql = "insert into `Customer Dimension` ($keys) values ($values)";
 
 
-        if ($this->db->exec($sql)) {
+        if ($stmt->execute()) {
             $this->id = $this->db->lastInsertId();
             $this->get_data('id', $this->id);
 
@@ -280,19 +267,72 @@ class Customer extends Subject {
                 return $this->data['Customer Name'];
 
                 break;
-            case 'Tax Number':
+            case 'Tax Number Formatted':
+
+                switch ($this->data['Customer Tax Number Validation Source']) {
+                    case 'Online':
+                        $source = ' <i class="fal fa-globe"></i>';
+                        break;
+                    case 'Staff':
+                        $source = ' <i class="fal fa-thumbtack"></i>';
+                        break;
+                    default:
+                        $source = '';
+
+                }
+
+                if ($this->data['Customer Tax Number Validation Date'] != '') {
+                    $_tmp = gmdate("U") - gmdate(
+                            "U", strtotime(
+                                   $this->data['Customer Tax Number Validation Date'].' +0:00'
+                               )
+                        );
+                    if ($_tmp < 3600) {
+                        $date = strftime(
+                            "%e %b %Y %H:%M:%S %Z", strtotime(
+                                                      $this->data['Customer Tax Number Validation Date'].' +0:00'
+                                                  )
+                        );
+
+                    } elseif ($_tmp < 86400) {
+                        $date = strftime(
+                            "%e %b %Y %H:%M %Z", strtotime(
+                                                   $this->data['Customer Tax Number Validation Date'].' +0:00'
+                                               )
+                        );
+
+                    } else {
+                        $date = strftime(
+                            "%e %b %Y", strtotime(
+                                          $this->data['Customer Tax Number Validation Date'].' +0:00'
+                                      )
+                        );
+                    }
+                } else {
+                    $date = '';
+                }
+
+                $msg = $this->data['Customer Tax Number Validation Message'];
+
+                $title = htmlspecialchars(trim($date.' '.$msg));
+
                 if ($this->data['Customer Tax Number'] != '') {
                     if ($this->data['Customer Tax Number Valid'] == 'Yes') {
                         return sprintf(
-                            '<span class="ok">%s</span>', $this->data['Customer Tax Number']
+                            '<i style="margin-right: 0px" class="fa fa-check success" title="'._('Valid').'"></i> <span title="'.$title.'" >%s</span>', $this->data['Customer Tax Number'].$source
                         );
                     } elseif ($this->data['Customer Tax Number Valid'] == 'Unknown') {
                         return sprintf(
-                            '<span class="disabled">%s</span>', $this->data['Customer Tax Number']
+                            '<i style="margin-right: 0px" class="fal fa-question-circle discreet" title="'._('Unknown if is valid').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Customer Tax Number'].$source
+                        );
+                    } elseif ($this->data['Customer Tax Number Valid'] == 'API_Down') {
+                        return sprintf(
+                            '<i style="margin-right: 0px"  class="fal fa-question-circle discreet" title="'._('Validity is unknown').'"> </i> <span class="discreet" title="'.$title.'">%s</span> %s', $this->data['Customer Tax Number'],
+                            ' <i  title="'._('Online validation service down').'" class="fa fa-wifi-slash error"></i>'
                         );
                     } else {
                         return sprintf(
-                            '<span class="error">%s</span>', $this->data['Customer Tax Number']
+                            '<i style="margin-right: 0px" class="fa fa-ban error" title="'._('Invalid').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Customer Tax Number'].$source
                         );
                     }
                 }
@@ -340,8 +380,8 @@ class Customer extends Subject {
                         $source = '<i title=\''._('Validated online').'\' class=\'far fa-globe\'></i>';
 
 
-                    } elseif ($this->data['Customer Tax Number Validation Source'] == 'Manual') {
-                        $source = '<i title=\''._('Set up manually').'\' class=\'far fa-hand-rock\'></i>';
+                    } elseif ($this->data['Customer Tax Number Validation Source'] == 'Staff') {
+                        $source = '<i title=\''._('Set up manually').'\' class=\'far fa-thumbtack\'></i>';
                     } else {
                         $source = '';
                     }
@@ -353,6 +393,7 @@ class Customer extends Subject {
 
                     switch ($this->data['Customer Tax Number Valid']) {
                         case 'Unknown':
+                        case 'API_Down':
                             return _('Not validated').$validation_data;
                             break;
                         case 'Yes':
@@ -360,6 +401,7 @@ class Customer extends Subject {
                             break;
                         case 'No':
                             return _('Not valid').$validation_data;
+                            break;
                         default:
                             return $this->data['Customer Tax Number Valid'].$validation_data;
 
@@ -377,6 +419,7 @@ class Customer extends Subject {
                         break;
                     case 'No':
                         return _('No');
+                        break;
                     default:
                         return $this->data['Customer '.$key];
 
@@ -1032,18 +1075,34 @@ class Customer extends Subject {
 
             case 'Customer Invoice Address':
 
+                $old_country = $this->data['Customer Invoice Address Country 2 Alpha Code'];
+
                 $this->update_address('Invoice', json_decode($value, true), $options);
 
+                if ($old_country != $this->data['Customer Invoice Address Country 2 Alpha Code']) {
+                    $this->validate_customer_tax_number();
+                }
 
                 $this->update_metadata = array(
 
                     'class_html' => array(
-                        'Contact_Address' => $this->get('Contact Address')
+                        'Contact_Address' => $this->get('Contact Address'),
+                        'Customer_Tax_Number_Formatted'=>$this->get('Tax Number Formatted')
 
 
                     )
                 );
 
+                $this->other_fields_updated = array(
+                    'Customer_Tax_Number' => array(
+                        'field'           => 'Customer_Tax_Number_Valid',
+                        'render'          => true,
+                        'value'           => $this->get('Customer Tax Number Valid'),
+                        'formatted_value' => $this->get('Tax Number Valid'),
+
+
+                    )
+                );
 
                 break;
             case 'Customer Delivery Address':
@@ -1058,40 +1117,74 @@ class Customer extends Subject {
 
                 break;
 
+            case('Customer Registration Number'):
+                $this->update_field($field, $value, $options);
 
+
+                $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket') AND `Order Customer Key`=%d ", $this->id);
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+                        $order         = get_object('Order', $row['Order Key']);
+                        $order->editor = $this->editor;
+                        $order->update(array('Order Registration Number' => $value), $options);
+                    }
+                }
+
+                if ($value == '') {
+                    $this->update_metadata['hide'] = array('Customer_Registration_Number_display');
+                } else {
+                    $this->update_metadata['show'] = array('Customer_Registration_Number_display');
+                }
+
+                break;
             case('Customer Tax Number'):
                 $this->update_tax_number($value);
 
 
-                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN (\'InBasket\',\'InProcess\',\'InWarehouse\',\'PackedDone\')  AND `Order Customer Key`=%d ', $this->id);
+                $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket')  AND `Order Customer Key`=%d ", $this->id);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
-                        $order = get_object('Order', $row['Order Key']);
+                        $order         = get_object('Order', $row['Order Key']);
+                        $order->editor = $this->editor;
+
                         $order->update_tax_number($value);
                     }
+                }
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Customer_Tax_Number_Formatted' => $this->get('Tax Number Formatted'),
+                    ),
+
+                );
+
+                if ($value == '') {
+                    $this->update_metadata['hide'] = array('Customer_Tax_Number_display');
                 } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
+                    $this->update_metadata['show'] = array('Customer_Tax_Number_display');
+
                 }
 
 
                 break;
+
             case('Customer Tax Number Valid'):
                 $this->update_tax_number_valid($value);
 
 
-                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN (\'InBasket\',\'InProcess\',\'InWarehouse\',\'PackedDone\')  AND `Order Customer Key`=%d ', $this->id);
+                $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket')  AND `Order Customer Key`=%d ", $this->id);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
                         $order = get_object('Order', $row['Order Key']);
                         $order->update_tax_number_valid($value);
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Customer_Tax_Number_Formatted' => $this->get('Tax Number Formatted'),
+                    )
+                );
+
 
                 break;
 
@@ -1527,29 +1620,10 @@ class Customer extends Subject {
 
     function update_tax_number($value) {
 
-        include_once 'utils/validate_tax_number.php';
-
         $this->update_field('Customer Tax Number', $value);
 
-
         if ($this->updated) {
-
-            $tax_validation_data = validate_tax_number($this->data['Customer Tax Number'], $this->data['Customer Invoice Address Country 2 Alpha Code']);
-
-            $this->update(
-                array(
-                    'Customer Tax Number Valid'              => $tax_validation_data['Tax Number Valid'],
-                    'Customer Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
-                    'Customer Tax Number Validation Date'    => $tax_validation_data['Tax Number Validation Date'],
-                    'Customer Tax Number Validation Source'  => 'Online',
-                    'Customer Tax Number Validation Message' => 'B: '.$tax_validation_data['Tax Number Validation Message'],
-                ), 'no_history'
-            );
-
-
-            $this->new_value = $value;
-
-
+            $this->validate_customer_tax_number();
         }
 
         $this->other_fields_updated = array(
@@ -1563,6 +1637,45 @@ class Customer extends Subject {
             )
         );
 
+        return true;
+
+    }
+
+    function validate_customer_tax_number() {
+
+        if ($this->data['Customer Tax Number'] == '') {
+            $this->fast_update(
+                array(
+                    'Customer Tax Number Valid'              => 'Unknown',
+                    'Customer Tax Number Details Match'      => '',
+                    'Customer Tax Number Validation Date'    => '',
+                    'Customer Tax Number Validation Source'  => '',
+                    'Customer Tax Number Validation Message' => ''
+                )
+            );
+        } else {
+
+            include_once 'utils/validate_tax_number.php';
+
+            $tax_validation_data = validate_tax_number($this->data['Customer Tax Number'], $this->data['Customer Invoice Address Country 2 Alpha Code']);
+
+            if ($tax_validation_data['Tax Number Valid'] == 'API_Down') {
+                if (!($this->data['Customer Tax Number Validation Source'] == '' and $this->data['Customer Tax Number Valid'] == 'No')) {
+
+                    return false;
+                }
+            }
+
+            $this->fast_update(
+                array(
+                    'Customer Tax Number Valid'              => $tax_validation_data['Tax Number Valid'],
+                    'Customer Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
+                    'Customer Tax Number Validation Date'    => $tax_validation_data['Tax Number Validation Date'],
+                    'Customer Tax Number Validation Source'  => $tax_validation_data['Tax Number Validation Source'],
+                    'Customer Tax Number Validation Message' => $tax_validation_data['Tax Number Validation Message'],
+                )
+            );
+        }
 
     }
 
@@ -1574,9 +1687,17 @@ class Customer extends Subject {
         if ($value == 'Auto') {
 
 
-            $tax_validation_data = validate_tax_number(
-                $this->data['Customer Tax Number'], $this->data['Customer Invoice Address Country 2 Alpha Code']
-            );
+            $tax_validation_data = validate_tax_number($this->data['Customer Tax Number'], $this->data['Customer Invoice Address Country 2 Alpha Code']);
+
+            if ($tax_validation_data['Tax Number Valid'] == 'API_Down') {
+                if (!($this->data['Customer Tax Number Validation Source'] == '' and $this->data['Customer Tax Number Valid'] == 'No')) {
+                    $this->error = true;
+                    $this->msg   = '<span class="error"><i class="fa fa-exclamation-circle"></i> '.$tax_validation_data['Tax Number Validation Message'].'</span>';
+
+                    return;
+                }
+            }
+
 
             $this->update(
                 array(

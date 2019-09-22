@@ -62,7 +62,7 @@
         <div class="title">
             <span  id="order_flow_packed_done" class="{if  $order_flow=='packed_done'}blue{/if} Orders_Packed_Number button" title="{t}Closed orders waiting to be invoiced{/t}" onClick="get_orders_table('packed_done',{ 'parent': 'store','parent_key':{$store->id}})"> <i style="font-size: 50%" class="fa fa-archive" aria-hidden="true"></i> {$store->get('Orders Packed Number')}</span>
             |
-            <span  id="order_flow_approved"  class="{if  $order_flow=='approved'}blue{/if}  Orders_Dispatch_Approved_Number button" title="{t}Invoiced orders waiting to be dispatched{/t}"  onclick="get_orders_table('approved',{ 'parent': 'store','parent_key':{$store->id}})" >{$store->get('Orders Dispatch Approved Number')} <i style="font-size: 50%" class="fal fa-file-alt" aria-hidden="true"></i> </span>
+            <span  id="order_flow_approved"  class="{if  $order_flow=='approved'}blue{/if}  Orders_Dispatch_Approved_Number button" title="{t}Invoiced orders waiting to be dispatched{/t}"  onclick="get_orders_table('approved',{ 'parent': 'store','parent_key':{$store->id}})" >{$store->get('Orders Dispatch Approved Number')} <i style="font-size: 50%" class="fal fa-file-invoice-dollar" aria-hidden="true"></i> </span>
 
         </div >
 

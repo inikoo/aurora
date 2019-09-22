@@ -746,7 +746,164 @@ class Invoice extends DB_Table {
 
 
         switch ($key) {
+            case 'Tax Number Formatted':
 
+
+                switch ($this->data['Invoice Tax Number Validation Source']) {
+                    case 'Online':
+                        $source = ' <i class="fal fa-globe"></i>';
+                        break;
+                    case 'Staff':
+                        $source = ' <i class="fal fa-thumbtack"></i>';
+
+                        break;
+                    default:
+                        $source = '';
+
+                }
+
+                if ($this->data['Invoice Tax Number Validation Date'] != '') {
+                    $_tmp = gmdate("U") - gmdate(
+                            "U", strtotime(
+                                   $this->data['Invoice Tax Number Validation Date'].' +0:00'
+                               )
+                        );
+                    if ($_tmp < 3600) {
+                        $date = strftime("%e %b %Y %H:%M:%S %Z", strtotime($this->data['Invoice Tax Number Validation Date'].' +0:00'));
+
+                    } elseif ($_tmp < 86400) {
+                        $date = strftime(
+                            "%e %b %Y %H:%M %Z", strtotime($this->data['Invoice Tax Number Validation Date'].' +0:00')
+                        );
+
+                    } else {
+                        $date = strftime("%e %b %Y", strtotime($this->data['Invoice Tax Number Validation Date'].' +0:00')
+                        );
+                    }
+                } else {
+                    $date = '';
+                }
+
+                $msg = $this->data['Invoice Tax Number Validation Message'];
+
+                $title = htmlspecialchars(trim($date.' '.$msg));
+
+                if ($this->data['Invoice Tax Number'] != '') {
+                    if ($this->data['Invoice Tax Number Valid'] == 'Yes') {
+                        return sprintf(
+                            '<i style="margin-right: 0px" class="fa fa-check success" title="'._('Valid').'"></i> <span title="'.$title.'" >%s</span>', $this->data['Invoice Tax Number'].$source
+                        );
+                    } elseif ($this->data['Invoice Tax Number Valid'] == 'Unknown') {
+                        return sprintf(
+                            '<i style="margin-right: 0px" class="fal fa-question-circle discreet" title="'._('Validity is unknown').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Invoice Tax Number'].$source
+                        );
+                    } elseif ($this->data['Invoice Tax Number Valid'] == 'API_Down') {
+                        return sprintf(
+                            '<i style="margin-right: 0px"  class="fal fa-question-circle discreet" title="'._('Validity is unknown').'"> </i> <span class="discreet" title="'.$title.'">%s</span> %s', $this->data['Invoice Tax Number'],' <i  title="'._('Online validation service down').'" class="fa fa-wifi-slash error"></i>'
+                        );
+                    } else {
+                        return sprintf(
+                            '<i style="margin-right: 0px" class="fa fa-ban error" title="'._('Invalid').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Invoice Tax Number'].$source
+                        );
+                    }
+                }
+
+                break;
+            case('Tax Number Valid'):
+                if ($this->data['Invoice Tax Number'] != '') {
+
+                    if ($this->data['Invoice Tax Number Validation Date'] != '') {
+                        $_tmp = gmdate("U") - gmdate(
+                                "U", strtotime(
+                                       $this->data['Invoice Tax Number Validation Date'].' +0:00'
+                                   )
+                            );
+                        if ($_tmp < 3600) {
+                            $date = strftime(
+                                "%e %b %Y %H:%M:%S %Z", strtotime(
+                                                          $this->data['Invoice Tax Number Validation Date'].' +0:00'
+                                                      )
+                            );
+
+                        } elseif ($_tmp < 86400) {
+                            $date = strftime(
+                                "%e %b %Y %H:%M %Z", strtotime(
+                                                       $this->data['Invoice Tax Number Validation Date'].' +0:00'
+                                                   )
+                            );
+
+                        } else {
+                            $date = strftime(
+                                "%e %b %Y", strtotime(
+                                              $this->data['Invoice Tax Number Validation Date'].' +0:00'
+                                          )
+                            );
+                        }
+                    } else {
+                        $date = '';
+                    }
+
+                    $msg = $this->data['Invoice Tax Number Validation Message'];
+
+                    if ($this->data['Invoice Tax Number Validation Source'] == 'Online') {
+                        $source = '<i title=\''._('Validated online').'\' class=\'far fa-globe\'></i>';
+
+
+                    } elseif ($this->data['Invoice Tax Number Validation Source'] == 'Staff') {
+                        $source = '<i title=\''._('Set up manually').'\' class=\'far fa-thumbtack\'></i>';
+                    } else {
+                        $source = '';
+                    }
+
+                    $validation_data = trim($date.' '.$source.' '.$msg);
+                    if ($validation_data != '') {
+                        $validation_data = ' <span class=\'discreet\'>('.$validation_data.')</span>';
+                    }
+
+                    switch ($this->data['Invoice Tax Number Valid']) {
+                        case 'Unknown':
+                        case 'API_Down':
+                            return _('Not validated').$validation_data;
+                            break;
+                        case 'Yes':
+                            return _('Validated').$validation_data;
+                            break;
+                        case 'No':
+                            return _('Not valid').$validation_data;
+                            break;
+                        default:
+                            return $this->data['Invoice Tax Number Valid'].$validation_data;
+
+                            break;
+                    }
+                }
+                break;
+            case 'Address':
+
+                return $this->get('Invoice Address Formatted');
+                break;
+
+            case 'Invoice Address':
+
+
+                $address_fields = array(
+
+                    'Address Recipient'            => $this->get('Invoice Address Recipient'),
+                    'Address Organization'         => $this->get('Invoice Address Organization'),
+                    'Address Line 1'               => $this->get('Invoice Address Line 1'),
+                    'Address Line 2'               => $this->get('Invoice Address Line 2'),
+                    'Address Sorting Code'         => $this->get('Invoice Address Sorting Code'),
+                    'Address Postal Code'          => $this->get('Invoice Address Postal Code'),
+                    'Address Dependent Locality'   => $this->get('Invoice Address Dependent Locality'),
+                    'Address Locality'             => $this->get('Invoice Address Locality'),
+                    'Address Administrative Area'  => $this->get('Invoice Address Administrative Area'),
+                    'Address Country 2 Alpha Code' => $this->get('Invoice Address Country 2 Alpha Code'),
+
+
+                );
+
+                return json_encode($address_fields);
+                break;
             case 'Currency Code':
 
                 return $this->data['Invoice Currency'];
@@ -810,16 +967,19 @@ class Invoice extends DB_Table {
                 break;
 
             case('Corporate Currency Total Amount'):
-                global $corporate_currency;
-                $_key = preg_replace('/Corporate Currency /', '', $key);
+
+
+                $account = get_object('Account', 1);
+                $_key    = preg_replace('/Corporate Currency /', '', $key);
 
                 return money(
-                    $this->data['Invoice '.$_key] * $this->data['Invoice Currency Exchange'], $corporate_currency
+                    $this->data['Invoice '.$_key] * $this->data['Invoice Currency Exchange'], $account->get('Account Currency Code')
                 );
                 break;
             case('Date'):
+            case('Tax Liability Date'):
                 return strftime(
-                    "%a %e %b %Y %H:%M %Z", strtotime($this->data['Invoice Date'].' +0:00')
+                    "%a %e %b %Y %H:%M %Z", strtotime($this->data['Invoice '.$key].' +0:00')
                 );
                 break;
             case('Deleted Date'):
@@ -940,6 +1100,135 @@ class Invoice extends DB_Table {
 
         return false;
     }
+
+
+    function update_tax_number($value) {
+
+        include_once 'utils/validate_tax_number.php';
+
+        $old_formatted_value = $this->get('Tax Number Formatted');
+        $this->update_field('Invoice Tax Number', $value, 'no_history');
+
+
+        if ($this->updated) {
+
+            if ($value == '') {
+
+                $this->fast_update(
+                    array(
+                        'Invoice Tax Number Valid'              => 'Unknown',
+                        'Invoice Tax Number Details Match'      => '',
+                        'Invoice Tax Number Validation Date'    => '',
+                        'Invoice Tax Number Validation Source'  => '',
+                        'Invoice Tax Number Validation Message' => ''
+                    )
+                );
+            } else {
+
+                $tax_validation_data = validate_tax_number($this->data['Invoice Tax Number'], $this->data['Invoice Address Country 2 Alpha Code']);
+
+                if ($tax_validation_data['Tax Number Valid'] == 'API_Down') {
+                    if (!($this->data['Invoice Tax Number Validation Source'] == '' and $this->data['Invoice Tax Number Valid'] == 'No')) {
+                        return;
+                    }
+                }
+
+                $this->fast_update(
+                    array(
+                        'Invoice Tax Number Valid'              => $tax_validation_data['Tax Number Valid'],
+                        'Invoice Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
+                        'Invoice Tax Number Validation Date'    => $tax_validation_data['Tax Number Validation Date'],
+                        'Invoice Tax Number Validation Source'  => 'Online',
+                        'Invoice Tax Number Validation Message' => 'B: '.$tax_validation_data['Tax Number Validation Message'],
+                    )
+                );
+            }
+
+
+            $this->new_value = $value;
+
+            $this->add_changelog_record('Invoice Tax Number', $old_formatted_value, $this->get('Tax Number Formatted'), '', 'Invoice', $this->id);
+
+
+        }
+
+        $this->other_fields_updated = array(
+            'Invoice_Tax_Number_Valid' => array(
+                'field'           => 'Invoice_Tax_Number_Valid',
+                'render'          => ($this->get('Invoice Tax Number') == '' ? false : true),
+                'value'           => $this->get('Invoice Tax Number Valid'),
+                'formatted_value' => $this->get('Tax Number Valid'),
+
+
+            )
+        );
+
+
+    }
+
+
+    function update_tax_number_valid($value) {
+
+        include_once 'utils/validate_tax_number.php';
+
+
+        if ($value == 'Auto') {
+
+
+            $tax_validation_data = validate_tax_number($this->data['Invoice Tax Number'], $this->data['Invoice Address Country 2 Alpha Code']);
+
+            if ($tax_validation_data['Tax Number Valid'] == 'API_Down') {
+                if (!($this->data['Invoice Tax Number Validation Source'] == '' and $this->data['Invoice Tax Number Valid'] == 'No')) {
+                    $this->error = true;
+                    $this->msg   = '<span class="error"><i class="fa fa-exclamation-circle"></i> '.$tax_validation_data['Tax Number Validation Message'].'</span>';
+
+                    return;
+                }
+            }
+
+            $this->fast_update(
+                array(
+                    //'Invoice Tax Number Valid' => $tax_validation_data['Tax Number Valid'],
+
+                    'Invoice Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
+                    'Invoice Tax Number Validation Date'    => ($tax_validation_data['Tax Number Validation Date'] == '' ? gmdate('Y-m-d H:i:s') : $tax_validation_data['Tax Number Validation Date']),
+                    'Invoice Tax Number Validation Source'  => 'Online',
+                    'Invoice Tax Number Validation Message' => $tax_validation_data['Tax Number Validation Message'],
+                )
+            );
+            $this->update_field('Invoice Tax Number Valid', $tax_validation_data['Tax Number Valid']);
+
+        } else {
+
+
+            $this->fast_update(
+                array(
+                    'Invoice Tax Number Details Match'      => 'Unknown',
+                    'Invoice Tax Number Validation Date'    => $this->editor['Date'],
+                    'Invoice Tax Number Validation Source'  => 'Staff',
+                    'Invoice Tax Number Validation Message' => $this->editor['Author Name'],
+                )
+            );
+            $this->update_field('Invoice Tax Number Valid', $value);
+        }
+
+
+        // print_r($this->data);
+
+        $this->other_fields_updated = array(
+            'Invoice_Tax_Number' => array(
+                'field'           => 'Invoice_Tax_Number',
+                'render'          => true,
+                'value'           => $this->get('Invoice Tax Number'),
+                'formatted_value' => $this->get('Tax Number'),
+
+
+            )
+        );
+
+
+    }
+
 
     function get_formatted_payment_state() {
 
@@ -1162,10 +1451,6 @@ class Invoice extends DB_Table {
                     $this->db->exec($sql);
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
@@ -1181,10 +1466,6 @@ class Invoice extends DB_Table {
                     );
                     $this->db->exec($sql);
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
@@ -1200,10 +1481,6 @@ class Invoice extends DB_Table {
                     $data[$row['Transaction Tax Code']] = $row['net'];
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
@@ -1224,10 +1501,6 @@ class Invoice extends DB_Table {
 
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
@@ -1410,6 +1683,141 @@ class Invoice extends DB_Table {
 
         switch ($field) {
 
+            case 'Invoice Date':
+
+                $account = get_object('Account', 1);
+
+                $this->update_field($field, $value, $options);
+
+                $products = array();
+                $dates    = array();
+
+                $sql = "SELECT `Invoice Date`,`Product ID` FROM `Order Transaction Fact`  WHERE `Invoice Key`=?";
+
+
+                $stmt = $this->db->prepare($sql);
+                if ($stmt->execute(
+                    array(
+                        $this->id
+                    )
+                )) {
+                    while ($row = $stmt->fetch()) {
+                        $products[$row['Product ID']] = 1;
+                        $dates[$row['Invoice Date']]  = 1;
+
+
+                    }
+                }
+
+
+                include_once 'utils/new_fork.php';
+                new_housekeeping_fork(
+                    'au_asset_sales', array(
+                    'type'                 => 'update_edited_invoice_products_sales_data',
+                    'products'             => $products,
+                    'dates'                => $dates,
+                    'customer_key'         => $this->get('Invoice Customer Key'),
+                    'store_key'            => $this->get('Invoice Store Key'),
+                    'invoice_category_key' => $this->get('Invoice Category Key'),
+                    'invoice_date'         => gmdate('Y-m-d', strtotime($this->get('Invoice Date').' +0:00'))
+                ), $account->get('Account Code')
+                );
+
+                break;
+            case
+            ('Invoice Registration Number'):
+            case('Invoice Customer Name'):
+
+                $this->update_field($field, $value, $options);
+                $order         = get_object('Order', $this->data['Invoice Order Key']);
+                $order->editor = $this->editor;
+                $order->update(array(preg_replace('/^Invoice /', 'Order ', $field) => $value), $options);
+
+
+                break;
+            case('Invoice Tax Number'):
+                $this->update_tax_number($value);
+                $order         = get_object('Order', $this->data['Invoice Order Key']);
+                $order->editor = $this->editor;
+
+                $order_old_formatted_value = $order->get('Tax Number Formatted');
+                $order->update_tax_number($value, 'no_history', $updated_from_invoice = true);
+
+                $order->fast_update(
+                    array(
+                        'Order Tax Number Valid'              => $this->data['Invoice Tax Number Valid'],
+                        'Order Tax Number Details Match'      => $this->data['Invoice Tax Number Details Match'],
+                        'Order Tax Number Validation Date'    => $this->data['Invoice Tax Number Validation Date'],
+                        'Order Tax Number Validation Source'  => $this->data['Invoice Tax Number Validation Source'],
+                        'Order Tax Number Validation Message' => $this->data['Invoice Tax Number Validation Message'],
+                    )
+                );
+
+                if ($order_old_formatted_value != $order->get('Tax Number Formatted')) {
+                    $this->add_changelog_record('Order Tax Number', $order_old_formatted_value, $order->get('Tax Number Formatted'), '', 'Order', $order->id);
+
+                }
+
+
+                $order->update_tax(false, $this->id);
+
+                $this->update_tax_data();
+
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Invoice_Tax_Number_Formatted' => $this->get('Tax Number Formatted'),
+                    ),
+
+                );
+
+                break;
+            case('Invoice Tax Number Valid'):
+                $this->update_tax_number_valid($value);
+                $order                     = get_object('Order', $this->data['Invoice Order Key']);
+                $order->editor             = $this->editor;
+                $order_old_formatted_value = $order->get('Tax Number Valid');
+                $order->fast_update(
+                    array(
+                        'Order Tax Number Valid'              => $this->data['Invoice Tax Number Valid'],
+                        'Order Tax Number Details Match'      => $this->data['Invoice Tax Number Details Match'],
+                        'Order Tax Number Validation Date'    => $this->data['Invoice Tax Number Validation Date'],
+                        'Order Tax Number Validation Source'  => $this->data['Invoice Tax Number Validation Source'],
+                        'Order Tax Number Validation Message' => $this->data['Invoice Tax Number Validation Message'],
+                    )
+                );
+                if ($order_old_formatted_value != $order->get('Order Tax Number Valid')) {
+                    $order->add_changelog_record('Order Tax Number Valid', $order_old_formatted_value, $order->get('Tax Number Valid'), '', 'Order', $order->id);
+
+                }
+
+                $order->update_tax(false, $this->id);
+
+                $this->update_tax_data();
+
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Invoice_Tax_Number_Formatted' => $this->get('Tax Number Formatted'),
+                    ),
+
+                );
+
+                break;
+            case 'Invoice Address':
+
+                $this->update_address(json_decode($value, true));
+
+                $order         = get_object('Order', $this->data['Invoice Order Key']);
+                $order->editor = $this->editor;
+
+                $order->update_tax(false, $this->id);
+
+                $this->update_tax_data();
+
+                break;
+
+
             case 'Invoice Public ID':
                 $this->update_field($field, $value, $options);
 
@@ -1559,7 +1967,6 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
         $sql = sprintf("DELETE FROM `Invoice Sales Representative Bridge`  WHERE   `Invoice Key`=%d", $this->id);
         $this->db->exec($sql);
-
 
 
         $sql = sprintf("DELETE FROM `Invoice Tax Dimension` WHERE `Invoice Key`=%d", $this->id);
@@ -1743,7 +2150,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         include_once 'utils/new_fork.php';
         new_housekeeping_fork(
             'au_asset_sales', array(
-            'type'                 => 'update_deleted_invoice_products_sales_data',
+            'type'                 => 'update_edited_invoice_products_sales_data',
             'products'             => $products,
             'dates'                => $dates,
             'customer_key'         => $customer_key,
@@ -1835,14 +2242,8 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
                 $data[$row['Transaction Tax Code']] = $row['net'];
-
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
-        //  print_r($data);
 
         $sql = sprintf(
             "SELECT  `Tax Category Code`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE `Invoice Key`=%d  GROUP BY  `Tax Category Code`  ", $this->id
@@ -1851,35 +2252,20 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-
-
                 if (isset($data[$row['Tax Category Code']])) {
                     $data[$row['Tax Category Code']] += $row['net'];
                 } else {
                     $data[$row['Tax Category Code']] = $row['net'];
                 }
-
-
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
-
-        // print_r($data);
-
         if ($this->data['Invoice Net Amount Off'] != 0) {
-
-
             if (isset($data[$this->data['Invoice Tax Code']])) {
                 $data[$this->data['Invoice Tax Code']] -= $this->data['Invoice Net Amount Off'];
             } else {
                 $data[$this->data['Invoice Tax Code']] = -$this->data['Invoice Net Amount Off'];
             }
-
-
         }
 
         $sql = sprintf("DELETE FROM `Invoice Tax Bridge` WHERE `Invoice Key`=%d", $this->id);
@@ -1888,16 +2274,13 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         $sql = sprintf("DELETE FROM `Invoice Tax Dimension` WHERE `Invoice Key`=%d", $this->id);
         $this->db->exec($sql);
 
-        $sql = sprintf(
-            "    INSERT INTO `Invoice Tax Dimension` (`Invoice Key`) VALUES (%d)", $this->id
-        );
-
-        //print "$sql\n";
-
+        $sql = sprintf("INSERT INTO `Invoice Tax Dimension` (`Invoice Key`) VALUES (%d)", $this->id);
         $this->db->exec($sql);
 
 
         $total_tax = 0;
+
+
         foreach ($data as $tax_code => $amount) {
 
             $tax_category = get_object('Tax_Category', $tax_code);
@@ -1905,9 +2288,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
             $total_tax    += $tax;
             $is_base      = 'Yes';
 
-            $sql = sprintf(
-                "    UPDATE `Invoice Tax Dimension` SET `%s`=%.2f WHERE `Invoice Key`=%d", addslashes($tax_code), $tax, $this->id
-            );
+            $sql = sprintf("UPDATE `Invoice Tax Dimension` SET `%s`=%.2f WHERE `Invoice Key`=%d", addslashes($tax_code), $tax, $this->id);
             $this->db->exec($sql);
             // print "$sql\n";
             $sql = sprintf(
@@ -1939,6 +2320,181 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
     }
 
+
+    function update_address($fields, $options = '') {
+
+
+        $old_value = $this->get("Address");
+
+
+        $updated_fields_number = 0;
+
+
+        if (preg_match('/gb|im|jy|gg/i', $fields['Address Country 2 Alpha Code'])) {
+            include_once 'utils/geography_functions.php';
+            $fields['Address Postal Code'] = gbr_pretty_format_post_code($fields['Address Postal Code']);
+        }
+
+        foreach ($fields as $field => $value) {
+
+            $this->update_field(
+                'Invoice '.$field, $value, 'no_history'
+            );
+            if ($this->updated) {
+                $updated_fields_number++;
+
+            }
+        }
+
+
+        if ($updated_fields_number > 0) {
+
+
+            $this->updated = true;
+        }
+
+
+        if ($this->updated) {
+
+
+            $order         = get_object('Order', $this->data['Invoice Order Key']);
+            $order->editor = $this->editor;
+
+            $order->update_address('Invoice', $fields, '', $updated_from_invoice = true);
+
+
+            $this->update_address_formatted_fields();
+
+
+            if (!preg_match('/no( |\_)history|nohistory/i', $options)) {
+
+
+                $this->add_changelog_record(
+                    "Address", $old_value, $this->get("Address"), '', $this->table_name, $this->id
+                );
+
+            }
+
+
+
+
+        }
+
+    }
+
+
+    function update_address_formatted_fields() {
+
+        include_once 'utils/get_addressing.php';
+
+        $address_fields = array(
+            'Address Recipient'            => $this->get('Invoice Address Recipient'),
+            'Address Organization'         => $this->get('Invoice Address Organization'),
+            'Address Line 1'               => $this->get('Invoice Address Line 1'),
+            'Address Line 2'               => $this->get('Invoice Address Line 2'),
+            'Address Sorting Code'         => $this->get('Invoice Address Sorting Code'),
+            'Address Postal Code'          => $this->get('Invoice Address Postal Code'),
+            'Address Dependent Locality'   => $this->get('Invoice Address Dependent Locality'),
+            'Address Locality'             => $this->get('Invoice Address Locality'),
+            'Address Administrative Area'  => $this->get('Invoice Address Administrative Area'),
+            'Address Country 2 Alpha Code' => $this->get('Invoice Address Country 2 Alpha Code'),
+        );
+
+
+        // replace null to empty string do not remove
+        array_walk_recursive(
+            $address_fields, function (&$item) {
+            $item = strval($item);
+        }
+        );
+
+
+        $new_checksum = md5(
+            json_encode($address_fields)
+        );
+
+
+        $this->update_field(
+            'Invoice Address Checksum', $new_checksum, 'no_history'
+        );
+
+        $account = get_object('Account', 1);
+        $locale  = $account->get('Account Locale');
+
+        if ($this->get('Store Key')) {
+            $store   = get_object('Store', $this->get('Store Key'));
+            $country = $store->get('Store Home Country Code 2 Alpha');
+            //$locale  = $store->get('Store Locale');
+        } else {
+            $country = $account->get('Account Country 2 Alpha Code');
+            //$locale  = $account->get('Account Locale');
+        }
+
+
+        list($address, $formatter, $postal_label_formatter) = get_address_formatter($country, $locale);
+
+
+        $address = $address->withFamilyName($this->get('Address Recipient'))->withOrganization($this->get('Address Organization'))->withAddressLine1($this->get('Address Line 1'))->withAddressLine2($this->get('Address Line 2'))->withSortingCode(
+            $this->get('Address Sorting Code')
+        )->withPostalCode($this->get('Address Postal Code'))->withDependentLocality(
+            $this->get('Address Dependent Locality')
+        )->withLocality($this->get('Address Locality'))->withAdministrativeArea(
+            $this->get('Address Administrative Area')
+        )->withCountryCode(
+            $this->get('Address Country 2 Alpha Code')
+        );
+
+
+        $xhtml_address = $formatter->format($address);
+
+
+        $xhtml_address = preg_replace('/class="address-line1"/', 'class="address-line1 street-address"', $xhtml_address);
+        $xhtml_address = preg_replace('/class="address-line2"/', 'class="address-line2 extended-address"', $xhtml_address);
+        $xhtml_address = preg_replace('/class="sort-code"/', 'class="sort-code postal-code"', $xhtml_address);
+        $xhtml_address = preg_replace('/class="country"/', 'class="country country-name"', $xhtml_address);
+
+
+        //$xhtml_address = preg_replace('/(class="address-line1 street-address"><\/span>)<br>/', '$1', $xhtml_address);
+
+
+        $xhtml_address = preg_replace('/<br>/', '<br/>', $xhtml_address);
+
+
+        $this->update_field('Invoice Address Formatted', $xhtml_address, 'no_history');
+        $this->update_field('Invoice Address Postal Label', $postal_label_formatter->format($address), 'no_history');
+
+    }
+
+    function get_field_label($field) {
+
+
+        switch ($field) {
+
+
+            case 'Invoice Registration Number':
+                $label = _('registration number');
+                break;
+            case 'Invoice Tax Number':
+                $label = _('tax number');
+                break;
+            case 'Invoice Tax Number Valid':
+                $label = _('tax number validity');
+                break;
+            case 'Invoice Customer Name':
+                $label = _('customer name');
+                break;
+            case 'Invoice Public ID':
+                $label = _('invoice number');
+                break;
+
+            default:
+                $label = $field;
+
+        }
+
+        return $label;
+
+    }
 
 }
 

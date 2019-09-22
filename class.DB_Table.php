@@ -142,7 +142,11 @@ abstract class DB_Table extends stdClass {
         $value = _trim($value);
 
 
+
+
         $formatted_field = preg_replace('/^'.$this->table_name.' /', '', $field);
+
+
 
 
         //$old_value=_('Unknown');
@@ -229,11 +233,15 @@ abstract class DB_Table extends stdClass {
                 ) and !$this->new and $save_history) {
 
 
-                //$old_formatted_value = htmlentities($old_formatted_value);
-                //$new_formatted_value = htmlentities($this->get($formatted_field));
+
+
+                if($formatted_field=='Tax Number'){
+                    $formatted_field='Tax Number Formatted';
+                }
+
+
                 $new_formatted_value = $this->get($formatted_field);
 
-                //print  "xx  $formatted_field x";
 
 
                 $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, $options, $table_name, $table_key);
@@ -267,6 +275,7 @@ abstract class DB_Table extends stdClass {
             $sql = sprintf(
                 "INSERT INTO `%s History Bridge` VALUES (%d,%d,'No','No','Changes')", $table_name, $table_key, $history_key
             );
+
 
             $this->db->exec($sql);
 
@@ -505,7 +514,6 @@ abstract class DB_Table extends stdClass {
 
         $sql =
             "INSERT INTO `History Dimension` (`Author Name`,`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`,`Metadata`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-
 
         $stmt = $this->db->prepare($sql);
 

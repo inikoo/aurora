@@ -1380,7 +1380,7 @@ function get_customer_navigation($data, $smarty, $user, $db) {
 
 
     $title = '<span class="Customer_Level_Type_Icon">'.$customer->get('Level Type Icon').'</span>';
-    $title .= '<span class="id"><span class="Customer_Name">'.$customer->get('Customer Name').'</span> ('.$customer->get_formatted_id().')</span>';
+    $title .= '<span class="id"><span class="Customer_Name_Truncated">'.(strlen($customer->get('Customer Name'))>50?substrwords($customer->get('Customer Name'),55):$customer->get('Customer Name')).'</span> ('.$customer->get_formatted_id().')</span>';
     if ($customer->get('Customer Type by Activity') == 'ToApprove') {
         $title .= ' <span class="error padding_left_10"><i class="far fa-exclamation-circle"></i> '._('To be approved').'</span>';
     } elseif ($customer->get('Customer Type by Activity') == 'Rejected') {

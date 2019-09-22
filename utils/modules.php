@@ -950,7 +950,7 @@ $modules = array(
 
                     'customer.product.invoices' => array(
                         'label' => _('Invoices'),
-                        'icon'  => 'file-alt',
+                        'icon'  => 'file-invoice-dollar',
 
 
                     ),
@@ -1103,7 +1103,7 @@ $modules = array(
                     'order.invoices'       => array(
                         'label' => '',
                         'title' => _('Invoices'),
-                        'icon'  => 'file-alt',
+                        'icon'  => 'file-invoice-dollar',
                         'class' => 'right icon_only'
                     ),
                     'order.deals'          => array(
@@ -1222,7 +1222,7 @@ $modules = array(
                         'label' => _(
                             'Invoices'
                         ),
-                        'icon'  => 'file-alt'
+                        'icon'  => 'file-invoice-dollar'
                     ),
                 )
 
@@ -1574,7 +1574,7 @@ $modules = array(
                     'order.invoices'       => array(
                         'label' => '',
                         'title' => _('Invoices'),
-                        'icon'  => 'file-alt',
+                        'icon'  => 'file-invoice-dollar',
                         'class' => 'right icon_only'
                     ),
                     'order.deals'          => array(
@@ -1621,14 +1621,14 @@ $modules = array(
             'invoices' => array(
                 'type'      => 'navigation',
                 'label'     => _('Invoices'),
-                'icon'      => 'file-alt',
+                'icon'      => 'file-invoice-dollar',
                 'reference' => 'invoices/%d',
                 'tabs'      => array(
                     'invoices' => array(
                         'label' => _(
                             'Invoices'
                         ),
-                        'icon'  => 'file-alt'
+                        'icon'  => 'file-invoice-dollar'
                     ),
                 )
             ),
@@ -1678,7 +1678,7 @@ $modules = array(
                         'label' => _(
                             'Invoices'
                         ),
-                        'icon'  => 'file-alt'
+                        'icon'  => 'file-invoice-dollar'
                     ),
 
                 )
@@ -1717,7 +1717,7 @@ $modules = array(
                         'label' => _(
                             'Invoices'
                         ),
-                        'icon'  => 'file-alt'
+                        'icon'  => 'file-invoice-dollar'
                     ),
                 )
 
@@ -1881,7 +1881,7 @@ $modules = array(
                         'label' => _(
                             'Invoices'
                         ),
-                        'icon'  => 'file-alt'
+                        'icon'  => 'file-invoice-dollar'
                     ),
 
                 )
@@ -1939,7 +1939,7 @@ $modules = array(
                         'label' => _(
                             'Invoices'
                         ),
-                        'icon'  => 'file-alt'
+                        'icon'  => 'file-invoice-dollar'
                     ),
 
                     */
@@ -2095,7 +2095,7 @@ $modules = array(
             'invoices' => array(
                 'type'      => 'navigation',
                 'label'     => _('Invoices').' ('._('All').')',
-                'icon'      => 'file-alt',
+                'icon'      => 'file-invoice-dollar',
                 'reference' => 'invoices/per_store',
                 'tabs'      => array(
                     'invoices_per_store'      => array(
@@ -2358,13 +2358,13 @@ $modules = array(
             'invoices' => array(
                 'type'      => 'navigation',
                 'label'     => _('Invoices'),
-                'icon'      => 'file-alt',
+                'icon'      => 'file-invoice-dollar',
                 'reference' => 'invoices/%d',
                 'tabs'      => array(
 
                     'invoices' => array(
                         'label' => _('Invoices'),
-                        'icon'  => 'file-alt',
+                        'icon'  => 'file-invoice-dollar',
                     )
 
                 )
@@ -3710,7 +3710,7 @@ $modules = array(
                     ),
                     'order.invoices'       => array(
                         'label' => _('Invoices'),
-                        'icon'  => 'file-alt'
+                        'icon'  => 'file-invoice-dollar'
                     ),
                     'order.payments'       => array(
                         'label' => _('Payments'),

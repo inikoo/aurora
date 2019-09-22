@@ -87,8 +87,15 @@ class Order extends DB_Table {
 
         if ($this->id) {
             $this->set_display_currency($this->data['Order Currency'], 1.0);
+            $this->metadata = json_decode($this->data['Order Metadata'], true);
+
         }
 
+    }
+
+
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
     }
 
     function set_display_currency($currency_code, $exchange) {
@@ -141,49 +148,45 @@ class Order extends DB_Table {
 
                 break;
             case('Order For Collection'):
-                if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+                if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
                     return;
                 }
 
                 $this->update_for_collection($value, $options);
                 break;
             case('Order Tax Number'):
-                if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+                if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
                     return;
                 }
                 $this->update_tax_number($value);
+                $this->order_totals_changed_post_operation();
                 break;
             case('Order Tax Number Valid'):
-                if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+                if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
                     return;
                 }
                 $this->update_tax_number_valid($value);
+                $this->order_totals_changed_post_operation();
                 break;
             case 'Order Invoice Address':
-                if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+                if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
                     return;
                 }
                 $this->update_address('Invoice', json_decode($value, true));
-
-
-                $customer = get_object('Customer', $this->data['Order Customer Key']);
-                $customer->update_field_switcher('Customer Invoice Address', $value, '', array('no_propagate_orders' => true));
-
-
+                $this->order_totals_changed_post_operation();
                 break;
             case 'Order Delivery Address':
-                if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+                if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
                     return;
                 }
                 $this->update_address('Delivery', json_decode($value, true));
+                $this->order_totals_changed_post_operation();
                 break;
 
             case('Order State'):
                 $this->update_state($value, $options, $metadata);
                 break;
-            case 'auto_account_payments':
-                $this->auto_account_payments($value, $options);
-                break;
+
 
             case('Order Customer Purchase Order ID'):
                 $this->update_field('Order Customer Purchase Order ID', $value);
@@ -216,6 +219,57 @@ class Order extends DB_Table {
         }
 
     }
+
+    function order_totals_changed_post_operation() {
+
+
+        $this->update_metadata
+
+            = array(
+            'class_html' => array(
+                'Order_Tax_Number_Formatted' => $this->get('Tax Number Formatted'),
+                'Tax_Description'            => $this->get('Tax Description'),
+                'Total_Tax_Amount'           => $this->get('Total Tax Amount'),
+                'Total_Amount'               => $this->get('Total Amount'),
+                'To_Pay_Amount_Absolute'     => $this->get('To Pay Amount Absolute')
+            )
+        );
+
+        if ($this->get('Order To Pay Amount') == 0) {
+            $this->update_metadata['hide'] = array(
+                'Order_To_Pay_Amount',
+                'Order_Payments_Amount'
+            );
+            if ($this->get('Order Total Amount') == 0) {
+                array_push($this->update_metadata['hide'], 'Order_Paid');
+            } else {
+                $this->update_metadata['show'] = array('Order_Paid');
+            }
+        } elseif ($this->get('Order To Pay Amount') > 0) {
+            $this->update_metadata['show'] = array(
+                'Order_To_Pay_Amount',
+                'To_Pay_Label',
+                'Order_Payments_Amount'
+            );
+            $this->update_metadata['hide'] = array(
+                'To_Refund_Label',
+                'Order_Paid'
+            );
+
+        } elseif ($this->get('Order To Pay Amount') < 0) {
+            $this->update_metadata['show'] = array(
+                'Order_To_Pay_Amount',
+                'To_Refund_Label',
+                'Order_Payments_Amount'
+            );
+            $this->update_metadata['hide'] = array(
+                'To_Pay_Label',
+                'Order_Paid'
+            );
+        }
+
+    }
+
 
     function get($key = '') {
 
@@ -253,7 +307,29 @@ class Order extends DB_Table {
 
         switch ($key) {
 
+            case 'Tax Description':
+                switch ($this->data['Order Tax Code']) {
+                    case 'OUT':
+                        return _('Outside the scope od VAT');
+                        break;
+                    case 'EU':
+                        return sprintf(_('EC with %s'), $this->get('Tax Number Formatted'));
+                        break;
+                    default:
 
+                        switch ($this->metadata('why_tax')) {
+                            case 'EC with invalid tax number':
+                                return sprintf(_('EC with %s'), $this->get('Tax Number Formatted'));
+                                break;
+                            default:
+                                $why_tax_formatted = '';
+                        }
+
+                        return $this->metadata('tax_name').$why_tax_formatted;
+
+
+                }
+                break;
             case 'Margin':
 
                 if (is_numeric($this->data['Order Margin'])) {
@@ -348,72 +424,7 @@ class Order extends DB_Table {
                 return $this->data['Order Currency'];
                 break;
 
-            case('Tax Number Valid'):
-                if ($this->data['Order Tax Number'] != '') {
 
-                    if ($this->data['Order Tax Number Validation Date'] != '') {
-                        $_tmp = gmdate("U") - gmdate(
-                                "U", strtotime(
-                                       $this->data['Order Tax Number Validation Date'].' +0:00'
-                                   )
-                            );
-                        if ($_tmp < 3600) {
-                            $date = strftime("%e %b %Y %H:%M:%S %Z", strtotime($this->data['Order Tax Number Validation Date'].' +0:00'));
-
-                        } elseif ($_tmp < 86400) {
-                            $date = strftime(
-                                "%e %b %Y %H:%M %Z", strtotime(
-                                                       $this->data['Order Tax Number Validation Date'].' +0:00'
-                                                   )
-                            );
-
-                        } else {
-                            $date = strftime(
-                                "%e %b %Y", strtotime(
-                                              $this->data['Order Tax Number Validation Date'].' +0:00'
-                                          )
-                            );
-                        }
-                    } else {
-                        $date = '';
-                    }
-
-
-                    // print_r($this->data);
-
-                    $msg = $this->data['Order Tax Number Validation Message'];
-
-                    if ($this->data['Order Tax Number Validation Source'] == 'Online') {
-                        $source = '<i title=\''._('Validated online').'\' class=\'far fa-globe\'></i>';
-
-
-                    } elseif ($this->data['Order Tax Number Validation Source'] == 'Manual') {
-                        $source = '<i title=\''._('Set up manually').'\' class=\'far fa-hand-rock\'></i>';
-                    } else {
-                        $source = '';
-                    }
-
-                    $validation_data = trim($date.' '.$source.' '.$msg);
-                    if ($validation_data != '') {
-                        $validation_data = ' <span class=\'discreet\'>('.$validation_data.')</span>';
-                    }
-
-                    switch ($this->data['Order Tax Number Valid']) {
-                        case 'Unknown':
-                            return _('Not validated').$validation_data;
-                            break;
-                        case 'Yes':
-                            return _('Validated').$validation_data;
-                            break;
-                        case 'No':
-                            return _('Not valid').$validation_data;
-                        default:
-                            return $this->data['Order Tax Number Valid'].$validation_data;
-
-                            break;
-                    }
-                }
-                break;
 
             case 'Order Invoice Address':
             case 'Order Delivery Address':
@@ -670,7 +681,7 @@ class Order extends DB_Table {
             case ('Estimated Weight'):
                 include_once 'utils/natural_language.php';
 
-                return "&#8494;".smart_weight($this->data['Order Estimated Weight'],1);
+                return "&#8494;".smart_weight($this->data['Order Estimated Weight'], 1);
 
 
                 break;
@@ -701,9 +712,9 @@ class Order extends DB_Table {
                     case('Dispatched'):
 
                         if ($this->data['Order For Collection'] == 'Yes') {
-                            $state= _('Collected');
+                            $state = _('Collected');
                         } else {
-                            $state= _('Dispatched');
+                            $state = _('Dispatched');
                         }
 
                         break;
@@ -795,6 +806,198 @@ class Order extends DB_Table {
                 return $this->data['Order Replacements In Warehouse without Alerts'] + $this->data['Order Replacements In Warehouse with Alerts'] + $this->data['Order Replacements Packed Done'] + $this->data['Order Replacements Approved'];
                 break;
 
+            case('Tax Number Valid'):
+                if ($this->data['Order Tax Number'] != '') {
+
+                    if ($this->data['Order Tax Number Validation Date'] != '') {
+                        $_tmp = gmdate("U") - gmdate(
+                                "U", strtotime(
+                                       $this->data['Order Tax Number Validation Date'].' +0:00'
+                                   )
+                            );
+                        if ($_tmp < 3600) {
+                            $date = strftime("%e %b %Y %H:%M:%S %Z", strtotime($this->data['Order Tax Number Validation Date'].' +0:00'));
+
+                        } elseif ($_tmp < 86400) {
+                            $date = strftime(
+                                "%e %b %Y %H:%M %Z", strtotime(
+                                                       $this->data['Order Tax Number Validation Date'].' +0:00'
+                                                   )
+                            );
+
+                        } else {
+                            $date = strftime(
+                                "%e %b %Y", strtotime(
+                                              $this->data['Order Tax Number Validation Date'].' +0:00'
+                                          )
+                            );
+                        }
+                    } else {
+                        $date = '';
+                    }
+
+
+                    // print_r($this->data);
+
+                    $msg = $this->data['Order Tax Number Validation Message'];
+
+                    if ($this->data['Order Tax Number Validation Source'] == 'Online') {
+                        $source = '<i title=\''._('Validated online').'\' class=\'far fa-globe\'></i>';
+
+
+                    } elseif ($this->data['Order Tax Number Validation Source'] == 'Staff') {
+                        $source = '<i title=\''._('Set up manually').'\' class=\'far fa-thumbtack\'></i>';
+                    } else {
+                        $source = '';
+                    }
+
+                    $validation_data = trim($date.' '.$source.' '.$msg);
+                    if ($validation_data != '') {
+                        $validation_data = ' <span class=\'discreet\'>('.$validation_data.')</span>';
+                    }
+
+                    switch ($this->data['Order Tax Number Valid']) {
+                        case 'Unknown':
+                            return _('Not validated').$validation_data;
+                            break;
+                        case 'Yes':
+                            return _('Validated').$validation_data;
+                            break;
+                        case 'No':
+                            return _('Not valid').$validation_data;
+                        default:
+                            return $this->data['Order Tax Number Valid'].$validation_data;
+
+                            break;
+                    }
+                }
+                break;
+
+            case 'Tax Number Formatted':
+
+
+                switch ($this->data['Order Tax Number Validation Source']) {
+                    case 'Online':
+                        $source = ' <i class="fal fa-globe"></i>';
+                        break;
+                    case 'Staff':
+                        $source = ' <i class="fal fa-thumbtack"></i>';
+                        break;
+                    default:
+                        $source = '';
+
+                }
+
+                if ($this->data['Order Tax Number Validation Date'] != '') {
+                    $_tmp = gmdate("U") - gmdate("U", strtotime($this->data['Order Tax Number Validation Date'].' +0:00'));
+                    if ($_tmp < 3600) {
+                        $date = strftime("%e %b %Y %H:%M:%S %Z", strtotime($this->data['Order Tax Number Validation Date'].' +0:00'));
+                    } elseif ($_tmp < 86400) {
+                        $date = strftime("%e %b %Y %H:%M %Z", strtotime($this->data['Order Tax Number Validation Date'].' +0:00'));
+
+                    } else {
+                        $date = strftime("%e %b %Y", strtotime($this->data['Order Tax Number Validation Date'].' +0:00'));
+                    }
+                } else {
+                    $date = '';
+                }
+
+                $msg = $this->data['Order Tax Number Validation Message'];
+
+                $title = htmlspecialchars(trim($date.' '.$msg));
+
+                if ($this->data['Order Tax Number'] != '') {
+                    if ($this->data['Order Tax Number Valid'] == 'Yes') {
+                        return sprintf(
+                            '<i style="margin-right: 0px" class="fa fa-check success" title="'._('Valid').'"></i> <span title="'.$title.'" >%s</span>', $this->data['Order Tax Number'].$source
+                        );
+                    } elseif ($this->data['Order Tax Number Valid'] == 'Unknown') {
+                        return sprintf(
+                            '<i style="margin-right: 0px" class="fal fa-question-circle discreet" title="'._('Unknown if is valid').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Order Tax Number'].$source
+                        );
+                    } elseif ($this->data['Order Tax Number Valid'] == 'API_Down') {
+                        return sprintf(
+                            '<i style="margin-right: 0px"  class="fal fa-question-circle discreet" title="'._('Validity is unknown').'"> </i> <span class="discreet" title="'.$title.'">%s</span> %s', $this->data['Order Tax Number'],
+                            ' <i  title="'._('Online validation service down').'" class="fa fa-wifi-slash error"></i>'
+                        );
+                    } else {
+                        return sprintf(
+                            '<i style="margin-right: 0px" class="fa fa-ban error" title="'._('Invalid').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Order Tax Number'].$source
+                        );
+                    }
+                }
+
+                break;
+            case('Tax Number Valid'):
+                if ($this->data['Order Tax Number'] != '') {
+
+                    if ($this->data['Order Tax Number Validation Date'] != '') {
+                        $_tmp = gmdate("U") - gmdate(
+                                "U", strtotime(
+                                       $this->data['Order Tax Number Validation Date'].' +0:00'
+                                   )
+                            );
+                        if ($_tmp < 3600) {
+                            $date = strftime(
+                                "%e %b %Y %H:%M:%S %Z", strtotime(
+                                                          $this->data['Order Tax Number Validation Date'].' +0:00'
+                                                      )
+                            );
+
+                        } elseif ($_tmp < 86400) {
+                            $date = strftime(
+                                "%e %b %Y %H:%M %Z", strtotime(
+                                                       $this->data['Order Tax Number Validation Date'].' +0:00'
+                                                   )
+                            );
+
+                        } else {
+                            $date = strftime(
+                                "%e %b %Y", strtotime(
+                                              $this->data['Order Tax Number Validation Date'].' +0:00'
+                                          )
+                            );
+                        }
+                    } else {
+                        $date = '';
+                    }
+
+                    $msg = $this->data['Order Tax Number Validation Message'];
+
+                    if ($this->data['Order Tax Number Validation Source'] == 'Online') {
+                        $source = '<i title=\''._('Validated online').'\' class=\'far fa-globe\'></i>';
+
+
+                    } elseif ($this->data['Order Tax Number Validation Source'] == 'Staff') {
+                        $source = '<i title=\''._('Set up manually').'\' class=\'far fa-hand-rock\'></i>';
+                    } else {
+                        $source = '';
+                    }
+
+                    $validation_data = trim($date.' '.$source.' '.$msg);
+                    if ($validation_data != '') {
+                        $validation_data = ' <span class=\'discreet\'>('.$validation_data.')</span>';
+                    }
+
+                    switch ($this->data['Order Tax Number Valid']) {
+                        case 'Unknown':
+                        case 'API_Down':
+                            return _('Not validated').$validation_data;
+                            break;
+                        case 'Yes':
+                            return _('Validated').$validation_data;
+                            break;
+                        case 'No':
+                            return _('Not valid').$validation_data;
+                            break;
+                        default:
+                            return $this->data['Order Tax Number Valid'].$validation_data;
+
+                            break;
+                    }
+                }
+                break;
+
 
         }
         $_key = ucwords($key);
@@ -855,8 +1058,8 @@ class Order extends DB_Table {
             $date = gmdate('Y-m-d H:i:s');
         }
 
-        $hide=array();
-        $show=array();
+        $hide = array();
+        $show = array();
 
         $account = get_object('Account', 1);
 
@@ -984,8 +1187,15 @@ class Order extends DB_Table {
 
                     $this->update_totals();
 
-                    $hide=array();
-                    $show=array();
+                    $show = array('customer_balance');
+
+                    if(count($this->get_payments('keys','Completed'))==0){
+                        $hide = array('order_payments_list','payment_overview');
+
+                    }
+
+
+
 
                     break;
                 case 'InProcess':
@@ -1080,10 +1290,6 @@ class Order extends DB_Table {
 
 
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
 
                     if ($deal_components != '') {
@@ -1121,8 +1327,11 @@ class Order extends DB_Table {
                         )
                     );
 
+                $hide= array('customer_balance');
 
-                    break;
+                $show = array('order_payments_list','payment_overview');
+
+                break;
 
 
                 case 'Delivery Note Cancelled':
@@ -1692,7 +1901,7 @@ class Order extends DB_Table {
             $invoices_xhtml .= sprintf(
                 ' <div class="node" id="invoice_%d">
                     <span class="node_label" >
-                        <i class="fal fa-file-alt fa-fw %s" aria-hidden="true"></i>
+                        <i class="fal fa-file-invoice-dollar fa-fw %s" aria-hidden="true"></i>
                         <span class="link %s" onClick="change_view(\'%s\')">%s</span>
                         <img class="button pdf_link" onclick="download_pdf_from_list(%d,$(\'.pdf_invoice_dialog img\'))" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif">
                         <i onclick="show_pdf_invoice_dialog(this,%d)" title="%s" class="far very_discreet fa-sliders-h-square button"></i>
@@ -1724,8 +1933,8 @@ class Order extends DB_Table {
             'invoices_xhtml'    => $invoices_xhtml,
             'number_deliveries' => $number_deliveries,
             'number_invoices'   => $number_invoices,
-            'hide'=>$hide,
-            'show'=>$show
+            'hide'              => $hide,
+            'show'              => $show
         );
 
 
@@ -1769,8 +1978,6 @@ class Order extends DB_Table {
         }
 
 
-
-
         $date = gmdate('Y-m-d H:i:s');
 
         $this->data['Order Cancelled Date'] = $date;
@@ -1801,8 +2008,7 @@ class Order extends DB_Table {
             "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order Payment State`=%s,`Order State`='NA',`Order To Pay Amount`=%.2f,`Order Cancel Note`=%s,
 				`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order Items Cost`=0,
 				`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0
-				WHERE `Order Key`=%d",
-            prepare_mysql($this->data['Order Cancelled Date']),  prepare_mysql($this->data['Order State']), $this->data['Order To Pay Amount'],prepare_mysql($this->data['Order Cancel Note']),
+				WHERE `Order Key`=%d", prepare_mysql($this->data['Order Cancelled Date']), prepare_mysql($this->data['Order State']), $this->data['Order To Pay Amount'], prepare_mysql($this->data['Order Cancel Note']),
 
             $this->id
         );
@@ -1812,8 +2018,7 @@ class Order extends DB_Table {
 
 
         $sql = sprintf(
-            "UPDATE `Order Transaction Fact` SET  `Delivery Note Key`=NULL,`Invoice Key`=NULL, `Consolidated`='Yes',`Current Dispatching State`=%s ,`Cost Supplier`=0  WHERE `Order Key`=%d ",
-            prepare_mysql('Cancelled'), $this->id
+            "UPDATE `Order Transaction Fact` SET  `Delivery Note Key`=NULL,`Invoice Key`=NULL, `Consolidated`='Yes',`Current Dispatching State`=%s ,`Cost Supplier`=0  WHERE `Order Key`=%d ", prepare_mysql('Cancelled'), $this->id
         );
         $this->db->exec($sql);
 
@@ -1972,10 +2177,14 @@ class Order extends DB_Table {
             'Invoice Tax Number Validation Date'    => $this->data['Order Tax Number Validation Date'],
             'Invoice Tax Number Associated Name'    => $this->data['Order Tax Number Associated Name'],
             'Invoice Tax Number Associated Address' => $this->data['Order Tax Number Associated Address'],
-            'Invoice Net Amount Off'                => $this->data['Order Deal Amount Off'],
-            'Invoice Customer Contact Name'         => $this->data['Order Customer Contact Name'],
-            'Invoice Customer Name'                 => $this->data['Order Customer Name'],
-            'Invoice Customer Level Type'           => $this->data['Order Customer Level Type'],
+            'Invoice Tax Number Associated Source'  => $this->data['Order Tax Number Associated Source'],
+            'Invoice Tax Number Associated Message' => $this->data['Order Tax Number Associated Message'],
+
+
+            'Invoice Net Amount Off'        => $this->data['Order Deal Amount Off'],
+            'Invoice Customer Contact Name' => $this->data['Order Customer Contact Name'],
+            'Invoice Customer Name'         => $this->data['Order Customer Name'],
+            'Invoice Customer Level Type'   => $this->data['Order Customer Level Type'],
 
 
             'Invoice Sales Representative Key'     => $this->data['Order Sales Representative Key'],
@@ -2001,20 +2210,21 @@ class Order extends DB_Table {
             'Invoice Tax Liability Date' => $this->data['Order Packed Done Date'],
 
 
-            'Invoice Items Gross Amount'    => $this->data['Order Items Gross Amount'],
-            'Invoice Items Discount Amount' => $this->data['Order Items Discount Amount'],
-
+            'Invoice Items Gross Amount'        => $this->data['Order Items Gross Amount'],
+            'Invoice Items Discount Amount'     => $this->data['Order Items Discount Amount'],
             'Invoice Items Net Amount'          => $this->data['Order Items Net Amount'],
             'Invoice Items Out of Stock Amount' => ($this->data['Order Items Out of Stock Amount'] == '' ? 0 : $this->data['Order Items Out of Stock Amount']),
             'Invoice Shipping Net Amount'       => $this->data['Order Shipping Net Amount'],
             'Invoice Charges Net Amount'        => $this->data['Order Charges Net Amount'],
             'Invoice Insurance Net Amount'      => $this->data['Order Insurance Net Amount'],
             'Invoice Total Net Amount'          => $this->data['Order Total Net Amount'],
-            'Invoice Total Tax Amount'          => $this->data['Order Total Tax Amount'],
-            'Invoice Payments Amount'           => $this->data['Order Payments Amount'],
-            'Invoice To Pay Amount'             => $this->data['Order To Pay Amount'],
-            'Invoice Total Amount'              => $this->data['Order Total Amount'],
-            'Invoice Currency'                  => $this->data['Order Currency'],
+
+            'Invoice Total Tax Amount' => $this->data['Order Total Tax Amount'],
+
+            'Invoice Payments Amount' => $this->data['Order Payments Amount'],
+            'Invoice To Pay Amount'   => $this->data['Order To Pay Amount'],
+            'Invoice Total Amount'    => $this->data['Order Total Amount'],
+            'Invoice Currency'        => $this->data['Order Currency'],
 
 
         );
@@ -2073,21 +2283,6 @@ class Order extends DB_Table {
 
     }
 
-    function auto_account_payments($value, $options = '') {
-
-        $this->update_field(
-            'Order Apply Auto Customer Account Payment', $value, $options
-        );
-
-
-        if ($value == 'Yes') {
-            //  $this->apply_payment_from_customer_account();
-        } else {
-
-
-        }
-
-    }
 
     function get_deleted_invoices($scope = 'keys') {
 
@@ -2368,12 +2563,6 @@ class Order extends DB_Table {
         return currency_symbol($this->data['Order Currency']);
     }
 
-    function get_formatted_tax_info() {
-        $selection_type     = $this->data['Order Tax Selection Type'];
-        $formatted_tax_info = '<span title="'.$selection_type.'">'.$this->data['Order Tax Name'].'</span>';
-
-        return $formatted_tax_info;
-    }
 
     function get_formatted_payment_state() {
         return get_order_formatted_payment_state($this->data);
@@ -2501,7 +2690,6 @@ class Order extends DB_Table {
             $deal_components_diff = array_merge(array_diff($old_used_deals[2], $intersect), array_diff($new_used_deals[2], $intersect));
 
 
-
             if (count($campaigns_diff) > 0 or count($deal_diff) > 0 or count($deal_components_diff) > 0) {
                 $account = get_object('Account', '');
 
@@ -2574,8 +2762,6 @@ class Order extends DB_Table {
         // if($this->id){
 
 
-
-
         $sql = sprintf(
             "SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') group by `Delivery Note State` ", $this->id
         );
@@ -2618,7 +2804,8 @@ class Order extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') and `Delivery Note Waiting State`='Customer'  group by `Delivery Note State` ", $this->id
+            "SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') and `Delivery Note Waiting State`='Customer'  group by `Delivery Note State` ",
+            $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -2715,7 +2902,7 @@ class Order extends DB_Table {
 
     function update_insurance($dn_key = false) {
 
-        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+        if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
             return;
         }
 
@@ -3082,43 +3269,47 @@ class Order extends DB_Table {
             'Invoice Tax Number Validation Date'    => $this->data['Order Tax Number Validation Date'],
             'Invoice Tax Number Associated Name'    => $this->data['Order Tax Number Associated Name'],
             'Invoice Tax Number Associated Address' => $this->data['Order Tax Number Associated Address'],
-            'Invoice Net Amount Off'                => 0,
-            'Invoice Customer Contact Name'         => $this->data['Order Customer Contact Name'],
-            'Invoice Customer Name'                 => $this->data['Order Customer Name'],
-            'Invoice Customer Level Type'           => $this->data['Order Customer Level Type'],
-            'Invoice Sales Representative Key'      => $this->data['Order Sales Representative Key'],
+            'Invoice Tax Number Associated Source'  => $this->data['Order Tax Number Associated Source'],
+            'Invoice Tax Number Associated Message' => $this->data['Order Tax Number Associated Message'],
+
+
+            'Invoice Net Amount Off'               => 0,
+            'Invoice Customer Contact Name'        => $this->data['Order Customer Contact Name'],
+            'Invoice Customer Name'                => $this->data['Order Customer Name'],
+            'Invoice Customer Level Type'          => $this->data['Order Customer Level Type'],
+            'Invoice Sales Representative Key'     => $this->data['Order Sales Representative Key'],
 
             //   'Invoice Telephone'                    => $this->data['Order Telephone'],
             //     'Invoice Email'                        => $this->data['Order Email'],
-            'Invoice Address Recipient'             => $this->data['Order Invoice Address Recipient'],
-            'Invoice Address Organization'          => $this->data['Order Invoice Address Organization'],
-            'Invoice Address Line 1'                => $this->data['Order Invoice Address Line 1'],
-            'Invoice Address Line 2'                => $this->data['Order Invoice Address Line 2'],
-            'Invoice Address Sorting Code'          => $this->data['Order Invoice Address Sorting Code'],
-            'Invoice Address Postal Code'           => $this->data['Order Invoice Address Postal Code'],
-            'Invoice Address Dependent Locality'    => $this->data['Order Invoice Address Dependent Locality'],
-            'Invoice Address Locality'              => $this->data['Order Invoice Address Locality'],
-            'Invoice Address Administrative Area'   => $this->data['Order Invoice Address Administrative Area'],
-            'Invoice Address Country 2 Alpha Code'  => $this->data['Order Invoice Address Country 2 Alpha Code'],
-            'Invoice Address Checksum'              => $this->data['Order Invoice Address Checksum'],
-            'Invoice Address Formatted'             => $this->data['Order Invoice Address Formatted'],
-            'Invoice Address Postal Label'          => $this->data['Order Invoice Address Postal Label'],
-            'Invoice Registration Number'           => $this->data['Order Registration Number'],
-            'Invoice Tax Type'                      => ($tax_only ? 'Tax_Only' : 'Normal'),
-            'Invoice Tax Liability Date'            => $date,
-            'Invoice Items Gross Amount'            => 0,
-            'Invoice Items Discount Amount'         => 0,
-            'Invoice Items Net Amount'              => 0,
-            'Invoice Items Out of Stock Amount'     => 0,
-            'Invoice Shipping Net Amount'           => 0,
-            'Invoice Charges Net Amount'            => 0,
-            'Invoice Insurance Net Amount'          => 0,
-            'Invoice Total Net Amount'              => 0,
-            'Invoice Total Tax Amount'              => 0,
-            'Invoice Payments Amount'               => 0,
-            'Invoice To Pay Amount'                 => 0,
-            'Invoice Total Amount'                  => 0,
-            'Invoice Currency'                      => $this->data['Order Currency'],
+            'Invoice Address Recipient'            => $this->data['Order Invoice Address Recipient'],
+            'Invoice Address Organization'         => $this->data['Order Invoice Address Organization'],
+            'Invoice Address Line 1'               => $this->data['Order Invoice Address Line 1'],
+            'Invoice Address Line 2'               => $this->data['Order Invoice Address Line 2'],
+            'Invoice Address Sorting Code'         => $this->data['Order Invoice Address Sorting Code'],
+            'Invoice Address Postal Code'          => $this->data['Order Invoice Address Postal Code'],
+            'Invoice Address Dependent Locality'   => $this->data['Order Invoice Address Dependent Locality'],
+            'Invoice Address Locality'             => $this->data['Order Invoice Address Locality'],
+            'Invoice Address Administrative Area'  => $this->data['Order Invoice Address Administrative Area'],
+            'Invoice Address Country 2 Alpha Code' => $this->data['Order Invoice Address Country 2 Alpha Code'],
+            'Invoice Address Checksum'             => $this->data['Order Invoice Address Checksum'],
+            'Invoice Address Formatted'            => $this->data['Order Invoice Address Formatted'],
+            'Invoice Address Postal Label'         => $this->data['Order Invoice Address Postal Label'],
+            'Invoice Registration Number'          => $this->data['Order Registration Number'],
+            'Invoice Tax Type'                     => ($tax_only ? 'Tax_Only' : 'Normal'),
+            'Invoice Tax Liability Date'           => $date,
+            'Invoice Items Gross Amount'           => 0,
+            'Invoice Items Discount Amount'        => 0,
+            'Invoice Items Net Amount'             => 0,
+            'Invoice Items Out of Stock Amount'    => 0,
+            'Invoice Shipping Net Amount'          => 0,
+            'Invoice Charges Net Amount'           => 0,
+            'Invoice Insurance Net Amount'         => 0,
+            'Invoice Total Net Amount'             => 0,
+            'Invoice Total Tax Amount'             => 0,
+            'Invoice Payments Amount'              => 0,
+            'Invoice To Pay Amount'                => 0,
+            'Invoice Total Amount'                 => 0,
+            'Invoice Currency'                     => $this->data['Order Currency'],
 
 
         );
@@ -3454,6 +3645,12 @@ class Order extends DB_Table {
                 break;
             case 'Order Invoice Address':
                 return _("invoice address");
+                break;
+            case 'Order Customer Name':
+                return _("customer name");
+                break;
+            case 'Order Registration Number':
+                return _("registration number");
                 break;
             default:
                 return $field;

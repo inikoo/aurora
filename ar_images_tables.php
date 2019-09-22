@@ -107,11 +107,8 @@ function images($_data, $db, $user) {
                 case 'Default':
 
                     switch ($data['Image Subject Object']) {
-                        case 'Part':
-                        case 'Product':
 
-                            $object_image_scope = _('Marketing');
-                            break;
+
 
 
                         default:

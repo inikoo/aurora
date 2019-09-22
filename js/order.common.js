@@ -1295,21 +1295,14 @@ function save_item_qty_change(element) {
                     //$('.' + key).html(data.metadata.class_html[key])
                 }
 
-
+                /*
                 if (data.metadata.items == 0) {
                     $('.payments').addClass('hide')
-
-
-
-
-
                 }
                 else {
-
-
                     $('.payments').removeClass('hide')
                 }
-
+                */
 
 
 
@@ -2480,6 +2473,708 @@ function select_deal_component_choose_by_customer(element) {
 
         }
     });
+
+
+
+}
+
+// used in order showcase
+
+
+$(document).on('click', '#Shipping_Net_Amount', function (evt) {
+    if($('#order').data('state_index')>=90 || $('#order').data('state_index')<=0 ){
+        return;
+    }
+    $('#Shipping_Net_Amount').addClass('hide')
+    $('#Shipping_Net_Amount_form').removeClass('hide')
+
+})
+
+$(document).on('click', '#Shipping_Net_Amount_label', function (evt) {
+    if($('#order').data('state_index')>=90 || $('#order').data('state_index')<=0 ){
+        return;
+    }
+    $('#Shipping_Net_Amount').removeClass('hide')
+    $('#Shipping_Net_Amount_form').addClass('hide')
+
+})
+
+$(document).on('input propertychange', '#Shipping_Net_Amount_input', function (evt) {
+
+
+    $('#Shipping_Net_Amount_save').addClass('changed')
+
+    if (!validate_number($('#Shipping_Net_Amount_input').val(), 0, 999999999) || $('#Shipping_Net_Amount_input').val() == '') {
+        $('#Shipping_Net_Amount_save').addClass('valid').removeClass('error')
+
+    } else {
+        $('#Shipping_Net_Amount_save').removeClass('valid').addClass('error ')
+
+    }
+
+
+})
+
+
+function save_shipping_value() {
+
+    if($('#order').data('state_index')>=90 || $('#order').data('state_index')<=0 ){
+        return;
+    }
+
+    if ($('#Shipping_Net_Amount_save').hasClass('wait')) {
+        return;
+    }
+    $('#Shipping_Net_Amount_save').addClass('wait')
+
+    $('#Shipping_Net_Amount_save').removeClass('fa-cloud').addClass('fa-spinner fa-spin');
+
+
+    if ($('#Shipping_Net_Amount_input').val() == '') {
+        $('#Shipping_Net_Amount_input').val(0)
+    }
+
+    var amount = parseFloat($('#Shipping_Net_Amount_input').val())
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'set_shipping_value')
+
+    ajaxData.append("order_key", $('#object_showcase div.order').data("object").key)
+    ajaxData.append("amount", amount)
+
+
+    $.ajax({
+        url: "/ar_edit_orders.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+        }, success: function (data) {
+
+
+            $('#Shipping_Net_Amount_save').removeClass('wait')
+            $('#Shipping_Net_Amount_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
+
+
+            console.log(data)
+
+            if (data.state == '200') {
+
+
+                $('#Shipping_Net_Amount').removeClass('hide')
+                $('#Shipping_Net_Amount_form').addClass('hide')
+
+                $('.Total_Amount').attr('amount', data.metadata.to_pay)
+                $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
+
+
+                $('#Shipping_Net_Amount_input').val(data.metadata.shipping).attr('ovalue', data.metadata.shipping)
+                $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue', data.metadata.charges)
+
+                if (data.metadata.to_pay == 0) {
+                    $('.Order_Payments_Amount').addClass('hide')
+                    $('.Order_To_Pay_Amount').addClass('hide')
+
+                } else {
+                    $('.Order_Payments_Amount').removeClass('hide')
+                    $('.Order_To_Pay_Amount').removeClass('hide')
+
+                }
+
+                if (data.metadata.to_pay != 0 || data.metadata.payments == 0) {
+                    $('.Order_Paid').addClass('hide')
+                } else {
+                    $('.Order_Paid').removeClass('hide')
+                }
+
+                if (data.metadata.to_pay <= 0) {
+                    $('.add_payment_to_order_button').addClass('fa-lock-alt super_discreet').removeClass('fa-plus')
+                } else {
+                    $('.add_payment_to_order_button').removeClass('fa-lock-alt super_discreet').addClass('fa-plus')
+                }
+
+
+                if (data.metadata.to_pay == 0) {
+                    $('.Order_To_Pay_Amount').removeClass('button').attr('amount', data.metadata.to_pay)
+
+                } else {
+                    $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
+
+                }
+
+
+                $('#payment_nodes').html(data.metadata.payments_xhtml)
+
+
+                for (var key in data.metadata.class_html) {
+                    $('.' + key).html(data.metadata.class_html[key])
+                }
+
+
+                for (var key in data.metadata.hide) {
+                    $('#' + data.metadata.hide[key]).addClass('hide')
+                }
+                for (var key in data.metadata.show) {
+                    $('#' + data.metadata.show[key]).removeClass('hide')
+                }
+
+
+            } else if (data.state == '400') {
+                swal($('body').data('labels').error, data.msg, "error")
+            }
+
+
+        }, error: function () {
+            $('#Shipping_Net_Amount_save').removeClass('wait')
+            $('#Shipping_Net_Amount_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
+
+        }
+    });
+
+
+}
+
+
+function set_shipping_as_auto() {
+
+    if($('#order').data('state_index')>=90 || $('#order').data('state_index')<=0 ){
+        return;
+    }
+
+    if ($('#set_shipping_as_auto').hasClass('wait')) {
+        return;
+    }
+    $('#set_shipping_as_auto').addClass('wait')
+
+    $('#set_shipping_as_auto').removeClass('fa-magic').addClass('fa-spinner fa-spin');
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'set_shipping_as_auto')
+
+    ajaxData.append("order_key", $('#object_showcase div.order').data("object").key)
+
+
+    $.ajax({
+        url: "/ar_edit_orders.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+        }, success: function (data) {
+
+
+            $('#set_shipping_as_auto').removeClass('wait')
+            $('#set_shipping_as_auto').addClass('fa-magic').removeClass('fa-spinner fa-spin');
+
+
+            console.log(data)
+
+            if (data.state == '200') {
+
+
+                $('#Shipping_Net_Amount').removeClass('hide')
+                $('#Shipping_Net_Amount_form').addClass('hide')
+
+                $('.Total_Amount').attr('amount', data.metadata.to_pay)
+                $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
+
+
+                $('#Shipping_Net_Amount_input').val(data.metadata.shipping).attr('ovalue', data.metadata.shipping)
+                $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue', data.metadata.charges)
+
+                if (data.metadata.to_pay == 0) {
+                    $('.Order_Payments_Amount').addClass('hide')
+                    $('.Order_To_Pay_Amount').addClass('hide')
+
+                } else {
+                    $('.Order_Payments_Amount').removeClass('hide')
+                    $('.Order_To_Pay_Amount').removeClass('hide')
+
+                }
+
+                if (data.metadata.to_pay != 0 || data.metadata.payments == 0) {
+                    $('.Order_Paid').addClass('hide')
+                } else {
+                    $('.Order_Paid').removeClass('hide')
+                }
+
+                if (data.metadata.to_pay <= 0) {
+                    $('.add_payment_to_order_button').addClass('fa-lock-alt super_discreet').removeClass('fa-plus')
+                } else {
+                    $('.add_payment_to_order_button').removeClass('fa-lock-alt super_discreet').addClass('fa-plus')
+                }
+
+
+                if (data.metadata.to_pay == 0) {
+                    $('.Order_To_Pay_Amount').removeClass('button').attr('amount', data.metadata.to_pay)
+
+                } else {
+                    $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
+
+                }
+
+
+                $('#payment_nodes').html(data.metadata.payments_xhtml)
+
+
+                for (var key in data.metadata.class_html) {
+                    $('.' + key).html(data.metadata.class_html[key])
+                }
+
+
+                for (var key in data.metadata.hide) {
+                    $('#' + data.metadata.hide[key]).addClass('hide')
+                }
+                for (var key in data.metadata.show) {
+                    $('#' + data.metadata.show[key]).removeClass('hide')
+                }
+
+
+            } else if (data.state == '400') {
+                swal($('body').data('labels').error, data.msg, "error")
+            }
+
+
+        }, error: function () {
+            $('#set_shipping_as_auto').removeClass('wait')
+            $('#set_shipping_as_auto').addClass('fa-magic').removeClass('fa-spinner fa-spin');
+
+
+        }
+    });
+
+}
+
+
+$(document).on('click', '#Charges_Net_Amount', function (evt) {
+    if($('#order').data('state_index')>=90 || $('#order').data('state_index')<=0 ){
+        return;
+    }
+    $('#Charges_Net_Amount').addClass('hide')
+    $('#Charges_Net_Amount_form').removeClass('hide')
+
+})
+
+$(document).on('click', '#Charges_Net_Amount_label', function (evt) {
+    if($('#order').data('state_index')>=90 || $('#order').data('state_index')<=0 ){
+        return;
+    }
+    $('#Charges_Net_Amount').removeClass('hide')
+    $('#Charges_Net_Amount_form').addClass('hide')
+
+})
+
+$(document).on('input propertychange', '#Charges_Net_Amount_input', function (evt) {
+
+
+    $('#Charges_Net_Amount_save').addClass('changed')
+
+    if (!validate_number($('#Charges_Net_Amount_input').val(), 0, 999999999) || $('#Charges_Net_Amount_input').val() == '') {
+        $('#Charges_Net_Amount_save').addClass('valid').removeClass('error')
+
+    } else {
+        $('#Charges_Net_Amount_save').removeClass('valid').addClass('error ')
+
+    }
+
+
+})
+
+function save_charges_value() {
+
+
+    if($('#order').data('state_index')>=90 || $('#order').data('state_index')<=0 ){
+        return;
+    }
+
+
+    if ($('#Charges_Net_Amount_save').hasClass('wait')) {
+        return;
+    }
+    $('#Charges_Net_Amount_save').addClass('wait')
+
+    $('#Charges_Net_Amount_save').removeClass('fa-cloud').addClass('fa-spinner fa-spin');
+
+
+    if ($('#Charges_Net_Amount_input').val() == '') {
+        $('#Charges_Net_Amount_input').val(0)
+    }
+
+    var amount = parseFloat($('#Charges_Net_Amount_input').val())
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'set_hanging_charges_value')
+
+    ajaxData.append("order_key", $('#object_showcase div.order').data("object").key)
+    ajaxData.append("amount", amount)
+
+
+    $.ajax({
+        url: "/ar_edit_orders.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+        }, success: function (data) {
+
+
+            $('#Charges_Net_Amount_save').removeClass('wait')
+            $('#Charges_Net_Amount_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
+
+
+            console.log(data)
+
+            if (data.state == '200') {
+
+
+                $('#Charges_Net_Amount').removeClass('hide')
+                $('#Charges_Net_Amount_form').addClass('hide')
+
+                $('.Total_Amount').attr('amount', data.metadata.to_pay)
+                $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
+
+
+                $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue', data.metadata.charges)
+                $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue', data.metadata.charges)
+
+                if (data.metadata.to_pay == 0) {
+                    $('.Order_Payments_Amount').addClass('hide')
+                    $('.Order_To_Pay_Amount').addClass('hide')
+
+                } else {
+                    $('.Order_Payments_Amount').removeClass('hide')
+                    $('.Order_To_Pay_Amount').removeClass('hide')
+
+                }
+
+                if (data.metadata.to_pay != 0 || data.metadata.payments == 0) {
+                    $('.Order_Paid').addClass('hide')
+                } else {
+                    $('.Order_Paid').removeClass('hide')
+                }
+
+                if (data.metadata.to_pay <= 0) {
+                    $('.add_payment_to_order_button').addClass('fa-lock-alt super_discreet').removeClass('fa-plus')
+                } else {
+                    $('.add_payment_to_order_button').removeClass('fa-lock-alt super_discreet').addClass('fa-plus')
+                }
+
+
+                if (data.metadata.to_pay == 0) {
+                    $('.Order_To_Pay_Amount').removeClass('button').attr('amount', data.metadata.to_pay)
+
+                } else {
+                    $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
+
+                }
+
+
+                $('#payment_nodes').html(data.metadata.payments_xhtml)
+
+
+                for (var key in data.metadata.class_html) {
+                    $('.' + key).html(data.metadata.class_html[key])
+                }
+
+
+                for (var key in data.metadata.hide) {
+                    $('#' + data.metadata.hide[key]).addClass('hide')
+                }
+                for (var key in data.metadata.show) {
+                    $('#' + data.metadata.show[key]).removeClass('hide')
+                }
+
+
+            } else if (data.state == '400') {
+                swal($('body').data('labels').error, data.msg, "error")
+            }
+
+
+        }, error: function () {
+            $('#Charges_Net_Amount_save').removeClass('wait')
+            $('#Charges_Net_Amount_save').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
+
+        }
+    });
+
+
+}
+
+function set_charges_as_auto() {
+
+    if($('#order').data('state_index')>=90 || $('#order').data('state_index')<=0 ){
+        return;
+    }
+
+    if ($('#set_charges_as_auto').hasClass('wait')) {
+        return;
+    }
+    $('#set_charges_as_auto').addClass('wait')
+
+    $('#set_charges_as_auto').removeClass('fa-magic').addClass('fa-spinner fa-spin');
+
+
+    var ajaxData = new FormData();
+
+    ajaxData.append("tipo", 'set_charges_as_auto')
+
+    ajaxData.append("order_key", $('#object_showcase div.order').data("object").key)
+
+
+    $.ajax({
+        url: "/ar_edit_orders.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+        }, success: function (data) {
+
+
+            $('#set_charges_as_auto').removeClass('wait')
+            $('#set_charges_as_auto').addClass('fa-magic').removeClass('fa-spinner fa-spin');
+
+
+            console.log(data)
+
+            if (data.state == '200') {
+
+
+                $('#Charges_Net_Amount').removeClass('hide')
+                $('#Charges_Net_Amount_form').addClass('hide')
+
+                $('.Total_Amount').attr('amount', data.metadata.to_pay)
+                $('.Order_To_Pay_Amount').attr('amount', data.metadata.to_pay)
+
+
+                $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue', data.metadata.charges)
+                $('#Charges_Net_Amount_input').val(data.metadata.charges).attr('ovalue', data.metadata.charges)
+
+                if (data.metadata.to_pay == 0) {
+                    $('.Order_Payments_Amount').addClass('hide')
+                    $('.Order_To_Pay_Amount').addClass('hide')
+
+                } else {
+                    $('.Order_Payments_Amount').removeClass('hide')
+                    $('.Order_To_Pay_Amount').removeClass('hide')
+
+                }
+
+                if (data.metadata.to_pay != 0 || data.metadata.payments == 0) {
+                    $('.Order_Paid').addClass('hide')
+                } else {
+                    $('.Order_Paid').removeClass('hide')
+                }
+
+                if (data.metadata.to_pay <= 0) {
+                    $('.add_payment_to_order_button').addClass('fa-lock-alt super_discreet').removeClass('fa-plus')
+                } else {
+                    $('.add_payment_to_order_button').removeClass('fa-lock-alt super_discreet').addClass('fa-plus')
+                }
+
+
+                if (data.metadata.to_pay == 0) {
+                    $('.Order_To_Pay_Amount').removeClass('button').attr('amount', data.metadata.to_pay)
+
+                } else {
+                    $('.Order_To_Pay_Amount').addClass('button').attr('amount', data.metadata.to_pay)
+
+                }
+
+
+                $('#payment_nodes').html(data.metadata.payments_xhtml)
+
+
+                for (var key in data.metadata.class_html) {
+                    $('.' + key).html(data.metadata.class_html[key])
+                }
+
+
+                for (var key in data.metadata.hide) {
+                    $('#' + data.metadata.hide[key]).addClass('hide')
+                }
+                for (var key in data.metadata.show) {
+                    $('#' + data.metadata.show[key]).removeClass('hide')
+                }
+
+
+            } else if (data.state == '400') {
+                swal($('body').data('labels').error, data.msg, "error")
+            }
+
+
+        }, error: function () {
+            $('#set_charges_as_auto').removeClass('wait')
+            $('#set_charges_as_auto').addClass('fa-magic').removeClass('fa-spinner fa-spin');
+
+
+        }
+    });
+
+}
+
+function edit_order_in_warehouse(){
+
+
+
+    if($('#forward_operations .edit_order_in_warehouse i').hasClass('far')){
+
+
+        Swal.fire({
+            title: $('.edit_order_in_warehouse').data('title'),
+            html: $('.edit_order_in_warehouse').data('html') + ' <div style="margin-top:10px" class="small error">This is a <em>beta</em> (untested) feature</div>',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: $('.edit_order_in_warehouse').data('confirmButtonText')
+        }).then(function (result) {
+            if (result.value) {
+                grid.columns.findWhere({
+                    name: 'quantity'
+                }).set("renderable", false);
+                grid.columns.findWhere({
+                    name: 'quantity_edit'
+                }).set("renderable", true);
+                $('#forward_operations .edit_order_in_warehouse i').removeClass('far').addClass('fas');
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+    }else{
+        grid.columns.findWhere({ name: 'quantity'} ).set("renderable", true)
+        grid.columns.findWhere({ name: 'quantity_edit'} ).set("renderable", false)
+        $('#forward_operations .edit_order_in_warehouse i').addClass('far').removeClass('fas')
+
+    }
+
+
+
+
+}
+
+
+function show_add_deal_to_order(){
+    $('.open_add_discounts').addClass('hide')
+    $('.discounts_label').addClass('hide')
+
+    $('.save_add_discounts').removeClass('hide')
+    $('.close_add_discounts').removeClass('hide')
+    $('#add_discount').removeClass('hide').focus()
+    $('#add_item_results_container').removeClass('hide')
+
+
+}
+
+function hide_add_deal_to_order(){
+    $('.open_add_discounts').removeClass('hide')
+    $('.discounts_label').removeClass('hide')
+
+    $('.save_add_discounts').addClass('hide')
+    $('.close_add_discounts').addClass('hide')
+    $('#add_discount').addClass('hide').focus()
+    $('#add_item_results_container').addClass('hide')
+
+
+}
+
+function save_add_deal_to_order(){
+    console.log('to do')
+
+}
+
+$(".clone_order_open_button").on( 'click',function () {
+    open_clone_order()
+})
+
+
+function close_clone_order(){
+    $('#clone_order_dialog').addClass('hide')
+}
+
+function open_clone_order() {
+
+
+    if (!$('.clone_order_open_button i').hasClass('fa-clone')) {
+        return;
+    }
+
+    $('.clone_order_open_button i').removeClass('fa-clone').addClass('fa-spinner fa-spin')
+
+
+    var request = '/ar_find.php?tipo=orders_in_process&customer_key=' + $('#order').data('customer_key')
+
+    $.getJSON(request, function (data) {
+
+        $('.clone_order_open_button i').addClass('fa-clone').removeClass('fa-spinner fa-spin')
+
+
+        $('#clone_order_dialog').find('.clone_order_msg').html(data.clone_msg)
+
+        if (data.orders_in_process > 1) {
+            $('#clone_order_dialog').find('.save').removeClass('valid').addClass('invalid')
+        }
+
+
+        $('#clone_order_dialog').removeClass('hide').offset({
+            top:  $('.clone_order_open_button').offset().top  + $('.clone_order_open_button').height(), left: $('.clone_order_open_button').offset().left-$('#clone_order_dialog').width()
+        })
+
+
+    })
+
+}
+
+function clone_order(element){
+
+    if($(element).hasClass('invalid')){
+        return ;
+    }
+
+    var icon=$(element).find('i')
+
+    if(icon.hasClass('wait')){
+        return ;
+    }
+
+    icon.addClass('wait fa-spinner fa-spin').removeClass('fa-clone')
+
+
+
+    var request = '/ar_edit_orders.php?tipo=clone_order&order_key='+ $('#order').attr('order_key')
+    console.log(request)
+    var form_data = new FormData();
+    form_data.append("tipo", 'clone_order')
+    form_data.append("order_key", $('#order').attr('order_key'))
+
+    var request = $.ajax({
+        url: "/ar_edit_orders.php",
+        data: form_data,
+        processData: false,
+        contentType: false,
+        type: 'POST',
+        dataType: 'json'
+    })
+
+    request.done(function (data) {
+
+        if (data.state == 200) {
+            change_view(data.redirect)
+
+        }
+        else if (data.state == 400) {
+            alert(data.msg)
+
+
+        }
+    })
+
+    request.fail(function (jqXHR, textStatus) {
+        console.log(textStatus)
+
+        console.log(jqXHR.responseText)
+
+
+    });
+
+
 
 
 

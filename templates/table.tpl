@@ -296,6 +296,7 @@
         <i class="fa fa-chevron-right fa-fw"></i>
     </div>
     <div id="paginator" style="float:right;padding-left:10px;padding-right:10px;"></div>
+
     <div id="results_per_page" onclick="show_results_per_page()" class="square_button right hide" title="{t}Results per page{/t} ({$results_per_page})">
         <i class="fa fa-reorder fa-fw"></i>
     </div>
@@ -379,7 +380,7 @@
 
 
 
-    <div id="filter_container" class="{if $f_field==''}hide{/if}">
+    <div id="filter_container" class="hide {if $f_field==''}hide{/if}">
         <div id="show_filter" onclick="show_filter()" class="square_button right " title="{t}Filter table{/t}" style="border-left:1px solid #aaa">
             <i class="fa fa-filter fa-fw"></i>
         </div>
@@ -401,10 +402,7 @@
 
 
     </div>
-
-
-
-    <div id="table_buttons" ">
+    <div id="table_buttons" class="hide">
 
         {if isset($table_buttons)   }
 
@@ -413,9 +411,10 @@
 
 
         <div {if isset($button.id) and $button.id }id="{$button.id}"{/if}
-        {if isset($button.attr)} {foreach from=$button.attr key=attr_key item=attr_value }{$attr_key}="{$attr_value}" {/foreach}
-        {/if}
-        class="table_button square_button right {if isset($button.class)}{$button.class}{/if}"
+            {if isset($button.attr)}
+                {foreach from=$button.attr key=attr_key item=attr_value }{$attr_key}="{$attr_value}" {/foreach}
+            {/if}
+            class="table_button square_button right {if isset($button.class)}{$button.class}{/if}"
         {if isset($button.reference) and $button.reference!=''}onclick="change_view('{$button.reference}')"{else if isset($button.change_tab) and $button.change_tab!=''}onclick=
         "change_view(state.request + '&tab={$button.change_tab}')"{/if}
         {if isset($button.title)}title="{$button.title}"{/if}>
@@ -629,7 +628,7 @@
     {/foreach}
 
 
-    {/if}
+        {/if}
 
         {if isset($upload_file)}
 
@@ -729,6 +728,8 @@
     </script>
     {/if}
     </div>
+
+
     <span class="padding_left_10" id="rtext"></span></div>
 
 <div id="table_edit_control_panel" class="hide" style="padding:10px 5px;border-bottom:1px solid #ccc">
@@ -804,6 +805,9 @@
             // if (resp.resultset.total_records > 20) {
             //     $('#results_per_page').removeClass('hide')
             // }
+
+            $('#table_buttons').removeClass('hide')
+
             if (total_pages > 1 && '{if isset($f_label)}{$f_label}{/if}' != '') {
                 $('#filter_container').removeClass('hide')
             }
@@ -833,11 +837,11 @@
 
                 if (rows.state.currentPage == 1) {
                     $('#prev_page').addClass('disabled')
-                    $('#first_page').addClass('hide')
+                    $('#first_page').addClass('disabled')
 
                 } else if (rows.state.currentPage == 2) {
 
-                    $('#first_page').addClass('disabled')
+                 //   $('#first_page').addClass('disabled')
 
                 } else if (rows.state.currentPage == total_pages) {
                     $('#next_page').addClass('disabled')

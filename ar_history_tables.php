@@ -55,20 +55,18 @@ function object_history($_data, $db, $user) {
 
     $adata = array();
 
-//print $sql;
+
     foreach ($db->query($sql) as $data) {
 
 
         $data['History Details'] = trim($data['History Details']);
-        //print_r($data);
+
 
         if ($data['History Details'] == '') {
-            $note = nl2br($data['History Abstract']);
+            $note = $data['History Abstract'];
         } else {
-            $note = nl2br($data['History Abstract']).' <i  class="fa fa-angle-double-down fw button" id="history_details_button_'.$data['History Key'].'" onclick="show_history_details('
-                .$data['History Key'].')"></i> <div  id="history_details_'.$data['History Key'].'" class="history_details hide">'.nl2br(
-                    $data['History Details']
-                ).'</div>';
+            $note = $data['History Abstract'].' <i  class="fa fa-angle-double-down fw button" id="history_details_button_'.$data['History Key'].'" onclick="show_history_details('
+                .$data['History Key'].')"></i> <div  id="history_details_'.$data['History Key'].'" class="history_details hide">'.$data['History Details'].'</div>';
         }
 
 

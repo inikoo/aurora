@@ -62,9 +62,6 @@ class TaxCategory extends DB_Table {
     }
 
 
-
-
-
     function get($key, $data = false) {
         switch ($key) {
 
@@ -82,4 +79,4 @@ class TaxCategory extends DB_Table {
 
 }
 
-?>
+

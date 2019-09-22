@@ -163,7 +163,12 @@ function invoice_address($db, $data, $customer, $editor) {
 
     echo json_encode(
         array(
-            'state' => 200
+            'state'    => 200,
+            'metadata' => array(
+                'class_html' => array(
+                    'Tax_Number_Valid' => $customer->get('Tax Number Valid'),
+                )
+            )
         )
     );
 
@@ -358,12 +363,11 @@ function update_poll($db, $data, $customer, $editor) {
 function get_profile_html($data, $customer, $db) {
 
 
-
-    $smarty               = new Smarty();
+    $smarty = new Smarty();
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
     $smarty->setCacheDir('server_files/smarty/cache');
-$smarty->setConfigDir('server_files/smarty/configs');
+    $smarty->setConfigDir('server_files/smarty/configs');
     $smarty->addPluginsDir('./smarty_plugins');
 
     $order = get_object('Order', $customer->get_order_in_process_key());

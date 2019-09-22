@@ -186,7 +186,6 @@ function register($db, $website, $data, $editor, $account) {
                     echo json_encode(
                         array(
                             'state'  => 400,
-                            'reason' => $reason
                         )
                     );
                     exit;
@@ -229,5 +228,3 @@ function register($db, $website, $data, $editor, $account) {
 
 }
 
-
-?>

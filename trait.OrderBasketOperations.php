@@ -13,7 +13,6 @@
 trait OrderBasketOperations {
 
 
-
     function create_order($data) {
 
         global $account;
@@ -46,22 +45,14 @@ trait OrderBasketOperations {
 
         $this->data['Order Last Updated by Customer'] = $this->data['Order Date'];
 
-        $this->data['Order Tax Code']           = '';
-        $this->data['Order Tax Rate']           = 0;
-        $this->data['Order Tax Name']           = '';
-        $this->data['Order Tax Operations']     = '';
-        $this->data['Order Tax Selection Type'] = '';
-
-
         if (isset($data['Order Tax Code'])) {
 
             $tax_cat = new TaxCategory('code', $data['Order Tax Code']);
             if ($tax_cat->id) {
-                $this->data['Order Tax Code']           = $tax_cat->data['Tax Category Code'];
-                $this->data['Order Tax Rate']           = $tax_cat->data['Tax Category Rate'];
-                $this->data['Order Tax Name']           = $tax_cat->data['Tax Category Name'];
-                $this->data['Order Tax Operations']     = '';
-                $this->data['Order Tax Selection Type'] = 'set';
+                $this->data['Order Tax Code'] = $tax_cat->data['Tax Category Code'];
+                $this->data['Order Tax Rate'] = $tax_cat->data['Tax Category Rate'];
+                $tax_name                     = $tax_cat->data['Tax Category Name'];
+                $reason_tax_code_selected     = 'set';
             } else {
                 $this->error = true;
                 $this->msg   = 'Tax code not found';
@@ -70,28 +61,20 @@ trait OrderBasketOperations {
         } else {
             $tax_code_data = $this->get_tax_data();
 
-            $this->data['Order Tax Code']           = $tax_code_data['code'];
-            $this->data['Order Tax Rate']           = $tax_code_data['rate'];
-            $this->data['Order Tax Name']           = $tax_code_data['name'];
-            $this->data['Order Tax Operations']     = $tax_code_data['operations'];
-            $this->data['Order Tax Selection Type'] = '';
+            $this->data['Order Tax Code'] = $tax_code_data['code'];
+            $this->data['Order Tax Rate'] = $tax_code_data['rate'];
+            $tax_name                     = $tax_code_data['name'];
+            $reason_tax_code_selected     = $tax_code_data['reason_tax_code_selected'];
 
 
         }
 
-        if($this->data['Order Tax Name']==''){
-        //    $this->data['Order Tax Name']=0;
-        }
 
-        $this->data['Order State']      = 'InBasket';
+        $this->data['Order State']                       = 'InBasket';
         $this->data['Order Current XHTML Payment State'] = _('Waiting for payment');
 
 
-        if (isset($data['Order Apply Auto Customer Account Payment'])) {
-            $this->data['Order Apply Auto Customer Account Payment'] = $data['Order Apply Auto Customer Account Payment'];
-        } else {
-            $this->data['Order Apply Auto Customer Account Payment'] = 'Yes';
-        }
+
 
         if (isset($data['Order Payment Method'])) {
             $this->data['Order Payment Method'] = $data['Order Payment Method'];
@@ -142,7 +125,7 @@ trait OrderBasketOperations {
         if ($this->data['Order Currency'] != $account->get('Currency Code')) {
 
             include_once 'utils/currency_functions.php';
-            $exchange = currency_conversion($this->db, $this->data['Order Currency'], $account->get('Currency Code'), '1 hour');
+            $exchange                              = currency_conversion($this->db, $this->data['Order Currency'], $account->get('Currency Code'), '1 hour');
             $this->data['Order Currency Exchange'] = $exchange;
         }
 
@@ -154,34 +137,29 @@ trait OrderBasketOperations {
         }
 
 
+        $sql = sprintf(
+            "UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
+        );
 
-            $sql = sprintf(
-                "UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) WHERE `Store Key`=%d", $this->data['Order Store Key']
-            );
-
-            $this->db->exec($sql);
-
-
-            $public_id = $this->db->lastInsertId();
-
-            $this->data['Order Public ID'] = sprintf($this->public_id_format, $public_id);
-
-            $number = strtolower($this->data['Order Public ID']);
-            if (preg_match("/^\d+/", $number, $match)) {
-                $part_number = $match[0];
-                $this->data['Order File As']   = preg_replace('/^\d+/', sprintf("%012d", $part_number), $number);
-
-            } elseif (preg_match("/\d+$/", $number, $match)) {
-                $part_number = $match[0];
-                $this->data['Order File As']   = preg_replace('/\d+$/', sprintf("%012d", $part_number), $number);
-
-            } else {
-                $this->data['Order File As']   = $number;
-            }
+        $this->db->exec($sql);
 
 
+        $public_id = $this->db->lastInsertId();
 
+        $this->data['Order Public ID'] = sprintf($this->public_id_format, $public_id);
 
+        $number = strtolower($this->data['Order Public ID']);
+        if (preg_match("/^\d+/", $number, $match)) {
+            $part_number                 = $match[0];
+            $this->data['Order File As'] = preg_replace('/^\d+/', sprintf("%012d", $part_number), $number);
+
+        } elseif (preg_match("/\d+$/", $number, $match)) {
+            $part_number                 = $match[0];
+            $this->data['Order File As'] = preg_replace('/\d+$/', sprintf("%012d", $part_number), $number);
+
+        } else {
+            $this->data['Order File As'] = $number;
+        }
 
 
         //calculate the order total
@@ -192,12 +170,8 @@ trait OrderBasketOperations {
         $this->data['Order Metadata'] = '{}';
 
 
-
-
         $sql = sprintf(
-            "INSERT INTO `Order Dimension` (%s) values (%s)",
-            '`'.join('`,`', array_keys($this->data)).'`',
-            join(',', array_fill(0, count($this->data), '?'))
+            "INSERT INTO `Order Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($this->data)).'`', join(',', array_fill(0, count($this->data), '?'))
         );
 
         $stmt = $this->db->prepare($sql);
@@ -212,6 +186,8 @@ trait OrderBasketOperations {
         if ($stmt->execute()) {
             $this->id = $this->db->lastInsertId();
 
+            $this->fast_update_json_field('Order Metadata', 'tax_name', $tax_name);
+            $this->fast_update_json_field('Order Metadata', 'why_tax', $reason_tax_code_selected);
 
             /*
 
@@ -235,6 +211,8 @@ trait OrderBasketOperations {
 
             $this->get_data('id', $this->id);
 
+
+
             $this->update_charges();
 
             if ($this->data['Order Shipping Method'] == 'Calculated') {
@@ -243,8 +221,7 @@ trait OrderBasketOperations {
             }
 
 
-
-                $this->update_totals();
+            $this->update_totals();
 
 
             $sql = sprintf(
@@ -286,8 +263,8 @@ trait OrderBasketOperations {
 		`Date`,`Order Transaction Key`,`Site Key`,`Store Key`,`Customer Key`,`Order Key`,`Page Key`,`Product ID`,`Quantity Delta`,`Quantity`,`Net Amount Delta`,`Net Amount`,`Page Store Section Type`)
 	VALUE (%s,%s,%d,%d,%d,%d,%d,%d,
 		%f,%f,%.2f,%.2f,%s
-		) ", prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($data['otf_key']), $this->data['Order Website Key'], $this->data['Order Store Key'], $this->data['Order Customer Key'], $this->id,
-            $data['Webpage Key'], $data['Product ID'], $data['Quantity Delta'], $data['Quantity'], $data['Net Amount Delta'], $data['Net Amount'], prepare_mysql($data['Page Store Section Type'])
+		) ", prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($data['otf_key']), $this->data['Order Website Key'], $this->data['Order Store Key'], $this->data['Order Customer Key'], $this->id, $data['Webpage Key'], $data['Product ID'], $data['Quantity Delta'],
+            $data['Quantity'], $data['Net Amount Delta'], $data['Net Amount'], prepare_mysql($data['Page Store Section Type'])
 
 
         );
@@ -299,7 +276,7 @@ trait OrderBasketOperations {
     }
 
 
-    function update_address($type, $fields, $options = '') {
+    function update_address($type, $fields, $options = '', $updated_from_invoice = false) {
 
 
         $old_value = $this->get("$type Address");
@@ -309,7 +286,7 @@ trait OrderBasketOperations {
 
         if (preg_match('/gb|im|jy|gg/i', $fields['Address Country 2 Alpha Code'])) {
             include_once 'utils/geography_functions.php';
-            $fields['Address Postal Code']=gbr_pretty_format_post_code($fields['Address Postal Code']);
+            $fields['Address Postal Code'] = gbr_pretty_format_post_code($fields['Address Postal Code']);
         }
 
         foreach ($fields as $field => $value) {
@@ -324,7 +301,6 @@ trait OrderBasketOperations {
 
 
         if ($updated_fields_number > 0) {
-
 
 
             $this->updated = true;
@@ -345,10 +321,10 @@ trait OrderBasketOperations {
             }
 
 
-            if ($type == 'Invoice') {
+            if ($type == 'Invoice' and !$updated_from_invoice) {
 
 
-                $this->update_tax_number_validation();
+                $this->validate_order_tax_number();
 
                 $this->update_tax();
 
@@ -372,7 +348,7 @@ trait OrderBasketOperations {
 
         include_once 'utils/get_addressing.php';
 
-        $address_fields=array(
+        $address_fields = array(
             'Address Recipient'            => $this->get($type.' Address Recipient'),
             'Address Organization'         => $this->get($type.' Address Organization'),
             'Address Line 1'               => $this->get($type.' Address Line 1'),
@@ -387,8 +363,11 @@ trait OrderBasketOperations {
 
 
         // replace null to empty string do not remove
-        array_walk_recursive($address_fields,function(&$item){$item=strval($item);});
-
+        array_walk_recursive(
+            $address_fields, function (&$item) {
+            $item = strval($item);
+        }
+        );
 
 
         $new_checksum = md5(
@@ -401,30 +380,31 @@ trait OrderBasketOperations {
         );
 
 
+        $account = get_object('Account', '');
+        $locale  = $account->get('Account Locale');
+
         if ($type == 'Delivery') {
 
-            $account = get_object('Account', 1);
             $country = $account->get('Account Country 2 Alpha Code');
-            $locale  = $account->get('Account Locale');
         } else {
 
             if ($this->get('Store Key')) {
-                $store   =  get_object('Store', $this->get('Store Key'));
+                $store   = get_object('Store', $this->get('Store Key'));
                 $country = $store->get('Store Home Country Code 2 Alpha');
-                $locale  = $store->get('Store Locale');
+                //$locale  = $store->get('Store Locale');
             } else {
-                $account = get_object('Account', 1);
                 $country = $account->get('Account Country 2 Alpha Code');
-                $locale  = $account->get('Account Locale');
+                //$locale  = $account->get('Account Locale');
             }
         }
 
         list($address, $formatter, $postal_label_formatter) = get_address_formatter($country, $locale);
 
 
-        $address = $address->withFamilyName($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))
-            ->withAddressLine2($this->get($type.' Address Line 2'))->withSortingCode($this->get($type.' Address Sorting Code'))->withPostalCode($this->get($type.' Address Postal Code'))
-            ->withDependentLocality(
+        $address =
+            $address->withFamilyName($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))->withAddressLine2($this->get($type.' Address Line 2'))->withSortingCode(
+                $this->get($type.' Address Sorting Code')
+            )->withPostalCode($this->get($type.' Address Postal Code'))->withDependentLocality(
                 $this->get($type.' Address Dependent Locality')
             )->withLocality($this->get($type.' Address Locality'))->withAdministrativeArea(
                 $this->get($type.' Address Administrative Area')
@@ -434,8 +414,6 @@ trait OrderBasketOperations {
 
 
         $xhtml_address = $formatter->format($address);
-
-
 
 
         $xhtml_address = preg_replace(
@@ -452,11 +430,10 @@ trait OrderBasketOperations {
         $xhtml_address = preg_replace('/class="country"/', 'class="country country-name"', $xhtml_address);
 
 
-        $xhtml_address = preg_replace('/(class="address-line1 street-address"><\/span>)<br>/', '$1', $xhtml_address);
+        //$xhtml_address = preg_replace('/(class="address-line1 street-address"><\/span>)<br>/', '$1', $xhtml_address);
 
 
         $xhtml_address = preg_replace('/<br>/', '<br/>', $xhtml_address);
-
 
 
         $this->update_field($this->table_name.' '.$type.' Address Formatted', $xhtml_address, 'no_history');
@@ -481,10 +458,9 @@ trait OrderBasketOperations {
     }
 
 
+    function update_for_collection($value, $options = false) {
 
-    function update_for_collection($value, $options=false) {
-
-        if($this->get('State Index') >= 90 or $this->get('State Index') <=0  ){
+        if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
             return;
         }
 
@@ -492,7 +468,6 @@ trait OrderBasketOperations {
         if ($value != 'Yes') {
             $value = 'No';
         }
-
 
 
         $old_value = $this->data['Order For Collection'];
@@ -518,8 +493,6 @@ trait OrderBasketOperations {
                     'Address Country 2 Alpha Code' => $store->get('Store Collect Address Country 2 Alpha Code'),
 
                 );
-
-
 
 
                 $this->update_address('Delivery', $address_data, $options);
@@ -556,8 +529,6 @@ trait OrderBasketOperations {
             $this->update_shipping();
             $this->update_tax();
             $this->update_totals();
-
-
 
 
             //    $this->apply_payment_from_customer_account();

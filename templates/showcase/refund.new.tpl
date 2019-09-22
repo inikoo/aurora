@@ -82,7 +82,7 @@
 
                 <div class="node" id="invoice_{$invoice->id}">
                     <span class="node_label" >
-                        <i class="fal fa-file-alt fa-fw " aria-hidden="true"></i>
+                        <i class="fal fa-file-invoice-dollar fa-fw " aria-hidden="true"></i>
                         <span class="link" onClick="change_view('invoices/{$invoice->get('Invoice Store Key')}/{$invoice->id}')">{$invoice->get('Invoice Public ID')}</span>
                         <a class="pdf_link" target='_blank' href="/pdf/invoice.pdf.php?id={$invoice->id}"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
                     </span>

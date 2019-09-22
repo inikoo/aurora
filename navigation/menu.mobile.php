@@ -119,7 +119,7 @@ function get_mobile_menu($data,$user, $smarty) {
 
         if ($user->get('User Hooked Store Key')) {
             $nav_menu[] = array(
-                '<i class="fal fa-file-alt fa-fw"></i>',
+                '<i class="fal fa-file-invoice-dollar fa-fw"></i>',
                 _('Invoices'),
                 'invoices',
                 'invoices',
@@ -128,7 +128,7 @@ function get_mobile_menu($data,$user, $smarty) {
             );
         } else {
             $nav_menu[] = array(
-                '<i class="fal fa-file-alt fa-fw"></i>',
+                '<i class="fal fa-file-invoice-dollar fa-fw"></i>',
                 _('Invoices'),
                 'invoices/all',
                 'invoices',

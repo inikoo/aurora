@@ -474,22 +474,22 @@ class Subject extends DB_Table {
             $this->table_name.' '.$type.' Address Checksum', $new_checksum, 'no_history'
         );
 
+        $account = get_object('Account', '');
+        $locale  = $account->get('Account Locale');
 
         if ($type == 'Delivery') {
 
-            $account = get_object('Account', '');
             $country = $account->get('Account Country 2 Alpha Code');
-            $locale  = $account->get('Account Locale');
+            //$locale  = $account->get('Account Locale');
         } else {
 
             if ($this->get('Store Key')) {
                 $store   = get_object('Store', $this->get('Store Key'));
                 $country = $store->get('Store Home Country Code 2 Alpha');
-                $locale  = $store->get('Store Locale');
+                //$locale  = $store->get('Store Locale');
             } else {
-                $account = get_object('Account', '');
                 $country = $account->get('Account Country 2 Alpha Code');
-                $locale  = $account->get('Account Locale');
+                //$locale  = $account->get('Account Locale');
             }
         }
 
@@ -514,6 +514,7 @@ class Subject extends DB_Table {
 
         if ($type == 'Contact') {
 
+            /*
             if ($this->get($type.' Address Recipient') == $this->get('Main Contact Name')) {
                 $xhtml_address = preg_replace('/(class="family-name">.+<\/span>)<br>/', '$1', $xhtml_address);
             }
@@ -521,6 +522,7 @@ class Subject extends DB_Table {
             if ($this->get($type.' Address Organization') == $this->get('Company Name')) {
                 $xhtml_address = preg_replace('/(class="organization">.+<\/span>)<br>/', '$1', $xhtml_address);
             }
+            */
         }
         $xhtml_address = preg_replace(
             '/class="family-name"/', 'class="recipient fn '.($this->get($type.' Address Recipient') == $this->get('Main Contact Name') and $type == 'Contact' ? 'hide' : '').'"', $xhtml_address
@@ -536,9 +538,8 @@ class Subject extends DB_Table {
         $xhtml_address = preg_replace('/class="country"/', 'class="country country-name"', $xhtml_address);
 
 
-        $xhtml_address = preg_replace('/(class="address-line1 street-address"><\/span>)<br>/', '$1', $xhtml_address);
+        //$xhtml_address = preg_replace('/(class="address-line1 street-address"><\/span>)<br>/', '$1', $xhtml_address);
 
-        //  print $xhtml_address;
 
 
         $this->update_field($this->table_name.' '.$type.' Address Formatted', $xhtml_address, 'no_history');
@@ -580,7 +581,7 @@ class Subject extends DB_Table {
             $store = get_object('Store', $this->get('Store Key'));
             if ($store->get('Store Type') != 'External') {
                 if ($type == 'Invoice') {
-                    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
+                    $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket')   AND `Order Customer Key`=%d ", $this->id);
                     // print "$sql\n";
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
@@ -592,13 +593,10 @@ class Subject extends DB_Table {
 
                             $order->update(array('Order Invoice Address' => $this->get('Customer Invoice Address')), 'no_history', array('no_propagate_customer' => true));
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
                 } elseif ($type == 'Delivery') {
-                    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
+                    $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket')   AND `Order Customer Key`=%d ", $this->id);
+
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
                             $order         = get_object('Order', $row['Order Key']);
@@ -606,10 +604,6 @@ class Subject extends DB_Table {
 
                             $order->update(array('Order Delivery Address' => $this->get('Customer Delivery Address')), 'no_history', array('no_propagate_customer' => true));
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
                 }
             }

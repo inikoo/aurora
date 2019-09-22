@@ -77,13 +77,6 @@ class DeliveryNote extends DB_Table {
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Delivery Note Key'];
 
-            //todo remove this if when sure Delivery Note Metadata V2 always is a valid json
-            if ($this->data['Delivery Note Metadata V2'] == '') {
-                $this->medatata = array();
-            } else {
-                $this->medatata = json_decode($this->data['Delivery Note Metadata V2'], true);
-            }
-
 
         }
 
@@ -124,12 +117,6 @@ class DeliveryNote extends DB_Table {
             $this->id = $this->db->lastInsertId();
 
 
-            $sql = sprintf(
-                'UPDATE `Delivery Note Dimension`  SET  `Delivery Note Metadata V2`=JSON_SET(`Delivery Note Metadata V2`,"$.ver",2)
-                             WHERE `Delivery Note Key`=%d ', $this->id
-            );
-
-
             $this->db->exec($sql);
 
             $this->get_data('id', $this->id);
@@ -151,19 +138,12 @@ class DeliveryNote extends DB_Table {
                     $total_estimated_weight += $estimated_weight;
                     $distinct_items++;
                     $sql = sprintf(
-                        "UPDATE  `Order Transaction Fact` SET `Estimated Weight`=%f,`Order Last Updated Date`=%s,`Delivery Note ID`=%s,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s WHERE `Order Transaction Fact Key`=%d", $estimated_weight,
-                        prepare_mysql($this->data['Delivery Note Date Created']), prepare_mysql($this->data['Delivery Note ID'])
-
-
-                        , $this->data['Delivery Note Key'], prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']), $row['Order Transaction Fact Key']
+                        "UPDATE  `Order Transaction Fact` SET `Estimated Weight`=%f,`Order Last Updated Date`=%s,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s WHERE `Order Transaction Fact Key`=%d", $estimated_weight,
+                        prepare_mysql($this->data['Delivery Note Date Created']), $this->data['Delivery Note Key'], prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']), $row['Order Transaction Fact Key']
 
                     );
                     $this->db->exec($sql);
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
@@ -188,8 +168,8 @@ class DeliveryNote extends DB_Table {
 
 
             $sql = sprintf(
-                'SELECT OTF.`Product Code`,OTF.`Order Quantity`,OTF.`Product ID`,`Product Package Weight`,`Order Quantity`,`Order Bonus Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PH  ON (OTF.`Product Key`=PH.`Product Key`)  LEFT JOIN `Product Dimension` P  ON (PH.`Product ID`=P.`Product ID`)
-		WHERE `Order Key`=%d  AND `Current Dispatching State` IN ("Submitted by Customer","In Process")  ', $order->id
+                "SELECT OTF.`Product Code`,OTF.`Order Quantity`,OTF.`Product ID`,`Product Package Weight`,`Order Quantity`,`Order Bonus Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PH  ON (OTF.`Product Key`=PH.`Product Key`)  LEFT JOIN `Product Dimension` P  ON (PH.`Product ID`=P.`Product ID`)
+		WHERE `Order Key`=%d  AND `Current Dispatching State` IN ('Submitted by Customer','In Process')  ", $order->id
             );
 
 
@@ -720,8 +700,8 @@ class DeliveryNote extends DB_Table {
                     } else {
                         $consignment = '<span class="discreet italic">'._('Courier not set').'</span>';
                     }
-                }else{
-                    $consignment=_('Collected by customer');
+                } else {
+                    $consignment = _('Collected by customer');
                 }
 
                 return $consignment;
@@ -1455,10 +1435,10 @@ class DeliveryNote extends DB_Table {
 
                 if (in_array(
                     $this->data['Delivery Note Type'], array(
-                    'Replacement & Shortages',
-                    'Replacement',
-                    'Shortages'
-                )
+                                                         'Replacement & Shortages',
+                                                         'Replacement',
+                                                         'Shortages'
+                                                     )
                 )) {
 
                     if (!($this->get('State Index') == 80 or $this->get('State Index') == 90)) {
@@ -1593,10 +1573,10 @@ class DeliveryNote extends DB_Table {
 
                 if ($this->get('State Index') != 80 or in_array(
                         $this->data['Delivery Note Type'], array(
-                        'Replacement & Shortages',
-                        'Replacement',
-                        'Shortages'
-                    )
+                                                             'Replacement & Shortages',
+                                                             'Replacement',
+                                                             'Shortages'
+                                                         )
                     )) {
                     return;
                 }
@@ -1719,19 +1699,28 @@ class DeliveryNote extends DB_Table {
                 $order->editor = $this->editor;
 
 
-                if ($order->get('Order Invoice Key')) {
-                    $value = 'Approved';
+                if ($this->data['Delivery Note Type'] == 'Order') {
+                    if ($order->get('Order Invoice Key')) {
+                        $value = 'Approved';
+                    } else {
+                        $value = 'Packed Done';
+                    }
                 } else {
-                    $value = 'Packed Done';
+                    $value = 'Approved';
                 }
 
+                $this->fast_update(
+                    array(
+                        'Delivery Note Date Dispatched' => '',
+                        'Delivery Note Date'            => $date,
+                        'Delivery Note State'           => $value,
+                    )
+                );
 
-                $this->update_field('Delivery Note Date Dispatched', '', 'no_history');
-                $this->update_field('Delivery Note Date', $date, 'no_history');
-                $this->update_field('Delivery Note State', $value, 'no_history');
 
-
-                $order->update(array('Order State' => 'un_dispatch'));
+                if ($this->data['Delivery Note Type'] == 'Order') {
+                    $order->update(array('Order State' => 'un_dispatch'));
+                }
 
                 $note = _('Delivery note un dispatched');
 
@@ -1852,14 +1841,14 @@ class DeliveryNote extends DB_Table {
 
 
                 $sql = sprintf(
-                    'SELECT * FROM `Inventory Transaction Fact`  WHERE  `Delivery Note Key`=%d  AND `Inventory Transaction Section`="OIP"  ', $this->id
+                    "SELECT * FROM `Inventory Transaction Fact`  WHERE  `Delivery Note Key`=%d  AND `Inventory Transaction Section`='OIP'  ", $this->id
                 );
 
 
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
 
-                        $sql = sprintf('UPDATE `Inventory Transaction Fact`  SET   `Inventory Transaction Type`="FailSale" , `Inventory Transaction Section`="NoDispatched"  WHERE `Inventory Transaction Key`=%d  ', $row['Inventory Transaction Key']);
+                        $sql = sprintf("UPDATE `Inventory Transaction Fact`  SET   `Inventory Transaction Type`='FailSale' , `Inventory Transaction Section`='NoDispatched'  WHERE `Inventory Transaction Key`=%d  ", $row['Inventory Transaction Key']);
                         $this->db->exec($sql);
 
 
@@ -1868,7 +1857,7 @@ class DeliveryNote extends DB_Table {
 
 
                 $sql = sprintf(
-                    'SELECT * FROM `Inventory Transaction Fact`  WHERE  `Delivery Note Key`=%d  AND `Inventory Transaction Type`="Sale" AND `Inventory Transaction Section`="Out"  ', $this->id
+                    "SELECT * FROM `Inventory Transaction Fact`  WHERE  `Delivery Note Key`=%d  AND `Inventory Transaction Type`='Sale' AND `Inventory Transaction Section`='Out'", $this->id
                 );
 
 
@@ -1876,7 +1865,7 @@ class DeliveryNote extends DB_Table {
                     foreach ($result as $row) {
 
                         $sql = sprintf(
-                            'UPDATE `Inventory Transaction Fact`  SET  `Inventory Transaction Record Type`="Movement",  `Inventory Transaction Type`="FailSale" , `Inventory Transaction Section`="NoDispatched"  WHERE `Inventory Transaction Key`=%d  ',
+                            "UPDATE `Inventory Transaction Fact`  SET  `Inventory Transaction Record Type`='Movement',  `Inventory Transaction Type`='FailSale' , `Inventory Transaction Section`='NoDispatched'  WHERE `Inventory Transaction Key`=%d  ",
                             $row['Inventory Transaction Key']
                         );
                         $this->db->exec($sql);
@@ -2094,7 +2083,7 @@ class DeliveryNote extends DB_Table {
             if ($row = $result->fetch()) {
 
                 // print_r($row);
-                $qty=$row['Picked']+$qty;
+                $qty = $row['Picked'] + $qty;
 
                 $transaction_value = $row['Part Cost'] * $qty;
 
@@ -2463,10 +2452,6 @@ class DeliveryNote extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 

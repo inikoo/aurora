@@ -31,8 +31,35 @@ $smarty->assign('state', $state);
 
 $smarty->assign('js_code', 'js/injections/invoice_details.'.(_DEVEL ? '' : 'min.').'js');
 
+$customer = get_object('Customer', $state['_object']->get('Invoice Customer Key'));
+
+$smarty->assign('default_country', $state['store']->get('Store Home Country Code 2 Alpha'));
+$smarty->assign(
+    'preferred_countries', '"'.join(
+                             '", "', preferred_countries($state['store']->get('Store Home Country Code 2 Alpha'))
+                         ).'"'
+);
+
+$default_country = ($customer->get('Contact Address Country 2 Alpha Code') == ''
+    ? $state['store']->get('Store Home Country Code 2 Alpha')
+    : $customer->get(
+        'Contact Address Country 2 Alpha Code'
+    ));
+$smarty->assign(
+    'default_telephone_data', base64_encode(
+                                json_encode(
+                                    array(
+                                        'default_country'     => strtolower($default_country),
+                                        'preferred_countries' => array_map(
+                                            'strtolower', preferred_countries($default_country)
+                                        ),
+                                    )
+                                )
+                            )
+);
+
+
 $html = $smarty->fetch('edit_object.tpl');
 
 
 
-?>
