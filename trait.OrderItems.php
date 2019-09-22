@@ -400,30 +400,44 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
 
             //  print_r($operations);
 
-            $hide         = array();
-            $show         = array();
+
             $add_class    = array();
             $remove_class = array();
 
 
+
+
+            if($this->get('Order To Pay Amount')==0){
+                $hide=array('Order_To_Pay_Amount','Order_Payments_Amount');
+
+
+                if($this->get('Order Total Amount')==0){
+                    array_push( $hide,'Order_Paid');
+                }else{
+                    $show=array('Order_Paid');
+                }
+            }elseif($this->get('Order To Pay Amount')>0){
+                $show=array('Order_To_Pay_Amount','To_Pay_Label','Order_Payments_Amount');
+                $hide=array('To_Refund_Label','Order_Paid');
+
+            }elseif($this->get('Order To Pay Amount')<0){
+                $show=array('Order_To_Pay_Amount','To_Refund_Label','Order_Payments_Amount');
+                $hide=array('To_Pay_Label','Order_Paid');
+            }
+            
+            
             if ($this->get('Order Charges Net Amount') == 0) {
-
                 $add_class['order_charges_container'] = 'very_discreet';
-
                 $hide[] = 'order_charges_info';
             } else {
                 $remove_class['order_charges_container'] = 'very_discreet';
-
                 $show[] = 'order_charges_info';
             }
 
 
             if ($this->get('Order Items Discount Amount') == 0) {
-
-
                 $hide[] = 'order_items_discount_container';
             } else {
-
                 $show[] = 'order_items_discount_container';
             }
 
@@ -447,6 +461,15 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
                 $show[] = 'Deal_Amount_Off_tr';
             }
 
+
+            if($this->get('Order Number Items')==0){
+                $hide[] = 'order_payments_list';
+            }else{
+
+            }
+
+            
+            
             $this->update_metadata = array(
 
                 'class_html'   => array(

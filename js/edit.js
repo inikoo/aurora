@@ -1884,6 +1884,29 @@ function assign_available_barcode(field) {
 }
 
 
+function not_authorised_toggle_unlock_delete_object(element,right_code) {
+
+    var _labels = $(element).data('labels');
+    var request = '/ar_find.php?tipo=users_with_right&right='+right_code
+    $.getJSON(request, function (data) {
+        var a = [];
+        $.each(data.users_data, function (key, value) {
+            if (value['UIR'] == 'No') {
+                a.push(value['User Alias'])
+            }
+        });
+        var authorised_users = a.join(', ');
+        footer_text = _labels.footer + authorised_users
+
+
+        Swal.fire({
+            type: 'error', title: _labels.title, text: _labels.text, footer: footer_text,
+        })
+
+    })
+
+}
+
 function toggle_unlock_delete_object(element) {
 
     if ($(element).hasClass('fa-lock')) {

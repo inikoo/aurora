@@ -18,7 +18,7 @@
                     </div>
                     <div id="invoices" onclick="change_sales_overview_type('invoices')"
                          class="widget  left {if $type=='invoices'}selected{/if}">
-                        <i class="fal fa-file-alt"></i><span class="label"> {t}Invoices per store{/t} </span>
+                        <i class="fal fa-file-invoice-dollar"></i><span class="label"> {t}Invoices per store{/t} </span>
                     </div>
                     <div id="invoice_categories" onclick="change_sales_overview_type('invoice_categories')"
                          class=" widget  left {if $type=='invoice_categories'}selected{/if}">

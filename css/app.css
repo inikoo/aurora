@@ -1847,6 +1847,9 @@ textarea {
   .textarea_dialog .save {
     float: right; }
 
+.edit_object table tr td .adr {
+  line-height: 145%; }
+
 input.invalid {
   background-color: #ffe5e5; }
 

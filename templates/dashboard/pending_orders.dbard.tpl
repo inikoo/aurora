@@ -91,7 +91,7 @@
         <span>{t}Invoicing{/t}</span>
         <div class="title">
             <span class=" button" title="{t}Closed orders waiting to be invoiced{/t}"  onclick="go_to_orders('packed_done')"><i style="font-size: 50%" class=" fa fa-archive " aria-hidden="true"></i> <span class="Orders_Packed_Number">{$object->get('Orders Packed Number')}</span></span> |
-            <span class=" button" title="{t}Invoiced orders waiting to be dispatched{/t}"   onclick="go_to_orders('approved')"><span class="Orders_Dispatch_Approved_Number">{$object->get('Orders Dispatch Approved Number')}</span> <i style="font-size: 50%" class="fal fa-file-alt" aria-hidden="true"></i></span>
+            <span class=" button" title="{t}Invoiced orders waiting to be dispatched{/t}"   onclick="go_to_orders('approved')"><span class="Orders_Dispatch_Approved_Number">{$object->get('Orders Dispatch Approved Number')}</span> <i style="font-size: 50%" class="fal fa-file-invoice-dollar" aria-hidden="true"></i></span>
         </div>
         <div >
             <span class="Orders_Packed_Amount" title="{if $currency=='account'}{$object->get('DC Orders Packed Amount')}{else}{$object->get('Orders Packed Amount')}{/if}">{if $currency=='account'}{$object->get('DC Orders Packed Amount Minify')}{else}{$object->get('Orders Packed Amount Minify')}{/if}</span> |

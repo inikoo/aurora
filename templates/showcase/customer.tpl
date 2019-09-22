@@ -7,19 +7,26 @@
 </div>
 
 <div id="customer" class="subject_profile" key="{$customer->id}" store_key="{$customer->get('Store Key')}">
+
+
     <div id="contact_data">
+
+        <div class="  {if $customer->get('Customer Name')|strlen <50 }hide{/if}" ">
+            <h1 style="margin-bottom: 0px;position: relative;top:-10px" class="Customer_Name ">{$customer->get('Customer Name')}</h1>
+        </div>
         <div class="data_container">
-            <div class="data_field  {if $customer->get('Customer Type')!='Company'}hide{/if}">
-                <i title="{t}Company name{/t}" class="fa fa-building"></i> <span
-                        class="Customer_Name">{$customer->get('Customer Name')}</span>
-            </div>
+
             <div class="data_field">
-                <i title="{t}Contact name{/t}" class="fa fa-male"></i> <span
+                <i title="{t}Contact name{/t}" class="fa fa-fw  fa-male"></i> <span
                         class="Customer_Main_Contact_Name">{$customer->get('Customer Main Contact Name')}</span>
             </div>
-            <div class="data_field {if !$customer->get('Customer Tax Number')}hide{/if}">
-                <i title="{t}Tax number{/t}" class="fab fa-black-tie"></i></i> <span
-                        class="Customer_Tax_Number">{$customer->get('Tax Number')}</span>
+            <div class="data_field Customer_Tax_Number_display {if !$customer->get('Customer Tax Number')}hide{/if}">
+                <i title="{t}Tax number{/t}" class="fal fa-fw fa-passport"></i></i> <span
+                        class="Customer_Tax_Number_Formatted">{$customer->get('Tax Number Formatted')}</span>
+            </div>
+            <div class="data_field Customer_Registration_Number_display {if !$customer->get('Customer Registration Number')}hide{/if}">
+                <i title="{t}Registration number{/t}" class="fal fa-fw fa-id-card"></i></i> <span
+                        class="Customer_Registration_Number">{$customer->get('Registration Number')}</span>
             </div>
         </div>
         <div class="data_container">

@@ -1,17 +1,19 @@
 <div class="invoice">
-    <div id="contact_data" class="block" style="float:left;padding:20px 20px;max-width:500px;">
+    <div id="contact_data" class="block" style="float:left;padding:20px 20px;max-width:350px;">
         <div class="data_container">
             <div class="data_field">
                 <i class="fa fa-fw  fa-user" title="{t}Customer name{/t}"  ></i> <span onclick="change_view('/customers/{$invoice->get('Invoice Store Key')}/{$invoice->get('Invoice Customer Key')}')" class="link Invoice_Customer_Name">{$invoice->get('Invoice Customer Name')}</span>
             </div>
 
             <div class="data_field ">
-                <i class="fab fa-fw fa-black-tie" title="{t}Tax number{/t}"></i> <span class="Invoice_Tax_Number">{if $invoice->get('Invoice Tax Number')!=''}{$invoice->get('Invoice Tax Number')}{else}<span style="font-style: italic" class="super_discreet">No tax number provided</span>{/if}</span>
+                <i class="fal fa-fw fa-passport" title="{t}Tax number{/t}"></i> <span class="Invoice_Tax_Number_Formatted">{if $invoice->get('Invoice Tax Number')!=''}{$invoice->get('Tax Number Formatted')}{else}<span style="font-style: italic" class="super_discreet">No tax number provided</span>{/if}</span>
             </div>
 
             <div class="data_field ">
-                <i class="fa fa-fw fa-university" title="{t}Registration number{/t}"></i> <span class="Invoice_Registration_Number">{if $invoice->get('Invoice Registration Number')!=''}{$invoice->get('Invoice Registration Number')}{else}<span style="font-style: italic" class="super_discreet">No registration number provided</span>{/if}</span>
+                <i class="fal fa-fw fa-id-card" title="{t}Registration number{/t}"></i> <span class="Invoice_Registration_Number">{if $invoice->get('Invoice Registration Number')!=''}{$invoice->get('Invoice Registration Number')}{else}<span style="font-style: italic" class="super_discreet">No registration number provided</span>{/if}</span>
             </div>
+
+
 
         </div>
 
@@ -21,7 +23,7 @@
             <div style="min-height:80px;float:left;width:16px">
                 <i style="position: relative;top:3px" class="fa fa-map-marker"></i>
             </div>
-            <div style="min-width:150px;max-width:220px;margin-left: 25px">
+            <div style="min-width:150px;max-width:220px;margin-left: 25px" class="Invoice_Address">
                 {$invoice->get('Invoice Address Formatted')}
             </div>
         </div>
@@ -32,7 +34,7 @@
     </div>
 
 
-    <div id="totals" class="block totals"  style="width: 300px">
+    <div id="totals" class="block totals"  style="width: 322px">
 
 
         <table border="0">
@@ -96,7 +98,7 @@
             </tr>
             {foreach from=$tax_data item=tax }
                 <tr>
-                    <td class="aright">{$tax.name}</td>
+                    <td class="aright">{t}Tax{/t} <span class="small discreet">({$tax.name})</span></td>
                     <td class="aright">{$tax.amount}</td>
                 </tr>
             {/foreach}
@@ -135,8 +137,7 @@
 
     </div>
 
-    <div  class="block totals"  style="width: 250px">
-
+    <div  class="block totals"  style="width: 225px">
 
         <table border="0" >
 
@@ -151,6 +152,7 @@
             </tr>
 
         </table>
+
 
         <div id="sticky_note_div" class="sticky_note pink"
              style="position:relative;left:-20px;width:270px;{if $invoice->get('Sticky Note')==''}display:none{/if}">

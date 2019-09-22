@@ -14,77 +14,104 @@
 function validate_tax_number($tax_number, $country_2alpha_code) {
 
 
-
-
     if (in_array(
         $country_2alpha_code, array(
-            "AT",
-            "BE",
-            "BG",
-            "CY",
-            "CZ",
-            "DE",
-            "DK",
-            "EE",
-            "GR",
-            "ES",
-            "FI",
-            "FR",
-            "GB",
-            "HR",
-            "HU",
-            "IE",
-            "IT",
-            "LT",
-            "LU",
-            "LV",
-            "MT",
-            "NL",
-            "PL",
-            "PT",
-            "RO",
-            "SE",
-            "SI",
-            "SK"
-        )
+                                "AT",
+                                "BE",
+                                "BG",
+                                "CY",
+                                "CZ",
+                                "DE",
+                                "DK",
+                                "EE",
+                                "GR",
+                                "ES",
+                                "FI",
+                                "FR",
+                                "GB",
+                                "HR",
+                                "HU",
+                                "IE",
+                                "IT",
+                                "LT",
+                                "LU",
+                                "LV",
+                                "MT",
+                                "NL",
+                                "PL",
+                                "PT",
+                                "RO",
+                                "SE",
+                                "SI",
+                                "SK"
+                            )
     )) {
 
-        $tax_number = preg_replace(
-            '/^'.$country_2alpha_code.'/i', '', $tax_number
-        );
+        $tax_number = preg_replace('/^'.$country_2alpha_code.'/i', '', $tax_number);
         $tax_number = preg_replace('/[^a-z^0-9]/i', '', $tax_number);
 
         if (preg_match('/^gr$/i', $country_2alpha_code)) {
             $country_2alpha_code = 'EL';
         }
 
-        $tax_number = preg_replace(
-            '/^'.$country_2alpha_code.'/i', '', $tax_number
-        );
+        $tax_number = preg_replace('/^'.$country_2alpha_code.'/i', '', $tax_number);
         $tax_number = preg_replace('/[^a-z^0-9]/i', '', $tax_number);
 
 
-       return check_european_tax_number($country_2alpha_code, $tax_number);
+
+        switch ($country_2alpha_code){
+            case 'GB':
+
+                if(!preg_match('/(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})/',$tax_number)){
+                    $response = array(
+                        'Tax Number'              => $tax_number,
+                        'Tax Number Valid'              => 'No',
+                        'Tax Number Details Match'      => 'Unknown',
+                        'Tax Number Validation Date'    => '',
+                        'Tax Number Associated Name'    => '',
+                        'Tax Number Associated Address' => '',
+                        'Tax Number Validation Message' => _("Invalid tax number format").' ('.$country_2alpha_code.')',
+                        'Tax Number Validation Source'  => 'Aurora'
+                    );
+
+                    return $response;
+                }
+
+                break;
+            case 'DE':
+
+                if(!preg_match('/(DE)?[0-9]{9}/',$tax_number)){
+                    $response = array(
+                        'Tax Number'              => $tax_number,
+                        'Tax Number Valid'              => 'No',
+                        'Tax Number Details Match'      => 'Unknown',
+                        'Tax Number Validation Date'    => '',
+                        'Tax Number Associated Name'    => '',
+                        'Tax Number Associated Address' => '',
+                        'Tax Number Validation Message' => _("Invalid tax number format").' ('.$country_2alpha_code.')',
+                        'Tax Number Validation Source'  => 'Aurora'
+                    );
+
+                    return $response;
+                }
+
+                break;
+
+        }
 
 
-
-    //return json_decode(file_get_contents('http://www.inikoo.com/vies.php?45798437589347=1&c='.$country_2alpha_code.'&t='.$tax_number),true);
-
-
-
-
+        return check_european_tax_number($country_2alpha_code, $tax_number);
 
     } else {
         $response = array(
-            'Tax Number Valid'              => $tax_number,
+            'Tax Number'              => $tax_number,
             'Tax Number Valid'              => 'Unknown',
             'Tax Number Details Match'      => 'Unknown',
             'Tax Number Validation Date'    => '',
             'Tax Number Associated Name'    => '',
             'Tax Number Associated Address' => '',
-            'Tax Number Validation Message' => _(
-                    "Can't verify the tax numbers in this country"
-                ).' ('.$country_2alpha_code.')'
+            'Tax Number Validation Message' => _("Can't verify the tax numbers in this country").' ('.$country_2alpha_code.')',
+            'Tax Number Validation Source'  => 'Aurora'
         );
 
         return $response;
@@ -104,7 +131,9 @@ function check_european_tax_number($country_code, $tax_number) {
         'Tax Number Validation Date'    => '',
         'Tax Number Associated Name'    => '',
         'Tax Number Associated Address' => '',
-        'Tax Number Validation Message' => ''
+        'Tax Number Validation Message' => '',
+        'Tax Number Validation Source'  => 'Online'
+
     );
 
     try {
@@ -124,22 +153,13 @@ function check_european_tax_number($country_code, $tax_number) {
 
 
         if (preg_match('/INVALID_INPUT/i', $msg)) {
-            $msg                                  = _(
-                'Invalid tax number format'
-            );
-            $response['Tax Number Valid']         = 'No';
-            $response['Tax Number Details Match'] = 'No';
-
-            $response['Tax Number Validation Message'] = _(
-                'Invalid tax number format'
-            );
+            $response['Tax Number Valid']              = 'No';
+            $response['Tax Number Details Match']      = 'No';
+            $response['Tax Number Validation Message'] = _('Invalid tax number format').' ('.$country_code.')';
             $response['Tax Number Validation Date']    = gmdate('Y-m-d H:i:s');
-
-
         } elseif (preg_match('/SERVER_BUSY|MS_UNAVAILABLE/i', $msg)) {
-            $response['Tax Number Validation Message'] = _(
-                'Validations server is busy please try later'
-            );
+            $response['Tax Number Valid']              = 'API_Down';
+            $response['Tax Number Validation Message'] = _('Validations server is busy please try later');
 
 
         } else {
@@ -161,11 +181,8 @@ function check_european_tax_number($country_code, $tax_number) {
         if (isset($result->address)) {
             $result->address = str_replace("\n\n\n", "\n", $result->address);
             $result->address = str_replace("\n\n", "\n", $result->address);
-
             $result->address = nl2br($result->address);
-
         }
-
 
         $response = array(
             'Tax Number'                    => $country_code.' '.$tax_number,
@@ -174,7 +191,8 @@ function check_european_tax_number($country_code, $tax_number) {
             'Tax Number Validation Date'    => gmdate('Y-m-d H:i:s'),
             'Tax Number Associated Name'    => $result->name,
             'Tax Number Associated Address' => $result->address,
-            'Tax Number Validation Message' => ''
+            'Tax Number Validation Message' => '',
+            'Tax Number Validation Source'  => 'Online'
         );
 
 
@@ -191,5 +209,3 @@ function check_european_tax_number($country_code, $tax_number) {
 
 }
 
-
-?>

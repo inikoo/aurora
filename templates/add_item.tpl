@@ -221,20 +221,17 @@
     function save_add_item() {
 
 
-        console.log($('#table').data("metadata"))
 
 
         $('#add_item_save').addClass('fa-spinner fa-spin');
 
 
-        console.log($('#table'))
 
         var table_metadata = $('#table').data("metadata")
 
-        console.log(table_metadata)
 
         var request = '/ar_edit_orders.php?tipo=edit_item_in_order&field=' + table_metadata.field + '&parent=' + table_metadata.parent + '&parent_key=' + table_metadata.parent_key + '&item_key=' + $('#add_item_save').attr('item_key') + '&item_historic_key=' + $('#add_item_save').attr('item_historic_key') + '&qty=' + $('#add_item_qty').val()
-        console.log(request)
+
 
         //=====
         var form_data = new FormData();
@@ -307,10 +304,10 @@
                 }
 
                 if (data.metadata.to_pay <= 0) {
-  $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
-} else {
-  $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
-}
+                    $('.add_payment_to_order_button').addClass('fa-lock super_discreet').removeClass('fa-plus')
+                } else {
+                    $('.add_payment_to_order_button').removeClass('fa-lock super_discreet').addClass('fa-plus')
+                }
 
 
                 if (data.metadata.to_pay == 0) {
@@ -323,7 +320,7 @@
 
 
                 if (data.metadata.items == 0) {
-                    $('.payments').addClass('hide')
+
                     $('#submit_operation').addClass('hide')
                     $('#send_to_warehouse_operation').addClass('hide')
 
@@ -335,7 +332,7 @@
                 else {
 
 
-                    $('.payments').removeClass('hide')
+
                     $('#submit_operation').removeClass('hide')
                     $('#send_to_warehouse_operation').removeClass('hide')
                 }

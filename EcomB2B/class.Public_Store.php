@@ -228,6 +228,66 @@ class Public_Store {
         $this->new_customer     = false;
         $this->new_website_user = false;
 
+
+        if (empty($data['Customer Main Plain Email'])) {
+            $this->error      = true;
+            $this->msg        = _("Email missing");
+            $this->error_code = 'email_missing';
+            $this->metadata   = '';
+
+            return array(false,false);
+        }
+
+
+        $sql  = 'select `Customer Key` from `Customer Dimension` where `Customer Main Plain Email`=? and `Customer Store Key`=? ';
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $data['Customer Main Plain Email'],
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $this->error      = true;
+            $this->msg        = sprintf(_('Email %s is already registered'), $data['Customer Main Plain Email']);
+            $this->error_code = 'duplicate_email';
+            $this->metadata   = $data['Customer Main Plain Email'];
+
+            return array(false,false);
+        }
+
+        $sql = "SELECT `Website User Key` FROM `Website User Dimension` WHERE `Website User Handle`=? AND `Website User Website Key`=? ";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $data['Customer Main Plain Email'],
+                $this->get('Store Website Key')
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $this->error      = true;
+            $this->msg        = sprintf(_('Email %s is already registered'), $data['Customer Main Plain Email']).' (handle)';
+            $this->error_code = 'duplicate_email';
+            $this->metadata   = $data['Customer Main Plain Email'];
+
+            return array(false,false);
+        }
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                if ($row['num'] > 0) {
+                    $this->error = true;
+                    $this->msg   = 'Duplicate user login';
+
+                    return;
+                }
+            }
+        }
+
+
         $data['editor']                         = $this->editor;
         $data['Customer Store Key']             = $this->id;
         $data['Customer Billing Address Link']  = 'Contact';
@@ -311,7 +371,7 @@ class Public_Store {
 
                 $website_user->fast_update(
                     array(
-                        `Website User Has Login`     => 'Yes',
+                        `Website User Has Login` => 'Yes',
 
                     )
                 );
@@ -321,7 +381,7 @@ class Public_Store {
                         `Website User Login Count`   => 1,
                         'Website User Last Login'    => gmdate('Y-m-d H:i:s'),
                         'Website User Last Login IP' => ip_from_cloudfare()
-                    ),'Website User Data'
+                    ), 'Website User Data'
                 );
 
 
@@ -357,5 +417,3 @@ class Public_Store {
 
 }
 
-
-?>

@@ -62,13 +62,18 @@ class Public_Customer extends DBW_Table {
         }
 
         if ($this->data = $this->db->query($sql)->fetch()) {
-            $this->id = $this->data['Customer Key'];
+            $this->id       = $this->data['Customer Key'];
             $this->metadata = json_decode($this->data['Customer Metadata'], true);
 
         }
 
 
     }
+
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
+    }
+
 
     function find($raw_data, $address_raw_data, $options = '') {
 
@@ -123,10 +128,6 @@ class Public_Customer extends DBW_Table {
 
     }
 
-    function metadata($key) {
-        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
-    }
-
     function create($raw_data, $address_raw_data) {
 
 
@@ -139,40 +140,33 @@ class Public_Customer extends DBW_Table {
         $this->editor = $raw_data['editor'];
 
         $this->data['Customer First Contacted Date'] = gmdate('Y-m-d H:i:s');
+        $this->data['Customer Sticky Note']          = '';
+        $this->data['Customer Metadata']             = '{}';
 
-        $this->data['Customer Metadata'] ='{}';
+        unset($this->data['Customer Lost Date']);
+        unset($this->data['First Invoiced Order Date']);
+        unset($this->data['Customer Last Invoiced Order Date']);
+        unset($this->data['Customer Tax Number Validation Date']);
+        unset($this->data['Customer Last Order Date']);
+        unset($this->data['Customer First Order Date']);
 
-        $keys   = '';
-        $values = '';
 
+        $sql = sprintf(
+            "INSERT INTO `Customer Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($this->data)).'`', join(',', array_fill(0, count($this->data), '?'))
+        );
 
+        $stmt = $this->db->prepare($sql);
+
+        $i = 1;
         foreach ($this->data as $key => $value) {
-            $keys .= ",`".$key."`";
-            if (in_array(
-                $key, array(
-                        'Customer First Contacted Date',
-                        'Customer Lost Date',
-                        'Customer First Invoiced Order Date',
-                        'Customer Last Invoiced Order Date',
-                        'Customer Tax Number Validation Date',
-                        'Customer Last Order Date',
-                        'Customer First Order Date'
-                    )
-            )) {
-                $values .= ','.prepare_mysql($value, true);
-            } else {
-                $values .= ','.prepare_mysql($value, false);
-            }
+            $stmt->bindValue($i, $value);
+            $i++;
         }
 
 
-        $values = preg_replace('/^,/', '', $values);
-        $keys   = preg_replace('/^,/', '', $keys);
-
-        $sql = "insert into `Customer Dimension` ($keys) values ($values)";
+        if ($stmt->execute()) {
 
 
-        if ($this->db->exec($sql)) {
             $this->id = $this->db->lastInsertId();
             $this->get_data('id', $this->id);
 
@@ -218,7 +212,8 @@ class Public_Customer extends DBW_Table {
 
         } else {
             $this->error = true;
-            $this->msg   = 'Error inserting customer record';
+            print_r($stmt->errorInfo());
+            $this->msg = 'Error inserting customer record';
         }
 
 
@@ -234,12 +229,10 @@ class Public_Customer extends DBW_Table {
         $updated_fields_number = 0;
 
 
-
         if (preg_match('/gb|im|jy|gg/i', $fields['Address Country 2 Alpha Code'])) {
             include_once 'utils/geography_functions.php';
-            $fields['Address Postal Code']=gbr_pretty_format_post_code($fields['Address Postal Code']);
+            $fields['Address Postal Code'] = gbr_pretty_format_post_code($fields['Address Postal Code']);
         }
-
 
 
         foreach ($fields as $field => $value) {
@@ -276,9 +269,7 @@ class Public_Customer extends DBW_Table {
 
             if ($type == 'Contact') {
 
-
-
-
+                $this->fast_update(array('Customer Main Plain Postal Code' => preg_replace('/\s|\n|\r/', '', $this->data['Customer Contact Address Postal Code'])));
 
                 $location = $this->get('Contact Address Locality');
                 if ($location == '') {
@@ -407,8 +398,8 @@ class Public_Customer extends DBW_Table {
                         $source = '<i title=\''._('Validated online').'\' class=\'far fa-globe\'></i>';
 
 
-                    } elseif ($this->data['Customer Tax Number Validation Source'] == 'Manual') {
-                        $source = '<i title=\''._('Set up manually').'\' class=\'far fa-hand-rock\'></i>';
+                    } elseif ($this->data['Customer Tax Number Validation Source'] == 'Staff') {
+                        $source = '<i title=\''._('Set up manually').'\' class=\'far fa-thumbtack\'></i>';
                     } else {
                         $source = '';
                     }
@@ -426,7 +417,7 @@ class Public_Customer extends DBW_Table {
                             return _('Validated').$validation_data;
                             break;
                         case 'No':
-                            return _('Not valid').$validation_data;
+                            return '<span class="error">'._('Not valid').'</span>'.$validation_data;
                         default:
                             return $this->data['Customer Tax Number Valid'].$validation_data;
 
@@ -502,10 +493,10 @@ class Public_Customer extends DBW_Table {
 
         $address =
             $address->withFamilyName($this->get($type.' Address Recipient'))->withOrganization($this->get($type.' Address Organization'))->withAddressLine1($this->get($type.' Address Line 1'))->withAddressLine2($this->get($type.' Address Line 2'))->withSortingCode(
-                    $this->get($type.' Address Sorting Code')
-                )->withPostalCode($this->get($type.' Address Postal Code'))->withDependentLocality($this->get($type.' Address Dependent Locality'))->withLocality($this->get($type.' Address Locality'))->withAdministrativeArea(
-                    $this->get($type.' Address Administrative Area')
-                )->withCountryCode($this->get($type.' Address Country 2 Alpha Code'));
+                $this->get($type.' Address Sorting Code')
+            )->withPostalCode($this->get($type.' Address Postal Code'))->withDependentLocality($this->get($type.' Address Dependent Locality'))->withLocality($this->get($type.' Address Locality'))->withAdministrativeArea(
+                $this->get($type.' Address Administrative Area')
+            )->withCountryCode($this->get($type.' Address Country 2 Alpha Code'));
 
 
         $xhtml_address = $formatter->format($address);
@@ -554,10 +545,6 @@ class Public_Customer extends DBW_Table {
 
                 $order_key = $row['Order Key'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -565,33 +552,33 @@ class Public_Customer extends DBW_Table {
     }
 
 
-    function get_orders_data(){
+    function get_orders_data() {
 
-        $orders_data=array();
-        $sql=sprintf('select `Order Invoice Key`,`Order Key`,`Order Public ID`,`Order Date`,`Order Total Amount`,`Order State`,`Order Currency` from `Order Dimension` where `Order Customer Key`=%d order by `Order Date` desc ',$this->id);
+        $orders_data = array();
+        $sql         = sprintf('select `Order Invoice Key`,`Order Key`,`Order Public ID`,`Order Date`,`Order Total Amount`,`Order State`,`Order Currency` from `Order Dimension` where `Order Customer Key`=%d order by `Order Date` desc ', $this->id);
 
-        if ($result=$this->db->query($sql)) {
-        		foreach ($result as $row) {
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
 
-        		    switch ($row['Order State']){
-                        default:
-                            $state=$row['Order State'];
-                    }
+                switch ($row['Order State']) {
+                    default:
+                        $state = $row['Order State'];
+                }
 
-                    $orders_data[]=array(
-                        'key'=>$row['Order Key'],
-                        'invoice_key'=>$row['Order Invoice Key'],
-                        'number'=>$row['Order Public ID'],
-                        'date'=>strftime("%e %b %Y", strtotime($row['Order Date'].' +0:00')),
-                        'state'=>$state,
-                        'total'=>money($row['Order Total Amount'],$row['Order Currency'])
+                $orders_data[] = array(
+                    'key'         => $row['Order Key'],
+                    'invoice_key' => $row['Order Invoice Key'],
+                    'number'      => $row['Order Public ID'],
+                    'date'        => strftime("%e %b %Y", strtotime($row['Order Date'].' +0:00')),
+                    'state'       => $state,
+                    'total'       => money($row['Order Total Amount'], $row['Order Currency'])
 
-                    );
-        		}
-        }else {
-        		print_r($error_info=$this->db->errorInfo());
-        		print "$sql\n";
-        		exit;
+                );
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
         }
 
         return $orders_data;
@@ -607,9 +594,6 @@ class Public_Customer extends DBW_Table {
         }
 
 
-
-
-
         switch ($field) {
 
             case 'Customer Delivery Address Link':
@@ -621,7 +605,6 @@ class Public_Customer extends DBW_Table {
             case 'Customer Contact Address':
 
                 $this->update_address('Contact', json_decode($value, true), $options);
-
 
 
                 if (empty($metadata['no_propagate_addresses'])) {
@@ -649,6 +632,9 @@ class Public_Customer extends DBW_Table {
 
 
             case 'Customer Invoice Address':
+
+                $old_country = $this->data['Customer Invoice Address Country 2 Alpha Code'];
+
 
                 $this->update_address('Invoice', json_decode($value, true), $options);
 
@@ -683,7 +669,7 @@ class Public_Customer extends DBW_Table {
 
                 if (empty($metadata['no_propagate_orders'])) {
 
-                    $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
+                    $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket')   AND `Order Customer Key`=%d ", $this->id);
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
                             $order = get_object('Order', $row['Order Key']);
@@ -691,11 +677,11 @@ class Public_Customer extends DBW_Table {
                             $order->editor = $this->editor;
                             $order->update(array('Order Invoice Address' => $value), $options, array('no_propagate_customer' => true));
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
+                }
+
+                if ($old_country != $this->data['Customer Invoice Address Country 2 Alpha Code']) {
+                    $this->validate_customer_tax_number();
                 }
 
                 break;
@@ -704,7 +690,7 @@ class Public_Customer extends DBW_Table {
 
                 $this->update_address('Delivery', json_decode($value, true));
 
-                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
+                $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket')   AND `Order Customer Key`=%d ", $this->id);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
                         $order         = get_object('Order', $row['Order Key']);
@@ -712,10 +698,6 @@ class Public_Customer extends DBW_Table {
 
                         $order->update(array('Order Delivery Address' => $value), $options, array('no_propagate_customer' => true));
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
@@ -754,8 +736,8 @@ class Public_Customer extends DBW_Table {
 
 
                     } catch (\libphonenumber\NumberParseException $e) {
-                        $this->error = true;
-                        $this->msg   = 'Error 1234';
+                        $this->error     = true;
+                        $this->msg       = 'Error 1234';
                         $formatted_value = '';
                     }
 
@@ -765,8 +747,6 @@ class Public_Customer extends DBW_Table {
 
 
                 $this->update_field($field, $value, 'no_history');
-
-
                 $this->update_field(preg_replace('/Plain/', 'XHTML', $field), $formatted_value, 'no_history');
 
 
@@ -845,7 +825,7 @@ class Public_Customer extends DBW_Table {
                 }
 
 
-                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order State`="InBasket"', $this->id);
+                $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order State`='InBasket'", $this->id);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
                         $order         = get_object('Order', $row['Order Key']);
@@ -878,7 +858,8 @@ class Public_Customer extends DBW_Table {
 
                 //  }
 
-                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
+                $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` ='InBasket'  AND `Order Customer Key`=%d ", $this->id);
+
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
                         $order         = get_object('Order', $row['Order Key']);
@@ -933,7 +914,7 @@ class Public_Customer extends DBW_Table {
 
                 //  }
 
-                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ("InBasket")   AND `Order Customer Key`=%d ', $this->id);
+                $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` = 'InBasket'   AND `Order Customer Key`=%d ", $this->id);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
                         $order         = get_object('Order', $row['Order Key']);
@@ -1064,16 +1045,12 @@ class Public_Customer extends DBW_Table {
             case 'Customer Tax Number':
                 $this->update_tax_number($value);
 
-                $sql = sprintf('SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN (\'InBasket\',\'InProcess\',\'InWarehouse\',\'PackedDone\')  AND `Order Customer Key`=%d ', $this->id);
+                $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` ='InBasket' AND `Order Customer Key`=%d ", $this->id);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
                         $order = get_object('Order', $row['Order Key']);
                         $order->update_tax_number($value);
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
@@ -1115,47 +1092,59 @@ class Public_Customer extends DBW_Table {
 
     }
 
+
     function update_tax_number($value) {
-
-        include_once 'utils/validate_tax_number.php';
-
 
         $this->update_field('Customer Tax Number', $value);
 
         if ($this->updated) {
+            $this->validate_customer_tax_number();
+        }
 
+
+
+        return true;
+
+    }
+
+    function validate_customer_tax_number() {
+
+        if ($this->data['Customer Tax Number'] == '') {
+            $this->fast_update(
+                array(
+                    'Customer Tax Number Valid'              => 'Unknown',
+                    'Customer Tax Number Details Match'      => '',
+                    'Customer Tax Number Validation Date'    => '',
+                    'Customer Tax Number Validation Source'  => '',
+                    'Customer Tax Number Validation Message' => ''
+                )
+            );
+        } else {
+
+            include_once 'utils/validate_tax_number.php';
 
             $tax_validation_data = validate_tax_number($this->data['Customer Tax Number'], $this->data['Customer Invoice Address Country 2 Alpha Code']);
 
-            $this->update(
+            if ($tax_validation_data['Tax Number Valid'] == 'API_Down') {
+                if (!($this->data['Customer Tax Number Validation Source'] == '' and $this->data['Customer Tax Number Valid'] == 'No')) {
+
+                    return false;
+                }
+            }
+
+            $this->fast_update(
                 array(
                     'Customer Tax Number Valid'              => $tax_validation_data['Tax Number Valid'],
                     'Customer Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
                     'Customer Tax Number Validation Date'    => $tax_validation_data['Tax Number Validation Date'],
-                    'Customer Tax Number Validation Source'  => 'Online',
-                    'Customer Tax Number Validation Message' => 'A: '.$tax_validation_data['Tax Number Validation Message'],
-                ), 'no_history'
+                    'Customer Tax Number Validation Source'  => $tax_validation_data['Tax Number Validation Source'],
+                    'Customer Tax Number Validation Message' => $tax_validation_data['Tax Number Validation Message'],
+                )
             );
-
-
-            $this->new_value = $value;
-
-
         }
 
-        $this->other_fields_updated = array(
-            'Customer_Tax_Number_Valid' => array(
-                'field'           => 'Customer_Tax_Number_Valid',
-                'render'          => ($this->get('Customer Tax Number') == '' ? false : true),
-                'value'           => $this->get('Customer Tax Number Valid'),
-                'formatted_value' => $this->get('Tax Number Valid'),
-
-
-            )
-        );
-
-
     }
+
 
     function update_poll_answer($poll_key, $value, $options) {
 
@@ -1208,16 +1197,12 @@ class Public_Customer extends DBW_Table {
         );
 
 
-
-
         $order_data['Order Customer Key']          = $this->id;
         $order_data['Order Customer Name']         = $this->data['Customer Name'];
         $order_data['Order Customer Contact Name'] = $this->data['Customer Main Contact Name'];
-        $order_data['Order Customer Level Type'] = $this->data['Customer Level Type'];
+        $order_data['Order Customer Level Type']   = $this->data['Customer Level Type'];
 
-
-
-        $order_data['Order Registration Number']   = $this->data['Customer Registration Number'];
+        $order_data['Order Registration Number'] = $this->data['Customer Registration Number'];
 
         $order_data['Order Tax Number']                    = $this->data['Customer Tax Number'];
         $order_data['Order Tax Number Valid']              = $this->data['Customer Tax Number Valid'];
@@ -1264,7 +1249,7 @@ class Public_Customer extends DBW_Table {
         $order_data['Order Delivery Address Postal Label']         = $this->data['Customer Delivery Address Postal Label'];
 
 
-        $order_data['Order Sticky Note'] = $this->data['Customer Order Sticky Note'];
+        $order_data['Order Sticky Note']          = $this->data['Customer Order Sticky Note'];
         $order_data['Order Delivery Sticky Note'] = $this->data['Customer Delivery Sticky Note'];
 
 
@@ -1602,9 +1587,8 @@ class Public_Customer extends DBW_Table {
     }
 
 
-
     function update_credit_account_running_balances() {
-        $running_balance = 0;
+        $running_balance     = 0;
         $credit_transactions = 0;
 
         $sql  = 'SELECT `Credit Transaction Amount`,`Credit Transaction Key`  FROM `Credit Transaction Fact`  WHERE `Credit Transaction Customer Key`=? order by `Credit Transaction Date`,`Credit Transaction Key`    ';
@@ -1635,7 +1619,6 @@ class Public_Customer extends DBW_Table {
 
 
     }
-
 
 
 }

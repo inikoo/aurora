@@ -1090,7 +1090,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                 switch ($state['section']) {
 
                     case 'invoices':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-file-alt"></i> '._('Invoices').' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-file-invoice-dollar"></i> '._('Invoices').' '.$store->get('Code'));
                         break;
                     case 'payments':
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-credit-cart"></i> '._('Payments').' '.$store->get('Code'));
@@ -1099,7 +1099,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-piggy-bank"></i> '._('Credit vault').' '.$store->get('Code'));
                         break;
                     case 'deleted_invoices':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-file-alt"></i> '._('Deleted invoices').' '.$store->get('Code'));
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-file-invoice-dollar"></i> '._('Deleted invoices').' '.$store->get('Code'));
                         break;
 
                 }
@@ -1107,10 +1107,10 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                 switch ($state['section']) {
 
                     case 'invoices':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-file-alt"></i> '._('Invoices').' ('._('All').')');
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-file-invoice-dollar"></i> '._('Invoices').' ('._('All').')');
                         break;
                     case 'deleted_invoices':
-                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-file-alt"></i> '._('Deleted invoices').' ('._('All').')');
+                        $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-file-invoice-dollar"></i> '._('Deleted invoices').' ('._('All').')');
                         break;
                     case 'payments':
                         $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', '<i class="fal fa-fw fa-credit-cart"></i> '._('Payments').' ('._('All').')');
@@ -1558,7 +1558,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             include_once 'showcase/invoice.show.php';
             $html         = get_invoice_showcase($data, $smarty, $user, $db);
             $title        = $data['_object']->get('Public ID');
-            $web_location = '<i class="fal fa-fw fa-file-alt"></i> '.$title;
+            $web_location = '<i class="fal fa-fw fa-file-invoice-dollar"></i> '.$title;
 
             break;
         case 'delivery_note':
@@ -5144,7 +5144,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 $branch[] = array(
                     'label'     => '<span class="id Webpage_Code">'.$state['_object']->get('Code').'</span>',
-                    'icon'      => 'file-alt',
+                    'icon'      => 'browser',
                     'reference' => ''
                 );
 
@@ -5167,7 +5167,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 $branch[] = array(
                     'label'     => '<span class=" Webpage_Code error"> ('._('Deleted').')  '.$state['_object']->get('Page Title').'</span>',
-                    'icon'      => 'file-alt error',
+                    'icon'      => 'browser error',
                     'reference' => ''
                 );
 
@@ -7117,13 +7117,13 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     if ($state['_object']->deleted) {
                         $branch[] = array(
                             'label'     => '<span class="strikethrough">'.$state['_object']->get('Invoice Public ID').'</span> ('._('Deleted').')',
-                            'icon'      => 'file-alt',
+                            'icon'      => 'file-invoice-dollar',
                             'reference' => ''
                         );
                     } else {
                         $branch[] = array(
                             'label'     => $state['_object']->get('Invoice Public ID'),
-                            'icon'      => 'file-alt',
+                            'icon'      => 'file-invoice-dollar',
                             'reference' => ''
                         );
                     }
@@ -7395,16 +7395,12 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
                     $branch[] = array(
-                        'label'     => $state['_object']->get(
-                            'Invoice Public ID'
-                        ),
-                        'icon'      => 'file-alt',
+                        'label'     => $state['_object']->get('Invoice Public ID'),
+                        'icon'      => 'file-invoice-dollar',
                         'reference' => ''
                     );
                     $branch[] = array(
-                        'label'     => $state['_object']->get(
-                            'Delivery Note ID'
-                        ),
+                        'label'     => $state['_object']->get('Delivery Note ID'),
                         'icon'      => 'truck fa-flip-horizontal',
                         'reference' => ''
                     );
@@ -9285,7 +9281,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 $branch[] = array(
                     'label'     => _('Invoices').' ('._('All stores').')',
-                    'icon'      => 'file-alt',
+                    'icon'      => 'file-invoice-dollar',
                     'reference' => 'invoices/all'
                 );
 
@@ -9312,7 +9308,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 $branch[] = array(
                     'label'     => $state['_object']->get('Invoice Public ID'),
-                    'icon'      => 'file-alt',
+                    'icon'      => 'file-invoice-dollar',
                     'reference' => ''
                 );
 
@@ -9628,7 +9624,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
                 $branch[] = array(
                     'label'     => $state['_object']->get('Invoice Public ID'),
-                    'icon'      => 'file-alt',
+                    'icon'      => 'file-invoice-dollar',
                     'reference' => ''
                 );
             } elseif ($state['section'] == 'invoices') {
