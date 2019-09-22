@@ -158,7 +158,8 @@ if ($logged_in and !$is_devel) {
         'server_data'  => $_SERVER,
         'session_data' => $_SESSION,
         'webpage_key'  => $webpage_key,
-        'device'       => $detected_device
+        'device'       => $detected_device,
+        'datetime'       => gmdate('Y-m-d H:i:s')
     ), DNS_ACCOUNT_CODE
     );
 
