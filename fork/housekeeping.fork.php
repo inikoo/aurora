@@ -108,7 +108,7 @@ function fork_housekeeping($job) {
                     $webpage_label = '<i class="fal fa-glass-cheers"></i> '._('Sale completed');
                 } elseif ($row['Webpage Code'] == 'search.sys') {
                     $webpage_label = '<i class="fal fa-search"></i> '._('Search');
-                }elseif ($row['Webpage Code'] == 'not_found.sys') {
+                } elseif ($row['Webpage Code'] == 'not_found.sys') {
                     $webpage_label = '<i class="fal fa-compass-slash"></i> '._('Not found');
                 } elseif ($row['Webpage Scope'] == 'Product') {
                     $webpage_label = '<i class="fal fa-cube"></i> '.strtolower($row['Webpage Code']);
@@ -199,7 +199,7 @@ function fork_housekeeping($job) {
                         array(
                             'channel' => 'real_time.'.strtolower($account->get('Account Code')),
 
-                            'd3' => array(
+                            'd3'   => array(
                                 array(
                                     'type'        => 'current_website_users',
                                     'website_key' => $data['session_data']['website_key'],
@@ -208,7 +208,7 @@ function fork_housekeeping($job) {
                             ),
                             'tabs' => array(
                                 array(
-                                    'tab'   => 'websites',
+                                    'tab' => 'websites',
 
                                     'cell' => array(
                                         'website_rt_user_'.$data['session_data']['website_key'] => count($real_time_website_users_data['real_time_users'])
@@ -224,7 +224,14 @@ function fork_housekeeping($job) {
 
             }
 
+            $sql = 'update `Customer Dimension` set `Customer Last Website Visit`=? where `Customer Key`=? ';
 
+            $db->prepare($sql)->execute(
+                array(
+                    $data['datetime'],
+                    $data['session_data']['customer_key']
+                )
+            );
             break;
 
 
@@ -1307,10 +1314,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         $customer->editor     = $data['editor'];
         $store->editor        = $data['editor'];
         $website_user->editor = $data['editor'];
-
-
-
-
 
 
         if ($customer->get('Customer Tax Number') != '') {
@@ -3177,8 +3180,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
         case 'take_webpage_screenshot':
-
-
 
 
             $webpage = get_object('Webpage', $data['webpage_key']);
