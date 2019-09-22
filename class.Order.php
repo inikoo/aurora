@@ -2175,10 +2175,14 @@ class Order extends DB_Table {
             'Invoice Tax Number'                    => $this->data['Order Tax Number'],
             'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
             'Invoice Tax Number Validation Date'    => $this->data['Order Tax Number Validation Date'],
+            'Invoice Tax Number Validation Source'    => $this->data['Order Tax Number Validation Source'],
+            'Invoice Tax Number Validation Message'    => $this->data['Order Tax Number Validation Message'],
+
+
+
+
             'Invoice Tax Number Associated Name'    => $this->data['Order Tax Number Associated Name'],
             'Invoice Tax Number Associated Address' => $this->data['Order Tax Number Associated Address'],
-            'Invoice Tax Number Associated Source'  => $this->data['Order Tax Number Associated Source'],
-            'Invoice Tax Number Associated Message' => $this->data['Order Tax Number Associated Message'],
 
 
             'Invoice Net Amount Off'        => $this->data['Order Deal Amount Off'],
@@ -3124,8 +3128,6 @@ class Order extends DB_Table {
             foreach ($this->get_invoices('objects') as $_invoice) {
                 if ($_invoice->data['Invoice Type'] == 'Invoice') {
                     $invoice_public_id = $_invoice->data['Invoice Public ID'];
-
-
                 }
             }
 
@@ -3267,10 +3269,13 @@ class Order extends DB_Table {
             'Invoice Tax Number'                    => $this->data['Order Tax Number'],
             'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
             'Invoice Tax Number Validation Date'    => $this->data['Order Tax Number Validation Date'],
+            'Invoice Tax Number Validation Source'    => $this->data['Order Tax Number Validation Source'],
+            'Invoice Tax Number Validation Message'    => $this->data['Order Tax Number Validation Message'],
+
             'Invoice Tax Number Associated Name'    => $this->data['Order Tax Number Associated Name'],
             'Invoice Tax Number Associated Address' => $this->data['Order Tax Number Associated Address'],
-            'Invoice Tax Number Associated Source'  => $this->data['Order Tax Number Associated Source'],
-            'Invoice Tax Number Associated Message' => $this->data['Order Tax Number Associated Message'],
+
+
 
 
             'Invoice Net Amount Off'               => 0,
