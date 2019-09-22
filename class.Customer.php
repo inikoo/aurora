@@ -910,6 +910,9 @@ class Customer extends Subject {
         $order_data['Order Tax Number Valid']              = $this->data['Customer Tax Number Valid'];
         $order_data['Order Tax Number Validation Date']    = $this->data['Customer Tax Number Validation Date'];
         $order_data['Order Tax Number Validation Source']  = $this->data['Customer Tax Number Validation Source'];
+        $order_data['Order Tax Number Validation Message']  = $this->data['Customer Tax Number Validation Message'];
+
+
         $order_data['Order Tax Number Details Match']      = $this->data['Customer Tax Number Details Match'];
         $order_data['Order Tax Number Registered Name']    = $this->data['Customer Tax Number Registered Name'];
         $order_data['Order Tax Number Registered Address'] = $this->data['Customer Tax Number Registered Address'];
