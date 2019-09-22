@@ -451,6 +451,7 @@ class Subject extends DB_Table {
     function update_address_formatted_fields($type) {
 
         include_once 'utils/get_addressing.php';
+        $store   = get_object('Store', $this->get('Store Key'));
 
         $new_checksum = md5(
             json_encode(
@@ -484,7 +485,6 @@ class Subject extends DB_Table {
         } else {
 
             if ($this->get('Store Key')) {
-                $store   = get_object('Store', $this->get('Store Key'));
                 $country = $store->get('Store Home Country Code 2 Alpha');
                 //$locale  = $store->get('Store Locale');
             } else {
@@ -514,7 +514,7 @@ class Subject extends DB_Table {
 
         if ($type == 'Contact') {
 
-            /*
+
             if ($this->get($type.' Address Recipient') == $this->get('Main Contact Name')) {
                 $xhtml_address = preg_replace('/(class="family-name">.+<\/span>)<br>/', '$1', $xhtml_address);
             }
@@ -522,15 +522,15 @@ class Subject extends DB_Table {
             if ($this->get($type.' Address Organization') == $this->get('Company Name')) {
                 $xhtml_address = preg_replace('/(class="organization">.+<\/span>)<br>/', '$1', $xhtml_address);
             }
-            */
+
         }
         $xhtml_address = preg_replace(
-            '/class="family-name"/', 'class="recipient fn '.($this->get($type.' Address Recipient') == $this->get('Main Contact Name') and $type == 'Contact' ? 'hide' : '').'"', $xhtml_address
+            '/class="family-name"/', 'class="recipient fn '.(($this->get($type.' Address Recipient') == $this->get('Main Contact Name') and $type == 'Contact' ) ? 'hide' : '').'"', $xhtml_address
         );
 
 
         $xhtml_address = preg_replace(
-            '/class="organization"/', 'class="organization org '.($this->get($type.' Address Organization') == $this->get('Company Name') and $type == 'Contact' ? 'hide' : '').'"', $xhtml_address
+            '/class="organization"/', 'class="organization org '.(($this->get($type.' Address Organization') == $this->get('Company Name') and $type == 'Contact' ) ? 'hide' : '').'"', $xhtml_address
         );
         $xhtml_address = preg_replace('/class="address-line1"/', 'class="address-line1 street-address"', $xhtml_address);
         $xhtml_address = preg_replace('/class="address-line2"/', 'class="address-line2 extended-address"', $xhtml_address);
@@ -578,7 +578,6 @@ class Subject extends DB_Table {
             // print $type;
 
 
-            $store = get_object('Store', $this->get('Store Key'));
             if ($store->get('Store Type') != 'External') {
                 if ($type == 'Invoice') {
                     $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket')   AND `Order Customer Key`=%d ", $this->id);

@@ -254,10 +254,6 @@ trait OrderCalculateTotals {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $payments = 0;
