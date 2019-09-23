@@ -2764,6 +2764,11 @@ class Account extends DB_Table {
                 }
 
                 break;
+            case 'Account Timezone':
+                $value=preg_replace('/\_/', '/', $value);
+                $this->update_field($field, $value);
+
+                break;
             default:
 
                 $base_data = $this->base_data();
