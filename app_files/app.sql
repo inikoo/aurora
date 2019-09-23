@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.26, for Linux (x86_64)
 --
--- Host: localhost    Database: sk
+-- Host: localhost    Database: es
 -- ------------------------------------------------------
 -- Server version	5.7.26-0ubuntu0.18.04.1-log
 
@@ -1334,13 +1334,6 @@ CREATE TABLE `Agent Dimension` (
   `Agent Name` varchar(255) DEFAULT NULL,
   `Agent File As` varchar(255) NOT NULL,
   `Agent Fiscal Name` varchar(255) DEFAULT NULL,
-  `Agent Main XHTML Address` varchar(1024) DEFAULT '',
-  `Agent Main Plain Address` varchar(1024) DEFAULT NULL,
-  `Agent Main Country Key` smallint(5) unsigned NOT NULL,
-  `Agent Main Country Code` varchar(3) NOT NULL,
-  `Agent Main Country` varchar(255) NOT NULL,
-  `Agent Main Location` varchar(255) DEFAULT NULL,
-  `Agent Main XHTML Email` varchar(1024) DEFAULT NULL,
   `Agent Main Plain Email` varchar(255) NOT NULL,
   `Agent Location` varchar(255) DEFAULT NULL,
   `Agent Contact Address Recipient` varchar(255) DEFAULT NULL,
@@ -1356,7 +1349,6 @@ CREATE TABLE `Agent Dimension` (
   `Agent Contact Address Checksum` varchar(64) DEFAULT NULL,
   `Agent Contact Address Formatted` text,
   `Agent Contact Address Postal Label` text,
-  `Agent Main Email Key` mediumint(8) unsigned DEFAULT NULL,
   `Agent Company Name` varchar(255) DEFAULT NULL,
   `Agent Main Contact Name` varchar(255) DEFAULT NULL,
   `Agent QQ` varchar(64) DEFAULT NULL,
@@ -1365,7 +1357,6 @@ CREATE TABLE `Agent Dimension` (
   `Agent Main Plain Mobile` varchar(255) DEFAULT NULL,
   `Agent Main XHTML Mobile` varchar(255) DEFAULT NULL,
   `Agent Main XHTML Telephone` varchar(255) DEFAULT NULL,
-  `Agent Main Telephone Key` mediumint(8) unsigned DEFAULT NULL,
   `Agent Main Plain Telephone` varchar(255) NOT NULL,
   `Agent Main XHTML FAX` varchar(100) DEFAULT NULL,
   `Agent Main FAX Key` mediumint(8) unsigned DEFAULT NULL,
@@ -1418,6 +1409,8 @@ CREATE TABLE `Agent Dimension` (
   `Agent Order Public ID Format` varchar(64) DEFAULT NULL,
   `Agent Order Last Order ID` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Agent Metadata` json DEFAULT NULL,
+  `Agent Main Image Key` mediumint(8) unsigned DEFAULT NULL,
+  `Agent Number Images` smallint(5) unsigned DEFAULT '0',
   PRIMARY KEY (`Agent Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2005,7 +1998,7 @@ DROP TABLE IF EXISTS `Credit Transaction Fact`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Credit Transaction Fact` (
   `Credit Transaction Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `Credit Transaction Type` enum('Payment','Adjust','Cancel','Return','PayReturn') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Payment',
+  `Credit Transaction Type` enum('Payment','Adjust','Cancel','Return','PayReturn','AddFundsOther','Compensation','TransferIn','MoneyBack','TransferOut','RemoveFundsOther') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Payment',
   `Credit Transaction Date` datetime NOT NULL,
   `Credit Transaction Amount` decimal(16,2) NOT NULL,
   `Credit Transaction Currency Code` varchar(3) COLLATE utf8_unicode_ci NOT NULL,
@@ -2189,12 +2182,12 @@ CREATE TABLE `Customer Dimension` (
   `Customer Tax Number` varchar(64) DEFAULT NULL,
   `Customer Registration Number` varchar(255) DEFAULT NULL,
   `Customer Main XHTML Telephone` varchar(255) DEFAULT NULL,
-  `Customer Main Plain Telephone` varchar(45) NOT NULL,
-  `Customer Main Plain FAX` varchar(100) NOT NULL,
+  `Customer Main Plain Telephone` varchar(45) DEFAULT NULL,
+  `Customer Main Plain FAX` varchar(100) DEFAULT NULL,
   `Customer Main XHTML FAX` varchar(100) DEFAULT NULL,
   `Customer Main XHTML Mobile` varchar(255) DEFAULT NULL,
-  `Customer Main Plain Mobile` varchar(255) NOT NULL,
-  `Customer Main Plain Email` varchar(255) NOT NULL,
+  `Customer Main Plain Mobile` varchar(255) DEFAULT NULL,
+  `Customer Main Plain Email` varchar(255) DEFAULT NULL,
   `Customer Main Plain Postal Code` varchar(16) DEFAULT NULL,
   `Customer Location` varchar(255) DEFAULT NULL,
   `Customer Contact Address Recipient` varchar(255) DEFAULT NULL,
@@ -2279,8 +2272,8 @@ CREATE TABLE `Customer Dimension` (
   `Recargo Equivalencia` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Customer Preferred Contact Number` enum('Telephone','Mobile') NOT NULL DEFAULT 'Mobile',
   `Customer Preferred Contact Number Formatted Number` varchar(255) DEFAULT NULL,
-  `Customer Tax Number Valid` enum('Yes','No','Unknown') NOT NULL DEFAULT 'Unknown',
-  `Customer Tax Number Validation Source` enum('Online','Staff') DEFAULT NULL,
+  `Customer Tax Number Valid` enum('Yes','No','Unknown','API_Down') NOT NULL DEFAULT 'Unknown',
+  `Customer Tax Number Validation Source` enum('Online','Staff','Aurora') DEFAULT NULL,
   `Customer Tax Number Validation Message` text,
   `Customer Tax Number Details Match` enum('Yes','No','Unknown') NOT NULL DEFAULT 'Unknown',
   `Customer Tax Number Validation Date` datetime DEFAULT NULL,
@@ -2298,6 +2291,7 @@ CREATE TABLE `Customer Dimension` (
   `Customer First Order Date` datetime DEFAULT NULL,
   `Customer Lost Date` datetime DEFAULT NULL,
   `Customer First Contacted Date` datetime DEFAULT NULL,
+  `Customer Last Website Visit` datetime DEFAULT NULL,
   `Customer Website User Key` mediumint(8) unsigned DEFAULT NULL,
   `Customer Payments Amount` decimal(18,2) NOT NULL DEFAULT '0.00',
   `Customer Invoiced Amount` decimal(18,2) NOT NULL DEFAULT '0.00',
@@ -3521,7 +3515,14 @@ CREATE TABLE `Feedback Dimension` (
   `Feedback Other` enum('Yes','No') COLLATE utf8mb4_unicode_ci DEFAULT 'No',
   `Feedback Message` text COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`Feedback Key`),
-  KEY `Feedback User Key` (`Feedback User Key`)
+  KEY `Feedback User Key` (`Feedback User Key`),
+  KEY `Feedback Supplier` (`Feedback Supplier`),
+  KEY `Feedback Picker` (`Feedback Picker`),
+  KEY `Feedback Packer` (`Feedback Packer`),
+  KEY `Feedback Warehouse` (`Feedback Warehouse`),
+  KEY `Feedback Courier` (`Feedback Courier`),
+  KEY `Feedback Marketing` (`Feedback Marketing`),
+  KEY `Feedback Other` (`Feedback Other`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3737,26 +3738,6 @@ CREATE TABLE `ITF POTF Costing Done Bridge` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Image Bridge`
---
-
-DROP TABLE IF EXISTS `Image Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Image Bridge` (
-  `Subject Type` enum('Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail') DEFAULT NULL,
-  `Subject Key` mediumint(8) unsigned NOT NULL,
-  `Image Key` mediumint(8) unsigned NOT NULL,
-  `Is Principal` enum('Yes','No') NOT NULL DEFAULT 'Yes',
-  `Image Caption` varchar(1024) NOT NULL,
-  UNIQUE KEY `unique` (`Subject Type`,`Subject Key`,`Image Key`),
-  KEY `Subject Key` (`Subject Key`),
-  KEY `Image Key` (`Image Key`),
-  KEY `Subject Type` (`Subject Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Image Dimension`
 --
 
@@ -3778,7 +3759,7 @@ CREATE TABLE `Image Dimension` (
   `Image File Format` enum('jpeg','png','gif','ico') NOT NULL DEFAULT 'jpeg',
   `Image Original Filename` varchar(255) DEFAULT NULL COMMENT 'To delete',
   `Image Public` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Last Modify Date` datetime DEFAULT NULL,
+  `Image Creation Date` datetime DEFAULT NULL,
   `Image Path` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Image Key`),
   KEY `Image Checksum` (`Image File Checksum`),
@@ -3796,8 +3777,8 @@ DROP TABLE IF EXISTS `Image Subject Bridge`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Image Subject Bridge` (
   `Image Subject Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Image Subject Object` enum('Webpage Screenshot','Website','Webpage','Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category','Staff') DEFAULT NULL,
-  `Image Subject Object Image Scope` varchar(16) NOT NULL DEFAULT 'Default',
+  `Image Subject Object` enum('Webpage Screenshot','Website','Webpage','Store Product','Site Favicon','Product','Family','Department','Store','Part','Supplier Product','Store Logo','Store Email Template Header','Store Email Postcard','Email Image','Page','Page Header','Page Footer','Page Header Preview','Page Footer Preview','Page Preview','Site Menu','Site Search','User Profile','Attachment Thumbnail','Category','Staff','Supplier','Agent') DEFAULT NULL,
+  `Image Subject Object Image Scope` varchar(64) NOT NULL DEFAULT 'Default',
   `Image Subject Object Key` mediumint(8) unsigned NOT NULL,
   `Image Subject Image Key` mediumint(8) unsigned NOT NULL,
   `Image Subject Is Principal` enum('Yes','No') NOT NULL DEFAULT 'Yes',
@@ -3805,8 +3786,9 @@ CREATE TABLE `Image Subject Bridge` (
   `Image Subject Is Public` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Image Subject Order` smallint(5) unsigned NOT NULL DEFAULT '1',
   `Image Subject Date` datetime DEFAULT NULL,
+  `Image Subject Metadata` json DEFAULT NULL,
   PRIMARY KEY (`Image Subject Key`),
-  UNIQUE KEY `unique` (`Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key`),
+  UNIQUE KEY `unique` (`Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key`,`Image Subject Object Image Scope`) USING BTREE,
   KEY `Subject Key` (`Image Subject Object Key`),
   KEY `Image Key` (`Image Subject Image Key`),
   KEY `Subject Type` (`Image Subject Object`),
@@ -4677,7 +4659,9 @@ CREATE TABLE `Invoice Dimension` (
   `Invoice Billing Region` varchar(64) DEFAULT NULL,
   `Invoice Message` text,
   `Invoice Tax Number` varchar(64) DEFAULT NULL,
-  `Invoice Tax Number Valid` enum('Yes','No','Unknown') DEFAULT 'No',
+  `Invoice Tax Number Valid` enum('Yes','No','Unknown','API_Down') DEFAULT 'No',
+  `Invoice Tax Number Validation Source` enum('Online','Staff','Aurora') DEFAULT NULL,
+  `Invoice Tax Number Validation Message` text,
   `Invoice Tax Number Validation Date` datetime DEFAULT NULL,
   `Invoice Tax Number Associated Name` varchar(255) DEFAULT NULL,
   `Invoice Tax Number Associated Address` text,
@@ -5474,9 +5458,6 @@ CREATE TABLE `Order Dimension` (
   `Order Billing To Country 2 Alpha Code` varchar(2) NOT NULL DEFAULT 'XX',
   `Order Tax Rate` decimal(8,6) NOT NULL,
   `Order Tax Code` varchar(16) NOT NULL,
-  `Order Tax Name` varchar(255) DEFAULT NULL,
-  `Order Tax Operations` longtext,
-  `Order Tax Selection Type` varchar(128) DEFAULT NULL,
   `Order Estimated Weight` float NOT NULL DEFAULT '0',
   `Order Dispatched Estimated Weight` float NOT NULL DEFAULT '0',
   `Order Weight` float DEFAULT NULL,
@@ -5486,9 +5467,9 @@ CREATE TABLE `Order Dimension` (
   `Order Invoiced` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Order with Out of Stock` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Order Tax Number` varchar(64) DEFAULT NULL,
-  `Order Tax Number Valid` enum('Yes','No','Unknown') NOT NULL DEFAULT 'No',
+  `Order Tax Number Valid` enum('Yes','No','Unknown','API_Down') NOT NULL DEFAULT 'No',
   `Order Tax Number Validation Date` datetime DEFAULT NULL,
-  `Order Tax Number Validation Source` enum('Online','Staff') DEFAULT NULL,
+  `Order Tax Number Validation Source` enum('Online','Staff','Aurora') DEFAULT NULL,
   `Order Tax Number Validation Message` text,
   `Order Tax Number Details Match` enum('Yes','No','Unknown') NOT NULL DEFAULT 'Unknown',
   `Order Tax Number Registered Name` varchar(255) DEFAULT NULL,
@@ -5496,7 +5477,6 @@ CREATE TABLE `Order Dimension` (
   `Order Tax Number Associated Name` varchar(255) DEFAULT NULL,
   `Order Tax Number Associated Address` text,
   `Order Registration Number` varchar(255) DEFAULT NULL,
-  `Order Apply Auto Customer Account Payment` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `Order Show in Warehouse Orders` enum('Yes','No') NOT NULL DEFAULT 'Yes',
   `Order Checkout Block Payment Account Key` smallint(5) unsigned DEFAULT NULL,
   `Order Delivery Note Alert` enum('No','Yes','Closed') NOT NULL DEFAULT 'No',
@@ -6444,7 +6424,6 @@ DROP TABLE IF EXISTS `Page Store Dimension`;
 CREATE TABLE `Page Store Dimension` (
   `Page Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `Webpage Code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `Page Code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Page State` enum('Online','Offline') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Offline',
   `Page Stealth Mode` enum('Yes','No') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'No',
   `Page Site Key` mediumint(8) unsigned DEFAULT NULL,
@@ -6516,14 +6495,12 @@ CREATE TABLE `Page Store Dimension` (
   `Webpage Navigation Data` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `Webpage Properties` json DEFAULT NULL,
   PRIMARY KEY (`Page Key`),
-  UNIQUE KEY `Page Site Key_2` (`Page Site Key`,`Page Code`),
   UNIQUE KEY `Webpage Code` (`Webpage Code`,`Page Site Key`) USING BTREE,
   UNIQUE KEY `Webpage Code_2` (`Webpage Code`,`Webpage Website Key`),
   KEY `Page Store Function` (`Page Store Section`),
   KEY `Page Parent Key` (`Page Parent Key`),
   KEY `Page Site Key` (`Page Site Key`),
   KEY `Page Store See Also Type` (`Page Store See Also Type`),
-  KEY `Page Code` (`Page Code`(5)),
   KEY `Page Store Section Type` (`Page Store Section Type`),
   KEY `Site Flag Key` (`Site Flag Key`),
   KEY `Webpage Website Key` (`Webpage Website Key`),
@@ -7589,7 +7566,6 @@ CREATE TABLE `Part Dimension` (
   `Part Available` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Part Available for Products` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Part Available for Products Configuration` enum('Yes','No','Automatic') NOT NULL DEFAULT 'No',
-  `Part Main State` enum('Keeping','LastStock','Discontinued','NotKeeping') DEFAULT NULL,
   `Part Cost` decimal(12,4) DEFAULT '0.0000',
   `Part Cost in Warehouse` decimal(12,4) DEFAULT NULL,
   `Part Margin` float DEFAULT NULL,
@@ -7607,14 +7583,9 @@ CREATE TABLE `Part Dimension` (
   `Part Unit RRP` float unsigned DEFAULT NULL,
   `Part XHTML Currently Used In` text,
   `Part Stock Status` enum('Surplus','Optimal','Low','Critical','Out_Of_Stock','Error') NOT NULL DEFAULT 'Optimal',
-  `Part Stock State` enum('Excess','Normal','Low','VeryLow','OutofStock','Error') NOT NULL DEFAULT 'Normal',
   `Part Last Stock` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Part Currently Used In` varchar(255) DEFAULT NULL,
-  `Part XHTML Currently Supplied By` text,
-  `Part XHTML Description` varchar(255) DEFAULT NULL,
   `Part Package Description` varchar(255) DEFAULT NULL,
   `Part Package Description Note` varchar(255) DEFAULT NULL,
-  `Part Unit Description` text,
   `Part SKOs per Carton` smallint(5) unsigned DEFAULT NULL,
   `Part SKO Barcode` varchar(128) DEFAULT NULL,
   `Part Carton Barcode` varchar(64) DEFAULT NULL,
@@ -7650,35 +7621,10 @@ CREATE TABLE `Part Dimension` (
   `Part Unit Weight Display` float DEFAULT NULL,
   `Part Unit Weight Display Units` enum('Kg','g','oz','lb') DEFAULT 'Kg',
   `Part Package Dimensions` varchar(255) DEFAULT NULL,
-  `Part Unit Dimensions Type` enum('Rectangular','Cilinder','Sphere','String','Sheet') DEFAULT 'Rectangular',
-  `Part Unit Dimensions Display Units` enum('mm','cm','m','in','yd','ft') DEFAULT 'cm',
-  `Part Unit Dimensions Width` float DEFAULT NULL,
-  `Part Unit Dimensions Depth` float DEFAULT NULL,
   `Part Unit Dimensions Length` float DEFAULT NULL,
-  `Part Unit Dimensions Diameter` float DEFAULT NULL,
-  `Part Unit Dimensions Width Display` float DEFAULT NULL,
-  `Part Unit Dimensions Depth Display` float DEFAULT NULL,
-  `Part Unit Dimensions Length Display` float DEFAULT NULL,
-  `Part Unit Dimensions Diameter Display` float DEFAULT NULL,
-  `Part Unit Dimensions Volume` float DEFAULT NULL,
-  `Part Unit XHTML Dimensions` varchar(255) DEFAULT NULL,
   `Part Unit Dimensions` varchar(255) DEFAULT NULL,
   `Part Unit Volume` float DEFAULT NULL,
-  `Part Unit Materials` text,
   `Part Materials` text,
-  `Part Unit XHTML Materials` text,
-  `Part Package Dimensions Type` enum('Rectangular','Cilinder','Sphere') DEFAULT 'Rectangular',
-  `Part Package Dimensions Display Units` enum('mm','cm','m','in','yd','ft') DEFAULT 'cm',
-  `Part Package Dimensions Width` float DEFAULT NULL,
-  `Part Package Dimensions Depth` float DEFAULT NULL,
-  `Part Package Dimensions Length` float DEFAULT NULL,
-  `Part Package Dimensions Diameter` float DEFAULT NULL,
-  `Part Package Dimensions Width Display` float DEFAULT NULL,
-  `Part Package Dimensions Depth Display` float DEFAULT NULL,
-  `Part Package Dimensions Length Display` float DEFAULT NULL,
-  `Part Package Dimensions Diameter Display` float DEFAULT NULL,
-  `Part Package Dimensions Volume` float DEFAULT NULL,
-  `Part Package XHTML Dimensions` varchar(255) DEFAULT NULL,
   `Part Commercial Value` decimal(12,2) DEFAULT NULL,
   `Part Current Stock` decimal(24,6) DEFAULT NULL,
   `Part Current On Hand Stock` decimal(24,6) NOT NULL DEFAULT '0.000000',
@@ -7690,7 +7636,6 @@ CREATE TABLE `Part Dimension` (
   `Part Current Stock Negative Discrepancy Value` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Part Current Stock Cost Per Unit` decimal(12,2) DEFAULT NULL,
   `Part Current Storing Cost Per Unit` decimal(12,2) DEFAULT NULL,
-  `Part XHTML Picking Location` varchar(255) NOT NULL,
   `Part Distinct Locations` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Part Forecast Metadata` text,
   `Part Days Available Forecast` float DEFAULT NULL,
@@ -7703,7 +7648,6 @@ CREATE TABLE `Part Dimension` (
   `Part Next Shipment State` enum('None','Set','Overdue') NOT NULL DEFAULT 'None',
   `Part Next Supplier Shipment from PO` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Part Next Supplier Shipment` datetime DEFAULT NULL,
-  `Part XHTML Next Supplier Shipment` text,
   `Part Valid From` datetime DEFAULT NULL,
   `Part Active From` datetime DEFAULT NULL,
   `Part Valid To` datetime DEFAULT NULL,
@@ -7755,11 +7699,8 @@ CREATE TABLE `Part Dimension` (
   KEY `Part TYpe` (`Part Status`),
   KEY `Part Valid From` (`Part Valid From`),
   KEY `Part Valid To` (`Part Valid To`),
-  KEY `Part Currently Used In` (`Part Currently Used In`),
   KEY `Part Available` (`Part Available`),
-  KEY `Part Main State` (`Part Main State`),
   KEY `Part Tarrif Code Valid` (`Part Tariff Code Valid`),
-  KEY `Part Stock State` (`Part Stock State`),
   KEY `Part Reference` (`Part Reference`),
   KEY `Part Available for Products Configuration` (`Part Available for Products Configuration`),
   KEY `Part Next Shipment State` (`Part Next Shipment State`),
@@ -7769,7 +7710,8 @@ CREATE TABLE `Part Dimension` (
   KEY `Part Production` (`Part Production`),
   KEY `Part Made in Production` (`Part Made in Production`),
   KEY `Part Package Weight Status` (`Part Package Weight Status`),
-  KEY `Part Main Supplier Part Key` (`Part Main Supplier Part Key`)
+  KEY `Part Main Supplier Part Key` (`Part Main Supplier Part Key`),
+  KEY `Part Stock Status` (`Part Stock Status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -11697,6 +11639,7 @@ CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Parent Email` varchar(255) DEFAULT NULL,
   `Purchase Order Parent Telephone` varchar(255) DEFAULT NULL,
   `Purchase Order Parent Address` text,
+  `Purchase Order Parent Country Code` varchar(2) DEFAULT NULL,
   `Purchase Order Agent Key` mediumint(8) unsigned DEFAULT NULL,
   `Purchase Order Agent Data` text,
   `Purchase Order Creation Date` datetime DEFAULT NULL COMMENT 'Date when the purchase order where first placed',
@@ -11772,7 +11715,8 @@ CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Production` enum('Yes','No') NOT NULL DEFAULT 'No',
   PRIMARY KEY (`Purchase Order Key`),
   KEY `Purchase Order Parent` (`Purchase Order Parent`),
-  KEY `Purchase Order Agent Key` (`Purchase Order Agent Key`)
+  KEY `Purchase Order Agent Key` (`Purchase Order Agent Key`),
+  KEY `Purchase Order Parent Country Code` (`Purchase Order Parent Country Code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -11811,7 +11755,7 @@ CREATE TABLE `Purchase Order Transaction Fact` (
   `Creation Date` datetime DEFAULT NULL,
   `Purchase Order Last Updated Date` datetime DEFAULT NULL,
   `Supplier Delivery Last Updated Date` datetime DEFAULT NULL,
-  `Supplier Invoice Last Updated Date` datetime DEFAULT NULL,
+  `Purchase Order Transaction Invoice Date` date DEFAULT NULL,
   `Supplier Part Key` mediumint(8) unsigned DEFAULT NULL,
   `Supplier Part Historic Key` mediumint(8) unsigned DEFAULT NULL,
   `Purchase Order Transaction Part SKU` mediumint(8) unsigned DEFAULT NULL,
@@ -11851,7 +11795,7 @@ CREATE TABLE `Purchase Order Transaction Fact` (
   `Supplier Delivery Exchange Rate` int(11) DEFAULT NULL,
   `Supplier Delivery Paid Amount` decimal(16,2) DEFAULT '0.00',
   `Supplier Delivery Tax Amount` float NOT NULL DEFAULT '0',
-  `Supplier Delivery Transaction State` enum('InProcess','Dispatched','Received','Checked','Placed','Cancelled') DEFAULT NULL,
+  `Supplier Delivery Transaction State` enum('InProcess','Dispatched','Received','Checked','Placed','Cancelled','CostingDone','NoReceived') DEFAULT NULL,
   `Supplier Delivery Transaction Placed` enum('Yes','No','NA') DEFAULT NULL,
   `Supplier Invoice Key` mediumint(8) unsigned DEFAULT NULL,
   `Purchase Order CBM` float DEFAULT NULL COMMENT 'In m3',
@@ -14604,6 +14548,7 @@ CREATE TABLE `Supplier Delivery Dimension` (
   `Supplier Delivery Parent Email` varchar(255) DEFAULT NULL,
   `Supplier Delivery Parent Telephone` varchar(255) DEFAULT NULL,
   `Supplier Delivery Parent Address` text,
+  `Supplier Delivery Parent Country Code` varchar(2) DEFAULT NULL,
   `Supplier Delivery Warehouse Key` smallint(5) unsigned DEFAULT NULL,
   `Supplier Delivery Warehouse Metadata` text,
   `Supplier Delivery State` enum('InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked') NOT NULL DEFAULT 'InProcess',
@@ -14619,6 +14564,7 @@ CREATE TABLE `Supplier Delivery Dimension` (
   `Supplier Delivery Placed Date` datetime DEFAULT NULL,
   `Supplier Delivery Start Costing Date` date DEFAULT NULL,
   `Supplier Delivery Invoice Checked Date` datetime DEFAULT NULL,
+  `Supplier Delivery Invoice Date` date DEFAULT NULL,
   `Supplier Delivery Cancelled Date` datetime DEFAULT NULL,
   `Supplier Delivery Last Updated Date` datetime DEFAULT NULL COMMENT 'Lastest Date when Adding/Modify Supplier Delivery Transaction or Data',
   `Supplier Delivery Main Inputter Key` mediumint(8) unsigned DEFAULT NULL,
@@ -14658,8 +14604,10 @@ CREATE TABLE `Supplier Delivery Dimension` (
   `Supplier Delivery Metadata` text,
   `Supplier Delivery Number Attachments` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Delivery Production` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Supplier Delivery Invoice Public ID` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Supplier Delivery Key`),
-  KEY `Supplier Delivery Purchase Order Key` (`Supplier Delivery Purchase Order Key`)
+  KEY `Supplier Delivery Purchase Order Key` (`Supplier Delivery Purchase Order Key`),
+  KEY `Supplier Delivery Parent Country Code` (`Supplier Delivery Parent Country Code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -14794,6 +14742,7 @@ CREATE TABLE `Supplier Dimension` (
   `Supplier Number History Records` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Number System Users` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Supplier Number Attachments` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Supplier Number Images` smallint(5) unsigned DEFAULT '0',
   `Supplier Paid Ordered Parts To Replenish` mediumint(9) NOT NULL DEFAULT '0',
   `Supplier Paid Ordered Parts` mediumint(9) NOT NULL DEFAULT '0',
   `Supplier Tolerable Percentage Paid Ordered Parts To Replenish` float NOT NULL DEFAULT '0',
@@ -14806,6 +14755,7 @@ CREATE TABLE `Supplier Dimension` (
   `Supplier Order Last Order ID` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Supplier Production` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Supplier Metadata` json DEFAULT NULL,
+  `Supplier Main Image Key` mediumint(8) unsigned DEFAULT NULL,
   PRIMARY KEY (`Supplier Key`),
   UNIQUE KEY `Supplier Code` (`Supplier Code`),
   KEY `Supplier Most Recent` (`Supplier Active`),
@@ -15055,49 +15005,6 @@ CREATE TABLE `Tax Category Dimension` (
   KEY `Composite` (`Composite`),
   KEY `Tax Category Active` (`Tax Category Active`),
   KEY `Tax Category Country Code` (`Tax Category Country Code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Template Dimension`
---
-
-DROP TABLE IF EXISTS `Template Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Template Dimension` (
-  `Template Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Template Website Key` mediumint(8) unsigned DEFAULT NULL,
-  `Template Code` varchar(255) DEFAULT NULL,
-  `Template Scope Key` mediumint(8) unsigned NOT NULL,
-  `Template Scope` varchar(16) NOT NULL,
-  `Template Base` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Template Device` enum('Desktop','Tablet','Mobile') NOT NULL DEFAULT 'Desktop',
-  `Template Source` text,
-  `Template Number Webpages` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Template Number Webpage Versions` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`Template Key`),
-  KEY `Template Code` (`Template Code`),
-  KEY `Template Website Key` (`Template Website Key`),
-  KEY `Template Scope Key` (`Template Scope Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Template Scope Dimension`
---
-
-DROP TABLE IF EXISTS `Template Scope Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Template Scope Dimension` (
-  `Template Scope Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Template Scope Website Key` mediumint(8) unsigned NOT NULL,
-  `Template Scope Code` varchar(255) NOT NULL,
-  `Template Scope Number Templates` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`Template Scope Key`),
-  UNIQUE KEY `Template Scope Website Key_2` (`Template Scope Website Key`,`Template Scope Code`),
-  KEY `Template Scope Website Key` (`Template Scope Website Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -15446,6 +15353,7 @@ CREATE TABLE `User Dimension` (
   `User Alias` varchar(120) DEFAULT NULL,
   `User Type` enum('Staff','Supplier','Administrator','Warehouse','Contractor','Agent') NOT NULL,
   `User Staff Type` enum('Working','NotWorking') DEFAULT NULL,
+  `User Inikoo Rep` enum('Yes','No') DEFAULT 'No',
   `User Site Key` smallint(5) unsigned NOT NULL DEFAULT '0',
   `User Parent Key` mediumint(9) unsigned DEFAULT NULL,
   `User Preferred Locale` varchar(12) NOT NULL DEFAULT 'en_GB.UTF-8',
@@ -15648,7 +15556,9 @@ DROP TABLE IF EXISTS `User Rights Bridge`;
 CREATE TABLE `User Rights Bridge` (
   `User Key` mediumint(8) unsigned NOT NULL,
   `Right Code` varchar(8) NOT NULL,
-  UNIQUE KEY `id_i_idx` (`User Key`,`Right Code`)
+  UNIQUE KEY `id_i_idx` (`User Key`,`Right Code`),
+  KEY `User Key` (`User Key`),
+  KEY `Right Code` (`Right Code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -15969,6 +15879,54 @@ CREATE TABLE `Webpage Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Webpage GSC Data`
+--
+
+DROP TABLE IF EXISTS `Webpage GSC Data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Webpage GSC Data` (
+  `Webpage GSCD Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Webpage GSCD Website Key` smallint(6) DEFAULT NULL,
+  `Webpage GSCD Webpage Key` mediumint(8) DEFAULT NULL,
+  `Webpage GSCD Interval` enum('Total','Last Month','Last Week','Yesterday','Week To Day','Today','Quarter To Day','Month To Day','Year To Day','1 Year','1 Quarter','1 Month') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Webpage GSCD Clicks` mediumint(8) unsigned DEFAULT NULL,
+  `Webpage GSCD Impressions` mediumint(8) unsigned DEFAULT NULL,
+  `Webpage GSCD CTR` double unsigned DEFAULT NULL,
+  `Webpage GSCD Position` double unsigned DEFAULT NULL,
+  PRIMARY KEY (`Webpage GSCD Key`),
+  UNIQUE KEY `Webpage GSCD Webpage Key_2` (`Webpage GSCD Webpage Key`,`Webpage GSCD Interval`),
+  KEY `Webpage GSCD Webpage Key` (`Webpage GSCD Webpage Key`),
+  KEY `Webpage GSCD Webpage Type` (`Webpage GSCD Interval`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Webpage GSC Timeseries`
+--
+
+DROP TABLE IF EXISTS `Webpage GSC Timeseries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Webpage GSC Timeseries` (
+  `Webpage GSCT Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Webpage GSCT Website Key` smallint(6) DEFAULT NULL,
+  `Webpage GSCT Webpage Key` mediumint(8) DEFAULT NULL,
+  `Webpage GSCT Frequency` enum('Day','Week','Month','Quarter','Year') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Webpage GSCT Date` date DEFAULT NULL,
+  `Webpage GSCT Clicks` mediumint(8) unsigned DEFAULT NULL,
+  `Webpage GSCT Impressions` mediumint(8) unsigned DEFAULT NULL,
+  `Webpage GSCT CTR` double unsigned DEFAULT NULL,
+  `Webpage GSCT Position` double unsigned DEFAULT NULL,
+  PRIMARY KEY (`Webpage GSCT Key`),
+  UNIQUE KEY `Webpage GSCT Webpage Key_2` (`Webpage GSCT Webpage Key`,`Webpage GSCT Frequency`,`Webpage GSCT Date`),
+  KEY `Webpage GSCT Webpage Key` (`Webpage GSCT Webpage Key`),
+  KEY `Webpage GSCT Date` (`Webpage GSCT Date`),
+  KEY `Webpage GSCT Webpage Type` (`Webpage GSCT Frequency`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Webpage History Bridge`
 --
 
@@ -16028,6 +15986,56 @@ CREATE TABLE `Webpage Publishing History Bridge` (
   KEY `Deletable` (`Deletable`),
   KEY `Type` (`Type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Webpage Query GSC Data`
+--
+
+DROP TABLE IF EXISTS `Webpage Query GSC Data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Webpage Query GSC Data` (
+  `Webpage Query GSCD Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Webpage Query GSCD Website Key` smallint(6) DEFAULT NULL,
+  `Webpage Query GSCD Webpage Key` mediumint(8) DEFAULT NULL,
+  `Webpage Query GSCD Interval` enum('Total','Last Month','Last Week','Yesterday','Week To Day','Today','Quarter To Day','Month To Day','Year To Day','1 Year','1 Quarter','1 Month') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Webpage Query GSCD Query` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Webpage Query GSCD Clicks` mediumint(8) unsigned DEFAULT NULL,
+  `Webpage Query GSCD Impressions` mediumint(8) unsigned DEFAULT NULL,
+  `Webpage Query GSCD CTR` double unsigned DEFAULT NULL,
+  `Webpage Query GSCD Position` double unsigned DEFAULT NULL,
+  PRIMARY KEY (`Webpage Query GSCD Key`),
+  UNIQUE KEY `Webpage Query GSCD Webpage Key_2` (`Webpage Query GSCD Webpage Key`,`Webpage Query GSCD Interval`,`Webpage Query GSCD Query`) USING BTREE,
+  KEY `Webpage Query GSCD Webpage Key` (`Webpage Query GSCD Webpage Key`),
+  KEY `Webpage Query GSCD Webpage Type` (`Webpage Query GSCD Interval`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Webpage Query GSC Timeseries`
+--
+
+DROP TABLE IF EXISTS `Webpage Query GSC Timeseries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Webpage Query GSC Timeseries` (
+  `Webpage Query GSCT Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Webpage Query GSCT Website Key` smallint(6) DEFAULT NULL,
+  `Webpage Query GSCT Webpage Key` mediumint(8) DEFAULT NULL,
+  `Webpage Query GSCT Frequency` enum('Day','Week','Month','Quarter','Year') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Webpage Query GSCT Date` date DEFAULT NULL,
+  `Webpage Query GSCT Query` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Webpage Query GSCT Clicks` mediumint(8) unsigned DEFAULT NULL,
+  `Webpage Query GSCT Impressions` mediumint(8) unsigned DEFAULT NULL,
+  `Webpage Query GSCT CTR` double unsigned DEFAULT NULL,
+  `Webpage Query GSCT Position` double unsigned DEFAULT NULL,
+  PRIMARY KEY (`Webpage Query GSCT Key`),
+  UNIQUE KEY `Webpage Query GSCT Webpage Key_2` (`Webpage Query GSCT Webpage Key`,`Webpage Query GSCT Frequency`,`Webpage Query GSCT Date`,`Webpage Query GSCT Query`) USING BTREE,
+  KEY `Webpage Query GSCT Webpage Key` (`Webpage Query GSCT Webpage Key`),
+  KEY `Webpage Query GSCT Date` (`Webpage Query GSCT Date`),
+  KEY `Webpage Query GSCT Webpage Type` (`Webpage Query GSCT Frequency`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -16161,6 +16169,10 @@ DROP TABLE IF EXISTS `Website Data`;
 CREATE TABLE `Website Data` (
   `Website Key` smallint(5) unsigned NOT NULL,
   `Website Total Acc Visitors` mediumint(9) NOT NULL DEFAULT '0',
+  `Website GSC Clicks` int(10) unsigned DEFAULT NULL,
+  `Website GSC Impressions` int(10) unsigned DEFAULT NULL,
+  `Website GSC CTR` double unsigned DEFAULT NULL,
+  `Website GSC Position` double unsigned DEFAULT NULL,
   `Website Total Acc Sessions` mediumint(9) NOT NULL DEFAULT '0',
   `Website Total Acc Requests` mediumint(9) NOT NULL DEFAULT '0',
   `Website Total Acc Users` mediumint(9) NOT NULL DEFAULT '0',
@@ -16289,7 +16301,7 @@ CREATE TABLE `Website Dimension` (
   `Website Name` varchar(128) NOT NULL,
   `Website URL` varchar(255) NOT NULL,
   `Website Locale` varchar(5) NOT NULL DEFAULT 'en_GB',
-  `Website Settings` text,
+  `Website Settings` json DEFAULT NULL,
   `Website Style` mediumtext,
   `Website Mobile Style` text,
   `Website Localised Labels` text,
@@ -16389,6 +16401,52 @@ CREATE TABLE `Website Footer History Bridge` (
   KEY `Website Footer Key` (`Website Footer Key`),
   KEY `History Key` (`History Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Website GSC Data`
+--
+
+DROP TABLE IF EXISTS `Website GSC Data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website GSC Data` (
+  `Website GSCD Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Website GSCD Website Key` smallint(6) DEFAULT NULL,
+  `Website GSCD Interval` enum('Total','Last Month','Last Week','Yesterday','Week To Day','Today','Quarter To Day','Month To Day','Year To Day','1 Year','1 Quarter','1 Month') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Website GSCD Clicks` mediumint(8) unsigned DEFAULT NULL,
+  `Website GSCD Impressions` mediumint(8) unsigned DEFAULT NULL,
+  `Website GSCD CTR` double unsigned DEFAULT NULL,
+  `Website GSCD Position` double unsigned DEFAULT NULL,
+  PRIMARY KEY (`Website GSCD Key`),
+  UNIQUE KEY `Website GSCD Website Key_2` (`Website GSCD Website Key`,`Website GSCD Interval`),
+  KEY `Website GSCD Website Key` (`Website GSCD Website Key`),
+  KEY `Website GSCD Website Type` (`Website GSCD Interval`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Website GSC Timeseries`
+--
+
+DROP TABLE IF EXISTS `Website GSC Timeseries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website GSC Timeseries` (
+  `Website GSCT Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Website GSCT Website Key` smallint(6) DEFAULT NULL,
+  `Website GSCT Frequency` enum('Day','Week','Month','Quarter','Year') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Website GSCT Date` date DEFAULT NULL,
+  `Website GSCT Clicks` mediumint(8) unsigned DEFAULT NULL,
+  `Website GSCT Impressions` mediumint(8) unsigned DEFAULT NULL,
+  `Website GSCT CTR` double unsigned DEFAULT NULL,
+  `Website GSCT Position` double unsigned DEFAULT NULL,
+  PRIMARY KEY (`Website GSCT Key`),
+  UNIQUE KEY `Website GSCT Website Key_2` (`Website GSCT Website Key`,`Website GSCT Frequency`,`Website GSCT Date`),
+  KEY `Website GSCT Website Key` (`Website GSCT Website Key`),
+  KEY `Website GSCT Date` (`Website GSCT Date`),
+  KEY `Website GSCT Website Type` (`Website GSCT Frequency`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -16497,6 +16555,54 @@ CREATE TABLE `Website Node Dimension` (
   KEY `Website Node Parent Key` (`Website Node Parent Key`),
   KEY `Website Node Webpage Key` (`Website Node Webpage Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Website Query GSC Data`
+--
+
+DROP TABLE IF EXISTS `Website Query GSC Data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website Query GSC Data` (
+  `Website Query GSCD Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Website Query GSCD Website Key` smallint(6) DEFAULT NULL,
+  `Website Query GSCD Interval` enum('Total','Last Month','Last Week','Yesterday','Week To Day','Today','Quarter To Day','Month To Day','Year To Day','1 Year','1 Quarter','1 Month') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Website Query GSCD Query` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Website Query GSCD Clicks` mediumint(8) unsigned DEFAULT NULL,
+  `Website Query GSCD Impressions` mediumint(8) unsigned DEFAULT NULL,
+  `Website Query GSCD CTR` double unsigned DEFAULT NULL,
+  `Website Query GSCD Position` double unsigned DEFAULT NULL,
+  PRIMARY KEY (`Website Query GSCD Key`),
+  UNIQUE KEY `Website Query GSCD Website Key_2` (`Website Query GSCD Website Key`,`Website Query GSCD Interval`,`Website Query GSCD Query`) USING BTREE,
+  KEY `Website Query GSCD Website Key` (`Website Query GSCD Website Key`),
+  KEY `Website Query GSCD Interval` (`Website Query GSCD Interval`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Website Query GSC Timeseries`
+--
+
+DROP TABLE IF EXISTS `Website Query GSC Timeseries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Website Query GSC Timeseries` (
+  `Website Query GSCT Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Website Query GSCT Website Key` smallint(6) DEFAULT NULL,
+  `Website Query GSCT Frequency` enum('Day','Week','Month','Quarter','Year') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Website Query GSCT Date` date DEFAULT NULL,
+  `Website Query GSCT Query` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Website Query GSCT Clicks` mediumint(8) unsigned DEFAULT NULL,
+  `Website Query GSCT Impressions` mediumint(8) unsigned DEFAULT NULL,
+  `Website Query GSCT CTR` double unsigned DEFAULT NULL,
+  `Website Query GSCT Position` double unsigned DEFAULT NULL,
+  PRIMARY KEY (`Website Query GSCT Key`),
+  UNIQUE KEY `Website Query GSCT Website Key_2` (`Website Query GSCT Website Key`,`Website Query GSCT Frequency`,`Website Query GSCT Date`,`Website Query GSCT Query`) USING BTREE,
+  KEY `Website Query GSCT Website Key` (`Website Query GSCT Website Key`),
+  KEY `Website Query GSCT Date` (`Website Query GSCT Date`),
+  KEY `Website Query GSCT Frequency` (`Website Query GSCT Frequency`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -16640,8 +16746,11 @@ CREATE TABLE `Website Webpage Scope Map` (
   `Website Webpage Scope Webpage Key` mediumint(8) unsigned NOT NULL,
   `Website Webpage Scope Scope` enum('Category','Product') COLLATE utf8_unicode_ci DEFAULT NULL,
   `Website Webpage Scope Scope Key` mediumint(8) unsigned NOT NULL,
+  `Website Webpage Scope Scope Webpage Key` mediumint(8) unsigned DEFAULT NULL,
   `Website Webpage Scope Type` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   `Website Webpage Scope Index` smallint(6) DEFAULT NULL,
+  `Website Webpage Block Index` tinyint(3) unsigned DEFAULT NULL,
+  `Website Webpage Scope Webpage Index` smallint(5) unsigned DEFAULT NULL,
   KEY `Website Webpage Scope Webpage Key` (`Website Webpage Scope Webpage Key`),
   KEY `Website Webpage Scope Scope` (`Website Webpage Scope Scope`,`Website Webpage Scope Scope Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -16761,4 +16870,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-08-30  5:57:41
+-- Dump completed on 2019-09-23 16:18:07
