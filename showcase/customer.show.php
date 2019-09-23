@@ -69,8 +69,14 @@ function get_customer_showcase($data, $smarty, $user, $db,$redis,$account) {
 
 
     }
+    $customer_web_info_log_out='<span class="italic discreet">'._('Customer not logged in').'</span>';
 
-        $customer_web_info_log_out='<span class="italic discreet">'.sprintf('last seen %s',$customer->get('Last Website Visit')).'</span>';
+    $last_visit_date=$customer->get('Last Website Visit');
+    if($last_visit_date!=''){
+        $customer_web_info_log_out.='<span class="small italic discreet">'.sprintf('last seen %s',$last_visit_date).'</span>';
+
+    }
+
 
 
     $smarty->assign('online',$online);
@@ -80,7 +86,9 @@ function get_customer_showcase($data, $smarty, $user, $db,$redis,$account) {
 
     $order_basket      = array(
         'key'       => '',
-        'public_id' => '',
+        'public_id' => '<span class="very_discreet italic">'._('No order in basket').'</span>',
+        'number_items'=>'',
+        'weight'=>'',
         'items_net' => '',
         'other_net' => '',
         'tax' => '',
