@@ -779,7 +779,7 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
         $image = array_pop($images);
 
         if (isset($data['response_type']) and $data['response_type'] == 'froala') {
-            echo json_encode(array('link' => sprintf('/image.php?id=%d', $image->id)));
+            echo json_encode(array('link' => sprintf('/wi.php?id=%d', $image->id)));
         } else {
 
             if ($uploads > 0) {
