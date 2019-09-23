@@ -514,8 +514,9 @@ module.exports = function (grunt) {
                     port: '<%= secret.fork.port %>',
                     debug: true,
                     releases_to_keep: '3',
-                    exclude: ['keyring', 'external_libs', 'server_files','vendor','base_dirs','img_*'],
-                    after_deploy: 'cd /home/fork/fork/current && ln -s /home/fork/composer/current/vendor vendor && ln -s /home/fork/external_libs/current/ external_libs && ln -s /home/fork/keyring/ keyring  && ln -s /home/fork/base_dirs/ base_dirs && cp -av  /home/fork/img/* . '
+                    exclude: ['keyring', 'external_libs', 'server_files','vendor','base_dirs','img_*','node_modules'],
+                    before_deploy: 'cd /home/fork/composer && /usr/bin/php7.2 /usr/local/bin/composer install',
+                    after_deploy: 'cd /home/fork/fork/current && mv /home/fork/composer/vendor . && ln -s /home/fork/external_libs/current/ external_libs && ln -s /home/fork/keyring/ keyring  && ln -s /home/fork/base_dirs/ base_dirs && cp -av  /home/fork/img/* . '
                 }
             }, fork_external_libs: {
                 options: {
@@ -526,19 +527,6 @@ module.exports = function (grunt) {
                     password: '<%= secret.fork.password %>',
                     port: '<%= secret.fork.port %>',
                     debug: true,
-                    releases_to_keep: '3'
-                }
-            }, fork_composer: {
-                options: {
-                    local_path: '../fork/composer_config',
-                    deploy_path: '/home/fork/composer',
-                    host: '<%= secret.fork.host %>',
-                    username: '<%= secret.fork.username %>',
-                    password: '<%= secret.fork.password %>',
-                    port: '<%= secret.fork.port %>',
-                    debug: true,
-                    after_deploy: 'cd /home/fork/composer/current && composer update',
-
                     releases_to_keep: '3'
                 }
             }
