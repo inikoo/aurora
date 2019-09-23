@@ -147,8 +147,9 @@ if (isset($_REQUEST['snapshot'])) {
 
 }
 
+//if ($logged_in and !$is_devel) {
+if ($logged_in ) {
 
-if ($logged_in and !$is_devel) {
     include_once 'utils/new_fork.php';
 
 

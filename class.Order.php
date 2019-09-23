@@ -307,6 +307,29 @@ class Order extends DB_Table {
 
         switch ($key) {
 
+            case 'Last Updated by Customer':
+                $_tmp = gmdate("U") - gmdate("U", strtotime($this->data['Order Last Updated by Customer'].' +0:00'));
+                if ($_tmp < 3600) {
+                    $date = strftime("%H:%M:%S %Z", strtotime($this->data['Order Last Updated by Customer'].' +0:00'));
+
+                } elseif ($_tmp < 86400) {
+                    $date = strftime(
+                        "%e %b %Y %H:%M %Z", strtotime(
+                                               $this->data['Order Last Updated by Customer'].' +0:00'
+                                           )
+                    );
+
+                } else {
+                    $date = strftime(
+                        "%e %b %Y", strtotime(
+                                      $this->data['Order Last Updated by Customer'].' +0:00'
+                                  )
+                    );
+                }
+
+                return $date;
+
+                break;
             case 'Tax Description':
                 switch ($this->data['Order Tax Code']) {
                     case 'OUT':
