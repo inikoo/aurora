@@ -645,6 +645,10 @@ $modules = array(
 
                 ),
                 'tabs'           => array(
+                    'customer.history' => array(
+                        'label' => _('History, notes'),
+                        'icon'  => 'sticky-note'
+                    ),
                     'customer.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database'
@@ -686,10 +690,7 @@ $modules = array(
                         'icon'  => 'paper-plane'
                     ),
 
-                    'customer.history' => array(
-                        'label' => _('History, notes'),
-                        'icon'  => 'sticky-note'
-                    ),
+
 
                     'customer.orders' => array(
                         'label' => _('Orders'),
