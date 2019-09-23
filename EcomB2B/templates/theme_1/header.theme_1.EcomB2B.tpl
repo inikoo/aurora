@@ -15,7 +15,7 @@
 <div id="top_header" style="width: 100%; display: flex;"  >
 
     <div id="header_logo" style="flex-grow:1;;flex-grow: 0;flex-shrink: 0;flex-grow: 0;flex-shrink: 0; ;text-align: center">
-            <a href="https://{$website->get('Website URL')}"><img id="website_logo" style="margin-top:{if isset($settings['logo_top_margin'])}{$settings['logo_top_margin']}{else}0px{/if};max-height: 100%;max-width:  100%;vertical-align: middle;" src="{if empty($settings['logo_website'])}https://via.placeholder.com/60x60{else}{$settings['logo_website_website']}{/if}"/></a>
+            <a href="https://{$website->get('Website URL')}"><img id="website_logo" style="margin-top:{if isset($settings['logo_top_margin'])}{$settings['logo_top_margin']}{else}0px{/if};max-height: 100%;max-width:  100%;vertical-align: middle;" src="{if empty($settings['logo_website_website'])}https://via.placeholder.com/60x60{else}{$settings['logo_website_website']}{/if}"/></a>
     </div>
 
     <div id="main_header" style="flex-grow:2;position: relative">
@@ -155,7 +155,9 @@
                 {if $sub_column.type=='items'}
                     <div class="vertical-menu  ">
                         {foreach from=$sub_column.items item=item}
-                            <a href="{$item.url}"><i class="item_icon fa-fw {$item.icon}"></i> <span class="_item_label">{$item.label}</span></a>
+                            {if !empty($item.url) and !empty($item.label) }
+                                <a href="{$item.url}"><i class="item_icon fa-fw {$item.icon}"></i> <span class="_item_label">{$item.label}</span></a>
+                            {/if}
                         {/foreach}
                     </div>
                 {elseif $sub_column.type=='text'}
@@ -178,7 +180,9 @@
                 {elseif $sub_column.type=='departments' or   $sub_column.type=='families' or  $sub_column.type=='web_departments' or   $sub_column.type=='web_families'}
                     <div class="vertical-menu  ">
                         {foreach from=$store->get_categories({$sub_column.type},{$sub_column.page},'menu') item=item}
-                            <a href="{$item['url']}"><i class="fa fa-caret-right fa-fw "></i>{$item['label']}</a>
+                            {if !empty($item.url) and !empty($item.label) }
+                                <a href="{$item['url']}"><i class="fa fa-caret-right fa-fw "></i>{$item['label']}</a>
+                            {/if}
                         {/foreach}
                     </div>
                 {/if}
@@ -192,7 +196,9 @@
 
             {foreach from=$column.items item=item}
                 {if $item.type=='item'}
-                    <a href="{$item['url']}">{$item['label']}</a>
+                    {if !empty($item.url) and !empty($item.label) }
+                        <a href="{$item['url']}">{$item['label']}</a>
+                    {/if}
                 {/if}
             {/foreach}
         </div>
