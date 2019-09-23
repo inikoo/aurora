@@ -377,7 +377,7 @@ function  render_real_time_users_table(users_data) {
         if (tr.length) {
 
             tr.find('.icon').html(data.icon)
-            tr.find('.web_location').html(data.web_location).attr("onclick",'onclick="change_view(\''+data.request+'\')"');
+            tr.find('.web_location').html(data.web_location).attr("onclick",'change_view(\''+data.request+'\')');
             tr.find('.web_location').html(data.web_location)
 
         } else {
