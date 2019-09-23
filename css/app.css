@@ -1453,6 +1453,29 @@ div.table.with_totals table.backgrid tr:last-child td {
         .subject_profile #info #overviews .overview tr {
           height: 28px; }
 
+.customer_showcase_order {
+  width: 100%; }
+  .customer_showcase_order td {
+    padding: 0px 20px; }
+  .customer_showcase_order .customer_online_icon {
+    width: 30px;
+    padding: 0px;
+    text-align: center;
+    border-left: 1px solid #ccc; }
+  .customer_showcase_order .customer_web_info_log_out {
+    padding: 0px 0px 0px 5px; }
+
+.customer_real_data_info {
+  width: 100%; }
+  .customer_real_data_info td {
+    padding: 0px 20px; }
+  .customer_real_data_info .device_label {
+    width: 30px;
+    padding: 0px;
+    text-align: center; }
+  .customer_real_data_info .user_location {
+    width: 200px; }
+
 table.totals .subtotal td {
   border-top: 1px solid #ddd; }
 table.totals .last td {

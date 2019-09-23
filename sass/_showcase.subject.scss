@@ -34,6 +34,20 @@
     }
   }
 }
+
+
+.customer_showcase_order{
+  width: 100%;
+  td{padding:0px 20px}
+  .customer_online_icon{width:30px;padding:0px;text-align: center;border-left: 1px solid #ccc}
+  .customer_web_info_log_out{padding: 0px 0px 0px 5px}
+}
     
-    
-    
+.customer_real_data_info{
+  width: 100%;
+  td{padding:0px 20px}
+
+  .device_label{width:30px;padding:0px;text-align: center}
+  .user_location{width: 200px}
+
+}

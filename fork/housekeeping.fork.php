@@ -102,6 +102,8 @@ function fork_housekeeping($job) {
                     $webpage_label = '<i class="fal fa-home"></i> '._('Home');
                 } elseif ($row['Webpage Code'] == 'basket.sys') {
                     $webpage_label = '<i class="fal fa-shopping-basket"></i> '._('Basket');
+                }elseif ($row['Webpage Code'] == 'profile.sys') {
+                    $webpage_label = '<i class="fal fa-user"></i> '._('Profile');
                 } elseif ($row['Webpage Code'] == 'checkout.sys') {
                     $webpage_label = '<i class="fal fa-scanner-keyboard"></i> '._('Checkout');
                 } elseif ($row['Webpage Code'] == 'thanks.sys') {
@@ -167,6 +169,7 @@ function fork_housekeeping($job) {
             if ($redis->connect('127.0.0.1', 6379)) {
 
 
+                /*
                 $sql  = 'select `Website Key` from `Website Dimension`';
                 $stmt = $db->prepare($sql);
                 $stmt->execute(
@@ -175,6 +178,7 @@ function fork_housekeeping($job) {
                 while ($row = $stmt->fetch()) {
                     $redis->zRemRangeByScore('_WU'.$account->get('Code').'|'.$row['Website Key'], 0, gmdate('U') - 300);
                 }
+                */
 
 
                 $key  = '_WU'.$account->get('Code').'|'.$data['session_data']['website_key'];
@@ -199,14 +203,32 @@ function fork_housekeeping($job) {
                         array(
                             'channel' => 'real_time.'.strtolower($account->get('Account Code')),
 
-                            'd3'   => array(
+                            'd3'      => array(
                                 array(
                                     'type'        => 'current_website_users',
                                     'website_key' => $data['session_data']['website_key'],
                                     'data'        => $real_time_website_users_data
                                 )
                             ),
-                            'tabs' => array(
+                            'objects' => array(
+                                array(
+                                    'object'          => 'customer',
+                                    'key'             => $data['session_data']['customer_key'],
+                                    'update_metadata' => array(
+                                        'class_html' => array(
+                                            'webpage_label'        => $webpage_label,
+                                            'device_label'         => $webuser_data['device_label'],
+                                            'user_location'        => $webuser_data['location'],
+                                            'webpage_label'        => $webuser_data['webpage_label'],
+                                            'customer_online_icon' => '<i title="'._('Online').'" class="far success fa-globe"></i>',
+                                        ),
+                                        'hide'       => array('customer_web_info_log_out'),
+                                        'show'       => array('customer_web_info_log_in'),
+                                    )
+                                )
+
+                            ),
+                            'tabs'    => array(
                                 array(
                                     'tab' => 'websites',
 

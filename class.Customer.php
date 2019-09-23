@@ -243,6 +243,35 @@ class Customer extends Subject {
 
         switch ($key) {
 
+            case 'Last Website Visit':
+
+                if($this->data['Customer Last Website Visit']!=''){
+                    $_tmp = gmdate("U") - gmdate("U", strtotime($this->data['Customer Last Website Visit'].' +0:00'));
+                    if ($_tmp < 3600) {
+                        $date = strftime("%H:%M:%S %Z", strtotime($this->data['Customer Last Website Visit'].' +0:00'));
+
+                    } elseif ($_tmp < 86400) {
+                        $date = strftime(
+                            "%e %b %Y %H:%M %Z", strtotime(
+                                                   $this->data['Customer Last Website Visit'].' +0:00'
+                                               )
+                        );
+
+                    } else {
+                        $date = strftime(
+                            "%e %b %Y", strtotime(
+                                          $this->data['Customer Last Website Visit'].' +0:00'
+                                      )
+                        );
+                    }
+
+                    return $date;
+                }else{
+                    return '';
+                }
+
+
+            
             case 'Delivery Address Link':
 
                 if ($this->data['Customer Delivery Address Link'] == 'Billing') {

@@ -902,7 +902,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
             list($response['object_showcase'], $title, $web_location) = get_object_showcase(
-                (isset($modules[$state['module']]['sections'][$state['section']]['showcase']) ? $modules[$state['module']]['sections'][$state['section']]['showcase'] : $state['object']), $state, $smarty, $user, $db, $account
+                (isset($modules[$state['module']]['sections'][$state['section']]['showcase']) ? $modules[$state['module']]['sections'][$state['section']]['showcase'] : $state['object']), $state, $smarty, $user, $db, $account,$redis
             );
 
             if ($title != '') {
@@ -1393,7 +1393,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
  *
  * @return mixed|string
  */
-function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
+function get_object_showcase($showcase, $data, $smarty, $user, $db, $account,$redis) {
 
 
     $title        = '';
@@ -1530,7 +1530,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account) {
             break;
         case 'customer':
             include_once 'showcase/customer.show.php';
-            $html         = get_customer_showcase($data, $smarty, $user, $db);
+            $html         = get_customer_showcase($data, $smarty, $user, $db,$redis,$account);
             $title        = 'C'.$data['_object']->get('Formatted ID');
             $web_location = '<i class="fal fa-fw fa-user"></i> '.$title;
 

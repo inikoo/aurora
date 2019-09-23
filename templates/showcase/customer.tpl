@@ -6,7 +6,7 @@
 
 </div>
 
-<div id="customer" class="subject_profile" key="{$customer->id}" store_key="{$customer->get('Store Key')}">
+<div id="customer" class="subject_profile" style="padding-bottom: 0px;border-bottom:none"  key="{$customer->id}" store_key="{$customer->get('Store Key')}">
 
 
     <div style="float: left;width: 590px;">
@@ -88,11 +88,7 @@
             </div>
 
         </div>
-        <div style="clear:both">
-        </div>
-        <div class="data_container">
 
-        </div>
 
 
         <div style="clear:both">
@@ -158,12 +154,7 @@
                     <td>{t}Contact since{/t}:</td>
                     <td class="aright">{$customer->get('First Contacted Date')}</td>
                 </tr>
-                {foreach from=$customer->get_category_data() item=item key=key}
-                    <tr>
-                        <td>{$item.root_label}:</td>
-                        <td>{$item.value}</td>
-                    </tr>
-                {/foreach}
+
                 <tr>
                     <td>{t}Subscriptions{/t}:</td>
                     <td style="text-align: right">
@@ -213,11 +204,38 @@
         {/if}
 
     </div>
-
-    <div style="clear:both">
-    </div>
+    <div style="clear: both"></div>
 </div>
 
+
+
+<div style="clear:both;border-top:1px solid #aaa;;border-bottom:1px solid #aaa;min-height: 30px;padding:0px 20px;">
+    <table class="customer_showcase_order">
+        <td style="width:30px;padding:0px;text-align: center"><i title="{t}Order in basket{/t}" class="fa fa-shopping-basket"></i></td>
+        <td style="width: 80px"><span >{$order_basket.public_id}</span></td>
+        <td  style="width: 80px"><span title="{t}Items net{/t} {$order_basket.items_net}">{$order_basket.number_items}</span></td>
+        <td  style="width: 80px">{$order_basket.weight}</td>
+
+        <td class="hide"  style="width: 80px"><span title="{t}Shipping and charges{/t}">{$order_basket.other_net}</span></td>
+
+        <td style="width: 150px"><span ><span class="discreet small">{$order_basket.tax_description}</span> {$order_basket.tax}</span></td>
+
+        <td style="width: 80px"><span class="strong">{$order_basket.total}</span></td>
+
+        <td class="customer_online_icon">
+            {if $online}
+            <i title="{t}Online{/t}" class="far success fa-globe"></i>
+            {else}
+                <i title="{t}Offline{/t}" class="fal super_discreet fa-globe"></i>
+            {/if}
+        </td>
+        <td class="customer_web_info_log_out {if $online}hide{/if} " >{$customer_web_info_log_out}</td>
+        <td class="customer_web_info_log_in {if !$online}hide{/if} " style="padding:0px">{$customer_web_info_logged_in}</td>
+    </table>
+
+
+</div>
+<div style="height: 10px;border-bottom:1px solid #ccc;padding: 0px"></div>
 
 
 

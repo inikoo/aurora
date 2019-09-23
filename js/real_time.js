@@ -25,7 +25,7 @@ function connect_websocket() {
         websocket_connected = true;
 
 
-        // console.log('real_time.'+$('#account_name').data('account_code').toLowerCase())
+        console.log('real_time.'+$('#account_name').data('account_code').toLowerCase())
 
         ws_connection.subscribe('real_time.' + $('#account_name').data('account_code').toLowerCase(), function (topic, data) {
 
@@ -50,10 +50,18 @@ function connect_websocket() {
             for (var i in data.objects) {
 
 
+
+
                 if (state.object == data.objects[i].object && state.key == data.objects[i].key) {
 
 
+
+
                     for (var j in data.objects[i].update_metadata.class_html) {
+
+                        console.log('.' + j)
+                        console.log(data.objects[i].update_metadata.class_html[j])
+
                         $('.' + j).html(data.objects[i].update_metadata.class_html[j])
                     }
 
