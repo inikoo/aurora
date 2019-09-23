@@ -442,6 +442,12 @@ class Order extends DB_Table {
                 return floor((gmdate('U') - strtotime($this->data['Order Submitted by Customer Date'].' +0:00')) / 3600 / 24);
 
                 break;
+            case 'Waiting days decimal':
+
+
+                return number(  (gmdate('U') - strtotime($this->data['Order Submitted by Customer Date'].' +0:00')) / 3600 / 24,1,true).' '._('days');
+
+                break;
             case 'Currency Code':
 
                 return $this->data['Order Currency'];

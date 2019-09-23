@@ -234,7 +234,36 @@
     </table>
 
 
+
 </div>
+
+{foreach from=$orders_in_process item=order_in_process}
+
+    <div style="clear:both;border-bottom:1px solid #aaa;min-height: 30px;padding:0px 20px;">
+        <table   class="customer_showcase_order">
+            <td class="icon_order_in_basket  " style="width:30px;padding:0px;text-align: center">{$order_in_process.icon}</td>
+            <td class="order_in_basket_public_id  " style="width: 60px"><span >{$order_in_process.public_id}</span></td>
+            <td class="order_in_basket_items   " style="width: 40px"><span title="{t}Items net{/t} {$order_in_process.items_net}">{$order_in_process.number_items}</span></td>
+
+
+            <td  style="width: 60px">{$order_in_process.weight}</td>
+
+            <td style="width: 150px"><span ><span class="discreet small">{$order_in_process.tax_description}</span> {$order_in_process.tax}</span></td>
+            <td style="width: 80px"><span class="strong">{$order_in_process.total}</span></td>
+            <td style="width: 190px"><span title="{t}Submitted date{/t}">{$order_in_process.submitted}</span> <span class="strong padding_left_5" title="{t}Waiting days{/t}">{$order_in_process.waiting_days}</span></td>
+
+            <td style="width: 90px"><span >{$order_in_process.state}</span></td>
+            <td><span >{$order_in_process.operations}</span></td>
+
+
+        </table>
+
+
+
+    </div>
+{/foreach}
+
+
 <div style="height: 10px;border-bottom:1px solid #ccc;padding: 0px"></div>
 
 

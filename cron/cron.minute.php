@@ -415,7 +415,7 @@ while ($row = $stmt->fetch()) {
             $customer_web_info_log_out = '<span class="italic discreet">'._('Customer not logged in').'</span>';
 
             $last_visit                = strftime("%H:%M:%S %Z", $value);
-            $customer_web_info_log_out .= ' <span class="small italic discreet padding_left_5">('.sprintf('last seen %s', $last_visit).')</span>';
+            $customer_web_info_log_out .= ' <span class="small italic discreet padding_left_5">('.sprintf('Last seen %s', $last_visit).')</span>';
 
 
             $objects_data[] = array(
