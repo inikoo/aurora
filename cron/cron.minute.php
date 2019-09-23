@@ -399,7 +399,7 @@ $stmt->execute(
     array()
 );
 
-$objects_data    = array();
+$objects_data            = array();
 $real_time_website_users = array();
 while ($row = $stmt->fetch()) {
 
@@ -409,15 +409,22 @@ while ($row = $stmt->fetch()) {
     foreach ($items_to_delete as $key => $value) {
 
         $customer_key = preg_replace('/^.*\|/', '', $key);
-        if ($customer_key >0) {
-            $last_visit = strftime("%H:%M:%S %Z", $value);
+        if ($customer_key > 0) {
+
+
+            $customer_web_info_log_out = '<span class="italic discreet">'._('Customer not logged in').'</span>';
+
+            $last_visit                = strftime("%H:%M:%S %Z", $value);
+            $customer_web_info_log_out .= '<span class="small italic discreet">'.sprintf('last seen %s', $last_visit).'</span>';
+
+
             $objects_data[] = array(
                 'object'          => 'customer',
                 'key'             => $customer_key,
                 'update_metadata' => array(
                     'class_html' => array(
                         'customer_online_icon' => '<i title="'._('Offline').'" class="fal super_discreet fa-globe"></i>',
-                        'customer_web_info'    => '<span class="italic discreet">'.sprintf('last seen %s', $last_visit).'</span>'
+                        'customer_web_info'    => '<span class="italic discreet">'.$last_visit.'</span>'
                     )
                 )
             );
@@ -449,8 +456,8 @@ $socket->send(
         array(
             'channel' => 'real_time.'.strtolower($account->get('Account Code')),
 
-            'iu' => $real_time_users,
-            'd3' => $real_time_website_users,
+            'iu'      => $real_time_users,
+            'd3'      => $real_time_website_users,
             'objects' => $objects_data
 
         )

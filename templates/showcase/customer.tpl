@@ -210,16 +210,16 @@
 
 
 <div style="clear:both;border-top:1px solid #aaa;;border-bottom:1px solid #aaa;min-height: 30px;padding:0px 20px;">
-    <table class="customer_showcase_order">
-        <td style="width:30px;padding:0px;text-align: center"><i title="{t}Order in basket{/t}" class="fa fa-shopping-basket"></i></td>
-        <td style="width: 80px"><span >{$order_basket.public_id}</span></td>
-        <td  style="width: 80px"><span title="{t}Items net{/t} {$order_basket.items_net}">{$order_basket.number_items}</span></td>
+    <table  class="customer_showcase_order">
+        <td class="icon_order_in_basket  {if $order_basket.key==''}hide{/if} " style="width:30px;padding:0px;text-align: center"><i title="{t}Order in basket{/t}" class="fa fa-shopping-basket"></i></td>
+        <td class="order_in_basket_public_id  {if $order_basket.key==''}hide{/if} " style="width: 80px"><span >{$order_basket.public_id}</span></td>
+        <td class="order_in_basket_items  {if $order_basket.key==''}hide{/if}  " style="width: 80px"><span title="{t}Items net{/t} {$order_basket.items_net}">{$order_basket.number_items}</span></td>
+
+        <td class="no_order_in_basket_label  {if $order_basket.key!=''}hide{/if} " style="width: 190px"><span class="italic very_discreet" >{t}No order in basket{/t}</span></td>
+
         <td  style="width: 80px">{$order_basket.weight}</td>
 
-        <td class="hide"  style="width: 80px"><span title="{t}Shipping and charges{/t}">{$order_basket.other_net}</span></td>
-
         <td style="width: 150px"><span ><span class="discreet small">{$order_basket.tax_description}</span> {$order_basket.tax}</span></td>
-
         <td style="width: 80px"><span class="strong">{$order_basket.total}</span></td>
 
         <td class="customer_online_icon">
