@@ -516,7 +516,7 @@ module.exports = function (grunt) {
                     releases_to_keep: '3',
                     exclude: ['keyring', 'external_libs', 'server_files','vendor','base_dirs','img_*','node_modules'],
                     before_deploy: 'cd /home/fork/composer && /usr/bin/php7.2 /usr/local/bin/composer install',
-                    after_deploy: 'cd /home/fork/fork/current && mv /home/fork/composer/vendor . && ln -s /home/fork/external_libs/current/ external_libs && ln -s /home/fork/keyring/ keyring  && ln -s /home/fork/base_dirs/ base_dirs && cp -av  /home/fork/img/* . '
+                    after_deploy: 'cd /home/fork/fork/current && mv /home/fork/composer/vendor . && ln -s /home/fork/node/node_modules . &&  mkdir server_files &&  mkdir server_files/tmp  &&  ln -s /home/fork/external_libs/current/ external_libs && ln -s /home/fork/keyring/ keyring  && ln -s /home/fork/base_dirs/ base_dirs && cp -av  /home/fork/img/* . '
                 }
             }, fork_external_libs: {
                 options: {
