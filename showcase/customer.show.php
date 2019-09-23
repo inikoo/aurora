@@ -73,7 +73,7 @@ function get_customer_showcase($data, $smarty, $user, $db,$redis,$account) {
 
     $last_visit_date=$customer->get('Last Website Visit');
     if($last_visit_date!=''){
-        $customer_web_info_log_out.='<span class="small italic discreet">'.sprintf('last seen %s',$last_visit_date).'</span>';
+        $customer_web_info_log_out.=' <span class="small italic discreet">'.sprintf('last seen %s',$last_visit_date).'</span>';
 
     }
 
