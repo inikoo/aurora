@@ -4071,13 +4071,13 @@ class Page extends DB_Table {
             $tablet_image       = process_screenshot($this, $tmp_file_root.'_tablet_screenshot.jpeg', 'Tablet');
             $full_webpage_image = process_screenshot($this, $tmp_file_root.'_full_webpage_thumbnail_screenshot.jpeg', 'Full Webpage Thumbnail');
 
-            /*
+
                         print $desktop_image->id."\n";
                         print $mobile_image->id."\n";
                         print $tablet_image->id."\n";
                         print $full_webpage_image->id."\n";
 
-            */
+
             $this->update(
                 array(
                     'desktop_screenshot'      => $desktop_image->id,

@@ -40,11 +40,7 @@ trait ImageSubject {
         }
 
         if (!empty($raw_data['Image Subject Object Image Scope']) ) {
-
-
-
             $object_image_scope = $raw_data['Image Subject Object Image Scope'];
-
         } else {
             $object_image_scope = 'Default';
         }
@@ -126,6 +122,9 @@ trait ImageSubject {
             }else{
                 $image->fork=false;
             }
+
+
+
 
             if ($this->table_name == 'Page') {
                 $subject = 'Webpage';
