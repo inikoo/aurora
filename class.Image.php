@@ -452,11 +452,12 @@ class Image extends DB_Table {
             chdir('../');
 
 
+
+
         }
 
 
         $path_root='img';
-
 
 
 
@@ -475,6 +476,7 @@ class Image extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
+
 
 
                 if (!is_dir($path_root.'/public_db/'.$checksum[0])) {
@@ -518,7 +520,6 @@ class Image extends DB_Table {
                 chdir($current_cwd);
 
             } else {
-
 
                 $public_db_path = preg_replace('/'.$path_root.'\/db/', $path_root.'/public_db', $image_path);
                 if (file_exists($public_db_path)) {
