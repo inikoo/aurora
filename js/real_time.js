@@ -385,7 +385,7 @@ function  render_real_time_users_table(users_data) {
 
             table.append('<tr data-user_key="' + data.user_key + '"  class="rt_u_' + data.user_key + '">' + '<td class="icon">' + data.icon + '</td>' +
 
-                '<td class="alias">' + data.alias + '</td>' + '<td class="web_location"  class="button" onclick="change_view(\''+data.request+'\')" >' + data.web_location + '</td>' +
+                '<td class="alias">' + data.alias + '</td>' + '<td class="web_location button" onclick="change_view(\''+data.request+'\')" >' + data.web_location + '</td>' +
 
                 '</tr>')
         }
