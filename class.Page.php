@@ -416,7 +416,6 @@ class Page extends DB_Table {
                 break;
 
 
-
             case 'Browser Title':
 
                 return $this->data['Webpage '.$key];
@@ -532,7 +531,6 @@ class Page extends DB_Table {
                 }
 
 
-
                 return false;
 
                 break;
@@ -595,7 +593,6 @@ class Page extends DB_Table {
                 break;
 
 
-
             case('link'):
                 return $this->display();
                 break;
@@ -619,7 +616,6 @@ class Page extends DB_Table {
 
         return false;
     }
-
 
 
     function load_scope() {
@@ -780,8 +776,6 @@ class Page extends DB_Table {
     }
 
 
-
-
     function unpublish() {
 
         $this->update_state('Offline');
@@ -883,7 +877,6 @@ class Page extends DB_Table {
             if ($this->updated and $this->data['Webpage State'] == 'Online') {
                 $this->publish();
             }
-
 
 
             $website = get_object('Website', $this->data['Webpage Website Key']);
@@ -1336,10 +1329,6 @@ class Page extends DB_Table {
                 break;
 
 
-
-
-
-
             case('Webpage State'):
 
 
@@ -1558,8 +1547,6 @@ class Page extends DB_Table {
         }
 
 
-
-
         $this->get_data('id', $this->id);
 
 
@@ -1601,7 +1588,6 @@ class Page extends DB_Table {
 
 
     }
-
 
 
     function reset_object() {
@@ -3110,7 +3096,7 @@ class Page extends DB_Table {
 
 
         $this->update_field_switcher('Page Store Content Data', json_encode($content_data), 'no_history');
-        $sql = sprintf('DELETE FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND `Website Webpage Block Index`=%d ', $this->id,$block_index);
+        $sql = sprintf('DELETE FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND `Website Webpage Block Index`=%d ', $this->id, $block_index);
         $this->db->exec($sql);
 
         $index = 0;
@@ -3513,8 +3499,6 @@ class Page extends DB_Table {
         $this->db->exec($sql);
 
 
-
-
         $sql = sprintf('delete `Webpage Section Dimension` where `Webpage Section Webpage Key`=%d  ', $this->id);
         $this->db->exec($sql);
 
@@ -3546,8 +3530,6 @@ class Page extends DB_Table {
         );
 
         $this->db->exec($sql);
-
-
 
 
         $sql = sprintf(
@@ -3588,7 +3570,6 @@ class Page extends DB_Table {
         }
 
         //todo Urgent redo see also
-
 
 
         $this->deleted = true;
@@ -4070,12 +4051,6 @@ class Page extends DB_Table {
             $mobile_image       = process_screenshot($this, $tmp_file_root.'_mobile_screenshot.jpeg', 'Mobile');
             $tablet_image       = process_screenshot($this, $tmp_file_root.'_tablet_screenshot.jpeg', 'Tablet');
             $full_webpage_image = process_screenshot($this, $tmp_file_root.'_full_webpage_thumbnail_screenshot.jpeg', 'Full Webpage Thumbnail');
-
-
-                        print $desktop_image->id."\n";
-                        print $mobile_image->id."\n";
-                        print $tablet_image->id."\n";
-                        print $full_webpage_image->id."\n";
 
 
             $this->update(
