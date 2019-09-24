@@ -155,14 +155,16 @@ class Order extends DB_Table {
                 $this->update_for_collection($value, $options);
                 break;
             case('Order Tax Number'):
-                if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
+                if ($this->get('State Index') <= 0) {
                     return;
                 }
+
+
                 $this->update_tax_number($value);
                 $this->order_totals_changed_post_operation();
                 break;
             case('Order Tax Number Valid'):
-                if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
+                if ( $this->get('State Index') <= 0) {
                     return;
                 }
                 $this->update_tax_number_valid($value);
@@ -331,27 +333,38 @@ class Order extends DB_Table {
 
                 break;
             case 'Tax Description':
+
                 switch ($this->data['Order Tax Code']) {
+
                     case 'OUT':
-                        return _('Outside the scope od VAT');
+                        $tax_description= _('Outside the scope od VAT');
                         break;
                     case 'EU':
-                        return sprintf(_('EC with %s'), $this->get('Tax Number Formatted'));
+                        $tax_description= sprintf(_('EC with %s'), $this->get('Tax Number Formatted'));
                         break;
                     default:
 
                         switch ($this->metadata('why_tax')) {
                             case 'EC with invalid tax number':
-                                return sprintf(_('EC with %s'), $this->get('Tax Number Formatted'));
+                                $tax_description=  sprintf(_('EC with %s'), $this->get('Tax Number Formatted'));
                                 break;
                             default:
                                 $why_tax_formatted = '';
+                                $tax_description= $this->metadata('tax_name').$why_tax_formatted .$this->data['Order Tax Code'];
+
                         }
 
-                        return $this->metadata('tax_name').$why_tax_formatted;
 
 
                 }
+
+
+                if($this->metadata('original_tax_code')!='' and  $this->metadata('original_tax_code')!=$this->get('Order Tax Code') ){
+                    $tax_description='<span class="error italic"> <i class="fa fa-exclamation-circle error"></i> ('._('Edited').')</span> '.$tax_description;
+                }
+
+                return $tax_description;
+
                 break;
             case 'Margin':
 
@@ -1657,7 +1670,7 @@ class Order extends DB_Table {
                             $operations = array();
 
 
-                            break;
+
 
 
                             break;
@@ -1670,6 +1683,8 @@ class Order extends DB_Table {
 
                     }
 
+                    $this->fast_update_json_field('Order Metadata', 'original_tax_code', '');
+                    $this->fast_update_json_field('Order Metadata', 'original_tax_description', '');
 
                     $dn         = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
                     $dn->editor = $this->editor;
@@ -1728,6 +1743,9 @@ class Order extends DB_Table {
                     $this->update_field('Order Date', $date, 'no_history');
                     $this->update_field('Order Invoice Key', $invoice->id, 'no_history');
 
+
+                    $this->fast_update_json_field('Order Metadata', 'original_tax_code', $this->get('Order Tax Code'));
+                    $this->fast_update_json_field('Order Metadata', 'original_tax_description',  $this->get('Tax Description'));
 
                     $history_data = array(
                         'History Abstract' => _('Order invoiced'),

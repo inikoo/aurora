@@ -19,9 +19,7 @@ trait OrderTax {
             return;
         }
 
-        if ($this->get('State Index') >= 90 and !$updated_from_invoice) {
-            return;
-        }
+
 
         $this->update_field('Order Tax Number', $value, $options);
 
@@ -52,7 +50,7 @@ trait OrderTax {
 
     function validate_order_tax_number() {
 
-        if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
+        if ($this->get('State Index') <= 0) {
             return;
         }
 
@@ -153,6 +151,35 @@ trait OrderTax {
 
         $old_tax_code = $this->data['Order Tax Code'];
 
+
+
+        if($this->get('State Index')>90 and $this->get('Order Invoice Key')  ){
+            $edit_otf=false;
+
+        }else{
+            $edit_otf=true;
+        }
+
+        if($update_from_invoice_key){
+            $edit_otf=true;
+
+        }
+
+
+
+        if(!$edit_otf){
+
+
+
+
+            if($this->metadata('original_tax_code')==''){
+                $this->fast_update_json_field('Order Metadata', 'original_tax_code', $old_tax_code);
+                $this->fast_update_json_field('Order Metadata', 'original_tax_description', $this->get('Tax Description'));
+
+
+            }
+        }
+
         if ($tax_category_code) {
             $tax_category = new TaxCategory('code', $tax_category_code);
             if (!$tax_category->id) {
@@ -195,7 +222,10 @@ trait OrderTax {
             );
         }
 
-        $this->db->exec($sql);
+        if($edit_otf){
+            $this->db->exec($sql);
+
+        }
 
 
         if ($update_from_invoice_key > 0) {
@@ -208,21 +238,21 @@ trait OrderTax {
             );
         }
 
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                $sql = sprintf(
-                    "UPDATE `Order No Product Transaction Fact` SET `Transaction Tax Amount`=%f,`Tax Category Code`=%s WHERE `Order No Product Transaction Fact Key`=%d", $row['Transaction Net Amount'] * $tax_rate, prepare_mysql($new_tax_code),
-                    $row['Order No Product Transaction Fact Key']
-                );
-                $this->db->exec($sql);
+        if($edit_otf) {
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
 
 
+                    $sql = sprintf(
+                        "UPDATE `Order No Product Transaction Fact` SET `Transaction Tax Amount`=%f,`Tax Category Code`=%s WHERE `Order No Product Transaction Fact Key`=%d", $row['Transaction Net Amount'] * $tax_rate, prepare_mysql($new_tax_code),
+                        $row['Order No Product Transaction Fact Key']
+                    );
+                    $this->db->exec($sql);
+
+
+                }
             }
         }
-
 
         $this->fast_update(
             array(
@@ -234,9 +264,12 @@ trait OrderTax {
         $this->fast_update_json_field('Order Metadata', 'tax_name', $tax_name);
         $this->fast_update_json_field('Order Metadata', 'why_tax', $reason_tax_code_selected);
 
+        if($edit_otf) {
+            $this->update_totals();
+        }else{
+            $this->fast_update_json_field('Order Metadata', 'post_invoice_tax_code', $new_tax_code);
 
-        $this->update_totals();
-
+        }
     }
 
     function get_tax_data() {
@@ -402,9 +435,9 @@ trait OrderTax {
 
 
                         $response = array(
-                            'code'                     => $tax_category['Excluded']['code'],
-                            'name'                     => $tax_category['Excluded']['name'].'<div>'._('Valid tax number').'<br>'.$this->data['Order Tax Number'].'</div>',
-                            'rate'                     => $tax_category['Excluded']['rate'],
+                            'code'                     => $tax_category['EU_VTC']['code'],
+                            'name'                     => _('EC with valid tax number').'<span>'.$this->data['Order Tax Number'].'</span>',
+                            'rate'                     => $tax_category['EU_VTC']['rate'],
                             'reason_tax_code_selected' => 'EC with valid tax number',
                             'operations'               => ''
 
@@ -816,9 +849,9 @@ trait OrderTax {
 
 
                         $response = array(
-                            'code'                     => $tax_category['Exempt']['code'],
-                            'name'                     => $tax_category['Exempt']['name'].'<div>'._('Valid tax number').'<br>'.$this->data['Order Tax Number'].'</div>',
-                            'rate'                     => $tax_category['Exempt']['rate'],
+                            'code'                     => $tax_category['EU_VTC']['code'],
+                            'name'                     => _('EC with valid tax number').'<span>'.$this->data['Order Tax Number'].'</span>',
+                            'rate'                     => $tax_category['EU_VTC']['rate'],
                             'reason_tax_code_selected' => 'EC with valid tax number',
                             'operations'               => ''
 

@@ -20,7 +20,6 @@ function fork_take_webpage_screenshot($job) {
     list($account, $db, $data, $editor) = $_data;
 
 
-    print_r($data);
     $webpage = get_object('Webpage', $data['webpage_key']);
     $webpage->fork=true;
 

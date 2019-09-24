@@ -35,7 +35,7 @@ if ($result = $db->query($sql)) {
 $lap_time0 = date('U');
 $contador  = 0;
 
-    $sql = sprintf("SELECT `Page Key` FROM `Page Store Dimension`  left join `Website Dimension`  on (`Website Key`=`Webpage Website Key`)   %s  order by rand()", $where
+    $sql = sprintf("SELECT `Page Key` FROM `Page Store Dimension`  left join `Website Dimension`  on (`Website Key`=`Webpage Website Key`)   %s  order by  ", $where
 );
 
 if ($result = $db->query($sql)) {
