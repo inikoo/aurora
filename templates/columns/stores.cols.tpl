@@ -10,7 +10,7 @@ cell: "string"
 name: "access",
 label: "",
 editable: false,
-sortType: "toggle",
+sortable: false,
 cell: Backgrid.HtmlCell.extend({
 className: "width_20"
 })

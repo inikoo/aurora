@@ -1356,12 +1356,24 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 $section    = 'customer';
                 $object     = 'customer';
                 $parent     = 'store';
+
+
                 $parent_key = '';
 
 
                 if (isset($view_path[0])) {
 
                     $key = $view_path[0];
+
+                    $_customer=get_object('Customer',$key);
+                    $parent_key=$_customer->get('Customer Store Key');
+                    if (!in_array($parent_key, $user->stores)) {
+                        $module  = 'utils';
+                        $section = 'forbidden';
+                        $object  = '';
+
+                        break;
+                    }
 
                     if (isset($view_path[1])) {
                         if ($view_path[1] == 'order') {
@@ -1709,7 +1721,13 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     $section    = 'prospects';
                     $parent     = 'store';
                     $parent_key = $arg1;
+                    if (!in_array($parent_key, $user->stores)) {
+                        $module  = 'utils';
+                        $section = 'forbidden';
+                        $object  = '';
 
+                        break;
+                    }
 
                     if (isset($view_path[0])) {
 
@@ -1803,9 +1821,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 if ($count_view_path == 0) {
                     $section = 'customers';
                     $parent  = 'store';
-                    if ($user->data['User Hooked Store Key'] and in_array(
-                            $user->data['User Hooked Store Key'], $user->stores
-                        )) {
+                    if ($user->data['User Hooked Store Key'] and in_array($user->data['User Hooked Store Key'], $user->stores)) {
                         $parent_key = $user->data['User Hooked Store Key'];
                     } else {
                         $_tmp       = $user->stores;
@@ -1837,10 +1853,16 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                         $parent     = 'store';
                         $parent_key = $list->get('List Parent Key');
 
+                        if (!in_array($parent_key, $user->stores)) {
+                            $module  = 'utils';
+                            $section = 'forbidden';
+                            $object  = '';
 
-                        if (isset($view_path[1]) and is_numeric(
-                                $view_path[1]
-                            )) {
+                            break;
+                        }
+
+
+                        if (isset($view_path[1]) and is_numeric($view_path[1])) {
                             $section    = 'customer';
                             $parent     = 'list';
                             $parent_key = $list->id;
@@ -1886,6 +1908,13 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     $section    = 'customers';
                     $parent     = 'store';
                     $parent_key = $arg1;
+                    if (!in_array($parent_key, $user->stores)) {
+                        $module  = 'utils';
+                        $section = 'forbidden';
+                        $object  = '';
+
+                        break;
+                    }
                     if (isset($view_path[0])) {
 
                         if (is_numeric($view_path[0])) {
@@ -4304,7 +4333,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             $key     = 1;
                             $section = 'supplier_parts';
 
-                        }  elseif ($view_path[0] == 'dashboard') {
+                        } elseif ($view_path[0] == 'dashboard') {
                             $object  = 'account';
                             $key     = 1;
                             $section = 'dashboard';
