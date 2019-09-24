@@ -193,6 +193,7 @@ function get_fork_metadata($job) {
     $session->set('current_warehouse', $warehouse_key);
 
 
+
     return array(
         $account,
         $db,
@@ -342,4 +343,4 @@ function get_fork_data($job) {
 }
 
 
-?>
+

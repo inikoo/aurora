@@ -27,10 +27,54 @@ $options_valid_tax_number = array(
 $countries = get_countries($db);
 
 
+if($object->get('State Index')>=30    ){
+    $render_invoicing_field=true;
+    $invoicing_fields_class='';
+}else{
+    $render_invoicing_field=false;
+    $invoicing_fields_class='hide';
+
+}
+
+
+
+$other_delivery_addresses_fields = array();
+
+
+$other_delivery_addresses = $customer->get_addresses_data();
+
+$smarty->assign('other_delivery_addresses', $other_delivery_addresses);
+
+$number_other_delivery_address = count($other_delivery_addresses);
+
+
+if($store->get('Store Can Collect')=='Yes'){
+    $number_other_delivery_address++;
+}
+
+$smarty->assign('can_collect', $store->get('Store Can Collect'));
+$smarty->assign('order', $object);
+
+
+$other_delivery_addresses_fields_directory = $smarty->fetch('order_delivery_addresses_directory.tpl');
+/*
+$other_delivery_addresses_fields[] = array(
+    'id'     => 'other_delivery_addresses',
+    'render' => ($number_other_delivery_address > 1 ? true : false),
+    'class'  => 'directory',
+
+    'value'           => '',
+    'label'           => _('Delivery options'),
+    'formatted_value' => $other_delivery_addresses_fields_directory,
+    'reference'       => ''
+);
+
+array_splice($object_fields[2]['fields'], 0, 0, $other_delivery_addresses_fields);
+*/
 $object_fields = array(
 
     array(
-        'label'      => _('Customer'),
+        'label'      => _('Header'),
         'show_title' => true,
         'fields'     => array(
 
@@ -65,26 +109,7 @@ $object_fields = array(
 
             */
 
-            array(
-                'id'              => 'Order_Tax_Number',
-                'render'          => ($object->get('State Index') >= 90 ? false : true),
-                'edit'            => ($edit ? 'string' : ''),
-                'value'           => $object->get('Order Tax Number'),
-                'formatted_value' => $object->get('Tax Number'),
-                'label'           => ucfirst($object->get_field_label('Order Tax Number')),
-                'required'        => false,
-                'type'            => 'value'
 
-            ),
-            array(
-                'render'          => ($object->get('Order Tax Number') == '' ? false : ($object->get('State Index') >= 90 ? false : true)),
-                'id'              => 'Order_Tax_Number_Valid',
-                'edit'            => ($edit ? 'option' : ''),
-                'options'         => $options_valid_tax_number,
-                'value'           => $object->get('Order Tax Number Valid'),
-                'formatted_value' => $object->get('Tax Number Valid'),
-                'label'           => ucfirst($object->get_field_label('Order Tax Number Valid')),
-            ),
 
             array(
                 'id'              => 'Order_Customer_Purchase_Order_ID',
@@ -100,18 +125,40 @@ $object_fields = array(
     ),
 
 
+
     array(
-        'label'      => _('Invoice Address'),
+        'label'      => _('Invoicing'),
+        'label'      => _('Invoicing').(($object->get('State Index') >=90  and  $object->get('Order Invoice Key') )  ? ' <span  style="font-weight: normal" class="padding_left_10 small">'._('Applied only to new refunds').'</span>' : ''),
+
         'show_title' => false,
-        'class'      => ($object->get('State Index') >= 90 ? 'hide' : ''),
+        'class'      =>$invoicing_fields_class,
         'fields'     => array(
 
 
+            array(
+                'id'              => 'Order_Tax_Number',
+                'render'          =>$render_invoicing_field,
+                'edit'            => ($edit ? 'string' : ''),
+                'value'           => $object->get('Order Tax Number'),
+                'formatted_value' => $object->get('Tax Number'),
+                'label'           => ucfirst($object->get_field_label('Order Tax Number')),
+                'required'        => false,
+                'type'            => 'value'
 
+            ),
+            array(
+                'render'          => ($object->get('Order Tax Number') == '' ? false : $render_invoicing_field),
+                'id'              => 'Order_Tax_Number_Valid',
+                'edit'            => ($edit ? 'option' : ''),
+                'options'         => $options_valid_tax_number,
+                'value'           => $object->get('Order Tax Number Valid'),
+                'formatted_value' => $object->get('Tax Number Valid'),
+                'label'           => ucfirst($object->get_field_label('Order Tax Number Valid')),
+            ),
 
             array(
                 'id'     => 'Order_Invoice_Address',
-                'render' => ($object->get('State Index') >= 90 ? false : true),
+                'render'          =>$render_invoicing_field,
 
                 'edit'            => ($edit ? 'address' : ''),
                 'countries'       => $countries,
@@ -126,15 +173,15 @@ $object_fields = array(
     ),
 
     array(
-        'label'      => _('Delivery Address'),
+        'label'      => _('Delivering').($object->get('State Index') >=100 ? ' <span  style="font-weight: normal" class="padding_left_10 small">'._('Applied only to new replacements/refunds').'</span>' : ''),
         'show_title' => false,
-        'class'      => ($object->get('State Index') >= 90 ? 'hide' : ''),
+        'class'      => ($object->get('State Index') <30 ? 'hide' : ''),
         'fields'     => array(
 
 
             array(
                 'id'              => 'Order_Delivery_Address',
-                'render'          => (($object->get('State Index') >= 90 or  $object->get('Order For Collection')=='Yes')? false : true),
+                'render'          => (($object->get('State Index') <30  or  $object->get('Order For Collection')=='Yes')? false : true),
                 'edit'            => ($edit ? 'address' : ''),
                 'countries'       => $countries,
                 'value'           => htmlspecialchars($object->get('Order Delivery Address')),
@@ -144,7 +191,16 @@ $object_fields = array(
                 'required'        => false
             ),
 
+            array(
+                'id'     => 'other_delivery_addresses',
+                'render' => ($number_other_delivery_address > 1 ? ($object->get('State Index') <30 ? false : true) : false),
+                'class'  => 'directory',
 
+                'value'           => '',
+                'label'           => _('Delivery options'),
+                'formatted_value' => $other_delivery_addresses_fields_directory,
+                'reference'       => ''
+            )
 
 
         )
@@ -153,37 +209,3 @@ $object_fields = array(
 
 );
 
-
-
-$other_delivery_addresses_fields = array();
-
-
-$other_delivery_addresses = $customer->get_addresses_data();
-
-$smarty->assign('other_delivery_addresses', $other_delivery_addresses);
-
-$number_other_delivery_address = count($other_delivery_addresses);
-
-
-if($store->get('Store Can Collect')=='Yes'){
-    $number_other_delivery_address++;
-}
-
-$smarty->assign('can_collect', $store->get('Store Can Collect'));
-$smarty->assign('order', $object);
-
-
-$other_delivery_addresses_fields_directory = $smarty->fetch('order_delivery_addresses_directory.tpl');
-
-$other_delivery_addresses_fields[] = array(
-    'id'     => 'other_delivery_addresses',
-    'render' => ($number_other_delivery_address > 1 ? true : false),
-    'class'  => 'directory',
-
-    'value'           => '',
-    'label'           => _('Delivery options'),
-    'formatted_value' => $other_delivery_addresses_fields_directory,
-    'reference'       => ''
-);
-
-array_splice($object_fields[2]['fields'], 0, 0, $other_delivery_addresses_fields);
