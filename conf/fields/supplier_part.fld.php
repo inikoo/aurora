@@ -62,9 +62,21 @@ $options_yes_no = array(
     'Yes' => _('Yes'),
     'No'  => _('No')
 );
+
+if ($user->can_edit('parts')) {
+    $edit = true;
+} else {
+    $edit = false;
+}
+
+if ($user->can_supervisor('parts')) {
+    $super_edit = true;
+} else {
+    $super_edit = false;
+
+}
+
 $supplier_part_fields = array();
-
-
 
 
 $supplier_part_fields[] = array(
@@ -76,13 +88,11 @@ $supplier_part_fields[] = array(
         array(
             'id'                       => 'Supplier_Part_Supplier_Key',
             'edit'                     => ($edit ? 'dropdown_select' : ''),
+            'right_code'               => 'PE',
             'scope'                    => 'suppliers',
-            //'create_new'=>0,
             'parent'                   => 'account',
             'parent_key'               => 1,
-            'value'                    => $object->get(
-                'Supplier Part Supplier Key'
-            ),
+            'value'                    => $object->get('Supplier Part Supplier Key'),
             'formatted_value'          => $object->get('Supplier Key'),
             'stripped_formatted_value' => $object->get('Supplier Key'),
             'label'                    => _('Supplier'),
@@ -100,18 +110,14 @@ $supplier_part_fields[] = array(
 
         ),
         array(
-            'render' => ($new ? false : true),
-            'id'     => 'Supplier_Part_Status',
-            'edit'   => ($edit ? 'option' : ''),
-
+            'render'          => ($new ? false : true),
+            'id'              => 'Supplier_Part_Status',
+            'edit'            => ($super_edit ? 'option' : ''),
+            'right_code'      => 'PS',
             'options'         => $options_status,
-            'value'           => htmlspecialchars(
-                $object->get('Supplier Part Status')
-            ),
+            'value'           => htmlspecialchars($object->get('Supplier Part Status')),
             'formatted_value' => $object->get('Status'),
-            'label'           => ucfirst(
-                $object->get_field_label('Supplier Part Status')
-            ),
+            'label'           => ucfirst($object->get_field_label('Supplier Part Status')),
             'required'        => true,
             'type'            => 'skip'
         ),
@@ -119,10 +125,9 @@ $supplier_part_fields[] = array(
         array(
 
             'render' => ($supplier->get('Supplier On Demand') == 'Yes' ? true : false),
-
-            'id'   => 'Supplier_Part_On_Demand',
-            'edit' => ($edit ? 'option' : ''),
-
+            'id'     => 'Supplier_Part_On_Demand',
+            'edit'   => ($edit ? 'option' : ''),
+            'right_code'               => 'PE',
             'options'         => $options_yn,
             'value'           => ($new
                 ? 'No'
@@ -143,7 +148,7 @@ $supplier_part_fields[] = array(
 
             'id'   => 'Supplier_Part_Fresh',
             'edit' => ($edit ? 'option' : ''),
-
+            'right_code'               => 'PE',
             'options'         => $options_yn,
             'value'           => ($new
                 ? 'No'
@@ -162,7 +167,8 @@ $supplier_part_fields[] = array(
 
         array(
             'id'              => 'Supplier_Part_Minimum_Carton_Order',
-            'edit'            => 'smallint_unsigned',
+            'edit'   => ($edit ? 'smallint_unsigned' : ''),
+            'right_code'               => 'PE',
             'value'           => ($new
                 ? 1
                 : htmlspecialchars(
@@ -184,7 +190,7 @@ $supplier_part_fields[] = array(
         array(
             'id'   => 'Supplier_Part_Average_Delivery_Days',
             'edit' => ($edit ? 'numeric' : ''),
-
+            'right_code'               => 'PE',
             'value' => ($new
                 ? ($part_scope
                     ? ''
@@ -212,7 +218,7 @@ $supplier_part_fields[] = array(
         array(
             'id'   => 'Supplier_Part_Reference',
             'edit' => ($edit ? 'string' : ''),
-
+            'right_code'               => 'PE',
             'value'             => htmlspecialchars($object->get('Supplier Part Reference')),
             'formatted_value'   => $object->get('Reference'),
             'label'             => _('<b>Supplier\'s</b> unit code').' (for ordering)',
@@ -224,13 +230,13 @@ $supplier_part_fields[] = array(
         array(
             'id'   => 'Supplier_Part_Description',
             'edit' => ($edit ? 'string' : ''),
-
+            'right_code'               => 'PE',
             'value'           => htmlspecialchars($object->get('Supplier Part Description')),
             'formatted_value' => $object->get('Supplier Part Description'),
-            'label'             => _('<b>Supplier\'s</b> unit description').' (for ordering)',
+            'label'           => _('<b>Supplier\'s</b> unit description').' (for ordering)',
 
-            'required'        => true,
-            'type'            => 'value'
+            'required' => true,
+            'type'     => 'value'
         ),
 
     )
@@ -238,13 +244,14 @@ $supplier_part_fields[] = array(
 
 
 $supplier_part_fields[] = array(
-    'label' => _('Cost/Pricing'),
+    'label'      => _('Cost/Pricing'),
     'show_title' => true,
     'fields'     => array(
 
         array(
             'id'              => 'Supplier_Part_Unit_Cost',
             'edit'            => ($edit ? 'amount' : ''),
+            'right_code'               => 'PE',
             'value'           => htmlspecialchars($object->get('Supplier Part Unit Cost')),
             'formatted_value' => $object->get('Unit Cost'),
             'label'           => ucfirst($object->get_field_label('Supplier Part Unit Cost')),
@@ -252,25 +259,26 @@ $supplier_part_fields[] = array(
             'placeholder'     => sprintf(_('amount in %s '), $options['parent_object']->get('Default Currency Code')),
             'type'            => 'value'
         ),
-/*
-        array(
-            'id'              => 'Supplier_Part_Unit_Extra_Cost',
-            'render'          => false,
-            'edit'            => 'amount_percentage',
-            'value'           => htmlspecialchars(
-                $object->get('Supplier Part Unit Extra Cost')
-            ),
-            'formatted_value' => $object->get('Unit Extra Cost'),
-            'label'           => ucfirst($object->get_field_label('Supplier Part Unit Extra Cost')),
-            'required'        => false,
-            'placeholder'     =>  sprintf(_('amount in %s or %%'), $options['parent_object']->get('Default Currency Code')),
+        /*
+                array(
+                    'id'              => 'Supplier_Part_Unit_Extra_Cost',
+                    'render'          => false,
+                    'edit'            => 'amount_percentage',
+                    'value'           => htmlspecialchars(
+                        $object->get('Supplier Part Unit Extra Cost')
+                    ),
+                    'formatted_value' => $object->get('Unit Extra Cost'),
+                    'label'           => ucfirst($object->get_field_label('Supplier Part Unit Extra Cost')),
+                    'required'        => false,
+                    'placeholder'     =>  sprintf(_('amount in %s or %%'), $options['parent_object']->get('Default Currency Code')),
 
-            'type'            => 'value'
-        ),
-*/
+                    'type'            => 'value'
+                ),
+        */
         array(
             'id'              => 'Supplier_Part_Unit_Extra_Cost_Percentage',
-            'edit'            => 'percentage',
+            'edit'            => ($edit ? 'percentage' : ''),
+            'right_code'               => 'PE',
             'locked'          => ($part_scope ? 1 : 0),
             'value'           => htmlspecialchars($object->get('Supplier Part Unit Extra Cost Percentage')),
             'formatted_value' => $object->get('Unit Extra Cost Percentage'),
@@ -283,7 +291,8 @@ $supplier_part_fields[] = array(
 
         array(
             'id'     => 'Part_Unit_Price',
-            'edit'   => 'amount_margin',
+            'edit'            => ($edit ? 'amount_margin' : ''),
+            'right_code'               => 'PE',
             'render' => true,
 
             'value'           => htmlspecialchars($object->part->get('Part Unit Price')),
@@ -295,8 +304,9 @@ $supplier_part_fields[] = array(
         ),
         array(
             'id'              => 'Part_Unit_RRP',
-            'edit'            => 'amount_margin',
-            'render' => true,
+            'edit'            => ($edit ? 'amount_margin' : ''),
+            'right_code'               => 'PE',
+            'render'          => true,
             'value'           => htmlspecialchars($object->part->get('Part Unit RRP')),
             'formatted_value' => $object->part->get('Unit RRP'),
             'label'           => ucfirst($object->part->get_field_label('Part Unit RRP')),
@@ -320,6 +330,7 @@ $supplier_part_fields[] = array(
         array(
             'id'              => 'Part_Recommended_Product_Unit_Name',
             'edit'            => ($edit ? 'string' : ''),
+            'right_code'               => 'PE',
             'render'          => true,
             'value'           => htmlspecialchars($object->part->get('Part Recommended Product Unit Name')),
             'formatted_value' => $object->part->get('Recommended Product Unit Name'),
@@ -329,9 +340,9 @@ $supplier_part_fields[] = array(
         ),
         array(
             'id'     => 'Part_Barcode',
-            'render'          => true,
+            'render' => true,
             'edit'   => ($edit ? 'barcode' : ''),
-
+            'right_code'               => 'PE',
             'value'             => htmlspecialchars($object->part->get('Part Barcode Number')),
             'formatted_value'   => $object->part->get('Barcode Number'),
             'label'             => _('Unit barcode (EAN-13)'),
@@ -353,9 +364,9 @@ $supplier_part_fields[] = array(
         array(
             'id'     => 'Part_Unit_Label',
             //'class'=>($supplier_part_scope?'hide':''),
-            'render'          => true,
-            'edit'            => ($edit ? 'string' : ''),
-
+            'render' => true,
+            'edit'   => ($edit ? 'string' : ''),
+            'right_code'               => 'PE',
             'value'           => htmlspecialchars(
                 $object->part->get('Part Unit Label')
             ),
@@ -370,7 +381,7 @@ $supplier_part_fields[] = array(
         array(
             'id'   => 'Part_Unit_Weight',
             'edit' => ($edit ? 'numeric' : ''),
-
+            'right_code'               => 'PE',
             'value'           => $object->part->get('Part Unit Weight'),
             'formatted_value' => $object->part->get('Unit Weight'),
             'label'           => ucfirst($object->part->get_field_label('Part Unit Weight')),
@@ -382,7 +393,8 @@ $supplier_part_fields[] = array(
         ),
         array(
             'id'              => 'Part_Unit_Dimensions',
-            'edit'            => 'dimensions',
+            'edit' => ($edit ? 'dimensions' : ''),
+            'right_code'               => 'PE',
             'value'           => $object->part->get('Part Unit Dimensions'),
             'formatted_value' => $object->part->get('Unit Dimensions'),
             'label'           => ucfirst(
@@ -395,18 +407,14 @@ $supplier_part_fields[] = array(
         ),
 
 
-    
-
-
     )
 );
 
-$warning_units_per_package='';
-$can_edit_units_per_package=false;
+$warning_units_per_package  = '';
+$can_edit_units_per_package = false;
 
 $supplier_part_fields[] = array(
     'label' => 'SKO <span class="small">('._('Units packed in').')</span>',
-
 
 
     'show_title' => true,
@@ -416,8 +424,8 @@ $supplier_part_fields[] = array(
         array(
             'id'     => 'Part_Reference',
             'edit'   => ($edit ? 'string' : ''),
-            'render' =>true,
-
+            'right_code'               => 'PE',
+            'render' => true,
             'value'             => htmlspecialchars($object->part->get('Part Part Reference')),
             'formatted_value'   => $object->part->get('Part Reference'),
             'label'             => _('Part reference'),
@@ -436,7 +444,7 @@ $supplier_part_fields[] = array(
         ),
 
         array(
-            'render' =>true,
+            'render' => true,
 
             'id'              => 'Part_Units_Per_Package',
             'edit'            => ($can_edit_units_per_package ? 'numeric' : ''),
@@ -444,7 +452,7 @@ $supplier_part_fields[] = array(
             'formatted_value' => $object->part->get('Part Units Per Package'),
             'label'           => ucfirst($object->part->get_field_label('Part Units Per Package')).$warning_units_per_package,
             'invalid_msg'     => get_invalid_message('string'),
-            'required'        =>true,
+            'required'        => true,
             'type'            => 'value'
         ),
 
@@ -454,7 +462,7 @@ $supplier_part_fields[] = array(
 
             'id'   => 'Part_Recommended_Packages_Per_Selling_Outer',
             'edit' => ($edit ? 'numeric' : ''),
-
+            'right_code'               => 'PE',
             'value'           => $object->part->get('Part Recommended Packages Per Selling Outer'),
             'formatted_value' => $object->part->get('Part Recommended Packages Per Selling Outer'),
             'label'           => ucfirst($object->part->get_field_label('Part Recommended Packages Per Selling Outer')),
@@ -465,10 +473,9 @@ $supplier_part_fields[] = array(
 
         array(
             'id'     => 'Part_SKO_Barcode',
-            'render' =>true,
-            //'render'=>true,
-            'edit' => ($edit ? 'string' : ''),
-
+            'render' => true,
+            'edit'   => ($edit ? 'string' : ''),
+            'right_code'               => 'PE',
             'value'             => htmlspecialchars($object->part->get('Part SKO Barcode')),
             'formatted_value'   => $object->part->get('SKO Barcode'),
             'label'             => _('SKO barcode').' ('._('stock control').')',
@@ -488,9 +495,8 @@ $supplier_part_fields[] = array(
         array(
             'id'     => 'Part_Package_Description',
             'render' => true,
-
             'edit' => ($edit ? 'string' : ''),
-
+            'right_code'               => 'PE',
             'value'           => htmlspecialchars($object->part->get('Part Package Description')),
             'formatted_value' => $object->part->get('Part Package Description'),
             'label'           => _('SKO description').' ('._('for picking aid').')',
@@ -499,11 +505,11 @@ $supplier_part_fields[] = array(
         ),
 
 
-
         array(
-            'render' => true,
+            'render'          => true,
             'id'              => 'Part_Package_Description_Note',
-            'edit'            => 'string',
+            'edit' => ($edit ? 'string' : ''),
+            'right_code'               => 'PE',
             'value'           => htmlspecialchars($object->part->get('Part Package Description Note')),
             'formatted_value' => $object->part->get('Package Description Note'),
             'label'           => ucfirst($object->part->get_field_label('Part Package Description Note')),
@@ -514,9 +520,10 @@ $supplier_part_fields[] = array(
         ),
 
         array(
-            'render' => false,
+            'render'          => false,
             'id'              => 'Part_Package_Image',
-            'edit'            => 'upload',
+            'edit' => ($edit ? 'upload' : ''),
+            'right_code'               => 'PE',
             'value'           => htmlspecialchars($object->part->get('Part Package Image')),
             'formatted_value' => $object->part->get('Package Description Image'),
             'label'           => ucfirst($object->part->get_field_label('Part Package Image')),
@@ -538,19 +545,21 @@ $supplier_part_fields[] = array(
         ),
 
         array(
-            'id'   => 'Part_Package_Weight',
-            'edit' => ($edit ? 'numeric' : ''),
+            'id'              => 'Part_Package_Weight',
+            'edit'            => ($edit ? 'numeric' : ''),
+            'right_code'               => 'PE',
             'value'           => $object->part->get('Part Package Weight'),
             'formatted_value' => $object->part->get('Package Weight'),
             'label'           => ucfirst($object->part->get_field_label('Part Package Weight')),
             'invalid_msg'     => get_invalid_message('numeric'),
             'required'        => false,
             'placeholder'     => 'Kg',
-            'type' => 'value'
+            'type'            => 'value'
         ),
         array(
             'id'              => 'Part_Package_Dimensions',
-            'edit'            => 'dimensions',
+            'edit'            => ($edit ? 'dimensions' : ''),
+            'right_code'               => 'PE',
             'value'           => $object->part->get('Part Package Dimensions'),
             'formatted_value' => $object->part->get('Package Dimensions'),
             'label'           => ucfirst(
@@ -563,23 +572,21 @@ $supplier_part_fields[] = array(
         ),
 
 
-
     )
 );
 
 
 $supplier_part_fields[] = array(
-    'label' =>_('Cartons'),
+    'label' => _('Cartons'),
 
     'show_title' => true,
     'fields'     => array(
 
 
-
         array(
-            'id'              => 'Supplier_Part_Packages_Per_Carton',
-            'edit'            => 'smallint_unsigned',
-
+            'id'   => 'Supplier_Part_Packages_Per_Carton',
+            'edit'            => ($edit ? 'smallint_unsigned' : ''),
+            'right_code'               => 'PE',
             'value'           => ($new ? 1 : htmlspecialchars($object->get('Supplier Part Packages Per Carton'))),
             'formatted_value' => ($new ? 1 : $object->get('Packages Per Carton')),
             'label'           => ucfirst($object->get_field_label('Supplier Part Packages Per Carton')),
@@ -589,8 +596,9 @@ $supplier_part_fields[] = array(
 
 
         array(
-            'id'   => 'Supplier_Part_Carton_CBM',
-            'edit' => ($edit ? 'numeric' : ''),
+            'id'              => 'Supplier_Part_Carton_CBM',
+            'edit'            => ($edit ? 'numeric' : ''),
+            'right_code'               => 'PE',
             'value'           => htmlspecialchars($object->get('Supplier Part Carton CBM')),
             'formatted_value' => $object->get('Carton CBM'),
             'label'           => ucfirst($object->get_field_label('Supplier Part Carton CBM')),
@@ -599,21 +607,23 @@ $supplier_part_fields[] = array(
             'type'            => 'value'
         ),
         array(
-            'id'   => 'Supplier_Part_Carton_Weight',
-            'edit' => ($edit ? 'numeric' : ''),
+            'id'              => 'Supplier_Part_Carton_Weight',
+            'edit'            => ($edit ? 'numeric' : ''),
+            'right_code'               => 'PE',
             'value'           => $object->get('Supplier Part Carton Weight'),
             'formatted_value' => $object->get('Carton Weight'),
             'label'           => ucfirst($object->get_field_label('Supplier Part Carton Weight')),
             'invalid_msg'     => get_invalid_message('numeric'),
             'required'        => false,
             'placeholder'     => 'Kg',
-            'type' => 'value'
+            'type'            => 'value'
         ),
 
         array(
-            'id'     => 'Supplier_Part_Carton_Barcode',
-            'render' => true,
-            'edit' => ($edit ? 'string' : ''),
+            'id'                => 'Supplier_Part_Carton_Barcode',
+            'render'            => true,
+            'edit'              => ($edit ? 'string' : ''),
+            'right_code'               => 'PE',
             'value'             => htmlspecialchars($object->get('Supplier Part Carton Barcode')),
             'formatted_value'   => $object->get('Carton Barcode'),
             'label'             => _('Carton barcode').' ('._('stock control').')',
@@ -635,7 +645,6 @@ $supplier_part_fields[] = array(
 );
 
 
-
 $supplier_part_fields[] = array(
     'label' => _('Properties'),
 
@@ -644,6 +653,7 @@ $supplier_part_fields[] = array(
         array(
             'id'              => 'Part_CPNP_Number',
             'edit'            => ($edit ? 'string' : ''),
+            'right_code'               => 'PE',
             'value'           => htmlspecialchars($object->part->get('Part CPNP Number')),
             'formatted_value' => $object->part->get('CPNP Number'),
             'label'           => ucfirst($object->part->get_field_label('Part CPNP Number')),
@@ -653,7 +663,7 @@ $supplier_part_fields[] = array(
         array(
             'id'   => 'Part_Materials',
             'edit' => ($edit ? 'textarea' : ''),
-
+            'right_code'               => 'PE',
             'value'           => htmlspecialchars($object->part->get('Part Materials')),
             'formatted_value' => $object->part->get('Materials'),
             'label'           => ucfirst(
@@ -665,14 +675,15 @@ $supplier_part_fields[] = array(
 
         array(
             'id'                       => 'Part_Origin_Country_Code',
-            'edit'                     => 'country_select',
+            'edit' => ($edit ? 'country_select' : ''),
+            'right_code'               => 'PE',
             'options'                  => get_countries($db),
             'scope'                    => 'countries',
-            'value'                    =>  htmlspecialchars($object->part->get('Part Origin Country Code')),
-            'formatted_value'          =>  $object->part->get('Origin Country Code'),
-            'stripped_formatted_value' =>  ($object->part->get('Part Origin Country Code') != '' ? $object->part->get('Origin Country').' ('.$object->part->get(
-                        'Part Origin Country Code'
-                    ).')' : ''),
+            'value'                    => htmlspecialchars($object->part->get('Part Origin Country Code')),
+            'formatted_value'          => $object->part->get('Origin Country Code'),
+            'stripped_formatted_value' => ($object->part->get('Part Origin Country Code') != '' ? $object->part->get('Origin Country').' ('.$object->part->get(
+                    'Part Origin Country Code'
+                ).')' : ''),
             'label'                    => ucfirst(
                 $object->part->get_field_label('Part Origin Country Code')
             ),
@@ -682,12 +693,10 @@ $supplier_part_fields[] = array(
         array(
             'id'   => 'Part_Tariff_Code',
             'edit' => ($edit ? 'numeric' : ''),
-
+            'right_code'               => 'PE',
             'value'           => $object->part->get('Part Tariff Code'),
             'formatted_value' => $object->part->get('Tariff Code'),
-            'label'           => ucfirst(
-                $object->part->get_field_label('Part Tariff Code')
-            ),
+            'label'           => ucfirst($object->part->get_field_label('Part Tariff Code')),
             'invalid_msg'     => get_invalid_message('string'),
             'required'        => false,
             'type'            => 'value'
@@ -696,12 +705,10 @@ $supplier_part_fields[] = array(
         array(
             'id'   => 'Part_Duty_Rate',
             'edit' => ($edit ? 'numeric' : ''),
-
+            'right_code'               => 'PE',
             'value'           => $object->part->get('Part Duty Rate'),
             'formatted_value' => $object->part->get('Duty Rate'),
-            'label'           => ucfirst(
-                $object->part->get_field_label('Part Duty Rate')
-            ),
+            'label'           => ucfirst($object->part->get_field_label('Part Duty Rate')),
             'invalid_msg'     => get_invalid_message('string'),
             'required'        => false,
             'type'            => 'value'
@@ -709,7 +716,7 @@ $supplier_part_fields[] = array(
         array(
             'id'   => 'Part_HTSUS_Code',
             'edit' => ($edit ? 'numeric' : ''),
-
+            'right_code'               => 'PE',
             'value'           => $object->part->get('Part HTSUS Code'),
             'formatted_value' => $object->part->get('HTSUS Code'),
             'label'           => '<span title="Harmonized Tariff Schedule of the United States Code ">HTS US <img src="/art/flags/us.gif"/></span>',
@@ -725,7 +732,7 @@ $supplier_part_fields[] = array(
 );
 
 $supplier_part_fields[] = array(
-    'label' =>_('Health & Safety'),
+    'label' => _('Health & Safety'),
 
     'show_title' => true,
     'fields'     => array(
@@ -733,34 +740,27 @@ $supplier_part_fields[] = array(
         array(
             'id'   => 'Part_UN_Number',
             'edit' => ($edit ? 'string' : ''),
-
-            'value'           => htmlspecialchars(
-                $object->part->get('Part UN Number')
-            ),
+            'right_code'               => 'PE',
+            'value'           => htmlspecialchars($object->part->get('Part UN Number')),
             'formatted_value' => $object->part->get('UN Number'),
-            'label'           => ucfirst(
-                $object->part->get_field_label('Part UN Number')
-            ),
+            'label'           => ucfirst($object->part->get_field_label('Part UN Number')),
             'required'        => false,
             'type'            => 'value'
         ),
         array(
             'id'   => 'Part_UN_Class',
             'edit' => ($edit ? 'string' : ''),
-
-            'value'           => htmlspecialchars(
-                $object->part->get('Part UN Class')
-            ),
+            'right_code'               => 'PE',
+            'value'           => htmlspecialchars($object->part->get('Part UN Class')),
             'formatted_value' => $object->part->get('UN Class'),
-            'label'           => ucfirst(
-                $object->part->get_field_label('Part UN Class')
-            ),
+            'label'           => ucfirst($object->part->get_field_label('Part UN Class')),
             'required'        => false,
             'type'            => 'value'
         ),
         array(
             'id'              => 'Part_Packing_Group',
             'edit'            => ($edit ? 'option' : ''),
+            'right_code'               => 'PE',
             'options'         => $options_Packing_Group,
             'value'           => htmlspecialchars($object->part->get('Part Packing Group')),
             'formatted_value' => $object->part->get('Packing Group'),
@@ -771,28 +771,20 @@ $supplier_part_fields[] = array(
         array(
             'id'   => 'Part_Proper_Shipping_Name',
             'edit' => ($edit ? 'string' : ''),
-
-            'value'           => htmlspecialchars(
-                $object->part->get('Part Proper Shipping Name')
-            ),
+            'right_code'               => 'PE',
+            'value'           => htmlspecialchars($object->part->get('Part Proper Shipping Name')),
             'formatted_value' => $object->part->get('Proper Shipping Name'),
-            'label'           => ucfirst(
-                $object->part->get_field_label('Part Proper Shipping Name')
-            ),
+            'label'           => ucfirst($object->part->get_field_label('Part Proper Shipping Name')),
             'required'        => false,
             'type'            => 'value'
         ),
         array(
             'id'   => 'Part_Hazard_Identification_Number',
             'edit' => ($edit ? 'string' : ''),
-
-            'value'           => htmlspecialchars(
-                $object->part->get('Part Hazard Identification Number')
-            ),
+            'right_code'               => 'PE',
+            'value'           => htmlspecialchars($object->part->get('Part Hazard Identification Number')),
             'formatted_value' => $object->part->get('Hazard Identification Number'),
-            'label'           => ucfirst(
-                $object->part->get_field_label('Part Hazard Identification Number')
-            ),
+            'label'           => ucfirst($object->part->get_field_label('Part Hazard Identification Number')),
             'required'        => false,
             'type'            => 'value'
         )
@@ -812,6 +804,7 @@ $part_fields[] = array(
         array(
             'id'              => 'Part_Production_Supply',
             'edit'            => ($edit ? 'option' : ''),
+            'right_code'               => 'PE',
             'options'         => $options_yes_no,
             'value'           => htmlspecialchars($object->part->get('Part Production Supply')),
             'formatted_value' => $object->part->get('Production Supply'),

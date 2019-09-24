@@ -1887,6 +1887,9 @@ function assign_available_barcode(field) {
 function not_authorised_toggle_unlock_delete_object(element,right_code) {
 
     var _labels = $(element).data('labels');
+    console.log(_labels)
+    console.log(element)
+
     var request = '/ar_find.php?tipo=users_with_right&right='+right_code
     $.getJSON(request, function (data) {
         var a = [];

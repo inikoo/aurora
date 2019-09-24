@@ -65,6 +65,8 @@ $user_groups = array(
         'Rights' => array(
             'BV',
             'BE',
+            'PE',
+            'PV'
 
 
         )
@@ -78,7 +80,10 @@ $user_groups = array(
         'Rights' => array(
             'BV',
             'BE',
-            'BS'
+            'BS',
+            'PE',
+            'PV',
+            'PS'
         )
 
     ),
@@ -139,9 +144,9 @@ $user_groups = array(
             'LV',
             'LE',
             'PV',
-            'PE',
+
             'LS',
-            'PS',
+
             'PLV',
             'PLE',
             'PLS',
