@@ -99,7 +99,7 @@ $user_rights = array(
         'Right Name' => 'stock'
     ),
     'PLE' => array(
-        'Right Type' => 'View',
+        'Right Type' => 'Edit',
         'Right Name' => 'stock'
     ),
     'PLS' => array(

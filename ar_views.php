@@ -1314,7 +1314,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     unset($state['warehouse']);
     unset($state['production']);
 
-
+    $state['stores']=$user->stores;
     $response['state'] = 200;
 
     $response['app_state'] = $state;

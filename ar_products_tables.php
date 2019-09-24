@@ -130,7 +130,7 @@ function stores($_data, $db, $user) {
 
 
         $record_data[] = array(
-            'access' => (in_array($data['Store Key'], $user->stores) ? '' : '<i class="fa fa-lock "></i>'),
+            'access' => (in_array($data['Store Key'], $user->stores) ? '<i title="'._('Store worker access').'" class="fa fa-fw   fa-user-hard-hat "></i>' : '<i title="'._('View only').'" style="color:#603cb8" class="fa fa-fw fa-mask "></i>'),
 
             'id'      => (integer)$data['Store Key'],
             'code'    => sprintf('<span class="link" onClick="change_view(\'store/%d\')" >%s</span>', $data['Store Key'], $data['Store Code']),

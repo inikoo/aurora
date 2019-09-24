@@ -414,7 +414,7 @@
                     </td>
 
                 </tr>
-                <tr>
+                <tr class="{if !$user->can_edit('PLE')}hide{/if}">
 
 
                     <td colspan="4" class="small " style="text-align: right">
@@ -435,10 +435,6 @@
 
                 </tr>
 
-
-
-
-
                 <div id="inventory_transaction_note" style="position:absolute;z-index:100" class="hide" scope="">
                     <textarea></textarea>
                 </div>
@@ -447,21 +443,7 @@
                     $('#inventory_transaction_note textarea').bind('input propertychange', function () {
                         inventory_transaction_note_changed()
                     });
-
-
-
-
-
                 </script>
-
-
-
-
-
-
-
-
-
             </table>
 
             <style>
@@ -483,7 +465,16 @@
 
               <tr id="unknown_location_tr" class="{if $part->get('Part Unknown Location Stock')==0}hide{/if}">
                   <td colspan="3"><i class="fa error fa-exclamation-circle" aria-hidden="true"></i>  {t}Lost & found{/t}</td>
-                  <td onCLick="show_dialog_consolidate_unknown_location(this)" id="Part_Unknown_Location_Stock" class="aright  strong Unknown_Location_Stock button"  part_sku="{$part->id}" qty="{$part->get('Part Unknown Location Stock')}"  >{$part->get('Unknown Location Stock')}</td>
+                  <td id="Part_Unknown_Location_Stock" title="{t}Review lost & found{/t}"
+                      {if $user->can_edit('PLS')}
+                          onClick="show_dialog_consolidate_unknown_location(this)"
+                      {else}
+                        data-labels='{ "text":"{t}Please ask an authorised user to delete this part{/t}","title":"{t}Restricted operation{/t}","footer":"{t}Authorised users{/t}: "}'
+                        onClick="not_authorised_toggle_unlock_delete_object(this,'PLS')"
+                      {/if}
+                        class="aright strong Unknown_Location_Stock button"
+
+                      part_sku="{$part->id}" qty="{$part->get('Part Unknown Location Stock')}"  >{$part->get('Unknown Location Stock')}</td>
               </tr>
 
 

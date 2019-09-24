@@ -15,9 +15,8 @@ function isMobile() {
 
 var key_scope = false;
 var old_state_request = '';
-var websocket_connected=false;
-var websocket_connected_connecting=false;
-
+var websocket_connected = false;
+var websocket_connected_connecting = false;
 
 
 $(document).ready(function () {
@@ -32,14 +31,9 @@ $(document).ready(function () {
     change_view($('#_request').val())
 
 
-
-
-
-    $(document).on( "keydown", function (e) {
+    $(document).on("keydown", function (e) {
         key_press(e)
     })
-
-
 
 
     connect_websocket();
@@ -62,9 +56,6 @@ $(document).ready(function () {
     }, 60000);
 
 
-
-
-
 })
 
 
@@ -80,42 +71,27 @@ function change_browser_history_state(request) {
     }
 
 
-
-
-
-
     if (old_state_request != request) {
 
         console.log(old_state_request + ' -> ' + request)
 
 
-
-
         if (!$('#is_devel').val()) {
 
-            var _tmp=$('#account_name');
+            var _tmp = $('#account_name');
             ga('set', 'contentGroup1', state.module.replace("_", " ").capitalize());
             ga('set', 'contentGroup2', state.section.replace("_", " ").capitalize());
-            ga('set', 'contentGroup3', _tmp.data('user_handle').capitalize()+' '+_tmp.data('account_code'));
-
-
-
-
-
+            ga('set', 'contentGroup3', _tmp.data('user_handle').capitalize() + ' ' + _tmp.data('account_code'));
 
 
             ga('set', 'page', request);
             ga('send', 'pageview');
 
 
-
-
         }
 
         //console.log(request)
         window.top.history.pushState({request: request}, '', request)
-
-
 
 
         old_state_request = request
@@ -126,13 +102,11 @@ window.addEventListener('popstate', function (event) {
 
     // console.log(event)
 
-    if(event.state==null){
+    if (event.state == null) {
         console.log('null state!!!!!!')
-    }else{
+    } else {
         change_view(event.state.request)
     }
-
-
 
 
 });
@@ -178,24 +152,24 @@ function get_widget_details(element, widget, metadata) {
 
 }
 
-function change_menu_view(module){
+function change_menu_view(module) {
 
 
-    switch (module){
+    switch (module) {
         case '_dashboard':
             change_view('/dashboard')
             break;
         case 'customers':
-            if(state.current_store){
-                change_view('customers/'+state.current_store+'/dashboard')
-            }else{
+            if (state.current_store && jQuery.inArray(state.current_store, state.stores) !== -1) {
+                change_view('customers/' + state.current_store + '/dashboard')
+            } else {
                 change_view('customers/all')
             }
             break;
         case 'orders':
-            if(state.current_store){
-                change_view('orders/'+state.current_store+'/dashboard')
-            }else{
+            if (state.current_store) {
+                change_view('orders/' + state.current_store + '/dashboard')
+            } else {
                 change_view('orders/all/by_store')
             }
             break;
@@ -206,23 +180,23 @@ function change_menu_view(module){
             break;
 
         case 'products':
-            if(state.current_store){
-                change_view('store/'+state.current_store)
-            }else{
+            if (state.current_store) {
+                change_view('store/' + state.current_store)
+            } else {
                 change_view('stores')
             }
             break;
         case 'websites':
-            if(state.current_website){
-                change_view('website/'+state.current_website)
-            }else{
+            if (state.current_website) {
+                change_view('website/' + state.current_website)
+            } else {
                 change_view('websites')
             }
             break;
         case 'warehouses':
-            if(state.current_warehouse){
-                change_view('warehouse/'+state.current_warehouse+'/dashboard')
-            }else{
+            if (state.current_warehouse) {
+                change_view('warehouse/' + state.current_warehouse + '/dashboard')
+            } else {
                 change_view('warehouses')
             }
             break;
@@ -236,9 +210,9 @@ function change_menu_view(module){
             change_view('suppliers/dashboard')
             break;
         case 'production':
-            if(state.current_production){
-                change_view('production/'+state.current_production)
-            }else{
+            if (state.current_production) {
+                change_view('production/' + state.current_production)
+            } else {
                 change_view('production/all')
             }
             break;
@@ -268,9 +242,9 @@ function change_menu_view(module){
     }
 }
 
-function change_view_if_has_link_class(element,_request, metadata){
+function change_view_if_has_link_class(element, _request, metadata) {
 
-    if($(element).hasClass('link')){
+    if ($(element).hasClass('link')) {
         change_view(_request, metadata)
     }
 
@@ -280,63 +254,53 @@ function change_view_if_has_link_class(element,_request, metadata){
 function change_view(_request, metadata) {
 
 
-
-
-    $.urlParam = function(name,str){
+    $.urlParam = function (name, str) {
         var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(str);
-        if (results==null){
+        if (results == null) {
             return null;
-        }
-        else{
+        } else {
             return results[1] || 0;
         }
     }
 
-    var tmp='?__R__='+_request
+    var tmp = '?__R__=' + _request
 
     $('#tabs').removeClass('hide')
 
 
-    _request=$.urlParam('__R__',tmp)
-    var tab=$.urlParam('tab',tmp)
-    var subtab=$.urlParam('subtab',tmp)
+    _request = $.urlParam('__R__', tmp)
+    var tab = $.urlParam('tab', tmp)
+    var subtab = $.urlParam('subtab', tmp)
 
-    if (metadata == undefined || !metadata ) {
+    if (metadata == undefined || !metadata) {
         metadata = {};
     }
 
 
-    var request_data= {
+    var request_data = {
         tipo: 'views', request: _request, metadata: JSON.stringify(metadata), old_state: JSON.stringify(state)
     }
 
 
     if (tab != null) {
-        request_data.tab=tab
+        request_data.tab = tab
     }
     if (subtab != null) {
-        request_data.subtab=subtab
+        request_data.subtab = subtab
     }
 
     if (metadata.tab != undefined) {
-        request_data.tab=metadata.tab
-    }else if (metadata.subtab != undefined) {
-        request_data.subtab=metadata.subtab
+        request_data.tab = metadata.tab
+    } else if (metadata.subtab != undefined) {
+        request_data.subtab = metadata.subtab
     }
 
 
-
-
-
     $.ajax({
-        url: '/ar_views.php',
-        type: 'GET',
-        dataType: 'json',
-        data: request_data,
-        success: function(data) {
+        url: '/ar_views.php', type: 'GET', dataType: 'json', data: request_data, success: function (data) {
 
 
-            if(data.state==200) {
+            if (data.state == 200) {
 
                 state = data.app_state;
 
@@ -347,7 +311,7 @@ function change_view(_request, metadata) {
                 }
                 if (typeof (data.web_navigation) != "undefined" && data.web_navigation !== null && data.web_navigation != '') {
                     $('#web_navigation').html(data.web_navigation);
-                }else{
+                } else {
                     $('#web_navigation').html('')
                 }
 
@@ -391,7 +355,6 @@ function change_view(_request, metadata) {
                 }
 
 
-
                 if (typeof (data.tab) != "undefined" && data.tab !== null) {
                     $('#tab').html(data.tab);
                 }
@@ -428,8 +391,7 @@ function change_view(_request, metadata) {
 
                 change_browser_history_state(data.app_state.request)
                 show_side_content($('#notifications').data('current_side_view'))
-            }
-            else{
+            } else {
                 swal({
                     title: "Error A123"
                 });
@@ -437,9 +399,6 @@ function change_view(_request, metadata) {
 
         }
     });
-
-
-
 
 
 }
@@ -452,7 +411,6 @@ function logout() {
 function decodeEntities(a) {
     return a
 }
-
 
 
 function htmlEncode(value) {
