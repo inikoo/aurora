@@ -2374,3 +2374,55 @@ function save_permissions() {
 
 
 }
+
+
+$(document).on('click', '.locked_show_edit_button', function (evt) {
+
+
+    var _labels = $(this).data('labels');
+
+    console.log(_labels)
+
+    if(_labels==undefined){
+        _labels={footer:'',title:$('body').data('labels').error,text:''}
+    }
+
+        if(_labels.footer==undefined){
+        _labels.footer='';
+    }
+    if(_labels.title==undefined){
+        _labels.title=$('body').data('labels').error;
+    }
+    if( _labels.text==undefined){
+        _labels.text='yy';
+    }
+
+    var right_code=$(this).data('right_code')
+    if(right_code!=''){
+        var request = '/ar_find.php?tipo=users_with_right&right='+right_code
+        $.getJSON(request, function (data) {
+            var a = [];
+            $.each(data.users_data, function (key, value) {
+                if (value['UIR'] == 'No') {
+                    a.push(value['User Alias'])
+                }
+            });
+            var authorised_users = a.join(', ');
+            footer_text = _labels.footer + authorised_users
+
+
+            Swal.fire({
+                type: 'error', title: _labels.title, text: _labels.text, footer: footer_text,
+            })
+
+        })
+    }else{
+        Swal.fire({
+            type: 'error', title: _labels.title, text: _labels.text, footer:'',
+        })
+    }
+
+
+
+
+});

@@ -268,7 +268,7 @@
                             </td>
                             <td class="show_buttons  {if $edit=='address'}address {/if}">
 
-                                <i id="{$field.id}_lock" class="fa fa-lock fw {if $edit!='' or $class=='new'  or $class=='operation'   or $edit=='no_icon'  }hide{/if} edit lock"></i>
+                                <i  data-right_code="{if !empty($field.right_code)}{$field.right_code}{/if}"   data-labels='{ "footer": "{t}Authorised users{/t}: ","title":"{t}Restricted operation{/t}" , "text":"{t}Please ask an authorised user to edit this field{/t}"}' id="{$field.id}_lock" class=" locked_show_edit_button  fa fa-lock  fw {if $edit!='' or $class=='new'  or $class=='operation'   or $edit=='no_icon'  }hide{/if} edit lock"></i>
                                 <i class="fa fa-lock fw {if !$linked  }hide{/if} edit"></i>
 
                                 <span  class="{if  $class=='operation_with_field'  }hide{/if}" ><i id="{$field.id}_reset_button" class="fa fa-sign-out fa-flip-horizontal fw reset hide reset_button" onclick="close_edit_this_field(this)"></i>
@@ -309,9 +309,9 @@
                                           available_barcodes="{$available_barcodes}"
                                           title="{t}Assign next available barcode{/t}"
                                           onClick="assign_available_barcode('{$field.id}')">
-  <i class="fa fa-barcode fa-stack-1x"></i>
-  <i class="fa fa-bolt fa-inverse fa-stack-1x"></i>
-</span>
+                                            <i class="fa fa-barcode fa-stack-1x"></i>
+                                                <i class="fa fa-bolt fa-inverse fa-stack-1x"></i>
+                                            </span>
                                     <input id="{$field.id}" class="input_field hide" value="{$field.value}"
                                            has_been_valid="0"
                                            {if isset($field.placeholder)}placeholder="{$field.placeholder}"{/if} />
