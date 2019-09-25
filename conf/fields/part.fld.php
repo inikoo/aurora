@@ -66,10 +66,9 @@ if ($user->can_edit('parts')) {
     $edit = true;
 } else {
     $edit = false;
-
 }
 
-if ($user->can_supervisor('parts')) {
+if ($user->can_supervisor('suppliers')) {
     $super_edit = true;
 } else {
     $super_edit = false;
@@ -752,7 +751,7 @@ if (!$new and !$supplier_part_scope) {
                 'value'     => '',
                 'label'     => '<i class="fa fa-fw fa-'.($super_edit ? 'lock-alt' : 'lock').'  button" 
                  data-labels=\'{ "text":"'._('Please ask an authorised user to delete this part').'","title":"'._('Restricted operation').'","footer":"'._('Authorised users').': "}\'  
-                onClick="'.($super_edit ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'PS\')').'"  
+                onClick="'.($super_edit ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'BS\')').'"  
                 style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
                     .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete part & related supplier's parts").' <i class="far fa-trash-alt new_button link"></i></span>',
                 'reference' => '',
