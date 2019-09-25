@@ -414,7 +414,7 @@
                     </td>
 
                 </tr>
-                <tr class="{if !$user->can_edit('PLE')}hide{/if}">
+                <tr class="{if !$user->can_edit('stock')}hide{/if}">
 
 
                     <td colspan="4" class="small " style="text-align: right">
@@ -466,7 +466,7 @@
               <tr id="unknown_location_tr" class="{if $part->get('Part Unknown Location Stock')==0}hide{/if}">
                   <td colspan="3"><i class="fa error fa-exclamation-circle" aria-hidden="true"></i>  {t}Lost & found{/t}</td>
                   <td id="Part_Unknown_Location_Stock" title="{t}Review lost & found{/t}"
-                      {if $user->can_edit('PLS')}
+                      {if $user->can_supervisor('stock')}
                           onClick="show_dialog_consolidate_unknown_location(this)"
                       {else}
                         data-labels='{ "text":"{t}Please ask an authorised user to delete this part{/t}","title":"{t}Restricted operation{/t}","footer":"{t}Authorised users{/t}: "}'
