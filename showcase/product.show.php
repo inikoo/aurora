@@ -25,10 +25,10 @@ function get_product_showcase($data, $smarty, $user, $db) {
     $product->get_webpage();
     //$product->update_weight();
 
-   $product->update_availability(false);
+    //$product->update_availability(false);
 
-  //  if($product->id==30297) {
-     //   $product->update_availability();
+    //  if($product->id==30297) {
+    //   $product->update_availability();
     //}
 
 
@@ -304,7 +304,8 @@ function get_product_showcase($data, $smarty, $user, $db) {
                                $product->get('Product 1 Year Ago Invoiced Amount'), $product->get('Product 2 Year Ago Invoiced Amount')
                            ),
                            'invoiced_amount_delta'         => ($product->get('Product 1 Year Ago Invoiced Amount') > $product->get('Product 2 Year Ago Invoiced Amount')
-                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>' : ($product->get('Product 1 Year Ago Invoiced Amount') < $product->get(
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                               : ($product->get('Product 1 Year Ago Invoiced Amount') < $product->get(
                                    'Product 2 Year Ago Invoiced Amount'
                                ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
                            'quantity_invoiced_delta_title' => delta(
@@ -324,7 +325,8 @@ function get_product_showcase($data, $smarty, $user, $db) {
                                $product->get('Product 2 Year Ago Invoiced Amount'), $product->get('Product 3 Year Ago Invoiced Amount')
                            ),
                            'invoiced_amount_delta'         => ($product->get('Product 2 Year Ago Invoiced Amount') > $product->get('Product 3 Year Ago Invoiced Amount')
-                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>' : ($product->get('Product 2 Year Ago Invoiced Amount') < $product->get(
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                               : ($product->get('Product 2 Year Ago Invoiced Amount') < $product->get(
                                    'Product 3 Year Ago Invoiced Amount'
                                ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
                            'quantity_invoiced_delta_title' => delta(
@@ -344,7 +346,8 @@ function get_product_showcase($data, $smarty, $user, $db) {
                                $product->get('Product 3 Year Ago Invoiced Amount'), $product->get('Product 4 Year Ago Invoiced Amount')
                            ),
                            'invoiced_amount_delta'         => ($product->get('Product 3 Year Ago Invoiced Amoun') > $product->get('Product 4 Year Ago Invoiced Amount')
-                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>' : ($product->get('Product 3 Year Ago Invoiced Amount') < $product->get(
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                               : ($product->get('Product 3 Year Ago Invoiced Amount') < $product->get(
                                    'Product 4 Year Ago Invoiced Amount'
                                ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
                            'quantity_invoiced_delta_title' => delta(
@@ -365,7 +368,8 @@ function get_product_showcase($data, $smarty, $user, $db) {
                                $product->get('Product 4 Year Ago Invoiced Amount'), $product->get('Product 5 Year Ago Invoiced Amount')
                            ),
                            'invoiced_amount_delta'         => ($product->get('Product 4 Year Ago Invoiced Amount') > $product->get('Product 5 Year Ago Invoiced Amount')
-                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>' : ($product->get('Product 4 Year Ago Invoiced Amount') < $product->get(
+                               ? '<i class="fa fa-fw fa-play fa-rotate-270 success" aria-hidden="true"></i>'
+                               : ($product->get('Product 4 Year Ago Invoiced Amount') < $product->get(
                                    'Product 5 Year Ago Invoiced Amount'
                                ) ? '<i class="fa fa-fw fa-play fa-rotate-90 error" aria-hidden="true"></i>' : '')),
                            'quantity_invoiced_delta_title' => delta(
