@@ -1319,7 +1319,6 @@ class Product extends Asset {
 
 
             $stock       = 99999999999;
-            $tipo        = 'Excess';
             $change      = false;
             $stock_error = false;
 
@@ -1330,7 +1329,7 @@ class Product extends Asset {
                 foreach ($result as $row) {
 
 
-                    //print_r($row);
+
 
                     if ($on_demand == '') {
                         $on_demand = $row['Part On Demand'];
@@ -1349,23 +1348,26 @@ class Product extends Asset {
                     }
 
 
-                    if (is_numeric($row['stock']) and is_numeric(
-                            $row['Product Part Ratio']
-                        ) and $row['Product Part Ratio'] > 0) {
+                    if (is_numeric($row['stock']) and is_numeric($row['Product Part Ratio']) and $row['Product Part Ratio'] > 0) {
 
                         $_part_stock = $row['stock'];
+
 
 
                         if ($row['Part Current On Hand Stock'] == 0 and $row['Part Current Stock In Process'] > 0) {
                             $_part_stock = 0;
                         }
 
-                        if ($row['Part On Demand'] == 'Yes') {
-                            $_part_stock = 99999999999;
-                        }
+
+
+
+
 
                         $_stock = $_part_stock / $row['Product Part Ratio'];
-                        if ($stock > $_stock) {
+
+
+
+                        if ($stock >= $_stock or $change==false) {
                             $stock  = $_stock;
                             $change = true;
                         }
@@ -1406,9 +1408,7 @@ class Product extends Asset {
         if($min_days_available==''){
             $min_days_available=100;
         }
-        //print $stock;
 
-        //print $on_demand;
         //exit;
 
         if($on_demand == 'Yes'){
