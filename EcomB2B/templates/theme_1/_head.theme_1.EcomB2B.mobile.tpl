@@ -128,7 +128,7 @@
         </script>
     {/if}
 
-    <link rel="stylesheet" type="text/css" href="/css/mobile.min.css?v2.4">
+    <link rel="stylesheet" type="text/css" href="/css/mobile.min.css?v2.5">
 
     {assign "with_forms" false}
     {assign "with_not_found" 0}

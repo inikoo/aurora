@@ -128,7 +128,7 @@
         </script>
     {/if}
 
-    <link rel="stylesheet" type="text/css" href="/css/tablet.min.css?v=v181125">
+    <link rel="stylesheet" type="text/css" href="/css/tablet.min.css?v=v181125v2">
 
     {assign "with_forms" false}
     {assign "with_not_found" 0}
