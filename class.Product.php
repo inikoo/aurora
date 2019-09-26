@@ -1408,7 +1408,7 @@ class Product extends Asset {
         }
 
 
-        if($stock==0){
+        if($stock==0 ){
             $tipo  = 'OutofStock';
         }elseif($stock==1){
             $tipo  = 'VeryLow';
@@ -1417,7 +1417,6 @@ class Product extends Asset {
         }
 
 
-      //  print "$tipo $stock ";exit;
 
         $this->fast_update(
             array(

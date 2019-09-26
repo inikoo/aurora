@@ -706,6 +706,7 @@ abstract class DB_Table extends stdClass {
         }
 
 
+
         foreach ($data as $field => $value) {
 
 
@@ -716,7 +717,8 @@ abstract class DB_Table extends stdClass {
             );
             $stmt = $this->db->prepare($sql);
 
-            if ($value == '' and $null_if_empty) {
+
+            if ($value === '' and $null_if_empty) {
                 $value = null;
             }
 
