@@ -299,7 +299,8 @@ $user_groups = array(
             'MV',
             'ME',
             'WE',
-            'WV'
+            'WV',
+
 
         ),
         'Stores_Scope' => true

@@ -14,7 +14,7 @@ require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 
 
-if (!$user->can_view('sites')) {
+if (!$user->can_view('websites')) {
     echo json_encode(
         array(
             'state' => 405,
@@ -247,6 +247,8 @@ function websites($_data, $db, $user, $account, $redis) {
 
         $adata[] = array(
             'id'     => (integer)$data['Website Key'],
+            'access' => (in_array($data['Website Store Key'], $user->stores) ? '<i title="'._('Website worker access').'" class="fa fa-fw   fa-user-hard-hat "></i>' : '<i title="'._('View only').'" style="color:#603cb8" class="fa fa-fw fa-mask "></i>'),
+
             'status' => $status,
             'code'   => sprintf('<span class="link" title="%s" onclick="change_view(\'website/%d\')">%s</span>', $data['Website Name'], $data['Website Key'], $data['Website Code']),
             'name'   => sprintf('<span class="link" onclick="change_view(\'website/%d\')">%s</span>', $data['Website Key'], $data['Website Name']),

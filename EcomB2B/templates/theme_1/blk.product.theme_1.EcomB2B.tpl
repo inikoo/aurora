@@ -28,9 +28,7 @@
             <div class="gallery" style="display: flex;;max-width: 330px;flex-wrap: wrap " itemscope itemtype="http://schema.org/ImageGallery">
 
                 {foreach from=$data.other_images item=image name=foo}
-                    <figure style="margin: 0px 5px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject"
-
-                    >
+                    <figure style="margin: 0px 5px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
                         <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
                             <img style="height: 50px" src="{if $image.image_website=='' }{$image.src}{else}{$image.image_website}{/if}" itemprop="thumbnail" alt="{$image.caption}"/>
                         </a>
@@ -52,12 +50,26 @@
                     {t}Product code{/t}: <span class="code">{$product->get('Code')} </span>
                 </div>
 
+
                 {if $logged_in}
                     <i  style="float: right;font-size: 22px"  data-product_code="{$product->get('Code')}" data-product_id="{$product->id}" data-favourite_key="0" class="sim_button favourite_{$product->id} favourite  far  fa-heart" aria-hidden="true"></i>
                 {/if}
 
+
+
+
+
             </div>
-            <div class="ordering-container  log_in" style="display: flex;margin-top:40px;clear:both">
+
+
+            <div style="clear:both ">
+                {if $logged_in and  isset($settings['Display Stock Levels in Product']) and $settings['Display Stock Levels in Product']=='Yes'}
+                    {t}Stock{/t}: <i class="product_stock_dot fa fa-circle stock_level_{$product->id}"></i> <span class="product_stock_label_{$product->id}"></span>
+                {/if}
+            </div>
+
+
+            <div class="ordering-container  log_in" style="display: flex;margin-top:15px;">
 
                 {if $logged_in}
 

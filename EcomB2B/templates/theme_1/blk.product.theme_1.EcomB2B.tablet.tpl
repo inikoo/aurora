@@ -61,6 +61,9 @@
                     <h1 class="">{$product->get('Code')}</h1>
                     <h2 class="">{$product->get('Name')}</h2>
 
+
+
+
                     {if $logged_in}
 
 
@@ -99,6 +102,9 @@
 
                             </div>
                         {/if}
+
+
+
                     {else}
                         <div class="notification-small bg-red-light tap-hide animate-right">
                             <strong class="bg-red-dark"><i class="ion-information-circled"></i></strong>
@@ -117,7 +123,20 @@
                                 {assign 'rrp' $product->get('RRP')}
                                 {if $rrp!=''}
                                     <div style="margin-top:4px">{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
+
+                                {if $logged_in and  isset($settings['Display Stock Levels in Product']) and $settings['Display Stock Levels in Product']=='Yes'}
+                                    <div style="margin-top:15px">
+                                        {t}Stock{/t}: <i class="product_stock_dot fa fa-circle stock_level_{$product->id}"></i> <span class="product_stock_label_{$product->id}"></span>
+                                    </div>
+                                {/if}
+
                             </div>
+
+
+
+
+
+
                         </div>
                     {else}
                         <div class="container">

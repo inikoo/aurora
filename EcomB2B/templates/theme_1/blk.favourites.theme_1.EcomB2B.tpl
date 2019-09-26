@@ -35,7 +35,7 @@
     {counter start=-1 print=false assign="counter"}
     {foreach from=$products item=item }
         {counter print=false assign="counter"}
-    <div class="product_wrap wrap type_{$item.type} " data-type="{$item.type}" {if $item.type=='product'} data-sort_code="{$item.sort_code}" data-sort_name="{$item.sort_name}{/if} ">
+    <div class="product_wrap  {if $logged_in and isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Hint_Bar'}stock_info_hint{/if} wrap type_{$item.type} " data-type="{$item.type}" {if $item.type=='product'} data-sort_code="{$item.sort_code}" data-sort_name="{$item.sort_name}{/if} ">
         <div class="product_block item product_container" data-product_id="{$item.product_id}">
 
 
@@ -49,6 +49,12 @@
 
                 {if $logged_in}
                     <i    data-product_id="{$item.product_id}" data-product_code="{$item.code}" data-favourite_key="0" class="favourite_{$item.product_id} favourite far  fa-heart" aria-hidden="true"></i>
+
+                    {if isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Dot'}
+
+                        <i class="stock_dot stock_level_{$item.product_id}  fa fa-circle" ></i>
+                    {/if}
+
                 {/if}
                 <a href="{$item.link}"
                    data-analytics='{ "id": "{$item.code}", "name": "{$item.name|escape:'quotes'}",{if isset($item.category)} "category": "{$item.category}",{/if}{if isset($item.raw_price)} "price": "{$item.raw_price}",{/if}"list": "Family", "position":{$counter}}'
@@ -116,7 +122,13 @@
                 </div>
 
             {/if}
+            {if $logged_in and isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Hint_Bar'}
+                <div  style="width: 100%;height: 5px;" class=" stock_hint stock_level_{$item.product_id}" >
 
+
+                </div>
+
+            {/if}
 
 
 

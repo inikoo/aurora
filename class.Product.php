@@ -824,6 +824,35 @@ class Product extends Asset {
             case 'Number Images':
             case 'Number History Records':
                 number($this->data['Product '.$key]);
+            case 'Availability State':
+
+
+                switch ($this->data['Product Availability State']) {
+                    case 'Excess':
+                        $stock_status = '<i class="fa green  fa-plus-circle fa-fw"  title="'._('Excess stock').'"></i>';
+                        break;
+                    case 'Normal':
+                        $stock_status = '<i class="fa green fa-check-circle fa-fw"  title="'._('Normal stock').'"></i>';
+                        break;
+                    case 'Low':
+                        $stock_status = '<i class="fa yellow fa-minus-circle fa-fw"  title="'._('Low stock').'"></i>';
+                        break;
+                    case 'VeryLow':
+                        $stock_status = '<i class="fa error fa-minus-circle fa-fw"   title="'._('Very low stock').'"></i>';
+                        break;
+                    case 'OutofStock':
+                        $stock_status = '<i class="fa error fa-ban fa-fw"   title="'._('Out of stock').'"></i>';
+                        break;
+                    case 'Error':
+                        $stock_status = '<i class="fa fa-question-circle fa-fw"   title="'._('Error').'"></i>';
+                        break;
+                    default:
+                        $stock_status = $this->data['Product Availability State'];
+                        break;
+                }
+
+                return $stock_status;
+                break;
             default:
 
 

@@ -170,7 +170,7 @@ function get_mobile_menu($data,$user, $smarty) {
         */
     }
 
-    if ($user->can_view('sites')) {
+    if ($user->can_view('websites')) {
 
 
         if ($user->data['User Hooked Site Key']) {

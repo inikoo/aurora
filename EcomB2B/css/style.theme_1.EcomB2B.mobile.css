@@ -392,4 +392,85 @@ div.blk_images.template_3 figure {
   margin-top: 20px;
   clear: both; }
 
+i.stock_dot {
+  font-size: 25px;
+  position: absolute;
+  top: 31px;
+  right: 7px;
+  z-index: 1;
+  color: #FFF;
+  opacity: 0;
+  transition: all 0.5s ease; }
+  i.stock_dot.inline {
+    position: relative;
+    top: -1px;
+    right: auto;
+    font-size: 14px; }
+  i.stock_dot.Excess {
+    color: #13D13D;
+    opacity: .9; }
+  i.stock_dot.OnDemand {
+    color: #13D13D;
+    opacity: .9; }
+  i.stock_dot.Normal {
+    color: #13D13D;
+    opacity: .9; }
+  i.stock_dot.Low {
+    color: #FCBE07;
+    opacity: .9; }
+  i.stock_dot.VeryLow {
+    color: #F25056;
+    opacity: .9; }
+  i.stock_dot.OutofStock {
+    color: #F25056;
+    opacity: .9; }
+  i.stock_dot.Error {
+    color: #F25056;
+    opacity: .9; }
+
+i.product_stock_dot {
+  color: #FFF;
+  opacity: 0;
+  transition: all 0.5s ease;
+  padding-right: 5px;
+  padding-left: 5px; }
+  i.product_stock_dot.Excess {
+    color: #13D13D;
+    opacity: .9; }
+  i.product_stock_dot.OnDemand {
+    color: #13D13D;
+    opacity: .9; }
+  i.product_stock_dot.Normal {
+    color: #13D13D;
+    opacity: .9; }
+  i.product_stock_dot.Low {
+    color: #FCBE07;
+    opacity: .9; }
+  i.product_stock_dot.VeryLow {
+    color: #F25056;
+    opacity: .9; }
+  i.product_stock_dot.OutofStock {
+    color: #F25056;
+    opacity: .9; }
+  i.product_stock_dot.Error {
+    color: #F25056;
+    opacity: .9; }
+
+.image_stock_hint {
+  transition: all 0.5s ease; }
+  .image_stock_hint.Excess {
+    border-bottom: 3px solid  #13D13D; }
+  .image_stock_hint.OnDemand {
+    border-bottom: 3px solid  #13D13D; }
+  .image_stock_hint.Normal {
+    border-bottom: 3px solid  #13D13D; }
+  .image_stock_hint.Low {
+    border-bottom: 3px solid  #FCBE07; }
+  .image_stock_hint.VeryLow {
+    border-bottom: 3px solid  #F25056; }
+  .image_stock_hint.OutofStock {
+    border-bottom: 3px solid  #F25056; }
+  .image_stock_hint.Error {
+    border-bottom: 3px solid  #F25056; }
+
 /*# sourceMappingURL=style.theme_1.EcomB2B.mobile.css.map */

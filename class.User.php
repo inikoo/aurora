@@ -1720,6 +1720,7 @@ class User extends DB_Table {
         $tag = strtolower(_trim($tag));
 
 
+
         if ($tag_key == false) {
             if (isset($this->rights_allow[$right_type][$tag])) {
 

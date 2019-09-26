@@ -179,7 +179,7 @@
                    class="overview {if $product->get('Product Status')=='Discontinued'}super_discreet{/if} {if $product->get('Product Status')=='Discontinued' and $product->get('Product Availability')==0}hide{/if}">
 
                 <tr id="stock_available" class="{if $product->get('Product Number of Parts')==0}hide{/if}">
-                    <td>{t}Stock available{/t}:</td>
+                    <td>{t}Stock available{/t}: <span class="italic discreet">{$product->get('Availability State')}</span> </td>
                     <td class="aright Product_Availability">{$product->get('Availability')}</td>
                 </tr>
 

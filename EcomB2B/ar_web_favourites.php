@@ -35,12 +35,12 @@ switch ($tipo) {
                      )
         );
 
-        get_favourites_html($data, $customer,$db);
+        get_favourites_html($data, $customer, $db);
 
 
         break;
 
-   
+
     case 'update_favourite':
         $data = prepare_values(
             $_REQUEST, array(
@@ -54,7 +54,7 @@ switch ($tipo) {
 
 
         break;
-   
+
 }
 
 function update_favourite($data, $customer, $editor, $db) {
@@ -102,15 +102,14 @@ function update_favourite($data, $customer, $editor, $db) {
 
 }
 
-function get_favourites_html($data, $customer,$db) {
+function get_favourites_html($data, $customer, $db) {
 
 
-
-    $smarty               = new Smarty();
+    $smarty = new Smarty();
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
     $smarty->setCacheDir('server_files/smarty/cache');
-$smarty->setConfigDir('server_files/smarty/configs');
+    $smarty->setConfigDir('server_files/smarty/configs');
     $smarty->addPluginsDir('./smarty_plugins');
 
     $order = get_object('Order', $customer->get_order_in_process_key());
@@ -118,7 +117,7 @@ $smarty->setConfigDir('server_files/smarty/configs');
     $website = get_object('Website', $_SESSION['website_key']);
     $theme   = $website->get('Website Theme');
 
-    $store   = get_object('Store', $website->get('Website Store Key'));
+    $store = get_object('Store', $website->get('Website Store Key'));
 
     $webpage = $website->get_webpage('favourites.sys');
 
@@ -153,11 +152,10 @@ $smarty->setConfigDir('server_files/smarty/configs');
     $smarty->assign('key', $block_key);
     $smarty->assign('data', $block);
     $smarty->assign('labels', $website->get('Localised Labels'));
+    $smarty->assign('settings', $website->settings);
+
     $smarty->assign('logged_in', true);
     $smarty->assign('order_key', $order->id);
-
-
-
 
 
     $favourite_products = array();
@@ -171,31 +169,28 @@ $smarty->setConfigDir('server_files/smarty/configs');
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
-            $product=get_object('Product',$row['Customer Favourite Product Product ID']);
+            $product = get_object('Product', $row['Customer Favourite Product Product ID']);
 
             $product->load_webpage();
-            $favourite_products[] =
-                array(
-                    'type'                 => 'product',
-                    'product_id'           => $product->id,
-                    'web_state'            => $product->get('Web State'),
-                    'price'                => $product->get('Price'),
-                    'rrp'                  => $product->get('RRP'),
-                    'header_text'          => '',
-                    'code'                 => $product->get('Code'),
-                    'name'                 => $product->get('Name'),
-                    'link'                 => $product->webpage->get('URL'),
-                    'webpage_code'         => $product->webpage->get('Webpage Code'),
-                    'webpage_key'          => $product->webpage->id,
-                    'image_src'            => $product->get('Image'),
-                    'image_mobile_website' => $product->get('Image Mobile In Family Webpage'),
-                    'image_website'        => '',
-                    'out_of_stock_class'   => $product->get('Out of Stock Class'),
-                    'out_of_stock_label'   => $product->get('Out of Stock Label'),
-                    'sort_code'            => $product->get('Code File As'),
-                    'sort_name'            => $product->get('Product Name'),
-
-
+            $favourite_products[] = array(
+                'type'                 => 'product',
+                'product_id'           => $product->id,
+                'web_state'            => $product->get('Web State'),
+                'price'                => $product->get('Price'),
+                'rrp'                  => $product->get('RRP'),
+                'header_text'          => '',
+                'code'                 => $product->get('Code'),
+                'name'                 => $product->get('Name'),
+                'link'                 => $product->webpage->get('URL'),
+                'webpage_code'         => $product->webpage->get('Webpage Code'),
+                'webpage_key'          => $product->webpage->id,
+                'image_src'            => $product->get('Image'),
+                'image_mobile_website' => $product->get('Image Mobile In Family Webpage'),
+                'image_website'        => '',
+                'out_of_stock_class'   => $product->get('Out of Stock Class'),
+                'out_of_stock_label'   => $product->get('Out of Stock Label'),
+                'sort_code'            => $product->get('Code File As'),
+                'sort_name'            => $product->get('Product Name'),
 
 
             );
@@ -205,7 +200,6 @@ $smarty->setConfigDir('server_files/smarty/configs');
         print "$sql\n";
         exit;
     }
-
 
 
     //  print_r($favourite_products);

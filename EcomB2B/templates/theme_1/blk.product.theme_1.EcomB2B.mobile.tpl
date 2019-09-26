@@ -99,6 +99,12 @@
             <div class="store-product-rating half-top">
                 <h2>{t}Price{/t}: {$product->get('Price')} <span style="font-size:80%">{$product->get('Price Per Unit')}</span></h2>
                 {if $product->get('RRP')!=''}<span>{t}RRP{/t}: {$product->get('RRP')}</span>{/if}
+
+                {if $logged_in and  isset($settings['Display Stock Levels in Product']) and $settings['Display Stock Levels in Product']=='Yes'}
+                    <br><span style="line-height: 20px "> {t}Stock{/t}: <i class="product_stock_dot fa fa-circle stock_level_{$product->id}"></i> <span class="product_stock_label_{$product->id}"></span></span>
+                {/if}
+
+
             </div>
 
 

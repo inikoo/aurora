@@ -539,3 +539,141 @@ div.blk_images.template_3 figure {
   margin-top: 20px;
   clear: both
 }
+
+
+i.stock_dot {
+
+  font-size: 25px;
+  position: absolute;
+  top:31px;
+  right:7px;
+  z-index: 1;
+
+  color:#FFF;
+  opacity:0;
+  transition: all 0.5s ease;
+
+  &.inline{
+    position: relative;
+    top:-1px;
+    right:auto;
+    font-size: 14px;
+  }
+
+
+  &.Excess {
+    color: #13D13D;
+    opacity:.9;
+  }
+
+  &.OnDemand {
+    color: #13D13D;
+    opacity:.9;
+  }
+
+  &.Normal {
+    color: #13D13D;
+    opacity:.9;
+  }
+
+  &.Low {
+    color:#FCBE07;
+    opacity:.9;
+  }
+
+  &.VeryLow {
+    color:#F25056;
+    opacity:.9;
+  }
+
+  &.OutofStock {
+    color:#F25056;
+    opacity:.9;
+  }
+  &.Error {
+    color:#F25056;
+    opacity:.9;
+  }
+
+}
+
+
+i.product_stock_dot {
+  color:#FFF;
+  opacity:0;
+
+  transition: all 0.5s ease;
+  padding-right: 5px;
+  padding-left: 5px;
+
+
+  &.Excess {
+    color: #13D13D;
+    opacity:.9;
+  }
+
+  &.OnDemand {
+    color: #13D13D;
+    opacity:.9;
+  }
+
+  &.Normal {
+    color: #13D13D;
+    opacity:.9;
+  }
+
+  &.Low {
+    color:#FCBE07;
+    opacity:.9;
+  }
+
+  &.VeryLow {
+    color:#F25056;
+    opacity:.9;
+  }
+
+  &.OutofStock {
+    color:#F25056;
+    opacity:.9;
+  }
+  &.Error {
+    color:#F25056;
+    opacity:.9;
+  }
+
+}
+
+
+.image_stock_hint{
+
+  transition: all 0.5s ease;
+
+  &.Excess {
+    border-bottom: 3px solid  #13D13D;
+  }
+
+  &.OnDemand {
+    border-bottom: 3px solid  #13D13D;
+  }
+
+  &.Normal {
+    border-bottom: 3px solid  #13D13D;
+  }
+
+  &.Low {
+    border-bottom: 3px solid  #FCBE07;
+
+  }
+
+  &.VeryLow {
+    border-bottom: 3px solid  #F25056;
+  }
+
+  &.OutofStock {
+    border-bottom: 3px solid  #F25056;
+  }
+  &.Error {
+    border-bottom: 3px solid  #F25056;
+  }
+
+}

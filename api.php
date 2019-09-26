@@ -112,7 +112,7 @@ function authorization($db, $user_key, $api_key_key, $scope) {
         exit;
     }
 
-    $user = check_permisions($db, $user_key, $scope, $api_key_key);
+    $user = check_permissions($db, $user_key, $scope, $api_key_key);
 
 
     $editor = array(
@@ -166,7 +166,7 @@ function authorization($db, $user_key, $api_key_key, $scope) {
 }
 
 
-function check_permisions($db, $user_key, $scope) {
+function check_permissions($db, $user_key, $scope) {
     include_once 'class.User.php';
     $user = new User($user_key);
 

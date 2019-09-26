@@ -12,7 +12,7 @@ label: "",
 editable: false,
 sortable: false,
 cell: Backgrid.HtmlCell.extend({
-className: "width_20"
+className: "width_30 align_center"
 })
 
 }

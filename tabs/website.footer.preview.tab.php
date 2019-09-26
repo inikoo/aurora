@@ -9,11 +9,19 @@
 
 */
 
-$theme=$state['_object']->get('Website Theme');
+$website = $state['_object'];
 
-$smarty->assign('website',$state['_object']);
-$smarty->assign('theme',$theme);
+if ($user->can_supervisor('websites') and in_array($website->get('Website Store Key'), $user->stores)) {
 
-$html = $smarty->fetch('footer_preview.tpl');
+    $theme = $state['_object']->get('Website Theme');
 
-?>
+    $smarty->assign('website', $state['_object']);
+    $smarty->assign('theme', $theme);
+
+    $html = $smarty->fetch('footer_preview.tpl');
+
+
+} else {
+    $html = '<div style="padding:20px"><i class="fa error fa-octagon padding_right_5" ></i>  '.("Sorry you dont have permission to access this area").'</div>';
+}
+

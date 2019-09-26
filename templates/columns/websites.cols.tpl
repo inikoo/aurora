@@ -5,6 +5,15 @@ label: "",
 editable: false,
 renderable: false,
 cell: "string"
+},{
+name: "access",
+label: "",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({
+className: "width_30 align_center"
+})
+
 },
 {
 name: "status",

@@ -10,6 +10,8 @@
 */
 
 
+use function Aws\default_user_agent;
+
 include_once 'class.DB_Table.php';
 include_once 'class.Image.php';
 include_once 'trait.ImageSubject.php';
@@ -520,8 +522,6 @@ class Website extends DB_Table {
                 break;
 
             case 'Settings Info Bar Basket Amount Type':
-
-
                 switch ($this->get('Website Settings Info Bar Basket Amount Type')) {
                     case 'items_net':
                         return _('Items net');
@@ -531,32 +531,60 @@ class Website extends DB_Table {
                 }
 
                 break;
+            case 'Settings Display Stock Levels in Product':
+
+                $value = $this->settings('Display Stock Levels in Product');
+                if ($value == 'Yes') {
+                    return _('Yes');
+                } else {
+                    return _('No');
+                }
+                break;
+            case 'Settings Display Stock Levels in Category':
+
+
+                switch ($this->settings('Display Stock Levels in Category')) {
+                    case 'Hint_Bar':
+                        return '<i class="fa fa-window-minimize" style="color: #13D13D"></i><i class="fa fa-window-minimize" style="color: #FCBE07"></i><i class="fa fa-window-minimize margin_right_10" style="color: #F25056"></i>'._('Bar hint');
+                        break;
+                    case 'Dot':
+                        return '<i class="fa fa-circle" style="color: #13D13D"></i> <i class="fa fa-circle" style="color: #FCBE07"></i> <i class="fa fa-circle margin_right_10" style="color: #F25056"></i>'._('Dot');
+                        break;
+                    default:
+                        return _('No');
+                }
+                break;
+            case 'Settings Display Stock Quantity':
+
+
+                switch ($this->settings('Display Stock Quantity')) {
+                    case 'Yes':
+                        return _('Yes');
+                        break;
+                    case 'Only_if_very_low':
+                        return _('Only if stock very low');
+                        break;
+                    default:
+                        return _('No');
+                }
 
 
             default:
 
 
                 if (preg_match('/^Website Settings /', $key)) {
-
-
                     $_key = preg_replace('/^Website Settings /', '', $key);
-                    if (isset($this->settings[$_key])) {
-                        return $this->settings[$_key];
-                    } else {
-                        return '';
-                    }
 
+                    return $this->settings($_key);
                 }
 
                 if (preg_match('/^Settings /', $key)) {
 
 
                     $_key = preg_replace('/^Settings /', '', $key);
-                    if (isset($this->settings[$_key])) {
-                        return $this->settings[$_key];
-                    } else {
-                        return '';
-                    }
+
+                    return $this->settings($_key);
+
 
                 }
 
@@ -598,6 +626,11 @@ class Website extends DB_Table {
         }
 
         return '';
+    }
+
+
+    function settings($key) {
+        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
     }
 
     function create_header($data) {
@@ -891,20 +924,20 @@ class Website extends DB_Table {
     }
 
     function update_website_webpages_data() {
-        $sql             = sprintf(
+        $sql                        = sprintf(
             'SELECT `Webpage State`,count(*) AS number FROM `Page Store Dimension` WHERE `Webpage Website Key`=%d  group by `Webpage State`', $this->id
         );
-        $number_online_webpages = 0;
-        $number_offline_webpages=0;
-        $number_in_process_webpages=0;
+        $number_online_webpages     = 0;
+        $number_offline_webpages    = 0;
+        $number_in_process_webpages = 0;
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                if($row['Webpage State']=='Online'){
+                if ($row['Webpage State'] == 'Online') {
                     $number_online_webpages = $row['number'];
-                }elseif($row['Webpage State']=='Offline'){
+                } elseif ($row['Webpage State'] == 'Offline') {
                     $number_offline_webpages = $row['number'];
-                }elseif($row['Webpage State']=='InProcess'){
+                } elseif ($row['Webpage State'] == 'InProcess') {
                     $number_in_process_webpages = $row['number'];
                 }
             }
@@ -912,8 +945,8 @@ class Website extends DB_Table {
 
         $this->fast_update(
             array(
-                'Website Number Online Webpages' => $number_online_webpages,
-                'Website Number Offline Webpages' => $number_offline_webpages,
+                'Website Number Online Webpages'     => $number_online_webpages,
+                'Website Number Offline Webpages'    => $number_offline_webpages,
                 'Website Number In Process Webpages' => $number_in_process_webpages,
             ), 'Website Data'
         );
@@ -1124,7 +1157,6 @@ class Website extends DB_Table {
         $this->update_website_webpages_data();
 
 
-
         $this->new_page     = $page->new;
         $this->new_page_key = $page->id;
         $this->msg          = $page->msg;
@@ -1227,7 +1259,6 @@ class Website extends DB_Table {
         $this->update_website_webpages_data();
 
 
-
         $this->new_page     = $page->new;
         $this->new_page_key = $page->id;
         $this->msg          = $page->msg;
@@ -1315,7 +1346,6 @@ class Website extends DB_Table {
         $sql = sprintf(
             'SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Code`=%s AND `Webpage Website Key`=%d  ', prepare_mysql($code), $this->id
         );
-
 
 
         if ($result = $this->db->query($sql)) {
@@ -1411,19 +1441,18 @@ class Website extends DB_Table {
 
     function update_users_data() {
 
-        $users=0;
-        $sql='select count(*) as num from `Website User Dimension` where `Website User Website Key`=? and `Website User Has Login`="Yes"  ';
-        $stmt = $this->db->prepare($sql);
+        $users = 0;
+        $sql   = 'select count(*) as num from `Website User Dimension` where `Website User Website Key`=? and `Website User Has Login`="Yes"  ';
+        $stmt  = $this->db->prepare($sql);
         $stmt->execute(
             array($this->id)
         );
         while ($row = $stmt->fetch()) {
-            $users=$row['num'];
+            $users = $row['num'];
         }
 
 
-
-        $this->fast_update(array('Website Total Acc Users'=>$users),'Website Data');
+        $this->fast_update(array('Website Total Acc Users' => $users), 'Website Data');
 
     }
 
