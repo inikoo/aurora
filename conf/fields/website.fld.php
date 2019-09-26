@@ -165,6 +165,9 @@ $object_fields = array(
                 'edit'   => ($supervisor_edit ? 'option' : ''),
                 'right_code' => 'WS-'.$store_key,
                 'render' => ($new ? false : true),
+               // 'render' => ($new ? false : ((
+               //     $object->get('Website Settings Display Stock Levels in Category') == ''
+               // )?true:false) ),
                 'options'         => $options_show_stock_quantity,
                 'value'           => ($object->get('Website Settings Display Stock Quantity') == '' ? 'No' : $object->get('Website Settings Display Stock Quantity')),
                 'formatted_value' => $object->get('Settings Display Stock Quantity'),
