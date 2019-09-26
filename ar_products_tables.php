@@ -836,6 +836,8 @@ function sales_history($_data, $db, $user, $account) {
                 'sales'     => '<span class="very_discreet">'.money(0, $currency).'</span>',
                 'customers' => '<span class="very_discreet">'.number(0).'</span>',
                 'invoices'  => '<span class="very_discreet">'.number(0).'</span>',
+                'outers'  => '<span class="very_discreet">'.number(0).'</span>',
+
                 'refunds'   => '<span class="very_discreet">'.money(0, $currency).'</span>',
                 'date'      => $date
 
@@ -941,6 +943,8 @@ function sales_history($_data, $db, $user, $account) {
                     'sales'     => money($data['sales'], $currency),
                     'customers' => number($data['customers']),
                     'invoices'  => number($data['invoices']),
+                    'outers'  => number($data['outers']),
+
                     'date'      => $record_data[$_date]['date']
                 );
 
