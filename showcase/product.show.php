@@ -25,7 +25,7 @@ function get_product_showcase($data, $smarty, $user, $db) {
     $product->get_webpage();
     //$product->update_weight();
 
-   //$product->update_availability(false);
+   $product->update_availability(false);
 
   //  if($product->id==30297) {
      //   $product->update_availability();
