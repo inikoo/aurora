@@ -1304,13 +1304,13 @@ class Product extends Asset {
     function update_availability($use_fork = true) {
 
 
-
-
+        $min_days_available='';
+        $min_slock_status='';
+        $on_demand = '';
 
         if ($this->get('Product Number of Parts') > 0) {
 
-            $min_days_available='';
-            $min_slock_status='';
+
 
             $sql = sprintf(
                 " SELECT `Part Days Available Forecast`,`Part Reference`,`Part On Demand`,`Part Stock Status`,`Part Current On Hand Stock`-`Part Current Stock In Process`-`Part Current Stock Ordered Paid` AS stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio` FROM     `Product Part Bridge` B LEFT JOIN   `Part Dimension` P   ON (P.`Part SKU`=B.`Product Part Part SKU`)   WHERE B.`Product Part Product ID`=%d   ",
@@ -1322,7 +1322,7 @@ class Product extends Asset {
             $change      = false;
             $stock_error = false;
 
-            $on_demand = '';
+
 
 
             if ($result = $this->db->query($sql)) {
