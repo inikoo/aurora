@@ -1669,7 +1669,7 @@ class Product extends Asset {
                     return 'Offline';
                 } else {
 
-                    if ($this->data['Product Availability'] > 0) {
+                    if ($this->data['Product Availability'] > 0 or $this->data['Product Availability State']=='OnDemand'  ) {
                         return 'For Sale';
                     } else {
                         return 'Out of Stock';
