@@ -829,7 +829,10 @@ class Product extends Asset {
 
                 switch ($this->data['Product Availability State']) {
                     case 'Excess':
-                        $stock_status = '<i style="color: #13D13D" class="fa fa-circle fa-fw"  title="'._('Excess stock').'"></i>';
+                        $stock_status = '<i style="color: #13D13D" class="fa fa-circle fa-fw"  title="'._('Excess stock').'"></i> <i class="very_discreet fal fa-spider-web"></i> ';
+                        break;
+                    case 'OnDemand':
+                        $stock_status = '<i style="color: #13D13D" class="fa green fa-circle fa-fw"  title="'._('On demand').'"></i>';
                         break;
                     case 'Normal':
                         $stock_status = '<i style="color: #13D13D" class="fa green fa-circle fa-fw"  title="'._('Normal stock').'"></i>';
@@ -1403,12 +1406,16 @@ class Product extends Asset {
         if($min_days_available==''){
             $min_days_available=100;
         }
+        //print $stock;
 
-        if($stock==0 ){
-            $tipo  = 'OutofStock';
-        }elseif($on_demand == 'Yes'){
+        //print $on_demand;
+        //exit;
+
+        if($on_demand == 'Yes'){
             $tipo  = 'OnDemand';
 
+        }elseif($stock==0 ){
+            $tipo  = 'OutofStock';
         }elseif($stock==1 or $min_days_available<2){
             $tipo  = 'VeryLow';
         }elseif($stock<5 or $min_days_available<7){
