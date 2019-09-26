@@ -97,6 +97,11 @@ class Public_Website {
 
     }
 
+    function settings($key) {
+        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
+    }
+
+
     function get_webpage($code) {
 
         if ($code == '') {

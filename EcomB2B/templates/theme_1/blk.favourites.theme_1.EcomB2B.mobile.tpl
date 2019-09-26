@@ -37,12 +37,20 @@
                            data-list="Products"
                            onclick="go_product(this); return !ga.loaded;"
 
-                           style="z-index: 10000;"><img src="{$product_data.image_mobile_website}" alt="{$product_data.name|escape}"></a>
+                           style="z-index: 10000;"><img style="height: auto"
+                                                         {if $logged_in and isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Hint_Bar'}
+                                                             class="image_stock_hint image_stock_hint_{$product_data.product_id} "
+                                                         {/if}
+                                                        src="{$product_data.image_mobile_website}" alt="{$product_data.name|escape}"></a>
 
 
 
                         <em style="margin-left:185px;padding-left: 0px;" class="single_line_height">
-
+                            <div class="description">{$product_data.code}
+                                {if isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Dot'}
+                                    <i class="stock_dot inline stock_level_{$product_data.product_id} fa fa-fw fa-circle" ></i>
+                                {/if}
+                            </div>
                             <div class="description" {if ($product_data.name|count_characters)>40} style="font-size: 80% {elseif ($product_data.name|count_characters)>35}{/if}">{$product_data.name}</div>
                             {if $logged_in}
                                 <div class="price" style="margin-top: 5px">
@@ -76,7 +84,6 @@
 
                             {/if}
                         </em>
-                             <u>{$product_data.code}</u>
 
                     </span>
 

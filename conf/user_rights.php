@@ -122,16 +122,16 @@ $user_rights = array(
     ),
     'WV' => array(
         'Right Type' => 'View',
-        'Right Name' => 'sites'
+        'Right Name' => 'websites'
     ),
 
     'WE' => array(
         'Right Type' => 'Edit',
-        'Right Name' => 'sites'
+        'Right Name' => 'websites'
     ),
     'WS' => array(
         'Right Type' => 'Supervisor',
-        'Right Name' => 'sites'
+        'Right Name' => 'websites'
     ),
     'BV' => array(
         'Right Type' => 'View',

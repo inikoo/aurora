@@ -100,7 +100,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             elseif ($view_path[1] == 'website') {
 
 
-                                if (!$user->can_view('sites')) {
+                                if (!$user->can_view('websites')) {
                                     $module  = 'utils';
                                     $section = 'forbidden';
                                     break;
@@ -1055,7 +1055,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                 break;
             case 'websites':
-                if (!$user->can_view('sites')) {
+                if (!$user->can_view('websites')) {
                     $module  = 'utils';
                     $section = 'forbidden';
                     break;
@@ -1065,7 +1065,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                 break;
             case 'page':
-                if (!$user->can_view('sites')) {
+                if (!$user->can_view('websites')) {
                     $module  = 'utils';
                     $section = 'forbidden';
                     break;
@@ -1110,7 +1110,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
             case 'webpages':
-                if (!$user->can_view('sites')) {
+                if (!$user->can_view('websites')) {
                     $module  = 'utils';
                     $section = 'forbidden';
                     break;
@@ -1170,7 +1170,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
 
             case 'website':
-                if (!$user->can_view('sites')) {
+                if (!$user->can_view('websites')) {
                     $module  = 'utils';
                     $section = 'forbidden';
                     break;
@@ -1320,7 +1320,7 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                 break;
 
             case 'webpage':
-                if (!$user->can_view('sites')) {
+                if (!$user->can_view('websites')) {
                     $module  = 'utils';
                     $section = 'forbidden';
                     break;

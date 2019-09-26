@@ -17,10 +17,16 @@ if (isset($options['new']) and $options['new']) {
     $new = false;
 }
 
+$store_key = $object->get('Website Store Key');
+
 
 $labels = $object->get('Localised Labels');
 
-//print_r($labels);
+if ($user->can_supervisor('websites') and in_array($store_key, $user->stores)) {
+    $supervisor_edit = true;
+} else {
+    $supervisor_edit = false;
+}
 
 
 $object_fields = array(
@@ -30,62 +36,69 @@ $object_fields = array(
         'fields'     => array(
 
             array(
-                'id'       => 'Localised_Labels_Register',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_Register']) ? _('Register') : $labels['_Register']),
-                'label'    => _('Register'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_Register',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_Register']) ? _('Register') : $labels['_Register']),
+                'label'      => _('Register'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_Login',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_Login']) ? _('Login') : $labels['_Login']),
-                'label'    => _('Login'),
-                'required' => true,
-                'type'     => 'value'
-            ),
-
-            array(
-                'id'       => 'Localised_Labels_login_to_see',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_login_to_see']) ? _('For prices, please login or register') : $labels['_login_to_see']),
-                'label'    => _('Login to see message'),
-                'required' => true,
-                'type'     => 'value'
-            ),
-            array(
-                'id'       => 'Localised_Labels_Logout',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_Logout']) ? _('Log out') : $labels['_Logout']),
-                'label'    => _('Log out'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_Login',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_Login']) ? _('Login') : $labels['_Login']),
+                'label'      => _('Login'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
             array(
-                'id'       => 'Localised_Labels_Profile',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_Profile']) ? _('Profile') : $labels['_Profile']),
-                'label'    => _('Profile'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_login_to_see',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_login_to_see']) ? _('For prices, please login or register') : $labels['_login_to_see']),
+                'label'      => _('Login to see message'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_Basket',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['Basket']) ? _('Basket') : $labels['_Basket']),
-                'label'    => _('Basket'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_Logout',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_Logout']) ? _('Log out') : $labels['_Logout']),
+                'label'      => _('Log out'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+
+            array(
+                'id'         => 'Localised_Labels_Profile',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_Profile']) ? _('Profile') : $labels['_Profile']),
+                'label'      => _('Profile'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_Favourites',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_Favourites']) ? _('My favourites') : $labels['_Favourites']),
-                'label'    => _('Favourites'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_Basket',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['Basket']) ? _('Basket') : $labels['_Basket']),
+                'label'      => _('Basket'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+            array(
+                'id'         => 'Localised_Labels_Favourites',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_Favourites']) ? _('My favourites') : $labels['_Favourites']),
+                'label'      => _('Favourites'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
         )
@@ -98,76 +111,85 @@ $object_fields = array(
         'fields'     => array(
 
             array(
-                'id'       => 'Localised_Labels_product_price',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_product_price']) ? _('Price') : $labels['_product_price']),
-                'label'    => _('Price'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_product_price',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_product_price']) ? _('Price') : $labels['_product_price']),
+                'label'      => _('Price'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_product_rrp',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_product_rrp']) ? _('RRP') : $labels['_product_rrp']),
-                'label'    => _('RRP'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_product_rrp',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_product_rrp']) ? _('RRP') : $labels['_product_rrp']),
+                'label'      => _('RRP'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_product_code',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_product_code']) ? _('Product Code') : $labels['_product_code']),
-                'label'    => _('Code'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_product_code',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_product_code']) ? _('Product Code') : $labels['_product_code']),
+                'label'      => _('Code'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_product_origin',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_product_origin']) ? _('Origin') : $labels['_product_origin']),
-                'label'    => _('Origin'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_product_origin',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_product_origin']) ? _('Origin') : $labels['_product_origin']),
+                'label'      => _('Origin'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_product_weight',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_product_weight']) ? _('Weight') : $labels['_product_weight']),
-                'label'    => _('Weight'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_product_weight',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_product_weight']) ? _('Weight') : $labels['_product_weight']),
+                'label'      => _('Weight'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_product_dimensions',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_product_dimensions']) ? _('Dimensions') : $labels['_product_dimensions']),
-                'label'    => _('Dimensions'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_product_dimensions',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_product_dimensions']) ? _('Dimensions') : $labels['_product_dimensions']),
+                'label'      => _('Dimensions'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_product_materials',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_product_materials']) ? _('Materials/Ingredients') : $labels['_product_materials']),
-                'label'    => _('Materials/Ingredients'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_product_materials',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_product_materials']) ? _('Materials/Ingredients') : $labels['_product_materials']),
+                'label'      => _('Materials/Ingredients'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_product_barcode',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_product_barcode']) ? _('Barcode') : $labels['_product_barcode']),
-                'label'    => _('Barcode'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_product_barcode',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_product_barcode']) ? _('Barcode') : $labels['_product_barcode']),
+                'label'      => _('Barcode'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_product_cpnp',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_product_cpnp']) ? _('Cosmetic Products Notification Portal') : $labels['_product_cpnp']),
-                'label'    => _('CPNP'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_product_cpnp',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_product_cpnp']) ? _('Cosmetic Products Notification Portal') : $labels['_product_cpnp']),
+                'label'      => _('CPNP'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
 
@@ -176,52 +198,131 @@ $object_fields = array(
 
 
     array(
+        'label'      => _('Stock'),
+        'show_title' => true,
+        'fields'     => array(
+
+            array(
+                'id'         => 'Localised_Labels_stock',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['stock']) ? _('Stock') : $labels['stock']),
+                'label'      => _('Stock'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+            array(
+                'id'         => 'Localised_Labels_stock_OnDemand',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_stock_OnDemand']) ? _('Product made on demand') : $labels['_stock_OnDemand']),
+                'label'      => _('On demand'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+            array(
+                'id'         => 'Localised_Labels_stock_Excess',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_stock_Excess']) ? _('Plenty of stock') : $labels['_stock_Excess']),
+                'label'      => _('Excess stock'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+            array(
+                'id'         => 'Localised_Labels_stock_Normal',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_stock_Normal']) ? _('Plenty of stock') : $labels['_stock_Normal']),
+                'label'      => _('Normal'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+
+            array(
+                'id'         => 'Localised_Labels_stock_Low',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_stock_Low']) ? _('Limited stock') : $labels['_stock_Low']),
+                'label'      => _('Low'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+            array(
+                'id'         => 'Localised_Labels_stock_VeryLow',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_stock_VeryLow']) ? _('Very low stock') : $labels['_stock_VeryLow']),
+                'label'      => _('Very low'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+            array(
+                'id'         => 'Localised_Labels_stock_OutofStock',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_stock_OutofStock']) ? _('Out of stock') : $labels['_stock_OutofStock']),
+                'label'      => _('Out of Stock'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+
+
+        )
+    ),
+
+    array(
         'label'      => _('Order button states'),
         'show_title' => true,
         'fields'     => array(
 
             array(
-                'id'       => 'Localised_Labels_ordering_order_now',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_ordering_order_now']) ? _('Order now') : $labels['_ordering_order_now']),
-                'label'    => _('Order quantity =0'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_ordering_order_now',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_ordering_order_now']) ? _('Order now') : $labels['_ordering_order_now']),
+                'label'      => _('Order quantity =0'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_ordering_ordered',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_ordering_ordered']) ? _('Ordered') : $labels['_ordering_ordered']),
-                'label'    => _('Order quantity >0'),
-                'required' => true,
-                'type'     => 'value'
-            ),
-
-            array(
-                'id'       => 'Localised_Labels_ordering_click_to_update',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_ordering_click_to_update']) ? _('Click to update') : $labels['_ordering_click_to_update']),
-                'label'    => _('Order quantity changed'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_ordering_ordered',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_ordering_ordered']) ? _('Ordered') : $labels['_ordering_ordered']),
+                'label'      => _('Order quantity >0'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
             array(
-                'id'       => 'Localised_Labels_ordering_ordering_updated',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_ordering_updated']) ? _('Update') : $labels['_ordering_updated']),
-                'label'    => _('Order quantity saved'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_ordering_click_to_update',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_ordering_click_to_update']) ? _('Click to update') : $labels['_ordering_click_to_update']),
+                'label'      => _('Order quantity changed'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
             array(
-                'id'       => 'Localised_Labelsout_of_stock',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['out_of_stock']) ? _('Out of stock') : $labels['out_of_stock']),
-                'label'    => _('Out of stock'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_ordering_ordering_updated',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_ordering_updated']) ? _('Update') : $labels['_ordering_updated']),
+                'label'      => _('Order quantity saved'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+
+            array(
+                'id'         => 'Localised_Labelsout_of_stock',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['out_of_stock']) ? _('Out of stock') : $labels['out_of_stock']),
+                'label'      => _('Out of stock'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
 
@@ -233,60 +334,67 @@ $object_fields = array(
         'fields'     => array(
 
             array(
-                'id'       => 'Localised_Labels_delivery_address_label',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_delivery_address_label']) ? _('Delivery address') : $labels['_delivery_address_label']),
-                'label'    => _('Delivery address'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_delivery_address_label',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_delivery_address_label']) ? _('Delivery address') : $labels['_delivery_address_label']),
+                'label'      => _('Delivery address'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_invoice_address_label',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_invoice_address_label']) ? _('Invoice address') : $labels['_invoice_address_label']),
-                'label'    => _('Invoice address'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_invoice_address_label',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_invoice_address_label']) ? _('Invoice address') : $labels['_invoice_address_label']),
+                'label'      => _('Invoice address'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_items_gross',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_items_gross']) ? _('Items gross') : $labels['_items_gross']),
-                'label'    => _('Items gross'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_items_gross',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_items_gross']) ? _('Items gross') : $labels['_items_gross']),
+                'label'      => _('Items gross'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_items_discounts',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_items_discounts']) ? _('Items gross') : $labels['_items_discounts']),
-                'label'    => _('Items discounts'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_items_discounts',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_items_discounts']) ? _('Items gross') : $labels['_items_discounts']),
+                'label'      => _('Items discounts'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_items_net',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_items_net']) ? _('Items net') : $labels['_items_net']),
-                'label'    => _('Items net'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_items_net',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_items_net']) ? _('Items net') : $labels['_items_net']),
+                'label'      => _('Items net'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_items_charges',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_items_charges']) ? _('Charges') : $labels['_items_charges']),
-                'label'    => _('Charges'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_items_charges',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_items_charges']) ? _('Charges') : $labels['_items_charges']),
+                'label'      => _('Charges'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_items_shipping',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_items_shipping']) ? _('Shipping') : $labels['_items_shipping']),
-                'label'    => _('Shipping'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_items_shipping',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_items_shipping']) ? _('Shipping') : $labels['_items_shipping']),
+                'label'      => _('Shipping'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
         )
@@ -298,67 +406,72 @@ $object_fields = array(
 
 
             array(
-                'id'       => 'Localised_Labels_validation_password_missing',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_validation_password_missing']) ? _('Please enter your password') : $labels['_validation_password_missing']),
-                'label'    => _('Password missing'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_validation_password_missing',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_validation_password_missing']) ? _('Please enter your password') : $labels['_validation_password_missing']),
+                'label'      => _('Password missing'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_validation_minlength_password',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_validation_minlength_password']) ? _('Enter at least 8 characters') : $labels['_validation_minlength_password']),
-                'label'    => _('Password too short'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_validation_minlength_password',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_validation_minlength_password']) ? _('Enter at least 8 characters') : $labels['_validation_minlength_password']),
+                'label'      => _('Password too short'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_validation_same_password',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_validation_same_password']) ? _('Enter the same password as above') : $labels['_validation_same_password']),
-                'label'    => _('Password not match'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_validation_same_password',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_validation_same_password']) ? _('Enter the same password as above') : $labels['_validation_same_password']),
+                'label'      => _('Password not match'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_validation_required',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['validation_required']) ? _('This field is required') : $labels['validation_required']),
-                'label'    => _('Required field empty'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_validation_required',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['validation_required']) ? _('This field is required') : $labels['validation_required']),
+                'label'      => _('Required field empty'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_validation_email_invalid',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_validation_email_invalid']) ? _('Invalid email') : $labels['_validation_email_invalid']),
-                'label'    => _('Invalid email'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_validation_email_invalid',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_validation_email_invalid']) ? _('Invalid email') : $labels['_validation_email_invalid']),
+                'label'      => _('Invalid email'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_validation_handle_registered',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_validation_handle_registered']) ? _('Email address is already in registered') : $labels['_validation_handle_registered']),
-                'label'    => _('Duplicate email'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_validation_handle_registered',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_validation_handle_registered']) ? _('Email address is already in registered') : $labels['_validation_handle_registered']),
+                'label'      => _('Duplicate email'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_validation_accept_terms',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_validation_accept_terms']) ? _('Please accept our terms and conditions to proceed') : $labels['_validation_accept_terms']),
-                'label'    => _('Terms and conditions not accepted'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_validation_accept_terms',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_validation_accept_terms']) ? _('Please accept our terms and conditions to proceed') : $labels['_validation_accept_terms']),
+                'label'      => _('Terms and conditions not accepted'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
 
         )
     ),
-
-
 
 
     array(
@@ -368,197 +481,219 @@ $object_fields = array(
 
 
             array(
-                'id'       => 'Localised_Labelsaddress_addressLine1',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['address_addressLine1']) ? _('Address Line 1') : $labels['address_addressLine1']),
-                'label'    => _('Address Line 1'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labelsaddress_addressLine1',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['address_addressLine1']) ? _('Address Line 1') : $labels['address_addressLine1']),
+                'label'      => _('Address Line 1'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
             array(
-                'id'       => 'Localised_Labelsaddress_addressLine2',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['address_addressLine2']) ? _('Address Line 2') : $labels['address_addressLine2']),
-                'label'    => _('Address Line 2'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labelsaddress_addressLine2',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['address_addressLine2']) ? _('Address Line 2') : $labels['address_addressLine2']),
+                'label'      => _('Address Line 2'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
             array(
-                'id'       => 'Localised_LabelsdependentLocality_neighborhood',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['dependentLocality_neighborhood']) ? _('Neighborhood') : $labels['dependentLocality_neighborhood']),
-                'label'    => _('Neighborhood'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_LabelsdependentLocality_neighborhood',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['dependentLocality_neighborhood']) ? _('Neighborhood') : $labels['dependentLocality_neighborhood']),
+                'label'      => _('Neighborhood'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
             array(
-                'id'       => 'Localised_LabelsdependentLocality_district',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['dependentLocality_district']) ? _('District') : $labels['dependentLocality_district']),
-                'label'    => _('District'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_LabelsdependentLocality_district',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['dependentLocality_district']) ? _('District') : $labels['dependentLocality_district']),
+                'label'      => _('District'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
             array(
-                'id'       => 'Localised_LabelsdependentLocality_townland',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['dependentLocality_townland']) ? _('Townland') : $labels['dependentLocality_townland']),
-                'label'    => _('Townland (Ireland)'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_LabelsdependentLocality_townland',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['dependentLocality_townland']) ? _('Townland') : $labels['dependentLocality_townland']),
+                'label'      => _('Townland (Ireland)'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_LabelsdependentLocality_village_township',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['dependentLocality_village_township']) ? _('Village (Township)') : $labels['dependentLocality_village_township']),
-                'label'    => _('Village (Township)'),
-                'required' => true,
-                'type'     => 'value'
-            ),
-
-            array(
-                'id'       => 'Localised_LabelsdependentLocality_suburb',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['dependentLocality_suburb']) ? _('Suburb') : $labels['dependentLocality_suburb']),
-                'label'    => _('Suburb'),
-                'required' => true,
-                'type'     => 'value'
-            ),
-
-
-            array(
-                'id'       => 'Localised_Labelslocality_city',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['locality_city']) ? _('City') : $labels['locality_city']),
-                'label'    => _('City'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_LabelsdependentLocality_village_township',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['dependentLocality_village_township']) ? _('Village (Township)') : $labels['dependentLocality_village_township']),
+                'label'      => _('Village (Township)'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
             array(
-                'id'       => 'Localised_Labelslocality_suburb',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['locality_suburb']) ? _('locality_city') : $labels['locality_suburb']),
-                'label'    => _('locality_city'),
-                'required' => true,
-                'type'     => 'value'
-            ),
-
-            array(
-                'id'       => 'Localised_Labelslocality_district',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['locality_district']) ? _('District') : $labels['locality_district']),
-                'label'    => _('District'),
-                'required' => true,
-                'type'     => 'value'
-            ),
-
-            array(
-                'id'       => 'Localised_Labelslocality_post_town',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['locality_post_town']) ? _('Post town') : $labels['locality_post_town']),
-                'label'    => _('Post town (United Kingdom)'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_LabelsdependentLocality_suburb',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['dependentLocality_suburb']) ? _('Suburb') : $labels['dependentLocality_suburb']),
+                'label'      => _('Suburb'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
 
             array(
-                'id'       => 'Localised_LabelsadministrativeArea_state',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['administrativeArea_state']) ? _('State') : $labels['administrativeArea_state']),
-                'label'    => _('State'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labelslocality_city',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['locality_city']) ? _('City') : $labels['locality_city']),
+                'label'      => _('City'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
             array(
-                'id'       => 'Localised_LabelsadministrativeArea_province',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['administrativeArea_province']) ? _('Province') : $labels['administrativeArea_province']),
-                'label'    => _('Province'),
-                'required' => true,
-                'type'     => 'value'
-            ),
-            array(
-                'id'       => 'Localised_LabelsadministrativeArea_island',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['administrativeArea_island']) ? _('Island') : $labels['administrativeArea_island']),
-                'label'    => _('Island'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labelslocality_suburb',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['locality_suburb']) ? _('locality_city') : $labels['locality_suburb']),
+                'label'      => _('locality_city'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
             array(
-                'id'       => 'Localised_LabelsDepartment',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['Department']) ? _('Department') : $labels['Department']),
-                'label'    => _('Department (country subdivision)'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labelslocality_district',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['locality_district']) ? _('District') : $labels['locality_district']),
+                'label'      => _('District'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+
+            array(
+                'id'         => 'Localised_Labelslocality_post_town',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['locality_post_town']) ? _('Post town') : $labels['locality_post_town']),
+                'label'      => _('Post town (United Kingdom)'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
 
             array(
-                'id'       => 'Localised_LabelsadministrativeArea_county',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['administrativeArea_county']) ? _('County') : $labels['administrativeArea_county']),
-                'label'    => _('County'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_LabelsadministrativeArea_state',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['administrativeArea_state']) ? _('State') : $labels['administrativeArea_state']),
+                'label'      => _('State'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
             array(
-                'id'       => 'Localised_LabelsadministrativeArea_area',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['administrativeArea_area']) ? _('Area') : $labels['administrativeArea_area']),
-                'label'    => _('Area (country subdivision)'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_LabelsadministrativeArea_province',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['administrativeArea_province']) ? _('Province') : $labels['administrativeArea_province']),
+                'label'      => _('Province'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_LabelsadministrativeArea_prefecture',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['administrativeArea_prefecture']) ? _('Prefecture') : $labels['administrativeArea_prefecture']),
-                'label'    => _('Prefecture'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_LabelsadministrativeArea_island',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['administrativeArea_island']) ? _('Island') : $labels['administrativeArea_island']),
+                'label'      => _('Island'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+
+            array(
+                'id'         => 'Localised_LabelsDepartment',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['Department']) ? _('Department') : $labels['Department']),
+                'label'      => _('Department (country subdivision)'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+
+
+            array(
+                'id'         => 'Localised_LabelsadministrativeArea_county',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['administrativeArea_county']) ? _('County') : $labels['administrativeArea_county']),
+                'label'      => _('County'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+
+            array(
+                'id'         => 'Localised_LabelsadministrativeArea_area',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['administrativeArea_area']) ? _('Area') : $labels['administrativeArea_area']),
+                'label'      => _('Area (country subdivision)'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_LabelsadministrativeArea_district',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['administrativeArea_district']) ? _('District') : $labels['administrativeArea_district']),
-                'label'    => _('District (country subdivision)'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_LabelsadministrativeArea_prefecture',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['administrativeArea_prefecture']) ? _('Prefecture') : $labels['administrativeArea_prefecture']),
+                'label'      => _('Prefecture'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_LabelsadministrativeArea_emirate',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['administrativeArea_emirate']) ? _('Emirate') : $labels['administrativeArea_emirate']),
-                'label'    => _('Emirate'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_LabelsadministrativeArea_district',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['administrativeArea_district']) ? _('District') : $labels['administrativeArea_district']),
+                'label'      => _('District (country subdivision)'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_LabelspostalCode_postal',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['postalCode_postal']) ? _('Postal code') : $labels['postalCode_postal']),
-                'label'    => _('Postal code'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_LabelsadministrativeArea_emirate',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['administrativeArea_emirate']) ? _('Emirate') : $labels['administrativeArea_emirate']),
+                'label'      => _('Emirate'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labelsaddress_country',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['address_country']) ? _('Country') : $labels['address_country']),
-                'label'    => _('Country'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_LabelspostalCode_postal',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['postalCode_postal']) ? _('Postal code') : $labels['postalCode_postal']),
+                'label'      => _('Postal code'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+            array(
+                'id'         => 'Localised_Labelsaddress_country',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['address_country']) ? _('Country') : $labels['address_country']),
+                'label'      => _('Country'),
+                'required'   => true,
+                'type'       => 'value'
             )
 
         )
@@ -570,20 +705,22 @@ $object_fields = array(
         'fields'     => array(
 
             array(
-                'id'       => 'Localised_Labels_unsubscribe_text',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_unsubscribe_text']) ? _('If you do not wish to receive more marketing emails from us') : $labels['_unsubscribe_text']),
-                'label'    => _('Unsubscribe text'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_unsubscribe_text',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_unsubscribe_text']) ? _('If you do not wish to receive more marketing emails from us') : $labels['_unsubscribe_text']),
+                'label'      => _('Unsubscribe text'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_unsubscribe_link',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_unsubscribe_link']) ? _('Unsubscribe here') : $labels['_unsubscribe_link']),
-                'label'    => _('Unsubscribe link text'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_unsubscribe_link',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_unsubscribe_link']) ? _('Unsubscribe here') : $labels['_unsubscribe_link']),
+                'label'      => _('Unsubscribe link text'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
 
@@ -597,20 +734,22 @@ $object_fields = array(
         'fields'     => array(
 
             array(
-                'id'       => 'Localised_Labels_choose_one',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_choose_one']) ? _('Please, choose one') : $labels['_choose_one']),
-                'label'    => _('Pick an option'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_choose_one',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_choose_one']) ? _('Please, choose one') : $labels['_choose_one']),
+                'label'      => _('Pick an option'),
+                'required'   => true,
+                'type'       => 'value'
             ),
             array(
-                'id'       => 'Localised_Labels_we_will_contact_you',
-                'edit'     => ($edit ? 'string' : ''),
-                'value'    => (empty($labels['_we_will_contact_you']) ? _('We will contact you') : $labels['_we_will_contact_you']),
-                'label'    => _('Unknown shipping amount'),
-                'required' => true,
-                'type'     => 'value'
+                'id'         => 'Localised_Labels_we_will_contact_you',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_we_will_contact_you']) ? _('We will contact you') : $labels['_we_will_contact_you']),
+                'label'      => _('Unknown shipping amount'),
+                'required'   => true,
+                'type'       => 'value'
             ),
 
 
@@ -618,8 +757,6 @@ $object_fields = array(
     ),
 
 
-
 );
 
 
-?>

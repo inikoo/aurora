@@ -9,27 +9,26 @@
 
 */
 
+$website = $state['_object'];
 
-$website=$state['_object'];
-$theme=$website->get('Website Theme');
-
-
-$smarty->assign('settings',$website->settings);
+if ($user->can_supervisor('websites') and in_array($website->get('Website Store Key'), $user->stores)) {
 
 
-$smarty->assign('website',$website);
-$smarty->assign('theme',$theme);
-
-//print_r($website->settings);
+    $theme   = $website->get('Website Theme');
 
 
-$html = $smarty->fetch('control.website.colors.tpl');
+    $smarty->assign('settings', $website->settings);
 
 
+    $smarty->assign('website', $website);
+    $smarty->assign('theme', $theme);
+
+    //print_r($website->settings);
 
 
+    $html = $smarty->fetch('control.website.colors.tpl');
 
 
-
-
-?>
+}else{
+    $html = '<div style="padding:20px"><i class="fa error fa-octagon padding_right_5" ></i>  '.("Sorry you dont have permission to access this area").'</div>';
+}

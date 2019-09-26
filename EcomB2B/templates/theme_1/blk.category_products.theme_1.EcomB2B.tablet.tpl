@@ -46,7 +46,11 @@
                                onclick="go_product(this); return !ga.loaded;"
 
                             ><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"></i></a>
-                            {if $logged_in}<i    data-product_code="{$item.code}" data-product_id="{$item.product_id}" data-favourite_key="0" class="favourite_{$item.product_id} favourite far  fa-heart" aria-hidden="true"></i>
+                            {if $logged_in}
+                                <i data-product_code="{$item.code}" data-product_id="{$item.product_id}" data-favourite_key="0" class="favourite_{$item.product_id} favourite far  fa-heart" aria-hidden="true"></i>
+                                {if isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Dot'}
+                                    <i class="stock_dot stock_level_{$item.product_id}  fa fa-circle" ></i>
+                                {/if}
                             {/if}
                             <img src="{$item.image_website}"  />
                         </div>
@@ -110,12 +114,10 @@
                             </div>
 
                         {/if}
-
-
-
-
-
-
+                        {if $logged_in and isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Hint_Bar'}
+                            <div  style="width: 100%;height: 5px;" class=" stock_hint stock_level_{$item.product_id}" >
+                            </div>
+                        {/if}
                     </div>
 
                 {elseif $item.type=='text'}

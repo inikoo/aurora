@@ -33,7 +33,11 @@
                            data-list="Family"
                            onclick="go_product(this); return !ga.loaded;"
 
-                           style="z-index: 10000;"><img style="height: auto" src="{$item.image_mobile_website}" alt="{$item.name|escape}"></a>
+                           style="z-index: 10000;"><img style="height: auto"
+                                                         {if $logged_in and isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Hint_Bar'}
+                                                             class="image_stock_hint image_stock_hint_{$item.product_id} "
+                                                         {/if}
+                                                        src="{$item.image_mobile_website}" alt="{$item.name|escape}"></a>
 
                          <a class="go_product" href="{$item.link}"
 
@@ -44,6 +48,11 @@
                             style="z-index: 10000;"><i  class="fal fa-external-link"></i></a>
 
                         <em style="margin-left:185px;padding-left: 0px;" class="single_line_height">
+                            <div class="description">{$item.code}
+                                {if isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Dot'}
+                                    <i class="stock_dot inline stock_level_{$item.product_id} fa fa-fw fa-circle" ></i>
+                                {/if}
+                            </div>
 
                             <div class="description"  {if ($item.name|count_characters)>40} style="font-size: 80% {elseif ($item.name|count_characters)>35}{/if}">{$item.name}</div>
                             {if $logged_in}
@@ -88,7 +97,7 @@
 
                             {/if}
                         </em>
-                             <u>{$item.code}</u>
+
 
                     </span>
 

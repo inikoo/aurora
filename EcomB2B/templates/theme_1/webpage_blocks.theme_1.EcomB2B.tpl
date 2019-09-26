@@ -74,15 +74,11 @@
             {assign "with_product_order_input" false}
             {assign "with_reset_password" false}
             {assign "with_unsubscribe" false}
-
-
+            {assign "with_category_products" false}
 
             {if !empty($content.blocks) and  $content.blocks|is_array}
             {foreach from=$content.blocks item=$block key=key}
                 {if $block.show}
-
-
-
 
                     {if $block.type=='basket'}
                         {if $logged_in}{assign "with_basket" 1}
@@ -123,7 +119,9 @@
                         {/if}
                     {elseif $block.type=='favourites'}
 
-                        {if $logged_in}{assign "with_favourites" 1}
+                        {if $logged_in}
+                            {assign "with_favourites" 1}
+                            {assign "with_category_products" 1}
                             <div id="favourites">
                                 <div style="text-align: center">
                                     <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>
@@ -175,6 +173,7 @@
                         {if $block.type=='reset_password' }{assign "with_reset_password" 1}{/if}
                         {if $block.type=='unsubscribe'}{assign "with_unsubscribe" 1}{/if}
                         {if $block.type=='category_products' or   $block.type=='products'  or   $block.type=='product' }{assign "with_product_order_input" 1}{/if}
+                        {if $block.type=='category_products' or   $block.type=='products'  }{assign "with_category_products" 1}{/if}
 
 
                         {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
@@ -1166,15 +1165,7 @@
             {if $logged_in}
                 {if $with_product_order_input==1}
 
-
-
-
-
-                $.getJSON("ar_web_customer_products.php?loc=with_product_order_input&tipo=category_products&webpage_key={$webpage->id}",
-                    function (data) {
-
-
-
+            $.getJSON("ar_web_customer_products.php?with_category_products={if $with_category_products==1}Yes{else}No{/if}&tipo=category_products&webpage_key={$webpage->id}", function (data) {
                 $('.order_row i').removeClass('hide')
                 $('.order_row span').removeClass('hide')
 
@@ -1184,35 +1175,33 @@
                     $('.order_row_' + index).find('.label span').html('{if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}')
                 });
 
-
                 $.each(data.favourite, function (index, value) {
                     $('.favourite_' + index).removeClass('far').addClass('marked fas').data('favourite_key', value)
                 });
 
                 $.each(data.out_of_stock_reminders, function (index, value) {
-
-                    var reminder_icon=$('.out_of_stock_reminders_' + index)
+                    var reminder_icon = $('.out_of_stock_reminders_' + index)
                     reminder_icon.removeClass('far').addClass('fas').data('out_of_stock_reminder_key', value).attr('title', reminder_icon.data('label_remove_notification'))
                 });
 
+                $.each(data.stock, function (index, value) {
+                    if (value[0] != '') {
+                        $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title', value[1])
+                        $('.product_stock_label_' + index).html(value[1])
+                    }
+                });
 
                 $('#header_order_totals').find('.ordered_products_number').html(data.items)
                 $('#header_order_totals').find('.order_amount').html(data.total)
-                $('#header_order_totals').find('i').attr('title',data.label)
-
+                $('#header_order_totals').find('i').attr('title', data.label)
             });
                 {else}
                 $.getJSON("ar_web_customer_products.php?tipo=total_basket", function (data) {
+                    $('#header_order_totals').find('.ordered_products_number').html(data.items)
+                    $('#header_order_totals').find('.order_amount').html(data.total)
+                    $('#header_order_totals').find('i').attr('title', data.label)
 
-
-                $('#header_order_totals').find('.ordered_products_number').html(data.items)
-                $('#header_order_totals').find('.order_amount').html(data.total)
-                $('#header_order_totals').find('i').attr('title',data.label)
-
-
-
-
-            });
+                });
                 {/if}
                 getScript('/js/desktop.logged_in.min.js?v=190522', function () {
                 $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
@@ -1226,9 +1215,8 @@
 
                         $('#favourites').html(data.html)
 
-                        $.getJSON("ar_web_customer_products.php?tipo=category_products&webpage_key={$webpage->id}", function (data) {
+                        $.getJSON("ar_web_customer_products.php?tipo=category_products&with_favourites_products=Yes&webpage_key={$webpage->id}", function (data) {
 
-                            console.log(data)
 
 
                             $('.order_row i').removeClass('hide')
@@ -1249,6 +1237,16 @@
 
                                 var reminder_icon=$('.out_of_stock_reminders_' + index)
                                 reminder_icon.removeClass('far').addClass('fas').data('out_of_stock_reminder_key', value).attr('title', reminder_icon.data('label_remove_notification'))
+                            });
+
+                            $.each(data.stock, function (index, value) {
+                                if(value[0]!=''){
+                                    $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title',value[1])
+
+                                    $('.product_stock_label_'+ index).html(value[1])
+
+                                }
+
                             });
 
                             $('#header_order_totals').find('.ordered_products_number').html(data.items)

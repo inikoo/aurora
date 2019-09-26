@@ -271,14 +271,47 @@ switch ($tipo) {
 function users_with_right($db, $data){
 
     $users_data=array();
-    $sql='select U.`User Key`,`User Alias`,`User Inikoo Rep` as UIR from `User Dimension` U left join `User Rights Bridge` URB on (URB.`User Key`=U.`User Key`) where `Right Code`=?  ';
-    $stmt = $db->prepare($sql);
-    $stmt->execute(
-        array($data['right'])
-    );
-    while ($row = $stmt->fetch()) {
-        $users_data[]=$row;
+
+    if(preg_match('/^(.+)\-(\d+)$/',$data['right'],$matches)){
+        $right_code=$matches[1];
+        $scope_key=$matches[2];
+
+        $scope='Store';
+
+        $users_data=array();
+        $sql='select U.`User Key`,`User Alias`,`User Inikoo Rep` as UIR,`Scope`,`Scope Key` 
+                from `User Dimension` U left join `User Rights Bridge` URB on (URB.`User Key`=U.`User Key`)   left join `User Right Scope Bridge`  URSB on (URSB.`User Key`=U.`User Key`)   
+                where `Right Code`=?  and `Scope`=? and `Scope Key`=? ';
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $right_code,
+                $scope,
+                $scope_key
+            )
+        );
+        while ($row = $stmt->fetch()) {
+
+
+            $users_data[]=$row;
+        }
+
+    }else{
+
+        $users_data=array();
+        $sql='select U.`User Key`,`User Alias`,`User Inikoo Rep` as UIR from `User Dimension` U left join `User Rights Bridge` URB on (URB.`User Key`=U.`User Key`) where `Right Code`=?  ';
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array($data['right'])
+        );
+        while ($row = $stmt->fetch()) {
+            $users_data[]=$row;
+        }
+
     }
+
+
+
 
     $response = array(
         'state'   => 200,
