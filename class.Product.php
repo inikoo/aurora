@@ -829,22 +829,22 @@ class Product extends Asset {
 
                 switch ($this->data['Product Availability State']) {
                     case 'Excess':
-                        $stock_status = '<i class="fa green  fa-plus-circle fa-fw"  title="'._('Excess stock').'"></i>';
+                        $stock_status = '<i style="color: #13D13D" class="fa fa-circle fa-fw"  title="'._('Excess stock').'"></i>';
                         break;
                     case 'Normal':
-                        $stock_status = '<i class="fa green fa-check-circle fa-fw"  title="'._('Normal stock').'"></i>';
+                        $stock_status = '<i style="color: #13D13D" class="fa green fa-circle fa-fw"  title="'._('Normal stock').'"></i>';
                         break;
                     case 'Low':
-                        $stock_status = '<i class="fa yellow fa-minus-circle fa-fw"  title="'._('Low stock').'"></i>';
+                        $stock_status = '<i style="color: #FCBE07" class="fa fa-circle fa-fw"  title="'._('Low stock').'"></i>';
                         break;
                     case 'VeryLow':
-                        $stock_status = '<i class="fa error fa-minus-circle fa-fw"   title="'._('Very low stock').'"></i>';
+                        $stock_status = '<i style="color: #F25056" class="fa fa-circle fa-fw"   title="'._('Very low stock').'"></i>';
                         break;
                     case 'OutofStock':
-                        $stock_status = '<i class="fa error fa-ban fa-fw"   title="'._('Out of stock').'"></i>';
+                        $stock_status = '<i style="color: #F25056" class="fa fa-circle fa-fw"   title="'._('Out of stock').'"></i>';
                         break;
                     case 'Error':
-                        $stock_status = '<i class="fa fa-question-circle fa-fw"   title="'._('Error').'"></i>';
+                        $stock_status = '<i style="color: #F25056" class="fa fa-circle fa-fw"   title="'._('Error').'"></i>';
                         break;
                     default:
                         $stock_status = $this->data['Product Availability State'];
@@ -1301,10 +1301,16 @@ class Product extends Asset {
     function update_availability($use_fork = true) {
 
 
+
+
+
         if ($this->get('Product Number of Parts') > 0) {
 
+            $min_days_available='';
+            $min_slock_status='';
+
             $sql = sprintf(
-                " SELECT `Part Reference`,`Part On Demand`,`Part Stock Status`,`Part Current On Hand Stock`-`Part Current Stock In Process`-`Part Current Stock Ordered Paid` AS stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio` FROM     `Product Part Bridge` B LEFT JOIN   `Part Dimension` P   ON (P.`Part SKU`=B.`Product Part Part SKU`)   WHERE B.`Product Part Product ID`=%d   ",
+                " SELECT `Part Days Available Forecast`,`Part Reference`,`Part On Demand`,`Part Stock Status`,`Part Current On Hand Stock`-`Part Current Stock In Process`-`Part Current Stock Ordered Paid` AS stock,`Part Current Stock In Process`,`Part Current On Hand Stock`,`Product Part Ratio` FROM     `Product Part Bridge` B LEFT JOIN   `Part Dimension` P   ON (P.`Part SKU`=B.`Product Part Part SKU`)   WHERE B.`Product Part Product ID`=%d   ",
                 $this->id
             );
 
@@ -1320,6 +1326,9 @@ class Product extends Asset {
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
 
+
+                    //print_r($row);
+
                     if ($on_demand == '') {
                         $on_demand = $row['Part On Demand'];
 
@@ -1332,19 +1341,10 @@ class Product extends Asset {
                     }
 
 
-                    if ($row['Part Stock Status'] == 'Error') {
-                        $tipo = 'Error';
-                    } elseif ($row['Part Stock Status'] == 'Out_Of_Stock' and $tipo != 'Error') {
-                        $tipo = 'OutofStock';
-                    } elseif ($row['Part Stock Status'] == 'Critical' and $tipo != 'Error' and $tipo != 'OutofStock') {
-                        $tipo = 'VeryLow';
-                    } else {
-                        if ($row['Part Stock Status'] == 'Low' and $tipo != 'Error' and $tipo != 'OutofStock' and $tipo != 'VeryLow') {
-                            $tipo = 'Low';
-                        } elseif ($row['Part Stock Status'] == 'Optimal' and $tipo == 'Excess') {
-                            $tipo = 'Normal';
-                        }
+                    if($min_days_available==='' or $min_days_available>$row['Part Days Available Forecast']){
+                        $min_days_available=$row['Part Days Available Forecast'];
                     }
+
 
                     if (is_numeric($row['stock']) and is_numeric(
                             $row['Product Part Ratio']
@@ -1378,9 +1378,6 @@ class Product extends Asset {
 
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
 
 
@@ -1396,26 +1393,31 @@ class Product extends Asset {
                 }
             }
 
-            if ($on_demand == 'Yes') {
 
-                $stock = 99999999999;
-                $tipo  = 'OnDemand';
-            }
 
         } else {
             $stock = 0;
-            $tipo  = 'Normal';
         }
 
+
+        if($min_days_available==''){
+            $min_days_available=100;
+        }
 
         if($stock==0 ){
             $tipo  = 'OutofStock';
-        }elseif($stock==1){
-            $tipo  = 'VeryLow';
-        }elseif($stock<5){
-            $tipo  = 'Low';
-        }
+        }elseif($on_demand == 'Yes'){
+            $tipo  = 'OnDemand';
 
+        }elseif($stock==1 or $min_days_available<2){
+            $tipo  = 'VeryLow';
+        }elseif($stock<5 or $min_days_available<7){
+            $tipo  = 'Low';
+        }elseif($min_days_available<101){
+            $tipo  = 'Normal';
+        }else{
+            $tipo  = 'Excess';
+        }
 
 
         $this->fast_update(
