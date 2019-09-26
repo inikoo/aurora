@@ -38,7 +38,19 @@ className: "aright"
 }),
 headerCell: integerHeaderCell,
 sortType: "toggle",
-},{
+},
+{
+name: "outers",
+label: "{t}Outers{/t}",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({
+className: "aright"
+}),
+headerCell: integerHeaderCell,
+sortType: "toggle",
+},
+{
 name: "sales",
 label: "{t}Sales{/t}",
 editable: false,
