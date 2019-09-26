@@ -740,9 +740,7 @@ class Product extends Asset {
 
                 switch ($this->data['Product Web State']) {
                     case 'For Sale':
-                        $web_state = '<span class="'.(($this->get(
-                                    'Product Availability'
-                                ) <= 0 and $this->data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Online').'</span>'.($this->data['Product Web Configuration'] == 'Online Force For Sale' ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>'
+                        $web_state = '<span class="'.(($this->get('Product Availability') <= 0 and $this->data['Product Number of Parts'] > 0 and $this->data['Product Availability State'] !='OnDemand') ? 'error' : '').'">'._('Online').'</span>'.($this->data['Product Web Configuration'] == 'Online Force For Sale' ? ' <i class="fa fa-thumb-tack padding_left_5" aria-hidden="true"></i>'
                                 : '');
                         break;
                     case 'Out of Stock':
@@ -1308,6 +1306,9 @@ class Product extends Asset {
         $min_slock_status='';
         $on_demand = '';
 
+
+
+
         if ($this->get('Product Number of Parts') > 0) {
 
 
@@ -1367,9 +1368,16 @@ class Product extends Asset {
 
 
 
-                        if ($stock >= $_stock or $change==false) {
-                            $stock  = $_stock;
-                            $change = true;
+                        if ($stock >= $_stock or $change==false     ) {
+
+                            if($this->get('Product Number of Parts') > 1 and $row['Part On Demand']=='Yes' ){
+
+                            }else{
+                                $stock  = $_stock;
+                                $change = true;
+                            }
+
+
                         }
 
 
