@@ -16,9 +16,7 @@ $table = '`Order Transaction Fact` TR ';
 switch ($parameters['parent']) {
     case 'product':
         $where = sprintf(' where `Product ID`=%d', $parameters['parent_key']);
-        // todo remove this after migration
-        $product = get_object('Product', $parameters['parent_key']);
-        $store   = get_object('Store', $product->get('Product Store Key'));
+
         break;
     default:
         exit('parent not configured');
@@ -60,9 +58,11 @@ $sql_totals = "select count(Distinct $sql_totals_fields) as num from $table  $wh
     $fields = "`Invoice Date` as `Date`,
 sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as sales,
 count(distinct `Invoice Key`) as invoices,
-count(distinct `Customer Key`) as customers
+count(distinct `Customer Key`) as customers,
+sum( `Delivery Note Quantity`) as outers
+
 ";
 
 
 
-?>
+
