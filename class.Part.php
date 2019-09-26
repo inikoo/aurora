@@ -2742,11 +2742,6 @@ class Part extends Asset {
                 $this->update_field($field, $value, $options);
                 break;
 
-            case('Part Available for Products Configuration'):
-                $this->update_availability_for_products_configuration(
-                    $value, $options
-                );
-                break;
 
 
             case 'Part Next Set Supplier Shipment':
@@ -3560,107 +3555,6 @@ class Part extends Asset {
 
     }
 
-    function update_availability_for_products_configuration($value, $options) {
-
-        $this->update_field(
-            'Part Available for Products Configuration', $value, $options
-        );
-        $new_value = $this->new_value;
-        $updated   = $this->updated;
-
-        if (preg_match('/dont_update_pages/', $options)) {
-            $update_products = false;
-        } else {
-            $update_products = true;
-        }
-
-        $this->update_availability_for_products($update_products);
-        $this->new_value = $new_value;
-        $this->updated   = $updated;
-
-    }
-
-    function update_availability_for_products($update_pages = true) {
-
-        global $session;
-
-        switch ($this->data['Part Available for Products Configuration']) {
-            case 'Yes':
-            case 'No':
-                $this->update_field(
-                    'Part Available for Products', $this->data['Part Available for Products Configuration']
-                );
-                break;
-            case 'Automatic':
-                if ($this->data['Part Current On Hand Stock'] > 0 and $this->data['Part Status'] == 'In Use') {
-                    $this->update_field('Part Available for Products', 'Yes');
-                } else {
-                    $this->update_field('Part Available for Products', 'No');
-                }
-
-        }
-
-
-        if ($this->updated) {
-
-
-            if (isset($this->editor['User Key']) and is_numeric(
-                    $this->editor['User Key']
-                )) {
-                $user_key = $this->editor['User Key'];
-            } else {
-                $user_key = 0;
-            }
-
-            $sql = sprintf(
-                "SELECT UNIX_TIMESTAMP(`Date`) AS date,`Part Availability for Products Key` FROM `Part Availability for Products Timeline` WHERE `Part SKU`=%d AND `Warehouse Key`=%d  ORDER BY `Date` DESC ,`Part Availability for Products Key` DESC LIMIT 1", $this->sku,
-                $session->get('current_warehouse')
-            );
-
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $last_record_key  = $row['Part Availability for Products Key'];
-                    $last_record_date = $row['date'];
-                } else {
-                    $last_record_key  = false;
-                    $last_record_date = false;
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-
-            $new_date_formatted = gmdate('Y-m-d H:i:s');
-            $new_date           = gmdate('U');
-
-            $sql = sprintf(
-                "INSERT INTO `Part Availability for Products Timeline`  (`Part SKU`,`User Key`,`Warehouse Key`,`Date`,`Availability for Products`) VALUES (%d,%d,%d,%s,%s) ", $this->sku, $user_key, $session->get('current_warehouse'), prepare_mysql($new_date_formatted),
-                prepare_mysql($this->data['Part Available for Products'])
-
-            );
-            $this->db->exec($sql);
-
-            if ($last_record_key) {
-                $sql = sprintf(
-                    "UPDATE `Part Availability for Products Timeline` SET `Duration`=%d WHERE `Part Availability for Products Key`=%d", $new_date - $last_record_date, $last_record_key
-
-                );
-                $this->db->exec($sql);
-
-            }
-
-
-            foreach ($this->get_products('objects') as $product) {
-                $product->editor = $this->editor;
-                //$product->update_web_state($update_pages);
-
-            }
-
-        }
-
-    }
 
     function get_number_real_locations($unknown_location_key = '') {
 
