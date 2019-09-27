@@ -245,7 +245,7 @@ class Customer extends Subject {
 
             case 'Last Website Visit':
 
-                if($this->data['Customer Last Website Visit']!=''){
+                if ($this->data['Customer Last Website Visit'] != '') {
                     $_tmp = gmdate("U") - gmdate("U", strtotime($this->data['Customer Last Website Visit'].' +0:00'));
                     if ($_tmp < 3600) {
                         $date = strftime("%H:%M:%S %Z", strtotime($this->data['Customer Last Website Visit'].' +0:00'));
@@ -266,12 +266,11 @@ class Customer extends Subject {
                     }
 
                     return $date;
-                }else{
+                } else {
                     return '';
                 }
 
 
-            
             case 'Delivery Address Link':
 
                 if ($this->data['Customer Delivery Address Link'] == 'Billing') {
@@ -939,7 +938,7 @@ class Customer extends Subject {
         $order_data['Order Tax Number Valid']              = $this->data['Customer Tax Number Valid'];
         $order_data['Order Tax Number Validation Date']    = $this->data['Customer Tax Number Validation Date'];
         $order_data['Order Tax Number Validation Source']  = $this->data['Customer Tax Number Validation Source'];
-        $order_data['Order Tax Number Validation Message']  = $this->data['Customer Tax Number Validation Message'];
+        $order_data['Order Tax Number Validation Message'] = $this->data['Customer Tax Number Validation Message'];
 
 
         $order_data['Order Tax Number Details Match']      = $this->data['Customer Tax Number Details Match'];
@@ -1118,8 +1117,8 @@ class Customer extends Subject {
                 $this->update_metadata = array(
 
                     'class_html' => array(
-                        'Contact_Address' => $this->get('Contact Address'),
-                        'Customer_Tax_Number_Formatted'=>$this->get('Tax Number Formatted')
+                        'Contact_Address'               => $this->get('Contact Address'),
+                        'Customer_Tax_Number_Formatted' => $this->get('Tax Number Formatted')
 
 
                     )
@@ -3774,15 +3773,35 @@ class Customer extends Subject {
     }
 
     function approve() {
+        include_once 'utils/new_fork.php';
+        $account = get_object('Account', 1);
 
         $this->update(array('Customer Type by Activity' => 'Active'));
+
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'         => 'customer_approval_done',
+            'email_template_code' => 'Registration Approved',
+            'customer_key' => $this->id,
+        ), $account->get('Account Code')
+        );
+
 
     }
 
     function reject() {
+        include_once 'utils/new_fork.php';
+        $account = get_object('Account', 1);
 
         $this->update(array('Customer Type by Activity' => 'Rejected'));
 
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'                => 'customer_approval_done',
+            'email_template_code' => 'Registration Rejected',
+            'customer_key'        => $this->id,
+        ), $account->get('Account Code')
+        );
     }
 
     function update_last_dispatched_order_key() {

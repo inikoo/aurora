@@ -17,10 +17,6 @@ $metadata = $object->get('Metadata');
 
 $smarty->assign('email_template', $object);
 
-
-
-
-
 $object_fields[] = array(
     'label'      => _('Operations'),
     'show_title' => true,
@@ -55,6 +51,3 @@ $object_fields[] = array(
     )
 
 );
-
-
-?>

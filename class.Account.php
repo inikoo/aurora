@@ -221,13 +221,13 @@ class Account extends DB_Table {
 
         }
 
-        $data['Store Telecom Format']   = $this->get('Account Country Code');
         $data['Store Tax Country Code'] = $this->get('Account Country Code');
 
 
         $data['Store Home Country Code 2 Alpha'] = substr($data['Store Locale'], -2);
 
-        $country                         = new Country('2alpha', $data['Store Home Country Code 2 Alpha']);
+        $country = new Country('2alpha', $data['Store Home Country Code 2 Alpha']);
+
         $data['Store Home Country Name'] = $country->get('Country Name');
 
 
@@ -430,8 +430,8 @@ class Account extends DB_Table {
 
                 $field = 'Account '.preg_replace('/ Minify$/', '', $key);
 
-                $_value=($this->data[preg_replace('/Suppliers /', '', $field)]-$this->data[preg_replace('/Suppliers /', 'Production ', $field)]);
-                
+                $_value = ($this->data[preg_replace('/Suppliers /', '', $field)] - $this->data[preg_replace('/Suppliers /', 'Production ', $field)]);
+
                 $suffix          = '';
                 $fraction_digits = 'NO_FRACTION_DIGITS';
                 if ($_value >= 1000000) {
@@ -2765,7 +2765,7 @@ class Account extends DB_Table {
 
                 break;
             case 'Account Timezone':
-                $value=preg_replace('/\_/', '/', $value);
+                $value = preg_replace('/\_/', '/', $value);
                 $this->update_field($field, $value);
 
                 break;

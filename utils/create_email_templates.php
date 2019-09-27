@@ -93,6 +93,16 @@ function create_email_templates($db, $store) {
             'Email Campaign Type Scope'  => 'Customer Notification',
             'Email Campaign Type Code'   => 'Delivery Confirmation',
         ),
+        array(
+            'Email Campaign Type Status' => 'InProcess',
+            'Email Campaign Type Scope'  => 'Customer Notification',
+            'Email Campaign Type Code'   => 'Registration Approved',
+        ),
+        array(
+            'Email Campaign Type Status' => 'InProcess',
+            'Email Campaign Type Scope'  => 'Customer Notification',
+            'Email Campaign Type Code'   => 'Registration Rejected',
+        ),
 
     );
 
@@ -120,6 +130,8 @@ function create_email_templates($db, $store) {
             $email_campaign_type_key = $db->lastInsertId();
             $email_campaign_type     = get_object('email_campaign_type', $email_campaign_type_key);
 
+
+
             switch ($email_campaign_type->get('Email Campaign Type Code')) {
                 case 'New Order':
                 case 'New Customer':
@@ -133,7 +145,7 @@ function create_email_templates($db, $store) {
                         case 'New Order':
                             $subject = _('New order').' '.$store->get('Name');
                         // $html    = file_get_contents('templates/notification_emails/new_order.ntfy.tpl');
-
+                            break;
                         case 'New Customer':
                             $subject = _('New customer registration').' '.$store->get('Name');
                             // $html    = file_get_contents('templates/notification_emails/alert.ntfy.tpl');

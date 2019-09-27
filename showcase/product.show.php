@@ -404,5 +404,3 @@ function get_product_showcase($data, $smarty, $user, $db) {
 
 }
 
-
-?>

@@ -4209,6 +4209,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                 if (in_array(
                     $data['_object']->get('Email Campaign Type Code'), array(
                                                                          'Registration',
+                                                                         'Registration Approved',
+                                                                         'Registration Rejected',
                                                                          'Password Reminder',
                                                                          'Invite',
                                                                          'Delivery Confirmation',
@@ -4224,6 +4226,21 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                         $data['tab'] = 'email_campaign_type.sent_emails';
 
                     }
+
+                    if($data['_object']->get('Email Campaign Type Status')=='InProcess'){
+
+                        $_content['tabs']['email_campaign_type.details']['class']       = 'hide';
+                        $_content['tabs']['email_campaign_type.sent_emails']['class'] = 'hide';
+                        if ($data['tab'] == 'email_campaign_type.details' or $data['tab'] == 'email_campaign_type.sent_emails') {
+                            $_content['tabs']['email_campaign_type.workshop']['selected'] = true;
+
+                            $data['tab'] = 'email_campaign_type.workshop';
+
+                        }
+
+
+                    }
+
 
 
                 } else {

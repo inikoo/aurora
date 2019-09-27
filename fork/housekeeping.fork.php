@@ -102,7 +102,7 @@ function fork_housekeeping($job) {
                     $webpage_label = '<i class="fal fa-home"></i> '._('Home');
                 } elseif ($row['Webpage Code'] == 'basket.sys') {
                     $webpage_label = '<i class="fal fa-shopping-basket"></i> '._('Basket');
-                }elseif ($row['Webpage Code'] == 'profile.sys') {
+                } elseif ($row['Webpage Code'] == 'profile.sys') {
                     $webpage_label = '<i class="fal fa-user"></i> '._('Profile');
                 } elseif ($row['Webpage Code'] == 'checkout.sys') {
                     $webpage_label = '<i class="fal fa-scanner-keyboard"></i> '._('Checkout');
@@ -3101,6 +3101,30 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             break;
 
+
+        case 'customer_approval_done':
+
+            $customer = get_object('customer', $data['customer_key']);
+
+            $email_template_type = get_object('Email_Template_Type', ($data['email_template_code']).'|'.$customer->get('Customer Store Key'), 'code_store');
+            if ($email_template_type->id and $email_template_type->get('Email Campaign Type Status') == 'Active') {
+                $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
+                $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
+                if ($published_email_template->id) {
+                    $send_data = array(
+                        'Email_Template_Type' => $email_template_type,
+                        'Email_Template'      => $email_template,
+
+                    );
+
+                    $published_email_template->send($customer, $send_data);
+                }
+
+
+            }
+
+            break;
+
         case 'update_deals_status_from_dates':
 
             $sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension`  left join `Store Dimension` on (`Deal Store Key`=`Store Key`) where `Deal Expiration Date` is not null  and `Deal Status` not in ('Finished')");
@@ -3199,7 +3223,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
             break;
-
 
 
         default:
