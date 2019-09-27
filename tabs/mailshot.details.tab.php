@@ -66,7 +66,3 @@ if ($email_campaign->get('Email Campaign Type') == 'Marketing') {
 
 }
 
-
-
-
-?>

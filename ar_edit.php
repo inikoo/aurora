@@ -3022,10 +3022,11 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             $object = $parent->create_mailshot($data['fields_data']);
 
 
+
             if (!$parent->error) {
 
                 $pcard             = '';
-                $redirect          = 'marketing/'.$object->get('Store Key').'/emails/'.$parent->id.'/mailshot/'.$object->id;
+                $redirect          = 'marketing/'.$object->get('Store Key').'/emails/'.$object->get('Email Campaign Email Template Type Key').'/mailshot/'.$object->id;
                 $redirect_metadata = array('tab' => 'mailshot.workshop');
 
                 $updated_data = array();
