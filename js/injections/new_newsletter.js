@@ -3,7 +3,7 @@
  Copyright (c) 2018, Inikoo
  Version 3.0*/
 
-$("#new_newsletter").on( 'click',function () {
+$("#new_newsletter").on('click', function () {
     new_newsletter(this)
 })
 
@@ -17,9 +17,6 @@ function new_newsletter(element) {
     var fields_data = {
         'Email Campaign Type': 'Newsletter'
     };
-
-
-    //var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + parent + '&parent_key=' + parent_key + '&fields_data=' + JSON.stringify(fields_data)
 
 
     var form_data = new FormData();
@@ -36,14 +33,12 @@ function new_newsletter(element) {
     request.done(function (data) {
 
 
-
         //console.log(data)
         if (data.state == 200) {
 
-                change_view('marketing/' + data.updated_data.store_key + '/emails/' + data.updated_data.email_template_type_key + '/mailshot/' + data.new_id, {
-                    tab: 'mailshot.details'})
-
-          
+            change_view(data.redirect, {
+                tab: 'mailshot.details'
+            })
 
 
         } else if (data.state == 400) {
