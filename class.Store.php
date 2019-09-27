@@ -211,9 +211,6 @@ class Store extends DB_Table {
             $sql = "INSERT INTO `Store Default Currency` (`Store Key`) VALUES(".$this->id.");";
             $this->db->exec($sql);
 
-            $sql = "INSERT INTO `Store Data Currency` (`Store Key`) VALUES(".$this->id.");";
-            $this->db->exec($sql);
-
 
             $sql = sprintf(
                 "INSERT INTO `Store Data` (`Store Key`) VALUES (%d)", $this->id

@@ -20,6 +20,20 @@ $email_templates_data = array(
         'sender'  => 'Store'
 
     ),
+    'Registration Approved'               => array(
+        'key'     => 'Registration',
+        'name'    => _('Registration approved'),
+        'subject' => _('Registration approved'),
+        'sender'  => 'Store'
+
+    ),
+    'Registration Rejected'               => array(
+        'key'     => 'Registration',
+        'name'    => _('Registration rejected'),
+        'subject' => _('Registration rejected'),
+        'sender'  => 'Store'
+
+    ),
     'Password Reminder'        => array(
         'key'     => 'Password Reminder',
         'name'    => _('Password reset'),
@@ -90,4 +104,3 @@ $email_templates_data = array(
 );
 
 
-?>

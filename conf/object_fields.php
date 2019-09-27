@@ -724,7 +724,10 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                     include 'fields/email_campaign_type.oos_notification.fld.php';
                     break;
                 case 'Registration':
-                    include 'fields/email_campaign_type.registration.fld.php';
+                case 'Registration Approved':
+                case 'Registration Rejected':
+
+                include 'fields/email_campaign_type.registration.fld.php';
                     break;
                 case 'Password Reminder':
                     include 'fields/email_campaign_type.password_reminder.fld.php';
