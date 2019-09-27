@@ -27,7 +27,7 @@
                 <section>
                     <label class="input">
                         <i class="icon-append far fa-envelope"></i>
-                        <input class="register_field" type="email" name="email"  placeholder="{$data.labels._email_placeholder}">
+                        <input class="register_field" type="email" autocomplete="email"  name="email"  placeholder="{$data.labels._email_placeholder}">
                         <b id="_email_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._email_tooltip}</b>
                     </label>
                 </section>
@@ -35,7 +35,7 @@
                 <section>
                     <label class="input">
                         <i id="_password"  class="icon-append far fa-lock"></i>
-                        <input class="register_field" type="password" name="password" id="register_password" placeholder="{$data.labels._password_placeholder}" >
+                        <input class="register_field" type="password"  autocomplete="new-password" name="new-password" id="register_password" placeholder="{$data.labels._password_placeholder}" >
                         <b id="_password_tooltip"  class="tooltip tooltip-bottom-right">{$data.labels._password_tooltip}</b>
                     </label>
                 </section>
@@ -43,7 +43,7 @@
                 <section>
                     <label class="input">
                         <i id="_password_confirm" class="icon-append far fa-repeat-1"></i>
-                        <input class="register_field ignore" type="password" name="password_confirm" placeholder="{$data.labels._password_confirm_placeholder}" >
+                        <input class="register_field ignore" type="password"  autocomplete="new-password" name="password_confirm" placeholder="{$data.labels._password_confirm_placeholder}" >
                         <b id="_password_confirm_tooltip"  class="tooltip tooltip-bottom-right">{$data.labels._password_confirm_tooltip}</b>
                     </label>
                 </section>
@@ -54,7 +54,7 @@
                 <section>
                     <label class="input">
                         <i class="icon-append far fa-mobile" ></i>
-                        <input class="register_field" type="text" name="mobile" placeholder="{$data.labels._mobile_placeholder}">
+                        <input class="register_field" type="text" autocomplete="tel"  name="tel" placeholder="{$data.labels._mobile_placeholder}">
                         <b id="_mobile_tooltip"  class="tooltip tooltip-bottom-right">{$data.labels._mobile_tooltip}</b>
                     </label>
                 </section>
@@ -62,7 +62,7 @@
                 <section>
                     <label class="input">
                         <i class="icon-append far fa-user"></i>
-                        <input class="register_field" type="text" name="contact_name"  placeholder="{$data.labels._contact_name_placeholder}">
+                        <input class="register_field" type="text" autocomplete="name" name="name"  placeholder="{$data.labels._contact_name_placeholder}">
                         <b id="_contact_name_tooltip"  class="tooltip tooltip-bottom-right">{$data.labels._contact_name_tooltip}</b>
                     </label>
                 </section>
@@ -70,7 +70,7 @@
                 <section>
                     <label class="input">
                         <i class="icon-append far fa-store-alt"></i>
-                        <input class="register_field" type="text" name="company"  placeholder="{$data.labels._company_placeholder}">
+                        <input class="register_field" type="text" autocomplete="organization" name="organization"  placeholder="{$data.labels._company_placeholder}">
                         <b id="_company_tooltip"  class="tooltip tooltip-bottom-right">{$data.labels._company_tooltip}</b>
                     </label>
                 </section>
@@ -263,12 +263,3 @@
 
 
 </div>
-
-
-<script>
-
-
-
-</script>
-
-

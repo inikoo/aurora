@@ -671,7 +671,7 @@
                         });
 
 
-                        register_data['password'] = sha256_digest(register_data['password']);
+                        register_data['new-password'] = sha256_digest(register_data['new-password']);
 
                         var ajaxData = new FormData();
 
@@ -722,16 +722,16 @@
                                 }
                             }
 
-                        }, password: {
+                        }, 'new-password': {
                             required: true, minlength: 8
 
 
                         }, password_confirm: {
                             required: true, minlength: 8, equalTo: "#register_password"
-                        }, contact_name: {
+                        }, name: {
                             required: true,
 
-                        }, mobile: {
+                        }, tel: {
                             required: true,
 
                         }, terms: {
@@ -772,7 +772,7 @@
 
                     }
                 ,
-                    password:
+                    'new-password':
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}', minlength
                     :
@@ -792,12 +792,12 @@
                         '{if empty($labels._validation_minlength_password)}{t}Enter at least 8 characters{/t}{else}{$labels._validation_minlength_password|escape}{/if}',
                     }
                 ,
-                    contact_name:
+                    name:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
                     }
                 ,
-                    mobile:
+                    tel:
                     {
                         required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
                     }
