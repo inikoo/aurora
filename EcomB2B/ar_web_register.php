@@ -64,12 +64,12 @@ function register($db, $website, $data, $editor, $account) {
 
     if ($store->id) {
         $customer_data = array(
-            'Customer Main Contact Name'   => $raw_data['contact_name'],
-            'Customer Company Name'        => $raw_data['company'],
+            'Customer Main Contact Name'   => $raw_data['name'],
+            'Customer Company Name'        => $raw_data['organization'],
             'Customer Registration Number' => $raw_data['registration_number'],
             'Customer Tax Number'          => $raw_data['tax_number'],
             'Customer Main Plain Email'    => $raw_data['email'],
-            'Customer Main Plain Mobile'   => $raw_data['mobile'],
+            'Customer Main Plain Mobile'   => $raw_data['tel'],
             'Customer Registration Number' => $raw_data['registration_number'],
             'Customer Type by Activity'    => ($website->get('Website Registration Type') == 'ApprovedOnly' ? 'ToApprove' : 'Active')
 
@@ -112,7 +112,7 @@ function register($db, $website, $data, $editor, $account) {
         }
 
 
-        list($customer, $website_user) = $store->create_customer($customer_data, array('Website User Password' => $raw_data['password']));
+        list($customer, $website_user) = $store->create_customer($customer_data, array('Website User Password' => $raw_data['new-password']));
 
         if ($store->new_customer and $store->new_website_user) {
 
@@ -120,11 +120,8 @@ function register($db, $website, $data, $editor, $account) {
             foreach ($raw_data as $_key => $value) {
 
                 if (preg_match('/^poll_(\d+)/i', $_key, $matches)) {
-
                     $poll_key = $matches[1];
                     $customer->update(array('Customer Poll Query '.$poll_key => $value), 'no_history');
-
-
                 }
 
 
