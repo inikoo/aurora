@@ -115,8 +115,7 @@ if ($auth->is_authenticated()) {
 
     }
 
-    define("TIMEZONE", date_default_timezone_get());
-    $session->set('timezone', TIMEZONE);
+    $session->set('timezone', date_default_timezone_get());
     $session->set('local_timezone', $_REQUEST['timezone']);
     $session->set('local_timezone_label', get_normalized_timezones_formatted_label($_REQUEST['timezone']));
 

@@ -93,13 +93,13 @@ function get_fork_metadata($job) {
 
     $account = new Account($db);
 
+
+
     if ($account->get('Timezone')) {
-        date_default_timezone_set($account->get('Timezone'));
-        define("TIMEZONE", $account->data['Account Timezone']);
+        date_default_timezone_set($account->get('Account Timezone'));
 
     } else {
         date_default_timezone_set('UTC');
-        define("TIMEZONE", 'UTC');
 
     }
 

@@ -2582,23 +2582,6 @@ class Order extends DB_Table {
     }
 
 
-    function update_customer_history() {
-        $customer = new Customer ($this->data['Order Customer Key']);
-        switch ($this->data['Order State']) {
-
-            case ('Approved'):
-            case('InWarehouse'):
-            case('PackedDone'):
-            case('Dispatched'):
-                $customer->update_history_order_in_warehouse($this);
-                break;
-            default:
-
-                break;
-        }
-
-
-    }
 
     function get_currency_symbol() {
         return currency_symbol($this->data['Order Currency']);
