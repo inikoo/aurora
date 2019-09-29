@@ -74,7 +74,11 @@ if ($order == 'alias') {
 
 
 $table
-    = '  `Timesheet Record Dimension` as TRD left join `Staff Dimension` SD on (SD.`Staff Key`=TRD.`Timesheet Record Staff Key`) left join `Staff Dimension` A on (A.`Staff Key`=TRD.`Timesheet Authoriser Key`)  left join `Staff Dimension` I on (I.`Staff Key`=TRD.`Timesheet Remover Key`)    ';
+    = '  `Timesheet Record Dimension` as TRD 
+            left join `Timesheet Dimension` TD on (TD.`Timesheet Key`=TRD.`Timesheet Record Timesheet Key`) 
+            left join `Staff Dimension` SD on (SD.`Staff Key`=TRD.`Timesheet Record Staff Key`) 
+            left join `Staff Dimension` A on (A.`Staff Key`=TRD.`Timesheet Authoriser Key`)  
+            left join `Staff Dimension` I on (I.`Staff Key`=TRD.`Timesheet Remover Key`)    ';
 
 $sql_totals = "select count(*) as num from $table  $where  ";
 
@@ -84,8 +88,8 @@ $fields
 A.`Staff Alias` authoriser,`Timesheet Record Note`,
 I.`Staff Alias` ignorer,
 
-`Timesheet Record Ignored Due Missing End`,
+`Timesheet Record Ignored Due Missing End`,`Timesheet Timezone`,
 `Timesheet Record Ignored`,`Timesheet Record Timesheet Key`,SD.`Staff ID`,`Timesheet Record Key`,`Timesheet Record Source`,SD.`Staff Alias`,`Timesheet Record Staff Key`,SD.`Staff Name`,`Timesheet Record Date`,`Timesheet Record Type`,`Timesheet Record Action Type`,`Timesheet Record Action Type`
 ";
 
-?>
+

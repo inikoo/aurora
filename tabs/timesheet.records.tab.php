@@ -9,6 +9,8 @@
 
 */
 
+include_once 'utils/timezones.php';
+
 $tab     = 'timesheet.records';
 $ar_file = 'ar_hr_tables.php';
 $tipo    = 'timesheet_records';
@@ -23,6 +25,7 @@ $parameters    = array(
     'parent_key' => $state['key'],
 
 );
+
 
 $table_buttons   = array();
 $table_buttons[] = array(
@@ -55,4 +58,4 @@ include 'utils/get_table_html.php';
 
 $html = $html.'<div id="fields" object="Timesheet_Record"></div>';
 
-?>
+$html.= '<div style="padding: 5px 20px" class="small "><span class="discreet">'._('Times in').':</span> '.get_timezone_info($state['_object']->get('Timesheet Timezone'),$state['_object']->get('IsoDate').' 12:00:00').'</div>';
