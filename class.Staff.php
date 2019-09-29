@@ -195,6 +195,7 @@ class Staff extends DB_Table {
             $this->data['Staff PIN'] = '1234';
         }
 
+        $this->data['Staff Timezone'] = $account->get('Account Timezone');
 
         $keys   = '';
         $values = '';
@@ -294,6 +295,7 @@ class Staff extends DB_Table {
                 //print_r($this->user);
                 if ($this->create_user_error) {
                     $this->extra_msg = '<span class="warning"><i class="fa fa-exclamation-triangle"></i> '._("System user couldn't be created").' ('.$this->create_user_msg.')</span>';
+
                     return;
                 }
                 $staff_user->editor = $data['editor'];
@@ -328,8 +330,9 @@ class Staff extends DB_Table {
         if (!$working_hours) {
 
             $timesheet_data = array(
-                'Timesheet Date'      => date("Y-m-d", $date),
+                'Timesheet Date'      => gmdate("Y-m-d", $date),
                 'Timesheet Staff Key' => $this->id,
+                'Timesheet Timezone'  => $this->data['Staff Timezone'],
                 'editor'              => $this->editor
             );
             $timesheet      = new Timesheet('find', $timesheet_data, 'create');
@@ -817,6 +820,7 @@ class Staff extends DB_Table {
                 break;
             case('Position'):
                 $positions = '';
+
                 return $positions;
                 /*
                 include 'conf/roles.php';
@@ -1128,8 +1132,6 @@ class Staff extends DB_Table {
 
 
     }
-
-
 
 
     function create_timesheet_record($data) {

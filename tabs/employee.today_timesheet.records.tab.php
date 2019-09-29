@@ -76,4 +76,5 @@ include 'utils/get_table_html.php';
 
 $html = $html.'<div id="fields" object="Timesheet_Record"></div>';
 
-?>
+$html .= '<div style="padding: 5px 20px" class="small "><span class="discreet">'._('Times in').':</span> '.get_timezone_info($timesheet->get('Timesheet Timezone'), $timesheet->get('IsoDate').' 12:00:00').'</div>';
+

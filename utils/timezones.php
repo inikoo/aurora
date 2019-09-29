@@ -317,18 +317,28 @@ function _normalized_timezones() {
     );
 }
 
-function get_timezone_info() {
-    return 'UTC'.date('P').' <span class="abbreviation">'.get_timezone_abbreviation().'</span>';
+function get_timezone_info($timezone_id = '',$datetime='') {
+
+    if($timezone_id==''){
+        return 'UTC'.date('P').' <span class="abbreviation">'.get_timezone_abbreviation().'</span>';
+
+    }else{
+        $dt = new DateTime(($datetime==''?'now':$datetime), new DateTimeZone($timezone_id));
+        return 'UTC'.$dt->format('P').' <span class="abbreviation">'.get_timezone_abbreviation($timezone_id).'</span>';
+
+    }
+
 }
 
-function get_timezone_abbreviation($timezone_id = false) {
+function get_timezone_abbreviation($timezone_id = '',$datetime='') {
 
 
-    if (!$timezone_id) {
+    if ($timezone_id=='') {
         $timezone_id = date_default_timezone_get();
     }
 
-    $dt = new DateTime('now', new DateTimeZone($timezone_id));
+    $dt = new DateTime(($datetime==''?'now':$datetime), new DateTimeZone($timezone_id));
+
 
     $abbreviation = $dt->format('T');
     if (preg_match('/\d{1,2}$/', $abbreviation)) {

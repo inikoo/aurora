@@ -72,7 +72,7 @@ switch ($tipo) {
     case 'positions':
         positions(get_table_parameters(), $db, $user);
         break;
-        case 'deleted.employees':
+    case 'deleted.employees':
         deleted_employees(get_table_parameters(), $db, $user, 'current');
         break;
     case 'deleted.contractors':
@@ -108,7 +108,7 @@ function employees($_data, $db, $user, $type = '') {
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     //print $sql;
-   // exit;
+    // exit;
 
 
     $adata = array();
@@ -154,7 +154,7 @@ function employees($_data, $db, $user, $type = '') {
                 'formatted_id' => sprintf("%04d", $data['Staff Key']),
                 'payroll_id'   => $data['Staff ID'],
                 'name'         => $data['Staff Name'],
-                'code'         => sprintf('<span class="link" onCLick="change_view(\'employee/%d\')">%s</span>',$data['Staff Key'],$data['Staff Alias']),
+                'code'         => sprintf('<span class="link" onCLick="change_view(\'employee/%d\')">%s</span>', $data['Staff Key'], $data['Staff Alias']),
                 'code_link'    => $data['Staff Alias'],
 
 
@@ -184,13 +184,11 @@ function employees($_data, $db, $user, $type = '') {
 
                 'supervisors' => $data['supervisors'],
 
-                'job_title'          => $data['Staff Job Title'],
-                'user_login'         => $data['User Handle'],
+                'job_title'  => $data['Staff Job Title'],
+                'user_login' => $data['User Handle'],
 
-                'user_login'         => sprintf('<span class="link" onCLick="change_view(\'users/%d\')">%s</span>',$data['User Key'],$data['User Handle']),
-                'user_name_bis'         => sprintf('<span class="link" onCLick="change_view(\'users/%d\')">%s</span>',$data['User Key'],$data['User Handle']),
-
-
+                'user_login'    => sprintf('<span class="link" onCLick="change_view(\'users/%d\')">%s</span>', $data['User Key'], $data['User Handle']),
+                'user_name_bis' => sprintf('<span class="link" onCLick="change_view(\'users/%d\')">%s</span>', $data['User Key'], $data['User Handle']),
 
 
                 'user_active'        => $user_active,
@@ -236,10 +234,9 @@ function contractors($_data, $db, $user) {
 
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-   // print $sql;
+    // print $sql;
 
     $adata = array();
     foreach ($db->query($sql) as $data) {
@@ -311,7 +308,7 @@ function contractors($_data, $db, $user) {
             'type'  => $type,
 
 
-           // 'supervisors' => $data['supervisors'],
+            // 'supervisors' => $data['supervisors'],
 
             'job_title'          => $data['Staff Job Title'],
             'user_login'         => $data['User Handle'],
@@ -354,8 +351,7 @@ function timesheets($_data, $db, $user) {
     include_once 'prepare_table/init.php';
     include_once 'utils/natural_language.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     //print $sql;
     $adata = array();
 
@@ -404,18 +400,12 @@ function timesheets($_data, $db, $user) {
                 //'unpaid_overtime'=> ($unpaid_overtime!=0?sprintf("%s %s", number($unpaid_overtime, 2), _('h')):'<span class="disabled">-</span>'),
                 //'paid_overtime'=> ($paid_overtime!=0?sprintf("%s %s", number($paid_overtime, 2), _('h')):'<span class="disabled">-</span>'),
                 //'worked_time'=> ($worked_time!=0?sprintf("%s %s", number($worked_time, 2), _('h')):'<span class="disabled">-</span>'),
-                'clocked_time'       => ($clocked_hours != 0 ? '<span title="'.sprintf("%s %s", number($clocked_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['clocked_time']).'</span>'
-                    : '<span class="disabled">-</span>'),
-                'breaks_time'        => ($breaks_hours != 0 ? '<span title="'.sprintf("%s %s", number($breaks_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['breaks']).'</span>'
-                    : '<span class="disabled">-</span>'),
-                'work_time_hours'    => ($work_time_hours != 0 ? '<span title="'.sprintf("%s %s", number($work_time_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['work_time']).'</span>'
-                    : '<span class="disabled">-</span>'),
-                'unpaid_overtime'    => ($unpaid_overtime != 0 ? '<span title="'.sprintf("%s %s", number($unpaid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime']).'</span>'
-                    : '<span class="disabled">-</span>'),
-                'paid_overtime'      => ($paid_overtime != 0 ? '<span title="'.sprintf("%s %s", number($paid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime']).'</span>'
-                    : '<span class="disabled">-</span>'),
-                'worked_time'        => ($worked_time != 0 ? '<span title="'.sprintf("%s %s", number($worked_time, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time']).'</span>'
-                    : '<span class="disabled">-</span>'),
+                'clocked_time'       => ($clocked_hours != 0 ? '<span title="'.sprintf("%s %s", number($clocked_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['clocked_time']).'</span>' : '<span class="disabled">-</span>'),
+                'breaks_time'        => ($breaks_hours != 0 ? '<span title="'.sprintf("%s %s", number($breaks_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['breaks']).'</span>' : '<span class="disabled">-</span>'),
+                'work_time_hours'    => ($work_time_hours != 0 ? '<span title="'.sprintf("%s %s", number($work_time_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['work_time']).'</span>' : '<span class="disabled">-</span>'),
+                'unpaid_overtime'    => ($unpaid_overtime != 0 ? '<span title="'.sprintf("%s %s", number($unpaid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime']).'</span>' : '<span class="disabled">-</span>'),
+                'paid_overtime'      => ($paid_overtime != 0 ? '<span title="'.sprintf("%s %s", number($paid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime']).'</span>' : '<span class="disabled">-</span>'),
+                'worked_time'        => ($worked_time != 0 ? '<span title="'.sprintf("%s %s", number($worked_time, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time']).'</span>' : '<span class="disabled">-</span>'),
 
 
                 'clocking_records' => number(
@@ -450,8 +440,7 @@ function timesheet_records($_data, $db, $user) {
     $rtext_label = 'request';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
 
@@ -514,8 +503,7 @@ function timesheet_records($_data, $db, $user) {
                     $action_type = '<span id="action_type_'.$data['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-question"></i> '._('Unknown').'</span></span>';
                     break;
                 case 'Ignored':
-                    $action_type = '<span id="action_type_'.$data['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-eye-slash"></i> '._('Ignored').' '.($data['ignorer'] != ''
-                            ? '('.$data['ignorer'].')' : '').'</span></span>';
+                    $action_type = '<span id="action_type_'.$data['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-eye-slash"></i> '._('Ignored').' '.($data['ignorer'] != '' ? '('.$data['ignorer'].')' : '').'</span></span>';
                     break;
                 case 'MarkStart':
                     if ($data['Timesheet Record Type'] == 'WorkingHoursMark') {
@@ -550,8 +538,7 @@ function timesheet_records($_data, $db, $user) {
                     case 'No':
                         $ignored = _('No');
                         $used    = sprintf(
-                            '<i id="used_%d" value="Yes" onClick="toggle_ignore_record(%d)" class="far fa-fw fa-check-square checkbox"></i>', $data['Timesheet Record Key'],
-                            $data['Timesheet Record Key']
+                            '<i id="used_%d" value="Yes" onClick="toggle_ignore_record(%d)" class="far fa-fw fa-check-square checkbox"></i>', $data['Timesheet Record Key'], $data['Timesheet Record Key']
                         );
                         break;
 
@@ -567,9 +554,22 @@ function timesheet_records($_data, $db, $user) {
             }
 
             $notes = sprintf(
-                '<span class="button" key="%d" onclick="open_timesheet_record_notes(this)" id="notes_%d" >%s<span class="note">%s</span></span>', $data['Timesheet Record Key'],$data['Timesheet Record Key'],'<i class="far fa-sticky-note very_discreet '.($data['Timesheet Record Note']!=''?'hide':'').'" aria-hidden="true"></i> ',($data['Timesheet Record Note'])
+                '<span class="button" key="%d" onclick="open_timesheet_record_notes(this)" id="notes_%d" >%s<span class="note">%s</span></span>', $data['Timesheet Record Key'], $data['Timesheet Record Key'],
+                '<i class="far fa-sticky-note very_discreet '.($data['Timesheet Record Note'] != '' ? 'hide' : '').'" aria-hidden="true"></i> ', ($data['Timesheet Record Note'])
             );
 
+            date_default_timezone_set($data['Timesheet Timezone']);
+            if ($data['Timesheet Record Date'] != '') {
+                $_date = new DateTime($data['Timesheet Record Date'], new DateTimeZone($data['Timesheet Timezone']));
+
+
+                $time = sprintf('<span title="%s">%s</span>',
+                                strftime("%a %e %b %Y %H:%M:%S %Z", $_date->getTimestamp()),
+                                strftime("%H:%M", $_date->getTimestamp())
+                                );
+            } else {
+                $time = '';
+            }
 
 
             $adata[] = array(
@@ -588,10 +588,8 @@ function timesheet_records($_data, $db, $user) {
                 'ignored'                => $ignored,
                 'used'                   => $used,
                 'notes'                  => $notes,
-               'time'=>date('H:i:s',strtotime('2010-01-01 08:30:30 +0:00'))
-                // 'date'                   => ($data['Timesheet Record Date'] != '' ? strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Timesheet Record Date'])) : ''),
-               // 'time'                   => ($data['Timesheet Record Date'] != '' ? strftime("%H:%M:%S", strtotime($data['Timesheet Record Date'])) : ''),
-
+                //  'date'                   => ($data['Timesheet Record Date'] != '' ? strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Timesheet Record Date'])) : ''),
+                'time'                   => $time
 
 
             );
@@ -623,8 +621,7 @@ function overtimes($_data, $db, $user) {
     $rtext_label = 'overtime';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
 
@@ -706,8 +703,7 @@ function months($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
 
-    $sql
-        = "select $fields from $table $where $wheref $group_by order by $order $order_direction ";
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction ";
     //print $sql;
     $adata = array();
 
@@ -753,8 +749,7 @@ function weeks($_data, $db, $user) {
     $rtext_label = 'week';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref $group_by order by $order $order_direction ";
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction ";
     //print $sql;
     $adata = array();
 
@@ -802,8 +797,7 @@ function days($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
 
-    $sql
-        = "select $fields from $table $where $wheref $group_by order by $order $order_direction ";
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction ";
 
     $adata = array();
 
@@ -853,8 +847,7 @@ function timesheets_employees($_data, $db, $user) {
     include_once 'prepare_table/init.php';
     include_once 'utils/natural_language.php';
 
-    $sql
-        = "select $fields from $table $where $wheref $group_by order by $order $order_direction ";
+    $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction ";
     //print $sql;
     $adata = array();
 
@@ -935,19 +928,14 @@ function timesheets_employees($_data, $db, $user) {
                 //'paid_overtime'=> ($paid_overtime!=0?sprintf("%s %s", number($paid_overtime, 2, 2), _('h')):'<span class="disabled">-</span>'),
                 //'worked_time'=> ($worked_time!=0?sprintf("%s %s", number($worked_time, 2, 2), _('h')):'<span class="disabled">-</span>'),
 
-                'clocked_time'    => ($clocked_hours != 0 ? '<span title="'.sprintf("%s %s", number($clocked_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['clocked_time']).'</span>'
-                    : '<span class="disabled">-</span>'),
+                'clocked_time'    => ($clocked_hours != 0 ? '<span title="'.sprintf("%s %s", number($clocked_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['clocked_time']).'</span>' : '<span class="disabled">-</span>'),
                 'breaks_time'     => ($breaks_hours != 0 ? '<span title="'.sprintf(
                         "%s %s", number($breaks_hours, 3), _('h')
                     ).'">'.seconds_to_hourminutes($data['breaks']).'</span>' : '<span class="disabled">-</span>'),
-                'work_time_hours' => ($work_time_hours != 0 ? '<span title="'.sprintf("%s %s", number($work_time_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['work_time']).'</span>'
-                    : '<span class="disabled">-</span>'),
-                'unpaid_overtime' => ($unpaid_overtime != 0 ? '<span title="'.sprintf("%s %s", number($unpaid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime']).'</span>'
-                    : '<span class="disabled">-</span>'),
-                'paid_overtime'   => ($paid_overtime != 0 ? '<span title="'.sprintf("%s %s", number($paid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime']).'</span>'
-                    : '<span class="disabled">-</span>'),
-                'worked_time'     => ($worked_time != 0 ? '<span title="'.sprintf("%s %s", number($worked_time, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time']).'</span>'
-                    : '<span class="disabled">-</span>'),
+                'work_time_hours' => ($work_time_hours != 0 ? '<span title="'.sprintf("%s %s", number($work_time_hours, 3), _('h')).'">'.seconds_to_hourminutes($data['work_time']).'</span>' : '<span class="disabled">-</span>'),
+                'unpaid_overtime' => ($unpaid_overtime != 0 ? '<span title="'.sprintf("%s %s", number($unpaid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime']).'</span>' : '<span class="disabled">-</span>'),
+                'paid_overtime'   => ($paid_overtime != 0 ? '<span title="'.sprintf("%s %s", number($paid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime']).'</span>' : '<span class="disabled">-</span>'),
+                'worked_time'     => ($worked_time != 0 ? '<span title="'.sprintf("%s %s", number($worked_time, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time']).'</span>' : '<span class="disabled">-</span>'),
 
                 'worked_time_monday'    => ($worked_time_monday != 0 ? '<span title="'.sprintf(
                         "%s %s", number($worked_time_monday, 3), _('h')
@@ -1161,8 +1149,7 @@ function deleted_employees($_data, $db, $user) {
     $rtext_label = 'deleted employee';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
 
@@ -1201,8 +1188,7 @@ function deleted_contractors($_data, $db, $user) {
     $rtext_label = 'deleted contractor';
     include_once 'prepare_table/init.php';
 
-    $sql
-        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
 
@@ -1239,38 +1225,39 @@ function deleted_contractors($_data, $db, $user) {
 
 function positions($_data, $db, $user) {
 
-   // $rtext_label = 'job position';
+    // $rtext_label = 'job position';
     include_once 'prepare_table/init.php';
 
     include 'conf/roles.php';
 
     $sql = "select $fields from $table $where $wheref $group_by ";
 
-   // print $sql;
+    // print $sql;
 
     $base_data = $roles;
     foreach ($db->query($sql) as $data) {
 
-        if(isset($base_data[$data['Role Code']]))
-        $base_data[$data['Role Code']] = array_merge($base_data[$data['Role Code']],$data);
+        if (isset($base_data[$data['Role Code']])) {
+            $base_data[$data['Role Code']] = array_merge($base_data[$data['Role Code']], $data);
+        }
     }
 
     foreach ($base_data as $key => $data) {
 
         $adata[] = array(
-            'id'      => $key,
-            '_position'         => $data['title'],
-            'position'         => sprintf('<span class="button" onClick="change_view(\'hr/position/%s\')">%s</span>',$key,$data['title']),
-            '_employees' => (isset($data['employees'])? $data['employees']:0),
+            'id'         => $key,
+            '_position'  => $data['title'],
+            'position'   => sprintf('<span class="button" onClick="change_view(\'hr/position/%s\')">%s</span>', $key, $data['title']),
+            '_employees' => (isset($data['employees']) ? $data['employees'] : 0),
 
-            'employees' => (isset($data['employees'])? number($data['employees']):0)
+            'employees' => (isset($data['employees']) ? number($data['employees']) : 0)
         );
 
     }
 
 
     foreach ($adata as $key => $row) {
-        $positions[$key]  = $row['_position'];
+        $positions[$key] = $row['_position'];
         $employees[$key] = $row['_employees'];
     }
 
@@ -1278,20 +1265,20 @@ function positions($_data, $db, $user) {
     //print_r($positions);
 
 
-  if($order=='position'){
-      if($order_direction=='desc'){
-          array_multisort($positions, SORT_DESC, $adata);
+    if ($order == 'position') {
+        if ($order_direction == 'desc') {
+            array_multisort($positions, SORT_DESC, $adata);
 
-      }else{
-          array_multisort($positions, SORT_ASC, $adata);
+        } else {
+            array_multisort($positions, SORT_ASC, $adata);
 
-      }
+        }
 
-  }elseif($order=='employees'){
-        if($order_direction=='desc'){
+    } elseif ($order == 'employees') {
+        if ($order_direction == 'desc') {
             array_multisort($employees, SORT_DESC, $adata);
 
-        }else{
+        } else {
             array_multisort($employees, SORT_ASC, $adata);
 
         }
@@ -1299,8 +1286,7 @@ function positions($_data, $db, $user) {
     }
 
 
-  //  print $order.' '.$order_direction;
-
+    //  print $order.' '.$order_direction;
 
 
     $total_records = count($roles);
@@ -1383,7 +1369,7 @@ function salesmen($_data, $db, $user, $type = '') {
                 'formatted_id' => sprintf("%04d", $data['Staff Key']),
                 'payroll_id'   => $data['Staff ID'],
                 'name'         => $data['Staff Name'],
-                'code'         => sprintf('<span class="link" onCLick="change_view(\'employee/%d\')">%s</span>',$data['Staff Key'],$data['Staff Alias']),
+                'code'         => sprintf('<span class="link" onCLick="change_view(\'employee/%d\')">%s</span>', $data['Staff Key'], $data['Staff Alias']),
                 'code_link'    => $data['Staff Alias'],
 
 
@@ -1413,13 +1399,11 @@ function salesmen($_data, $db, $user, $type = '') {
 
                 'supervisors' => $data['supervisors'],
 
-                'job_title'          => $data['Staff Job Title'],
-                'user_login'         => $data['User Handle'],
+                'job_title'  => $data['Staff Job Title'],
+                'user_login' => $data['User Handle'],
 
-                'user_login'         => sprintf('<span class="link" onCLick="change_view(\'users/%d\')">%s</span>',$data['User Key'],$data['User Handle']),
-                'user_name_bis'         => sprintf('<span class="link" onCLick="change_view(\'users/%d\')">%s</span>',$data['User Key'],$data['User Handle']),
-
-
+                'user_login'    => sprintf('<span class="link" onCLick="change_view(\'users/%d\')">%s</span>', $data['User Key'], $data['User Handle']),
+                'user_name_bis' => sprintf('<span class="link" onCLick="change_view(\'users/%d\')">%s</span>', $data['User Key'], $data['User Handle']),
 
 
                 'user_active'        => $user_active,
