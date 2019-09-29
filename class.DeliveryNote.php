@@ -387,9 +387,9 @@ class DeliveryNote extends DB_Table {
 
 
                     if ($this->get('Delivery Note Date Finish Picking') != '') {
-                        return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking')));
+                        return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking').' +0:00'));
                     } else {
-                        return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Start Picking')));
+                        return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Start Picking').' +0:00'));
                     }
 
 
@@ -411,11 +411,11 @@ class DeliveryNote extends DB_Table {
                                 return '<i class="fa fa-arrow-right" aria-hidden="true"></i>';
 
                             } else {
-                                return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking')));
+                                return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking').' +0:00'));
 
                             }
                         } else {
-                            return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Start Picking')));
+                            return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Start Picking').' +0:00'));
                         }
 
                     } else {
@@ -438,9 +438,9 @@ class DeliveryNote extends DB_Table {
 
 
                     if ($this->get('Delivery Note Date Finish Picking') != '') {
-                        return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking')));
+                        return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking').' +0:00'));
                     } else {
-                        return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Start Picking')));
+                        return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Start Picking').' +0:00'));
                     }
 
 
@@ -457,9 +457,9 @@ class DeliveryNote extends DB_Table {
 
 
                         if ($this->get('Delivery Note Date Finish Picking') != '') {
-                            return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking')));
+                            return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking').' +0:00'));
                         } else {
-                            return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Start Picking')));
+                            return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Start Picking').' +0:00'));
                         }
 
                     } else {
@@ -575,19 +575,19 @@ class DeliveryNote extends DB_Table {
             case 'Order Date Placed':
             case 'Date Created':
 
-                return strftime("%e %b %y", strtotime($this->data['Delivery Note '.$key]));
+                return strftime("%e %b %y", strtotime($this->data['Delivery Note '.$key].' +0:00'));
                 break;
             case 'Order Datetime Placed':
 
-                return strftime("%e %b %y %H:%M %Z", strtotime($this->data['Delivery Note Order Date Placed']));
+                return strftime("%e %b %y %H:%M %Z", strtotime($this->data['Delivery Note Order Date Placed'].' +0:00'));
                 break;
             case('Date'):
 
-                return strftime("%e %b %y", strtotime($this->data['Delivery Note Date']));
+                return strftime("%e %b %y", strtotime($this->data['Delivery Note Date'].' +0:00'));
 
                 break;
             case('Creation Date'):
-                return strftime("%e %b %y %H:%M %Z", strtotime($this->data['Delivery Note Date Created']));
+                return strftime("%e %b %y %H:%M %Z", strtotime($this->data['Delivery Note Date Created'].' +0:00'));
                 break;
             case('Start Picking Datetime'):
             case('Finish Picking Datetime'):
@@ -605,7 +605,7 @@ class DeliveryNote extends DB_Table {
                 }
 
                 return strftime(
-                    "%e %b %y %H:%M", strtotime($this->data["Delivery Note $key"])
+                    "%e %b %y %H:%M", strtotime($this->data["Delivery Note $key"].' +0:00')
                 );
                 break;
 
@@ -2251,7 +2251,7 @@ class DeliveryNote extends DB_Table {
 
 
                     if ($pending == 0) {
-                        $picked_time = sprintf(_('Picked: %s'), strftime("%a %e %b %y %H:%M %Z", strtotime($date)));
+                        $picked_time = sprintf(_('Picked: %s'), strftime("%a %e %b %y %H:%M %Z", strtotime($date).' +0:00'));
                         $location    = sprintf('<i class="fa fa-fw fa-check super_discreet %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $picked_time);
 
                     } elseif ($part_location->get('Quantity On Hand') <= 0) {

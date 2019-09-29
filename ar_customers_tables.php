@@ -138,7 +138,7 @@ function customers($_data, $db, $user) {
                 $last_order_date = '';
             } else {
                 $last_order_date = strftime(
-                    "%e %b %y", strtotime($data['Customer Last Order Date'])
+                    "%e %b %y", strtotime($data['Customer Last Order Date'].' +0:00')
                 );
             }
 
@@ -147,14 +147,14 @@ function customers($_data, $db, $user) {
             } else {
                 $last_invoice_date = strftime(
                     "%e %b %y", strtotime(
-                                  $data['Customer Last Invoiced Order Date']
+                                  $data['Customer Last Invoiced Order Date'].' +0:00'
                               )
                 );
             }
 
 
             $contact_since = strftime(
-                "%e %b %y", strtotime($data['Customer First Contacted Date'])
+                "%e %b %y", strtotime($data['Customer First Contacted Date'].' +0:00')
             );
 
 
@@ -312,7 +312,7 @@ function lists($_data, $db, $user) {
                 'type'          => $customer_list_type,
                 'name'          => sprintf('<span class="link"  onclick="change_view(\'customers/list/%d\')">%s</span>', $data['List key'], $data['List Name']),
                 'creation_date' => strftime(
-                    "%a %e %b %Y %H:%M %Z", strtotime($data['List Creation Date'])
+                    "%a %e %b %Y %H:%M %Z", strtotime($data['List Creation Date'].' +0:00')
                 ),
                 //'add_to_email_campaign_action'=>'<div class="buttons small"><button class="positive" onClick="add_to_email_campaign('.$data['List key'].')">'._('Add Emails').'</button></div>',
                 'items'         => $items,
@@ -671,7 +671,7 @@ function abandoned_cart_mail_list($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-            $inactive_since = strftime("%e %b %y", strtotime($data['Order Date']));
+            $inactive_since = strftime("%e %b %y", strtotime($data['Order Date'].' +0:00'));
 
 
             $customer_link_format = '/customers/%d/%d';
@@ -910,7 +910,7 @@ function poll_query_options($_data, $db, $user) {
 
 
             if ($data['Customer Poll Query Option Last Answered'] != '') {
-                $last_chose = strftime("%e %b %y", strtotime($data['Customer Poll Query Option Last Answered']));
+                $last_chose = strftime("%e %b %y", strtotime($data['Customer Poll Query Option Last Answered'].' +0:00'));
             } else {
                 $last_chose = '';
             }
@@ -979,7 +979,7 @@ function poll_query_answers($_data, $db, $user) {
                 'formatted_id' => sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Key']),
                 'customer'     => $data['Customer Name'],
                 'answer'       => $data['Customer Poll Reply'],
-                'date'         => strftime("%e %b %y", strtotime($data['Customer Poll Date']))
+                'date'         => strftime("%e %b %y", strtotime($data['Customer Poll Date'].' +0:00'))
 
 
             );
@@ -1033,7 +1033,7 @@ function asset_customers($_data, $db, $user) {
             } else {
                 $last_invoice_date = strftime(
                     "%e %b %y", strtotime(
-                                  $data['last_invoice']
+                                  $data['last_invoice'].' +0:00'
                               )
                 );
                 $invoiced_amount   = money($data['invoiced_amount'], $data['Order Currency Code']);
@@ -1122,7 +1122,7 @@ function prospects($_data, $db, $user) {
 
 
             $contact_since = strftime(
-                "%e %b %y", strtotime($data['Prospect First Contacted Date'])
+                "%e %b %y", strtotime($data['Prospect First Contacted Date'].' +0:00')
             );
 
 
@@ -1242,7 +1242,7 @@ function prospects_email_templates($_data, $db, $user) {
                 'subject' => $data['Email Template Subject'],
 
                 'name' => sprintf('<span class="link" onclick="change_view(\'prospects/%d/template/%d\')">%s</span>', $_data['parameters']['store_key'], $data['Email Template Key'], $data['Email Template Name']),
-                'date' => strftime("%a %e %b %Y", strtotime($data['Email Template Created'])),
+                'date' => strftime("%a %e %b %Y", strtotime($data['Email Template Created'].' +0:00')),
 
             );
 
@@ -1424,7 +1424,7 @@ function sales_history($_data, $db, $user, $account) {
                 $from_date = gmdate("Y-m-01", strtotime($from_date.' -1 year  +0:00'));
                 $to_date   = gmdate("Y-m-01", strtotime($to_date.' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
-                $from_date = gmdate("Y-m-d", strtotime($from_date.'  -1 year  +0:00'));
+                $from_date = gmdate("Y-m-d", strtotime($from_date.' -1 year  +0:00'));
                 $to_date   = gmdate("Y-m-d", strtotime($to_date.'  +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
                 $from_date = gmdate("Y-m-d", strtotime($from_date.' - 1 year +0:00'));
@@ -1456,23 +1456,23 @@ function sales_history($_data, $db, $user, $account) {
 
             if ($_data['parameters']['frequency'] == 'annually') {
                 $_date           = strftime("%Y", strtotime($data['Date'].' +0:00'));
-                $_date_last_year = strftime("%Y", strtotime($data['Date'].' - 1 year'));
+                $_date_last_year = strftime("%Y", strtotime($data['Date'].' - 1 year +0:00'));
                 $date            = $_date;
             } elseif ($_data['parameters']['frequency'] == 'quarterly') {
                 $_date           = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
-                $_date_last_year = 'Q'.ceil(date('n', strtotime($data['Date'].' - 1 year')) / 3).' '.strftime("%Y", strtotime($data['Date'].' - 1 year'));
+                $_date_last_year = 'Q'.ceil(date('n', strtotime($data['Date'].' - 1 year +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' - 1 year +0:00'));
                 $date            = $_date;
             } elseif ($_data['parameters']['frequency'] == 'monthly') {
                 $_date           = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
-                $_date_last_year = strftime("%b %Y", strtotime($data['Date'].' - 1 year'));
+                $_date_last_year = strftime("%b %Y", strtotime($data['Date'].' - 1 year +0:00'));
                 $date            = $_date;
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
                 $_date           = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
-                $_date_last_year = strftime("%Y%W ", strtotime($data['Date'].' - 1 year'));
+                $_date_last_year = strftime("%Y%W ", strtotime($data['Date'].' - 1 year +0:00'));
                 $date            = strftime("(%e %b) %Y %W ", strtotime($data['Date'].' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
                 $_date           = date('Y-m-d', strtotime($data['Date'].' +0:00'));
-                $_date_last_year = date('Y-m-d', strtotime($data['Date'].'  -1 year'));
+                $_date_last_year = date('Y-m-d', strtotime($data['Date'].' -1 year +0:00'));
                 $date            = strftime("%a %e %b %Y", strtotime($data['Date'].' +0:00'));
             }
 
@@ -1974,7 +1974,7 @@ function credit_blockchain($_data, $db, $user,$account) {
 
             $amount_ac=$data['Credit Transaction Amount']*$data['Credit Transaction Currency Exchange Rate'];
             $date = strftime(
-                "%a %e %b %y %T %Z", strtotime($data['Credit Transaction Date'])
+                "%a %e %b %y %T %Z", strtotime($data['Credit Transaction Date'].' +0:00')
             );
 
             $adata[] = array(
