@@ -82,8 +82,8 @@
 {/if}
 
 
-<div id="top_bar">
-    <div  class="timezone_info">{$timezone_info}</div>
+<div id="top_bar" style="top:16px">
+    <div class="timezone_info">{$timezone_info}</div>
 
     <div id="view_position"></div>
 
@@ -141,7 +141,7 @@
             <div style="clear:both;margin-bottom:100px"></div>
         </div>
     </section>
-    <aside id="notifications" data-current_side_view="{$_side_block}">
+    <aside id="notifications"  style="top:-15px" data-current_side_view="{$_side_block}">
         <div class="top_buttons">
 
 
