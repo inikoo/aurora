@@ -73,8 +73,8 @@ $session->start();
 
 $session->set('account', $account->get('Code'));
 
-if (!date_default_timezone_set($session->get('timezone'))) {
-    if(!date_default_timezone_set($account->get('Account Timezone'))){
+if ($session->get('timezone')=='' or !date_default_timezone_set($session->get('timezone'))) {
+    if($account->get('Account Timezone') or !date_default_timezone_set($account->get('Account Timezone'))){
         date_default_timezone_set('UTC');
     }
 }
