@@ -167,12 +167,8 @@ function get_fork_metadata($job) {
 
     $account = new Account($db);
 
-    if ($account->get('Timezone')) {
-        date_default_timezone_set($account->get('Account Timezone'));
-
-    } else {
-        date_default_timezone_set('UTC');
-
+    if(!date_default_timezone_set($account->get('Account Timezone'))){
+    date_default_timezone_set('UTC');
     }
 
 
@@ -231,7 +227,7 @@ function get_fork_data($job) {
     $fork_metadata = json_decode($fork_raw_data, true);
 
 
-    print_r($fork_metadata);
+    //print_r($fork_metadata);
 
     $inikoo_account_code = $fork_metadata['code'];
     if (!ctype_alnum($inikoo_account_code)) {
@@ -281,9 +277,7 @@ function get_fork_data($job) {
 
     $account = new Account($db);
 
-    if ($account->get('Timezone')) {
-        date_default_timezone_set($account->get('Account Timezone'));
-    } else {
+    if(!date_default_timezone_set($account->get('Account Timezone'))){
         date_default_timezone_set('UTC');
     }
 

@@ -23,7 +23,7 @@ function fork_take_webpage_screenshot($job) {
     $webpage = get_object('Webpage', $data['webpage_key']);
     $webpage->fork=true;
 
-    $url = $webpage->get('Webpage URL').'?snapshot='.md5(VKEY.'||'.date('Ymd'));
+    $url = $webpage->get('Webpage URL').'?snapshot='.md5(VKEY.'||'.gmdate('Ymd'));
 
 
     if (!($webpage->get('Website Code') == 'home_logout.sys' or $webpage->get('Website Code') == 'register.sys')) {
