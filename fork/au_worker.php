@@ -169,11 +169,9 @@ function get_fork_metadata($job) {
 
     if ($account->get('Timezone')) {
         date_default_timezone_set($account->get('Account Timezone'));
-        define("TIMEZONE", $account->data['Account Timezone']);
 
     } else {
         date_default_timezone_set('UTC');
-        define("TIMEZONE", 'UTC');
 
     }
 

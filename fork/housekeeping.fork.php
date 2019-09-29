@@ -1161,7 +1161,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $customer               = new Customer($order->get('Order Customer Key'));
             $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
             $customer->editor       = $data['editor'];
-            $customer->add_history_new_order($order);
+
             $customer->update_orders();
             $store = new Store($order->get('Order Store Key'));
 
