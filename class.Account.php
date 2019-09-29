@@ -505,6 +505,12 @@ class Account extends DB_Table {
             case 'Pretty Valid From':
                 return strftime("%a %e %b %Y", strtotime($this->data['Account Valid From'].' +0:00'));
                 break;
+            case 'Timezone':
+                include_once 'utils/timezones.php';
+                return get_normalized_timezones_formatted_label($this->data['Account Timezone']);
+
+                break;
+
             default:
 
 
@@ -2765,7 +2771,6 @@ class Account extends DB_Table {
 
                 break;
             case 'Account Timezone':
-                $value = preg_replace('/\_/', '/', $value);
                 $this->update_field($field, $value);
 
                 break;

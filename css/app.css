@@ -77,6 +77,13 @@ html, body, textarea, button {
   html .strikethrough, body .strikethrough, textarea .strikethrough, button .strikethrough {
     text-decoration: line-through; }
 
+.timezone_info {
+  float: right;
+  padding-right: 30px;
+  opacity: .6; }
+  .timezone_info .abbreviation {
+    opacity: .4; }
+
 .unselectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;

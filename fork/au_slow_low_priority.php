@@ -98,7 +98,7 @@ function get_fork_metadata($job) {
         define("TIMEZONE", $account->data['Account Timezone']);
 
     } else {
-        setTimezone('UTC');
+        date_default_timezone_set('UTC');
         define("TIMEZONE", 'UTC');
 
     }

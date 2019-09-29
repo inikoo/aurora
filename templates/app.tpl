@@ -2,16 +2,10 @@
 <html lang='en' xml:lang='en' xmlns="http://www.w3.org/1999/xhtml">
 <head>
 
-
-
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
     <title>Aurora</title>
-
     <link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon"/>
-
     <link href="/assets/au_app.min.css?v=190923" rel="stylesheet">
-
 
     {if !$is_devel}
         <script
@@ -24,7 +18,7 @@
 
     <script src="/assets/aurora_libs.min.js?v190910v3"></script>
 
-    <script src="/assets/aurora.min.js?v190924"></script>
+    <script src="/assets/aurora.min.js?v190924v2"></script>
 
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 
@@ -54,7 +48,7 @@
 
 
 {if !$is_devel}
-    <script>
+    men<script>
         (function (i, s, o, g, r, a, m) {
             i['GoogleAnalyticsObject'] = r;
             i[r] = i[r] || function () {
@@ -89,7 +83,10 @@
 
 
 <div id="top_bar">
+    <div  class="timezone_info">{$timezone_info}</div>
+
     <div id="view_position"></div>
+
 </div>
 <input type="hidden" id="_labels" data-labels='{ "error":"{t}Error{/t}"}'>
 
@@ -120,9 +117,10 @@
                 <li title="{t}Share screen{/t}"><a href="https://get.teamviewer.com/txww6bm" target="_blank"><i class="far fa-desktop fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label"
                                                                                                                                                                                                 class="label"> {t}Share screen{/t}</span></a>
                 </li>
-                *}
-                <li class="hide" title="{t}Help{/t}" onclick="window.fcWidget.open(); return false;"><i class="fas fa-headset fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Online chat{/t}</span>
+                 <li class="hide" title="{t}Help{/t}" onclick="window.fcWidget.open(); return false;"><i class="fas fa-headset fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label" class="label"> {t}Online chat{/t}</span>
                 </li>
+                *}
+
                 <li title="{t}Help{/t}" onclick="FreshWidget.show(); return false;"><i class="fal fa-hands-helping fa-fw" style="color:cornflowerblue;opacity:.75"></i><span id="fire_label"
                                                                                                                                                                              class="label"> {t}Help{/t}</span>
                 </li>
@@ -180,8 +178,6 @@
             </div>
         </div>
 
-
-
         <div  class="whiteboard side_content hide">
             <div class="top">
                 {t}Whiteboard{/t}
@@ -231,7 +227,7 @@
             "url":         "https://inikoo.freshdesk.com"
         });
     </script>
-    {if false}
+    {*
     <script>
         window.fcWidget.init({
             token:  "869f028d-7877-4611-a735-7021ae47fab0",
@@ -253,7 +249,7 @@
 
         window.fcWidget.user.setFirstName("{$user->get('Alias')}");
     </script>
-    {/if}
+    *}
 {/if}
 </body>
 </html>

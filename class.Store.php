@@ -4629,4 +4629,3 @@ class Store extends DB_Table {
 }
 
 
-?>

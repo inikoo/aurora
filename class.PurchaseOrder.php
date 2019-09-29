@@ -662,7 +662,7 @@ class PurchaseOrder extends DB_Table {
                 }
 
                 return strftime(
-                    "%e %b %Y", strtotime($this->data['Purchase Order '.$key].' +0:00')
+                    "%e %b %Y", strtotime($this->data['Purchase Order '.$key])
                 );
 
                 break;
@@ -987,16 +987,6 @@ class PurchaseOrder extends DB_Table {
 
                 }
 
-                /*
-
-                if (preg_match('/Date$/', $key)) {
-                    $date='Purchase Order '.$key;
-                    if ($key=='Estimated Receiving Date' or $key=='Agreed Receiving Date')
-                        return strftime("%e-%b-%Y", strtotime($this->data[$date].' +0:00'));
-                    else
-                        return strftime("%e-%b-%Y %H:%M", strtotime($this->data[$date].' +0:00'));
-                }
-    */
 
                 break;
         }

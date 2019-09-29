@@ -415,6 +415,8 @@
                                     {include file="parts_list.edit.tpl" field=$field parts_list=$object->get_parts_data(true) mode='edit'}
                                 {elseif $edit=='user_permissions'  }
                                     {include file="user_permissions.edit.tpl" field=$field user_key=$system_user->id user_groups=$system_user->get_groups() user_stores=$system_user->stores mode='edit'}
+                                {elseif $edit=='timezone'  }
+                                    {include file="timezone.edit.tpl" field=$field  timezones=$field.timezones mode='edit'}
 
                                 {elseif $edit=='mixed_recipients'  }
                                     {include file="mixed_recipients.edit.tpl" field_id=$field.id mixed_recipients=$object->get(preg_replace('/_/',' ',$field.id)) mode='edit'}

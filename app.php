@@ -11,6 +11,7 @@
 */
 
 require_once 'common.php';
+require_once 'utils/timezones.php';
 
 $smarty->assign('_request', $_SERVER['REQUEST_URI']);
 $smarty->assign('_side_block', (!empty($session->get('side_block')) ? $session->get('side_block') : 'real_time_users'));
@@ -39,6 +40,9 @@ $display_device_version='desktop';
 $_SESSION['display_device_version']=$display_device_version;
 $_SESSION['detected_device']=$detected_device;
 
+$smarty->assign('timezone_info', get_timezone_info());
+
+
 
 $smarty->assign('is_devel', preg_match('/bali|sasi|sakoi|geko/', gethostname()));
 
@@ -52,4 +56,3 @@ if ($display_device_version == 'mobile') {
 
 
 
-?>

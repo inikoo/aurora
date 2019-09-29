@@ -172,7 +172,7 @@ function get_fork_metadata($job) {
         define("TIMEZONE", $account->data['Account Timezone']);
 
     } else {
-        setTimezone('UTC');
+        date_default_timezone_set('UTC');
         define("TIMEZONE", 'UTC');
 
     }
@@ -286,7 +286,7 @@ function get_fork_data($job) {
     if ($account->get('Timezone')) {
         date_default_timezone_set($account->get('Timezone'));
     } else {
-        setTimezone('UTC');
+        date_default_timezone_set('UTC');
     }
 
 

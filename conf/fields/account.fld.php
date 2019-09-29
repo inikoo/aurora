@@ -10,12 +10,21 @@
  Version 3.0
 */
 
+include_once 'utils/timezones.php';
 
 if (isset($options['new']) and $options['new']) {
     $new = true;
 } else {
     $new = false;
 }
+
+if ($user->can_edit('account')) {
+    $edit = true;
+} else {
+    $edit = false;
+}
+
+
 
 
 $object_fields = array(
@@ -49,18 +58,24 @@ $object_fields = array(
         'show_title' => true,
         'fields'     => array(
             array(
-                'id'    => 'Account_Country',
-                'value' => $object->get('Account Country Code'),
-                'label' => _('Country')
+                'id'     => 'Account_Country',
+                'render' => false,
+                'value'  => $object->get('Account Country Code'),
+                'label'  => _('Country')
             ),
             array(
-                'id'    => 'Account_Currency',
-                'value' => $object->get('Account Currency'),
-                'label' => _('Currency')
+                'id'     => 'Account_Currency',
+                'render' => false,
+                'value'  => $object->get('Account Currency'),
+                'label'  => _('Currency')
             ),
             array(
-                'id'    => 'Account_Timezone',
-                'value' => $object->get('Account Timezone'),
+                'id'              => 'Account_Timezone',
+                'edit'            => ($edit ? 'timezone' : ''),
+                'value'           => $object->get('Account Timezone'),
+                'formatted_value' => $object->get('Timezone'),
+                'timezones'       => get_normalized_timezones(),
+
                 'label' => _('Timezone')
             )
 
@@ -75,10 +90,10 @@ $object_fields = array(
 
 
             array(
-                'edit'     => ($edit ? 'textarea' : ''),
-                'id'       => 'Account_Label_Signature',
-                'value'    => $object->get('Account Label Signature'),
-                'formatted_value'    => $object->get('Label Signature'),
+                'edit'            => ($edit ? 'textarea' : ''),
+                'id'              => 'Account_Label_Signature',
+                'value'           => $object->get('Account Label Signature'),
+                'formatted_value' => $object->get('Label Signature'),
 
                 'label'    => ucfirst($object->get_field_label('Account Label Signature')),
                 'required' => false,
@@ -95,4 +110,4 @@ $object_fields = array(
 );
 
 
-?>
+

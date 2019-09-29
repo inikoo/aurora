@@ -318,9 +318,9 @@ class Email_Tracking extends DB_Table {
                 }
 
                 return '<span title="'.strftime(
-                        "%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Email Tracking '.$key]." +00:00")
+                        "%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Email Tracking '.$key])
                     ).'">'.strftime(
-                        "%a, %e %b %Y %R:%S", strtotime($this->data['Email Tracking '.$key]." +00:00")
+                        "%a, %e %b %Y %R:%S", strtotime($this->data['Email Tracking '.$key])
                     ).'</span>';
                 break;
 
@@ -338,4 +338,4 @@ class Email_Tracking extends DB_Table {
 }
 
 
-?>
+

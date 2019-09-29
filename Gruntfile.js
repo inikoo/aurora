@@ -175,7 +175,14 @@ module.exports = function (grunt) {
                     'js/libs/jquery-migrate-3.0.1.js',
                     'js/libs/jquery-ui.1.12.1.js',
                     'js/libs/jquery.nice-select.js',
-                    'js/libs/moment-with-locales.js',
+
+
+                    'bower_components/moment/min/moment-with-locales.js',
+                    'bower_components/moment-timezone/builds/moment-timezone-with-data-2012-2022.js',
+                    'bower_components/select2/dist/js/select2.js',
+                    //'js/libs/moment-with-locales.js',
+                    //'js/libs/moment-timezone-with-data.js',
+
                     'js/libs/chrono.js',
                     'js/libs/sha256.js',
                     'js/libs/underscore.min.js',
@@ -279,6 +286,29 @@ module.exports = function (grunt) {
 
 
                 ], dest: 'assets/aurora.min.js',
+
+            }, login: {
+                options: {
+
+                    sourceMap: true,
+                },
+                src: [
+                    'js/libs/jquery-3.3.1.min.js',
+                    'js/libs/jquery-migrate-3.0.1.js',
+                    'bower_components/moment/min/moment.min.js',
+                    'bower_components/moment-timezone/builds/moment-timezone-with-data-10-year-range.min.js',
+                    'js/libs/sha256.js',
+                    'js/libs/aes.js',
+                    'js/libs/base64.js',
+
+                    'js/login/login.js',
+                    'js/libs/jquery.backstretch.min.js',
+
+
+
+
+
+                ], dest: 'assets/login.min.js',
 
             }, setup: {
                 options: {
@@ -404,6 +434,7 @@ module.exports = function (grunt) {
                             'css/d3fc.css',
                             'css/backgrid.css',
                             'css/backgrid-filter.css',
+                            'bower_components/select2/dist/css/select2.css',
 
                             'css/editor_v1/froala_editor.css',
                             'css/editor_v1/froala_style.css',
@@ -570,7 +601,8 @@ module.exports = function (grunt) {
     grunt.registerTask('qws', ['copy:websocket']);
 
 
-    grunt.registerTask('au', ['sass:aurora','sass:aurora_public','sass:login', 'cssmin:au', 'cssmin:au_login','uglify:aurora_libs','uglify:aurora']);
+    grunt.registerTask('au', ['sass:aurora','sass:aurora_public','sass:login', 'cssmin:au', 'cssmin:au_login','uglify:aurora_libs','uglify:login','uglify:aurora']);
+    grunt.registerTask('qau', ['uglify:aurora']);
 
 
     grunt.registerTask('pweb', ['sass:aurora_public', 'cssmin:pweb',
