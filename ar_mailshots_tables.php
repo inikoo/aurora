@@ -157,7 +157,7 @@ function subject_sent_emails($_data, $db, $user) {
                 'subject'   => $subject,
                 'recipient' => $recipient,
                 'email'     => $email,
-                'date'      => strftime("%a, %e %b %Y %R", strtotime($data['Email Tracking Created Date'])),
+                'date'      => strftime("%a, %e %b %Y %R", strtotime($data['Email Tracking Created Date'].' +0:00')),
 
 
             );
@@ -253,7 +253,7 @@ function email_tracking_events($_data, $db, $user) {
 
             $adata[] = array(
                 'id'   => (integer)$data['Email Tracking Event Key'],
-                'date' => strftime("%a %e %b %Y %H:%M %Z ", strtotime($data['Email Tracking Event Date'])),
+                'date' => strftime("%a %e %b %Y %H:%M %Z ", strtotime($data['Email Tracking Event Date'].' +0:00')),
 
                 'note'  => $note,
                 'event' => $event,
@@ -457,7 +457,7 @@ function sent_emails($_data, $db, $user) {
                 'subject'  => $subject,
                 'prospect' => $prospects,
                 'customer' => $customer,
-                'date'     => strftime("%a, %e %b %Y %R:%S %Z", strtotime($data['Email Tracking Created Date'])),
+                'date'     => strftime("%a, %e %b %Y %R:%S %Z", strtotime($data['Email Tracking Created Date'].' +0:00')),
 
 
             );
@@ -588,7 +588,7 @@ function user_notification_sent_emails($_data, $db, $user) {
                 'email'    => $email,
                 'subject'  => $subject,
                 'recipient' => $recipient,
-                'date'     => strftime("%a, %e %b %Y %R:%S", strtotime($data['Email Tracking Created Date'])),
+                'date'     => strftime("%a, %e %b %Y %R:%S", strtotime($data['Email Tracking Created Date'].' +0:00')),
 
 
             );
@@ -793,7 +793,7 @@ function mailshots($_data, $db, $user) {
                 'name'  => sprintf('<span class="name_%d">%s</span>', $data['Email Campaign Key'], $name),
                 'state' => sprintf('<span class="state_%d">%s</span>', $data['Email Campaign Key'], $state),
 
-                'date' => sprintf('<span class="date_%d">%s</span>', $data['Email Campaign Key'], strftime("%a, %e %b %Y %R", strtotime($data['Email Campaign Last Updated Date']))),
+                'date' => sprintf('<span class="date_%d">%s</span>', $data['Email Campaign Key'], strftime("%a, %e %b %Y %R", strtotime($data['Email Campaign Last Updated Date'].' +0:00'))),
                 'sent' => sprintf('<span class="sent_%d">%s</span>', $data['Email Campaign Key'], number($data['Email Campaign Sent'])),
 
 
@@ -905,7 +905,7 @@ function account_mailshots($_data, $db, $user) {
                 'name'  => sprintf('<span class="name_%d">%s</span>', $data['Email Campaign Key'], $name),
                 'state' => sprintf('<span class="state_%d">%s</span>', $data['Email Campaign Key'], $state),
 
-                'date' => sprintf('<span class="date_%d">%s</span>', $data['Email Campaign Key'], strftime("%a, %e %b %Y %R", strtotime($data['Email Campaign Last Updated Date']))),
+                'date' => sprintf('<span class="date_%d">%s</span>', $data['Email Campaign Key'], strftime("%a, %e %b %Y %R", strtotime($data['Email Campaign Last Updated Date'].' +0:00'))),
                 'sent' => sprintf('<span class="sent_%d">%s</span>', $data['Email Campaign Key'], number($data['Email Campaign Sent'])),
 
 
@@ -1006,7 +1006,7 @@ function previous_mailshots($_data, $db, $user) {
 
                 'name' => sprintf('<span class="name_%d">%s</span>', $data['Email Campaign Key'], $name),
 
-                'date'    => sprintf('<span class="date_%d">%s</span>', $data['Email Campaign Key'], strftime("%a, %e %b %Y", strtotime($data['Email Campaign Last Updated Date']))),
+                'date'    => sprintf('<span class="date_%d">%s</span>', $data['Email Campaign Key'], strftime("%a, %e %b %Y", strtotime($data['Email Campaign Last Updated Date'].' +0:00'))),
                 'sent'    => sprintf('<span class="sent_%d">%s</span>', $data['Email Campaign Key'], number($data['Email Campaign Sent'])),
                 'subject' => $data['Email Template Subject'],
 
@@ -1106,7 +1106,7 @@ function other_stores_mailshots($_data, $db, $user) {
                 'name'  => sprintf('<span class="name_%d">%s</span>', $data['Email Campaign Key'], $name),
                 'store' => sprintf('<span title="%s">%s</span>', $data['Store Name'], $data['Store Code']),
 
-                'date'    => sprintf('<span class="date_%d">%s</span>', $data['Email Campaign Key'], strftime("%a, %e %b %Y", strtotime($data['Email Campaign Last Updated Date']))),
+                'date'    => sprintf('<span class="date_%d">%s</span>', $data['Email Campaign Key'], strftime("%a, %e %b %Y", strtotime($data['Email Campaign Last Updated Date'].' +0:00'))),
                 'sent'    => sprintf('<span class="sent_%d">%s</span>', $data['Email Campaign Key'], number($data['Email Campaign Sent'])),
                 'subject' => $data['Email Template Subject'],
 

@@ -429,7 +429,7 @@ class PurchaseOrder extends DB_Table {
                                                                'Dispatched'
                                                            )
                     )) {
-                    return gmdate("Y-m-d H:i:s", strtotime($this->data['Purchase Order Estimated Production Date']));
+                    return gmdate("Y-m-d H:i:s", strtotime($this->data['Purchase Order Estimated Production Date'].' +0:00'));
                 } else {
 
 
@@ -450,11 +450,11 @@ class PurchaseOrder extends DB_Table {
 
                             //  print 'now +'.$parent->get($parent->table_name.' Average Delivery Days').' days';
                             if ($this->data['Purchase Order State'] == 'InProcess') {
-                                return gmdate("Y-m-d H:i:s", strtotime('now +'.$parent->get($parent->table_name.' Average Production Days').' days'));
+                                return gmdate("Y-m-d H:i:s", strtotime('now +'.$parent->get($parent->table_name.' Average Production Days').' days +0:00'));
                             } else {
 
 
-                                return gmdate("Y-m-d H:i:s", strtotime($this->get('Purchase Order Submitted Date').' +'.$parent->get($parent->table_name.' Average Production Days').' days'));
+                                return gmdate("Y-m-d H:i:s", strtotime($this->get('Purchase Order Submitted Date').' +'.$parent->get($parent->table_name.' Average Production Days').' days +0:00'));
 
                             }
 
@@ -474,7 +474,7 @@ class PurchaseOrder extends DB_Table {
                 break;
 
             case 'Submitted Formatted Date':
-                return strftime("%c", strtotime($this->get('Purchase Order Submitted Date')));
+                return strftime("%c", strtotime($this->get('Purchase Order Submitted Date').' +0:00'));
 
                 break;
             case 'Estimated Receiving Datetime':
@@ -511,11 +511,11 @@ class PurchaseOrder extends DB_Table {
 
                             //  print 'now +'.$parent->get($parent->table_name.' Average Delivery Days').' days';
                             if ($this->data['Purchase Order State'] == 'InProcess') {
-                                return gmdate("Y-m-d H:i:s", strtotime('now +'.$parent->get($parent->table_name.' Average Delivery Days').' days'));
+                                return gmdate("Y-m-d H:i:s", strtotime('now +'.$parent->get($parent->table_name.' Average Delivery Days').' days +0:00'));
                             } else {
 
 
-                                return gmdate("Y-m-d H:i:s", strtotime($this->get('Purchase Order Submitted Date').' +'.$parent->get($parent->table_name.' Average Delivery Days').' days'));
+                                return gmdate("Y-m-d H:i:s", strtotime($this->get('Purchase Order Submitted Date').' +'.$parent->get($parent->table_name.' Average Delivery Days').' days +0:00'));
 
                             }
 
@@ -580,7 +580,7 @@ class PurchaseOrder extends DB_Table {
 
                 } else {
                     if ($this->get('Estimated Receiving Datetime')) {
-                        return strftime("%e %b %Y", strtotime($this->get('Estimated Receiving Datetime')));
+                        return strftime("%e %b %Y", strtotime($this->get('Estimated Receiving Datetime').' +0:00'));
                     } else {
                         return '';
                     }
@@ -662,7 +662,7 @@ class PurchaseOrder extends DB_Table {
                 }
 
                 return strftime(
-                    "%e %b %Y", strtotime($this->data['Purchase Order '.$key])
+                    "%e %b %Y", strtotime($this->data['Purchase Order '.$key].' +0:00')
                 );
 
                 break;
@@ -674,7 +674,7 @@ class PurchaseOrder extends DB_Table {
                 } else {
 
                     if ($this->data['Purchase Order Estimated Receiving Date']) {
-                        return '<span class="discreet"><i class="fa fa-thumb-tack" aria-hidden="true"></i> '.strftime("%e %b %Y", strtotime($this->get('Estimated Receiving Date'))).'</span>';
+                        return '<span class="discreet"><i class="fa fa-thumb-tack" aria-hidden="true"></i> '.strftime("%e %b %Y", strtotime($this->get('Estimated Receiving Date').' +0:00')).'</span>';
                     } else {
 
                         $parent = get_object(
@@ -685,7 +685,7 @@ class PurchaseOrder extends DB_Table {
 
 
                             if ($parent->get($parent->table_name.' Average Delivery Days') and is_numeric($parent->get($parent->table_name.' Average Delivery Days'))) {
-                                return '<span class="discreet italic">'.strftime("%d %b %Y", strtotime('now +'.$parent->get($parent->table_name.' Average Delivery Days').' days')).'</span>';
+                                return '<span class="discreet italic">'.strftime("%d %b %Y", strtotime('now +'.$parent->get($parent->table_name.' Average Delivery Days').' days +0:00')).'</span>';
 
                             } else {
                                 return '&nbsp;';
@@ -706,7 +706,7 @@ class PurchaseOrder extends DB_Table {
                                         "%d %b %Y", strtotime(
                                                       $this->get('Purchase Order Submitted Date').' +'.$parent->get(
                                                           $parent->table_name.' Average Delivery Days'
-                                                      ).' days'
+                                                      ).' days +0:00'
                                                   )
                                     ).'</span>';
 
@@ -1322,7 +1322,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                     if ($parent->get($parent->table_name.' Average Production Days') != '' and is_numeric($parent->get($parent->table_name.' Average Production Days'))) {
                         $this->fast_update(
                             array(
-                                'Purchase Order Estimated Production Date' => gmdate("Y-m-d H:i:s", strtotime('now +'.$parent->get($parent->table_name.' Average Production Days').' days')),
+                                'Purchase Order Estimated Production Date' => gmdate("Y-m-d H:i:s", strtotime('now +'.$parent->get($parent->table_name.' Average Production Days').' days +0:00')),
                             )
                         );
                     }
@@ -1331,7 +1331,7 @@ sum(`Purchase Order Net Amount`) AS items_net, sum(`Purchase Order Extra Cost Am
                     if ($parent->get($parent->table_name.' Average Delivery Days') != '' and is_numeric($parent->get($parent->table_name.' Average Delivery Days'))) {
                         $this->fast_update(
                             array(
-                                'Purchase Order Estimated Receiving Date' => gmdate("Y-m-d H:i:s", strtotime('now +'.$parent->get($parent->table_name.' Average Delivery Days').' days')),
+                                'Purchase Order Estimated Receiving Date' => gmdate("Y-m-d H:i:s", strtotime('now +'.$parent->get($parent->table_name.' Average Delivery Days').' days +0:00')),
                             )
                         );
                     }

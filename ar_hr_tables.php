@@ -588,8 +588,9 @@ function timesheet_records($_data, $db, $user) {
                 'ignored'                => $ignored,
                 'used'                   => $used,
                 'notes'                  => $notes,
-                'date'                   => ($data['Timesheet Record Date'] != '' ? strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Timesheet Record Date'])) : ''),
-                'time'                   => ($data['Timesheet Record Date'] != '' ? strftime("%H:%M:%S", strtotime($data['Timesheet Record Date'])) : ''),
+               'time'=>date('H:i:s',strtotime('2010-01-01 08:30:30 +0:00'))
+                // 'date'                   => ($data['Timesheet Record Date'] != '' ? strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Timesheet Record Date'])) : ''),
+               // 'time'                   => ($data['Timesheet Record Date'] != '' ? strftime("%H:%M:%S", strtotime($data['Timesheet Record Date'])) : ''),
 
 
 

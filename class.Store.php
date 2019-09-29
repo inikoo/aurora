@@ -1049,7 +1049,7 @@ class Store extends DB_Table {
             require_once 'utils/date_functions.php';
 
             if ($this->data['Store Valid From'] != '') {
-                $from = date('Y-m-d', strtotime($this->get('Valid From')));
+                $from = date('Y-m-d', strtotime($this->get('Valid From').' +0:00'));
 
             } else {
                 $from = '';

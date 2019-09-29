@@ -308,15 +308,15 @@ class Order extends DB_Table {
         switch ($key) {
 
             case 'Last Updated by Customer':
-                $_tmp = gmdate("U") - gmdate("U", strtotime($this->data['Order Last Updated by Customer']));
+                $_tmp = gmdate("U") - gmdate("U", strtotime($this->data['Order Last Updated by Customer'].' +0:00'));
                 if ($_tmp < 3600) {
-                    $date = strftime("%H:%M:%S %Z", strtotime($this->data['Order Last Updated by Customer']));
+                    $date = strftime("%H:%M:%S %Z", strtotime($this->data['Order Last Updated by Customer'].' +0:00'));
 
                 } elseif ($_tmp < 86400) {
-                    $date = strftime("%e %b %Y %H:%M %Z", strtotime($this->data['Order Last Updated by Customer']));
+                    $date = strftime("%e %b %Y %H:%M %Z", strtotime($this->data['Order Last Updated by Customer'].' +0:00'));
 
                 } else {
-                    $date = strftime("%e %b %Y", strtotime($this->data['Order Last Updated by Customer']));
+                    $date = strftime("%e %b %Y", strtotime($this->data['Order Last Updated by Customer'].' +0:00'));
                 }
 
                 return $date;
@@ -442,13 +442,13 @@ class Order extends DB_Table {
             case 'Waiting days':
 
 
-                return floor((gmdate('U') - strtotime($this->data['Order Submitted by Customer Date'])) / 3600 / 24);
+                return floor((gmdate('U') - strtotime($this->data['Order Submitted by Customer Date'].' +0:00')) / 3600 / 24);
 
                 break;
             case 'Waiting days decimal':
 
 
-                return number(  (gmdate('U') - strtotime($this->data['Order Submitted by Customer Date'])) / 3600 / 24,1,true).' '._('days');
+                return number(  (gmdate('U') - strtotime($this->data['Order Submitted by Customer Date'].' +0:00')) / 3600 / 24,1,true).' '._('days');
 
                 break;
             case 'Currency Code':
@@ -645,7 +645,7 @@ class Order extends DB_Table {
                 if ($this->data['Order '.$key] == '') {
                     return '';
                 } else {
-                    return strftime("%e %b %y %H:%M", strtotime($this->data['Order '.$key]));
+                    return strftime("%e %b %y %H:%M", strtotime($this->data['Order '.$key].' +0:00'));
                 }
 
 
@@ -657,13 +657,7 @@ class Order extends DB_Table {
                 include_once 'common_natural_language.php';
 
                 return seconds_to_string(
-                    gmdate(
-                        'U', strtotime(
-                               $this->data['Order Submitted by Customer Date']
-                           )
-                    ) - gmdate(
-                        'U', strtotime($this->data['Order Created Date'])
-                    )
+                    gmdate('U', strtotime($this->data['Order Submitted by Customer Date'].' +0:00')) - gmdate('U', strtotime($this->data['Order Created Date'].' +0:00'))
                 );
                 break;
             case('Send to Warehouse Interval'):
@@ -674,10 +668,10 @@ class Order extends DB_Table {
 
                 return seconds_to_string(
                     gmdate(
-                        'U', strtotime($this->data['Order Send to Warehouse Date'])
+                        'U', strtotime($this->data['Order Send to Warehouse Date'].' +0:00')
                     ) - gmdate(
                         'U', strtotime(
-                               $this->data['Order Submitted by Customer Date']
+                               $this->data['Order Submitted by Customer Date'].' +0:00'
                            )
                     )
                 );
@@ -690,9 +684,9 @@ class Order extends DB_Table {
 
                 return seconds_to_string(
                     gmdate(
-                        'U', strtotime($this->data['Order Packed Done Date'])
+                        'U', strtotime($this->data['Order Packed Done Date'].' +0:00')
                     ) - gmdate(
-                        'U', strtotime($this->data['Order Send to Warehouse Date'])
+                        'U', strtotime($this->data['Order Send to Warehouse Date'].' +0:00')
                     )
                 );
                 break;
@@ -703,8 +697,8 @@ class Order extends DB_Table {
                 include_once 'common_natural_language.php';
 
                 return seconds_to_string(
-                    gmdate('U', strtotime($this->data['Order Dispatched Date'])) - gmdate(
-                        'U', strtotime($this->data['Order Packed Done Date'])
+                    gmdate('U', strtotime($this->data['Order Dispatched Date'].' +0:00')) - gmdate(
+                        'U', strtotime($this->data['Order Packed Done Date'].' +0:00')
                     )
                 );
                 break;
@@ -844,23 +838,23 @@ class Order extends DB_Table {
                     if ($this->data['Order Tax Number Validation Date'] != '') {
                         $_tmp = gmdate("U") - gmdate(
                                 "U", strtotime(
-                                       $this->data['Order Tax Number Validation Date']
+                                       $this->data['Order Tax Number Validation Date'].' +0:00'
                                    )
                             );
                         if ($_tmp < 3600) {
-                            $date = strftime("%e %b %Y %H:%M:%S %Z", strtotime($this->data['Order Tax Number Validation Date']));
+                            $date = strftime("%e %b %Y %H:%M:%S %Z", strtotime($this->data['Order Tax Number Validation Date'].' +0:00'));
 
                         } elseif ($_tmp < 86400) {
                             $date = strftime(
                                 "%e %b %Y %H:%M %Z", strtotime(
-                                                       $this->data['Order Tax Number Validation Date']
+                                                       $this->data['Order Tax Number Validation Date'].' +0:00'
                                                    )
                             );
 
                         } else {
                             $date = strftime(
                                 "%e %b %Y", strtotime(
-                                              $this->data['Order Tax Number Validation Date']
+                                              $this->data['Order Tax Number Validation Date'].' +0:00'
                                           )
                             );
                         }
@@ -921,14 +915,14 @@ class Order extends DB_Table {
                 }
 
                 if ($this->data['Order Tax Number Validation Date'] != '') {
-                    $_tmp = gmdate("U") - gmdate("U", strtotime($this->data['Order Tax Number Validation Date']));
+                    $_tmp = gmdate("U") - gmdate("U", strtotime($this->data['Order Tax Number Validation Date'].' +0:00'));
                     if ($_tmp < 3600) {
-                        $date = strftime("%e %b %Y %H:%M:%S %Z", strtotime($this->data['Order Tax Number Validation Date']));
+                        $date = strftime("%e %b %Y %H:%M:%S %Z", strtotime($this->data['Order Tax Number Validation Date'].' +0:00'));
                     } elseif ($_tmp < 86400) {
-                        $date = strftime("%e %b %Y %H:%M %Z", strtotime($this->data['Order Tax Number Validation Date']));
+                        $date = strftime("%e %b %Y %H:%M %Z", strtotime($this->data['Order Tax Number Validation Date'].' +0:00'));
 
                     } else {
-                        $date = strftime("%e %b %Y", strtotime($this->data['Order Tax Number Validation Date']));
+                        $date = strftime("%e %b %Y", strtotime($this->data['Order Tax Number Validation Date'].' +0:00'));
                     }
                 } else {
                     $date = '';
@@ -966,27 +960,27 @@ class Order extends DB_Table {
                     if ($this->data['Order Tax Number Validation Date'] != '') {
                         $_tmp = gmdate("U") - gmdate(
                                 "U", strtotime(
-                                       $this->data['Order Tax Number Validation Date']
+                                       $this->data['Order Tax Number Validation Date'].' +0:00'
                                    )
                             );
                         if ($_tmp < 3600) {
                             $date = strftime(
                                 "%e %b %Y %H:%M:%S %Z", strtotime(
-                                                          $this->data['Order Tax Number Validation Date']
+                                                          $this->data['Order Tax Number Validation Date'].' +0:00'
                                                       )
                             );
 
                         } elseif ($_tmp < 86400) {
                             $date = strftime(
                                 "%e %b %Y %H:%M %Z", strtotime(
-                                                       $this->data['Order Tax Number Validation Date']
+                                                       $this->data['Order Tax Number Validation Date'].' +0:00'
                                                    )
                             );
 
                         } else {
                             $date = strftime(
                                 "%e %b %Y", strtotime(
-                                              $this->data['Order Tax Number Validation Date']
+                                              $this->data['Order Tax Number Validation Date'].' +0:00'
                                           )
                             );
                         }
@@ -1845,7 +1839,7 @@ class Order extends DB_Table {
                     $customer->fast_update(
                         array(
                             'Customer Last Dispatched Order Key'  => $this->id,
-                            'Customer Last Dispatched Order Date' => date('Y-m-d', strtotime($date))
+                            'Customer Last Dispatched Order Date' => date('Y-m-d', strtotime($date).' +0:00')
                         )
                     );
 
@@ -2594,7 +2588,7 @@ class Order extends DB_Table {
     }
 
     function get_date($field) {
-        return strftime("%e %b %Y", strtotime($this->data[$field]));
+        return strftime("%e %b %Y", strtotime($this->data[$field].' +0:00'));
     }
 
     function remove_out_of_stocks_from_basket($product_pid) {
@@ -2667,10 +2661,6 @@ class Order extends DB_Table {
 
                 $affected_rows++;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
