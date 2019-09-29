@@ -237,8 +237,8 @@ function orders_in_process_not_paid($_data, $db, $user, $account) {
             'checked'   => sprintf('<i class="far fa-square fa-fw button"  aria-hidden="true" onClick="select_order(this)"></i>'),
             'store_key' => (integer)$data['Order Store Key'],
             'public_id' => $public_id,
-            'date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
-            'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'])),
+            'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'])),
             'customer'  => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
 
             'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
@@ -339,8 +339,8 @@ function orders_in_process_paid($_data, $db, $user, $account) {
 
 
             ),
-            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
-            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'])),
+            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'])),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
             'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
             'payments'       => $payments,
@@ -415,8 +415,8 @@ function orders_in_warehouse($_data, $db, $user) {
             'public_id'      => sprintf(
                 '<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
             ),
-            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
-            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'])),
+            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'])),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
             'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
             'payment_state'  => $payment_state,
@@ -529,8 +529,8 @@ function orders_in_warehouse_no_alerts($_data, $db, $user, $account) {
             'public_id'      => sprintf(
                 '<span class="link"  onclick="change_view(\'orders/%s/dashboard/in_warehouse/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
             ),
-            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['submitted_date'].' +0:00')),
-           // 'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['submitted_date'])),
+           // 'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'])),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
             'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Replacement State'], $data['Order Key']),
             'payment_state'  => $payment_state,
@@ -608,8 +608,8 @@ function orders_in_warehouse_with_alerts($_data, $db, $user, $account) {
             'public_id'      => sprintf(
                 '<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
             ),
-            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
-            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'])),
+            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'])),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
             'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
             'payment_state'  => $payment_state,
@@ -686,8 +686,8 @@ function orders_packed_done($_data, $db, $user, $account) {
             'public_id'      => sprintf(
                 '<span class="link"  onclick="change_view(\'orders/%s/dashboard/packed_done/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
             ),
-            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
-            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'])),
+            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'])),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
             'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
             'payment_state'  => $payment_state,
@@ -762,8 +762,8 @@ function orders_approved($_data, $db, $user, $account) {
             'public_id'      => sprintf(
                 '<span class="link"  onclick="change_view(\'orders/%s/dashboard/approved/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
             ),
-            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
-            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'])),
+            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'])),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
             'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
             'payment_state'  => $payment_state,
@@ -837,8 +837,8 @@ function orders_dispatched_today($_data, $db, $user, $account) {
             'public_id'      => sprintf(
                 '<span class="link"  onclick="change_view(\'orders/%s/dashboard/dispatched_today/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
             ),
-            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
-            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'])),
+            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'])),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
             'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
             'payment_state'  => $payment_state,
@@ -886,8 +886,8 @@ function orders_in_website($_data, $db, $user, $account) {
 
 
             ),
-            'date'         => strftime("%e %b %Y", strtotime($data['Order Created Date'].' +0:00')),
-            'last_updated' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated by Customer'].' +0:00')),
+            'date'         => strftime("%e %b %Y", strtotime($data['Order Created Date'])),
+            'last_updated' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated by Customer'])),
             'customer'     => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
             'total_amount' => money($data['Order Total Amount'], $data['Order Currency']),
             'idle_time'    => number($data['idle_time'])
@@ -967,8 +967,8 @@ function orders_server($_data, $db, $user) {
             'store'          => sprintf('<span class="link" onClick="change_view(\'/orders/%d\')">%s</span>', $data['Order Store Key'], $data['Store Code']),
             'state'          => $state,
             'public_id'      => sprintf('<span class="link" onClick="change_view(\'/orders/all/%d\')">%s</span>', $data['Order Key'], $data['Order Public ID']),
-            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
-            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'])),
+            'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'])),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
             'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
             'payment_state'  => get_order_formatted_payment_state($data),
@@ -1055,8 +1055,8 @@ function orders($_data, $db, $user) {
                 'public_id' => sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%s</span>', $parameters['parent_key'], $data['Order Key'], $data['Order Public ID']),
                 'state'     => $state,
 
-                'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
-                'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+                'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'])),
+                'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'])),
                 'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
                 'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], '', $data['Order Key']),
                 'payment_state'  => get_order_formatted_payment_state($data),
@@ -1202,7 +1202,7 @@ function delivery_notes($_data, $db, $user) {
             'number'   => sprintf('<span class="link" onclick="change_view(\'delivery_notes/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Key'], $data['Delivery Note ID']),
             'customer' => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d\')">%s</span>', $data['Delivery Note Store Key'], $data['Delivery Note Customer Key'], $data['Delivery Note Customer Name']),
 
-            'date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Created'].' +0:00')),
+            'date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Created'])),
             'weight'  => weight($data['Delivery Note Weight']),
             'parcels' => $parcels,
             'type'    => $type,
@@ -1293,7 +1293,7 @@ function pending_delivery_notes($_data, $db, $user) {
             'number'   => $data['Delivery Note ID'],
             'customer' => $data['Delivery Note Customer Name'],
 
-            'date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Created'].' +0:00')),
+            'date'    => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Delivery Note Date Created'])),
             'weight'  => weight($data['Delivery Note Weight']),
             'parcels' => $parcels,
             'type'    => $type,
@@ -2672,7 +2672,7 @@ function orders_in_website_mailshots($_data, $db, $user) {
 
         $adata[] = array(
             'id'   => (integer)$data['Email Campaign Key'],
-            'date' => strftime("%a %e %b %Y", strtotime($data['Email Campaign Last Updated Date'].' +0:00')),
+            'date' => strftime("%a %e %b %Y", strtotime($data['Email Campaign Last Updated Date'])),
 
 
             'name'   => $name,
@@ -3641,10 +3641,10 @@ function purged_orders($_data, $db, $user) {
                 'public_id'    => sprintf('<span class="link" onClick="change_view(\'orders/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']),
                 'purge_status' => sprintf('<span class="purged_status_%d">%s</span>', $data['Order Key'], $purge_status),
 
-                'last_updated_date' => strftime("%a %e %b %Y", strtotime($data['Order Last Updated Date'].' +0:00')),
+                'last_updated_date' => strftime("%a %e %b %Y", strtotime($data['Order Last Updated Date'])),
                 'purged_date'       => sprintf(
                     '<span class="purged_date_%d">%s</span>', $data['Order Key'],
-                    (($data['Order Basket Purge Purged Date'] == '' or ($data['Order Basket Purge Order Status'] == 'Exculpated')) ? '' : strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Basket Purge Purged Date'].' +0:00')))
+                    (($data['Order Basket Purge Purged Date'] == '' or ($data['Order Basket Purge Order Status'] == 'Exculpated')) ? '' : strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Basket Purge Purged Date'])))
                 ),
 
 

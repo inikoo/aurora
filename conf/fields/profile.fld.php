@@ -13,6 +13,7 @@
 include 'utils/available_locales.php';
 include 'conf/user_groups.php';
 
+global $session;
 
 $options_yn = array(
     'Yes' => _('Yes'),
@@ -25,6 +26,13 @@ $options_tc = array(
     'app_theme_green' => _('Green'),
     'app_theme_blue'  => _('Blue')
 );
+
+$options_timezone = array(
+    'Account' => _('Organization').' <small class="discreet small">('.$account->get('Timezone').')</small>',
+    'Local' => _('Local time').' <small class="discreet small">('.$session->get('local_timezone_label').')</small>',
+    'UTC' => 'UTC',
+);
+
 
 $options_locales = array();
 foreach ($available_locales as $locale) {
@@ -120,6 +128,16 @@ $object_fields = array(
                     $object->get_field_label('Preferred Locale')
                 ),
                 'options'         => $options_locales,
+
+
+            ),
+            array(
+                'id'              => 'User_Display_Timezone',
+                'edit'            => 'option',
+                'value'           => $object->get('User Display Timezone'),
+                'formatted_value' => $object->get('Display Timezone'),
+                'label'           => ucfirst($object->get_field_label('User Display Timezone')),
+                'options'         => $options_timezone,
 
 
             ),

@@ -161,3 +161,4 @@ package-lock.json
 websocket_server/composer.lock
 /keyring/google_api_key.json
 /keyring/google_dns.php
+/bower_components/select2/

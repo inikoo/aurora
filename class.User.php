@@ -154,13 +154,11 @@ class User extends DB_Table {
                     "SELECT * FROM `User Staff Settings Dimension` WHERE `User Key`=%d", $this->id
                 );
 
-                //print $sql;
-
-
                 if ($row = $this->db->query($sql)->fetch()) {
 
+                    $this->data     = array_merge($this->data, $row);
+                    $this->settings = json_decode($this->data['User Settings'], true);
 
-                    $this->data = array_merge($this->data, $row);
                 }
             }
         }
@@ -168,6 +166,9 @@ class User extends DB_Table {
 
     }
 
+    function settings($key) {
+        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
+    }
 
     function get_deleted_data($tag) {
 
@@ -189,6 +190,7 @@ class User extends DB_Table {
 
     function create($data) {
 
+        $account = get_object('Account', '');
 
         $this->new = false;
         $this->msg = _('Unknown Error').' (0)';
@@ -257,9 +259,6 @@ class User extends DB_Table {
 
                     return;
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
 
 
@@ -290,7 +289,14 @@ class User extends DB_Table {
             $user_id = $this->db->lastInsertId();
             $this->get_data('id', $user_id);
 
-            $this->fast_update(array('User Settings' => '{}'));
+            $this->fast_update(
+                array(
+                    'User Settings'   => '{}',
+                    'User Properties' => '{}'
+                )
+            );
+
+            $this->fast_update_json_field('User Settings', 'timezone', 'Account');
 
             $this->new = true;
 
@@ -363,6 +369,7 @@ class User extends DB_Table {
     function get($key) {
 
         global $account;
+        global $session;
 
         if (!$this->id) {
             return;
@@ -370,6 +377,24 @@ class User extends DB_Table {
 
 
         switch ($key) {
+            case 'User Display Timezone':
+                return $this->settings('Timezone');
+                break;
+            case 'Display Timezone':
+                switch ($this->settings('Timezone')) {
+                    case 'Account':
+                        return _('Organization').' <small class="discreet small">('.$account->get('Timezone').')</small>';
+                        break;
+                    case 'Account':
+                        return _('Local time').' <small class="discreet small">('.$session->get('local_timezone_label').')</small>';
+                        break;
+                    case 'UTC':
+                        return 'UTC';
+                        break;
+                    default:
+                        return $this->settings('Timezone');
+                }
+                break;
             case('theme_raw'):
                 if (empty(json_decode($this->data['User Settings'], true))) {
                     return 'app_theme_default';
@@ -933,6 +958,40 @@ class User extends DB_Table {
                 }
 
 
+                break;
+            case 'User Display Timezone':
+                $this->fast_update_json_field('User Settings', 'Timezone', $value);
+                global $session;
+
+                $account = get_object('Account', '');
+
+                include_once 'utils/timezones.php';
+                date_default_timezone_set('UTC');
+                switch ($this->settings('Timezone')) {
+                    case 'Account':
+                        date_default_timezone_set($account->get('Account Timezone'));
+                        break;
+                    case 'Local':
+                        if (!date_default_timezone_set($session->get('local_timezone'))) {
+
+                            print 'cacacaca';
+                            date_default_timezone_set($account->get('Account Timezone'));
+
+                        }
+                        break;
+                    default:
+                        break;
+
+                }
+                $session->set('timezone', date_default_timezone_get());
+
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'timezone_info' => strftime('%z %Z'),
+
+                    )
+                );
                 break;
             default:
                 $base_data = $this->base_data();
@@ -1708,7 +1767,6 @@ class User extends DB_Table {
         return $this->can_do('Supervisor', $tag, $tag_key);
 
 
-
     }
 
     function can_do($right_type, $tag, $tag_key = false) {
@@ -1718,7 +1776,6 @@ class User extends DB_Table {
             return false;
         }
         $tag = strtolower(_trim($tag));
-
 
 
         if ($tag_key == false) {

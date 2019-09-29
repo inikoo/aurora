@@ -1,5 +1,4 @@
 <?php
-date_default_timezone_set('UTC');
 
 if (isset($user) and is_object($user)) {
     $editor = array(

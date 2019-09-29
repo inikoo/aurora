@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
 
+include_once 'utils/object_functions.php';
+
 
 include_once 'keyring/dns.php';
 include_once 'keyring/key.php';
@@ -35,11 +37,11 @@ $smarty->addPluginsDir('./smarty_plugins');
 
 date_default_timezone_set('UTC');
 
+
 $db = new PDO(
     "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-
 
 
 include_once 'utils/i18n.php';
@@ -51,13 +53,10 @@ require_once "utils/aes.php";
 setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 
-$account = new Account();
-date_default_timezone_set($account->data['Account Timezone']);
-define("TIMEZONE", $account->data['Account Timezone']);
+$account =  get_object('Account','');
 
 
 include_once 'class.Auth.php';
-include_once 'class.User.php';
 
 
 $sessionStorage = new NativeSessionStorage(array(), new MemcachedSessionHandler($memcached));
@@ -96,8 +95,30 @@ if ($auth->is_authenticated()) {
 
 
     $_SESSION['user_key']    = $_user_key;
-    $user                    = new User($_user_key);
+    $user                    = get_object('User', $_user_key);
     $_SESSION['text_locale'] = $user->get('User Preferred Locale');
+
+
+    include_once 'utils/timezones.php';
+    switch ($user->settings('Timezone')) {
+        case 'Account':
+            date_default_timezone_set($account->get('Account Timezone'));
+            break;
+        case 'Local':
+            if(!date_default_timezone_set($_REQUEST['timezone'])){
+                date_default_timezone_set($account->get('Account Timezone'));
+
+            }
+            break;
+        default:
+            break;
+
+    }
+
+    define("TIMEZONE", date_default_timezone_get());
+    $session->set('timezone', TIMEZONE);
+    $session->set('local_timezone', $_REQUEST['timezone']);
+    $session->set('local_timezone_label', get_normalized_timezones_formatted_label($_REQUEST['timezone']));
 
 
     $session->set('state', array());
@@ -107,7 +128,7 @@ if ($auth->is_authenticated()) {
     $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension` WHERE `Warehouse State`="Active" limit 1');
 
     if ($result = $db->query($sql)) {
-        if ($row = $result->fetch() ) {
+        if ($row = $result->fetch()) {
             $warehouse_key = $row['Warehouse Key'];
         }
     } else {
@@ -148,7 +169,6 @@ if ($auth->is_authenticated()) {
     $session->set('current_production', $production_key);
 
 
-
     if (isset($_REQUEST['url']) and $_REQUEST['url'] != '') {
 
         header("Location: ".urldecode($_REQUEST['url']));
@@ -167,7 +187,7 @@ if ($auth->is_authenticated()) {
     if (!preg_match('/(js|js\.php)$/', $target)) {
         if (isset($_REQUEST['url']) and $_REQUEST['url'] != '') {
             header('Location: login.php?e=1&ref='.$_REQUEST['url']);
-        }else{
+        } else {
             header('Location: login.php?e=1');
         }
 
@@ -177,4 +197,4 @@ if ($auth->is_authenticated()) {
 }
 
 
-?>
+

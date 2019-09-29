@@ -207,6 +207,10 @@ function open_edit_field(object, key, field) {
         case 'mixed_recipients':
             $('#' + field + '_container').find('.mixed_recipients_container').removeClass('hide')
             $('#' + field + '_save_button').removeClass('hide')
+            break;
+        case 'timezone':
+            $('.timezone_edit').removeClass('hide')
+            $('#' + field + '_save_button').removeClass('hide')
 
             break;
 
@@ -471,6 +475,10 @@ function close_edit_field(field) {
             break;
         case 'mixed_recipients':
             $('#' + field + '_container').find('.mixed_recipients_container').addClass('hide')
+            break;
+        case 'timezone':
+            $('.timezone_edit').addClass('hide')
+
             break;
 
         default:

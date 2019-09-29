@@ -190,6 +190,10 @@ html, body, textarea,button {
 
 }
 
+.timezone_info{
+  float:right;padding-right: 30px;opacity: .6;
+  .abbreviation{;opacity: .4}
+}
 
 .unselectable{
   @include unselectable;

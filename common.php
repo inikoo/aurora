@@ -63,12 +63,6 @@ if ($account->get('Account State') != 'Active') {
 }
 
 
-if ($account->get('Timezone')) {
-    date_default_timezone_set($account->get('Timezone'));
-} else {
-    setTimezone('UTC');
-}
-
 
 require_once 'utils/modules.php';
 
@@ -78,6 +72,14 @@ $session        = new Session($sessionStorage);
 $session->start();
 
 $session->set('account', $account->get('Code'));
+
+if (!date_default_timezone_set($session->get('timezone'))) {
+    if(!date_default_timezone_set($account->get('Account Timezone'))){
+        date_default_timezone_set('UTC');
+    }
+}
+$session->set('timezone', date_default_timezone_get());
+
 
 
 /**

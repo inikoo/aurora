@@ -12,19 +12,14 @@
 
     <script src="https://browser.sentry-cdn.com/5.4.0/bundle.min.js" crossorigin="anonymous">
     </script>
+    {if !$is_devel}
     <script>
         Sentry.init({
             dsn: 'https://6b74919f310546d2a64bbf7c856d0820@sentry.io/1482169'});
     </script>
+    {/if}
 
-
-    <script src="js/libs/jquery-2.2.1.js"></script>
-    <script src="js/libs/sha256.js"></script>
-    <script src="js/libs/aes.js"></script>
-    <script src="/js/libs/base64.js"></script>
-
-    <script src="js/login/login.js"></script>
-    <script src="js/libs/jquery.backstretch.min.js"></script>
+    <script src="/assets/login.min.js?v=190929v2"></script>
 
 
 </head>
@@ -39,10 +34,11 @@
                 aurora
             </div>
         </div>
-        <form class="form form--login" name="login_form" id="login_form" method="post" autocomplete="off" action="authorization.php">
+        <form class="form form--login" name="login_form" id="login_form" method="post"  action="authorization.php">
             <input type="hidden" id="blow_fish" value="{$st}"/>
             <input type="hidden" id="token" name="token" value=""/>
             <input type="hidden" name="url" value="{$url}">
+            <input type="hidden" id="timezone" name="timezone" value="">
 
             <div class="form__field">
                 <label for="login__username" title="{t}Username{/t}"><i class="fa fa-user fa-fw"></i> <span class="hidden"></span></label>
