@@ -1,0 +1,33 @@
+{
+  "name": "aurora",
+  "description": "Business systems platform",
+  "main": "index.php",
+  "authors": [
+    "Raul Perusquia",
+    "Inikoo Ltd"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "Business",
+    "operations",
+    "data",
+    "warehouse",
+    "busiess",
+    "intelligence",
+    "forecasting"
+  ],
+  "homepage": "https://github.com/inikoo/aurora",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "select2": "^4.0.10",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.25"
+  }
+}

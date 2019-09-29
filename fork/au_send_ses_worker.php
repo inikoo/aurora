@@ -99,7 +99,7 @@ function get_fork_metadata($job) {
     $account = new Account($db);
 
     if ($account->get('Timezone')) {
-        date_default_timezone_set($account->get('Timezone'));
+        date_default_timezone_set($account->get('Account Timezone'));
         define("TIMEZONE", $account->data['Account Timezone']);
 
     } else {
