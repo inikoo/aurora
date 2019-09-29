@@ -64,5 +64,3 @@ $account=get_object('Account',1);
 require_once 'utils/ar_web_common.php';
 
 
-
-?>

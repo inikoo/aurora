@@ -94,11 +94,10 @@ function get_logged_in(){
             $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         }
 
-        date_default_timezone_set('utc');
         $sql = sprintf(
             'INSERT INTO `Website Auth Token Dimension` (`Website Auth Token Website Key`,`Website Auth Token Selector`,`Website Auth Token Hash`,`Website Auth Token Website User Key`,`Website Auth Token Customer Key`,`Website Auth Token Website User Log Key`,`Website Auth Token Expire`) 
             VALUES (%d,%s,%s,%d,%d,%d,%s)', $_SESSION['website_key'], prepare_mysql($selector), prepare_mysql(hash('sha256', $authenticator)), $_SESSION['website_user_key'], $_SESSION['customer_key'], $_SESSION['website_user_log_key'],
-            prepare_mysql(date('Y-m-d H:i:s', time() + 864000))
+            prepare_mysql(gmdate('Y-m-d H:i:s', time() + 864000))
 
         );
 

@@ -18,22 +18,21 @@ require 'keyring/key.php';
 session_start();
 
 
-
 $logged_in = !empty($_SESSION['logged_in']);
 
 
 if (!$logged_in) {
 
-    if(empty($redirect_to_login)){
+    if (empty($redirect_to_login)) {
         $response = array(
             'state' => 400,
             'resp'  => 'log out'
         );
         echo json_encode($response);
         exit;
-    }else{
+    } else {
 
-       // print_r($_SERVER);
+        // print_r($_SERVER);
 
         header('Location: /login.sys?'.$redirect_to_login[0].'='.$redirect_to_login[1]);
         exit;
@@ -81,24 +80,20 @@ if (!$customer->id) {
 
 $editor = array(
     'Author Name'  => $customer->get('Name'),
-    'Author Alias' =>$customer->get('Name'),
+    'Author Alias' => $customer->get('Name'),
     'Author Type'  => 'Customer',
     'Author Key'   => $customer->id,
-    'Subject'  => 'Customer',
-    'Subject Key'   => $customer->id,
+    'Subject'      => 'Customer',
+    'Subject Key'  => $customer->id,
     'User Key'     => 0,
     'Date'         => gmdate('Y-m-d H:i:s')
 );
 
 
 $order_key = $customer->get_order_in_process_key();
-$order = get_object('Order', $order_key);
-
+$order     = get_object('Order', $order_key);
 
 
 require_once 'utils/ar_web_common.php';
 
 
-
-
-?>

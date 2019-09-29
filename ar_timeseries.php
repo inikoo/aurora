@@ -155,9 +155,7 @@ function get_csv_records($db, $data) {
 
         foreach ($result as $data) {
             $adata[] = array(
-                'date'      => date(
-                    "U", strtotime($data['Timeseries Record Date'].' +0:00')
-                ),
+                'date'      => gmdate("U", strtotime($data['Timeseries Record Date'])),
                 'float_a'   => $data['Timeseries Record Float A'],
                 'float_b'   => $data['Timeseries Record Float B'],
                 'float_c'   => $data['Timeseries Record Float C'],
@@ -308,7 +306,7 @@ count(distinct `Customer Key`) as customers
 
             if(!$timeseries_key){
                print "Date,Open,Volume\n";
-                print date('Y-m-d').",0,0\n";
+                print gmdate('Y-m-d').",0,0\n";
                 return;
             }
 
