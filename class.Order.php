@@ -1839,7 +1839,7 @@ class Order extends DB_Table {
                     $customer->fast_update(
                         array(
                             'Customer Last Dispatched Order Key'  => $this->id,
-                            'Customer Last Dispatched Order Date' => date('Y-m-d', strtotime($date).' +0:00')
+                            'Customer Last Dispatched Order Date' => gmdate('Y-m-d', strtotime($date.' +0:00'))
                         )
                     );
 
