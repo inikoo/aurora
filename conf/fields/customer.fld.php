@@ -12,7 +12,7 @@
 
 include_once 'utils/static_data.php';
 
-
+$store = get_object('Store', $object->get('Customer Store Key'));
 $smarty->assign('customer', $object);
 
 $countries = get_countries($db);
@@ -259,7 +259,7 @@ if ($new) {
                 ),
                 array(
                     'id'              => 'Customer_Delivery_Address',
-                    'edit'            => ($_edit ? 'address' : ''),
+                    'edit'            => ($_edit and $store->get('Store Type') != 'Dropshipping' ? 'address' : ''),
                     'countries'       => $countries,
                     'value'           => htmlspecialchars($object->get('Customer Delivery Address')),
                     'formatted_value' => $object->get('Delivery Address'),
@@ -298,8 +298,7 @@ if ($new) {
     );
 
 
-}
-else {
+} else {
 
 
     $customer_fields = array();
@@ -607,7 +606,8 @@ else {
 
             array(
                 'id'              => 'Customer_Delivery_Address_Link',
-                'edit'            => ($_edit ? 'option' : ''),
+                'render'          => ($store->get('Store Type') == 'Dropshipping' ? false : true),
+                'edit'            => (($_edit and $store->get('Store Type') != 'Dropshipping') ? 'option' : ''),
                 'value'           => htmlspecialchars($object->get('Customer Delivery Address Link')),
                 'formatted_value' => $object->get('Delivery Address Link'),
                 'label'           => ucfirst($object->get_field_label('Customer Delivery Address Link')),
@@ -618,7 +618,7 @@ else {
             array(
                 'id'              => 'Customer_Delivery_Address',
                 'edit'            => ($_edit ? 'address' : ''),
-                'render'          => ($object->get('Customer Delivery Address Link') != 'None' ? false : true),
+                'render'          => (($object->get('Customer Delivery Address Link') != 'None' or $store->get('Store Type') == 'Dropshipping') ? false : true),
                 'countries'       => $countries,
                 'value'           => htmlspecialchars($object->get('Customer Delivery Address')),
                 'formatted_value' => $object->get('Delivery Address'),
@@ -688,14 +688,17 @@ else {
 
 
     $customer_fields[] = array(
-        'label'      => _('Sales representative'),
+        'label' => _('Sales representative'),
+
         'show_title' => true,
-        'class'      => 'edit_fields',
+        'class'      => 'edit_fields '.($store->get('Store Type') == 'Dropshipping' ? 'hide' : ''),
         'fields'     => array(
 
             array(
-                'id'              => 'Customer_Level_Type',
-                'edit'            => 'no_icon',
+                'id'     => 'Customer_Level_Type',
+                'edit'   => 'no_icon',
+                'render' => ($store->get('Store Type') == 'Dropshipping' ? false : true),
+
                 'value'           => $object->get('Customer Level Type'),
                 'formatted_value' => '<span class="button" onclick="toggle_subscription(this)"  field="Customer_Level_Type_Partner"  style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Level Type') == 'Partner' ? 'fa-toggle-on' : 'fa-toggle-off')
                     .'" aria-hidden="true"></i> <span class="'.($object->get('Customer Level Type') == 'Partner' ? 'discreet' : '').'">'._('Partner').'</span></span>',
@@ -705,7 +708,7 @@ else {
             ),
 
             array(
-                'render' => ($object->get('Customer Level Type') == 'Partner' ? false : true),
+                'render' => (($object->get('Customer Level Type') == 'Partner' or $store->get('Store Type') == 'Dropshipping') ? false : true),
                 'id'     => 'Customer_Sales_Representative',
                 'edit'   => ($edit ? 'option_multiple_choices' : ''),
 

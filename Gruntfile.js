@@ -245,6 +245,8 @@ module.exports = function (grunt) {
                     //'js/libs/jquery.formatCurrency-1.4.0.min.js',
                     'js/libs/jquery.formatCurrency.js',
                     'js/libs/autobahn.v1.js',
+
+
                 ], dest: 'assets/aurora_libs.min.js',
 
             }, aurora: {
