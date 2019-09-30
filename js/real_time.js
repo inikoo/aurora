@@ -8,8 +8,9 @@ function connect_websocket() {
 
     websocket_connected_connecting = true;
 
-    if (location.host == 'au.bali') {
-        var wsuri = 'ws://' + location.hostname + '/ws';
+
+    if (location.host == 'au.geko' || location.host == 'au.bali') {
+        var wsuri = 'wss://' + location.hostname + '/ws';
 
     } else {
         var wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + '//' + location.hostname + '/ws180718';

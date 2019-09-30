@@ -144,7 +144,7 @@
 
     <div class="block ">
         <div class="state" style="height:30px;margin-bottom:0px;position:relative;top:-5px;min-width: 250px">
-            <div id="back_operations" class="{if $store->get('Store Version')<2}hide{/if}">
+            <div id="back_operations" >
                 <div id="delete_operations" class="order_operation {if $delivery_note->get('Delivery Note Number Picked Items')>0       }hide{/if}">
                     <div class="square_button left" xstyle="padding:0;margin:0;position:relative;top:-5px" title="{t}delete{/t}">
                         <i class="far fa-trash-alt very_discreet " aria-hidden="true" onclick="toggle_order_operation_dialog('delete')"></i>
@@ -225,7 +225,7 @@
 
             </div>
             <span style="float:left;padding-left:10px;padding-top:5px" class="Delivery_Note_State"> {$delivery_note->get('State')} </span>
-            <div id="forward_operations" class="{if $store->get('Store Version')<2}hide{/if}">
+            <div id="forward_operations" >
 
 
 

@@ -632,16 +632,20 @@ $modules = array(
                 'icon'           => 'user',
                 'reference'      => 'customer/%d',
                 'subtabs_parent' => array(
-                    'customer.marketing.families'   => 'customer.marketing',
-                    'customer.marketing.products'   => 'customer.marketing',
-                    'customer.marketing.favourites' => 'customer.marketing',
-                    'customer.marketing.search'     => 'customer.marketing',
+                    'customer.marketing.families'   => 'customer.insights',
+                    'customer.marketing.products'   => 'customer.insights',
+                    'customer.marketing.favourites' => 'customer.insights',
+                    'customer.marketing.search'     => 'customer.insights',
+                    'customer.poll'     => 'customer.insights',
 
                     'customer.sales.plot'      => 'customer.sales',
                     'customer.sales.history'   => 'customer.sales',
                     'customer.sales.calendar'  => 'customer.sales',
                     'customer.sales.dashboard' => 'customer.sales',
                     'customer.sales.info'      => 'customer.sales',
+
+                    'customer.orders'      => 'customer.orders_invoices',
+                    'customer.invoices'      => 'customer.orders_invoices',
 
                 ),
                 'tabs'           => array(
@@ -683,55 +687,51 @@ $modules = array(
 
                     'customer.insights'    => array(
                         'label' => _('Insights'),
-                        'icon'  => 'graduation-cap'
-                    ),
-                    'customer.sent_emails' => array(
-                        'label' => _('Sent emails'),
-                        'icon'  => 'paper-plane'
-                    ),
-
-
-
-                    'customer.orders' => array(
-                        'label' => _('Orders'),
-                        'icon'  => 'shopping-cart'
-
-                    ),
-
-                    'customer.invoices'  => array('label' => _('Invoices')),
-                    'customer.marketing' => array(
-                        'label'   => _('Interests'),
-                        'title'   => _("Customer's interests"),
+                        'icon'  => 'graduation-cap',
                         'subtabs' => array(
-
+                            'customer.poll' => array(
+                                'label' => _('Poll'),
+                                'icon'=>'poll-people'
+                            ),
                             'customer.marketing.products' => array(
-                                'label' => _(
-                                    'Products invoiced'
-                                )
+                                'label' => _('Products invoiced'),
+                                'icon'=>'cube'
                             ),
 
                             'customer.marketing.families' => array(
-                                'label' => _(
-                                    'Categories ordered'
-                                )
+                                'label' => _('Categories ordered'),
+                                'icon'=>'cubes'
                             ),
 
                             'customer.marketing.favourites' => array(
-                                'label' => _(
-                                    'Favourite products'
-                                )
+                                'label' => _('Favourite products'),
+                                'icon'=>'heart'
                             ),
-                            /*
-                            'customer.marketing.search'     => array(
-                                'label' => _(
-                                    'Search queries'
-                                )
-                            ),
-                            */
 
+
+                        )
+                    ),
+
+
+
+
+                    'customer.orders_invoices' => array(
+                        'label' => _('Orders'),
+                        'icon'  => 'shopping-cart',
+                        'subtabs' => array(
+                            'customer.orders' => array(
+                                'label' => _('Orders'),
+                                'icon'=>'shopping-cart'
+                            ),
+                            'customer.invoices' => array(
+                                'label' => _('Invoices'),
+                                'icon'=>'file-invoice-dollar'
+                            ),
                         )
 
                     ),
+
+
 
                     'customer.deals'             => array(
                         'label' => _('Discounts'),
@@ -740,6 +740,14 @@ $modules = array(
                     'customer.credit_blockchain' => array(
                         'label' => _('Credits blockchain'),
                         'icon'  => 'code-commit'
+                    ),
+
+                    'customer.sent_emails' => array(
+                        'label'=>'',
+                        'title' => _('Sent emails'),
+                        'icon'  => 'paper-plane',
+                        'class' => 'icon_only right'
+
                     ),
 
                 )
