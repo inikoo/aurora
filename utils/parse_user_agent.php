@@ -86,11 +86,11 @@ function parse_user_agent($user_agent, $db) {
             $icon = get_user_agent_icon($result_json['parse']['operating_system_name_code'], $result_json['parse']['simple_operating_platform_string'], $result_json['parse']['user_agent']);
 
             $sql = sprintf(
-                'insert into kbase.`User Agent` (`User Agent Hash`,`User Agent`,`Software`,`Software Details`,`Device`,`OS Code`,`Data`,`Icon`) values (%s,%s,%s,%s,%s,%s,%s,%s) ', prepare_mysql($user_agent_hash), prepare_mysql($result_json['parse']['user_agent']),
+                'insert into kbase.`User Agent` (`User Agent Hash`,`User Agent`,`Software`,`Software Details`,`Device`,`OS Code`,`Data`,`Icon`,`Date`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s) ', prepare_mysql($user_agent_hash), prepare_mysql($result_json['parse']['user_agent']),
                 prepare_mysql($result_json['parse']['simple_software_string']), prepare_mysql($result_json['parse']['simple_sub_description_string']), prepare_mysql($result_json['parse']['simple_operating_platform_string']),
                 prepare_mysql($result_json['parse']['operating_system_name_code']), prepare_mysql(
                     json_encode($result_json)
-                ), prepare_mysql($icon)
+                ), prepare_mysql($icon), prepare_mysql(gmdate('Y-m-d H:i:s'))
 
 
             );
