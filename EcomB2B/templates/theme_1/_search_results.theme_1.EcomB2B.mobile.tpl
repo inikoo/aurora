@@ -24,7 +24,7 @@
     <tr>
 
 
-        <td style="padding: 5px;text-align: center" class="center"><img class="center" style="height: 60px" src="{$result.image_mobile}"></td>
+        <td style="padding: 5px;text-align: center" class="center"><img class="center" style="height: 80px;display: block;margin-left: auto; margin-right: auto;" src="{$result.image_mobile}"></td>
         <td style="padding-left: 5px;text-align: left"><b>{$result.code}</b>  {$result.name}
 
             {if $result.scope=='Product'}

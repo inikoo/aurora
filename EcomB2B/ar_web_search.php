@@ -416,7 +416,7 @@ function process_search($q, $db, $website, $order_key) {
 function get_image_mobile($image_key) {
 
 
-    return 'wi?id='.$image_key.'&s=120x120';
+    return 'wi.php?id='.$image_key.'&s=120x120';
 
 
 }
