@@ -1,0 +1,8 @@
+RewriteEngine On
+RewriteRule ^api/ box_api.php [L]
+RewriteRule ^$ /box.php [L]
+RewriteBase /
+RewriteRule ^(js|css|templates)($|/) - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*) box.php [QSA,L]
