@@ -71,7 +71,7 @@ if ($authenticated == 'OK') {
         $db->prepare($sql)->execute(
             array(
                 $box_id,
-                (isset($_REQUEST['model']) ? $_REQUEST['register'] : 'Unknown'),
+                (isset($_REQUEST['register']) ? $_REQUEST['register'] : 'Unknown'),
                 gmdate('Y-m-d H:i:s')
             )
         );
