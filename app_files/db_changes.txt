@@ -1127,3 +1127,17 @@ update `Shipping Dimension` set `Shipping Metadata`='0,500,14.95;500,,0' where `
 
 ALTER TABLE `Shipping Zone Dimension` ADD `Shipping Zone Discounted Price` JSON NULL DEFAULT NULL AFTER `Shipping Zone Price`;
 update `Shipping Zone Dimension` set `Shipping Zone Discounted Price`=`Shipping Zone Price`;
+
+CREATE TABLE IF NOT EXISTS `Customer Client History Bridge` (
+  `Customer Client Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `Customer Client History Bridge`
+  ADD PRIMARY KEY (`Customer Client Key`,`History Key`),
+  ADD KEY `Customer Client Key` (`Customer Client Key`),
+  ADD KEY `History Key` (`History Key`),
+  ADD KEY `Deletable` (`Deletable`),
+  ADD KEY `Type` (`Type`);

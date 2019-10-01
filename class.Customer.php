@@ -20,7 +20,6 @@ include_once 'class.Attachment.php';
 class Customer extends Subject {
     var $contact_data = false;
 
-    var $fuzzy = false;
     var $tax_number_read = false;
     var $warning_messages = array();
     var $warning = false;
@@ -3543,10 +3542,6 @@ class Customer extends Subject {
                 $order_key = $row['Order Key'];
                 $date      = $row['dispatched_date'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $this->fast_update(

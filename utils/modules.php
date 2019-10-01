@@ -657,6 +657,14 @@ $modules = array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
+                    /*
+                    'customer.clients' => array(
+                        'label' => _("Clients"),
+
+                        'title' => _("Customer's clients"),
+                        'icon'  => 'address-book'
+                    ),
+                    */
                     'customer.sales'   => array(
                         'label'   => _('Sales'),
                         'icon'    => 'money-bill',
