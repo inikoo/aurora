@@ -26,6 +26,7 @@ error_reporting(E_ALL);
 date_default_timezone_set('UTC');
 include_once 'utils/general_functions.php';
 include_once 'utils/object_functions.php';
+include_once 'utils/network_functions.php';
 
 
 $db = new PDO(
@@ -38,8 +39,7 @@ list($authenticated, $box_id) = authenticate($db);
 
 if ($authenticated == 'OK') {
 
-
-    $sql  = 'select `Box Key` from `Box Dimension` where `Box ID`=?';
+    $sql  = 'select `Box Key`,`Box Aurora Account Code`,`Box Aurora Account Data` from `Box Dimension` where `Box ID`=?';
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array($box_id)
@@ -48,20 +48,48 @@ if ($authenticated == 'OK') {
         $box_key = $row['Box Key'];
 
 
+        log_api_key_access_success($db, $box_key);
 
-    }else{
+        if($row['Box Aurora Account Code']==''){
+            $response= array(
+                'state' => 'OK',
+                'code'  => 'Registered',
+                'msg'   => 'Box registered, still waiting for confirmation on aurora'
+            );
 
-        $sql='insert into `Box Dimension` (`Box ID`,`Box Model`,`Box Registered Date`) values (?,?) ';
+
+            echo json_encode($response);
+            exit;
+        }
+
+
+
+
+    } else {
+
+        $sql = 'insert into `Box Dimension` (`Box ID`,`Box Model`,`Box Registered Date`) values (?,?,?) ';
         $db->prepare($sql)->execute(
             array(
                 $box_id,
-                (isset($_REQUEST['model'])?$_REQUEST['model']:'Unknown'),
+                (isset($_REQUEST['model']) ? $_REQUEST['register'] : 'Unknown'),
                 gmdate('Y-m-d H:i:s')
-            ));
-        $box_key = $this->db->lastInsertId();
+            )
+        );
+        $box_key = $db->lastInsertId();
+
+
+        return array(
+            'state' => 'OK',
+            'code'  => 'Registered',
+            'msg'   => 'Box registered, waiting for confirmation on aurora'
+        );
+
+        log_api_key_access_success($db, $box_key);
+
+        echo json_encode($response);
+        exit;
 
     }
-    log_api_key_access_success($db, $box_key);
 
 
 }
@@ -114,7 +142,7 @@ function authenticate($db) {
 
 
             $box_id         = $matches[1];
-            $api_key_secret = base64_decode(preg_replace('/^\./', '', $matches[2]));
+            $api_key_secret = preg_replace('/^\./', '', $matches[2]);
 
 
             if ($api_key_secret == API_KEY_SECRET) {
@@ -150,26 +178,25 @@ function authenticate($db) {
 
 function log_box_api_key_access_failure($db, $fail_type) {
 
-    include_once 'utils/network_functions.php';
-
 
     $sql = 'INSERT INTO `Fail API Box Request Dimension` (`Fail API Box Request IP`,`Fail API Box Request Date`,`Fail API Box Request Type`) VALUES(?,?,?)';
 
     $stmt = $db->prepare($sql);
 
-    if(!$stmt->execute(
+    if (!$stmt->execute(
         [
             ip(),
             gmdate('Y-m-d H:i:s'),
             $fail_type
         ]
-    )){
-     print_r($stmt->errorInfo());
+    )) {
+        print_r($stmt->errorInfo());
     }
 
     return array(
         'state' => 'Error',
-        'msg'   => $fail_type
+        'code'  => $fail_type,
+        'msg'   => 'Access failed'
     );
 
 }
