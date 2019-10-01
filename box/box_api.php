@@ -78,7 +78,7 @@ if ($authenticated == 'OK') {
         $box_key = $db->lastInsertId();
 
 
-        return array(
+        $response= array(
             'state' => 'OK',
             'code'  => 'Registered',
             'msg'   => 'Box registered, waiting for confirmation on aurora'
