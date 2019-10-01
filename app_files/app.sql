@@ -3267,7 +3267,7 @@ CREATE TABLE `Email Campaign Type Dimension` (
   `Email Campaign Type Status` enum('Active','Suspended','InProcess') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'InProcess',
   `Email Campaign Type Scope` enum('Marketing','Customer Notification','User Notification') COLLATE utf8_unicode_ci DEFAULT NULL,
   `Email Campaign Type Store Key` smallint(5) unsigned DEFAULT NULL,
-  `Email Campaign Type Code` enum('New Customer','Delivery Note Undispatched','Invoice Deleted','New Order','AbandonedCart','Delivery Confirmation','GR Reminder','Invite','Invite Mailshot','Marketing','Newsletter','OOS Notification','Order Confirmation','Password Reminder','Registration') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Email Campaign Type Code` enum('New Customer','Delivery Note Undispatched','Invoice Deleted','New Order','AbandonedCart','Delivery Confirmation','GR Reminder','Invite','Invite Mailshot','Marketing','Newsletter','OOS Notification','Order Confirmation','Password Reminder','Registration','Registration Approved','Registration Rejected') COLLATE utf8_unicode_ci DEFAULT NULL,
   `Email Campaign Type Mailshots` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Email Campaign Type Scheduled` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Email Campaign Type Sent` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -6616,31 +6616,6 @@ CREATE TABLE `Page Store See Also Bridge` (
   `Correlation Value` float DEFAULT NULL,
   `Webpage See Also Order` mediumint(8) unsigned DEFAULT NULL,
   PRIMARY KEY (`Page Store Key`,`Page Store See Also Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Part Availability for Products Timeline`
---
-
-DROP TABLE IF EXISTS `Part Availability for Products Timeline`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Part Availability for Products Timeline` (
-  `Part Availability for Products Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Part SKU` mediumint(8) unsigned NOT NULL,
-  `Warehouse Key` smallint(5) unsigned NOT NULL,
-  `User Key` mediumint(8) unsigned NOT NULL,
-  `Date` datetime NOT NULL,
-  `Duration` mediumint(9) DEFAULT NULL COMMENT 'In seconds',
-  `Availability for Products` enum('Yes','No') NOT NULL,
-  `Source` enum('Manual','Automatic','Fix') NOT NULL DEFAULT 'Manual',
-  PRIMARY KEY (`Part Availability for Products Key`),
-  KEY `Date` (`Date`),
-  KEY `Part SKU` (`Part SKU`),
-  KEY `Warehouse Key` (`Warehouse Key`),
-  KEY `User Key` (`User Key`),
-  KEY `Source` (`Source`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -12234,6 +12209,7 @@ CREATE TABLE `Staff Dimension` (
   `Staff Valid From` datetime DEFAULT NULL,
   `Staff Valid To` datetime DEFAULT NULL,
   `Staff Is Supervisor` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Staff Timezone` varchar(32) DEFAULT NULL,
   `Staff Working Hours` text,
   `Staff Working Hours Per Week` float DEFAULT NULL,
   `Staff Working Hours Per Week Metadata` varchar(255) NOT NULL,
@@ -13471,7 +13447,6 @@ CREATE TABLE `Store Dimension` (
   `Store Address` varchar(255) DEFAULT NULL,
   `Store Google Map URL` text,
   `Short Marketing Description` varchar(255) DEFAULT NULL,
-  `Store Telecom Format` varchar(255) NOT NULL DEFAULT 'GBR',
   `Store State` enum('Normal','Closed','Suspended') NOT NULL DEFAULT 'Normal',
   `Store Website Key` smallint(5) unsigned DEFAULT NULL,
   `Store Valid From` datetime DEFAULT NULL,
@@ -13486,7 +13461,6 @@ CREATE TABLE `Store Dimension` (
   `Store Locale` enum('en_GB','de_DE','fr_FR','es_ES','pl_PL','it_IT','sk_SK','pt_PT','hu_HU','da_DK','nl_NL','cs_CZ') DEFAULT 'en_GB',
   `Store Timezone` varchar(64) NOT NULL DEFAULT 'Europe/London',
   `Store Sticky Note` text,
-  `Store Page Key` mediumint(8) unsigned DEFAULT NULL,
   `Store Departments` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Store Families` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Store For Public Sale Products` smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -13570,10 +13544,7 @@ CREATE TABLE `Store Dimension` (
   `Store VAT Number` varchar(255) DEFAULT NULL,
   `Store Company Number` varchar(255) DEFAULT NULL,
   `Store Company Name` varchar(255) DEFAULT NULL,
-  `Store Invoice Message Header` text,
   `Store Invoice Message` text,
-  `Store Delivery Note XHTML Message` mediumtext,
-  `Store Invoice XHTML Message` mediumtext,
   `Store No Products Department Key` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store No Products Family Key` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Store Show in Warehouse Orders` enum('Yes','No') NOT NULL DEFAULT 'Yes',
@@ -13605,7 +13576,6 @@ CREATE TABLE `Store Dimension` (
   `Store Proforma Message` text,
   `Store Send Order Recursion Emails` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Store Reviews Settings` text,
-  `Store Version` tinyint(4) NOT NULL DEFAULT '2',
   `Store Properties` json DEFAULT NULL,
   `Store Settings` json DEFAULT NULL,
   `Store Label Signature` varchar(255) DEFAULT NULL,
@@ -15146,6 +15116,7 @@ CREATE TABLE `Timesheet Dimension` (
   `Timesheet Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `Timesheet Date` date NOT NULL,
   `Timesheet Type` enum('WorkingDay','DayOff','NoFixedWorkingHours') DEFAULT 'NoFixedWorkingHours',
+  `Timesheet Timezone` varchar(32) DEFAULT NULL,
   `Timesheet Staff Key` mediumint(8) unsigned NOT NULL,
   `Timesheet Working Hours Records` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `Timesheet Break Records` tinyint(3) unsigned NOT NULL DEFAULT '0',
@@ -15374,6 +15345,7 @@ CREATE TABLE `User Dimension` (
   `User Password Recovery Email` varchar(255) DEFAULT NULL,
   `User Password Recovery Mobile` varchar(64) DEFAULT NULL,
   `User Settings` json DEFAULT NULL,
+  `User Properties` json DEFAULT NULL,
   PRIMARY KEY (`User Key`),
   UNIQUE KEY `User Handle` (`User Handle`,`User Type`,`User Site Key`),
   KEY `h` (`User Handle`),
@@ -16870,4 +16842,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-09-23 16:18:07
+-- Dump completed on 2019-09-30  7:22:39

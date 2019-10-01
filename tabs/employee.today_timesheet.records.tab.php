@@ -10,6 +10,7 @@
 */
 
 include_once('class.Timesheet.php');
+include_once 'utils/timezones.php';
 
 $tab     = 'timesheet.records';
 $ar_file = 'ar_hr_tables.php';
