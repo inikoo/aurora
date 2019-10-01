@@ -152,15 +152,19 @@ function log_box_api_key_access_failure($db, $fail_type) {
     include_once 'utils/network_functions.php';
 
 
-    $sql = 'INSERT INTO `Fail API Box Request Dimension` (`Fail API Box Request IP`,`Fail API Box Request Date`,`Fail API Box  Request Date Type`) VALUES(?,?,?)';
+    $sql = 'INSERT INTO `Fail API Box Request Dimension` (`Fail API Box Request IP`,`Fail API Box Request Date`,`Fail API Box Request Type`) VALUES(?,?,?)';
 
-    $db->prepare($sql)->execute(
+    $stmt = $db->prepare($sql);
+
+    if(!$stmt->execute(
         [
             ip(),
             gmdate('Y-m-d H:i:s'),
             $fail_type
         ]
-    );
+    )){
+     print_r($stmt->errorInfo());
+    }
 
     return array(
         'state' => 'Error',
