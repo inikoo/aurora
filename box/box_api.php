@@ -108,7 +108,9 @@ function authenticate($db) {
             $token = $_headers['HTTP_X_AUTH_KEY'];
         } elseif (!empty($_headers['http_x_auth_key'])) {
             $token = $_headers['http_x_auth_key'];
-        } else {
+        } elseif (!empty($_REQUEST['AUTH_KEY'])) {
+            $token = $_REQUEST['AUTH_KEY'];
+        }else {
             $auth_header = getAuthorizationHeader();
             if (preg_match('/^Bearer\s(.+)$/', $auth_header, $matches)) {
                 $token = $matches[1];
