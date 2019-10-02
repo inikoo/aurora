@@ -395,13 +395,32 @@ class User extends DB_Table {
                         return $this->settings('Timezone');
                 }
                 break;
-            case('theme_raw'):
-                if (empty(json_decode($this->data['User Settings'], true))) {
-                    return 'app_theme_default';
-                } else {
-                    return json_decode($this->data['User Settings'])->theme;
+            case 'User Theme':
+                $theme = $this->settings('theme');
+                if ($theme == '') {
+                    $theme = 'app_theme_default';
+                }
+
+                return $theme;
+                break;
+            case 'Theme':
+
+                switch ($this->get('User Theme')) {
+                    case 'app_theme_red':
+                        return _('Red');
+                        break;
+                    case 'app_theme_green':
+                        return _('Green');
+                        break;
+                    case 'app_theme_blue':
+                        return _('Blue');
+                        break;
+                    default:
+                        return _('Black');
+                        break;
                 }
                 break;
+
 
             case 'User Groups':
                 return $this->get_groups();
@@ -915,10 +934,7 @@ class User extends DB_Table {
                 $this->update_permissions($value);
 
                 break;
-            case('theme'):
-                $this->fast_update_json_field('User Settings', $field, $value);
 
-                break;
 
             case('theme'):
                 $this->fast_update_json_field('User Settings', $field, $value);
@@ -1682,6 +1698,9 @@ class User extends DB_Table {
                 break;
             case 'User Warehouses':
                 $label = _('warehouses');
+                break;
+            case 'User Theme':
+                $label = _('theme');
                 break;
             case 'User Productions':
                 $label = _('production suppliers');

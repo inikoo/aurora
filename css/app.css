@@ -8727,6 +8727,14 @@ h2.dashboard {
 .app_theme_green #app_leftmenu, .app_theme_green #app_leftmenu #top_info, .app_theme_green #app_leftmenu li:hover {
   background: #356f55; }
 
+/*
+.app_theme_green{
+#top_bar{
+  background: #43974A;
+}
+
+}
+*/
 .app_theme_blue #top_bar,
 .app_theme_blue #app_leftmenu li,
 .app_theme_blue .dashboard table .main_title,

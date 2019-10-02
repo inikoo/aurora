@@ -42,7 +42,7 @@
 "error":"{t}Error{/t}",
 "invalid_val":"{t}Invalid value{/t}"
 
-}' class="{$user->get('theme_raw')}">
+}' class="{$user->get('User Theme')}">
 <input type="hidden" id="_request" value="{$_request}">
 <input type="hidden" id="is_devel" value="{$is_devel}">
 
