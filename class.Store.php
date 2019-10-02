@@ -3218,7 +3218,15 @@ class Store extends DB_Table {
 
     }
 
-    function create_customer($data) {
+    /**
+     * @param $data
+     *
+     * @return array[
+     *  'Customer' => \Customer,
+     *  'Website_User' => \Website_User
+     * ]
+     */
+    public function create_customer($data) {
 
         $this->new_customer     = false;
         $this->new_website_user = false;
@@ -3333,8 +3341,8 @@ class Store extends DB_Table {
             }
 
             return array(
-                $customer,
-                $website_user
+                'Customer'=>$customer,
+                'Website_User'=>$website_user
             );
         } else {
             $this->error = true;

@@ -1058,6 +1058,8 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
  * @param $editor
  * @param $data
  * @param $smarty  \Smarty
+ *
+ * @throws \SmartyException
  */
 function new_object($account, $db, $user, $editor, $data, $smarty) {
 
@@ -1210,7 +1212,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                     // print_r($deal);
 
-                    $pcard = '';
+                    $new_object_html = '';
 
 
                     $redirect     = 'products/'.$category->get('Store Key').'/category/'.$category->id.'/deal/'.$object->id;
@@ -2047,7 +2049,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                     //print_r($deal);
 
-                    $pcard = '';
+                    $new_object_html = '';
 
 
                     $redirect     = 'offers/'.$campaign->get('Store Key').'/'.strtolower($campaign->get('Deal Campaign Code')).'/'.$object->id;
@@ -2199,7 +2201,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                     //  print_r($deal_component);
 
-                    $pcard = '';
+                    $new_object_html = '';
 
 
                     $redirect     = 'products/'.$category->get('Store Key').'/category/'.$category->id.'/deal_component/'.$deal_component->id;
@@ -2359,7 +2361,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     //print_r($campaign);
                     //print_r($object);
 
-                    $pcard = '';
+                    $new_object_html = '';
 
 
                     $redirect     = 'offers/'.$object->get('Store Key').'/'.strtolower($campaign->get('Code')).'/deal/'.$object->id;
@@ -2394,7 +2396,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                 $smarty->assign('object', $object);
 
-                $pcard = '';
+                $new_object_html = '';
 
 
                 $redirect     = 'website/'.$object->get('Webpage Website Key').'/in_process/webpage/'.$object->id;
@@ -2420,7 +2422,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                 $smarty->assign('object', $object);
 
-                $pcard = '';
+                $new_object_html = '';
 
 
                 $redirect     = 'store/'.$object->get('Website Store Key').'/website/';
@@ -2445,8 +2447,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                 $smarty->assign('object', $object);
 
-                $pcard        = $smarty->fetch('presentation_cards/location.pcard.tpl');
-                $updated_data = array();
+                $new_object_html = $smarty->fetch('presentation_cards/location.pcard.tpl');
+                $updated_data    = array();
             }
             break;
 
@@ -2467,10 +2469,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                 $smarty->assign('object', $object);
 
-                $pcard        = $smarty->fetch(
+                $new_object_html = $smarty->fetch(
                     'presentation_cards/main_category.pcard.tpl'
                 );
-                $updated_data = array();
+                $updated_data    = array();
             }
             break;
 
@@ -2484,8 +2486,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             if (!$parent->error and $object->id) {
 
-                $pcard        = '';
-                $updated_data = array();
+                $new_object_html = '';
+                $updated_data    = array();
 
                 if ($object->get('Purchase Order Production') == 'Yes') {
                     $redirect = sprintf('production/%d/order/%d', $object->get('Purchase Order Parent Key'), $object->id);
@@ -2505,8 +2507,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             if (!$parent->error) {
 
-                $pcard        = '';
-                $updated_data = array();
+                $new_object_html = '';
+                $updated_data    = array();
             }
             break;
         case 'Order':
@@ -2526,8 +2528,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             if (!$parent->error) {
 
-                $pcard        = '';
-                $updated_data = array();
+                $new_object_html = '';
+                $updated_data    = array();
             }
             break;
 
@@ -2558,8 +2560,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 echo json_encode($response);
                 exit;
             }
-            $pcard        = '';
-            $updated_data = array();
+            $new_object_html = '';
+            $updated_data    = array();
 
 
             break;
@@ -2588,8 +2590,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 echo json_encode($response);
                 exit;
             }
-            $pcard        = '';
-            $updated_data = array();
+            $new_object_html = '';
+            $updated_data    = array();
 
             break;
 
@@ -2622,8 +2624,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 echo json_encode($response);
                 exit;
             }
-            $pcard        = '';
-            $updated_data = array();
+            $new_object_html = '';
+            $updated_data    = array();
 
             break;
 
@@ -2657,8 +2659,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 echo json_encode($response);
                 exit;
             }
-            $pcard        = '';
-            $updated_data = array();
+            $new_object_html = '';
+            $updated_data    = array();
 
             break;
 
@@ -2690,8 +2692,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 echo json_encode($response);
                 exit;
             }
-            $pcard        = '';
-            $updated_data = array();
+            $new_object_html = '';
+            $updated_data    = array();
             break;
 
         case 'Agent':
@@ -2701,10 +2703,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $smarty->assign('account', $account);
                 $smarty->assign('object', $object);
 
-                $pcard        = $smarty->fetch(
+                $new_object_html = $smarty->fetch(
                     'presentation_cards/agent.pcard.tpl'
                 );
-                $updated_data = array();
+                $updated_data    = array();
             }
             break;
         case 'Barcode':
@@ -2714,8 +2716,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             }
 
-            $pcard        = '';
-            $updated_data = array();
+            $new_object_html = '';
+            $updated_data    = array();
 
 
             break;
@@ -2728,10 +2730,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                 $smarty->assign('object', $object);
 
-                $pcard        = $smarty->fetch(
+                $new_object_html = $smarty->fetch(
                     'presentation_cards/part.pcard.tpl'
                 );
-                $updated_data = array();
+                $updated_data    = array();
             } else {
 
 
@@ -2756,8 +2758,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                 $smarty->assign('object', $object);
 
-                $pcard        = $smarty->fetch('presentation_cards/product.pcard.tpl');
-                $updated_data = array();
+                $new_object_html = $smarty->fetch('presentation_cards/product.pcard.tpl');
+                $updated_data    = array();
             } else {
 
 
@@ -2778,10 +2780,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                 $smarty->assign('object', $object);
 
-                $pcard        = $smarty->fetch(
+                $new_object_html = $smarty->fetch(
                     'presentation_cards/manufacture_task.pcard.tpl'
                 );
-                $updated_data = array();
+                $updated_data    = array();
             } else {
 
 
@@ -2820,16 +2822,16 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             if ($parent->get_object_name() == 'Staff') {
-                $pcard = $smarty->fetch(
+                $new_object_html = $smarty->fetch(
                     'presentation_cards/staff.system_user.pcard.tpl'
                 );
             } elseif ($parent->get_object_name() == 'Agent') {
-                $pcard = $smarty->fetch(
+                $new_object_html = $smarty->fetch(
                     'presentation_cards/agent.system_user.pcard.tpl'
                 );
 
             } elseif ($parent->get_object_name() == 'Supplier') {
-                $pcard = $smarty->fetch(
+                $new_object_html = $smarty->fetch(
                     'presentation_cards/supplier.system_user.pcard.tpl'
                 );
 
@@ -2847,10 +2849,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     $smarty->assign('account', $account);
                     $smarty->assign('object', $object);
 
-                    $pcard        = $smarty->fetch(
+                    $new_object_html = $smarty->fetch(
                         'presentation_cards/store.pcard.tpl'
                     );
-                    $updated_data = array();
+                    $updated_data    = array();
 
                 } else {
                     $response = array(
@@ -2873,10 +2875,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     $smarty->assign('account', $account);
                     $smarty->assign('object', $object);
 
-                    $pcard        = $smarty->fetch(
+                    $new_object_html = $smarty->fetch(
                         'presentation_cards/warehouse.pcard.tpl'
                     );
-                    $updated_data = array();
+                    $updated_data    = array();
                 } else {
                     $response = array(
                         'state' => 400,
@@ -2892,7 +2894,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
         case 'Customer':
             include_once 'class.Customer.php';
 
-
+            /**
+             * @var $parent \Store
+             */
             list($customer, $website_user) = $parent->create_customer($data['fields_data']);
 
             if ($parent->new_customer) {
@@ -2904,8 +2908,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $smarty->assign('website_user', $website_user);
 
 
-                $pcard        = $smarty->fetch('presentation_cards/customer.pcard.tpl');
-                $updated_data = array();
+                $new_object_html = $smarty->fetch('presentation_cards/customer.pcard.tpl');
+                $updated_data    = array();
             } else {
                 $response = array(
                     'state' => 400,
@@ -2919,23 +2923,21 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             break;
-        case 'Customer_Client':
-            include_once 'class.Customer.php';
+        case 'Customer Client':
+
+            /**
+             * @var $parent \Customer
+             */
+            $customer_client = $parent->create_client($data['fields_data']);
+
+            if ($parent->new_client) {
+                $object = $customer_client;
 
 
-            $customer_client = $parent->create_customer($data['fields_data']);
+                $redirect = 'customers/'.$customer_client->get('Store Key').'/'.$parent->id.'/client/'.$customer_client->id;
 
-            if ($parent->new_customer) {
-
-
-                $object = $customer;
-                $smarty->assign('account', $account);
-                $smarty->assign('customer', $customer);
-                $smarty->assign('website_user', $website_user);
-
-
-                $pcard        = $smarty->fetch('presentation_cards/customer.pcard.tpl');
-                $updated_data = array();
+                $new_object_html = '';
+                $updated_data    = array();
             } else {
                 $response = array(
                     'state' => 400,
@@ -2957,10 +2959,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $smarty->assign('account', $account);
                 $smarty->assign('prospect', $prospect);
 
-                $pcard        = $smarty->fetch(
+                $new_object_html = $smarty->fetch(
                     'presentation_cards/prospect.pcard.tpl'
                 );
-                $updated_data = array();
+                $updated_data    = array();
             }
             break;
         case 'Supplier':
@@ -2970,10 +2972,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $smarty->assign('account', $account);
                 $smarty->assign('object', $object);
 
-                $pcard        = $smarty->fetch(
+                $new_object_html = $smarty->fetch(
                     'presentation_cards/supplier.pcard.tpl'
                 );
-                $updated_data = array();
+                $updated_data    = array();
             }
             break;
         case 'Contractor':
@@ -2986,10 +2988,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $smarty->assign('account', $account);
                 $smarty->assign('object', $object);
 
-                $pcard        = $smarty->fetch(
+                $new_object_html = $smarty->fetch(
                     'presentation_cards/contractor.pcard.tpl'
                 );
-                $updated_data = array();
+                $updated_data    = array();
             }
             break;
         case 'Staff':
@@ -3000,10 +3002,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $smarty->assign('account', $account);
                 $smarty->assign('object', $object);
 
-                $pcard        = $smarty->fetch(
+                $new_object_html = $smarty->fetch(
                     'presentation_cards/employee.pcard.tpl'
                 );
-                $updated_data = array();
+                $updated_data    = array();
             }
 
 
@@ -3030,18 +3032,18 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $smarty->assign('qr_code', $qr_code);
 
 
-                $pcard        = $smarty->fetch(
+                $new_object_html = $smarty->fetch(
                     'presentation_cards/api_key.pcard.tpl'
                 );
-                $updated_data = array();
+                $updated_data    = array();
             }
             break;
         case 'Timesheet_Record':
             include_once 'class.Timesheet_Record.php';
             $object = $parent->create_timesheet_record($data['fields_data']);
             if (!$parent->error) {
-                $pcard        = '';
-                $updated_data = array(
+                $new_object_html = '';
+                $updated_data    = array(
                     'Timesheet_Clocked_Hours' => $parent->get('Clocked Hours')
                 );
             }
@@ -3056,10 +3058,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             if (!$parent->error) {
                 $smarty->assign('object', $object);
 
-                $pcard        = $smarty->fetch(
+                $new_object_html = $smarty->fetch(
                     'presentation_cards/supplier_part.pcard.tpl'
                 );
-                $updated_data = array();
+                $updated_data    = array();
             }
             break;
         case 'EmailCampaign':
@@ -3071,7 +3073,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             if (!$parent->error) {
 
-                $pcard             = '';
+                $new_object_html   = '';
                 $redirect          = 'marketing/'.$object->get('Store Key').'/emails/'.$object->get('Email Campaign Email Template Type Key').'/mailshot/'.$object->id;
                 $redirect_metadata = array('tab' => 'mailshot.workshop');
 
@@ -3096,15 +3098,15 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                 if ($object->get('Customer Poll Query Type') == 'Options') {
 
-                    $pcard        = '';
-                    $redirect     = 'customers/'.$parent->id.'/poll_query/'.$object->id;
-                    $updated_data = array();
+                    $new_object_html = '';
+                    $redirect        = 'customers/'.$parent->id.'/poll_query/'.$object->id;
+                    $updated_data    = array();
 
                 } else {
 
 
-                    $pcard        = $smarty->fetch('presentation_cards/customer_poll_query.pcard.tpl');
-                    $updated_data = array();
+                    $new_object_html = $smarty->fetch('presentation_cards/customer_poll_query.pcard.tpl');
+                    $updated_data    = array();
                 }
 
 
@@ -3128,8 +3130,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $smarty->assign('poll_option', $object);
 
 
-                $pcard        = $smarty->fetch('presentation_cards/customer_poll_query_option.pcard.tpl');
-                $updated_data = array();
+                $new_object_html = $smarty->fetch('presentation_cards/customer_poll_query_option.pcard.tpl');
+                $updated_data    = array();
 
 
             }
@@ -3140,7 +3142,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             if ($parent->new_list) {
 
-                $pcard             = '';
+                $new_object_html   = '';
                 $redirect          = 'customers/list/'.$object->id;
                 $redirect_metadata = array('tab' => 'customers.list');
                 $updated_data      = array();
@@ -3185,9 +3187,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             if ($object->id) {
 
 
-                $pcard        = '';
-                $redirect     = sprintf('prospects/%d/template/%d', $data['parent_key'], $object->id);
-                $updated_data = array();
+                $new_object_html = '';
+                $redirect        = sprintf('prospects/%d/template/%d', $data['parent_key'], $object->id);
+                $updated_data    = array();
             }
 
             break;
@@ -3199,8 +3201,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             if (!$parent->error) {
                 $smarty->assign('object', $object);
 
-                $pcard        = $smarty->fetch('presentation_cards/shipper.pcard.tpl');
-                $updated_data = array();
+                $new_object_html = $smarty->fetch('presentation_cards/shipper.pcard.tpl');
+                $updated_data    = array();
             }
             break;
         case 'Order_Basket_Purge':
@@ -3231,8 +3233,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             if (!$parent->error) {
 
-                $pcard        = '';
-                $updated_data = array();
+                $new_object_html = '';
+                $updated_data    = array();
             }
             break;
         case 'Warehouse Area':
@@ -3244,10 +3246,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                 $smarty->assign('object', $object);
 
-                $pcard        = $smarty->fetch(
+                $new_object_html = $smarty->fetch(
                     'presentation_cards/warehouse_area.pcard.tpl'
                 );
-                $updated_data = array();
+                $updated_data    = array();
             } else {
 
 
@@ -3317,7 +3319,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
         $response = array(
             'state'             => 200,
             'msg'               => '<i class="fa fa-check"></i> '._('Success'),
-            'pcard'             => $pcard,
+            'pcard'             => $new_object_html,
             'new_id'            => $object->id,
             'updated_data'      => $updated_data,
             'metadata'          => $metadata,

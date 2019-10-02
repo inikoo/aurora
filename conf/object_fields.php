@@ -22,6 +22,9 @@
  */
 function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
+    /**
+     * @var array $object_fields
+     */
 
     $account = new Account($db);
     $edit    = true;
@@ -436,6 +439,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             } else {
                 include 'fields/customer_client.fld.php';
             }
+
 
             return $object_fields;
             break;

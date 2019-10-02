@@ -37,36 +37,6 @@ if (!isset($_REQUEST['tipo'])) {
     exit;
 }
 
-/*
- *
- *
- *
- *
- *
- * elseif ($view_path[1] == 'client') {
-
-
-                            $module     = 'customer_client';
-                            $section    = 'customer_client';
-                            $parent     = 'customer';
-                            $parent_key = $key;
-                            $object     = 'customer_client';
-                            if (isset($view_path[2])) {
-                                if (is_numeric($view_path[2])) {
-                                    $key = $view_path[2];
-                                }elseif ($view_path[2]=='new') {
-
-                                    $section    = 'customer_client.new';
-
-                                    $key =0;
-                                }
-                            }
-                        }
- *
- *
- */
-
-
 
 $tipo = $_REQUEST['tipo'];
 
@@ -186,9 +156,7 @@ function customers($_data, $db, $user) {
             }
 
 
-            $contact_since = strftime(
-                "%e %b %y", strtotime($data['Customer First Contacted Date'].' +0:00')
-            );
+            $contact_since = strftime("%e %b %y", strtotime($data['Customer First Contacted Date'].' +0:00'));
 
 
             if ($data['Customer Billing Address Link'] == 'Contact') {
@@ -1357,11 +1325,10 @@ function sales_history($_data, $db, $user, $account) {
         $to         = ($category->get('Part Category Status') == 'NotInUse' ? $product->get('Part Category Valid To') : gmdate('Y-m-d'));
         $date_field = '`Timeseries Record Date`';
         break;
-        */
-        default:
-            print_r($_data);
-            exit('parent not configured '.$_data['parameters']['parent']);
-            break;
+        */ default:
+        print_r($_data);
+        exit('parent not configured '.$_data['parameters']['parent']);
+        break;
     }
 
 
@@ -1648,11 +1615,7 @@ function products($_data, $db, $user, $account) {
                 'status'   => $status,
                 'amount'   => sprintf('<span>%s</span>', money($data['amount'], $data['Store Currency Code'])),
                 'invoices' => sprintf(
-                    '<span class="link" onclick="change_view(\'customers/%d/%d/product/%d\',{ })">%s</span>',
-                    $data['Store Key'],
-                    $data['Customer Key'],
-                    $data['Product ID'],
-                    number($data['invoices'])
+                    '<span class="link" onclick="change_view(\'customers/%d/%d/product/%d\',{ })">%s</span>', $data['Store Key'], $data['Customer Key'], $data['Product ID'], number($data['invoices'])
                 ),
                 'qty'      => sprintf('<span>%s</span>', number($data['qty']))
 
@@ -1914,12 +1877,10 @@ function customer_notifications($_data, $db, $user) {
 }
 
 
+function credit_blockchain($_data, $db, $user, $account) {
 
 
-function credit_blockchain($_data, $db, $user,$account) {
-
-
-//'Payment','Adjust','Cancel','Return','PayReturn','AddFunds'
+    //'Payment','Adjust','Cancel','Return','PayReturn','AddFunds'
 
     $rtext_label = 'transaction';
 
@@ -1935,29 +1896,35 @@ function credit_blockchain($_data, $db, $user,$account) {
 
         foreach ($result as $data) {
 
-            $note='';
-            switch ($data['Credit Transaction Type']){
+            $note = '';
+            switch ($data['Credit Transaction Type']) {
                 case 'Payment':
 
-                    if($data['Credit Transaction Amount']<0){
-                        $type=_('Used');
-                        $note=sprintf('<span class="link" onclick="change_view(\'orders/%d/%d\')" >%s</span>',$data['Order Store Key'],$data['Order Key'],$data['Order Public ID']);
+                    if ($data['Credit Transaction Amount'] < 0) {
+                        $type = _('Used');
+                        $note = sprintf('<span class="link" onclick="change_view(\'orders/%d/%d\')" >%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']);
 
-                    }else{
-                        $note=sprintf('<span class="link" onclick="change_view(\'orders/%d/%d\')" >%s</span>',$data['Order Store Key'],$data['Order Key'],$data['Order Public ID']);
+                    } else {
+                        $note = sprintf('<span class="link" onclick="change_view(\'orders/%d/%d\')" >%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']);
 
 
-                        if($data['Invoice Key'] and $data['Invoice Type']=='Refund'){
-                            $type=_('Credited from refund');
+                        if ($data['Invoice Key'] and $data['Invoice Type'] == 'Refund') {
+                            $type = _('Credited from refund');
 
-                            $note.=sprintf(' <span class="error padding_left_10"> <i class="fal fa-file-invoice-dollar error"></i> <span class="link error" onclick="change_view(\'invoices/%d/%d\')" >%s</span></span>',$data['Order Store Key'],$data['Invoice Key'],$data['Invoice Public ID']);
+                            $note .= sprintf(
+                                ' <span class="error padding_left_10"> <i class="fal fa-file-invoice-dollar error"></i> <span class="link error" onclick="change_view(\'invoices/%d/%d\')" >%s</span></span>', $data['Order Store Key'], $data['Invoice Key'],
+                                $data['Invoice Public ID']
+                            );
 
-                        }else{
+                        } else {
 
-                            $icon='fa-sack-dollar';
+                            $icon = 'fa-sack-dollar';
 
-                            $type=_('Credited from payment');
-                            $note.=sprintf(' <span class=" padding_left_10"> <i class="fal %s "></i> <span class="link discreet" onclick="change_view(\'payments/%d/%d\')" >%s</span></span>',$icon,$data['Order Store Key'],$data['Payment Related Payment Key'],$data['Payment Related Payment Transaction ID']);
+                            $type = _('Credited from payment');
+                            $note .= sprintf(
+                                ' <span class=" padding_left_10"> <i class="fal %s "></i> <span class="link discreet" onclick="change_view(\'payments/%d/%d\')" >%s</span></span>', $icon, $data['Order Store Key'], $data['Payment Related Payment Key'],
+                                $data['Payment Related Payment Transaction ID']
+                            );
 
                         }
 
@@ -1966,62 +1933,61 @@ function credit_blockchain($_data, $db, $user,$account) {
 
                     break;
                 case 'Cancel':
-                    $type=_('Cancelled');
+                    $type = _('Cancelled');
 
                     break;
                 case 'Return':
-                    $type=_('Return');
-                    $note=$data['History Abstract'];
+                    $type = _('Return');
+                    $note = $data['History Abstract'];
 
                     break;
                 case 'MoneyBack':
                 case 'RemoveFundsOther':
-                    $type=_('Withdraw');
-                    $note=$data['History Abstract'];
+                    $type = _('Withdraw');
+                    $note = $data['History Abstract'];
 
                     break;
                 case 'PayReturn':
                 case 'Compensation':
                 case 'AddFundsOther':
-                    $type=_('Deposit');
-                    $note=$data['History Abstract'];
+                    $type = _('Deposit');
+                    $note = $data['History Abstract'];
 
                     break;
 
                 case 'TransferOut':
                 case 'TransferIn':
-                    $type=_('Transfer');
-                    $note=$data['History Abstract'];
+                    $type = _('Transfer');
+                    $note = $data['History Abstract'];
 
                     break;
 
                 case 'Adjust':
-                    $type=_('Adjust');
-                    $note=$data['History Abstract'];
+                    $type = _('Adjust');
+                    $note = $data['History Abstract'];
                     break;
                 default:
-                    $type=$data['Credit Transaction Type'];
+                    $type = $data['Credit Transaction Type'];
 
             }
 
 
-            $amount_ac=$data['Credit Transaction Amount']*$data['Credit Transaction Currency Exchange Rate'];
-            $date = strftime(
+            $amount_ac = $data['Credit Transaction Amount'] * $data['Credit Transaction Currency Exchange Rate'];
+            $date      = strftime(
                 "%a %e %b %y %T %Z", strtotime($data['Credit Transaction Date'].' +0:00')
             );
 
             $adata[] = array(
-                'id'           => (integer)$data['Credit Transaction Key'],
-                'amount'           => money($data['Credit Transaction Amount'],$data['Credit Transaction Currency Code']),
-                'running_amount'           => money($data['Credit Transaction Running Amount'],$data['Credit Transaction Currency Code']),
+                'id'             => (integer)$data['Credit Transaction Key'],
+                'amount'         => money($data['Credit Transaction Amount'], $data['Credit Transaction Currency Code']),
+                'running_amount' => money($data['Credit Transaction Running Amount'], $data['Credit Transaction Currency Code']),
 
-                'type'           =>$type,
-                'notes'           =>$note,
+                'type'  => $type,
+                'notes' => $note,
 
 
-                'amount_ac'           => money($amount_ac,$account->get('Currency Code')),
-                'date'           =>$date
-
+                'amount_ac' => money($amount_ac, $account->get('Currency Code')),
+                'date'      => $date
 
 
             );
@@ -2049,12 +2015,23 @@ function credit_blockchain($_data, $db, $user,$account) {
 }
 
 
-
 function customer_clients($_data, $db, $user) {
 
     $rtext_label = 'customer clients';
 
     include_once 'prepare_table/init.php';
+
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     */
 
     $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
@@ -2066,11 +2043,21 @@ function customer_clients($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-
             $adata[] = array(
-                'id'           => (integer)$data['Customer Client Key'],
-                'name'         => $data['Customer Client Name'],
+                'id'   => (integer)$data['Customer Client Key'],
+                'code' => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d/client/%d\')">%s</span>',$data['Customer Client Store Key'],$data['Customer Client Customer Key'],$data['Customer Client Key'],$data['Customer Client Code']),
+                'name' => $data['Customer Client Name'],
+                'since' => strftime("%e %b %y", strtotime($data['Customer Client Creation Date'].' +0:00')),
+                'location' => $data['Customer Client Location'],
+                'pending_orders' => number($data['Customer Client Pending Orders']),
+                'invoices' => number($data['Customer Client Number Invoices']),
+                'last_invoice' => ($data['Customer Client Last Invoice Date']==''?'':strftime("%e %b %y", strtotime($data['Customer Client Last Invoice Date'].' +0:00'))),
 
+                'total_invoiced_amount' => money($data['Customer Client Invoiced Amount'],$data['Customer Client Currency Code']),
+                'address'=>$data['Customer Client Contact Address Formatted'],
+                'email'=>$data['Customer Client Main Plain Email'],
+                'telephone'=>$data['Customer Client Main XHTML Telephone'],
+                'mobile'=>$data['Customer Client Main XHTML Mobile'],
 
             );
         }
