@@ -404,7 +404,8 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
             $add_class    = array();
             $remove_class = array();
 
-
+            $show=array();
+            $hide=array();
 
 
             if($this->get('Order To Pay Amount')==0){
