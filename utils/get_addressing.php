@@ -10,7 +10,6 @@
 */
 
 
-
 use CommerceGuys\Addressing\Zone\Zone;
 
 use CommerceGuys\Addressing\Address;
@@ -24,6 +23,7 @@ use CommerceGuys\Addressing\Subdivision\SubdivisionRepository;
 function get_zone_object($data) {
     return new Zone($data);
 }
+
 function get_address_object() {
     return new Address();
 }
@@ -46,7 +46,12 @@ function get_address_subdivisions($country_code, $locale = null) {
 
 }
 
-
+/**
+ * @param null $origin_country
+ * @param null $locale
+ *
+ * @return array [Address,DefaultFormatter,PostalLabelFormatter]
+ */
 function get_address_formatter($origin_country = null, $locale = null) {
 
 

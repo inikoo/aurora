@@ -13,6 +13,7 @@
 include_once 'utils/date_functions.php';
 
 
+
 if (!isset($rtext_label)) {
     $rtext_label = '';
 }
@@ -114,4 +115,4 @@ if (isset($parameters['parent_period']) and $parameters['parent_period'] != 'all
 
 }
 
-?>
+

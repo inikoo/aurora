@@ -1059,7 +1059,7 @@ class Customer extends Subject {
                 $this->update_field($field, $value);
 
 
-                $sql = sprintf("update `Order Dimension` set `Order Sticky Note`=%s where  WHERE `Order State` in  ('InBasket','InProcess')  and `Order Customer Key`=%d ", $value, $this->id);
+                $sql = sprintf("update `Order Dimension` set `Order Sticky Note`=%s   WHERE `Order State` in  ('InBasket','InProcess')  and `Order Customer Key`=%d ", $value, $this->id);
                 $this->db->exec($sql);
 
 
@@ -1069,7 +1069,7 @@ class Customer extends Subject {
                 $this->update_field($field, $value);
 
 
-                $sql = sprintf("update `Order Dimension` set `Order Delivery Sticky Note`=%s where  WHERE `Order State` in  ('InBasket','InProcess','InWarehouse')  and `Order Customer Key`=%d ", $value, $this->id);
+                $sql = sprintf("update `Order Dimension` set `Order Delivery Sticky Note`=%s   WHERE `Order State` in  ('InBasket','InProcess','InWarehouse')  and `Order Customer Key`=%d ", $value, $this->id);
                 $this->db->exec($sql);
 
 
@@ -1519,9 +1519,6 @@ class Customer extends Subject {
             }
 
 
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
 
@@ -2280,7 +2277,6 @@ class Customer extends Subject {
 
         return $credits;
     }
-
 
 
     public function update_orders() {
@@ -3505,9 +3501,9 @@ class Customer extends Subject {
 
         new_housekeeping_fork(
             'au_housekeeping', array(
-            'type'         => 'customer_approval_done',
+            'type'                => 'customer_approval_done',
             'email_template_code' => 'Registration Approved',
-            'customer_key' => $this->id,
+            'customer_key'        => $this->id,
         ), $account->get('Account Code')
         );
 
@@ -3947,6 +3943,120 @@ class Customer extends Subject {
             $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
         );
 
+    }
+
+    /**
+     * @param $data
+     *
+     * @return bool|\Customer_Client
+     */
+    public function create_client($data) {
+
+        global $account;
+
+        include_once 'class.Customer_Client.php';
+
+        $this->new_client = false;
+
+        $data['editor'] = $this->editor;
+
+        if (empty($data['Customer Client Code'])) {
+            $this->error      = true;
+            $this->msg        = _("Code missing");
+            $this->error_code = 'client_code_missing';
+            $this->metadata   = '';
+
+            return false;
+        }
+
+
+        $data['Customer Client Store Key']     = $this->data['Customer Store Key'];
+        $data['Customer Client Customer Key']  = $this->id;
+        $data['Customer Client Currency Code'] = $this->data['Customer Currency Code'];
+
+
+        $address_fields = array(
+            'Address Recipient'            => $data['Customer Client Main Contact Name'],
+            'Address Organization'         => $data['Customer Client Company Name'],
+            'Address Line 1'               => '',
+            'Address Line 2'               => '',
+            'Address Sorting Code'         => '',
+            'Address Postal Code'          => '',
+            'Address Dependent Locality'   => '',
+            'Address Locality'             => '',
+            'Address Administrative Area'  => '',
+            'Address Country 2 Alpha Code' => $data['Customer Client Contact Address country'],
+
+        );
+        unset($data['Customer Client Contact Address country']);
+
+        if (isset($data['Customer Client Contact Address addressLine1'])) {
+            $address_fields['Address Line 1'] = $data['Customer Client Contact Address addressLine1'];
+            unset($data['Customer Client Contact Address addressLine1']);
+        }
+        if (isset($data['Customer Client Contact Address addressLine2'])) {
+            $address_fields['Address Line 2'] = $data['Customer Client Contact Address addressLine2'];
+            unset($data['Customer Client Contact Address addressLine2']);
+        }
+        if (isset($data['Customer Client Contact Address sortingCode'])) {
+            $address_fields['Address Sorting Code'] = $data['Customer Client Contact Address sortingCode'];
+            unset($data['Customer Client Contact Address sortingCode']);
+        }
+        if (isset($data['Customer Client Contact Address postalCode'])) {
+            $address_fields['Address Postal Code'] = $data['Customer Client Contact Address postalCode'];
+            unset($data['Customer Client Contact Address postalCode']);
+        }
+
+        if (isset($data['Customer Client Contact Address dependentLocality'])) {
+            $address_fields['Address Dependent Locality'] = $data['Customer Client Contact Address dependentLocality'];
+            unset($data['Customer Client Contact Address dependentLocality']);
+        }
+
+        if (isset($data['Customer Client Contact Address locality'])) {
+            $address_fields['Address Locality'] = $data['Customer Client Contact Address locality'];
+            unset($data['Customer Client Contact Address locality']);
+        }
+
+        if (isset($data['Customer Client Contact Address administrativeArea'])) {
+            $address_fields['Address Administrative Area'] = $data['Customer Client Contact Address administrativeArea'];
+            unset($data['Customer Client Contact Address administrativeArea']);
+        }
+
+
+        $client = new Customer_Client('new', $data, $address_fields);
+
+
+        if ($client->id) {
+            $this->new_client_msg = $client->msg;
+
+            if ($client->new) {
+                $this->new_client = true;
+
+                include_once 'utils/new_fork.php';
+
+
+                new_housekeeping_fork(
+                    'au_housekeeping', array(
+                    'type'         => 'customer_client_created',
+                    'customer_key' => $client->id,
+                    'editor'       => $this->editor
+                ), $account->get('Account Code')
+                );
+
+
+            } else {
+                $this->error = true;
+                $this->msg   = $client->msg;
+
+            }
+
+            return $client;
+        } else {
+            $this->error = true;
+            $this->msg   = $client->msg;
+        }
+
+        return false;
     }
 
 

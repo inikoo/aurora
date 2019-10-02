@@ -2179,7 +2179,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
                     break;
                 case ('customer_client'):
-                    return get_pcustomer_client_navigation(
+                    return get_customer_client_navigation(
                         $data, $smarty, $user, $db, $account
                     );
                     break;
