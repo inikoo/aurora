@@ -10,7 +10,7 @@ function connect_websocket() {
 
 
     if (location.host == 'au.geko' || location.host == 'au.bali') {
-        var wsuri = 'wss://' + location.hostname + '/ws';
+        var wsuri = 'ws://' + location.hostname + '/ws180718';
 
     } else {
         var wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + '//' + location.hostname + '/ws180718';
@@ -178,7 +178,7 @@ function connect_websocket() {
 
     }, function () {
         websocket_connected_connecting = false;
-        console.warn('WebSocket connection closed');
+        //console.warn('WebSocket connection closed');
         websocket_connected = false;
 
     }, {'skipSubprotocolCheck': true});

@@ -20,7 +20,7 @@ $options_yn = array(
     'No'  => _('No')
 );
 
-$options_tc = array(
+$options_theme = array(
     'app_theme_default' => _('Black'),
     'app_theme_red' => _('Red'),
     'app_theme_green' => _('Green'),
@@ -145,10 +145,10 @@ $object_fields = array(
                 'render'          => (  $object->get('User Type')=='Administrator'  ? false : true),
                 'id'              => 'theme',
                 'edit'            => 'option',
-                'value'           => $user->get('theme_raw'),
-                'formatted_value' => $options_tc[$user->get('theme_raw')],
-                'label'           => _('Theme'),
-                'options'         => $options_tc,
+                'value'           => $user->get('User Theme'),
+                'formatted_value' => $user->get('Theme'),
+                'label'           => ucfirst($object->get_field_label('User Theme')),
+                'options'         => $options_theme,
 
 
             )
