@@ -3525,7 +3525,7 @@ class Store extends DB_Table {
             return;
         }
 
-        if (!is_numeric($data['Product Units Per Case']) or $data['Product Units Per Case'] < 0) {
+        if (!is_numeric($data['Product Units Per Case']) or $data['Product Units Per Case'] <= 0) {
             $this->error      = true;
             $this->msg        = sprintf(_('Invalid units per outer (%s)'), $data['Product Units Per Case']);
             $this->error_code = 'invalid_product_units_per_case';
