@@ -37,6 +37,36 @@ if (!isset($_REQUEST['tipo'])) {
     exit;
 }
 
+/*
+ *
+ *
+ *
+ *
+ *
+ * elseif ($view_path[1] == 'client') {
+
+
+                            $module     = 'customer_client';
+                            $section    = 'customer_client';
+                            $parent     = 'customer';
+                            $parent_key = $key;
+                            $object     = 'customer_client';
+                            if (isset($view_path[2])) {
+                                if (is_numeric($view_path[2])) {
+                                    $key = $view_path[2];
+                                }elseif ($view_path[2]=='new') {
+
+                                    $section    = 'customer_client.new';
+
+                                    $key =0;
+                                }
+                            }
+                        }
+ *
+ *
+ */
+
+
 
 $tipo = $_REQUEST['tipo'];
 
@@ -94,6 +124,9 @@ switch ($tipo) {
         break;
     case 'credit_blockchain':
         credit_blockchain(get_table_parameters(), $db, $user, $account);
+        break;
+    case 'customer_clients':
+        customer_clients(get_table_parameters(), $db, $user, $account);
         break;
     default:
         $response = array(
@@ -2014,3 +2047,52 @@ function credit_blockchain($_data, $db, $user,$account) {
     );
     echo json_encode($response);
 }
+
+
+
+function customer_clients($_data, $db, $user) {
+
+    $rtext_label = 'customer clients';
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $adata = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+
+            $adata[] = array(
+                'id'           => (integer)$data['Customer Client Key'],
+                'name'         => $data['Customer Client Name'],
+
+
+            );
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+

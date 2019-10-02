@@ -657,14 +657,14 @@ $modules = array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
-                    /*
+
                     'customer.clients' => array(
                         'label' => _("Clients"),
 
                         'title' => _("Customer's clients"),
                         'icon'  => 'address-book'
                     ),
-                    */
+                    
                     'customer.sales'   => array(
                         'label'   => _('Sales'),
                         'icon'    => 'money-bill',
@@ -766,13 +766,46 @@ $modules = array(
                 'type' => 'new_object',
                 'tabs' => array(
                     'customer.new' => array(
-                        'label' => _(
-                            'New customer'
-                        )
+                        'label' => _('New customer')
                     ),
 
                 )
 
+            ),
+
+            'customer_client.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'customer_client.new' => array(
+                        'label' => _("New customer's client")
+                    ),
+
+                )
+
+            ),
+
+
+            'customer_client' => array(
+                'type'  => 'object',
+                'label' => _("Customer's client"),
+                'title' =>_("Customer's client"),
+                'icon'  => '',
+
+                'tabs' => array(
+                    'customer_client.details' => array(
+                        'label' => _('Data'),
+                        'icon'  => 'database'
+                    ),
+
+                    'customer_client.orders' => array('label' => _('Orders')),
+                    'customer_client.history' => array(
+                        'title' => _('History, notes'),
+                        'label' => '',
+                        'icon'  => 'road',
+                        'class' => 'icon_only right'
+                    ),
+
+                )
             ),
 
             'prospects.email_template' => array(

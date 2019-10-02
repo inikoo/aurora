@@ -431,6 +431,8 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
             }
         }
 
+
+
         if ($state['object'] == 'website' and $state['tab'] != 'website.new') {
 
 
@@ -686,6 +688,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     }
 
 
+
     if ($state['section'] == 'setup') {
 
         $state = array(
@@ -902,7 +905,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
             list($response['object_showcase'], $title, $web_location) = get_object_showcase(
-                (isset($modules[$state['module']]['sections'][$state['section']]['showcase']) ? $modules[$state['module']]['sections'][$state['section']]['showcase'] : $state['object']), $state, $smarty, $user, $db, $account,$redis
+                (isset($modules[$state['module']]['sections'][$state['section']]['showcase']) ? $modules[$state['module']]['sections'][$state['section']]['showcase'] : $state['object']), $state, $smarty, $user, $db, $account, $redis
             );
 
             if ($title != '') {
@@ -922,10 +925,10 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
                                 switch ($state['_object']->get('Email Campaign Type Code')) {
                                     case 'Newsletter':
-                                        $web_location= '<i class="fal fa-fw fa-newspaper"></i> '._('Newsletters');
+                                        $web_location = '<i class="fal fa-fw fa-newspaper"></i> '._('Newsletters');
                                         break;
                                     case 'Marketing':
-                                        $web_location= '<i class="fal fa-fw fa-bullhorn"></i> '._('Mailshots');
+                                        $web_location = '<i class="fal fa-fw fa-bullhorn"></i> '._('Mailshots');
                                         break;
                                 }
 
@@ -934,9 +937,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                         break;
 
                 }
-
-
-
 
 
                 $redis->hSet('_IUObj'.$account->get('Code').':'.$user->id, 'web_location', $web_location);
@@ -1314,7 +1314,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     unset($state['warehouse']);
     unset($state['production']);
 
-    $state['stores']=$user->stores;
+    $state['stores']   = $user->stores;
     $response['state'] = 200;
 
     $response['app_state'] = $state;
@@ -1393,7 +1393,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
  *
  * @return mixed|string
  */
-function get_object_showcase($showcase, $data, $smarty, $user, $db, $account,$redis) {
+function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $redis) {
 
 
     $title        = '';
@@ -1530,7 +1530,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account,$re
             break;
         case 'customer':
             include_once 'showcase/customer.show.php';
-            $html         = get_customer_showcase($data, $smarty, $user, $db,$redis,$account);
+            $html         = get_customer_showcase($data, $smarty, $user, $db, $redis, $account);
             $title        = 'C'.$data['_object']->get('Formatted ID');
             $web_location = '<i class="fal fa-fw fa-user"></i> '.$title;
 
@@ -1770,15 +1770,15 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account,$re
             break;
         case 'mailshot':
             include_once 'showcase/email_campaign.show.php';
-            $html = get_email_campaign_showcase($data, $smarty, $user, $db, $account);
-            $web_location = '<i class="fal fa-fw fa-mail-bulk"></i> '.(strlen($data['_object']->get('Name'))>17?substr($data['_object']->get('Name'),0,20).'&hellip;':$data['_object']->get('Name'));
+            $html         = get_email_campaign_showcase($data, $smarty, $user, $db, $account);
+            $web_location = '<i class="fal fa-fw fa-mail-bulk"></i> '.(strlen($data['_object']->get('Name')) > 17 ? substr($data['_object']->get('Name'), 0, 20).'&hellip;' : $data['_object']->get('Name'));
 
             break;
 
         case 'newsletter':
             include_once 'showcase/email_campaign.show.php';
-            $html = get_email_campaign_showcase($data, $smarty, $user, $db, $account);
-            $web_location = '<i class="fal fa-fw fa-newsletter"></i> '.(strlen($data['_object']->get('Name'))>17?substr($data['_object']->get('Name'),0,20).'&hellip;':$data['_object']->get('Name'));
+            $html         = get_email_campaign_showcase($data, $smarty, $user, $db, $account);
+            $web_location = '<i class="fal fa-fw fa-newsletter"></i> '.(strlen($data['_object']->get('Name')) > 17 ? substr($data['_object']->get('Name'), 0, 20).'&hellip;' : $data['_object']->get('Name'));
 
             break;
 
@@ -2172,7 +2172,17 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_new_customer_navigation(
                         $data, $smarty, $user, $db, $account, $account
                     );
-
+                    break;
+                case ('customer_client.new'):
+                    return get_new_customer_client_navigation(
+                        $data, $smarty, $user, $db, $account, $account
+                    );
+                    break;
+                case ('customer_client'):
+                    return get_pcustomer_client_navigation(
+                        $data, $smarty, $user, $db, $account
+                    );
+                    break;
                 case ('prospect'):
                     return get_prospect_navigation(
                         $data, $smarty, $user, $db, $account
@@ -3637,7 +3647,20 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
     );
 
+    if ($data['section'] == 'customer') {
+        if ($data['store']->get('Store Type') == 'Dropshipping') {
+            $_content['tabs']['customer.clients']['class'] = '';
 
+        } else {
+            $_content['tabs']['customer.clients']['class'] = 'hide';
+            if ($data['tab'] == 'customer.clients') {
+                $data['tab'] = 'customer.history';
+            }
+
+        }
+
+
+    }
     if ($data['section'] == 'mailshot') {
 
 
@@ -4227,9 +4250,9 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
                     }
 
-                    if($data['_object']->get('Email Campaign Type Status')=='InProcess'){
+                    if ($data['_object']->get('Email Campaign Type Status') == 'InProcess') {
 
-                        $_content['tabs']['email_campaign_type.details']['class']       = 'hide';
+                        $_content['tabs']['email_campaign_type.details']['class']     = 'hide';
                         $_content['tabs']['email_campaign_type.sent_emails']['class'] = 'hide';
                         if ($data['tab'] == 'email_campaign_type.details' or $data['tab'] == 'email_campaign_type.sent_emails') {
                             $_content['tabs']['email_campaign_type.workshop']['selected'] = true;
@@ -4240,7 +4263,6 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
 
                     }
-
 
 
                 } else {

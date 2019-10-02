@@ -10,19 +10,21 @@
  Version 3.0
 */
 
+/**
+ * @param $data
+ * @param $smarty \Smarty
+ * @param $user
+ * @param $db     \PDO
+ *
+ * @return mixed
+ * @throws \SmartyException
+ */
 function get_customers_navigation($data, $smarty, $user, $db) {
 
 
     require_once 'class.Store.php';
 
-    switch ($data['parent']) {
-        case 'store':
 
-            break;
-        default:
-
-            break;
-    }
 
 
     $left_buttons = array();
@@ -126,11 +128,9 @@ function get_customers_list_navigation($data, $smarty, $user, $db) {
     $store = new Store($list->get('List Parent Key'));
 
 
-    $block_view = $data['section'];
 
 
     $left_buttons  = array();
-    $right_buttons = array();
 
 
     $tab = 'customers.lists';
@@ -967,6 +967,7 @@ function get_customer_navigation($data, $smarty, $user, $db) {
 
 
     $customer = $data['_object'];
+    $store = $data['store'];
 
     if (!$customer->id) {
         return;
@@ -1333,7 +1334,7 @@ function get_customer_navigation($data, $smarty, $user, $db) {
     //$right_buttons[]=array('icon'=>'edit', 'title'=>_('Edit customer'), 'url'=>'edit_customer.php?id='.$customer->id);
     //$right_buttons[]=array('icon'=>'sticky-note', 'title'=>_('History note'), 'id'=>'note');
     //$right_buttons[]=array('icon'=>'paperclip', 'title'=>_('Attachement'), 'id'=>'attach');
-    if ($store->get('Store Type') !='External') {
+    if (!($store->get('Store Type') =='External'  or $store->get('Store Type') =='Dropshipping' ) ) {
         $right_buttons[] = array(
             'icon'  => 'shopping-cart',
             'title' => _('New order'),
@@ -3672,5 +3673,60 @@ function get_mailshot_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+/**
+ * @param $data   array
+ * @param $smarty \Smarty
+ * @param $user
+ * @param $db     \PDO
+ *
+ * @return mixed
+ * @throws \SmartyException
+ */
+function get_new_customer_client_navigation($data, $smarty, $user, $db) {
 
-?>
+
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    $sections = get_sections('customers', $data['parent_key']);
+
+    $_section = 'customers';
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => $data['_parent']->get('Name'),
+        'reference' => 'customers/'.$data['_parent']->get('Store Key').'/'.$data['parent_key']
+    );
+
+
+    $left_buttons[] = $up_button;
+
+
+    $title = _("New customer's client").' (<span class="id">'.$data['_parent']->get('Formatted ID').'</span> <span class="small">'.$data['_parent']->get('Name').'</span> )';
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search customers')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
