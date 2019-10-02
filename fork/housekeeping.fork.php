@@ -415,7 +415,7 @@ function fork_housekeeping($job) {
 
                         $feedback_otf_data = array(
                             'Feedback OTF Feedback Key'       => $feedback_id,
-                            'Feedback OTF Original Key'       => $feedback['original_otf'],
+                            'Feedback OTF Original Key'       => (isset($feedback['original_otf'])?$feedback['original_otf']:''),
                             'Feedback OTF Store Key'          => $data['store_key'],
                             'Feedback OTF Post Operation Key' => $feedback['otf']
                         );
@@ -479,7 +479,7 @@ function fork_housekeeping($job) {
 
                         $feedback_otf_data = array(
                             'Feedback ONPTF Feedback Key'       => $feedback_id,
-                            'Feedback ONPTF Original Key'       => $feedback['original_onptf'],
+                            'Feedback ONPTF Original Key'       => (isset($feedback['original_onptf'])?$feedback['original_onptf']:''),
                             'Feedback ONPTF Store Key'          => $data['store_key'],
                             'Feedback ONPTF Post Operation Key' => $feedback['onptf']
                         );
