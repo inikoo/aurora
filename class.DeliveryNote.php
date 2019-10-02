@@ -887,7 +887,7 @@ class DeliveryNote extends DB_Table {
 
             $feedback = array();
 
-            foreach ($transactions as $tansaction_key => $transaction_data) {
+            foreach ($transactions as $transaction_key => $transaction_data) {
 
 
                 if ($transaction_data['type'] == 'itf') {
@@ -957,12 +957,7 @@ class DeliveryNote extends DB_Table {
 
 
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
-                    }
-
+                    } 
 
                 }
             }
