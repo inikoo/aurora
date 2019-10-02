@@ -202,18 +202,6 @@ if ($new) {
 
 
                 array(
-                    'id'              => 'Customer_Main_Plain_FAX',
-                    'edit'            => ($_edit ? 'telephone' : ''),
-                    'value'           => $object->get('Customer Main Plain FAX'),
-                    'formatted_value' => $object->get('Main Plain FAX'),
-                    'label'           => ucfirst($object->get_field_label('Customer Main Plain FAX')),
-                    'invalid_msg'     => get_invalid_message('telephone'),
-                    'required'        => false,
-                    'type'            => 'value'
-                ),
-
-
-                array(
                     'id'              => 'Customer_Website',
                     'edit'            => ($_edit ? 'string' : ''),
                     'value'           => $object->get('Customer Website'),
@@ -549,6 +537,7 @@ if ($new) {
 
             array(
                 'id'              => 'Customer_Main_Plain_FAX',
+                'render'          => ($object->get('Customer Main Plain FAX') != '' ? true : false),
                 'edit'            => ($_edit ? 'telephone' : ''),
                 'value'           => $object->get('Customer Main Plain FAX'),
                 'formatted_value' => $object->get('Main Plain FAX'),

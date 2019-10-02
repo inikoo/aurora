@@ -309,7 +309,15 @@ switch ($tipo) {
         break;
 }
 
-
+/**
+ * @param $account \Account
+ * @param $db      \PDO
+ * @param $editor  array
+ * @param $data    array
+ * @param $smarty  \Smarty
+ *
+ * @throws \SmartyException
+ */
 function edit_field($account, $db, $editor, $data, $smarty) {
 
 
@@ -1043,7 +1051,14 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 
 }
 
-
+/**
+ * @param $account \Account
+ * @param $db      PDO
+ * @param $user
+ * @param $editor
+ * @param $data
+ * @param $smarty  \Smarty
+ */
 function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
@@ -1090,7 +1105,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
                         'Deal Name Label' => $data['fields_data']['Deal Name'],
-                        'Deal Name Label' => $data['fields_data']['Deal Name'],
                         'Deal Icon'       => '<i class="fa fa-tag" ></i>',
 
                         'Deal Trigger'     => 'Category',
@@ -1123,61 +1137,65 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             'Deal Component Allowance'              => $data['fields_data']['Percentage Off'] / 100
                         );
 
+                    } elseif ($data['fields_data']['Deal Type Buy n get n free']) {
+
+                        $deal_new_data['Deal Allowance Label'] = sprintf(_('get %d free'), $data['fields_data']['Deal Buy n get n free B']);
+
+
+                        $deal_new_data['Deal Terms']      = $data['fields_data']['Deal Buy n get n free A'];
+                        $deal_new_data['Deal Terms Type'] = ($voucher ? 'Category For Every Quantity Ordered AND Voucher' : 'Category For Every Quantity Ordered');
+                        $deal_new_data['Deal Term Label'] = sprintf(_('%s products, buy %d'), $category->get('Code'), $data['fields_data']['Deal Buy n get n free A']);
+
+                        $allowance_data = json_encode(
+                            array(
+                                'object'       => 'Category',
+                                'key'          => $category->id,
+                                'qty'          => $data['fields_data']['Deal Buy n get n free B'],
+                                'same_product' => true
+                            )
+                        );
+
+
+                        $new_component_data = array(
+
+
+                            'Deal Component Allowance Label'        => sprintf(_('get %d free'), $data['fields_data']['Deal Buy n get n free B']),
+                            'Deal Component Allowance Type'         => 'Get Free',
+                            'Deal Component Allowance Target'       => 'Category',
+                            'Deal Component Allowance Target Type'  => 'Items',
+                            'Deal Component Allowance Target Key'   => $category->id,
+                            'Deal Component Allowance Target Label' => $category->get('Code'),
+                            'Deal Component Allowance'              => $allowance_data
+                        );
+
+                    } elseif ($data['fields_data']['Deal Type Buy n pay n']) {
+
+                        $deal_new_data['Deal Allowance Label'] = sprintf(_('get cheapest %d free'), $data['fields_data']['Deal Buy n n free B']);
+
+
+                        $deal_new_data['Deal Terms']      = $data['fields_data']['Deal Buy n n free A'];
+                        $deal_new_data['Deal Terms Type'] = ($voucher ? 'Category For Every Quantity Any Product Ordered AND Voucher' : 'Category For Every Quantity Any Product Ordered');
+                        $deal_new_data['Deal Term Label'] = sprintf(_('%s (Mix & match), buy %d'), $category->get('Code'), $data['fields_data']['Deal Buy n n free A']);
+
+                        $new_component_data = array(
+
+                            'Deal Component Allowance Label'        => sprintf(_('get cheapest %d free'), $data['fields_data']['Deal Buy n n free B']),
+                            'Deal Component Allowance Type'         => 'Get Cheapest Free',
+                            'Deal Component Allowance Target'       => 'Category',
+                            'Deal Component Allowance Target Type'  => 'Items',
+                            'Deal Component Allowance Target Key'   => $category->id,
+                            'Deal Component Allowance Target Label' => $category->get('Code'),
+                            'Deal Component Allowance'              => $data['fields_data']['Deal Buy n n free B']
+                        );
+
                     } else {
-                        if ($data['fields_data']['Deal Type Buy n get n free']) {
 
-                            $deal_new_data['Deal Allowance Label'] = sprintf(_('get %d free'), $data['fields_data']['Deal Buy n get n free B']);
-
-
-                            $deal_new_data['Deal Terms']      = $data['fields_data']['Deal Buy n get n free A'];
-                            $deal_new_data['Deal Terms Type'] = ($voucher ? 'Category For Every Quantity Ordered AND Voucher' : 'Category For Every Quantity Ordered');
-                            $deal_new_data['Deal Term Label'] = sprintf(_('%s products, buy %d'), $category->get('Code'), $data['fields_data']['Deal Buy n get n free A']);
-
-                            $allowance_data = json_encode(
-                                array(
-                                    'object'       => 'Category',
-                                    'key'          => $category->id,
-                                    'qty'          => $data['fields_data']['Deal Buy n get n free B'],
-                                    'same_product' => true
-                                )
-                            );
-
-
-                            $new_component_data = array(
-
-
-                                'Deal Component Allowance Label'        => sprintf(_('get %d free'), $data['fields_data']['Deal Buy n get n free B']),
-                                'Deal Component Allowance Type'         => 'Get Free',
-                                'Deal Component Allowance Target'       => 'Category',
-                                'Deal Component Allowance Target Type'  => 'Items',
-                                'Deal Component Allowance Target Key'   => $category->id,
-                                'Deal Component Allowance Target Label' => $category->get('Code'),
-                                'Deal Component Allowance'              => $allowance_data
-                            );
-
-                        } else {
-                            if ($data['fields_data']['Deal Type Buy n pay n']) {
-
-                                $deal_new_data['Deal Allowance Label'] = sprintf(_('get cheapest %d free'), $data['fields_data']['Deal Buy n n free B']);
-
-
-                                $deal_new_data['Deal Terms']      = $data['fields_data']['Deal Buy n n free A'];
-                                $deal_new_data['Deal Terms Type'] = ($voucher ? 'Category For Every Quantity Any Product Ordered AND Voucher' : 'Category For Every Quantity Any Product Ordered');
-                                $deal_new_data['Deal Term Label'] = sprintf(_('%s (Mix & match), buy %d'), $category->get('Code'), $data['fields_data']['Deal Buy n n free A']);
-
-                                $new_component_data = array(
-
-                                    'Deal Component Allowance Label'        => sprintf(_('get cheapest %d free'), $data['fields_data']['Deal Buy n n free B']),
-                                    'Deal Component Allowance Type'         => 'Get Cheapest Free',
-                                    'Deal Component Allowance Target'       => 'Category',
-                                    'Deal Component Allowance Target Type'  => 'Items',
-                                    'Deal Component Allowance Target Key'   => $category->id,
-                                    'Deal Component Allowance Target Label' => $category->get('Code'),
-                                    'Deal Component Allowance'              => $data['fields_data']['Deal Buy n n free B']
-                                );
-
-                            }
-                        }
+                        $response = array(
+                            'state' => 400,
+                            'resp'  => 'Missing deal type'
+                        );
+                        echo json_encode($response);
+                        exit;
                     }
 
 
@@ -1216,7 +1234,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                         'Deal Expiration Date' => $data['fields_data']['Deal Interval To'],
 
 
-                        'Deal Name Label' => $data['fields_data']['Deal Name'],
                         'Deal Name Label' => $data['fields_data']['Deal Name'],
                         'Deal Icon'       => $campaign->get('Icon'),
 
@@ -1305,8 +1322,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             } elseif ($data['fields_data']['Deal Type Percentage Off']) {
 
 
-                                if (preg_match('/\%\s*$/', $data['fields_data']['Percentage'])) {
-                                    $percentage = floatval(preg_replace('/\%\s*$/', '', $data['fields_data']['Percentage']));
+                                if (preg_match('/%\s*$/', $data['fields_data']['Percentage'])) {
+                                    $percentage = floatval(preg_replace('/%\s*$/', '', $data['fields_data']['Percentage']));
                                     // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
                                 } else {
                                     $response = array(
@@ -1466,8 +1483,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             } elseif ($data['fields_data']['Deal Type Percentage Off']) {
 
 
-                                if (preg_match('/\%\s*$/', $data['fields_data']['Percentage'])) {
-                                    $percentage = floatval(preg_replace('/\%\s*$/', '', $data['fields_data']['Percentage']));
+                                if (preg_match('/%\s*$/', $data['fields_data']['Percentage'])) {
+                                    $percentage = floatval(preg_replace('/%\s*$/', '', $data['fields_data']['Percentage']));
                                     // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
                                 } else {
                                     $response = array(
@@ -1767,8 +1784,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             } elseif ($data['fields_data']['Deal Type Percentage Off']) {
 
 
-                                if (preg_match('/\%\s*$/', $data['fields_data']['Percentage'])) {
-                                    $percentage = floatval(preg_replace('/\%\s*$/', '', $data['fields_data']['Percentage']));
+                                if (preg_match('/%\s*$/', $data['fields_data']['Percentage'])) {
+                                    $percentage = floatval(preg_replace('/%\s*$/', '', $data['fields_data']['Percentage']));
                                     // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
                                 } else {
                                     $response = array(
@@ -1966,8 +1983,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             $data['fields_data']['Percentage Off'] .= '%';
 
 
-                            if (preg_match('/\%\s*$/', $data['fields_data']['Percentage Off'])) {
-                                $percentage = floatval(preg_replace('/\%\s*$/', '', $data['fields_data']['Percentage Off']));
+                            if (preg_match('/%\s*$/', $data['fields_data']['Percentage Off'])) {
+                                $percentage = floatval(preg_replace('/%\s*$/', '', $data['fields_data']['Percentage Off']));
                                 // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
                             } else {
                                 $response = array(
@@ -2902,6 +2919,36 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             break;
+        case 'Customer_Client':
+            include_once 'class.Customer.php';
+
+
+            $customer_client = $parent->create_customer($data['fields_data']);
+
+            if ($parent->new_customer) {
+
+
+                $object = $customer;
+                $smarty->assign('account', $account);
+                $smarty->assign('customer', $customer);
+                $smarty->assign('website_user', $website_user);
+
+
+                $pcard        = $smarty->fetch('presentation_cards/customer.pcard.tpl');
+                $updated_data = array();
+            } else {
+                $response = array(
+                    'state' => 400,
+                    'msg'   => $parent->msg
+
+                );
+                echo json_encode($response);
+                exit;
+
+            }
+
+
+            break;
         case 'Prospect':
             include_once 'class.Prospect.php';
             if (!$parent->error) {
@@ -3020,7 +3067,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             include_once 'class.EmailCampaign.php';
             $object = $parent->create_mailshot($data['fields_data']);
-
 
 
             if (!$parent->error) {
@@ -3159,7 +3205,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             break;
         case 'Order_Basket_Purge':
 
-            $sql = sprintf('select `Order Basket Purge Key` from `Order Basket Purge Dimension` where `Order Basket Purge Store Key`=%d and `Order Basket Purge Type`="Manual" and `Order Basket Purge State`="In Process"', $parent->id);
+            $sql = sprintf("select `Order Basket Purge Key` from `Order Basket Purge Dimension` where `Order Basket Purge Store Key`=%d and `Order Basket Purge Type`='Manual' and `Order Basket Purge State`='In Process'", $parent->id);
 
             if ($result = $db->query($sql)) {
                 if ($row = $result->fetch()) {
@@ -3753,7 +3799,13 @@ function disassociate_category($account, $db, $data, $editor) {
     echo json_encode($response);
 }
 
-
+/**
+ * @param $account \Account
+ * @param $db      \PDO
+ * @param $data
+ * @param $editor
+ * @param $user    \User
+ */
 function transfer_customer_credit_to($account, $db, $data, $editor, $user) {
 
     include_once 'utils/currency_functions.php';
@@ -3926,28 +3978,29 @@ function edit_customer_account_amount($operation_type, $account, $db, $data, $ed
                     .($data['note'] != '' ? ', '.$data['note'] : '');
                 break;
             case 'RemoveFundsOther':
-                $note = '<i class="fal fa-download "  title="'._('Funds withdrawn from customer account').'" ></i> '.money(-$data['amount'], $store->get('Store Currency Code'))
-                    .($data['note'] != '' ? ', '.$data['note'] : '');
+                $note = '<i class="fal fa-download "  title="'._('Funds withdrawn from customer account').'" ></i> '.money(-$data['amount'], $store->get('Store Currency Code')).($data['note'] != '' ? ', '.$data['note'] : '');
                 break;
         }
 
     } else {
         switch ($data['credit_transaction_type']) {
             case 'PayReturn':
-                $note = '<i class="fal fa-upload "  title="'._('Funds added to customer account').'" ></i> '.money($data['amount'], $store->get('Store Currency Code')).' <i class="fal fa-mailbox"  title="'._('Money add to customer account to pay for postage of a return').'" ></i>  '
-                    .($data['note'] != '' ? ', '.$data['note'] : '');
+                $note =
+                    '<i class="fal fa-upload "  title="'._('Funds added to customer account').'" ></i> '.money($data['amount'], $store->get('Store Currency Code')).' <i class="fal fa-mailbox"  title="'._('Money add to customer account to pay for postage of a return')
+                    .'" ></i>  '.($data['note'] != '' ? ', '.$data['note'] : '');
                 break;
             case 'Compensation':
-                $note = '<i class="fal fa-upload "  title="'._('Funds added to customer account').'" ></i> '.money($data['amount'], $store->get('Store Currency Code')).' <i class="fal fa-angry"  title="'._('Compensation to customer').'" ></i>  '
-                    .($data['note'] != '' ? ', '.$data['note'] : '');
+                $note =
+                    '<i class="fal fa-upload "  title="'._('Funds added to customer account').'" ></i> '.money($data['amount'], $store->get('Store Currency Code')).' <i class="fal fa-angry"  title="'._('Compensation to customer').'" ></i>  '.($data['note'] != '' ? ', '
+                        .$data['note'] : '');
                 break;
             case 'TransferIn':
-                $note = '<i class="fal fa-upload "  title="'._('Funds added to customer account').'" ></i> '.money($data['amount'], $store->get('Store Currency Code')).' <i class="fal fa-exchange"  title="'._('Transfer funds other account').'" ></i>  '
-                    .($data['note'] != '' ? ', '.$data['note'] : '');
+                $note =
+                    '<i class="fal fa-upload "  title="'._('Funds added to customer account').'" ></i> '.money($data['amount'], $store->get('Store Currency Code')).' <i class="fal fa-exchange"  title="'._('Transfer funds other account').'" ></i>  '.($data['note'] != ''
+                        ? ', '.$data['note'] : '');
                 break;
             case 'AddFundsOther':
-                $note = '<i class="fal fa-upload "  title="'._('Funds added to customer account').'" ></i> '.money($data['amount'], $store->get('Store Currency Code'))
-                    .($data['note'] != '' ? ', '.$data['note'] : '');
+                $note = '<i class="fal fa-upload "  title="'._('Funds added to customer account').'" ></i> '.money($data['amount'], $store->get('Store Currency Code')).($data['note'] != '' ? ', '.$data['note'] : '');
                 break;
         }
     }

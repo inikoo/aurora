@@ -427,6 +427,19 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             return $customer_fields;
             break;
+
+        case 'Customer Client':
+
+
+            if (!empty($options['new'])) {
+                include 'fields/customer_client.new.fld.php';
+            } else {
+                include 'fields/customer_client.fld.php';
+            }
+
+            return $object_fields;
+            break;
+
         case 'Product':
         case 'StoreProduct':
 

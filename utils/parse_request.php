@@ -1352,10 +1352,10 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     break;
                 }
 
-                $module     = 'customers';
-                $section    = 'customer';
-                $object     = 'customer';
-                $parent     = 'store';
+                $module  = 'customers';
+                $section = 'customer';
+                $object  = 'customer';
+                $parent  = 'store';
 
 
                 $parent_key = '';
@@ -1365,8 +1365,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                     $key = $view_path[0];
 
-                    $_customer=get_object('Customer',$key);
-                    $parent_key=$_customer->get('Customer Store Key');
+                    $_customer  = get_object('Customer', $key);
+                    $parent_key = $_customer->get('Customer Store Key');
                     if (!in_array($parent_key, $user->stores)) {
                         $module  = 'utils';
                         $section = 'forbidden';
@@ -1387,6 +1387,25 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             if (isset($view_path[2])) {
                                 if (is_numeric($view_path[2])) {
                                     $key = $view_path[2];
+                                }
+                            }
+                        } elseif ($view_path[1] == 'client') {
+
+
+                            $module     = 'customers';
+                            $section    = 'customer_client';
+                            $parent     = 'customer';
+                            $parent_key = $key;
+                            $object     = 'customer_client';
+                            if (isset($view_path[2])) {
+                                if (is_numeric($view_path[2])) {
+                                    $key = $view_path[2];
+                                } elseif ($view_path[2] == 'new') {
+
+                                    $section = 'customer_client.new';
+
+                                    $key = 0;
+
                                 }
                             }
                         }
@@ -1924,6 +1943,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             $parent_key = $arg1;
                             $object     = 'customer';
                             $key        = $view_path[0];
+
+
                             if (isset($view_path[1])) {
 
                                 if ($view_path[1] == 'email') {
@@ -1954,10 +1975,29 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
 
                                         }
                                     }
+                                }elseif ($view_path[1] == 'client') {
+
+
+                                    $section    = 'customer_client';
+                                    $parent     = 'customer';
+                                    $parent_key = $key;
+                                    $object     = 'customer_client';
+                                    if (isset($view_path[2])) {
+                                        if (is_numeric($view_path[2])) {
+                                            $key = $view_path[2];
+                                        }elseif ($view_path[2]=='new') {
+
+                                            $section    = 'customer_client.new';
+
+                                            $key =0;
+
+                                        }
+                                    }
                                 }
                             }
 
-                        } elseif ($view_path[0] == 'lists') {
+                        }
+                        elseif ($view_path[0] == 'lists') {
                             $section = 'lists';
 
 
@@ -1969,10 +2009,12 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 }
                             }
 
-                        } elseif ($view_path[0] == 'categories') {
+                        }
+                        elseif ($view_path[0] == 'categories') {
                             $section = 'categories';
 
-                        } elseif ($view_path[0] == 'notifications') {
+                        }
+                        elseif ($view_path[0] == 'notifications') {
                             $section = 'customer_notifications';
 
                             if (isset($view_path[1])) {
@@ -2044,7 +2086,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 }
                             }
 
-                        } elseif ($view_path[0] == 'email_campaign_type') {
+                        }
+                        elseif ($view_path[0] == 'email_campaign_type') {
 
 
                             $section = 'email_campaign_type';
@@ -2061,11 +2104,13 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             }
 
 
-                        } elseif ($view_path[0] == 'insights') {
+                        }
+                        elseif ($view_path[0] == 'insights') {
                             $section = 'insights';
 
 
-                        } elseif ($view_path[0] == 'poll_query') {
+                        }
+                        elseif ($view_path[0] == 'poll_query') {
                             $section = 'insights';
 
 
@@ -2106,7 +2151,8 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                             }
 
 
-                        } elseif ($view_path[0] == 'category') {
+                        }
+                        elseif ($view_path[0] == 'category') {
 
                             $section = 'category';
                             $object  = 'category';
@@ -2127,10 +2173,12 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                                 //if ($category->get('Category Branch Type')=='Root') {
                                 //}
                             }
-                        } elseif ($view_path[0] == 'new') {
+                        }
+                        elseif ($view_path[0] == 'new') {
                             $section = 'customer.new';
                             $object  = '';
                         }
+
                     }
 
                 }
