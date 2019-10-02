@@ -189,9 +189,15 @@ if ($result = $db->query($sql)) {
             $_country=new Country('code',$row['Product Origin Country Code']);
 
 
-            $country=$countryRepository->get($_country->get('Country 2 Alpha Code'));
+            try {
+                $country     = $countryRepository->get($_country->get('Country 2 Alpha Code'));
+                $description .= ' <br>'._('Origin').': '.$country->getName().' ('.$country->getThreeLetterCode().')';
+            }catch (Exception $e) {
+                $description .= ' <br>'._('Origin').': '.$row['Product Origin Country Code'];
 
-            $description .= ' <br>'._('Origin').': '.$country->getName().' ('.$country->getThreeLetterCode().')';
+            }
+
+
         }
 
 
