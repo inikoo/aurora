@@ -157,7 +157,7 @@ div.inline { float:left; }
 	<table class="items" width="100%" style="font-size: 9pt; border-collapse: collapse;" cellpadding="8">
 		<thead>
 			<tr>
-				<td style="width:8%;text-align:left">{t}Code{/t}</td>
+				<td style="width:15%;text-align:left">{t}Code{/t}</td>
 				<td style="text-align:left">{t}Description{/t}</td>
 				<td style="width:8%;text-align:right">{if $order->get('Order Type')=='Order'}{t}Discount{/t}{/if}</td>
 				<td style="width:8%;text-align:right">{t}Quantity{/t}</td>
@@ -167,7 +167,7 @@ div.inline { float:left; }
 		<tbody>
 			{foreach from=$transactions item=transaction name=products} 
 			<tr class="{if $smarty.foreach.products.last}last{/if}">
-				<td style="width:8%;text-align:left">{$transaction['Product Code']}</td>
+				<td style="width:15%;text-align:left">{$transaction['Product Code']}</td>
 				<td style="text-align:left">{$transaction['Product Description']}</td>
 				<td style="width:8%;text-align:right">{$transaction['Discount']}</td>
 				
