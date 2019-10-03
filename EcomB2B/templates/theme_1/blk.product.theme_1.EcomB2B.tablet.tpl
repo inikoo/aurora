@@ -10,10 +10,7 @@
 *}
 
 <style>
-    .swiper-container {
-        width: 100%;
 
-    }
 
     .activity-item strong{
         padding-left: 0px;
@@ -42,9 +39,7 @@
                     <div class="gallery" style="display: flex;flex-wrap: wrap ;max-width: 330px" itemscope itemtype="http://schema.org/ImageGallery">
 
                         {foreach from=$data.other_images item=image name=foo}
-                            <figure style="margin: 0px 5px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject"
-
-                            >
+                            <figure style="margin: 0px 5px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
                                 <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
                                     <img style="height: 50px" src="{if $image.image_website=='' }{$image.src}{else}{$image.image_website}{/if}" itemprop="thumbnail" alt="{$image.caption}"/>
                                 </a>
@@ -77,9 +72,6 @@
                                     <i data-product_id="{$product->id}"
                                        data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
                                        data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"   title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"    class="far fa-envelope like_button reminder out_of_stock_reminders_{$product->id} margin_left_5" aria-hidden="true"></i>
-
-
-
                                 </p>
 
 
