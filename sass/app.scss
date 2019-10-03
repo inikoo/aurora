@@ -1436,7 +1436,7 @@ h2.dashboard{
   background: #8a3d3d; }
 
 
-
+/*
 .app_theme_green #top_bar,
 .app_theme_green #app_leftmenu li,
 .app_theme_green .dashboard table .main_title,
@@ -1445,16 +1445,123 @@ h2.dashboard{
   background: #035003; }
 .app_theme_green #app_leftmenu, .app_theme_green #app_leftmenu #top_info, .app_theme_green #app_leftmenu li:hover {
   background: #356f55; }
-
-
-/*
-.app_theme_green{
-#top_bar{
-  background: #43974A;
-}
-
-}
 */
+
+
+.app_theme_green{
+  
+
+  #top_bar{
+    background: #454d66;
+  }
+  #app_leftmenu{
+    //background-image: url("../art/green_left_menu4.jpg");
+    //background-size: contain;
+    background: #009975;
+    #top_info{
+      background: #009975;
+      border-color: rgba(88,179,104,.5);
+
+      color: white;
+
+      #hello_user {
+        color: white;
+        &.link:hover {
+          color: white;
+        }
+      }
+
+      #aurora_logo {
+        border-color: rgba(88,179,104,.7);
+
+      }
+    }
+    #account_name {
+
+      color: white;
+
+      &.link:hover {
+        color: whitesmoke;
+      }
+    }
+    li{
+      background: rgba(88,179,104,.3);
+      color:white;
+      border-color: rgba(88,179,104,.7);
+      i{
+        opacity: 1;
+      }
+
+      &.selected{
+        color:yellow;
+
+      }
+
+      &:hover{
+        background: rgba(88,179,104,.5);
+      }
+
+      &:last-of-type, &.last {
+        border-color: rgba(88,179,104,.8);
+      }
+
+    }
+  }
+
+  #notifications {
+    background-image: url('../art/leaves.png');
+    background-size: contain;
+
+    .top_buttons{
+      background: #009975;
+
+    }
+
+    .side_content_icon {
+      color: #58b368;
+      &:hover{
+        background: #009975;
+        color: #58b368;
+      }
+      &.selected{
+        color: white;
+      }
+    }
+
+    .side_content {
+      .top {
+        background: none;
+        color: #454d66;
+      }
+
+      .navigation {
+        border-color: #58b368;
+
+        color: #454d66;
+      }
+
+      .content {
+
+
+        border-color: #58b368;
+        color: #454d66;
+
+      }
+
+
+      .think {
+        color: #0f3c4b;
+      }
+
+    }
+
+
+  }
+
+
+
+}
+
 
 .app_theme_blue #top_bar,
 .app_theme_blue #app_leftmenu li,

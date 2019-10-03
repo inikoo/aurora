@@ -9,7 +9,10 @@ function connect_websocket() {
     websocket_connected_connecting = true;
 
 
-    if (location.host == 'au.geko' || location.host == 'au.bali') {
+    if (location.host == 'au.bali') {
+        var wsuri = 'ws://' + location.hostname + '/ws';
+
+    }else if (location.host == 'au.geko' ) {
         var wsuri = 'ws://' + location.hostname + '/ws180718';
 
     } else {

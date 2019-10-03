@@ -8717,24 +8717,70 @@ h2.dashboard {
 .app_theme_red #app_leftmenu, .app_theme_red #app_leftmenu #top_info, .app_theme_red #app_leftmenu li:hover {
   background: #8a3d3d; }
 
+/*
 .app_theme_green #top_bar,
 .app_theme_green #app_leftmenu li,
 .app_theme_green .dashboard table .main_title,
 .app_theme_green .dashboard table .main_title .widget_types .widget.selected,
 .app_theme_green .dashboard table .main_title .widget_types .widget.selected:hover {
   background: #035003; }
-
 .app_theme_green #app_leftmenu, .app_theme_green #app_leftmenu #top_info, .app_theme_green #app_leftmenu li:hover {
   background: #356f55; }
-
-/*
-.app_theme_green{
-#top_bar{
-  background: #43974A;
-}
-
-}
 */
+.app_theme_green #top_bar {
+  background: #454d66; }
+.app_theme_green #app_leftmenu {
+  background: #009975; }
+  .app_theme_green #app_leftmenu #top_info {
+    background: #009975;
+    border-color: rgba(88, 179, 104, 0.5);
+    color: white; }
+    .app_theme_green #app_leftmenu #top_info #hello_user {
+      color: white; }
+      .app_theme_green #app_leftmenu #top_info #hello_user.link:hover {
+        color: white; }
+    .app_theme_green #app_leftmenu #top_info #aurora_logo {
+      border-color: rgba(88, 179, 104, 0.7); }
+  .app_theme_green #app_leftmenu #account_name {
+    color: white; }
+    .app_theme_green #app_leftmenu #account_name.link:hover {
+      color: whitesmoke; }
+  .app_theme_green #app_leftmenu li {
+    background: rgba(88, 179, 104, 0.3);
+    color: white;
+    border-color: rgba(88, 179, 104, 0.7); }
+    .app_theme_green #app_leftmenu li i {
+      opacity: 1; }
+    .app_theme_green #app_leftmenu li.selected {
+      color: yellow; }
+    .app_theme_green #app_leftmenu li:hover {
+      background: rgba(88, 179, 104, 0.5); }
+    .app_theme_green #app_leftmenu li:last-of-type, .app_theme_green #app_leftmenu li.last {
+      border-color: rgba(88, 179, 104, 0.8); }
+.app_theme_green #notifications {
+  background-image: url("../art/leaves.png");
+  background-size: contain; }
+  .app_theme_green #notifications .top_buttons {
+    background: #009975; }
+  .app_theme_green #notifications .side_content_icon {
+    color: #58b368; }
+    .app_theme_green #notifications .side_content_icon:hover {
+      background: #009975;
+      color: #58b368; }
+    .app_theme_green #notifications .side_content_icon.selected {
+      color: white; }
+  .app_theme_green #notifications .side_content .top {
+    background: none;
+    color: #454d66; }
+  .app_theme_green #notifications .side_content .navigation {
+    border-color: #58b368;
+    color: #454d66; }
+  .app_theme_green #notifications .side_content .content {
+    border-color: #58b368;
+    color: #454d66; }
+  .app_theme_green #notifications .side_content .think {
+    color: #0f3c4b; }
+
 .app_theme_blue #top_bar,
 .app_theme_blue #app_leftmenu li,
 .app_theme_blue .dashboard table .main_title,
