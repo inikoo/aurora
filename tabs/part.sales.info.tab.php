@@ -10,17 +10,5 @@
  Version 3.0
 */
 
-
-
-
 $smarty->assign('object', $state['_object']);
-
-
-
-
-
-
-$html = $smarty->fetch('part_sales_info.tpl')
-
-
-?>
+$html = $smarty->fetch('part_sales_info.tpl');
