@@ -17,7 +17,6 @@ include_once 'class.Subject.php';
 class Prospect extends Subject {
 
 
-    var $warning_messages = array();
     var $warning = false;
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {

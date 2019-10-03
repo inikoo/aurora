@@ -242,12 +242,8 @@ function customers($_data, $db, $user) {
                 'top_invoices'     => percentage(
                     $data['Customer Invoices Top Percentage'], 1, 2
                 ),
-                'top_balance'      => percentage(
-                    $data['Customer Balance Top Percentage'], 1, 2
-                ),
-                'top_profits'      => percentage(
-                    $data['Customer Profits Top Percentage'], 1, 2
-                ),
+                'top_balance'      => percentage($data['Customer Balance Top Percentage'], 1, 2),
+                'top_profits'      => percentage($data['Customer Profits Top Percentage'], 1, 2),
                 'address'          => $data['Customer Contact Address Formatted'],
                 'billing_address'  => $billing_address,
                 'delivery_address' => $delivery_address,
@@ -256,6 +252,7 @@ function customers($_data, $db, $user) {
                 'logins'        => number($data['Customer Number Web Logins']),
                 'failed_logins' => number($data['Customer Number Web Failed Logins']),
                 'requests'      => number($data['Customer Number Web Requests']),
+                'clients'       => number($data['Customer Number Clients']),
 
 
             );
@@ -2044,20 +2041,20 @@ function customer_clients($_data, $db, $user) {
 
 
             $adata[] = array(
-                'id'   => (integer)$data['Customer Client Key'],
-                'code' => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d/client/%d\')">%s</span>',$data['Customer Client Store Key'],$data['Customer Client Customer Key'],$data['Customer Client Key'],$data['Customer Client Code']),
-                'name' => $data['Customer Client Name'],
-                'since' => strftime("%e %b %y", strtotime($data['Customer Client Creation Date'].' +0:00')),
-                'location' => $data['Customer Client Location'],
+                'id'             => (integer)$data['Customer Client Key'],
+                'code'           => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d/client/%d\')">%s</span>', $data['Customer Client Store Key'], $data['Customer Client Customer Key'], $data['Customer Client Key'], $data['Customer Client Code']),
+                'name'           => $data['Customer Client Name'],
+                'since'          => strftime("%e %b %y", strtotime($data['Customer Client Creation Date'].' +0:00')),
+                'location'       => $data['Customer Client Location'],
                 'pending_orders' => number($data['Customer Client Pending Orders']),
-                'invoices' => number($data['Customer Client Number Invoices']),
-                'last_invoice' => ($data['Customer Client Last Invoice Date']==''?'':strftime("%e %b %y", strtotime($data['Customer Client Last Invoice Date'].' +0:00'))),
+                'invoices'       => number($data['Customer Client Number Invoices']),
+                'last_invoice'   => ($data['Customer Client Last Invoice Date'] == '' ? '' : strftime("%e %b %y", strtotime($data['Customer Client Last Invoice Date'].' +0:00'))),
 
-                'total_invoiced_amount' => money($data['Customer Client Invoiced Amount'],$data['Customer Client Currency Code']),
-                'address'=>$data['Customer Client Contact Address Formatted'],
-                'email'=>$data['Customer Client Main Plain Email'],
-                'telephone'=>$data['Customer Client Main XHTML Telephone'],
-                'mobile'=>$data['Customer Client Main XHTML Mobile'],
+                'total_invoiced_amount' => money($data['Customer Client Invoiced Amount'], $data['Customer Client Currency Code']),
+                'address'               => $data['Customer Client Contact Address Formatted'],
+                'email'                 => $data['Customer Client Main Plain Email'],
+                'telephone'             => $data['Customer Client Main XHTML Telephone'],
+                'mobile'                => $data['Customer Client Main XHTML Mobile'],
 
             );
         }

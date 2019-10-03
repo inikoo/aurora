@@ -3872,8 +3872,8 @@ function get_customer_client_navigation($data, $smarty, $user, $db) {
     }
 
 
-    $title = '<span class="id"><span class="Customer_Name_Truncated">'.(strlen($client->get('Customer Client Name')) > 50 ? substrwords($client->get('Customer Client Name'), 55) : $client->get('Customer Client Name')).'</span> ('.$client->get('Code').')</span>';
-
+    $title = '<i class="far fa-address-book"></i> <span class="id">['.$client->get('Code').']</span> <span class=" Customer_Client_Name_Truncated">'.(strlen($client->get('Customer Client Name')) > 50 ? substrwords($client->get('Customer Client Name'), 55) : $client->get('Customer Client Name')).'</span>';
+    $title.=' <span class="very_small button padding_left_10" onclick="change_view(\'customers/'.$customer->get('Customer Store Key').'/'.$customer->id.'\')"><i class="fal fa-level-up"></i> <i class="fal fa-user"></i> '.$customer->get('Formatted ID').'</span>';
 
     $_content = array(
         'sections_class' => '',

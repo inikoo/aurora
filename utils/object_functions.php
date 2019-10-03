@@ -10,7 +10,13 @@
  Version 3.0
 */
 
-/** @return object|false */
+/**
+ * @param      $object_name
+ * @param      $key
+ * @param bool $load_other_data
+ *
+ * @return \Account|bool|\Customer|\Product|\Public_Category|\Public_Product|\Store
+ */
 function get_object($object_name, $key, $load_other_data = false) {
 
     if ($object_name == '') {
@@ -34,7 +40,11 @@ function get_object($object_name, $key, $load_other_data = false) {
 
         case 'customer':
             include_once 'class.Customer.php';
+            /**
+             * @var $object \Customer
+             */
             $object = new Customer('id', $key);
+
             break;
         case 'store':
             include_once 'class.Store.php';

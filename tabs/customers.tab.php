@@ -74,6 +74,7 @@ if (in_array($state['store']->id, $user->stores) and $user->can_view('customers'
             'reference' => "customers/".$state['parent_key']."/new"
         );
     }
+    $smarty->assign('store', $state['store']);
 
     $smarty->assign('table_buttons', $table_buttons);
 

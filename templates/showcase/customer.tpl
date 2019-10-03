@@ -154,7 +154,12 @@
                     <td>{t}Contact since{/t}:</td>
                     <td class="aright">{$customer->get('First Contacted Date')}</td>
                 </tr>
-
+                {if $store->get('Store Type')=='Dropshipping'}
+                <tr>
+                    <td>{t}Customer's clients{/t}:</td>
+                    <td class="aright">{$customer->get('Number Clients')}</td>
+                </tr>
+                {/if}
                 <tr>
                     <td>{t}Subscriptions{/t}:</td>
                     <td style="text-align: right">
