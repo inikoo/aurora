@@ -133,18 +133,7 @@ switch ($tipo) {
         );
         create_webpage($data, $editor, $smarty, $db);
         break;
-    case 'set_footer_template':
 
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'object' => array('type' => 'string'),
-                         'key'    => array('type' => 'key'),
-                         'value'  => array('type' => 'string'),
-
-                     )
-        );
-        set_footer_template($data, $editor, $smarty, $db);
-        break;
 
     case 'update_object_public':
         $data = prepare_values(
@@ -427,22 +416,6 @@ function update_object_public($data, $editor, $smarty, $db) {
 }
 
 
-
-function set_footer_template($data, $editor, $smarty, $db) {
-
-
-    $object = get_object($data['object'], $data['key']);
-
-    $object->set_footer_template($data['value']);
-
-
-    $response = array(
-        'state' => 200
-
-
-    );
-    echo json_encode($response);
-}
 
 function create_webpage($data, $editor, $smarty, $db) {
 
