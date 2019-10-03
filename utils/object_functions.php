@@ -526,6 +526,10 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Customer_Client.php';
             $object = new Customer_Client('id', $key);
             break;
+        case 'clocking_machine':
+            include_once 'class.Clocking_Machine.php';
+            $object = new Clocking_Machine('id', $key);
+            break;
         default:
             exit('need to complete E1: x>>>>|'.strtolower($object_name).'|<<<<++>>'.$load_other_data."<\n");
             break;

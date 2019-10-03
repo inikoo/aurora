@@ -2240,4 +2240,84 @@ function get_position_navigation($data, $smarty, $user, $db) {
 }
 
 
-?>
+function get_clocking_machines_navigation($data, $smarty, $user, $db) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = get_sections('hr', '');
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+
+    $_content = array(
+
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => _('Clocking-in machines'),
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search manpower')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+
+
+function get_new_clocking_machine_navigation($data, $smarty, $user, $db) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+
+
+    $sections = get_sections('hr', '');
+
+    $_section = 'employees';
+    if (isset($sections[$_section])) {
+        $sections[$_section]['selected'] = true;
+    }
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => _("Clocking-in machines"),
+        'reference' => 'clocking_machines'
+    );
+
+
+    $left_buttons[] = $up_button;
+
+
+    $title = '<span class="id ">'._('Set up new clocking-n machine').'</span>';
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search manpower')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}

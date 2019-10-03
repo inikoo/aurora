@@ -3182,6 +3182,15 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('position'):
                     return get_position_navigation($data, $smarty, $user, $db, $account);
                     break;
+                case ('clocking_machines'):
+                    return get_clocking_machines_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('clocking_machine'):
+                    return get_clocking_machine_navigation($data, $smarty, $user, $db, $account);
+                    break;
+                case ('clocking_machine.new'):
+                    return get_new_clocking_machine_navigation($data, $smarty, $user, $db, $account);
+                    break;
             }
 
             break;
@@ -7919,7 +7928,25 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         );
 
                     }
+                case 'clocking_machines':
+                    $branch[] = array(
+                        'label'     => _('Clocking-in machines'),
+                        'icon'      => 'chess-clock',
+                        'reference' => 'clocking_machines'
+                    );
+                    break;
+                case 'clocking_machine.new':
+                    $branch[] = array(
+                        'label'     => _('Clocking-in machines'),
+                        'icon'      => 'chess-clock',
+                        'reference' => 'clocking_machines'
+                    );
 
+                    $branch[] = array(
+                        'label'     => _('Setting up new clocking-in machine'),
+                        'icon'      => 'pager',
+                    );
+                    break;
             }
             break;
 

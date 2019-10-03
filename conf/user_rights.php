@@ -45,7 +45,7 @@ $user_rights = array(
         'Right Type' => 'Edit',
         'Right Name' => 'staff'
     ),
-    'EC' => array(
+    'ES' => array(
         'Right Type' => 'Supervisor',
         'Right Name' => 'staff'
     ),

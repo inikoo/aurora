@@ -1,4 +1,4 @@
-<div class="hide timezone_edit edit_object" style="margin:5px" data-old_value="{$field.value}" >
+<div class="{if $mode=='edit'}hide{/if} timezone_edit edit_object" style="margin:0px;padding: 0px" data-old_value="{$field.value}" >
 
     <input id="{$field.id}" type="hidden" class="input_field " value="{$field.value}"/>
     <select style="width: 600px" class="timezone_select"></select>

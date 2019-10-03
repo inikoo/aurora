@@ -3147,14 +3147,7 @@ $tab_defaults = array(
         'f_field'     => 'alias',
 
     ),
-    'overtimes'           => array(
-        'view'        => 'overview',
-        'sort_key'    => 'id',
-        'sort_order'  => 1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'reference'
-    ),
+
     'employees'           => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
@@ -4840,9 +4833,17 @@ $tab_defaults = array(
         'elements_type' => array_keys($elements_options['purges_history'])[0],
         'elements'      => $elements_options['purges_history']
     ),
+    'clocking_machines'        => array(
+        'view'        => 'overview',
+        'sort_key'    => 'code',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code'
+    ),
 
 
 );
 
 
-?>
+
