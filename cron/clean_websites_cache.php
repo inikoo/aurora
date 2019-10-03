@@ -1,5 +1,4 @@
 <?php
-
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
@@ -24,4 +23,4 @@ $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 $smarty_web->clearAllCache();
 $smarty_web->clearCompiledTemplate();
 
-?>
+
