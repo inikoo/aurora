@@ -791,6 +791,18 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             return $object_fields;
             break;
+        case 'Clocking Machine':
+
+
+            if (!empty($options['new'])) {
+                include 'fields/clocking_machine.new.fld.php';
+            } else {
+                include 'fields/clocking_machine.fld.php';
+            }
+
+
+            return $object_fields;
+            break;
         default:
             print 'todo object in object fields'.$object->get_object_name();
 

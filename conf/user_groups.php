@@ -41,6 +41,7 @@ $user_groups = array(
         'Rights' => array(
             'EV',
             'EE',
+            'ES',
 
         )
 

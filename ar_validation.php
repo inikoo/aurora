@@ -27,7 +27,6 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 
-
 switch ($tipo) {
 
     case 'valid_redirection_webpage_code':
@@ -76,9 +75,20 @@ switch ($tipo) {
         );
 
 
-
-
         check_for_duplicates($data, $db, $user, $account);
+        break;
+
+    case 'check_for_box_serial_number':
+
+        $data = prepare_values(
+            $_REQUEST, array(
+
+                         'value' => array('type' => 'string'),
+                     )
+        );
+
+
+        check_for_box_serial_number($data, $db, $user, $account);
         break;
 
     default:
@@ -89,6 +99,81 @@ switch ($tipo) {
         echo json_encode($response);
         exit;
         break;
+}
+
+
+/**
+ *
+ * @param $data    array
+ * @param $db      \PDO
+ * @param $user    \User
+ * @param $account \Account
+ */
+function check_for_box_serial_number($data, $db, $user, $account) {
+
+
+    if (!$user->can_supervisor('staff')) {
+        $response = array(
+            'state' => 400,
+            'msg'   => '',
+        );
+    } else {
+
+
+        if (strlen($data['value']) < 8) {
+            $response = array(
+                'state'      => 200,
+                'validation' => 'potentially_valid',
+                'msg'        => ''
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        $sql = "SELECT `Box Key`,`Box Aurora Account Code`  FROM box.`Box Dimension`  WHERE  `Box ID`=?    ";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array($data['value'])
+        );
+        if ($row = $stmt->fetch()) {
+            if ($row['Box Aurora Account Code'] == '') {
+                $response = array(
+                    'state'      => 200,
+                    'validation' => 'valid',
+                    'msg'        => '<i class="fa fa-check success"></i>'
+                );
+
+            } elseif ($row['Box Aurora Account Code'] == $account->get('Code')) {
+                $response = array(
+                    'state'      => 200,
+                    'validation' => 'invalid',
+                    'msg'        => _('Clocking-in machine already set up'),
+                );
+
+            } else {
+                $response = array(
+                    'state'      => 200,
+                    'validation' => 'invalid',
+                    'msg'        => _('Clocking-in machine already set up in other organisation'),
+                );
+            }
+
+
+        } else {
+            $response = array(
+                'state'      => 200,
+                'validation' => 'invalid',
+                'msg'        => _('Serial number not found')
+            );
+
+        }
+    }
+
+    echo json_encode($response);
+
+
 }
 
 
@@ -150,17 +235,13 @@ function check_for_duplicates($data, $db, $user, $account) {
     $options_where = '';
 
 
-
-
     switch ($data['object']) {
 
         case 'Customers_List':
         case 'List':
             $invalid_msg = _('Another list has same name');
             $sql         = sprintf(
-                "SELECT `List Key`AS `key` ,`List Name` AS field FROM `List Dimension` WHERE `List Parent Key`=%d  AND `List Name`=%s",
-                $data['parent_key'],
-                prepare_mysql($data['value'])
+                "SELECT `List Key`AS `key` ,`List Name` AS field FROM `List Dimension` WHERE `List Parent Key`=%d  AND `List Name`=%s", $data['parent_key'], prepare_mysql($data['value'])
             );
 
             $validation_sql_queries[] = array(
@@ -173,8 +254,7 @@ function check_for_duplicates($data, $db, $user, $account) {
         case 'Customer Poll Query Option':
             $invalid_msg = _('Another option has same code');
             $sql         = sprintf(
-                "SELECT `Customer Poll Query Option Key`AS `key` ,`Customer Poll Query Option Name` AS field FROM `Customer Poll Query Option Dimension` WHERE `Customer Poll Query Option Store Key`=%d  AND `Customer Poll Query Option Name`=%s",
-                $data['parent_key'],
+                "SELECT `Customer Poll Query Option Key`AS `key` ,`Customer Poll Query Option Name` AS field FROM `Customer Poll Query Option Dimension` WHERE `Customer Poll Query Option Store Key`=%d  AND `Customer Poll Query Option Name`=%s", $data['parent_key'],
                 prepare_mysql($data['value'])
             );
 
@@ -223,7 +303,7 @@ function check_for_duplicates($data, $db, $user, $account) {
                 case 'Deal Name':
                     $invalid_msg = _('Another offer has this name');
                     $sql         = sprintf(
-                        "SELECT `Deal Key`AS `key` ,`Deal Name` AS field FROM `Deal Dimension` WHERE `Deal Name`=%s  and `Deal Store Key`=%d ", prepare_mysql($data['value']),$data['parent_key']
+                        "SELECT `Deal Key`AS `key` ,`Deal Name` AS field FROM `Deal Dimension` WHERE `Deal Name`=%s  and `Deal Store Key`=%d ", prepare_mysql($data['value']), $data['parent_key']
                     );
 
 
@@ -235,9 +315,8 @@ function check_for_duplicates($data, $db, $user, $account) {
                 case 'Deal Voucher Code':
                     $invalid_msg = _('Voucher code already used');
                     $sql         = sprintf(
-                        "SELECT `Voucher Key`AS `key` ,`Voucher Code` AS field FROM `Voucher Dimension` WHERE `Voucher Code`=%s  and `Voucher Store Key`=%d ", prepare_mysql($data['value']),$data['parent_key']
+                        "SELECT `Voucher Key`AS `key` ,`Voucher Code` AS field FROM `Voucher Dimension` WHERE `Voucher Code`=%s  and `Voucher Store Key`=%d ", prepare_mysql($data['value']), $data['parent_key']
                     );
-
 
 
                     $validation_sql_queries[] = array(
@@ -254,8 +333,6 @@ function check_for_duplicates($data, $db, $user, $account) {
             break;
         case 'Deal_Component':
             switch ($field) {
-
-
 
 
                 default:
@@ -438,8 +515,8 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
             break;
-            
-            
+
+
         case 'Prospect':
 
             $invalid_msg              = _('Prospect already inputted');
@@ -463,8 +540,8 @@ function check_for_duplicates($data, $db, $user, $account) {
 
             $invalid_msg              = _('Prospect already registered');
             $sql                      = sprintf(
-                "SELECT `Customer Other Email Customer Key` AS `key` ,`Customer Other Email Email` AS field FROM `Customer Other Email Dimension` WHERE `Customer Other Email Email`=%s AND `Customer Other Email Store Key`=%d   ",
-                prepare_mysql($data['value']), $data['parent_key']
+                "SELECT `Customer Other Email Customer Key` AS `key` ,`Customer Other Email Email` AS field FROM `Customer Other Email Dimension` WHERE `Customer Other Email Email`=%s AND `Customer Other Email Store Key`=%d   ", prepare_mysql($data['value']),
+                $data['parent_key']
             );
             $validation_sql_queries[] = array(
                 'sql'         => $sql,
@@ -859,7 +936,6 @@ function check_for_duplicates($data, $db, $user, $account) {
                     );
 
 
-
             }
 
             break;
@@ -976,13 +1052,12 @@ function check_for_duplicates($data, $db, $user, $account) {
         case 'Mailshot':
 
 
-
             switch ($field) {
                 case 'Email Campaign Name':
 
 
-                    $invalid_msg              = _('There is another mailshot  que this name');
-                    $sql                      = sprintf(
+                    $invalid_msg = _('There is another mailshot  que this name');
+                    $sql         = sprintf(
                         "SELECT `Email Campaign Key` AS `key` ,`Email Campaign Name` AS field FROM `Email Campaign Dimension`  WHERE  `Email Campaign Name`=%s  AND `Email Campaign Email Template Type Key`=%d and `Email Campaign Key`!=%d  ",
                         prepare_mysql($data['value']), $data['parent_key'], $data['key']
 
@@ -1006,11 +1081,9 @@ function check_for_duplicates($data, $db, $user, $account) {
                 case 'Supplier Part Carton Barcode':
 
 
-
-                    $invalid_msg              = _('Barcode used');
-                    $sql                      = sprintf(
-                        "SELECT `Supplier Part Key` AS `key` ,`Supplier Part Reference` AS field FROM `Supplier Part Dimension`  WHERE `Supplier Part Carton Barcode`=%s  and  `Supplier Part Supplier Key`=%d  ",
-                        prepare_mysql($data['value']), $data['parent_key']
+                    $invalid_msg = _('Barcode used');
+                    $sql         = sprintf(
+                        "SELECT `Supplier Part Key` AS `key` ,`Supplier Part Reference` AS field FROM `Supplier Part Dimension`  WHERE `Supplier Part Carton Barcode`=%s  and  `Supplier Part Supplier Key`=%d  ", prepare_mysql($data['value']), $data['parent_key']
 
                     );
 
@@ -1022,11 +1095,9 @@ function check_for_duplicates($data, $db, $user, $account) {
                 case 'Supplier Part Reference':
 
 
-
-                    $invalid_msg              = _('Reference used');
-                    $sql                      = sprintf(
-                        "SELECT `Supplier Part Key` AS `key` ,`Supplier Part Reference` AS field FROM `Supplier Part Dimension`  WHERE `Supplier Part Reference`=%s  and  `Supplier Part Supplier Key`=%d  ",
-                        prepare_mysql($data['value']), $data['parent_key']
+                    $invalid_msg = _('Reference used');
+                    $sql         = sprintf(
+                        "SELECT `Supplier Part Key` AS `key` ,`Supplier Part Reference` AS field FROM `Supplier Part Dimension`  WHERE `Supplier Part Reference`=%s  and  `Supplier Part Supplier Key`=%d  ", prepare_mysql($data['value']), $data['parent_key']
 
                     );
 
@@ -1041,8 +1112,6 @@ function check_for_duplicates($data, $db, $user, $account) {
             break;
 
         default:
-
-
 
 
             break;
@@ -1089,8 +1158,6 @@ function check_for_duplicates($data, $db, $user, $account) {
             prepare_mysql($data['value']), $parent_where, $options_where
 
         );
-
-
 
 
         if (!isset($invalid_msg)) {

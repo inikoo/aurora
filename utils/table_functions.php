@@ -545,6 +545,14 @@ function get_rtext($record_label, $total_records) {
         return sprintf(
             ngettext('%s job order', '%s job orders', $total_records), number($total_records)
         );
+    } elseif ($record_label == 'customer client') {
+        return sprintf(
+            ngettext("%s customer's client", "%s customer's clients", $total_records), number($total_records)
+        );
+    } elseif ($record_label == 'clocking machine') {
+        return sprintf(
+            ngettext('%s clocking-in machines', '%s clocking-in machines', $total_records), number($total_records)
+        );
     } else {
         return sprintf(
             ngettext('%s record', '%s records', $total_records), number($total_records)

@@ -7106,44 +7106,33 @@ $modules = array(
 
             ),
 
-            'timesheets' => array(
+
+
+            'clocking_machines' => array(
                 'type'      => 'navigation',
-                'icon'      => 'calendar',
-                'label'     => _('Calendar'),
-                'reference' => 'timesheets/day/'.date('Ymd'),
+                'icon'      => 'chess-clock',
+                'label'     => _('Clocking-in Machines'),
+                'reference' => 'clocking_machines',
                 'tabs'      => array(
-                    'timesheets.months' => array(
-                        'label' => _(
-                            'Months'
-                        )
+                    'clocking_machines' => array(
+                        'label' => _('TClocking-in Machines')
                     ),
 
-                    'timesheets.weeks'     => array(
-                        'label' => _(
-                            'Weeks'
-                        )
-                    ),
-                    'timesheets.days'      => array(
-                        'label' => _(
-                            'Days'
-                        )
-                    ),
-                    'timesheets.employees' => array(
-                        'label' => _(
-                            "Employes'"
-                        )
-                    ),
 
-                    'timesheets.timesheets' => array(
-                        'label' => _(
-                            'Timesheets'
-                        )
+
+                )
+
+            ),
+            'clocking_machine.new'     => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'clocking_machine.new' => array(
+                        'label' => _('new clocking-in machine')
                     ),
 
                 )
 
             ),
-
 
             'new_timesheet_record' => array(
                 'type'      => 'new',

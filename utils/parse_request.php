@@ -5927,6 +5927,28 @@ function parse_request($_data, $db, $modules, $account = '', $user = '', $is_set
                     }
                 }
                 break;
+            case 'clocking_machines':
+                if (!$user->can_view('staff')) {
+                    $module  = 'utils';
+                    $section = 'forbidden';
+                    break;
+                }
+
+                $module  = 'hr';
+                $section = 'clocking_machines';
+                if (isset($view_path[0])) {
+                    if (is_numeric($view_path[0])) {
+                        $section = 'clocking_machine';
+                        $object = 'clocking_machine';
+                        $key    = $view_path[0];
+
+                    }elseif($view_path[0]=='new'){
+                        $section = 'clocking_machine.new';
+                        $object = 'clocking_machine';
+                        $key    = 0;
+                    }
+                }
+                break;
 
             case 'pending_delivery_notes':
 

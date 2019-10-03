@@ -123,7 +123,7 @@ function customers($_data, $db, $user) {
     $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
 
@@ -208,7 +208,7 @@ function customers($_data, $db, $user) {
             }
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'           => (integer)$data['Customer Key'],
                 'store_key'    => $data['Customer Store Key'],
                 'formatted_id' => $formatted_id,
@@ -268,7 +268,7 @@ function customers($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -287,7 +287,7 @@ function lists($_data, $db, $user) {
 
     $sql = "select $fields from `List Dimension` CLD $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-    $adata = array();
+    $table_data = array();
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
@@ -305,7 +305,7 @@ function lists($_data, $db, $user) {
 
             }
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'            => (integer)$data['List key'],
                 'type'          => $customer_list_type,
                 'name'          => sprintf('<span class="link"  onclick="change_view(\'customers/list/%d\')">%s</span>', $data['List key'], $data['List Name']),
@@ -328,7 +328,7 @@ function lists($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -346,7 +346,7 @@ function categories($_data, $db, $user) {
     include_once 'prepare_table/init.php';
 
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
 
@@ -369,7 +369,7 @@ function categories($_data, $db, $user) {
             $level = $data['Category Branch Type'];
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'                  => (integer)$data['Category Key'],
                 'store_key'           => (integer)$data['Category Store Key'],
                 'code'                => $data['Category Code'],
@@ -395,7 +395,7 @@ function categories($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -496,7 +496,7 @@ function customers_server($_data, $db, $user) {
 
                 }
         */
-            $adata[] = array(
+            $table_data[] = array(
                 'store_key'                   => $data['Store Key'],
                 'code'                        => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Store Key'], $data['Store Code']),
                 'name'                        => sprintf('<span class="link" onClick="change_view(\'customers/%d\')">%s</span>', $data['Store Key'], $data['Store Name']),
@@ -551,7 +551,7 @@ function customers_server($_data, $db, $user) {
     }
 
 
-    $adata[] = array(
+    $table_data[] = array(
         'store_key'                   => '',
         'name'                        => '',
         'code'                        => _('Total').($filtered > 0 ? ' '.'<i class="fa fa-filter fa-fw"></i>' : ''),
@@ -574,7 +574,7 @@ function customers_server($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -607,14 +607,14 @@ function customers_geographic_distribution($_data, $db, $user) {
     $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'      => (integer)$data['Country Key'],
                 'country' => $data['Country Name'],
                 'flag'    => sprintf('<img alt="%s" title="%s" src="/art/flags/%s.gif"/>', $data['Country 2 Alpha Code'], $data['Country 2 Alpha Code'].' '.$data['Country Name'], strtolower($data['Country 2 Alpha Code'])),
@@ -639,7 +639,7 @@ function customers_geographic_distribution($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -662,7 +662,7 @@ function abandoned_cart_mail_list($_data, $db, $user) {
     $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
 
@@ -676,7 +676,7 @@ function abandoned_cart_mail_list($_data, $db, $user) {
             $order_link_format    = '/orders/%d/%d';
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'           => (integer)$data['Customer Key'],
                 'store_key'    => $data['Customer Store Key'],
                 'formatted_id' => sprintf('<span class="link" onClick="change_view(\''.$customer_link_format.'\')">%06d</span>', $data['Order Store Key'], $data['Customer Key'], $data['Customer Key']),
@@ -703,7 +703,7 @@ function abandoned_cart_mail_list($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -726,7 +726,7 @@ function newsletter_mail_list($_data, $db, $user) {
     $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
 
@@ -736,7 +736,7 @@ function newsletter_mail_list($_data, $db, $user) {
             $customer_link_format = '/customers/%d/%d';
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'           => (integer)$data['Customer Key'],
                 'store_key'    => $data['Customer Store Key'],
                 'formatted_id' => sprintf('<span class="link" onClick="change_view(\''.$customer_link_format.'\')">%06d</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Key']),
@@ -760,7 +760,7 @@ function newsletter_mail_list($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -792,7 +792,7 @@ function poll_queries($_data, $db, $user) {
     $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
 
@@ -841,7 +841,7 @@ function poll_queries($_data, $db, $user) {
             }
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'                   => (integer)$data['Customer Poll Query Key'],
                 'type'                 => $type,
                 'query'                => sprintf(
@@ -868,7 +868,7 @@ function poll_queries($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -900,7 +900,7 @@ function poll_query_options($_data, $db, $user) {
     $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
 
@@ -914,7 +914,7 @@ function poll_query_options($_data, $db, $user) {
             }
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'    => (integer)$data['Customer Poll Query Option Key'],
                 'code'  => sprintf(
                     '<span class="link" onclick="change_view(\'/customers/%d/poll_query/%d/option/%d\')" title="%s">%s</span>', $data['Customer Poll Query Option Store Key'], $data['Customer Poll Query Option Query Key'], $data['Customer Poll Query Option Key'],
@@ -939,7 +939,7 @@ function poll_query_options($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -962,7 +962,7 @@ function poll_query_answers($_data, $db, $user) {
     $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
 
@@ -972,7 +972,7 @@ function poll_query_answers($_data, $db, $user) {
             $link_format = '/customers/%d/%d';
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'           => (integer)$data['Customer Poll Key'],
                 'formatted_id' => sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Key']),
                 'customer'     => $data['Customer Name'],
@@ -992,7 +992,7 @@ function poll_query_answers($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1018,7 +1018,7 @@ function asset_customers($_data, $db, $user) {
     $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
 
@@ -1061,7 +1061,7 @@ function asset_customers($_data, $db, $user) {
             $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Key']);
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'              => (integer)$data['Customer Key'],
                 'store_key'       => $data['Customer Store Key'],
                 'formatted_id'    => $formatted_id,
@@ -1088,7 +1088,7 @@ function asset_customers($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1112,7 +1112,7 @@ function prospects($_data, $db, $user) {
 
     //  print $sql;
 
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
 
@@ -1150,7 +1150,7 @@ function prospects($_data, $db, $user) {
             $name        = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%s</span>', $parameters['parent_key'], $data['Prospect Key'], $data['Prospect Name']);
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'        => (integer)$data['Prospect Key'],
                 'store_key' => $data['Prospect Store Key'],
 
@@ -1184,7 +1184,7 @@ function prospects($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1210,7 +1210,7 @@ function prospects_email_templates($_data, $db, $user) {
 
     //  print $sql;
 
-    $adata = array();
+    $table_data = array();
 
 
     if ($result = $db->query($sql)) {
@@ -1233,7 +1233,7 @@ function prospects_email_templates($_data, $db, $user) {
                     break;
             }
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'      => (integer)$data['Email Template Key'],
                 'author'  => $author,
                 'state'   => $state,
@@ -1256,7 +1256,7 @@ function prospects_email_templates($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1716,7 +1716,7 @@ function customer_notifications($_data, $db, $user) {
 
     //print $sql;
 
-    $adata = array();
+    $table_data = array();
 
 
     foreach ($db->query($sql) as $data) {
@@ -1794,7 +1794,7 @@ function customer_notifications($_data, $db, $user) {
         $type = sprintf('<span class="link" onClick="change_view(\'customers/%d/notifications/%d\')">%s</span>', $data['Email Campaign Type Store Key'], $data['Email Campaign Type Key'], $_type);
 
 
-        $adata[] = array(
+        $table_data[] = array(
             'id'     => (integer)$data['Email Campaign Type Key'],
             'status' => $status,
 
@@ -1840,16 +1840,16 @@ function customer_notifications($_data, $db, $user) {
 
 
         $type = array();
-        foreach ($adata as $key => $row) {
+        foreach ($table_data as $key => $row) {
             $type[$key] = $row['_type'];
         }
 
 
         if ($_dir == 'desc') {
-            array_multisort($type, SORT_DESC, $adata);
+            array_multisort($type, SORT_DESC, $table_data);
 
         } else {
-            array_multisort($type, SORT_ASC, $adata);
+            array_multisort($type, SORT_ASC, $table_data);
 
         }
 
@@ -1862,7 +1862,7 @@ function customer_notifications($_data, $db, $user) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -1887,7 +1887,7 @@ function credit_blockchain($_data, $db, $user, $account) {
     $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
 
@@ -1974,7 +1974,7 @@ function credit_blockchain($_data, $db, $user, $account) {
                 "%a %e %b %y %T %Z", strtotime($data['Credit Transaction Date'].' +0:00')
             );
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'             => (integer)$data['Credit Transaction Key'],
                 'amount'         => money($data['Credit Transaction Amount'], $data['Credit Transaction Currency Code']),
                 'running_amount' => money($data['Credit Transaction Running Amount'], $data['Credit Transaction Currency Code']),
@@ -2000,7 +2000,7 @@ function credit_blockchain($_data, $db, $user, $account) {
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,
@@ -2011,7 +2011,11 @@ function credit_blockchain($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
-
+/**
+ * @param $_data
+ * @param $db \PDO
+ * @param $user
+ */
 function customer_clients($_data, $db, $user) {
 
     $rtext_label = 'customer clients';
@@ -2028,19 +2032,23 @@ function customer_clients($_data, $db, $user) {
      * @var string $order_direction
      * @var string $start_from
      * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
      */
 
     $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
 
 
-    $adata = array();
+    $table_data = array();
 
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
 
 
-            $adata[] = array(
+            $table_data[] = array(
                 'id'             => (integer)$data['Customer Client Key'],
                 'code'           => sprintf('<span class="link" onclick="change_view(\'customers/%d/%d/client/%d\')">%s</span>', $data['Customer Client Store Key'], $data['Customer Client Customer Key'], $data['Customer Client Key'], $data['Customer Client Code']),
                 'name'           => $data['Customer Client Name'],
@@ -2059,17 +2067,13 @@ function customer_clients($_data, $db, $user) {
             );
         }
 
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
 
     $response = array(
         'resultset' => array(
             'state'         => 200,
-            'data'          => $adata,
+            'data'          => $table_data,
             'rtext'         => $rtext,
             'sort_key'      => $_order,
             'sort_dir'      => $_dir,

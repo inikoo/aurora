@@ -81,6 +81,9 @@ switch ($tipo) {
     case 'salesmen':
         salesmen(get_table_parameters(), $db, $user, 'current');
         break;
+    case 'clocking_machines':
+        clocking_machines(get_table_parameters(), $db, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -105,6 +108,21 @@ function employees($_data, $db, $user, $type = '') {
     }
 
     include_once 'prepare_table/init.php';
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     //print $sql;
@@ -233,7 +251,21 @@ function contractors($_data, $db, $user) {
     $rtext_label = 'contractor';
 
     include_once 'prepare_table/init.php';
-
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     // print $sql;
@@ -349,6 +381,21 @@ function timesheets($_data, $db, $user) {
 
     $rtext_label = 'timesheet';
     include_once 'prepare_table/init.php';
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
     include_once 'utils/natural_language.php';
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -439,7 +486,21 @@ function timesheet_records($_data, $db, $user) {
 
     $rtext_label = 'request';
     include_once 'prepare_table/init.php';
-
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
@@ -563,10 +624,9 @@ function timesheet_records($_data, $db, $user) {
                 $_date = new DateTime($data['Timesheet Record Date'], new DateTimeZone($data['Timesheet Timezone']));
 
 
-                $time = sprintf('<span title="%s">%s</span>',
-                                strftime("%a %e %b %Y %H:%M:%S %Z", $_date->getTimestamp()),
-                                strftime("%H:%M", $_date->getTimestamp())
-                                );
+                $time = sprintf(
+                    '<span title="%s">%s</span>', strftime("%a %e %b %Y %H:%M:%S %Z", $_date->getTimestamp()), strftime("%H:%M", $_date->getTimestamp())
+                );
             } else {
                 $time = '';
             }
@@ -620,7 +680,21 @@ function overtimes($_data, $db, $user) {
 
     $rtext_label = 'overtime';
     include_once 'prepare_table/init.php';
-
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
@@ -664,12 +738,8 @@ function overtimes($_data, $db, $user) {
                 'reference'     => $data['Overtime Reference'],
                 'status'        => $status,
 
-                'start' => ($data['Overtime Start Date'] != '' ? strftime(
-                    "%e %b %Y", strtotime($data['Overtime Start Date'])
-                ) : ''),
-                'end'   => ($data['Overtime End Date'] != '' ? strftime(
-                    "%e %b %Y", strtotime($data['Overtime End Date'])
-                ) : ''),
+                'start' => ($data['Overtime Start Date'] != '' ? strftime("%e %b %Y", strtotime($data['Overtime Start Date'])) : ''),
+                'end'   => ($data['Overtime End Date'] != '' ? strftime("%e %b %Y", strtotime($data['Overtime End Date'])) : ''),
 
 
             );
@@ -701,7 +771,21 @@ function months($_data, $db, $user) {
 
     $rtext_label = 'month';
     include_once 'prepare_table/init.php';
-
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
 
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction ";
     //print $sql;
@@ -748,6 +832,21 @@ function weeks($_data, $db, $user) {
 
     $rtext_label = 'week';
     include_once 'prepare_table/init.php';
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
 
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction ";
     //print $sql;
@@ -795,7 +894,21 @@ function days($_data, $db, $user) {
 
     $rtext_label = 'day';
     include_once 'prepare_table/init.php';
-
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
 
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction ";
 
@@ -842,10 +955,25 @@ function days($_data, $db, $user) {
 
 
 function timesheets_employees($_data, $db, $user) {
+    include_once 'utils/natural_language.php';
 
     $rtext_label = 'employee';
     include_once 'prepare_table/init.php';
-    include_once 'utils/natural_language.php';
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
 
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction ";
     //print $sql;
@@ -1148,7 +1276,21 @@ function deleted_employees($_data, $db, $user) {
 
     $rtext_label = 'deleted employee';
     include_once 'prepare_table/init.php';
-
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
@@ -1187,7 +1329,21 @@ function deleted_contractors($_data, $db, $user) {
 
     $rtext_label = 'deleted contractor';
     include_once 'prepare_table/init.php';
-
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     $adata = array();
@@ -1227,7 +1383,21 @@ function positions($_data, $db, $user) {
 
     // $rtext_label = 'job position';
     include_once 'prepare_table/init.php';
-
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
     include 'conf/roles.php';
 
     $sql = "select $fields from $table $where $wheref $group_by ";
@@ -1320,6 +1490,22 @@ function salesmen($_data, $db, $user, $type = '') {
     }
 
     include_once 'prepare_table/init.php';
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
+
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     //print $sql;
@@ -1442,4 +1628,66 @@ function salesmen($_data, $db, $user, $type = '') {
 }
 
 
-?>
+/**
+ * @param $_data
+ * @param $db \PDO
+ * @param $user
+ */
+function clocking_machines($_data, $db, $user) {
+
+    $rtext_label = 'clocking machine';
+
+    include_once 'prepare_table/init.php';
+
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
+
+    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            $table_data[] = array(
+                'id'             => (integer)$data['Clocking Machine Key'],
+                'code'           => sprintf('<span class="link" onclick="change_view(\'clocking_machine/%d\')">%s</span>', $data['Clocking Machine Key'], $data['locking Machine Code']),
+
+
+            );
+        }
+
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
