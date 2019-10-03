@@ -175,4 +175,4 @@ function get_default_footer_data($template) {
 
 }
 
-?>
+

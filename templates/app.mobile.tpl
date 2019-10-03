@@ -134,7 +134,7 @@ todo get new version of material
 *}
 <script src="/js/libs/material.min.js"></script>
 
-<script src="/js/libs/jquery-2.2.1.js"></script>
+<script src="/js/libs/jquery-3.3.1.min.js"></script>
 <script src="/js/libs/jquery.mobile-1.4.5.js"></script>
 
 <script src="/js/app.mobile.js"></script>

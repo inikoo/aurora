@@ -1309,37 +1309,7 @@ class Website extends DB_Table {
         }
     }
 
-    function set_footer_template($template) {
 
-
-        include_once 'conf/footer_data.php';
-
-        $footer_data = $this->get('Footer Data');
-        if (!$footer_data) {
-
-            $footer_data = array(
-                'template' => $template,
-                'data'     => get_default_footer_data($this, $template)
-
-
-            );
-
-
-        } else {
-            $footer_data['template'] = $template;
-            if (isset($footer_data['legacy'][$template])) {
-                $footer_data['data'] = $footer_data['legacy'][$template]['data'];
-
-            } else {
-                $footer_data['data'] = get_default_footer_data($this, $template);
-            }
-        }
-
-
-        $this->update(array('Website Footer Data' => json_encode($footer_data)), 'no_history');
-
-
-    }
 
     function get_system_webpage_key($code) {
 
