@@ -1510,7 +1510,7 @@ h2.dashboard{
 
   #notifications {
     background-image: url('../art/leaves.png');
-    background-size: contain;
+
 
     .top_buttons{
       background: #009975;
@@ -1530,8 +1530,9 @@ h2.dashboard{
 
     .side_content {
       .top {
-        background: none;
+        background: rgba(255,255,255,.9);
         color: #454d66;
+        border-bottom:1px solid #454d66;
       }
 
       .navigation {
@@ -1542,7 +1543,7 @@ h2.dashboard{
 
       .content {
 
-
+        background: rgba(255,255,255,.7);
         border-color: #58b368;
         color: #454d66;
 

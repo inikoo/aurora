@@ -8758,8 +8758,7 @@ h2.dashboard {
     .app_theme_green #app_leftmenu li:last-of-type, .app_theme_green #app_leftmenu li.last {
       border-color: rgba(88, 179, 104, 0.8); }
 .app_theme_green #notifications {
-  background-image: url("../art/leaves.png");
-  background-size: contain; }
+  background-image: url("../art/leaves.png"); }
   .app_theme_green #notifications .top_buttons {
     background: #009975; }
   .app_theme_green #notifications .side_content_icon {
@@ -8770,12 +8769,14 @@ h2.dashboard {
     .app_theme_green #notifications .side_content_icon.selected {
       color: white; }
   .app_theme_green #notifications .side_content .top {
-    background: none;
-    color: #454d66; }
+    background: rgba(255, 255, 255, 0.9);
+    color: #454d66;
+    border-bottom: 1px solid #454d66; }
   .app_theme_green #notifications .side_content .navigation {
     border-color: #58b368;
     color: #454d66; }
   .app_theme_green #notifications .side_content .content {
+    background: rgba(255, 255, 255, 0.7);
     border-color: #58b368;
     color: #454d66; }
   .app_theme_green #notifications .side_content .think {
