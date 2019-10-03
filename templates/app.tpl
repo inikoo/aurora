@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Aurora</title>
     <link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon"/>
-    <link href="/assets/au_app.min.css?v=190929" rel="stylesheet">
+    <link href="/assets/au_app.min.css?v=191094" rel="stylesheet">
 
     {if !$is_devel}
         <script
