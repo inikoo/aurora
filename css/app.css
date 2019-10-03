@@ -8727,10 +8727,16 @@ h2.dashboard {
 .app_theme_green #app_leftmenu, .app_theme_green #app_leftmenu #top_info, .app_theme_green #app_leftmenu li:hover {
   background: #356f55; }
 */
+.app_theme_green .dashboard table .main_title {
+  background: #454d66; }
+  .app_theme_green .dashboard table .main_title .widget.selected, .app_theme_green .dashboard table .main_title .widget.selected:hover {
+    background: #454d66; }
 .app_theme_green #top_bar {
   background: #454d66; }
 .app_theme_green #app_leftmenu {
-  background: #009975; }
+  xbackground-image: url("../art/congruent_pentagon.png");
+  xbackground-size: contain;
+  background: #73bf80; }
   .app_theme_green #app_leftmenu #top_info {
     background: #009975;
     border-color: rgba(88, 179, 104, 0.5);
@@ -8742,21 +8748,27 @@ h2.dashboard {
     .app_theme_green #app_leftmenu #top_info #aurora_logo {
       border-color: rgba(88, 179, 104, 0.7); }
   .app_theme_green #app_leftmenu #account_name {
+    background: #009975;
     color: white; }
     .app_theme_green #app_leftmenu #account_name.link:hover {
       color: whitesmoke; }
   .app_theme_green #app_leftmenu li {
-    background: rgba(88, 179, 104, 0.3);
-    color: white;
-    border-color: rgba(88, 179, 104, 0.7); }
+    background: rgba(88, 179, 104, 0.8);
+    color: #454d66;
+    border-color: #4daa5e; }
     .app_theme_green #app_leftmenu li i {
-      opacity: 1; }
+      opacity: .9; }
     .app_theme_green #app_leftmenu li.selected {
-      color: yellow; }
+      color: #833c76;
+      opacity: 1; }
+      .app_theme_green #app_leftmenu li.selected:hover {
+        color: #833c76; }
     .app_theme_green #app_leftmenu li:hover {
       background: rgba(88, 179, 104, 0.5); }
+      .app_theme_green #app_leftmenu li:hover i {
+        opacity: .9; }
     .app_theme_green #app_leftmenu li:last-of-type, .app_theme_green #app_leftmenu li.last {
-      border-color: rgba(88, 179, 104, 0.8); }
+      border-color: #4daa5e; }
 .app_theme_green #notifications {
   background-image: url("../art/leaves.png"); }
   .app_theme_green #notifications .top_buttons {
