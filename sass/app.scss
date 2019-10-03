@@ -1449,15 +1449,26 @@ h2.dashboard{
 
 
 .app_theme_green{
-  
+
+  .dashboard table .main_title{
+    background: #454d66;
+    .widget {
+      &.selected, &.selected:hover {
+        background: #454d66;
+
+
+      }
+    }
+  }
 
   #top_bar{
     background: #454d66;
   }
   #app_leftmenu{
-    //background-image: url("../art/green_left_menu4.jpg");
-    //background-size: contain;
-    background: #009975;
+    xbackground-image: url("../art/congruent_pentagon.png");
+    xbackground-size: contain;
+    background:#73bf80;
+   // background: rgba(0, 153, 117,.5);
     #top_info{
       background: #009975;
       border-color: rgba(88,179,104,.5);
@@ -1477,7 +1488,7 @@ h2.dashboard{
       }
     }
     #account_name {
-
+      background:  #009975;
       color: white;
 
       &.link:hover {
@@ -1485,24 +1496,32 @@ h2.dashboard{
       }
     }
     li{
-      background: rgba(88,179,104,.3);
-      color:white;
-      border-color: rgba(88,179,104,.7);
+      background: rgba(88, 179, 104,.8);
+      color:#454d66;
+      border-color: #4daa5e;
+
       i{
-        opacity: 1;
+        opacity: .9;
       }
 
       &.selected{
-        color:yellow;
+        color:#833c76;
+        opacity: 1;
+&:hover{
+  color:#833c76;
+}
 
       }
 
       &:hover{
         background: rgba(88,179,104,.5);
+        i{
+          opacity: .9;
+        }
       }
 
       &:last-of-type, &.last {
-        border-color: rgba(88,179,104,.8);
+        border-color: #4daa5e;
       }
 
     }
