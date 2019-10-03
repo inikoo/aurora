@@ -44,8 +44,8 @@ module.exports = function (grunt) {
             }, pweb_desktop_image_gallery: {
                 src: [
 
-                    'EcomB2B/js/photoswipe.js',
-                    'EcomB2B/js/photoswipe-ui-default.js',
+                    'EcomB2B/js/libs/photoswipe.js',
+                    'EcomB2B/js/libs/photoswipe-ui-default.js',
 
 
                 ], dest: 'EcomB2B/js/image_gallery.min.js',
