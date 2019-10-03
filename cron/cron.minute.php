@@ -15,6 +15,8 @@ require_once 'utils/new_fork.php';
 
 $time = gmdate('H:i');
 
+real_time_users_operations($db,$redis,$account) ;
+send_periodic_email_mailshots($time, $db, $account);
 
 switch ($time) {
     case '00:00':
@@ -358,6 +360,30 @@ switch ($time) {
         ), $account->get('Account Code')
         );
         break;
+    case '04:00':
+        $sql="select `Customer Key` from `Customer Dimension` where `Customer Type by Activity`!='Lost' ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array()
+        );
+        while ($row = $stmt->fetch()) {
+            $customer = get_object('Customer', $row['Customer Key'] );
+            $customer->update_orders();
+            $customer->update_activity();
+
+        }
+        $sql="select `Store Key` from `Store Dimension`   ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array()
+        );
+        while ($row = $stmt->fetch()) {
+            $store = get_object('Store', $row['Customer Key'] );
+            $store->update_customers_data();
+
+        }
+
+        break;
     case '05:00':
 
         new_housekeeping_fork(
@@ -382,125 +408,137 @@ switch ($time) {
         break;
 }
 
-$context = new ZMQContext();
-$socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-$socket->connect("tcp://localhost:5555");
 
-require_once 'utils/real_time_functions.php';
+/**
+ * @param $db \PDO
+ * @param $redis \Redis
+ * @param $account \Account
+ *
+ * @throws \ZMQSocketException
+ */
+function real_time_users_operations($db,$redis,$account) {
 
-$redis->zRemRangeByScore('_IU'.$account->get('Code'), 0, gmdate('U') - 600);
+    $context = new ZMQContext();
+    $socket  = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
+    $socket->connect("tcp://localhost:5555");
 
-$real_time_users = get_users_read_time_data($redis, $account);
+    require_once 'utils/real_time_functions.php';
 
+    $redis->zRemRangeByScore('_IU'.$account->get('Code'), 0, gmdate('U') - 600);
 
-$sql  = 'select `Website Key` from `Website Dimension`';
-$stmt = $db->prepare($sql);
-$stmt->execute(
-    array()
-);
-
-$objects_data            = array();
-$real_time_website_users = array();
-while ($row = $stmt->fetch()) {
-
-
-    $items_to_delete = $redis->zRangeByScore('_WU'.$account->get('Code').'|'.$row['Website Key'], 0, gmdate('U') - 300, ['withscores' => true]);
-
-    foreach ($items_to_delete as $key => $value) {
-
-        $customer_key = preg_replace('/^.*\|/', '', $key);
-        if ($customer_key > 0) {
+    $real_time_users = get_users_read_time_data($redis, $account);
 
 
-            $customer_web_info_log_out = '<span class="italic discreet">'._('Customer not logged in').'</span>';
+    $sql  = 'select `Website Key` from `Website Dimension`';
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array()
+    );
 
-            $last_visit                = strftime("%H:%M:%S %Z", $value);
-            $customer_web_info_log_out .= ' <span class="small italic discreet padding_left_5">('.sprintf('Last seen %s', $last_visit).')</span>';
+    $objects_data            = array();
+    $real_time_website_users = array();
+    while ($row = $stmt->fetch()) {
 
 
-            $objects_data[] = array(
-                'object'          => 'customer',
-                'key'             => $customer_key,
-                'update_metadata' => array(
-                    'class_html' => array(
-                        'customer_online_icon' => '<i title="'._('Offline').'" class="fal super_discreet fa-globe"></i>',
-                        'customer_web_info'    => '<span class="italic discreet">'.$last_visit.'</span>'
+        $items_to_delete = $redis->zRangeByScore('_WU'.$account->get('Code').'|'.$row['Website Key'], 0, gmdate('U') - 300, ['withscores' => true]);
+
+        foreach ($items_to_delete as $key => $value) {
+
+            $customer_key = preg_replace('/^.*\|/', '', $key);
+            if ($customer_key > 0) {
+
+
+                $customer_web_info_log_out = '<span class="italic discreet">'._('Customer not logged in').'</span>';
+
+                $last_visit                = strftime("%H:%M:%S %Z", $value);
+                $customer_web_info_log_out .= ' <span class="small italic discreet padding_left_5">('.sprintf('Last seen %s', $last_visit).')</span>';
+
+
+                $objects_data[] = array(
+                    'object'          => 'customer',
+                    'key'             => $customer_key,
+                    'update_metadata' => array(
+                        'class_html' => array(
+                            'customer_online_icon' => '<i title="'._('Offline').'" class="fal super_discreet fa-globe"></i>',
+                            'customer_web_info'    => '<span class="italic discreet">'.$last_visit.'</span>'
+                        )
                     )
-                )
-            );
+                );
+            }
         }
+
+
+        //continue;
+
+        $deleted_values = $redis->zRemRangeByScore('_WU'.$account->get('Code').'|'.$row['Website Key'], 0, gmdate('U') - 300);
+        if ($deleted_values > 0) {
+            $real_time_website_users_data = get_website_users_read_time_data($redis, $account, $row['Website Key']);
+
+            $real_time_website_users[] = array(
+                'type'        => 'current_website_users',
+                'website_key' => $row['Website Key'],
+                'data'        => $real_time_website_users_data
+            );
+
+
+        }
+
+
     }
 
 
-    //continue;
+    $socket->send(
+        json_encode(
+            array(
+                'channel' => 'real_time.'.strtolower($account->get('Account Code')),
 
-    $deleted_values = $redis->zRemRangeByScore('_WU'.$account->get('Code').'|'.$row['Website Key'], 0, gmdate('U') - 300);
-    if ($deleted_values > 0) {
-        $real_time_website_users_data = get_website_users_read_time_data($redis, $account, $row['Website Key']);
+                'iu'      => $real_time_users,
+                'd3'      => $real_time_website_users,
+                'objects' => $objects_data
 
-        $real_time_website_users[] = array(
-            'type'        => 'current_website_users',
-            'website_key' => $row['Website Key'],
-            'data'        => $real_time_website_users_data
-        );
-
-
-    }
-
+            )
+        )
+    );
 
 }
 
 
-$socket->send(
-    json_encode(
-        array(
-            'channel' => 'real_time.'.strtolower($account->get('Account Code')),
-
-            'iu'      => $real_time_users,
-            'd3'      => $real_time_website_users,
-            'objects' => $objects_data
-
-        )
-    )
-);
-
-send_periodic_email_mailshots($time, $db, $account);
-
-
+/**
+ * @param $time string
+ * @param $db \PDO
+ * @param $account \Account
+ */
 function send_periodic_email_mailshots($time, $db, $account) {
 
+    $sql="select `Email Campaign Type Code`,`Email Campaign Type Metadata`,`Email Campaign Type Key` from `Email Campaign Type Dimension` where `Email Campaign Type Status`='Active' ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array()
+    );
+    while ($row = $stmt->fetch()) {
+        if ($row['Email Campaign Type Metadata'] != '') {
+            $metadata = json_decode($row['Email Campaign Type Metadata'], true);
 
-    $sql = sprintf('select `Email Campaign Type Code`,`Email Campaign Type Metadata`,`Email Campaign Type Key` from `Email Campaign Type Dimension` where `Email Campaign Type Status`="Active" ');
+            if (isset($metadata['Schedule'])) {
 
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-
-            if ($row['Email Campaign Type Metadata'] != '') {
-                $metadata = json_decode($row['Email Campaign Type Metadata'], true);
-
-                if (isset($metadata['Schedule'])) {
-
-                    date_default_timezone_set($metadata['Schedule']['Timezone']);
-
-
-                    if ($metadata['Schedule']['Time'] == $time.':00') {
-                        if (isset($metadata['Schedule']['Days'])) {
-                            if ($metadata['Schedule']['Days'][iso_860_to_day_name(date('N'))] == 'Yes') {
-
-                                new_housekeeping_fork(
-                                    'au_housekeeping', array(
-                                    'type'                    => 'create_and_send_mailshot',
-                                    'email_template_type_key' => $row['Email Campaign Type Key'],
-
-                                ), $account->get('Account Code')
-                                );
+                date_default_timezone_set($metadata['Schedule']['Timezone']);
 
 
-                            }
+                if ($metadata['Schedule']['Time'] == $time.':00') {
+                    if (isset($metadata['Schedule']['Days'])) {
+                        if ($metadata['Schedule']['Days'][iso_860_to_day_name(date('N'))] == 'Yes') {
+
+                            new_housekeeping_fork(
+                                'au_housekeeping', array(
+                                'type'                    => 'create_and_send_mailshot',
+                                'email_template_type_key' => $row['Email Campaign Type Key'],
+
+                            ), $account->get('Account Code')
+                            );
+
+
                         }
                     }
-
-
                 }
 
 
@@ -508,11 +546,10 @@ function send_periodic_email_mailshots($time, $db, $account) {
 
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
+
+
+
 
 
 }

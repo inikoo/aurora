@@ -415,7 +415,7 @@ function fork_housekeeping($job) {
 
                         $feedback_otf_data = array(
                             'Feedback OTF Feedback Key'       => $feedback_id,
-                            'Feedback OTF Original Key'       => (isset($feedback['original_otf'])?$feedback['original_otf']:''),
+                            'Feedback OTF Original Key'       => (isset($feedback['original_otf']) ? $feedback['original_otf'] : ''),
                             'Feedback OTF Store Key'          => $data['store_key'],
                             'Feedback OTF Post Operation Key' => $feedback['otf']
                         );
@@ -479,7 +479,7 @@ function fork_housekeeping($job) {
 
                         $feedback_otf_data = array(
                             'Feedback ONPTF Feedback Key'       => $feedback_id,
-                            'Feedback ONPTF Original Key'       => (isset($feedback['original_onptf'])?$feedback['original_onptf']:''),
+                            'Feedback ONPTF Original Key'       => (isset($feedback['original_onptf']) ? $feedback['original_onptf'] : ''),
                             'Feedback ONPTF Store Key'          => $data['store_key'],
                             'Feedback ONPTF Post Operation Key' => $feedback['onptf']
                         );
@@ -1153,22 +1153,22 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
         case 'order_created':
-            include_once 'class.Order.php';
-            include_once 'class.Customer.php';
-            include_once 'class.Store.php';
-            $order = new Order($data['subject_key']);
 
-            $customer               = new Customer($order->get('Order Customer Key'));
+            $order    = get_object('Order', $data['subject_key']);
+            $customer = get_object('Customer', $order->get('Order Customer Key'));
+            $store    = get_object('Store', $order->get('Order Store Key'));
+            $account = get_object('Account', '');
+
+
             $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
             $customer->editor       = $data['editor'];
 
             $customer->update_orders();
-            $store = new Store($order->get('Order Store Key'));
+            $customer->update_activity();
 
-
+            $store->update_customers_data();
             $store->update_orders();
 
-            $account = get_object('Account', '');
             $account->update_orders();
 
 
@@ -1182,7 +1182,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $store    = get_object('Store', $order->get('Order Store Key'));
             $account  = get_object('Account', '');
 
-            $sql = sprintf('SELECT `Transaction Type Key` FROM `Order No Product Transaction Fact` WHERE `Transaction Type`="Charges" AND   `Order Key`=%d  ', $order->id);
+            $sql = sprintf("SELECT `Transaction Type Key` FROM `Order No Product Transaction Fact` WHERE `Transaction Type`='Charges' AND   `Order Key`=%d  ", $order->id);
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
@@ -1190,14 +1190,13 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                     $charge->update_charge_usage();
 
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
             $customer->update_orders();
+            $customer->update_activity();
+
+            $store->update_customers_data();
             $store->update_orders();
             $account->update_orders();
 
@@ -1292,12 +1291,33 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
             break;
-        /*
-        case 'customer_created_migration':
+
+        case 'customer_created':
+
+            $customer     = get_object('Customer', $data['customer_key']);
+            $store        = get_object('Store', $customer->get('Customer Store Key'));
+            $website_user = get_object('Website_User', $data['website_user_key']);
+
+            $customer->editor     = $data['editor'];
+            $store->editor        = $data['editor'];
+            $website_user->editor = $data['editor'];
 
 
+            if ($customer->get('Customer Tax Number') != '') {
 
-            $customer = get_object('Customer', $data['customer_key']);
+                $customer->update_tax_number_valid('Auto');
+            }
+
+
+            $customer->update_location_type();
+            $store->update_customers_data();
+
+            if ($website_user->id) {
+                $website = get_object('Website', $website_user->get('Website User Website Key'));
+
+                $website->update_users_data();
+
+            }
 
 
             $sql = sprintf(
@@ -1326,66 +1346,14 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                     }
                 }
             }
+
+
             break;
-        */ case 'customer_created':
+        case 'customer_client_created':
+            $customer = get_object('Customer', $data['customer_key']);
 
-        $customer     = get_object('Customer', $data['customer_key']);
-        $store        = get_object('Store', $customer->get('Customer Store Key'));
-        $website_user = get_object('Website_User', $data['website_user_key']);
-
-        $customer->editor     = $data['editor'];
-        $store->editor        = $data['editor'];
-        $website_user->editor = $data['editor'];
-
-
-        if ($customer->get('Customer Tax Number') != '') {
-
-            $customer->update_tax_number_valid('Auto');
-        }
-
-
-        $customer->update_location_type();
-        $store->update_customers_data();
-
-        if ($website_user->id) {
-            $website = get_object('Website', $website_user->get('Website User Website Key'));
-
-            $website->update_users_data();
-
-        }
-
-
-        $sql = sprintf(
-            'select `Prospect Key` from `Prospect Dimension`  where `Prospect Store Key`=%d and `Prospect Main Plain Email`=%s and `Prospect Customer Key` is  NULL ', $customer->get('Store Key'), prepare_mysql($customer->get('Customer Main Plain Email'))
-
-        );
-        if ($result = $db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                $prospect         = get_object('Prospect', $row['Prospect Key']);
-                $prospect->editor = $data['editor'];
-                if ($prospect->id) {
-                    $sql = sprintf('select `History Key`,`Type`,`Deletable`,`Strikethrough` from `Prospect History Bridge` where `Prospect Key`=%d ', $prospect->id);
-                    if ($result2 = $db->query($sql)) {
-                        foreach ($result2 as $row2) {
-                            $sql = sprintf(
-                                "INSERT INTO `Customer History Bridge` VALUES (%d,%d,%s,%s,%s)", $customer->id, $row2['History Key'], prepare_mysql($row2['Deletable']), prepare_mysql($row2['Strikethrough']), prepare_mysql($row2['Type'])
-                            );
-                            //print "$sql\n";
-                            $db->exec($sql);
-                        }
-                    }
-
-
-                    $prospect->update_status('Registered', $customer);
-                }
-            }
-        }
-
-
-        break;
-
-
+            $customer->update_clients_data();
+            break;
         case 'update_web_state_slow_forks':
 
             include_once 'class.Product.php';

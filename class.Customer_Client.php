@@ -159,7 +159,17 @@ class Customer_Client extends Subject {
 
 
         switch ($key) {
+            case('Creation Date'):
+                if ($this->data['Customer Client '.$key] == '') {
+                    return '';
+                }
 
+                return '<span title="'.strftime(
+                        "%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Customer Client '.$key]." +00:00")
+                    ).'">'.strftime(
+                        "%a %e %b %Y", strtotime($this->data['Customer Client '.$key]." +00:00")
+                    ).'</span>';
+                break;
             case 'Customer Client Contact Address':
 
 

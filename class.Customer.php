@@ -18,11 +18,13 @@ include_once 'class.Order.php';
 include_once 'class.Attachment.php';
 
 class Customer extends Subject {
-    var $contact_data = false;
 
-    var $tax_number_read = false;
-    var $warning_messages = array();
-    var $warning = false;
+    /**
+     * @var \PDO
+     */
+    public $db;
+
+
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
@@ -346,20 +348,20 @@ class Customer extends Subject {
                 if ($this->data['Customer Tax Number'] != '') {
                     if ($this->data['Customer Tax Number Valid'] == 'Yes') {
                         return sprintf(
-                            '<i style="margin-right: 0px" class="fa fa-check success" title="'._('Valid').'"></i> <span title="'.$title.'" >%s</span>', $this->data['Customer Tax Number'].$source
+                            '<i style="margin-right: 0" class="fa fa-check success" title="'._('Valid').'"></i> <span title="'.$title.'" >%s</span>', $this->data['Customer Tax Number'].$source
                         );
                     } elseif ($this->data['Customer Tax Number Valid'] == 'Unknown') {
                         return sprintf(
-                            '<i style="margin-right: 0px" class="fal fa-question-circle discreet" title="'._('Unknown if is valid').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Customer Tax Number'].$source
+                            '<i style="margin-right: 0" class="fal fa-question-circle discreet" title="'._('Unknown if is valid').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Customer Tax Number'].$source
                         );
                     } elseif ($this->data['Customer Tax Number Valid'] == 'API_Down') {
                         return sprintf(
-                            '<i style="margin-right: 0px"  class="fal fa-question-circle discreet" title="'._('Validity is unknown').'"> </i> <span class="discreet" title="'.$title.'">%s</span> %s', $this->data['Customer Tax Number'],
+                            '<i style="margin-right: 0"  class="fal fa-question-circle discreet" title="'._('Validity is unknown').'"> </i> <span class="discreet" title="'.$title.'">%s</span> %s', $this->data['Customer Tax Number'],
                             ' <i  title="'._('Online validation service down').'" class="fa fa-wifi-slash error"></i>'
                         );
                     } else {
                         return sprintf(
-                            '<i style="margin-right: 0px" class="fa fa-ban error" title="'._('Invalid').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Customer Tax Number'].$source
+                            '<i style="margin-right: 0" class="fa fa-ban error" title="'._('Invalid').'"></i> <span class="discreet" title="'.$title.'">%s</span>', $this->data['Customer Tax Number'].$source
                         );
                     }
                 }
@@ -2578,6 +2580,29 @@ class Customer extends Subject {
 
     }
 
+    public function update_clients_data() {
+
+
+        $clients = 0;
+        $sql     = "SELECT count(*) AS num FROM `Customer Client Dimension` WHERE `Customer Client Customer Key`=?  ";
+        $stmt    = $this->db->prepare($sql);
+        $stmt->execute(
+            array($this->id)
+        );
+        while ($row = $stmt->fetch()) {
+            $clients = $row['num'];
+        }
+
+
+        $this->fast_update(
+            array(
+                'Customer Number Clients' => $clients,
+            )
+        );
+
+
+    }
+
     public function update_payments() {
 
 
@@ -2620,8 +2645,6 @@ class Customer extends Subject {
             return;
         }
 
-        $this->data['Customer Lost Date'] = '';
-        $this->data['Actual Customer']    = 'Yes';
 
         $orders = $this->data['Customer Orders'];
 
@@ -2629,26 +2652,17 @@ class Customer extends Subject {
         $store = get_object('store', $this->data['Customer Store Key']);
 
         if ($orders == 0) {
-            $this->data['Customer Type by Activity'] = 'Active';
-            $this->data['Customer Active']           = 'Yes';
-            if (strtotime('now') - strtotime(
-                    $this->data['Customer First Contacted Date']
-                ) > $store->data['Store Losing Customer Interval']) {
-                $this->data['Customer Type by Activity'] = 'Losing';
+            $type_by_activity   = 'Active';
+            $is_customer_active = 'Yes';
+            if (strtotime('now') - strtotime($this->data['Customer First Contacted Date']) > $store->data['Store Losing Customer Interval']) {
+                $type_by_activity = 'Losing';
             }
-            if (strtotime('now') - strtotime(
-                    $this->data['Customer First Contacted Date']
-                ) > $store->data['Store Lost Customer Interval']) {
-                $this->data['Customer Type by Activity'] = 'Lost';
-                $this->data['Customer Active']           = 'No';
+            if (strtotime('now') - strtotime($this->data['Customer First Contacted Date']) > $store->data['Store Lost Customer Interval']) {
+                $type_by_activity   = 'Lost';
+                $is_customer_active = 'No';
             }
 
-            //print "\n\n".$this->data['Customer First Contacted Date']." +".$this->data['Customer First Contacted Date']." seconds\n";
-            $this->data['Customer Lost Date'] = gmdate(
-                'Y-m-d H:i:s', strtotime(
-                                 $this->data['Customer First Contacted Date']." +".$store->data['Store Lost Customer Interval']." seconds"
-                             )
-            );
+            $customer_lost_date = gmdate('Y-m-d H:i:s', strtotime($this->data['Customer First Contacted Date']." +".$store->data['Store Lost Customer Interval']." seconds"));
         } else {
 
 
@@ -2666,33 +2680,27 @@ class Customer extends Subject {
             $losing_interval = ceil($losing_interval);
 
 
-            $this->data['Customer Type by Activity'] = 'Active';
-            $this->data['Customer Active']           = 'Yes';
+            $type_by_activity   = 'Active';
+            $is_customer_active = 'Yes';
             if (strtotime('now') - strtotime($this->data['Customer Last Order Date']) > $losing_interval) {
-                $this->data['Customer Type by Activity'] = 'Losing';
+                $type_by_activity = 'Losing';
             }
             if (strtotime('now') - strtotime($this->data['Customer Last Order Date']) > $lost_interval) {
-                $this->data['Customer Type by Activity'] = 'Lost';
-                $this->data['Customer Active']           = 'No';
+                $type_by_activity   = 'Lost';
+                $is_customer_active = 'No';
             }
-            //print "\n xxx ".$this->data['Customer Last Order Date']." +$losing_interval seconds"."    \n";
-            $this->data['Customer Lost Date'] = gmdate(
-                'Y-m-d H:i:s', strtotime(
-                                 $this->data['Customer Last Order Date']." +$lost_interval seconds"
-                             )
-            );
+            $customer_lost_date = gmdate('Y-m-d H:i:s', strtotime($this->data['Customer Last Order Date']." +$lost_interval seconds"));
 
         }
 
-        $sql = sprintf(
-            "UPDATE `Customer Dimension` SET `Customer Active`=%s,`Customer Type by Activity`=%s , `Customer Lost Date`=%s WHERE `Customer Key`=%d", prepare_mysql($this->data['Customer Active']), prepare_mysql($this->data['Customer Type by Activity']),
-            prepare_mysql($this->data['Customer Lost Date']), $this->id
+        $this->fast_update(
+            array(
+                'Customer Active'           => $is_customer_active,
+                'Customer Type by Activity' => $type_by_activity,
+                'Customer Lost Date'        => $customer_lost_date,
+            )
         );
 
-        $this->db->exec($sql);
-
-        $store = get_object('store', $this->data['Customer Store Key']);
-        $store->update_customers_data();
 
 
     }
@@ -2927,10 +2935,6 @@ class Customer extends Subject {
             if ($row = $result->fetch()) {
                 $total_customers_with_less_invoices = $row['customers'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -4037,9 +4041,11 @@ class Customer extends Subject {
 
                 new_housekeeping_fork(
                     'au_housekeeping', array(
-                    'type'         => 'customer_client_created',
-                    'customer_key' => $client->id,
-                    'editor'       => $this->editor
+                    'type'                => 'customer_client_created',
+                    'customer_key'        => $this->id,
+                    'customer_client_key' => $client->id,
+
+                    'editor' => $this->editor
                 ), $account->get('Account Code')
                 );
 

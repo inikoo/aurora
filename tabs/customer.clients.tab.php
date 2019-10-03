@@ -65,11 +65,15 @@ if ($state['store']->get('Store Type') == 'Dropshipping') {
 
         $table_buttons = array();
 
-        $table_buttons[] = array(
-            'icon'      => 'plus',
-            'title'     => _('New client'),
-            'reference' => "customers/".$state['_object']->get('Store Key')."/".$state['key']."/client/new"
-        );
+        if(!($state['_object']->get('Customer Type by Activity')=='Rejected' or $state['_object']->get('Customer Type by Activity')=='ToApprove')){
+            $table_buttons[] = array(
+                'icon'      => 'plus',
+                'title'     => _('New client'),
+                'reference' => "customers/".$state['_object']->get('Store Key')."/".$state['key']."/client/new"
+            );
+        }
+
+
 
 
         $smarty->assign('table_buttons', $table_buttons);

@@ -28,8 +28,7 @@ $print_est = true;
 
 print date('l jS \of F Y h:i:s A')."\n";
 
-
-$where = '';
+$where ='';
 
 $sql = sprintf("select count(*) as num from `Customer Dimension` left join `Store Dimension` on (`Store Key`=`Customer Store Key`) $where");
 if ($result = $db->query($sql)) {
@@ -57,11 +56,12 @@ if ($result = $db->query($sql)) {
         $customer = new Customer('id', $row['Customer Key']);
 
 
-       // $customer->update_orders();
-        $customer->update_last_dispatched_order_key();
+        $customer->update_orders();
+        $customer->update_activity();
+       // $customer->update_last_dispatched_order_key();
         //$customer->update_invoices();
         //$customer->update_payments();
-        //$customer->update_activity();
+
         //$customer->update_account_balance();
         //$customer->update_credit_account_running_balances();
 
@@ -90,4 +90,4 @@ if ($result = $db->query($sql)) {
     }
 }
 
-?>
+

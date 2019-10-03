@@ -13,13 +13,23 @@
 
 include_once 'class.DB_Table.php';
 
+/**
+ * Class Store
+ */
 class Store extends DB_Table {
 
-
+    /**
+     * @var \PDO
+     */
+    public $db;
+    /**
+     * @var \Smarty
+     */
     public $smarty;
     public $fork;
 
     function __construct($a1, $a2 = false, $a3 = false, $_db = false) {
+
 
         if (!$_db) {
             global $db;

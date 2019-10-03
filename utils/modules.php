@@ -662,7 +662,11 @@ $modules = array(
                         'label' => _("Clients"),
 
                         'title' => _("Customer's clients"),
-                        'icon'  => 'address-book'
+                        'icon'  => 'address-book',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Clients'
+                        ),
                     ),
                     
                     'customer.sales'   => array(

@@ -1,3 +1,13 @@
+{*
+<!--
+ About:
+ Author: Raul Perusquia <raul@inikoo.com>
+ Created: Thu 3 Oct 2019 14:40:36 +0800 MYT, Kuala Lumpur, Malaysia
+ Copyright (c) 2019, Inikoo
+
+ Version 3
+-->
+*}
 var columns = [
 {
 name: "id",

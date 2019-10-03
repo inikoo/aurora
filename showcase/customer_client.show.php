@@ -3,87 +3,28 @@
 
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 29 August 2015 16:54:39 GMT+8 Singapore
+ Created: Thu 3 Oct 2019 14:37:35 +0800 MYT, Kuala Lumpur
 
- Copyright (c) 2015, Inikoo
+Copyright (c) 2019, Inikoo
 
  Version 3.0
 */
 
-function get_customer_showcase($data, $smarty, $user, $db, $redis, $account) {
+function get_customer_client_showcase($data, $smarty, $user, $db, $redis, $account) {
 
 
-    include_once 'utils/real_time_functions.php';
-    $customer = $data['_object'];
-    if (!$customer->id) {
+    $customer_client = $data['_object'];
+    if (!$customer_client->id) {
         return "";
     }
 
-    $customer->update_account_balance();
-    $customer->update_credit_account_running_balances();
 
+    $customer=get_object('Customer',$customer_client->get('Customer Client Customer Key'));
 
-
-    //$customer->update_orders();
-    //$customer->update_last_dispatched_order_key();
-    //$customer->update_invoices();
-    //$customer->update_payments();
-    //$customer->update_activity();
-
-
-    //$customer->update_clients_data();
+    $smarty->assign('customer_client', $customer_client);
 
     $smarty->assign('customer', $customer);
     $smarty->assign('store', $data['store']);
-
-    $website_key = $data['store']->get('Store Website Key');
-
-    $customer_web_info_logged_in = '<table class="customer_real_data_info">
-                <td class="device_label" ></td>
-                <td class="user_location"></td>
-                <td class="webpage_label"></td>
-                </table>';
-
-    $online          = false;
-    $real_time_users = $redis->ZREVRANGE('_WU'.$account->get('Code').'|'.$website_key, 0, 1000, 'WITHSCORES');
-    foreach ($real_time_users as $_key => $timestamp) {
-
-        $_customer_key = preg_replace('/^.*\|/', '', $_key);
-
-        if ($_customer_key == $customer->id) {
-
-            $website_user = json_decode($redis->get($_key), true);
-
-            if (is_array($website_user)) {
-                $online                      = true;
-                $customer_web_info_logged_in = '<table class="customer_real_data_info">
-                <td class="device_label" >'.$website_user['device_label'].'</td>
-                <td class="user_location">'.$website_user['location'].'</td>
-                <td class="webpage_label">'.$website_user['webpage_label'].'</td>
-                </table>';
-
-
-            }
-
-
-            break;
-        }
-
-
-    }
-    $customer_web_info_log_out = '<span class="italic discreet">'._('Customer not logged in').'</span>';
-
-    $last_visit_date = $customer->get('Last Website Visit');
-    if ($last_visit_date != '') {
-        $customer_web_info_log_out .= ' <span class="small italic discreet padding_left_5">('.sprintf('Last seen %s', $last_visit_date).')</span>';
-
-    }
-
-
-    $smarty->assign('online', $online);
-
-    $smarty->assign('customer_web_info_logged_in', $customer_web_info_logged_in);
-    $smarty->assign('customer_web_info_log_out', $customer_web_info_log_out);
 
     $order_basket      = array(
         'key'             => '',
@@ -98,10 +39,10 @@ function get_customer_showcase($data, $smarty, $user, $db, $redis, $account) {
         'tax_description' => '',
     );
     $orders_in_process = array();
-    $sql               = "select `Order Key` from `Order Dimension` where `Order Customer Key`=? and !(`Order State` ='Dispatched' or `Order State` ='Cancelled')  order by `Order Submitted by Customer Date`  ";
+    $sql               = "select `Order Key` from `Order Dimension` where `Order Customer Client Key`=? and !(`Order State` ='Dispatched' or `Order State` ='Cancelled')  order by `Order Submitted by Customer Date`  ";
     $stmt              = $db->prepare($sql);
     $stmt->execute(
-        array($customer->id)
+        array($customer_client->id)
     );
     while ($row = $stmt->fetch()) {
 
@@ -161,8 +102,7 @@ function get_customer_showcase($data, $smarty, $user, $db, $redis, $account) {
     $smarty->assign('order_basket', $order_basket);
     $smarty->assign('orders_in_process', $orders_in_process);
 
-
-    return $smarty->fetch('showcase/customer.tpl');
+    return $smarty->fetch('showcase/customer_client.tpl');
 
 
 }

@@ -1535,6 +1535,13 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             $web_location = '<i class="fal fa-fw fa-user"></i> '.$title;
 
             break;
+        case 'customer_client':
+            include_once 'showcase/customer_client.show.php';
+            $html         = get_customer_client_showcase($data, $smarty, $user, $db, $redis, $account);
+            $title        = $data['_object']->get('Code');
+            $web_location = '<i class="fal fa-fw fa-address-book"></i> '.$title;
+
+            break;
         case 'supplier':
             include_once 'showcase/supplier.show.php';
             $html         = get_supplier_showcase($data, $smarty, $user, $db);

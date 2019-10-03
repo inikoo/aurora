@@ -198,7 +198,18 @@ sortType: "toggle",
 {if $sort_key=='total_invoiced_net_amount'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
-}
+},
+{
+name: "clients",
+label: "{t}Clients{/t}",
+renderable:{if $store->get('Store Type')=='Dropshipping'}true{else}false{/if},
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='clients'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
 
 
 ]
@@ -228,6 +239,11 @@ grid.columns.findWhere({ name: 'total_invoiced_amount'} ).set("renderable", fals
 grid.columns.findWhere({ name: 'total_invoiced_net_amount'} ).set("renderable", false)
 
 
+
+{if $store->get('Store Type')=='Dropshipping'}
+    grid.columns.findWhere({ name: 'clients'} ).set("renderable", false)
+{/if}
+
 if(view=='overview'){
 grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'activity'} ).set("renderable", true)
@@ -236,6 +252,9 @@ grid.columns.findWhere({ name: 'invoices'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'last_invoice'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'contact_since'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'total_invoiced_net_amount'} ).set("renderable", true)
+{if $store->get('Store Type')=='Dropshipping'}
+    grid.columns.findWhere({ name: 'clients'} ).set("renderable", true)
+{/if}
 
 }else if(view=='weblog'){
 grid.columns.findWhere({ name: 'logins'} ).set("renderable", true)
