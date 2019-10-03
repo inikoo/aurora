@@ -415,7 +415,6 @@ module.exports = function (grunt) {
                         'EcomB2B/theme_1/tablet/skin.css',
                         'EcomB2B/theme_1/tablet/framework.css',
 
-                        'EcomB2B/theme_1/css/swiper.css',
                         'EcomB2B/css/style.theme_1.EcomB2B.tablet.css'
                     ],
 

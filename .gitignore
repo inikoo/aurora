@@ -165,3 +165,4 @@ websocket_server/composer.lock
 /bower_components/
 
 /box/keyring/dns.php
+/box/tests/box_registration.test.php
