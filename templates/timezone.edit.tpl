@@ -1,7 +1,7 @@
 <div class="{if $mode=='edit'}hide{/if} timezone_edit edit_object" style="margin:0px;padding: 0px" data-old_value="{$field.value}" >
 
     <input id="{$field.id}" type="hidden" class="input_field " value="{$field.value}"/>
-    <select style="width: 600px" class="timezone_select"></select>
+    <select style="width: 500px" class="timezone_select"></select>
     <i id="{$field.id}_save_button" class="fa fa-cloud save {$edit} hide "
        onclick="save_this_field(this)"></i>
     <span id="{$field.id}_msg" class="msg"></span>

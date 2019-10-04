@@ -50,19 +50,89 @@ if ($authenticated == 'OK') {
 
         log_api_key_access_success($db, $box_key);
 
-        if($row['Box Aurora Account Code']==''){
-            $response= array(
-                'state' => 'OK',
-                'code'  => 'Registered',
-                'msg'   => 'Box registered, still waiting for confirmation on aurora'
+        if ($row['Box Aurora Account Code'] != '' and $row['Box Aurora Account Data'] != '') {
+
+
+            if (isset($_REQUEST['register'])) {
+
+                $_data = json_decode($row['Box Aurora Account Data'], true);
+
+                $_timezone = new DateTimeZone($_data['timezone']);
+                $_datetime = new DateTime("now", $_timezone);
+
+
+                list($wifi_encrypted_password, $enc_iv) = explode("::", $_data['wifi_token']);;
+                $cipher_method = 'aes-128-ctr';
+                $enc_key       = openssl_digest(SHARED_KEY, 'SHA256', true);
+                $wifi_pwd      = openssl_decrypt($wifi_encrypted_password, $cipher_method, $enc_key, 0, hex2bin($enc_iv));
+                unset($wifi_encrypted_password, $cipher_method, $enc_key, $enc_iv);
+
+
+                $response = array(
+                    'state' => 'Registered',
+                    'name'        => $_data['name'].'@'.strtolower($row['Box Aurora Account Code']).'.au.sys',
+                    'time_offset' => timezone_offset_get($_timezone, $_datetime),
+                    'SSID'        => $_data['SSID'],
+                    'wifi_pwd'    => $wifi_pwd,
+
+
+                );
+
+
+                echo json_encode($response);
+                exit;
+
+
+            } elseif (!empty($_REQUEST['get'])) {
+                switch ($_REQUEST['get']) {
+                    case 'time_offset':
+                        $_data = json_decode($row['Box Aurora Account Data'], true);
+
+                        $_timezone = new DateTimeZone($_data['timezone']);
+                        $_datetime = new DateTime("now", $_timezone);
+                        $response  = array(
+                            'offset' => timezone_offset_get($_timezone, $_datetime),
+                        );
+
+                        break;
+                    case 'wifi':
+
+                        $_data = json_decode($row['Box Aurora Account Data'], true);
+
+                        list($wifi_encrypted_password, $enc_iv) = explode("::", $_data['wifi_token']);;
+                        $cipher_method = 'aes-128-ctr';
+                        $enc_key       = openssl_digest(SHARED_KEY, 'SHA256', true);
+                        $wifi_pwd      = openssl_decrypt($wifi_encrypted_password, $cipher_method, $enc_key, 0, hex2bin($enc_iv));
+                        unset($wifi_encrypted_password, $cipher_method, $enc_key, $enc_iv);
+
+                        $response = array(
+                            'SSID'     => $_data['SSID'],
+                            'wifi_pwd' => $wifi_pwd,
+                        );
+
+                        break;
+                    default:
+                        $response = array(
+                        );
+
+                }
+                echo json_encode($response);
+                exit;
+
+
+            }
+
+
+        } else {
+            $response = array(
+                'state' => 'Waiting',
+                'msg'   => 'Waiting for confirmation on aurora'
             );
 
 
             echo json_encode($response);
             exit;
         }
-
-
 
 
     } else {
@@ -78,10 +148,9 @@ if ($authenticated == 'OK') {
         $box_key = $db->lastInsertId();
 
 
-        $response= array(
-            'state' => 'OK',
-            'code'  => 'Registered',
-            'msg'   => 'Box registered, waiting for confirmation on aurora'
+        $response = array(
+            'state' => 'Waiting',
+            'msg'   => 'Waiting for confirmation on aurora'
         );
 
         log_api_key_access_success($db, $box_key);
@@ -110,7 +179,7 @@ function authenticate($db) {
             $token = $_headers['http_x_auth_key'];
         } elseif (!empty($_REQUEST['AUTH_KEY'])) {
             $token = $_REQUEST['AUTH_KEY'];
-        }else {
+        } else {
             $auth_header = getAuthorizationHeader();
             if (preg_match('/^Bearer\s(.+)$/', $auth_header, $matches)) {
                 $token = $matches[1];

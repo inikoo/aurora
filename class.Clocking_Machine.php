@@ -11,7 +11,7 @@
 
 include_once 'class.DB_Table.php';
 
-class Clocking_Machine extends DB_Table{
+class Clocking_Machine extends DB_Table {
 
     /**
      * @var \PDO
@@ -64,7 +64,7 @@ class Clocking_Machine extends DB_Table{
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id       = $this->data['Clocking Machine Key'];
-            $this->metadata = json_decode($this->data['Clocking Machine Metadata'], true);
+            $this->settings = json_decode($this->data['Clocking Machine Settings'], true);
 
         }
 
@@ -76,7 +76,35 @@ class Clocking_Machine extends DB_Table{
     }
 
 
-    function create($raw_data, $address_raw_data) {
+    function create($raw_data, $settings) {
+
+        $account = get_object('Account', 1);
+
+        if (empty($raw_data['Clocking Machine Code'])) {
+            $this->error      = true;
+            $this->msg        = _("Name missing");
+            $this->error_code = 'clocking_machine_code_missing';
+            $this->metadata   = '';
+
+            return;
+
+        }
+
+
+        $sql  = "select `Clocking Machine Key` from `Clocking Machine Dimension`  where `Clocking Machine Code`=? ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array($raw_data['Clocking Machine Code'])
+        );
+        if ($row = $stmt->fetch()) {
+            $this->error = true;
+
+            $this->found            = true;
+            $this->duplicated_field = 'Clocking Machine Code';
+            $this->get_data('id', $row['Clocking Machine Key']);
+
+            return;
+        }
 
 
         $this->data = $this->base_data();
@@ -88,6 +116,7 @@ class Clocking_Machine extends DB_Table{
         $this->editor = $raw_data['editor'];
 
         $this->data['Clocking Machine Creation Date'] = gmdate('Y-m-d H:i:s');
+        $this->data['Clocking Machine Settings']      = '{}';
 
 
         $sql = sprintf(
@@ -107,10 +136,58 @@ class Clocking_Machine extends DB_Table{
 
 
             $this->id = $this->db->lastInsertId();
+
+            foreach ($settings as $key => $value) {
+                $this->fast_update_json_field('Clocking Machine Settings', $key, $value);
+            }
+
+            $api_key_data = array(
+                'API Key Scope'                => 'Timesheet',
+                'API Key Clocking Machine Key' => $this->id
+            );
+
+            include_once 'class.API_Key.php';
+
+            $api_key = new API_Key('create', $api_key_data);
+
+
+            $this->fast_update(
+                array(
+                    'Clocking Machine API Key Key' => $api_key->id
+                )
+            );
             $this->get_data('id', $this->id);
 
 
+            $cipher_method = 'aes-128-ctr';
+            $enc_key       = openssl_digest(SHARED_KEY, 'SHA256', true);
+            $enc_iv        = openssl_random_pseudo_bytes(openssl_cipher_iv_length($cipher_method));
+            $api_secret    = openssl_encrypt($api_key->secret_key, $cipher_method, $enc_key, 0, $enc_iv)."::".bin2hex($enc_iv);
+            unset($cipher_method, $enc_key, $enc_iv);
 
+
+            $box_data = array(
+                'name'       => $this->data['Clocking Machine Code'],
+                'timezone'   => $this->settings('timezone'),
+                'SSID'       => $this->settings('SSID'),
+                'wifi_token' => $this->settings('wifi_token'),
+                'api_code'   => $api_key->get('API Key Code'),
+                'api_secret' => $api_secret,
+                'api_url'    => $account->get('Account System Public URL')
+
+            );
+
+
+            $sql = 'update  box.`Box Dimension` set `Box Set up Date`=?,`Box Aurora Account Data`=? where `Box Key`=?  ';
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    gmdate('Y-m-d H:i:s'),
+                    json_encode($box_data),
+                    $this->data['Clocking Machine Box Key']
+                )
+            );
 
             $history_data = array(
                 'History Abstract' => sprintf(_("Clocking-in machine created (%s)"), $this->get('Code')),
@@ -129,8 +206,7 @@ class Clocking_Machine extends DB_Table{
 
         } else {
             $this->error = true;
-            print_r($stmt->errorInfo());
-            $this->msg = 'Error inserting Clocking Machine record';
+            $this->msg   = 'Error inserting Clocking Machine record';
         }
 
 
@@ -158,7 +234,6 @@ class Clocking_Machine extends DB_Table{
                 break;
 
 
-
             default:
 
                 if (array_key_exists($key, $this->data)) {
@@ -176,8 +251,9 @@ class Clocking_Machine extends DB_Table{
     }
 
 
-
-
+    function settings($key) {
+        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
+    }
 
     function update_field_switcher($field, $value, $options = '', $metadata = array()) {
 
@@ -188,7 +264,6 @@ class Clocking_Machine extends DB_Table{
 
 
         switch ($field) {
-
 
 
             case 'Clocking Machine Timezone':
@@ -202,7 +277,6 @@ class Clocking_Machine extends DB_Table{
 
         }
     }
-
 
 
     function get_field_label($field) {

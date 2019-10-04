@@ -3262,6 +3262,27 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 exit;
             }
             break;
+        case 'Clocking Machine':
+            $object = $parent->set_up_clocking_machine($data['fields_data']);
+
+
+            if ($parent->new_clocking_machine) {
+
+                $new_object_html   = '';
+                $redirect          = 'clocking_machines/'.$object->id;
+                $updated_data = array();
+            } else {
+
+
+                $response = array(
+                    'state' => 400,
+                    'msg'   => $parent->msg
+
+                );
+                echo json_encode($response);
+                exit;
+            }
+            break;
         case 'Charge':
 
             include_once 'class.Charge.php';

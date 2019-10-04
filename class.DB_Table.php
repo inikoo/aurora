@@ -228,7 +228,7 @@ abstract class DB_Table extends stdClass {
 
 
             if (preg_match(
-                    '/product category|invoice|prospect|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|user|store|product|company area|company department|position|category|customer poll query|customer poll query option|api key|email campaign|waehouse|warehouse area|email template|list|sales representative|order basket purge|shipping zone|shipping zone schema/i',
+                    '/product category|invoice|prospect|deal|charge|deal campaign|attachment bridge|location|site|page|part|barcode|agent|customer|contact|company|order|staff|supplier|address|user|store|product|company area|company department|position|category|customer poll query|customer poll query option|api key|email campaign|waehouse|warehouse area|email template|list|sales representative|order basket purge|shipping zone|shipping zone schema|customer client|clocking machine/i',
                     $table_name
                 ) and !$this->new and $save_history) {
 
