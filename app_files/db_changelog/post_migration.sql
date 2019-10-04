@@ -290,3 +290,5 @@ ALTER TABLE `Order Dimension` DROP `Order Tax Name`, DROP `Order Tax Operations`
 DROP TABLE `Part Availability for Products Timeline`;
 
 UPDATE `User Dimension` SET `User Settings`= JSON_SET(`User Settings`,'$.Timezone','Account') ;
+
+DROP TABLE  `Webpage Panel Dimension`;
