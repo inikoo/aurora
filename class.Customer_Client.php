@@ -151,14 +151,22 @@ class Customer_Client extends Subject {
     }
 
 
-    function get($key) {
+    function get($key, $arg1 = false) {
 
         if (!$this->id) {
             return '';
         }
 
+        list($got, $result) = $this->get_subject_common($key, $arg1);
+        if ($got) {
+            return $result;
+        }
+
 
         switch ($key) {
+            case 'Name Truncated':
+                return (strlen($this->get('Customer Client Name')) > 50 ? substrwords($this->get('Customer Client Name'), 55) : $this->get('Customer Client Name'));
+                break;
             case('Creation Date'):
                 if ($this->data['Customer Client '.$key] == '') {
                     return '';
@@ -262,11 +270,13 @@ class Customer_Client extends Subject {
 
     function update_field_switcher($field, $value, $options = '', $metadata = array()) {
 
-
         if (is_string($value)) {
             $value = _trim($value);
         }
 
+        if ($this->update_subject_field_switcher($field, $value, $options, $metadata)) {
+            return;
+        }
 
         switch ($field) {
 
@@ -281,6 +291,7 @@ class Customer_Client extends Subject {
 
                 break;
             case 'Customer Client Location':
+            case 'Customer Client Code':
 
                 $this->update_field($field, $value, $options);
 

@@ -523,6 +523,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Data_Sets('code', $key);
             break;
         case 'customer_client':
+        case 'customer client':
             include_once 'class.Customer_Client.php';
             $object = new Customer_Client('id', $key);
             break;

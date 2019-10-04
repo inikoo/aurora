@@ -12,7 +12,7 @@
     <div style="float: left;width: 590px;">
 
         <div class="{if $customer->get('Customer Name')|strlen <50 }hide{/if}">
-            <h1 style="margin-bottom: 0px;position: relative;top:-10px" class="Customer_Name ">{$customer->get('Customer Name')}</h1>
+            <h1 style="margin-bottom: 0px;position: relative;top:-10px" class="Customer_Name Subject_Name">{$customer->get('Customer Name')}</h1>
         </div>
         <div class="data_container" >
 

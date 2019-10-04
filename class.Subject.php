@@ -454,7 +454,6 @@ class Subject extends DB_Table {
         $store = get_object('Store', $this->get('Store Key'));
 
 
-
         $new_checksum = md5(
             json_encode(
                 array(
@@ -619,11 +618,11 @@ class Subject extends DB_Table {
 
         switch ($field) {
 
-          case 'History Note':
+            case 'History Note':
 
 
-            $this->add_note($value, '', '', $metadata['deletable']);
-            break;
+                $this->add_note($value, '', '', $metadata['deletable']);
+                break;
 
 
             case $this->table_name.' Main Plain Email':
@@ -639,8 +638,8 @@ class Subject extends DB_Table {
             case $this->table_name.' Main Plain Telephone':
                 $value = preg_replace('/\s/', '', $value);
                 if ($value == '+') {
-                    $value           = '';
-                    $formatted_value = '';
+                    $value = '';
+                    //$formatted_value = '';
                 }
                 if ($value != '') {
 
@@ -680,64 +679,70 @@ class Subject extends DB_Table {
                 $this->update_field($field, $value, 'no_history');
                 $this->update_field(preg_replace('/Plain/', 'XHTML', $field), $formatted_value, 'no_history');
 
+
                 if ($field == $this->table_name.' Main Plain Mobile' or $field == $this->table_name.' Main Plain Telephone') {
 
                     $this->update_field_switcher($this->table_name.' Preferred Contact Number', '');
-                }
-                if ($field == $this->table_name.' Main Plain Mobile') {
-
 
                     $this->other_fields_updated[$this->table_name.'_Main_Plain_Mobile']    = array(
                         'field'           => $this->table_name.'_Main_Plain_Mobile',
                         'render'          => true,
-                        'label'           => ucfirst(
-                                $this->get_field_label(
-                                    $this->table_name.' Main Plain Mobile'
-                                )
-                            ).($this->get(
-                                $this->table_name.' Main Plain Mobile'
-                            ) != '' ? ($this->get(
-                                $this->table_name.' Preferred Contact Number'
-                            ) == 'Mobile' ? ' <i title="'._(
+                        'label'           => ucfirst($this->get_field_label($this->table_name.' Main Plain Mobile')).($this->get($this->table_name.' Main Plain Mobile') != '' ? ($this->get($this->table_name.' Preferred Contact Number') == 'Mobile' ? ' <i title="'._(
                                     'Main contact number'
-                                ).'" class="fa fa-star discreet"></i>' : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="far fa-star discreet button"></i>') : ''),
-                        'value'           => $this->get(
-                            $this->table_name.' Main Plain Mobile'
-                        ),
+                                ).'" class="fa fa-star yellow"></i>' : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fal fa-star very_discreet button"></i>') : ''),
+                        'value'           => $this->get($this->table_name.' Main Plain Mobile'),
                         'formatted_value' => $this->get('Main Plain Mobile')
                     );
                     $this->other_fields_updated[$this->table_name.'_Main_Plain_Telephone'] = array(
                         'field'  => $this->table_name.'_Main_Plain_Telephone',
                         'render' => true,
-                        'label'  => ucfirst(
-                                $this->get_field_label(
-                                    $this->table_name.' Main Plain Telephone'
-                                )
-                            ).($this->get(
+                        'label'  => ucfirst($this->get_field_label($this->table_name.' Main Plain Telephone')).($this->get(
                                 $this->table_name.' Main Plain Telephone'
                             ) != '' ? ($this->get(
                                 $this->table_name.' Preferred Contact Number'
-                            ) == 'Telephone' ? ' <i title="'._(
-                                    'Main contact number'
-                                ).'" class="fa fa-star discreet"></i>' : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="far fa-star discreet button"></i>') : ''),
+                            ) == 'Telephone' ? ' <i title="'._('Main contact number').'" class="fa fa-star yellow"></i>' : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fal fa-star very_discreet button"></i>') : ''),
 
                     );
+
+
                 } else {
                     $this->other_fields_updated[$this->table_name.'_Main_Plain_FAX'] = array(
                         'field'           => $this->table_name.'_Main_Plain_FAX',
                         'render'          => true,
-                        'label'           => ucfirst(
-                            $this->get_field_label(
-                                $this->table_name.' Main Plain FAX'
-                            )
-                        ),
-                        'value'           => $this->get(
-                            $this->table_name.' Main Plain FAX'
-                        ),
+                        'label'           => ucfirst($this->get_field_label($this->table_name.' Main Plain FAX')),
+                        'value'           => $this->get($this->table_name.' Main Plain FAX'),
                         'formatted_value' => $this->get('Main Plain FAX')
                     );
 
+
                 }
+
+
+                if ($this->get('Main Plain Mobile') == '') {
+                    $hide = array('Subject_Mobile_display');
+                    $show = array();
+                } else {
+                    $show = array('Subject_Mobile_display');
+                    $hide = array();
+                }
+
+                if ($this->get('Main Plain Telephone') == '') {
+                    $hide[] = 'Subject_Telephone_display';
+                } else {
+                    $show[] = 'Subject_Telephone_display';
+                }
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Subject_Mobile'    => $this->get('Main XHTML Mobile'),
+                        'Subject_Telephone' => $this->get('Main XHTML Telephone')
+
+
+                    ),
+                    'hide'       => $hide,
+                    'show'       => $show,
+
+                );
 
 
                 return true;
@@ -776,13 +781,16 @@ class Subject extends DB_Table {
 
 
                 $this->update_field($field, $value, $options);
+                $_updated=$this->updated;
 
 
                 $this->update_field($this->table_name.' Preferred Contact Number Formatted Number', $this->get('Main XHTML '.$value), $options);
 
 
-                $this->other_fields_updated[$this->table_name.'_Main_Plain_Mobile'] = array(
-                    'field'  => $this->table_name.'_Main_Plain_Mobile',
+                $table_name=preg_replace('/\s/','_',$this->table_name);
+
+                $this->other_fields_updated[$table_name.'_Main_Plain_Mobile'] = array(
+                    'field'  => $table_name.'_Main_Plain_Mobile',
                     'render' => true,
                     'label'  => ucfirst(
                             $this->get_field_label(
@@ -791,14 +799,14 @@ class Subject extends DB_Table {
                         ).($this->get($this->table_name.' Main Plain Mobile') != '' ? ($this->get(
                             $this->table_name.' Preferred Contact Number'
                         ) == 'Mobile'
-                            ? ' <i title="'._('Main contact number').'" class="fa fa-star discreet"></i>'
+                            ? ' <i title="'._('Main contact number').'" class="fa fa-star yellow"></i>'
                             : ' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main contact number'
-                            ).'" class="far fa-star discreet button"></i>') : ''),
+                            ).'" class="fal fa-star very_discreet button"></i>') : ''),
                 );
 
-                $this->other_fields_updated[$this->table_name.'_Main_Plain_Telephone'] = array(
-                    'field'  => $this->table_name.'_Main_Plain_Telephone',
+                $this->other_fields_updated[$table_name.'_Main_Plain_Telephone'] = array(
+                    'field'  => $table_name.'_Main_Plain_Telephone',
                     'render' => true,
                     'label'  => ucfirst(
                             $this->get_field_label(
@@ -809,12 +817,13 @@ class Subject extends DB_Table {
                         ) == 'Telephone'
                             ? ' <i title="'._(
                                 'Main contact number'
-                            ).'" class="fa fa-star discreet"></i>'
+                            ).'" class="fa fa-star yellow"></i>'
                             : ' <i onClick="set_this_as_main(this)" title="'._(
                                 'Set as main contact number'
-                            ).'" class="far fa-star discreet button"></i>') : ''),
+                            ).'" class="fal fa-star very_discreet button"></i>') : ''),
                 );
 
+                $this->updated=$_updated;
 
                 return true;
 
@@ -837,9 +846,7 @@ class Subject extends DB_Table {
                     );
 
                 } else {
-                    $this->update_field(
-                        $this->table_name.' Name', $value, 'no_history'
-                    );
+                    $this->update_field($this->table_name.' Name', $value, 'no_history');
                 }
 
                 if ($old_value == $this->get('Contact Address Organization')) {
@@ -861,10 +868,6 @@ class Subject extends DB_Table {
                             $order->editor = $this->editor;
                             $order->update(array('Order Customer Name' => $this->get('Name')));
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
 
 
@@ -892,6 +895,17 @@ class Subject extends DB_Table {
                     }
                 }
 
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Name_Truncated' => $this->get('Name Truncated'),
+                        'Subject_Name'   => $this->get('Name')
+
+                    )
+                );
+
+
+                /*
                 $this->other_fields_updated = array(
                     $this->table_name.'_Name' => array(
                         'field'           => $this->table_name.'_Name',
@@ -904,6 +918,7 @@ class Subject extends DB_Table {
 
                     )
                 );
+*/
 
                 return true;
                 break;
@@ -949,7 +964,6 @@ class Subject extends DB_Table {
 
 
                             $_value = $this->get('Customer Client Contact Address');
-
 
 
                             $order->update(array('Order Delivery Address' => $_value), 'no_history', array('no_propagate_customer' => true));
@@ -1201,7 +1215,10 @@ class Subject extends DB_Table {
 
     function update_email($field, $value, $options) {
 
+
         if ($value == '' and count($other_emails_data = $this->get_other_emails_data()) > 0) {
+
+
             $old_value = $this->get($field);
             foreach ($other_emails_data as $other_key => $other_value) {
                 break;
@@ -1283,9 +1300,6 @@ class Subject extends DB_Table {
                         return;
                     }
 
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
                 }
 
 
@@ -1310,8 +1324,7 @@ class Subject extends DB_Table {
                 }
 
 
-            }
-            elseif($this->table_name != 'Customer Client') {
+            } elseif ($this->table_name != 'Customer Client') {
 
                 $sql = sprintf(
                     'SELECT `%s Key`,`%s Name` FROM `%s Dimension`  WHERE `%s Main Plain Email`=%s AND `%s Key`!=%d ', addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), addslashes($this->table_name), prepare_mysql($value),
@@ -1365,9 +1378,6 @@ class Subject extends DB_Table {
                         return;
                     }
 
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
                 }
 
             }
@@ -1395,7 +1405,7 @@ class Subject extends DB_Table {
             }
 
 
-            if($this->table_name == 'Customer Client'){
+            if ($this->table_name == 'Customer Client') {
 
                 $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Client Key`=%d AND `Order State`='InBasket' ", $this->id);
                 if ($result = $this->db->query($sql)) {
@@ -1410,8 +1420,26 @@ class Subject extends DB_Table {
             }
 
 
-
         }
+
+
+        if ($this->get('Main Plain Email') == '') {
+            $hide = array('Subject_Email_display');
+            $show = array();
+        } else {
+            $show = array('Subject_Email_display');
+            $hide = array();
+        }
+
+        $this->update_metadata = array(
+            'class_html' => array(
+                'Subject_Email' => ($this->get('Main Plain Email') != '' ? '<a href="mailto:'.$this->get('Main Plain Email').'">'.$this->get('Main Plain Email').'</a>' : ''),
+
+            ),
+            'hide'       => $hide,
+            'show'       => $show,
+
+        );
 
 
         $this->other_fields_updated = array(
@@ -1429,6 +1457,10 @@ class Subject extends DB_Table {
     }
 
     function get_other_emails_data() {
+
+        if ($this->table_name == 'Customer Client') {
+            return array();
+        }
 
         $sql = sprintf(
             "SELECT `%s Other Email Key`,`%s Other Email Email`,`%s Other Email Label` FROM `%s Other Email Dimension` WHERE `%s Other Email %s Key`=%d ORDER BY `%s Other Email Key`", addslashes($this->table_name), addslashes($this->table_name),
@@ -1945,6 +1977,9 @@ class Subject extends DB_Table {
             case 'Contact Address':
             case 'Invoice Address':
             case 'Delivery Address':
+
+
+
 
                 return array(
                     true,
