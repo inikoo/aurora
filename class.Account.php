@@ -507,6 +507,7 @@ class Account extends DB_Table {
                 break;
             case 'Timezone':
                 include_once 'utils/timezones.php';
+
                 return get_normalized_timezones_formatted_label($this->data['Account Timezone']);
 
                 break;
@@ -2788,7 +2789,144 @@ class Account extends DB_Table {
         }
     }
 
+    /**
+     * @param $data
+     *
+     * @return \Store
+     */
+    function set_up_clocking_machine($data) {
+
+$this->new_clocking_machine=false;
+
+        $sql = "SELECT `Box Key`,`Box Aurora Account Code`,`Box Model`  FROM box.`Box Dimension`  WHERE  `Box ID`=?    ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array($data['Clocking Machine Serial Number'])
+        );
+        if ($row = $stmt->fetch()) {
+            if ($row['Box Aurora Account Code'] == '' or true) {
+
+
+                $sql = 'update  box.`Box Dimension` set `Box Aurora Account Code`=? where `Box Key`=?  ';
+
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $this->get('Account Code'),
+                        $row['Box Key']
+                    )
+                );
+
+
+                $data['Clocking Machine Box Key']=$row['Box Key'];
+                $data['Clocking Machine Model']=$row['Box Model'];
+
+
+                if($data['Clocking Machine WiFi Password']!='Box Key'){
+
+
+                    $cipher_method = 'aes-128-ctr';
+                    $enc_key = openssl_digest(SHARED_KEY, 'SHA256', TRUE);
+                    $enc_iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($cipher_method));
+                    $wifi_encrypted_password = openssl_encrypt($data['Clocking Machine WiFi Password'], $cipher_method, $enc_key, 0, $enc_iv) . "::" . bin2hex($enc_iv);
+                    unset($token, $cipher_method, $enc_key, $enc_iv);
+
+
+
+/*
+                    list($wifi_encrypted_password, $enc_iv) = explode("::", $wifi_encrypted_password);;
+                    $cipher_method = 'aes-128-ctr';
+                    $enc_key = openssl_digest(SHARED_KEY, 'SHA256', TRUE);
+                    $token = openssl_decrypt($wifi_encrypted_password, $cipher_method, $enc_key, 0, hex2bin($enc_iv));
+                    unset($wifi_encrypted_password, $cipher_method, $enc_key, $enc_iv);
+                    print $token."\n";
+*/
+
+                }else{
+                    $wifi_encrypted_password='';
+                }
+                unset($data['Clocking Machine WiFi Password']);
+
+
+
+
+                $settings=array(
+                    'SSID'=>$data['Clocking Machine WiFi SSID'],
+                    'wifi_token'=>$wifi_encrypted_password,
+                    'timezone'=>$data['Clocking Machine Timezone'],
+                );
+                unset($data['Clocking Machine Timezone']);
+
+                $data['editor']=$this->editor;
+
+
+                include_once 'class.Clocking_Machine.php';
+                $clocking_machine=new Clocking_Machine('new',$data,$settings);
+
+
+
+                if ($clocking_machine->id) {
+                    $this->new_object_msg = $clocking_machine->msg;
+
+                    if ($clocking_machine->new) {
+                        $this->new_clocking_machine = true;
+                    } else {
+                        $this->error = true;
+                        if ($clocking_machine->found) {
+
+                            $this->error_code     = 'duplicated_field';
+                            $this->error_metadata = json_encode(array($clocking_machine->duplicated_field));
+
+                            if ($clocking_machine->duplicated_field == 'Clocking Machine Code') {
+                                $this->msg = _('Duplicated name');
+                            }
+
+
+                        } else {
+                            $this->msg = $clocking_machine->msg;
+                        }
+                    }
+
+                    return $clocking_machine;
+                } else {
+
+
+                    $this->error = true;
+                    $this->msg   = $clocking_machine->msg;
+                }
+                
+
+
+            } elseif ($row['Box Aurora Account Code'] == $this->get('Code')) {
+
+                $this->error;
+                $this->msg = _('Clocking-in machine already set up');
+
+                return false;
+
+
+            } else {
+                $this->error;
+                $this->msg = _('Clocking-in machine already set up');
+
+                return false;
+            }
+
+
+        } else {
+            $this->error;
+            $this->msg = _('Serial number not found');
+
+            return false;
+
+
+        }
+
+
+     
+
+    }
+
 }
 
-
-?>
