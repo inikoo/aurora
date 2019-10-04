@@ -33,15 +33,6 @@ CREATE TABLE `API Box Request Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `API Box Request Dimension`
---
-
-LOCK TABLES `API Box Request Dimension` WRITE;
-/*!40000 ALTER TABLE `API Box Request Dimension` DISABLE KEYS */;
-/*!40000 ALTER TABLE `API Box Request Dimension` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `Box Dimension`
 --
 
@@ -52,21 +43,14 @@ CREATE TABLE `Box Dimension` (
   `Box Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `Box ID` varchar(64) DEFAULT NULL,
   `Box Registered Date` datetime DEFAULT NULL,
+  `Box Set up Date` datetime DEFAULT NULL,
   `Box Model` varchar(64) DEFAULT NULL,
   `Box Aurora Account Code` varchar(64) DEFAULT NULL,
   `Box Aurora Account Data` json DEFAULT NULL,
-  PRIMARY KEY (`Box Key`)
+  PRIMARY KEY (`Box Key`),
+  UNIQUE KEY `Box ID` (`Box ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Box Dimension`
---
-
-LOCK TABLES `Box Dimension` WRITE;
-/*!40000 ALTER TABLE `Box Dimension` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Box Dimension` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `Fail API Box Request Dimension`
@@ -83,15 +67,6 @@ CREATE TABLE `Fail API Box Request Dimension` (
   PRIMARY KEY (`Fail API Box Request Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Fail API Box Request Dimension`
---
-
-LOCK TABLES `Fail API Box Request Dimension` WRITE;
-/*!40000 ALTER TABLE `Fail API Box Request Dimension` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Fail API Box Request Dimension` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -102,4 +77,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-10-01 17:43:15
+-- Dump completed on 2019-10-05  1:54:59

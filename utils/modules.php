@@ -720,7 +720,6 @@ $modules = array(
                                 'icon'  => 'heart'
                             ),
 
-
                         )
                     ),
 

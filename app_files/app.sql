@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.26, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.27, for Linux (x86_64)
 --
--- Host: localhost    Database: es
+-- Host: localhost    Database: _aurora
 -- ------------------------------------------------------
--- Server version	5.7.26-0ubuntu0.18.04.1-log
+-- Server version	5.7.27-0ubuntu0.19.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -45,7 +45,8 @@ CREATE TABLE `API Key Dimension` (
   `API Key Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `API Key Code` varchar(8) NOT NULL,
   `API Key Active` enum('Yes','No') NOT NULL DEFAULT 'Yes',
-  `API Key User Key` mediumint(8) unsigned NOT NULL,
+  `API Key User Key` mediumint(8) unsigned DEFAULT NULL,
+  `API Key Clocking Machine Key` smallint(5) unsigned DEFAULT NULL,
   `API Key Valid From` datetime DEFAULT NULL,
   `API Key Valid To` datetime DEFAULT NULL,
   `API Key Hash` varchar(255) NOT NULL,
@@ -63,7 +64,8 @@ CREATE TABLE `API Key Dimension` (
   PRIMARY KEY (`API Key Key`),
   KEY `API Key User Key` (`API Key User Key`),
   KEY `API Key Code` (`API Key Code`),
-  KEY `API Key Scope` (`API Key Scope`)
+  KEY `API Key Scope` (`API Key Scope`),
+  KEY `API Key Clocking Machine Key` (`API Key Clocking Machine Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1978,6 +1980,49 @@ CREATE TABLE `Charge History Bridge` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Clocking Machine Dimension`
+--
+
+DROP TABLE IF EXISTS `Clocking Machine Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Clocking Machine Dimension` (
+  `Clocking Machine Key` smallint(6) NOT NULL AUTO_INCREMENT,
+  `Clocking Machine API Key Key` mediumint(9) DEFAULT NULL,
+  `Clocking Machine Code` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Clocking Machine Box Key` smallint(6) DEFAULT NULL,
+  `Clocking Machine Creation Date` datetime DEFAULT NULL,
+  `Clocking Machine Serial Number` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Clocking Machine Model` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Clocking Machine Settings` json DEFAULT NULL,
+  `Clocking Machine Number History Records` smallint(5) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Clocking Machine Key`),
+  UNIQUE KEY `Clocking Machine Code` (`Clocking Machine Code`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Clocking Machine History Bridge`
+--
+
+DROP TABLE IF EXISTS `Clocking Machine History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Clocking Machine History Bridge` (
+  `Clocking Machine Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Clocking Machine Key`,`History Key`),
+  KEY `Clocking Machine Key` (`Clocking Machine Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Configuration Dimension`
 --
 
@@ -2058,6 +2103,94 @@ CREATE TABLE `Customer Category History Bridge` (
   `History Key` int(10) unsigned NOT NULL,
   `Type` enum('Changes','Assign') NOT NULL,
   UNIQUE KEY `Store Key` (`Store Key`,`Category Key`,`History Key`),
+  KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Customer Client Dimension`
+--
+
+DROP TABLE IF EXISTS `Customer Client Dimension`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Customer Client Dimension` (
+  `Customer Client Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Customer Client Code` varchar(255) DEFAULT NULL,
+  `Customer Client Store Key` smallint(5) unsigned DEFAULT NULL,
+  `Customer Client Customer Key` mediumint(8) unsigned DEFAULT NULL,
+  `Customer Client Creation Date` datetime DEFAULT NULL,
+  `Customer Client Name` varchar(255) DEFAULT NULL,
+  `Customer Client File As` varchar(255) DEFAULT NULL,
+  `Customer Client Main Contact Name` varchar(255) DEFAULT NULL,
+  `Customer Client Main XHTML Telephone` varchar(255) DEFAULT NULL,
+  `Customer Client Main Plain Telephone` varchar(45) DEFAULT NULL,
+  `Customer Client Main XHTML Mobile` varchar(255) DEFAULT NULL,
+  `Customer Client Main Plain Mobile` varchar(255) DEFAULT NULL,
+  `Customer Client Main Plain Email` varchar(255) DEFAULT NULL,
+  `Customer Client Main Plain Postal Code` varchar(16) DEFAULT NULL,
+  `Customer Client Location` varchar(255) DEFAULT NULL,
+  `Customer Client Contact Address Recipient` varchar(255) DEFAULT NULL,
+  `Customer Client Contact Address Organization` varchar(255) DEFAULT NULL,
+  `Customer Client Contact Address Line 1` varchar(255) DEFAULT NULL,
+  `Customer Client Contact Address Line 2` varchar(255) DEFAULT NULL,
+  `Customer Client Contact Address Sorting Code` varchar(255) DEFAULT NULL,
+  `Customer Client Contact Address Postal Code` varchar(255) DEFAULT NULL,
+  `Customer Client Contact Address Dependent Locality` varchar(255) DEFAULT NULL,
+  `Customer Client Contact Address Locality` varchar(255) DEFAULT NULL,
+  `Customer Client Contact Address Administrative Area` varchar(255) DEFAULT NULL,
+  `Customer Client Contact Address Country 2 Alpha Code` varchar(2) DEFAULT NULL,
+  `Customer Client Contact Address Checksum` varchar(64) DEFAULT NULL,
+  `Customer Client Contact Address Formatted` text,
+  `Customer Client Contact Address Postal Label` text,
+  `Customer Client Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Customer Client Pending Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Customer Client Orders Invoiced` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Customer Client Orders Cancelled` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Customer Client Orders with Replacements` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Customer Client Last Invoice Date` datetime DEFAULT NULL,
+  `Customer Client Invoiced Amount` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `Customer Client Number Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Customer Client Number Refunds` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Customer Client Preferred Contact Number` enum('Telephone','Mobile') NOT NULL DEFAULT 'Mobile',
+  `Customer Client Currency Code` varchar(3) DEFAULT NULL,
+  `Customer Client Number History Records` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Customer Client Metadata` json DEFAULT NULL,
+  PRIMARY KEY (`Customer Client Key`) USING BTREE,
+  KEY `Customer Client Store Key` (`Customer Client Store Key`),
+  KEY `Customer Client Name` (`Customer Client Name`),
+  KEY `Customer Client First Contacted Date` (`Customer Client Creation Date`),
+  KEY `Customer Client Orders Invoiced` (`Customer Client Orders Invoiced`),
+  KEY `Customer Client Main Plain Telephone` (`Customer Client Main Plain Telephone`(6)),
+  KEY `Customer Client Orders` (`Customer Client Store Key`,`Customer Client Orders`),
+  KEY `Customer Client Net Balance` (`Customer Client Store Key`),
+  KEY `Customer Client Profit` (`Customer Client Store Key`),
+  KEY `Customer Client Main Plain Email` (`Customer Client Main Plain Email`),
+  KEY `Customer Client Contact Address Locality` (`Customer Client Contact Address Locality`(12)),
+  KEY `Customer Client Main Contact Name` (`Customer Client Main Contact Name`(16)),
+  KEY `Customer Client Main Plain Postal Code` (`Customer Client Main Plain Postal Code`),
+  KEY `Customer Client Customer Key` (`Customer Client Customer Key`),
+  KEY `Customer Client Code` (`Customer Client Code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Customer Client History Bridge`
+--
+
+DROP TABLE IF EXISTS `Customer Client History Bridge`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Customer Client History Bridge` (
+  `Customer Client Key` mediumint(8) unsigned NOT NULL,
+  `History Key` int(10) unsigned NOT NULL,
+  `Deletable` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Strikethrough` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Type` enum('Notes','Changes') NOT NULL DEFAULT 'Notes',
+  PRIMARY KEY (`Customer Client Key`,`History Key`),
+  KEY `Customer Client Key` (`Customer Client Key`),
+  KEY `History Key` (`History Key`),
+  KEY `Deletable` (`Deletable`),
   KEY `Type` (`Type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2283,6 +2416,8 @@ CREATE TABLE `Customer Dimension` (
   `Customer Number Web Logins` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Customer Number Web Failed Logins` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Customer Number Web Requests` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `Customer Number History Records` smallint(5) unsigned DEFAULT '0',
+  `Customer Number Clients` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Customer Currency Code` varchar(3) DEFAULT NULL,
   `Customer Metadata` json DEFAULT NULL,
   `Customer Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -3038,6 +3173,7 @@ CREATE TABLE `Delivery Note Dimension` (
   `Delivery Note File As` varchar(255) DEFAULT NULL,
   `Delivery Note Store Key` smallint(5) unsigned NOT NULL DEFAULT '1',
   `Delivery Note Customer Key` mediumint(8) unsigned DEFAULT NULL,
+  `Delivery Note Customer Client Key` mediumint(8) unsigned DEFAULT NULL,
   `Delivery Note Customer Name` varchar(255) NOT NULL DEFAULT 'Unknown Customer',
   `Delivery Note Distinct Items` smallint(5) unsigned DEFAULT NULL,
   `Delivery Note Estimated Weight` decimal(12,3) NOT NULL DEFAULT '0.000',
@@ -3097,7 +3233,8 @@ CREATE TABLE `Delivery Note Dimension` (
   KEY `Delivery Note Order Alert` (`Delivery Note Order Alert`),
   KEY `Delivery Note Premium Key` (`Delivery Note Premium Key`),
   KEY `Delivery Note Address Country 2 Alpha Code` (`Delivery Note Address Country 2 Alpha Code`),
-  KEY `Delivery Note Shipper Key` (`Delivery Note Shipper Key`)
+  KEY `Delivery Note Shipper Key` (`Delivery Note Shipper Key`),
+  KEY `Delivery Note Customer Client Key` (`Delivery Note Customer Client Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -4605,6 +4742,7 @@ CREATE TABLE `Invoice Dimension` (
   `Invoice File As` varchar(32) DEFAULT NULL,
   `Invoice Store Key` tinyint(8) unsigned NOT NULL DEFAULT '0',
   `Invoice Customer Key` mediumint(8) unsigned DEFAULT NULL,
+  `Invoice Customer Client Key` mediumint(8) unsigned DEFAULT NULL,
   `Invoice Customer Name` varchar(255) DEFAULT 'Unknown Customer',
   `Invoice Customer Contact Name` varchar(255) DEFAULT NULL,
   `Invoice Customer Level Type` enum('Normal','VIP','Partner','Staff') DEFAULT 'Normal',
@@ -4680,7 +4818,8 @@ CREATE TABLE `Invoice Dimension` (
   KEY `Invoice Billing Region` (`Invoice Billing Region`),
   KEY `Invoice Order Key` (`Invoice Order Key`),
   KEY `Invoice Sales Representative Key` (`Invoice Sales Representative Key`),
-  KEY `Invoice Public ID` (`Invoice Public ID`)
+  KEY `Invoice Public ID` (`Invoice Public ID`),
+  KEY `Invoice Customer Client Key` (`Invoice Customer Client Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -5307,6 +5446,7 @@ CREATE TABLE `Order Dimension` (
   `Order File As` varchar(255) DEFAULT NULL,
   `Order Customer Purchase Order ID` varchar(64) DEFAULT NULL,
   `Order Customer Key` mediumint(8) unsigned DEFAULT NULL,
+  `Order Customer Client Key` mediumint(8) unsigned DEFAULT NULL,
   `Order Customer Name` varchar(255) NOT NULL DEFAULT 'Unknown Customer',
   `Order Customer Contact Name` varchar(255) NOT NULL DEFAULT '',
   `Order Customer Fiscal Name` text,
@@ -5531,7 +5671,8 @@ CREATE TABLE `Order Dimension` (
   KEY `Order Priority Level` (`Order Priority Level`),
   KEY `Order Care Level` (`Order Care Level`),
   KEY `Order Customer Level Type` (`Order Customer Level Type`),
-  KEY `Order Last Updated by Customer` (`Order Last Updated by Customer`)
+  KEY `Order Last Updated by Customer` (`Order Last Updated by Customer`),
+  KEY `Order Customer Client Key` (`Order Customer Client Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -16842,4 +16983,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-09-30  7:22:39
+-- Dump completed on 2019-10-05  1:54:21
