@@ -956,7 +956,7 @@ class Deal extends DB_Table {
         $families     = array();
         $departments  = array();
         $sql          = sprintf(
-            'select `Deal Component Trigger Key`,`Category Scope` from  `Deal Component Dimension`  left join `Category Dimension` on (`Deal Component Trigger Key`=`Category Key`)   where `Deal Component Deal Key`=%d  and `Deal Component Trigger`="Category"  ',
+            "select `Deal Component Trigger Key`,`Category Scope` from  `Deal Component Dimension`  left join `Category Dimension` on (`Deal Component Trigger Key`=`Category Key`)   where `Deal Component Deal Key`=%d  and `Deal Component Trigger`='Category'  ",
             $this->id
         );
         if ($result = $this->db->query($sql)) {
@@ -970,14 +970,10 @@ class Deal extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $sql = sprintf(
-            'select `Deal Component Allowance Target Key`,`Category Scope` from  `Deal Component Dimension`  left join `Category Dimension` on (`Deal Component Allowance Target Key`=`Category Key`)    where `Deal Component Deal Key`=%d  and `Deal Component Allowance Target`="Category"   ',
+            "select `Deal Component Allowance Target Key`,`Category Scope` from  `Deal Component Dimension`  left join `Category Dimension` on (`Deal Component Allowance Target Key`=`Category Key`)    where `Deal Component Deal Key`=%d  and `Deal Component Allowance Target`='Category'   ",
             $this->id
         );
         if ($result = $this->db->query($sql)) {
@@ -991,10 +987,6 @@ class Deal extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1016,7 +1008,7 @@ class Deal extends DB_Table {
 
 
         foreach ($products as $product_id) {
-            $sql = sprintf('select `Page Key` from `Page Store Dimension` where `Webpage Scope`="Product" and `Webpage Scope Key`=%d ', $product_id);
+            $sql = sprintf("select `Page Key` from `Page Store Dimension` where `Webpage Scope`='Product' and `Webpage Scope Key`=%d ", $product_id);
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
@@ -1031,7 +1023,7 @@ class Deal extends DB_Table {
         }
 
         foreach ($families as $family_key) {
-            $sql = sprintf('select `Page Key`,`Webpage Website Key` from `Page Store Dimension` where `Webpage Scope`="Category Products" and `Webpage Scope Key`=%d ', $family_key);
+            $sql = sprintf("select `Page Key`,`Webpage Website Key` from `Page Store Dimension` where `Webpage Scope`='Category Products' and `Webpage Scope Key`=%d ", $family_key);
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
@@ -1040,15 +1032,11 @@ class Deal extends DB_Table {
                         $row['Page Key']
                     );
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
         }
 
-        /** @var Smarty */
+        /** @var $smarty_web Smarty */
         $smarty_web               = new Smarty();
         $smarty_web->template_dir = 'EcomB2B/templates';
         $smarty_web->compile_dir  = 'EcomB2B/server_files/smarty/templates_c';
@@ -1080,7 +1068,7 @@ class Deal extends DB_Table {
             $this->update_field('Deal Begin Date', $value, $options);
 
             $sql = sprintf(
-                'SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Status`="Waiting" AND `Deal Component Deal Key`=%d', $this->id
+                "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Status`='Waiting' AND `Deal Component Deal Key`=%d", $this->id
             );
 
             if ($result = $this->db->query($sql)) {
@@ -1090,10 +1078,6 @@ class Deal extends DB_Table {
                         array('Deal Component Begin Date' => $value)
                     );
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
@@ -1141,7 +1125,7 @@ class Deal extends DB_Table {
         $this->updated = true;
 
         $sql = sprintf(
-            'SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Status`!="Finish" AND `Deal Component Deal Key`=%d', $this->id
+            "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Status`!='Finish' AND `Deal Component Deal Key`=%d", $this->id
         );
 
 
@@ -1151,10 +1135,6 @@ class Deal extends DB_Table {
                 $deal_component->update(array('Deal Component Expiration Date' => $value));
                 $deal_component->update_status_from_dates();
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1376,7 +1356,7 @@ class Deal extends DB_Table {
         $sql = sprintf("DELETE FROM `Deal Dimension` WHERE `Deal Key`=%d ", $this->id);
         $this->db->exec($sql);
 
-        $campaign         = new DealCampaign($this->data['Deal Campaign Key']);
+        $campaign         = get_object('DealCampaign',$this->data['Deal Campaign Key']);
         $campaign->editor = $this->editor;
 
         $campaign->update_number_of_deals();
