@@ -482,7 +482,7 @@ if ($new) {
                 'formatted_value' => $object->get('Main XHTML Mobile'),
                 'label'           => ucfirst(
                         $object->get_field_label('Customer Main Plain Mobile')
-                    ).($object->get('Customer Main Plain Mobile') != '' ? ($object->get('Customer Preferred Contact Number') == 'Mobile' ? ' <i  title="'._('Main contact number').'" class="fa fa-star button discreet"></i>'
+                    ).($object->get('Customer Main Plain Mobile') != '' ? ($object->get('Customer Preferred Contact Number') == 'Mobile' ? ' <i  title="'._('Main contact number').'" class="fa yellow fa-star button "></i>'
                         : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fal fa-star discreet button"></i>') : ''),
                 'invalid_msg'     => get_invalid_message('telephone'),
                 'required'        => false,
@@ -499,7 +499,7 @@ if ($new) {
                 'formatted_value' => $object->get('Main XHTML Telephone'),
                 'label'           => ucfirst(
                         $object->get_field_label('Customer Main Plain Telephone')
-                    ).($object->get('Customer Main Plain Telephone') != '' ? ($object->get('Customer Preferred Contact Number') == 'Telephone' ? ' <i  title="'._('Main contact number').'" class="fa fa-star button discreet"></i>'
+                    ).($object->get('Customer Main Plain Telephone') != '' ? ($object->get('Customer Preferred Contact Number') == 'Telephone' ? ' <i  title="'._('Main contact number').'" class="fa fa-star button yellow"></i>'
                         : ' <i onClick="set_this_as_main(this)" title="'._('Set as main contact number').'" class="fal fa-star discreet button"></i>') : ''),
                 'invalid_msg'     => get_invalid_message('telephone'),
                 'required'        => false

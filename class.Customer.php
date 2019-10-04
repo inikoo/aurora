@@ -612,6 +612,9 @@ class Customer extends Subject {
                     -1 * $this->data['Customer Refunded Net Amount'], $this->store->get('Store Currency Code')
                 );
                 break;
+            case 'Name Truncated':
+                return (strlen($this->get('Customer Name')) > 50 ? substrwords($this->get('Customer Name'), 55) : $this->get('Customer Name'));
+                break;
 
             default:
 

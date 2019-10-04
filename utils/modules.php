@@ -636,7 +636,7 @@ $modules = array(
                     'customer.marketing.products'   => 'customer.insights',
                     'customer.marketing.favourites' => 'customer.insights',
                     'customer.marketing.search'     => 'customer.insights',
-                    'customer.poll'     => 'customer.insights',
+                    'customer.poll'                 => 'customer.insights',
 
                     'customer.sales.plot'      => 'customer.sales',
                     'customer.sales.history'   => 'customer.sales',
@@ -644,8 +644,8 @@ $modules = array(
                     'customer.sales.dashboard' => 'customer.sales',
                     'customer.sales.info'      => 'customer.sales',
 
-                    'customer.orders'      => 'customer.orders_invoices',
-                    'customer.invoices'      => 'customer.orders_invoices',
+                    'customer.orders'   => 'customer.orders_invoices',
+                    'customer.invoices' => 'customer.orders_invoices',
 
                 ),
                 'tabs'           => array(
@@ -661,15 +661,15 @@ $modules = array(
                     'customer.clients' => array(
                         'label' => _("Clients"),
 
-                        'title' => _("Customer's clients"),
-                        'icon'  => 'address-book',
+                        'title'         => _("Customer's clients"),
+                        'icon'          => 'address-book',
                         'quantity_data' => array(
                             'object' => '_object',
                             'field'  => 'Number Clients'
                         ),
                     ),
-                    
-                    'customer.sales'   => array(
+
+                    'customer.sales' => array(
                         'label'   => _('Sales'),
                         'icon'    => 'money-bill',
                         'subtabs' => array(
@@ -697,52 +697,49 @@ $modules = array(
                     ),
 
 
-                    'customer.insights'    => array(
-                        'label' => _('Insights'),
-                        'icon'  => 'graduation-cap',
+                    'customer.insights' => array(
+                        'label'   => _('Insights'),
+                        'icon'    => 'graduation-cap',
                         'subtabs' => array(
-                            'customer.poll' => array(
+                            'customer.poll'               => array(
                                 'label' => _('Poll'),
-                                'icon'=>'poll-people'
+                                'icon'  => 'poll-people'
                             ),
                             'customer.marketing.products' => array(
                                 'label' => _('Products invoiced'),
-                                'icon'=>'cube'
+                                'icon'  => 'cube'
                             ),
 
                             'customer.marketing.families' => array(
                                 'label' => _('Categories ordered'),
-                                'icon'=>'cubes'
+                                'icon'  => 'cubes'
                             ),
 
                             'customer.marketing.favourites' => array(
                                 'label' => _('Favourite products'),
-                                'icon'=>'heart'
+                                'icon'  => 'heart'
                             ),
 
 
                         )
                     ),
-
-
 
 
                     'customer.orders_invoices' => array(
-                        'label' => _('Orders'),
-                        'icon'  => 'shopping-cart',
+                        'label'   => _('Orders'),
+                        'icon'    => 'shopping-cart',
                         'subtabs' => array(
-                            'customer.orders' => array(
+                            'customer.orders'   => array(
                                 'label' => _('Orders'),
-                                'icon'=>'shopping-cart'
+                                'icon'  => 'shopping-cart'
                             ),
                             'customer.invoices' => array(
                                 'label' => _('Invoices'),
-                                'icon'=>'file-invoice-dollar'
+                                'icon'  => 'file-invoice-dollar'
                             ),
                         )
 
                     ),
-
 
 
                     'customer.deals'             => array(
@@ -755,7 +752,7 @@ $modules = array(
                     ),
 
                     'customer.sent_emails' => array(
-                        'label'=>'',
+                        'label' => '',
                         'title' => _('Sent emails'),
                         'icon'  => 'paper-plane',
                         'class' => 'icon_only right'
@@ -790,18 +787,37 @@ $modules = array(
 
 
             'customer_client' => array(
-                'type'  => 'object',
-                'label' => _("Customer's client"),
-                'title' =>_("Customer's client"),
-                'icon'  => '',
-
-                'tabs' => array(
+                'type'           => 'object',
+                'label'          => _("Customer's client"),
+                'title'          => _("Customer's client"),
+                'icon'           => '',
+                'subtabs_parent' => array(
+                    'customer_client.orders'         => 'customer_client.orders_deliveries',
+                    'customer_client.delivery_notes' => 'customer_client.orders_deliveries',
+                ),
+                'tabs'           => array(
                     'customer_client.details' => array(
                         'label' => _('Data'),
                         'icon'  => 'database'
                     ),
 
-                    'customer_client.orders' => array('label' => _('Orders')),
+
+                    'customer_client.orders_deliveries' => array(
+                        'label'   => _('Orders'),
+                        'icon'    => 'shopping-cart',
+                        'subtabs' => array(
+                            'customer_client.orders'         => array(
+                                'label' => _('Orders'),
+                                'icon'  => 'shopping-cart'
+                            ),
+                            'customer_client.delivery_notes' => array(
+                                'label' => _('Delivery notes'),
+                                'icon'  => 'truck'
+                            ),
+                        )
+
+                    ),
+
                     'customer_client.history' => array(
                         'title' => _('History, notes'),
                         'label' => '',
@@ -2863,7 +2879,6 @@ $modules = array(
                     ),
 
 
-
                     'webpage.logbook' => array(
                         'label' => _('Logbook'),
                         'icon'  => 'road'
@@ -3023,7 +3038,6 @@ $modules = array(
                 )
 
             ),
-
 
 
             'offers' => array(
@@ -4559,7 +4573,7 @@ $modules = array(
 
                         )
                     ),
-                    'suppliers.categories'    => array(
+                    'suppliers.categories'     => array(
                         'label' => _('Categories'),
                         'icon'  => 'sitemap',
 
@@ -7107,8 +7121,7 @@ $modules = array(
             ),
 
 
-
-            'clocking_machines' => array(
+            'clocking_machines'    => array(
                 'type'      => 'navigation',
                 'icon'      => 'chess-clock',
                 'label'     => _('Clocking-in Machines'),
@@ -7119,11 +7132,10 @@ $modules = array(
                     ),
 
 
-
                 )
 
             ),
-            'clocking_machine.new'     => array(
+            'clocking_machine.new' => array(
                 'type' => 'new_object',
                 'tabs' => array(
                     'clocking_machine.new' => array(
@@ -8316,13 +8328,13 @@ $modules = array(
                         'icon'  => 'sliders-h',
                     ),
 
-                    'supplier_part.images'        => array(
+                    'supplier_part.images'  => array(
                         'label' => '',
                         'title' => _('Images'),
                         'icon'  => 'camera-retro',
                         'class' => 'right icon_only'
                     ),
-                    'supplier_part.history'       => array(
+                    'supplier_part.history' => array(
                         'label' => '',
                         'title' => _('History/Notes'),
                         'icon'  => 'road',

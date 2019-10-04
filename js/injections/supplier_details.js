@@ -3,20 +3,6 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
-function post_set_as_main(data) {
-
-
-    if (data.action == 'set_main_contact_number_Mobile') {
-
-
-        $("#Supplier_Main_Plain_Mobile_display").insertAfter("#display_telephones");
-    } else if (data.action == 'set_main_contact_number_Telephone') {
-
-
-        $("#Supplier_Main_Plain_Telephone_display").insertAfter("#display_telephones");
-
-    }
-}
 
 
 function post_update_field(data) {

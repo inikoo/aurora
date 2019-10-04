@@ -99,7 +99,7 @@ function validate_address(field) {
 function client_validation(type, required, value, field) {
 
 
-    console.log(type + ' ' + value + ' ' + field+ ' required:' + required)
+    //console.log(type + ' ' + value + ' ' + field+ ' required:' + required)
 
     var valid_state = {
         class: 'valid', type: ''
@@ -464,7 +464,7 @@ function client_validation(type, required, value, field) {
             }
 
         case 'positive_integer_more_than_zero':
-            var res = validate_integer(value, 1,65535)
+            var res = validate_integer(value, 1, 65535)
             if (res) return res
             break;
 
@@ -622,7 +622,7 @@ function client_validation(type, required, value, field) {
     }
 
 
-   // console.log(valid_state)
+    // console.log(valid_state)
 
     return valid_state;
 }
@@ -638,7 +638,7 @@ function checkEan(eanCode) {
     }
 
     // Add five 0 if the code has only 8 digits
-    if (eanCode.length == 8 ) {
+    if (eanCode.length == 8) {
         eanCode = "00000" + eanCode;
     }
     // Check for 13 digits otherwise
@@ -651,22 +651,12 @@ function checkEan(eanCode) {
     eanCode = eanCode.substring(0, eanCode.length - 1);
 
     // Add even numbers together
-    even = Number(eanCode.charAt(1)) +
-        Number(eanCode.charAt(3)) +
-        Number(eanCode.charAt(5)) +
-        Number(eanCode.charAt(7)) +
-        Number(eanCode.charAt(9)) +
-        Number(eanCode.charAt(11));
+    even = Number(eanCode.charAt(1)) + Number(eanCode.charAt(3)) + Number(eanCode.charAt(5)) + Number(eanCode.charAt(7)) + Number(eanCode.charAt(9)) + Number(eanCode.charAt(11));
     // Multiply this result by 3
     even *= 3;
 
     // Add odd numbers together
-    odd = Number(eanCode.charAt(0)) +
-        Number(eanCode.charAt(2)) +
-        Number(eanCode.charAt(4)) +
-        Number(eanCode.charAt(6)) +
-        Number(eanCode.charAt(8)) +
-        Number(eanCode.charAt(10));
+    odd = Number(eanCode.charAt(0)) + Number(eanCode.charAt(2)) + Number(eanCode.charAt(4)) + Number(eanCode.charAt(6)) + Number(eanCode.charAt(8)) + Number(eanCode.charAt(10));
 
     // Add two totals together
     total = even + odd;
@@ -713,7 +703,6 @@ function validate_ean_barcode(value) {
             type: 'invalid'
         }
     }
-
 
 
     if (value.length == 12) {
@@ -793,8 +782,6 @@ function validate_barcode(value, min_length, max_length) {
 function validate_number(value, min, max) {
 
 
-
-
     if (!$.isNumeric(value)) {
         return {
             class: 'invalid', type: 'no_numeric'
@@ -806,7 +793,7 @@ function validate_number(value, min, max) {
     var max = parseFloat(max)
 
 
-    console.log(min)
+    //console.log(min)
 
     if (min != undefined && value < min) {
 
@@ -871,7 +858,7 @@ function validate_signed_integer(value, max_value) {
     return false
 }
 
-function validate_integer(value, min_value,max_value) {
+function validate_integer(value, min_value, max_value) {
 
     if (!$.isNumeric(value)) {
         return {
@@ -879,7 +866,7 @@ function validate_integer(value, min_value,max_value) {
         }
     }
 
-    if (max_value != undefined &&  value > max_value) {
+    if (max_value != undefined && value > max_value) {
         return {
             class: 'invalid',
 
@@ -911,8 +898,7 @@ function validate_integer(value, min_value,max_value) {
 function server_validation(settings, parent, parent_key, object, key, field, value) {
 
 
-
-    console.log(settings)
+    //console.log(settings)
     if (settings.parent != null) {
         parent = settings.parent;
     }
@@ -947,7 +933,7 @@ function server_validation(settings, parent, parent_key, object, key, field, val
         }
 
 
-        console.log(settings.metadata)
+        //console.log(settings.metadata)
         if (settings.metadata != null) {
             request += '&metadata=' + JSON.stringify(settings.metadata);
         }
