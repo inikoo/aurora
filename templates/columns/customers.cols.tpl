@@ -202,7 +202,7 @@ headerCell: integerHeaderCell
 {
 name: "clients",
 label: "{t}Clients{/t}",
-renderable:{if $store->get('Store Type')=='Dropshipping'}true{else}false{/if},
+renderable:{if !empty($show_customer_clients)}true{else}false{/if},
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
@@ -240,7 +240,7 @@ grid.columns.findWhere({ name: 'total_invoiced_net_amount'} ).set("renderable", 
 
 
 
-{if $store->get('Store Type')=='Dropshipping'}
+{if !empty($show_customer_clients)}
     grid.columns.findWhere({ name: 'clients'} ).set("renderable", false)
 {/if}
 
@@ -252,7 +252,7 @@ grid.columns.findWhere({ name: 'invoices'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'last_invoice'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'contact_since'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'total_invoiced_net_amount'} ).set("renderable", true)
-{if $store->get('Store Type')=='Dropshipping'}
+{if !empty($show_customer_clients)}
     grid.columns.findWhere({ name: 'clients'} ).set("renderable", true)
 {/if}
 

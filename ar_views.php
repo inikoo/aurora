@@ -123,7 +123,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
     if (isset($data['metadata']['reload']) and $data['metadata']['reload']) {
-
         $reload = true;
     } else {
         $reload = false;
@@ -343,7 +342,9 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
             $state['key'] = $_object->id;
         }
 
+
         if (!isset($_object)) {
+
             $_object = get_object($state['object'], $state['key']);
         }
 
@@ -430,7 +431,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
             }
         }
-
 
 
         if ($state['object'] == 'website' and $state['tab'] != 'website.new') {
@@ -688,7 +688,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     }
 
 
-
     if ($state['section'] == 'setup') {
 
         $state = array(
@@ -788,10 +787,10 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     }
 
-    // todo implement correctly if multiwarehouses ever done, special care has to be done when visiting warehouses servers becuse current_warehouse will be set to null, and if then jump to a invengtory/part it may be still null causing avok
+    // todo implement correctly if multi-warehouses ever done, special care has to be done when visiting warehouses servers becuse current_warehouse will be set to null, and if then jump to a invengtory/part it may be still null causing avok
     //if (isset($state['current_warehouse'])) {$session->set('current_warehouse', $state['current_warehouse']);}
 
-    // todo implement correctly if multiprouction ever done,
+    // todo implement correctly if multi-prouction ever done,
 
     //if (isset($state['current_production'])) {$session->set('current_production', $state['current_production']);}
 
@@ -5686,79 +5685,88 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
             switch ($state['section']) {
                 case 'list':
-                    $list  = new SubjectList($state['key']);
-                    $store = new Store($list->data['List Parent Key']);
 
 
                     $branch[] = array(
-                        'label'     => _(
-                                "Customer's lists"
-                            ).' '.$store->data['Store Code'],
+                        'label'     => _("Customer's lists").' '.$state['store']->data['Store Code'],
                         'icon'      => 'list',
-                        'reference' => 'customers/'.$store->id.'/lists'
+                        'reference' => 'customers/'.$state['store']->id.'/lists'
                     );
                     $branch[] = array(
-                        'label'     => '<span class="List_Name">'.$list->get('List Name').'</span>',
+                        'label'     => '<span class="List_Name">'.$state['_object']->get('List Name').'</span>',
                         'icon'      => '',
-                        'reference' => 'customers/list/'.$list->id
+                        'reference' => 'customers/'.$state['store']->id.'/lists/'.$state['_object']->id
                     );
 
                     break;
 
                 case 'customer':
-
-
                     if ($state['parent'] == 'store') {
-                        $customer = new Customer($state['key']);
-                        if ($customer->id) {
-
-
-                            $store = new Store(
-                                $customer->data['Customer Store Key']
-                            );
-
-
-                            $branch[] = array(
-                                'label'     => _(
-                                        'Customers'
-                                    ).' '.$store->data['Store Code'],
-                                'icon'      => 'users',
-                                'reference' => 'customers/'.$store->id
-                            );
-                            $branch[] = array(
-                                'label'     => $customer->get_formatted_id(),
-                                'icon'      => 'user',
-                                'reference' => 'customer/'.$customer->id
-                            );
-                        }
-                    } elseif ($state['parent'] == 'list') {
-                        $customer = new Customer($state['key']);
-                        $store    = new Store(
-                            $customer->data['Customer Store Key']
-                        );
-
-                        $list = new SubjectList($state['parent_key']);
-
                         $branch[] = array(
-                            'label'     => _("Customer's lists").' '.$store->data['Store Code'],
-                            'icon'      => 'list',
-                            'reference' => 'customers/'.$store->id.'/lists'
+                            'label'     => _('Customers').' '.$state['store']->get('Store Code'),
+                            'icon'      => 'users',
+                            'reference' => 'customers/'.$state['store']->id
                         );
                         $branch[] = array(
-                            'label'     => '<span class="List_Name">'.$list->get('List Name').'</span>',
-                            'icon'      => '',
-                            'reference' => 'customers/list/'.$list->id
-                        );
-
-
-                        $branch[] = array(
-                            'label'     => _(
-                                    'Customer'
-                                ).' '.$customer->get_formatted_id(),
+                            'label'     => $state['_object']->get_formatted_id(),
                             'icon'      => 'user',
-                            'reference' => 'customer/'.$customer->id
+                            'reference' => 'customer/'.$state['_object']->id
+                        );
+
+                    } elseif ($state['parent'] == 'list') {
+
+                        $branch[] = array(
+                            'label'     => _("Customer's lists").' '.$state['store']->data['Store Code'],
+                            'icon'      => 'list',
+                            'reference' => 'customers/'.$state['store']->id.'/lists'
+                        );
+                        $branch[] = array(
+                            'label'     => '<span class="List_Name">'.$state['_parent']->get('List Name').'</span>',
+                            'icon'      => '',
+                            'reference' => 'customers/'.$state['store']->id.'/lists/'.$state['_parent']->id
+                        );
+                        $branch[] = array(
+                            'label'     => _('Customer').' '.$state['_object']->get_formatted_id(),
+                            'icon'      => 'user',
+                            'reference' => 'customers/'.$state['store']->id.'/lists/'.$state['_parent']->id.'/'.$state['_object']->id
                         );
                     }
+                    break;
+
+
+                case 'customer_client':
+                    $branch[] = array(
+                        'label'     => _('Customers').' '.$state['store']->get('Store Code'),
+                        'icon'      => 'users',
+                        'reference' => 'customers/'.$state['store']->id
+                    );
+                    $branch[] = array(
+                        'label'     => $state['_parent']->get_formatted_id(),
+                        'icon'      => 'user',
+                        'reference' => 'customers/'.$state['store']->id.'/'.$state['_parent']->id
+                    );
+                    $branch[] = array(
+                        'label'     => '<span class="Customer_Client_Code">'.$state['_object']->get('Code').'</span>',
+                        'icon'      => 'address-book',
+                        'reference' => ''
+                    );
+                    break;
+                case 'customer_client.new':
+                    $branch[] = array(
+                        'label'     => _('Customers').' '.$state['store']->get('Store Code'),
+                        'icon'      => 'users',
+                        'reference' => 'customers/'.$state['store']->id
+                    );
+                    $branch[] = array(
+                        'label'     => $state['_parent']->get_formatted_id(),
+                        'icon'      => 'user',
+                        'reference' => 'customers/'.$state['store']->id.'/'.$state['_parent']->id
+                    );
+                    $branch[] = array(
+                        'label'     => _("New customer's client"),
+                        'icon'      => 'address-book',
+                        'reference' => ''
+                    );
                     break;
                 case 'prospect':
                     $branch[] = array(
@@ -7322,16 +7330,12 @@ function get_view_position($db, $state, $user, $smarty, $account) {
 
 
                             $branch[] = array(
-                                'label'     => _(
-                                        'Customers'
-                                    ).' '.$store->data['Store Code'],
+                                'label'     => _('Customers').' '.$store->data['Store Code'],
                                 'icon'      => 'users',
                                 'reference' => 'customers/'.$store->id
                             );
                             $branch[] = array(
-                                'label'     => _(
-                                        'Customer'
-                                    ).' '.$customer->get_formatted_id(),
+                                'label'     => _('Customer').' '.$customer->get_formatted_id(),
                                 'icon'      => 'user',
                                 'reference' => 'customer/'.$customer->id
                             );
@@ -7943,8 +7947,8 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     );
 
                     $branch[] = array(
-                        'label'     => _('Setting up new clocking-in machine'),
-                        'icon'      => 'pager',
+                        'label' => _('Setting up new clocking-in machine'),
+                        'icon'  => 'pager',
                     );
                     break;
             }

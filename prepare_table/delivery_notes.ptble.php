@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * @var $f_value string
+ */
+
 $where    = 'where true';
 $table    = '`Delivery Note Dimension` D ';
 $wheref   = '';
@@ -62,6 +67,11 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
      $where = sprintf('where  `Delivery Note Order Key`=%d  ', $parameters['parent_key']);
 
 
+}elseif ($parameters['parent'] == 'customer_client') {
+
+    $where = sprintf('where  `Delivery Note Customer Client Key`=%d  ', $parameters['parent_key']);
+
+
 } elseif ($parameters['parent'] == 'invoice') {
 
     $table
@@ -70,7 +80,7 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 
 
 } else {
-    exit("unknown parent (dn)\n");
+    exit("unknown parent ".$parameters['parent']."\n");
 }
 
 if (isset($parameters['period'])) {
@@ -198,8 +208,7 @@ if ($parameters['f_field'] == 'customer' and $f_value != '') {
 }
 
 $fields = '*';
-$sql_totals
-        = "select count(Distinct D.`Delivery Note Key`) as num from $table $where ";
+$sql_totals = "select count(Distinct `Delivery Note Key`) as num from $table $where ";
 
 
 function dn_awhere($awhere) {
@@ -478,4 +487,4 @@ function dn_awhere($awhere) {
 }
 
 
-?>
+

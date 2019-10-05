@@ -113,6 +113,24 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
         }
 
     }
+}elseif ($parameters['parent'] == 'customer_client') {
+
+
+    $customer_client = get_object('Customer_Client',$parameters['parent_key']);
+
+    if (!$customer_client->id) {
+        $where = ' where false';
+    } else {
+
+        if (in_array($customer_client->get('Customer Client Store Key'), $user->stores)) {
+            $where = sprintf(
+                'where  `Order Customer Client Key`=%d  ', $parameters['parent_key']
+            );
+        } else {
+            $where = ' where false';
+        }
+
+    }
 } elseif ($parameters['parent'] == 'campaign') {
     $table
            = '`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`) left join `Order Deal Bridge` DB on (DB.`Order Key`=O.`Order Key`)';
