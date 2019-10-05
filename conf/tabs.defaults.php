@@ -4639,7 +4639,32 @@ $tab_defaults = array(
 
     ),
 
+    'customer_client.orders'               => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'number',
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+        'elements_type' => array_keys($elements_options['orders'])[0],
+        'elements'      => $elements_options['orders']
+    ),
+    'customer_client.delivery_notes' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'from'          => '',
+        'to'            => '',
+        'period'        => 'all',
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => '',
+        'export_fields' => $export_fields['delivery_notes']
 
+    ),
     'prospect.sent_emails' => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
