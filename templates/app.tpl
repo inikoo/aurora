@@ -12,7 +12,7 @@
         window.LogRocket && window.LogRocket.init('lrrztl/aurora');
         LogRocket.identify('{$user->get('User Handle')}_{$account->get('Account Code')}', {
             name:'{$user->get('User Alias')}',
-            account: '{$account->get('Account Name')}'
+            url: '{$account->get('Account Code')|lower}.aurora.systems'
         });
 
     </script>
