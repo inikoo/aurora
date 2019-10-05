@@ -6,13 +6,13 @@
     <title>Aurora</title>
     <link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon"/>
     <link href="/assets/au_app.min.css?v=191094v2" rel="stylesheet">
-
     {if !$is_devel}
+        <script src="https://cdn.lr-ingest.io/LogRocket.min.js" crossorigin="anonymous"></script>
+        <script>window.LogRocket && window.LogRocket.init('lrrztl/aurora');</script>
         <script
                 src="https://browser.sentry-cdn.com/5.6.3/bundle.min.js"
                 integrity="sha384-/Cqa/8kaWn7emdqIBLk3AkFMAHBk0LObErtMhO+hr52CntkaurEnihPmqYj3uJho"
                 crossorigin="anonymous"></script>
-
     {/if}
     <script src="https://d3js.org/d3.v4.min.js"></script>
 
@@ -34,7 +34,7 @@
 
 
 </head>
-<body  data-labels='{
+<body data-labels='{
 "save":"{t}Save{/t}",
 "undo":"{t}Undo{/t}",
 "add":"{t}Add{/t}",
@@ -65,24 +65,21 @@
         ga('send', 'pageview');
 
         //Sentry.init({ dsn: 'https://6b74919f310546d2a64bbf7c856d0820@sentry.io/1482169' });
-        Sentry.init({ dsn: 'https://8f17945abb95493692010f7026553f71@sentry.io/1329970' });
+        Sentry.init({dsn: 'https://8f17945abb95493692010f7026553f71@sentry.io/1329970'});
 
 
         Sentry.configureScope((scope) => {
             scope
                 .setUser({
-                    "id":       "{$user->id}",
-                    "username": "{$user->get('Alias')}",
-                    "email":    "{$user->get_staff_email()}"
+                    "id": "{$user->id}", "username": "{$user->get('Alias')}", "email": "{$user->get_staff_email()}"
                 });
-        })
-        ;
+        });
 
     </script>
 {/if}
 
 
-<div id="top_bar" >
+<div id="top_bar">
     <div class="timezone_info">{$timezone_info}</div>
 
     <div id="view_position"></div>
@@ -141,7 +138,7 @@
             <div style="clear:both;margin-bottom:100px"></div>
         </div>
     </section>
-    <aside id="notifications"   data-current_side_view="{$_side_block}">
+    <aside id="notifications" data-current_side_view="{$_side_block}">
         <div class="top_buttons">
 
 
@@ -149,14 +146,15 @@
                 <i class="fa fa-question-circle fa-fw  "></i>
             </div>
 
-            <div data-type="real_time_users" onclick="show_side_content('real_time_users')" class="real_time_users_button side_content_icon square_button {if $_side_block=='real_time_users'}selected{/if}" title="{t}Real time users{/t}">
+            <div data-type="real_time_users" onclick="show_side_content('real_time_users')" class="real_time_users_button side_content_icon square_button {if $_side_block=='real_time_users'}selected{/if}"
+                 title="{t}Real time users{/t}">
                 <i class="fa fa-user-circle fa-fw  "></i>
             </div>
             <div style="clear:both"></div>
         </div>
 
 
-        <div  class="help side_content hide">
+        <div class="help side_content hide">
             <div class="top">
                 {t}Help{/t}
             </div>
@@ -166,19 +164,19 @@
             <div class="content"></div>
         </div>
 
-        <div  class="real_time_users side_content hide">
+        <div class="real_time_users side_content hide">
             <div class="top">
                 {t}Active users{/t}
             </div>
 
             <div class="content">
-                <table  class="real_time_users_table ">
+                <table class="real_time_users_table ">
                 </table>
 
             </div>
         </div>
 
-        <div  class="whiteboard side_content hide">
+        <div class="whiteboard side_content hide">
             <div class="top">
                 {t}Whiteboard{/t}
             </div>
@@ -215,16 +213,16 @@
     <script type="text/javascript">
         FreshWidget.init("", {
             "queryString": "{if $user->get('User Password Recovery Email')!=''}helpdesk_ticket[requester]={$user->get('User Password Recovery Email')}&disable[requester]=true{/if}&widgetType=popup&submitTitle=Submit+ticket",
-            "utf8":        "✓",
-            "widgetType":  "popup",
-            "buttonType":  "text",
-            "buttonText":  "Support",
+            "utf8": "✓",
+            "widgetType": "popup",
+            "buttonType": "text",
+            "buttonText": "Support",
             "buttonColor": "white",
-            "buttonBg":    "#006063",
-            "alignment":   "3",
-            "offset":      "-1000px",
-            "formHeight":  "580px",
-            "url":         "https://inikoo.freshdesk.com"
+            "buttonBg": "#006063",
+            "alignment": "3",
+            "offset": "-1000px",
+            "formHeight": "580px",
+            "url": "https://inikoo.freshdesk.com"
         });
     </script>
     {*
