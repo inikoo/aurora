@@ -10,7 +10,6 @@
     <script src="https://cdn.lr-ingest.io/LogRocket.min.js" crossorigin="anonymous"></script>
     <script>window.LogRocket && window.LogRocket.init('lrrztl/aurora');</script>
 
-
         <script
                 src="https://browser.sentry-cdn.com/5.6.3/bundle.min.js"
                 integrity="sha384-/Cqa/8kaWn7emdqIBLk3AkFMAHBk0LObErtMhO+hr52CntkaurEnihPmqYj3uJho"
