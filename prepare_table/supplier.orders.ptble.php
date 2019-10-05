@@ -22,7 +22,7 @@ $table = '`Purchase Order Dimension` O  ';
 if ($parameters['parent'] == 'account') {
     $table = '`Purchase Order Dimension` O left join `Supplier Dimension` on (`Supplier Key`=`Purchase Order Parent Key`)   ';
 
-    $where = sprintf('where `Purchase Order Parent`="Supplier" and  `Supplier Production`="No"');
+    $where = sprintf('where (`Purchase Order Parent`="Supplier" and  `Supplier Production`="No" ) or `Purchase Order Parent`="Agent"  ');
 
 } elseif ($parameters['parent'] == 'production') {
     $table = '`Purchase Order Dimension` O left join `Supplier Dimension` on (`Supplier Key`=`Purchase Order Parent Key`)  ';
