@@ -8,7 +8,14 @@
     <link href="/assets/au_app.min.css?v=191094v2" rel="stylesheet">
     {if !$is_devel}
     <script src="https://cdn.lr-ingest.io/LogRocket.min.js" crossorigin="anonymous"></script>
-    <script>window.LogRocket && window.LogRocket.init('lrrztl/aurora');</script>
+    <script>
+        window.LogRocket && window.LogRocket.init('lrrztl/aurora');
+        LogRocket.identify('{$user->get('User Handle')}_{$account->get('Account Code')}', {
+            name:'{$user->get('User Alias')}',
+            account: '{$account->get('Account Name')}'
+        });
+
+    </script>
 
         <script
                 src="https://browser.sentry-cdn.com/5.6.3/bundle.min.js"
