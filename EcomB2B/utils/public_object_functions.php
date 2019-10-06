@@ -10,7 +10,13 @@
  Version 3.0
 */
 
-
+/**
+ * @param      $object_name
+ * @param      $key
+ * @param bool $load_other_data
+ *
+ * @return bool|\Image|\Public_Account|\Public_Customer|\Public_Product|\Public_Store|\Public_Website_User|\Public_Website
+ */
 function get_object($object_name, $key, $load_other_data = false) {
 
     if ($object_name == '') {
@@ -52,8 +58,6 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Public_Product.php';
             $object = new Public_Product('id', $key);
             break;
-
-
         case 'product-historic_key':
             include_once 'class.Public_Product.php';
             $object = new Public_Product('historic_key', $key);

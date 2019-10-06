@@ -126,7 +126,6 @@ if (isset($is_homepage)) {
 $is_devel = preg_match('/bali|sasi|sakoi|geko/', gethostname());
 
 
-
 if (isset($_REQUEST['snapshot'])) {
     require 'keyring/key.php';
 
@@ -148,7 +147,7 @@ if (isset($_REQUEST['snapshot'])) {
 }
 
 //if ($logged_in and !$is_devel) {
-if ($logged_in ) {
+if ($logged_in) {
 
     include_once 'utils/new_fork.php';
 
@@ -160,7 +159,7 @@ if ($logged_in ) {
         'session_data' => $_SESSION,
         'webpage_key'  => $webpage_key,
         'device'       => $detected_device,
-        'datetime'       => gmdate('Y-m-d H:i:s')
+        'datetime'     => gmdate('Y-m-d H:i:s')
     ), DNS_ACCOUNT_CODE
     );
 
@@ -337,8 +336,11 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
 
     if ($webpage->get('Webpage Scope') == 'Product') {
 
-
-        $smarty->assign('product', get_object('Product', $webpage->get('Webpage Scope Key')));
+        /**
+         * @var $product \Public_Product
+         */
+        $product = get_object('Product', $webpage->get('Webpage Scope Key'));
+        $smarty->assign('product', $product);
 
     }
 

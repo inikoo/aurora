@@ -14,15 +14,53 @@
 
 class Public_Product {
 
+    public $table_name = 'Product';
+
+    /**
+     * @var string|bool
+     */
+    public $id = false;
+    /**
+     * @var \Public_Webpage|bool
+     */
+    public $webpage = false;
+    /**
+     * @var array
+     */
+    public $data;
+    /**
+     * @var array
+     */
+    public $properties;
+    /**
+     * @var array
+     */
+    public $settings;
+    /**
+     * @var bool
+     */
+    public $error;
+    /**
+     * @var string
+     */
+    public $msg;
+    /**
+     * @var bool|\PDO
+     */
+    private $db;
+
+    /**
+     * @var integer
+     */
+    public $historic_id;
+
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
         global $db;
-        $this->db              = $db;
-        $this->id              = false;
-        $this->acc_data_loaded = false;
-        $this->webpage         = false;
+        $this->db      = $db;
+        $this->id      = false;
+        $this->webpage = false;
 
-        $this->table_name = 'Product';
 
         if (is_numeric($arg1)) {
             $this->get_data('id', $arg1);
@@ -80,8 +118,6 @@ class Public_Product {
             }
         } else {
 
-            //sdasdas();
-            exit ("wrong id in class.product get_data A :$key  ".$this->get('Code')." \n");
 
             return;
         }
@@ -131,12 +167,7 @@ class Public_Product {
                     } else {
                         return 0;
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
-
 
                 break;
             case 'Unit Smart Weight':
@@ -146,17 +177,12 @@ class Public_Product {
                 $weight = $this->data['Product '.$key];
 
 
-
-
                 if ($weight < 1) {
-
-
-                    return   weight($weight *1000, 'g');
+                    return weight($weight * 1000, 'g');
                 } else {
                     return weight($weight);
                 }
 
-                return weight($this->data['Product '.$key]);
 
                 break;
 
@@ -207,28 +233,6 @@ class Public_Product {
 
 
 
-            case 'Favourite Key':
-
-                $sql = sprintf(
-                    "SELECT `Customer Favourite Product Key`  FROM  `Customer Favourite Product Fact` WHERE `Customer Favourite Product Customer Key`=%d AND `Customer Favourite Product Product ID`=%d ", $arg1, $this->id
-                );
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $favourite_key = $row['Customer Favourite Product Key'];
-                    } else {
-                        $favourite_key = 0;
-
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-                return $favourite_key;
-                break;
-
             case 'Product Name':
             case 'Product Price':
             case 'Product Unit Weight':
@@ -263,51 +267,7 @@ class Public_Product {
                 }
 
                 break;
-            case 'Image Data2':
 
-                include_once 'utils/image_functions.php';
-
-                $sql = sprintf(
-                    "SELECT `Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` 
-                    FROM `Image Dimension`    LEFT JOIN `Image Subject Bridge`   ON (`Image Subject Image Key`=`Image Key`)  WHERE `Image key`=%d ", $this->data['Product Main Image Key']
-                );
-
-
-
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-
-                        $image_data = array(
-                            'key'           => $row['Image Key'],
-                            'src'           => $img = '/image.php?&id='.$row['Image Key'],
-                            'caption'       => $row['Image Subject Image Caption'],
-                            'width'         => $row['Image Width'],
-                            'height'        => $row['Image Height'],
-                            'image_website' => $img = '/image.php?&id='.$row['Image Key'],
-                        );
-                    } else {
-                        $image_data = array(
-                            'key'           => 0,
-                            'src'           => '/art/nopic.png',
-                            'caption'       => '',
-                            'width'         => 190,
-                            'height'        => 130,
-                            'image_website' => '/art/nopic.png'
-                        );
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-
-
-
-                return $image_data;
-
-                break;
             case 'Image Data':
 
                 include_once 'utils/image_functions.php';
@@ -318,15 +278,11 @@ class Public_Product {
                 );
 
 
-
-
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
 
 
-                        $image_website ='wi.php?id='.$row['Image Key'].'&s='.get_image_size($row['Image Key'], 330, 330, 'fit_highest');
-
-
+                        $image_website = 'wi.php?id='.$row['Image Key'].'&s='.get_image_size($row['Image Key'], 330, 330, 'fit_highest');
 
 
                         $image_data = array(
@@ -352,8 +308,6 @@ class Public_Product {
                     print "$sql\n";
                     exit;
                 }
-
-
 
 
                 return $image_data;
@@ -389,7 +343,6 @@ class Public_Product {
                 }
 
                 break;
-
 
 
             case 'Webpage Key':
@@ -600,18 +553,7 @@ class Public_Product {
                                     ).'Kg/L</span>';
                             }
 
-                            break;
-                            print_r($data);
-                            exit;
-                            if (!$part->data['Part '.$tag.' Dimensions Length Display'] or !$part->data['Part '.$tag.' Dimensions Diameter Display']) {
-                                $dimensions = '';
-                            } else {
-                                $dimensions = 'L:'.number(
-                                        $part->data['Part '.$tag.' Dimensions Length Display']
-                                    ).' &#8709;:'.number(
-                                        $part->data['Part '.$tag.' Dimensions Diameter Display']
-                                    ).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
-                            }
+
                             break;
                         case 'Sphere':
 
@@ -631,14 +573,7 @@ class Public_Product {
                             }
 
                             break;
-                            if (!$part->data['Part '.$tag.' Dimensions Diameter Display']) {
-                                $dimensions = '';
-                            } else {
-                                $dimensions = '&#8709;:'.number(
-                                        $part->data['Part '.$tag.' Dimensions Diameter Display']
-                                    ).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
-                            }
-                            break;
+
                         case 'String':
                             $dimensions = number(
                                     convert_units(
@@ -647,14 +582,6 @@ class Public_Product {
                                 ).$data['units'];
                             break;
 
-                            if (!$part->data['Part '.$tag.' Dimensions Length Display']) {
-                                $dimensions = '';
-                            } else {
-                                $dimensions = 'L:'.number(
-                                        $part->data['Part '.$tag.' Dimensions Length Display']
-                                    ).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
-                            }
-                            break;
 
                         default:
                             $dimensions = '';
@@ -677,7 +604,7 @@ class Public_Product {
                 $dimensions = '';
 
 
-                $tag = preg_replace('/ Dimensions$/', '', $key);
+                //$tag = preg_replace('/ Dimensions$/', '', $key);
 
                 if ($this->data[$this->table_name.' '.$key] != '') {
                     $data = json_decode(
@@ -731,26 +658,11 @@ class Public_Product {
 
 
                             break;
-                            //print_r($data);
-                            exit;
-                            if (!$part->data['Part '.$tag.' Dimensions Length Display'] or !$part->data['Part '.$tag.' Dimensions Diameter Display']) {
-                                $dimensions = '';
-                            } else {
-                                $dimensions = 'L:'.number(
-                                        $part->data['Part '.$tag.' Dimensions Length Display']
-                                    ).' &#8709;:'.number(
-                                        $part->data['Part '.$tag.' Dimensions Diameter Display']
-                                    ).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
-                            }
-                            break;
+
                         case 'Sphere':
 
 
-                            $dimensions = _('Diameter').' '.number(
-                                    convert_units(
-                                        $data['l'], 'm', $data['units']
-                                    )
-                                ).$data['units'];
+                            $dimensions = _('Diameter').' '.number(convert_units($data['l'], 'm', $data['units'])).$data['units'];
 
                             break;
                         case 'String':
@@ -761,14 +673,7 @@ class Public_Product {
                                 ).$data['units'];
                             break;
 
-                            if (!$part->data['Part '.$tag.' Dimensions Length Display']) {
-                                $dimensions = '';
-                            } else {
-                                $dimensions = 'L:'.number(
-                                        $part->data['Part '.$tag.' Dimensions Length Display']
-                                    ).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
-                            }
-                            break;
+
 
                         default:
                             $dimensions = '';
@@ -822,7 +727,7 @@ class Public_Product {
                     }
 
                     $xhtml_materials = ucfirst(
-                        preg_replace('/^\, /', '', $xhtml_materials)
+                        preg_replace('/^, /', '', $xhtml_materials)
                     );
 
 
@@ -856,14 +761,14 @@ class Public_Product {
 
             default:
 
-
+            return '';
         }
-
+        return '';
     }
 
     function load_webpage() {
 
-        $this->webpage = get_object('public_webpage-scope_product',$this->id);
+        $this->webpage = get_object('public_webpage-scope_product', $this->id);
     }
 
     function get_attachments() {
@@ -872,7 +777,7 @@ class Public_Product {
 
 
         $sql = sprintf(
-            'SELECT `Attachment Subject Type`, `Attachment Bridge Key`,`Attachment Caption`  FROM `Product Part Bridge`  LEFT JOIN `Attachment Bridge` AB  ON (AB.`Subject Key`=`Product Part Part SKU`)    WHERE AB.`Subject`="Part" AND  `Product Part Product ID`=%d  AND `Attachment Public`="Yes" ',
+            "SELECT `Attachment Subject Type`, `Attachment Bridge Key`,`Attachment Caption`  FROM `Product Part Bridge`  LEFT JOIN `Attachment Bridge` AB  ON (AB.`Subject Key`=`Product Part Part SKU`)    WHERE AB.`Subject`='Part' AND  `Product Part Product ID`=%d  AND `Attachment Public`='Yes' ",
             $this->id
         );
 
@@ -893,9 +798,6 @@ class Public_Product {
                     'name'  => $row2['Attachment Caption']
                 );
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -904,85 +806,8 @@ class Public_Product {
 
     }
 
-    function load_acc_data() {
-
-        $sql = sprintf(
-            "SELECT * FROM `Product Data` WHERE `Product ID`=%d", $this->id
-        );
 
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                foreach ($row as $key => $value) {
-                    $this->data[$key] = $value;
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        $sql = sprintf(
-            "SELECT * FROM `Product DC Data` WHERE `Product ID`=%d", $this->id
-        );
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                foreach ($row as $key => $value) {
-                    $this->data[$key] = $value;
-                }
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
-
-
-    function get_image_gallery2() {
-
-        include_once 'utils/image_functions.php';
-
-
-        $sql = sprintf(
-            "SELECT `Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` FROM `Image Subject Bridge` B LEFT JOIN `Image Dimension` I ON (`Image Subject Image Key`=`Image Key`) WHERE `Image Subject Object`=%s AND   `Image Subject Object Key`=%d ORDER BY `Image Subject Is Principal`,`Image Subject Date`,`Image Subject Key`",
-            prepare_mysql('Product'), $this->id
-        );
-
-
-        $gallery = array();
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($row['Image Key']) {
-
-
-                    $gallery[] = array(
-                        'src'           => 'wi.php?id='.$row['Image Key'],
-                        'caption'       => $row['Image Subject Image Caption'],
-                        'key'           => $row['Image Key'],
-                        'width'         => $row['Image Width'],
-                        'height'        => $row['Image Height'],
-                        'image_website' => 'wi.php?id='.$row['Image Key'],
-
-                    );
-                }
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql";
-            exit;
-        }
-
-
-        // print_r($gallery);
-
-        return $gallery;
-
-    }
 
     function get_image_gallery() {
 
@@ -1002,8 +827,7 @@ class Public_Product {
                 if ($row['Image Key']) {
 
 
-                    $image_website ='wi.php?id='.$row['Image Key'].'&s='.get_image_size($row['Image Key'], '', 50, 'height');
-
+                    $image_website = 'wi.php?id='.$row['Image Key'].'&s='.get_image_size($row['Image Key'], '', 50, 'height');
 
 
                     $gallery[] = array(
@@ -1018,99 +842,9 @@ class Public_Product {
                 }
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql";
-            exit;
         }
-
-
-        // print_r($gallery);
-
         return $gallery;
 
-    }
-
-    function get_images_slidesshow() {
-
-
-        include_once 'utils/natural_language.php';
-
-        global $imagecache;
-
-        $image_subject_type = $this->table_name;
-
-
-        $sql = sprintf(
-            "SELECT `Image Subject Is Principal`,`Image Key`,`Image Subject Image Caption`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` FROM `Image Subject Bridge` B LEFT JOIN `Image Dimension` I ON (`Image Subject Image Key`=`Image Key`) WHERE `Image Subject Object`=%s AND   `Image Subject Object Key`=%d ORDER BY `Image Subject Is Principal`,`Image Subject Date`,`Image Subject Key`",
-            prepare_mysql($image_subject_type), $this->id
-        );
-
-
-        // print $sql;
-
-        $subject_order = 0;
-
-        //print $sql;
-        $images_slideshow = array();
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($row['Image Key']) {
-
-                    if ($row['Image Height'] != 0) {
-                        $ratio = $row['Image Width'] / $row['Image Height'];
-                    } else {
-                        $ratio = 1;
-                    }
-
-
-
-                    $image_key = $row['Image Key'];
-
-
-                    if ($image_key) {
-                        $image_product_webpage='/wi.php?id='.$image_key.'&s=600x375';
-                    } else {
-                        $image_product_webpage = '/art/nopic.png';
-
-                    }
-
-
-
-
-                    // print_r($row);
-                    $images_slideshow[] = array(
-                        'subject_order'         => $subject_order,
-                        'name'                  => $row['Image Filename'],
-                        'small_url'             => 'wi.php?id='.$row['Image Key'].'&s=320x280',
-                        'thumbnail_url'         => 'wi.php?id='.$row['Image Key'].'&s=25x20',
-                        'normal_url'            => 'wi.php?id='.$row['Image Key'],
-                        'filename'              => $row['Image Filename'],
-                        'ratio'                 => $ratio,
-                        'caption'               => $row['Image Subject Image Caption'],
-                        'is_principal'          => $row['Image Subject Is Principal'],
-                        'id'                    => $row['Image Key'],
-                        'size'                  => file_size($row['Image File Size']),
-                        'width'                 => $row['Image Width'],
-                        'height'                => $row['Image Height'],
-                        'image_product_webpage' => $image_product_webpage
-
-                    );
-                    $subject_order++;
-                }
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql";
-            exit;
-        }
-
-        //print_r($images_slideshow);
-        //exit;
-
-        return $images_slideshow;
     }
 
     function get_number_images() {
@@ -1128,10 +862,6 @@ class Public_Product {
             if ($row = $result->fetch()) {
                 $number_of_images = $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql";
-            exit;
         }
 
 
@@ -1142,246 +872,6 @@ class Public_Product {
         return $this->table_name;
 
     }
-
-    function get_field_label($field) {
-        global $account;
-
-        switch ($field) {
-
-            case 'Product ID':
-                $label = _('id');
-                break;
-
-
-            case 'Product Cost':
-                $label = _('Outer cost');
-                break;
-
-            case 'Product Description':
-                $label = _('Product description');
-                break;
-            case 'Product Webpage Name':
-                $label = _('Webpage title');
-                break;
-            case 'Product Code':
-                $label = _('code');
-                break;
-            case 'Product Outer Description':
-                $label = _('description');
-                break;
-            case 'Product Unit Description':
-                $label = _('unit description');
-                break;
-            case 'Product Price':
-                $label = _('Outer price');
-                break;
-            case 'Product Outer Weight':
-                $label = _('weight');
-                break;
-            case 'Product Outer Dimensions':
-                $label = _('dimensions');
-                break;
-            case 'Product Units Per Outer':
-                $label = _('retail units per outer');
-                break;
-
-            case 'Product Unit Type':
-                $label = _('unit type');
-                break;
-            case 'Product Label in Family':
-                $label = _('label in family');
-                break;
-
-            case 'Product Unit Weight':
-                $label = _('unit weight');
-                break;
-            case 'Product Unit Dimensions':
-                $label = _('unit dimensions');
-                break;
-            case 'Product Units Per Case':
-                $label = _('units per outer');
-                break;
-            case 'Product Unit Label':
-                $label = _('unit label');
-                break;
-            case 'Product Parts':
-                $label = _('parts');
-                break;
-            case 'Product Name':
-                $label = _('unit name');
-                break;
-
-            case 'Product Unit RRP':
-                $label = _('unit RRP');
-                break;
-
-            case 'Product Tariff Code':
-                $label = _('tariff code');
-                break;
-
-            case 'Product Duty Rate':
-                $label = _('duty rate');
-                break;
-
-            case 'Product UN Number':
-                $label = _('UN number');
-                break;
-
-            case 'Product UN Class':
-                $label = _('UN class');
-                break;
-            case 'Product Packing Group':
-                $label = _('packing group');
-                break;
-            case 'Product Proper Shipping Name':
-                $label = _('proper shipping name');
-                break;
-            case 'Product Hazard Identification Number':
-                $label = _('hazard identification number');
-                break;
-            case 'Product Materials':
-                $label = _('Materials/Ingredients');
-                break;
-            case 'Product Origin Country Code':
-                $label = _('country of origin');
-                break;
-            case 'Product Units Per Package':
-                $label = _('units per SKO');
-                break;
-            case 'Product Barcode Number':
-                $label = _('barcode');
-                break;
-            case 'Product CPNP Number':
-                $label = _('CPNP number');
-                break;
-
-
-            default:
-                $label = $field;
-
-        }
-
-        return $label;
-
-    }
-
-    function get_prev_product($scope = 'data') {
-
-
-        $prev_product = false;
-
-        $sql = sprintf(
-            "SELECT `Webpage Code`,`Product Name` FROM `Category Bridge` LEFT JOIN `Product Dimension` P ON (`Subject Key`=`Product ID`) 
-              LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)
-              WHERE P.`Product Type`='Product' AND`Subject`='Product' AND `Category Key`=%d AND `Webpage State`='Online' AND P.`Product Status` IN ('Active','Discontinuing') AND (`Product Code File As` < %s OR (`Product Code File As` = %s AND P.`Product ID` < %d)) ORDER BY `Product Code File As` DESC , P.`Product ID` DESC LIMIT 1;",
-            $this->data['Product Family Category Key'], prepare_mysql($this->data['Product Code File As']), prepare_mysql($this->data['Product Code File As']), $this->id
-
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-
-                $prev_product = array(
-                    'webpage_code' => $row['Webpage Code'],
-                    'name'         => $row['Product Name']
-                );
-            } else {
-
-                $sql = sprintf(
-                    "SELECT `Webpage Code`,`Product Name` FROM `Category Bridge` LEFT JOIN `Product Dimension` P ON (`Subject Key`=`Product ID`) 
-              LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)
-              WHERE P.`Product Type`='Product' AND`Subject`='Product' AND `Category Key`=%d AND `Webpage State`='Online' AND P.`Product Status` IN ('Active','Discontinuing')  AND   P.`Product ID`!=%d  ORDER BY `Product Code File As` DESC , P.`Product ID` DESC LIMIT 1;",
-                    $this->data['Product Family Category Key'], $this->id
-
-                );
-
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $prev_product = array(
-                            'webpage_code' => $row['Webpage Code'],
-                            'name'         => $row['Product Name']
-                        );
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $prev_product;
-
-
-    }
-
-
-    function get_next_product($scope = 'data') {
-        $next_product = false;
-
-
-        $sql = sprintf(
-            "SELECT `Webpage Code`,`Product Name` FROM `Category Bridge` LEFT JOIN `Product Dimension` P ON (`Subject Key`=`Product ID`) 
-              LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)
-              WHERE P.`Product Type`='Product' AND`Subject`='Product' AND `Category Key`=%d AND `Webpage State`='Online' AND P.`Product Status` IN ('Active','Discontinuing') 
-              AND (`Product Code File As` > %s OR (`Product Code File As` = %s AND P.`Product ID` > %d)) ORDER BY `Product Code File As`  , P.`Product ID` DESC LIMIT 1;", $this->data['Product Family Category Key'], prepare_mysql($this->data['Product Code File As']),
-            prepare_mysql($this->data['Product Code File As']), $this->id
-
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-
-                $next_product = array(
-                    'webpage_code' => $row['Webpage Code'],
-                    'name'         => $row['Product Name']
-                );
-            } else {
-
-                $sql = sprintf(
-                    "SELECT `Webpage Code`,`Product Name` FROM `Category Bridge` LEFT JOIN `Product Dimension` P ON (`Subject Key`=`Product ID`) 
-              LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)
-              WHERE P.`Product Type`='Product' AND`Subject`='Product' AND `Category Key`=%d AND `Webpage State`='Online' AND P.`Product Status` IN ('Active','Discontinuing') AND   P.`Product ID`!=%d  ORDER BY `Product Code File As`  , P.`Product ID` DESC LIMIT 1;",
-                    $this->data['Product Family Category Key'], $this->id
-
-                );
-
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $next_product = array(
-                            'webpage_code' => $row['Webpage Code'],
-                            'name'         => $row['Product Name']
-                        );
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $next_product;
-
-    }
-
 
     function get_deal_components($scope = 'keys', $options = 'Active') {
 
@@ -1487,78 +977,6 @@ class Public_Product {
     }
 
 
-    function get_parent_category($scope = 'keys') {
-
-
-        $parent_category = false;
-        if ($scope == 'keys') {
-            $parent_category = $this->data['Product Family Category Key'];
-        } elseif ($scope == 'objects') {
-            $parent_category = get_object('Category', $this->data['Product Family Category Key']);
-        } elseif ($scope == 'data') {
-
-            $sql = sprintf(
-                'SELECT `Webpage Code`,`Category Label`,`Category Code`,`Category Subject`,`Category Parent Key`,`Category Key` FROM  `Category Dimension` C LEFT JOIN `Product Category Dimension`  ON (C.`Category Key`=`Product Category Key`) 
-        LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Category Webpage Key`)  WHERE C.`Category Key`=%d ', $this->data['Product Family Category Key']
-            );
-
-        }
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-
-                $parent_category = array(
-                    'label'        => $row['Category Label'],
-                    'code'         => $row['Category Code'],
-                    'webpage_code' => strtolower($row['Webpage Code'])
-
-                );
-
-
-                $sql = sprintf(
-                    "SELECT `Webpage Code`,B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` 
-        FROM `Category Bridge` B 
-        LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) 
-        LEFT JOIN `Page Store Dimension` W ON (W.`Webpage Scope Key`=B.`Category Key` AND `Webpage Scope`=%s) 
-
-          WHERE  `Category Branch Type`='Head'  AND B.`Subject Key`=%d AND B.`Subject`=%s",
-
-                    prepare_mysql('Category Categories'),
-
-                    $row['Category Key'], prepare_mysql('Category')
-                );
-
-
-                if ($result2 = $this->db->query($sql)) {
-                    if ($row2 = $result2->fetch()) {
-                        $parent_category['parent'] = array(
-                            'label'        => $row2['Category Label'],
-                            'code'         => $row2['Category Code'],
-                            'webpage_code' => strtolower($row2['Webpage Code'])
-
-                        );
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        return $parent_category;
-    }
-
 
 }
 
-
-?>
