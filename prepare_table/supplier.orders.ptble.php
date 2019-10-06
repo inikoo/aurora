@@ -22,7 +22,7 @@ $table = '`Purchase Order Dimension` O  ';
 if ($parameters['parent'] == 'account') {
     $table = '`Purchase Order Dimension` O left join `Supplier Dimension` on (`Supplier Key`=`Purchase Order Parent Key`)   ';
 
-    $where = sprintf('where (`Purchase Order Parent`="Supplier" and  `Supplier Production`="No" ) or `Purchase Order Parent`="Agent"  ');
+    $where = sprintf('where ( (`Purchase Order Parent`="Supplier" and  `Supplier Production`="No" ) or `Purchase Order Parent`="Agent" ) ');
 
 } elseif ($parameters['parent'] == 'production') {
     $table = '`Purchase Order Dimension` O left join `Supplier Dimension` on (`Supplier Key`=`Purchase Order Parent Key`)  ';
@@ -155,7 +155,6 @@ if (isset($parameters['elements_type'])) {
     }
 }
 
-
 if (($parameters['f_field'] == 'number') and $f_value != '') {
 
     $wheref = sprintf(
@@ -198,4 +197,4 @@ $sql_totals = "select count(Distinct O.`Purchase Order Key`) as num from $table 
 //print "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
-?>
+
