@@ -8,7 +8,14 @@ abstract class DB_Table extends stdClass {
     public $db;
     public $errors_while_updating = array();
     public $updated_fields = array();
+    /**
+     * @var array
+     */
     public $data = array();
+
+    /**
+     * @var string
+     */
     public $id = 0;
     public $warning = false;
     public $deleted = false;
