@@ -11,7 +11,9 @@
   Version 2.0
 */
 
-
+/**
+ * Class Public_Store
+ */
 class Public_Store {
 
     public $editor = array(
@@ -22,46 +24,57 @@ class Public_Store {
         'Date'         => false
     );
 
-    function __construct($a1, $a2 = false, $a3 = false, $_db = false) {
+    public $table_name = 'Store';
 
-        if (!$_db) {
-            global $db;
-            $this->db = $db;
-        } else {
-            $this->db = $_db;
-        }
-        $this->id            = false;
-        $this->table_name    = 'Store';
-        $this->ignore_fields = array('Store Key');
+    /**
+     * @var string|bool
+     */
+    public $id = false;
 
-        if (is_numeric($a1) and !$a2) {
-            $this->get_data('id', $a1);
-        } else {
-            $this->get_data($a1, $a2);
-        }
+    /**
+     * @var bool|\PDO
+     */
+    private $db;
 
+    /**
+     * @var array
+     */
+    public $data;
+    /**
+     * @var array
+     */
+    public $properties;
+    /**
+     * @var array
+     */
+    public $settings;
+
+    /**
+     * @var bool
+     */
+    public $error;
+    /**
+     * @var string
+     */
+    public $msg;
+
+
+    function __construct($a1) {
+        global $db;
+        $this->db = $db;
+        $this->get_data($a1);
     }
 
 
-    function get_data($tipo, $tag) {
+    function get_data($tag) {
 
+        $sql = sprintf(
+            "SELECT * FROM `Store Dimension` WHERE `Store Key`=%d", $tag
+        );
 
-        if ($tipo == 'id') {
-            $sql = sprintf(
-                "SELECT * FROM `Store Dimension` WHERE `Store Key`=%d", $tag
-            );
-        } elseif ($tipo == 'code') {
-            $sql = sprintf(
-                "SELECT * FROM `Store Dimension` WHERE `Store Code`=%s", prepare_mysql($tag)
-            );
-        } else {
-            return;
-        }
 
         if ($this->data = $this->db->query($sql)->fetch()) {
-
             $this->id         = $this->data['Store Key'];
-            $this->code       = $this->data['Store Code'];
             $this->properties = json_decode($this->data['Store Properties'], true);
             $this->settings   = json_decode($this->data['Store Settings'], true);
         }
@@ -83,7 +96,7 @@ class Public_Store {
                 switch ($type) {
                     case 'departments':
                         $sql = sprintf(
-                            'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Categories" ) WHERE   C.`Category Parent Key`=%d  and `Page Key` is not null order by `Webpage Name` LIMIT %d,%d ',
+                            "SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`='Category Categories' ) WHERE   C.`Category Parent Key`=%d  and `Page Key` is not null order by `Webpage Name` LIMIT %d,%d ",
                             $this->get('Store Department Category Key'), $limit[0], $limit[1]
                         );
 
@@ -92,7 +105,7 @@ class Public_Store {
                         break;
                     case 'families':
                         $sql = sprintf(
-                            'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Products" ) WHERE   C.`Category Parent Key`=%d  and `Page Key` is not null order by `Webpage Name` LIMIT %d,%d ',
+                            "SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`='Category Products' ) WHERE   C.`Category Parent Key`=%d  and `Page Key` is not null order by `Webpage Name` LIMIT %d,%d ",
                             $this->get('Store Family Category Key'), $limit[0], $limit[1]
                         );
 
@@ -104,7 +117,7 @@ class Public_Store {
 
 
                         $sql = sprintf(
-                            'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Categories" ) WHERE   C.`Category Parent Key`=%d  and `Page Key` is not null order by `Webpage Name` LIMIT %d,%d ',
+                            "SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`='Category Categories' ) WHERE   C.`Category Parent Key`=%d  and `Page Key` is not null order by `Webpage Name` LIMIT %d,%d ",
                             $website->get('Website Alt Department Category Key'), $limit[0], $limit[1]
                         );
 
@@ -116,7 +129,7 @@ class Public_Store {
                         $website = new Public_Website($this->get('Store Website Key'));
 
                         $sql = sprintf(
-                            'SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`="Category Products" ) WHERE   C.`Category Parent Key`=%d  and `Page Key` is not null order by `Webpage Name` LIMIT %d,%d ',
+                            "SELECT  `Webpage Code`,`Webpage Name` FROM  `Category Dimension` C   LEFT JOIN `Page Store Dimension` P ON (P.`Webpage Scope Key`=C.`Category Key` AND `Webpage Scope`='Category Products' ) WHERE   C.`Category Parent Key`=%d  and `Page Key` is not null order by `Webpage Name` LIMIT %d,%d ",
                             $website->get('Website Alt Family Category Key'), $limit[0], $limit[1]
                         );
 
@@ -143,10 +156,6 @@ class Public_Store {
                         }
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
             }
 
@@ -190,7 +199,6 @@ class Public_Store {
             case 'Store Email':
             case 'Store Website Key':
             case 'Store Home Country Code 2 Alpha':
-            case 'Store Email':
             case 'Store Email Template Signature':
             case 'Store Google Map URL':
             case 'Store Can Collect':
@@ -214,6 +222,8 @@ class Public_Store {
             case 'Name':
                 return $this->data['Store Name'];
                 break;
+            default:
+                return '';
 
         }
 
@@ -235,7 +245,10 @@ class Public_Store {
             $this->error_code = 'email_missing';
             $this->metadata   = '';
 
-            return array(false,false);
+            return array(
+                false,
+                false
+            );
         }
 
 
@@ -253,7 +266,10 @@ class Public_Store {
             $this->error_code = 'duplicate_email';
             $this->metadata   = $data['Customer Main Plain Email'];
 
-            return array(false,false);
+            return array(
+                false,
+                false
+            );
         }
 
         $sql = "SELECT `Website User Key` FROM `Website User Dimension` WHERE `Website User Handle`=? AND `Website User Website Key`=? ";
@@ -272,7 +288,10 @@ class Public_Store {
             $this->error_code = 'duplicate_email';
             $this->metadata   = $data['Customer Main Plain Email'];
 
-            return array(false,false);
+            return array(
+                false,
+                false
+            );
         }
 
 
@@ -371,14 +390,14 @@ class Public_Store {
 
                 $website_user->fast_update(
                     array(
-                        `Website User Has Login` => 'Yes',
+                        'Website User Has Login' => 'Yes',
 
                     )
                 );
 
                 $website_user->fast_update(
                     array(
-                        `Website User Login Count`   => 1,
+                        'Website User Login Count'   => 1,
                         'Website User Last Login'    => gmdate('Y-m-d H:i:s'),
                         'Website User Last Login IP' => ip_from_cloudfare()
                     ), 'Website User Data'
