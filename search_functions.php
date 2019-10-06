@@ -95,11 +95,8 @@ function search_suppliers($db, $account, $user, $data) {
                     }
 
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print $sql;
-                exit;
             }
+
 
             $sql = sprintf(
                 "SELECT `Supplier Key`,`Supplier Name`,`Supplier Type` FROM `Supplier Dimension` WHERE  `Supplier Production`='No' and `Supplier Name`  REGEXP '[[:<:]]%s' LIMIT 20 ", $q
@@ -158,11 +155,8 @@ function search_suppliers($db, $account, $user, $data) {
                     }
 
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print $sql;
-                exit;
             }
+
 
             $sql = sprintf(
                 "SELECT `Supplier Key`,`Supplier Name`,`Supplier Nickname`,`Supplier Type` FROM `Supplier Dimension` WHERE  `Supplier Production`='No' and  `Supplier Nickname`  REGEXP '[[:<:]]%s' LIMIT 20 ", $q
@@ -221,10 +215,6 @@ function search_suppliers($db, $account, $user, $data) {
                     }
 
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print $sql;
-                exit;
             }
 
 
@@ -249,10 +239,6 @@ function search_suppliers($db, $account, $user, $data) {
                     }
 
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print $sql;
-                exit;
             }
 
             $sql = sprintf(
@@ -290,10 +276,6 @@ function search_suppliers($db, $account, $user, $data) {
                     }
 
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print $sql;
-                exit;
             }
 
 
@@ -318,10 +300,6 @@ function search_suppliers($db, $account, $user, $data) {
                     }
 
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print $sql;
-                exit;
             }
 
 
@@ -360,10 +338,6 @@ function search_suppliers($db, $account, $user, $data) {
                     }
 
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print $sql;
-                exit;
             }
 
 
@@ -400,10 +374,6 @@ function search_suppliers($db, $account, $user, $data) {
                     }
 
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print $sql;
-                exit;
             }
 
 
@@ -428,9 +398,6 @@ function search_suppliers($db, $account, $user, $data) {
                     }
 
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
             }
 
 
@@ -463,11 +430,50 @@ function search_suppliers($db, $account, $user, $data) {
                     }
 
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
             }
 
+
+            $sql = sprintf(
+                "SELECT `Purchase Order Key`,`Purchase Order Public ID` FROM `Purchase Order Dimension` WHERE  `Purchase Order Public ID` LIKE '%%%s%%' LIMIT 20 ", $q
+            );
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+                    if ($row['Purchase Order Public ID'] == $q) {
+
+                        $candidates['O'.$row['Purchase Order Key']] = 1000;
+                    } else {
+
+                        $len_name                                   = strlen($row['Purchase Order Public ID']);
+                        $len_q                                      = strlen($q);
+                        $factor                                     = $len_q / $len_name;
+                        $candidates['O'.$row['Purchase Order Key']] = 500 * $factor;
+                    }
+
+                }
+            }
+
+            $sql = sprintf(
+                "SELECT `Supplier Delivery Key`,`Supplier Delivery Public ID` FROM `Supplier Delivery Dimension` WHERE  `Supplier Delivery Public ID` LIKE '%%%s%%' LIMIT 20 ", $q
+            );
+
+            if ($result = $db->query($sql)) {
+                foreach ($result as $row) {
+
+                    if ($row['Supplier Delivery Public ID'] == $q) {
+
+                        $candidates['D'.$row['Supplier Delivery Key']] = 1000;
+                    } else {
+
+                        $len_name                                   = strlen($row['Supplier Delivery Public ID']);
+                        $len_q                                      = strlen($q);
+                        $factor                                     = $len_q / $len_name;
+                        $candidates['D'.$row['Supplier Delivery Key']] = 500 * $factor;
+                    }
+
+                }
+            }
 
         }
 
@@ -488,16 +494,19 @@ function search_suppliers($db, $account, $user, $data) {
             return;
         }
 
-        $counter                    = 0;
-        $supplier_parts_keys        = '';
-        $supplier_keys              = '';
-        $agent_keys                 = '';
-        $category_keys              = '';
-        $results                    = array();
-        $number_supplier_parts_keys = 0;
-        $number_supplier_keys       = 0;
-        $number_agent_keys          = 0;
-        $number_category_keys       = 0;
+        $counter                     = 0;
+        $supplier_parts_keys         = '';
+        $supplier_keys               = '';
+        $agent_keys                  = '';
+        $category_keys               = '';
+        $purchase_orders_keys        = array();
+        $deliveries_keys             =  array();
+        $results                     = array();
+        $number_supplier_parts_keys  = 0;
+        $number_supplier_keys        = 0;
+        $number_agent_keys           = 0;
+        $number_category_keys        = 0;
+
 
         foreach ($candidates as $_key => $val) {
             $counter++;
@@ -526,6 +535,16 @@ function search_suppliers($db, $account, $user, $data) {
                 $results[$_key] = '';
                 $number_category_keys++;
 
+            } elseif ($_key[0] == 'O') {
+                $key                    = preg_replace('/^O/', '', $_key);
+                $purchase_orders_keys[] = $key;
+                $results[$_key]         = '';
+
+            } elseif ($_key[0] == 'D') {
+                $key             = preg_replace('/^D/', '', $_key);
+                $deliveries_keys[] = $key;
+                $results[$_key]  = '';
+
             }
 
             if ($counter > $max_results) {
@@ -536,6 +555,7 @@ function search_suppliers($db, $account, $user, $data) {
         $supplier_keys       = preg_replace('/^,/', '', $supplier_keys);
         $agent_keys          = preg_replace('/^,/', '', $agent_keys);
         $category_keys       = preg_replace('/^,/', '', $category_keys);
+
 
 
         if ($number_supplier_parts_keys) {
@@ -641,6 +661,8 @@ function search_suppliers($db, $account, $user, $data) {
         }
 
         if ($number_category_keys) {
+
+
             $sql = sprintf(
                 "SELECT `Category Code`,`Category Store Key`,`Category Key`,`Category Code`,`Category Label` FROM `Category Dimension` WHERE `Category Key` IN (%s)", $category_keys
             );
@@ -652,26 +674,49 @@ function search_suppliers($db, $account, $user, $data) {
                     $icon = '<i class="fa fa-sitemap fa-fw padding_right_5" aria-hidden="true" ></i> ';
 
                     $results['C'.$row['Category Key']] = array(
-                        'label'   => $icon.highlightkeyword(
-                                sprintf('%s', $row['Category Code']), $queries
-                            ),
-                        'details' => highlightkeyword(
-                            $row['Category Label'], $queries
-                        ),
-                        'view'    => sprintf(
-                            'suppliers/category/%d', $row['Category Key']
-                        )
-
+                        'label'   => $icon.highlightkeyword(sprintf('%s', $row['Category Code']), $queries),
+                        'details' => highlightkeyword($row['Category Label'], $queries),
+                        'view'    => sprintf('suppliers/category/%d', $row['Category Key'])
 
                     );
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print $sql;
-                exit;
             }
         }
 
+        if (count($purchase_orders_keys) > 0) {
+
+            $in = str_repeat('?,', count($purchase_orders_keys) - 1).'?';
+            $sql  = "SELECT `Purchase Order Public ID`,`Purchase Order Parent`,`Purchase Order Parent Name`,`Purchase Order Currency Code`,`Purchase Order Total Amount`,`Purchase Order Parent Key`,`Purchase Order Key` FROM `Purchase Order Dimension` WHERE `Purchase Order Key` IN ($in)";
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                $purchase_orders_keys
+            );
+            while ($row = $stmt->fetch()) {
+                $icon = '<i class="far fa-clipboard fa-fw padding_right_5"></i> ';
+                $results['O'.$row['Purchase Order Key']] = array(
+                    'label'   => $icon.highlightkeyword(sprintf('%s', $row['Purchase Order Public ID']), $queries),
+                    'details' => $row['Purchase Order Parent Name'].' '.money($row['Purchase Order Total Amount'], $row['Purchase Order Currency Code']),
+                    'view'    => sprintf('suppliers/order/%d', $row['Purchase Order Key'])
+                );
+            }
+        }
+        if (count($deliveries_keys) > 0) {
+
+            $in = str_repeat('?,', count($deliveries_keys) - 1).'?';
+            $sql  = "SELECT `Supplier Delivery Public ID`,`Supplier Delivery Parent`,`Supplier Delivery Parent Name`,`Supplier Delivery Currency Code`,`Supplier Delivery Total Amount`,`Supplier Delivery Parent Key`,`Supplier Delivery Key` FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Key` IN ($in)";
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                $deliveries_keys
+            );
+            while ($row = $stmt->fetch()) {
+                $icon = '<i class="far fa-truck fa-fw padding_right_5"></i> ';
+                $results['D'.$row['Supplier Delivery Key']] = array(
+                    'label'   => $icon.highlightkeyword(sprintf('%s', $row['Supplier Delivery Public ID']), $queries),
+                    'details' => $row['Supplier Delivery Parent Name'].' '.money($row['Supplier Delivery Total Amount'], $row['Supplier Delivery Currency Code']),
+                    'view'    => sprintf('%s/%d/delivery/%d', strtolower($row['Supplier Delivery Parent']),$row['Supplier Delivery Parent Key'],$row['Supplier Delivery Key'])
+                );
+            }
+        }
 
         $results_data = array(
             'n' => count($results),
@@ -1342,20 +1387,20 @@ function search_inventory($db, $account, $user, $data) {
 
 
                 if ($row['Part Status'] == 'Not In Use') {
-                    $status = '<i class="far fa-box fa-fw padding_right_5 very_discreet" title="'._('Discontinued').'"></i> ';
-                    $label='<span class="discreet">'.$row['Part Reference'].'</span>';
-                    $details='<span class="discreet">'.highlightkeyword($row['Part Package Description'], $queries).'</span> <span class="error">('._('Discontinued').')</span>';
+                    $status  = '<i class="far fa-box fa-fw padding_right_5 very_discreet" title="'._('Discontinued').'"></i> ';
+                    $label   = '<span class="discreet">'.$row['Part Reference'].'</span>';
+                    $details = '<span class="discreet">'.highlightkeyword($row['Part Package Description'], $queries).'</span> <span class="error">('._('Discontinued').')</span>';
 
                 } elseif ($row['Part Status'] == 'Discontinuing') {
-                    $status = '<i class="far fa-box fa-fw padding_right_5 discreet" aria-hidden="true"></i> ';
-                    $label='<span >'.$row['Part Reference'].'</span>';
-                    $details='<span >'.highlightkeyword($row['Part Package Description'], $queries).'</span> <span class="warning">('._('Discontinuing').')</span>';
+                    $status  = '<i class="far fa-box fa-fw padding_right_5 discreet" aria-hidden="true"></i> ';
+                    $label   = '<span >'.$row['Part Reference'].'</span>';
+                    $details = '<span >'.highlightkeyword($row['Part Package Description'], $queries).'</span> <span class="warning">('._('Discontinuing').')</span>';
 
 
                 } else {
-                    $status = '<i class="far fa-box fa-fw padding_right_5" aria-hidden="true"></i> ';
-                    $label=highlightkeyword($row['Part Reference'], $queries);
-                    $details=highlightkeyword($row['Part Package Description'], $queries);
+                    $status  = '<i class="far fa-box fa-fw padding_right_5" aria-hidden="true"></i> ';
+                    $label   = highlightkeyword($row['Part Reference'], $queries);
+                    $details = highlightkeyword($row['Part Package Description'], $queries);
 
                 }
 
@@ -3735,8 +3780,6 @@ function search_webpages($db, $account, $user, $data) {
     }
 
 
-
-
     if ($data['scope'] == 'website') {
         if (in_array($data['scope_key'], $user->stores)) {
             $where_store = sprintf(' and `Webpage Website Key`=%d', $data['scope_key']);
@@ -3751,7 +3794,7 @@ function search_webpages($db, $account, $user, $data) {
             $where_store = sprintf(' and `Webpage Website Key` in (%s)', join(',', $user->websites));
         }
 
-       // $stores = join(',', $user->stores);
+        // $stores = join(',', $user->stores);
     }
 
     /*
@@ -3778,8 +3821,6 @@ function search_webpages($db, $account, $user, $data) {
 */
 
 
-
-
     $results_data = false;
     if (!$results_data or true) {
 
@@ -3796,7 +3837,6 @@ function search_webpages($db, $account, $user, $data) {
             $sql = sprintf(
                 "select `Page Key`,`Webpage Code`,`Webpage Name` ,`Webpage State` from `Page Store Dimension` where true $where_store and `Webpage Code` like '%s%%' limit 20 ", $q
             );
-
 
 
             if ($result = $db->query($sql)) {
@@ -4218,15 +4258,15 @@ function search_parts($db, $account, $data, $response_type = 'echo') {
 
                 if ($row['Part Status'] == 'Not In Use') {
                     $status = '<i class="far fa-box fa-fw padding_right_5 very_discreet" title="'._('Discontinued').'"></i> ';
-                    $label='<span class="very_discreet">'.$row['Part Package Description'].'</span>';
+                    $label  = '<span class="very_discreet">'.$row['Part Package Description'].'</span>';
 
                 } elseif ($row['Part Status'] == 'Discontinuing') {
                     $status = '<i class="far fa-box fa-fw padding_right_5 discreet" aria-hidden="true"></i> ';
-                    $label=highlightkeyword($row['Part Package Description'], $queries);
+                    $label  = highlightkeyword($row['Part Package Description'], $queries);
 
                 } else {
                     $status = '<i class="far fa-box fa-fw padding_right_5" aria-hidden="true"></i> ';
-                    $label=highlightkeyword($row['Part Package Description'], $queries);
+                    $label  = highlightkeyword($row['Part Package Description'], $queries);
                 }
 
                 $results['P'.$row['Part SKU']] = array(
