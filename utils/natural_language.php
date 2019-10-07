@@ -303,8 +303,17 @@ function smart_weight($weight,$decimals=3){
     }
 }
 
+/**
+ * @param        $w
+ * @param string $unit
+ * @param int    $number_decimals
+ * @param bool   $simplify
+ * @param bool   $zero_fill
+ *
+ * @return string
+ */
 function weight($w, $unit = 'Kg', $number_decimals = 3, $simplify = false, $zero_fill = false) {
-    //print $w;
+
     if ($w == '') {
         return '';
     }

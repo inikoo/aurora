@@ -816,12 +816,8 @@ function production_orders($_data, $db, $user, $account) {
                 case 'InProcess':
                     $state = _('Planning');
                     break;
-                case 'SubmittedAgent':
                 case 'Submitted':
                     $state = _('Manufacturing');
-                    break;
-                case 'Editing_Submitted':
-                    $state = _('Manufacturing').' ('._('editing').')';
                     break;
                 case 'Inputted':
                 case 'Dispatched':
@@ -906,12 +902,8 @@ function production_deliveries_with_part($_data, $db, $user) {
                 case 'InProcess':
                     $state = _('Planning');
                     break;
-                case 'SubmittedAgent':
                 case 'Submitted':
                     $state = _('Manufacturing');
-                    break;
-                case 'Editing_Submitted':
-                    $state = _('Manufacturing').' ('._('editing').')';
                     break;
                 case 'Inputted':
                 case 'Dispatched':
@@ -1014,12 +1006,8 @@ function production_orders_with_part($_data, $db, $user, $account) {
                 case 'InProcess':
                     $state = _('Planning');
                     break;
-                case 'SubmittedAgent':
                 case 'Submitted':
                     $state = _('Manufacturing');
-                    break;
-                case 'Editing_Submitted':
-                    $state = _('Manufacturing').' ('._('editing').')';
                     break;
                 case 'Inputted':
                 case 'Dispatched':

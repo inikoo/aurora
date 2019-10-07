@@ -384,6 +384,14 @@ switch ($tipo) {
         );
         clone_order($data, $editor, $smarty, $db, $account, $user);
         break;
+    case 'cancel_purchase_order_submitted_item':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'transaction_key' => array('type' => 'key'),
+                     )
+        );
+        cancel_purchase_order_submitted_item($data, $db);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -392,6 +400,125 @@ switch ($tipo) {
         echo json_encode($response);
         exit;
         break;
+}
+
+/**
+ * @param $data
+ * @param $db \PDO
+ */
+function cancel_purchase_order_submitted_item($data, $db) {
+
+    $sql  =
+        "select `Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Purchase Order Transaction State`,`Purchase Order Submitted Units` ,`Supplier Delivery Units` ,`Supplier Delivery Transaction State` ,`Purchase Order Submitted Cancelled Units`, `Purchase Order Transaction Part SKU` ,`Supplier Part Key` from `Purchase Order Transaction Fact` where `Purchase Order Transaction Fact Key`=?";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array($data['transaction_key'])
+    );
+    if ($row = $stmt->fetch()) {
+        // print_r($row);
+
+        if ($row['Purchase Order Transaction State'] != 'Submitted') {
+            $response = array(
+                'state' => 400,
+                'msg'   => "Can't cancel transaction"
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        /**
+         * @var $purchase_order \PurchaseOrder
+         */
+        $purchase_order = get_object('Purchase_Order', $row['Purchase Order Key']);
+        if ($purchase_order->id) {
+
+            $date          = gmdate('Y-m-d H:i:s');
+            $unit_qty      = $row['Supplier Delivery Units'];
+            $supplier_part = get_object('SupplierPart', $row['Supplier Part Key']);
+            $amount        = $unit_qty * $supplier_part->get('Supplier Part Unit Cost');
+            $extra_amount  = $unit_qty * $supplier_part->get('Supplier Part Unit Extra Cost');
+
+            if (is_numeric($supplier_part->get('Supplier Part Carton CBM'))) {
+                $cbm = $unit_qty * $supplier_part->get('Supplier Part Carton CBM') / $supplier_part->get('Supplier Part Packages Per Carton') / $supplier_part->part->get('Part Units Per Package');
+            } else {
+                $cbm = 'NULL';
+            }
+
+
+            if (is_numeric($supplier_part->part->get('Part Package Weight'))) {
+                $weight = $unit_qty * $supplier_part->part->get('Part Package Weight') / $supplier_part->part->get('Part Units Per Package');
+            } else {
+                $weight = 'NULL';
+            }
+
+            $sql = "update `Purchase Order Transaction Fact` set `Purchase Order Submitted Cancelled Units`=?,`Purchase Order Last Updated Date`=?,`Purchase Order Net Amount`=? ,
+                        `Purchase Order Extra Cost Amount`=? ,
+                        `Purchase Order CBM`=?,
+                        `Purchase Order Weight`=?  where  `Purchase Order Transaction Fact Key`=? ";
+
+
+            $stmt = $db->prepare($sql);
+
+            $stmt->execute(
+                array(
+                    $row['Purchase Order Submitted Units'] - $row['Supplier Delivery Units'],
+                    $date,
+                    $amount,
+                    $extra_amount,
+                    $cbm,
+                    $weight,
+                    $row['Purchase Order Transaction Fact Key']
+                )
+            );
+
+
+            $purchase_order->update_purchase_order_item_state($row['Purchase Order Transaction Fact Key']);
+            $purchase_order->update_totals();
+
+            $response = array(
+                'state'           => 200,
+                'update_metadata' => array(
+                    'class_html' => array(
+                        'transaction_state_'.$row['Purchase Order Transaction Fact Key'] => _('Cancelled'),
+
+                        'Purchase_Order_Total_Amount'                      => $purchase_order->get('Total Amount'),
+                        'Purchase_Order_Total_Amount_Account_Currency'     => $purchase_order->get('Total Amount Account Currency'),
+                        'Purchase_Order_Items_Net_Amount'                  => $purchase_order->get('Items Net Amount'),
+                        'Purchase_Order_Items_Net_Amount_Account_Currency' => $purchase_order->get('Items Net Amount Account Currency'),
+                        'Purchase_Order_AC_Total_Amount'                   => $purchase_order->get('AC Total Amount'),
+                        'Purchase_Order_AC_Extra_Costs_Amount'             => $purchase_order->get('AC Extra Costs Amount'),
+                        'Purchase_Order_AC_Subtotal_Amount'                => $purchase_order->get('AC Subtotal Amount'),
+                        'Purchase_Order_Weight'                            => $purchase_order->get('Weight'),
+                        'Purchase_Order_CBM'                               => $purchase_order->get('CBM'),
+                        'Purchase_Order_Number_Items'                      => $purchase_order->get('Number Items'),
+                        'Purchase_Order_State'                             => $purchase_order->get('State'),
+
+                    )
+                )
+            );
+            echo json_encode($response);
+            exit;
+
+
+        } else {
+            $response = array(
+                'state' => 400,
+                'msg'   => 'PO not found'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+    } else {
+        $response = array(
+            'state' => 400,
+            'msg'   => 'transaction not found'
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
 }
 
 
@@ -419,7 +546,6 @@ function clone_order($data, $editor, $smarty, $db, $account, $user) {
     }
 
 
-
     $items = $order->get_items();
 
     foreach ($items as $item) {
@@ -427,16 +553,14 @@ function clone_order($data, $editor, $smarty, $db, $account, $user) {
         if ($item['webpage_state'] == 'Online') {
 
 
-
-            if(array_key_exists($item['product_id'],$target_items_data) and $target_items_data[$item['product_id']]<=$item['qty']){
-                $skip=true;
-            }else{
-                $skip=false;
+            if (array_key_exists($item['product_id'], $target_items_data) and $target_items_data[$item['product_id']] <= $item['qty']) {
+                $skip = true;
+            } else {
+                $skip = false;
             }
 
 
-
-            if(  $item['qty']>0   and  !$skip ){
+            if ($item['qty'] > 0 and !$skip) {
 
 
                 $quantity = $item['qty'];
@@ -448,7 +572,7 @@ function clone_order($data, $editor, $smarty, $db, $account, $user) {
                 $payment_state = 'Waiting Payment';
 
 
-                $product = get_object('Product', $item['product_id'] );
+                $product = get_object('Product', $item['product_id']);
                 $data    = array(
                     'date'                      => gmdate('Y-m-d H:i:s'),
                     'item_historic_key'         => $product->get('Product Current Key'),
@@ -472,8 +596,8 @@ function clone_order($data, $editor, $smarty, $db, $account, $user) {
 
 
     $response = array(
-        'state'        => 200,
-        'redirect'     => sprintf('orders/%d/%d',$target_order->get('Order Store Key'),$target_order->id),
+        'state'    => 200,
+        'redirect' => sprintf('orders/%d/%d', $target_order->get('Order Store Key'), $target_order->id),
 
     );
     echo json_encode($response);

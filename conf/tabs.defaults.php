@@ -1187,7 +1187,7 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'label'
     ),
-    'shipping_zone_schema.zones' => array(
+    'shipping_zone_schema.zones'   => array(
         'view'        => 'overview',
         'sort_key'    => 'position',
         'sort_order'  => 1,
@@ -1509,12 +1509,12 @@ $tab_defaults = array(
 
 
     'websites'         => array(
-        'view'        => 'overview',
-        'sort_key'    => 'id',
-        'sort_order'  => 1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'code',
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'code',
         'elements_type' => array_keys($elements_options['websites'])[0],
         'elements'      => $elements_options['websites'],
     ),
@@ -1554,7 +1554,7 @@ $tab_defaults = array(
         'elements'      => $elements_options['online_webpages'],
     ),
 
-    'website.online_webpages'       => array(
+    'website.online_webpages'          => array(
         'view'          => 'overview',
         'sort_key'      => 'code',
         'sort_order'    => 1,
@@ -1565,7 +1565,7 @@ $tab_defaults = array(
         'elements_type' => array_keys($elements_options['online_webpages'])[0],
         'elements'      => $elements_options['online_webpages'],
     ),
-    'website.offline_webpages'      => array(
+    'website.offline_webpages'         => array(
         'view'          => 'overview',
         'sort_key'      => 'code',
         'sort_order'    => 1,
@@ -1576,7 +1576,7 @@ $tab_defaults = array(
         'elements'      => $elements_options['online_webpages'],
 
     ),
-    'webpage_type.online_webpages'  => array(
+    'webpage_type.online_webpages'     => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -1586,7 +1586,7 @@ $tab_defaults = array(
         'f_period'    => 'ytd',
 
     ),
-       'webpage_type.in_process_webpages'  => array(
+    'webpage_type.in_process_webpages' => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -1596,7 +1596,7 @@ $tab_defaults = array(
         'f_period'    => 'ytd',
 
     ),
-       'webpage_type.offline_webpages'  => array(
+    'webpage_type.offline_webpages'    => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -1607,7 +1607,7 @@ $tab_defaults = array(
 
     ),
 
-    'website.webpage.types'         => array(
+    'website.webpage.types' => array(
         'view'        => 'overview',
         'sort_key'    => 'type',
         'sort_order'  => 1,
@@ -1615,7 +1615,6 @@ $tab_defaults = array(
         'rpp_options' => $default_rrp_options,
         'f_field'     => ''
     ),
-
 
 
     'website.footer.versions' => array(
@@ -1716,7 +1715,7 @@ $tab_defaults = array(
 
     ),
 
-    'website.templates'      => array(
+    'website.templates' => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -1726,7 +1725,7 @@ $tab_defaults = array(
         'f_period'    => 'all',
 
     ),
-    'webpage.assets'  => array(
+    'webpage.assets'    => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -1736,7 +1735,7 @@ $tab_defaults = array(
         'f_period'    => 'ytd',
 
     ),
-    'marketing_server'       => array(
+    'marketing_server'  => array(
         'view'        => 'overview',
         'sort_key'    => 'id',
         'sort_order'  => 1,
@@ -1745,7 +1744,7 @@ $tab_defaults = array(
         'f_field'     => 'code',
         'f_period'    => 'ytd',
     ),
-    'suppliers'              => array(
+    'suppliers'         => array(
         'view'          => 'overview',
         'sort_key'      => 'formatted_id',
         'sort_order'    => 1,
@@ -1759,62 +1758,62 @@ $tab_defaults = array(
     ),
 
     'suppliers.supplier_parts.surplus' => array(
-        'view'          => 'reorder',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'reference',
-        'f_period'      => 'ytd',
+        'view'        => 'reorder',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'f_period'    => 'ytd',
 
         'export_fields' => $export_fields['supplier_parts']
 
 
     ),
-    'suppliers.supplier_parts.ok' => array(
-        'view'          => 'reorder',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'reference',
-        'f_period'      => 'ytd',
+    'suppliers.supplier_parts.ok'      => array(
+        'view'        => 'reorder',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'f_period'    => 'ytd',
 
         'export_fields' => $export_fields['supplier_parts']
 
 
     ),
 
-    'suppliers.supplier_parts.low' => array(
-        'view'          => 'reorder',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 500,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'reference',
-        'f_period'      => 'ytd',
+    'suppliers.supplier_parts.low'          => array(
+        'view'        => 'reorder',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'f_period'    => 'ytd',
 
         'export_fields' => $export_fields['supplier_parts']
     ),
-    'suppliers.supplier_parts.critical' => array(
-        'view'          => 'reorder',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 500,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'reference',
-        'f_period'      => 'ytd',
+    'suppliers.supplier_parts.critical'     => array(
+        'view'        => 'reorder',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'f_period'    => 'ytd',
 
         'export_fields' => $export_fields['supplier_parts']
     ),
     'suppliers.supplier_parts.out_of_stock' => array(
-        'view'          => 'reorder',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 500,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'reference',
-        'f_period'      => 'ytd',
+        'view'        => 'reorder',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 500,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'f_period'    => 'ytd',
 
         'export_fields' => $export_fields['supplier_parts']
     ),
@@ -1901,7 +1900,7 @@ $tab_defaults = array(
         'elements_type' => array_keys($elements_options['supplier_history'])[0],
         'elements'      => $elements_options['supplier_history']
     ),
-    'supplier.images'        => array(
+    'supplier.images'         => array(
         'view'        => 'overview',
         'sort_key'    => 'image_order',
         'sort_order'  => 0,
@@ -1959,7 +1958,7 @@ $tab_defaults = array(
         'elements_type' => array_keys($elements_options['supplier_orders'])[0],
         'elements'      => $elements_options['supplier_orders']
     ),
-    'production_supplier.orders'                   => array(
+    'production_supplier.orders'        => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -1985,7 +1984,7 @@ $tab_defaults = array(
         'elements_type' => array_keys($elements_options['supplier_deliveries'])[0],
         'elements'      => $elements_options['supplier_deliveries']
     ),
-    'production_supplier.deliveries'               => array(
+    'production_supplier.deliveries'    => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -2015,8 +2014,9 @@ $tab_defaults = array(
         'rpp'           => 1000,
         'rpp_options'   => $default_rrp_options,
         'f_field'       => 'code',
-        'export_fields' => $export_fields['supplier.order.items']
-
+        'export_fields' => $export_fields['supplier.order.items'],
+        'elements_type' => array_keys($elements_options['supplier_order_items'])[0],
+        'elements'      => $elements_options['supplier_order_items']
 
     ),
     'supplier.order.items_in_process'   => array(
@@ -2315,7 +2315,6 @@ $tab_defaults = array(
     ),
 
 
-
     'agents'                  => array(
         'view'        => 'overview',
         'sort_key'    => 'code',
@@ -2335,7 +2334,7 @@ $tab_defaults = array(
         'elements_type' => array_keys($elements_options['agent_history'])[0],
         'elements'      => $elements_options['agent_history']
     ),
-    'agent.images'        => array(
+    'agent.images'            => array(
         'view'        => 'overview',
         'sort_key'    => 'image_order',
         'sort_order'  => 0,
@@ -2758,7 +2757,7 @@ $tab_defaults = array(
     ),
 
 
-    'inventory.discontinued_parts'  => array(
+    'inventory.discontinued_parts'       => array(
         'view'          => 'overview',
         'sort_key'      => 'valid_to',
         'sort_order'    => 1,
@@ -2769,7 +2768,7 @@ $tab_defaults = array(
         'export_fields' => $export_fields['parts']
 
     ),
-    'inventory.discontinuing_parts' => array(
+    'inventory.discontinuing_parts'      => array(
         'view'          => 'overview',
         'sort_key'      => 'stock_value',
         'sort_order'    => 1,
@@ -2780,7 +2779,7 @@ $tab_defaults = array(
         'export_fields' => $export_fields['parts']
 
     ),
-    'inventory.in_process_parts'    => array(
+    'inventory.in_process_parts'         => array(
         'view'          => 'overview',
         'sort_key'      => 'valid_from',
         'sort_order'    => 1,
@@ -2790,95 +2789,95 @@ $tab_defaults = array(
         'export_fields' => $export_fields['parts']
 
     ),
-    'warehouse.feedback'    => array(
-        'view'          => 'overview',
-        'sort_key'      => 'date',
-        'sort_order'    => -1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'reference',
-        'f_period'      => 'ytd',
+    'warehouse.feedback'                 => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'f_period'    => 'ytd',
 
 
     ),
-    'inventory.feedback'    => array(
-        'view'          => 'overview',
-        'sort_key'      => 'date',
-        'sort_order'    => -1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'reference',
-        'f_period'      => 'ytd',
+    'inventory.feedback'                 => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'f_period'    => 'ytd',
 
 
     ),
-    'supplier.feedback'    => array(
-        'view'          => 'overview',
-        'sort_key'      => 'date',
-        'sort_order'    => -1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'reference',
-        'f_period'      => 'ytd',
+    'supplier.feedback'                  => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'f_period'    => 'ytd',
 
 
     ),
-    'part.feedback'    => array(
-        'view'          => 'overview',
-        'sort_key'      => 'date',
-        'sort_order'    => -1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'reference',
-        'f_period'      => 'ytd',
+    'part.feedback'                      => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'f_period'    => 'ytd',
 
 
     ),
-    'part_category.feedback'    => array(
-        'view'          => 'overview',
-        'sort_key'      => 'date',
-        'sort_order'    => -1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'reference',
-        'f_period'      => 'ytd',
+    'part_category.feedback'             => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'f_period'    => 'ytd',
 
 
     ),
-    'supplier_part.feedback'    => array(
-        'view'          => 'overview',
-        'sort_key'      => 'date',
-        'sort_order'    => -1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'reference',
-        'f_period'      => 'ytd',
+    'supplier_part.feedback'             => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'f_period'    => 'ytd',
 
 
     ),
-    'inventory.feedback_per_part'    => array(
-        'view'          => 'overview',
-        'sort_key'      => 'number_feedback',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'reference',
-        'f_period'      => 'ytd',
+    'inventory.feedback_per_part'        => array(
+        'view'        => 'overview',
+        'sort_key'    => 'number_feedback',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'f_period'    => 'ytd',
 
 
     ),
-    'inventory.feedback_per_part_family'    => array(
-        'view'          => 'overview',
-        'sort_key'      => 'number_feedback',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'reference',
-        'f_period'      => 'ytd',
+    'inventory.feedback_per_part_family' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'number_feedback',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'f_period'    => 'ytd',
 
 
     ),
-    'part_families'                    => array(
+    'part_families'                      => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -4162,37 +4161,37 @@ $tab_defaults = array(
         'f_field'     => 'caption'
     ),
 
-    'category_sales_correlations'                    => array(
-        'view'          => 'overview',
-        'sort_key'      => 'correlation',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'code',
+    'category_sales_correlations' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'correlation',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
 
     ),
 
 
-    'product_sales_correlations'                    => array(
-        'view'          => 'overview',
-        'sort_key'      => 'correlation',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'code',
+    'product_sales_correlations' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'correlation',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
 
     ),
 
-    'product_sales_anticorrelations'                    => array(
-        'view'          => 'overview',
-        'sort_key'      => 'correlation',
-        'sort_order'    => -1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'code',
+    'product_sales_anticorrelations' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'correlation',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
 
     ),
-    'subject_categories'                 => array(
+    'subject_categories'             => array(
         'view'        => 'overview',
         'sort_key'    => 'code',
         'sort_order'  => 1,
@@ -4473,7 +4472,7 @@ $tab_defaults = array(
         'f_field'     => 'reference',
 
     ),
-    'webpage.logbook' => array(
+    'webpage.logbook'                          => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
         'sort_order'    => 1,
@@ -4483,7 +4482,7 @@ $tab_defaults = array(
         'elements_type' => array_keys($elements_options['webpage_publishing_history'])[0],
         'elements'      => $elements_options['webpage_publishing_history']
     ),
-    'category.webpage.logbook' => array(
+    'category.webpage.logbook'                 => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
         'sort_order'    => 1,
@@ -4493,17 +4492,17 @@ $tab_defaults = array(
         'elements_type' => array_keys($elements_options['webpage_publishing_history'])[0],
         'elements'      => $elements_options['webpage_publishing_history']
     ),
-    'product.webpages' => array(
-        'view'          => 'overview',
-        'sort_key'      => 'type',
-        'sort_order'    => -1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'code',
-        'f_period'      => 'ytd',
+    'product.webpages'                         => array(
+        'view'        => 'overview',
+        'sort_key'    => 'type',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+        'f_period'    => 'ytd',
 
     ),
-    'product.webpage.logbook'  => array(
+    'product.webpage.logbook'                  => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
         'sort_order'    => 1,
@@ -4628,18 +4627,18 @@ $tab_defaults = array(
 
 
     ),
-    'customer_clients' => array(
-        'view'          => 'overview',
-        'sort_key'      => 'id',
-        'sort_order'    => 1,
-        'rpp'           => 100,
-        'rpp_options'   => $default_rrp_options,
-        'f_field'       => 'name',
+    'customer_clients'                => array(
+        'view'        => 'overview',
+        'sort_key'    => 'id',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'name',
 
 
     ),
 
-    'customer_client.orders'               => array(
+    'customer_client.orders'         => array(
         'view'          => 'overview',
         'sort_key'      => 'id',
         'sort_order'    => 1,
@@ -4665,7 +4664,7 @@ $tab_defaults = array(
         'export_fields' => $export_fields['delivery_notes']
 
     ),
-    'prospect.sent_emails' => array(
+    'prospect.sent_emails'           => array(
         'view'        => 'overview',
         'sort_key'    => 'date',
         'sort_order'  => 1,
@@ -4848,7 +4847,7 @@ $tab_defaults = array(
         'elements'      => $elements_options['purged_orders']
     ),
 
-    'purge.history' => array(
+    'purge.history'     => array(
         'view'          => 'overview',
         'sort_key'      => 'date',
         'sort_order'    => 1,
@@ -4858,7 +4857,7 @@ $tab_defaults = array(
         'elements_type' => array_keys($elements_options['purges_history'])[0],
         'elements'      => $elements_options['purges_history']
     ),
-    'clocking_machines'        => array(
+    'clocking_machines' => array(
         'view'        => 'overview',
         'sort_key'    => 'code',
         'sort_order'  => 1,

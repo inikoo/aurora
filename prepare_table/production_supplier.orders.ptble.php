@@ -81,7 +81,7 @@ if (isset($parameters['elements_type'])) {
 
 
                     if ($_key == 'InProcess') {
-                        $_elements .= ",'InProcess','Editing_Submitted'";
+                        $_elements .= ",'InProcess'";
                     }elseif ($_key == 'Manufacturing') {
                         $_elements .= ",'Submitted'";
                     } elseif ($_key == 'ReceivedChecked') {

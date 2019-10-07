@@ -722,3 +722,56 @@ function save_po_note(element){
 
 
 }
+
+function cancel_purchase_order_submitted_item(transaction_key){
+
+
+    $(element).addClass('fa-spin fa-spinner')
+
+    var form_data = new FormData();
+
+    form_data.append("tipo", 'cancel_purchase_order_submitted_item')
+    form_data.append("transaction_key", transaction_key)
+
+
+
+
+    var request = $.ajax({
+
+        url: "/ar_edit_orders.php",
+        data: form_data,
+        processData: false,
+        contentType: false,
+        type: 'POST',
+        dataType: 'json'
+
+    })
+
+
+    request.done(function (data) {
+
+
+        if (data.state == 200) {
+
+            for (var key in data.update_metadata.class_html) {
+                $('.' + key).html(data.update_metadata.class_html[key])
+            }
+
+
+        } else if (data.state == 400) {
+
+
+            console.log(data)
+        }
+
+    })
+
+
+    request.fail(function (jqXHR, textStatus) {
+        console.log(textStatus)
+        console.log(jqXHR.responseText)
+
+    });
+
+
+}

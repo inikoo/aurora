@@ -52,10 +52,6 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 
             }
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
 

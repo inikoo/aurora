@@ -17,6 +17,11 @@ function get_showcase($data, $smarty, $user, $db) {
     }
 
     $data['_object']->get_order_data();
+
+    /*
+    $data['_object']->update_supplier_delivery_items_state();
+    */
+
     $_parent = get_object($data['_object']->get('Supplier Delivery Parent'), $data['_object']->get('Supplier Delivery Parent Key'));
 
     $smarty->assign('parent', $_parent);

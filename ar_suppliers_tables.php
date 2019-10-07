@@ -813,12 +813,8 @@ function orders($_data, $db, $user, $account) {
                 case 'InProcess':
                     $state = _('In Process');
                     break;
-                case 'SubmittedAgent':
                 case 'Submitted':
                     $state = _('Submitted');
-                    break;
-                case 'Editing_Submitted':
-                    $state = _('Submitted').' ('._('editing').')';
                     break;
                 case 'Inputted':
                     $state = _('Delivery in process');
@@ -848,7 +844,6 @@ function orders($_data, $db, $user, $account) {
                     $state = $data['Purchase Order State'];
                     break;
             }
-
 
             $table_data[] = array(
                 'id'              => (integer)$data['Purchase Order Key'],
