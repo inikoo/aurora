@@ -9,14 +9,18 @@
  Version 3.0
 */
 
-function get_supplier_order_showcase($data, $smarty, $user, $db) {
+function get_supplier_order_showcase($data, $smarty, $user) {
 
-
-    if (!$data['_object']->id) {
+    /**
+     * @var $purchase_order \PurchaseOrder
+     */
+    $purchase_order=$data['_object'];
+    
+    if (!$purchase_order->id) {
         return "";
     }
 
-    if ($data['_object']->deleted) {
+    if ($purchase_order->deleted) {
 
         return '';
 
@@ -25,13 +29,18 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
 
         $smarty->assign('no_production_date_label', sprintf(_('No estimated %s'), '<i class="far fa-industry-alt"></i>'));
 
-        $smarty->assign('order', $data['_object']);
+        $smarty->assign('order', $purchase_order);
 
-
+/*
+        foreach($purchase_order->get_deliveries('objects')  as $delivery){
+            $delivery->update_supplier_delivery_items_state();
+        }
+        $purchase_order->update_purchase_order_items_state();
+*/
 
 
         $_parent = get_object(
-            $data['_object']->get('Purchase Order Parent'), $data['_object']->get('Purchase Order Parent Key')
+            $purchase_order->get('Purchase Order Parent'), $purchase_order->get('Purchase Order Parent Key')
         );
 
         $smarty->assign('parent', $_parent);
@@ -42,10 +51,10 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
                              array(
                                  'object'                  => $data['object'],
                                  'key'                     => $data['key'],
-                                 'order_parent'            => $data['_object']->get('Purchase Order Parent'),
-                                 'order_parent_key'        => $data['_object']->get('Purchase Order Parent Key'),
+                                 'order_parent'            => $purchase_order->get('Purchase Order Parent'),
+                                 'order_parent_key'        => $purchase_order->get('Purchase Order Parent Key'),
                                  'tab'                     => $data['tab'],
-                                 'purchase_order_number'   => $data['_object']->get('Purchase Order Public ID'),
+                                 'purchase_order_number'   => $purchase_order->get('Purchase Order Public ID'),
                                  'skip_inputting'          => $_parent->get('Parent Skip Inputting'),
                                  'skip_mark_as_dispatched' => $_parent->get('Parent Skip Mark as Dispatched'),
                                  'skip_mark_as_received'   => $_parent->get('Parent Skip Mark as Received'),
@@ -58,16 +67,16 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
         );
 
 
-        if ($data['_object']->get('Purchase Order Submitted Date') != '') {
+        if ($purchase_order->get('Purchase Order Submitted Date') != '') {
             $min_date_send_order = date(
                 'U', strtotime(
-                       $data['_object']->get('Purchase Order Submitted Date').' +0:00'
+                       $purchase_order->get('Purchase Order Submitted Date').' +0:00'
                    )
             );
         } else {
             $min_date_send_order = date(
                 'U', strtotime(
-                       $data['_object']->get('Purchase Order Created Date').' +0:00'
+                       $purchase_order->get('Purchase Order Created Date').' +0:00'
                    )
             );
 
@@ -78,7 +87,7 @@ function get_supplier_order_showcase($data, $smarty, $user, $db) {
 
         if ($user->get('User Type') == 'Staff' or $user->get('User Type') == 'Contractor') {
 
-            if ($data['_object']->get('Purchase Order Production') == 'Yes') {
+            if ($purchase_order->get('Purchase Order Production') == 'Yes') {
                 return $smarty->fetch('showcase/production.purchase_order.tpl');
 
             } else {

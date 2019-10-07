@@ -1436,7 +1436,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             break;
         case 'purchase_order':
             include_once 'showcase/supplier.order.show.php';
-            $html         = get_supplier_order_showcase($data, $smarty, $user, $db);
+            $html         = get_supplier_order_showcase($data, $smarty, $user);
             $title        = $data['_object']->get('Public ID');
             $web_location = '<i class="fal fa-fw fa-clipboard"></i> '.$data['_object']->get('Public ID');
             if ($data['module'] == 'production') {

@@ -291,7 +291,7 @@
 
             </div>
             <span style="float:left;padding-left:10px;padding-top:5px"
-                  class="Purchase_Order_State"> {$order->get('State')} </span>
+                  class="Purchase_Order_State">{$order->get('State')}</span>
             <div id="forward_operations">
 
 

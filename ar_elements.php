@@ -128,9 +128,8 @@ switch ($tab) {
     case 'orders.website':
 
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
-        get_orders_control_panel_numbers($tab,$db, $data['parameters'], $user, $account);
+        get_orders_control_panel_numbers($tab, $db, $data['parameters'], $user, $account);
         break;
-
 
 
     case 'campaigns':
@@ -438,6 +437,14 @@ switch ($tab) {
         $data = prepare_values($_REQUEST, array('parameters' => array('type' => 'json array')));
         get_websites_elements($db, $data['parameters'], $account, $user);
         break;
+    case 'supplier.order.items':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parameters' => array('type' => 'json array')
+                     )
+        );
+        get_purchase_order_items_elements($db, $data['parameters']);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -448,6 +455,64 @@ switch ($tab) {
         break;
 }
 
+/**
+ * @param $db \PDO
+ * @param $data
+ */
+function get_purchase_order_items_elements($db, $data) {
+
+    $elements_numbers = array(
+        'type' => array(
+            'InProcess'  => 0,
+            'Submitted'  => 0,
+            'InDelivery' => 0,
+            'Receiving'  => 0,
+            'Received'   => 0,
+            'Cancelled'  => 0
+        ),
+    );
+//'InProcess','Submitted','ProblemSupplier','Confirmed','ReceivedAgent','InDelivery','Inputted','Dispatched','Received','Checked','Placed','Cancelled','NoReceived'
+    $sql  = "select count(*) as number,`Purchase Order Transaction State` as element from `Purchase Order Transaction Fact` where `Purchase Order Key`=? group by `Purchase Order Transaction State` ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array($data['parent_key'])
+    );
+    while ($row = $stmt->fetch()) {
+
+        if ($row['element'] == 'ProblemSupplier' or $row['element'] == 'Confirmed' or $row['element'] == 'ReceivedAgent' or $row['element'] == 'Inputted' ) {
+            $row['element'] = 'Submitted';
+        }
+        if ($row['element'] == 'Dispatched') {
+            $row['element'] = 'InDelivery';
+        }
+
+        if ($row['element'] == 'Received' or $row['element'] == 'Checked') {
+            $row['element'] = 'Receiving';
+        }
+
+        if ($row['element'] == 'Placed') {
+            $row['element'] = 'Received';
+        }
+
+        if ($row['element'] == 'NoReceived') {
+            $row['element'] = 'Cancelled';
+        }
+
+        $elements_numbers['type'][$row['element']] = $row['number'];
+
+    }
+
+    foreach ($elements_numbers['type'] as $key => $value) {
+        $elements_numbers['type'][$key] = number($value);
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+}
 
 function parts_barcode_errors($db, $data, $user) {
 
@@ -2242,7 +2307,7 @@ function get_supplier_orders_elements($db, $data) {
             break;
         case 'account':
             $table = '`Purchase Order Dimension` O left join `Supplier Dimension` on (`Supplier Key`=`Purchase Order Parent Key`)   ';
-            $where = sprintf('where  `Purchase Order Parent`="Supplier" and `Supplier Production`="No"');
+            $where = sprintf('where (( `Purchase Order Parent`="Supplier" and `Supplier Production`="No" ) or  `Purchase Order Parent`="Agent") ');
             break;
         case 'production':
             $table = '`Purchase Order Dimension` O left join `Supplier Dimension` on (`Supplier Key`=`Purchase Order Parent Key`)  ';
@@ -2286,10 +2351,10 @@ function get_supplier_orders_elements($db, $data) {
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
-            //'InProcess','SubmittedAgent','Submitted','Editing_Submitted','Inputted','Dispatched','Received','Checked','Placed', 'Costing','InvoiceChecked' ,'Cancelled'
-            if ($row['element'] == 'InProcess' or $row['element'] == 'Editing_Submitted') {
+            //'InProcess','Submitted','Inputted','Dispatched','Received','Checked','Placed', 'Costing','InvoiceChecked' ,'Cancelled'
+            if ($row['element'] == 'InProcess') {
                 $element = 'InProcess';
-            } elseif ($row['element'] == 'Submitted' or $row['element'] == 'SubmittedAgent' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
+            } elseif ($row['element'] == 'Submitted' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
                 $element = 'SubmittedInputtedDispatched';
             } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked') {
                 $element = 'ReceivedChecked';
@@ -2367,16 +2432,13 @@ function get_production_orders_elements($db, $data) {
     );
 
 
-
-
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
 
-
-            if ($row['element'] == 'InProcess' or $row['element'] == 'Editing_Submitted') {
+            if ($row['element'] == 'InProcess') {
                 $element = 'InProcess';
-            } elseif ($row['element'] == 'Submitted' or $row['element'] == 'SubmittedAgent' ) {
+            } elseif ($row['element'] == 'Submitted') {
                 $element = 'Manufacturing';
             } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
                 $element = 'ReceivedChecked';
@@ -2411,10 +2473,7 @@ function get_production_orders_with_part_elements($db, $data) {
     list($db_interval, $from, $to, $from_date_1yb, $to_1yb) = calculate_interval_dates($db, $data['period'], $data['from'], $data['to']);
 
 
-
-
-    $table
-        = ' `Purchase Order Transaction Fact` POTF  left join  `Purchase Order Dimension` O on (POTF.`Purchase Order Key`=O.`Purchase Order Key`)
+    $table = ' `Purchase Order Transaction Fact` POTF  left join  `Purchase Order Dimension` O on (POTF.`Purchase Order Key`=O.`Purchase Order Key`)
 	left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`)
     left join  `Part Dimension` P on (P.`Part SKU`=SP.`Supplier Part Part SKU`)';
 
@@ -2423,7 +2482,8 @@ function get_production_orders_with_part_elements($db, $data) {
         case 'production_part':
             $where = sprintf(
                 'where POTF.`Supplier Part Key`=%d  ', $data['parent_key']
-            );            break;
+            );
+            break;
 
             break;
         default:
@@ -2453,20 +2513,19 @@ function get_production_orders_with_part_elements($db, $data) {
     );
 
 
-//'','','','Confirmed','ReceivedAgent','InDelivery','Inputted','Dispatched','Received','Checked','Placed','Cancelled'
+    //'','','','Confirmed','ReceivedAgent','InDelivery','Inputted','Dispatched','Received','Checked','Placed','Cancelled'
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
 
-
-            if ($row['element'] == 'InProcess' ) {
+            if ($row['element'] == 'InProcess') {
                 $element = 'InProcess';
-            } elseif ($row['element'] == 'Submitted' ) {
+            } elseif ($row['element'] == 'Submitted') {
                 $element = 'Manufacturing';
             } elseif ($row['element'] == 'InDelivery' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched' or $row['element'] == 'Received' or $row['element'] == 'Checked') {
                 $element = 'ReceivedChecked';
-            } elseif ($row['element'] == 'Placed' ) {
+            } elseif ($row['element'] == 'Placed') {
                 $element = 'Placed';
             } else {
                 $element = $row['element'];
@@ -3843,7 +3902,6 @@ function get_users_elements($db, $user_type) {
 }
 
 
-
 function get_orders_control_panel_numbers($tipo, $db, $data, $user, $account) {
     $elements_numbers = array(
         'location' => array(
@@ -3874,8 +3932,8 @@ function get_orders_control_panel_numbers($tipo, $db, $data, $user, $account) {
             $where = 'where `Order State`="Approved"  ';
             break;
         case 'orders.dispatched_today':
-            $where =sprintf( 'where ((`Order State`="Dispatched" and `Order Dispatched Date`>%s ) or (`Order Replacement State`="Dispatched" and `Order Post Transactions Dispatched Date`>%s )) ',
-                             prepare_mysql(gmdate('Y-m-d 00:00:00')),  prepare_mysql(gmdate('Y-m-d 00:00:00'))
+            $where = sprintf(
+                'where ((`Order State`="Dispatched" and `Order Dispatched Date`>%s ) or (`Order Replacement State`="Dispatched" and `Order Post Transactions Dispatched Date`>%s )) ', prepare_mysql(gmdate('Y-m-d 00:00:00')), prepare_mysql(gmdate('Y-m-d 00:00:00'))
             );
             break;
         default:
@@ -3887,7 +3945,7 @@ function get_orders_control_panel_numbers($tipo, $db, $data, $user, $account) {
 
 
     if ($data['parent'] == 'store') {
-        $where .= sprintf(' and  `Order Store Key`=%d ', $data['parent_key']);
+        $where        .= sprintf(' and  `Order Store Key`=%d ', $data['parent_key']);
         $store        = get_object('store', $data['parent_key']);
         $home_country = $store->get('Store Home Country Code 2 Alpha');
         /*
@@ -3930,7 +3988,7 @@ function get_orders_control_panel_numbers($tipo, $db, $data, $user, $account) {
         print_r($error_info = $stmt->errorInfo());
         exit();
     }
-    $sql = "select count(*) as number from `Order Dimension` O $where and `Order Invoice Address Country 2 Alpha Code`=?  ";
+    $sql  = "select count(*) as number from `Order Dimension` O $where and `Order Invoice Address Country 2 Alpha Code`=?  ";
     $stmt = $db->prepare($sql);
     if ($stmt->execute(
         array(
@@ -4031,15 +4089,14 @@ function get_category_deal_components_element_numbers($db, $data, $user) {
 }
 
 
-
-function get_websites_elements($db, $data, $account,$user) {
+function get_websites_elements($db, $data, $account, $user) {
 
 
     $elements_numbers = array(
         'status' => array(
-            'Active'  => 0,
+            'Active'    => 0,
             'InProcess' => 0,
-            'Closed' => 0,
+            'Closed'    => 0,
         ),
 
     );

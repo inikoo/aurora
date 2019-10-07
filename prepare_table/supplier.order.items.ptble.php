@@ -14,10 +14,72 @@
 $where  = sprintf(
     ' where POTF.`Purchase Order Key`=%d', $parameters['parent_key']
 );
+
+
+
+
+switch ($parameters['elements_type']) {
+
+    case 'state':
+        $_elements      = '';
+        $count_elements = 0;
+        foreach (
+            $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
+        ) {
+            if ($_value['selected']) {
+                $count_elements++;
+
+
+
+                if($_key=='InProcess'){
+                    $_elements .= ",'InProcess','ProblemSupplier'";
+                }elseif($_key=='Submitted'){
+                    $_elements .= ",'Submitted','ReceivedAgent','Confirmed'";
+
+                }elseif($_key=='InDelivery'){
+                    $_elements .= ",'InDelivery','Dispatched','Inputted'";
+
+                }elseif($_key=='Receiving'){
+                    $_elements .= ",'Received','Checked','Inputted'";
+
+                }elseif($_key=='Received'){
+                    $_elements .= ",'Placed'";
+
+                }elseif($_key=='Cancelled'){
+                    $_elements .= ",'Cancelled','NoReceived'";
+
+                }
+
+            }
+        }
+        $_elements = preg_replace('/^\,/', '', $_elements);
+
+
+
+
+
+        if ($_elements == '') {
+            $where .= ' and false';
+        } elseif ($count_elements < 6) {
+            $where .= ' and `Purchase Order Transaction State` in ('.$_elements.')';
+        }
+        break;
+
+
+
+}
+
+
+
+
+
 $wheref = '';
 if ($parameters['f_field'] == 'code' and $f_value != '') {
     $wheref .= " and `Supplier Part Reference` like '".addslashes($f_value)."%'";
 }
+
+
+
 
 $_order = $order;
 $_dir   = $order_direction;

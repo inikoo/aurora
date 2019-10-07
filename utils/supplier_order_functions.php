@@ -257,6 +257,7 @@ function get_purchase_order_transaction_data($data) {
             break;
         case 'Submitted':
             $state .= sprintf('<span  title="%s">%s</span>', _('Submitted to agent'), _('Submitted'));
+            $state.='<br/> <i class="fa error fa-minus-circle button "  title="'._('Cancel').'"  onclick="cancel_purchase_order_submitted_item('.$data['Purchase Order Transaction Fact Key'].')" ></i>';
             break;
         case 'ProblemSupplier':
             $state .= sprintf('<span class="error" title="%s">%s</span>', _('Problem with supplier supplier'), _('Problem'));
@@ -317,7 +318,7 @@ function get_purchase_order_transaction_data($data) {
 
             break;
         case 'InDelivery':
-            $state .= _('Loading Delivery');
+            $state .= _('In transit');
             break;
         case 'Inputted':
             $state .= _('Delivery in process').$delivery_link;
@@ -334,8 +335,14 @@ function get_purchase_order_transaction_data($data) {
         case 'Placed':
             $state .= _('Booked in').$delivery_link;
             break;
+        case 'InvoiceChecked':
+            $state .= _('Booked in, costing done').$delivery_link;
+            break;
         case 'Cancelled':
             $state .= _('Cancelled');
+            break;
+        case 'NoReceived':
+            $state .= _('No received');
             break;
         default:
             $state .= $data['Purchase Order Transaction State'];
@@ -350,4 +357,4 @@ function get_purchase_order_transaction_data($data) {
 
 }
 
-?>
+
