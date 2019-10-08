@@ -471,7 +471,7 @@ function get_purchase_order_items_elements($db, $data) {
             'Cancelled'  => 0
         ),
     );
-//'InProcess','Submitted','ProblemSupplier','Confirmed','ReceivedAgent','InDelivery','Inputted','Dispatched','Received','Checked','Placed','Cancelled','NoReceived'
+
     $sql  = "select count(*) as number,`Purchase Order Transaction State` as element from `Purchase Order Transaction Fact` where `Purchase Order Key`=? group by `Purchase Order Transaction State` ";
     $stmt = $db->prepare($sql);
     $stmt->execute(
@@ -490,7 +490,7 @@ function get_purchase_order_items_elements($db, $data) {
             $row['element'] = 'Receiving';
         }
 
-        if ($row['element'] == 'Placed') {
+        if ($row['element'] == 'Placed' or $row['element'] == 'InvoiceChecked') {
             $row['element'] = 'Received';
         }
 

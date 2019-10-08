@@ -23,6 +23,8 @@ cell: Backgrid.HtmlCell.extend({ className: "width_20"} ),
 name: "reference",
 label: "{t}S. Code{/t}",
 editable: false,
+sortType: "toggle",
+{if $sort_key=='reference'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({
 })
 },
@@ -39,6 +41,8 @@ cell: "html"
 name: "description_units",
 label: "{t}Unit description{/t}",
 editable: false,
+sortType: "toggle",
+{if $sort_key=='description_units'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: "html"
 
 },
@@ -46,12 +50,16 @@ cell: "html"
 name: "description_skos",
 label: "{t}SKO description{/t}",
 editable: false,
+sortType: "toggle",
+{if $sort_key=='description_skos'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: "html"
 
 },{
 name: "description_cartons",
 label: "{t}Carton description{/t}",
 editable: false,
+sortType: "toggle",
+{if $sort_key=='description_cartons'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: "html"
 
 },

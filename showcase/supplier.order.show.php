@@ -14,8 +14,8 @@ function get_supplier_order_showcase($data, $smarty, $user) {
     /**
      * @var $purchase_order \PurchaseOrder
      */
-    $purchase_order=$data['_object'];
-    
+    $purchase_order = $data['_object'];
+
     if (!$purchase_order->id) {
         return "";
     }
@@ -31,7 +31,7 @@ function get_supplier_order_showcase($data, $smarty, $user) {
 
         $smarty->assign('order', $purchase_order);
 
-/*
+        /*
         foreach($purchase_order->get_deliveries('objects')  as $delivery){
             $delivery->update_supplier_delivery_items_state();
         }

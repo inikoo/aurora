@@ -845,6 +845,51 @@ function orders($_data, $db, $user, $account) {
                     break;
             }
 
+
+            if($data['Purchase Order State']!=$data['Purchase Order Max Supplier Delivery State'] and $data['Purchase Order Max Supplier Delivery State']!='NA' and $data['Purchase Order Max Supplier Delivery State']!='InProcess'){
+
+                switch ($data['Purchase Order Max Supplier Delivery State']) {
+
+
+                    case 'InProcess':
+                        $max_state = _('In Process');
+                        break;
+                    case 'Submitted':
+                        $max_state = _('Submitted');
+                        break;
+                    case 'Inputted':
+                        $max_state = _('Delivery in process');
+                        break;
+                    case 'Dispatched':
+                        $max_state = _('Delivery dispatched');
+                        break;
+                    case 'Received':
+                        $max_state = _('Received');
+                        break;
+                    case 'Checked':
+                        $max_state = _('Checked');
+                        break;
+                    case 'Placed':
+                        $max_state = _('Booked in');
+                        break;
+                    case 'Costing':
+                        $max_state = _('Booked in').' ('._('Review costing').')';
+                        break;
+                    case 'InvoiceChecked':
+                        $max_state = _('Booked in').' ('._('Costing done').')';
+                        break;
+                    case 'Cancelled':
+                        $max_state = _('Cancelled');
+                        break;
+                    default:
+                        $max_state = $data['Purchase Order State'];
+                        break;
+                }
+
+                $state.=' <span class="very_small discreet">('.$max_state.')</span>';
+            }
+
+
             $table_data[] = array(
                 'id'              => (integer)$data['Purchase Order Key'],
                 'parent'          => sprintf('<span class="link" onclick="change_view(\'/%s/%d\')" >%s</span>  ', strtolower($data['Purchase Order Parent']), $data['Purchase Order Parent Key'], $data['Purchase Order Parent Name']),
@@ -4978,11 +5023,11 @@ function delivery_items_done($_data, $db, $user) {
             );
             if ($data['Part Reference'] != $data['Supplier Part Reference']) {
                 $reference .= sprintf(
-                    '<br ><span class="small link"  onclick="change_view(\'/supplier/%d/part/%d\')"  title="%s"><i class="fa fa-square"></i> %s</span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Supplier product code'), $data['Supplier Part Reference']
+                    '<br ><span class="small link"  onclick="change_view(\'/supplier/%d/part/%d\')"  title="%s"><i class="fal box"></i> %s</span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Supplier product code'), $data['Supplier Part Reference']
                 );
             } else {
                 $reference .= sprintf(
-                    ', <span class="small link"  onclick="change_view(\'/supplier/%d/part/%d\')" ><i class="fa fa-square" title="%s"></i> </span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Part reference is same as supplier product code')
+                    ', <span class="small link"  onclick="change_view(\'/supplier/%d/part/%d\')" ><i class="fal fa-box" title="%s"></i> </span>', $data['Supplier Key'], $data['Supplier Part Key'], _('Part reference is same as supplier product code')
                 );
             }
 

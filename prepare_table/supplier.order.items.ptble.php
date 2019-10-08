@@ -43,7 +43,7 @@ switch ($parameters['elements_type']) {
                     $_elements .= ",'Received','Checked','Inputted'";
 
                 }elseif($_key=='Received'){
-                    $_elements .= ",'Placed'";
+                    $_elements .= ",'Placed','InvoiceChecked'";
 
                 }elseif($_key=='Cancelled'){
                     $_elements .= ",'Cancelled','NoReceived'";
@@ -78,25 +78,36 @@ if ($parameters['f_field'] == 'code' and $f_value != '') {
     $wheref .= " and `Supplier Part Reference` like '".addslashes($f_value)."%'";
 }
 
-
+//
 
 
 $_order = $order;
 $_dir   = $order_direction;
 
-if ($order == 'code') {
+if ($order == 'reference') {
     $order = '`Supplier Part Reference`';
-} elseif ($order == 'created') {
-    $order = '`Order Date`';
-} elseif ($order == 'description') {
+} elseif ($order == 'description_units' or $order == 'description_skos' or $order == 'description_cartons' ) {
     $order = '`Supplier Part Description`';
+}elseif ($order == 'created') {
+    $order = '`Order Date`';
+}elseif ($order == 'items_qty') {
+    $order = '`Purchase Order Submitted Units`';
+}elseif ($order == 'amount') {
+    $order = '`Purchase Order Net Amount`';
+}elseif ($order == 'weight') {
+    $order = '`Part Package Weight`*`Purchase Order Submitted Units`';
+}elseif ($order == 'cbm') {
+    $order = '`Supplier Part Carton CBM`*`Purchase Order Submitted Units`';
 } elseif ($order == 'last_updated') {
     $order = '`Order Last Updated Date`';
 } elseif ($order == 'item_index') {
     $order = '`Purchase Order Item Index`';
+} elseif ($order == 'state') {
+    $order = '`Purchase Order Transaction State`';
 } else {
     $order = '`Purchase Order Transaction Fact Key`';
 }
+
 
 $table
     = "
