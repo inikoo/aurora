@@ -3,7 +3,7 @@
 abstract class DB_Table extends stdClass {
 
     /**
-     * @var PDO
+     * @var $db PDO
      */
     public $db;
     public $errors_while_updating = array();
