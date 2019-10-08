@@ -89,14 +89,10 @@ function update_products_data($db) {
 
 
             //$product->update_part_numbers();
-            //$product->update_order_numbers();
-            //$product->update_customers_favored_numbers();
 
             // $product->update_history_records_data();
             //  $product->update_images_data();
 
-            //  $product->update_interval_sales();
-            //$product->update_up_today_sales();
 
             // print_r(array('Product XHTML Parts'=>$product->get('Parts')));
 
