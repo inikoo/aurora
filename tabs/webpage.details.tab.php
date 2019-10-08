@@ -13,6 +13,9 @@
 include_once 'utils/invalid_messages.php';
 include_once 'conf/object_fields.php';
 
+/**
+ * @var $webpage \Page
+ */
 $webpage = $state['_object'];
 
 $object_fields = get_object_fields($webpage, $db, $user, $smarty, array());
@@ -39,4 +42,4 @@ if($webpage->get('Webpage Scope')=='Category Categories' or $webpage->get('Webpa
 
 $html .= $smarty->fetch('edit_object.tpl');
 
-?>
+

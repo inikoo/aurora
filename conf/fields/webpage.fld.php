@@ -48,19 +48,19 @@ if ($object->get('Webpage Scope') == 'Category Categories' or $object->get('Webp
 
 $can_update_code = (in_array(
     $object->get('Webpage Scope'), array(
-    'Product',
-    'Category Categories',
-    'Category Products',
-    'Info'
-)
+                                     'Product',
+                                     'Category Categories',
+                                     'Category Products',
+                                     'Info'
+                                 )
 ) ? true : false);
 
 
 $can_delete = (in_array(
     $object->get('Webpage Scope'), array(
-    'Info',
-    ''
-)
+                                     'Info',
+                                     ''
+                                 )
 ) ? true : false);
 
 
@@ -137,9 +137,7 @@ if (in_array(
                     'render'    => ($website->get('Website Status') == 'Active' and $object->get('Webpage State') == 'Offline' ? true : false),
                     'class'     => 'operation',
                     'value'     => '',
-                    'label'     => '<span style="margin:10px 0px;padding:10px;border:1px solid #ccc" webpage_key="'.$object->id.'" onClick="publish(this,\'publish_webpage\')" class=" button ">'._(
-                            "Republish web page"
-                        ).' <i class="fa fa-rocket   button"></i></span>',
+                    'label'     => '<span style="margin:10px 0px;padding:10px;border:1px solid #ccc" webpage_key="'.$object->id.'" onClick="publish(this,\'publish_webpage\')" class=" button ">'._("Republish web page").' <i class="fa fa-rocket   button"></i></span>',
                     'reference' => '',
                     'type'      => 'operation'
                 ),
@@ -159,17 +157,6 @@ if (in_array(
 
                 ),
 
-
-                array(
-                    'id'        => 'launch_webpage',
-                    'render'    => ($website->get('Website Status') == 'Active' and $object->get('Webpage State') == 'InProcess' ? true : false),
-                    'class'     => 'operation',
-                    'value'     => '',
-                    'label'     => ' <span style="margin:10px 0px;padding:10px;border:1px solid #ccc"  webpage_key="'.$object->id.'" onClick="publish(this,\'publish_webpage\')" class="save changed valid">'._("Launch web page")
-                        .' <i class="fa fa-rocket save changed valid"></i></span>',
-                    'reference' => '',
-                    'type'      => 'operation'
-                ),
 
                 array(
                     'id'     => 'Webpage_Redirection_Code',
