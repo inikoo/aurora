@@ -57,7 +57,6 @@ switch ($tipo) {
 
 function recover_password($db, $data, $editor, $website, $account) {
 
-   // require 'external_libs/aws.phar';
 
 
     $sql = sprintf(

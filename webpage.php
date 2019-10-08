@@ -24,9 +24,7 @@ if (!isset($_REQUEST['theme']) or !preg_match('/^theme\_\d+$/', $_REQUEST['theme
 }
 
 
-//require_once 'external_libs/ImageCache.php';
-//$imagecache                         = new ImageCache();
-//$imagecache->cached_image_directory = 'EcomB2B/server_files/cached_images/';
+
 
 $webpage_key = $_REQUEST['webpage_key'];
 $theme       = $_REQUEST['theme'];

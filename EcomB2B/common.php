@@ -22,10 +22,7 @@ include_once 'utils/general_functions.php';
 include_once 'utils/public_object_functions.php';
 include_once 'utils/network_functions.php';
 include_once 'utils/aes.php';
-include_once 'external_libs/ImageCache.php';
 
-$imagecache = new ImageCache();
-$imagecache->cached_image_directory = 'server_files/cached_images';
 
 $smarty               = new Smarty();
 $smarty->setTemplateDir('templates');
