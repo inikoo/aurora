@@ -26,7 +26,6 @@ $editor = array(
     'Subject Key'  => 0,
     'Author Name'  => 'System (Stack product sales)',
     'Author Alias' => 'System (Stack product sales)',
-    'v'            => 3
 
 
 );

@@ -304,7 +304,7 @@ abstract class DB_Table extends stdClass {
     function add_table_history($raw_data, $force, $post_arg1, $options = '', $table_name, $table_key) {
 
 
-        //print_r($raw_data);
+
 
         $editor_data = $this->get_editor_data();
         if ($this->no_history) {
@@ -340,14 +340,14 @@ abstract class DB_Table extends stdClass {
             $data['User Key'] = $editor_data['User Key'];
         }
 
-        //  print_r($data);
+
+
 
         if ($data['Subject'] == '' and isset($this->editor['Subject']) and isset($this->editor['Subject Key']) and isset($this->editor['Author Name'])) {
             $data['Subject']     = $this->editor['Subject'];
             $data['Subject Key'] = $this->editor['Subject Key'];
             $data['Author Name'] = $this->editor['Author Name'];
         }
-
 
         if ($data['Subject'] == '') {
             include_once 'class.User.php';
@@ -517,6 +517,7 @@ abstract class DB_Table extends stdClass {
                     '<i class="fa fa-upload" aria-hidden="true"></i> <span class="link" onclick="change_view(\'upload/%d\')">%s</span>)</span>', $this->editor['Upload Key'], $this->editor['Upload Label']
                 );
         }
+
 
 
         $sql =

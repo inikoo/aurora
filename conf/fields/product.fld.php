@@ -139,7 +139,7 @@ $product_fields = array(
                     array(
                         'tipo'       => 'check_for_duplicates',
                         'parent'     => 'store',
-                        'parent_key' => $object->get('Product Store Key'),
+                        'parent_key' =>  ($new ? $options['store_key'] :$object->get('Product Store Key')),
                         'object'     => 'Product',
                         'key'        => $object->id
                     )

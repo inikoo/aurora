@@ -3462,6 +3462,11 @@ class Store extends DB_Table {
 
     }
 
+    /**
+     * @param $data
+     *
+     * @return bool|\Product
+     */
     function create_product($data) {
 
 
@@ -3478,11 +3483,12 @@ class Store extends DB_Table {
             $this->error_code = 'product_code_missing';
             $this->metadata   = '';
 
-            return;
+            return false;
         }
 
         $sql = sprintf(
-            'SELECT count(*) AS num ,`Product ID` FROM `Product Dimension` WHERE `Product Code`=%s AND `Product Store Key`=%d AND `Product Status`!="Discontinued" ', prepare_mysql($data['Product Code']), $this->id
+            "SELECT count(*) AS num ,`Product ID` FROM `Product Dimension` WHERE `Product Code`=%s AND `Product Store Key`=%d AND `Product Status`!='Discontinued' ",
+            prepare_mysql($data['Product Code']), $this->id
 
         );
 
@@ -3497,12 +3503,8 @@ class Store extends DB_Table {
 
                     return get_object('Product', $row['Product ID']);
 
-                    return;
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -3513,7 +3515,7 @@ class Store extends DB_Table {
             $this->msg        = _('Unit label missing');
             $this->error_code = 'product_unit_label_missing';
 
-            return;
+            return false;
         }
 
         if (!isset($data['Product Name']) or $data['Product Name'] == '') {
@@ -3523,7 +3525,7 @@ class Store extends DB_Table {
             $this->msg        = _('Product name missing');
             $this->error_code = 'product_name_missing';
 
-            return;
+            return false;
         }
 
 
@@ -3532,7 +3534,7 @@ class Store extends DB_Table {
             $this->msg        = _('Units per outer missing');
             $this->error_code = 'product_units_per_case_missing';
 
-            return;
+            return false;
         }
 
         if (!is_numeric($data['Product Units Per Case']) or $data['Product Units Per Case'] <= 0) {
@@ -3541,7 +3543,7 @@ class Store extends DB_Table {
             $this->error_code = 'invalid_product_units_per_case';
             $this->metadata   = $data['Product Units Per Case'];
 
-            return;
+            return false;
         }
 
 
@@ -3550,7 +3552,7 @@ class Store extends DB_Table {
             $this->msg        = _('Cost missing');
             $this->error_code = 'product_price_missing';
 
-            return;
+            return false;
         }
 
         if (!is_numeric($data['Product Price']) or $data['Product Price'] < 0) {
@@ -3559,7 +3561,7 @@ class Store extends DB_Table {
             $this->error_code = 'invalid_product_price';
             $this->metadata   = $data['Product Price'];
 
-            return;
+            return false;
         }
 
 
@@ -3572,7 +3574,7 @@ class Store extends DB_Table {
                 $this->error_code = 'invalid_product_unit_rrp';
                 $this->metadata   = $data['Product Unit RRP'];
 
-                return;
+                return false;
             }
         }
         if ($data['Product Unit RRP'] != '') {
@@ -3614,7 +3616,7 @@ class Store extends DB_Table {
 
             include_once 'class.Part.php';
             $product_parts = array();
-            foreach (preg_split('/\,/', $data['Parts']) as $part_data) {
+            foreach (preg_split('/,/', $data['Parts']) as $part_data) {
                 $part_data = _trim($part_data);
                 if (preg_match('/(\d+)x\s+/', $part_data, $matches)) {
 
@@ -3644,7 +3646,7 @@ class Store extends DB_Table {
 
         if (isset($data['Product Parts'])) {
 
-            include_once 'class.Part.php';
+
             $product_parts = json_decode($data['Product Parts'], true);
 
 
@@ -3662,7 +3664,7 @@ class Store extends DB_Table {
                         $this->metadata   = '';
 
 
-                        return;
+                        return false;
                     }
 
                     if (!isset($product_part['Part SKU'])
@@ -3676,7 +3678,7 @@ class Store extends DB_Table {
                         $this->metadata   = '';
 
 
-                        return;
+                        return false;
                     }
 
                     if (!array_key_exists('Ratio', $product_part)
@@ -3689,7 +3691,7 @@ class Store extends DB_Table {
                         $this->metadata   = '';
 
 
-                        return;
+                        return false;
                     }
 
                     if (!array_key_exists('Note', $product_part)
@@ -3702,7 +3704,7 @@ class Store extends DB_Table {
                         $this->metadata   = '';
 
 
-                        return;
+                        return false;
                     }
 
                     if (is_null($product_part['Note'])) {
@@ -3720,7 +3722,7 @@ class Store extends DB_Table {
                         $this->metadata   = '';
 
 
-                        return;
+                        return false;
                     }
 
                     if (
@@ -3733,11 +3735,11 @@ class Store extends DB_Table {
                         $this->metadata   = '';
 
 
-                        return;
+                        return false;
                     }
 
 
-                    $part = new Part($product_part['Part SKU']);
+                    $part = get_object('Part',$product_part['Part SKU']);
 
                     if (!$part->id) {
 
@@ -3747,7 +3749,7 @@ class Store extends DB_Table {
                         $this->metadata   = $product_part['Part SKU'];
 
 
-                        return;
+                        return false;
 
                     }
 
@@ -3760,7 +3762,7 @@ class Store extends DB_Table {
                         $this->error_code = 'invalid_parts_per_product';
                         $this->metadata   = array($product_part['Ratio']);
 
-                        return;
+                        return false;
 
                     }
 
@@ -3774,7 +3776,7 @@ class Store extends DB_Table {
                 $this->error_code = 'can_not_parse_product_parts';
                 $this->metadata   = '';
 
-                return;
+                return false;
 
             }
 
@@ -3815,6 +3817,9 @@ class Store extends DB_Table {
                         $part->editor=$this->editor;
                         $part->fork=$this->fork;
                         $part->updated_linked_products();
+
+                       
+
                     }
                 }
 
@@ -3827,6 +3832,7 @@ class Store extends DB_Table {
                     $product->update(array('Product Family Category Key' => $family_key), 'no_history');
                 }
 
+                $product->update_status_from_parts();
 
                 global $account;
 

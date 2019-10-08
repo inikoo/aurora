@@ -945,10 +945,13 @@ function check_for_duplicates($data, $db, $user, $account) {
 
 
                     $invalid_msg              = _('Product code already used');
+
                     $sql                      = sprintf(
-                        "SELECT P.`Product ID` AS `key` ,`Product Code` AS field FROM `Product Dimension` P WHERE  `Product Code`=%s  AND `Product Store Key`=%s AND `Product Status`!='Discontinued' ", prepare_mysql($data['value']), $data['parent_key']
+                        "SELECT P.`Product ID` AS `key` ,`Product Code` AS field FROM `Product Dimension` P WHERE  `Product Code`=%s  AND `Product Store Key`=%d AND `Product Status`!='Discontinued' ",
+                        prepare_mysql($data['value']), $data['parent_key']
 
                     );
+
                     $validation_sql_queries[] = array(
                         'sql'         => $sql,
                         'invalid_msg' => $invalid_msg

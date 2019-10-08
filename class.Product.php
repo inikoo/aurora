@@ -795,6 +795,7 @@ class Product extends Asset {
     function create($data) {
 
 
+
         include_once 'utils/natural_language.php';
 
 
@@ -805,6 +806,7 @@ class Product extends Asset {
             }
         }
         $this->editor = $data['editor'];
+
 
         if ($this->data['Product Valid From'] == '') {
             $this->data['Product Valid From'] = gmdate('Y-m-d H:i:s');
@@ -2936,7 +2938,7 @@ class Product extends Asset {
 
 
                         if ($old_family->id) {
-                            /** @var $old_website \Page  */
+                            /** @var $old_website \Page */
                             $old_website = get_object('Webpage', $old_family->get('Product Category Webpage Key'));
                             if ($old_website->id) {
                                 $old_website->reindex_items();
@@ -2947,7 +2949,7 @@ class Product extends Asset {
                         }
 
                         if ($family->id) {
-                            /** @var $website \Page  */
+                            /** @var $website \Page */
                             $website = get_object('Webpage', $family->get('Product Category Webpage Key'));
                             if ($website->id) {
                                 $website->reindex_items();
@@ -3107,7 +3109,6 @@ class Product extends Asset {
 
     function update_part_list($value, $options = '') {
 
-
         $value = json_decode($value, true);
 
 
@@ -3126,14 +3127,15 @@ class Product extends Asset {
             }
         }
 
-        if (count(array_diff($old_part_list_keys, $new_part_list_keys)) != 0) {
 
-            //print_r($old_part_list_keys);
-            //print_r($new_part_list_keys);
-            $this->error = true;
-            $this->msg   = _('Another user updated current part list, refresh and try again');
+        foreach (array_diff($old_part_list_keys, $new_part_list_keys) as $product_part_key )  {
+            $sql = "delete from `Product Part Bridge` where `Product Part Key`=? ";
+            $this->db->prepare($sql)->execute(
+                array(
+                    $product_part_key
+                )
+            );
 
-            return;
         }
 
 
@@ -3201,7 +3203,6 @@ class Product extends Asset {
         $this->update_weight();
 
         $this->fast_update(array('Product XHTML Parts' => $this->get('Parts')));
-
 
         $this->update_metadata = array(
             'class_html' => array(
