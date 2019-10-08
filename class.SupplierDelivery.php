@@ -61,7 +61,7 @@ class SupplierDelivery extends DB_Table {
         $this->found     = false;
         $this->found_key = false;
         $create          = '';
-        $update          = '';
+
         if (preg_match('/create/i', $options)) {
             $create = 'create';
         }
@@ -784,7 +784,24 @@ class SupplierDelivery extends DB_Table {
                 break;
             case 'Supplier Delivery Estimated Receiving Date':
                 $this->update_field($field, $value, $options);
-                $this->update_supplier_parts();
+
+                $sql = sprintf(
+                    "SELECT `Supplier Part Key`,`Supplier Delivery Units` FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=%d", $this->id
+                );
+
+
+                if ($result = $this->db->query($sql)) {
+                    foreach ($result as $row) {
+
+                        $supplier_part         = get_object('SupplierPart', $row['Supplier Part Key']);
+                        $supplier_part->editor = $this->editor;
+                        if (isset($supplier_part->part)) {
+                            $supplier_part->part->update_next_deliveries_data();
+                        }
+
+
+                    }
+                }
 
                 break;
 
@@ -896,12 +913,7 @@ class SupplierDelivery extends DB_Table {
                 );
                 $this->db->exec($sql);
 
-                $sql = sprintf(
-                    'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Transaction State`=%s WHERE `Supplier Delivery Key`=%d ', prepare_mysql($value), $this->id
-                );
-                $this->db->exec($sql);
-
-                $this->update_supplier_parts();
+              $this->update_supplier_delivery_items_state();
 
                 $operations = array(
                     'delete_operations',
@@ -929,13 +941,14 @@ class SupplierDelivery extends DB_Table {
 
 
                 $sql = sprintf(
-                    'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Transaction State`=%s ,`Purchase Order Transaction State`=%s ,`Supplier Delivery Last Updated Date`=%s WHERE `Supplier Delivery Key`=%d ', prepare_mysql($value), prepare_mysql($value),
+                    'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Last Updated Date`=%s WHERE `Supplier Delivery Key`=%d ',
                     prepare_mysql($date), $this->id
                 );
                 $this->db->exec($sql);
 
 
-                $this->update_supplier_parts();
+                $this->update_supplier_delivery_items_state();
+
 
                 $operations = array(
                     'cancel_operations',
@@ -968,10 +981,9 @@ class SupplierDelivery extends DB_Table {
                 );
                 $this->db->exec($sql);
 
-                $sql = sprintf(
-                    'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Transaction State`=%s ,`Purchase Order Transaction State`=%s WHERE `Supplier Delivery Key`=%d ', prepare_mysql($value), prepare_mysql($value), $this->id
-                );
-                $this->db->exec($sql);
+
+
+                $this->update_supplier_delivery_items_state();
 
 
                 $parent = get_object(
@@ -1016,7 +1028,7 @@ class SupplierDelivery extends DB_Table {
                 }
 
 
-                $this->update_supplier_parts();
+
 
                 break;
             case 'Checked':
@@ -1182,7 +1194,7 @@ class SupplierDelivery extends DB_Table {
                             'Supplier Delivery Invoice Checked Date' => $date,
                         )
                     );
-
+                    $this->update_supplier_delivery_items_state();
 
                     $operations = array('');
 
@@ -1225,7 +1237,7 @@ class SupplierDelivery extends DB_Table {
                 );
                 $operations = array();
 
-                $this->update_supplier_parts();
+                $this->update_supplier_delivery_items_state();
 
                 break;
 
@@ -1270,32 +1282,7 @@ class SupplierDelivery extends DB_Table {
 
     }
 
-    function update_supplier_parts() {
 
-
-        $sql = sprintf(
-            "SELECT `Supplier Part Key`,`Supplier Delivery Units` FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=%d", $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                $supplier_part         = get_object('SupplierPart', $row['Supplier Part Key']);
-                $supplier_part->editor = $this->editor;
-                if (isset($supplier_part->part)) {
-                    $supplier_part->part->update_next_deliveries_data();
-                }
-
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
 
     function update_item($data) {
 
@@ -1328,348 +1315,181 @@ class SupplierDelivery extends DB_Table {
         $units_qty = $data['qty'];
 
 
-        //  print $qty;
 
-        $placement = '';
 
-        $sql = sprintf(
-            'SELECT `Supplier Delivery Transaction Placed`,`Part SKU`,POTF.`Purchase Order Transaction Fact Key`,`Supplier Delivery Placed Units`,POTF.`Metadata`,`Purchase Order Transaction Part SKU`,POTF.`Supplier Part Key`
+        $sql = "SELECT `Supplier Delivery Transaction Placed`,`Part SKU`,POTF.`Purchase Order Transaction Fact Key`,`Supplier Delivery Placed Units`,POTF.`Metadata`,`Purchase Order Transaction Part SKU`,POTF.`Supplier Part Key`
 		      FROM `Purchase Order Transaction Fact`  POTF
               LEFT JOIN  `Part Dimension` P ON (P.`Part SKU`=POTF.`Purchase Order Transaction Part SKU`)
-              WHERE  `Purchase Order Transaction Fact Key`=%d ', $transaction_key
+              WHERE  `Purchase Order Transaction Fact Key`=? ";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array($transaction_key)
         );
+        if($row = $stmt->fetch()) {
+            /**
+             * @var $part \Part
+             */
+            $part = get_object('Part', $row['Purchase Order Transaction Part SKU']);
+
+            $sko_qty = $units_qty / $part->get('Part Units Per Package');
+            if ($sko_qty < 0) {
+                $sko_qty   = 0;
+                $units_qty = 0;
+            }
+
+            $placement_sko_qty = $this->get_placement_quantity($transaction_key);
+
+            $placement_units_qty = $placement_sko_qty * $part->get('Part Units Per Package');
 
 
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
+            // print  $qty.' '.$placement_qty ;
 
-                /**
-                 * @var $part \Part
-                 */
-                $part = get_object('Part', $row['Purchase Order Transaction Part SKU']);
+            if (round($units_qty, 2) < round($placement_units_qty, 2)) {
+                $this->error = true;
+                $this->msg   = sprintf(_("%d SKOs have been already placed, checked SKOs can't be set up to %d"), $placement_sko_qty, $sko_qty);
 
-                $sko_qty = $units_qty / $part->get('Part Units Per Package');
-                if ($sko_qty < 0) {
-                    $sko_qty   = 0;
-                    $units_qty = 0;
-                }
-
-                $placement_sko_qty = $this->get_placement_quantity($transaction_key);
-
-                $placement_units_qty = $placement_sko_qty * $part->get('Part Units Per Package');
+                return false;
 
 
-                // print  $qty.' '.$placement_qty ;
-
-                if (round($units_qty, 2) < round($placement_units_qty, 2)) {
-                    $this->error = true;
-                    $this->msg   = sprintf(_("%d SKOs have been already placed, checked SKOs can't be set up to %d"), $placement_sko_qty, $sko_qty);
-
-                    return false;
+            }
 
 
-                }
+            //$this->db->exec($sql);
+            if ($units_qty == 0) {
 
-
-                //$this->db->exec($sql);
-                if ($units_qty == 0) {
-
-                    if (round($placement_units_qty, 2) > round($units_qty, 2)) {
-                        $placed = 'Yes';
-                    } else {
-                        $placed = 'NA';
-                    }
+                if (round($placement_units_qty, 2) > round($units_qty, 2)) {
+                    $placed = 'Yes';
                 } else {
-
-                    if (round($placement_units_qty, 2) >= round($units_qty, 2)) {
-                        $placed = 'Yes';
-                    } else {
-                        $placed = 'No';
-                    }
-
+                    $placed = 'NA';
                 }
+            } else {
 
-
-                $sql = sprintf(
-                    "UPDATE `Purchase Order Transaction Fact` SET  `Supplier Delivery Checked Units`=%f,`Supplier Delivery Last Updated Date`=%s ,`Supplier Delivery Transaction Placed`=%s WHERE  `Purchase Order Transaction Fact Key`=%d ", $units_qty,
-                    prepare_mysql($date), prepare_mysql($placed), $transaction_key
-                );
-                //print "$sql\n";
-
-                $this->db->exec($sql);
-
-                if ($placed == 'Yes') {
-                    $sql = sprintf(
-                        "UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Transaction State`='Placed' ,`Purchase Order Transaction State`='Placed' WHERE `Purchase Order Transaction Fact Key`=%d ",
-
-                        $transaction_key
-                    );
-
+                if (round($placement_units_qty, 2) >= round($units_qty, 2)) {
+                    $placed = 'Yes';
                 } else {
-                    $sql = sprintf(
-                        "UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Transaction State`='Checked',`Purchase Order Transaction State`='Checked'  WHERE `Purchase Order Transaction Fact Key`=%d ",
-
-                        $transaction_key
-                    );
+                    $placed = 'No';
                 }
 
-
-                $this->db->exec($sql);
-
-                $quantity = ($sko_qty - $placement_sko_qty);
+            }
 
 
-                if ($row['Metadata'] == '') {
-                    $metadata = array();
-                } else {
-                    $metadata = json_decode($row['Metadata'], true);
-                }
+            $sql = sprintf(
+                "UPDATE `Purchase Order Transaction Fact` SET  `Supplier Delivery Checked Units`=%f,`Supplier Delivery Last Updated Date`=%s ,`Supplier Delivery Transaction Placed`=%s WHERE  `Purchase Order Transaction Fact Key`=%d ", $units_qty,
+                prepare_mysql($date), prepare_mysql($placed), $transaction_key
+            );
+            //print "$sql\n";
+            $this->db->exec($sql);
 
 
-                $placement = '<div  class="placement_data mini_table right no_padding" style="padding-right:2px">';
-                if (isset($metadata['placement_data'])) {
+            $this->update_supplier_delivery_item_state($transaction_key,false);
 
-                    foreach ($metadata['placement_data'] as $placement_data) {
-                        $placement .= '<div style="clear:both;">
+            $quantity = ($sko_qty - $placement_sko_qty);
+
+
+            if ($row['Metadata'] == '') {
+                $metadata = array();
+            } else {
+                $metadata = json_decode($row['Metadata'], true);
+            }
+
+
+            $placement = '<div  class="placement_data mini_table right no_padding" style="padding-right:2px">';
+            if (isset($metadata['placement_data'])) {
+
+                foreach ($metadata['placement_data'] as $placement_data) {
+                    $placement .= '<div style="clear:both;">
                                 <div class="data w150 aright link" onClick="change_view(\'locations/'.$placement_data['wk'].'/'.$placement_data['lk'].'\')" >'.$placement_data['l'].'</div>
                                 <div  class=" data w75 aleft"  >'.$placement_data['qty'].' '._(
-                                'SKO'
-                            ).' <i class="fa fa-sign-out" aria-hidden="true"></i></div>
+                            'SKO'
+                        ).' <i class="fa fa-sign-out" aria-hidden="true"></i></div>
                                 </div>';
 
 
-                    }
                 }
-                $placement .= '<div style="clear:both"></div>';
+            }
+            $placement .= '<div style="clear:both"></div>';
 
 
-                $placement .= '
+            $placement .= '
                                 <div style="clear:both"  id="place_item_'.$row['Purchase Order Transaction Fact Key'].'" class="place_item '.($placed == 'No' ? '' : 'hide').' " part_sku="'.$row['Part SKU'].'" transaction_key="'
-                    .$row['Purchase Order Transaction Fact Key'].'"  >
+                .$row['Purchase Order Transaction Fact Key'].'"  >
                                 <input class="place_qty width_50 changed" value="'.($quantity + 0).'" ovalue="'.($quantity + 0).'"  min="1" max="'.$quantity.'"  >
                                 <input class="location_code"  placeholder="'._('Location code').'"  >
                                 <i  class="fa  fa-cloud  fa-fw save " aria-hidden="true" title="'._('Place to location').'"  location_key="" onClick="place_item(this)"  ></i>
                                 <div>';
 
 
-                $part->update_next_deliveries_data();
+            $part->update_next_deliveries_data();
 
 
-            }
-        }
-
-        $this->update_totals();
-
-
-        $this->update_state($this->get_state());
-
-
-        if ($this->data['Supplier Delivery Placed Items'] == 'Yes') {
-            $operations = array();
-
-        } else {
-            $operations = array('cancel_operations');
-
-        }
-
-
-        $this->update_metadata = array(
-            'class_html'    => array(
-                'Supplier_Delivery_State'                             => $this->get('State'),
-                'Supplier_Delivery_Number_Placed_Items'               => $this->get('Number Placed Items'),
-                'Supplier_Delivery_Number_Received_and_Checked_Items' => $this->get('Number Received and Checked Items'),
-                'Supplier_Delivery_Checked_Percentage_or_Date'        => '&nbsp;'.$this->get('Checked Percentage or Date'),
-                'Supplier_Delivery_Placed_Percentage_or_Date'         => '&nbsp;'.$this->get('Placed Percentage or Date'),
-                'Supplier_Delivery_Number_Under_Delivered_Items'      => $this->get('Number Under Delivered Items'),
-                'Supplier_Delivery_Number_Over_Delivered_Items'       => $this->get('Number Over Delivered Items'),
-
-            ),
-            'checked_items' => $this->get('Supplier Delivery Number Received and Checked Items'),
-
-            'placement'   => $placement,
-            'operations'  => $operations,
-            'state_index' => $this->get('State Index'),
-
-
-        );
-
-
-        if ($this->get('Supplier Delivery Number Received and Checked Items') == 0) {
-            $this->update_metadata['hide'] = array('Mismatched_Items');
-        } else {
-            $this->update_metadata['show'] = array('Mismatched_Items');
-        }
-
-
-        return array(
-            'transaction_key' => $transaction_key,
-            'qty'             => $sko_qty + 0
-        );
-
-
-    }
-
-    /*
-        function update_item_delivery_units($data) {
-
-            //todo this in never called
-
-            $item_key          = $data['item_key'];
-            $item_historic_key = $data['item_historic_key'];
-            $units_qty         = $data['qty'];
-
-
-            $supplier_part = get_object('SupplierPart', $item_key);
-
-
-            $date            = gmdate('Y-m-d H:i:s');
-            $transaction_key = '';
-
-            if ($units_qty == 0) {
-
-                $sql = sprintf(
-                    "SELECT `Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Note to Supplier Locked` FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=%d AND `Supplier Part Key`=%d ", $this->id, $item_key
-                );
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-
-                        if ($row['Purchase Order Key'] == '') {
-
-                            $sql = sprintf(
-                                "DELETE FROM `Purchase Order Transaction Fact` WHERE `Purchase Order Transaction Fact Key`=%d ", $row['Purchase Order Transaction Fact Key']
-                            );
-                            $this->db->exec($sql);
-                        } else {
-
-                            $sql = sprintf(
-                                "UPDATE  `Purchase Order Transaction Fact` SET  `Supplier Delivery Key`=NULL,`Supplier Delivery Received Location Key`=1, `Supplier Delivery Units`=0,`Supplier Delivery Checked Units`=0,`Supplier Delivery Damaged Units`=0,`Supplier Delivery Placed Units`=0,`Supplier Delivery Net Amount`=0,`Supplier Delivery Transaction State`=NULL,`Supplier Delivery Transaction State`='Cancelled',`Supplier Delivery Counted`='No' WHERE `Purchase Order Transaction Fact Key`=%d ",
-                                $row['Purchase Order Transaction Fact Key']
-                            );
-
-                            // print $sql;
-                            $this->db->exec($sql);
-
-                        }
-                        $transaction_key = $row['Purchase Order Transaction Fact Key'];
-
-                    }
-                }
-
-
-                $amount    = 0;
-                $subtotals = '';
-
-
-            } else {
-
-
-                $amount = $units_qty * $supplier_part->get('Supplier Part Unit Cost');
-                if (is_numeric($supplier_part->get('Supplier Part Carton CBM'))) {
-                    $cbm = $units_qty * $supplier_part->get('Supplier Part Carton CBM') * $supplier_part->part->get('Part Units Per Package') * $supplier_part->get('Supplier Part Packages Per Carton');
-                } else {
-                    $cbm = 'NULL';
-                }
-
-
-                if (is_numeric($supplier_part->part->get('Part Package Weight'))) {
-                    $weight = $units_qty * $supplier_part->part->get('Part Package Weight') / $supplier_part->part->get('Part Units Per Package');
-                } else {
-                    $weight = 'NULL';
-                }
-
-
-                $sql = sprintf(
-                    "SELECT `Purchase Order Transaction Fact Key`,`Note to Supplier Locked` FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=%d AND `Supplier Part Key`=%d ", $this->id, $item_key
-                );
-
-
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-
-                        $sql = sprintf(
-                            "update`Purchase Order Transaction Fact` set  `Supplier Delivery Units`=%f,`Supplier Delivery Last Updated Date`=%s,`Supplier Delivery Net Amount`=%f ,`Supplier Delivery CBM`=%s,`Supplier Delivery Weight`=%s  where  `Purchase Order Transaction Fact Key`=%d ",
-                            $units_qty, prepare_mysql($date), $amount, $cbm, $weight, $row['Purchase Order Transaction Fact Key']
-                        );
-
-                        $this->db->exec($sql);
-
-                        $transaction_key = $row['Purchase Order Transaction Fact Key'];
-                    } else {
-
-                        $sql = sprintf(
-                            "INSERT INTO `Purchase Order Transaction Fact` (`Purchase Order Transaction Part SKU`,`Supplier Part Key`,`Supplier Part Historic Key`,`Currency Code`,`Supplier Delivery Last Updated Date`,`Supplier Delivery Transaction State`,
-                        `Supplier Key`,`Agent Key`,`Supplier Delivery Key`,`Supplier Delivery Units`,`Supplier Delivery Net Amount`,`Note to Supplier`,`Supplier Delivery CBM`,`Supplier Delivery Weight`,
-                        `User Key`,`Creation Date`
-                        )
-                        VALUES (%d,%d,%d,%s,%s,%s,
-                         %d,%s,%d,%.6f,%.2f,%s,%s,%s,
-                         %d,%s
-                         )", $supplier_part->get('Supplier Part Part SKU'), $item_key, $item_historic_key, prepare_mysql($this->get('Supplier Delivery Currency Code')), prepare_mysql($date), prepare_mysql($this->get('Supplier Delivery State')),
-
-                            $supplier_part->get('Supplier Part Supplier Key'), ($supplier_part->get('Supplier Part Agent Key') == ''
-                            ? 'Null'
-                            : sprintf(
-                                "%d", $supplier_part->get('Supplier Part Agent Key')
-                            )), $this->id, $units_qty, $amount, prepare_mysql(
-                                $supplier_part->get('Supplier Part Note to Supplier'), false
-                            ), $cbm, $weight, $this->editor['User Key'], prepare_mysql($date)
-
-
-                        );
-
-                        $this->db->exec($sql);
-                        $transaction_key = $this->db->lastInsertId();
-
-
-                    }
-
-
-                    $subtotals = money($amount, $this->get('Supplier Delivery Currency Code'));
-
-                    if ($weight > 0) {
-                        $subtotals .= ' '.weight($weight);
-                    }
-                    if ($cbm > 0) {
-                        $subtotals .= ' '.number($cbm).' m³';
-                    }
-
-
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
-                }
-
-
-            }
-
-            $supplier_part->part->update_next_deliveries_data();
 
             $this->update_totals();
 
-            $this->update_metadata = array(
-                'class_html' => array(
-                    'Supplier_Delivery_Total_Amount'                  => $this->get('Total Amount'),
-                    'Supplier_Delivery_Total_Amount_Account_Currency' => $this->get('Total Amount Account Currency'),
-                    'Supplier_Delivery_Weight'                        => $this->get('Weight'),
-                    'Supplier_Delivery_CBM'                           => $this->get('CBM'),
 
-                )
+            $this->update_state($this->get_state());
+
+
+            if ($this->data['Supplier Delivery Placed Items'] == 'Yes') {
+                $operations = array();
+
+            } else {
+                $operations = array('cancel_operations');
+
+            }
+
+
+            $this->update_metadata = array(
+                'class_html'    => array(
+                    'Supplier_Delivery_State'                             => $this->get('State'),
+                    'Supplier_Delivery_Number_Placed_Items'               => $this->get('Number Placed Items'),
+                    'Supplier_Delivery_Number_Received_and_Checked_Items' => $this->get('Number Received and Checked Items'),
+                    'Supplier_Delivery_Checked_Percentage_or_Date'        => '&nbsp;'.$this->get('Checked Percentage or Date'),
+                    'Supplier_Delivery_Placed_Percentage_or_Date'         => '&nbsp;'.$this->get('Placed Percentage or Date'),
+                    'Supplier_Delivery_Number_Under_Delivered_Items'      => $this->get('Number Under Delivered Items'),
+                    'Supplier_Delivery_Number_Over_Delivered_Items'       => $this->get('Number Over Delivered Items'),
+
+                ),
+                'checked_items' => $this->get('Supplier Delivery Number Received and Checked Items'),
+
+                'placement'   => $placement,
+                'operations'  => $operations,
+                'state_index' => $this->get('State Index'),
+
+
             );
+
+
+            if ($this->get('Supplier Delivery Number Received and Checked Items') == 0) {
+                $this->update_metadata['hide'] = array('Mismatched_Items');
+            } else {
+                $this->update_metadata['show'] = array('Mismatched_Items');
+            }
 
 
             return array(
                 'transaction_key' => $transaction_key,
-                'subtotals'       => $subtotals,
-                'to_charge'       => money(
-                    $amount, $this->data['Purchase Order Currency Code']
-                ),
-                'qty'             => $qty + 0
+                'qty'             => $sko_qty + 0
             );
 
-
+        }else{
+            return false;
         }
-    */
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+
 
     function get_placement_quantity($transaction_key) {
 
@@ -1776,39 +1596,25 @@ class SupplierDelivery extends DB_Table {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
         $over  = 0;
         $under = 0;
 
-        $sql = sprintf(
-            "SELECT  
+        $sql ="SELECT  sum( if(`Supplier Delivery Checked Units` > `Supplier Delivery Units` ,1,0))  over, sum( if( `Supplier Delivery Checked Units` < `Supplier Delivery Units` ,1,0))  under FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=?   and `Supplier Delivery Checked Units` is not null  ";
 
-
-		 sum( if( `Supplier Delivery Checked Units` > `Supplier Delivery Units` ,1,0)) AS over,
-				 sum( if( `Supplier Delivery Checked Units` < `Supplier Delivery Units` ,1,0)) AS under
-
-		 
-		 FROM `Purchase Order Transaction Fact` WHERE `Supplier Delivery Key`=%d   and `Supplier Delivery Checked Units` is not null  ", $this->id
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array($this->id)
         );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-
-                $over  = $row['over'];
-                $under = $row['under'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+        while ($row = $stmt->fetch()) {
+            $over  = $row['over'];
+            $under = $row['under'];
         }
+
+
+
 
         $this->fast_update(
             array(
@@ -1978,17 +1784,22 @@ class SupplierDelivery extends DB_Table {
 
                 if ($placed == 'Yes') {
                     $sql = sprintf(
-                        'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Placed SKOs`=%f, `Supplier Delivery Transaction State`="Placed" ,`Purchase Order Transaction State`="Placed"  WHERE `Purchase Order Transaction Fact Key`=%d ', $sko_qty,
+                        'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Placed SKOs`=%f  WHERE `Purchase Order Transaction Fact Key`=%d ', $sko_qty,
                         $row['Purchase Order Transaction Fact Key']
                     );
 
                 } else {
                     $sql = sprintf(
-                        'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Placed SKOs`=null, `Supplier Delivery Transaction State`=%s ,`Purchase Order Transaction State`=%s  WHERE `Purchase Order Transaction Fact Key`=%d ',
-                        prepare_mysql(($row['Supplier Delivery Checked Units'] == '' ? 'Received' : 'Checked')), prepare_mysql(($row['Supplier Delivery Checked Units'] == '' ? 'Received' : 'Checked')), $row['Purchase Order Transaction Fact Key']
+                        'UPDATE `Purchase Order Transaction Fact` SET `Supplier Delivery Placed SKOs`=null   WHERE `Purchase Order Transaction Fact Key`=%d ',
+                        $row['Purchase Order Transaction Fact Key']
                     );
                 }
                 $this->db->exec($sql);
+
+
+                $this->update_supplier_delivery_item_state($row['Purchase Order Transaction Fact Key'],false);
+
+
 
                 $placement = '<div  class="placement_data mini_table right no_padding" style="padding-right:2px">';
                 if (isset($metadata['placement_data'])) {
@@ -2197,22 +2008,43 @@ class SupplierDelivery extends DB_Table {
     function update_supplier_delivery_items_state() {
 
 
-        $sql  = "select `Supplier Delivery Transaction State`,`Purchase Order Transaction Fact Key`,POTF.`Supplier Delivery Key` ,`Supplier Delivery Units`,`Supplier Delivery Checked Units`,`Supplier Delivery Placed Units`,
-       `Supplier Delivery State`,
-                `Supplier Delivery Transaction State`
-                from `Purchase Order Transaction Fact`  POTF left join 
-                `Supplier Delivery Dimension` SD on (POTF.`Supplier Delivery Key`=SD.`Supplier Delivery Key`) 
-                where POTF.`Supplier Delivery Key`=? ";
+        $sql  = "select `Purchase Order Transaction Fact Key` from `Purchase Order Transaction Fact` where `Supplier Delivery Key`=? ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             array($this->id)
         );
         while ($row = $stmt->fetch()) {
+            $this->update_supplier_delivery_item_state($row['Purchase Order Transaction Fact Key']);
 
-            $old_state=
-            $state = $this->get_supplier_order_item_state(
-                $row['Supplier Delivery Units'], $row['Supplier Delivery Checked Units'], $row['Supplier Delivery Placed Units']
-            );
+
+        }
+
+    }
+
+
+    function update_supplier_delivery_item_state($transaction_key,$update_part_next_deliveries_data = true) {
+
+        $sql  = "select `Purchase Order Transaction Fact Key`,POTF.`Supplier Delivery Key` ,`Supplier Delivery Units`,`Supplier Delivery Checked Units`,`Supplier Delivery Placed Units`,
+       `Supplier Delivery State`,`Purchase Order Key`,
+                `Supplier Delivery Transaction State`,`Purchase Order Transaction Part SKU`
+                from `Purchase Order Transaction Fact`  POTF left join 
+                `Supplier Delivery Dimension` SD on (POTF.`Supplier Delivery Key`=SD.`Supplier Delivery Key`) 
+                where POTF.`Purchase Order Transaction Fact Key`=? ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array($transaction_key)
+        );
+        if ($row = $stmt->fetch()) {
+
+
+            $old_state = $row['Supplier Delivery Transaction State'];
+
+            $sent    = $row['Supplier Delivery Units'];
+            $checked = $row['Supplier Delivery Checked Units'];
+            $placed  = $row['Supplier Delivery Placed Units'];
+
+
+            $state = $this->get_supplier_order_item_state($sent, $checked, $placed);
 
 
             $sql = "update `Purchase Order Transaction Fact` set `Supplier Delivery Transaction State`=? where `Purchase Order Transaction Fact Key`=? ";
@@ -2224,80 +2056,94 @@ class SupplierDelivery extends DB_Table {
                 )
             );
 
-            if($old_state!=$state){
+            if ($old_state != $state ) {
                 /**
-                 * @var $part \Part
+                 * @var $purchase_order \PurchaseOrder
                  */
-                $part=get_object('Part',$row['Purchase Order Transaction Part SKU']);
-                $part->update_next_deliveries_data();
+                $purchase_order=get_object('Purchase Order',$row['Purchase Order Key']);
+                $purchase_order->update_purchase_order_item_state($row['Purchase Order Transaction Fact Key'],false);
+
+                if( $update_part_next_deliveries_data) {
+
+                    /**
+                     * @var $part \Part
+                     */
+                    $part = get_object('Part', $row['Purchase Order Transaction Part SKU']);
+                    $part->update_next_deliveries_data();
+                }
             }
+
 
 
         }
 
     }
 
-    private function get_supplier_order_item_state($sent, $checked, $placed) {
 
-        //'InProcess','Dispatched','Received','Checked','Placed','Cancelled','CostingDone','NoReceived'
-
-
-        if ($this->data['Supplier Delivery State'] == 'Cancelled') {
-            return 'Cancelled';
-
-        }
+    private function get_supplier_order_item_state($sent,$checked,$placed) {
 
 
-        if ($checked == '' and $placed == '') {
-            //'InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked'
 
 
-            if ($this->data['Supplier Delivery State'] == 'InProcess' or $this->data['Supplier Delivery State'] == 'Consolidated') {
-                $state = 'InProcess';
-            } elseif ($this->data['Supplier Delivery State'] == 'Dispatched') {
 
-                if ($sent > 0) {
-                    $state = 'Dispatched';
+            if ($this->data['Supplier Delivery State'] == 'Cancelled') {
+                return 'Cancelled';
+
+            }
+
+
+            if ($checked == '' and $placed == '') {
+                //'InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked'
+
+
+                if ($this->data['Supplier Delivery State'] == 'InProcess' or $this->data['Supplier Delivery State'] == 'Consolidated') {
+                    $state = 'InProcess';
+                } elseif ($this->data['Supplier Delivery State'] == 'Dispatched') {
+
+                    if ($sent > 0) {
+                        $state = 'Dispatched';
+                    } else {
+                        $state = 'Cancelled';
+                    }
+
                 } else {
-                    $state = 'Cancelled';
+
+                    if ($sent > 0) {
+                        $state = 'Received';
+                    } else {
+                        $state = 'Cancelled';
+                    }
+
                 }
 
-            } else {
 
-                if ($sent > 0) {
-                    $state = 'Received';
-                } else {
+            } elseif ($placed == '') {
+
+                if ($sent == 0) {
                     $state = 'Cancelled';
+                } elseif ($checked == 0) {
+                    $state = 'NoReceived';
+                } else {
+                    $state = 'Checked';
+
+                }
+
+
+            } else {
+                if ($placed >= $checked) {
+                    $state = 'Placed';
+
+                } else {
+                    $state = 'Checked';
                 }
 
             }
 
-
-        } elseif ($placed == '') {
-
-            if ($sent == 0) {
-                $state = 'Cancelled';
-            } elseif ($checked == 0) {
-                $state = 'NoReceived';
-            } else {
-                $state = 'Checked';
-
+            if ($this->data['Supplier Delivery State'] == 'InvoiceChecked' and $state == 'Placed') {
+                $state = 'CostingDone';
             }
 
-
-        } else {
-            if ($placed >= $checked) {
-                $state = 'Placed';
-
-            } else {
-                $state = 'Checked';
-            }
-
-        }
-
-        if ($this->data['Supplier Delivery State'] == 'InvoiceChecked' and $state == 'Placed') {
-            $state = 'CostingDone';
-        }
+            //print "$sent,$checked,$placed $state\n";
 
 
         return $state;

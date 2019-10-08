@@ -2178,6 +2178,8 @@ class PurchaseOrder extends DB_Table {
 
                     }
 
+                    $this->update_purchase_order_items_state();
+
 
                     break;
 
@@ -2286,6 +2288,7 @@ class PurchaseOrder extends DB_Table {
                         'UPDATE `Purchase Order Transaction Fact` SET `Purchase Order Transaction State`=%s WHERE `Purchase Order Key`=%d ', prepare_mysql($value), $this->id
                     );
                     $this->db->exec($sql);
+                    $this->update_purchase_order_items_state();
 
                     break;
 
@@ -2319,28 +2322,8 @@ class PurchaseOrder extends DB_Table {
                     );
                     // print_r($stmt->errorInfo());
                     $this->update_purchase_order_items_state();
-
                     break;
 
-
-                case 'Checked':
-
-
-                    $this->update_field(
-                        'Purchase Order Locked', 'Yes', 'no_history'
-                    );
-
-                    $this->update_field(
-                        'Purchase Order State', $value, 'no_history'
-                    );
-                    foreach ($metadata as $key => $_value) {
-                        $this->update_field(
-                            $key, $_value, 'no_history'
-                        );
-                    }
-
-
-                    break;
 
                 case 'Inputted':
                 case 'Dispatched':
@@ -2349,15 +2332,21 @@ class PurchaseOrder extends DB_Table {
                 case 'Costing':
                 case 'InvoiceChecked':
 
-
-                    $this->update_field(
-                        'Purchase Order State', $value, 'no_history'
+                    $this->fast_update(
+                        array(
+                            'Purchase Order Locked' => 'Yes'
+                        )
                     );
+
+
+
                     foreach ($metadata as $key => $_value) {
                         $this->update_field(
                             $key, $_value, 'no_history'
                         );
                     }
+
+                    $this->update_purchase_order_items_state();
 
 
                     break;
@@ -2412,6 +2401,25 @@ class PurchaseOrder extends DB_Table {
 
     }
 
+    function update_purchase_order_items_state() {
+
+
+        $sql  = "select `Purchase Order Transaction Fact Key` from `Purchase Order Transaction Fact`  where `Purchase Order Key`=? ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array($this->id)
+        );
+        while ($row = $stmt->fetch()) {
+            $this->update_purchase_order_item_state($row['Purchase Order Transaction Fact Key']);
+
+
+        }
+
+        $this->update_totals();
+
+
+    }
+
     function create_agent_supplier_purchase_orders() {
 
 
@@ -2442,25 +2450,6 @@ class PurchaseOrder extends DB_Table {
 
             }
         }
-
-
-    }
-
-    function update_purchase_order_items_state() {
-
-
-        $sql  = "select `Purchase Order Transaction Fact Key` from `Purchase Order Transaction Fact`  where `Purchase Order Key`=? ";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(
-            array($this->id)
-        );
-        while ($row = $stmt->fetch()) {
-            $this->update_purchase_order_item_state($row['Purchase Order Transaction Fact Key']);
-
-
-        }
-
-        $this->update_totals();
 
 
     }
