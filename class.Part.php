@@ -1863,10 +1863,6 @@ class Part extends Asset {
 
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
@@ -4709,12 +4705,16 @@ class Part extends Asset {
                         'Product Unit Weight'                  => $this->get('Part Unit Weight'),
                         'Product Unit Dimensions'              => $this->get('Part Unit Dimensions'),
                         'Product Materials'                    => $this->data['Part Materials'],
+                        'Product Barcode Number'                    => $this->data['Part Barcode Number'],
+
+                        'Product Barcode Key'                    => $this->data['Part Barcode Key'],
+
                     )
                 );
 
 
 
-                $sql = 'SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`="Part" AND `Image Subject Object Key`=? and `Image Subject Object Image Scope`="Marketing" ORDER BY `Image Subject Order` ';
+                $sql = "SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`='Part' AND `Image Subject Object Key`=? and `Image Subject Object Image Scope`='Marketing' ORDER BY `Image Subject Order` ";
 
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(

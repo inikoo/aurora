@@ -9,6 +9,17 @@
 
  Version 2.0
 */
+use \Rollbar\Rollbar;
+use \Rollbar\Payload\Level;
+
+if(defined('ROLLBACK_ACCESS_TOKEN')) {
+    Rollbar::init(
+        array(
+            'access_token' => ROLLBACK_ACCESS_TOKEN,
+            'environment'  => 'AU'
+        )
+    );
+}
 
 if(defined('SENTRY_DNS_AU')){
     Sentry\init(['dsn' => SENTRY_DNS_AU ]);
