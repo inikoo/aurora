@@ -1111,7 +1111,8 @@ function get_webpage_type_navigation($data, $smarty, $user, $db, $account) {
                 $tab      = 'website.webpage.types';
                 $_section = 'websites';
 
-                include 'conf/webpage_types.php';
+                include_once 'conf/webpage_types.php';
+                $webpage_types=get_webpage_types();
 
 
                 $label = $webpage_types[$object->get('Code')]['title'];

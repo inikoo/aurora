@@ -10,8 +10,6 @@
 */
 
 
-use function Aws\default_user_agent;
-
 include_once 'class.DB_Table.php';
 include_once 'class.Image.php';
 include_once 'trait.ImageSubject.php';
@@ -257,7 +255,8 @@ class Website extends DB_Table {
             $this->create_header($header_data);
 
 
-            include 'conf/webpage_types.php';
+            include_once 'conf/webpage_types.php';
+            $webpage_types=get_webpage_types();
             foreach ($webpage_types as $webpage_type) {
                 $sql = sprintf(
                     'INSERT INTO `Webpage Type Dimension` (`Webpage Type Website Key`,`Webpage Type Code`) VALUES (%d,%s) ', $this->id, prepare_mysql($webpage_type['code'])
@@ -771,6 +770,38 @@ class Website extends DB_Table {
 
     }
 
+    function update_website_webpages_data() {
+        $sql = "SELECT `Webpage State`,count(*) AS number FROM `Page Store Dimension` WHERE `Webpage Website Key`=%d  group by `Webpage State`";
+
+        $number_online_webpages     = 0;
+        $number_offline_webpages    = 0;
+        $number_in_process_webpages = 0;
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array($this->id)
+        );
+        while ($row = $stmt->fetch()) {
+            if ($row['Webpage State'] == 'Online') {
+                $number_online_webpages = $row['number'];
+            } elseif ($row['Webpage State'] == 'Offline') {
+                $number_offline_webpages = $row['number'];
+            } elseif ($row['Webpage State'] == 'InProcess') {
+                $number_in_process_webpages = $row['number'];
+            }
+        }
+
+
+        $this->fast_update(
+            array(
+                'Website Number Online Webpages'     => $number_online_webpages,
+                'Website Number Offline Webpages'    => $number_offline_webpages,
+                'Website Number In Process Webpages' => $number_in_process_webpages,
+            ), 'Website Data'
+        );
+
+
+    }
 
     function update_labels_in_localised_labels($labels, $operation = 'append') {
 
@@ -921,37 +952,6 @@ class Website extends DB_Table {
 
 
         }
-    }
-
-    function update_website_webpages_data() {
-        $sql                        = sprintf(
-            'SELECT `Webpage State`,count(*) AS number FROM `Page Store Dimension` WHERE `Webpage Website Key`=%d  group by `Webpage State`', $this->id
-        );
-        $number_online_webpages     = 0;
-        $number_offline_webpages    = 0;
-        $number_in_process_webpages = 0;
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                if ($row['Webpage State'] == 'Online') {
-                    $number_online_webpages = $row['number'];
-                } elseif ($row['Webpage State'] == 'Offline') {
-                    $number_offline_webpages = $row['number'];
-                } elseif ($row['Webpage State'] == 'InProcess') {
-                    $number_in_process_webpages = $row['number'];
-                }
-            }
-        }
-
-        $this->fast_update(
-            array(
-                'Website Number Online Webpages'     => $number_online_webpages,
-                'Website Number Offline Webpages'    => $number_offline_webpages,
-                'Website Number In Process Webpages' => $number_in_process_webpages,
-            ), 'Website Data'
-        );
-
-
     }
 
     function get_field_label($field) {
@@ -1308,7 +1308,6 @@ class Website extends DB_Table {
 
         }
     }
-
 
 
     function get_system_webpage_key($code) {

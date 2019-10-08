@@ -71,7 +71,8 @@ class Webpage_Type extends DB_Table {
             case 'Label':
 
 
-                include 'conf/webpage_types.php';
+                include_once 'conf/webpage_types.php';
+                $webpage_types=get_webpage_types();
 
                 return $webpage_types[$this->data['Webpage Type Code']]['title'];
                 break;

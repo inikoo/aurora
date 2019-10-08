@@ -717,7 +717,8 @@ function webpages_in_process($_data, $db, $user) {
 
     $rtext_label = 'webpage in_process';
     include_once 'prepare_table/init.php';
-    include 'conf/webpage_types.php';
+    include_once 'conf/webpage_types.php';
+    $webpage_types=get_webpage_types();
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
@@ -777,7 +778,8 @@ function webpages_ready($_data, $db, $user) {
 
     $rtext_label = 'webpage ready';
     include_once 'prepare_table/init.php';
-    include 'conf/webpage_types.php';
+    include_once 'conf/webpage_types.php';
+    $webpage_types=get_webpage_types();
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
@@ -824,7 +826,8 @@ function webpages_online($_data, $db, $user) {
 
 
     include_once 'prepare_table/init.php';
-    include 'conf/webpage_types.php';
+    include_once 'conf/webpage_types.php';
+    $webpage_types=get_webpage_types();
 
 
     //print_r($_data);
@@ -885,7 +888,8 @@ function webpages_offline($_data, $db, $user) {
 
     $rtext_label = 'webpage offline';
     include_once 'prepare_table/init.php';
-    include 'conf/webpage_types.php';
+    include_once 'conf/webpage_types.php';
+    $webpage_types=get_webpage_types();
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
@@ -943,7 +947,8 @@ function webpage_types($_data, $db, $user) {
 
     // $rtext_label = 'job position';
     include_once 'prepare_table/init.php';
-    include 'conf/webpage_types.php';
+    include_once 'conf/webpage_types.php';
+    $webpage_types=get_webpage_types();
 
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
