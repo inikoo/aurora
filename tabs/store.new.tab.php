@@ -16,12 +16,6 @@ include_once 'class.Store.php';
 
 
 
-if($account->get('Account Stores')==0){
-
-    $html='<div style="padding:20px">'.sprintf(_('You need set up a warehouse before creating a store, set up the warehouse %s'),'<span class="marked_link" onClick="change_view(\'/warehouse/new\')" >'._('here').'</span>').'</div>';
-    return;
-}
-
 
 
 $store = new Store(0);
@@ -37,4 +31,4 @@ $smarty->assign('object_fields', $object_fields);
 
 $html = $smarty->fetch('new_object.tpl');
 
-?>
+
