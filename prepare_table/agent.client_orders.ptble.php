@@ -73,13 +73,13 @@ if (isset($parameters['elements_type'])) {
                 if ($_value) {
                     $num_elements_checked++;
 
-
-                    if ($_key == 'SubmittedInputtedDispatched') {
-                        $_elements .= ",'Submitted','Inputted','Dispatched'";
-                    } elseif ($_key == 'ReceivedChecked') {
+                    if ($_key == 'Submitted') {
+                        $_elements .= ",'Submitted'";
+                    } elseif ($_key == 'InTransit') {
+                        $_elements .= ",'Dispatched'";
+                    }elseif ($_key == 'ReceivedChecked') {
                         $_elements .= ",'Received','Checked'";
                     } else {
-
                         $_elements .= ",'".addslashes($_key)."'";
                     }
                 }
@@ -178,4 +178,4 @@ $sql_totals
 //print "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
-?>
+

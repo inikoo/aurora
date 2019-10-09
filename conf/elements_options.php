@@ -1178,21 +1178,19 @@ $elements_options = array(
 
 
                 'InProcess'                   => array(
-                    'label'    => _(
-                        'In process'
-                    ),
+                    'label'    => _('In process'),
                     'selected' => true
                 ),
-                'SubmittedInputtedDispatched' => array(
-                    'label'    => _(
-                        'Submitted, in transit'
-                    ),
+                'Submitted' => array(
+                    'label'    => _('Submitted'),
+                    'selected' => true
+                ),
+                'InTransit' => array(
+                    'label'    => _('In transit'),
                     'selected' => true
                 ),
                 'ReceivedChecked'             => array(
-                    'label'    => _(
-                        'In warehouse'
-                    ),
+                    'label'    => _('In warehouse'),
                     'selected' => true
                 ),
                 'Placed'                      => array(
@@ -1205,9 +1203,7 @@ $elements_options = array(
                     'selected' => true
                 ),
                 'Cancelled'      => array(
-                    'label'    => _(
-                        'Cancelled'
-                    ),
+                    'label'    => _('Cancelled'),
                     'selected' => false
                 ),
             ),
