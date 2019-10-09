@@ -635,16 +635,9 @@ function save_webpage_content($data, $editor, $account, $db) {
     }
 
 
-    // print_r( $webpage->get('Content Data'));
-
-
-    //  print_r( json_decode($data['content_data'],true));
-
-    // exit;
 
     $old_content_data = $webpage->get('Content Data');
 
-    //====== here ===== do all post edit stuff
 
 
 
