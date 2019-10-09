@@ -114,7 +114,6 @@ class Page extends DB_Table {
         }
 
 
-        // print $sql;
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
@@ -780,19 +779,6 @@ class Page extends DB_Table {
 
         $this->update_state('Offline');
 
-
-        if ($this->get('Webpage State') == 'Online') {
-            $icon = 'fa-rocket';
-        } elseif ($this->get('Webpage State') == 'Offline') {
-            $icon = ' fa-rocket discreet fa-flip-vertical';
-        } elseif ($this->get('Webpage State') == 'Ready') {
-            $icon = 'fa-check-circle';
-
-        } elseif ($this->get('Webpage State') == 'InProcess') {
-            $icon = 'fa-child';
-
-
-        }
 
 
         $smarty_web = new Smarty();
@@ -1644,10 +1630,6 @@ class Page extends DB_Table {
 
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
