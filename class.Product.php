@@ -984,10 +984,6 @@ class Product extends Asset {
                     $changed = true;
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print $sql;
-            exit;
         }
 
 
