@@ -15,6 +15,7 @@ include_once 'utils/date_functions.php';
 
 function get_invoice_category_showcase($data, $smarty) {
 
+
     $category = $data['_object'];
 
 
@@ -33,4 +34,4 @@ function get_invoice_category_showcase($data, $smarty) {
 }
 
 
-?>
+

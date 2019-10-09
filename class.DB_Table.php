@@ -703,7 +703,7 @@ abstract class DB_Table extends stdClass {
             $key_field = 'Product Category Key';
 
         }elseif ($table_full_name == 'Part Category Data' or $table_full_name == 'Part Category Dimension') {
-            $key_field = 'Product Category Key';
+            $key_field = 'Part Category Key';
 
         } elseif ($table_full_name == 'Invoice Category Data' or $table_full_name == 'Invoice Category DC Data' or $table_full_name == 'Invoice Category Dimension') {
             $key_field = 'Invoice Category Key';
@@ -723,6 +723,10 @@ abstract class DB_Table extends stdClass {
             $sql = sprintf(
                 "UPDATE `%s` SET `%s`=? WHERE `%s`=?", addslashes($table_full_name), addslashes($field), addslashes($key_field)
             );
+
+
+            //print "$sql\n";
+
             $stmt = $this->db->prepare($sql);
 
 
@@ -736,6 +740,8 @@ abstract class DB_Table extends stdClass {
 
 
             $stmt->execute();
+            //print_r($stmt->errorInfo());
+
 
             $this->data[$field] = $value;
 
