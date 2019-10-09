@@ -13,15 +13,16 @@
 include_once 'utils/date_functions.php';
 
 
-function get_part_family_showcase($data, $smarty) {
+function get_part_family_showcase($data, $smarty,$user,$db) {
 
-    global $db;
+
+
+
 
     $category = $data['_object'];
     if (!$category->id) {
         return "";
     }
-
     $category->load_acc_data();
 
     $smarty->assign('category', $category);

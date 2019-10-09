@@ -16,7 +16,7 @@ require_once 'class.Category.php';
 $print_est = true;
 
 
-$where = " where `Category Key`=11899 ";
+$where = " where `Category Key`=30518 ";
 $where = "where true";
 
 $sql = sprintf(
@@ -46,6 +46,8 @@ $sql = sprintf(
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $category = new Category($row['Category Key']);
+
+
         $category->load_acc_data();
 
         $category->update_part_category_sales('Total');
@@ -83,4 +85,4 @@ if ($result = $db->query($sql)) {
 }
 
 
-?>
+
