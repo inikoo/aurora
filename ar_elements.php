@@ -479,7 +479,7 @@ function get_purchase_order_items_elements($db, $data) {
     );
     while ($row = $stmt->fetch()) {
 
-        if ($row['element'] == 'ProblemSupplier' or $row['element'] == 'Confirmed' or $row['element'] == 'ReceivedAgent' or $row['element'] == 'Inputted' ) {
+        if ($row['element'] == 'ProblemSupplier' or $row['element'] == 'Confirmed' or $row['element'] == 'ReceivedAgent' or $row['element'] == 'Inputted') {
             $row['element'] = 'Submitted';
         }
         if ($row['element'] == 'Dispatched') {
@@ -2331,12 +2331,13 @@ function get_supplier_orders_elements($db, $data) {
     $elements_numbers = array(
         'state' => array(
 
-            'InProcess'                   => 0,
-            'SubmittedInputtedDispatched' => 0,
-            'ReceivedChecked'             => 0,
-            'Placed'                      => 0,
-            'InvoiceChecked'              => 0,
-            'Cancelled'                   => 0
+            'InProcess'       => 0,
+            'Submitted'       => 0,
+            'InTransit'       => 0,
+            'ReceivedChecked' => 0,
+            'Placed'          => 0,
+            'InvoiceChecked'  => 0,
+            'Cancelled'       => 0
         ),
     );
 
@@ -2354,8 +2355,10 @@ function get_supplier_orders_elements($db, $data) {
             //'InProcess','Submitted','Inputted','Dispatched','Received','Checked','Placed', 'Costing','InvoiceChecked' ,'Cancelled'
             if ($row['element'] == 'InProcess') {
                 $element = 'InProcess';
-            } elseif ($row['element'] == 'Submitted' or $row['element'] == 'Inputted' or $row['element'] == 'Dispatched') {
-                $element = 'SubmittedInputtedDispatched';
+            } elseif ($row['element'] == 'Submitted' or $row['element'] == 'Inputted') {
+                $element = 'Submitted';
+            } elseif ($row['element'] == 'Dispatched') {
+                $element = 'InTransit';
             } elseif ($row['element'] == 'Received' or $row['element'] == 'Checked') {
                 $element = 'ReceivedChecked';
             } elseif ($row['element'] == 'Placed' or $row['element'] == 'Costing') {
@@ -2367,10 +2370,6 @@ function get_supplier_orders_elements($db, $data) {
                 $elements_numbers['state'][$element] += $row['number'];
             }
         }
-    } else {
-        print "$sql";
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
 
