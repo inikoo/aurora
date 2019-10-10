@@ -275,6 +275,7 @@ class SupplierPart extends DB_Table {
 
         $field = preg_replace('/^Part Part /', 'Part ', $field);
 
+
         switch ($field) {
 
             case 'Supplier Part Carton Weight':
@@ -688,7 +689,7 @@ class SupplierPart extends DB_Table {
 
                     $this->fast_update(
                         array(
-                            'Supplier Part Unit Extra Cost' => $value * $this->data['Supplier Part Unit Extra Cost Percentage']
+                            'Supplier Part Unit Extra Cost' => $this->data['Supplier Part Unit Expense']+$value * $this->data['Supplier Part Unit Extra Cost Percentage']
 
                         )
                     );
@@ -709,6 +710,8 @@ class SupplierPart extends DB_Table {
                         'Carton_Cost'      => $this->get('Carton Cost'),
                         'SKO_Cost'         => $this->get('SKO Cost'),
                         'Unit_Cost_Amount' => $this->get('Unit Cost Amount'),
+                        'Unit_Delivered_Cost'=>$this->get('Unit Delivered Cost'),
+
 
                     )
                 );
@@ -717,11 +720,9 @@ class SupplierPart extends DB_Table {
                     'Part_Unit_Price' => array(
                         'field'           => 'Part_Unit_Price',
                         'render'          => true,
-                        'formatted_value' => $this->get('Part Unit Price'),
-                        'value'           => $this->get('Part Part Unit Price'),
+                        'formatted_value' => $this->get('Unit Price'),
+                        'value'           => $this->part->get('Part Unit Price')
                     ),
-
-
                 );
 
 
@@ -736,6 +737,61 @@ class SupplierPart extends DB_Table {
 
 
                 $this->updated = $updated;
+                break;
+
+            case 'Supplier Part Unit Expense':
+                if ($value == '') {
+                    $this->error = true;
+                    $this->msg   = _('Cost missing');
+
+                    return;
+                }
+
+                if (!is_numeric($value) or $value < 0) {
+                    $this->error = true;
+                    $this->msg   = sprintf(_('Invalid amount (%s)'), $value);
+
+                    return;
+                }
+
+                $this->update_field($field, $value, $options);
+
+
+                if ($this->data['Supplier Part Unit Extra Cost Percentage'] != '') {
+
+
+                    $this->fast_update(
+                        array(
+                            'Supplier Part Unit Extra Cost' => $value+$this->data['Supplier Part Unit Cost'] * $this->data['Supplier Part Unit Extra Cost Percentage']
+
+                        )
+                    );
+
+                }
+
+
+
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Carton_Cost'      => $this->get('Carton Cost'),
+                        'SKO_Cost'         => $this->get('SKO Cost'),
+                        'Unit_Cost_Amount' => $this->get('Unit Cost Amount'),
+                        'Unit_Delivered_Cost'=>$this->get('Unit Delivered Cost'),
+
+
+                    )
+                );
+
+                $this->other_fields_updated = array(
+                    'Part_Unit_Price' => array(
+                        'field'           => 'Part_Unit_Price',
+                        'render'          => true,
+                        'formatted_value' => $this->get('Unit Price'),
+                        'value'           => $this->part->get('Part Unit Price')
+                    ),
+                );
+
                 break;
             case 'Supplier Part Currency Code':
 
@@ -1044,7 +1100,7 @@ class SupplierPart extends DB_Table {
 
                 $this->update_field($field, $value, $options);
 
-                $this->update_field('Supplier Part Unit Extra Cost', $this->data['Supplier Part Unit Cost'] * $value, 'no_history');
+                $this->update_field('Supplier Part Unit Extra Cost', $this->data['Supplier Part Unit Expense']+$this->data['Supplier Part Unit Cost'] * $value, 'no_history');
 
 
                 $this->part->update_cost();
@@ -1055,6 +1111,8 @@ class SupplierPart extends DB_Table {
                         'Carton_Cost'      => $this->get('Carton Cost'),
                         'SKO_Cost'         => $this->get('SKO Cost'),
                         'Unit_Cost_Amount' => $this->get('Unit Cost Amount'),
+                        'Unit_Delivered_Cost'=>$this->get('Unit Delivered Cost'),
+
 
                     )
                 );
@@ -1063,11 +1121,9 @@ class SupplierPart extends DB_Table {
                     'Part_Unit_Price' => array(
                         'field'           => 'Part_Unit_Price',
                         'render'          => true,
-                        'formatted_value' => $this->get('Part Unit Price'),
-                        'value'           => $this->get('Part Part Unit Price'),
+                        'formatted_value' => $this->get('Unit Price'),
+                        'value'           => $this->part->get('Part Unit Price')
                     ),
-
-
                 );
 
 
@@ -1125,6 +1181,32 @@ class SupplierPart extends DB_Table {
 
                 $this->add_note($value, '', '', $metadata['deletable']);
                 break;
+            case 'Part Unit Price':
+                $this->part->update(array($field => $value), $options);
+                $this->updated = $this->part->updated;
+                $this->msg     = $this->part->msg;
+                $this->error   = $this->part->error;
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Carton_Cost'      => $this->get('Carton Cost'),
+                        'SKO_Cost'         => $this->get('SKO Cost'),
+                        'Unit_Cost_Amount' => $this->get('Unit Cost Amount'),
+                        'Unit_Delivered_Cost'=>$this->get('Unit Delivered Cost'),
+
+                    )
+                );
+
+                $this->other_fields_updated = array(
+                    'Part_Unit_Price' => array(
+                        'field'           => 'Part_Unit_Price',
+                        'render'          => true,
+                        'formatted_value' => $this->get('Unit Price'),
+                        'value'           => $this->part->get('Part Unit Price')
+                    ),
+                );
+
+                break;
             default:
 
 
@@ -1163,6 +1245,8 @@ class SupplierPart extends DB_Table {
                 }
 
         }
+
+
 
 
     }
@@ -1524,7 +1608,19 @@ class SupplierPart extends DB_Table {
 
                 return $cost;
                 break;
+            case 'Unit Expense':
 
+                if ($this->data['Supplier Part Unit Expense'] == '') {
+                    return '';
+                }
+
+                $unit_expense = money(
+                    $this->data['Supplier Part Unit Expense'], $this->data['Supplier Part Currency Code'], false, 'FOUR_FRACTION_DIGITS'
+                );
+
+                return $unit_expense;
+
+                break;
             case 'SKO Margin':
                 include_once 'utils/currency_functions.php';
                 $exchange = currency_conversion(
@@ -1557,12 +1653,51 @@ class SupplierPart extends DB_Table {
                 $delivered_cost = ($this->data['Supplier Part Unit Cost'] + $extra_cost) / $exchange;
 
                 $cost = sprintf(
-                    '<span title="%s+%s @%s">%s</span>', money($this->data['Supplier Part Unit Cost'], $this->data['Supplier Part Currency Code']), money($extra_cost, $this->data['Supplier Part Currency Code']), $exchange,
+                    '<span title="%s(%s) +%s(%s) @%s">%s</span>',
+                    money($this->data['Supplier Part Unit Cost'], $this->data['Supplier Part Currency Code']),
+                    _('cost'),
+                    money($extra_cost, $this->data['Supplier Part Currency Code']),
+                    _('extra costs'),
+                    $exchange,
                     money($delivered_cost, $account->get('Account Currency'))
                 );
 
                 return $cost;
                 break;
+
+            case 'SKO Delivered Cost':
+
+                include_once 'utils/currency_functions.php';
+
+                if ($this->data['Supplier Part Unit Cost'] == '') {
+                    return '';
+                }
+
+                if ($this->data['Supplier Part Unit Extra Cost'] == '') {
+                    $extra_cost = 0;
+                } else {
+                    $extra_cost = $this->data['Supplier Part Unit Extra Cost'];
+                }
+                $exchange       = currency_conversion(
+                    $this->db, $account->get('Account Currency'), $this->data['Supplier Part Currency Code'], '- 1 hour'
+                );
+                $delivered_cost = ($this->data['Supplier Part Unit Cost'] + $extra_cost) / $exchange;
+
+                $cost = sprintf(
+                    '<span title="%s(%s) +%s(%s) @%s x%s">%s </span>',
+                    money($this->data['Supplier Part Unit Cost'], $this->data['Supplier Part Currency Code']),
+                    _('cost'),
+                    money($extra_cost, $this->data['Supplier Part Currency Code']),
+                    _('extra costs'),
+                    $exchange,
+                    $this->part->data['Part Unit Price'],
+
+                    money($this->part->data['Part Unit Price']*  $delivered_cost, $account->get('Account Currency'))
+                );
+
+                return $cost;
+                break;
+
 
             case 'Supplier Part Unit Extra Cost Fraction':
                 return $this->data['Supplier Part Unit Extra Cost Percentage'];
@@ -1586,9 +1721,9 @@ class SupplierPart extends DB_Table {
 
 
                 $extra_cost .= ' <span class="discreet">'.money($this->data['Supplier Part Unit Extra Cost'], $this->data['Supplier Part Currency Code']).'</span>';
+                return $extra_cost;
 
-
-                return $extra_cost.', <span class="italic discreet">'._('delivered unit cost').':</span> <span class="italic">'.$this->get('Unit Delivered Cost').'</span>';
+                //return $extra_cost.', <span class="italic discreet">'._('delivered unit cost').':</span> <span class="italic">'.$this->get('Unit Delivered Cost').'</span>';
 
             case 'Unit Extra Cost':
                 if ($this->data['Supplier Part Unit Extra Cost'] == '') {
@@ -1677,7 +1812,7 @@ class SupplierPart extends DB_Table {
                 }
                 break;
 
-            case 'Part Unit Price':
+            case 'Unit Price':
 
 
                 if ($this->part->data['Part Unit Price'] == '') {
@@ -1707,10 +1842,10 @@ class SupplierPart extends DB_Table {
                         $this->db, $account->get('Account Currency'), $this->data['Supplier Part Currency Code'], '- 1 hour'
                     );
 
-                    $unit_margin = $this->part->data['Part Unit Price'] - $this->data['Supplier Part Unit Cost'] / $exchange;
+                    $unit_margin = $this->part->data['Part Unit Price'] - ($this->data['Supplier Part Unit Cost'] +$this->data['Supplier Part Unit Extra Cost'] )/ $exchange;
 
                     $price_other_info .= sprintf(
-                        '<span class="'.($unit_margin < 0 ? 'error' : '').'">'._('margin %s').'</span>', percentage($unit_margin, $this->part->data['Part Unit Price'])
+                        '<span class="'.($unit_margin < 0 ? 'error' : '').'">'._('future margin %s').'</span>', percentage($unit_margin, $this->part->data['Part Unit Price'])
                     );
                 }
 
@@ -1900,6 +2035,9 @@ class SupplierPart extends DB_Table {
                 break;
             case 'Supplier Part Cost':
                 $label = _('unit cost');
+                break;
+            case 'Supplier Part Unit Expense':
+                $label = _('unit expense');
                 break;
             case 'Supplier Part Batch':
                 $label = _('batch');

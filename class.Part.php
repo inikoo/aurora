@@ -577,7 +577,6 @@ class Part extends Asset {
     }
 
 
-
     function get_supplier_parts($scope = 'keys') {
 
 
@@ -824,7 +823,11 @@ class Part extends Asset {
 
             case 'SKOs per Carton':
 
+                $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
 
+                return $main_supplier_part->get('Supplier Part Packages Per Carton');
+
+                /*
                 $suppliers = '';
 
                 foreach ($this->get_supplier_parts('objects') as $supplier_part) {
@@ -841,9 +844,9 @@ class Part extends Asset {
                     return number($this->data['Part SKOs per Carton'])." <span class='italic very_discreet'>(".$suppliers.')</span>';
 
                 }
+*/
 
 
-                break;
 
             case 'CBM per Unit':
 
@@ -1430,14 +1433,17 @@ class Part extends Asset {
                 break;
             case 'Carton Weight':
                 $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
+
                 return $main_supplier_part->get('Carton Weight');
                 break;
             case 'Carton CBM':
                 $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
+
                 return $main_supplier_part->get('Carton CBM');
                 break;
             case 'Supplier Part Currency Code':
                 $main_supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
+
                 return $main_supplier_part->get('Supplier Part Currency Code');
                 break;
             case 'Part Supplier Part Unit Cost':
@@ -1678,6 +1684,90 @@ class Part extends Asset {
 
     }
 
+    function update_weight_status() {
+
+        $weight_status_old = $this->get('Part Package Weight Status');
+
+        $max_value  = 0;
+        $min_value  = 0;
+        $avg_weight = 0;
+        $sql        = sprintf(
+            'select avg(`Part Package Weight` ) as average_kg ,avg(`Part Cost`/`Part Package Weight` ) as average_cost_per_kg ,STD(`Part Cost`/`Part Package Weight`)  as sd_cost_per_kg from `Part Dimension` where  `Part Status`="In Use" and  `Part Package Weight`>0 and `Part Cost`>0  '
+        );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $max_value  = $row['average_cost_per_kg'] + (3 * $row['sd_cost_per_kg']);
+                $min_value  = $row['average_cost_per_kg'] * 0.001;
+                $avg_weight = $row['average_kg'];
+            }
+        }
+
+
+        $weight_status = 'OK';
+        if ($this->get('Part Package Weight') == '' or $this->get('Part Package Weight') == 0) {
+            $weight_status = 'Missing';
+        } else {
+
+            if ($this->get('Part Package Weight') > 0 and $this->get('Part Unit Weight') > 0) {
+
+
+                $sko_weight_from_unit_weight = $this->get('Part Unit Weight') * $this->get('Part Units Per Package');
+
+
+                if ($sko_weight_from_unit_weight > (2 * $this->get('Part Package Weight'))) {
+                    $weight_status = 'Underweight Web';
+
+                    //   print "$sko_weight_from_unit_weight  ".$this->get('Part Unit Weight')." \n";
+
+
+                }
+                if ($sko_weight_from_unit_weight < 0.5 * $this->get('Part Package Weight')) {
+
+
+                    $weight_status = 'Overweight Web';
+
+                }
+            }
+
+
+            if ($this->get('Part Cost') > 0 and $weight_status == 'OK' and $max_value > 0 and $max_value < ($this->get('Part Cost') / $this->get('Part Package Weight')) and $avg_weight * 0.1 > $this->get('Part Package Weight')) {
+
+
+                //   print $this->get('Reference')." $max_value  ".$this->get('Part Package Weight')." ".$this->get('Part Cost')."  ".( $this->get('Part Cost')/ $this->get('Part Package Weight') )."    \n";
+
+                $weight_status = 'Underweight Cost';
+
+            }
+
+            // print $avg_weight."\n";
+
+            if ($this->get('Part Cost') > 0 and $weight_status == 'OK' and $min_value > 0 and $min_value > ($this->get('Part Cost') / $this->get('Part Package Weight')) and $avg_weight * 10 < $this->get('Part Package Weight')) {
+                $weight_status = 'Overweight Cost';
+                // print $this->get('Reference')." $min_value  ".$this->get('Part Package Weight')." ".$this->get('Part Cost')."  ".($this->get('Part Cost') / $this->get('Part Package Weight'))."    \n";
+
+            }
+
+        }
+
+
+        //print $weight_status;
+
+
+        $this->fast_update(
+            array(
+                'Part Package Weight Status' => $weight_status,
+            )
+        );
+
+
+        if ($weight_status_old != $weight_status) {
+            $account = get_object('Account', 1);
+            $account->update_parts_data();
+        }
+
+
+    }
+
     function update_next_shipment() {
 
 
@@ -1755,6 +1845,47 @@ class Part extends Asset {
                 $main_supplier_part->update(array('Supplier Part Unit Cost' => $value), $options);
 
 
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Carton_Cost'        => $main_supplier_part->get('Carton Cost'),
+                        'SKO_Cost'           => $main_supplier_part->get('SKO Cost'),
+                        'Unit_Cost_Amount'   => $main_supplier_part->get('Unit Cost Amount'),
+                        'SKO_Delivered_Cost' => $main_supplier_part->get('SKO Delivered Cost'),
+
+                    )
+                );
+
+
+                break;
+            case 'Part Supplier Part Unit Expense':
+
+                $main_supplier_part         = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
+                $main_supplier_part->editor = $this->editor;
+                $main_supplier_part->update(array('Supplier Part Unit Expense' => $value), $options);
+
+
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Carton_Cost'         => $main_supplier_part->get('Carton Cost'),
+                        'SKO_Cost'            => $main_supplier_part->get('SKO Cost'),
+                        'Unit_Cost_Amount'    => $main_supplier_part->get('Unit Cost Amount'),
+                        'Unit_Delivered_Cost' => $main_supplier_part->get('Unit Delivered Cost'),
+
+
+                    )
+                );
+
+                $this->other_fields_updated = array(
+                    'Part_Supplier_Part_Unit_Expense' => array(
+                        'render'          => true,
+                        'field'           => 'Part_Supplier_Part_Unit_Expense',
+                        'value'           => $main_supplier_part->get('Supplier Part Unit Expense'),
+                        'formatted_value' => $main_supplier_part->get('Unit Expense'),
+                    ),
+
+
+                );
+
                 break;
 
             case 'Part Supplier Part Unit Extra Cost Percentage':
@@ -1766,9 +1897,10 @@ class Part extends Asset {
 
                 $this->update_metadata = array(
                     'class_html' => array(
-                        'Carton_Cost'      => $main_supplier_part->get('Carton Cost'),
-                        'SKO_Cost'         => $main_supplier_part->get('SKO Cost'),
-                        'Unit_Cost_Amount' => $main_supplier_part->get('Unit Cost Amount'),
+                        'Carton_Cost'        => $main_supplier_part->get('Carton Cost'),
+                        'SKO_Cost'           => $main_supplier_part->get('SKO Cost'),
+                        'Unit_Cost_Amount'   => $main_supplier_part->get('Unit Cost Amount'),
+                        'SKO_Delivered_Cost' => $main_supplier_part->get('SKO Delivered Cost'),
 
                     )
                 );
@@ -2739,7 +2871,6 @@ class Part extends Asset {
                 break;
 
 
-
             case 'Part Next Set Supplier Shipment':
                 $this->update_set_next_supplier_shipment($value, $options);
                 break;
@@ -3551,7 +3682,6 @@ class Part extends Asset {
 
     }
 
-
     function get_number_real_locations($unknown_location_key = '') {
 
 
@@ -4036,7 +4166,6 @@ class Part extends Asset {
         return $suppliers;
     }
 
-
     function get_period($period, $key) {
         return $this->get($period.' '.$key);
     }
@@ -4146,8 +4275,6 @@ class Part extends Asset {
 
     }
 
-
-
     function get_current_formatted_value_at_cost() {
         //return number($this->data['Part Current Value'],2);
         return money($this->data['Part Current Value']);
@@ -4160,7 +4287,6 @@ class Part extends Asset {
             $this->data['Part Current On Hand Stock'] * $this->data['Part Cost']
         );
     }
-
 
     function update_stock_in_transactions() {
 
@@ -4689,12 +4815,12 @@ class Part extends Asset {
 
             if (count($product->get_parts()) == 1) {
                 $product->editor = $this->editor;
-                $product->fork = $this->fork;
+                $product->fork   = $this->fork;
 
                 $product->fast_update(
                     array(
-                        'Product Tariff Code' => $this->get('Part Tariff Code'),
-                        'Product HTSUS Code'  => $this->get('Part HTSUS Code'),
+                        'Product Tariff Code'                  => $this->get('Part Tariff Code'),
+                        'Product HTSUS Code'                   => $this->get('Part HTSUS Code'),
                         'Product Duty Rate'                    => $this->get('Part Duty Rate'),
                         'Product Origin Country Code'          => $this->get('Part Origin Country Code'),
                         'Product UN Number'                    => $this->get('Part UN Number'),
@@ -4705,13 +4831,12 @@ class Part extends Asset {
                         'Product Unit Weight'                  => $this->get('Part Unit Weight'),
                         'Product Unit Dimensions'              => $this->get('Part Unit Dimensions'),
                         'Product Materials'                    => $this->data['Part Materials'],
-                        'Product Barcode Number'                    => $this->data['Part Barcode Number'],
+                        'Product Barcode Number'               => $this->data['Part Barcode Number'],
 
-                        'Product Barcode Key'                    => $this->data['Part Barcode Key'],
+                        'Product Barcode Key' => $this->data['Part Barcode Key'],
 
                     )
                 );
-
 
 
                 $sql = "SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`='Part' AND `Image Subject Object Key`=? and `Image Subject Object Image Scope`='Marketing' ORDER BY `Image Subject Order` ";
@@ -4721,7 +4846,7 @@ class Part extends Asset {
                     array($this->id)
                 );
                 while ($row = $stmt->fetch()) {
-                    $product->link_image($row['Image Subject Image Key'],'Marketing');
+                    $product->link_image($row['Image Subject Image Key'], 'Marketing');
                 }
 
             }
@@ -5185,91 +5310,6 @@ class Part extends Asset {
                     'Part Production Supply' => 'Yes',
                 )
             );
-        }
-
-
-    }
-
-
-    function update_weight_status() {
-
-        $weight_status_old = $this->get('Part Package Weight Status');
-
-        $max_value  = 0;
-        $min_value  = 0;
-        $avg_weight = 0;
-        $sql        = sprintf(
-            'select avg(`Part Package Weight` ) as average_kg ,avg(`Part Cost`/`Part Package Weight` ) as average_cost_per_kg ,STD(`Part Cost`/`Part Package Weight`)  as sd_cost_per_kg from `Part Dimension` where  `Part Status`="In Use" and  `Part Package Weight`>0 and `Part Cost`>0  '
-        );
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $max_value  = $row['average_cost_per_kg'] + (3 * $row['sd_cost_per_kg']);
-                $min_value  = $row['average_cost_per_kg'] * 0.001;
-                $avg_weight = $row['average_kg'];
-            }
-        }
-
-
-        $weight_status = 'OK';
-        if ($this->get('Part Package Weight') == '' or $this->get('Part Package Weight') == 0) {
-            $weight_status = 'Missing';
-        } else {
-
-            if ($this->get('Part Package Weight') > 0 and $this->get('Part Unit Weight') > 0) {
-
-
-                $sko_weight_from_unit_weight = $this->get('Part Unit Weight') * $this->get('Part Units Per Package');
-
-
-                if ($sko_weight_from_unit_weight > (2 * $this->get('Part Package Weight'))) {
-                    $weight_status = 'Underweight Web';
-
-                    //   print "$sko_weight_from_unit_weight  ".$this->get('Part Unit Weight')." \n";
-
-
-                }
-                if ($sko_weight_from_unit_weight < 0.5 * $this->get('Part Package Weight')) {
-
-
-                    $weight_status = 'Overweight Web';
-
-                }
-            }
-
-
-            if ($this->get('Part Cost') > 0 and $weight_status == 'OK' and $max_value > 0 and $max_value < ($this->get('Part Cost') / $this->get('Part Package Weight')) and $avg_weight * 0.1 > $this->get('Part Package Weight')) {
-
-
-                //   print $this->get('Reference')." $max_value  ".$this->get('Part Package Weight')." ".$this->get('Part Cost')."  ".( $this->get('Part Cost')/ $this->get('Part Package Weight') )."    \n";
-
-                $weight_status = 'Underweight Cost';
-
-            }
-
-            // print $avg_weight."\n";
-
-            if ($this->get('Part Cost') > 0 and $weight_status == 'OK' and $min_value > 0 and $min_value > ($this->get('Part Cost') / $this->get('Part Package Weight')) and $avg_weight * 10 < $this->get('Part Package Weight')) {
-                $weight_status = 'Overweight Cost';
-                // print $this->get('Reference')." $min_value  ".$this->get('Part Package Weight')." ".$this->get('Part Cost')."  ".($this->get('Part Cost') / $this->get('Part Package Weight'))."    \n";
-
-            }
-
-        }
-
-
-        //print $weight_status;
-
-
-        $this->fast_update(
-            array(
-                'Part Package Weight Status' => $weight_status,
-            )
-        );
-
-
-        if ($weight_status_old != $weight_status) {
-            $account = get_object('Account', 1);
-            $account->update_parts_data();
         }
 
 

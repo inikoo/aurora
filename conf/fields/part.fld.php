@@ -163,7 +163,7 @@ $part_fields[] = array(
 if (!$new) {
 
     $part_fields[] = array(
-        'label' => _('Cost/Pricing'),
+        'label' => _('Cost/Pricing').' <span style="font-weight: normal" class="padding_left_10 small">'._('Future delivered cost').': <span class="Unit_Delivered_Cost">'.$main_supplier_part->get('Unit Delivered Cost').'/'._('unit').'</span></span>',
 
         'show_title' => true,
         'fields'     => array(
@@ -176,6 +176,17 @@ if (!$new) {
                 'value'           => htmlspecialchars($main_supplier_part->get('Supplier Part Unit Cost')),
                 'formatted_value' => $main_supplier_part->get('Unit Cost'),
                 'label'           => ucfirst($main_supplier_part->get_field_label('Supplier Part Unit Cost')),
+                'required'        => true,
+                'placeholder'     => sprintf(_('amount in %s '), $supplier->get('Default Currency Code')),
+
+                'type' => 'value'
+            ),
+            array(
+                'id'              => 'Part_Supplier_Part_Unit_Expense',
+                'edit'            => ($edit ? 'amount' : ''),
+                'value'           => htmlspecialchars($main_supplier_part->get('Supplier Part Unit Expense')),
+                'formatted_value' => $main_supplier_part->get('Unit Expense'),
+                'label'           => ucfirst($main_supplier_part->get_field_label('Supplier Part Unit Expense')).' <span class="discreet very_small">('._('% extra costs not apply').')</span>',
                 'required'        => true,
                 'placeholder'     => sprintf(_('amount in %s '), $supplier->get('Default Currency Code')),
 

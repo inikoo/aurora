@@ -210,22 +210,19 @@ $supplier_part_fields[] = array(
             'placeholder'     => sprintf(_('amount in %s '), $options['parent_object']->get('Default Currency Code')),
             'type'            => 'value'
         ),
-        /*
-                array(
-                    'id'              => 'Supplier_Part_Unit_Extra_Cost',
-                    'render'          => false,
-                    'edit'            => 'amount_percentage',
-                    'value'           => htmlspecialchars(
-                        $object->get('Supplier Part Unit Extra Cost')
-                    ),
-                    'formatted_value' => $object->get('Unit Extra Cost'),
-                    'label'           => ucfirst($object->get_field_label('Supplier Part Unit Extra Cost')),
-                    'required'        => false,
-                    'placeholder'     =>  sprintf(_('amount in %s or %%'), $options['parent_object']->get('Default Currency Code')),
+        array(
+            'id'              => 'Supplier_Part_Unit_Expense',
+            'edit'            => ($edit ? 'amount' : ''),
+            'value'           => htmlspecialchars($object->get('Supplier Part Unit Expense')),
+            'formatted_value' => $object->get('Unit Expense'),
+            'label'           => ucfirst($object->get_field_label('Supplier Part Unit Expense')).' <span class="discreet very_small">('._('% extra costs not apply').')</span>',
+            'required'        => true,
+            'placeholder'     => sprintf(_('amount in %s '), $options['parent_object']->get('Default Currency Code')),
 
-                    'type'            => 'value'
-                ),
-        */
+            'type' => 'value'
+        ),
+
+
         array(
             'id'              => 'Supplier_Part_Unit_Extra_Cost_Percentage',
             'edit'            => 'percentage',
