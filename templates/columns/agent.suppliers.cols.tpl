@@ -64,6 +64,7 @@ editable: false,
 cell: "html"
 }, {
 name: "last_purchase_order",
+renderable:false,
 label: "{t}Last PO{/t}",
 defaultOrder:1,
 editable: false,
@@ -380,7 +381,7 @@ $('#columns_period').addClass('hide');
 
 grid.columns.findWhere({ name: 'name'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'location'} ).set("renderable", false)
-grid.columns.findWhere({ name: 'last_purchase_order'} ).set("renderable", false)
+//grid.columns.findWhere({ name: 'last_purchase_order'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'active_supplier_parts'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'supplier_parts'} ).set("renderable", false)
 
@@ -415,7 +416,7 @@ grid.columns.findWhere({ name: 'sales_quarter4'} ).set("renderable", false)
 if(view=='overview'){
 grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'location'} ).set("renderable", true)
-grid.columns.findWhere({ name: 'last_purchase_order'} ).set("renderable", true)
+//grid.columns.findWhere({ name: 'last_purchase_order'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'active_supplier_parts'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'supplier_parts'} ).set("renderable", true)
 

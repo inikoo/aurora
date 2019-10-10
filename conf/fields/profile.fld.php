@@ -15,6 +15,9 @@ include 'conf/user_groups.php';
 
 global $session;
 
+
+//print_r($object);
+
 $options_yn = array(
     'Yes' => _('Yes'),
     'No'  => _('No')
@@ -39,6 +42,7 @@ foreach ($available_locales as $locale) {
 
     $options_locales[$locale['Locale']] = $locale['Language Name'].($locale['Language Name'] != $locale['Language Original Name'] ? ' ('.$locale['Language Original Name'].')' : '');
 }
+
 
 
 $object_fields = array(

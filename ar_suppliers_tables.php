@@ -781,14 +781,44 @@ function categories($_data, $db, $user) {
 
 function orders($_data, $db, $user, $account) {
 
-    if (!$user->can_view('suppliers')) {
-        echo json_encode(
-            array(
-                'state' => 405,
-                'resp'  => 'Forbidden'
-            )
-        );
-        exit;
+
+    if ($user->get('User Type') == 'Agent') {
+
+
+        switch ($_data['parameters']['parent']) {
+            case 'supplier':
+
+                $supplier = get_object('Supplier', $_data['parameters']['parent_key']);
+
+
+                if (!in_array($user->get('User Parent Key'), $supplier->get_agents())) {
+                    echo json_encode(
+                        array(
+                            'state' => 405,
+                            'resp'  => 'Forbidden'
+                        )
+                    );
+                    exit;
+                }
+
+
+                break;
+        }
+
+
+    } else {
+
+
+        if (!$user->can_view('suppliers')) {
+            echo json_encode(
+                array(
+                    'state' => 405,
+                    'resp'  => 'Forbidden'
+                )
+            );
+            exit;
+        }
+
     }
 
 
@@ -797,7 +827,7 @@ function orders($_data, $db, $user, $account) {
 
     include_once 'prepare_table/init.php';
 
-    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
     $table_data = array();
@@ -846,7 +876,7 @@ function orders($_data, $db, $user, $account) {
             }
 
 
-            if($data['Purchase Order State']!=$data['Purchase Order Max Supplier Delivery State'] and $data['Purchase Order Max Supplier Delivery State']!='NA' and $data['Purchase Order Max Supplier Delivery State']!='InProcess'){
+            if ($data['Purchase Order State'] != $data['Purchase Order Max Supplier Delivery State'] and $data['Purchase Order Max Supplier Delivery State'] != 'NA' and $data['Purchase Order Max Supplier Delivery State'] != 'InProcess') {
 
                 switch ($data['Purchase Order Max Supplier Delivery State']) {
 
@@ -886,7 +916,7 @@ function orders($_data, $db, $user, $account) {
                         break;
                 }
 
-                $state.=' <span class="very_small discreet">('.$max_state.')</span>';
+                $state .= ' <span class="very_small discreet">('.$max_state.')</span>';
             }
 
 
@@ -1146,11 +1176,11 @@ function deliveries($_data, $db, $user) {
                     break;
                 case 'InvoiceChecked':
 
-                    if($data['Supplier Delivery Invoice Public ID']!='' and $data['Supplier Delivery Invoice Date']!=''){
-                        $state= _('Booked in').', '._('costing done').' <i class="fa fa-check success"></i>';
+                    if ($data['Supplier Delivery Invoice Public ID'] != '' and $data['Supplier Delivery Invoice Date'] != '') {
+                        $state = _('Booked in').', '._('costing done').' <i class="fa fa-check success"></i>';
 
-                    }else{
-                        $state= _('Booked in').', '._('costing done');
+                    } else {
+                        $state = _('Booked in').', '._('costing done');
 
                     }
 
@@ -4750,7 +4780,6 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
 }
 
 
-
 function timeseries_drill_down_parts($_data, $db, $user, $account) {
 
 
@@ -5083,13 +5112,10 @@ function format_money_paid($number) {
 }
 
 
-
-
 function supplier_parts($_data, $db, $user, $account) {
 
 
     include_once 'utils/currency_functions.php';
-
 
 
     if ($user->get('User Type') == 'Agent') {
@@ -5140,12 +5166,10 @@ function supplier_parts($_data, $db, $user, $account) {
     }
 
 
-
     $rtext_label = 'supplier part';
     include_once 'prepare_table/init.php';
 
-    $sql         = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
 
     $record_data = array();
@@ -5259,7 +5283,6 @@ function supplier_parts($_data, $db, $user, $account) {
 
                         }
             */
-
 
 
             if ($data['Part Next Deliveries Data'] == '') {
@@ -5405,7 +5428,7 @@ function supplier_parts($_data, $db, $user, $account) {
 }
 
 
-function feedback($_data, $db, $user,$account) {
+function feedback($_data, $db, $user, $account) {
 
 
     $rtext_label = 'issue';

@@ -1735,28 +1735,37 @@ class Supplier extends SubjectSupplier {
     }
 
 
-    function get_agents_data() {
+
+    function get_agents($scope='keys'){
+
         $agents_data = array();
         $sql         = sprintf(
             'SELECT `Agent Code`,`Agent Key`,`Agent Name`  FROM `Agent Supplier Bridge` LEFT JOIN `Agent Dimension` ON (`Agent Supplier Agent Key`=`Agent Key`)  WHERE `Agent Supplier Supplier Key`=%d', $this->id
         );
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $agents_data[] = array(
-                    'Agent Key'  => $row['Agent Key'],
-                    'Agent Code' => $row['Agent Code'],
-                    'Agent Name' => $row['Agent Name'],
 
-                );
+                if($scope=='data'){
+                    $agents_data[$row['Agent Key']] = array(
+                        'Agent Key'  => $row['Agent Key'],
+                        'Agent Code' => $row['Agent Code'],
+                        'Agent Name' => $row['Agent Name'],
+
+                    );
+                }elseif($scope=='objects'){
+                    $agents_data[$row['Agent Key']] =get_object('Agent',$row['Agent Key']);
+                }else{
+                    $agents_data[$row['Agent Key']] =$row['Agent Key'];
+                }
+
+
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
         return $agents_data;
 
     }
+
 
 
     function archive() {
