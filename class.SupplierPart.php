@@ -191,13 +191,18 @@ class SupplierPart extends DB_Table {
 
         }
 
+        if ( !isset($base_data['Supplier Part Unit Expense']) or  $base_data['Supplier Part Unit Expense'] == '') {
+            $base_data['Supplier Part Unit Expense'] = 0;
+
+        }
+
 
         if (preg_match('/\%$/', $base_data['Supplier Part Unit Extra Cost Percentage'])) {
             $base_data['Supplier Part Unit Extra Cost Percentage'] = floatval(preg_replace('/\%$/', '', $base_data['Supplier Part Unit Extra Cost Percentage'])) / 100;
             // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
         }
 
-        $base_data['Supplier Part Unit Extra Cost'] = floatval($base_data['Supplier Part Unit Extra Cost Percentage']) * floatval($base_data['Supplier Part Unit Cost']);
+        $base_data['Supplier Part Unit Extra Cost'] = $base_data['Supplier Part Unit Expense']+floatval($base_data['Supplier Part Unit Extra Cost Percentage']) * floatval($base_data['Supplier Part Unit Cost']);
 
 
         $keys   = '(';
