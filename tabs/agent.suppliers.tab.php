@@ -35,10 +35,12 @@ $table_views = array(
     'sales'    => array('label' => _("Parts's sales")),
     'sales_q'  => array('label' => _("Parts's sales (Qs)")),
     'sales_y'  => array('label' => _("Parts's sales (Yrs)")),
+/*
     'orders'   => array(
         'label' => _('Orders'),
         'title' => _('Purchase orders, deliveries & invoices')
     ),
+*/
 );
 
 $table_filters = array(

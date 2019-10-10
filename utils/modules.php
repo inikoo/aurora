@@ -7326,9 +7326,7 @@ $modules = array(
                     ),
 
                     'user.login_history' => array(
-                        'label' => _(
-                            'Login history'
-                        ),
+                        'label' => _('Login history'),
                         'icon'  => 'sign-in'
                     ),
 
@@ -8023,60 +8021,29 @@ $modules = array(
                 'icon'  => 'user_secret',
                 'id'    => '',
                 'tabs'  => array(
-                    'agent.details'   => array(
-                        'label' => _(
-                            'Data'
-                        ),
-                        'icon'  => 'database',
-                        'title' => _(
-                            'Details'
-                        )
+                    'agent.profile' => array(
+                        'label' => _('Settings'),
+                        'icon'  => 'sliders-h'
                     ),
-                    'agent.suppliers' => array(
-                        'label' => _(
-                            "Agent's suppliers"
-                        ),
-                        'icon'  => 'hand-holding-box'
+                    'agent.details'   => array(
+                        'label' => _('Agent details'),
+                        'icon'  => 'database',
+                        'title' => _('Agent details'),
                     ),
 
-                    'agent.supplier_parts' => array(
-                        'label' => _(
-                            "Agent's Parts"
-                        ),
-                        'icon'  => 'hand-receiving'
+                    'agent.details'   => array(
+                        'label' => _('Agent details'),
+                        'icon'  => 'database',
+                        'title' => _('Agent details'),
                     ),
-                    'agent.orders'         => array(
-                        'label' => _(
-                            'Purchase orders'
-                        ),
-                        'icon'  => 'clipboard'
-                    ),
-                    'agent.deliveries'     => array(
-                        'label' => _(
-                            'Deliveries'
-                        ),
-                        'icon'  => 'truck'
-                    ),
-                    /*
-                    'agent.agent_orders'   => array(
-                        'label' => _(
-                            "Agent's PO"
-                        ),
-                        'icon'  => 'clipboard fa-flip-horizontal'
-                    ),
-    */
+
+
                     'agent.history'        => array(
                         'label' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'
                     ),
-                    'agent.users'          => array(
-                        'label' => _(
-                            'System users'
-                        ),
-                        'icon'  => 'terminal',
-                        'class' => 'right icon_only'
-                    ),
+
                 )
             )
         ),

@@ -771,13 +771,12 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
 
     }
 
-    //    <i class="fa fa-user-secret" aria-hidden="true"></i> {foreach from=$supplier->get_agents_data() item=agent_data } <span onclick="change_view('agent/{$agent_data['Agent Key']}')" class="button id bold ">{$agent_data['Agent Code']}</span>, <span>{$agent_data['Agent Name']}</span> {/foreach}
 
     $title .= ' <span class=" padding_left_10 very_small  '.($supplier->get(
             'Supplier Has Agent'
         ) == 'No' ? 'hide' : '').'">';
     $count = 0;
-    foreach ($supplier->get_agents_data() as $agent_data) {
+    foreach ($supplier->get_agents('data') as $agent_data) {
         $title .= ($count > 0 ? ', ' : ' ').'<span onclick="change_view(\'agent/'.$agent_data['Agent Key'].'\')" class="button  "><i class="fa fa-user-secret" aria-hidden="true" style="font-size:90%"></i> '.$agent_data['Agent Code'].'</span>';
         $count++;
     }

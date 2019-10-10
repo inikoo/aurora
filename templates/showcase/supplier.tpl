@@ -32,7 +32,7 @@
 
 
 
-        <div class="data_container" style="clear:both">
+        <div class="data_container" style="clear:both;max-width: 350px">
 
 
             <div class="categories hide">
@@ -68,7 +68,7 @@
                 </div>
             </div>
         </div>
-        <div class="data_container">
+        <div class="data_container" style="max-width: 270px;">
             <div id="Supplier_Main_Plain_Email_display"
                  class="data_field   {if !$supplier->get('Supplier Main Plain Email')}hide{/if}">
                 <i class="fa fa-fw fa-at"></i> <span
