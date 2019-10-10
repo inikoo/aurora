@@ -25,5 +25,3 @@ if ($result = $db->query($sql)) {
     print_r($error_info = $db->errorInfo());
     exit;
 }
-
-?>

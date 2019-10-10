@@ -2211,24 +2211,13 @@ class SupplierDelivery extends DB_Table {
                     $attachment->delete();
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
             }
 
 
-            $purchase_order = get_object(
-                'PurchaseOrder', $this->get('Supplier Delivery Purchase Order Key')
-            );
+            $purchase_order = get_object('PurchaseOrder', $this->get('Supplier Delivery Purchase Order Key'));
+            $purchase_order->update_purchase_order_items_state();
 
-            /*
-                        $purchase_order->update_state(
-                            'Submitted', '', array('date' => $purchase_order->get('Purchase Order Submitted Date'))
-                        );
 
-            */
-
-            $purchase_order->update_totals();
 
             $this->deleted = true;
 
