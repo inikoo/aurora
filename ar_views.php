@@ -212,12 +212,35 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
         case 'page':
             $_parent = get_object('Webpage', $state['parent_key']);
             $website = get_object('Website', $_parent->get('Webpage Website Key'));
-            //$state['current_website'] = $website->id;
-            $website                  = $website;
             $state['current_website'] = $website->id;
 
             break;
+        case 'webpage_type':
+            $_parent = get_object('Webpage_Type', $state['parent_key']);
+            $website = get_object('Website', $_parent->get('Webpage Type Website Key'));
+            $state['current_website'] = $website->id;
 
+
+            if(!$_parent->id){
+                $state = array(
+                    'old_state'  => $state,
+                    'module'     => 'utils',
+                    'section'    => 'not_found',
+                    'tab'        => 'not_found',
+                    'subtab'     => '',
+                    'parent'     => $state['object'],
+                    'parent_key' => '',
+                    'object'     => '',
+                    'store'      => '',
+                    'website'    => '',
+                    'warehouse'  => '',
+                    'key'        => '',
+                    'request'    => $state['request']
+                );
+            }
+
+
+            break;
         case 'warehouse':
             $_parent                    = get_object('Warehouse', $state['parent_key']);
             $warehouse                  = $_parent;
@@ -330,6 +353,9 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
     $state['_parent'] = $_parent;
+
+
+
 
 
     if ($state['object'] != '') {
