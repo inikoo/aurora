@@ -192,6 +192,15 @@ $export_edit_template_fields = array(
         array(
             'default_value' => '',
             'show_for_new'  => true,
+            'required'      => true,
+            'header'        => 'Unit expense',
+            'name'          => 'Supplier Part Unit Expense',
+            'label'         => _('Unit expense'),
+            'checked'       => 0
+        ),
+        array(
+            'default_value' => '',
+            'show_for_new'  => true,
             'required'      => false,
             'header'        => 'Unit extra costs %',
             'name'          => 'Supplier Part Unit Extra Cost Percentage',

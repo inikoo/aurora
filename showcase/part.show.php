@@ -53,6 +53,9 @@ function get_part_showcase($data, $smarty, $user, $db) {
         return "";
     }
 
+    $main_supplier_part = get_object('Supplier_Part', $part->get('Part Main Supplier Part Key'));
+    $smarty->assign('main_supplier_part', $main_supplier_part);
+
 
     $a4_labels_options = array(
         array(

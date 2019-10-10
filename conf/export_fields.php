@@ -187,11 +187,9 @@ $export_fields = array(
         ),
 
 
-
-
     ),
 
-    'orders'                       => array(
+    'orders'         => array(
         array(
             'name'    => '`Order Public ID`',
             'label'   => _('ID'),
@@ -229,7 +227,7 @@ $export_fields = array(
         ),
 
     ),
-    'delivery_notes'               => array(
+    'delivery_notes' => array(
         array(
             'name'    => '`Delivery Note ID`',
             'label'   => _('ID'),
@@ -440,7 +438,7 @@ $export_fields = array(
     ),
 
 
-    'supplier_parts'                          => array(
+    'supplier_parts'  => array(
         array(
             'name'    => '`Supplier Part Status`',
             'label'   => _('Availability'),
@@ -500,6 +498,11 @@ $export_fields = array(
             'checked' => 1
         ),
         array(
+            'name'    => '`Supplier Part Unit Expense`',
+            'label'   => _('Unit expense'),
+            'checked' => 1
+        ),
+        array(
             'name'    => '`Supplier Part Unit Extra Cost`',
             'label'   => _('Unit extra costs'),
             'checked' => 1
@@ -522,7 +525,7 @@ $export_fields = array(
         ),
 
     ),
-    'agent_parts'                             => array(
+    'agent_parts'     => array(
         array(
             'name'    => '`Supplier Part Status`',
             'label'   => _('Availability'),
@@ -582,6 +585,11 @@ $export_fields = array(
             'checked' => 1
         ),
         array(
+            'name'    => '`Supplier Part Unit Expense`',
+            'label'   => _('Unit expense'),
+            'checked' => 1
+        ),
+        array(
             'name'    => '`Supplier Part Unit Extra Cost`',
             'label'   => _('Unit extra costs'),
             'checked' => 1
@@ -604,7 +612,7 @@ $export_fields = array(
         ),
 
     ),
-    'ec_sales_list'                           => array(
+    'ec_sales_list'   => array(
         array(
             'name'    => '`Invoice Address Country 2 Alpha Code`',
             'label'   => _('Country Code'),
@@ -651,7 +659,7 @@ $export_fields = array(
             'checked' => 0
         ),
     ),
-    'locations'                               => array(
+    'locations'       => array(
         array(
             'name'    => '`Location Code`',
             'label'   => _('Code'),
@@ -687,7 +695,7 @@ $export_fields = array(
 
 
     ),
-    'parts'                                   => array(
+    'parts'           => array(
         array(
             'name'    => '`Part Reference`',
             'label'   => _('Reference'),
@@ -731,7 +739,6 @@ $export_fields = array(
         ),
 
 
-
         array(
             'name'    => '`Part Package Weight`',
             'label'   => _('SKO weight (Kg)'),
@@ -750,11 +757,10 @@ $export_fields = array(
 
         array(
             'name'    => '`Part Unit Weight`',
-            'label'         => _('Weight shown in website').' (Kg)',
+            'label'   => _('Weight shown in website').' (Kg)',
             'checked' => 0
         ),
 
-        
 
     ),
     'part_categories' => array(
@@ -939,7 +945,6 @@ $export_fields = array(
         ),
 
 
-
     ),
     'supplier_timeseries_drill_down_parts'    => array(
         array(
@@ -1068,7 +1073,6 @@ $export_fields = array(
             'label'   => _('Weight status'),
             'checked' => 1
         ),
-
 
 
     ),
@@ -1265,7 +1269,7 @@ $export_fields = array(
             'checked' => 1
         ),
         array(
-            'name'    =>'sum(`Invoice Currency Exchange Rate`*`Order Transaction Amount`) ',
+            'name'    => 'sum(`Invoice Currency Exchange Rate`*`Order Transaction Amount`) ',
             'label'   => _('Amount').' ('.$account->get('Account Currency Code').')',
             'checked' => 1
         ),

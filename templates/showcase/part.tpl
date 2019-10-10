@@ -254,10 +254,13 @@
 
 
                 <tr class="Part_Cost_in_Warehouse_info_set_up {if $part->get('Part Cost in Warehouse')==''}hide{/if}">
-                    <td colspan="2">
+                    <td>
 
                        {t}Stock value{/t}: <span  style="font-size:85%" class="Part_Cost_in_Warehouse">{$part->get('Cost in Warehouse')}</span>
-
+                    </td>
+                    <td style="text-align: right">
+                        <span title="{t}Future delivered cost{/t}"><i class="fal fa-shipping-timed "></i>  <span class="SKO_Delivered_Cost">{$main_supplier_part->get('SKO Delivered Cost')}</span><span>/SKO</span></span>
+                    </td>
 
                 </tr>
 
@@ -679,7 +682,7 @@
                     <i class="fal fa-pallet fa-fw" title="{t}Carton{/t}" ></i>
                 </td>
                 <td style="padding-left: 4px">
-                    <span class="discreet" title="{t}Units per carton{/t}"><i class="fal fa-fwx fa-stop-circle very_discreet" style="font-size: 80%;margin-right: 1px" ></i><i class="fal fa-fws very_discreet fa-times" style="position: relative;top:1px;margin-right: 3px"></i>{$part->get('Units Per Carton')}</span>
+                    <span class="discreet" title="{t}Units per carton{/t}"><i class="fal fa-fwx fa-stop-circle very_discreet" style="font-size: 80%;margin-right: 1px" ></i><i class="fal fa-fws very_discreet fa-times" style="position: relative;top:1px;margin-right: 3px"></i>{$part->get('Units Per Carton')} </span> <span class="discreet" title="{t}SKOs per carton{/t}">({$part->get('SKOs per Carton')})</span>
 
                 </td>
                 <td>
