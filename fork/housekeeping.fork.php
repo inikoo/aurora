@@ -1135,6 +1135,41 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             break;
         case 'customer_deleted':
+
+
+
+            $sql = sprintf(
+                "DELETE FROM `Customer Correlation` WHERE `Customer A Key`=%d OR `Customer B Key`=%s", $data['customer_key'], $data['customer_key']
+            );
+            $db->exec($sql);
+
+            $db->exec($sql);
+            $sql = sprintf(
+                "DELETE FROM `List Customer Bridge` WHERE `Customer Key`=%d", $data['customer_key']
+            );
+            $db->exec($sql);
+
+            $sql = sprintf(
+                "DELETE FROM `Customer Send Post` WHERE `Customer Key`=%d", $data['customer_key']
+            );
+            $db->exec($sql);
+
+
+
+            $sql = sprintf(
+                "DELETE FROM `Category Bridge` WHERE `Subject`='Customer' AND `Subject Key`=%d", $data['customer_key']
+            );
+            $db->exec($sql);
+
+
+
+
+            $website_user = get_object('Website_User',$data['website_user']);
+            $website_user->editor       = $data['editor'];
+
+            $website_user->delete();
+
+
             $store = get_object('Store', $data['store_key']);
             $store->update_customers_data();
 

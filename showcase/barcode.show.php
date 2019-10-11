@@ -28,4 +28,3 @@ function get_barcode_showcase($data, $smarty, $user, $db) {
 }
 
 
-?>

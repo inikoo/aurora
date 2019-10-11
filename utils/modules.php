@@ -941,6 +941,17 @@ $modules = array(
                 )
             ),
 
+            'deleted_customer' => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'customer.history' => array(
+                        'label' => _('History'),
+                        'icon'  => 'road'
+                    ),
+
+
+                )
+            ),
 
             'prospect' => array(
                 'type'      => 'object',
@@ -7106,7 +7117,7 @@ $modules = array(
 
             ),
 
-            'timesheet' => array(
+            'timesheet'  => array(
                 'type' => 'object',
                 'tabs' => array(
                     'timesheet.records' => array(
@@ -7124,22 +7135,22 @@ $modules = array(
                 'label'     => _('Calendar'),
                 'reference' => 'timesheets/day/'.date('Ymd'),
                 'tabs'      => array(
-                    'timesheets.months' => array(
+                    'timesheets.months'     => array(
                         'label' => _(
                             'Months'
                         )
                     ),
-                    'timesheets.weeks'     => array(
+                    'timesheets.weeks'      => array(
                         'label' => _(
                             'Weeks'
                         )
                     ),
-                    'timesheets.days'      => array(
+                    'timesheets.days'       => array(
                         'label' => _(
                             'Days'
                         )
                     ),
-                    'timesheets.employees' => array(
+                    'timesheets.employees'  => array(
                         'label' => _(
                             "Employes'"
                         )
@@ -7177,7 +7188,6 @@ $modules = array(
                 )
 
             ),
-
 
 
             'new_timesheet_record' => array(
@@ -8025,20 +8035,20 @@ $modules = array(
                         'label' => _('Settings'),
                         'icon'  => 'sliders-h'
                     ),
-                    'agent.details'   => array(
+                    'agent.details' => array(
                         'label' => _('Agent details'),
                         'icon'  => 'database',
                         'title' => _('Agent details'),
                     ),
 
-                    'agent.details'   => array(
+                    'agent.details' => array(
                         'label' => _('Agent details'),
                         'icon'  => 'database',
                         'title' => _('Agent details'),
                     ),
 
 
-                    'agent.history'        => array(
+                    'agent.history' => array(
                         'label' => _('History/Notes'),
                         'icon'  => 'road',
                         'class' => 'right icon_only'

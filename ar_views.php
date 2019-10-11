@@ -352,7 +352,8 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     }
 
 
-    $state['_parent'] = $_parent;
+
+
 
 
 
@@ -425,7 +426,11 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
             }
         }
 
-        if ($state['object'] == 'customer' and $state['tab'] != 'customer.new') {
+        if ($state['object'] == 'customer' and $state['tab'] != 'customer.new' and  $_object->id) {
+
+
+
+
 
             if ($state['parent'] == 'store' and $state['parent_key'] == '') {
 
@@ -562,6 +567,8 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
         if (!$_object->id and $modules[$state['module']]['sections'][$state['section']]['type'] == 'object') {
 
+
+
             if ($state['object'] == 'api_key') {
                 $_object          = new API_Key('deleted', $state['key']);
                 $state['_object'] = $_object;
@@ -570,8 +577,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                     $state['tab']     = 'api_key.history';
 
                 }
-            }
-            if ($state['object'] == 'barcode') {
+            }elseif ($state['object'] == 'barcode') {
                 $_object          = new Barcode('deleted', $state['key']);
                 $state['_object'] = $_object;
                 if ($_object->id) {
@@ -579,8 +585,20 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                     $state['tab']     = 'barcode.history';
 
                 }
-            }
-            if ($state['object'] == 'Customer_Poll_Query_Option') {
+            }elseif ($state['object'] == 'customer') {
+
+
+
+                $_object          = new Customer('deleted', $state['key']);
+                $state['_object'] = $_object;
+
+
+                if ($_object->id) {
+                    $state['section'] = 'deleted_customer';
+                    $state['tab']     = 'customer.history';
+
+                }
+            }elseif ($state['object'] == 'Customer_Poll_Query_Option') {
                 $_object          = new Customer_Poll_Query_Option('deleted', $state['key']);
                 $state['_object'] = $_object;
                 if ($_object->id) {
@@ -2266,6 +2284,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('product'):
                     return get_customer_product_navigation(
                         $data, $smarty, $user, $db, $account, $account
+                    );
+                    break;
+                case ('deleted_customer'):
+                    return get_deleted_customer_navigation(
+                        $data, $smarty, $user, $db, $account
                     );
                     break;
 
@@ -5757,6 +5780,21 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                             'reference' => 'customers/'.$state['store']->id.'/lists/'.$state['_parent']->id.'/'.$state['_object']->id
                         );
                     }
+                    break;
+
+                case 'deleted_customer':
+                        $branch[] = array(
+                            'label'     => _('Customers').' '.$state['store']->get('Store Code'),
+                            'icon'      => 'users',
+                            'reference' => 'customers/'.$state['store']->id
+                        );
+                        $branch[] = array(
+                            'label'     => $state['_object']->get_formatted_id().' ('._('Deleted').')',
+                            'icon'      => 'user',
+                            'reference' => 'customer/'.$state['_object']->id
+                        );
+
+
                     break;
 
 

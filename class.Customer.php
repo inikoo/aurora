@@ -25,7 +25,6 @@ class Customer extends Subject {
     public $db;
 
 
-
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
         global $db;
@@ -75,6 +74,10 @@ class Customer extends Subject {
             $sql = sprintf(
                 "SELECT * FROM `Customer Dimension` WHERE `Customer Main Plain Email`=%s", prepare_mysql($id)
             );
+        } elseif ($tag == 'deleted') {
+            $this->get_deleted_data($id);
+
+            return;
         } else {
             $sql = sprintf(
                 "SELECT * FROM `Customer Dimension` WHERE `Customer Key`=%s", prepare_mysql($id)
@@ -87,12 +90,20 @@ class Customer extends Subject {
             $this->metadata = json_decode($this->data['Customer Metadata'], true);
 
         }
-
-
     }
 
-    function metadata($key) {
-        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
+    function get_deleted_data($id) {
+
+        $this->deleted = true;
+        $sql           = sprintf("SELECT * FROM `Customer Deleted Dimension` WHERE `Customer Key`=%d", $id);
+
+        if ($this->data = $this->db->query($sql)->fetch()) {
+
+            $this->id = $this->data['Customer Key'];
+
+
+        }
+
     }
 
     function find($raw_data, $address_raw_data, $options = '') {
@@ -203,7 +214,7 @@ class Customer extends Subject {
                 array(
                     'Customer Main Plain Mobile'    => $this->get('Customer Main Plain Mobile'),
                     'Customer Main Plain Telephone' => $this->get('Customer Main Plain Telephone'),
-                    'Customer Main Plain FAX'       => $this->get('Customer Main Plain FAX'),
+                    'Customer Main Plain FAX'       => $this->zget('Customer Main Plain FAX'),
                 ), 'no_history'
 
             );
@@ -806,7 +817,6 @@ class Customer extends Subject {
 
     }
 
-
     function get_other_delivery_address_fields($other_delivery_address_key) {
 
         $sql = sprintf(
@@ -846,6 +856,9 @@ class Customer extends Subject {
 
     }
 
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
+    }
 
     function update_location_type() {
 
@@ -1493,6 +1506,44 @@ class Customer extends Subject {
         }
     }
 
+    function validate_customer_tax_number() {
+
+        if ($this->data['Customer Tax Number'] == '') {
+            $this->fast_update(
+                array(
+                    'Customer Tax Number Valid'              => 'Unknown',
+                    'Customer Tax Number Details Match'      => '',
+                    'Customer Tax Number Validation Date'    => '',
+                    'Customer Tax Number Validation Source'  => '',
+                    'Customer Tax Number Validation Message' => ''
+                )
+            );
+        } else {
+
+            include_once 'utils/validate_tax_number.php';
+
+            $tax_validation_data = validate_tax_number($this->data['Customer Tax Number'], $this->data['Customer Invoice Address Country 2 Alpha Code']);
+
+            if ($tax_validation_data['Tax Number Valid'] == 'API_Down') {
+                if (!($this->data['Customer Tax Number Validation Source'] == '' and $this->data['Customer Tax Number Valid'] == 'No')) {
+
+                    return false;
+                }
+            }
+
+            $this->fast_update(
+                array(
+                    'Customer Tax Number Valid'              => $tax_validation_data['Tax Number Valid'],
+                    'Customer Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
+                    'Customer Tax Number Validation Date'    => $tax_validation_data['Tax Number Validation Date'],
+                    'Customer Tax Number Validation Source'  => $tax_validation_data['Tax Number Validation Source'],
+                    'Customer Tax Number Validation Message' => $tax_validation_data['Tax Number Validation Message'],
+                )
+            );
+        }
+
+    }
+
     function add_other_delivery_address($fields) {
 
 
@@ -1670,44 +1721,6 @@ class Customer extends Subject {
         );
 
         return true;
-
-    }
-
-    function validate_customer_tax_number() {
-
-        if ($this->data['Customer Tax Number'] == '') {
-            $this->fast_update(
-                array(
-                    'Customer Tax Number Valid'              => 'Unknown',
-                    'Customer Tax Number Details Match'      => '',
-                    'Customer Tax Number Validation Date'    => '',
-                    'Customer Tax Number Validation Source'  => '',
-                    'Customer Tax Number Validation Message' => ''
-                )
-            );
-        } else {
-
-            include_once 'utils/validate_tax_number.php';
-
-            $tax_validation_data = validate_tax_number($this->data['Customer Tax Number'], $this->data['Customer Invoice Address Country 2 Alpha Code']);
-
-            if ($tax_validation_data['Tax Number Valid'] == 'API_Down') {
-                if (!($this->data['Customer Tax Number Validation Source'] == '' and $this->data['Customer Tax Number Valid'] == 'No')) {
-
-                    return false;
-                }
-            }
-
-            $this->fast_update(
-                array(
-                    'Customer Tax Number Valid'              => $tax_validation_data['Tax Number Valid'],
-                    'Customer Tax Number Details Match'      => $tax_validation_data['Tax Number Details Match'],
-                    'Customer Tax Number Validation Date'    => $tax_validation_data['Tax Number Validation Date'],
-                    'Customer Tax Number Validation Source'  => $tax_validation_data['Tax Number Validation Source'],
-                    'Customer Tax Number Validation Message' => $tax_validation_data['Tax Number Validation Message'],
-                )
-            );
-        }
 
     }
 
@@ -2125,12 +2138,6 @@ class Customer extends Subject {
         return $order_key;
     }
 
-    function add_customer_history($history_data, $force_save = true, $deleteable = 'No', $type = 'Changes') {
-
-        return $this->add_subject_history(
-            $history_data, $force_save, $deleteable, $type
-        );
-    }
 
 
     function get_addresses_data() {
@@ -2705,7 +2712,6 @@ class Customer extends Subject {
         );
 
 
-
     }
 
 
@@ -2724,12 +2730,7 @@ class Customer extends Subject {
                 $order = get_object('Order', $row['Order Key']);
                 $order->cancel(_('Cancelled because customer was deleted'));
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
-
 
         $has_orders = false;
         $sql        = "SELECT count(*) AS total  FROM `Order Dimension` WHERE `Order State`!='Cancelled' and  `Order Customer Key`=".$this->id;
@@ -2740,10 +2741,6 @@ class Customer extends Subject {
                     $has_orders = true;
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -2756,53 +2753,23 @@ class Customer extends Subject {
 
 
         $history_data = array(
-            'History Abstract' => _('Customer Deleted'),
+            'History Abstract' => _('Customer deleted'),
             'History Details'  => '',
             'Action'           => 'deleted'
         );
 
-        $this->add_history($history_data, $force_save = true);
+        $this->add_subject_history(
+            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+        );
 
 
         $sql = sprintf(
             "DELETE FROM `Customer Dimension` WHERE `Customer Key`=%d", $this->id
         );
         $this->db->exec($sql);
-        $sql = sprintf(
-            "DELETE FROM `Customer Correlation` WHERE `Customer A Key`=%d OR `Customer B Key`=%s", $this->id, $this->id
-        );
-        $this->db->exec($sql);
-        $sql = sprintf(
-            "DELETE FROM `Customer History Bridge` WHERE `Customer Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-        $sql = sprintf(
-            "DELETE FROM `List Customer Bridge` WHERE `Customer Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-
-        $sql = sprintf(
-            "DELETE FROM `Customer Send Post` WHERE `Customer Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-
-        $sql = sprintf(
-            "DELETE FROM `Category Bridge` WHERE `Subject`='Customer' AND `Subject Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-
-        $sql = sprintf(
-            "DELETE FROM `Customer Send Post` WHERE  `Customer Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
 
 
-        $website_user = get_object('Website_User', $this->get('Customer Website User Key'));
-        $website_user->delete();
 
-
-        // Delete if the email has not been send yet
-        //Email Campaign Mailing List
 
         $sql = sprintf(
             "INSERT INTO `Customer Deleted Dimension` (`Customer Key`,`Customer Store Key`,`Customer Deleted Name`,`Customer Deleted Contact Name`,`Customer Deleted Email`,`Customer Deleted Metadata`,`Customer Deleted Date`,`Customer Deleted Note`) VALUE (%d,%d,%s,%s,%s,%s,%s,%s) ",
@@ -2819,6 +2786,8 @@ class Customer extends Subject {
             'au_housekeeping', array(
             'type'      => 'customer_deleted',
             'store_key' => $this->data['Customer Store Key'],
+            'customer_key'=>$this->id,
+            'website_user'=> $this->get('Customer Website User Key'),
             'editor'    => $this->editor
         ), $account->get('Account Code'), $this->db
         );
@@ -2827,33 +2796,7 @@ class Customer extends Subject {
         $this->deleted = true;
     }
 
-    function update_subscription($customer_id, $type) {
-        if (!isset($customer_id) || !isset($type)) {
-            return;
-        }
 
-
-    }
-
-    function get_order_key() {
-        $sql = sprintf(
-            "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Key`=%d ORDER BY `Order Key` DESC", $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                return $row['Order Key'];
-            } else {
-                return -1;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-    }
 
 
     function get_category_data() {

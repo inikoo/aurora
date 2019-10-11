@@ -34,7 +34,7 @@ $options_delivery_address_link = array(
 $options_sales_representative = array();
 
 $sql = sprintf(
-    'SELECT `User Alias`,U.`User Key`,`User Handle` from `User Dimension` U LEFT JOIN `User Group User Bridge` B ON (U.`User Key`=B.`User Key`) WHERE  `User Type` in  ("Staff","Contractor")  and `User Group Key`=2     and `User Active`="Yes"  group by U.`User Key` order by `User Alias`  '
+    "SELECT `User Alias`,U.`User Key`,`User Handle` from `User Dimension` U LEFT JOIN `User Group User Bridge` B ON (U.`User Key`=B.`User Key`) WHERE  `User Type` in  ('Staff','Contractor')  and `User Group Key`=2     and `User Active`='Yes'  group by U.`User Key`  "
 );
 
 
@@ -577,7 +577,6 @@ if ($new) {
                 'label'           => ucfirst($object->get_field_label('Customer Contact Address')),
                 'invalid_msg'     => get_invalid_message('address'),
                 'required'        => false,
-                'type'            => 'valuex'
 
             ),
 
