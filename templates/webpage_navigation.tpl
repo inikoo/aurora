@@ -15,7 +15,6 @@
 
             <i class="fa fa-home"></i> [
             <span title="{t}Homepage logout view{/t}" class="  button" onclick="change_view('website/{$website->id}/webpage/{$website->get_system_webpage_key('home_logout.sys')}')"><i class="fal fa-user-slash"></i></span>
-            <span title="{t}Homepage new customer{/t}" class="button padding_right_5 padding_left_5" onclick="change_view('website/{$website->id}/webpage/{$website->get_system_webpage_key('home_rookie.sys')}')"><i class="fal fa-acorn"></i></span>
             <span title="{t}Homepage{/t}" class="button" onclick="change_view('website/{$website->id}/webpage/{$website->get_system_webpage_key('home.sys')}')"><i class="fal fa-user-crown"></i></span>
 
             ]

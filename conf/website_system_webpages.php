@@ -41,9 +41,9 @@ function website_system_webpages_config($website_type) {
                     'blocks' => array(
 
 
-                        $blocks['iframe'],
+                       // $blocks['iframe'],
                         //$blocks['six_pack'],
-                        $blocks['images'],
+                      //  $blocks['images'],
                         // $blocks['counter'],
                         //$blocks['three_pack'],
 
@@ -68,11 +68,11 @@ function website_system_webpages_config($website_type) {
                     'blocks' => array(
 
 
-                        $blocks['iframe'],
-                        $blocks['button'],
+                        //$blocks['iframe'],
+                        //$blocks['button'],
 
                         //   $blocks['six_pack'],
-                        $blocks['images'],
+                        //$blocks['images'],
                         // $blocks['counter'],
                         //   $blocks['three_pack'],
 
