@@ -290,20 +290,29 @@ function orders_in_process_paid($_data, $db, $user, $account) {
 
             foreach (preg_split('/,/', $data['payments']) as $payment_data) {
                 $payment_data = preg_split('/\|/', $payment_data);
-                //print_r($payment_data);
 
-                if ($payment_data[1] == 'Accounts') {
-                    $payment_name = _('Credit');
-                } else {
-                    $payment_name = $payment_data[0];
+                if(count($payment_data)==2){
+                    if ($payment_data[1] == 'Accounts') {
+                        $payment_name = _('Credit');
+                    } else {
+                        $payment_name = $payment_data[0];
+                    }
+
+                    $payments .= $payment_name.', ';
+                }else{
+                    throw new Exception($sql.'; '.json_encode($data));
+
                 }
 
-                $payments .= $payment_name.', ';
+
+
+
             }
+            $payments = preg_replace('/, $/', '', $payments);
+
         }
 
 
-        $payments = preg_replace('/, $/', '', $payments);
 
 
         // include_once 'class.Order.php';
