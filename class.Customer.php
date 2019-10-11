@@ -2139,7 +2139,6 @@ class Customer extends Subject {
     }
 
 
-
     function get_addresses_data() {
 
 
@@ -2723,29 +2722,42 @@ class Customer extends Subject {
         $this->deleted = false;
 
 
-        $sql = "SELECT `Order Key`  FROM `Order Dimension` WHERE `Order State` in  ('InBasket','InProcess') and  `Order Customer Key`=".$this->id;
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $order = get_object('Order', $row['Order Key']);
-                $order->cancel(_('Cancelled because customer was deleted'));
-            }
-        }
-
-        $has_orders = false;
-        $sql        = "SELECT count(*) AS total  FROM `Order Dimension` WHERE `Order State`!='Cancelled' and  `Order Customer Key`=".$this->id;
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                if ($row['total'] > 0) {
-                    $has_orders = true;
-                }
-            }
+        $sql  = "SELECT `Order Key`  FROM `Order Dimension` WHERE `Order State` in  ('InBasket','InProcess') and  `Order Customer Key`=?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this - id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            $order = get_object('Order', $row['Order Key']);
+            $order->editor;
+            $order->cancel(_('Cancelled because customer was deleted'));
         }
 
 
-        if ($has_orders) {
-            $this->msg   = _("Customer can't be deleted because has orders");
+        $number_orders = 0;
+
+        $sql  = "SELECT count(*) AS num  FROM `Order Dimension` WHERE `Order State`!='Cancelled' and  `Order Customer Key`=?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $number_orders = $row['num'];
+        }
+
+
+        if ($number_orders > 0) {
+            $this->msg = sprintf(
+                ngettext(
+                    "Customer can't be deleted because it has %s order", "Customer can't be deleted because it has %s orders", $number_orders
+                ), number($number_orders)
+            );
+
+
             $this->error = true;
 
             return;
@@ -2769,8 +2781,6 @@ class Customer extends Subject {
         $this->db->exec($sql);
 
 
-
-
         $sql = sprintf(
             "INSERT INTO `Customer Deleted Dimension` (`Customer Key`,`Customer Store Key`,`Customer Deleted Name`,`Customer Deleted Contact Name`,`Customer Deleted Email`,`Customer Deleted Metadata`,`Customer Deleted Date`,`Customer Deleted Note`) VALUE (%d,%d,%s,%s,%s,%s,%s,%s) ",
             $this->id, $this->data['Customer Store Key'], prepare_mysql($this->data['Customer Name']), prepare_mysql($this->data['Customer Main Contact Name']), prepare_mysql($this->data['Customer Main Plain Email']),
@@ -2784,19 +2794,17 @@ class Customer extends Subject {
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
             'au_housekeeping', array(
-            'type'      => 'customer_deleted',
-            'store_key' => $this->data['Customer Store Key'],
-            'customer_key'=>$this->id,
-            'website_user'=> $this->get('Customer Website User Key'),
-            'editor'    => $this->editor
+            'type'         => 'customer_deleted',
+            'store_key'    => $this->data['Customer Store Key'],
+            'customer_key' => $this->id,
+            'website_user' => $this->get('Customer Website User Key'),
+            'editor'       => $this->editor
         ), $account->get('Account Code'), $this->db
         );
 
 
         $this->deleted = true;
     }
-
-
 
 
     function get_category_data() {
