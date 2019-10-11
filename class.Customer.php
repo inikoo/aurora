@@ -2726,7 +2726,7 @@ class Customer extends Subject {
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             array(
-                $this - id
+                $this->id
             )
         );
         while ($row = $stmt->fetch()) {
