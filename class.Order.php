@@ -93,17 +93,11 @@ class Order extends DB_Table {
 
     }
 
-
-    function metadata($key) {
-        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
-    }
-
     function set_display_currency($currency_code, $exchange) {
         $this->currency_code = $currency_code;
         $this->exchange      = $exchange;
 
     }
-
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
 
@@ -164,7 +158,7 @@ class Order extends DB_Table {
                 $this->order_totals_changed_post_operation();
                 break;
             case('Order Tax Number Valid'):
-                if ( $this->get('State Index') <= 0) {
+                if ($this->get('State Index') <= 0) {
                     return;
                 }
                 $this->update_tax_number_valid($value);
@@ -222,55 +216,6 @@ class Order extends DB_Table {
 
     }
 
-    function order_totals_changed_post_operation() {
-
-
-        $this->update_metadata = array(
-            'class_html' => array(
-                'Order_Tax_Number_Formatted' => $this->get('Tax Number Formatted'),
-                'Tax_Description'            => $this->get('Tax Description'),
-                'Total_Tax_Amount'           => $this->get('Total Tax Amount'),
-                'Total_Amount'               => $this->get('Total Amount'),
-                'To_Pay_Amount_Absolute'     => $this->get('To Pay Amount Absolute')
-            )
-        );
-
-        if ($this->get('Order To Pay Amount') == 0) {
-            $this->update_metadata['hide'] = array(
-                'Order_To_Pay_Amount',
-                'Order_Payments_Amount'
-            );
-            if ($this->get('Order Total Amount') == 0) {
-                array_push($this->update_metadata['hide'], 'Order_Paid');
-            } else {
-                $this->update_metadata['show'] = array('Order_Paid');
-            }
-        } elseif ($this->get('Order To Pay Amount') > 0) {
-            $this->update_metadata['show'] = array(
-                'Order_To_Pay_Amount',
-                'To_Pay_Label',
-                'Order_Payments_Amount'
-            );
-            $this->update_metadata['hide'] = array(
-                'To_Refund_Label',
-                'Order_Paid'
-            );
-
-        } elseif ($this->get('Order To Pay Amount') < 0) {
-            $this->update_metadata['show'] = array(
-                'Order_To_Pay_Amount',
-                'To_Refund_Label',
-                'Order_Payments_Amount'
-            );
-            $this->update_metadata['hide'] = array(
-                'To_Pay_Label',
-                'Order_Paid'
-            );
-        }
-
-    }
-
-
     function get($key = '') {
 
         if (!$this->id) {
@@ -327,30 +272,29 @@ class Order extends DB_Table {
                 switch ($this->data['Order Tax Code']) {
 
                     case 'OUT':
-                        $tax_description= _('Outside the scope od VAT');
+                        $tax_description = _('Outside the scope od VAT');
                         break;
                     case 'EU':
-                        $tax_description= sprintf(_('EC with %s'), $this->get('Tax Number Formatted'));
+                        $tax_description = sprintf(_('EC with %s'), $this->get('Tax Number Formatted'));
                         break;
                     default:
 
                         switch ($this->metadata('why_tax')) {
                             case 'EC with invalid tax number':
-                                $tax_description=  sprintf(_('EC with %s'), $this->get('Tax Number Formatted'));
+                                $tax_description = sprintf(_('EC with %s'), $this->get('Tax Number Formatted'));
                                 break;
                             default:
                                 $why_tax_formatted = '';
-                                $tax_description= $this->metadata('tax_name').$why_tax_formatted .$this->data['Order Tax Code'];
+                                $tax_description   = $this->metadata('tax_name').$why_tax_formatted.$this->data['Order Tax Code'];
 
                         }
-
 
 
                 }
 
 
-                if($this->metadata('original_tax_code')!='' and  $this->metadata('original_tax_code')!=$this->get('Order Tax Code') ){
-                    $tax_description='<span class="error italic"> <i class="fa fa-exclamation-circle error"></i> ('._('Edited').')</span> '.$tax_description;
+                if ($this->metadata('original_tax_code') != '' and $this->metadata('original_tax_code') != $this->get('Order Tax Code')) {
+                    $tax_description = '<span class="error italic"> <i class="fa fa-exclamation-circle error"></i> ('._('Edited').')</span> '.$tax_description;
                 }
 
                 return $tax_description;
@@ -448,14 +392,13 @@ class Order extends DB_Table {
             case 'Waiting days decimal':
 
 
-                return number(  (gmdate('U') - strtotime($this->data['Order Submitted by Customer Date'].' +0:00')) / 3600 / 24,1,true).' '._('days');
+                return number((gmdate('U') - strtotime($this->data['Order Submitted by Customer Date'].' +0:00')) / 3600 / 24, 1, true).' '._('days');
 
                 break;
             case 'Currency Code':
 
                 return $this->data['Order Currency'];
                 break;
-
 
 
             case 'Order Invoice Address':
@@ -1038,6 +981,10 @@ class Order extends DB_Table {
         return false;
     }
 
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
+    }
+
     function get_deliveries($scope = 'keys') {
 
 
@@ -1067,6 +1014,54 @@ class Order extends DB_Table {
 
 
         return $deliveries;
+
+    }
+
+    function order_totals_changed_post_operation() {
+
+
+        $this->update_metadata = array(
+            'class_html' => array(
+                'Order_Tax_Number_Formatted' => $this->get('Tax Number Formatted'),
+                'Tax_Description'            => $this->get('Tax Description'),
+                'Total_Tax_Amount'           => $this->get('Total Tax Amount'),
+                'Total_Amount'               => $this->get('Total Amount'),
+                'To_Pay_Amount_Absolute'     => $this->get('To Pay Amount Absolute')
+            )
+        );
+
+        if ($this->get('Order To Pay Amount') == 0) {
+            $this->update_metadata['hide'] = array(
+                'Order_To_Pay_Amount',
+                'Order_Payments_Amount'
+            );
+            if ($this->get('Order Total Amount') == 0) {
+                array_push($this->update_metadata['hide'], 'Order_Paid');
+            } else {
+                $this->update_metadata['show'] = array('Order_Paid');
+            }
+        } elseif ($this->get('Order To Pay Amount') > 0) {
+            $this->update_metadata['show'] = array(
+                'Order_To_Pay_Amount',
+                'To_Pay_Label',
+                'Order_Payments_Amount'
+            );
+            $this->update_metadata['hide'] = array(
+                'To_Refund_Label',
+                'Order_Paid'
+            );
+
+        } elseif ($this->get('Order To Pay Amount') < 0) {
+            $this->update_metadata['show'] = array(
+                'Order_To_Pay_Amount',
+                'To_Refund_Label',
+                'Order_Payments_Amount'
+            );
+            $this->update_metadata['hide'] = array(
+                'To_Pay_Label',
+                'Order_Paid'
+            );
+        }
 
     }
 
@@ -1215,12 +1210,13 @@ class Order extends DB_Table {
 
                     $show = array('customer_balance');
 
-                    if(count($this->get_payments('keys','Completed'))==0){
-                        $hide = array('order_payments_list','payment_overview');
+                    if (count($this->get_payments('keys', 'Completed')) == 0) {
+                        $hide = array(
+                            'order_payments_list',
+                            'payment_overview'
+                        );
 
                     }
-
-
 
 
                     break;
@@ -1353,11 +1349,14 @@ class Order extends DB_Table {
                         )
                     );
 
-                $hide= array('customer_balance');
+                    $hide = array('customer_balance');
 
-                $show = array('order_payments_list','payment_overview');
+                    $show = array(
+                        'order_payments_list',
+                        'payment_overview'
+                    );
 
-                break;
+                    break;
 
 
                 case 'Delivery Note Cancelled':
@@ -1654,9 +1653,6 @@ class Order extends DB_Table {
                             $operations = array();
 
 
-
-
-
                             break;
                         default:
                             $this->error = true;
@@ -1729,7 +1725,7 @@ class Order extends DB_Table {
 
 
                     $this->fast_update_json_field('Order Metadata', 'original_tax_code', $this->get('Order Tax Code'));
-                    $this->fast_update_json_field('Order Metadata', 'original_tax_description',  $this->get('Tax Description'));
+                    $this->fast_update_json_field('Order Metadata', 'original_tax_description', $this->get('Tax Description'));
 
                     $history_data = array(
                         'History Abstract' => _('Order invoiced'),
@@ -2008,17 +2004,12 @@ class Order extends DB_Table {
 
         }
 
-
         $date = gmdate('Y-m-d H:i:s');
 
         $this->data['Order Cancelled Date'] = $date;
-
-        $this->data['Order Cancel Note'] = $note;
-
-        $this->data['Order Payment State'] = 'NA';
-
-
-        $this->data['Order State'] = 'Cancelled';
+        $this->data['Order Cancel Note']    = $note;
+        $this->data['Order Payment State']  = 'NA';
+        $this->data['Order State']          = 'Cancelled';
 
 
         $this->data['Order Invoiced Balance Net Amount']               = 0;
@@ -2036,7 +2027,7 @@ class Order extends DB_Table {
         );
 
         $sql = sprintf(
-            "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order Payment State`=%s,`Order State`='NA',`Order To Pay Amount`=%.2f,`Order Cancel Note`=%s,
+            "UPDATE `Order Dimension` SET  `Order Cancelled Date`=%s, `Order State`=%s,`Order Payment State`='NA',`Order To Pay Amount`=%.2f,`Order Cancel Note`=%s,
 				`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order Items Cost`=0,
 				`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0
 				WHERE `Order Key`=%d", prepare_mysql($this->data['Order Cancelled Date']), prepare_mysql($this->data['Order State']), $this->data['Order To Pay Amount'], prepare_mysql($this->data['Order Cancel Note']),
@@ -2055,7 +2046,7 @@ class Order extends DB_Table {
 
         $sql = sprintf(
 
-            "UPDATE `Order Transaction Fact` SET   `Estimated Dispatched Weight`=0,`Delivery Note Quantity`=0, `No Shipped Due Out of Stock`=0,`Order Out of Stock Lost Amount`=0 WHERE `Order Key`=%d ",
+            "UPDATE `Order Transaction Fact` SET   `Delivery Note Quantity`=0, `No Shipped Due Out of Stock`=0,`Order Out of Stock Lost Amount`=0 WHERE `Order Key`=%d ",
 
             $this->id
         );
@@ -2095,18 +2086,17 @@ class Order extends DB_Table {
             $customer = get_object('Customer', $this->get('Order Customer Key'));
             $store    = get_object('Store', $this->get('Order Store Key'));
 
-            $sql = sprintf('SELECT `Transaction Type Key` FROM `Order No Product Transaction Fact` WHERE `Transaction Type`="Charges" AND   `Order Key`=%d  ', $this->id);
+            $sql = sprintf("SELECT `Transaction Type Key` FROM `Order No Product Transaction Fact` WHERE `Transaction Type`='Charges' AND   `Order Key`=%d  ", $this->id);
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
+                    /**
+                     * @var $charge \Charge
+                     */
                     $charge = get_object('Charge', $row['Transaction Type Key']);
                     $charge->update_charge_usage();
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
@@ -2123,19 +2113,21 @@ class Order extends DB_Table {
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
+                    /**
+                     * @var $component \DealComponent
+                     */
                     $component = get_object('DealComponent', $row['Deal Component Key']);
                     $component->update_usage();
                     $deals[$row['Deal Key']]              = $row['Deal Key'];
                     $campaigns[$row['Deal Campaign Key']] = $row['Deal Campaign Key'];
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
 
             foreach ($deals as $deal_key) {
+                /**
+                 * @var $deal \Deal
+                 */
                 $deal = get_object('Deal', $deal_key);
                 $deal->update_usage();
             }
@@ -2206,10 +2198,8 @@ class Order extends DB_Table {
             'Invoice Tax Number'                    => $this->data['Order Tax Number'],
             'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
             'Invoice Tax Number Validation Date'    => $this->data['Order Tax Number Validation Date'],
-            'Invoice Tax Number Validation Source'    => $this->data['Order Tax Number Validation Source'],
-            'Invoice Tax Number Validation Message'    => $this->data['Order Tax Number Validation Message'],
-
-
+            'Invoice Tax Number Validation Source'  => $this->data['Order Tax Number Validation Source'],
+            'Invoice Tax Number Validation Message' => $this->data['Order Tax Number Validation Message'],
 
 
             'Invoice Tax Number Associated Name'    => $this->data['Order Tax Number Associated Name'],
@@ -2576,7 +2566,6 @@ class Order extends DB_Table {
     }
 
 
-
     function get_currency_symbol() {
         return currency_symbol($this->data['Order Currency']);
     }
@@ -2755,164 +2744,6 @@ class Order extends DB_Table {
 
         return $number;
     }
-
-
-    function update_number_replacements() {
-
-        $old_in_warehouse_no_alerts   = $this->get('Order Replacements In Warehouse without Alerts');
-        $old_in_warehouse_with_alerts = $this->get('Order Replacements In Warehouse with Alerts');
-        $old_packed_done              = $this->get('Order Replacements Packed Done');
-        $old_approved                 = $this->get('Order Replacements Approved');
-        $old_dispatched_today         = $this->get('Order Replacements Dispatched Today');
-
-
-        $in_warehouse             = 0;
-        $in_warehouse_with_alerts = 0;
-        $packed_done              = 0;
-        $approved                 = 0;
-        $dispatched_today         = 0;
-
-
-        // if($this->id){
-
-
-        $sql = sprintf(
-            "SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') group by `Delivery Note State` ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                //'Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Packed Done','Approved','Dispatched','Cancelled','Cancelled to Restock'
-
-                if ($row['num'] > 0) {
-                    switch ($row['Delivery Note State']) {
-                        case 'Ready to be Picked':
-                        case 'Picker Assigned':
-                        case 'Picking':
-                        case 'Picked':
-                        case 'Packing':
-                        case 'Packed':
-
-                            $in_warehouse += $row['num'];
-
-
-                            break;
-
-                        case 'Packed Done':
-                            $packed_done += $row['num'];
-                            break;
-                        case 'Approved':
-                            $approved += $row['num'];
-                            break;
-
-                    }
-                }
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $sql = sprintf(
-            "SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') and `Delivery Note Waiting State`='Customer'  group by `Delivery Note State` ",
-            $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                if ($row['num'] > 0) {
-                    switch ($row['Delivery Note State']) {
-                        case 'Ready to be Picked':
-                        case 'Picker Assigned':
-                        case 'Picking':
-                        case 'Picked':
-                        case 'Packing':
-                        case 'Packed':
-                            $in_warehouse_with_alerts += $row['num'];
-                            break;
-
-                    }
-                }
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $in_warehouse_no_alerts = $in_warehouse - $in_warehouse_with_alerts;
-
-
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Delivery Note Dimension` 
-            WHERE  `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') AND   `Delivery Note State` ='Dispatched' AND `Delivery Note Date Dispatched`>=%s ", $this->id, prepare_mysql(gmdate('Y-m-d 00:00:00'))
-
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-                if ($row['num'] > 0) {
-                    $dispatched_today = $row['num'];
-                }
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-        $this->fast_update(
-            array(
-                'Order Replacements In Warehouse without Alerts' => $in_warehouse_no_alerts,
-                'Order Replacements In Warehouse with Alerts'    => $in_warehouse_with_alerts,
-                'Order Replacements Packed Done'                 => $packed_done,
-                'Order Replacements Approved'                    => $approved,
-                'Order Replacements Dispatched Today'            => $dispatched_today,
-
-
-            )
-        );
-
-        $store = get_object('Store', $this->get('Store Key'));
-        $store->update_orders_in_warehouse_data();
-        $account = get_object('Account', 1);
-        $account->update_orders_in_warehouse_data();
-
-
-        if ($old_in_warehouse_no_alerts != $in_warehouse_no_alerts or $old_in_warehouse_with_alerts != $in_warehouse_with_alerts) {
-            $store->update_orders_in_warehouse_data();
-            $account->update_orders_in_warehouse_data();
-
-        }
-        if ($old_packed_done != $packed_done) {
-            $store->update_orders_packed_data();
-            $account->update_orders_packed_data();
-
-        }
-        if ($old_approved != $approved) {
-            $store->update_orders_approved_data();
-            $account->update_orders_approved_data();
-
-        }
-        if ($old_dispatched_today != $dispatched_today) {
-            $store->update_orders_dispatched_today();
-            $account->update_orders_dispatched_today();
-
-        }
-
-
-    }
-
 
     function update_insurance($dn_key = false) {
 
@@ -3279,13 +3110,11 @@ class Order extends DB_Table {
             'Invoice Tax Number'                    => $this->data['Order Tax Number'],
             'Invoice Tax Number Valid'              => $this->data['Order Tax Number Valid'],
             'Invoice Tax Number Validation Date'    => $this->data['Order Tax Number Validation Date'],
-            'Invoice Tax Number Validation Source'    => $this->data['Order Tax Number Validation Source'],
-            'Invoice Tax Number Validation Message'    => $this->data['Order Tax Number Validation Message'],
+            'Invoice Tax Number Validation Source'  => $this->data['Order Tax Number Validation Source'],
+            'Invoice Tax Number Validation Message' => $this->data['Order Tax Number Validation Message'],
 
             'Invoice Tax Number Associated Name'    => $this->data['Order Tax Number Associated Name'],
             'Invoice Tax Number Associated Address' => $this->data['Order Tax Number Associated Address'],
-
-
 
 
             'Invoice Net Amount Off'               => 0,
@@ -3487,6 +3316,162 @@ class Order extends DB_Table {
             print_r($error_info = $this->db->errorInfo());
             print "$sql\n";
             exit;
+        }
+
+
+    }
+
+    function update_number_replacements() {
+
+        $old_in_warehouse_no_alerts   = $this->get('Order Replacements In Warehouse without Alerts');
+        $old_in_warehouse_with_alerts = $this->get('Order Replacements In Warehouse with Alerts');
+        $old_packed_done              = $this->get('Order Replacements Packed Done');
+        $old_approved                 = $this->get('Order Replacements Approved');
+        $old_dispatched_today         = $this->get('Order Replacements Dispatched Today');
+
+
+        $in_warehouse             = 0;
+        $in_warehouse_with_alerts = 0;
+        $packed_done              = 0;
+        $approved                 = 0;
+        $dispatched_today         = 0;
+
+
+        // if($this->id){
+
+
+        $sql = sprintf(
+            "SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') group by `Delivery Note State` ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                //'Ready to be Picked','Picker Assigned','Picking','Picked','Packing','Packed','Packed Done','Approved','Dispatched','Cancelled','Cancelled to Restock'
+
+                if ($row['num'] > 0) {
+                    switch ($row['Delivery Note State']) {
+                        case 'Ready to be Picked':
+                        case 'Picker Assigned':
+                        case 'Picking':
+                        case 'Picked':
+                        case 'Packing':
+                        case 'Packed':
+
+                            $in_warehouse += $row['num'];
+
+
+                            break;
+
+                        case 'Packed Done':
+                            $packed_done += $row['num'];
+                            break;
+                        case 'Approved':
+                            $approved += $row['num'];
+                            break;
+
+                    }
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $sql = sprintf(
+            "SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') and `Delivery Note Waiting State`='Customer'  group by `Delivery Note State` ",
+            $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                if ($row['num'] > 0) {
+                    switch ($row['Delivery Note State']) {
+                        case 'Ready to be Picked':
+                        case 'Picker Assigned':
+                        case 'Picking':
+                        case 'Picked':
+                        case 'Packing':
+                        case 'Packed':
+                            $in_warehouse_with_alerts += $row['num'];
+                            break;
+
+                    }
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $in_warehouse_no_alerts = $in_warehouse - $in_warehouse_with_alerts;
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Delivery Note Dimension` 
+            WHERE  `Delivery Note Order Key`=%d  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') AND   `Delivery Note State` ='Dispatched' AND `Delivery Note Date Dispatched`>=%s ", $this->id, prepare_mysql(gmdate('Y-m-d 00:00:00'))
+
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+                if ($row['num'] > 0) {
+                    $dispatched_today = $row['num'];
+                }
+
+            }
+        } else {
+            print_r($error_info = $this->db->errorInfo());
+            print "$sql\n";
+            exit;
+        }
+
+
+        $this->fast_update(
+            array(
+                'Order Replacements In Warehouse without Alerts' => $in_warehouse_no_alerts,
+                'Order Replacements In Warehouse with Alerts'    => $in_warehouse_with_alerts,
+                'Order Replacements Packed Done'                 => $packed_done,
+                'Order Replacements Approved'                    => $approved,
+                'Order Replacements Dispatched Today'            => $dispatched_today,
+
+
+            )
+        );
+
+        $store = get_object('Store', $this->get('Store Key'));
+        $store->update_orders_in_warehouse_data();
+        $account = get_object('Account', 1);
+        $account->update_orders_in_warehouse_data();
+
+
+        if ($old_in_warehouse_no_alerts != $in_warehouse_no_alerts or $old_in_warehouse_with_alerts != $in_warehouse_with_alerts) {
+            $store->update_orders_in_warehouse_data();
+            $account->update_orders_in_warehouse_data();
+
+        }
+        if ($old_packed_done != $packed_done) {
+            $store->update_orders_packed_data();
+            $account->update_orders_packed_data();
+
+        }
+        if ($old_approved != $approved) {
+            $store->update_orders_approved_data();
+            $account->update_orders_approved_data();
+
+        }
+        if ($old_dispatched_today != $dispatched_today) {
+            $store->update_orders_dispatched_today();
+            $account->update_orders_dispatched_today();
+
         }
 
 
