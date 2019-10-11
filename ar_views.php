@@ -353,7 +353,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
 
-
+    $state['_parent']=$_parent;
 
 
 
