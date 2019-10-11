@@ -170,6 +170,7 @@ $cache_id = $_SESSION['website_key'].'|'.$webpage_key.'|'.($logged_in ? 'in' : '
 
 $template = $theme.'/webpage_blocks.'.$theme.'.'.$website_type.$template_suffix.'.tpl';
 
+
 $smarty->assign('is_devel', $is_devel);
 
 

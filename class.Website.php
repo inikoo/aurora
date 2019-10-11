@@ -1446,7 +1446,7 @@ class Website extends DB_Table {
 
         $sql = sprintf(
             "SELECT `Webpage Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  NOT IN  ('Category Categories','Category Products','Product') AND `Webpage Code` not in 
-                                                          ('in_process.sys','profile.sys','basket.sys','checkout.sys','favourites.sys','home.sys','home_rookie.sys','not_found.sys','offline.sys','reset_pwd.sys','search.sys',
+                                                          ('in_process.sys','profile.sys','basket.sys','checkout.sys','favourites.sys','home.sys','not_found.sys','offline.sys','reset_pwd.sys','search.sys',
                                                           'thanks.sys','welcome.sys','unsubscribe.sys'
                                                           )  and   `Webpage State`='Online'   ", $this->id
         );
