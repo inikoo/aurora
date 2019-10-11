@@ -2082,6 +2082,9 @@ function save_object_operation(type, element, metadata) {
 
         } else if (data.state == 400) {
             $(element).find('i').addClass(icon).removeClass('fa-spinner fa-spin')
+            Swal.fire({
+                type: 'error', title: data.resp
+            })
 
         }
     })
