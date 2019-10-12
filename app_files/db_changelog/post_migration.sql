@@ -292,3 +292,6 @@ DROP TABLE `Part Availability for Products Timeline`;
 UPDATE `User Dimension` SET `User Settings`= JSON_SET(`User Settings`,'$.Timezone','Account') ;
 
 DROP TABLE  `Webpage Panel Dimension`;
+
+ALTER TABLE `Order Dimension` ADD `Customer Client Customer Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Order Customer Key`, ADD INDEX (`Customer Client Customer Key`);
+ALTER TABLE `Invoice Dimension` ADD `Customer Client Customer Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Order Customer Key`, ADD INDEX (`Customer Client Customer Key`);

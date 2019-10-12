@@ -281,9 +281,10 @@ module.exports = function (grunt) {
                     'js/picking_and_packing.js',
                     'js/app.js',
                     'js/real_time.js',
-                    'js/customers.js'
-
-
+                    'js/customers.js',
+                    'js/customer_orders.js',
+                    'js/customer_client.js',
+                    'js/customer_client_orders.js'
 
 
 

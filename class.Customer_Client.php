@@ -62,11 +62,6 @@ class Customer_Client extends Subject {
 
     }
 
-    function metadata($key) {
-        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
-    }
-
-
     function create($raw_data, $address_raw_data) {
 
 
@@ -150,7 +145,6 @@ class Customer_Client extends Subject {
 
     }
 
-
     function get($key, $arg1 = false) {
 
         if (!$this->id) {
@@ -164,9 +158,18 @@ class Customer_Client extends Subject {
 
 
         switch ($key) {
+            case 'Phone':
+
+                $phone = $this->data['Customer Client Main XHTML Mobile'];
+
+                if ($this->data['Customer Client Preferred Contact Number'] == 'Telephone' and $this->data['Customer Client Preferred Contact Number'] != '') {
+                    $phone = $this->data['Customer Client Main XHTML Telephone'];
+                }
+
+                return $phone;
             case 'Name Truncated':
                 return (strlen($this->get('Customer Client Name')) > 50 ? substrwords($this->get('Customer Client Name'), 55) : $this->get('Customer Client Name'));
-                break;
+
             case('Creation Date'):
                 if ($this->data['Customer Client '.$key] == '') {
                     return '';
@@ -177,7 +180,7 @@ class Customer_Client extends Subject {
                     ).'">'.strftime(
                         "%a %e %b %Y", strtotime($this->data['Customer Client '.$key]." +00:00")
                     ).'</span>';
-                break;
+
             case 'Customer Client Contact Address':
 
 
@@ -198,7 +201,6 @@ class Customer_Client extends Subject {
                 );
 
                 return json_encode($address_fields);
-                break;
 
 
             default:
@@ -215,6 +217,10 @@ class Customer_Client extends Subject {
 
         }
 
+    }
+
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
     }
 
     function get_order_in_process_key() {
@@ -237,36 +243,6 @@ class Customer_Client extends Subject {
         return $order_key;
     }
 
-    /*
-        function get_orders_data() {
-
-            $orders_data = array();
-            $sql         = sprintf('select `Order Invoice Key`,`Order Key`,`Order Public ID`,`Order Date`,`Order Total Amount`,`Order State`,`Order Currency` from `Order Dimension` where `Order Customer Client Key`=%d order by `Order Date` desc ', $this->id);
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-
-                    switch ($row['Order State']) {
-                        default:
-                            $state = $row['Order State'];
-                    }
-
-                    $orders_data[] = array(
-                        'key'         => $row['Order Key'],
-                        'invoice_key' => $row['Order Invoice Key'],
-                        'number'      => $row['Order Public ID'],
-                        'date'        => strftime("%e %b %Y", strtotime($row['Order Date'].' +0:00')),
-                        'state'       => $state,
-                        'total'       => money($row['Order Total Amount'], $row['Order Currency'])
-
-                    );
-                }
-            }
-
-            return $orders_data;
-
-        }
-    */
 
     function update_field_switcher($field, $value, $options = '', $metadata = array()) {
 
@@ -318,69 +294,71 @@ class Customer_Client extends Subject {
 
         );
 
+        $customer = get_object('Customer', $this->data['Customer Client Customer Key']);
 
         $order_data['Order Customer Client Key']   = $this->id;
-        $order_data['Order Customer Name']         = $this->data['Customer Name'];
-        $order_data['Order Customer Contact Name'] = $this->data['Customer Main Contact Name'];
-        $order_data['Order Customer Level Type']   = $this->data['Customer Level Type'];
+        $order_data['Order Customer Key']          = $customer->id;
+        $order_data['Order Customer Name']         = $customer->data['Customer Name'];
+        $order_data['Order Customer Contact Name'] = $customer->data['Customer Main Contact Name'];
+        $order_data['Order Customer Level Type']   = $customer->data['Customer Level Type'];
 
-        $order_data['Order Registration Number'] = $this->data['Customer Registration Number'];
+        $order_data['Order Registration Number'] = $customer->data['Customer Registration Number'];
 
-        $order_data['Order Tax Number']                    = $this->data['Customer Tax Number'];
-        $order_data['Order Tax Number Valid']              = $this->data['Customer Tax Number Valid'];
-        $order_data['Order Tax Number Validation Date']    = $this->data['Customer Tax Number Validation Date'];
-        $order_data['Order Tax Number Validation Source']  = $this->data['Customer Tax Number Validation Source'];
-        $order_data['Order Tax Number Validation Message'] = $this->data['Customer Tax Number Validation Message'];
+        $order_data['Order Tax Number']                    = $customer->data['Customer Tax Number'];
+        $order_data['Order Tax Number Valid']              = $customer->data['Customer Tax Number Valid'];
+        $order_data['Order Tax Number Validation Date']    = $customer->data['Customer Tax Number Validation Date'];
+        $order_data['Order Tax Number Validation Source']  = $customer->data['Customer Tax Number Validation Source'];
+        $order_data['Order Tax Number Validation Message'] = $customer->data['Customer Tax Number Validation Message'];
 
-        $order_data['Order Tax Number Details Match']      = $this->data['Customer Tax Number Details Match'];
-        $order_data['Order Tax Number Registered Name']    = $this->data['Customer Tax Number Registered Name'];
-        $order_data['Order Tax Number Registered Address'] = $this->data['Customer Tax Number Registered Address'];
+        $order_data['Order Tax Number Details Match']      = $customer->data['Customer Tax Number Details Match'];
+        $order_data['Order Tax Number Registered Name']    = $customer->data['Customer Tax Number Registered Name'];
+        $order_data['Order Tax Number Registered Address'] = $customer->data['Customer Tax Number Registered Address'];
 
-        $order_data['Order Available Credit Amount']  = $this->data['Customer Account Balance'];
-        $order_data['Order Sales Representative Key'] = $this->data['Customer Sales Representative Key'];
+        $order_data['Order Available Credit Amount']  = $customer->data['Customer Account Balance'];
+        $order_data['Order Sales Representative Key'] = $customer->data['Customer Sales Representative Key'];
 
-        $order_data['Order Customer Fiscal Name'] = $this->get('Fiscal Name');
-        $order_data['Order Email']                = $this->data['Customer Main Plain Email'];
-        $order_data['Order Telephone']            = $this->data['Customer Preferred Contact Number Formatted Number'];
-
-
-        $order_data['Order Invoice Address Recipient']            = $this->data['Customer Invoice Address Recipient'];
-        $order_data['Order Invoice Address Organization']         = $this->data['Customer Invoice Address Organization'];
-        $order_data['Order Invoice Address Line 1']               = $this->data['Customer Invoice Address Line 1'];
-        $order_data['Order Invoice Address Line 2']               = $this->data['Customer Invoice Address Line 2'];
-        $order_data['Order Invoice Address Sorting Code']         = $this->data['Customer Invoice Address Sorting Code'];
-        $order_data['Order Invoice Address Postal Code']          = $this->data['Customer Invoice Address Postal Code'];
-        $order_data['Order Invoice Address Dependent Locality']   = $this->data['Customer Invoice Address Dependent Locality'];
-        $order_data['Order Invoice Address Locality']             = $this->data['Customer Invoice Address Locality'];
-        $order_data['Order Invoice Address Administrative Area']  = $this->data['Customer Invoice Address Administrative Area'];
-        $order_data['Order Invoice Address Country 2 Alpha Code'] = $this->data['Customer Invoice Address Country 2 Alpha Code'];
-        $order_data['Order Invoice Address Checksum']             = $this->data['Customer Invoice Address Checksum'];
-        $order_data['Order Invoice Address Formatted']            = $this->data['Customer Invoice Address Formatted'];
-        $order_data['Order Invoice Address Postal Label']         = $this->data['Customer Invoice Address Postal Label'];
+        $order_data['Order Customer Fiscal Name'] = $customer->get('Fiscal Name');
+        $order_data['Order Email']                = $customer->data['Customer Main Plain Email'];
+        $order_data['Order Telephone']            = $customer->data['Customer Preferred Contact Number Formatted Number'];
 
 
-        $order_data['Order Delivery Address Recipient']            = $this->data['Customer Delivery Address Recipient'];
-        $order_data['Order Delivery Address Organization']         = $this->data['Customer Delivery Address Organization'];
-        $order_data['Order Delivery Address Line 1']               = $this->data['Customer Delivery Address Line 1'];
-        $order_data['Order Delivery Address Line 2']               = $this->data['Customer Delivery Address Line 2'];
-        $order_data['Order Delivery Address Sorting Code']         = $this->data['Customer Delivery Address Sorting Code'];
-        $order_data['Order Delivery Address Postal Code']          = $this->data['Customer Delivery Address Postal Code'];
-        $order_data['Order Delivery Address Dependent Locality']   = $this->data['Customer Delivery Address Dependent Locality'];
-        $order_data['Order Delivery Address Locality']             = $this->data['Customer Delivery Address Locality'];
-        $order_data['Order Delivery Address Administrative Area']  = $this->data['Customer Delivery Address Administrative Area'];
-        $order_data['Order Delivery Address Country 2 Alpha Code'] = $this->data['Customer Delivery Address Country 2 Alpha Code'];
-        $order_data['Order Delivery Address Checksum']             = $this->data['Customer Delivery Address Checksum'];
-        $order_data['Order Delivery Address Formatted']            = $this->data['Customer Delivery Address Formatted'];
-        $order_data['Order Delivery Address Postal Label']         = $this->data['Customer Delivery Address Postal Label'];
+        $order_data['Order Invoice Address Recipient']            = $customer->data['Customer Invoice Address Recipient'];
+        $order_data['Order Invoice Address Organization']         = $customer->data['Customer Invoice Address Organization'];
+        $order_data['Order Invoice Address Line 1']               = $customer->data['Customer Invoice Address Line 1'];
+        $order_data['Order Invoice Address Line 2']               = $customer->data['Customer Invoice Address Line 2'];
+        $order_data['Order Invoice Address Sorting Code']         = $customer->data['Customer Invoice Address Sorting Code'];
+        $order_data['Order Invoice Address Postal Code']          = $customer->data['Customer Invoice Address Postal Code'];
+        $order_data['Order Invoice Address Dependent Locality']   = $customer->data['Customer Invoice Address Dependent Locality'];
+        $order_data['Order Invoice Address Locality']             = $customer->data['Customer Invoice Address Locality'];
+        $order_data['Order Invoice Address Administrative Area']  = $customer->data['Customer Invoice Address Administrative Area'];
+        $order_data['Order Invoice Address Country 2 Alpha Code'] = $customer->data['Customer Invoice Address Country 2 Alpha Code'];
+        $order_data['Order Invoice Address Checksum']             = $customer->data['Customer Invoice Address Checksum'];
+        $order_data['Order Invoice Address Formatted']            = $customer->data['Customer Invoice Address Formatted'];
+        $order_data['Order Invoice Address Postal Label']         = $customer->data['Customer Invoice Address Postal Label'];
 
 
-        $order_data['Order Sticky Note']          = $this->data['Customer Order Sticky Note'];
-        $order_data['Order Delivery Sticky Note'] = $this->data['Customer Delivery Sticky Note'];
+        $order_data['Order Delivery Address Recipient']            = $this->data['Customer Client Contact Address Recipient'];
+        $order_data['Order Delivery Address Organization']         = $this->data['Customer Client Contact Address Organization'];
+        $order_data['Order Delivery Address Line 1']               = $this->data['Customer Client Contact Address Line 1'];
+        $order_data['Order Delivery Address Line 2']               = $this->data['Customer Client Contact Address Line 2'];
+        $order_data['Order Delivery Address Sorting Code']         = $this->data['Customer Client Contact Address Sorting Code'];
+        $order_data['Order Delivery Address Postal Code']          = $this->data['Customer Client Contact Address Postal Code'];
+        $order_data['Order Delivery Address Dependent Locality']   = $this->data['Customer Client Contact Address Dependent Locality'];
+        $order_data['Order Delivery Address Locality']             = $this->data['Customer Client Contact Address Locality'];
+        $order_data['Order Delivery Address Administrative Area']  = $this->data['Customer Client Contact Address Administrative Area'];
+        $order_data['Order Delivery Address Country 2 Alpha Code'] = $this->data['Customer Client Contact Address Country 2 Alpha Code'];
+        $order_data['Order Delivery Address Checksum']             = $this->data['Customer Client Contact Address Checksum'];
+        $order_data['Order Delivery Address Formatted']            = $this->data['Customer Client Contact Address Formatted'];
+        $order_data['Order Delivery Address Postal Label']         = $this->data['Customer Client Contact Address Postal Label'];
 
 
-        $order_data['Order Customer Order Number'] = $this->get_number_of_orders() + 1;
+        $order_data['Order Sticky Note']          = $customer->data['Customer Order Sticky Note'];
+        $order_data['Order Delivery Sticky Note'] = $customer->data['Customer Delivery Sticky Note'];
 
-        $store = get_object('Store', $this->get('Customer Store Key'));
+
+        $order_data['Order Customer Order Number'] = $customer->get_number_of_orders() + 1;
+
+        $store = get_object('Store', $customer->get('Customer Store Key'));
 
         $order_data['Order Store Key']                = $store->id;
         $order_data['Order Currency']                 = $store->get('Store Currency Code');
@@ -388,8 +366,8 @@ class Customer_Client extends Subject {
         $order_data['public_id_format']               = $store->get('Store Order Public ID Format');
 
 
-        include_once 'class.Public_Order.php';
-        $order = new Public_Order('new', $order_data);
+        include_once 'class.Order.php';
+        $order = new Order('new', $order_data);
 
 
         if ($order->error) {
@@ -398,6 +376,10 @@ class Customer_Client extends Subject {
 
             return $order;
         }
+
+
+        $order->fast_update_json_field('Order Metadata', 'cc_email', $this->data['Customer Client Main Plain Email']);
+        $order->fast_update_json_field('Order Metadata', 'cc_telephone', $this->get('Phone'));
 
 
         require_once 'utils/new_fork.php';
@@ -488,6 +470,108 @@ class Customer_Client extends Subject {
         }
 
         return $label;
+
+    }
+
+
+    public function update_customer_client_orders() {
+
+
+        $customer_orders = 0;
+
+
+        $orders_cancelled = 0;
+
+        $order_interval     = '';
+        $order_interval_std = '';
+
+        $customer_with_orders = 'No';
+        $first_order          = '';
+        $last_order           = '';
+
+
+
+        $sql = sprintf(
+            "SELECT
+		min(`Order Date`) AS first_order_date ,
+		max(`Order Date`) AS last_order_date,
+		count(*) AS orders
+		FROM `Order Dimension` WHERE `Order Customer Client Key`=%d  AND `Order State` NOT IN ('Cancelled','InBasket') ", $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+
+
+                $customer_orders = $row['orders'];
+
+
+                if ($customer_orders > 0) {
+                    $first_order          = $row['first_order_date'];
+                    $last_order           = $row['last_order_date'];
+                    $customer_with_orders = 'Yes';
+                }
+            }
+        }
+
+        $sql = sprintf("SELECT count(*) AS orders FROM `Order Dimension` WHERE `Order Customer Client Key`=?  AND `Order State`  IN ('Cancelled') ");
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $orders_cancelled = $row['orders'];
+        }
+
+
+        if (($orders_cancelled + $customer_orders) > 1) {
+            $_last_order = false;
+            $_last_date  = false;
+            $intervals   = array();
+
+            $sql  = "SELECT `Order Date` AS date FROM `Order Dimension` WHERE  `Order State`  NOT IN ('InBasket')  AND `Order Customer Client Key`=? ORDER BY `Order Date`";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $this->id
+                )
+            );
+            while ($row = $stmt->fetch()) {
+                $this_date = gmdate('U', strtotime($row['date']));
+                if ($_last_order) {
+                    $intervals[] = ($this_date - $_last_date);
+                }
+
+                $_last_date  = $this_date;
+                $_last_order = true;
+            }
+
+
+            $order_interval     = average($intervals);
+            $order_interval_std = deviation($intervals);
+
+        }
+
+
+        $update_data = array(
+            'Customer Client Orders'           => $customer_orders,
+            'Customer Client Orders Cancelled' => $orders_cancelled,
+
+            'Customer Client First Order Date' => $first_order,
+            'Customer Client Last Order Date'  => $last_order,
+
+            'Customer Client Order Interval'     => $order_interval,
+            'Customer Client Order Interval STD' => $order_interval_std,
+            'Customer Client With Orders'        => $customer_with_orders,
+
+        );
+
+        $this->fast_update($update_data);
+
 
     }
 

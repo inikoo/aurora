@@ -3768,7 +3768,14 @@ function get_new_customer_client_navigation($data, $smarty, $user, $db) {
 
 }
 
-
+/**
+ * @param $data
+ * @param $smarty \Smarty
+ * @param $user \User
+ * @param $db \PDO
+ *
+ * @return string
+ */
 function get_customer_client_navigation($data, $smarty, $user, $db) {
 
 
@@ -3776,7 +3783,7 @@ function get_customer_client_navigation($data, $smarty, $user, $db) {
     $customer = $data['_parent'];
 
     if (!$client->id) {
-        return;
+        return '';
     }
 
 
@@ -3908,9 +3915,9 @@ function get_customer_client_navigation($data, $smarty, $user, $db) {
 
 
     $right_buttons[] = array(
-        'icon'  => 'shopping-cart',
-        'title' => _('New order'),
-        'id'    => 'take_order'
+        'html_icon'  => '<i class="fas fa-cart-arrow-down"></i>',
+        'title' => _("New dropshipping order"),
+        'id'    => 'take_customer_client_order'
     );
 
 

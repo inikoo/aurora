@@ -524,7 +524,8 @@ function get_object($object_name, $key, $load_other_data = false) {
             break;
         case 'customer_client':
         case 'customer client':
-            include_once 'class.Customer_Client.php';
+        case 'customerclient':
+        include_once 'class.Customer_Client.php';
             $object = new Customer_Client('id', $key);
             break;
         case 'clocking_machine':

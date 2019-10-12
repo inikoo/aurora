@@ -1638,6 +1638,9 @@ table.totals .total td {
     flex-grow: 1;
     padding: 10px; }
 
+.order.dropshipping .adr span.hide {
+  display: block; }
+
 .name_and_categories {
   width: 100;
   padding: 5px 20px 5px 20px; }
