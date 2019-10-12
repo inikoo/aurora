@@ -64,6 +64,9 @@ if (in_array($state['store']->id, $user->stores) and $user->can_view('customers'
 
     );
 
+    if ($state['store']->get('Store Type') == 'Dropshipping') {
+        $smarty->assign('show_customer_clients', 1);
+    }
 
     $table_buttons = array();
 

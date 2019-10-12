@@ -746,9 +746,6 @@ function get_supplier_navigation($data, $smarty, $user, $db, $account) {
             'class' => 'open_sticky_note  square_button right object_sticky_note  '.($category->get('Sticky Note') == '' ? '' : 'hide')
 
         );
-        //$right_buttons[]=array('icon'=>'sticky-note','title'=>_('History note'),'id'=>'note');
-        //$right_buttons[]=array('icon'=>'paperclip','title'=>_('Attachement'),'id'=>'attach');
-        //$right_buttons[]=array('icon'=>'shopping-cart','title'=>_('New order'),'id'=>'take_order');
 
     }
 
@@ -1330,16 +1327,12 @@ function get_supplier_part_navigation($data, $smarty, $user, $db, $account) {
             );
 
 
-            //$right_buttons[]=array('icon'=>'edit','title'=>_('Edit supplier'),'url'=>'edit_supplier.php?id='.$supplier->id);
             $right_buttons[] = array(
                 'icon'  => 'sticky-note',
                 'title' => _('Sticky note'),
                 'class' => 'open_sticky_note  square_button right object_sticky_note  '.($category->get('Sticky Note') == '' ? '' : 'hide')
 
             );
-            //$right_buttons[]=array('icon'=>'sticky-note','title'=>_('History note'),'id'=>'note');
-            //$right_buttons[]=array('icon'=>'paperclip','title'=>_('Attachement'),'id'=>'attach');
-            //$right_buttons[]=array('icon'=>'shopping-cart','title'=>_('New order'),'id'=>'take_order');
 
         }
 

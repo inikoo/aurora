@@ -1137,7 +1137,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         case 'customer_deleted':
 
 
-
             $sql = sprintf(
                 "DELETE FROM `Customer Correlation` WHERE `Customer A Key`=%d OR `Customer B Key`=%s", $data['customer_key'], $data['customer_key']
             );
@@ -1155,17 +1154,14 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $db->exec($sql);
 
 
-
             $sql = sprintf(
                 "DELETE FROM `Category Bridge` WHERE `Subject`='Customer' AND `Subject Key`=%d", $data['customer_key']
             );
             $db->exec($sql);
 
 
-
-
-            $website_user = get_object('Website_User',$data['website_user']);
-            $website_user->editor       = $data['editor'];
+            $website_user         = get_object('Website_User', $data['website_user']);
+            $website_user->editor = $data['editor'];
 
             $website_user->delete();
 
@@ -1192,7 +1188,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $order    = get_object('Order', $data['subject_key']);
             $customer = get_object('Customer', $order->get('Order Customer Key'));
             $store    = get_object('Store', $order->get('Order Store Key'));
-            $account = get_object('Account', '');
+            $account  = get_object('Account', '');
 
 
             $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
@@ -1200,6 +1196,11 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             $customer->update_orders();
             $customer->update_activity();
+
+            if ($order->get('Order Customer Client Key') > 0) {
+                $customer_client = get_object('CustomerClient', $order->get('Order Customer Client Key'));
+                $customer_client->update_customer_client_orders();
+            }
 
             $store->update_customers_data();
             $store->update_orders();

@@ -2377,26 +2377,25 @@ class Customer extends Subject {
 
 
         if (($orders_cancelled + $customer_orders) > 1) {
-            $sql         = "SELECT `Order Date` AS date FROM `Order Dimension` WHERE  `Order State`  NOT IN ('InBasket')  AND `Order Customer Key`=".$this->id." ORDER BY `Order Date`";
             $_last_order = false;
             $_last_date  = false;
             $intervals   = array();
+            $sql         = "SELECT `Order Date` AS date FROM `Order Dimension` WHERE  `Order State`  NOT IN ('InBasket')  AND `Order Customer Key`=? ORDER BY `Order Date`";
 
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $this_date = gmdate('U', strtotime($row['date']));
-                    if ($_last_order) {
-                        $intervals[] = ($this_date - $_last_date);
-                    }
-
-                    $_last_date  = $this_date;
-                    $_last_order = true;
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $this->id
+                )
+            );
+            while ($row = $stmt->fetch()) {
+                $this_date = gmdate('U', strtotime($row['date']));
+                if ($_last_order) {
+                    $intervals[] = ($this_date - $_last_date);
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
+
+                $_last_date  = $this_date;
+                $_last_order = true;
             }
 
 

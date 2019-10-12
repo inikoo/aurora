@@ -4,6 +4,12 @@
  Version 3.0*/
 
 
+function customer_email_width_hack(email) {
+    if (email.text().length > 30) {
+        email.css("font-size", "90%");
+    }
+}
+
 function unauthorized_open_fund_credit(element) {
     var _labels = $(element).data('labels');
     var request = '/ar_find.php?tipo=users_with_right&right=IS'
