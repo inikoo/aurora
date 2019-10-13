@@ -38,19 +38,13 @@ if (empty($_SESSION['website_key'])) {
             $params = session_get_cookie_params();
 
             setcookie(
-                'sk', '', time() - 42000,
-                $params["path"], $params["domain"],
-                $params["secure"], $params["httponly"]
+                'sk', '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]
             );
             setcookie(
-                'page_key', '', time() - 42000,
-                $params["path"], $params["domain"],
-                $params["secure"], $params["httponly"]
+                'page_key', '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]
             );
-            $resxx = setcookie(
-                'user_handle', '', time() - 42000,
-                $params["path"], $params["domain"],
-                $params["secure"], $params["httponly"]
+            setcookie(
+                'user_handle', '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]
             );
         }
         session_regenerate_id();
@@ -61,9 +55,6 @@ if (empty($_SESSION['website_key'])) {
 
     include('utils/find_website_key.include.php');
 }
-
-
-
 
 
 $url = preg_replace('/^\//', '', $_SERVER['REQUEST_URI']);
@@ -78,7 +69,7 @@ if ($url == 'sitemap.xml') {
     date_default_timezone_set('UTC');
 
     $db = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
     );
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
@@ -96,14 +87,10 @@ if ($url == 'sitemap.xml') {
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $xml .= '  <sitemap>'."\n";
-            $xml .= '    <loc>https://'.$website->get('Website URL').'/'.preg_replace('/\-1\.xml\.gz/', '', $row['Sitemap Name']).'.xml</loc>'."\n";
+            $xml .= '    <loc>https://'.$website->get('Website URL').'/'.preg_replace('/-1\.xml\.gz/', '', $row['Sitemap Name']).'.xml</loc>'."\n";
             $xml .= '    <lastmod>'.date('Y-m-d', strtotime($row['Sitemap Date'])).'</lastmod>'."\n";
             $xml .= '  </sitemap>'."\n";
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
 
@@ -120,7 +107,7 @@ if ($url == 'sitemap-info.xml' or $url == 'sitemap-products.xml') {
 
 
     $db = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
     );
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
@@ -142,10 +129,6 @@ if ($url == 'sitemap-info.xml' or $url == 'sitemap-products.xml') {
         } else {
             $xml = '';
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
 
@@ -198,7 +181,7 @@ function get_url($website_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
 
 
     $db = new PDO(
-        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+        "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
     );
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
@@ -208,37 +191,22 @@ function get_url($website_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
     if ($page_key) {
         return $page_key;
     }
+    $_tmp_url = preg_replace('/\/$/', '', $url);
 
-    if (!$page_key and preg_match('/[a-z0-9\_\-]\/$/i', $url)) {
-        $_tmp_url = preg_replace('/\/$/', '', $url);
+    if (!$page_key and preg_match('/[a-z0-9_\-]\/$/i', $url)) {
         $page_key = get_page_key_from_code($website_key, $_tmp_url, $db);
         if ($page_key) {
             return $page_key;
-
-            //$url=$_SERVER['SERVER_NAME'].'/'.$_tmp_url;
-            //return $url;
         }
     }
 
 
-    if (preg_match('/[a-z0-9\_\-]\/$/i', $url)) {
+    if (preg_match('/[a-z0-9_\-]\/$/i', $url)) {
         return $_SERVER['HTTP_HOST'].'/index.php?error='.$_tmp_url;
-        //$_tmp_url=preg_replace('/\/$/','',$url);
-
-        //header("Location: http://".$target);
     }
 
 
     $original_url = '/'.$original_url;
-
-    $url_array = explode("/", $url);
-    $file      = array_pop($url_array);
-
-
-    if (preg_match('/^sitemap_index\.xml$/', $url, $match)) {
-
-
-    }
 
 
     if (preg_match('/^sitemap(\d+)\.xml$/', $url, $match)) {
@@ -254,56 +222,49 @@ function get_url($website_key, $url, $dns_host, $dns_user, $dns_pwd, $dns_db) {
 
 
     }
-    $sql = sprintf(
-        "SELECT  `Webpage Alias Webpage Key` FROM `Webpage Alias Dimension` WHERE `Webpage Alias Website Key`=%d AND `Webpage Alias Tag`=%s ", $website_key,
 
-
-        _prepare_mysql($url)
+    $sql  = "SELECT  `Webpage Alias Webpage Key` FROM `Webpage Alias Dimension` WHERE `Webpage Alias Website Key`=? AND `Webpage Alias Tag`=?";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $website_key,
+            $url
+        )
     );
+    if ($row = $stmt->fetch()) {
+        return $row['Webpage Alias Webpage Key'];
 
+    } else {
+        return "/404.php?url=$url&original_url=$original_url";
 
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
-
-            return $row['Webpage Alias Webpage Key'];
-
-
-        } else {
-
-
-            return "/404.php?url=$url&original_url=$original_url";
-        }
     }
 
 
 }
 
+/**
+ * @param $website_key
+ * @param $code
+ * @param $db \PDO
+ *
+ * @return int|mixed
+ */
 function get_page_key_from_code($website_key, $code, $db) {
 
-    $page_key = 0;
-    $sql      = sprintf(
-        "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Website Key`=%d AND `Webpage Code`=%s ", $website_key, _prepare_mysql($code)
+    $sql = "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Website Key`=? AND `Webpage Code`=? ";
+
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $website_key,
+            $code
+        )
     );
-
-
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
-            $page_key = $row['Page Key'];
-        }
-    }
-
-
-    return $page_key;
-}
-
-function _prepare_mysql($string, $null_if_empty = true) {
-
-    if ($string == '' and $null_if_empty) {
-        return 'NULL';
+    if ($row = $stmt->fetch()) {
+        return $row['Page Key'];
     } else {
-        return "'".addslashes($string)."'";
+        return 0;
     }
+
+
 }
-
-
-?>
