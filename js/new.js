@@ -239,13 +239,10 @@ function save_new_object(object, form_type) {
 
         $('tr.controls').addClass('waiting')
 
+        const  _object = object.replace(" ", "_");
 
+        $('#' + _object + '_save_icon').removeClass('fa-cloud').addClass('fa-spinner fa-spin');;
 
-
-        $('#' + object + '_save_icon').removeClass('fa-cloud').addClass('fa-spinner fa-spin');;
-
-       // $('#save_label').addClass('hide')
-       // $('#saving_label').removeClass('hide')
 
 
 
@@ -432,18 +429,16 @@ function save_new_object(object, form_type) {
         request.done(function (data) {
 
 
-            console.log(data)
-            $('#' + object + '_save_icon').addClass('fa-cloud');
-            $('#' + object + '_save_icon').removeClass('fa-spinner fa-spin');
-           // $('#save_label').removeClass('hide')
-           // $('#saving_label').addClass('hide')
+
+
+
             $('tr.controls').removeClass('waiting').removeClass('valid');
             if (data.state == 200) {
 
 
                 if (data.pcard == '' && data.redirect != '') {
 
-                    //console.log(data.redirect)
+                    console.log(data.redirect)
                    // console.log(data.redirect_metadata)
                     change_view(data.redirect,data.redirect_metadata)
                     return;
@@ -462,11 +457,17 @@ function save_new_object(object, form_type) {
 
                 post_new_actions(object, data)
 
+                $('#' + _object + '_save_icon').addClass('fa-cloud');
+                $('#' + _object + '_save_icon').removeClass('fa-spinner fa-spin');
+
+
             } else if (data.state == 400) {
+                $('#' + _object + '_save_icon').addClass('fa-cloud');
+                $('#' + _object + '_save_icon').removeClass('fa-spinner fa-spin');
                 $('tr.controls').addClass('error');
 
 
-                $('#' + object + '_msg').html(data.msg).removeClass('hide')
+                $('#' + _object + '_msg').html(data.msg).removeClass('hide')
                 $('#save_msg').html(data.msg).removeClass('hide')
 
 
@@ -475,13 +476,13 @@ function save_new_object(object, form_type) {
         })
 
         request.fail(function (jqXHR, textStatus) {
-            //console.log(textStatus)
 
-            //console.log(jqXHR.responseText)
-            $('#' + object + '_save_icon').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
+            $('#' + _object + '_save_icon').addClass('fa-cloud');
+            $('#' + _object + '_save_icon').removeClass('fa-spinner fa-spin');
+
+            $('#' + _object + '_save_icon').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
             $('tr.controls').removeClass('waiting valid').addClass('error')
-            //$('#save_label').removeClass('hide')
-            //$('#saving_label').addClass('hide')
+
 
             $('#inline_new_object_msg').html('Server error please contact Aurora support').addClass('error')
 

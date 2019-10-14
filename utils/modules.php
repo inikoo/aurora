@@ -7121,9 +7121,7 @@ $modules = array(
                 'type' => 'object',
                 'tabs' => array(
                     'timesheet.records' => array(
-                        'label' => _(
-                            'Clockings'
-                        )
+                        'label' => _('Clockings')
                     ),
 
                 )
@@ -7171,7 +7169,7 @@ $modules = array(
                 'reference' => 'clocking_machines',
                 'tabs'      => array(
                     'clocking_machines' => array(
-                        'label' => _('TClocking-in Machines')
+                        'label' => _('Clocking-in Machines')
                     ),
 
 
@@ -7188,7 +7186,17 @@ $modules = array(
                 )
 
             ),
+            'clocking_machine'  => array(
+                'type' => 'object',
+                'tabs' => array(
+                    'clocking_machine.details' => array(
+                        'icon'  => 'sliders-h',
+                        'label' => _('Settings')
+                    ),
 
+                )
+
+            ),
 
             'new_timesheet_record' => array(
                 'type'      => 'new',

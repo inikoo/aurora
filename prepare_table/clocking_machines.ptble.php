@@ -14,7 +14,7 @@ $table    = '`Clocking Machine Dimension` CM ';
 $group_by = '';
 
 
-$where='';
+$where=' where true ';
 
 
 $filter_msg = '';
