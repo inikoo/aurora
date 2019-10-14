@@ -150,7 +150,7 @@
 
                 <tr>
                     <td colspan=2>
-                        <table style="width:100%;;margin-bottom:10px">
+                        <table style="width:100%;margin-bottom:10px">
                             <tr style="border-top:1px solid #ccc;border-bottom:1px solid #ccc">
                                 <td style="border-left:1px solid #ccc;width:25%"
                                     class=" align_center discreet" title="{t}Parts in process{/t}"><i class="fa fa-child" aria-hidden="true"></i> <span class="In_Process_Parts">{$category->get('In Process')}</span></td>

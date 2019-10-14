@@ -96,10 +96,10 @@ function get_orders_operations($row, $user) {
                 $operations .= '<div class="buttons small '.$class.'">';
                 if ($row['Order Invoiced'] == 'No') {
                     $operations .= '<button  onClick="create_invoice(this,'.$row['Order Key'].')"><img id="create_invoice_img_'.$row['Order Key']
-                        .'" style="height:12px;width:12px" src="/art/icons/money.png"> '._('Create Invoice')."</button>";;
+                        .'" style="height:12px;width:12px" src="/art/icons/money.png"> '._('Create Invoice')."</button>";
                 } else {
                     $operations .= '<button  onClick="approve_dispatching(this,'.$row['Order Key'].')"><img id="approve_dispatching_img_'.$row['Order Key']
-                        .'" style="height:12px;width:12px" src="/art/icons/package_green.png"> '._('Approve Dispatching')."</button>";;
+                        .'" style="height:12px;width:12px" src="/art/icons/package_green.png"> '._('Approve Dispatching')."</button>";
 
 
                 }

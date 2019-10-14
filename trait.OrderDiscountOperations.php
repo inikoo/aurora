@@ -623,7 +623,7 @@ trait OrderDiscountOperations {
                         $qty = $row['qty'];
 
                         if ($qty >= $deal_component_data['Deal Component Terms']) {
-                            $terms_ok = true;;
+                            $terms_ok = true;
                             $this->deals['Category']['Terms'] = true;
 
 
@@ -703,7 +703,7 @@ trait OrderDiscountOperations {
 
 
                 if ($qty_product > 0 and $qty_product >= $deal_component_data['Deal Component Terms']) {
-                    $terms_ok = true;;
+                    $terms_ok = true;
                     $this->deals['Category']['Terms'] = true;
 
                     // i dont underestad below thing maybe it is wrong

@@ -65,7 +65,7 @@ if ($authenticated == 'OK') {
                 $_datetime = new DateTime("now", $_timezone);
 
 
-                list($wifi_encrypted_password, $enc_iv) = explode("::", $_data['wifi_token']);;
+                list($wifi_encrypted_password, $enc_iv) = explode("::", $_data['wifi_token']);
                 $cipher_method = 'aes-128-ctr';
                 $enc_key       = openssl_digest(SHARED_KEY, 'SHA256', true);
                 $wifi_pwd      = openssl_decrypt($wifi_encrypted_password, $cipher_method, $enc_key, 0, hex2bin($enc_iv));
@@ -106,7 +106,7 @@ if ($authenticated == 'OK') {
 
                         $_data = json_decode($row['Box Aurora Account Data'], true);
 
-                        list($wifi_encrypted_password, $enc_iv) = explode("::", $_data['wifi_token']);;
+                        list($wifi_encrypted_password, $enc_iv) = explode("::", $_data['wifi_token']);
                         $cipher_method = 'aes-128-ctr';
                         $enc_key       = openssl_digest(SHARED_KEY, 'SHA256', true);
                         $wifi_pwd      = openssl_decrypt($wifi_encrypted_password, $cipher_method, $enc_key, 0, hex2bin($enc_iv));

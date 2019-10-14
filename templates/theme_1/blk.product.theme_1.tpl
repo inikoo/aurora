@@ -44,7 +44,7 @@
                 </a>
             </figure>
 
-            <div class="gallery" style="display: flex;;max-width: 330px;flex-wrap: wrap " itemscope itemtype="http://schema.org/ImageGallery">
+            <div class="gallery" style="display: flex;max-width: 330px;flex-wrap: wrap " itemscope itemtype="http://schema.org/ImageGallery">
 
                 {foreach from=$data.other_images item=image name=foo}
                     <figure style="margin: 0px 5px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject"

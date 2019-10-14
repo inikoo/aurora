@@ -124,7 +124,7 @@
                         <em class="menu-divider" style="margin-top:40px">Get in touch with us</em>
 
             <em class="menu-divider">
-                <a href=""><em class="fa fa-phone color-black" style="font-size: 25px;margin-right: 20px;;position: relative;top:-2px" aria-hidden="true"></em></a>
+                <a href=""><em class="fa fa-phone color-black" style="font-size: 25px;margin-right: 20px;position: relative;top:-2px" aria-hidden="true"></em></a>
                 <a href=""><em class="fa fa-envelope-o color-black" style="font-size: 25px;position: relative;top:-4px" aria-hidden="true"></em></a>
 
 

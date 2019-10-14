@@ -14,7 +14,7 @@
 
 <div id="top_header" style="width: 100%; display: flex;"  >
 
-    <div id="header_logo" style="flex-grow:1;;flex-grow: 0;flex-shrink: 0;flex-grow: 0;flex-shrink: 0; ;text-align: center">
+    <div id="header_logo" style="flex-grow:1;flex-grow: 0;flex-shrink: 0;flex-grow: 0;flex-shrink: 0; ;text-align: center">
             <a href="https://{$website->get('Website URL')}"><img id="website_logo" style="margin-top:{if isset($settings['logo_top_margin'])}{$settings['logo_top_margin']}{else}0px{/if};max-height: 100%;max-width:  100%;vertical-align: middle;" src="{if empty($settings['logo_website_website'])}https://via.placeholder.com/60x60{else}{$settings['logo_website_website']}{/if}"/></a>
     </div>
 
@@ -56,12 +56,12 @@
 
     </div>
 
-    <div id="buffer_zone" style="flex-grow:1;text-align: right;;flex-grow: 0;flex-shrink: 0; flex-basis:100px;" >
+    <div id="buffer_zone" style="flex-grow:1;text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:100px;" >
 
     </div>
 
 
-    <div id="search_header" style="padding-top:5px;flex-grow:1;text-align: right;;flex-grow: 0;flex-shrink: 0; flex-basis:350px;position: relative" oncxlick="open_header_style()" >
+    <div id="search_header" style="padding-top:5px;flex-grow:1;text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:350px;position: relative" oncxlick="open_header_style()" >
 
 
         <div id="search_hanger" style="position: absolute;left:10px;top:{if isset($settings.search_top)}{$settings.search_top}{else}0{/if}px"><input id="header_search_input"/> <i id="header_search_icon" class="button fa fa-search"></i></div>

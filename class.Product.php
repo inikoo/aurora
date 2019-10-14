@@ -3531,7 +3531,7 @@ class Product extends Asset {
                             } else {
 
 
-                                $raw_units_qty = $row['Supplier Delivery Checked Units'] - $row['placed'];;
+                                $raw_units_qty = $row['Supplier Delivery Checked Units'] - $row['placed'];
                             }
 
 

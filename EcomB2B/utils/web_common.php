@@ -117,7 +117,7 @@ function set_locate($website,&$smarty){
         $website_locale = $_SESSION['website_locale'];
     }else{
         $_SESSION['website_locale'] = $website->get('Website Locale');
-        $website_locale             = $website->get('Website Locale');;
+        $website_locale             = $website->get('Website Locale');
     }
 
 

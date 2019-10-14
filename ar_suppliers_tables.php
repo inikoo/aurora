@@ -4325,7 +4325,7 @@ function agent_parts($_data, $db, $user, $account) {
                 ),
 
                 'packing' => '
-				 <div style="float:right;min-width:30px;;text-align:right" title="'._('Units per carton').'"><span class="discreet" >'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span></div>
+				 <div style="float:right;min-width:30px;text-align:right" title="'._('Units per carton').'"><span class="discreet" >'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span></div>
 				<div style="float:right;min-width:70px;text-align:center;"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div>
 				<div style="float:right;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package'].'</span></div>
 				 '),
@@ -5022,7 +5022,7 @@ function supplier_parts($_data, $db, $user, $account) {
                         $exchange * ($data['Supplier Part Unit Cost'] + $data['Supplier Part Unit Extra Cost']), $account->get('Account Currency')
                     ).'</span>',
                 'packing'        => '
-				 <div style="float:right;min-width:30px;;text-align:right" title="'._('Units per carton').'"><span class="discreet" >'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span></div>
+				 <div style="float:right;min-width:30px;text-align:right" title="'._('Units per carton').'"><span class="discreet" >'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span></div>
 				<div style="float:right;min-width:70px;text-align:center;" title="'._('Packages (SKOs) per carton').'" > <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div>
 				<div style="float:right;min-width:20px;text-align:right" title="'._('Units per SKO').'"><span>'.$data['Part Units Per Package'].'</span></div>
 				 '),

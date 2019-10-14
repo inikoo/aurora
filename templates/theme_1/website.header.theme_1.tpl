@@ -151,7 +151,7 @@
 
 
 
-            <div id="header_logo" style="flex-grow:1;;flex-grow: 0;flex-shrink: 0; border-right:1px dashed #ccc;flex-grow: 0;flex-shrink: 0; ;text-align: center">
+            <div id="header_logo" style="flex-grow:1;flex-grow: 0;flex-shrink: 0; border-right:1px dashed #ccc;flex-grow: 0;flex-shrink: 0; ;text-align: center">
 
 
                 <input style="display:none" type="file" name="logo" id="update_image_logo" class="image_upload_from_iframe"
@@ -202,12 +202,12 @@
 
             </div>
 
-            <div id="buffer_zone" style="flex-grow:1;text-align: right;;flex-grow: 0;flex-shrink: 0; flex-basis:100px;border-left:1px dashed #ccc;border-right:1px dashed #ccc;color:#ccc;opacity:.5;text-align: center" >
+            <div id="buffer_zone" style="flex-grow:1;text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:100px;border-left:1px dashed #ccc;border-right:1px dashed #ccc;color:#ccc;opacity:.5;text-align: center" >
                 <div style="padding-top:20px">{t}Buffer zone{/t}</div>
                 </div>
 
 
-            <div id="search_header" style="padding-top:5px;flex-grow:1;text-align: right;;flex-grow: 0;flex-shrink: 0; flex-basis:350px;position: relative" oncxlick="open_header_style()" class="xsearch_container ">
+            <div id="search_header" style="padding-top:5px;flex-grow:1;text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:350px;position: relative" oncxlick="open_header_style()" class="xsearch_container ">
 
 
                 <div id="search_hanger" style="position: absolute;left:10px;top:{if isset($settings.search_top)}{$settings.search_top}{else}0{/if}px"><input /> <i class="button fa fa-search"></i></div>

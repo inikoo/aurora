@@ -317,7 +317,7 @@ function fork_export($job) {
 
 
 
-                        $image_path = preg_replace('/^img\//', 'img_'.$account->get('Code').'/', $original_image->get('Image Path'));;
+                        $image_path = preg_replace('/^img\//', 'img_'.$account->get('Code').'/', $original_image->get('Image Path'));
 
 
                         $cached_image_path = preg_replace('/^.*\/db\//', 'img_cache/', $image_path);

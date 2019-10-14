@@ -190,7 +190,7 @@ trait OrderChargesOperations {
     function get_charges($dn_key = false) {
 
 
-        $charges = array();;
+        $charges = array();
         if ($this->data['Order Number Items'] == 0) {
 
             return $charges;

@@ -2623,7 +2623,7 @@ class Order extends DB_Table {
             return;
         }
 
-        $affected_rows = 0;;
+        $affected_rows = 0;
 
         $sql = sprintf(
             "SELECT `Order Transaction Fact Key`,`Quantity` FROM `Order Transaction Out of Stock in Basket Bridge` WHERE  `Product ID`=%d AND `Order Key`=%d ", $product_pid, $this->id

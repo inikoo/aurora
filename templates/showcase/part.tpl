@@ -189,7 +189,7 @@
 
                 <tr>
                     <td colspan=2>
-                        <table style="width:100%;;margin-bottom:10px">
+                        <table style="width:100%;margin-bottom:10px">
                             <tr style="border-top:1px solid #ccc;border-bottom:1px solid #ccc">
                                 <td style="border-left:1px solid #ccc;width:30%" class="align_center " title="{t}Stock in locations{/t}"><i class="fa fa-inventory fa-fw" aria-hidden="true"></i> <span
                                             class="Current_On_Hand_Stock">{$part->get('Current On Hand Stock')}</span></td>

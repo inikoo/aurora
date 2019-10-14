@@ -1202,7 +1202,7 @@ function get_empty_header() {
 
     $header_data['Order Main Source Type']        = 'Unknown';
     $header_data['Delivery Note Dispatch Method'] = 'Unknown';
-    $header_data['staff sale key']                = 0;;
+    $header_data['staff sale key']                = 0;
     $header_data['collection']      = 'No';
     $header_data['shipper_code']    = '';
     $header_data['staff sale']      = 'No';

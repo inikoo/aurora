@@ -140,7 +140,7 @@
 
                 <tr class="main ">
                     <td colspan=2>
-                        <table class="mesh" style="width:100%;;margin-bottom:10px;margin-top:10px">
+                        <table class="mesh" style="width:100%;margin-bottom:10px;margin-top:10px">
                             <tr >
                                 <td style="width:25%" class="New_Products align_center discreet" title="{t}New products{/t}"><i class="fa fa-child" aria-hidden="true" title="{t}New products (less than 2 weeks){/t}"></i> {$website->get('New Products')}
 
@@ -158,7 +158,7 @@
                                 </td>
                             </tr>
                         </table>
-                        <table style="width:100%;;margin-bottom:10px" class="mesh">
+                        <table style="width:100%;margin-bottom:10px" class="mesh">
                             <tr >
                                 <td style="width:25%" class="Active_Web_For_Sale align_center discreet " title="{t}Active products online{/t}"><i class="fa fa-microphone padding_right_10" aria-hidden="true" "></i> {$website->get('Active Web For Sale')}</td>
                                 <td style="width:25%" class="Active_Web_Out_of_Stock align_center " title="{t}Active products out of stock{/t}"><i class="fa fa-ban error padding_right_10" aria-hidden="true" "></i> {$website->get('Active Web Out of Stock')} {if $website->get('Store Active Web For Sale')>0 and $website->get('Store Active Web Out of Stock')>0 }({$website->get('Percentage Active Web Out of Stock')}){/if}</td>

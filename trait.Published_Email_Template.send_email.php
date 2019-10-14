@@ -1073,7 +1073,7 @@ trait Send_Email {
 
                         // print $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');
 
-                        return $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');;
+                        return $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');
 
                     }
 

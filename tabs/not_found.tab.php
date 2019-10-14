@@ -10,6 +10,6 @@
  Version 3.0
 */
 
-$html = '<div style="padding:20px;;font-size:30px;opacity:.5;font-family: "Courier New", Courier, monospace"><i class="fal fa-bug"></i> 404</div>';
+$html = '<div style="padding:20px;font-size:30px;opacity:.5;font-family: "Courier New", Courier, monospace"><i class="fal fa-bug"></i> 404</div>';
 
 

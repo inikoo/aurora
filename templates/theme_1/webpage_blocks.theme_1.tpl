@@ -27,7 +27,7 @@
 
 
 
-        <div class="handle" style="border-bottom: 1px solid #ccc;;width: 100%;line-height: 30px;height: 30px">
+        <div class="handle" style="border-bottom: 1px solid #ccc;width: 100%;line-height: 30px;height: 30px">
             <i class="fa fa-window-close button padding_left_10" onclick="$('#text_block_style').addClass('hide')"></i>
         </div>
 <div style="padding: 20px">

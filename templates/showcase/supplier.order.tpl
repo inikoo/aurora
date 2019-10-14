@@ -340,7 +340,7 @@
 
 
                 </td>
-                <td style="width:50%;text-align: center;padding: 0px;;xheight: 35px;line-height: 18px" >
+                <td style="width:50%;text-align: center;padding: 0px;xheight: 35px;line-height: 18px" >
                     <span class="discreet">{t}Delivery time{/t}</span><br>{$parent->get('Delivery Time')}
 
 

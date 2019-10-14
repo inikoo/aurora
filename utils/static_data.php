@@ -39,7 +39,7 @@ function get_currencies($db) {
         );
     }
     $formatted_data = preg_replace('/\,$/', '', $formatted_data);
-    $formatted_data .= ']';;
+    $formatted_data .= ']';
 
     return $formatted_data;
 

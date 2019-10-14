@@ -56,7 +56,7 @@
         </form>
 
     </div>
-    <div id="recovery_form_container" class="login_form hide"  style="width:450px;;margin:auto" >
+    <div id="recovery_form_container" class="login_form hide"  style="width:450px;margin:auto" >
         <form action="" id="password_recovery_form" class="sky-form "  >
             <header>{$data.labels._title_recovery}</header>
 

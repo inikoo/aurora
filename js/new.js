@@ -241,7 +241,7 @@ function save_new_object(object, form_type) {
 
         const  _object = object.replace(" ", "_");
 
-        $('#' + _object + '_save_icon').removeClass('fa-cloud').addClass('fa-spinner fa-spin');;
+        $('#' + _object + '_save_icon').removeClass('fa-cloud').addClass('fa-spinner fa-spin');
 
 
 

@@ -1727,7 +1727,7 @@ window.averta = {};
 			return r;		
 			
 		} : function (x , y , z , dist , orig , fade){
-			return st.left(dist , fade);;
+			return st.left(dist , fade);
 		};
 		
 		st.rotate3dright = (window._css3d)? function(x , y , z , dist , orig , fade){
@@ -1736,7 +1736,7 @@ window.averta = {};
 			if(orig) r[transform_orig_css] = orig;
 			return r;		
 		} : function (x , y , z , dist , orig , fade){
-			return st.right(dist , fade);;
+			return st.right(dist , fade);
 		};
 		
 		st.rotate3dtop = (window._css3d)? function(x , y , z , dist , orig , fade){
@@ -1745,7 +1745,7 @@ window.averta = {};
 			if(orig) r[transform_orig_css] = orig;
 			return r;		
 		} : function (x , y , z , dist , orig , fade){
-			return st.top(dist , fade);;
+			return st.top(dist , fade);
 		};
 		
 		st.rotate3dbottom = (window._css3d)? function(x , y , z , dist , orig , fade){

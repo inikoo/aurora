@@ -255,7 +255,7 @@
 
                         <section class="col col-11">
 
-                            <button  style="margin:20px;;margin-bottom:20px;margin-top:20px" type="submit" class="button"><b id="_go_checkout_label"  contenteditable="true">{$data._go_checkout_label}</b> <i  class=" fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
+                            <button  style="margin:20px;margin-bottom:20px;margin-top:20px" type="submit" class="button"><b id="_go_checkout_label"  contenteditable="true">{$data._go_checkout_label}</b> <i  class=" fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
 
                             <button  style="margin:20px;margin-bottom:20px" type="submit" class="button"><i  class=" fa fa-fw fa-arrow-left" aria-hidden="true"></i> <span id="_go_shop_label"  contenteditable="true">{if !empty($data._go_shop_label)}{$data._go_shop_label}{else}{t}Continue shopping{/t}{/if}</span> </button>
 

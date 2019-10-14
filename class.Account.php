@@ -2777,7 +2777,7 @@ class Account extends DB_Table {
 
 
                     /*
-                                        list($wifi_encrypted_password, $enc_iv) = explode("::", $wifi_encrypted_password);;
+                                        list($wifi_encrypted_password, $enc_iv) = explode("::", $wifi_encrypted_password);
                                         $cipher_method = 'aes-128-ctr';
                                         $enc_key = openssl_digest(SHARED_KEY, 'SHA256', TRUE);
                                         $token = openssl_decrypt($wifi_encrypted_password, $cipher_method, $enc_key, 0, hex2bin($enc_iv));

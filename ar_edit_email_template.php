@@ -517,7 +517,7 @@ function send_test_email($data, $smarty) {
         //  print $website->get('Website URL').'/unsubscribe.php';
         $smarty->assign('link', $website->get('Website URL').'/unsubscribe.php');
 
-        return $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');;
+        return $smarty->fetch('unsubscribe_marketing_email.placeholder.tpl');
 
 
     }, $request['Message']['Body']['Html']['Data']

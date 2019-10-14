@@ -2066,7 +2066,7 @@ function get_customers_poll_query_option_navigation($data, $smarty, $user, $db) 
     $sections['insights']['selected'] = true;
 
 
-    $title = sprintf(_('Poll option: %s'), '<span class="id"><span class="Customer_Poll_Query_Option_Name">'.$poll_option->get('Name').'</span></span>');;
+    $title = sprintf(_('Poll option: %s'), '<span class="id"><span class="Customer_Poll_Query_Option_Name">'.$poll_option->get('Name').'</span></span>');
 
 
     $_content = array(
