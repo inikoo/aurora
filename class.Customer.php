@@ -214,7 +214,7 @@ class Customer extends Subject {
                 array(
                     'Customer Main Plain Mobile'    => $this->get('Customer Main Plain Mobile'),
                     'Customer Main Plain Telephone' => $this->get('Customer Main Plain Telephone'),
-                    'Customer Main Plain FAX'       => $this->zget('Customer Main Plain FAX'),
+                    'Customer Main Plain FAX'       => $this->get('Customer Main Plain FAX'),
                 ), 'no_history'
 
             );
