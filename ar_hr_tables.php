@@ -1667,7 +1667,7 @@ function clocking_machines($_data, $db, $user) {
 
             $table_data[] = array(
                 'id'             => (integer)$data['Clocking Machine Key'],
-                'code'           => sprintf('<span class="link" onclick="change_view(\'clocking_machine/%d\')">%s</span>', $data['Clocking Machine Key'], $data['locking Machine Code']),
+                'code'           => sprintf('<span class="link" onclick="change_view(\'clocking_machines/%d\')">%s</span>', $data['Clocking Machine Key'], $data['Clocking Machine Code']),
 
 
             );
