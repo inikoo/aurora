@@ -1002,69 +1002,6 @@ class Website extends DB_Table {
 
     }
 
-    function get_default_template_key($scope, $device = 'Desktop') {
-
-        $template_key = false;
-
-        $sql = sprintf(
-            'SELECT `Template Key` FROM `Template Dimension` WHERE `Template Website Key`=%d AND `Template Scope`=%s AND `Template Device`=%s ', $this->id, prepare_mysql($scope), prepare_mysql($device)
-
-        );
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $template_key = $row['Template Key'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-        if (!$template_key) {
-
-
-            $sql = sprintf(
-                'SELECT `Template Key` FROM `Template Dimension` WHERE `Template Website Key`=%d AND `Template Scope`=%s AND `Template Device`="Desktop" ', $this->id, prepare_mysql($scope)
-
-            );
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $template_key = $row['Template Key'];
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-        }
-
-        if (!$template_key) {
-
-
-            $sql = sprintf(
-                'SELECT `Template Key` FROM `Template Dimension` WHERE `Template Website Key`=%d AND `Template Scope`="Blank" AND `Template Device`=%s ', $this->id, prepare_mysql($scope)
-
-            );
-            if ($result = $this->db->query($sql)) {
-                if ($row = $result->fetch()) {
-                    $template_key = $row['Template Key'];
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-        }
-
-        // print $template_key;
-
-
-        return $template_key;
-
-    }
-
     function create_category_webpage($category_key) {
 
         include_once 'class.Webpage_Type.php';
