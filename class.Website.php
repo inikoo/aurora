@@ -806,6 +806,10 @@ class Website extends DB_Table {
     function update_labels_in_localised_labels($labels, $operation = 'append') {
 
         $localised_labels = $this->get('Localised Labels');
+       // print_r($labels);
+
+      //  print_r($localised_labels);
+
         switch ($operation) {
             case 'append':
                 $localised_labels = array_merge($localised_labels, $labels);

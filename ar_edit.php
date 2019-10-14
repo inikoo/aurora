@@ -340,7 +340,9 @@ function edit_field($account, $db, $editor, $data, $smarty) {
 
     if ($data['object'] == 'Website' and preg_match('/^Localised_Labels/', $data['field'])) {
 
-
+        /**
+         * @var $object \Website
+         */
         $object->update_labels_in_localised_labels(array(preg_replace('/^Localised_Labels/', '', $data['field']) => $data['value']));
 
 
