@@ -295,3 +295,12 @@ DROP TABLE  `Webpage Panel Dimension`;
 
 ALTER TABLE `Order Dimension` ADD `Customer Client Customer Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Order Customer Key`, ADD INDEX (`Customer Client Customer Key`);
 ALTER TABLE `Invoice Dimension` ADD `Customer Client Customer Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Order Customer Key`, ADD INDEX (`Customer Client Customer Key`);
+
+ALTER TABLE `Purchase Order Transaction Fact` DROP `Purchase Order Quantity`;
+ALTER TABLE `Purchase Order Transaction Fact`
+    DROP `Supplier Delivery Quantity`,
+    DROP `Supplier Delivery Checked Quantity`,
+    DROP `Supplier Delivery Placed Quantity`;
+
+DROP TABLE `Website Node Dimension`;DROP TABLE `Webpage Version Block Bridge`, `Webpage Version Dimension`;
+

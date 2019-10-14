@@ -1716,20 +1716,13 @@ function return_items_done($_data, $db, $user) {
             $table_data[] = array(
 
                 'id' => (integer)$data['Part SKU'],
-
-
                 'part_reference' => $reference,
                 'description'    => $data['Part Package Description'],
-
                 'received_quantity' => number($data['skos_in']),
                 'checked_quantity'  => number($data['checked_quantity']),
-
                 'items_amount'                  => $items_amount,
                 'extra_amount'                  => $extra_amount,
                 'extra_amount_account_currency' => $extra_amount_account_currency,
-
-                // 'ordered'               => number($data['Purchase Order Quantity']),
-                //'qty'       => number($quantity),
                 'paid_account_currency'         => money($data['Supplier Delivery Net Amount'] * $supplier_delivery->get('Supplier Delivery Currency Exchange'), $account->get('Currency Code')),
 
                 'total_paid' => $total_paid,
@@ -1739,9 +1732,6 @@ function return_items_done($_data, $db, $user) {
 
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
 
