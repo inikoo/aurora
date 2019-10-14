@@ -156,19 +156,17 @@ class Product extends Asset {
                 }
 
                 return $img;
-                break;
+
 
             case 'Product Webpage Meta Description':
             case 'Webpage Meta Description':
                 return $this->webpage->get('Webpage Meta Description');
 
-                break;
 
             case 'Product Webpage Browser Title':
             case 'Webpage Browser Title':
                 return $this->webpage->get('Webpage Browser Title');
 
-                break;
 
             case 'Webpage Image':
 
@@ -184,8 +182,6 @@ class Product extends Asset {
 
                 return $img;
 
-                break;
-
 
             case 'Product Webpage Name':
             case 'Webpage Name':
@@ -193,7 +189,6 @@ class Product extends Asset {
 
                 return $this->webpage->get('Webpage Name');
 
-                break;
 
             case 'Webpage Price':
 
@@ -212,7 +207,7 @@ class Product extends Asset {
 
 
                 return $price;
-                break;
+
 
             case 'Webpage RRP':
 
@@ -227,15 +222,12 @@ class Product extends Asset {
 
 
                 return $rrp;
-                break;
+
 
             case 'Webpage Out of Stock Label':
 
 
                 return _('Out of stock');
-
-
-                break;
 
 
             case 'Price':
@@ -280,22 +272,19 @@ class Product extends Asset {
 
 
                 return $price;
-                break;
+
             case 'Unit Price':
                 return money(
                     $this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']
                 );
-                break;
             case 'Formatted Per Outer':
                 return _('per outer');
-                break;
             case 'RRP':
                 if ($this->data['Product RRP'] == '') {
                     return '';
                 }
 
                 return money($this->data['Product RRP'], $this->data['Store Currency Code']);
-                break;
 
 
             case 'Unit RRP':
@@ -320,7 +309,6 @@ class Product extends Asset {
                 }
 
                 return $rrp;
-                break;
 
             case 'Product Unit RRP':
 
@@ -336,8 +324,6 @@ class Product extends Asset {
                 }
 
 
-                break;
-
             case 'Unit Type':
                 if ($this->data['Product Unit Type'] == '') {
                     return '';
@@ -345,20 +331,6 @@ class Product extends Asset {
 
                 return _($this->data['Product Unit Type']);
 
-                /*
-			if ($this->data['Product Unit Type']=='')return '';
-			$unit_type_data=json_decode($this->data['Product Unit Type'], true);
-			$unit_type_key=key($unit_type_data);
-
-			$unit_type_value=$unit_type_data[$unit_type_key];
-			$unit_type_key=_($unit_type_key);
-			if ($unit_type_key!=$unit_type_value) {
-				return "$unit_type_value ($unit_type_key)";
-			}else {
-				return $unit_type_key;
-			}
-*/
-                break;
             case 'Parts':
                 $parts = '';
 
@@ -380,26 +352,18 @@ class Product extends Asset {
 
                 return $parts;
 
-                break;
-
 
             case 'Origin Country Code':
                 if ($this->data['Product Origin Country Code']) {
                     include_once 'class.Country.php';
-                    $country = new Country(
-                        'code', $this->data['Product Origin Country Code']
-                    );
+                    $country = new Country('code', $this->data['Product Origin Country Code']);
 
-                    return '<img src="/art/flags/'.strtolower(
-                            $country->get('Country 2 Alpha Code')
-                        ).'.gif" title="'.$country->get('Country Code').'"> '._(
-                            $country->get('Country Name')
-                        );
+                    return '<img src="/art/flags/'.strtolower($country->get('Country 2 Alpha Code')).'.gif" title="'.$country->get('Country Code').'"> '._($country->get('Country Name'));
                 } else {
                     return '';
                 }
 
-                break;
+
             case 'Origin Country':
                 if ($this->data['Product Origin Country Code']) {
                     include_once 'class.Country.php';
@@ -411,8 +375,6 @@ class Product extends Asset {
                 } else {
                     return '';
                 }
-
-                break;
 
 
             case 'Status':
@@ -435,7 +397,6 @@ class Product extends Asset {
 
                 return $status;
 
-                break;
 
             case 'Web Configuration':
 
@@ -459,7 +420,7 @@ class Product extends Asset {
                 }
 
                 return $web_configuration;
-                break;
+
 
             case 'Web State':
 
@@ -494,7 +455,7 @@ class Product extends Asset {
                 }
 
                 return $web_state;
-                break;
+
             case 'Availability':
 
                 if ($this->data['Product Availability State'] == 'OnDemand') {
@@ -502,7 +463,6 @@ class Product extends Asset {
                 } else {
                     return number($this->data['Product Availability']);
                 }
-                break;
 
             case 'Next Supplier Shipment':
                 if ($this->data['Product Next Supplier Shipment'] == '') {
@@ -515,7 +475,7 @@ class Product extends Asset {
 
 
                 }
-                break;
+
             case 'Acc To Day Updated':
             case 'Acc Ongoing Intervals Updated':
             case 'Acc Previous Intervals Updated':
@@ -529,7 +489,7 @@ class Product extends Asset {
                 }
 
                 return $value;
-                break;
+
             case 'Customers Numbers':
                 $customer_numbers = number($this->data['Product Number Customers']);
 
@@ -539,15 +499,14 @@ class Product extends Asset {
 
                 return $customer_numbers;
 
-                break;
 
             case 'Number Customers Favored':
             case 'Number Customers':
             case 'Number Orders':
             case 'Number Images':
             case 'Number History Records':
-                number($this->data['Product '.$key]);
-                break;
+                return number($this->data['Product '.$key]);
+
             case 'Availability State':
 
 
@@ -579,7 +538,7 @@ class Product extends Asset {
                 }
 
                 return $stock_status;
-                break;
+
             default:
 
 
@@ -714,9 +673,6 @@ class Product extends Asset {
 
                 $parts_data[] = $part_data;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
         return $parts_data;
@@ -793,7 +749,6 @@ class Product extends Asset {
     }
 
     function create($data) {
-
 
 
         include_once 'utils/natural_language.php';
@@ -2389,7 +2344,9 @@ class Product extends Asset {
             case('Product Tariff Code'):
 
                 if (!preg_match('/from_part/', $options) and count($this->get_parts()) == 1) {
-
+                    /**
+                     * @var $part \Part
+                     */
                     $part = array_values($this->get_parts('objects'))[0];
                     $part->update(
                         array(
@@ -2417,7 +2374,9 @@ class Product extends Asset {
 
                 if (!preg_match('/from_part/', $options) and count($this->get_parts()) == 1) {
 
-
+                    /**
+                     * @var $part \Part
+                     */
                     $part = array_values($this->get_parts('objects'))[0];
                     $part->update(
                         array(
@@ -2448,7 +2407,7 @@ class Product extends Asset {
 
                 if ($value == '') {
                     $dim = '';
-                    $vol = '';
+
                 } else {
                     $dim = parse_dimensions($value);
                     if ($dim == '') {
@@ -2459,13 +2418,14 @@ class Product extends Asset {
 
                         return;
                     }
-                    // $_tmp = json_decode($dim, true);
-                    //   $vol  = $_tmp['vol'];
+
                 }
 
                 if (!preg_match('/from_part/', $options) and count($this->get_parts()) == 1) {
 
-
+                    /**
+                     * @var $part \Part
+                     */
                     $part = array_values($this->get_parts('objects'))[0];
                     $part->update(
                         array(
@@ -2494,11 +2454,11 @@ class Product extends Asset {
             case 'Product Materials':
 
 
-                if (!preg_match('/from_part/', $options) and count(
-                        $this->get_parts()
-                    ) == 1) {
+                if (!preg_match('/from_part/', $options) and count($this->get_parts()) == 1) {
 
-
+                    /**
+                     * @var $part \Part
+                     */
                     $part = array_values($this->get_parts('objects'))[0];
                     $part->update(
                         array(
@@ -2577,6 +2537,9 @@ class Product extends Asset {
 
                 foreach ($materials_to_update as $material_key => $update) {
                     if ($update) {
+                        /**
+                         * @var $material \Material
+                         */
                         $material = get_object('Material', $material_key);
                         $material->update_stats();
 
@@ -3124,7 +3087,7 @@ class Product extends Asset {
         }
 
 
-        foreach (array_diff($old_part_list_keys, $new_part_list_keys) as $product_part_key )  {
+        foreach (array_diff($old_part_list_keys, $new_part_list_keys) as $product_part_key) {
             $sql = "delete from `Product Part Bridge` where `Product Part Key`=? ";
             $this->db->prepare($sql)->execute(
                 array(
