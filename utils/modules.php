@@ -2936,23 +2936,7 @@ $modules = array(
                         'label' => _('Plot')
                     ),
 
-                    'store.localization' => array(
-                        'label'   => _('Localization'),
-                        'icon'    => 'language',
-                        'subtabs' => array(
 
-                            'localization.materials' => array(
-                                'label' => _('Materials/Ingredients'),
-                                'icon'  => 'puzzle-piece',
-                            ),
-                            'localization.website'   => array(
-                                'label' => _('Website'),
-                                'icon'  => 'globe',
-                            ),
-
-
-                        ),
-                    ),
 
                     'store.history' => array(
                         'label' => _('History'),
@@ -3145,7 +3129,14 @@ $modules = array(
 
                         ),
                     ),
+                    'localization.materials' => array(
+                        'label'   => _('Localization (Materials/Ingredients)'),
+                        'icon'    => 'language',
 
+
+
+
+                    ),
                     'store.history' => array(
                         'label' => _('History'),
                         'icon'  => 'road',
