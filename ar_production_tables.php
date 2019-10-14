@@ -492,7 +492,7 @@ function production_parts($_data, $db, $user, $account) {
                 ),
 
                 'packing'    => '
-				   <div style="float:right;min-width:30px;;text-align:right" title="'._('Units per part').'"> <span class="strong" >'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span></div>
+				   <div style="float:right;min-width:30px;text-align:right" title="'._('Units per part').'"> <span class="strong" >'.($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span></div>
 				   <div style="float:right;min-width:40px;text-align:center;"><i class="far fa-equals"></i></div>
 				<div style="float:right;min-width:20px;text-align:right;" title="'._('Packages per part').'"><span>'.$data['Supplier Part Packages Per Carton'].'</span></div>
 				<div style="float:right;min-width:40px;text-align:center;"><i class="far fa-times"></i></div>

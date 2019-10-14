@@ -20,7 +20,7 @@
 
 
     <div class="regenerate_button" style="padding:20px 0px">
-        <span class=" button unselectable" onclick="regenerate_api_key({$api_key->id})" style="border:1px solid #ccc;;padding:10px">{t}Regenerate private key{/t}</span>
+        <span class=" button unselectable" onclick="regenerate_api_key({$api_key->id})" style="border:1px solid #ccc;padding:10px">{t}Regenerate private key{/t}</span>
 
     </div>
 

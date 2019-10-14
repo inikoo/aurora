@@ -299,7 +299,7 @@ trait ProductCategory {
         $product_ids = '';
         $sql         = sprintf(
             'SELECT `Subject Key` FROM `Category Bridge` WHERE `Category Key`=%d AND `Subject Key`>0 ', $this->id
-        );;
+        );
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
                 $product_ids .= $row['Subject Key'].',';

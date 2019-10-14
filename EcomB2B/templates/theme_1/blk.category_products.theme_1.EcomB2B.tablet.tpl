@@ -80,7 +80,7 @@
 
                                 {if !empty($item.next_shipment_timestamp)  and $item.next_shipment_timestamp>$smarty.now }
                                     <div class="  out_of_stock_row  out_of_stock "
-                                         style="z-index:1000;opacity:1;font-style: italic;;position:absolute;bottom:28px;height: 16px;line-height: 16px;padding:0px;padding-top:3px;font-size: 12px;width: 224px" >
+                                         style="z-index:1000;opacity:1;font-style: italic;position:absolute;bottom:28px;height: 16px;line-height: 16px;padding:0px;padding-top:3px;font-size: 12px;width: 224px" >
                                         <span style="padding-left: 10px">{t}Expected{/t}: {$item.next_shipment_timestamp|date_format:"%x"}</span>
                                     </div>
                                 {/if}

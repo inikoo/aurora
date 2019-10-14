@@ -44,7 +44,7 @@
 
 
 
-            <div class="handle" style="border-bottom: 1px solid #ccc;;width: 100%;line-height: 30px;height: 30px">
+            <div class="handle" style="border-bottom: 1px solid #ccc;width: 100%;line-height: 30px;height: 30px">
                 <i class="fa fa-window-close button padding_left_10" onclick="$('#header_style').addClass('hide')"></i>
             </div>
             <div style="padding: 20px">
@@ -109,7 +109,7 @@
         <div id="footer_style" class="hide object_control_panel element_for_color element_for_margins" style="padding: 0px;z-index: 5002;">
 
 
-            <div class="handle" style="border-bottom: 1px solid #ccc;;width: 100%;line-height: 30px;height: 30px">
+            <div class="handle" style="border-bottom: 1px solid #ccc;width: 100%;line-height: 30px;height: 30px">
                 <i class="fa fa-window-close button padding_left_10" onclick="$('#footer_style').addClass('hide')"></i>
             </div>
             <div style="padding: 20px">
@@ -177,7 +177,7 @@
 
 
 
-            <div class="handle" style="border-bottom: 1px solid #ccc;;width: 100%;line-height: 30px;height: 30px">
+            <div class="handle" style="border-bottom: 1px solid #ccc;width: 100%;line-height: 30px;height: 30px">
                 <i class="fa fa-window-close button padding_left_10" onclick="$('#menu_bar_style').addClass('hide')"></i>
             </div>
             <div style="padding: 20px">
@@ -338,7 +338,7 @@
 
 
 
-            <div class="handle" style="border-bottom: 1px solid #ccc;;width: 100%;line-height: 30px;height: 30px">
+            <div class="handle" style="border-bottom: 1px solid #ccc;width: 100%;line-height: 30px;height: 30px">
                 <i class="fa fa-window-close button padding_left_10" onclick="$('#navigation_style').addClass('hide')"></i>
             </div>
             <div style="padding: 20px">
@@ -405,7 +405,7 @@
 
 
 
-            <div class="handle" style="border-bottom: 1px solid #ccc;;width: 100%;line-height: 30px;height: 30px">
+            <div class="handle" style="border-bottom: 1px solid #ccc;width: 100%;line-height: 30px;height: 30px">
                 <i class="fa fa-window-close button padding_left_10" onclick="$('#body_style').addClass('hide')"></i>
             </div>
             <div style="padding: 20px">
@@ -459,7 +459,7 @@
 
 
 
-            <div class="handle" style="border-bottom: 1px solid #ccc;;width: 100%;line-height: 30px;height: 30px">
+            <div class="handle" style="border-bottom: 1px solid #ccc;width: 100%;line-height: 30px;height: 30px">
                 <i class="fa fa-window-close button padding_left_10" onclick="$('#button_style').addClass('hide')"></i>
             </div>
             <div style="padding: 20px">
@@ -503,7 +503,7 @@
 
 
 
-            <div class="handle" style="border-bottom: 1px solid #ccc;;width: 100%;line-height: 30px;height: 30px">
+            <div class="handle" style="border-bottom: 1px solid #ccc;width: 100%;line-height: 30px;height: 30px">
                 <i class="fa fa-window-close button padding_left_10" onclick="$('#product_wrap_style').addClass('hide')"></i>
             </div>
             <div style="padding: 20px">
@@ -621,7 +621,7 @@
 
         <div id="top_header" style="width: 100%; display: flex;"  >
 
-          <div id="header_logo" style="flex-grow:1;;flex-grow: 0;flex-shrink: 0;flex-grow: 0;flex-shrink: 0; ;text-align: center">
+          <div id="header_logo" style="flex-grow:1;flex-grow: 0;flex-shrink: 0;flex-grow: 0;flex-shrink: 0; ;text-align: center">
 
 
 
@@ -668,12 +668,12 @@
 
             </div>
 
-            <div id="buffer_zone" style="flex-grow:1;text-align: right;;flex-grow: 0;flex-shrink: 0; flex-basis:100px;" >
+            <div id="buffer_zone" style="flex-grow:1;text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:100px;" >
 
             </div>
 
 
-            <div id="search_header" style="padding-top:5px;flex-grow:1;text-align: right;;flex-grow: 0;flex-shrink: 0; flex-basis:350px;position: relative" oncxlick="open_header_style()" >
+            <div id="search_header" style="padding-top:5px;flex-grow:1;text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:350px;position: relative" oncxlick="open_header_style()" >
 
 
                 <div id="search_hanger" style="position: absolute;left:10px;top:{if isset($settings.search_top)}{$settings.search_top}{else}0{/if}px"><input/> <i class="button fa fa-search"></i></div>

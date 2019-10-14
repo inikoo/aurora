@@ -173,7 +173,7 @@
 
         </div>
     </div>
-    <div style="float: right;width: 310px;;margin-right: 20px">
+    <div style="float: right;width: 310px;margin-right: 20px">
 
         {if $customer->get('Customer Orders')>0}
             <table class="overview">
@@ -214,7 +214,7 @@
 
 
 
-<div style="clear:both;border-top:1px solid #aaa;;border-bottom:1px solid #aaa;min-height: 30px;padding:0px 20px;">
+<div style="clear:both;border-top:1px solid #aaa;border-bottom:1px solid #aaa;min-height: 30px;padding:0px 20px;">
     <table  class="customer_showcase_order">
         <td class="icon_order_in_basket  {if $order_basket.key==''}hide{/if} " style="width:30px;padding:0px;text-align: center"><i title="{t}Order in basket{/t}" class="fa fa-shopping-basket"></i></td>
         <td class="order_in_basket_public_id  {if $order_basket.key==''}hide{/if} " style="width: 80px"><span >{$order_basket.public_id}</span></td>

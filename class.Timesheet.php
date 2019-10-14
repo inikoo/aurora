@@ -744,7 +744,7 @@ class Timesheet extends DB_Table {
                     $action_type = 'End';
 
                 } elseif ($row['Timesheet Record Action Type'] == 'MarkStart') {
-                    $maarked_start = true;;
+                    $maarked_start = true;
 
 
                     if ($action_type == 'Start') {

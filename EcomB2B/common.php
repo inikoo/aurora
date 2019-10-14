@@ -186,7 +186,7 @@ if (!$is_cached) {
 
     if (!isset($_SESSION['website_locale'])) {
         $_SESSION['website_locale'] = $website->get('Website Locale');
-        $website_locale             = $website->get('Website Locale');;
+        $website_locale             = $website->get('Website Locale');
     }
 
 
@@ -194,7 +194,7 @@ if (!$is_cached) {
         $website_locale             = $_REQUEST['lang'];
         $_SESSION['website_locale'] = $website_locale;
     } elseif (isset($_REQUEST['lang']) and $_REQUEST['lang'] == 'website') {
-        $website_locale             = $website->get('Website Locale');;
+        $website_locale             = $website->get('Website Locale');
         $_SESSION['website_locale'] = $website_locale;
     } else {
         $website_locale = $_SESSION['website_locale'];

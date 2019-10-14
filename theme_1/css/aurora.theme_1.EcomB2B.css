@@ -307,7 +307,7 @@ label.toggle{
 
 .product_showcase  .favourite i{
 
-	font-size:20px;cursor:pointer;position:absolute;left:-1px;top:-1px;;z-index:1
+	font-size:20px;cursor:pointer;position:absolute;left:-1px;top:-1px;z-index:1
 
 }
 
@@ -536,7 +536,7 @@ table.properties td{
 
 
 .product_description{
-	padding-left:10px;padding-right:10px;display:block;height:51px !important;;
+	padding-left:10px;padding-right:10px;display:block;height:51px !important;
 }
 
 .product_prices{
@@ -597,7 +597,7 @@ table.properties td{
 
 .log_in_buttons_individual_product div{
 	height: 28px;cursor:pointer;
-	float: left;; font-weight: 800;line-height: 28px;
+	float: left; font-weight: 800;line-height: 28px;
 	min-width: 200px;
 	background-color: darkorange;color:whitesmoke;
 	margin-right: 4px;
@@ -673,7 +673,7 @@ table.properties td{
 }
 
 #bottom_see_also .item  .image_container{
-	border:1px solid #ccc;height:170px;width:170px;;vertical-align:middle;text-align:center;display: table-cell;
+	border:1px solid #ccc;height:170px;width:170px;vertical-align:middle;text-align:center;display: table-cell;
 
 }
 
@@ -693,7 +693,7 @@ table.properties td{
 }
 
 .panel .buttons{
-	position:absolute;top:10px;;display:flex;width:200px;margin-left:10px;
+	position:absolute;top:10px;display:flex;width:200px;margin-left:10px;
 }
 
 
@@ -835,7 +835,7 @@ table.properties td{
 
 .page_break span.title{
 
-	padding:0px;margin:0px;float:left;;padding-top:5px;
+	padding:0px;margin:0px;float:left;padding-top:5px;
 
 }
 

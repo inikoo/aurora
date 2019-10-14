@@ -12,7 +12,7 @@
 <div class="category_wrap wrap" data-type="{$item_data.type}">
 
      <span onclick="$(this).closest('.wrap').addClass('sortable-disabled');$(this).closest('.wrap').find('.item_overlay').removeClass('hide');$(this).closest('.wrap').find('.edit_icon').addClass('hide')" class="fa-stack button edit_icon"
-           style="font-size:12.5px;position:absolute;z-index: 1005;right:10px;top:10px;;">
+           style="font-size:12.5px;position:absolute;z-index: 1005;right:10px;top:10px;">
         <i style="color:cornflowerblue;" class="fas fa-circle fa-stack-2x "></i>
         <i class="fas fa-pencil fa-stack-1x fa-inverse"></i>
     </span>
