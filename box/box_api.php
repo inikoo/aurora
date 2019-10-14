@@ -45,6 +45,8 @@ if ($authenticated == 'OK') {
         array($box_id)
     );
     if ($row = $stmt->fetch()) {
+
+
         $box_key = $row['Box Key'];
 
 
@@ -54,6 +56,8 @@ if ($authenticated == 'OK') {
 
 
             if (isset($_REQUEST['register'])) {
+
+
 
                 $_data = json_decode($row['Box Aurora Account Data'], true);
 
@@ -77,6 +81,9 @@ if ($authenticated == 'OK') {
 
 
                 );
+
+                print json_encode($response);
+                exit;
 
 
                 echo json_encode($response);

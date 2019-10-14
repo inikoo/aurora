@@ -208,19 +208,13 @@ $_service = array(
             'icon'    => 'money-bill-alt',
             'subtabs' => array(
                 'service.sales.plot'     => array(
-                    'label' => _(
-                        'Plot'
-                    )
+                    'label' => _('Plot')
                 ),
                 'service.sales.history'  => array(
-                    'label' => _(
-                        'Sales history'
-                    )
+                    'label' => _('Sales history')
                 ),
                 'service.sales.calendar' => array(
-                    'label' => _(
-                        'Calendar'
-                    )
+                    'label' => _('Calendar')
                 ),
 
             )
@@ -233,12 +227,8 @@ $_service = array(
             'label'   => _('Customers'),
             'subtabs' => array(
                 'service.customers.customers'  => array(
-                    'label' => _(
-                        'Customers'
-                    ),
-                    'title' => _(
-                        'Customers'
-                    )
+                    'label' => _('Customers'),
+                    'title' => _('Customers')
                 ),
                 'service.customers.favourites' => array(
                     'label' => _('Customers who favored'),
@@ -7134,19 +7124,13 @@ $modules = array(
                 'reference' => 'timesheets/day/'.date('Ymd'),
                 'tabs'      => array(
                     'timesheets.months'     => array(
-                        'label' => _(
-                            'Months'
-                        )
+                        'label' => _('Months')
                     ),
                     'timesheets.weeks'      => array(
-                        'label' => _(
-                            'Weeks'
-                        )
+                        'label' => _('Weeks')
                     ),
                     'timesheets.days'       => array(
-                        'label' => _(
-                            'Days'
-                        )
+                        'label' => _('Days')
                     ),
                     'timesheets.employees'  => array(
                         'label' => _(
@@ -7163,13 +7147,33 @@ $modules = array(
 
 
             'clocking_machines'    => array(
-                'type'      => 'navigation',
-                'icon'      => 'chess-clock',
-                'label'     => _('Clocking-in Machines'),
-                'reference' => 'clocking_machines',
-                'tabs'      => array(
-                    'clocking_machines' => array(
+                'type'           => 'navigation',
+                'icon'           => 'chess-clock',
+                'label'          => _('Clocking-in Machines'),
+                'reference'      => 'clocking_machines',
+                'subtabs_parent' => array(
+                    'nfc_tags'         => 'clocking_machines.tags',
+                    'pending_nfc_tags' => 'clocking_machines.tags',
+
+                ),
+                'tabs'           => array(
+                    'clocking_machines'      => array(
+                        'icon'  => 'chess-clock',
                         'label' => _('Clocking-in Machines')
+                    ),
+                    'clocking_machines.tags' => array(
+                        'icon'    => 'id-card-alt',
+                        'label'   => _('NFC Tags'),
+                        'subtabs' => array(
+                            'nfc_tags'         => array(
+                                'icon'  => 'id-card-alt',
+                                'label' => _('Registered nfc-tags')
+                            ),
+                            'pending_nfc_tags' => array(
+                                'icon'  => 'head-side-medical',
+                                'label' => _('Pending nfc-tags')
+                            )
+                        )
                     ),
 
 
@@ -7186,7 +7190,7 @@ $modules = array(
                 )
 
             ),
-            'clocking_machine'  => array(
+            'clocking_machine'     => array(
                 'type' => 'object',
                 'tabs' => array(
                     'clocking_machine.details' => array(
@@ -8293,19 +8297,13 @@ $modules = array(
                         'class'   => 'right icon_only',
                         'subtabs' => array(
                             'supplier_part.purchase_orders.purchase_orders' => array(
-                                'label' => _(
-                                    'Purchase Orders'
-                                )
+                                'label' => _('Purchase Orders')
                             ),
                             'supplier_part.purchase_orders.delivery_notes'  => array(
-                                'label' => _(
-                                    'Delivery Notes'
-                                )
+                                'label' => _('Delivery Notes')
                             ),
                             'supplier_part.purchase_orders.invoices'        => array(
-                                'label' => _(
-                                    'Invoices'
-                                )
+                                'label' => _('Invoices')
                             ),
 
                         )
