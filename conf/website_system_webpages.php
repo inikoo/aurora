@@ -425,8 +425,8 @@ function website_system_webpages_config($website_type) {
                             'bottom_margin' => 60,
                             'labels'        => array(
 
-                                '_customer_orders_title'  => _("Customer <i>Orders</i>"),
-                                '_customer_profile_title' => _("Customer <i>Profile</i>"),
+                                '_customer_orders_title'  => _("Orders"),
+                                '_customer_profile_title' => _("Profile"),
 
 
                                 '_current_order_title' => _('Current order'),

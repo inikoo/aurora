@@ -15,20 +15,17 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
-
 <div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
-
 
     <div class="text_blocks container ">
 
         <div style="width: 250px" id="profile_menu" class="text_block ">
 
-            <h4 id="_customer_profile_title">{$data.labels._customer_profile_title}</h4>
-
+            <h4>{$data.labels._customer_profile_title}</h4>
             <ul>
 
                 <li>
-                                <span data-block="_contact_details" onClick="change_block(this)" class="block_link  like_button  selected" style="cursor: pointer">
+                            <span data-block="_contact_details" onClick="change_block(this)" class="block_link  like_button  selected" style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
                                     <span class="_contact_details_title">{$data.labels._contact_details_title}</span>
                                 </span>
@@ -46,7 +43,7 @@
                                     <span class="_invoice_address_title">{$data.labels._invoice_address_title}</span>
                                     </span>
                 </li>
-
+                {if $store->get('Store Type')!='Dropshipping'}
                 <li>
                                 <span data-block="_delivery_addresses_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
@@ -54,6 +51,7 @@
 
                                     </span>
                 </li>
+                {/if}
                 <li>
                                 <span data-block="_poll_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
@@ -63,8 +61,8 @@
 
 
             </ul>
-
-            <div >
+            {if $store->get('Store Type')!='Dropshipping'}
+                <div>
 
                 <h4 id="_customer_orders_title">{$data.labels._customer_orders_title}</h4>
 
@@ -82,534 +80,579 @@
 
                 </ul>
             </div>
+            {else}
+                <div>
 
+                    <h4>{if !empty($data.labels._customer_clients)}{$data.labels._customer_clients}{else}{t}Customers{/t}{/if}</h4>
+
+                    <ul class=" arrows_list1">
+                        <li>
+
+
+                        <span data-block="_orders_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
+                                    <i class="fa fa-angle-right"></i>
+                                    <span class="_orders_address_title">{if empty($data.labels._orders_title)}{t}Orders{/t}{else}{$data.labels._orders_title}{/if}</span>
+                                    </span>
+
+                        </li>
+
+
+                    </ul>
+                </div>
+            {/if}
         </div>
 
-         <div style="width: 100%" class="text_block">
+        <div style="width: 100%" class="text_block">
 
 
-        <div id="_contact_details" class="block reg_form">
-            <form id="contact_details" class="sky-form">
-                <header class="mirror_master" id="_contact_details_title">{$data.labels._contact_details_title}</header>
-
-                <fieldset>
-
-
-                    <section>
-                        <label class="label">{$data.labels._company_label}</label>
-                        <label class="input">
-                            <i class="icon-append "><i class="far fa-store-alt" aria-hidden="true"></i></i>
-                            <input class="register_field" type="text" name="company" value="{$customer->get('Customer Company Name')}" placeholder="{$data.labels._company_placeholder}">
-                            <b id="_company_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._company_tooltip}</b>
-                        </label>
-                    </section>
-
-
-                    <section>
-                        <label class="label">{$data.labels._contact_name_label}</label>
-                        <label class="input">
-                            <i class="icon-append "><i class="far fa-user" aria-hidden="true"></i></i>
-                            <input class="register_field" type="text" name="contact_name" value="{$customer->get('Customer Main Contact Name')}" placeholder="{$data.labels._contact_name_placeholder}">
-                            <b id="_contact_name_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._contact_name_tooltip}</b>
-                        </label>
-                    </section>
-
-
-                    <section>
-                        <label class="label">{$data.labels._mobile_label}</label>
-                        <label class="input">
-                            <i class="icon-append "><i class="far fa-mobile" aria-hidden="true"></i></i>
-                            <input class="register_field" type="text" name="mobile" value="{$customer->get('Customer Main Plain Mobile')}" placeholder="{$data.labels._mobile_placeholder}">
-                            <b id="_mobile_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._mobile_tooltip}</b>
-                        </label>
-                    </section>
-
-                    <section>
-                        <label class="label">{$data.labels._email_label}</label>
-                        <label class="input">
-                            <i class="icon-append "><i class="far fa-envelope" aria-hidden="true"></i></i>
-                            <input class="register_field" type="email" name="email" id="_email_placeholder" value="{$customer->get('Customer Main Plain Email')}" placeholder="{$data.labels._email_placeholder}">
-                            <b id="_email_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._email_tooltip}</b>
-                        </label>
-                    </section>
-
-                </fieldset>
-
-
-                <fieldset>
-
-                    <section>
-                        <label class="label">{$data.labels._registration_number_label}</label>
-
-                        <label class="input">
-                            <i class="icon-append "><i class="far fa-file-signature" aria-hidden="true"></i>
-                            </i>
-                            <input class="register_field" type="text" name="registration_number" value="{$customer->get('Customer Registration Number')}" placeholder="{$data.labels._registration_number_placeholder}">
-                            <b id="_registration_number_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._registration_number_tooltip}</b>
-                        </label>
-                    </section>
-
-                    <section>
-                        <label class="label">{$data.labels._tax_number_label}</label>
-
-                        <label class="input">
-                            <i id="_tax_number"  class="icon-append icon-gavel"><i class="fa fa-gavel"></i></i>
-                            <input class="register_field" type="text" name="tax_number" id="_tax_number_placeholder" value="{$customer->get('Customer Tax Number')}" placeholder="{$data.labels._tax_number_placeholder}">
-                            <b id="_tax_number_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._tax_number_tooltip}</b>
-                        </label>
-                        <label style="margin-top:5px;font-size: smaller" class="label Tax_Number_Valid">{$customer->get('Tax Number Valid')}</label>
-
-                    </section>
-
-
-                </fieldset>
-
-                <fieldset>
-
-                    <section>
-                        <label class="label">{t}Subscriptions{/t}</label>
-                        <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Newsletter')=='Yes'}checked{/if} name="newsletter"><i></i>{t}Newsletter{/t}</label>
-                        <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Email Marketing')=='Yes'}checked{/if} name="email_marketing"><i></i>{t}Email marketing{/t}
-                        </label>
-                        <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Postal Marketing')=='Yes'}checked{/if} name="postal_marketing"><i></i>{t}Postal marketing{/t}
-                        </label>
-                    </section>
-
-
-                </fieldset>
-
-
-                <footer>
-                    <button id="save_contact_details_button" type="submit" class="button invisible ">{$data.labels._save_contact_details_label} <i class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i></button>
-                </footer>
-            </form>
-        </div>
-        <div id="_login_details" class="block hide reg_form">
-            <form id="login_details" class="sky-form">
-                <header class="mirror_master" id="_login_details_title">{$data.labels._login_details_title}</header>
-
-                <fieldset>
-                    <section>
-                        <label class="input">
-                                        <span id="_username_info">{$data.labels._username_info}
-                        </label>
-                    </section>
-
-                    <section>
-                        <label class="input">
-                            <i class="icon-append"><i class="fa fa-lock"></i></i>
-                            <input class="register_field" type="password" name="pwd" id="password" placeholder="{$data.labels._password_placeholder}">
-                            <b id="_password_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._password_tooltip}</b>
-                        </label>
-                    </section>
-
-                    <section>
-                        <label class="input">
-                            <i  class="icon-append"><i class="fa fa-repeat-1"></i></i>
-                            <input class="register_field ignore" type="password" name="password_confirm" placeholder="{$data.labels._password_confirm_placeholder}">
-                            <b id="_password_conform_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._password_conform_tooltip}</b>
-                        </label>
-                    </section>
-
-
-                </fieldset>
-                <footer>
-                    <button type="submit" class="button invisible" id="save_login_details_button">{$data.labels._save_login_details_label} <i class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i></button>
-
-                </footer>
-            </form>
-        </div>
-
-        <div id="_invoice_address_details" class="block hide reg_form">
-
-
-            <div class="address_form">
-                <form id="invoice_address_form" class="sky-form">
-                    <header id="_title">{$data.labels._invoice_address_title}</header>
-
-
-                    <fieldset id="invoice_address_fields" style="position:relative">
-
-
-                        <section id="invoice_addressLine1" class="{if 'addressLine1'|in_array:$invoice_used_address_fields}{else}hide{/if}">
-
-                            <label for="file" class="input">
-                                <label class="label">{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</label>
-
-                                <input value="{$customer->get('Customer Invoice Address Line 1')}" type="text" name="addressLine1" class="{if 'addressLine1'|in_array:$invoice_used_address_fields}{else}ignore{/if}"
-                                       placeholder="{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}">
-                                <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</b>
-                            </label>
-                        </section>
-
-                        <section id="invoice_addressLine2" class="{if 'addressLine2'|in_array:$invoice_used_address_fields}{else}hide{/if}">
-                            <label for="file" class="input">
-                                <label class="label">{if !empty($labels.address_addressLine2)}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</label>
-
-                                <input value="{$customer->get('Customer Invoice Address Line 2')}" type="text" name="addressLine2" class="{if 'addressLine2'|in_array:$invoice_used_address_fields}{else}ignore{/if}"
-                                       placeholder="{if !empty($labels.address_addressLine2) }{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}">
-                                <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_addressLine2)}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</b>
-                            </label>
-                        </section>
-
-
-                        <div id="invoice_sortingCode" class="row {if 'sortingCode'|in_array:$invoice_used_address_fields}{else}hide{/if}">
-                            <section class="col col-6 ">
-                                <label class="input">
-                                    <label class="label">{if !empty($labels.address_sorting_code) }{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</label>
-
-                                    <input value="{$customer->get('Customer Invoice Address Sorting Code')}" type="text" name="sortingCode"
-                                           class="{if 'sortingCode'|in_array:$invoice_used_address_fields}{else}ignore{/if}"
-                                           placeholder="{if !empty($labels.address_sorting_code)}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}">
-                                    <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_sorting_code) }{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</b>
-                                </label>
-                            </section>
-
-
-                        </div>
-
-                        <div id="invoice_postalCode" class="row {if 'postalCode'|in_array:$invoice_used_address_fields}{else}hide{/if}">
-                            <section class="col col-6 ">
-                                <label class="input">
-                                    <label class="label">{if !empty($labels["postalCode_`$invoice_address_labels.postalCode.code`"]) }{$labels["postalCode_`$invoice_address_labels.postalCode.code`"]}{else}{$invoice_address_labels.postalCode.label}{/if}</label>
-
-                                    <input value="{$customer->get('Customer Invoice Address Postal Code')}" type="text" name="postalCode" class="{if 'postalCode'|in_array:$invoice_used_address_fields}{else}ignore{/if}"
-                                           placeholder="{if !empty($labels["postalCode_`$invoice_address_labels.postalCode.code`"]) }{$labels["postalCode_`$invoice_address_labels.postalCode.code`"]}{else}{$invoice_address_labels.postalCode.label}{/if}">
-                                    <b class="tooltip tooltip-bottom-right">{if !empty($labels["postalCode_`$invoice_address_labels.postalCode.code`"]) }{$labels["postalCode_`$invoice_address_labels.postalCode.code`"]}{else}{$invoice_address_labels.postalCode.label}{/if}</b>
-                                </label>
-                            </section>
-
-
-                        </div>
-
-                        <div id="invoice_dependentLocality" class="row {if 'dependentLocality'|in_array:$invoice_used_address_fields}{else}hide{/if}">
-                            <section class="col col-6 ">
-                                <label class="input">
-                                    <label class="label">{if !empty($labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]) }{$labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]}{else}{$invoice_address_labels.dependentLocality.label}{/if}</label>
-
-                                    <input value="{$customer->get('Customer Invoice Address Dependent Locality')}" type="text" name="dependentLocality"
-                                           class="{if 'dependentLocality'|in_array:$invoice_used_address_fields}{else}ignore{/if}"
-                                           placeholder="{if !empty($labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]) }{$labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]}{else}{$invoice_address_labels.dependentLocality.label}{/if}">
-                                    <b class="tooltip tooltip-bottom-right">{if !empty($labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]) }{$labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]}{else}{$invoice_address_labels.dependentLocality.label}{/if}</b>
-                                </label>
-                            </section>
-
-                        </div>
-
-                        <div id="invoice_locality" class="row {if 'locality'|in_array:$invoice_used_address_fields}{else}hide{/if}">
-                            <section class="col col-6 ">
-                                <label class="input">
-                                    <label class="label">{if !empty($labels["locality_`$invoice_address_labels.locality.code`"]) }{$labels["locality_`$invoice_address_labels.locality.code`"]}{else}{$invoice_address_labels.locality.label}{/if}</label>
-
-                                    <input value="{$customer->get('Customer Invoice Address Locality')}" type="text" name="locality" class="{if 'locality'|in_array:$invoice_used_address_fields}{else}ignore{/if}"
-                                           placeholder="{if !empty($labels["locality_`$invoice_address_labels.locality.code`"]) }{$labels["locality_`$invoice_address_labels.locality.code`"]}{else}{$invoice_address_labels.locality.label}{/if}">
-                                    <b class="tooltip tooltip-bottom-right">{if !empty($labels["locality_`$invoice_address_labels.locality.code`"]) }{$labels["locality_`$invoice_address_labels.locality.code`"]}{else}{$invoice_address_labels.locality.label}{/if}</b>
-
-                                </label>
-                            </section>
-
-                        </div>
-
-
-                        <div id="invoice_administrativeArea" class="row {if 'administrativeArea'|in_array:$invoice_used_address_fields}{else}hide{/if}">
-                            <section class="col col-6 ">
-                                <label class="input">
-                                    <label class="label">{if !empty($labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]) }{$labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]}{else}{$invoice_address_labels.administrativeArea.label}{/if}</label>
-
-                                    <input value="{$customer->get('Customer Invoice Address Administrative Area')}" type="text" name="administrativeArea"
-                                           class="{if 'administrativeArea'|in_array:$invoice_used_address_fields}{else}ignore{/if}"
-                                           placeholder="{if !empty($labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]) }{$labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]}{else}{$invoice_address_labels.administrativeArea.label}{/if}">
-                                    <b class="tooltip tooltip-bottom-right">{if !empty($labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]) }{$labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]}{else}{$invoice_address_labels.administrativeArea.label}{/if}</b>
-                                </label>
-                            </section>
-
-                        </div>
-
-
-                        <div class="row">
-                            <section class="col col-5">
-                                <label class="select">
-                                    <select id="invoice_country_select" name="country">
-                                        <option value="0" selected disabled>{if !empty($labels.address_country)}{$labels.address_country}{else}{t}Country{/t}{/if}</option>
-
-                                        {foreach from=$countries item=country}
-                                            <option value="{$country.2alpha}" {if $country.2alpha==$customer->get('Customer Invoice Address Country 2 Alpha Code')}selected{/if} >{$country.name}</option>
-                                        {/foreach}
-
-
-                                        <select><i></i>
-                                </label>
-                            </section>
-
-
-                        </div>
-
-
-                    </fieldset>
-
-
-                    <footer>
-                        <button type="submit" class="button invisible" id="save_invoice_address_details_button">{$data.labels._save_invoice_address_details_label} <i class="margin_left_10 fa fa-fw fa-save"
-                                                                                                                                                                      aria-hidden="true"></i></button>
-                    </footer>
-                </form>
-            </div>
-
-
-        </div>
-
-        <div id="_delivery_addresses_details" class="block hide reg_form">
-            <div class="address_form">
-                <form id="delivery_address_form" class="sky-form">
-                    <header id="_title">{$data.labels._delivery_addresses_title}</header>
-
+            <div id="_contact_details" class="block reg_form">
+                <form id="contact_details" class="sky-form">
+                    <header class="mirror_master" id="_contact_details_title">{$data.labels._contact_details_title}</header>
 
                     <fieldset>
 
 
                         <section>
-                            <label class="checkbox"><input class="ignored " type="checkbox" {if $customer->get('Customer Delivery Address Link')=='Billing'}checked{/if} name="delivery_address_link"
-                                                           id="delivery_address_link"><i></i>{if empty($data.labels._delivery_address_link)}{t}Deliver to invoice address{/t}{else}{$data.labels._delivery_address_link}{/if}
+                            <label class="label">{$data.labels._company_label}</label>
+                            <label class="input">
+                                <i class="icon-append "><i class="far fa-store-alt" aria-hidden="true"></i></i>
+                                <input class="register_field" type="text" name="company" value="{$customer->get('Customer Company Name')}" placeholder="{$data.labels._company_placeholder}">
+                                <b id="_company_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._company_tooltip}</b>
                             </label>
-                            </a> </label>
+                        </section>
 
+
+                        <section>
+                            <label class="label">{$data.labels._contact_name_label}</label>
+                            <label class="input">
+                                <i class="icon-append "><i class="far fa-user" aria-hidden="true"></i></i>
+                                <input class="register_field" type="text" name="contact_name" value="{$customer->get('Customer Main Contact Name')}" placeholder="{$data.labels._contact_name_placeholder}">
+                                <b id="_contact_name_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._contact_name_tooltip}</b>
+                            </label>
+                        </section>
+
+
+                        <section>
+                            <label class="label">{$data.labels._mobile_label}</label>
+                            <label class="input">
+                                <i class="icon-append "><i class="far fa-mobile" aria-hidden="true"></i></i>
+                                <input class="register_field" type="text" name="mobile" value="{$customer->get('Customer Main Plain Mobile')}" placeholder="{$data.labels._mobile_placeholder}">
+                                <b id="_mobile_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._mobile_tooltip}</b>
+                            </label>
+                        </section>
+
+                        <section>
+                            <label class="label">{$data.labels._email_label}</label>
+                            <label class="input">
+                                <i class="icon-append "><i class="far fa-envelope" aria-hidden="true"></i></i>
+                                <input class="register_field" type="email" name="email" id="_email_placeholder" value="{$customer->get('Customer Main Plain Email')}" placeholder="{$data.labels._email_placeholder}">
+                                <b id="_email_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._email_tooltip}</b>
+                            </label>
+                        </section>
+
+                    </fieldset>
+
+
+                    <fieldset>
+
+                        <section>
+                            <label class="label">{$data.labels._registration_number_label}</label>
+
+                            <label class="input">
+                                <i class="icon-append "><i class="far fa-file-signature" aria-hidden="true"></i>
+                                </i>
+                                <input class="register_field" type="text" name="registration_number" value="{$customer->get('Customer Registration Number')}" placeholder="{$data.labels._registration_number_placeholder}">
+                                <b id="_registration_number_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._registration_number_tooltip}</b>
+                            </label>
+                        </section>
+
+                        <section>
+                            <label class="label">{$data.labels._tax_number_label}</label>
+
+                            <label class="input">
+                                <i id="_tax_number" class="icon-append icon-gavel"><i class="fa fa-gavel"></i></i>
+                                <input class="register_field" type="text" name="tax_number" id="_tax_number_placeholder" value="{$customer->get('Customer Tax Number')}"
+                                       placeholder="{$data.labels._tax_number_placeholder}">
+                                <b id="_tax_number_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._tax_number_tooltip}</b>
+                            </label>
+                            <label style="margin-top:5px;font-size: smaller" class="label Tax_Number_Valid">{$customer->get('Tax Number Valid')}</label>
 
                         </section>
 
 
                     </fieldset>
 
+                    <fieldset>
 
-                    <fieldset id="delivery_address_fields" class="{if $customer->get('Customer Delivery Address Link')=='Billing'}hide{/if}" style="position:relative">
-
-
-                        <section id="delivery_addressLine1" class="{if 'addressLine1'|in_array:$delivery_used_address_fields}{else}hide{/if}">
-
-                            <label for="file" class="input">
-                                <label class="label">{if !empty($labels.address_addressLine1)}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</label>
-
-                                <input value="{$customer->get('Customer Delivery Address Line 1')}" type="text" name="addressLine1" class="{if 'addressLine1'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
-                                       placeholder="{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}">
-                                <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</b>
+                        <section>
+                            <label class="label">{t}Subscriptions{/t}</label>
+                            <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Newsletter')=='Yes'}checked{/if} name="newsletter"><i></i>{t}Newsletter{/t}</label>
+                            <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Email Marketing')=='Yes'}checked{/if} name="email_marketing"><i></i>{t}Email marketing{/t}
+                            </label>
+                            <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Postal Marketing')=='Yes'}checked{/if}
+                                                                              name="postal_marketing"><i></i>{t}Postal marketing{/t}
                             </label>
                         </section>
-
-                        <section id="delivery_addressLine2" class="{if 'addressLine2'|in_array:$delivery_used_address_fields}{else}hide{/if}">
-                            <label for="file" class="input">
-                                <label class="label">{if !empty($labels.address_addressLine2)}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</label>
-
-                                <input value="{$customer->get('Customer Delivery Address Line 2')}" type="text" name="addressLine2" class="{if 'addressLine2'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
-                                       placeholder="{if !empty($labels.address_addressLine2) }{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}">
-                                <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_addressLine2) }{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</b>
-                            </label>
-                        </section>
-
-
-                        <div id="delivery_sortingCode" class="row {if 'sortingCode'|in_array:$delivery_used_address_fields}{else}hide{/if}">
-                            <section class="col col-6 ">
-                                <label class="input">
-                                    <label class="label">{if !empty($labels.address_sorting_code) }{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</label>
-
-                                    <input value="{$customer->get('Customer Delivery Address Sorting Code')}" type="text" name="sortingCode"
-                                           class="{if 'sortingCode'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
-                                           placeholder="{if !empty($labels.address_sorting_code) }{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}">
-                                    <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_sorting_code) }{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</b>
-                                </label>
-                            </section>
-
-
-                        </div>
-
-                        <div id="delivery_postalCode" class="row {if 'postalCode'|in_array:$delivery_used_address_fields}{else}hide{/if}">
-                            <section class="col col-6 ">
-                                <label class="input">
-                                    <label class="label">{if !empty($labels["postalCode_`$delivery_address_labels.postalCode.code`"]) }{$labels["postalCode_`$delivery_address_labels.postalCode.code`"]}{else}{$delivery_address_labels.postalCode.label}{/if}</label>
-
-                                    <input value="{$customer->get('Customer Delivery Address Postal Code')}" type="text" name="postalCode" class="{if 'postalCode'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
-                                           placeholder="{if !empty($labels["postalCode_`$delivery_address_labels.postalCode.code`"]) }{$labels["postalCode_`$delivery_address_labels.postalCode.code`"]}{else}{$delivery_address_labels.postalCode.label}{/if}">
-                                    <b class="tooltip tooltip-bottom-right">{if !empty($labels["postalCode_`$delivery_address_labels.postalCode.code`"]) }{$labels["postalCode_`$delivery_address_labels.postalCode.code`"]}{else}{$delivery_address_labels.postalCode.label}{/if}</b>
-                                </label>
-                            </section>
-
-
-                        </div>
-
-                        <div id="delivery_dependentLocality" class="row {if 'dependentLocality'|in_array:$delivery_used_address_fields}{else}hide{/if}">
-                            <section class="col col-6 ">
-                                <label class="input">
-                                    <label class="label">{if !empty($labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]) }{$labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]}{else}{$delivery_address_labels.dependentLocality.label}{/if}</label>
-
-                                    <input value="{$customer->get('Customer Delivery Address Dependent Locality')}" type="text" name="dependentLocality"
-                                           class="{if 'dependentLocality'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
-                                           placeholder="{if !empty($labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"])}{$labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]}{else}{$delivery_address_labels.dependentLocality.label}{/if}">
-                                    <b class="tooltip tooltip-bottom-right">{if !empty($labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"])}{$labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]}{else}{$delivery_address_labels.dependentLocality.label}{/if}</b>
-                                </label>
-                            </section>
-
-                        </div>
-
-                        <div id="delivery_locality" class="row {if 'locality'|in_array:$delivery_used_address_fields}{else}hide{/if}">
-                            <section class="col col-6 ">
-                                <label class="input">
-                                    <label class="label">{if !empty($labels["locality_`$delivery_address_labels.locality.code`"]) }{$labels["locality_`$delivery_address_labels.locality.code`"]}{else}{$delivery_address_labels.locality.label}{/if}</label>
-
-                                    <input value="{$customer->get('Customer Delivery Address Locality')}" type="text" name="locality" class="{if 'locality'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
-                                           placeholder="{if !empty($labels["locality_`$delivery_address_labels.locality.code`"]) }{$labels["locality_`$delivery_address_labels.locality.code`"]}{else}{$delivery_address_labels.locality.label}{/if}">
-                                    <b class="tooltip tooltip-bottom-right">{if !empty($labels["locality_`$delivery_address_labels.locality.code`"]) }{$labels["locality_`$delivery_address_labels.locality.code`"]}{else}{$delivery_address_labels.locality.label}{/if}</b>
-                                </label>
-                            </section>
-
-                        </div>
-
-
-                        <div id="delivery_administrativeArea" class="row {if 'administrativeArea'|in_array:$delivery_used_address_fields}{else}hide{/if}">
-                            <section class="col col-6 ">
-                                <label class="input">
-                                    <label class="label">{if !empty($labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]) }{$labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]}{else}{$delivery_address_labels.administrativeArea.label}{/if}</label>
-
-                                    <input value="{$customer->get('Customer Delivery Address Administrative Area')}" type="text" name="administrativeArea"
-                                           class="{if 'administrativeArea'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
-                                           placeholder="{if !empty($labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"])}{$labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]}{else}{$delivery_address_labels.administrativeArea.label}{/if}">
-                                    <b class="tooltip tooltip-bottom-right">{if !empty($labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]) }{$labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]}{else}{$delivery_address_labels.administrativeArea.label}{/if}</b>
-                                </label>
-                            </section>
-
-                        </div>
-
-
-                        <div class="row">
-                            <section class="col col-5">
-                                <label class="select">
-                                    <select id="delivery_country_select" name="country">
-                                        <option value="0" selected disabled>{if !empty($labels.address_country) }{$labels.address_country}{else}{t}Country{/t}{/if}</option>
-
-                                        {foreach from=$countries item=country}
-                                            <option value="{$country['2alpha']}" {if $country['2alpha']==$customer->get('Customer Delivery Address Country 2 Alpha Code')}selected{/if} >{$country.name}</option>
-                                        {/foreach}
-
-
-                                        <select>
-                                </label>
-                            </section>
-
-
-                        </div>
 
 
                     </fieldset>
 
 
                     <footer>
-                        <button type="submit" class="button invisible" id="save_delivery_address_details_button">{$data.labels._save_delivery_address_details_label} <i class="margin_left_10 fa fa-fw fa-save"
-                                                                                                                                                                        aria-hidden="true"></i></button>
+                        <button id="save_contact_details_button" type="submit" class="button invisible ">{$data.labels._save_contact_details_label} <i class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i>
+                        </button>
+                    </footer>
+                </form>
+            </div>
+            <div id="_login_details" class="block hide reg_form">
+                <form id="login_details" class="sky-form">
+                    <header class="mirror_master" id="_login_details_title">{$data.labels._login_details_title}</header>
+
+                    <fieldset>
+                        <section>
+                            <label class="input">
+                                        <span id="_username_info">{$data.labels._username_info}
+                            </label>
+                        </section>
+
+                        <section>
+                            <label class="input">
+                                <i class="icon-append"><i class="fa fa-lock"></i></i>
+                                <input class="register_field" type="password" name="pwd" id="password" placeholder="{$data.labels._password_placeholder}">
+                                <b id="_password_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._password_tooltip}</b>
+                            </label>
+                        </section>
+
+                        <section>
+                            <label class="input">
+                                <i class="icon-append"><i class="fa fa-repeat-1"></i></i>
+                                <input class="register_field ignore" type="password" name="password_confirm" placeholder="{$data.labels._password_confirm_placeholder}">
+                                <b id="_password_conform_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._password_conform_tooltip}</b>
+                            </label>
+                        </section>
+
+
+                    </fieldset>
+                    <footer>
+                        <button type="submit" class="button invisible" id="save_login_details_button">{$data.labels._save_login_details_label} <i class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i></button>
 
                     </footer>
                 </form>
             </div>
 
-        </div>
-
-        <div id="_poll_details" class="block hide reg_form">
-            <form id="poll_details" class="sky-form">
-                <header class="mirror_master" id="_poll_details_title" >{if empty($data.labels._poll_details_title)}{t}Poll{/t}{else}{$data.labels._poll_details_title}{/if}</header>
-
-                <fieldset>
-                    <section>
-
-                        <label class="input">
-                                        <span id="_poll_info" >{if empty($data.labels._poll_info)}{t}Please let know you better so we can serve you better{/t}{else}{$data.labels._poll_info}{/if}
-                        </label>
-                    </section>
+            <div id="_invoice_address_details" class="block hide reg_form">
 
 
-                    {foreach from=$poll_queries item=query}
+                <div class="address_form">
+                    <form id="invoice_address_form" class="sky-form">
+                        <header id="_title">{$data.labels._invoice_address_title}</header>
 
-                        {if $query['Customer Poll Query Type']=='Open'}
-                            <section>
-                                <label class="label poll_query_label">{$query['Customer Poll Query Label']}</label>
-                                <label class="textarea">
-                                    <textarea rows="4" name="poll_{$query['Customer Poll Query Key']}" id="poll_{$query['Customer Poll Query Key']}">{$query['Reply']}</textarea>
+
+                        <fieldset id="invoice_address_fields" style="position:relative">
+
+
+                            <section id="invoice_addressLine1" class="{if 'addressLine1'|in_array:$invoice_used_address_fields}{else}hide{/if}">
+
+                                <label for="file" class="input">
+                                    <label class="label">{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</label>
+
+                                    <input value="{$customer->get('Customer Invoice Address Line 1')}" type="text" name="addressLine1" class="{if 'addressLine1'|in_array:$invoice_used_address_fields}{else}ignore{/if}"
+                                           placeholder="{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}">
+                                    <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</b>
                                 </label>
                             </section>
-                        {else}
-                            <section>
-                                <label data-query_key="{$query['Customer Poll Query Key']}" class="label poll_query_label">{$query['Customer Poll Query Label']}</label>
-                                <label class="select">
-                                    <select name="poll_{$query['Customer Poll Query Key']}">
-                                        <option value="0" selected disabled>{if !empty($labels._choose_one)}{$labels._choose_one}{else}{t}Please choose one{/t}{/if}</option>
 
-                                        {foreach from=$query['Options'] item=option}
-                                            <option value="{$option['Customer Poll Query Option Key']}"
-                                                    {if $option['Customer Poll Query Option Key']==$query['Reply']}selected{/if} >{$option['Customer Poll Query Option Label']}</option>
-                                        {/foreach}
+                            <section id="invoice_addressLine2" class="{if 'addressLine2'|in_array:$invoice_used_address_fields}{else}hide{/if}">
+                                <label for="file" class="input">
+                                    <label class="label">{if !empty($labels.address_addressLine2)}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</label>
 
-
-                                    </select>
-                                    <i></i>
+                                    <input value="{$customer->get('Customer Invoice Address Line 2')}" type="text" name="addressLine2" class="{if 'addressLine2'|in_array:$invoice_used_address_fields}{else}ignore{/if}"
+                                           placeholder="{if !empty($labels.address_addressLine2) }{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}">
+                                    <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_addressLine2)}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</b>
                                 </label>
                             </section>
+
+
+                            <div id="invoice_sortingCode" class="row {if 'sortingCode'|in_array:$invoice_used_address_fields}{else}hide{/if}">
+                                <section class="col col-6 ">
+                                    <label class="input">
+                                        <label class="label">{if !empty($labels.address_sorting_code) }{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</label>
+
+                                        <input value="{$customer->get('Customer Invoice Address Sorting Code')}" type="text" name="sortingCode"
+                                               class="{if 'sortingCode'|in_array:$invoice_used_address_fields}{else}ignore{/if}"
+                                               placeholder="{if !empty($labels.address_sorting_code)}{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}">
+                                        <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_sorting_code) }{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</b>
+                                    </label>
+                                </section>
+
+
+                            </div>
+
+                            <div id="invoice_postalCode" class="row {if 'postalCode'|in_array:$invoice_used_address_fields}{else}hide{/if}">
+                                <section class="col col-6 ">
+                                    <label class="input">
+                                        <label class="label">{if !empty($labels["postalCode_`$invoice_address_labels.postalCode.code`"]) }{$labels["postalCode_`$invoice_address_labels.postalCode.code`"]}{else}{$invoice_address_labels.postalCode.label}{/if}</label>
+
+                                        <input value="{$customer->get('Customer Invoice Address Postal Code')}" type="text" name="postalCode"
+                                               class="{if 'postalCode'|in_array:$invoice_used_address_fields}{else}ignore{/if}"
+                                               placeholder="{if !empty($labels["postalCode_`$invoice_address_labels.postalCode.code`"]) }{$labels["postalCode_`$invoice_address_labels.postalCode.code`"]}{else}{$invoice_address_labels.postalCode.label}{/if}">
+                                        <b class="tooltip tooltip-bottom-right">{if !empty($labels["postalCode_`$invoice_address_labels.postalCode.code`"]) }{$labels["postalCode_`$invoice_address_labels.postalCode.code`"]}{else}{$invoice_address_labels.postalCode.label}{/if}</b>
+                                    </label>
+                                </section>
+
+
+                            </div>
+
+                            <div id="invoice_dependentLocality" class="row {if 'dependentLocality'|in_array:$invoice_used_address_fields}{else}hide{/if}">
+                                <section class="col col-6 ">
+                                    <label class="input">
+                                        <label class="label">{if !empty($labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]) }{$labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]}{else}{$invoice_address_labels.dependentLocality.label}{/if}</label>
+
+                                        <input value="{$customer->get('Customer Invoice Address Dependent Locality')}" type="text" name="dependentLocality"
+                                               class="{if 'dependentLocality'|in_array:$invoice_used_address_fields}{else}ignore{/if}"
+                                               placeholder="{if !empty($labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]) }{$labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]}{else}{$invoice_address_labels.dependentLocality.label}{/if}">
+                                        <b class="tooltip tooltip-bottom-right">{if !empty($labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]) }{$labels["dependentLocality_`$invoice_address_labels.dependentLocality.code`"]}{else}{$invoice_address_labels.dependentLocality.label}{/if}</b>
+                                    </label>
+                                </section>
+
+                            </div>
+
+                            <div id="invoice_locality" class="row {if 'locality'|in_array:$invoice_used_address_fields}{else}hide{/if}">
+                                <section class="col col-6 ">
+                                    <label class="input">
+                                        <label class="label">{if !empty($labels["locality_`$invoice_address_labels.locality.code`"]) }{$labels["locality_`$invoice_address_labels.locality.code`"]}{else}{$invoice_address_labels.locality.label}{/if}</label>
+
+                                        <input value="{$customer->get('Customer Invoice Address Locality')}" type="text" name="locality" class="{if 'locality'|in_array:$invoice_used_address_fields}{else}ignore{/if}"
+                                               placeholder="{if !empty($labels["locality_`$invoice_address_labels.locality.code`"]) }{$labels["locality_`$invoice_address_labels.locality.code`"]}{else}{$invoice_address_labels.locality.label}{/if}">
+                                        <b class="tooltip tooltip-bottom-right">{if !empty($labels["locality_`$invoice_address_labels.locality.code`"]) }{$labels["locality_`$invoice_address_labels.locality.code`"]}{else}{$invoice_address_labels.locality.label}{/if}</b>
+
+                                    </label>
+                                </section>
+
+                            </div>
+
+
+                            <div id="invoice_administrativeArea" class="row {if 'administrativeArea'|in_array:$invoice_used_address_fields}{else}hide{/if}">
+                                <section class="col col-6 ">
+                                    <label class="input">
+                                        <label class="label">{if !empty($labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]) }{$labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]}{else}{$invoice_address_labels.administrativeArea.label}{/if}</label>
+
+                                        <input value="{$customer->get('Customer Invoice Address Administrative Area')}" type="text" name="administrativeArea"
+                                               class="{if 'administrativeArea'|in_array:$invoice_used_address_fields}{else}ignore{/if}"
+                                               placeholder="{if !empty($labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]) }{$labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]}{else}{$invoice_address_labels.administrativeArea.label}{/if}">
+                                        <b class="tooltip tooltip-bottom-right">{if !empty($labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]) }{$labels["administrativeArea_`$invoice_address_labels.administrativeArea.code`"]}{else}{$invoice_address_labels.administrativeArea.label}{/if}</b>
+                                    </label>
+                                </section>
+
+                            </div>
+
+
+                            <div class="row">
+                                <section class="col col-5">
+                                    <label class="select">
+                                        <select id="invoice_country_select" name="country">
+                                            <option value="0" selected disabled>{if !empty($labels.address_country)}{$labels.address_country}{else}{t}Country{/t}{/if}</option>
+
+                                            {foreach from=$countries item=country}
+                                                <option value="{$country.2alpha}" {if $country.2alpha==$customer->get('Customer Invoice Address Country 2 Alpha Code')}selected{/if} >{$country.name}</option>
+                                            {/foreach}
+
+
+                                            <select><i></i>
+                                    </label>
+                                </section>
+
+
+                            </div>
+
+
+                        </fieldset>
+
+
+                        <footer>
+                            <button type="submit" class="button invisible" id="save_invoice_address_details_button">{$data.labels._save_invoice_address_details_label} <i class="margin_left_10 fa fa-fw fa-save"
+                                                                                                                                                                          aria-hidden="true"></i></button>
+                        </footer>
+                    </form>
+                </div>
+
+
+            </div>
+
+            <div id="_delivery_addresses_details" class="block hide reg_form">
+                <div class="address_form">
+                    <form id="delivery_address_form" class="sky-form">
+                        <header id="_title">{$data.labels._delivery_addresses_title}</header>
+
+
+                        <fieldset>
+
+
+                            <section>
+                                <label class="checkbox"><input class="ignored " type="checkbox" {if $customer->get('Customer Delivery Address Link')=='Billing'}checked{/if} name="delivery_address_link"
+                                                               id="delivery_address_link"><i></i>{if empty($data.labels._delivery_address_link)}{t}Deliver to invoice address{/t}{else}{$data.labels._delivery_address_link}{/if}
+                                </label>
+                                </a> </label>
+
+
+                            </section>
+
+
+                        </fieldset>
+
+
+                        <fieldset id="delivery_address_fields" class="{if $customer->get('Customer Delivery Address Link')=='Billing'}hide{/if}" style="position:relative">
+
+
+                            <section id="delivery_addressLine1" class="{if 'addressLine1'|in_array:$delivery_used_address_fields}{else}hide{/if}">
+
+                                <label for="file" class="input">
+                                    <label class="label">{if !empty($labels.address_addressLine1)}{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</label>
+
+                                    <input value="{$customer->get('Customer Delivery Address Line 1')}" type="text" name="addressLine1" class="{if 'addressLine1'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
+                                           placeholder="{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}">
+                                    <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_addressLine1) }{$labels.address_addressLine1}{else}{t}Address Line 1{/t}{/if}</b>
+                                </label>
+                            </section>
+
+                            <section id="delivery_addressLine2" class="{if 'addressLine2'|in_array:$delivery_used_address_fields}{else}hide{/if}">
+                                <label for="file" class="input">
+                                    <label class="label">{if !empty($labels.address_addressLine2)}{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</label>
+
+                                    <input value="{$customer->get('Customer Delivery Address Line 2')}" type="text" name="addressLine2" class="{if 'addressLine2'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
+                                           placeholder="{if !empty($labels.address_addressLine2) }{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}">
+                                    <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_addressLine2) }{$labels.address_addressLine2}{else}{t}Address Line 2{/t}{/if}</b>
+                                </label>
+                            </section>
+
+
+                            <div id="delivery_sortingCode" class="row {if 'sortingCode'|in_array:$delivery_used_address_fields}{else}hide{/if}">
+                                <section class="col col-6 ">
+                                    <label class="input">
+                                        <label class="label">{if !empty($labels.address_sorting_code) }{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</label>
+
+                                        <input value="{$customer->get('Customer Delivery Address Sorting Code')}" type="text" name="sortingCode"
+                                               class="{if 'sortingCode'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
+                                               placeholder="{if !empty($labels.address_sorting_code) }{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}">
+                                        <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_sorting_code) }{$labels.address_sorting_code}{else}{t}Sorting code{/t}{/if}</b>
+                                    </label>
+                                </section>
+
+
+                            </div>
+
+                            <div id="delivery_postalCode" class="row {if 'postalCode'|in_array:$delivery_used_address_fields}{else}hide{/if}">
+                                <section class="col col-6 ">
+                                    <label class="input">
+                                        <label class="label">{if !empty($labels["postalCode_`$delivery_address_labels.postalCode.code`"]) }{$labels["postalCode_`$delivery_address_labels.postalCode.code`"]}{else}{$delivery_address_labels.postalCode.label}{/if}</label>
+
+                                        <input value="{$customer->get('Customer Delivery Address Postal Code')}" type="text" name="postalCode"
+                                               class="{if 'postalCode'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
+                                               placeholder="{if !empty($labels["postalCode_`$delivery_address_labels.postalCode.code`"]) }{$labels["postalCode_`$delivery_address_labels.postalCode.code`"]}{else}{$delivery_address_labels.postalCode.label}{/if}">
+                                        <b class="tooltip tooltip-bottom-right">{if !empty($labels["postalCode_`$delivery_address_labels.postalCode.code`"]) }{$labels["postalCode_`$delivery_address_labels.postalCode.code`"]}{else}{$delivery_address_labels.postalCode.label}{/if}</b>
+                                    </label>
+                                </section>
+
+
+                            </div>
+
+                            <div id="delivery_dependentLocality" class="row {if 'dependentLocality'|in_array:$delivery_used_address_fields}{else}hide{/if}">
+                                <section class="col col-6 ">
+                                    <label class="input">
+                                        <label class="label">{if !empty($labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]) }{$labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]}{else}{$delivery_address_labels.dependentLocality.label}{/if}</label>
+
+                                        <input value="{$customer->get('Customer Delivery Address Dependent Locality')}" type="text" name="dependentLocality"
+                                               class="{if 'dependentLocality'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
+                                               placeholder="{if !empty($labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"])}{$labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]}{else}{$delivery_address_labels.dependentLocality.label}{/if}">
+                                        <b class="tooltip tooltip-bottom-right">{if !empty($labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"])}{$labels["dependentLocality_`$delivery_address_labels.dependentLocality.code`"]}{else}{$delivery_address_labels.dependentLocality.label}{/if}</b>
+                                    </label>
+                                </section>
+
+                            </div>
+
+                            <div id="delivery_locality" class="row {if 'locality'|in_array:$delivery_used_address_fields}{else}hide{/if}">
+                                <section class="col col-6 ">
+                                    <label class="input">
+                                        <label class="label">{if !empty($labels["locality_`$delivery_address_labels.locality.code`"]) }{$labels["locality_`$delivery_address_labels.locality.code`"]}{else}{$delivery_address_labels.locality.label}{/if}</label>
+
+                                        <input value="{$customer->get('Customer Delivery Address Locality')}" type="text" name="locality" class="{if 'locality'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
+                                               placeholder="{if !empty($labels["locality_`$delivery_address_labels.locality.code`"]) }{$labels["locality_`$delivery_address_labels.locality.code`"]}{else}{$delivery_address_labels.locality.label}{/if}">
+                                        <b class="tooltip tooltip-bottom-right">{if !empty($labels["locality_`$delivery_address_labels.locality.code`"]) }{$labels["locality_`$delivery_address_labels.locality.code`"]}{else}{$delivery_address_labels.locality.label}{/if}</b>
+                                    </label>
+                                </section>
+
+                            </div>
+
+
+                            <div id="delivery_administrativeArea" class="row {if 'administrativeArea'|in_array:$delivery_used_address_fields}{else}hide{/if}">
+                                <section class="col col-6 ">
+                                    <label class="input">
+                                        <label class="label">{if !empty($labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]) }{$labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]}{else}{$delivery_address_labels.administrativeArea.label}{/if}</label>
+
+                                        <input value="{$customer->get('Customer Delivery Address Administrative Area')}" type="text" name="administrativeArea"
+                                               class="{if 'administrativeArea'|in_array:$delivery_used_address_fields}{else}ignore{/if}"
+                                               placeholder="{if !empty($labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"])}{$labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]}{else}{$delivery_address_labels.administrativeArea.label}{/if}">
+                                        <b class="tooltip tooltip-bottom-right">{if !empty($labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]) }{$labels["administrativeArea_`$delivery_address_labels.administrativeArea.code`"]}{else}{$delivery_address_labels.administrativeArea.label}{/if}</b>
+                                    </label>
+                                </section>
+
+                            </div>
+
+
+                            <div class="row">
+                                <section class="col col-5">
+                                    <label class="select">
+                                        <select id="delivery_country_select" name="country">
+                                            <option value="0" selected disabled>{if !empty($labels.address_country) }{$labels.address_country}{else}{t}Country{/t}{/if}</option>
+
+                                            {foreach from=$countries item=country}
+                                                <option value="{$country['2alpha']}" {if $country['2alpha']==$customer->get('Customer Delivery Address Country 2 Alpha Code')}selected{/if} >{$country.name}</option>
+                                            {/foreach}
+
+
+                                            <select>
+                                    </label>
+                                </section>
+
+
+                            </div>
+
+
+                        </fieldset>
+
+
+                        <footer>
+                            <button type="submit" class="button invisible" id="save_delivery_address_details_button">{$data.labels._save_delivery_address_details_label} <i class="margin_left_10 fa fa-fw fa-save"
+                                                                                                                                                                            aria-hidden="true"></i></button>
+
+                        </footer>
+                    </form>
+                </div>
+
+            </div>
+
+            <div id="_poll_details" class="block hide reg_form">
+                <form id="poll_details" class="sky-form">
+                    <header class="mirror_master" id="_poll_details_title">{if empty($data.labels._poll_details_title)}{t}Poll{/t}{else}{$data.labels._poll_details_title}{/if}</header>
+
+                    <fieldset>
+                        <section>
+
+                            <label class="input">
+                                        <span id="_poll_info">{if empty($data.labels._poll_info)}{t}Please let know you better so we can serve you better{/t}{else}{$data.labels._poll_info}{/if}
+                            </label>
+                        </section>
+
+
+                        {foreach from=$poll_queries item=query}
+
+                            {if $query['Customer Poll Query Type']=='Open'}
+                                <section>
+                                    <label class="label poll_query_label">{$query['Customer Poll Query Label']}</label>
+                                    <label class="textarea">
+                                        <textarea rows="4" name="poll_{$query['Customer Poll Query Key']}" id="poll_{$query['Customer Poll Query Key']}">{$query['Reply']}</textarea>
+                                    </label>
+                                </section>
+                            {else}
+                                <section>
+                                    <label data-query_key="{$query['Customer Poll Query Key']}" class="label poll_query_label">{$query['Customer Poll Query Label']}</label>
+                                    <label class="select">
+                                        <select name="poll_{$query['Customer Poll Query Key']}">
+                                            <option value="0" selected disabled>{if !empty($labels._choose_one)}{$labels._choose_one}{else}{t}Please choose one{/t}{/if}</option>
+
+                                            {foreach from=$query['Options'] item=option}
+                                                <option value="{$option['Customer Poll Query Option Key']}"
+                                                        {if $option['Customer Poll Query Option Key']==$query['Reply']}selected{/if} >{$option['Customer Poll Query Option Label']}</option>
+                                            {/foreach}
+
+
+                                        </select>
+                                        <i></i>
+                                    </label>
+                                </section>
+                            {/if}
+
+                        {/foreach}
+
+
+                    </fieldset>
+                    <footer>
+                        <button type="submit" class="button " id="save_poll_details">{if empty($data.labels._save_poll_details_label)}{t}Save{/t}{else}{$data.labels._save_poll_details_label}{/if} <i
+                                    class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i></button>
+                    </footer>
+                </form>
+            </div>
+
+
+            <div id="_orders_details" class="block hide">
+
+                <h3 class="mirror_master">{$data.labels._orders_title}</h3>
+
+                <table class="orders">
+                    <thead>
+                    <tr>
+                        <th class="text-left" id="_orders_th_number">{if empty($data.labels._orders_th_number)}{t}Number{/t}{else}{$data.labels._orders_th_number}{/if}</th>
+                        <th class="text-left" id="_orders_th_date">{if empty($data.labels._orders_th_date)}{t}Date{/t}{else}{$data.labels._orders_th_date}{/if}</th>
+                        <th class="text-left" id="_orders_th_status">{if empty($data.labels._orders_th_status)}{t}Status{/t}{else}{$data.labels._orders_th_status}{/if}</th>
+                        <th class="text-right" id="_orders_th_total">{if empty($data.labels._orders_th_total)}{t}Total{/t}{else}{$data.labels._orders_th_total}{/if}</th>
+                        <th></th>
+
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {assign "current_order_key"  $customer->get_order_in_process_key()}
+                    {foreach from=$customer->get_orders_data() item=_order}
+                        {if $current_order_key!=$_order.key}
+                            <tr>
+
+
+                                <td class="like_link" onclick="go_to_order({$_order.key})"><span>{$_order.number}</span></td>
+                                <td>{$_order.date}</td>
+                                <td>{$_order.state}</td>
+                                <td class="text-right">{$_order.total}</td>
+                                <td>
+                                    <a target="_blank" href="invoice.pdf.php?id={$_order.invoice_key}"><img class="button  {if !$_order.invoice_key}hide{/if}"
+                                                                                                            style="margin-left:50px;width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
+                                </td>
+                            </tr>
                         {/if}
-
                     {/foreach}
+                    </tbody>
+                </table>
 
 
-                </fieldset>
-                <footer>
-                    <button type="submit" class="button " id="save_poll_details">{if empty($data.labels._save_poll_details_label)}{t}Save{/t}{else}{$data.labels._save_poll_details_label}{/if} <i
-                                class="margin_left_10 fa fa-fw fa-save" aria-hidden="true"></i></button>
-                </footer>
-            </form>
-        </div>
+            </div>
+            <div id="_products_details" class="block hide">
+
+                <h3 class="mirror_master">{$data.labels._orders_title}</h3>
+
+                <table class="orders">
+                    <thead>
+                    <tr>
+                        <th class="text-left" id="_orders_th_family">{if empty($data.labels._orders_th_family )}{t}Family{/t}{else}{$data.labels._orders_th_family}{/if}</th>
+                        <th class="text-left" id="_orders_th_product">{if empty($data.labels._orders_th_product)}{t}Code{/t}{else}{$data.labels._orders_th_product}{/if}</th>
+                        <th class="text-left" id="_orders_th_description">{if empty($data.labels._orders_th_description)}{t}Product{/t}{else}{$data.labels._orders_th_description}{/if}</th>
+                        <th class="text-right" id="_orders_th_price">{if empty($data.labels._orders_th_price)}{t}Price{/t}{else}{$data.labels._orders_th_price}{/if}</th>
+                        <th></th>
 
 
-        <div id="_orders_details" class="block hide" >
+                    </tr>
+                    </thead>
+                    <tbody>
 
-            <h3 class="mirror_master" >{$data.labels._orders_title}</h3>
-
-            <table class="orders">
-                <thead>
-                <tr>
-                    <th  class="text-left" id="_orders_th_number" >{if empty($data.labels._orders_th_number)}{t}Number{/t}{else}{$data.labels._orders_th_number}{/if}</th>
-                    <th  class="text-left" id="_orders_th_date" >{if empty($data.labels._orders_th_date)}{t}Date{/t}{else}{$data.labels._orders_th_date}{/if}</th>
-                    <th  class="text-left" id="_orders_th_status" >{if empty($data.labels._orders_th_status)}{t}Status{/t}{else}{$data.labels._orders_th_status}{/if}</th>
-                    <th  class="text-right" id="_orders_th_total" >{if empty($data.labels._orders_th_total)}{t}Total{/t}{else}{$data.labels._orders_th_total}{/if}</th>
-                    <th></th>
+                    </tbody>
+                </table>
 
 
-                </tr>
-                </thead>
-                <tbody>
-                {assign "current_order_key"  $customer->get_order_in_process_key()}
-                {foreach from=$customer->get_orders_data() item=_order}
-                    {if $current_order_key!=$_order.key}
-                <tr>
+            </div>
+            <div id="_order_details" class="block hide">
 
 
-
-
-                    <td class="like_link" onclick="go_to_order({$_order.key})"><span >{$_order.number}</span></td>
-                    <td>{$_order.date}</td>
-                    <td>{$_order.state}</td>
-                    <td class="text-right">{$_order.total}</td>
-                    <td>
-                        <a target="_blank" href="invoice.pdf.php?id={$_order.invoice_key}"><img class="button  {if !$_order.invoice_key}hide{/if}"  style="margin-left:50px;width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
-                    </td>
-                </tr>
-                    {/if}
-                {/foreach}
-                </tbody>
-            </table>
+            </div>
 
 
         </div>
-        <div id="_order_details" class="block hide">
-
-
-
-        </div>
-
-
-    </div>
 
 
     </div>
