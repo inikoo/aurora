@@ -2,7 +2,7 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 17 February 2016 at 19:32:50 GMT+8, Kuala Lumpur, Maysia
+ Created: 17 February 2016 at 19:32:50 GMT+8, Kuala Lumpur, Malaysia
 
  Copyright (c) 2016, Inikoo
 
@@ -31,6 +31,9 @@ class Asset extends DB_Table {
 
 
                 if ($value == '') {
+                    /**
+                     * @var $barcode \Barcode
+                     */
                     $barcode         = get_object('Barcode', $this->get('Barcode Key'));
                     $barcode->editor = $this->editor;
                     if ($barcode->id) {
@@ -58,21 +61,20 @@ class Asset extends DB_Table {
                         $error = 'Size';
                         if (strlen($barcode) == 12) {
                             $error = 'Checksum_missing';
-                            $sql   = sprintf(
-                                'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number` LIKE "%s%%" AND `Part SKU`!=%d', addslashes($barcode), $this->id
+
+
+                            $sql  = "SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number` LIKE ? AND `Part SKU`!=?";
+                            $stmt = $this->db->prepare($sql);
+                            $stmt->execute(
+                                array(
+                                    $barcode.'%',
+                                    $this->id
+                                )
                             );
-
-                            if ($result = $this->db->query($sql)) {
-                                foreach ($result as $row) {
-
-                                    $error = 'Short_Duplicated';
-                                }
-
-                            } else {
-                                print_r($error_info = $this->db->errorInfo());
-                                print "$sql\n";
-                                exit;
+                            if ($stmt->fetch()) {
+                                $error = 'Short_Duplicated';
                             }
+
 
                         }
 
@@ -300,18 +302,10 @@ class Asset extends DB_Table {
 
 
                                 }
-                            } else {
-                                print_r($error_info = $db->errorInfo());
-                                print "$sql\n";
-                                exit;
                             }
 
 
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
                 }
 
@@ -458,7 +452,7 @@ class Asset extends DB_Table {
                         }
                     }
 
-                    $materials = preg_replace('/^\, /', '', $materials);
+                    $materials = preg_replace('/^, /', '', $materials);
 
 
                     return array(
@@ -513,7 +507,7 @@ class Asset extends DB_Table {
                     }
 
                     $xhtml_materials = ucfirst(
-                        preg_replace('/^\, /', '', $xhtml_materials)
+                        preg_replace('/^, /', '', $xhtml_materials)
                     );
 
                     return array(
@@ -534,7 +528,6 @@ class Asset extends DB_Table {
             case $this->table_name.' Unit Dimensions':
                 $dimensions = '';
 
-                $tag = preg_replace('/ Dimensions$/', '', $key);
 
                 if ($this->data[$key] != '') {
                     $data = json_decode($this->data[$key], true);
@@ -586,14 +579,6 @@ class Asset extends DB_Table {
 
                             break;
 
-                            if (!$part->data['Part '.$tag.' Dimensions Diameter Display']) {
-                                $dimensions = '';
-                            } else {
-                                $dimensions = '&#8709;:'.number(
-                                        $part->data['Part '.$tag.' Dimensions Diameter Display']
-                                    ).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
-                            }
-                            break;
                         case 'String':
                             $dimensions = 'L.'.number(
                                     convert_units(
@@ -602,25 +587,8 @@ class Asset extends DB_Table {
                                 ).' ('.$data['units'].')';
 
                             break;
-                            if (!$part->data['Part '.$tag.' Dimensions Length Display']) {
-                                $dimensions = '';
-                            } else {
-                                $dimensions = 'L:'.number(
-                                        $part->data['Part '.$tag.' Dimensions Length Display']
-                                    ).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
-                            }
-                            break;
-                        case 'Sheet':
-                            if (!$part->data['Part '.$tag.' Dimensions Width Display'] or !$part->data['Part '.$tag.' Dimensions Length Display']) {
-                                $dimensions = '';
-                            } else {
-                                $dimensions = number(
-                                        $part->data['Part '.$tag.' Dimensions Width Display']
-                                    ).'x'.number(
-                                        $part->data['Part '.$tag.' Dimensions Length Display']
-                                    ).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
-                            }
-                            break;
+
+
                         default:
                             $dimensions = '';
                     }
@@ -654,7 +622,7 @@ class Asset extends DB_Table {
                     true,
                     smart_weight($this->data[$this->table_name.' '.$key])
 
-            );
+                );
 
 
                 break;
@@ -732,18 +700,7 @@ class Asset extends DB_Table {
                             }
 
                             break;
-                            print_r($data);
-                            exit;
-                            if (!$part->data['Part '.$tag.' Dimensions Length Display'] or !$part->data['Part '.$tag.' Dimensions Diameter Display']) {
-                                $dimensions = '';
-                            } else {
-                                $dimensions = 'L:'.number(
-                                        $part->data['Part '.$tag.' Dimensions Length Display']
-                                    ).' &#8709;:'.number(
-                                        $part->data['Part '.$tag.' Dimensions Diameter Display']
-                                    ).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
-                            }
-                            break;
+
                         case 'Sphere':
 
 
@@ -762,14 +719,7 @@ class Asset extends DB_Table {
                             }
 
                             break;
-                            if (!$part->data['Part '.$tag.' Dimensions Diameter Display']) {
-                                $dimensions = '';
-                            } else {
-                                $dimensions = '&#8709;:'.number(
-                                        $part->data['Part '.$tag.' Dimensions Diameter Display']
-                                    ).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
-                            }
-                            break;
+
                         case 'String':
                             $dimensions = number(
                                     convert_units(
@@ -778,14 +728,6 @@ class Asset extends DB_Table {
                                 ).$data['units'];
                             break;
 
-                            if (!$part->data['Part '.$tag.' Dimensions Length Display']) {
-                                $dimensions = '';
-                            } else {
-                                $dimensions = 'L:'.number(
-                                        $part->data['Part '.$tag.' Dimensions Length Display']
-                                    ).' ('.$part->data['Part '.$tag.' Dimensions Display Units'].')';
-                            }
-                            break;
 
                         default:
                             $dimensions = '';
@@ -893,4 +835,4 @@ class Asset extends DB_Table {
 }
 
 
-?>
+
