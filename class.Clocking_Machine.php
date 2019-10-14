@@ -78,6 +78,9 @@ class Clocking_Machine extends DB_Table {
 
     function create($raw_data, $settings) {
 
+        include 'keyring/dns.php';
+        $box_db=get_box_db();
+
         $account = get_object('Account', 1);
 
         if (empty($raw_data['Clocking Machine Code'])) {
@@ -180,7 +183,7 @@ class Clocking_Machine extends DB_Table {
 
             $sql = 'update  box.`Box Dimension` set `Box Set up Date`=?,`Box Aurora Account Data`=? where `Box Key`=?  ';
 
-            $stmt = $this->db->prepare($sql);
+            $stmt = $box_db->prepare($sql);
             $stmt->execute(
                 array(
                     gmdate('Y-m-d H:i:s'),
