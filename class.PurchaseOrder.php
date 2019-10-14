@@ -1036,10 +1036,10 @@ class PurchaseOrder extends DB_Table {
         }
 
 
-        $purchase_order_state = $this->get_purchase_order_state();
         $this->fast_update(
             array(
-                'Purchase Order State' => $purchase_order_state
+                'Purchase Order State' => $this->get_purchase_order_state(),
+                'Purchase Order Max Supplier Delivery State' => $this->get_max_purchase_order_state()
             )
         );
 
@@ -1048,6 +1048,9 @@ class PurchaseOrder extends DB_Table {
 
 
     private function get_purchase_order_state() {
+
+        //'NA','InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked'
+
 
         $index = 0;
         $i     = 0;
@@ -1122,6 +1125,58 @@ class PurchaseOrder extends DB_Table {
 
 
     }
+
+
+
+    private function get_max_purchase_order_state() {
+
+        //'NA','InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked'
+
+
+        $index = 0;
+
+
+        $sql  = "select `Purchase Order Transaction State` from `Purchase Order Transaction Fact` where  `Purchase Order Key`=?   ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array($this->id)
+        );
+        while ($row = $stmt->fetch()) {
+            $_index = $this->get_purchase_order_item_state_index($row['Purchase Order Transaction State']);
+
+            if ($_index > 20) {
+
+
+                    if ($_index> $index) {
+                        $index = $_index;
+                    }
+
+            }
+        }
+
+
+
+
+        if ($index <= 20) {
+            return 'NA';
+        } elseif ($index <= 35) {
+            return 'Inputted';
+        } elseif ($index <= 40) {
+            return 'Dispatched';
+        } elseif ($index <= 50) {
+            return 'Received';
+        } elseif ($index <= 60) {
+            return 'Checked';
+        } elseif ($index <= 70) {
+            return 'Placed';
+        } else {
+            return 'InvoiceChecked';
+
+        }
+
+
+    }
+
 
     private function get_purchase_order_item_state_index($state) {
 
