@@ -1253,9 +1253,7 @@ class Product extends Asset {
 
                         if ($stock >= $_stock or $change == false) {
 
-                            if ($this->get('Product Number of Parts') > 1 and $row['Part On Demand'] == 'Yes') {
-
-                            } else {
+                            if (!($this->get('Product Number of Parts') > 1 and $row['Part On Demand'] == 'Yes')) {
                                 $stock  = $_stock;
                                 $change = true;
                             }
@@ -1552,10 +1550,10 @@ class Product extends Asset {
                         return 'Out of Stock';
                     }
                 }
-                break;
+
             default:
                 return 'Offline';
-                break;
+
         }
 
     }
@@ -2273,7 +2271,9 @@ class Product extends Asset {
                     $store = get_object('store', $this->get('Store Key'));
 
                     foreach ($store->get_websites('objects') as $website) {
-
+                        /**
+                         * @var $website \Website
+                         */
                         $website->create_product_webpage($this->id);
                     }
                 }
@@ -2971,7 +2971,9 @@ class Product extends Asset {
 
                 if (!preg_match('/from_part/', $options) and count($this->get_parts()) == 1) {
 
-
+                    /**
+                     * @var $part \Part
+                     */
                     $part = array_values($this->get_parts('objects'))[0];
                     $part->update(
                         array(
