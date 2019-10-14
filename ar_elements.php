@@ -3294,10 +3294,7 @@ function get_webpages_by_state_element_numbers($db, $data, $user, $state) {
             'Others' => 0,
 
         ),
-        'version' => array(
-            'I'  => 0,
-            'II' => 0,
-        ),
+
 
     );
     $where            = ' where `Webpage State`="'.$state.'"';
@@ -3340,19 +3337,6 @@ function get_webpages_by_state_element_numbers($db, $data, $user, $state) {
     $elements_numbers['type']['Others'] = number($elements_numbers['type']['Others']);
 
 
-    $sql = sprintf("select count(*) as number,`Webpage Version` as element from `Page Store Dimension`  $where  group by `Webpage Version` ");
-    foreach ($db->query($sql) as $row) {
-
-        if ($row['element'] == 1) {
-            $_element = 'I';
-        }
-        if ($row['element'] == 2) {
-            $_element = 'II';
-        }
-
-
-        $elements_numbers['version'][$_element] = number($row['number']);
-    }
 
 
     $response = array(

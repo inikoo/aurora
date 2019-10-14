@@ -179,11 +179,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 
             return $object_fields;
             break;
-        case 'Webpage Version':
-            include 'fields/webpage_version.fld.php';
 
-            return $object_fields;
-            break;
         case 'Website Node':
             include 'fields/website.node.fld.php';
 
@@ -813,4 +809,4 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
 }
 
 
-?>
+
