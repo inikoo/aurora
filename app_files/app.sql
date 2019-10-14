@@ -11778,7 +11778,7 @@ CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Main Buyer Key` mediumint(8) unsigned DEFAULT NULL,
   `Purchase Order Main Buyer Name` varchar(255) DEFAULT NULL,
   `Purchase Order Main Source Type` enum('Post','Internet','Telephone','Fax','In Person','Unknown','Email','Other') NOT NULL DEFAULT 'Unknown',
-  `Purchase Order State` enum('InProcess','SubmittedAgent','Submitted','Editing_Submitted','Inputted','Dispatched','Received','Checked','Placed','Costing','InvoiceChecked','Cancelled') NOT NULL DEFAULT 'InProcess',
+  `Purchase Order State` enum('Cancelled','NoReceived','InProcess','Submitted','Inputted','Dispatched','Received','Checked','Placed','Costing','InvoiceChecked') NOT NULL DEFAULT 'InProcess',
   `Purchase Order Max Supplier Delivery State` enum('NA','InProcess','Consolidated','Dispatched','Received','Checked','Placed','Costing','Cancelled','InvoiceChecked') NOT NULL DEFAULT 'NA',
   `Purchase Order Our Feedback` enum('Praise','None','Shortages','Breakings','Different Product','Multiple','Low Quality','Not Like','Slow Delivery','Other') NOT NULL DEFAULT 'None',
   `Purchase Order Actions Taken` enum('Refund','Credit','Replacement','Send Missing','Other','No Applicable') NOT NULL DEFAULT 'No Applicable',
@@ -11881,10 +11881,10 @@ CREATE TABLE `Purchase Order Transaction Fact` (
   `Agent Key` mediumint(8) unsigned DEFAULT NULL,
   `Agent Supplier Purchase Order Key` mediumint(8) unsigned DEFAULT NULL,
   `Purchase Order Ordering Units` float unsigned DEFAULT NULL,
-  `Purchase Order Quantity` float DEFAULT NULL,
   `Purchase Order Tax Code` varchar(16) DEFAULT NULL,
   `Purchase Order Net Amount` decimal(16,2) DEFAULT NULL,
   `Purchase Order Submitted Units` float unsigned DEFAULT NULL,
+  `Purchase Order Submitted Cancelled Units` float DEFAULT '0',
   `Purchase Order Submitted Unit Cost` decimal(16,4) DEFAULT NULL,
   `Purchase Order Submitted Unit Extra Cost Percentage` decimal(6,3) DEFAULT NULL,
   `Purchase Order Submitted Units Per SKO` mediumint(8) unsigned DEFAULT NULL,
@@ -11892,7 +11892,7 @@ CREATE TABLE `Purchase Order Transaction Fact` (
   `Purchase Order Extra Cost Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Purchase Order Tax Amount` decimal(16,3) NOT NULL DEFAULT '0.000',
   `Purchase Order Shipping Contribution Amount` double(15,2) NOT NULL DEFAULT '0.00',
-  `Purchase Order Transaction State` enum('InProcess','Submitted','ProblemSupplier','Confirmed','ReceivedAgent','InDelivery','Inputted','Dispatched','Received','Checked','Placed','Cancelled') NOT NULL DEFAULT 'InProcess',
+  `Purchase Order Transaction State` enum('Cancelled','NoReceived','InProcess','Submitted','ProblemSupplier','Confirmed','ReceivedAgent','InDelivery','Inputted','Dispatched','Received','Checked','Placed','InvoiceChecked') NOT NULL DEFAULT 'InProcess',
   `Currency Code` varchar(3) NOT NULL DEFAULT 'GBP',
   `Supplier Invoice Current Payment State` enum('No Applicable','Paid') NOT NULL DEFAULT 'No Applicable',
   `Supplier Delivery Key` mediumint(8) unsigned DEFAULT NULL,
@@ -11901,9 +11901,6 @@ CREATE TABLE `Purchase Order Transaction Fact` (
   `Supplier Delivery Checked Units` float unsigned DEFAULT NULL,
   `Supplier Delivery Placed Units` float unsigned DEFAULT NULL,
   `Supplier Delivery Placed SKOs` double unsigned DEFAULT NULL,
-  `Supplier Delivery Quantity` float DEFAULT NULL,
-  `Supplier Delivery Checked Quantity` float DEFAULT NULL,
-  `Supplier Delivery Placed Quantity` float DEFAULT NULL,
   `Supplier Delivery Net Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Supplier Delivery Placed Net Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Supplier Delivery Extra Cost Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
@@ -11911,7 +11908,7 @@ CREATE TABLE `Purchase Order Transaction Fact` (
   `Supplier Delivery Exchange Rate` int(11) DEFAULT NULL,
   `Supplier Delivery Paid Amount` decimal(16,2) DEFAULT '0.00',
   `Supplier Delivery Tax Amount` float NOT NULL DEFAULT '0',
-  `Supplier Delivery Transaction State` enum('InProcess','Dispatched','Received','Checked','Placed','Cancelled','CostingDone','NoReceived') DEFAULT NULL,
+  `Supplier Delivery Transaction State` enum('Cancelled','NoReceived','InProcess','Dispatched','Received','Checked','Placed','CostingDone') DEFAULT NULL,
   `Supplier Delivery Transaction Placed` enum('Yes','No','NA') DEFAULT NULL,
   `Supplier Invoice Key` mediumint(8) unsigned DEFAULT NULL,
   `Purchase Order CBM` float DEFAULT NULL COMMENT 'In m3',
@@ -14975,6 +14972,7 @@ CREATE TABLE `Supplier Part Dimension` (
   `Supplier Part From` datetime NOT NULL,
   `Supplier Part To` datetime DEFAULT NULL,
   `Supplier Part Unit Cost` decimal(16,4) unsigned DEFAULT NULL,
+  `Supplier Part Unit Expense` decimal(16,4) NOT NULL DEFAULT '0.0000' COMMENT 'Amount Extra cost (% extra cost don''t apply to this amount)',
   `Supplier Part Unit Extra Cost Percentage` decimal(6,3) DEFAULT NULL,
   `Supplier Part Unit Extra Cost` decimal(16,4) NOT NULL DEFAULT '0.0000',
   `Supplier Part Currency Code` varchar(3) DEFAULT NULL,
@@ -16061,26 +16059,6 @@ CREATE TABLE `Webpage History Bridge` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Webpage Panel Dimension`
---
-
-DROP TABLE IF EXISTS `Webpage Panel Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Webpage Panel Dimension` (
-  `Webpage Panel Key` int(11) NOT NULL AUTO_INCREMENT,
-  `Webpage Panel Id` varchar(255) NOT NULL,
-  `Webpage Panel Webpage Key` mediumint(8) unsigned NOT NULL,
-  `Webpage Panel Section Key` mediumint(8) unsigned DEFAULT '0',
-  `Webpage Panel Type` enum('code','text','image','page_break') NOT NULL,
-  `Webpage Panel Data` text,
-  `Webpage Panel Metadata` text,
-  PRIMARY KEY (`Webpage Panel Key`),
-  UNIQUE KEY `Webpage Panel Id` (`Webpage Panel Id`,`Webpage Panel Webpage Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Webpage Publishing History Bridge`
 --
 
@@ -16208,47 +16186,6 @@ CREATE TABLE `Webpage Type Dimension` (
   UNIQUE KEY `Webpage Type Code_2` (`Webpage Type Code`,`Webpage Type Website Key`),
   KEY `Webpage Type Code` (`Webpage Type Code`),
   KEY `Webpage Type Websiite Key` (`Webpage Type Website Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Webpage Version Block Bridge`
---
-
-DROP TABLE IF EXISTS `Webpage Version Block Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Webpage Version Block Bridge` (
-  `Webpage Version Block Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `Webpage Version Block Webpage Version Key` mediumint(8) unsigned NOT NULL,
-  `Webpage Version Block Position` smallint(5) unsigned NOT NULL DEFAULT '10',
-  `Webpage Version Block Template` varchar(255) NOT NULL,
-  `Webpage Version Block Objects` text,
-  `Webpage Version Block Settings` text NOT NULL,
-  PRIMARY KEY (`Webpage Version Block Key`),
-  KEY `Webpage Block Website Key` (`Webpage Version Block Webpage Version Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Webpage Version Dimension`
---
-
-DROP TABLE IF EXISTS `Webpage Version Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Webpage Version Dimension` (
-  `Webpage Version Key` mediumint(9) NOT NULL AUTO_INCREMENT,
-  `Webpage Version Webpage Key` mediumint(9) NOT NULL,
-  `Webpage Version Code` varchar(64) DEFAULT NULL,
-  `Webpage Version Device` enum('Desktop','Tablet','Mobile') NOT NULL DEFAULT 'Desktop',
-  `Webpage Version Template Key` mediumint(9) NOT NULL,
-  `Webpage Version Display Probability` float NOT NULL DEFAULT '1',
-  `Webpage Version Metadata` text,
-  `Webpage Version Valid From` datetime NOT NULL,
-  PRIMARY KEY (`Webpage Version Key`),
-  KEY `Webpage Version Webpage Key` (`Webpage Version Webpage Key`),
-  KEY `Webpage Version Code` (`Webpage Version Code`,`Webpage Version Webpage Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -16644,33 +16581,6 @@ CREATE TABLE `Website Image Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Website Node Dimension`
---
-
-DROP TABLE IF EXISTS `Website Node Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Website Node Dimension` (
-  `Website Node Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Website Node Store Key` mediumint(8) unsigned NOT NULL,
-  `Website Node Website Key` mediumint(8) unsigned NOT NULL,
-  `Website Node Parent Key` mediumint(8) unsigned DEFAULT NULL,
-  `Website Node Class` varchar(64) DEFAULT NULL,
-  `Website Node Object` varchar(64) DEFAULT NULL,
-  `Website Node Object Key` mediumint(8) unsigned DEFAULT NULL,
-  `Website Node Type` enum('Root','Branch','Head') NOT NULL,
-  `Website Node Webpage Key` mediumint(8) unsigned DEFAULT NULL,
-  `Website Node Icon` varchar(255) DEFAULT NULL,
-  `Website Node Locked` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Website Node Valid From` datetime DEFAULT NULL,
-  PRIMARY KEY (`Website Node Key`),
-  KEY `Website Node Website Key` (`Website Node Website Key`),
-  KEY `Website Node Parent Key` (`Website Node Parent Key`),
-  KEY `Website Node Webpage Key` (`Website Node Webpage Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Website Query GSC Data`
 --
 
@@ -16983,4 +16893,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-10-05  1:54:21
+-- Dump completed on 2019-10-15  0:00:35
