@@ -3908,7 +3908,7 @@ function transfer_customer_credit_to($account, $db, $data, $editor, $user) {
         'Payment Last Updated Date'      => $date,
         'Payment Transaction Status'     => 'Completed',
         'Payment Transaction ID'         => $data['reference'],
-        'Payment Method'                 => $payment_account->get('Payment Account Type'),
+        'Payment Method'                 => 'Account',
         'Payment Location'               => 'Customer',
         'Payment Metadata'               => '',
         'Payment Submit Type'            => 'Manual',
