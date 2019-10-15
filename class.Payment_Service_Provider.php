@@ -76,13 +76,11 @@ class Payment_Service_Provider extends DB_Table {
     function find($raw_data, $options) {
 
         $create = '';
-        $update = '';
+
         if (preg_match('/create/i', $options)) {
             $create = 'create';
         }
-        if (preg_match('/update/i', $options)) {
-            $update = 'update';
-        }
+
 
         $data = $this->base_data();
 
@@ -207,10 +205,6 @@ class Payment_Service_Provider extends DB_Table {
             foreach ($result as $row) {
                 $valid_payment_method[] = $row['Payment Method'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -264,7 +258,8 @@ class Payment_Service_Provider extends DB_Table {
             return $payment_account;
         } else {
             $this->error = true;
-            $this->msg   = $account->msg;
+            $this->msg   = $payment_account->msg;
+            return false;
         }
 
 
