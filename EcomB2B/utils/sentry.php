@@ -12,7 +12,7 @@
 
 if (defined('SENTRY_DNS_ECOM')) {
     $sentry_config = array(
-        'dsn' => SENTRY_DNS_AU,
+        'dsn' => SENTRY_DNS_ECOM,
     );
     if ($release = file_get_contents('release.txt')) {
         $sentry_config['release'] = trim($release);
