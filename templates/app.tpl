@@ -73,8 +73,12 @@
         ga('set', 'userId', '{$account->get('Code')}_{"%05d"|sprintf:$user->id}');
         ga('send', 'pageview');
 
-        //Sentry.init({ dsn: 'https://6b74919f310546d2a64bbf7c856d0820@sentry.io/1482169' });
-        Sentry.init({ dsn: 'https://8f17945abb95493692010f7026553f71@sentry.io/1329970' });
+        Sentry.init({
+            dsn: 'https://8f17945abb95493692010f7026553f71@sentry.io/1329970'
+            {if isset($release)}
+            ,  release: "{$release}"
+        {/if}
+        });
 
 
         Sentry.configureScope((scope) => {
