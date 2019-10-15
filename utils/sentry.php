@@ -16,7 +16,7 @@ if (defined('SENTRY_DNS_AU')) {
         'dsn' => SENTRY_DNS_AU,
     );
     if ($release = file_get_contents('release.txt')) {
-        $sentry_config['release'] = $release;
+        $sentry_config['release'] = trim($release);
     }
     Sentry\init($sentry_config);
 }

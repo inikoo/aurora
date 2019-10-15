@@ -14,7 +14,7 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
-<div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if}" top_margin="{$top_margin}" bottom_margin="{$bottom_margin}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
+<div id="block_{$key}" data-block_key="{$key}"  block="{$data.type}" class="{$data.type} _block   {if $store->get('Store Type')=='Dropshipping'}dropshipping{/if}   {if !$data.show}hide{/if}" top_margin="{$top_margin}" bottom_margin="{$bottom_margin}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px"  >
 
     <div class="products {if !$data.item_headers}no_items_header{/if}"  data-sort="{$data.sort}" >
 
@@ -48,10 +48,15 @@
                             </a>
 
                             {if $logged_in}
-                                <i data-product_id="{$item.product_id}" data-product_code="{$item.code}" data-favourite_key="0" class="favourite_{$item.product_id} favourite far fa-heart" ></i>
-                                {if isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Dot'}
-                                <i class="stock_dot stock_level_{$item.product_id}  fa fa-fw fa-circle" ></i>
+                                {if $store->get('Store Type')!='Dropshipping'}
+                                    <i data-product_id="{$item.product_id}" data-product_code="{$item.code}" data-favourite_key="0" class="favourite_{$item.product_id} favourite far fa-heart" ></i>
                                 {/if}
+                                    {if isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Dot'}
+                                        <i class="stock_dot stock_level_{$item.product_id}  fa fa-fw fa-circle" ></i>
+                                    {/if}
+
+
+
 
                             {/if}
                             <a href="{$item.link}"
@@ -85,8 +90,17 @@
 
 
                         {if $logged_in}
+                            {if $store->get('Store Type')=='Dropshipping'}
+                                <div class="order_row empty  order_row_{$item.product_id} ">
 
-                            {if $item.web_state=='Out of Stock'}
+                                    <div class="label sim_button" style="text-align: center">
+                                       {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}</span>
+                                    </div>
+
+
+                                </div>
+                            {else}
+                                {if $item.web_state=='Out of Stock'}
 
 
                                 {if !empty($item.next_shipment_timestamp)  }
@@ -118,7 +132,8 @@
 
 
                                 </div>
-                                {/if}
+                            {/if}
+                            {/if}
 
                         {else}
                             <div class="ordering log_out " >

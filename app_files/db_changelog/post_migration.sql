@@ -304,3 +304,6 @@ ALTER TABLE `Purchase Order Transaction Fact`
 
 DROP TABLE `Website Node Dimension`;DROP TABLE `Webpage Version Block Bridge`, `Webpage Version Dimension`;
 
+DROP TABLE `Customer Favorite Product Bridge`;
+
+
