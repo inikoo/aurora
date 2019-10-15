@@ -94,7 +94,7 @@ $smarty->addPluginsDir('./smarty_plugins');
 $smarty->assign('_DEVEL', _DEVEL);
 
 if (!empty($release)) {
-    $smarty->assign('release', $release);
+    $smarty->assign('release', trim($release));
 }
 if (defined('SENTRY_DNS_AUJS')) {
     $smarty->assign('sentry_js',SENTRY_DNS_AUJS);
