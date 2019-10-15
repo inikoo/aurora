@@ -80,7 +80,16 @@ function get_widget_details($db, $smarty, $user, $account, $modules) {
 
 }
 
-
+/**
+ * @param $db \PDO
+ * @param $smarty \Smarty
+ * @param $user \User
+ * @param $account \Account
+ * @param $modules
+ * @param $redis \Redis
+ *
+ * @throws \ZMQSocketException
+ */
 function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
 
@@ -1396,7 +1405,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
 
     }
 
-    if (is_array($state) and !(preg_match('/\_edit$/', $tab) or preg_match('/\.wget$/', $_tab))) {
+    if (is_array($state) and !(preg_match('/_edit$/', $tab) or preg_match('/\.wget$/', $_tab))) {
 
 
         // $_SESSION['state'][ $state['module']  ][ $state['section']  ]  ['tab'] = $_tab;
@@ -1433,15 +1442,17 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
  * @param $user    \User
  * @param $db      \PDO
  * @param $account \Account
+ * @param $redis \Redis
  *
  * @return mixed|string
+ * @throws \SmartyException
  */
 function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $redis) {
 
 
     $title        = '';
     $web_location = '';
-    if (preg_match('/\_edit$/', $data['tab'])) {
+    if (preg_match('/_edit$/', $data['tab'])) {
         return array(
             '',
             ''
@@ -1928,7 +1939,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             require_once 'navigation/dashboard.nav.php';
 
             return get_dashboard_navigation($data, $smarty, $user, $db, $account);
-            break;
+
         case ('products_server'):
             require_once 'navigation/products.nav.php';
             switch ($data['section']) {
@@ -1936,18 +1947,18 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_stores_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
                 case 'products':
                     return get_products_all_stores_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case 'store.new':
                     return get_new_store_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
             }
             break;
@@ -1963,61 +1974,60 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_store_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
                 case 'products':
                     return get_products_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case 'product':
                     return get_product_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case 'product.new':
                     return get_new_product_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
                 case 'services':
                     return get_services_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case 'service':
                     return get_service_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case 'service.new':
                     return get_new_service_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
 
                 case 'dashboard':
                     return get_store_dashboard_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
                 case ('categories'):
                     return get_products_categories_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('category'):
                     return get_products_category_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('main_category.new'):
                     return get_products_new_main_category_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('order'):
                     return get_order_navigation(
                         $data, $smarty, $user, $db, $account
@@ -2031,74 +2041,69 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_marketing_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
 
                 case ('campaign'):
                 case ('campaign_order_recursion'):
                 case ('vouchers'):
                     return get_campaign_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('campaign.new'):
                     return get_new_campaign_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('deal.new'):
                     return get_new_deal_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('deal_component.new'):
                     return get_new_deal_component_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('deal'):
                     return get_deal_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('deal_component'):
                     return get_deal_component_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
-                case ('enewsletters'):
-                    return get_enewsletters_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
-                    break;
+
+
                 case ('mailshots'):
                     return get_mailshots_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('marketing_post'):
 
                     return get_marketing_post_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('charge'):
                     return get_charge_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('shipping_zone'):
                     return get_shipping_zone_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('shipping_option'):
                     return get_shipping_option_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
 
                 case ('charge.new'):
                     return get_charge_new_navigation($data, $smarty, $user, $db, $account);
-                    break;
                 case ('shipping_zone.new'):
                     return get_shipping_zone_new_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('shipping_option.new'):
                     return get_shipping_option_new_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case 'email_campaign_type':
 
 
@@ -2109,20 +2114,20 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         return get_marketing_email_campaign_type_navigation($data, $smarty, $user, $db, $account);
 
                     }
-                    break;
+
                 case ('mailshot'):
                     return get_mailshot_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('email_tracking'):
                     return get_email_tracking_navigation($data, $smarty, $user, $db, $account, $account);
-                    break;
+
                 case 'shipping_zone_schema':
                     return get_shipping_zone_schema_navigation($data, $smarty, $user, $db, $account, $account);
-                    break;
+
 
                 case ('mailshot.new'):
                     return get_mailshot_new_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
 
 
             }
@@ -2137,45 +2142,45 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_customer_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
                 case ('customers'):
                     return get_customers_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('categories'):
 
                     return get_customers_categories_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('category'):
 
                     return get_customers_category_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('lists'):
                     return get_customers_lists_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('list'):
                     return get_customers_list_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('list.new'):
                     return get_new_list_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('dashboard'):
                     return get_customers_dashboard_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('customer_notifications'):
 
                     return get_customers_notifications_navigation(
@@ -2187,110 +2192,110 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_customers_insights_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('poll_query.new'):
                     return get_customers_new_poll_query_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('poll_query'):
                     return get_customers_poll_query_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('poll_query_option.new'):
                     return get_customers_new_poll_query_option_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('poll_query_option'):
                     return get_customers_poll_query_option_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('deleted_customer_poll_query_option'):
                     return get_customers_deleted_poll_query_option_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('pending_orders'):
                     return get_customers_pending_orders_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('customer.new'):
                     return get_new_customer_navigation(
                         $data, $smarty, $user, $db, $account, $account
                     );
-                    break;
+
                 case ('customer_client.new'):
                     return get_new_customer_client_navigation(
                         $data, $smarty, $user, $db, $account, $account
                     );
-                    break;
+
                 case ('customer_client'):
                     return get_customer_client_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('prospect'):
                     return get_prospect_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
 
                 case 'email_campaign_type':
                     return get_email_campaign_type_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case 'mailshot':
                     return get_mailshot_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('prospects'):
                     return get_prospects_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('prospect.new'):
                     return get_new_prospect_navigation(
                         $data, $smarty, $user, $db, $account, $account
                     );
-                    break;
+
                 case ('prospect.compose_email'):
                     return get_new_prospect_compose_email_navigation(
                         $data, $smarty, $user, $db, $account, $account
                     );
 
-                    break;
+
                 case ('email_tracking'):
                     return get_email_tracking_navigation(
                         $data, $smarty, $user, $db, $account, $account
                     );
-                    break;
+
                 case ('prospects.template.new'):
                     return get_prospects_new_template_navigation(
                         $data, $smarty, $user, $db, $account, $account
                     );
-                    break;
+
                 case ('prospects.email_template'):
                     return get_prospects_email_template_navigation(
                         $data, $smarty, $user, $db, $account, $account
                     );
-                    break;
+
                 case ('product'):
                     return get_customer_product_navigation(
                         $data, $smarty, $user, $db, $account, $account
                     );
-                    break;
+
                 case ('deleted_customer'):
                     return get_deleted_customer_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
 
             }
@@ -2304,12 +2309,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_customers_server_navigation(
                         $data, $smarty, $user, $db
                     );
-                    break;
+
                 case('email_communications'):
                     return get_email_communications_server_navigation(
                         $data, $smarty, $user, $db
                     );
-                    break;
+
             }
 
             break;
@@ -2320,10 +2325,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
                 case ('dashboard'):
                     return get_orders_server_dashboard_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('group_by_store'):
                     return get_orders_server_group_by_store_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
 
 
                 case ('orders'):
@@ -2331,16 +2336,16 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_orders_server_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('order'):
                     return get_order_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
 
                 case ('mailshot'):
                     return get_abandoned_card_email_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
             }
 
@@ -2355,16 +2360,16 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_pending_delivery_notes_server_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('delivery_notes'):
 
                     return get_delivery_notes_server_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('group_by_store'):
                     return get_delivery_notes_server_group_by_store_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
 
 
             }
@@ -2378,72 +2383,72 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
                 case ('dashboard'):
                     return get_dashboard_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('basket_orders'):
                     return get_basket_orders_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
 
                 case ('pending_orders'):
                     return get_pending_orders_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('orders'):
 
                     return get_orders_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('order'):
                     return get_order_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('invoice'):
                     include_once 'navigation/accounting.nav.php';
 
                     return get_invoice_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
 
                 case ('refund'):
                     include_once 'navigation/accounting.nav.php';
 
                     return get_invoice_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('delivery_note'):
                     return get_delivery_note_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('invoices'):
                     return get_invoices_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
 
                 case ('payment'):
                     return get_payment_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('mailshot'):
                     return get_abandoned_card_email_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('refund.new'):
                     return get_refund_new_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('replacement.new'):
                     return get_replacement_new_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('return.new'):
                     return get_return_new_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
 
                 case ('replacement'):
                     return get_replacement_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('return'):
                     return get_return_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('email_tracking'):
                     return get_email_tracking_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('purge'):
                     return get_purge_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('deleted_invoice'):
                     include_once 'navigation/accounting.nav.php';
 
                     return get_deleted_invoice_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 default:
                     return 'View not found x2'.$data['section'];
 
@@ -2456,26 +2461,26 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             switch ($data['section']) {
                 case ('delivery_notes'):
                     return get_delivery_notes_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
 
                 case ('delivery_note'):
                     return get_delivery_note_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
 
                 case ('invoice'):
                     include_once 'navigation/invoice.nav.php';
 
                     return get_invoice_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('order'):
                     return get_order_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('pick_aid'):
                     return get_pick_aid_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('pack_aid'):
                     return get_pack_aid_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 default:
                     return 'View not found x1'.$data['section'];
 
@@ -2487,7 +2492,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('websites'):
 
                     return get_websites_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
             }
 
             break;
@@ -2503,19 +2508,19 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case 'workshop':
                 case 'web_users':
                     return get_website_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('webpage'):
                     return get_webpage_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('webpage_type'):
                     return get_webpage_type_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case 'webpages':
                     return get_webpages_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('webpage.new'):
                     return get_new_webpage_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 default:
                     return 'View not found '.$data['section'];
 
@@ -2529,7 +2534,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_marketing_server_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
             }
 
             break;
@@ -2541,89 +2546,89 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             switch ($data['section']) {
                 case ('reports'):
                     return get_reports_navigation($user, $smarty, $data);
-                    break;
+
                 case ('performance'):
                     return get_performance_navigation($user, $smarty, $data);
-                    break;
+
                 case ('pickers'):
                     return get_pickers_navigation($user, $smarty, $data);
-                    break;
+
                 case ('packers'):
                     return get_packers_navigation($user, $smarty, $data);
-                    break;
+
                 case ('sales_representatives'):
                     return get_sales_representatives_navigation($user, $smarty, $data);
-                    break;
+
                 case ('prospect_agents'):
                     return get_prospect_agents_navigation($user, $smarty, $data);
-                    break;
+
                 case ('sales_representative'):
                     return get_sales_representative_navigation($user, $smarty, $data);
-                    break;
+
                 case ('prospect_agent'):
                     return get_prospect_agent_navigation($user, $smarty, $data);
-                    break;
+
                 case ('prospect_agent_email_tracking'):
                     return get_prospect_agent_email_tracking_navigation($data, $smarty, $user, $db);
-                    break;
+
 
                 case ('lost_stock'):
                     return get_lost_stock_navigation($user, $smarty, $data);
-                    break;
+
                 case ('stock_given_free'):
                     return get_stock_given_free_navigation($user, $smarty, $data);
-                    break;
+
                 case ('sales'):
                     return get_sales_navigation($user, $smarty, $data);
-                    break;
+
                 case ('report_orders'):
                     return get_report_orders_navigation($user, $smarty, $data);
-                    break;
+
                 case ('report_orders_components'):
                     return get_report_orders_components_navigation($user, $smarty, $data);
-                    break;
+
                 case ('report_delivery_notes'):
                     return get_report_delivery_notes_navigation($user, $smarty, $data);
-                    break;
+
                 case ('intrastat'):
                     return get_intrastat_navigation($user, $smarty, $data);
-                    break;
+
                 case ('intrastat_orders'):
                     return get_intrastat_orders_navigation($user, $smarty, $data);
-                    break;
+
                 case ('intrastat_products'):
                     return get_intrastat_products_navigation($user, $smarty, $data);
-                    break;
+
                 case ('intrastat_imports'):
                     return get_intrastat_imports_navigation($user, $smarty, $data);
-                    break;
+
                 case ('intrastat_parts'):
                     return get_intrastat_parts_navigation($user, $smarty, $data);
-                    break;
+
                 case ('intrastat_deliveries'):
                     return get_intrastat_deliveries_navigation($user, $smarty, $data);
-                    break;
+
                 case ('tax'):
                     return get_tax_navigation($user, $smarty, $data);
-                    break;
+
                 case ('billingregion_taxcategory'):
                     return get_georegion_taxcategory_navigation(
                         $user, $smarty, $data
                     );
-                    break;
+
                 case ('billingregion_taxcategory.invoices'):
                     return get_invoices_georegion_taxcategory_navigation(
                         $user, $smarty, $data, 'invoices'
                     );
-                    break;
+
                 case ('billingregion_taxcategory.refunds'):
                     return get_invoices_georegion_taxcategory_navigation(
                         $user, $smarty, $data, 'refunds'
                     );
-                    break;
+
                 case ('ec_sales_list'):
                     return get_ec_sales_list_navigation($user, $smarty, $data);
-                    break;
+
             }
         case ('production_server'):
             require_once 'navigation/production.nav.php';
@@ -2632,13 +2637,13 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_suppliers_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
                 case ('settings'):
                     return get_server_settings_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
 
             }
@@ -2651,82 +2656,82 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_delivery_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('order'):
                     return get_purchase_order_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('production_supplier_orders'):
                     return get_production_supplier_purchase_orders_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('production_supplier_deliveries'):
                     return get_production_supplier_deliveries_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('dashboard'):
                     return get_dashboard_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('manufacture_tasks'):
                     return get_manufacture_tasks_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('manufacture_task.new'):
                     return get_new_manufacture_task_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('operatives'):
                     return get_operatives_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('batches'):
                     return get_batches_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('manufacture_task'):
                     return get_manufacture_task_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('operative'):
                     return get_operative_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('batch'):
                     return get_batch_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('settings'):
                     return get_settings_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('production_parts'):
                     return get_production_parts_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('production_part'):
                     return get_production_part_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('materials'):
                     return get_materials_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('material'):
                     return get_material_navigation(
                         $data, $smarty, $user, $db, $account
@@ -2735,12 +2740,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_new_production_part_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('upload'):
                     return get_upload_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
             }
             break;
@@ -2752,146 +2757,146 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_dashboard_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('supplier_parts'):
                     return get_supplier_parts_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('supplier'):
                     return get_supplier_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('agent'):
                     return get_agent_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
                 case ('suppliers'):
                     return get_suppliers_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('orders'):
                     return get_purchase_orders_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('deliveries'):
                     return get_deliveries_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('order'):
                     return get_purchase_order_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('deleted_order'):
                     return get_deleted_purchase_order_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
                 case ('delivery'):
                     return get_delivery_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('agents'):
                     return get_agents_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('categories'):
 
                     return get_suppliers_categories_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('category'):
 
                     return get_suppliers_category_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('main_category.new'):
                     return get_suppliers_new_main_category_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('dashboard'):
                     return get_suppliers_dashboard_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('supplier.new'):
                     return get_new_supplier_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('agent.new'):
                     return get_new_agent_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('supplier_part'):
                     return get_supplier_part_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('supplier_part.new'):
                     return get_new_supplier_part_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('deleted_supplier'):
                     return get_deleted_supplier_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('supplier.user.new'):
                     return get_new_supplier_user_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('agent.user.new'):
                     return get_new_agent_user_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('supplier.order.item'):
                 case ('agent.order.item'):
                     return get_order_item_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('supplier.attachment'):
                     return get_supplier_attachment_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('supplier.attachment.new'):
                     return get_new_supplier_attachment_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('timeseries_record'):
                     return get_timeseries_record_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('supplier_delivery.attachment.new'):
                     return get_supplier_delivery_attachment_new_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('supplier_delivery.attachment'):
                     return get_supplier_delivery_attachment_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('settings'):
                     return get_settings_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
             }
 
             break;
@@ -2905,113 +2910,113 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_dashboard_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
                 case ('inventory'):
                     return get_inventory_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
                 case ('part'):
                     return get_part_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('part.new'):
                     return get_new_part_navigation(
                         $data, $smarty, $user, $db, $account, $account
                     );
-                    break;
+
                 case ('supplier_part.new'):
                     return get_new_supplier_part_navigation(
                         $data, $smarty, $user, $db, $account, $account
                     );
-                    break;
+
                 case ('product'):
 
                     return get_part_product_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('part.image'):
                     return get_part_image_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
                 case ('transactions'):
                     return get_transactions_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('stock_history'):
                     return get_stock_history_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('stock_history.day'):
                     return get_stock_history_day_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('categories'):
                     return get_categories_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('category'):
                     return get_parts_category_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('main_category.new'):
                     return get_parts_new_main_category_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
                 case ('upload'):
                     return get_upload_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
                 case ('barcodes'):
                     return get_barcodes_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('barcode'):
                     return get_barcode_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('deleted_barcode'):
                     return get_deleted_barcode_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('part.attachment'):
                     return get_part_attachment_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('part.attachment.new'):
                     return get_new_part_attachment_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('feedback'):
                     return get_feedback_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('feedback_item'):
                     return get_feedback_item_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
             }
 
             break;
@@ -3025,42 +3030,42 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_dashboard_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('warehouses'):
                     return get_warehouses_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('warehouse'):
                     return get_warehouse_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('warehouse.new'):
                     return get_new_warehouse_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('warehouse_area.new'):
                     return get_new_warehouse_area_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('warehouse_areas'):
                     return get_warehouse_areas_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('warehouse_area'):
                     return get_warehouse_area_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('locations'):
                     return get_locations_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
 
                 case ('location'):
@@ -3068,12 +3073,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                         $data, $smarty, $user, $db, $account
                     );
 
-                    break;
+
                 case ('location.new'):
                     return get_new_location_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('deleted_location'):
                     return get_deleted_location_navigation(
                         $data, $smarty, $user, $db, $account
@@ -3082,47 +3087,47 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_categories_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('category'):
                     return get_locations_category_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('main_category.new'):
                     return get_locations_new_main_category_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
                 case ('delivery_notes'):
                     return get_delivery_notes_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('leakages'):
                     return get_leakages_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('timeseries_record'):
                     return get_timeseries_record_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('returns'):
                     return get_returns_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('return'):
                     return get_return_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('shipper'):
                     return get_shipper_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('shipper.new'):
                     return get_shipper_new_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('upload'):
                     return get_upload_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('feedback'):
                     return get_feedback_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
 
             }
@@ -3140,105 +3145,105 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_employees_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('contractors'):
                     return get_contractors_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('organization'):
                     return get_organization_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('employee'):
                     return get_employee_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('deleted.employee'):
                     return get_deleted_employee_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('employee.new'):
                     return get_new_employee_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('contractor'):
                     return get_contractor_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('deleted.contractor'):
                     return get_deleted_contractor_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('contractor.new'):
                     return get_new_contractor_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('timesheet'):
                     return get_timesheet_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('timesheets'):
                     return get_timesheets_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('employee.attachment'):
                     return get_employee_attachment_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('employee.attachment.new'):
                     return get_new_employee_attachment_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('employee.user.new'):
                     return get_new_employee_user_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('contractor.user.new'):
                     return get_new_contractor_user_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
                 case ('upload'):
                     return get_upload_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('overtimes'):
                     return get_overtimes_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('hr.history'):
                     return get_history_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('position'):
                     return get_position_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('clocking_machines'):
                     return get_clocking_machines_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('clocking_machine'):
                     return get_clocking_machine_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('clocking_machine.new'):
                     return get_new_clocking_machine_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
             }
 
             break;
@@ -3250,10 +3255,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                 case ('forbidden'):
                 case ('not_found'):
                     return get_utils_navigation($data);
-                    break;
+
                 case ('fire'):
                     return get_fire_navigation($data);
-                    break;
+
             }
 
             break;
@@ -3263,10 +3268,10 @@ function get_navigation($user, $smarty, $data, $db, $account) {
             switch ($data['section']) {
                 case ('profile.api_key.new'):
                     return get_profile_new_api_key_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 default:
                     return get_profile_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
             }
 
 
@@ -3281,50 +3286,50 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
                 case ('payment_service_providers'):
                     return get_payment_service_providers_navigation($data, $user, $smarty, $db);
-                    break;
+
                 case ('payment_service_provider'):
                     return get_payment_service_provider_navigation($data, $user, $smarty, $db);
-                    break;
+
                 case ('payment_account'):
                     return get_payment_account_server_navigation($data, $user, $smarty, $db);
-                    break;
+
                 case ('payment_accounts'):
                     return get_payment_accounts_navigation(
                         $data, $user, $smarty, $db
                     );
-                    break;
+
                 case ('payment'):
                     return get_payment_navigation($data, $user, $smarty, $db);
-                    break;
+
                 case ('payments'):
                     return get_payments_navigation($data, $user, $smarty, $db);
-                    break;
+
                 case ('credits'):
                     return get_credits_navigation($data, $user, $smarty, $db);
-                    break;
+
                 case ('payments_by_store'):
                     return get_payments_by_store_navigation($data, $user, $smarty, $db);
-                    break;
+
                 case ('invoice'):
                     include_once 'navigation/invoice.nav.php';
 
                     return get_invoice_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('invoices'):
                     return get_invoices_server_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('deleted_invoices_server'):
                     return get_deleted_invoices_server_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('categories'):
                     return get_invoices_categories_server_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('category'):
                     return get_invoices_category_server_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('deleted_invoice'):
                     return get_deleted_invoice_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
             }
             break;
         case ('accounting'):
@@ -3336,45 +3341,45 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
                 case ('invoices'):
                     return get_invoices_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
 
                 case ('invoice'):
 
                     return get_invoice_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('deleted_invoice'):
                     return get_deleted_invoice_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
                 case ('payment_service_provider'):
                     return get_payment_service_provider_navigation(
                         $data, $user, $smarty, $db
                     );
-                    break;
+
                 case ('payment_service_providers'):
                     return get_payment_service_providers_navigation(
                         $data, $user, $smarty, $db
                     );
-                    break;
+
                 case ('payment_account'):
                     return get_payment_account_navigation($data, $user, $smarty, $db);
-                    break;
+
                 case ('payment_accounts'):
                     return get_payment_accounts_navigation(
                         $data, $user, $smarty, $db
                     );
-                    break;
+
                 case ('payment'):
                     return get_payment_navigation($data, $user, $smarty, $db);
-                    break;
+
                 case ('payments'):
                     return get_payments_navigation($data, $user, $smarty, $db);
-                    break;
+
                 case ('credits'):
                     return get_credits_navigation($data, $user, $smarty, $db);
-                    break;
+
                 case ('deleted_invoices'):
                     return get_deleted_invoices_navigation($data, $smarty, $user, $db, $account);
-                    break;
+
             }
             break;
         case ('account'):
@@ -3386,73 +3391,73 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_account_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
                 case ('data_sets'):
                     return get_data_sets_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('timeseries'):
                     return get_timeseries_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('timeserie'):
                     return get_timeserie_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('images'):
                     return get_images_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('attachments'):
                     return get_attachments_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('uploads'):
                     return get_uploads_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('materials'):
                     return get_materials_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('material'):
                     return get_material_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('upload'):
                     return get_upload_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('osf'):
                     return get_osf_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('isf'):
                     return get_isf_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('orders_index'):
                     return get_orders_index_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('settings'):
                     return get_settings_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
 
             }
@@ -3471,7 +3476,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_agent_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
 
             }
@@ -3483,27 +3488,27 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_suppliers_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('supplier'):
                     return get_supplier_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('supplier_part'):
                     return get_supplier_part_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('supplier.attachment'):
                     return get_supplier_attachment_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('supplier.attachment.new'):
                     return get_new_supplier_attachment_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
             }
         case 'agent_client_orders':
             require_once 'navigation/agent.nav.php';
@@ -3512,17 +3517,17 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_agent_client_orders_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('client_order'):
                     return get_agent_client_order_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('agent_supplier_order'):
                     return get_agent_supplier_order_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
 
             }
@@ -3534,12 +3539,12 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_deliveries_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('agent_delivery'):
                     return get_agent_delivery_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
 
             }
@@ -3551,7 +3556,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_parts_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
 
             }
@@ -3563,77 +3568,77 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_users_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
 
                 case ('staff'):
                     return get_staff_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('contractors'):
                     return get_contractors_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('suppliers'):
                     return get_suppliers_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('agents'):
                     return get_agents_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('warehouse'):
                     return get_warehouse_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('root'):
                     return get_root_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('user'):
                     return get_user_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('deleted.user'):
                     return get_deleted_user_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('suppliers.user'):
                     return get_supplierss_user_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
                 case ('warehouse.user'):
                     return get_warehouse_user_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('root.user'):
                     return get_root_user_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('user.api_key') :
                     return get_api_key_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
                 case ('user.api_key.new') :
                     return get_new_api_key_navigation($data, $smarty, $user, $db, $account);
                 case ('deleted_api_key') :
                     return get_deleted_api_key_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-                    break;
+
 
             }
             break;
