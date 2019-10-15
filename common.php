@@ -96,6 +96,11 @@ $smarty->assign('_DEVEL', _DEVEL);
 if (!empty($release)) {
     $smarty->assign('release', $release);
 }
+if (defined('SENTRY_DNS_AUJS')) {
+    $smarty->assign('sentry_js',SENTRY_DNS_AUJS);
+
+}
+
 
 if (isset($auth_data)) {
 

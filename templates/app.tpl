@@ -16,11 +16,11 @@
         });
 
     </script>
+        {if !empty($sentry_js)}
 
-        <script
-                src="https://browser.sentry-cdn.com/5.6.3/bundle.min.js"
-                integrity="sha384-/Cqa/8kaWn7emdqIBLk3AkFMAHBk0LObErtMhO+hr52CntkaurEnihPmqYj3uJho"
-                crossorigin="anonymous"></script>
+        <script src="https://browser.sentry-cdn.com/5.7.0/bundle.min.js" integrity="sha384-pHnCJ3bbzJ+LzI19wAdyBvGAjJ5vNAC59uxeRpw5WpgkSlZUQstEADxkSbBnI95q" crossorigin="anonymous">
+        </script>
+         {/if}
 
     {/if}
     <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -73,8 +73,10 @@
         ga('set', 'userId', '{$account->get('Code')}_{"%05d"|sprintf:$user->id}');
         ga('send', 'pageview');
 
+        {if !empty($sentry_js)}
+
         Sentry.init({
-            dsn: 'https://8f17945abb95493692010f7026553f71@sentry.io/1329970'
+            dsn: '{$sentry_js}'
             {if isset($release)}
             ,  release: "{$release}"
         {/if}
@@ -89,7 +91,7 @@
                     "email":    "{$user->get_staff_email()}"
                 });
         })
-        ;
+        {/if}
 
     </script>
 {/if}

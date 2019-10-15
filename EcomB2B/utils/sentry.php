@@ -10,6 +10,13 @@
  Version 2.0
 */
 
-if(defined('SENTRY_DNS_ECOM')){
-    Sentry\init(['dsn' => SENTRY_DNS_ECOM ]);
+if (defined('SENTRY_DNS_ECOM')) {
+    $sentry_config = array(
+        'dsn' => SENTRY_DNS_AU,
+    );
+    if ($release = file_get_contents('release.txt')) {
+        $sentry_config['release'] = $release;
+    }
+    Sentry\init($sentry_config);
 }
+
