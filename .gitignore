@@ -168,3 +168,4 @@ websocket_server/composer.lock
 /box/tests/box_registration.test.php
 /cron/fix_po_states.php
 /post_deploy.sh
+/deploy.sh
