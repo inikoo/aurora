@@ -8,7 +8,6 @@ require_once 'keyring/dns.php';
 require_once 'vendor/autoload.php';
 
 
-
 require_once 'utils/sentry.php';
 
 
@@ -66,7 +65,6 @@ if ($account->get('Account State') != 'Active') {
 }
 
 
-
 require_once 'utils/modules.php';
 
 
@@ -76,13 +74,12 @@ $session->start();
 
 $session->set('account', $account->get('Code'));
 
-if ($session->get('timezone')=='' or !date_default_timezone_set($session->get('timezone'))) {
-    if($account->get('Account Timezone') or !date_default_timezone_set($account->get('Account Timezone'))){
+if ($session->get('timezone') == '' or !date_default_timezone_set($session->get('timezone'))) {
+    if ($account->get('Account Timezone') or !date_default_timezone_set($account->get('Account Timezone'))) {
         date_default_timezone_set('UTC');
     }
 }
 $session->set('timezone', date_default_timezone_get());
-
 
 
 /**
@@ -96,6 +93,9 @@ $smarty->setConfigDir('server_files/smarty/configs');
 $smarty->addPluginsDir('./smarty_plugins');
 $smarty->assign('_DEVEL', _DEVEL);
 
+if (!empty($release)) {
+    $smarty->assign('release', $release);
+}
 
 if (isset($auth_data)) {
 
