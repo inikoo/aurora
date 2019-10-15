@@ -1609,3 +1609,15 @@ i.product_stock_dot {
   }
 
 }
+
+.dropshipping  i.stock_dot {
+
+  font-size:22px;
+  top: -20px;
+  left: 10px;
+
+}
+
+.dropshipping  .products.no_items_header i.stock_dot {
+  top:10px;
+}

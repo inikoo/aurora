@@ -1672,4 +1672,12 @@ i.product_stock_dot {
     color: #F25056;
     opacity: .9; }
 
+.dropshipping i.stock_dot {
+  font-size: 22px;
+  top: -20px;
+  left: 10px; }
+
+.dropshipping .products.no_items_header i.stock_dot {
+  top: 10px; }
+
 /*# sourceMappingURL=style.theme_1.EcomB2B.desktop.css.map */

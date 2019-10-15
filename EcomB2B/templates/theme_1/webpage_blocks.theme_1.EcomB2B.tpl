@@ -42,6 +42,8 @@
                             href="{$navigation.next.link}" title="{$navigation.next.title}"><i style="" class="fas fa-arrow-right next"></i></a>{/if}</div>
                     <div style="clear:both"></div>
                 </div>
+
+
             {/if}
 
             {if isset($discounts) and count($discounts.deals)>0 }
@@ -173,7 +175,17 @@
                         {if $block.type=='reset_password' }{assign "with_reset_password" 1}{/if}
                         {if $block.type=='unsubscribe'}{assign "with_unsubscribe" 1}{/if}
                         {if $block.type=='category_products' or   $block.type=='products'  or   $block.type=='product' }{assign "with_product_order_input" 1}{/if}
-                        {if $block.type=='category_products' or   $block.type=='products'  }{assign "with_category_products" 1}{/if}
+                        {if $block.type=='category_products'  }
+                            {assign "with_category_products" 1}
+
+                            {if $store->get('Store Type')=='Dropshipping'}
+                                xxxx xxxx
+                            {/if}
+
+                        {/if}
+                        {if $block.type=='category_products'   }
+                            {assign "with_category_products" 1}
+                        {/if}
 
 
                         {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
