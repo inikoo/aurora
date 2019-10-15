@@ -141,10 +141,6 @@ function payment_accounts($_data, $db, $user) {
         foreach ($result as $data) {
 
 
-            //$other_currency = ($account_currency != $data['Payment Account Currency']);
-
-
-            // print_r($data);
 
             if ($data['stores'] != '') {
                 $stores = '';

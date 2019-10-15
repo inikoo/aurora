@@ -431,6 +431,9 @@ function pay_credit($order, $amount, $editor, $db, $account) {
 
     $order->editor = $editor;
 
+    /**
+     * @var $payment_account \Public_Payment_Account
+     */
     $payment_account = get_object('Payment_Account', $store->get('Store Customer Payment Account Key'));
 
 

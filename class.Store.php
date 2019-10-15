@@ -264,6 +264,23 @@ class Store extends DB_Table {
             }
 
 
+            include_once 'class.Payment_Service_Provider.php';
+            $account_payments = new Payment_Service_Provider('block', 'Accounts');
+            $payment_account_credits=$account_payments->create_payment_account(
+                array(
+                    'Payment Account Block' => 'Accounts',
+                    'Payment Account Code' => 'IA_'.$this->get('Code'),
+                    'Payment Account Name' => 'Accounts '.$this->get('Code'),
+
+                )
+            );
+
+            $this->fast_update(
+                array(
+                'Store Customer Payment Account Key'=>$payment_account_credits->id
+                )
+            );
+
             $account         = new Account($this->db);
             $account->editor = $this->editor;
 

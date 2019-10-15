@@ -15,7 +15,7 @@ $filter_msg = '';
 $where = "where true";
 
 
-$fields = "   PA.`Payment Account Key`,`Payment Account Currency`,`Payment Account Code`,`Payment Account Name`,`Payment Account Transactions`,`Payment Account Payments Amount`,`Payment Account Refunds Amount`,`Payment Account Balance Amount`";
+$fields = "   PA.`Payment Account Key`,`Payment Account Code`,`Payment Account Name`,`Payment Account Transactions`,`Payment Account Payments Amount`,`Payment Account Refunds Amount`,`Payment Account Balance Amount`";
 
 
 switch ($parameters['parent']) {
