@@ -299,9 +299,6 @@ function orders_in_process_paid($_data, $db, $user, $account) {
                     }
 
                     $payments .= $payment_name.', ';
-                }else{
-                    throw new Exception($sql.'; '.json_encode($data));
-
                 }
 
 
