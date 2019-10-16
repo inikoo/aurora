@@ -82,12 +82,6 @@ class Payment_Account extends DB_Table {
             }
 
         }
-
-
-        //  print_r($data);
-        //  exit("s");
-
-
         $fields = array('Payment Account Code');
 
         $sql = sprintf(
@@ -98,8 +92,6 @@ class Payment_Account extends DB_Table {
                 ' and `%s`=%s', $field, prepare_mysql($data[$field], false)
             );
         }
-        //print $sql;
-
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -109,10 +101,6 @@ class Payment_Account extends DB_Table {
             } else {
                 $this->found = false;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -170,9 +158,6 @@ class Payment_Account extends DB_Table {
     function load_acc_data() {
 
 
-        //todo
-        return;
-
         $sql = sprintf("SELECT * FROM `Payment Account Data`  WHERE `Payment Account Key`=%d", $this->id);
 
         if ($result = $this->db->query($sql)) {
@@ -181,9 +166,6 @@ class Payment_Account extends DB_Table {
                     $this->data[$key] = $value;
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
         $sql = sprintf("SELECT * FROM `Payment Account DC Data`  WHERE `Payment Account Key`=%d", $this->id);
@@ -194,9 +176,6 @@ class Payment_Account extends DB_Table {
                     $this->data[$key] = $value;
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -251,7 +230,6 @@ class Payment_Account extends DB_Table {
 
                 }
 
-                break;
 
             case 'Transactions':
             case 'Number Stores':
@@ -282,8 +260,7 @@ class Payment_Account extends DB_Table {
 
         $sql = sprintf(
             "SELECT count(*) AS num,group_concat(DISTINCT `Payment Currency Code`) AS currencies, sum(if(`Payment Transaction Amount`>0,`Payment Transaction Amount`,0)) AS payments,
-  sum(`Payment Transaction Amount`) AS balance,sum(`Payment Transaction Amount Refunded`) AS refunded,sum(`Payment Transaction Amount Credited`) AS credited FROM `Payment Dimension` WHERE `Payment Account Key`=%d AND `Payment Transaction Status`='Completed'",
-            $this->id
+  sum(`Payment Transaction Amount`) AS balance,sum(`Payment Transaction Amount Refunded`) AS refunded,sum(`Payment Transaction Amount Credited`) AS credited FROM `Payment Dimension` WHERE `Payment Account Key`=%d AND `Payment Transaction Status`='Completed'", $this->id
         );
         // print $sql;
         if ($row = $this->db->query($sql)->fetch()) {
@@ -318,8 +295,7 @@ class Payment_Account extends DB_Table {
 
         $sql = sprintf(
             'INSERT INTO  `Payment Account Store Bridge`  (`Payment Account Store Payment Account Key`,`Payment Account Store Website Key`,`Payment Account Store Store Key`,`Payment Account Store Valid From`,`Payment Account Store Status`,`Payment Account Store Show In Cart`,`Payment Account Store Show Cart Order`) 
-          VALUES (%d,%d,%d,%s,%s,%s,%d) ', $this->id, $store->id, $store->get('Store Website Key'), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($data['Status']),
-            prepare_mysql($data['Show In Cart']), $data['Show Cart Order']
+          VALUES (%d,%d,%d,%s,%s,%s,%d) ', $this->id, $store->id, $store->get('Store Website Key'), prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($data['Status']), prepare_mysql($data['Show In Cart']), $data['Show Cart Order']
         );
 
 
