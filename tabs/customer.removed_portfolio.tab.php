@@ -2,22 +2,26 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 15 October 2015 at 12:10:57 BST, Sheffield UK
- Copyright (c) 2015, Inikoo
+ Created:  Wed 16 Oct 2019 11:40:24 +0800 MYT, Kuala Lumpur, Malaysia
+ Copyright (c) 2019, Inikoo
 
  Version 3
 
 */
 
-$tab     = 'customer.marketing.products';
+$tab     = 'customer.removed_portfolio';
 $ar_file = 'ar_customers_tables.php';
-$tipo    = 'products';
+$tipo    = 'customer_portfolio';
 
 $default = $user->get_tab_defaults($tab);
 
+
 $table_views = array(
     'overview' => array(
-        'label' => _('Overview')),
+        'label' => _('Overview')
+    ),
+
+
 );
 
 $table_filters = array(
@@ -35,8 +39,10 @@ $table_filters = array(
 $parameters = array(
     'parent'     => $state['object'],
     'parent_key' => $state['key'],
+    'type'       => 'Removed'
 
 );
+
 
 include('utils/get_table_html.php');
 
