@@ -71,9 +71,6 @@ function update_orders($db, $print_est) {
 
         }
 
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 }
 

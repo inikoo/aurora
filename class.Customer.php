@@ -2611,6 +2611,29 @@ class Customer extends Subject {
 
     }
 
+    public function update_portfolio() {
+
+
+        $products = 0;
+        $sql     = "SELECT count(*) AS num FROM `Customer Portfolio Fact` WHERE `Customer Portfolio Customers State`='Active' and  `Customer Portfolio Customer Key`=?  ";
+        $stmt    = $this->db->prepare($sql);
+        $stmt->execute(
+            array($this->id)
+        );
+        while ($row = $stmt->fetch()) {
+            $products = $row['num'];
+        }
+
+
+        $this->fast_update(
+            array(
+                'Customer Number Products in Portfolio' => $products,
+            )
+        );
+
+
+    }
+
     public function update_payments() {
 
 

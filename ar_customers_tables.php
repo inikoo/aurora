@@ -218,7 +218,7 @@ function customers($_data, $db, $user) {
                 $link_format  = '/customers/%d/%d';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Key']);
 
-            }elseif ($parameters['parent'] == 'list') {
+            } elseif ($parameters['parent'] == 'list') {
                 $link_format  = '/customers/list/%d/%d';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
 
@@ -303,7 +303,7 @@ function customers($_data, $db, $user) {
 
 /**
  * @param $_data
- * @param $db \PDO
+ * @param $db   \PDO
  * @param $user \User
  */
 function lists($_data, $db, $user) {
@@ -392,7 +392,7 @@ function categories($_data, $db, $user) {
      * @var string $total
      */
 
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+    $sql        = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $table_data = array();
 
     if ($result = $db->query($sql)) {
@@ -2356,7 +2356,6 @@ function customer_clients($_data, $db, $user) {
 }
 
 
-
 function customer_portfolio($_data, $db, $user) {
 
 
@@ -2390,55 +2389,42 @@ function customer_portfolio($_data, $db, $user) {
 
         foreach ($result as $data) {
 
-//'Excess','Normal','Low','VeryLow','OutofStock','Error','OnDemand'
+            //'Excess','Normal','Low','VeryLow','OutofStock','Error','OnDemand'
             switch ($data['Product Availability State']) {
                 case 'Excess':
                 case 'Normal':
-                $stock_status = sprintf('<i class="fa fa-circle " style="color:#13D13D" title="%s"></i>', _('Active'));
+
+
+                    $stock_status = sprintf('<i class="fa fa-circle " style="color:#13D13D" title="%s"></i>', _('Active'));
                     break;
-                case 'Suspended':
-                    $status = sprintf('<i class="fa fa-cube warning" aria-hidden="true" title="%s"></i>', _('Suspended'));
+                case 'OnDemand':
+                    $stock_status = sprintf('<i class="fa fa-circle " style="color:#13D13D" title="%s"></i>', _('On demand'));
                     break;
-                case 'Discontinuing':
-                    $status = sprintf('<i class="fa fa-cube warning very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinuing'));
+                case 'Error':
+                case 'OutofStock':
+                    $stock_status = sprintf('<i class="fa fa-circle " style="color:#F25056" title="%s"></i>', _('Out of stock'));
                     break;
-                case 'Discontinued':
-                    $status = sprintf('<i class="fa fa-cube very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinued'));
+                case 'VeryLow':
+                    $stock_status = sprintf('<i class="fa fa-circle " style="color:#ff7c00" title="%s"></i>', _('Very low stock'));
                     break;
-                case 'Suspended':
-                    $status = sprintf('<i class="fa fa-cube error" aria-hidden="true" title="%s"></i>', _('Suspended'));
+                case 'Low':
+                    $stock_status = sprintf('<i class="fa fa-circle " style="color:#FCBE07" title="%s"></i>', _('Low stock'));
                     break;
+
                 default:
                     $stock_status = $data['Product Availability State'];
                     break;
             }
 
 
-/*
- *
- *
- *   switch ($data['Product Availability State']) {
-                case 'Active':
-                    $status = sprintf('<i class="fa fa-cube" aria-hidden="true" title="%s"></i>', _('Active'));
-                    break;
-                case 'Suspended':
-                    $status = sprintf('<i class="fa fa-cube warning" aria-hidden="true" title="%s"></i>', _('Suspended'));
-                    break;
-                case 'Discontinuing':
-                    $status = sprintf('<i class="fa fa-cube warning very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinuing'));
-                    break;
-                case 'Discontinued':
-                    $status = sprintf('<i class="fa fa-cube very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinued'));
-                    break;
-                case 'Suspended':
-                    $status = sprintf('<i class="fa fa-cube error" aria-hidden="true" title="%s"></i>', _('Suspended'));
-                    break;
-                default:
-                    $status = $data['Product Status'];
-                    break;
-            }
+            if ($data['Product Availability State'] == 'Discontinued') {
+                $status_icon = ' <i class="fa fa-skull" title="'._('Discontinued').'"></i>';
 
- */
+            } elseif ($data['Product Availability State'] == 'Discontinuing') {
+                $status_icon = ' <i class="fa fa-skull" title="'._('Discontinuing').'"></i>';
+            } else {
+                $status_icon = '';
+            }
 
 
             $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
@@ -2448,17 +2434,30 @@ function customer_portfolio($_data, $db, $user) {
 
             $record_data[] = array(
 
-                'id'       => (integer)$data['Product ID'],
-                'code'     => $code,
-                'name'     => $name,
-                'stock_status'   => $stock_status,
-                'amount'   => sprintf('<span>%s</span>', money($data['Customer Portfolio Amount'], $data['Store Currency Code'])),
-                'invoices' => sprintf(
-                    '<span class="link" onclick="change_view(\'customers/%d/%d/product/%d\',{ })">%s</span>', $data['Store Key'], $data['Customer Key'], $data['Product ID'], number($data['invoices'])
-                ),
-                'qty'      => sprintf('<span>%s</span>', number($data['Customer Portfolio Ordered Quantity'])),
-                'orders'      => sprintf('<span>%s</span>', number($data['Customer Portfolio Orders'])),
-                'clients'      => sprintf('<span>%s</span>', number($data['Customer Portfolio Clients']))
+                'id'           => (integer)$data['Product ID'],
+                'code'         => $code.$status_icon,
+                'name'         => $name,
+                'stock_status' => $stock_status,
+                'created'        => ($data['Customer Portfolio Creation Date'] == ''
+                    ? ''
+                    : sprintf(
+                        '<span title="%s">%s</span>', strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Customer Portfolio Creation Date'].' +0:00')), strftime("%e %b %Y", strtotime($data['Customer Portfolio Creation Date'].' +0:00'))
+
+                    )),
+                'until'        => ($data['Customer Portfolio Removed Date'] == ''
+                    ? ''
+                    : sprintf(
+                        '<span title="%s">%s</span>', strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Customer Portfolio Removed Date'].' +0:00')), strftime("%e %b %Y", strtotime($data['Customer Portfolio Removed Date'].' +0:00'))
+
+                    )),
+                'last_order'   => ($data['Customer Portfolio Last Ordered'] == '' ? '' : strftime("%a %e %b %Y", strtotime($data['Customer Portfolio Last Ordered'].' +0:00'))),
+
+                'amount' => sprintf('<span>%s</span>', money($data['Customer Portfolio Amount'], $data['Store Currency Code'])),
+
+                'qty'        => sprintf('<span>%s</span>', number($data['Customer Portfolio Ordered Quantity'])),
+                'orders'     => sprintf('<span>%s</span>', number($data['Customer Portfolio Orders'])),
+                'clients'    => sprintf('<span>%s</span>', number($data['Customer Portfolio Clients'])),
+                'operations' => sprintf('<i class="far button fa-trash-alt" onclick="remove_item_from_portfolio(this,%d,%s)" ></i>', $data['Customer Portfolio Customer Key'], $data['Product ID'])
 
             );
 

@@ -49,7 +49,7 @@ cell: "html"
 },
  {
 name: "created",
-label: "{t}From{/t}",
+label: "{t}Since{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
@@ -61,12 +61,12 @@ headerCell: integerHeaderCell
 
 },
 {
-name: "removed",
-label: "{t}to order{/t}",
+name: "until",
+label: "{t}Until{/t}",
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
-{if $sort_key=='removed'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+{if $sort_key=='until'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 
 
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),

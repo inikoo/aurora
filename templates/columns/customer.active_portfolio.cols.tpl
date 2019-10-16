@@ -20,15 +20,13 @@ renderable: false
 
 
 {
-name: "status",
+name: "stock_status",
 label: "",
 editable: false,
-sortType: "toggle",
+sortable: false,
 cell: Backgrid.HtmlCell.extend({
-
-class:'width_20'
-
-} ),
+className: "width_30 align_center"
+})
 
 },
 {
@@ -103,6 +101,7 @@ headerCell: integerHeaderCell
 {
 name: "last_order",
 label: "{t}Last order{/t}",
+renderable:false,
 defaultOrder:1,
 editable: false,
 sortType: "toggle",
@@ -113,6 +112,19 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 },
+
+{
+name: "operations",
+label: "",
+defaultOrder:1,
+editable: false,
+sortable: false,
+
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+
+},
+
 ]
 
 
