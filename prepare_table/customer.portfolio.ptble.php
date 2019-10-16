@@ -15,8 +15,7 @@ include_once 'utils/date_functions.php';
 
 //$period_tag = get_interval_db_name($parameters['f_period']);
 
-$table          =
-    " `Customer Portfolio Fact` CPF left join    `Product Dimension` P  on (`Customer Portfolio Product ID`=P.`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`) left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`)";
+$table          = " `Customer Portfolio Fact` CPF left join    `Product Dimension` P  on (`Customer Portfolio Product ID`=P.`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`) left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`)";
 $where_interval = '';
 $wheref         = '';
 
@@ -29,6 +28,51 @@ if ($parameters['type'] == 'Active') {
     $where .= " and `Customer Portfolio Customers State`='Active'";
 } elseif ($parameters['type'] == 'Removed') {
     $where .= " and `Customer Portfolio Customers State`='Removed'";
+}
+
+
+
+if(isset($parameters['elements_type'])){
+
+
+    switch ($parameters['elements_type']) {
+
+        case 'availability_state':
+            $_elements      = '';
+            $count_elements = 0;
+            foreach (
+                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
+            ) {
+                if ($_value['selected']) {
+                    $count_elements++;
+                    if($_key=='Ok'){
+                        $_elements .= ',"Excess","Normal","OnDemand"';
+
+                    }if($_key=='OutofStock'){
+                        $_elements .= ',"OutofStock","Error"';
+
+                    }else{
+                        $_elements .= ','.prepare_mysql($_key);
+
+                    }
+
+                }
+            }
+            $_elements = preg_replace('/^\,/', '', $_elements);
+            if ($_elements == '') {
+                $where .= ' and false';
+            } elseif ($count_elements < 4) {
+                $where .= ' and P.`Product Availability State` in ('.$_elements.')';
+            }
+
+
+            break;
+
+
+    }
+
+
+
 }
 
 
@@ -52,8 +96,12 @@ if ($order == 'code') {
 } elseif ($order == 'invoices') {
     $order = 'invoices';
 } elseif ($order == 'amount') {
-    $order = `Customer Portfolio Amount`;
-} elseif ($order == 'orders') {
+    $order = '`Customer Portfolio Amount`';
+}elseif ($order == 'until') {
+    $order = '`Customer Portfolio Removed Date`';
+} elseif ($order == 'last_order') {
+    $order = '`Customer Portfolio Last Ordered`';
+}  elseif ($order == 'orders') {
     $order = '`Customer Portfolio Orders`';
 } elseif ($order == 'qty') {
     $order = '`Customer Portfolio Ordered Quantity`';
@@ -67,7 +115,7 @@ if ($order == 'code') {
 $sql_totals = "select count(distinct  CPF.`Customer Portfolio Key`) as num from $table $where";
 
 
-$fields = "P.`Product ID`,P.`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,S.`Store Key`,`Product RRP`,`Product Unit Label`,`Product Availability State`,
+$fields = "P.`Product ID`,P.`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,S.`Store Key`,`Product RRP`,`Product Unit Label`,`Product Availability State`,`Customer Portfolio Customer Key`,`Customer Portfolio Removed Date`,
     `Store Name`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,P.`Product Status`,`Product Units Per Case`,
        `Customer Portfolio Creation Date`,`Customer Portfolio Last Ordered`,`Customer Portfolio Orders`,`Customer Portfolio Amount` ,`Customer Portfolio Ordered Quantity`,`Customer Portfolio Clients`
   

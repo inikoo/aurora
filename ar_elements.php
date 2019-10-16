@@ -445,6 +445,14 @@ switch ($tab) {
         );
         get_purchase_order_items_elements($db, $data['parameters']);
         break;
+    case 'customer.active_portfolio':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'parameters' => array('type' => 'json array')
+                     )
+        );
+        get_customer_active_portfolio_elements($db, $data['parameters']);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -3287,7 +3295,7 @@ function get_webpages_by_state_element_numbers($db, $data, $user, $state) {
 
 
     $elements_numbers = array(
-        'type'    => array(
+        'type' => array(
             'Cats'   => 0,
             'Prods'  => 0,
             'Prod'   => 0,
@@ -3335,8 +3343,6 @@ function get_webpages_by_state_element_numbers($db, $data, $user, $state) {
 
     }
     $elements_numbers['type']['Others'] = number($elements_numbers['type']['Others']);
-
-
 
 
     $response = array(
@@ -4113,3 +4119,56 @@ function get_websites_elements($db, $data, $account, $user) {
 
 }
 
+
+/**
+ * @param $db \PDO
+ * @param $data
+ */
+function get_customer_active_portfolio_elements($db, $data) {
+
+
+    $elements_numbers = array(
+        'availability_state' => array(
+            'OutofStock' => 0,
+            'VeryLow'    => 0,
+            'Low'        => 0,
+            'Ok'         => 0,
+        ),
+
+    );
+
+
+    $sql  =
+        "select count(*) as number,`Product Availability State` as element from  `Customer Portfolio Fact` CPF left join    `Product Dimension` P  on (`Customer Portfolio Product ID`=P.`Product ID`) where  `Customer Portfolio Customer Key`=? and  `Customer Portfolio Customers State`='Active' group by `Product Availability State` ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $data['parent_key']
+        )
+    );
+    while ($row = $stmt->fetch()) {
+        if ($row['element'] == 'Error') {
+            $row['element'] = 'OutofStock';
+        } elseif ($row['element'] == 'Excess' or $row['element'] == 'Normal' or $row['element'] == 'OnDemand') {
+            $row['element'] = 'Ok';
+        }
+
+        $elements_numbers['status'][$row['element']] = $row['number'];
+    }
+
+
+    foreach ($elements_numbers['availability_state'] as $key => $value) {
+
+        $elements_numbers['availability_state'][$key] = number($value);
+
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+
+
+}

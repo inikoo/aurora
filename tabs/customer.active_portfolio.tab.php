@@ -43,6 +43,44 @@ $parameters = array(
 
 );
 
+$table_buttons   = array();
+
+$table_buttons[] = array(
+    'icon'     => 'plus',
+    'title'    => _("Add product to customer's portfolio"),
+    'id'       => 'add_to_portfolio',
+    'class'    => 'items_operation',
+    'add_item_to_portfolio' => array(
+
+        'field_label' => _("Product").':',
+        'metadata'    => base64_encode(
+            json_encode(
+                array(
+                    'scope'      => 'product',
+                    'parent'     => 'Store',
+                    'parent_key' => $state['_object']->get('Store Key'),
+                    'options'    => array('for_order'),
+                )
+            )
+        )
+
+    )
+
+);
+$smarty->assign('table_buttons', $table_buttons);
+
+$smarty->assign(
+    'table_metadata',
+    json_encode(
+        array(
+            'parent'     => $state['object'],
+            'parent_key' => $state['key'],
+        )
+    )
+
+);
+
+
 
 include('utils/get_table_html.php');
 
