@@ -1855,7 +1855,6 @@ $elements_options = array(
         )
     ),
 
-    //'InProcess','Submitted','Inputted','Dispatched','Received','Checked','Placed','Costing','InvoiceChecked','Cancelled'
     'supplier_order_items' => array(
         'state' => array(
             'label' => _('Status'),
@@ -1886,6 +1885,34 @@ $elements_options = array(
                 ),
 
             ),
+
+        ),
+    ),
+
+    'customer_portfolio' => array(
+        'availability_state' => array(
+            'label' => _('Stock state'),
+            'items' => array(
+
+                'OutofStock' => array(
+                    'label'    => _('Out of Stock'),
+                    'selected' => true
+                ),
+                'VeryLow' => array(
+                    'label'    => _('Very low'),
+                    'selected' => true
+                ),
+                'Low' => array(
+                    'label'    => _('Low'),
+                    'selected' => true
+                ),
+                'Ok' => array(
+                    'label'    => _('Good stock'),
+                    'selected' => true
+                ),
+
+            )
+
 
         ),
     ),

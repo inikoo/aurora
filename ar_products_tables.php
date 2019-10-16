@@ -51,7 +51,7 @@ switch ($tipo) {
         back_to_stock_notification_request_products(get_table_parameters(), $db, $user, $account);
         break;
     case 'back_to_stock_notification_request.customers':
-        back_to_stock_notification_request_customers(get_table_parameters(), $db, $user, $account);
+        back_to_stock_notification_request_customers(get_table_parameters(), $db, $user);
         break;
     case 'services':
         services(get_table_parameters(), $db, $user);
@@ -70,10 +70,10 @@ switch ($tipo) {
         parts(get_table_parameters(), $db, $user, $account);
         break;
     case 'product_categories_categories':
-        product_categories_categories(get_table_parameters(), $db, $user, $account);
+        product_categories_categories(get_table_parameters(), $db, $user);
         break;
     case 'product_categories_products':
-        product_categories_products(get_table_parameters(), $db, $user, $account);
+        product_categories_products(get_table_parameters(), $db, $user);
         break;
     case 'charges':
         charges(get_table_parameters(), $db, $user);
@@ -84,9 +84,7 @@ switch ($tipo) {
     case 'shipping_zones_schemas':
         shipping_zones_schemas(get_table_parameters(), $db, $user);
         break;
-    case 'shipping_options':
-        shipping_options(get_table_parameters(), $db, $user);
-        break;
+
     case 'customers':
         customers(get_table_parameters(), $db, $user);
         break;
@@ -103,8 +101,9 @@ switch ($tipo) {
         product_sales_correlations(get_table_parameters(), $db, $user, $type = 'anticorrelation');
         break;
     case 'webpages':
-        webpages(get_table_parameters(), $db, $user, $type = 'correlation');
+        webpages(get_table_parameters(), $db, $user);
         break;
+
     default:
         $response = array(
             'state' => 405,

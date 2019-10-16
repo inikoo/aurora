@@ -358,6 +358,29 @@ $tab_defaults = array(
         'export_fields' => $export_fields['invoices']
 
     ),
+    'customer.active_portfolio' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'code',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+        'f_period'    => 'ytd',
+        'elements_type' => array_keys($elements_options['customer_portfolio'])[0],
+        'elements'      => $elements_options['customer_portfolio'],
+        'export_fields' => $export_fields['products']
+
+    ),
+    'customer.removed_portfolio' => array(
+        'view'        => 'overview',
+        'sort_key'    => 'code',
+        'sort_order'  => 1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'code',
+
+
+    ),
     'customer.marketing.favourites' => array(
         'view'        => 'overview',
         'sort_key'    => 'id',

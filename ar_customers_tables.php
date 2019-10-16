@@ -98,6 +98,9 @@ switch ($tipo) {
     case 'customer_clients':
         customer_clients(get_table_parameters(), $db, $user, $account);
         break;
+    case 'customer_portfolio':
+        customer_portfolio(get_table_parameters(), $db, $user);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -2352,3 +2355,133 @@ function customer_clients($_data, $db, $user) {
     echo json_encode($response);
 }
 
+
+
+function customer_portfolio($_data, $db, $user) {
+
+
+    include_once 'utils/currency_functions.php';
+
+    $rtext_label = 'product';
+
+
+    include_once 'prepare_table/init.php';
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
+
+    $sql         = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $record_data = array();
+
+    $record_data = array();
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+//'Excess','Normal','Low','VeryLow','OutofStock','Error','OnDemand'
+            switch ($data['Product Availability State']) {
+                case 'Excess':
+                case 'Normal':
+                $stock_status = sprintf('<i class="fa fa-circle " style="color:#13D13D" title="%s"></i>', _('Active'));
+                    break;
+                case 'Suspended':
+                    $status = sprintf('<i class="fa fa-cube warning" aria-hidden="true" title="%s"></i>', _('Suspended'));
+                    break;
+                case 'Discontinuing':
+                    $status = sprintf('<i class="fa fa-cube warning very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinuing'));
+                    break;
+                case 'Discontinued':
+                    $status = sprintf('<i class="fa fa-cube very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinued'));
+                    break;
+                case 'Suspended':
+                    $status = sprintf('<i class="fa fa-cube error" aria-hidden="true" title="%s"></i>', _('Suspended'));
+                    break;
+                default:
+                    $stock_status = $data['Product Availability State'];
+                    break;
+            }
+
+
+/*
+ *
+ *
+ *   switch ($data['Product Availability State']) {
+                case 'Active':
+                    $status = sprintf('<i class="fa fa-cube" aria-hidden="true" title="%s"></i>', _('Active'));
+                    break;
+                case 'Suspended':
+                    $status = sprintf('<i class="fa fa-cube warning" aria-hidden="true" title="%s"></i>', _('Suspended'));
+                    break;
+                case 'Discontinuing':
+                    $status = sprintf('<i class="fa fa-cube warning very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinuing'));
+                    break;
+                case 'Discontinued':
+                    $status = sprintf('<i class="fa fa-cube very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinued'));
+                    break;
+                case 'Suspended':
+                    $status = sprintf('<i class="fa fa-cube error" aria-hidden="true" title="%s"></i>', _('Suspended'));
+                    break;
+                default:
+                    $status = $data['Product Status'];
+                    break;
+            }
+
+ */
+
+
+            $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+
+            $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%d\')" title="%s">%s</span>', $data['Store Key'], $data['Product ID'], $name, $data['Product Code']);
+
+
+            $record_data[] = array(
+
+                'id'       => (integer)$data['Product ID'],
+                'code'     => $code,
+                'name'     => $name,
+                'stock_status'   => $stock_status,
+                'amount'   => sprintf('<span>%s</span>', money($data['Customer Portfolio Amount'], $data['Store Currency Code'])),
+                'invoices' => sprintf(
+                    '<span class="link" onclick="change_view(\'customers/%d/%d/product/%d\',{ })">%s</span>', $data['Store Key'], $data['Customer Key'], $data['Product ID'], number($data['invoices'])
+                ),
+                'qty'      => sprintf('<span>%s</span>', number($data['Customer Portfolio Ordered Quantity'])),
+                'orders'      => sprintf('<span>%s</span>', number($data['Customer Portfolio Orders'])),
+                'clients'      => sprintf('<span>%s</span>', number($data['Customer Portfolio Clients']))
+
+            );
+
+
+        }
+
+    } else {
+        print "$sql\n";
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}

@@ -637,6 +637,10 @@ $modules = array(
                     'customer.orders'   => 'customer.orders_invoices',
                     'customer.invoices' => 'customer.orders_invoices',
 
+                    'customer.active_portfolio' => 'customer.portfolio',
+                    'customer.removed_portfolio' => 'customer.portfolio',
+
+
                 ),
                 'tabs'           => array(
                     'customer.history' => array(
@@ -648,16 +652,59 @@ $modules = array(
                         'icon'  => 'database'
                     ),
 
+                    'customer.portfolio' => array(
+
+                        'label' => _("Portfolio"),
+
+                        'title'         => _("Customer's store products"),
+                        'icon'          => 'store-alt',
+                        'quantity_data' => array(
+                            'object' => '_object',
+                            'field'  => 'Number Products in Portfolio'
+                        ),
+                        'subtabs' => array(
+                            'customer.active_portfolio' => array(
+                                'icon'=>'cube',
+                                'label' => _("Customer's store products")
+                            ),
+                            'customer.removed_portfolio' => array(
+                                'class'=>'icon_only right',
+                                'icon'=>'ghost',
+                                'label'=>_('Removed products'),
+                                'title' => _('Removed from portfolio')
+                            ),
+
+                        )
+                    ),
+
                     'customer.clients' => array(
                         'label' => _("Clients"),
 
                         'title'         => _("Customer's clients"),
                         'icon'          => 'address-book',
+
                         'quantity_data' => array(
                             'object' => '_object',
                             'field'  => 'Number Clients'
                         ),
                     ),
+
+                    'customer.orders_invoices' => array(
+                        'label'   => _('Orders'),
+                        'icon'    => 'shopping-cart',
+                        'subtabs' => array(
+                            'customer.orders'   => array(
+                                'label' => _('Orders'),
+                                'icon'  => 'shopping-cart'
+                            ),
+                            'customer.invoices' => array(
+                                'label' => _('Invoices'),
+                                'icon'  => 'file-invoice-dollar'
+                            ),
+                        )
+
+                    ),
+
 
                     'customer.sales' => array(
                         'label'   => _('Sales'),
@@ -714,21 +761,6 @@ $modules = array(
                     ),
 
 
-                    'customer.orders_invoices' => array(
-                        'label'   => _('Orders'),
-                        'icon'    => 'shopping-cart',
-                        'subtabs' => array(
-                            'customer.orders'   => array(
-                                'label' => _('Orders'),
-                                'icon'  => 'shopping-cart'
-                            ),
-                            'customer.invoices' => array(
-                                'label' => _('Invoices'),
-                                'icon'  => 'file-invoice-dollar'
-                            ),
-                        )
-
-                    ),
 
 
                     'customer.deals'             => array(
