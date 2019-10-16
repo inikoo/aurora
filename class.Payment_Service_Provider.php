@@ -259,6 +259,7 @@ class Payment_Service_Provider extends DB_Table {
         } else {
             $this->error = true;
             $this->msg   = $payment_account->msg;
+
             return false;
         }
 
@@ -315,8 +316,7 @@ class Payment_Service_Provider extends DB_Table {
             "SELECT count(*) AS num,group_concat(DISTINCT `Payment Currency Code`) AS currencies, sum(if(`Payment Transaction Amount`>0,`Payment Transaction Amount`,0)) AS payments,
   sum(`Payment Transaction Amount`) AS balance,sum(`Payment Transaction Amount Refunded`) AS refunded,sum(`Payment Transaction Amount Credited`) AS credited FROM `Payment Dimension` P
 left join `Payment Account Dimension` PA on (P.`Payment Account Key`=PA.`Payment Account Key`)
-WHERE `Payment Account Service Provider Key`=%d AND `Payment Transaction Status`='Completed'",
-            $this->id
+WHERE `Payment Account Service Provider Key`=%d AND `Payment Transaction Status`='Completed'", $this->id
         );
         // print $sql;
         if ($row = $this->db->query($sql)->fetch()) {
@@ -345,9 +345,6 @@ WHERE `Payment Account Service Provider Key`=%d AND `Payment Transaction Status`
 
     function load_acc_data() {
 
-
-        //todo
-        return;
 
         $sql = sprintf("SELECT * FROM `Payment Service Provider Data`  WHERE `Payment Service Provider Key`=%d", $this->id);
 
