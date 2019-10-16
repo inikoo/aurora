@@ -2418,6 +2418,7 @@ CREATE TABLE `Customer Dimension` (
   `Customer Number Web Requests` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Customer Number History Records` smallint(5) unsigned DEFAULT '0',
   `Customer Number Clients` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Customer Number Products in Portfolio` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Customer Currency Code` varchar(3) DEFAULT NULL,
   `Customer Metadata` json DEFAULT NULL,
   `Customer Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -2450,27 +2451,6 @@ CREATE TABLE `Customer Dimension` (
   KEY `Customer Last Dispatched Order Key` (`Customer Last Dispatched Order Key`),
   KEY `Customer Main Plain Postal Code` (`Customer Main Plain Postal Code`),
   KEY `Customer Account Balance` (`Customer Account Balance`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Customer Favorite Product Bridge`
---
-
-DROP TABLE IF EXISTS `Customer Favorite Product Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Customer Favorite Product Bridge` (
-  `Customer Favorite Product Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Customer Key` mediumint(8) unsigned NOT NULL,
-  `Product ID` mediumint(8) unsigned NOT NULL,
-  `Site Key` smallint(5) unsigned NOT NULL,
-  `Store Key` smallint(5) unsigned NOT NULL,
-  `Department Key` smallint(5) unsigned NOT NULL,
-  `Family Key` smallint(5) unsigned NOT NULL,
-  `Date Created` datetime NOT NULL,
-  PRIMARY KEY (`Customer Favorite Product Key`),
-  UNIQUE KEY `Customer Key` (`Customer Key`,`Product ID`,`Site Key`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2798,6 +2778,50 @@ CREATE TABLE `Customer Poll Query Option History Bridge` (
   KEY `Deletable` (`Deletable`),
   KEY `Type` (`Type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Customer Portfolio Fact`
+--
+
+DROP TABLE IF EXISTS `Customer Portfolio Fact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Customer Portfolio Fact` (
+  `Customer Portfolio Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Customer Portfolio Customers State` enum('Active','Removed') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Active',
+  `Customer Portfolio Store Key` smallint(5) unsigned DEFAULT NULL,
+  `Customer Portfolio Customer Key` mediumint(8) unsigned DEFAULT NULL,
+  `Customer Portfolio Product ID` mediumint(8) unsigned DEFAULT NULL,
+  `Customer Portfolio Creation Date` datetime DEFAULT NULL,
+  `Customer Portfolio Removed Date` datetime DEFAULT NULL,
+  `Customer Portfolio Last Ordered` datetime DEFAULT NULL,
+  `Customer Portfolio Clients` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Customer Portfolio Ordered Quantity` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT 'Ordered quantity',
+  `Customer Portfolio Orders` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `Customer Portfolio Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
+  PRIMARY KEY (`Customer Portfolio Key`),
+  KEY `Customer Portfolio Creation Date` (`Customer Portfolio Creation Date`),
+  KEY `Customer Portfolio Customer Key` (`Customer Portfolio Customer Key`,`Customer Portfolio Product ID`),
+  KEY `Customer Portfolio Store Key` (`Customer Portfolio Store Key`),
+  KEY `Customer Portfolio Customers State` (`Customer Portfolio Customers State`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Customer Portfolio Timeline`
+--
+
+DROP TABLE IF EXISTS `Customer Portfolio Timeline`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Customer Portfolio Timeline` (
+  `Customer Portfolio Timeline Customer Portfolio Key` int(11) NOT NULL,
+  `Customer Portfolio Timeline Action` enum('Add','Remove') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Customer Portfolio Timeline Date` datetime DEFAULT NULL,
+  PRIMARY KEY (`Customer Portfolio Timeline Customer Portfolio Key`),
+  KEY `Customer Portfolio Timeline Action` (`Customer Portfolio Timeline Action`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -7924,17 +7948,13 @@ DROP TABLE IF EXISTS `Payment Account Dimension`;
 CREATE TABLE `Payment Account Dimension` (
   `Payment Account Key` mediumint(9) NOT NULL AUTO_INCREMENT,
   `Payment Account Service Provider Key` mediumint(8) unsigned DEFAULT NULL,
-  `Payment Service Provider Key` mediumint(9) NOT NULL,
   `Payment Account Block` varchar(64) DEFAULT NULL,
   `Payment Account Code` varchar(64) NOT NULL,
   `Payment Account Name` varchar(32) NOT NULL,
   `Payment Account ID` varchar(128) DEFAULT NULL,
   `Payment Account Cart ID` varchar(64) DEFAULT NULL,
-  `Payment Account Type` enum('Credit Card','Cash','Paypal','Check','Bank Transfer','Cash on Delivery','Other','Unknown','Account','Sofort') DEFAULT NULL,
-  `Payment Type` enum('Credit Card','Cash','Paypal','Check','Bank Transfer','Cash on Delivery','Other','Unknown','Account','Sofort') NOT NULL DEFAULT 'Unknown',
   `Payment Account Login` varchar(64) DEFAULT NULL,
   `Payment Account Password` varchar(64) DEFAULT NULL,
-  `Payment Account Response` varchar(64) DEFAULT NULL,
   `Payment Account Online Refund` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Payment Account Refund Login` varchar(255) DEFAULT NULL,
   `Payment Account Refund Password` varchar(255) DEFAULT NULL,
@@ -7951,8 +7971,6 @@ CREATE TABLE `Payment Account Dimension` (
   `Payment Account Recipient Bank Country Code` varchar(3) DEFAULT NULL,
   `Payment Account Business Name` varchar(64) DEFAULT NULL,
   `Payment Account URL Link` varchar(255) DEFAULT NULL,
-  `Payment Account Button Image URL` varchar(128) DEFAULT NULL,
-  `Payment Account Button Image URL Selected` varchar(128) DEFAULT NULL,
   `Payment Account Settings` text,
   `Payment Account Currency` text NOT NULL,
   `Payment Account Transactions` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -7965,9 +7983,7 @@ CREATE TABLE `Payment Account Dimension` (
   `Payment Account Number Stores` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Payment Account Number Websites` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`Payment Account Key`),
-  UNIQUE KEY `Payment Account Code` (`Payment Account Code`),
-  KEY `Payment Service Provider Key` (`Payment Service Provider Key`),
-  KEY `Payment Account Type` (`Payment Account Type`)
+  UNIQUE KEY `Payment Account Code` (`Payment Account Code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -7989,28 +8005,6 @@ CREATE TABLE `Payment Account History Bridge` (
   KEY `History Key` (`History Key`),
   KEY `Deletable` (`Deletable`),
   KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Payment Account Site Bridge`
---
-
-DROP TABLE IF EXISTS `Payment Account Site Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Payment Account Site Bridge` (
-  `Payment Account Key` mediumint(9) NOT NULL,
-  `Site Key` mediumint(9) NOT NULL DEFAULT '0',
-  `Store Key` mediumint(9) NOT NULL,
-  `Valid From` datetime DEFAULT NULL,
-  `Valid To` datetime DEFAULT NULL,
-  `Status` enum('Active','Inactive') NOT NULL DEFAULT 'Inactive',
-  `Show In Cart` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Show Cart Order` smallint(6) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`Payment Account Key`,`Site Key`),
-  KEY `Site Key` (`Site Key`,`Show In Cart`),
-  KEY `Show Cart Order` (`Show Cart Order`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -16893,4 +16887,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-10-15  0:00:35
+-- Dump completed on 2019-10-17  0:46:50
