@@ -1,6 +1,7 @@
 ## Synopsis
 
-Aurora is a Business Operations/Intelligence system
+Aurora is a Business Operations/Intelligence system targeted to B2B and dropshippers, it cover all supplirt chain operations from purchasing, manufacturing, stocking in warehouse throght selling the products online.
+
 
 
 ## Contributors
