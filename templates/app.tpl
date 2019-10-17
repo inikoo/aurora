@@ -146,6 +146,9 @@
 
             </ul>
 
+            <div class="aurora_version full"></div>
+            <div class="aurora_version small"></div>
+
         </div>
         <div id="app_main">
             <div id="navigation"></div>
@@ -242,29 +245,7 @@
             "url":         "https://inikoo.freshdesk.com"
         });
     </script>
-    {*
-    <script>
-        window.fcWidget.init({
-            token:  "869f028d-7877-4611-a735-7021ae47fab0",
-            host:   "https://wchat.freshchat.com",
-            config: {
-                headerProperty: {
-                    hideChatButton: true
-                }
-            },
-        });
 
-
-        {if $user->get('User Password Recovery Email')!=''}
-        window.fcWidget.user.setEmail("{$user->get('User Password Recovery Email')}");
-        {/if}
-
-
-        window.fcWidget.setExternalId("{$account->get('Code')}.{$user->get('Handle')}");
-
-        window.fcWidget.user.setFirstName("{$user->get('Alias')}");
-    </script>
-    *}
 {/if}
 </body>
 </html>

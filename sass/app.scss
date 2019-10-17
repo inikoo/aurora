@@ -1619,3 +1619,11 @@ h2.dashboard{
   font-weight:200;
   font-family: 'Courier New', Courier, monospace;
 }
+
+.aurora_version{
+  opacity:0.5;text-align: center;position: absolute;bottom: 40px;width: 100%;font-size: small;
+}
+
+.aurora_version.small {
+  display: none;font-size: 11px
+}
