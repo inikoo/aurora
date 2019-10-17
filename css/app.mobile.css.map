@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AAGA,0BAAU;EACT,OAAO,EAAE,YAAY;EAClB,QAAQ,EAAE,MAAM;EAAC,YAAY;EAC7B,KAAK,EAAC,CAAC;EAAC,YAAY;EACpB,SAAS,EAAE,KAAK;AAGpB,4BAAY;EAEZ,KAAK,EAAC,IAAI;AAKT,oBAAK;EAEH,KAAK,EAAC,IAAI;EACT,UAAU,EAAE,IAAI",
-"sources": ["../sass/app.mobile.scss"],
-"names": [],
-"file": "app.mobile.css"
-}

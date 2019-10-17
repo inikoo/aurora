@@ -182,15 +182,7 @@ module.exports = function (grunt) {
 
 
                 }
-            }, /*
-            web: {
-                options: {
-                    // style: 'compressed'
-                }, files: {
-                    'web/css/aurora.css': 'web/sass/aurora.scss'
-                }
             },
-            */
             login: {
                 options: {
                     // style: 'compressed'
@@ -346,8 +338,9 @@ module.exports = function (grunt) {
     grunt.registerTask('qfork', ['copy:fork']);
 
 
-    grunt.registerTask('au_css', ['sass:aurora', 'sass:aurora_public', 'sass:login', 'cssmin:au', 'cssmin:au_login']);
-    grunt.registerTask('au_js', ['sass:aurora', 'sass:aurora_public', 'sass:login', 'cssmin:au', 'cssmin:au_login']);
+    grunt.registerTask('au_sass', ['sass:aurora', 'sass:aurora_public', 'sass:login']);
+    grunt.registerTask('au_css', ['cssmin:au', 'cssmin:au_login']);
+    grunt.registerTask('au_js', ['uglify:aurora_libs', 'uglify:login', 'uglify:aurora' ]);
 
     grunt.registerTask('au', ['sass:aurora', 'sass:aurora_public', 'sass:login', 'cssmin:au', 'cssmin:au_login', 'uglify:aurora_libs', 'uglify:login', 'uglify:aurora']);
 
