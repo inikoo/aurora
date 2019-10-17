@@ -169,3 +169,5 @@ websocket_server/composer.lock
 /cron/fix_po_states.php
 /post_deploy.sh
 /deploy.sh
+server_files
+assets
