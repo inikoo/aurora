@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Aurora</title>
     <link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon"/>
-    <link href="/assets/au_app.min.css?v=191012" rel="stylesheet">
+    <link href="/assets/au_app.min.css" rel="stylesheet">
     {if !$is_devel}
     <script src="https://cdn.lr-ingest.io/LogRocket.min.js" crossorigin="anonymous"></script>
     <script>
@@ -25,9 +25,8 @@
     {/if}
     <script src="https://d3js.org/d3.v4.min.js"></script>
 
-    <script src="/assets/aurora_libs.min.js?v190910v3"></script>
-
-    <script src="/assets/aurora.min.js?v191012a"></script>
+    <script src="/assets/aurora_libs.min.js"></script>
+    <script src="/assets/aurora.min.js"></script>
 
     <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 

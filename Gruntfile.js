@@ -319,6 +319,14 @@ module.exports = function (grunt) {
                 },
 
                 ]
+            },
+            css: {
+                src: ['templates/app.tpl'], overwrite: true, replacements: [{
+                    from: /"au_app.min.css\.*"/g,
+                    to: 'au_app.min.css?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                }
+
+                ]
             }
         }
 
