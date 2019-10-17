@@ -171,3 +171,4 @@ websocket_server/composer.lock
 /deploy.sh
 server_files
 assets
+/css/

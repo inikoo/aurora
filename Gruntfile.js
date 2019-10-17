@@ -4,6 +4,7 @@ module.exports = function (grunt) {
 
         clean: {
             fork: ["../fork/*", "!../fork/keyring/**", "!../fork/server_files/**"],
+            css: ["assets/images"],
         }, uglify: {
             pweb_common_desktop_logged_in: {
                 options: {
@@ -239,6 +240,13 @@ module.exports = function (grunt) {
             }
         }, copy: {
 
+            css: {
+                files: [{
+                    expand: true, cwd: 'css/images/', src: ['*'], dest: 'assets/images/'
+                }
+
+                ]
+            },
 
             fork_stones: {
                 files: [{
@@ -314,7 +322,7 @@ module.exports = function (grunt) {
             },
             css: {
                 src: ['templates/app.tpl'], overwrite: true, replacements: [{
-                    from: /"au_app.min.css\.*"/g,
+                    from: /au_app.min.css\.*"/g,
                     to: 'au_app.min.css?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
                 }
 
@@ -334,7 +342,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-text-replace');
 
 
-    ;grunt.registerTask('fork', ['copy:fork_stones', 'copy:fork']);
+    grunt.registerTask('fork', ['copy:fork_stones', 'copy:fork']);
     grunt.registerTask('qfork', ['copy:fork']);
 
 
