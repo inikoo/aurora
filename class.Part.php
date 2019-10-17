@@ -16,6 +16,10 @@ include_once 'class.Asset.php';
 
 class Part extends Asset {
 
+    /**
+     * @var \PDO
+     */
+    public $db;
 
     public $sku = false;
     public $locale = 'en_GB';
@@ -208,36 +212,6 @@ class Part extends Asset {
         }
 
 
-        /*
-                $keys   = '(';
-                $values = 'values(';
-                foreach ($base_data as $key => $value) {
-                    $keys .= "`$key`,";
-
-                    if (in_array(
-                        $key, array(
-
-                            )
-                    )) {
-                        $values .= prepare_mysql($value, false).",";
-
-                    } else {
-
-                        $values .= prepare_mysql($value).",";
-                    }
-                }
-                $keys   = preg_replace('/,$/', ')', $keys);
-                $values = preg_replace('/,$/', ')', $values);
-
-                //print_r($base_data);
-
-                $_sql = sprintf("INSERT INTO `Part Dimension` %s %s", $keys, $values);
-                print "$_sql\n";
-
-
-                */
-
-
         $sql = sprintf(
             "INSERT INTO `Part Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
         );
@@ -352,18 +326,18 @@ class Part extends Asset {
 
 
             $sql = sprintf(
-                'SELECT  `Supplier Delivery Estimated Receiving Date`,`Supplier Part Packages Per Carton`,`Purchase Order Key`,`Supplier Delivery Transaction State`,`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,`Part Units Per Package`,
+                "SELECT  `Supplier Delivery Estimated Receiving Date`,`Supplier Part Packages Per Carton`,`Purchase Order Key`,`Supplier Delivery Transaction State`,`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,`Part Units Per Package`,
                 `Supplier Delivery Units`, `Supplier Delivery Checked Units`,
                 ifnull(`Supplier Delivery Placed Units`,0) AS placed,POTF.`Supplier Delivery Key`,`Supplier Delivery Public ID` FROM 
                 `Purchase Order Transaction Fact` POTF LEFT JOIN 
                 `Supplier Delivery Dimension` PO  ON (PO.`Supplier Delivery Key`=POTF.`Supplier Delivery Key`)  left join  
                 `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) left join 
                 `Part Dimension` Pa on (SP.`Supplier Part Part SKU`=Pa.`Part SKU`)
-                WHERE POTF.`Supplier Part Key` IN (%s)  AND  POTF.`Supplier Delivery Key` IS NOT NULL AND `Supplier Delivery Transaction State` in ("InProcess","Dispatched","Received","Checked")
+                WHERE POTF.`Supplier Part Key` IN (%s)  AND  POTF.`Supplier Delivery Key` IS NOT NULL AND `Supplier Delivery Transaction State` in ('InProcess','Dispatched','Received','Checked')
                 
 
                 
-                 ', join($supplier_parts, ',')
+                 ", join($supplier_parts, ',')
             );
 
 
@@ -467,21 +441,16 @@ class Part extends Asset {
                         }
                     }
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
-
             $sql = sprintf(
-                'SELECT `Supplier Part Packages Per Carton`,POTF.`Purchase Order Transaction State`,`Purchase Order Submitted Units`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` ,
+                "SELECT `Supplier Part Packages Per Carton`,POTF.`Purchase Order Transaction State`,`Purchase Order Submitted Units`,`Supplier Delivery Key` ,`Purchase Order Estimated Receiving Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key` ,
                 `Part Units Per Package`,`Purchase Order Ordering Units`,`Purchase Order Submitted Units`
         FROM `Purchase Order Transaction Fact` POTF LEFT JOIN `Purchase Order Dimension` PO  ON (PO.`Purchase Order Key`=POTF.`Purchase Order Key`)  
           left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) left join 
                 `Part Dimension` Pa on (SP.`Supplier Part Part SKU`=Pa.`Part SKU`)
         
-        WHERE POTF.`Supplier Part Key`IN (%s) AND  POTF.`Supplier Delivery Key` IS NULL AND POTF.`Purchase Order Transaction State` NOT IN ("Placed","Cancelled") ', join($supplier_parts, ',')
+        WHERE POTF.`Supplier Part Key`IN (%s) AND  POTF.`Supplier Delivery Key` IS NULL AND POTF.`Purchase Order Transaction State` NOT IN ('Placed','Cancelled') ", join($supplier_parts, ',')
             );
 
             if ($result = $this->db->query($sql)) {
@@ -641,7 +610,7 @@ class Part extends Asset {
                     $products[$row['Product Part Product ID']] = array(
                         'store_key'         => $store->id,
                         'store_code'        => $store->get('Code'),
-                        'store_key'         => $store->get('Name'),
+                        'store_name'        => $store->get('Name'),
                         'product_id'        => $product->id,
                         'units_per_case'    => $product->get('Product Units Per Case'),
                         'name'              => $product->get('Product Name'),
@@ -746,7 +715,7 @@ class Part extends Asset {
         }
 
         if (!$this->id) {
-            return;
+            return false;
         }
 
 
@@ -827,25 +796,24 @@ class Part extends Asset {
 
                 return $main_supplier_part->get('Supplier Part Packages Per Carton');
 
-                /*
-                $suppliers = '';
+            /*
+            $suppliers = '';
 
-                foreach ($this->get_supplier_parts('objects') as $supplier_part) {
-                    $supplier_part->load_supplier();
-                    $suppliers .= $supplier_part->supplier->get('Code').' '.$supplier_part->get('Supplier Part Packages Per Carton').' '._("Supplier's part ordering SKOs per carton").', ';
+            foreach ($this->get_supplier_parts('objects') as $supplier_part) {
+                $supplier_part->load_supplier();
+                $suppliers .= $supplier_part->supplier->get('Code').' '.$supplier_part->get('Supplier Part Packages Per Carton').' '._("Supplier's part ordering SKOs per carton").', ';
 
-                }
-                $suppliers = preg_replace('/\, $/', '', $suppliers);
+            }
+            $suppliers = preg_replace('/\, $/', '', $suppliers);
 
-                if ($this->data['Part SKOs per Carton'] == '') {
-                    return '<span class="error">'._('Not set')."</span> <span class='italic very_discreet'>(".$suppliers.')</span>';
+            if ($this->data['Part SKOs per Carton'] == '') {
+                return '<span class="error">'._('Not set')."</span> <span class='italic very_discreet'>(".$suppliers.')</span>';
 
-                } else {
-                    return number($this->data['Part SKOs per Carton'])." <span class='italic very_discreet'>(".$suppliers.')</span>';
+            } else {
+                return number($this->data['Part SKOs per Carton'])." <span class='italic very_discreet'>(".$suppliers.')</span>';
 
-                }
+            }
 */
-
 
 
             case 'CBM per Unit':
@@ -1037,7 +1005,7 @@ class Part extends Asset {
                 }
 
 
-                $sko_recomended_price = sprintf(
+                $sko_recommended_price = sprintf(
                     _('recommended SKO commercial value: %s'),
                     ($this->data['Part Unit Price'] > 0 ? money($this->data['Part Unit Price'] * $this->data['Part Units Per Package'], $account->get('Account Currency')) : '<span class="italic discreet">'._('not set').'</span>')
 
@@ -1048,13 +1016,13 @@ class Part extends Asset {
 
                     $unit_margin = $this->data['Part Unit Price'] - ($this->data['Part Cost in Warehouse'] / $this->data['Part Units Per Package']);
 
-                    $sko_recomended_price .= sprintf(
+                    $sko_recommended_price .= sprintf(
                         ' (<span class="'.($unit_margin < 0 ? 'error' : '').'">%s '._('margin').'</span>)', percentage($unit_margin, $this->data['Part Unit Price'])
                     );
                 }
 
 
-                return $sko_cost.' <span class="discreet" style="margin-left:10px">'.$sko_recomended_price.'</span>';
+                return $sko_cost.' <span class="discreet" style="margin-left:10px">'.$sko_recommended_price.'</span>';
                 break;
 
 
@@ -1238,8 +1206,6 @@ class Part extends Asset {
 
                         }
 
-                    } else {
-
                     }
 
 
@@ -1311,14 +1277,12 @@ class Part extends Asset {
 
                 return $value;
                 break;
+            case 'Cost':
             case 'Commercial Value':
                 return money($this->data['Part '.$key], $account->get('Currency Code'));
                 break;
             case 'Margin':
                 return percentage($this->data['Part '.$key], 1);
-                break;
-            case 'Cost':
-                return money($this->data['Part '.$key], $account->get('Currency Code'));
                 break;
 
 
@@ -1369,20 +1333,21 @@ class Part extends Asset {
                 if (strlen($this->data['Part Barcode Number']) >= 12 and strlen($this->data['Part Barcode Number']) < 14) {
 
 
-                    $sql = sprintf(
-                        'SELECT `Part SKU`,`Part Reference` FROM `Part Dimension` WHERE `Part Barcode Number` LIKE "%s%%" AND `Part SKU`!=%d', addslashes($this->data['Part Barcode Number']), $this->id
+                    $sql = "SELECT `Part SKU`,`Part Reference` FROM `Part Dimension` WHERE `Part Barcode Number` LIKE ? AND `Part SKU`!=?";
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $this->data['Part Barcode Number'].'%',
+                            $this->id
+                        )
                     );
+                    while ($row = $stmt->fetch()) {
+                        $duplicates .= sprintf('<span class=" " style="cursor: pointer" onclick="change_view(\'part/%d\')">%s</span>, ', $row['Part SKU'], $row['Part Reference']);
 
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
-                            $duplicates .= sprintf('<span class=" " style="cursor: pointer" onclick="change_view(\'part/%d\')">%s</span>, ', $row['Part SKU'], $row['Part Reference']);
-                        }
-
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
+
+
                     if ($duplicates != '') {
                         $duplicates = ' ('.preg_replace('/\, $/', ')', $duplicates);
                     }
@@ -1620,21 +1585,20 @@ class Part extends Asset {
                 $error = 'Size';
                 if (strlen($barcode) == 12) {
                     $error = 'Checksum_missing';
-                    $sql   = sprintf(
-                        'SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number` LIKE "%s%%" AND `Part SKU`!=%d', addslashes($barcode), $this->id
+                    $sql   = "SELECT `Part SKU` FROM `Part Dimension` WHERE `Part Barcode Number` LIKE ? AND `Part SKU`!=?";
+
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $barcode.'%',
+                            $this->id,
+                        )
                     );
+                    while ($row = $stmt->fetch()) {
+                        $error = 'Short_Duplicated';
 
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
-
-                            $error = 'Short_Duplicated';
-                        }
-
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
+
 
                 }
 
@@ -1664,12 +1628,7 @@ class Part extends Asset {
                             $error = 'Duplicated';
                         }
 
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
-
 
                 }
 
@@ -1691,15 +1650,15 @@ class Part extends Asset {
         $max_value  = 0;
         $min_value  = 0;
         $avg_weight = 0;
-        $sql        = sprintf(
-            'select avg(`Part Package Weight` ) as average_kg ,avg(`Part Cost`/`Part Package Weight` ) as average_cost_per_kg ,STD(`Part Cost`/`Part Package Weight`)  as sd_cost_per_kg from `Part Dimension` where  `Part Status`="In Use" and  `Part Package Weight`>0 and `Part Cost`>0  '
-        );
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $max_value  = $row['average_cost_per_kg'] + (3 * $row['sd_cost_per_kg']);
-                $min_value  = $row['average_cost_per_kg'] * 0.001;
-                $avg_weight = $row['average_kg'];
-            }
+        $sql        =
+            "select avg(`Part Package Weight` ) as average_kg ,avg(`Part Cost`/`Part Package Weight` ) as average_cost_per_kg ,STD(`Part Cost`/`Part Package Weight`)  as sd_cost_per_kg from `Part Dimension` where  `Part Status`='In Use' and  `Part Package Weight`>0 and `Part Cost`>0 ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        if ($row = $stmt->fetch()) {
+            $max_value  = $row['average_cost_per_kg'] + (3 * $row['sd_cost_per_kg']);
+            $min_value  = $row['average_cost_per_kg'] * 0.001;
+            $avg_weight = $row['average_kg'];
         }
 
 
@@ -1710,16 +1669,9 @@ class Part extends Asset {
 
             if ($this->get('Part Package Weight') > 0 and $this->get('Part Unit Weight') > 0) {
 
-
                 $sko_weight_from_unit_weight = $this->get('Part Unit Weight') * $this->get('Part Units Per Package');
-
-
                 if ($sko_weight_from_unit_weight > (2 * $this->get('Part Package Weight'))) {
                     $weight_status = 'Underweight Web';
-
-                    //   print "$sko_weight_from_unit_weight  ".$this->get('Part Unit Weight')." \n";
-
-
                 }
                 if ($sko_weight_from_unit_weight < 0.5 * $this->get('Part Package Weight')) {
 
@@ -1763,64 +1715,6 @@ class Part extends Asset {
         if ($weight_status_old != $weight_status) {
             $account = get_object('Account', 1);
             $account->update_parts_data();
-        }
-
-
-    }
-
-    function update_next_shipment() {
-
-
-        return;
-
-        include_once 'class.PurchaseOrder.php';
-
-        $next_delivery_time   = 0;
-        $next_delivery_po_key = 0;
-
-        $sql = sprintf(
-            'SELECT `Purchase Order Key` FROM  `Supplier Part Dimension` SPD  LEFT JOIN   `Purchase Order Transaction Fact` POTF  ON (SPD.`Supplier Part Key`=POTF.`Supplier Part Key`)  WHERE `Purchase Order Transaction State` IN ("Submitted","Inputted","Dispatched") AND `Supplier Part Part SKU`=%d ',
-            $this->id
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                $purchase_order        = new PurchaseOrder($row['Purchase Order Key']);
-                $_next_delivery_time   = $purchase_order->get('Estimated Receiving Datetime');
-                $_next_delivery_po_key = $purchase_order->id;
-
-
-                if ($_next_delivery_time != '' and strtotime($_next_delivery_time) > gmdate('U')) {
-
-
-                    if (!$next_delivery_time or strtotime($_next_delivery_time.' +0:00') < $next_delivery_time) {
-                        $next_delivery_time   = strtotime($_next_delivery_time.' +0:00');
-                        $next_delivery_po_key = $_next_delivery_po_key;
-
-                    }
-                }
-
-            }
-
-
-            $this->update_field_switcher('Part Next Shipment Date', (!$next_delivery_time ? '' : gmdate('Y-m-d H:i:s', $next_delivery_time)), 'no_history');
-            $this->update_field_switcher('Part Next Shipment Object', 'PurchaseOrder', 'no_history');
-            $this->update_field_switcher('Part Next Shipment Object Key', (!$next_delivery_po_key ? '' : $next_delivery_po_key), 'no_history');
-
-
-            foreach ($this->get_products('objects') as $product) {
-                $product->editor = $this->editor;
-                $product->update_next_shipment();
-            }
-
-
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -1989,7 +1883,9 @@ class Part extends Asset {
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
 
-
+                        /**
+                         * @var $part \Part
+                         */
                         $part = get_object('Part', $row['Part SKU']);
                         $part->validate_barcode();
 
@@ -2015,7 +1911,10 @@ class Part extends Asset {
 
                 if (file_exists('widgets/inventory_alerts.wget.php')) {
                     include_once('widgets/inventory_alerts.wget.php');
-                    global $smarty;
+
+                    /**
+                     * @var $smarty \Smarty
+                     */ global $smarty;
 
                     if (is_object($smarty)) {
 
@@ -2402,6 +2301,9 @@ class Part extends Asset {
 
                 foreach ($materials_to_update as $material_key => $update) {
                     if ($update) {
+                        /**
+                         * @var $material \Material
+                         */
                         $material = get_object('Material', $material_key);
                         $material->update_stats();
 
@@ -2412,8 +2314,6 @@ class Part extends Asset {
                 $this->update_field('Part Materials', $materials, $options);
                 $updated = $this->updated;
 
-
-                //  print 'xxxxx';
 
                 foreach ($this->get_products('objects') as $product) {
 
@@ -2561,9 +2461,6 @@ class Part extends Asset {
                             $purchase_order->update_totals();
                         }
 
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
                     }
 
                     foreach ($this->get_products('objects') as $product) {
@@ -2634,18 +2531,9 @@ class Part extends Asset {
                 break;
             case('Part Tariff Code'):
 
-                if ($value == '') {
-                    $tariff_code_valid = '';
-                } else {
-                    //include_once 'utils/validate_tariff_code.php';
-                    //$tariff_code_valid = validate_tariff_code($value, $this->db);
-                }
-
 
                 $this->update_field($field, $value, $options);
                 $updated = $this->updated;
-                //$this->update_field('Part Tariff Code Valid', $tariff_code_valid, 'no_history');
-
 
                 foreach ($this->get_products('objects') as $product) {
 
@@ -2658,7 +2546,6 @@ class Part extends Asset {
 
                 }
 
-                //$this->update_linked_products($field, $value, $options, $metadata);
                 $this->updated = $updated;
 
                 break;
@@ -2853,8 +2740,6 @@ class Part extends Asset {
                 if ($value == 'Not In Use') {
                     if ($this->get('Part Current On Hand Stock') > 0) {
                         $value = 'Discontinuing';
-                    } elseif ($this->get('Part Current On Hand Stock') < 0) {
-
                     }
                 }
 
@@ -2870,10 +2755,6 @@ class Part extends Asset {
                 $this->update_field($field, $value, $options);
                 break;
 
-
-            case 'Part Next Set Supplier Shipment':
-                $this->update_set_next_supplier_shipment($value, $options);
-                break;
 
             case 'Part Main Supplier Part Key':
                 $old_value = $this->get('Part Main Supplier Part Key');
@@ -3193,19 +3074,20 @@ class Part extends Asset {
             foreach ($result as $row) {
 
 
-                $sql = sprintf(
-                    "SELECT `Category Label`,`Category Code` FROM `Category Dimension` WHERE `Category Key`=%d", $row['Category Root Key']
+                $sql = "SELECT `Category Label`,`Category Code` FROM `Category Dimension` WHERE `Category Key`=?";
+
+                $stmt2 = $this->db->prepare($sql);
+                $stmt2->execute(
+                    array(
+                        $row['Category Root Key']
+                    )
                 );
-
-
-                if ($result2 = $this->db->query($sql)) {
-                    if ($row2 = $result2->fetch()) {
-                        $root_label = $row2['Category Label'];
-                        $root_code  = $row2['Category Code'];
-                    }
+                if ($row2 = $stmt2->fetch()) {
+                    $root_label = $row2['Category Label'];
+                    $root_code  = $row2['Category Code'];
                 } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
+                    $root_label = '';
+                    $root_code  = '';
                 }
 
 
@@ -3225,9 +3107,6 @@ class Part extends Asset {
                 );
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -3316,9 +3195,6 @@ class Part extends Asset {
 
 
             }
-        } else {
-
-
         }
 
     }
@@ -3403,7 +3279,6 @@ class Part extends Asset {
             );
 
 
-            //print "Y $msg  YYYYYYYYYYY\n";
         }
 
 
@@ -3879,23 +3754,21 @@ class Part extends Asset {
 
         $image_key = '';
 
-        $sql = sprintf(
-            'SELECT `Image Subject Image Key`  FROM `Image Subject Bridge` WHERE `Image Subject Object` = "Part" AND `Image Subject Object Key` =%d AND `Image Subject Object Image Scope`="SKO"  ', $this->id
+        $sql = "SELECT `Image Subject Image Key`  FROM `Image Subject Bridge` WHERE `Image Subject Object` = 'Part' AND `Image Subject Object Key` =? AND `Image Subject Object Image Scope`='SKO'  ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $image_key = $row['Image Subject Image Key'];
-                break;
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+        while ($row = $stmt->fetch()) {
+            $image_key = $row['Image Subject Image Key'];
+            break;
         }
 
-        $this->update(array('Part SKO Image Key' => $image_key), 'no_history');
+
+        $this->fast_update(array('Part SKO Image Key' => $image_key));
 
     }
 
@@ -3934,9 +3807,6 @@ class Part extends Asset {
         return $suppliers;
     }
 
-    function update_custom_fields($id, $value) {
-        $this->update(array($id => $value));
-    }
 
     function update_leakages($type = 'all') {
 
@@ -4166,35 +4036,6 @@ class Part extends Asset {
         return $suppliers;
     }
 
-    function get_period($period, $key) {
-        return $this->get($period.' '.$key);
-    }
-
-    function get_unit($number) {
-        //'10','25','100','200','bag','ball','box','doz','dwt','ea','foot','gram','gross','hank','kilo','ib','m','oz','ozt','pair','pkg','set','skein','spool','strand','ten','tube','vial','yd'
-        switch ($this->data['Part Unit']) {
-            case 'bag':
-                $unit = ngettext('bag', 'bags', $number);
-                break;
-            case 'box':
-                $unit = ngettext('box', 'boxes', $number);
-
-                break;
-            case 'doz':
-                $unit = ngettext('dozen', 'dozens', $number);
-
-                break;
-            case 'ea':
-                $unit = ngettext('unit', 'units', $number);
-
-                break;
-            default:
-                $unit = $this->data['Part Unit'];
-                break;
-        }
-
-        return $unit;
-    }
 
     function get_stock($date) {
         $stock = 0;
@@ -4230,22 +4071,20 @@ class Part extends Asset {
         $stock_in_paid_orders = 0;
 
 
-        $sql = sprintf(
-            'SELECT sum((`Order Quantity`+`Order Bonus Quantity`)*`Product Part Ratio`) AS required FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`) WHERE OTF.`Current Dispatching State` IN ("Submitted by Customer","In Process") AND  `Current Payment State` IN ("Paid","No Applicable") AND `Product Part Part SKU`=%d    ',
+        $sql =
+            "SELECT sum((`Order Quantity`+`Order Bonus Quantity`)*`Product Part Ratio`) AS required FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`) WHERE OTF.`Current Dispatching State` IN ('Submitted by Customer','In Process') AND  `Current Payment State` IN ('Paid','No Applicable') AND `Product Part Part SKU`=?   ";
 
-            $this->id
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
         );
-        //print $sql;
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                //  print_r($row);
-                $stock_in_paid_orders = $row['required'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+        if ($row = $stmt->fetch()) {
+            $stock_in_paid_orders = $row['required'];
+
         }
+
 
         // print "$sql\n";
         $this->fast_update(
@@ -4260,65 +4099,6 @@ class Part extends Asset {
         }
     }
 
-    function get_barcode_data() {
-
-        switch ($this->data['Part Barcode Data Source']) {
-            case 'SKU':
-                return $this->sku;
-            case 'Reference':
-                return $this->data['Part Reference'];
-            default:
-                return $this->data['Part Barcode Data'];
-
-
-        }
-
-    }
-
-    function get_current_formatted_value_at_cost() {
-        //return number($this->data['Part Current Value'],2);
-        return money($this->data['Part Current Value']);
-    }
-
-    function get_current_formatted_value_at_current_cost() {
-
-
-        return money(
-            $this->data['Part Current On Hand Stock'] * $this->data['Part Cost']
-        );
-    }
-
-    function update_stock_in_transactions() {
-
-        $locations_data = array();
-        $stock          = 0;
-        $sql            = sprintf(
-            "SELECT `Inventory Transaction Quantity` ,`Inventory Transaction Key`,`Location Key` FROM `Inventory Transaction Fact` WHERE `Part SKU`=%d ORDER BY `Date`,`Event Order`", $this->sku
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                if (array_key_exists($row['Location Key'], $locations_data)) {
-                    $locations_data[$row['Location Key']] += $row['Inventory Transaction Quantity'];
-                } else {
-                    $locations_data[$row['Location Key']] = $row['Inventory Transaction Quantity'];
-                }
-
-                $stock += $row['Inventory Transaction Quantity'];
-                $sql   = sprintf(
-                    "UPDATE `Inventory Transaction Fact` SET `Part Stock`=%f,`Part Location Stock`=%f WHERE `Inventory Transaction Key`=%d", $stock, $locations_data[$row['Location Key']], $row['Inventory Transaction Key']
-                );
-                $this->db->exec($sql);
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
-        }
-
-
-    }
 
     function update_sales_from_invoices($interval, $this_year = true, $last_year = true) {
 
@@ -4601,7 +4381,6 @@ class Part extends Asset {
     }
 
     function get_field_label($field) {
-        global $account;
 
         switch ($field) {
 
@@ -5181,11 +4960,12 @@ class Part extends Asset {
 
 
                         $total_out_1_year = 0;
+                        /*
                         $sql              = sprintf(
                             "SELECT sum(`Inventory Transaction Quantity`) as qty_out FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Inventory Transaction Section`='Out' ", prepare_mysql($date_1yr_back.' 23:59:59'),
                             prepare_mysql($row['Date'].' 23:59:59'), $this->id
                         );
-
+*/
 
                         $sql = sprintf(
                             "SELECT sum(`Inventory Transaction Quantity`) as qty_out FROM `Inventory Transaction Fact` WHERE `Date`>=%s and `Date`<=%s  AND `Part SKU`=%d AND `Inventory Transaction Record Type`='Movement'  and  `Inventory Transaction Quantity`<0  ",

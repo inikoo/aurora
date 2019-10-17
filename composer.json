@@ -16,8 +16,8 @@
         "spatie/image-optimizer": "^1.1",
         "sentry/sdk": "2.0.3",
         "nesk/puphpeteer": "^1.6",
-        "rollbar/rollbar": "~1.5"
-
-
+        "rollbar/rollbar": "~1.5",
+        "ext-pdo": "*",
+        "ext-json": "*"
     }
 }

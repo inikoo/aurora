@@ -559,6 +559,8 @@ module.exports = function (grunt) {
     grunt.registerTask('qfork', ['copy:fork']);
 
 
+    grunt.registerTask('au_css', ['sass:aurora','sass:aurora_public','sass:login', 'cssmin:au', 'cssmin:au_login']);
+    grunt.registerTask('au_js', ['sass:aurora','sass:aurora_public','sass:login', 'cssmin:au', 'cssmin:au_login']);
 
     grunt.registerTask('au', ['sass:aurora','sass:aurora_public','sass:login', 'cssmin:au', 'cssmin:au_login','uglify:aurora_libs','uglify:login','uglify:aurora']);
 

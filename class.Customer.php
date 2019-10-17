@@ -2113,9 +2113,7 @@ class Customer extends Subject {
 
     }
 
-    function update_custom_fields($id, $value) {
-        $this->update(array($id => $value));
-    }
+
 
     function get_last_order() {
         $order_key = 0;

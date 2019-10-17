@@ -18,6 +18,19 @@ include_once 'class.InventoryAudit.php';
 
 class PartLocation extends DB_Table {
 
+    /**
+     * @var \PDO
+     */
+    public $db;
+    /**
+     * @var \Part
+     */
+    public $part;
+    /**
+     * @var \Location
+     */
+    public $location;
+
     var $ok = false;
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
@@ -162,8 +175,8 @@ class PartLocation extends DB_Table {
 
         }
 
-        $this->part     = new Part($this->part_sku);
-        $this->location = new Location($this->location_key);
+        $this->part     = get_object('Part',$this->part_sku);
+        $this->location = get_object('Location',$this->location_key);
 
 
     }

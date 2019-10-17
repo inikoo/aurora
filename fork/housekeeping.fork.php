@@ -618,7 +618,9 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
         case 'update_part_status':
 
-
+            /**
+             * @var $part \Part
+             */
             $part = get_object('Part', $data['part_sku']);
 
             $part->editor = $data['editor'];
@@ -1431,7 +1433,9 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             break;
 
         case 'update_part_products_availability':
-
+            /**
+             * @var $part \Part
+             */
             $part = get_object('Part', $data['part_sku']);
 
             if (isset($data['editor'])) {

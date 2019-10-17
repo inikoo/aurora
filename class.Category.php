@@ -1615,10 +1615,7 @@ class Category extends DB_Table {
 
     }
 
-    function get_period($period, $key) {
 
-        return $this->get($period.' '.$key);
-    }
 
     function delete() {
 
