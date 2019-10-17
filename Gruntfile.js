@@ -3,8 +3,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
 
         clean: {
-            fork: ["../fork/*", "!../fork/keyring/**", "!../fork/server_files/**"],
-            css: ["assets/images"],
+            fork: ["../fork/*", "!../fork/keyring/**", "!../fork/server_files/**"], css: ["assets/images"],
         }, uglify: {
             pweb_common_desktop_logged_in: {
                 options: {
@@ -31,7 +30,7 @@ module.exports = function (grunt) {
             }, pweb_desktop_image_gallery: {
                 src: [
 
-                    'EcomB2B/js/libs/photoswipe.js', 'EcomB2B/js/libs/photoswipe-ui-default.js',
+                    'EcomB2B/js_libs/photoswipe.js', 'EcomB2B/js_libs/photoswipe-ui-default.js',
 
 
                 ], dest: 'EcomB2B/js/image_gallery.min.js',
@@ -106,25 +105,25 @@ module.exports = function (grunt) {
                 options: {
 
                     sourceMap: true,
-                }, src: ['js/libs/jquery-3.3.1.min.js', 'js/libs/jquery-migrate-3.0.1.js', 'js/libs/jquery-ui.1.12.1.js', 'js/libs/jquery.nice-select.js',
+                }, src: ['js_libs/jquery-3.3.1.min.js', 'js_libs/jquery-migrate-3.0.1.js', 'js_libs/jquery-ui.1.12.1.js', 'js_libs/jquery.nice-select.js',
 
 
-                    'bower_components/moment/min/moment-with-locales.js', 'bower_components/moment-timezone/builds/moment-timezone-with-data-2012-2022.js', 'bower_components/select2/dist/js/select2.js', //'js/libs/moment-with-locales.js',
-                    //'js/libs/moment-timezone-with-data.js',
+                    'bower_components/moment/min/moment-with-locales.js', 'bower_components/moment-timezone/builds/moment-timezone-with-data-2012-2022.js', 'bower_components/select2/dist/js/select2.js', //'js_libs/moment-with-locales.js',
+                    //'js_libs/moment-timezone-with-data.js',
 
-                    'js/libs/chrono.js', 'js/libs/sha256.js', 'js/libs/underscore.min.js', 'js/libs/backbone.min.js', 'js/libs/backbone.paginator.js', 'js/libs/backgrid.js', 'js/libs/backgrid-filter.js', 'js/libs/snap.svg.js', 'js/libs/svg-dial.js', 'js/libs/countrySelect.js', 'js/libs/intlTelInput-jquery.14.0.6.js',
+                    'js_libs/chrono.js', 'js_libs/sha256.js', 'js_libs/underscore.min.js', 'js_libs/backbone.min.js', 'js_libs/backbone.paginator.js', 'js_libs/backgrid.js', 'js_libs/backgrid-filter.js', 'js_libs/snap.svg.js', 'js_libs/svg-dial.js', 'js_libs/countrySelect.js', 'js_libs/intlTelInput-jquery.14.0.6.js',
 
-                    //'js/libs/d3.js',
-                    //'js/libs/d3fc.layout.js',
-                    //'js/libs/d3fc.js',
+                    //'js_libs/d3.js',
+                    //'js_libs/d3fc.layout.js',
+                    //'js_libs/d3fc.js',
 
 
-                    'js/libs/sweetalert2.all.min.js', 'js/libs/tooltipster.bundle.min.js', 'js/libs/jquery-qrcode-0.14.0.min.js', 'js/alert_dial.js', 'js/libs/editor_v1/froala_editor.min.js', //'js/libs/editor_v1/codemirror.js',
-                    //'js/libs/editor_v1/codemirror.xml.js',
-                    //'js/libs/editor_v1/codemirror_active-line.js',
-                    'js/libs/editor_v1/plugins/align.min.js', 'js/libs/editor_v1/plugins/draggable.min.js', 'js/libs/editor_v1/plugins/char_counter.min.js', 'js/libs/editor_v1/plugins/code_beautifier.min.js', 'js/libs/editor_v1/plugins/code_view.min.js', 'js/libs/editor_v1/plugins/colors.min.js', 'js/libs/editor_v1/plugins/emoticons.min.js', 'js/libs/editor_v1/plugins/entities.min.js', 'js/libs/editor_v1/plugins/file.min.js', 'js/libs/editor_v1/plugins/font_family.min.js', 'js/libs/editor_v1/plugins/font_size.min.js', 'js/libs/editor_v1/plugins/fullscreen.min.js', 'js/libs/editor_v1/plugins/image.min.js', 'js/libs/editor_v1/plugins/image_manager.min.js', 'js/libs/editor_v1/plugins/inline_style.min.js', 'js/libs/editor_v1/plugins/line_breaker.min.js', 'js/libs/editor_v1/plugins/link.min.js', 'js/libs/editor_v1/plugins/lists.min.js', 'js/libs/editor_v1/plugins/paragraph_format.min.js', 'js/libs/editor_v1/plugins/paragraph_style.min.js', 'js/libs/editor_v1/plugins/quick_insert.min.js', 'js/libs/editor_v1/plugins/quote.min.js', 'js/libs/editor_v1/plugins/table.min.js', 'js/libs/editor_v1/plugins/save.min.js', 'js/libs/editor_v1/plugins/url.min.js', 'js/libs/editor_v1/plugins/video.min.js', 'js/libs/amcharts/amcharts.js', 'js/libs/amcharts/serial.js', 'js/libs/amcharts/amstock.js', 'js/libs/amcharts/plugins/dataloader/dataloader.min.js', 'js/libs/amcharts/plugins/export/export.min.js', 'js/libs/jquery.fancybox.min.js', 'js/libs/jquery.awesome-cursor.min.js', 'js/libs/base64.js', //'js/libs/jquery.formatCurrency-1.4.0.min.js',
-                    'js/libs/jquery.formatCurrency.js', //'bower_components/autobahn/autobahn.js',
-                    'js/libs/autobahn.v1.js',
+                    'js_libs/sweetalert2.all.min.js', 'js_libs/tooltipster.bundle.min.js', 'js_libs/jquery-qrcode-0.14.0.min.js', 'js/alert_dial.js', 'js_libs/editor_v1/froala_editor.min.js', //'js_libs/editor_v1/codemirror.js',
+                    //'js_libs/editor_v1/codemirror.xml.js',
+                    //'js_libs/editor_v1/codemirror_active-line.js',
+                    'js_libs/editor_v1/plugins/align.min.js', 'js_libs/editor_v1/plugins/draggable.min.js', 'js_libs/editor_v1/plugins/char_counter.min.js', 'js_libs/editor_v1/plugins/code_beautifier.min.js', 'js_libs/editor_v1/plugins/code_view.min.js', 'js_libs/editor_v1/plugins/colors.min.js', 'js_libs/editor_v1/plugins/emoticons.min.js', 'js_libs/editor_v1/plugins/entities.min.js', 'js_libs/editor_v1/plugins/file.min.js', 'js_libs/editor_v1/plugins/font_family.min.js', 'js_libs/editor_v1/plugins/font_size.min.js', 'js_libs/editor_v1/plugins/fullscreen.min.js', 'js_libs/editor_v1/plugins/image.min.js', 'js_libs/editor_v1/plugins/image_manager.min.js', 'js_libs/editor_v1/plugins/inline_style.min.js', 'js_libs/editor_v1/plugins/line_breaker.min.js', 'js_libs/editor_v1/plugins/link.min.js', 'js_libs/editor_v1/plugins/lists.min.js', 'js_libs/editor_v1/plugins/paragraph_format.min.js', 'js_libs/editor_v1/plugins/paragraph_style.min.js', 'js_libs/editor_v1/plugins/quick_insert.min.js', 'js_libs/editor_v1/plugins/quote.min.js', 'js_libs/editor_v1/plugins/table.min.js', 'js_libs/editor_v1/plugins/save.min.js', 'js_libs/editor_v1/plugins/url.min.js', 'js_libs/editor_v1/plugins/video.min.js', 'js_libs/amcharts/amcharts.js', 'js_libs/amcharts/serial.js', 'js_libs/amcharts/amstock.js', 'js_libs/amcharts/plugins/dataloader/dataloader.min.js', 'js_libs/amcharts/plugins/export/export.min.js', 'js_libs/jquery.fancybox.min.js', 'js_libs/jquery.awesome-cursor.min.js', 'js_libs/base64.js', //'js_libs/jquery.formatCurrency-1.4.0.min.js',
+                    'js_libs/jquery.formatCurrency.js', //'bower_components/autobahn/autobahn.js',
+                    'js_libs/autobahn.v1.js',
 
                 ], dest: 'assets/aurora_libs.min.js',
 
@@ -139,18 +138,29 @@ module.exports = function (grunt) {
 
                 ], dest: 'assets/aurora.min.js',
 
-            }, login: {
+            }, login_libs: {
                 options: {
 
                     sourceMap: true,
                 },
-                src: ['js/libs/jquery-3.3.1.min.js', 'js/libs/jquery-migrate-3.0.1.js', 'bower_components/moment/min/moment.min.js', 'bower_components/moment-timezone/builds/moment-timezone-with-data-10-year-range.min.js', 'js/libs/sha256.js', 'js/libs/aes.js', 'js/libs/base64.js',
+                src: ['js_libs/jquery-3.3.1.min.js', 'js_libs/jquery-migrate-3.0.1.js', 'bower_components/moment/min/moment.min.js', 'bower_components/moment-timezone/builds/moment-timezone-with-data-10-year-range.min.js', 'js_libs/sha256.js', 'js_libs/aes.js', 'js_libs/base64.js',
 
-                    'js/login/login.js', 'js/libs/jquery.backstretch.min.js',
+                    'js_libs/jquery.backstretch.min.js',
 
 
                 ],
-                dest: 'assets/login.min.js',
+                dest: 'assets/login_libs.min.js',
+
+            }, login: {
+                options: {
+
+                    sourceMap: true,
+                }, src: [
+
+                    'js/login/login.js'
+
+
+                ], dest: 'assets/login.min.js',
 
             }, setup: {
                 options: {
@@ -183,8 +193,7 @@ module.exports = function (grunt) {
 
 
                 }
-            },
-            login: {
+            }, login: {
                 options: {
                     // style: 'compressed'
                 }, files: {
@@ -319,14 +328,28 @@ module.exports = function (grunt) {
                 },
 
                 ]
-            },
-            css: {
+            }, css: {
                 src: ['templates/app.tpl'], overwrite: true, replacements: [{
-                    from: /au_app.min.css\.*"/g,
-                    to: 'au_app.min.css?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    from: /au_app.min.css\.*"/g, to: 'au_app.min.css?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
                 }
 
                 ]
+            }, js_libs: {
+                src: ['templates/app.tpl'], overwrite: true, replacements: [{
+                    from: /aurora_libs.min.js\.*"/g, to: 'aurora_libs.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                }]
+            }, js_login_libs: {
+                src: ['templates/login.tpl'], overwrite: true, replacements: [{
+                    from: /login_libs.min.js\.*"/g, to: 'login_libs.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                }]
+            }, js: {
+                src: ['templates/app.tpl'], overwrite: true, replacements: [{
+                    from: /aurora.min.js\.*"/g, to: 'aurora.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                }]
+            }, js_login: {
+                src: ['templates/login.tpl'], overwrite: true, replacements: [{
+                    from: /login.min.js\.*"/g, to: 'login.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                }]
             }
         }
 
@@ -348,9 +371,9 @@ module.exports = function (grunt) {
 
     grunt.registerTask('au_sass', ['sass:aurora', 'sass:aurora_public', 'sass:login']);
     grunt.registerTask('au_css', ['cssmin:au', 'cssmin:au_login']);
-    grunt.registerTask('au_js', ['uglify:aurora_libs', 'uglify:login', 'uglify:aurora' ]);
+    grunt.registerTask('au_js', ['uglify:aurora_libs', 'uglify:login', 'uglify:aurora']);
 
-    grunt.registerTask('au', ['sass:aurora', 'sass:aurora_public', 'sass:login', 'cssmin:au', 'cssmin:au_login', 'uglify:aurora_libs', 'uglify:login', 'uglify:aurora']);
+    grunt.registerTask('au', ['sass:aurora', 'sass:aurora_public', 'sass:login', 'cssmin:au', 'cssmin:au_login', 'uglify:aurora_libs', 'uglify:login_libs', 'uglify:login', 'uglify:aurora']);
 
 
     grunt.registerTask('pweb', ['sass:aurora_public', 'cssmin:pweb',

@@ -19,7 +19,8 @@
     </script>
     {/if}
 
-    <script src="/assets/login.min.js?v=190929v2"></script>
+    <script src="/assets/login_libs.min.js"></script>
+    <script src="/assets/login.min.js"></script>
 
 
 </head>
