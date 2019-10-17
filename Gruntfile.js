@@ -1,7 +1,6 @@
 module.exports = function (grunt) {
 
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'), secret: grunt.file.readJSON('deployment.secret.json'),
 
         clean: {
             fork: ["../fork/*", "!../fork/keyring/**", "!../fork/server_files/**"],
@@ -531,42 +530,6 @@ module.exports = function (grunt) {
 
 
         },
-
-        environments: {
-
-            options: {
-
-                current_symlink: 'current', zip_deploy: true, max_buffer: 200 * 1024 * 1024
-            }, fork: {
-                options: {
-                    local_path: '../fork/',
-                    deploy_path: '/home/fork/fork',
-                    host: '<%= secret.fork.host %>',
-                    username: '<%= secret.fork.username %>',
-                    password: '<%= secret.fork.password %>',
-                    port: '<%= secret.fork.port %>',
-                    debug: true,
-                    releases_to_keep: '3',
-                    exclude: ['keyring', 'external_libs', 'server_files','vendor','base_dirs','img_*','node_modules'],
-                    before_deploy: 'cd /home/fork/composer && /usr/bin/php7.2 /usr/local/bin/composer install',
-                    after_deploy: 'cd /home/fork/fork/current && mv /home/fork/composer/vendor . && ln -s /home/fork/node/node_modules . &&  mkdir server_files &&  mkdir server_files/tmp  &&  ln -s /home/fork/external_libs/current/ external_libs && ln -s /home/fork/keyring/ keyring  && ln -s /home/fork/base_dirs/ base_dirs && cp -av  /home/fork/img/* . '
-                }
-            }, fork_external_libs: {
-                options: {
-                    local_path: '../fork/external_libs',
-                    deploy_path: '/home/fork/external_libs',
-                    host: '<%= secret.fork.host %>',
-                    username: '<%= secret.fork.username %>',
-                    password: '<%= secret.fork.password %>',
-                    port: '<%= secret.fork.port %>',
-                    debug: true,
-                    releases_to_keep: '3'
-                }
-            }
-
-
-        },
-
         watch: {
 
             sass: {
@@ -589,22 +552,15 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-contrib-imagemin');
-    grunt.loadNpmTasks('grunt-ssh-deploy');
 
 
-    grunt.registerTask('default', ['sass']);
-
-    grunt.registerTask('app', ['clean:app', 'imagemin', 'sass', 'concat', 'uglify', 'cssmin', 'copy:app']);
+;
     grunt.registerTask('fork', [ 'copy:fork_stones', 'copy:fork']);
     grunt.registerTask('qfork', ['copy:fork']);
 
-    grunt.registerTask('ws', ['clean:websocket','copy:websocket', 'copy:websocket_stones']);
-    grunt.registerTask('qws', ['copy:websocket']);
 
 
     grunt.registerTask('au', ['sass:aurora','sass:aurora_public','sass:login', 'cssmin:au', 'cssmin:au_login','uglify:aurora_libs','uglify:login','uglify:aurora']);
-    grunt.registerTask('qau', ['uglify:aurora']);
 
 
     grunt.registerTask('pweb', ['sass:aurora_public', 'cssmin:pweb',
@@ -625,12 +581,5 @@ module.exports = function (grunt) {
         'uglify:pweb_desktop_checkout',
         'uglify:pweb_desktop_image_gallery'
     ]);
-    grunt.registerTask('deploy_fork_stones', [ 'copy:fork_stones', 'copy:fork', 'ssh_deploy:fork_external_libs']);
-    grunt.registerTask('deploy_fork_composer', [ 'copy:fork', 'ssh_deploy:fork_composer']);
-
-    grunt.registerTask('deploy_qfork', ['copy:fork', 'ssh_deploy:fork']);
-    grunt.registerTask('deploy_websocket_composer', ['clean:websocket',  'copy:websocket', 'ssh_deploy:websocket_composer']);
-    grunt.registerTask('deploy_websocket', ['clean:websocket',  'copy:websocket', 'ssh_deploy:websocket']);
-    grunt.registerTask('ecom', ['ssh_deploy:ecom']);
 
 };
