@@ -9,8 +9,10 @@ module.exports = function (grunt) {
             pweb_deployment_step4: ["EcomB2B/assets/*.tmp.*"],
             au_deployment_step2: ["assets/*.min.js", "assets/*.min.css"],
             au_deployment_step4: ["assets/*.tmp.*"],
+            assets:["assets/*min*","EcomB2B/assets/**"]
 
-        }, uglify: {
+        },
+        uglify: {
             pweb_common_desktop_logged_in: {
                 options: {
                     sourceMap: true,
@@ -183,7 +185,8 @@ module.exports = function (grunt) {
 
             }
 
-        }, sass: {
+        },
+        sass: {
             aurora: {
                 files: {
                     'css/staging/app.css': 'sass/app.scss', 'css/staging/app.mobile.css': 'sass/app.mobile.scss',
@@ -200,7 +203,8 @@ module.exports = function (grunt) {
                     'css/staging/login.css': 'sass/login.scss'
                 }
             }
-        }, cssmin: {
+        },
+        cssmin: {
             options: {
                 shorthandCompacting: false, roundingPrecision: -1, sourceMap: true,
             },
@@ -247,11 +251,14 @@ module.exports = function (grunt) {
 
                 }
             }
-        }, copy: {
+        },
+        copy: {
 
             fa_webfonts: {
                 files: [{
-                    expand: true, cwd: 'node_modules/@fortawesome/fontawesome-pro/webfonts/', src: ['*'], dest: 'webfonts/'
+                    expand: true, cwd: 'node_modules/@fortawesome/fontawesome-pro/webfonts/',
+                    src: ['*'],
+                    dest: 'webfonts/'
                 }
 
                 ]
@@ -350,7 +357,8 @@ module.exports = function (grunt) {
             },
 
 
-        }, replace: {
+        },
+        replace: {
             aurora_version: {
                 src: ['templates/app.tpl'], overwrite: true, replacements: [{
                     from: /<div class="aurora_version full">(.*)<\/div>/g,
@@ -361,7 +369,8 @@ module.exports = function (grunt) {
                 }
 
                 ]
-            }, css: {
+            },
+            css: {
                 src: ['templates/app.tpl'], overwrite: true, replacements: [{
                     from: /au_app.\.*min.css"/g, to: 'au_app.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.css"'
                 }
