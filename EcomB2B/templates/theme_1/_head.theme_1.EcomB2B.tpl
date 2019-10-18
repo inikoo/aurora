@@ -154,7 +154,7 @@
     {/if}
 
 
-    <link rel="stylesheet" href="css/desktop.min.css?v190516v3" type="text/css"/>
+    <link rel="stylesheet" href="assets/desktop.min.css" type="text/css"/>
 
     {assign "with_forms" false}
     {assign "with_not_found" 0}
@@ -174,18 +174,11 @@
     {assign "with_reviews" false}
     {assign "with_product_order_input" false}
     {assign "with_reset_password" false}
-
-
     {assign "with_order" false}
-
-
 
     {if !empty($content.blocks) and  $content.blocks|is_array}
     {foreach from=$content.blocks item=$block }
         {if $block.show}
-
-
-
         {if $block.type=='profile'}
             {if !$logged_in}
                 {assign "with_not_found" 1}
@@ -271,10 +264,10 @@
     {/if}
 
     {if $with_forms==1}
-        <link rel="stylesheet" href="css/forms.min.css?v2.0" type="text/css"/>
+        <link rel="stylesheet" href="assets/forms.min.css" type="text/css"/>
     {/if}
     {if $with_gallery==1}
-        <link rel="stylesheet" href="css/image_gallery.min.css">
+        <link rel="stylesheet" href="assets/image_gallery.min.css" type="text/css"/>
     {/if}
 
     {if !isset($is_devel) or !$is_devel  }
@@ -663,9 +656,5 @@
 
         {/if}
 
-
     </style>
-
 </head>
-
-

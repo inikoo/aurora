@@ -173,3 +173,5 @@ server_files
 assets
 /css/
 /.npmrc
+/EcomB2B/css/staging/
+/webfonts/

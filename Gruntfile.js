@@ -62,7 +62,7 @@ module.exports = function (grunt) {
 
                     'EcomB2B/js/basket_checkout/braintree.3.40.0.paypal-checkout.min.js', 'EcomB2B/js/basket_checkout/braintree.3.40.0.min.js', 'EcomB2B/js/basket_checkout/braintree.3.40.0.hosted-fields.min.js', 'EcomB2B/js/basket_checkout/checkout.js', 'EcomB2B/js/basket_checkout/order_totals.js',
 
-                ], dest: 'EcomB2B/js/desktop.checkout.min.js'
+                ], dest: 'EcomB2B/assets/desktop.checkout.min.js'
             }, pweb_desktop_profile: {
                 options: {
                     sourceMap: true,
@@ -195,19 +195,19 @@ module.exports = function (grunt) {
         sass: {
             aurora: {
                 files: {
-                    'css/app.css': 'sass/app.scss',
-                    'css/app.mobile.css': 'sass/app.mobile.scss',
+                    'css/staging/app.css': 'sass/app.scss',
+                    'css/staging/app.mobile.css': 'sass/app.mobile.scss',
 
                 }
             }, aurora_public: {
                 files: {
-                    'EcomB2B/css/style.theme_1.EcomB2B.desktop.css': 'sass/EcomB2B/style.theme_1.EcomB2B.scss',
-                    'EcomB2B/css/style.theme_1.EcomB2B.tablet.css': 'sass/EcomB2B/style.theme_1.EcomB2B.tablet.scss',
-                    'EcomB2B/css/style.theme_1.EcomB2B.mobile.css': 'sass/EcomB2B/style.theme_1.EcomB2B.mobile.scss',
+                    'EcomB2B/css/staging/style.theme_1.EcomB2B.desktop.css': 'sass/EcomB2B/style.theme_1.EcomB2B.scss',
+                    'EcomB2B/css/staging/style.theme_1.EcomB2B.tablet.css': 'sass/EcomB2B/style.theme_1.EcomB2B.tablet.scss',
+                    'EcomB2B/css/staging/style.theme_1.EcomB2B.mobile.css': 'sass/EcomB2B/style.theme_1.EcomB2B.mobile.scss',
                 }
             }, login: {
                files: {
-                    'css/login.css': 'sass/login.scss'
+                    'css/staging/login.css': 'sass/login.scss'
                 }
             }
         },
@@ -220,7 +220,7 @@ module.exports = function (grunt) {
                 files: {
                     'EcomB2B/assets/desktop.min.css': [
 
-                        'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/style.theme_1.EcomB2B.desktop.css'],
+                        'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.desktop.css'],
 
                     'EcomB2B/assets/forms.min.css': ['EcomB2B/css/sweetalert.css', 'EcomB2B/css/sky-forms.css', 'EcomB2B/css/sky_forms.aurora.css'],
 
@@ -228,14 +228,14 @@ module.exports = function (grunt) {
                     'EcomB2B/assets/image_gallery.min.css': ['EcomB2B/css/photoswipe.css', 'EcomB2B/css/photoswipe/default-skin.css'],
 
 
-                    'EcomB2B/assets/mobile.min.css': ['node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/mobile_style.css', 'EcomB2B/css/mobile_skin.css', 'EcomB2B/css/mobile_framework.css', 'EcomB2B/css/style.theme_1.EcomB2B.mobile.css'],
+                    'EcomB2B/assets/mobile.min.css': ['node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/mobile_style.css', 'EcomB2B/css/mobile_skin.css', 'EcomB2B/css/mobile_framework.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.mobile.css'],
 
 
                     'EcomB2B/assets/tablet.min.css': [
 
                         'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/mobile_style.css', 'EcomB2B/css/mobile_skin.css', 'EcomB2B/css/mobile_framework.css',
 
-                        'EcomB2B/css/style.theme_1.EcomB2B.tablet.css'],
+                        'EcomB2B/css/staging/style.theme_1.EcomB2B.tablet.css'],
 
 
                 }
@@ -247,23 +247,23 @@ module.exports = function (grunt) {
 
                         'css/editor_v1/froala_editor.css', 'css/editor_v1/froala_style.css', 'css/editor_v1/codemirror.css', 'css/editor_v1/codemirror_dracula.css',
 
-                        'css/editor_v1/plugins/char_counter.css', 'css/editor_v1/plugins/code_view.css', 'css/editor_v1/plugins/colors.css', 'css/editor_v1/plugins/emoticons.css', 'css/editor_v1/plugins/file.css', 'css/editor_v1/plugins/fullscreen.css', 'css/editor_v1/plugins/image.css', 'css/editor_v1/plugins/image_manager.css', 'css/editor_v1/plugins/line_breaker.css', 'css/editor_v1/plugins/quick_insert.css', 'css/editor_v1/plugins/table.css', 'css/editor_v1/plugins/video.css', 'css/editor_v1/plugins/draggable.css', 'css/amcharts/style.css', 'css/jquery.fancybox.min.css', 'css/tooltipster.bundle.min.css', 'css/app.css']
+                        'css/editor_v1/plugins/char_counter.css', 'css/editor_v1/plugins/code_view.css', 'css/editor_v1/plugins/colors.css', 'css/editor_v1/plugins/emoticons.css', 'css/editor_v1/plugins/file.css', 'css/editor_v1/plugins/fullscreen.css', 'css/editor_v1/plugins/image.css', 'css/editor_v1/plugins/image_manager.css', 'css/editor_v1/plugins/line_breaker.css', 'css/editor_v1/plugins/quick_insert.css', 'css/editor_v1/plugins/table.css', 'css/editor_v1/plugins/video.css', 'css/editor_v1/plugins/draggable.css', 'css/amcharts/style.css', 'css/jquery.fancybox.min.css', 'css/tooltipster.bundle.min.css', 'css/staging/app.css']
 
                 }
             },
 
             au_login: {
                 files: {
-                    'assets/login.min.css': ['node_modules/@fortawesome/fontawesome-pro/css/all.css', 'css/login.css']
+                    'assets/login.min.css': ['node_modules/@fortawesome/fontawesome-pro/css/all.css', 'css/staging/login.css']
 
                 }
             }
         },
         copy: {
 
-            css: {
+            fa_webfonts: {
                 files: [{
-                    expand: true, cwd: 'css/images/', src: ['*'], dest: 'assets/images/'
+                    expand: true, cwd: 'node_modules/@fortawesome/fontawesome-pro/webfonts/', src: ['*'], dest: 'webfonts/'
                 }
 
                 ]
@@ -476,10 +476,10 @@ module.exports = function (grunt) {
     grunt.registerTask('au_css', ['cssmin:au', 'cssmin:au_login']);
     grunt.registerTask('au_js', ['uglify:aurora_libs', 'uglify:login', 'uglify:aurora']);
 
-    grunt.registerTask('au', ['sass:aurora', 'sass:aurora_public', 'sass:login', 'cssmin:au', 'cssmin:au_login', 'uglify:aurora_libs', 'uglify:login_libs', 'uglify:login', 'uglify:aurora']);
+    grunt.registerTask('au', ['copy:fa_webfonts','sass:aurora',  'sass:login', 'cssmin:au', 'cssmin:au_login', 'uglify:aurora_libs', 'uglify:login_libs', 'uglify:login', 'uglify:aurora']);
 
 
-    grunt.registerTask('pweb', ['sass:aurora_public', 'cssmin:pweb',
+    grunt.registerTask('pweb', ['copy:fa_webfonts','sass:aurora_public', 'cssmin:pweb',
 
         'uglify:pweb_mobile_logged_in', 'uglify:pweb_mobile_forms', 'uglify:pweb_mobile_profile', 'uglify:pweb_mobile_basket', 'uglify:pweb_mobile_checkout', 'uglify:pweb_tablet', 'uglify:pweb_tablet_custom', 'uglify:pweb_common_desktop_logged_in', 'uglify:pweb_common_desktop_logged_out', 'uglify:pweb_desktop_logged_in', 'uglify:pweb_desktop_forms', 'uglify:pweb_desktop_profile', 'uglify:pweb_desktop_basket', 'uglify:pweb_desktop_checkout', 'uglify:pweb_desktop_image_gallery']);
 

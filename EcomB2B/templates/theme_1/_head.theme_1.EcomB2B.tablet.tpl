@@ -128,7 +128,7 @@
         </script>
     {/if}
 
-    <link rel="stylesheet" type="text/css" href="/css/tablet.min.css?v=v181125v2">
+    <link rel="stylesheet" type="text/css" href="assets/tablet.min.css">
 
     {assign "with_forms" false}
     {assign "with_not_found" 0}
@@ -224,11 +224,11 @@
         <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js" async></script>
     {/if}
     {if $with_forms==1}
-        <link rel="stylesheet" href="css/forms.min.css?v2.0" type="text/css"/>
+        <link rel="stylesheet" href="assets/forms.min.css" type="text/css"/>
 
     {/if}
     {if $with_gallery==1}
-        <link rel="stylesheet" href="css/image_gallery.min.css">
+        <link rel="stylesheet" href="assets/image_gallery.min.css" type="text/css"/>
     {/if}
 
     {if $website->get('Website Text Font')!=''  and $logged_in}
