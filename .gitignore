@@ -170,7 +170,11 @@ websocket_server/composer.lock
 /post_deploy.sh
 /deploy.sh
 server_files
-assets
-/css/
+
+
+
 /EcomB2B/css/staging/
 /webfonts/
+/css/staging/
+/EcomB2B/assets/
+/assets/*.min*
