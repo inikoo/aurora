@@ -212,22 +212,15 @@ module.exports = function (grunt) {
             pweb: {
                 files: {
                     'EcomB2B/assets/desktop.min.css': [
-
                         'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.desktop.css'],
-
-                    'EcomB2B/assets/forms.min.css': ['EcomB2B/css/sweetalert.css', 'EcomB2B/css/sky-forms.css', 'EcomB2B/css/sky_forms.aurora.css'],
-
-
-                    'EcomB2B/assets/image_gallery.min.css': ['EcomB2B/css/photoswipe.css', 'EcomB2B/css/photoswipe/default-skin.css'],
-
-
-                    'EcomB2B/assets/mobile.min.css': ['node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/mobile_style.css', 'EcomB2B/css/mobile_skin.css', 'EcomB2B/css/mobile_framework.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.mobile.css'],
-
-
+                    'EcomB2B/assets/forms.min.css': [
+                        'EcomB2B/css/sweetalert.css', 'EcomB2B/css/sky-forms.css', 'EcomB2B/css/sky_forms.aurora.css'],
+                    'EcomB2B/assets/image_gallery.min.css': [
+                        'EcomB2B/css/photoswipe.css', 'EcomB2B/css/photoswipe/default-skin.css'],
+                    'EcomB2B/assets/mobile.min.css': [
+                        'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/mobile_style.css', 'EcomB2B/css/mobile_skin.css', 'EcomB2B/css/mobile_framework.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.mobile.css'],
                     'EcomB2B/assets/tablet.min.css': [
-
                         'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/mobile_style.css', 'EcomB2B/css/mobile_skin.css', 'EcomB2B/css/mobile_framework.css',
-
                         'EcomB2B/css/staging/style.theme_1.EcomB2B.tablet.css'],
 
 
@@ -400,53 +393,73 @@ module.exports = function (grunt) {
 
             , ecom_desktop_in: {
                 src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl', 'EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
-                    from: /desktop.in.min.js\.*"/g, to: 'desktop.in.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    from: /desktop.in.\.*min.js"/g, to: 'desktop.in.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             }, ecom_desktop_logged_in: {
                 src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl', 'EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
-                    from: /desktop.logged_in.min.js\.*"/g, to: 'desktop.logged_in.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    from: /desktop.logged_in.\.*min.js"/g, to: 'desktop.logged_in.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             }, ecom_desktop_out: {
                 src: ['EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
-                    from: /desktop.out.min.js\.*"/g, to: 'desktop.out.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    from: /desktop.out.\.*min.js"/g, to: 'desktop.out.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             }, ecom_images: {
                 src: ['EcomB2B/templates/theme_1/webpage_blocks.theme_1.*tpl'], overwrite: true, replacements: [{
-                    from: /image_gallery.min.js\.*"/g, to: 'image_gallery.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    from: /image_gallery.\.*min.js"/g, to: 'image_gallery.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             }, ecom_desktop_forms: {
                 src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl', 'EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
-                    from: /desktop.forms.min.js\.*"/g, to: 'desktop.forms.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    from: /desktop.forms.\.*min.js"/g, to: 'desktop.forms.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             }, ecom_desktop_basket_checkout: {
                 src: ['EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
-                    from: /desktop.basket.min.js\.*"/g, to: 'desktop.basket.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    from: /desktop.basket.\.*min.js"/g, to: 'desktop.basket.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }, {
-                    from: /mobile.basket.min.js\.*"/g, to: 'mobile.basket.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    from: /mobile.basket.\.*min.js"/g, to: 'mobile.basket.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }, {
-                    from: /desktop.checkout.min.js\.*"/g, to: 'desktop.checkout.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    from: /desktop.checkout.\.*min.js"/g, to: 'desktop.checkout.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }, {
-                    from: /mobile.checkout.min.js\.*"/g, to: 'mobile.checkout.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    from: /mobile.checkout.\.*min.js"/g, to: 'mobile.checkout.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }, {
-                    from: /desktop.profile.min.js\.*"/g, to: 'desktop.profile.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    from: /desktop.profile.\.*min.js"/g, to: 'desktop.profile.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }, {
-                    from: /mobile.profile.min.js\.*"/g, to: 'mobile.profile.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    from: /mobile.profile.\.*min.js"/g, to: 'mobile.profile.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }
 
                 ]
             }, ecom_mobile_in: {
                 src: ['templates/theme_1/website.header.mobile.theme_1.tpl', 'EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
-                    from: /mobile.logged_in.min.js\.*"/g, to: 'mobile.logged_in.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    from: /mobile.logged_in.\.*min.js"/g, to: 'mobile.logged_in.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             }, ecom_mobile_forms: {
                 src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.*tpl', 'EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
-                    from: /mobile.forms.min.js\.*"/g, to: 'mobile.forms.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    from: /mobile.forms.\.*min.js"/g, to: 'mobile.forms.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             }, mobile_custom: {
                 src: ['templates/theme_1/website.header.mobile.theme_1.tpl', 'EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
-                    from: /mobile_custom.min.js\.*"/g, to: 'mobile_custom.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    from: /mobile_custom.\.*min.js"/g, to: 'mobile_custom.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
-            }
+            }, ecom_css: {
+                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.*tpl', 'EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
+                    {
+                        from: /desktop.\.*min.css"/g, to: 'desktop.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.css"'
+                    },
+                    {
+                        from: /forms.\.*min.css"/g, to: 'forms.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.css"'
+                    },
+                    {
+                        from: /image_gallery.\.*min.css"/g, to: 'image_gallery.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.css"'
+                    },
+                    {
+                        from: /mobile.\.*min.css"/g, to: 'mobile.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.css"'
+                    },
+                    {
+                        from: /tablet.\.*min.css"/g, to: 'tablet.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.css"'
+                    },
+
+
+                ]
+            },
 
 
         }
