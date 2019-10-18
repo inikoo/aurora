@@ -371,9 +371,13 @@ module.exports = function (grunt) {
                 ]
             },
             css: {
-                src: ['templates/app.tpl'], overwrite: true, replacements: [{
-                    from: /au_app.\.*min.css"/g, to: 'au_app.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.css"'
-                }
+                src: ['templates/app.tpl','templates/login.tpl'], overwrite: true, replacements: [
+                    {
+                        from: /au_app.\.*min.css"/g, to: 'au_app.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.css"'
+                    },
+                    {
+                        from: /login.\.*min.css"/g, to: 'login.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.css"'
+                    }
 
                 ]
             }, js_libs: {

@@ -7,7 +7,7 @@
     <link href="/art/aurora_log_v2_orange.png" rel="shortcut icon" type="image/x-icon"/>
     <title>{t}Login{/t}</title>
 
-    <link href="/css/login.min.css?v=3" rel="stylesheet">
+    <link href="/assets/login.min.css" rel="stylesheet">
 
 
     <script src="https://browser.sentry-cdn.com/5.4.0/bundle.min.js" crossorigin="anonymous">
