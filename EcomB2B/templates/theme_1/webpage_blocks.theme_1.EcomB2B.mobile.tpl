@@ -230,7 +230,7 @@
 
 
 
-    getScript('/js/mobile.190304.min.js', function () {
+    getScript("/assets/mobile.min.js", function () {
 
 
         {if $website->get('Website Text Font')!=''  and !$logged_in}
@@ -260,7 +260,7 @@
         });
 
 
-            getScript('/js/tablet.custom.min.js?v=190225v2', function () {
+            getScript("assets/mobile_custom.min.js", function () {
 
                 {if $with_search==1}
 
@@ -284,17 +284,17 @@
 
             {/if}
                 {if $with_basket==1}
-            getScript('/js/mobile.logged_in.min.js?v=190227', function () {
-                getScript('/js/mobile.forms.min.js', function () {
-                    getScript('/js/mobile.basket.min.js?v=190529', function () {
+            getScript("/assets/mobile.logged_in.min.js", function () {
+                getScript("/assets/mobile.forms.min.js", function () {
+                    getScript("/assets/mobile.basket.min.js", function () {
                     $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=mobile", function (data) {
 
                         $('#basket').html(data.html)
 
 
                         if(data.empty){
-                            console.log('x')
-                            getScript('/js/tablet.custom.min.js?v=2', function () {
+
+                            getScript("assets/mobile_custom.min.js", function () {
 
                             })
                         }else{
@@ -342,7 +342,7 @@
 
             {/if}
                 {if $with_thanks==1}
-            getScript('/js/mobile.logged_in.min.js?v=190227', function () {
+            getScript("/assets/mobile.logged_in.min.js", function () {
 
 
                 var getUrlParameter = function getUrlParameter(sParam) {
@@ -390,9 +390,9 @@
 
             {/if}
                 {if $with_checkout==1}
-            getScript('/js/mobile.logged_in.min.js?v=190227', function () {
-                getScript('/js/mobile.forms.min.js', function () {
-                    getScript('/js/mobile.checkout.min.js?v=190324v1', function () {
+            getScript("/assets/mobile.logged_in.min.js", function () {
+                getScript("/assets/mobile.forms.min.js", function () {
+                    getScript("/assets/mobile.checkout.min.js", function () {
                         $.getJSON("ar_web_checkout.php?tipo=get_checkout_html&device_prefix=mobile", function (data) {
 
                             $('#checkout').html(data.html)
@@ -415,7 +415,7 @@
 
             {/if}
                 {if $with_favourites==1}
-            getScript('/js/mobile.logged_in.min.js?v=190227', function () {
+            getScript("/assets/mobile.logged_in.min.js", function () {
 
                 $.getJSON("ar_web_favourites.php?tipo=get_favourites_html&device_prefix=mobile", function (data) {
 
@@ -451,8 +451,8 @@
 
             {/if}
                 {if $with_profile==1}
-            getScript('/js/mobile.forms.min.js', function () {
-                getScript('/js/mobile.profile.min.js', function () {
+            getScript("/assets/mobile.forms.min.js", function () {
+                getScript("/assets/mobile.profile.min.js", function () {
                 $.getJSON("ar_web_profile.php?tipo=get_profile_html&device_prefix=mobile", function (data) {
 
 
@@ -467,7 +467,7 @@
             })
             {/if}
                 {if $with_register==1}
-            getScript('/js/mobile.forms.min.js', function () {
+            getScript("/assets/mobile.forms.min.js", function () {
 
 
                 $( "#country_select" ).change(function() {
@@ -758,7 +758,7 @@
 
             {/if}
                 {if $with_reset_password}
-            getScript('/js/mobile.forms.min.js', function () {
+            getScript("/assets/mobile.forms.min.js", function () {
                 $("form").on('submit', function (e) {
 
                     e.preventDefault();
@@ -869,7 +869,7 @@
             {/if}
                 {if $with_login==1}
 
-            getScript('/js/mobile.forms.min.js', function () {
+            getScript("/assets/mobile.forms.min.js", function () {
 
 
                 $('#open_recovery').on('click', function (e) {
@@ -1114,7 +1114,7 @@
             {/if}
                 {if $with_gallery==1}
 
-            getScript('/js/image_gallery.min.js', function () {
+            getScript("/assets/image_gallery.min.js", function () {
                 var $pswp = $('.pswp')[0];
 
                 var items = [];
@@ -1255,7 +1255,7 @@
             });
             {/if}
 
-            getScript('/js/mobile.logged_in.min.js?v=190227', function () {
+            getScript("/assets/mobile.logged_in.min.js", function () {
                 $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
 
             })

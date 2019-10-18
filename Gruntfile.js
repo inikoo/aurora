@@ -3,95 +3,110 @@ module.exports = function (grunt) {
     grunt.initConfig({
 
         clean: {
-            fork: ["../fork/*", "!../fork/keyring/**", "!../fork/server_files/**"], css: ["assets/images"],
-        }, uglify: {
+            fork: ["../fork/*", "!../fork/keyring/**", "!../fork/server_files/**"],
+            css: ["assets/images"],
+            pweb_deployment_step2: ["EcomB2B/assets/*.min.js"],
+            pweb_deployment_step4: ["EcomB2B/assets/*.tmp.*"],
+
+        },
+        uglify: {
             pweb_common_desktop_logged_in: {
                 options: {
                     sourceMap: true,
                 },
 
-                src: ['EcomB2B/js/jquery.hoverIntent.js', 'EcomB2B/js/menu.js', 'EcomB2B/js/search.js',], dest: 'EcomB2B/js/desktop.in.min.js'
+                src: ['EcomB2B/js/libs/jquery.hoverIntent.js', 'EcomB2B/js/au_header/menu.js', 'EcomB2B/js/au_header/search.js',],
+                dest: 'EcomB2B/assets/desktop.in.min.js'
             }, pweb_common_desktop_logged_out: {
                 options: {
                     sourceMap: true,
                 },
 
-                src: ['EcomB2B/theme_1/local/jquery.js', 'EcomB2B/js/jquery.hoverIntent.js', 'EcomB2B/js/menu.js', 'EcomB2B/js/search.js',], dest: 'EcomB2B/js/desktop.out.min.js'
+                src: ['EcomB2B/js/libs/jquery.js', 'EcomB2B/js/libs/jquery.hoverIntent.js', 'EcomB2B/js/au_header/menu.js', 'EcomB2B/js/au_header/search.js',],
+                dest: 'EcomB2B/assets/desktop.out.min.js'
             }, pweb_desktop_logged_in: {
                 options: {
 
                     sourceMap: true,
                 },
 
-                src: ['EcomB2B/js/validation.EcomB2B.js', 'EcomB2B/js/aurora.logged_in.js', 'EcomB2B/js/ordering.js',
+                src: ['EcomB2B/js/aurora/validation.EcomB2B.js', 'EcomB2B/js/aurora/aurora.logged_in.js', 'EcomB2B/js/aurora/ordering.js',
 
 
-                ], dest: 'EcomB2B/js/desktop.logged_in.min.js',
+                ], dest: 'EcomB2B/assets/desktop.logged_in.min.js',
             }, pweb_desktop_image_gallery: {
+                options: {
+                    sourceMap: true,
+                },
                 src: [
 
-                    'EcomB2B/js_libs/photoswipe.js', 'EcomB2B/js_libs/photoswipe-ui-default.js',
+                    'EcomB2B/js/images/photoswipe.js', 'EcomB2B/js/images/photoswipe-ui-default.js',
 
 
-                ], dest: 'EcomB2B/js/image_gallery.min.js',
+                ], dest: 'EcomB2B/assets/image_gallery.min.js',
             }, pweb_desktop_forms: {
                 options: {
                     sourceMap: true,
                 },
-                src: ['EcomB2B/theme_1/local/jquery-ui.js', 'EcomB2B/theme_1/sky_forms/js/jquery.form.min.js', 'EcomB2B/theme_1/sky_forms/js/jquery.validate.min.js', 'EcomB2B/theme_1/sky_forms/js/additional-methods.min.js', 'EcomB2B/js/sweetalert.min.js', 'EcomB2B/js/sha256.js', 'EcomB2B/js/aurora_forms.js',],
-                dest: 'EcomB2B/js/desktop.forms.min.js'
+                src: ['EcomB2B/js/libs/jquery-ui.js', 'EcomB2B/js/libs/jquery.form.min.js', 'EcomB2B/js/libs/jquery.validate.min.js', 'EcomB2B/js/libs/additional-methods.min.js', 'EcomB2B/js/libs/sweetalert.min.js', 'EcomB2B/js/libs/sha256.js', 'EcomB2B/js/au_forms/aurora_forms.js'],
+                dest: 'EcomB2B/assets/desktop.forms.min.js'
             }, pweb_desktop_basket: {
                 options: {
                     sourceMap: true,
-                }, src: ['EcomB2B/js/basket.js', 'EcomB2B/js/order_totals.js',], dest: 'EcomB2B/js/desktop.basket.min.js'
+                }, src: ['EcomB2B/js/basket_checkout/basket.js', 'EcomB2B/js/basket_checkout/order_totals.js',],
+                dest: 'EcomB2B/assets/desktop.basket.min.js'
             }, pweb_desktop_checkout: {
                 options: {
                     sourceMap: true,
                 }, src: [
 
-                    'EcomB2B/js/braintree.3.40.0.paypal-checkout.min.js', 'EcomB2B/js/braintree.3.40.0.min.js', 'EcomB2B/js/braintree.3.40.0.hosted-fields.min.js', 'EcomB2B/js/checkout.js', 'EcomB2B/js/order_totals.js',
+                    'EcomB2B/js/basket_checkout/braintree.3.40.0.paypal-checkout.min.js', 'EcomB2B/js/basket_checkout/braintree.3.40.0.min.js', 'EcomB2B/js/basket_checkout/braintree.3.40.0.hosted-fields.min.js', 'EcomB2B/js/basket_checkout/checkout.js', 'EcomB2B/js/basket_checkout/order_totals.js',
 
                 ], dest: 'EcomB2B/js/desktop.checkout.min.js'
             }, pweb_desktop_profile: {
                 options: {
                     sourceMap: true,
-                }, src: ['EcomB2B/js/order_totals.js',], dest: 'EcomB2B/js/desktop.profile.min.js'
+                }, src: ['EcomB2B/js/basket_checkout/order_totals.js',],
+                            dest: 'EcomB2B/assets/desktop.profile.min.js'
             }, pweb_mobile_logged_in: {
                 options: {
                     sourceMap: true,
-                }, src: ['EcomB2B/js/validation.EcomB2B.js', 'EcomB2B/js/aurora.logged_in.mobile.js', 'EcomB2B/js/ordering.touch.js'
+                }, src: ['EcomB2B/js/aurora_mobile/validation.EcomB2B.js', 'EcomB2B/js/aurora_mobile/aurora.logged_in.mobile.js', 'EcomB2B/js/aurora_mobile/ordering.touch.js'
 
-                ], dest: 'EcomB2B/js/mobile.logged_in.min.js',
+                ], dest: 'EcomB2B/assets/mobile.logged_in.min.js',
 
             }, pweb_mobile_forms: {
                 options: {
                     sourceMap: true,
                 },
-                src: ['EcomB2B/theme_1/local/jquery-ui.js', 'EcomB2B/theme_1/sky_forms/js/jquery.form.min.js', 'EcomB2B/theme_1/sky_forms/js/jquery.validate.min.js', 'EcomB2B/theme_1/sky_forms/js/additional-methods.min.js', 'EcomB2B/js/sweetalert.min.js', 'EcomB2B/js/sha256.js', 'EcomB2B/js/aurora_forms.js',],
-                dest: 'EcomB2B/js/mobile.forms.min.js',
+                src: ['EcomB2B/js/libs/jquery-ui.js', 'EcomB2B/js/libs/jquery.form.min.js', 'EcomB2B/js/libs/jquery.validate.min.js', 'EcomB2B/js/libds/additional-methods.min.js', 'EcomB2B/js/libs/sweetalert.min.js', 'EcomB2B/js/lbs/sha256.js', 'EcomB2B/js/au_forms/aurora_forms.js',],
+                dest: 'EcomB2B/assets/mobile.forms.min.js',
 
             }, pweb_mobile_basket: {
                 options: {
                     sourceMap: true,
-                }, src: ['EcomB2B/js/basket.js', 'EcomB2B/js/order_totals.js',], dest: 'EcomB2B/js/mobile.basket.min.js'
+                }, src: ['EcomB2B/js/basket_checkout/basket.js', 'EcomB2B/js/basket_checkout/order_totals.js'],
+                dest: 'EcomB2B/assets/mobile.basket.min.js'
             }, pweb_mobile_profile: {
                 options: {
                     sourceMap: true,
-                }, src: ['EcomB2B/js/order_totals.js',], dest: 'EcomB2B/js/mobile.profile.min.js'
+                }, src: ['EcomB2B/js/basket_checkout/order_totals.js'],
+                dest: 'EcomB2B/assets/mobile.profile.min.js'
             }, pweb_mobile_checkout: {
                 options: {
                     sourceMap: true,
                 },
                 src: [
 
-                    'EcomB2B/js/braintree.3.40.0.paypal-checkout.min.js', 'EcomB2B/js/braintree.3.40.0.min.js', 'EcomB2B/js/braintree.3.40.0.hosted-fields.min.js', 'EcomB2B/js/checkout.js', 'EcomB2B/js/order_totals.js',],
-                dest: 'EcomB2B/js/mobile.checkout.min.js'
+                    'EcomB2B/js/basket_checkout/braintree.3.40.0.paypal-checkout.min.js', 'EcomB2B/js/basket_checkout/braintree.3.40.0.min.js', 'EcomB2B/js/basket_checkout/braintree.3.40.0.hosted-fields.min.js', 'EcomB2B/js/checkout.js', 'EcomB2B/js/basket_checkout/order_totals.js',],
+                dest: 'EcomB2B/assets/mobile.checkout.min.js'
 
             }, pweb_tablet: {
                 options: {
 
                     sourceMap: true,
-                }, src: ['EcomB2B/theme_1/local/jquery.js', 'EcomB2B/theme_1/tablet/plugins.js', 'EcomB2B/js/search.js',], dest: 'EcomB2B/js/mobile.190304.min.js',
+                }, src: ['EcomB2B/js/libs/jquery.js', 'EcomB2B/js/libs/mobile_plugins.js', 'EcomB2B/js/au_header/search.js'],
+                dest: 'EcomB2B/assets/mobile.min.js',
 
             }, pweb_tablet_custom: {
                 options: {
@@ -99,7 +114,8 @@ module.exports = function (grunt) {
                     sourceMap: true,
                 }, src: [
 
-                    'EcomB2B/theme_1/tablet/custom.js',], dest: 'EcomB2B/js/tablet.custom.min.js',
+                    'EcomB2B/js/libs/mobile_custom.js'],
+                dest: 'EcomB2B/assets/mobile_custom.min.js',
 
             }, aurora_libs: {
                 options: {
@@ -175,54 +191,49 @@ module.exports = function (grunt) {
 
             }
 
-        }, sass: {
+        },
+        sass: {
             aurora: {
-                options: {
-                    // style: 'compressed'
-                }, files: {
-                    'css/app.css': 'sass/app.scss', 'css/app.mobile.css': 'sass/app.mobile.scss',
+                files: {
+                    'css/app.css': 'sass/app.scss',
+                    'css/app.mobile.css': 'sass/app.mobile.scss',
 
                 }
             }, aurora_public: {
-                options: {
-                    // style: 'compressed'
-                }, files: {
-                    'EcomB2B/css/style.theme_1.EcomB2B.desktop.css': 'sass/style.theme_1.EcomB2B.scss',
-                    'EcomB2B/css/style.theme_1.EcomB2B.tablet.css': 'sass/style.theme_1.EcomB2B.tablet.scss',
-                    'EcomB2B/css/style.theme_1.EcomB2B.mobile.css': 'sass/style.theme_1.EcomB2B.mobile.scss',
-
-
+                files: {
+                    'EcomB2B/css/style.theme_1.EcomB2B.desktop.css': 'sass/EcomB2B/style.theme_1.EcomB2B.scss',
+                    'EcomB2B/css/style.theme_1.EcomB2B.tablet.css': 'sass/EcomB2B/style.theme_1.EcomB2B.tablet.scss',
+                    'EcomB2B/css/style.theme_1.EcomB2B.mobile.css': 'sass/EcomB2B/style.theme_1.EcomB2B.mobile.scss',
                 }
             }, login: {
-                options: {
-                    // style: 'compressed'
-                }, files: {
+               files: {
                     'css/login.css': 'sass/login.scss'
                 }
             }
-        }, cssmin: {
+        },
+        cssmin: {
             options: {
                 shorthandCompacting: false, roundingPrecision: -1, sourceMap: true,
             },
 
             pweb: {
                 files: {
-                    'EcomB2B/css/desktop.min.css': [
+                    'EcomB2B/assets/desktop.min.css': [
 
-                        'css/fontawesome-all.css', 'EcomB2B/css/style.theme_1.EcomB2B.desktop.css'],
+                        'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/style.theme_1.EcomB2B.desktop.css'],
 
-                    'EcomB2B/css/forms.min.css': ['EcomB2B/css/sweetalert.css', 'EcomB2B/theme_1/sky_forms/css/sky-forms.css', 'EcomB2B/css/sky_forms.aurora.css'],
-
-
-                    'EcomB2B/css/image_gallery.min.css': ['EcomB2B/css/photoswipe.css', 'EcomB2B/css/photoswipe/default-skin.css'],
+                    'EcomB2B/assets/forms.min.css': ['EcomB2B/css/sweetalert.css', 'EcomB2B/css/sky-forms.css', 'EcomB2B/css/sky_forms.aurora.css'],
 
 
-                    'EcomB2B/css/mobile.min.css': ['css/fontawesome-all.css', 'EcomB2B/theme_1/mobile/style.css', 'EcomB2B/theme_1/mobile/skin.css', 'EcomB2B/theme_1/mobile/framework.css', 'EcomB2B/css/style.theme_1.EcomB2B.mobile.css',],
+                    'EcomB2B/assets/image_gallery.min.css': ['EcomB2B/css/photoswipe.css', 'EcomB2B/css/photoswipe/default-skin.css'],
 
 
-                    'EcomB2B/css/tablet.min.css': [
+                    'EcomB2B/assets/mobile.min.css': ['node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/mobile_style.css', 'EcomB2B/css/mobile_skin.css', 'EcomB2B/css/mobile_framework.css', 'EcomB2B/css/style.theme_1.EcomB2B.mobile.css'],
 
-                        'css/fontawesome-all.css', 'EcomB2B/theme_1/tablet/style.css', 'EcomB2B/theme_1/tablet/skin.css', 'EcomB2B/theme_1/tablet/framework.css',
+
+                    'EcomB2B/assets/tablet.min.css': [
+
+                        'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/mobile_style.css', 'EcomB2B/css/mobile_skin.css', 'EcomB2B/css/mobile_framework.css',
 
                         'EcomB2B/css/style.theme_1.EcomB2B.tablet.css'],
 
@@ -232,7 +243,7 @@ module.exports = function (grunt) {
 
             au: {
                 files: {
-                    'assets/au_app.min.css': ['css/jquery-ui.css', 'css/fontawesome-all.css', 'css/intlTelInput.css', 'css/countrySelect.css', 'css/d3fc.css', 'css/backgrid.css', 'css/backgrid-filter.css', 'bower_components/select2/dist/css/select2.css',
+                    'assets/au_app.min.css': ['css/jquery-ui.css', 'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'css/intlTelInput.css', 'css/countrySelect.css', 'css/d3fc.css', 'css/backgrid.css', 'css/backgrid-filter.css', 'bower_components/select2/dist/css/select2.css',
 
                         'css/editor_v1/froala_editor.css', 'css/editor_v1/froala_style.css', 'css/editor_v1/codemirror.css', 'css/editor_v1/codemirror_dracula.css',
 
@@ -243,11 +254,12 @@ module.exports = function (grunt) {
 
             au_login: {
                 files: {
-                    'css/login.min.css': ['css/fontawesome-all.css', 'css/login.css']
+                    'assets/login.min.css': ['node_modules/@fortawesome/fontawesome-pro/css/all.css', 'css/login.css']
 
                 }
             }
-        }, copy: {
+        },
+        copy: {
 
             css: {
                 files: [{
@@ -255,6 +267,36 @@ module.exports = function (grunt) {
                 }
 
                 ]
+            },
+
+
+            pweb_deployment_step1: {
+                files: [{
+                    expand: true,
+                    dot: true,
+                    cwd: 'EcomB2B/assets',
+                    dest: 'EcomB2B/assets/',
+                    src: [
+                        '{,*/}*.min.js'
+                    ],
+                    rename: function(dest, src) {
+                        return dest + src.replace('.min','.xx.tmp');
+                    }
+                }]
+            },
+            pweb_deployment_step3: {
+                files: [{
+                    expand: true,
+                    dot: true,
+                    cwd: 'EcomB2B/assets',
+                    dest: 'EcomB2B/assets/',
+                    src: [
+                        '{,*/}*.tmp.*'
+                    ],
+                    rename: function(dest, src) {
+                        return dest + src.replace('.tmp.','.min.');
+                    }
+                }]
             },
 
             fork_stones: {
@@ -306,18 +348,8 @@ module.exports = function (grunt) {
             },
 
 
-        }, watch: {
-
-            sass: {
-                files: ['sass/*.scss'], tasks: ['sass:aurora'], options: {
-                    spawn: false,
-                },
-            }, fork: {
-                files: ['fork/*.php', 'conf/*.php', 'conf/fields/*.php', 'utils/*', 'class.*.php', 'trait.*.php'], tasks: ['copy:fork'], options: {
-                    spawn: false,
-                },
-            }
-        }, replace: {
+        },
+        replace: {
             aurora_version: {
                 src: ['templates/app.tpl'], overwrite: true, replacements: [{
                     from: /<div class="aurora_version full">(.*)<\/div>/g,
@@ -351,6 +383,73 @@ module.exports = function (grunt) {
                     from: /login.min.js\.*"/g, to: 'login.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
                 }]
             }
+
+            , ecom_desktop_in: {
+                    src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl','EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
+                        from: /desktop.in.min.js\.*"/g, to: 'desktop.in.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    }
+                    ]
+                }
+            , ecom_desktop_logged_in: {
+                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl','EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [  {
+                        from: /desktop.logged_in.min.js\.*"/g, to: 'desktop.logged_in.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    }
+                ]
+            }
+            , ecom_desktop_out: {
+                src: ['EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
+                    from: /desktop.out.min.js\.*"/g, to: 'desktop.out.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                }]
+            }
+            , ecom_images: {
+                src: ['EcomB2B/templates/theme_1/webpage_blocks.theme_1.*tpl'], overwrite: true, replacements: [{
+                    from: /image_gallery.min.js\.*"/g, to: 'image_gallery.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                }]
+            }
+            , ecom_desktop_forms: {
+                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl','EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
+                    from: /desktop.forms.min.js\.*"/g, to: 'desktop.forms.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                }]
+            }
+            , ecom_desktop_basket_checkout: {
+                src: ['EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [
+                    {
+                    from: /desktop.basket.min.js\.*"/g, to: 'desktop.basket.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                }, {
+                        from: /mobile.basket.min.js\.*"/g, to: 'mobile.basket.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    },
+                    {
+                        from: /desktop.checkout.min.js\.*"/g, to: 'desktop.checkout.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    },
+                    {
+                        from: /mobile.checkout.min.js\.*"/g, to: 'mobile.checkout.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    },
+                    {
+                        from: /desktop.profile.min.js\.*"/g, to: 'desktop.profile.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    },
+                    {
+                        from: /mobile.profile.min.js\.*"/g, to: 'mobile.profile.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                    }
+
+                ]
+            } , ecom_mobile_in: {
+                src: ['templates/theme_1/website.header.mobile.theme_1.tpl','EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
+                    from: /mobile.logged_in.min.js\.*"/g, to: 'mobile.logged_in.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                }
+                ]
+            }, ecom_mobile_forms: {
+            src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.*tpl','EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
+                from: /mobile.forms.min.js\.*"/g, to: 'mobile.forms.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+            }]
+        }, mobile_custom: {
+                src: ['templates/theme_1/website.header.mobile.theme_1.tpl','EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
+                    from: /mobile_custom.min.js\.*"/g, to: 'mobile_custom.min.js?=v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '"'
+                }
+                ]
+            }
+
+
+
         }
 
     });
@@ -363,6 +462,10 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-text-replace');
+
+
+
+    grunt.registerTask('pweb_deployment', ['copy:pweb_deployment_step1', 'clean:pweb_deployment_step2', 'copy:pweb_deployment_step3','clean:pweb_deployment_step4',]);
 
 
     grunt.registerTask('fork', ['copy:fork_stones', 'copy:fork']);

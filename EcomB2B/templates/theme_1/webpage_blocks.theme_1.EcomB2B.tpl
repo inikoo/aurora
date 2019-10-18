@@ -1,4 +1,4 @@
-﻿{*
+{*
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
@@ -230,7 +230,13 @@
             head.appendChild(script);
         }
 
-        getScript('/js/desktop.{if $logged_in}in{else}out{/if}.min.js?v=190410', function () {
+        getScript(
+                    {if $logged_in}
+                        "/assets/desktop.in.min.js"
+                    {else}
+                        "/assets/desktop.out.min.js"
+                    {/if}
+                    , function () {
 
 
             {if $website->get('Website Text Font')!=''  and !$logged_in}
@@ -316,8 +322,8 @@
 
             {/if}
             {if $with_reset_password==1}
-            getScript('/js/desktop.logged_in.min.js?v=190522', function () {
-                getScript('/js/desktop.forms.min.js', function () {
+            getScript("/assets/desktop.logged_in.min.js", function () {
+                getScript("/assets/desktop.forms.min.js", function () {
 
                     $("form").on('submit', function (e) {
 
@@ -431,9 +437,9 @@
 
             {/if}
             {if $with_basket==1}
-            getScript('/js/desktop.logged_in.min.js?v=190522', function () {
-                getScript('/js/desktop.forms.min.js', function () {
-                    getScript('/js/desktop.basket.min.js?v=190529', function () {
+            getScript("/assets/desktop.logged_in.min.js", function () {
+                getScript("/assets/desktop.forms.min.js", function () {
+                    getScript("/assets/desktop.basket.min.js", function () {
 
                     $.getJSON("ar_web_basket.php?tipo=get_basket_html&device_prefix=", function (data) {
 
@@ -477,7 +483,7 @@
 
 
 
-            getScript('/js/desktop.logged_in.min.js?v=190522', function () {
+            getScript("/assets/desktop.logged_in.min.js", function () {
 
                 var getUrlParameter = function getUrlParameter(sParam) {
                     var sPageURL = window.location.search.substring(1),
@@ -519,9 +525,9 @@
 
             {/if}
             {if $with_checkout==1}
-            getScript('/js/desktop.logged_in.min.js?v=190522', function () {
-                getScript('/js/desktop.forms.min.js', function () {
-                    getScript('/js/desktop.checkout.min.js?v=190329v3', function () {
+            getScript("/assets/desktop.logged_in.min.js", function () {
+                getScript("/assets/desktop.forms.min.js", function () {
+                    getScript("/assets/desktop.checkout.min.js", function () {
                         $.getJSON("ar_web_checkout.php?tipo=get_checkout_html&device_prefix=", function (data) {
 
 
@@ -563,8 +569,8 @@
 
             {/if}
             {if $with_profile==1}
-            getScript('/js/desktop.forms.min.js', function () {
-                getScript('/js/desktop.profile.min.js', function () {
+            getScript("/assets/desktop.forms.min.js", function () {
+                getScript("/assets/desktop.profile.min.js", function () {
                 $.getJSON("ar_web_profile.php?tipo=get_profile_html&device_prefix=", function (data) {
 
 
@@ -580,7 +586,7 @@
             {/if}
             {if $with_register==1}
             $('#register_header_button').addClass('hide')
-            getScript('/js/desktop.forms.min.js', function () {
+            getScript("/assets/desktop.forms.min.js", function () {
 
                 $("#country_select").change(function () {
 
@@ -871,7 +877,7 @@
             {/if}
             {if $with_login==1}
             $('.control_panel').addClass('hide')
-            getScript('/js/desktop.forms.min.js', function () {
+            getScript("/assets/desktop.forms.min.js", function () {
 
 
 
@@ -1125,7 +1131,7 @@
             {if $with_gallery==1}
 
 
-            getScript('/js/image_gallery.min.js', function () {
+            getScript("/assets/image_gallery.min.js", function () {
                 var $pswp = $('.pswp')[0];
 
                 var items = [];
@@ -1215,7 +1221,7 @@
 
                 });
                 {/if}
-                getScript('/js/desktop.logged_in.min.js?v=190522', function () {
+                getScript("/assets/desktop.logged_in.min.js", function () {
                 $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
 
 

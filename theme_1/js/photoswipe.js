@@ -1,1 +1,0 @@
-../../EcomB2B/js/photoswipe.js

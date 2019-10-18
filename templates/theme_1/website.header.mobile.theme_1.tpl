@@ -94,7 +94,7 @@
 
 
 
-        getScript('/theme_1/js/tablet.custom.min.js?v=2', function () {
+        getScript("EcomB2B/assets/mobile_custom.min.js", function () {
 
 
 
@@ -102,7 +102,7 @@
 
 
 
-            getScript('/theme_1/js/mobile.logged_in.min.js?v=190227', function () {
+            getScript("/EcomB2B/assets/mobile.logged_in.min.js", function () {
                 $('#logout i').removeClass('fa-spinner fa-spin').addClass('fa-sign-out')
 
             })

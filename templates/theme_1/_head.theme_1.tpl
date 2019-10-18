@@ -120,7 +120,7 @@
     <link rel="stylesheet" href="/css/webpage_preview/webpage_preview.css?v20180422v1" type="text/css"/>
 
 
-    <script src="EcomB2B/js/desktop.in.min.js"></script>
+    <script src="EcomB2B/assets/desktop.in.min.js"></script>
 
 
     <script src="js/libs/jquery-ui.js"></script>
@@ -165,7 +165,7 @@
 
 
 
-    <script src="/js/libs/base64.js?v3"></script>
+    <script src="/js/libs/base64.js"></script>
 
     <script src="/js/edit.js"></script>
     <script src="/js/validation.js"></script>

@@ -201,9 +201,9 @@
                 {assign "with_reset_password" 1}
                 {assign "with_forms" 1}
 
-                <script src="js/mobile.190304.min.js"></script>
-                <script src="js/mobile.forms.min.js"></script>
-                <script src="js/sweetalert.min.js"></script>
+                <script src="assets/mobile.min.js"></script>
+                <script src="assets/mobile.forms.min.js"></script>
+                <script src="js/libs/sweetalert.min.js"></script>
             {elseif $block.type=='reviews'}
                 {assign "with_reviews" 1}
             {else}
