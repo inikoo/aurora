@@ -18,13 +18,15 @@ module.exports = function (grunt) {
                     sourceMap: true,
                 },
 
-                src: ['EcomB2B/js/libs/jquery.hoverIntent.js', 'EcomB2B/js/au_header/menu.js', 'EcomB2B/js/au_header/search.js',], dest: 'EcomB2B/assets/desktop.in.min.js'
+                src: ['EcomB2B/js/libs/jquery.hoverIntent.js', 'EcomB2B/js/au_header/menu.js', 'EcomB2B/js/au_header/search.js',],
+                dest: 'EcomB2B/assets/desktop.in.min.js'
             }, pweb_common_desktop_logged_out: {
                 options: {
                     sourceMap: true,
                 },
 
-                src: ['EcomB2B/js/libs/jquery.js', 'EcomB2B/js/libs/jquery.hoverIntent.js', 'EcomB2B/js/au_header/menu.js', 'EcomB2B/js/au_header/search.js',], dest: 'EcomB2B/assets/desktop.out.min.js'
+                src: ['EcomB2B/js/libs/jquery.js', 'EcomB2B/js/libs/jquery.hoverIntent.js', 'EcomB2B/js/au_header/menu.js', 'EcomB2B/js/au_header/search.js',],
+                dest: 'EcomB2B/assets/desktop.out.min.js'
             }, pweb_desktop_logged_in: {
                 options: {
 
@@ -94,16 +96,16 @@ module.exports = function (grunt) {
                 },
                 src: [
 
-                    'EcomB2B/js/basket_checkout/braintree.3.40.0.paypal-checkout.min.js', 'EcomB2B/js/basket_checkout/braintree.3.40.0.min.js', 'EcomB2B/js/basket_checkout/braintree.3.40.0.hosted-fields.min.js', 'EcomB2B/js/checkout.js', 'EcomB2B/js/basket_checkout/order_totals.js',],
+                    'EcomB2B/js/basket_checkout/braintree.3.40.0.paypal-checkout.min.js', 'EcomB2B/js/basket_checkout/braintree.3.40.0.min.js', 'EcomB2B/js/basket_checkout/braintree.3.40.0.hosted-fields.min.js', 'EcomB2B/js/basket_checkout/checkout.js', 'EcomB2B/js/basket_checkout/order_totals.js',],
                 dest: 'EcomB2B/assets/mobile.checkout.min.js'
 
-            }, pweb_tablet: {
+            }, pweb_mobile: {
                 options: {
 
                     sourceMap: true,
                 }, src: ['EcomB2B/js/libs/jquery.js', 'EcomB2B/js/libs/mobile_plugins.js', 'EcomB2B/js/au_header/search.js'], dest: 'EcomB2B/assets/mobile.min.js',
 
-            }, pweb_tablet_custom: {
+            }, pweb_mobile_custom: {
                 options: {
 
                     sourceMap: true,
@@ -189,7 +191,8 @@ module.exports = function (grunt) {
         sass: {
             aurora: {
                 files: {
-                    'css/staging/app.css': 'sass/app.scss', 'css/staging/app.mobile.css': 'sass/app.mobile.scss',
+                    'css/staging/app.css': 'sass/au/app.scss',
+                    'css/staging/app.mobile.css': 'sass/au/app.mobile.scss',
 
                 }
             }, aurora_public: {
@@ -200,7 +203,7 @@ module.exports = function (grunt) {
                 }
             }, login: {
                 files: {
-                    'css/staging/login.css': 'sass/login.scss'
+                    'css/staging/login.css': 'sass/au/login.scss'
                 }
             }
         },
@@ -436,9 +439,14 @@ module.exports = function (grunt) {
                     from: /mobile.forms.\.*min.js"/g, to: 'mobile.forms.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             },
-            mobile_custom: {
+            pweb_mobile_custom: {
                 src: ['templates/theme_1/website.header.mobile.theme_1.tpl', 'EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
                     from: /mobile_custom.\.*min.js"/g, to: 'mobile_custom.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
+                }]
+            },
+            pweb_mobile: {
+                src: ['templates/theme_1/website.header.mobile.theme_1.tpl', 'EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [{
+                    from: /mobile.\.*min.js"/g, to: 'mobile.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
             },
             ecom_css: {
@@ -486,7 +494,7 @@ module.exports = function (grunt) {
     grunt.registerTask('qfork', ['copy:fork']);
 
 
-    grunt.registerTask('au_sass', ['sass:aurora', 'sass:aurora_public', 'sass:login']);
+    grunt.registerTask('au_sass', ['sass:aurora', 'sass:login']);
     grunt.registerTask('au_css', ['cssmin:au', 'cssmin:au_login']);
     grunt.registerTask('au_js', ['uglify:aurora_libs', 'uglify:login', 'uglify:aurora']);
 
@@ -495,6 +503,6 @@ module.exports = function (grunt) {
 
     grunt.registerTask('pweb', ['copy:fa_webfonts', 'sass:aurora_public', 'cssmin:pweb',
 
-        'uglify:pweb_mobile_logged_in', 'uglify:pweb_mobile_forms', 'uglify:pweb_mobile_profile', 'uglify:pweb_mobile_basket', 'uglify:pweb_mobile_checkout', 'uglify:pweb_tablet', 'uglify:pweb_tablet_custom', 'uglify:pweb_common_desktop_logged_in', 'uglify:pweb_common_desktop_logged_out', 'uglify:pweb_desktop_logged_in', 'uglify:pweb_desktop_forms', 'uglify:pweb_desktop_profile', 'uglify:pweb_desktop_basket', 'uglify:pweb_desktop_checkout', 'uglify:pweb_desktop_image_gallery']);
+        'uglify:pweb_mobile_logged_in', 'uglify:pweb_mobile_forms', 'uglify:pweb_mobile_profile', 'uglify:pweb_mobile_basket', 'uglify:pweb_mobile_checkout', 'uglify:pweb_mobile', 'uglify:pweb_mobile_custom', 'uglify:pweb_common_desktop_logged_in', 'uglify:pweb_common_desktop_logged_out', 'uglify:pweb_desktop_logged_in', 'uglify:pweb_desktop_forms', 'uglify:pweb_desktop_profile', 'uglify:pweb_desktop_basket', 'uglify:pweb_desktop_checkout', 'uglify:pweb_desktop_image_gallery']);
 
 };
