@@ -75,10 +75,9 @@
         {if !empty($sentry_js)}
 
         Sentry.init({
-            dsn: '{$sentry_js}'
-            {if isset($release)}
-            ,  release: "{$release}"
-        {/if}
+            dsn: '{$sentry_js}',
+            release: "__AURORA_RELEASE__"
+
         });
 
 

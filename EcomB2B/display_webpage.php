@@ -35,6 +35,11 @@ $smarty->setCacheDir('server_files/smarty/cache');
 $smarty->setConfigDir('server_files/smarty/configs');
 $smarty->addPluginsDir('./smarty_plugins');
 
+if (defined('SENTRY_DNS_ECOM_JS')) {
+    $smarty->assign('sentry_js',SENTRY_DNS_ECOM_JS);
+}
+
+
 $theme        = 'theme_1';
 $website_type = 'EcomB2B';
 

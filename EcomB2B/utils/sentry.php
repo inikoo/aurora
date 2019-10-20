@@ -13,10 +13,8 @@
 if (defined('SENTRY_DNS_ECOM')) {
     $sentry_config = array(
         'dsn' => SENTRY_DNS_ECOM,
+        'release'=>'__AURORA_RELEASE__'
     );
-    if ($release = file_get_contents('release.txt')) {
-        $sentry_config['release'] = trim($release);
-    }
     Sentry\init($sentry_config);
 }
 

@@ -113,19 +113,16 @@
 
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
-    {if !isset($is_devel) or !$is_devel  and false}
-        <script
-                src="https://browser.sentry-cdn.com/5.6.3/bundle.min.js"
-                integrity="sha384-/Cqa/8kaWn7emdqIBLk3AkFMAHBk0LObErtMhO+hr52CntkaurEnihPmqYj3uJho"
-                crossorigin="anonymous"></script>
 
-        <script>
-            Sentry.init({
-                dsn: 'https://ca602819cbd14ce99a6d3ab94e1c5f04@sentry.io/1329969' ,
-                release: "au-web@1.1"
+    {if isset($sentry_js)  }
+    <script src="https://browser.sentry-cdn.com/5.7.0/bundle.min.js" integrity="sha384-pHnCJ3bbzJ+LzI19wAdyBvGAjJ5vNAC59uxeRpw5WpgkSlZUQstEADxkSbBnI95q" crossorigin="anonymous">
+    </script>
+    Sentry.init({
+    dsn: '{sentry_js}' ,
+    release: "__AURORA_RELEASE__"
 
-            });
-        </script>
+    });
+    </script>
     {/if}
 
     <link rel="stylesheet" type="text/css" href="assets/tablet.min.css">

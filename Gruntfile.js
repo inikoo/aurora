@@ -436,12 +436,15 @@ module.exports = function (grunt) {
         },
         replace: {
             aurora_version: {
-                src: ['templates/app.tpl'], overwrite: true, replacements: [{
+                src: ['templates/app.tpl','utils/sentry.php','EcomB2B/sentry.php','EcomB2B/templates/theme_1/_head.theme_1.EcomB2B*'], overwrite: true, replacements: [{
                     from: /<div class="aurora_version full">(.*)<\/div>/g,
                     to: '<div class="aurora_version full">v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '</div>'
                 }, {
                     from: /<div class="aurora_version small">(.*)<\/div>/g,
                     to: '<div class="aurora_version small"><div>v' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '</div><div>' + grunt.option('au_version_patch') + '</div></div>'
+                }, {
+                    from: /__AURORA_RELEASE__/g,
+                    to: grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch')
                 }
 
                 ]
@@ -550,6 +553,8 @@ module.exports = function (grunt) {
 
                 ]
             },
+
+
 
 
         }
