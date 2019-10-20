@@ -134,8 +134,11 @@
     <![endif]-->
 
     {if isset($sentry_js)  }
-    <script src="https://browser.sentry-cdn.com/5.7.0/bundle.min.js" integrity="sha384-pHnCJ3bbzJ+LzI19wAdyBvGAjJ5vNAC59uxeRpw5WpgkSlZUQstEADxkSbBnI95q" crossorigin="anonymous">
-    </script>
+        <script
+                src="https://browser.sentry-cdn.com/5.7.1/bundle.min.js"
+                integrity="sha384-KMv6bBTABABhv0NI+rVWly6PIRvdippFEgjpKyxUcpEmDWZTkDOiueL5xW+cztZZ"
+                crossorigin="anonymous"></script>
+
     <script>
             Sentry.init({
                 dsn: '{$sentry_js}' ,
@@ -256,7 +259,7 @@
 
 
     {if $with_reviews==1}
-        <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js" async></script>
+        <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js" ></script>
 
     {/if}
 
