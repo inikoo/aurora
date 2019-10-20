@@ -230,7 +230,7 @@
 
 
 
-    getScript("/assets/mobile.min.js", function () {
+    getScript("/js/mobile.old.min.js", function () {
 
 
         {if $website->get('Website Text Font')!=''  and !$logged_in}
