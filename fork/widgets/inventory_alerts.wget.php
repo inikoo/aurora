@@ -1,1 +1,0 @@
-../../widgets/inventory_alerts.wget.php
