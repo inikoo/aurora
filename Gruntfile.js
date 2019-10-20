@@ -80,7 +80,7 @@ module.exports = function (grunt) {
                 options: {
                     sourceMap: true,
                 },
-                src: ['EcomB2B/js/libs/jquery-ui.js', 'EcomB2B/js/libs/jquery.form.min.js', 'EcomB2B/js/libs/jquery.validate.min.js', 'EcomB2B/js/libds/additional-methods.min.js', 'EcomB2B/js/libs/sweetalert.min.js', 'EcomB2B/js/lbs/sha256.js', 'EcomB2B/js/au_forms/aurora_forms.js',],
+                src: ['EcomB2B/js/libs/jquery-ui.js', 'EcomB2B/js/libs/jquery.form.min.js', 'EcomB2B/js/libs/jquery.validate.min.js', 'EcomB2B/js/libds/additional-methods.min.js', 'EcomB2B/js/libs/sweetalert.min.js', 'EcomB2B/js/libs/sha256.js', 'EcomB2B/js/au_forms/aurora_forms.js'],
                 dest: 'EcomB2B/assets/mobile.forms.min.js',
 
             }, ecom_mobile_basket: {

@@ -4,23 +4,11 @@
  Version 3.0*/
 
 
-
-
 $(function() {
-
-
-
     $("form").on('submit', function (e) {
-
         e.preventDefault();
         e.returnValue = false;
 
     });
-
-   
-
-
-
-
 });
 
