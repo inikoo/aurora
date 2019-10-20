@@ -137,7 +137,7 @@
     <script src="https://browser.sentry-cdn.com/5.7.0/bundle.min.js" integrity="sha384-pHnCJ3bbzJ+LzI19wAdyBvGAjJ5vNAC59uxeRpw5WpgkSlZUQstEADxkSbBnI95q" crossorigin="anonymous">
     </script>
             Sentry.init({
-                dsn: '{sentry_js}' ,
+                dsn: '{$sentry_js}' ,
                 release: "__AURORA_RELEASE__"
 
             });
