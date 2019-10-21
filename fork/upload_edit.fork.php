@@ -629,7 +629,9 @@ function new_object($account, $db, $user, $editor, $data, $upload, $fork_key) {
             break;
         case 'Customer':
             include_once 'class.Customer.php';
-            $object = $parent->create_customer($data['fields_data']);
+
+            $_result  = $parent->create_customer($data['fields_data']);
+            $object = $_result['Customer'];
 
             break;
         case 'Supplier':

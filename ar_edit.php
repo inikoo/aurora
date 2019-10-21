@@ -656,7 +656,7 @@ function edit_field($account, $db, $editor, $data, $smarty) {
 }
 
 
-function set_as_main($account, $db, $user, $editor, $data, $smarty){
+function set_as_main($account, $db, $user, $editor, $data, $smarty) {
 
 
     $object = get_object($data['object'], $data['key']);
@@ -673,7 +673,6 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty){
     }
 
     $object->editor = $editor;
-
 
 
     if ($data['field'] == 'Customer_Main_Plain_Mobile') {
@@ -698,7 +697,7 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty){
             'action'         => ($object->updated ? 'set_main_contact_number_Mobile' : '')
         );
 
-    }elseif ($data['field'] == 'Supplier_Main_Plain_Mobile') {
+    } elseif ($data['field'] == 'Supplier_Main_Plain_Mobile') {
         $object->update(array('Supplier Preferred Contact Number' => 'Mobile'));
         $response = array(
             'state'          => 200,
@@ -730,7 +729,7 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty){
             'action'         => ($object->updated ? 'set_main_contact_number_Telephone' : '')
         );
 
-    }elseif ($data['field'] == 'Customer_Client_Main_Plain_Telephone') {
+    } elseif ($data['field'] == 'Customer_Client_Main_Plain_Telephone') {
         $object->update(
             array('Customer Client Preferred Contact Number' => 'Telephone')
         );
@@ -2925,7 +2924,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             /**
              * @var $parent \Store
              */
-            list($customer, $website_user) = $parent->create_customer($data['fields_data']);
+            $_result  = $parent->create_customer($data['fields_data']);
+            $customer = $_result['Customer'];
+            $website_user=$_result['Website_User'];
 
             if ($parent->new_customer) {
 
@@ -2955,8 +2956,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             /**
              * @var $parent \Customer
-             */
-            $customer_client = $parent->create_client($data['fields_data']);
+             */ $customer_client = $parent->create_client($data['fields_data']);
 
             if ($parent->new_client) {
                 $object = $customer_client;
@@ -3296,9 +3296,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             if ($parent->new_clocking_machine) {
 
-                $new_object_html   = '';
-                $redirect          = 'clocking_machines/'.$object->id;
-                $updated_data = array();
+                $new_object_html = '';
+                $redirect        = 'clocking_machines/'.$object->id;
+                $updated_data    = array();
             } else {
 
 
