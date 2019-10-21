@@ -33,7 +33,6 @@ require_once 'keyring/dns.php';
 require_once 'utils/object_functions.php';
 
 $editor = array(
-    'Author Name'  => '',
     'Author Alias' => '',
     'Author Type'  => '',
     'Author Key'   => '',
@@ -46,7 +45,7 @@ $editor = array(
 
 
 $db = new PDO(
-    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
+    "mysql:host=$dns_host;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '+0:00';")
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
@@ -64,10 +63,6 @@ $locale = $_locale;
 $sns       = Message::fromRawPostData();
 $validator = new MessageValidator();
 if ($validator->isValid($sns)) {
-
-
-    //$sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'xx', addslashes( print_r($sns,true)  ));
-    //$db->exec($sql);
 
 
     if (in_array(
@@ -90,30 +85,13 @@ if ($validator->isValid($sns)) {
                 exit;
             }
         } else {
-            //print_r($error_info=$db->errorInfo());
-            //print "$sql\n";
             http_response_code(200);
             exit;
         }
 
-        //$sql = sprintf('insert into atest2  (`date`,`data`) values (NOW(),"%s")  ', addslashes($sns['MessageId']));
-
-        //db->exec($sql);
-
-
         $message = json_decode($sns['Message'], true);
 
-
-        // $sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'xx', addslashes(json_encode($message)));
-
-        // $db->exec($sql);
-
-
         $sql = sprintf('select `Email Tracking Key`  from `Email Tracking Dimension`  where `Email Tracking SES ID`=%s  ', prepare_mysql($message['mail']['messageId']));
-
-
-        //  $db->exec($_sql);
-
 
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -133,17 +111,7 @@ if ($validator->isValid($sns)) {
                         exit();
                         break;
 
-                    /*
-                    case 'Send':
-                        $event_type = 'Sent';
 
-                        break;
-                    case 'Delivery':
-                        $event_type = 'Delivered';
-                        $date       = gmdate('Y-m-d H:i:s', strtotime($message['delivery']['timestamp']));
-
-                        break;
-                    */
                     case 'Open':
 
                         require_once 'utils/ip_geolocation.php';
@@ -157,7 +125,7 @@ if ($validator->isValid($sns)) {
                         $event_data = $message['open'];
 
                         if (isset($event_data['ipAddress'])) {
-                            $ips = preg_split('/\,/', $event_data['ipAddress']);
+                            $ips = preg_split('/,/', $event_data['ipAddress']);
                             //print_r($ips);
 
                             foreach ($ips as $ip) {
@@ -197,7 +165,7 @@ if ($validator->isValid($sns)) {
                         if ($user_agent_note != '') {
                             $note .= ', '.$user_agent_note;
                         }
-                        $note = preg_replace('/^\, /', '', $note);
+                        $note = preg_replace('/^, /', '', $note);
 
 
                         break;
@@ -232,11 +200,6 @@ if ($validator->isValid($sns)) {
 
                         switch ($message['bounce']['bounceType']) {
                             case 'Undetermined':
-                                $event_type = 'Soft Bounce';
-
-
-                                break;
-
                             case 'Transient':
                                 $event_type = 'Soft Bounce';
 
@@ -253,15 +216,19 @@ if ($validator->isValid($sns)) {
 
                         if (isset($event_data['bouncedRecipients'][0]['status'])) {
                             $status_code = $event_data['bouncedRecipients'][0]['status'];
-                        }else{
+                        } else {
 
 
-                            $sql = sprintf(
-                                'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $row['Email Tracking Key'], addslashes(json_encode($message))
+                            $sql = "insert into atest  (`date`,`headers`,`request`) values (NOW(),?,?)  ";
 
+                            $stmt = $db->prepare($sql);
+                            $stmt->execute(
+                                [
+                                    $row['Email Tracking Key'],
+                                    json_encode($message)
+                                ]
                             );
 
-                            $db->exec($sql);
 
                         }
 
@@ -284,12 +251,17 @@ if ($validator->isValid($sns)) {
 
                     default:
 
-                        $sql = sprintf(
-                            'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', $row['Email Tracking Key'], addslashes(json_encode($message))
 
+                        $sql = "insert into atest  (`date`,`headers`,`request`) values (NOW(),?,?)  ";
+
+                        $stmt = $db->prepare($sql);
+                        $stmt->execute(
+                            [
+                                $row['Email Tracking Key'],
+                                json_encode($message)
+                            ]
                         );
 
-                        $db->exec($sql);
 
                         break;
                 }
@@ -300,16 +272,11 @@ if ($validator->isValid($sns)) {
                   values (%d,%s,%s,%s,%s,%s,%s)', $row['Email Tracking Key'], prepare_mysql($event_type), prepare_mysql($date), prepare_mysql(json_encode($event_data)), prepare_mysql($sns_id), prepare_mysql($note), prepare_mysql($status_code)
                 );
                 $db->exec($sql);
+
+
                 $event_key = $db->lastInsertId();
 
-                // $__sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'aaa',$sql );
 
-                // $db->exec($__sql);
-
-
-                //$__sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'ecent key',$event_key );
-
-                // $db->exec($__sql);
 
 
                 $email_tracking = get_object('email_tracking', $row['Email Tracking Key']);
@@ -331,7 +298,7 @@ if ($validator->isValid($sns)) {
                             $bounce_count = $row3['Bounced Email Count'] + 1;
 
                             $sql = sprintf(
-                                'update  `Bounced Email Dimension` set `Bounced Email Bounce Type`=%s,`Bounced Email Status Code`=%s,`Bounced Email Count`=%d   ,`Bounced Email Source`="AU" where `Bounced Email Key`=%d  ', prepare_mysql($bounce_type),
+                                "update  `Bounced Email Dimension` set `Bounced Email Bounce Type`=%s,`Bounced Email Status Code`=%s,`Bounced Email Count`=%d   ,`Bounced Email Source`='AU' where `Bounced Email Key`=%d  ", prepare_mysql($bounce_type),
                                 prepare_mysql($bounce_status_code), $bounce_count, $row3['Bounced Email Key']
                             );
                             $db->exec($sql);
@@ -418,15 +385,19 @@ if ($validator->isValid($sns)) {
 
                     foreach ($event_data['complainedRecipients'] as $_spam_recipients) {
 
-                        $sql = sprintf(
-                            'insert into `Email Spam Dimension` (`Email Spam Sender`,`Email Spam Recipient`,`Email Spam Tracking Event Key`) values (%s,%d) ',
+                        $sql = "insert into `Email Spam Dimension` (`Email Spam Sender`,`Email Spam Recipient`,`Email Spam Tracking Event Key`,`Email Spam Date`) values (?,?,?,?) ";
 
-                            prepare_mysql($_spam_recipients['emailAddress']), prepare_mysql($message['mail']['source']),
 
-                            $event_key
+                        $stmt= $db->prepare($sql);
+                        $stmt->execute(array(
+                                           $_spam_recipients['emailAddress'],
+                                           $message['mail']['source'],
+                                           $event_key,
+                                           gmdate('Y-m-d H:i:s')
 
-                        );
-                        $db->exec($sql);
+                                       ));
+
+
                     }
 
                     $email_tracking->fast_update(array('Email Tracking Spam' => 'Yes'));
@@ -440,20 +411,21 @@ if ($validator->isValid($sns)) {
                     //'email_template_update_sent_emails_totals','email_campaign_update_sent_emails_totals','email_template_type_update_sent_emails_totals','shipping_zone_usage','timeseries_stats','data_sets_stats','deal_campaign','deal','deal_component','update_order_in_basket_low_priority','update_order_in_basket','reindex_webpage','warehouse_ISF','product_web_state_legacy','update_part_products_availability','part_stock_in_paid_orders','full_after_part_stock_update_legacy','product_sales','product_family_sales','product_department_sales','part_sales','part_category_sales','supplier_sales','supplier_category_sales'
 
 
-
-                    $sql  = "insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
+                    $sql = "insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
                       ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ";
 
 
-                    $_date=gmdate('Y-m-d H:i:s');
-                    $stmt= $db->prepare($sql);
-                    $stmt->execute(array(
-                                       $_date,
-                                       $_date,
-                                       'email_template_type_update_sent_emails_totals',
-                                       $email_tracking->get('Email Tracking Email Template Type Key'),
-                                       $_date
-                                   ));
+                    $_date = gmdate('Y-m-d H:i:s');
+                    $stmt  = $db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $_date,
+                            $_date,
+                            'email_template_type_update_sent_emails_totals',
+                            $email_tracking->get('Email Tracking Email Template Type Key'),
+                            $_date
+                        )
+                    );
 
 
                 }
@@ -521,8 +493,6 @@ if ($validator->isValid($sns)) {
                     $email_template_type = get_object('email_template_type', $email_campaign->get('Email Campaign Email Template Type Key'));
 
 
-
-
                     $socket->send(
                         json_encode(
                             array(
@@ -543,12 +513,12 @@ if ($validator->isValid($sns)) {
                                                 'Email_Campaign_Soft_Bounces_Percentage' => $email_campaign->get('Soft Bounces Percentage'),
                                                 //'Email_Campaign_Delivered'              => $email_campaign->get('Delivered'),
                                                 //'Email_Campaign_Delivered_Percentage'              => $email_campaign->get('Delivered Percentage'),
-                                                'Email_Campaign_Open'               => $email_campaign->get('Open'),
-                                                'Email_Campaign_Spams'               => $email_campaign->get('Spams'),
-                                                'Email_Campaign_Clicked'            => $email_campaign->get('Clicked'),
-                                                'Email_Campaign_Open_Percentage'    => $email_campaign->get('Open Percentage'),
-                                                'Email_Campaign_Spams_Percentage'    => $email_campaign->get('Spams Percentage'),
-                                                'Email_Campaign_Clicked_Percentage' => $email_campaign->get('Clicked Percentage'),
+                                                'Email_Campaign_Open'                    => $email_campaign->get('Open'),
+                                                'Email_Campaign_Spams'                   => $email_campaign->get('Spams'),
+                                                'Email_Campaign_Clicked'                 => $email_campaign->get('Clicked'),
+                                                'Email_Campaign_Open_Percentage'         => $email_campaign->get('Open Percentage'),
+                                                'Email_Campaign_Spams_Percentage'        => $email_campaign->get('Spams Percentage'),
+                                                'Email_Campaign_Clicked_Percentage'      => $email_campaign->get('Clicked Percentage'),
 
                                             )
                                         )
@@ -589,20 +559,27 @@ if ($validator->isValid($sns)) {
                     );
 
 
-                    // $_sql = sprintf('insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'xxxxxx', 'hola hola send');
-                    // $db->exec($_sql);
 
 
                 }
 
 
             } else {
-                $sql = sprintf(
-                    'insert into atest  (`date`,`headers`,`request`) values (NOW(),"%s","%s")  ', 'xx', addslashes(json_encode($message))
 
+                $sql = "insert into atest  (`date`,`headers`,`request`) values (NOW(),?,?)  ";
+
+                $stmt = $db->prepare($sql);
+                $stmt->execute(
+                    [
+                        'xx',
+                        json_encode($message)
+                    ]
                 );
 
-                $db->exec($sql);
+
+
+
+
             }
             http_response_code(200);
             exit;
