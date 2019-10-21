@@ -10,13 +10,21 @@
     <link href="/assets/login.min.css" rel="stylesheet">
 
 
-    <script src="https://browser.sentry-cdn.com/5.4.0/bundle.min.js" crossorigin="anonymous">
-    </script>
-    {if !$is_devel}
-    <script>
+    {if !empty($sentry_js)}
+
+    <script
+            src="https://browser.sentry-cdn.com/5.7.1/bundle.min.js"
+            integrity="sha384-KMv6bBTABABhv0NI+rVWly6PIRvdippFEgjpKyxUcpEmDWZTkDOiueL5xW+cztZZ"
+            crossorigin="anonymous"></script>
+
+
         Sentry.init({
-            dsn: 'https://6b74919f310546d2a64bbf7c856d0820@sentry.io/1482169'});
-    </script>
+        dsn: '{$sentry_js}',
+        release: "__AURORA_RELEASE__"
+
+        });
+
+
     {/if}
 
     <script src="/assets/login_libs.min.js"></script>

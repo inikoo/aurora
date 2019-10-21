@@ -18,8 +18,10 @@
     </script>
         {if !empty($sentry_js)}
 
-        <script src="https://browser.sentry-cdn.com/5.7.0/bundle.min.js" integrity="sha384-pHnCJ3bbzJ+LzI19wAdyBvGAjJ5vNAC59uxeRpw5WpgkSlZUQstEADxkSbBnI95q" crossorigin="anonymous">
-        </script>
+        <script
+                src="https://browser.sentry-cdn.com/5.7.1/bundle.min.js"
+                integrity="sha384-KMv6bBTABABhv0NI+rVWly6PIRvdippFEgjpKyxUcpEmDWZTkDOiueL5xW+cztZZ"
+                crossorigin="anonymous"></script>
          {/if}
 
     {/if}
