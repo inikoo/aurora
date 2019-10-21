@@ -1298,7 +1298,7 @@ function create_new_field(_data) {
 
 
         $("#" + clone_field).intlTelInput({
-            utilsScript: "/js/libs/telephone_utils.js", defaultCountry: 'GB', preferredCountries: ['GB', 'US']
+            utilsScript: "/js_libs/telephone_utils.js", defaultCountry: 'GB', preferredCountries: ['GB', 'US']
         });
         $("#" + clone_field).intlTelInput("setNumber", _data.value);
 

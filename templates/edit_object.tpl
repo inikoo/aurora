@@ -333,7 +333,7 @@
                                         //console.log(default_telephone_data.default_country)
                                         $("#{$field.id}").intlTelInput(
                                                 {
-                                                    utilsScript: "/js/libs/telephone_utils.js",
+                                                    utilsScript: "/js_libs/telephone_utils.js",
                                                     numberType: {if isset($field.mobile)}'MOBILE'
                                                     {else}'FIXED_LINE'{/if},
                                                     initialCountry: default_telephone_data.default_country,

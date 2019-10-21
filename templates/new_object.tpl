@@ -261,7 +261,7 @@
 
 
                      $("#{$field.id}").intlTelInput({
-                            utilsScript: "/js/libs/telephone_utils.js",
+                            utilsScript: "/js_libs/telephone_utils.js",
                             initialCountry:default_telephone_data.default_country,
                             preferredCountries:default_telephone_data.preferred_countries
                         });

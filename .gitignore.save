@@ -41,7 +41,7 @@ deleteme.php
 
 css/jquery-ui.old.css
 
-js/libs/jquery-ui.old.js
+js_libs/jquery-ui.old.js
 
 *.wcpcache
 
@@ -104,7 +104,7 @@ EcomB2B/art/mobile_side_bg_1.sk.jpg
 
 EcomB2B/art/mobile_side_bg_1.sk.png
 
-js/libs/telephone_utils.old.js
+js_libs/telephone_utils.old.js
 
 
 

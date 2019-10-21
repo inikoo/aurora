@@ -89,10 +89,10 @@
 <span class="hide" id="error_message" error="{$error}">{t}Was not possible to log in with these credentials{/t}</span>
 
 <input id="_request" type="hidden" val="{$_request}">
-<script src="js/libs/material.min.js"></script>
-<script src="js/libs/jquery-3.3.1.min.js"></script>
-<script src="js/libs/sha256.js"></script>
-<script src="js/libs/aes.js"></script>
+<script src="js_libs/material.min.js"></script>
+<script src="js_libs/jquery-3.3.1.min.js"></script>
+<script src="js_libs/sha256.js"></script>
+<script src="js_libs/aes.js"></script>
 <script src="js/login/login.js"></script>
 
 <script src="js/login/login.mobile.js"></script>

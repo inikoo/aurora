@@ -27,10 +27,10 @@ Author: Raul Perusquia <raul@inikoo.com>
     </script>
 
 
-    <script src="js/libs/jquery-3.3.1.min.js"></script>
-    <script src="js/libs/sha256.js"></script>
-    <script src="js/libs/aes.js"></script>
-    <script src="/js/libs/base64.js"></script>
+    <script src="js_libs/jquery-3.3.1.min.js"></script>
+    <script src="js_libs/sha256.js"></script>
+    <script src="js_libs/aes.js"></script>
+    <script src="/js_libs/base64.js"></script>
 
 
 
