@@ -21,7 +21,7 @@ $customer = get_object('Customer', $delivery_note->get('Delivery Note Customer K
 $order    = get_object('Order', $delivery_note->get('Delivery Note Order Key'));
 
 
-$css = '<style>'.file_get_contents(getcwd().'/css/fontawesome-all.css').'</style>';
+$css = '<style>'.file_get_contents(getcwd().'/node_modules/@fortawesome/fontawesome-pro/css/all.css').'</style>';
 
 $smarty->assign('css', $css);
 
