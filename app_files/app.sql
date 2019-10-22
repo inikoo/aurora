@@ -2127,7 +2127,7 @@ CREATE TABLE `Customer Client Dimension` (
   `Customer Client Main Plain Telephone` varchar(45) DEFAULT NULL,
   `Customer Client Main XHTML Mobile` varchar(255) DEFAULT NULL,
   `Customer Client Main Plain Mobile` varchar(255) DEFAULT NULL,
-  `Customer Client Main Plain Email` varchar(255) DEFAULT NULL,
+  `Customer Client Main Plain Email` varchar(256) DEFAULT NULL,
   `Customer Client Main Plain Postal Code` varchar(16) DEFAULT NULL,
   `Customer Client Location` varchar(255) DEFAULT NULL,
   `Customer Client Contact Address Recipient` varchar(255) DEFAULT NULL,
@@ -2416,7 +2416,7 @@ CREATE TABLE `Customer Dimension` (
   `Customer Number Web Logins` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Customer Number Web Failed Logins` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Customer Number Web Requests` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Customer Number History Records` smallint(5) unsigned DEFAULT '0',
+  `Customer Number History Records` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Customer Number Clients` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Customer Number Products in Portfolio` smallint(5) unsigned NOT NULL DEFAULT '0',
   `Customer Currency Code` varchar(3) DEFAULT NULL,
@@ -2450,7 +2450,10 @@ CREATE TABLE `Customer Dimension` (
   KEY `Customer Main Plain Email` (`Customer Main Plain Email`),
   KEY `Customer Last Dispatched Order Key` (`Customer Last Dispatched Order Key`),
   KEY `Customer Main Plain Postal Code` (`Customer Main Plain Postal Code`),
-  KEY `Customer Account Balance` (`Customer Account Balance`)
+  KEY `Customer Account Balance` (`Customer Account Balance`),
+  KEY `Customer Contact Address Locality` (`Customer Contact Address Locality`(12)),
+  KEY `Customer New` (`Customer New`),
+  KEY `Customer With Orders` (`Customer With Orders`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3471,39 +3474,21 @@ CREATE TABLE `Email Campaign Type History Bridge` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Email Site Reminder Dimension`
+-- Table structure for table `Email Spam Dimension`
 --
 
-DROP TABLE IF EXISTS `Email Site Reminder Dimension`;
+DROP TABLE IF EXISTS `Email Spam Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Email Site Reminder Dimension` (
-  `Email Site Reminder Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Email Site Reminder State` enum('Waiting','Ready','Sent','Cancelled') NOT NULL DEFAULT 'Waiting',
-  `Email Site Reminder In Process` enum('Yes','No') NOT NULL DEFAULT 'Yes',
-  `Email Site Reminder Subject` enum('Customer','User') NOT NULL DEFAULT 'User',
-  `User Key` mediumint(9) DEFAULT NULL,
-  `Customer Key` mediumint(8) unsigned NOT NULL,
-  `Customer Name` varchar(255) NOT NULL,
-  `Site Key` mediumint(8) unsigned NOT NULL,
-  `Store Key` mediumint(8) unsigned NOT NULL,
-  `Trigger Scope` enum('Back in Stock') NOT NULL,
-  `Trigger Scope Key` mediumint(8) unsigned DEFAULT NULL,
-  `Trigger Scope Name` varchar(64) NOT NULL,
-  `Creator Subject` enum('Staff','User') NOT NULL,
-  `Creator Subject Key` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Creation Date` datetime NOT NULL,
-  `Finish Date` datetime DEFAULT NULL,
-  PRIMARY KEY (`Email Site Reminder Key`),
-  KEY `Customer Site Email Reminder State` (`Email Site Reminder State`),
-  KEY `User Key` (`User Key`),
-  KEY `Email Site Reminder Subject` (`Email Site Reminder Subject`),
-  KEY `Email Site Reminder In Process` (`Email Site Reminder In Process`),
-  KEY `Email Site Reminder In Process_2` (`Email Site Reminder In Process`,`Trigger Scope`,`Trigger Scope Key`,`User Key`),
-  KEY `Email Site Reminder State` (`Email Site Reminder State`,`Trigger Scope`,`Trigger Scope Key`),
-  KEY `Trigger Scope Name` (`Trigger Scope Name`),
-  KEY `Customer Name` (`Customer Name`(64))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `Email Spam Dimension` (
+  `Email Spam Key` mediumint(9) NOT NULL AUTO_INCREMENT,
+  `Email Spam Sender` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Email Spam Recipient` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Email Spam Tracking Event Key` int(10) unsigned DEFAULT NULL,
+  `Email Spam Date` datetime DEFAULT NULL,
+  PRIMARY KEY (`Email Spam Key`),
+  KEY `Email Spam Tracking Event Key` (`Email Spam Tracking Event Key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3612,7 +3597,8 @@ CREATE TABLE `Email Tracking Dimension` (
   KEY `Email Tracking Email Template Key` (`Email Tracking Email Template Key`),
   KEY `Email Tracking State` (`Email Tracking State`),
   KEY `Email Tracking Unsubscribed` (`Email Tracking Unsubscribed`,`Email Tracking Email Template Type Key`),
-  KEY `Email Tracking Spam` (`Email Tracking Spam`,`Email Tracking Email Template Type Key`)
+  KEY `Email Tracking Spam` (`Email Tracking Spam`,`Email Tracking Email Template Type Key`),
+  KEY `Email Tracking State_2` (`Email Tracking State`,`Email Tracking Email Template Type Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3751,7 +3737,7 @@ DROP TABLE IF EXISTS `Fork Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Fork Dimension` (
-  `Fork Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Fork Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Fork Type` enum('au_export','au_upload','au_housekeeping','export','import','edit','ping_sitemap','housekeeping','sendemail','edit_pages','au_time_series','au_calculate_sales','au_export_edit_template','au_upload_edit','au_send_mailshot') NOT NULL,
   `Fork Process Data` text NOT NULL,
   `Fork Token` varchar(64) DEFAULT NULL,
@@ -3908,17 +3894,12 @@ DROP TABLE IF EXISTS `Image Dimension`;
 CREATE TABLE `Image Dimension` (
   `Image Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `Image MIME Type` enum('image/jpeg','image/png','image/gif','image/x-icon') DEFAULT NULL,
-  `Image Data` longblob,
-  `Image Thumbnail Data` longblob,
-  `Image Small Data` longblob,
-  `Image Large Data` longblob,
   `Image Filename` varchar(255) DEFAULT NULL,
   `Image File Checksum` varchar(32) DEFAULT NULL,
   `Image Width` smallint(5) unsigned DEFAULT NULL,
   `Image Height` smallint(5) unsigned DEFAULT NULL,
   `Image File Size` mediumint(8) unsigned DEFAULT NULL,
   `Image File Format` enum('jpeg','png','gif','ico') NOT NULL DEFAULT 'jpeg',
-  `Image Original Filename` varchar(255) DEFAULT NULL COMMENT 'To delete',
   `Image Public` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Image Creation Date` datetime DEFAULT NULL,
   `Image Path` varchar(255) DEFAULT NULL,
@@ -3972,8 +3953,6 @@ CREATE TABLE `Imported Record` (
   `Imported Record Parent Key` mediumint(8) unsigned NOT NULL,
   `Imported Record Data` text NOT NULL,
   `Imported Record Subject Key` mediumint(8) unsigned DEFAULT NULL,
-  `Imported Record XHTML Note` varchar(255) DEFAULT '',
-  `Imported Record Note` varchar(255) DEFAULT '',
   PRIMARY KEY (`Imported Record Key`),
   KEY `Imported Records Key` (`Imported Record Parent Key`),
   KEY `Imported Record Index` (`Imported Record Index`),
@@ -4237,9 +4216,9 @@ CREATE TABLE `Inventory Warehouse Spanshot Fact` (
   `Warehouse Key` smallint(5) unsigned NOT NULL DEFAULT '1',
   `Parts` mediumint(8) unsigned NOT NULL,
   `Locations` mediumint(8) unsigned NOT NULL,
-  `Value At Cost` decimal(9,2) DEFAULT NULL,
-  `Value At Day Cost` decimal(9,2) DEFAULT NULL,
-  `Value Commercial` decimal(9,2) DEFAULT NULL,
+  `Value At Cost` decimal(16,2) DEFAULT NULL,
+  `Value At Day Cost` decimal(16,2) DEFAULT NULL,
+  `Value Commercial` decimal(16,2) DEFAULT NULL,
   `Value At Cost Open` float NOT NULL DEFAULT '0',
   `Value At Cost High` float NOT NULL DEFAULT '0',
   `Value At Cost Low` float NOT NULL DEFAULT '0',
@@ -4939,7 +4918,7 @@ CREATE TABLE `Invoice Tax Dimension` (
   `S3` decimal(12,2) DEFAULT NULL,
   `OUT` decimal(12,2) DEFAULT NULL,
   PRIMARY KEY (`Invoice Tax Key`),
-  KEY `Invoice Key` (`Invoice Key`)
+  UNIQUE KEY `Invoice Key` (`Invoice Key`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -5651,6 +5630,7 @@ CREATE TABLE `Order Dimension` (
   `Order Metadata` json DEFAULT NULL,
   `Order Sticky Note Edited` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Order Delivery Sticky Note Edited` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `Order Import ID` mediumint(8) unsigned DEFAULT NULL,
   `Order Website Key` smallint(5) unsigned DEFAULT NULL,
   `Order Priority Level` enum('PaidPremium','Urgent','Normal') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Normal',
   `Order Care Level` enum('PaidPremium','TakeCare','Normal') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'Normal',
@@ -5696,7 +5676,8 @@ CREATE TABLE `Order Dimension` (
   KEY `Order Care Level` (`Order Care Level`),
   KEY `Order Customer Level Type` (`Order Customer Level Type`),
   KEY `Order Last Updated by Customer` (`Order Last Updated by Customer`),
-  KEY `Order Customer Client Key` (`Order Customer Client Key`)
+  KEY `Order Customer Client Key` (`Order Customer Client Key`),
+  KEY `Order Import ID` (`Order Import ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -5743,7 +5724,8 @@ CREATE TABLE `Order Import Metadata` (
   PRIMARY KEY (`Order Import Metadata Key`),
   UNIQUE KEY `Metadata` (`Metadata`),
   KEY `Name` (`Name`),
-  KEY `Import Date` (`Import Date`)
+  KEY `Import Date` (`Import Date`),
+  KEY `Metadata_2` (`Metadata`,`Import Date`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -5771,7 +5753,7 @@ DROP TABLE IF EXISTS `Order Meta Transaction Deal Dimension`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Meta Transaction Deal Dimension` (
-  `Order Meta Transaction Deal Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Order Meta Transaction Deal Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Order Key` mediumint(8) unsigned NOT NULL,
   `Deal Campaign Key` mediumint(8) unsigned DEFAULT NULL,
   `Deal Key` mediumint(9) NOT NULL,
@@ -5886,9 +5868,9 @@ DROP TABLE IF EXISTS `Order Payment Bridge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Order Payment Bridge` (
-  `Order Key` mediumint(9) unsigned NOT NULL,
-  `Invoice Key` mediumint(8) unsigned DEFAULT NULL,
-  `Payment Key` mediumint(9) unsigned NOT NULL,
+  `Order Key` int(10) unsigned NOT NULL,
+  `Invoice Key` int(10) unsigned DEFAULT NULL,
+  `Payment Key` int(10) unsigned NOT NULL,
   `Payment Account Key` mediumint(8) unsigned DEFAULT NULL,
   `Payment Service Provider Key` mediumint(8) unsigned DEFAULT NULL,
   `Amount` decimal(12,2) DEFAULT NULL,
@@ -6227,83 +6209,6 @@ CREATE TABLE `Page Dimension` (
   `Page Published` enum('Yes','No') DEFAULT 'No',
   PRIMARY KEY (`Page Key`),
   KEY `Page URL` (`Page URL`(64))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Page Footer Dimension`
---
-
-DROP TABLE IF EXISTS `Page Footer Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Page Footer Dimension` (
-  `Page Footer Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Page Footer Name` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `Page Footer Preview Image Key` mediumint(9) DEFAULT NULL,
-  `Page Footer Preview Snapshot Last Update` datetime DEFAULT NULL,
-  `Site Key` mediumint(8) unsigned NOT NULL,
-  `Number Pages` mediumint(9) NOT NULL DEFAULT '0',
-  `Template` longtext CHARACTER SET latin1 NOT NULL,
-  `CSS` longtext CHARACTER SET latin1 NOT NULL,
-  `Javascript` longtext CHARACTER SET latin1 NOT NULL,
-  PRIMARY KEY (`Page Footer Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Page Footer External File Bridge`
---
-
-DROP TABLE IF EXISTS `Page Footer External File Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Page Footer External File Bridge` (
-  `Page Store External File Key` mediumint(8) unsigned NOT NULL,
-  `Page Footer Key` mediumint(8) unsigned NOT NULL,
-  `External File Type` enum('Javascript','CSS') CHARACTER SET latin1 NOT NULL,
-  PRIMARY KEY (`Page Store External File Key`,`Page Footer Key`),
-  KEY `Page Footer Key` (`Page Footer Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Page Header Dimension`
---
-
-DROP TABLE IF EXISTS `Page Header Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Page Header Dimension` (
-  `Page Header Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Page Header Name` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `Page Header Preview Image Key` mediumint(9) DEFAULT NULL,
-  `Page Header Preview Snapshot Last Update` datetime DEFAULT NULL,
-  `Site Key` mediumint(8) unsigned NOT NULL,
-  `Number Pages` mediumint(9) NOT NULL DEFAULT '0',
-  `Template` longtext CHARACTER SET latin1 NOT NULL,
-  `Default Site` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'Yes',
-  `CSS` longtext CHARACTER SET latin1 NOT NULL,
-  `Javascript` longtext CHARACTER SET latin1 NOT NULL,
-  PRIMARY KEY (`Page Header Key`),
-  KEY `Default Site` (`Default Site`),
-  KEY `Site Key` (`Site Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Page Header External File Bridge`
---
-
-DROP TABLE IF EXISTS `Page Header External File Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Page Header External File Bridge` (
-  `Page Store External File Key` mediumint(8) unsigned NOT NULL,
-  `Page Header Key` mediumint(8) unsigned NOT NULL,
-  `External File Type` enum('Javascript','CSS') CHARACTER SET latin1 NOT NULL,
-  PRIMARY KEY (`Page Store External File Key`,`Page Header Key`),
-  KEY `Page Header Key` (`Page Header Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -6649,8 +6554,8 @@ CREATE TABLE `Page Store Dimension` (
   `Site Flag Key` tinyint(3) unsigned DEFAULT NULL,
   `Page Related Products List` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `Page See Also Last Updated` datetime DEFAULT NULL,
-  `Page Store Content Data` longtext,
-  `Page Store Content Published Data` longtext,
+  `Page Store Content Data` longtext CHARACTER SET utf8mb4,
+  `Page Store Content Published Data` longtext CHARACTER SET utf8mb4,
   `Webpage Version` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `Webpage Browser Title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `Webpage Name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -6674,52 +6579,6 @@ CREATE TABLE `Page Store Dimension` (
   KEY `Webpage Version` (`Webpage Version`),
   KEY `Webpage Type Key` (`Webpage Type Key`),
   KEY `Webpage Scope` (`Webpage Scope`,`Webpage Scope Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Page Store External File Bridge`
---
-
-DROP TABLE IF EXISTS `Page Store External File Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Page Store External File Bridge` (
-  `Page Store External File Key` mediumint(8) unsigned NOT NULL,
-  `Page Key` mediumint(8) unsigned NOT NULL,
-  `External File Type` enum('Javascript','CSS') CHARACTER SET latin1 NOT NULL,
-  PRIMARY KEY (`Page Store External File Key`,`Page Key`),
-  KEY `Page Key` (`Page Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Page Store External File Dimension`
---
-
-DROP TABLE IF EXISTS `Page Store External File Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Page Store External File Dimension` (
-  `Page Store External File Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Page Store External File Name` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `Page Store External File Type` enum('Javascript','CSS') CHARACTER SET latin1 NOT NULL,
-  `Page Store External File Content` longtext NOT NULL,
-  PRIMARY KEY (`Page Store External File Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Page Store Found In Bridge`
---
-
-DROP TABLE IF EXISTS `Page Store Found In Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Page Store Found In Bridge` (
-  `Page Store Key` mediumint(8) unsigned NOT NULL,
-  `Page Store Found In Key` mediumint(8) unsigned NOT NULL,
-  PRIMARY KEY (`Page Store Key`,`Page Store Found In Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -6764,23 +6623,6 @@ CREATE TABLE `Page Store Section Dimension` (
   `Page Store Section Layout Data` text,
   PRIMARY KEY (`Page Store Section Key`),
   KEY `Site Key` (`Site Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Page Store See Also Bridge`
---
-
-DROP TABLE IF EXISTS `Page Store See Also Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Page Store See Also Bridge` (
-  `Page Store Key` mediumint(8) unsigned NOT NULL,
-  `Page Store See Also Key` mediumint(8) unsigned NOT NULL,
-  `Correlation Type` enum('Manual','Sales','Semantic','New') CHARACTER SET latin1 NOT NULL,
-  `Correlation Value` float DEFAULT NULL,
-  `Webpage See Also Order` mediumint(8) unsigned DEFAULT NULL,
-  PRIMARY KEY (`Page Store Key`,`Page Store See Also Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -10659,479 +10501,6 @@ CREATE TABLE `Product Data Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Product Department Data Dimension`
---
-
-DROP TABLE IF EXISTS `Product Department Data Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Product Department Data Dimension` (
-  `Product Department Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Product Department Total Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Total Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Total Acc Quantity Ordered` float NOT NULL DEFAULT '0',
-  `Product Department Total Acc Quantity Invoiced` float NOT NULL DEFAULT '0',
-  `Product Department Total Acc Quantity Delivered` float NOT NULL DEFAULT '0',
-  `Product Department Total Acc Days On Sale` float NOT NULL DEFAULT '0',
-  `Product Department Total Acc Days Available` float NOT NULL DEFAULT '0',
-  `Product Department Total Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Total Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Total Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 3 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 3 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 3 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 3 Year Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department 3 Year Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department 3 Year Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department 3 Year Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department 3 Year Acc Days On Sale` float DEFAULT NULL,
-  `Product Department 3 Year Acc Days Available` float DEFAULT NULL,
-  `Product Department 3 Year Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 3 Year Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 3 Year Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Year To Day Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Year To Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Year To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Year To Day Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department Year To Day Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department Year To Day Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department Year To Day Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department Year To Day Acc Days On Sale` float DEFAULT NULL,
-  `Product Department Year To Day Acc Days Available` float DEFAULT NULL,
-  `Product Department Year To Day Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Year To Day Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Year To Day Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Month To Day Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Month To Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Month To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Month To Day Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department Month To Day Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department Month To Day Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department Month To Day Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department Month To Day Acc Days On Sale` float DEFAULT NULL,
-  `Product Department Month To Day Acc Days Available` float DEFAULT NULL,
-  `Product Department Month To Day Acc Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Month To Day Acc Customers` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Month To Day Acc Pending Orders` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Week To Day Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Week To Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Week To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Week To Day Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department Week To Day Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department Week To Day Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department Week To Day Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department Week To Day Acc Days On Sale` float DEFAULT NULL,
-  `Product Department Week To Day Acc Days Available` float DEFAULT NULL,
-  `Product Department Week To Day Acc Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Week To Day Acc Customers` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Week To Day Acc Pending Orders` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Today Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Today Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Today Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Today Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department Today Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department Today Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department Today Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department Today Acc Days On Sale` float DEFAULT NULL,
-  `Product Department Today Acc Days Available` float DEFAULT NULL,
-  `Product Department Today Acc Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Today Acc Customers` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Today Acc Pending Orders` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Last Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Last Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Last Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Week Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department Last Week Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department Last Week Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department Last Week Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department Last Week Acc Days On Sale` float DEFAULT NULL,
-  `Product Department Last Week Acc Days Available` float DEFAULT NULL,
-  `Product Department Last Week Acc Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Last Week Acc Customers` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Last Week Acc Pending Orders` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Last Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Last Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department Last Month Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department Last Month Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department Last Month Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department Last Month Acc Days On Sale` float DEFAULT NULL,
-  `Product Department Last Month Acc Days Available` float DEFAULT NULL,
-  `Product Department Last Month Acc Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Last Month Acc Customers` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Last Month Acc Pending Orders` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Yesterday Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Yesterday Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department Yesterday Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Yesterday Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department Yesterday Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department Yesterday Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department Yesterday Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department Yesterday Acc Days On Sale` float DEFAULT NULL,
-  `Product Department Yesterday Acc Days Available` float DEFAULT NULL,
-  `Product Department Yesterday Acc Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Yesterday Acc Customers` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Yesterday Acc Pending Orders` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department 1 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Year Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Year Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department 1 Year Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department 1 Year Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department 1 Year Acc Days On Sale` float DEFAULT NULL,
-  `Product Department 1 Year Acc Days Available` float DEFAULT NULL,
-  `Product Department 1 Year Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Year Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Year Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 6 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 6 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 6 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 6 Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department 6 Month Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department 6 Month Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department 6 Month Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department 6 Month Acc Days On Sale` float DEFAULT NULL,
-  `Product Department 6 Month Acc Days Available` float DEFAULT NULL,
-  `Product Department 6 Month Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 6 Month Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 6 Month Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Quarter Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Quarter Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Quarter Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Quarter Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Quarter Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department 1 Quarter Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department 1 Quarter Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department 1 Quarter Acc Days On Sale` float DEFAULT NULL,
-  `Product Department 1 Quarter Acc Days Available` float DEFAULT NULL,
-  `Product Department 1 Quarter Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Quarter Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Quarter Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 3 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 3 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 3 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 3 Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department 3 Month Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department 3 Month Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department 3 Month Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department 3 Month Acc Days On Sale` float DEFAULT NULL,
-  `Product Department 3 Month Acc Days Available` float DEFAULT NULL,
-  `Product Department 3 Month Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 3 Month Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 3 Month Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Month Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department 1 Month Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department 1 Month Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department 1 Month Acc Days On Sale` float DEFAULT NULL,
-  `Product Department 1 Month Acc Days Available` float DEFAULT NULL,
-  `Product Department 1 Month Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Month Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Month Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 10 Day Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 10 Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 10 Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 10 Day Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department 10 Day Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department 10 Day Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department 10 Day Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department 10 Day Acc Days On Sale` float DEFAULT NULL,
-  `Product Department 10 Day Acc Days Available` float DEFAULT NULL,
-  `Product Department 10 Day Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 10 Day Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 10 Day Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Week Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department 1 Week Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Department 1 Week Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Department 1 Week Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Department 1 Week Acc Days On Sale` float DEFAULT NULL,
-  `Product Department 1 Week Acc Days Available` float DEFAULT NULL,
-  `Product Department 1 Week Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Week Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department 1 Week Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Total Acc Avg Week Sales Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Year Acc Avg Week Sales Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Quarter Acc Avg Week Sales Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Month Acc Avg Week Sales Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Week Acc Avg Week Sales Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department Total Acc Avg Week Profit Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Year Acc Avg Week Profit Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Quarter Acc Avg Week Profit Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Month Acc Avg Week Profit Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Week Acc Avg Week Profit Per Family` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department Total Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Year Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Quarter Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Month Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Week Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department Total Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Year Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Quarter Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Month Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Week Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Month Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Last Week Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Yesterday Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Week To Day Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Today Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Month To Day Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Year To Day Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department 3 Year Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department 1 Year Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department 6 Month Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department 1 Quarter Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department 1 Month Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department 10 Day Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department 1 Week Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department Last Month Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Week Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Yesterday Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Week To Day Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Today Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Month To Day Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Year To Day Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 3 Year Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Year Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 6 Month Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Quarter Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Month Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 10 Day Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Week Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Month Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Week Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Yesterday Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Week To Day Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Today Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Month To Day Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Year To Day Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 3 Year Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Year Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 6 Month Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Quarter Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Month Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 10 Day Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Week Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Month Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Week Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Yesterday Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Week To Day Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Today Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Month To Day Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Year To Day Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 3 Year Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Year Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 6 Month Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Quarter Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Month Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 10 Day Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department 1 Week Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department Last Month Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department Last Week Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department Yesterday Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department Week To Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department Today Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department Month To Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department Year To Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department 3 Year Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department 1 Year Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department 6 Month Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department 1 Quarter Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department 1 Month Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department 10 Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department 1 Week Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Department 10 Day Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 3 Year Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department Year To Day Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department Year To Day Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 6 Month Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 6 Month Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 10 Day Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Department 3 Year Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  PRIMARY KEY (`Product Department Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Department Default Currency`
---
-
-DROP TABLE IF EXISTS `Product Department Default Currency`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Product Department Default Currency` (
-  `Product Department Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Product Department DC Total Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Total Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 1 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 1 Year Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Quarter Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Quarter Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Quarter Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 1 Quarter Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 1 Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 1 Week Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Department DC 3 Year Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 3 Year Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 3 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 3 Year Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 6 Month Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 6 Month Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 6 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 6 Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 10 Day Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 10 Day Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 10 Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC 10 Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Year To Day Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Year To Day Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Year To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Year To Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Month To Day Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Month To Day Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Month To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Month To Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Week To Day Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Week To Day Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Week To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Week To Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Today Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Today Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Today Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Today Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Yesterday Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Yesterday Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Yesterday Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Yesterday Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Last Week Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Last Week Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Last Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Last Week Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Last Month Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Last Month Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Department DC Last Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  PRIMARY KEY (`Product Department Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Department Dimension`
---
-
-DROP TABLE IF EXISTS `Product Department Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Product Department Dimension` (
-  `Product Department Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Product Department Type` enum('Normal','Unknown','Historic') NOT NULL DEFAULT 'Normal',
-  `Product Department Sales Type` enum('Public Sale','Private Sale','Not for Sale') NOT NULL DEFAULT 'Public Sale',
-  `Product Department Store Key` smallint(5) unsigned NOT NULL,
-  `Product Department Store Code` varchar(32) NOT NULL,
-  `Product Department Code` varchar(255) DEFAULT NULL,
-  `Product Department Name` varchar(255) DEFAULT NULL,
-  `Product Department Description` text NOT NULL,
-  `Product Department Slogan` varchar(255) DEFAULT NULL,
-  `Product Department Marketing Resume` varchar(1024) DEFAULT NULL,
-  `Product Department Marketing Presentation` text NOT NULL,
-  `Product Department Main Image` varchar(255) NOT NULL DEFAULT 'art/nopic.png',
-  `Product Department Main Image Key` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Valid From` datetime DEFAULT NULL,
-  `Product Department Valid To` datetime DEFAULT NULL,
-  `Product Department Number Days on Sale` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Number Days with Sales` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Number Days Available` float NOT NULL DEFAULT '0',
-  `Product Department Avg Day Sales` float NOT NULL DEFAULT '0',
-  `Product Department Avg with Sale Day Sales` float NOT NULL DEFAULT '0',
-  `Product Department STD with Sale Day Sales` float NOT NULL DEFAULT '0',
-  `Product Department Max Day Sales` float NOT NULL DEFAULT '0',
-  `Product Department Sticky Note` text,
-  `Product Department Most Recent` enum('Yes','No') NOT NULL DEFAULT 'Yes',
-  `Product Department Most Recent Key` mediumint(8) unsigned DEFAULT NULL,
-  `Product Department Page Key` mediumint(8) unsigned DEFAULT NULL,
-  `Product Department Families` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Department For Public For Sale Families` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department For Public Discontinued Families` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Department For Public Sale Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Department For Private Sale Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Department In Process Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Department Not For Sale Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Department Discontinued Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Department Historic Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Department Surplus Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Department Optimal Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Department Low Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Department Critical Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Department Out Of Stock Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Department Unknown Stock Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Department Stock Value` decimal(14,2) NOT NULL DEFAULT '0.00',
-  `Product Department Currency Code` varchar(3) NOT NULL DEFAULT 'GBP',
-  `Product Department Active Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Active Customers More 0.75 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Active Customers More 0.5 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Active Customers More 0.25 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Losing Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Losing Customers More 0.75 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Losing Customers More 0.5 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Losing Customers More 0.25 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Lost Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Lost Customers More 0.75 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Lost Customers More 0.5 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Lost Customers More 0.25 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Department Last Updated` datetime DEFAULT NULL,
-  PRIMARY KEY (`Product Department Key`),
-  UNIQUE KEY `Product Department Store Key_2` (`Product Department Store Key`,`Product Department Code`),
-  KEY `code` (`Product Department Code`(16)),
-  KEY `Product Department Most Recent` (`Product Department Most Recent`),
-  KEY `Product Depxartment Discontinued Products` (`Product Department In Process Products`,`Product Department Historic Products`),
-  KEY `Product Department Type` (`Product Department Type`),
-  KEY `Product Department Name` (`Product Department Name`),
-  KEY `Product Department Store Key` (`Product Department Store Key`),
-  KEY `Product Department Sales Type` (`Product Department Sales Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Department History Bridge`
---
-
-DROP TABLE IF EXISTS `Product Department History Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Product Department History Bridge` (
-  `Department Key` mediumint(8) unsigned NOT NULL,
-  `History Key` int(10) unsigned NOT NULL,
-  `Deletable` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
-  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
-  `Type` enum('Notes','Changes','Attachments') CHARACTER SET latin1 NOT NULL,
-  PRIMARY KEY (`Department Key`,`History Key`),
-  KEY `Department Key` (`Department Key`),
-  KEY `Deletable` (`Deletable`),
-  KEY `History Key` (`History Key`),
-  KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Product Dimension`
 --
 
@@ -11181,7 +10550,6 @@ CREATE TABLE `Product Dimension` (
   `Product HTSUS Code` varchar(10) DEFAULT NULL,
   `Product Units Per Case` smallint(5) unsigned DEFAULT NULL,
   `Product Unit Type` varchar(64) DEFAULT 'Piece',
-  `Product Info Sheet Attachment Key` mediumint(9) DEFAULT NULL,
   `Product Availability State` enum('Excess','Normal','Low','VeryLow','OutofStock','Error','OnDemand') NOT NULL DEFAULT 'Normal',
   `Product Availability` float DEFAULT NULL,
   `Product Available Days Forecast` float DEFAULT NULL,
@@ -11189,7 +10557,6 @@ CREATE TABLE `Product Dimension` (
   `Product Next Day Availability` float DEFAULT NULL,
   `Product Stock Value` decimal(12,2) DEFAULT NULL,
   `Product Next Supplier Shipment` datetime DEFAULT NULL,
-  `Product XHTML Next Supplier Shipment` text NOT NULL,
   `Product Number of Parts` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `Product XHTML Parts` text,
   `Product Valid From` datetime DEFAULT NULL,
@@ -11215,7 +10582,6 @@ CREATE TABLE `Product Dimension` (
   `Product Last Sold Date` datetime DEFAULT NULL,
   `Product Days On Sale` float DEFAULT NULL,
   `Product GMROI` float DEFAULT NULL,
-  `Product Part Metadata` varchar(255) DEFAULT NULL,
   `Product Unit Label` varchar(255) NOT NULL DEFAULT 'Unit',
   `Product Label in Family` varchar(255) DEFAULT NULL,
   `Product Materials` text,
@@ -11258,599 +10624,6 @@ CREATE TABLE `Product Dimension` (
   KEY `Product Webpage Key` (`Product Webpage Key`),
   KEY `Product Category Department Key` (`Product Department Category Key`),
   KEY `Product Ignore Correlation` (`Product Ignore Correlation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Family Category Dimension`
---
-
-DROP TABLE IF EXISTS `Product Family Category Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Product Family Category Dimension` (
-  `Product Family Category Key` mediumint(8) unsigned NOT NULL,
-  `Product Family Category Store Key` mediumint(8) unsigned NOT NULL DEFAULT '1',
-  `Product Family Category XHTML Description` text NOT NULL,
-  `Product Family Category Valid From` datetime DEFAULT NULL,
-  `Product Family Category Valid To` datetime DEFAULT NULL,
-  `Product Family Category Departments` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Families` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category For Public Sale Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category For Private Sale Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category In Process Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Not For Sale Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Discontinued Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Unknown Sales State Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Surplus Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Optimal Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Low Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Critical Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Out Of Stock Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Unknown Stock Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Total Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category Total Invoiced Discount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category Total Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category Total Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category Total Quantity Ordered` float NOT NULL DEFAULT '0',
-  `Product Family Category Total Quantity Invoiced` float NOT NULL DEFAULT '0',
-  `Product Family Category Total Quantity Delivered` float NOT NULL DEFAULT '0',
-  `Product Family Category Total Days On Sale` float NOT NULL DEFAULT '0',
-  `Product Family Category Total Days Available` float NOT NULL DEFAULT '0',
-  `Product Family Category Total Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Total Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Total Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Year Acc Invoiced Discount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category 1 Year Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Year Acc Quantity Ordered` float DEFAULT '0',
-  `Product Family Category 1 Year Acc Quantity Invoiced` float DEFAULT '0',
-  `Product Family Category 1 Year Acc Quantity Delivered` float DEFAULT '0',
-  `Product Family Category 1 Year Acc Days On Sale` float DEFAULT '0',
-  `Product Family Category 1 Year Acc Days Available` float DEFAULT '0',
-  `Product Family Category 1 Year Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Year Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Year Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Quarter Acc Invoiced Gross Amount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Quarter Acc Invoiced Discount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Quarter Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category 1 Quarter Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Quarter Acc Quantity Ordered` float DEFAULT '0',
-  `Product Family Category 1 Quarter Acc Quantity Invoiced` float DEFAULT '0',
-  `Product Family Category 1 Quarter Acc Quantity Delivered` float DEFAULT '0',
-  `Product Family Category 1 Quarter Acc Days On Sale` float DEFAULT '0',
-  `Product Family Category 1 Quarter Acc Days Available` float DEFAULT '0',
-  `Product Family Category 1 Quarter Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Quarter Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Quarter Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Month Acc Invoiced Discount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category 1 Month Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Month Acc Quantity Ordered` float DEFAULT '0',
-  `Product Family Category 1 Month Acc Quantity Invoiced` float DEFAULT '0',
-  `Product Family Category 1 Month Acc Quantity Delivered` float DEFAULT '0',
-  `Product Family Category 1 Month Acc Days On Sale` float DEFAULT '0',
-  `Product Family Category 1 Month Acc Days Available` float DEFAULT '0',
-  `Product Family Category 1 Month Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Month Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Month Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Week Acc Invoiced Discount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category 1 Week Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category 1 Week Acc Quantity Ordered` float DEFAULT '0',
-  `Product Family Category 1 Week Acc Quantity Invoiced` float DEFAULT '0',
-  `Product Family Category 1 Week Acc Quantity Delivered` float DEFAULT '0',
-  `Product Family Category 1 Week Acc Days On Sale` float DEFAULT '0',
-  `Product Family Category 1 Week Acc Days Available` float DEFAULT '0',
-  `Product Family Category 1 Week Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Week Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category 1 Week Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Category Stock Value` decimal(14,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC Total Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC Total Invoiced Discount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC Total Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC Total Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC 1 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Year Acc Invoiced Discount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC 1 Year Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Quarter Acc Invoiced Gross Amount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Quarter Acc Invoiced Discount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Quarter Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC 1 Quarter Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Month Acc Invoiced Discount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC 1 Month Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Week Acc Invoiced Discount` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category DC 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Category DC 1 Week Acc Profit` decimal(12,2) DEFAULT '0.00',
-  `Product Family Category Currency Code` varchar(3) NOT NULL DEFAULT 'GBP',
-  PRIMARY KEY (`Product Family Category Key`,`Product Family Category Store Key`),
-  KEY `Product Family Category Store Key` (`Product Family Category Store Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Family Data Dimension`
---
-
-DROP TABLE IF EXISTS `Product Family Data Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Product Family Data Dimension` (
-  `Product Family Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Product Family Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Total Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Total Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Total Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Total Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Total Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Total Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family Total Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family Total Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family Total Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family Total Acc Days On Sale` float DEFAULT NULL,
-  `Product Family Total Acc Days Available` float DEFAULT NULL,
-  `Product Family 3 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 3 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 3 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 3 Year Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family 3 Year Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family 3 Year Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family 3 Year Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family 3 Year Acc Days On Sale` float DEFAULT NULL,
-  `Product Family 3 Year Acc Days Available` float DEFAULT NULL,
-  `Product Family 3 Year Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 3 Year Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 3 Year Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Year Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Year Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family 1 Year Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family 1 Year Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family 1 Year Acc Days On Sale` float DEFAULT NULL,
-  `Product Family 1 Year Acc Days Available` float DEFAULT NULL,
-  `Product Family 1 Year Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Year Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Year Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Year To Day Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Year To Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Year To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Year To Day Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family Year To Day Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family Year To Day Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family Year To Day Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family Year To Day Acc Days On Sale` float DEFAULT NULL,
-  `Product Family Year To Day Acc Days Available` float DEFAULT NULL,
-  `Product Family Year To Day Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Year To Day Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Year To Day Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Month To Day Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Month To Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Month To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Month To Day Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family Month To Day Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family Month To Day Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family Month To Day Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family Month To Day Acc Days On Sale` float DEFAULT NULL,
-  `Product Family Month To Day Acc Days Available` float DEFAULT NULL,
-  `Product Family Month To Day Acc Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Month To Day Acc Customers` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Month To Day Acc Pending Orders` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Week To Day Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Week To Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Week To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Week To Day Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family Week To Day Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family Week To Day Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family Week To Day Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family Week To Day Acc Days On Sale` float DEFAULT NULL,
-  `Product Family Week To Day Acc Days Available` float DEFAULT NULL,
-  `Product Family Week To Day Acc Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Week To Day Acc Customers` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Week To Day Acc Pending Orders` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Today Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Today Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Today Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Today Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family Today Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family Today Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family Today Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family Today Acc Days On Sale` float DEFAULT NULL,
-  `Product Family Today Acc Days Available` float DEFAULT NULL,
-  `Product Family Today Acc Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Today Acc Customers` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Today Acc Pending Orders` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Last Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Last Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Last Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Week Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family Last Week Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family Last Week Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family Last Week Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family Last Week Acc Days On Sale` float DEFAULT NULL,
-  `Product Family Last Week Acc Days Available` float DEFAULT NULL,
-  `Product Family Last Week Acc Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Last Week Acc Customers` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Last Week Acc Pending Orders` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Last Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Last Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family Last Month Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family Last Month Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family Last Month Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family Last Month Acc Days On Sale` float DEFAULT NULL,
-  `Product Family Last Month Acc Days Available` float DEFAULT NULL,
-  `Product Family Last Month Acc Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Last Month Acc Customers` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Last Month Acc Pending Orders` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Yesterday Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Yesterday Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family Yesterday Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Yesterday Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family Yesterday Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family Yesterday Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family Yesterday Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family Yesterday Acc Days On Sale` float DEFAULT NULL,
-  `Product Family Yesterday Acc Days Available` float DEFAULT NULL,
-  `Product Family Yesterday Acc Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Yesterday Acc Customers` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Yesterday Acc Pending Orders` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family 6 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 6 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 6 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 6 Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family 6 Month Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family 6 Month Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family 6 Month Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family 6 Month Acc Days On Sale` float DEFAULT NULL,
-  `Product Family 6 Month Acc Days Available` float DEFAULT NULL,
-  `Product Family 6 Month Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 6 Month Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 6 Month Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Quarter Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Quarter Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Quarter Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Quarter Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Quarter Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family 1 Quarter Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family 1 Quarter Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family 1 Quarter Acc Days On Sale` float DEFAULT NULL,
-  `Product Family 1 Quarter Acc Days Available` float DEFAULT NULL,
-  `Product Family 1 Quarter Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Quarter Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Quarter Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 3 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 3 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 3 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 3 Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family 3 Month Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family 3 Month Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family 3 Month Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family 3 Month Acc Days On Sale` float DEFAULT NULL,
-  `Product Family 3 Month Acc Days Available` float DEFAULT NULL,
-  `Product Family 3 Month Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 3 Month Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 3 Month Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Month Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family 1 Month Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family 1 Month Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family 1 Month Acc Days On Sale` float DEFAULT NULL,
-  `Product Family 1 Month Acc Days Available` float DEFAULT NULL,
-  `Product Family 1 Month Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Month Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Month Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 10 Day Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 10 Day Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 10 Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 10 Day Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family 10 Day Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family 10 Day Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family 10 Day Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family 10 Day Acc Days On Sale` float DEFAULT NULL,
-  `Product Family 10 Day Acc Days Available` float DEFAULT NULL,
-  `Product Family 10 Day Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 10 Day Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 10 Day Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Week Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family 1 Week Acc Quantity Ordered` float DEFAULT NULL,
-  `Product Family 1 Week Acc Quantity Invoiced` float DEFAULT NULL,
-  `Product Family 1 Week Acc Quantity Delivered` float DEFAULT NULL,
-  `Product Family 1 Week Acc Days On Sale` float DEFAULT NULL,
-  `Product Family 1 Week Acc Days Available` float DEFAULT NULL,
-  `Product Family 1 Week Acc Invoices` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Week Acc Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family 1 Week Acc Pending Orders` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Total Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Year Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Quarter Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Month Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Week Acc Avg Week Sales Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family Total Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Year Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Quarter Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Month Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Week Acc Avg Week Profit Per Product` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Month Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Last Week Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Yesterday Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Week To Day Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Today Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Month To Day Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Year To Day Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family 3 Year Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family 1 Year Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family 6 Month Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family 1 Quarter Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family 1 Month Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family 10 Day Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family 1 Week Acc 1YB Invoices` mediumint(9) NOT NULL DEFAULT '0',
-  `Product Family Last Month Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Week Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Yesterday Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Week To Day Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Today Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Month To Day Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Year To Day Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 3 Year Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Year Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 6 Month Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Quarter Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Month Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 10 Day Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Week Acc 1YB Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Month Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Week Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Yesterday Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Week To Day Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Today Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Month To Day Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Year To Day Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 3 Year Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Year Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 6 Month Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Quarter Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Month Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 10 Day Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Week Acc 1YB Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Month Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Week Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Yesterday Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Week To Day Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Today Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Month To Day Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Year To Day Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 3 Year Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Year Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 6 Month Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Quarter Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Month Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 10 Day Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family 1 Week Acc 1YB Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family Last Month Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family Last Week Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family Yesterday Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family Week To Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family Today Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family Month To Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family Year To Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family 3 Year Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family 1 Year Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family 6 Month Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family 1 Quarter Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family 1 Month Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family 10 Day Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  `Product Family 1 Week Acc 1YB Invoiced Delta` float NOT NULL DEFAULT '0',
-  PRIMARY KEY (`Product Family Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Family Default Currency`
---
-
-DROP TABLE IF EXISTS `Product Family Default Currency`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Product Family Default Currency` (
-  `Product Family Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Product Family DC Total Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Total Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Total Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Total Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 1 Year Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Year Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 1 Year Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Quarter Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Quarter Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Quarter Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 1 Quarter Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Month Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Month Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 1 Month Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Week Acc Invoiced Gross Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Week Acc Invoiced Discount Amount` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 1 Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 1 Week Acc Profit` decimal(12,2) DEFAULT NULL,
-  `Product Family DC 3 Year Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 3 Year Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 3 Year Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 3 Year Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 6 Month Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 6 Month Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 6 Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 6 Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 10 Day Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 10 Day Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 10 Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC 10 Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Year To Day Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Year To Day Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Year To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Year To Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Month To Day Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Month To Day Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Month To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Month To Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Week To Day Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Week To Day Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Week To Day Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Week To Day Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Today Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Today Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Today Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Today Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Yesterday Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Yesterday Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Yesterday Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Yesterday Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Last Week Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Last Week Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Last Week Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Last Week Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Last Month Acc Invoiced Gross Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Last Month Acc Invoiced Discount Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Last Month Acc Invoiced Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `Product Family DC Last Month Acc Profit` decimal(12,2) NOT NULL DEFAULT '0.00',
-  PRIMARY KEY (`Product Family Key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Family Dimension`
---
-
-DROP TABLE IF EXISTS `Product Family Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Product Family Dimension` (
-  `Product Family Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `Product Family Stealth` enum('Yes','No') NOT NULL DEFAULT 'No',
-  `Product Family Code` varchar(255) DEFAULT NULL,
-  `Product Family Name` varchar(255) DEFAULT NULL,
-  `Product Family Description` text,
-  `Product Family Slogan` varchar(255) DEFAULT NULL,
-  `Product Family Marketing Description` varchar(1024) DEFAULT NULL,
-  `Product Family Special Characteristic` varchar(255) NOT NULL,
-  `Product Family Main Image` varchar(255) NOT NULL DEFAULT 'art/nopic.png',
-  `Product Family Main Image Key` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Main Department Key` mediumint(8) unsigned DEFAULT NULL,
-  `Product Family Main Department Code` varchar(255) DEFAULT NULL,
-  `Product Family Main Department Name` varchar(255) DEFAULT NULL,
-  `Product Family Record Type` enum('Normal','Discontinued','NoSale','Private') NOT NULL DEFAULT 'Normal',
-  `Product Family Sales Type` enum('Public Sale','Private Sale Only','Not for Sale','Unknown','No Applicable') NOT NULL DEFAULT 'Public Sale',
-  `Product Family Availability` enum('Normal','Some Out of Stock','All Out of Stock','No Applicable') NOT NULL DEFAULT 'No Applicable',
-  `Product Family Web Products` enum('With Products For Sale','Empty') NOT NULL DEFAULT 'With Products For Sale',
-  `Product Family From Price` float unsigned NOT NULL DEFAULT '0',
-  `Product Family Product Price Multiplicity` smallint(5) unsigned zerofill NOT NULL DEFAULT '00000',
-  `Product Family Valid From` datetime DEFAULT NULL,
-  `Product Family Valid To` datetime DEFAULT NULL,
-  `Product Family Number Days on Sale` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Number Days with Sales` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Number Days Available` float NOT NULL DEFAULT '0',
-  `Product Family Avg Day Sales` float NOT NULL DEFAULT '0',
-  `Product Family Avg with Sale Day Sales` float NOT NULL DEFAULT '0',
-  `Product Family STD with Sale Day Sales` float NOT NULL DEFAULT '0',
-  `Product Family Max Day Sales` float NOT NULL DEFAULT '0',
-  `Product Family Sticky Note` text,
-  `Product Family Most Recent` enum('Yes','No') NOT NULL DEFAULT 'Yes',
-  `Product Family Most Recent Key` mediumint(8) unsigned DEFAULT NULL,
-  `Product Family Page Key` mediumint(8) unsigned DEFAULT NULL,
-  `Product Family For Public Sale Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family For Private Sale Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family In Process Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Not For Sale Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Discontinued Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Historic Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Surplus Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Optimal Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Low Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Critical Availability Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Out Of Stock Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Unknown Stock Products` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `Product Family Active Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Active Customers More 0.75 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Active Customers More 0.5 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Active Customers More 0.25 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Losing Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Losing Customers More 0.75 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Losing Customers More 0.5 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Losing Customers More 0.25 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Lost Customers` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Lost Customers More 0.75 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Lost Customers More 0.5 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Lost Customers More 0.25 Share` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Product Family Stock Value` decimal(14,2) DEFAULT NULL,
-  `Product Family Store Key` smallint(5) unsigned NOT NULL,
-  `Product Family Store Code` varchar(32) NOT NULL,
-  `Product Family Currency Code` varchar(3) NOT NULL DEFAULT 'GBP',
-  `Product Family Last Updated` datetime DEFAULT NULL,
-  PRIMARY KEY (`Product Family Key`),
-  UNIQUE KEY `Product Family Code` (`Product Family Code`,`Product Family Store Key`),
-  KEY `code` (`Product Family Code`(16)),
-  KEY `Product Family Most Recent` (`Product Family Most Recent`),
-  KEY `Product Family Store Key` (`Product Family Store Key`),
-  KEY `Product Family Main Department Key` (`Product Family Main Department Key`),
-  KEY `Product Family Sales Type` (`Product Family Sales Type`),
-  KEY `Product Family Record Type` (`Product Family Record Type`),
-  KEY `Product Family Product Price Multiplicity` (`Product Family Product Price Multiplicity`),
-  KEY `Product Family Stealth` (`Product Family Stealth`),
-  KEY `Product Family Name` (`Product Family Name`(128)),
-  KEY `Product Family Special Characteristic` (`Product Family Special Characteristic`(128)),
-  KEY `Product Family Web Products` (`Product Family Web Products`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Family History Bridge`
---
-
-DROP TABLE IF EXISTS `Product Family History Bridge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Product Family History Bridge` (
-  `Family Key` mediumint(8) unsigned NOT NULL,
-  `History Key` int(10) unsigned NOT NULL,
-  `Deletable` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
-  `Strikethrough` enum('Yes','No') CHARACTER SET latin1 NOT NULL DEFAULT 'No',
-  `Type` enum('Notes','Changes','Attachments') CHARACTER SET latin1 NOT NULL,
-  PRIMARY KEY (`Family Key`,`History Key`),
-  KEY `Family Key` (`Family Key`),
-  KEY `Deletable` (`Deletable`),
-  KEY `History Key` (`History Key`),
-  KEY `Type` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Product Family Semantic Correlation`
---
-
-DROP TABLE IF EXISTS `Product Family Semantic Correlation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Product Family Semantic Correlation` (
-  `Family A Key` mediumint(8) unsigned NOT NULL,
-  `Family B Key` mediumint(8) unsigned NOT NULL,
-  `Weight` float NOT NULL,
-  PRIMARY KEY (`Family A Key`,`Family B Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -12875,29 +11648,6 @@ CREATE TABLE `Session Dimension` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Shelf Type Dimension`
---
-
-DROP TABLE IF EXISTS `Shelf Type Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Shelf Type Dimension` (
-  `Shelf Type Key` smallint(6) NOT NULL AUTO_INCREMENT,
-  `Shelf Type Name` varchar(255) NOT NULL,
-  `Shelf Type Description` text NOT NULL,
-  `Shelf Type Type` enum('Pallet','Shelf','Drawer','Other') NOT NULL DEFAULT 'Other',
-  `Shelf Type Rows` smallint(6) NOT NULL DEFAULT '1',
-  `Shelf Type Columns` smallint(6) NOT NULL DEFAULT '1',
-  `Shelf Type Location Height` float DEFAULT NULL,
-  `Shelf Type Location Length` float DEFAULT NULL,
-  `Shelf Type Location Deep` float DEFAULT NULL,
-  `Shelf Type Location Max Weight` float DEFAULT NULL,
-  `Shelf Type Location Max Volume` float DEFAULT NULL,
-  PRIMARY KEY (`Shelf Type Key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Shipper Dimension`
 --
 
@@ -13149,7 +11899,7 @@ CREATE TABLE `Stack Dimension` (
   `Stack Key` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `Stack Creation Date` datetime DEFAULT NULL,
   `Stack Last Update Date` datetime DEFAULT NULL,
-  `Stack Operation` enum('shipping_zone_usage','timeseries_stats','data_sets_stats','deal_campaign','deal','deal_component','update_order_in_basket_low_priority','update_order_in_basket','reindex_webpage','warehouse_ISF','product_web_state_legacy','update_part_products_availability','part_stock_in_paid_orders','full_after_part_stock_update_legacy','product_sales','product_family_sales','product_department_sales','part_sales','part_category_sales','supplier_sales','supplier_category_sales') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Stack Operation` enum('email_template_update_sent_emails_totals','email_campaign_update_sent_emails_totals','email_template_type_update_sent_emails_totals','shipping_zone_usage','timeseries_stats','data_sets_stats','deal_campaign','deal','deal_component','update_order_in_basket_low_priority','update_order_in_basket','reindex_webpage','warehouse_ISF','product_web_state_legacy','update_part_products_availability','part_stock_in_paid_orders','full_after_part_stock_update_legacy','product_sales','product_family_sales','product_department_sales','part_sales','part_category_sales','supplier_sales','supplier_category_sales') COLLATE utf8_unicode_ci DEFAULT NULL,
   `Stack Object Key` int(10) unsigned DEFAULT NULL,
   `Stack Counter` mediumint(8) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`Stack Key`),
@@ -15722,43 +14472,6 @@ CREATE TABLE `Theme Background Bridge` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `Time Series Dimension`
---
-
-DROP TABLE IF EXISTS `Time Series Dimension`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Time Series Dimension` (
-  `Time Series Date` date NOT NULL,
-  `Time Series Frequency` enum('Daily','Weekly','Monthly','Quarterly','Yearly') NOT NULL,
-  `Time Series Name` varchar(255) NOT NULL,
-  `Time Series Name Key` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `Time Series Name Second Key` mediumint(9) NOT NULL DEFAULT '0',
-  `Time Series Parent Key` mediumint(8) unsigned NOT NULL,
-  `Time Series Label` varchar(16) NOT NULL,
-  `Time Series Value` float NOT NULL,
-  `Time Series Count` int(10) unsigned NOT NULL,
-  `Open` float DEFAULT NULL,
-  `High` float DEFAULT NULL,
-  `Low` float DEFAULT NULL,
-  `Close` float DEFAULT NULL,
-  `Volume` float DEFAULT NULL,
-  `Adj Close` float DEFAULT NULL,
-  `Time Series Type` enum('Data','Forecast','First','Current','Target') NOT NULL,
-  `Time Series Metadata` varchar(4) NOT NULL,
-  `Time Series Tag` varchar(1) NOT NULL,
-  UNIQUE KEY `Constraction` (`Time Series Date`,`Time Series Frequency`,`Time Series Name`(16),`Time Series Name Key`,`Time Series Name Second Key`,`Time Series Type`),
-  KEY `Time Series Type` (`Time Series Type`),
-  KEY `Time Series Parent Key` (`Time Series Parent Key`),
-  KEY `Time Series Date` (`Time Series Date`),
-  KEY `Time Series Frequency` (`Time Series Frequency`),
-  KEY `Time Series Name` (`Time Series Name`(24)),
-  KEY `Time Series Name Key` (`Time Series Name Key`),
-  KEY `Time Series Label` (`Time Series Label`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `Timeseries Dimension`
 --
 
@@ -17355,6 +16068,7 @@ DROP TABLE IF EXISTS `Website Webpage Scope Map`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Website Webpage Scope Map` (
+  `Website Webpage Scope Key` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Website Webpage Scope Website Key` mediumint(8) unsigned NOT NULL,
   `Website Webpage Scope Webpage Key` mediumint(8) unsigned NOT NULL,
   `Website Webpage Scope Scope` enum('Category','Product') COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -17364,6 +16078,7 @@ CREATE TABLE `Website Webpage Scope Map` (
   `Website Webpage Scope Index` smallint(6) DEFAULT NULL,
   `Website Webpage Block Index` tinyint(3) unsigned DEFAULT NULL,
   `Website Webpage Scope Webpage Index` smallint(5) unsigned DEFAULT NULL,
+  PRIMARY KEY (`Website Webpage Scope Key`),
   KEY `Website Webpage Scope Webpage Key` (`Website Webpage Scope Webpage Key`),
   KEY `Website Webpage Scope Scope` (`Website Webpage Scope Scope`,`Website Webpage Scope Scope Key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -17483,4 +16198,4 @@ CREATE TABLE `todo_users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-10-17  1:46:01
+-- Dump completed on 2019-10-23  0:40:36
