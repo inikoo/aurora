@@ -2585,44 +2585,7 @@ class Page extends DB_Table {
                 }
 
 
-                if ($number_links < $max_links) {
-                    $sql = sprintf(
-                        "SELECT * FROM `Product Family Semantic Correlation` WHERE `Family A Key`=%d ORDER BY `Weight` DESC LIMIT %d", $this->data['Webpage Scope Key'], ($max_links - $number_links) * 2
-                    );
 
-
-                    if ($result = $this->db->query($sql)) {
-                        foreach ($result as $row) {
-
-                            if (!array_key_exists($row['Family B Key'], $see_also)) {
-
-
-                                $_family  = get_object('Category', $row['Family B Key']);
-                                $_webpage = $_family->get_webpage();
-                                // and $_webpage->data['Page Stealth Mode'] == 'No'
-                                if ($_webpage->id and $_webpage->data['Page State'] == 'Online') {
-                                    $see_also[$_webpage->id] = array(
-                                        'type'     => 'Semantic',
-                                        'value'    => $row['Weight'],
-                                        'page_key' => $_webpage->id
-                                    );
-                                    $number_links            = count($see_also);
-                                    if ($number_links >= $max_links) {
-                                        break;
-                                    }
-                                }
-
-
-                            }
-
-                        }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
-                    }
-
-
-                }
 
 
                 if ($number_links < $max_links) {
@@ -3502,16 +3465,6 @@ class Page extends DB_Table {
         );
         $this->db->exec($sql);
 
-
-        $sql = sprintf(
-            "DELETE FROM `Page Store Found In Bridge` WHERE `Page Store Key`=%d", $this->id
-        );
-        $this->db->exec($sql);
-        $sql = sprintf(
-            "DELETE FROM `Page Store Found In Bridge` WHERE `Page Store Found In Key`=%d", $this->id
-        );
-
-        $this->db->exec($sql);
 
 
         $sql = sprintf(

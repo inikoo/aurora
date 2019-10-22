@@ -1629,6 +1629,7 @@ class Invoice extends DB_Table {
     }
 
 
+
     function categorize($skip_update_sales = false) {
 
         $category_key = 0;

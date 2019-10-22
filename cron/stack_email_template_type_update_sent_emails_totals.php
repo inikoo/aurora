@@ -38,6 +38,7 @@ if ($result = $db->query($sql)) {
         $total = $row['num'];
     } else {
         $total = 0;
+
     }
 } else {
     print_r($error_info = $db->errorInfo());

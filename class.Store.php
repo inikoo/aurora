@@ -338,17 +338,12 @@ class Store extends DB_Table {
             $deal_data = array(
                 'Deal Name'                          => 'Order Recursion Campaign',
                 'Deal Description'                   => "",
-                'Deal Term Allowances'               => "",
                 'Deal Term Allowances Label'         => "",
                 'Deal Trigger'                       => 'Order',
                 'Deal Trigger Key'                   => '0',
                 'Deal Trigger XHTML Label'           => '',
                 'Deal Terms Type'                    => 'Order Interval',
-                'Deal Terms Description'             => "last order within 30 days",
-                'Deal XHTML Terms Description Label' => "Reorder within 30 days to qualify",
-                'Deal Terms'                         => '30 day',
-                'Deal Terms Lock'                    => 'No',
-                'Deal Allowance Target Type'         => 'No Items'
+                'Deal Terms'                         => '30 day'
 
 
             );

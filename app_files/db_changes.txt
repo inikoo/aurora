@@ -1118,7 +1118,6 @@ ALTER TABLE `Supplier Delivery Dimension`
   ALTER TABLE `Supplier Delivery Dimension` ADD `Supplier Delivery Items Amount` DECIMAL(18,2) NOT NULL DEFAULT '0.00' AFTER `Supplier Delivery Actions Taken`, ADD `Supplier Delivery Extra Costs Amount` DECIMAL(18,2) NOT NULL DEFAULT '0.00' AFTER `Supplier Delivery Items Amount`, ADD `Supplier Delivery Total Amount` DECIMAL(18,2) NOT NULL DEFAULT '0' AFTER `Supplier Delivery Extra Costs Amount`, ADD `Supplier Delivery AC Subtotal Amount` DECIMAL(18,2) NOT NULL DEFAULT '0' AFTER `Supplier Delivery Total Amount`, ADD `Supplier Delivery AC Extra Costs Amount` DECIMAL(18,2) NOT NULL DEFAULT '0' AFTER `Supplier Delivery AC Subtotal Amount`, ADD `Supplier Delivery AC Total Amount` DECIMAL(18,2) NOT NULL DEFAULT '0' AFTER `Supplier Delivery AC Extra Costs Amount`;
 
 
-qf3htac MmHPX
 
 update `Shipping Dimension` set `Shipping Metadata`='0,100,2.95;100,,0' where `Shipping Metadata`='0,150,4.95;150,,0';
 update `Shipping Dimension` set `Shipping Metadata`='0,150,4.95;150,,0' where `Shipping Metadata`='0,250,9.95;250,,0';
