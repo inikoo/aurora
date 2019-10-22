@@ -1,6 +1,3 @@
-sudo chgrp -R www-data au
-
-
 for ACCOUNT in 'instance_1' ... 'instance_n'
 do
 cd au
