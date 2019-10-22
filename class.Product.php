@@ -786,16 +786,8 @@ class Product extends Asset {
 
         foreach ($this->data as $key => $value) {
             $keys .= ",`".$key."`";
-            if (in_array(
-                $key, array(
-                        'Product XHTML Next Supplier Shipment',
-                    )
-            )) {
-                $values .= ','.prepare_mysql($value, false);
+            $values .= ','.prepare_mysql($value, true);
 
-            } else {
-                $values .= ','.prepare_mysql($value, true);
-            }
         }
         $values = preg_replace('/^,/', '', $values);
         $keys   = preg_replace('/^,/', '', $keys);
