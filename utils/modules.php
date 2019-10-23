@@ -7142,8 +7142,8 @@ $modules = array(
             ),
             'timesheets' => array(
                 'type'      => 'navigation',
-                'icon'      => 'calendar',
-                'label'     => _('Calendar'),
+                'icon'      => 'user-clock',
+                'label'     => _('Clocking'),
                 'reference' => 'timesheets/day/'.date('Ymd'),
                 'tabs'      => array(
                     'timesheets.months'     => array(
@@ -7156,14 +7156,10 @@ $modules = array(
                         'label' => _('Days')
                     ),
                     'timesheets.employees'  => array(
-                        'label' => _(
-                            "Employes'"
-                        )
+                        'label' => _("Employes'")
                     ),
                     'timesheets.timesheets' => array(
-                        'label' => _(
-                            'Timesheets'
-                        )
+                        'label' => _('Timesheets')
                     ),
                 )
             ),

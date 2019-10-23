@@ -31,7 +31,7 @@ function get_employees_navigation($data, $smarty, $user, $db) {
         'title'          => _('Employees'),
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -65,7 +65,7 @@ function get_overtimes_navigation($data, $smarty, $user, $db) {
         'title'          => _('Overtimes'),
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -96,10 +96,10 @@ function get_history_navigation($data, $smarty, $user, $db) {
         'sections'       => $sections,
         'left_buttons'   => $left_buttons,
         'right_buttons'  => $right_buttons,
-        'title'          => _('Manpower history'),
+        'title'          => _('Staff history'),
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -133,7 +133,7 @@ function get_contractors_navigation($data, $smarty, $user, $db) {
         'title'          => _('Contractors'),
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -167,7 +167,7 @@ function get_organization_navigation($data, $smarty, $user, $db) {
         'title'          => _('Organization'),
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -383,7 +383,7 @@ function get_employee_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -432,7 +432,7 @@ function get_new_employee_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -635,7 +635,7 @@ function get_contractor_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -684,7 +684,7 @@ function get_new_contractor_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -956,7 +956,7 @@ function get_timesheet_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -1012,7 +1012,7 @@ function get_new_employee_attachment_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -1068,7 +1068,7 @@ function get_new_employee_user_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -1121,7 +1121,7 @@ function get_new_contractor_user_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -1178,7 +1178,7 @@ function get_employee_attachment_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -1408,7 +1408,7 @@ function get_timesheets_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -1628,7 +1628,7 @@ function get_upload_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -1823,7 +1823,7 @@ function get_deleted_employee_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -2018,7 +2018,7 @@ function get_deleted_contractor_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -2226,7 +2226,7 @@ function get_position_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -2261,7 +2261,7 @@ function get_clocking_machines_navigation($data, $smarty, $user, $db) {
         'title'          => _('Clocking-in machines'),
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -2309,7 +2309,7 @@ function get_new_clocking_machine_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );
@@ -2507,7 +2507,7 @@ function get_clocking_machine_navigation($data, $smarty, $user, $db) {
         'title'          => $title,
         'search'         => array(
             'show'        => true,
-            'placeholder' => _('Search manpower')
+            'placeholder' => _('Search staff')
         )
 
     );

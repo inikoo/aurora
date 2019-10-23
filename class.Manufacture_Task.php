@@ -380,7 +380,7 @@ class Manufacture_Task extends DB_Table {
                 $label = _('cost');
                 break;
             case 'Manufacture Task Work Cost':
-                $label = _('manpower cost');
+                $label = _('staff cost');
                 break;
             case 'Manufacture Task Energy Cost':
                 $label = _('energy cost');
@@ -392,7 +392,7 @@ class Manufacture_Task extends DB_Table {
                 $label = _('other cost');
                 break;
             case 'Manufacture Task Work Cost':
-                $label = _('manpower cost');
+                $label = _('staff cost');
                 break;
             case 'Manufacture Task Targets':
                 $label = _('targets');

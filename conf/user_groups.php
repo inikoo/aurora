@@ -53,6 +53,7 @@ $user_groups = array(
         'Edit'   => '',
         'Rights' => array(
             'EVW',
+            'EV'
 
         )
 
@@ -381,7 +382,8 @@ $user_groups = array(
         'Rights' => array(
             'URV',
             'UV',
-            'UA'
+            'UA',
+            'EV'
         )
 
     ),

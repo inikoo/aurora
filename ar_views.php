@@ -7754,7 +7754,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     break;
                 case 'hr.history':
                     $branch[] = array(
-                        'label'     => _('Manpower history'),
+                        'label'     => _('Staff history'),
                         'icon'      => '',
                         'reference' => 'hr/history'
                     );
