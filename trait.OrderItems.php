@@ -174,9 +174,9 @@ trait OrderItems {
                     if ($dn_key) {
 
                         $sql = sprintf(
-                            "UPDATE  `Order Transaction Fact` SET `Delivery Note ID`=%s,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s WHERE `Order Transaction Fact Key`=%d",
+                            "UPDATE  `Order Transaction Fact` SET `Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s WHERE `Order Transaction Fact Key`=%d",
 
-                            prepare_mysql($dn->data['Delivery Note ID']), $dn_key, prepare_mysql(
+                            $dn_key, prepare_mysql(
                                 $dn->get('Delivery Note Address Country 2 Alpha Code')
                             ), $row['Order Transaction Fact Key']
 
@@ -235,10 +235,9 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
                     if ($dn_key) {
 
                         $sql = sprintf(
-                            "UPDATE  `Order Transaction Fact` SET `Estimated Weight`=%f,`Delivery Note ID`=%s,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s WHERE `Order Transaction Fact Key`=%d", $estimated_weight,
-                            prepare_mysql($dn->get('Delivery Note ID')), $dn_key, prepare_mysql(
-                                $dn->get('Delivery Note Address Country 2 Alpha Code')
-                            ), $otf_key
+                            "UPDATE  `Order Transaction Fact` SET `Estimated Weight`=%f,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s WHERE `Order Transaction Fact Key`=%d", $estimated_weight, $dn_key, prepare_mysql(
+                            $dn->get('Delivery Note Address Country 2 Alpha Code')
+                        ), $otf_key
 
                         );
                         $this->db->exec($sql);
@@ -404,35 +403,52 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
             $add_class    = array();
             $remove_class = array();
 
-            $show=array();
-            $hide=array();
+            $show = array();
+            $hide = array();
 
 
-            if($this->get('Order To Pay Amount')==0){
-                $hide=array('Order_To_Pay_Amount','Order_Payments_Amount');
+            if ($this->get('Order To Pay Amount') == 0) {
+                $hide = array(
+                    'Order_To_Pay_Amount',
+                    'Order_Payments_Amount'
+                );
 
 
-                if($this->get('Order Total Amount')==0){
-                    array_push( $hide,'Order_Paid');
-                }else{
-                    $show=array('Order_Paid');
+                if ($this->get('Order Total Amount') == 0) {
+                    array_push($hide, 'Order_Paid');
+                } else {
+                    $show = array('Order_Paid');
                 }
-            }elseif($this->get('Order To Pay Amount')>0){
-                $show=array('Order_To_Pay_Amount','To_Pay_Label','Order_Payments_Amount');
-                $hide=array('To_Refund_Label','Order_Paid');
+            } elseif ($this->get('Order To Pay Amount') > 0) {
+                $show = array(
+                    'Order_To_Pay_Amount',
+                    'To_Pay_Label',
+                    'Order_Payments_Amount'
+                );
+                $hide = array(
+                    'To_Refund_Label',
+                    'Order_Paid'
+                );
 
-            }elseif($this->get('Order To Pay Amount')<0){
-                $show=array('Order_To_Pay_Amount','To_Refund_Label','Order_Payments_Amount');
-                $hide=array('To_Pay_Label','Order_Paid');
+            } elseif ($this->get('Order To Pay Amount') < 0) {
+                $show = array(
+                    'Order_To_Pay_Amount',
+                    'To_Refund_Label',
+                    'Order_Payments_Amount'
+                );
+                $hide = array(
+                    'To_Pay_Label',
+                    'Order_Paid'
+                );
             }
-            
-            
+
+
             if ($this->get('Order Charges Net Amount') == 0) {
                 $add_class['order_charges_container'] = 'very_discreet';
-                $hide[] = 'order_charges_info';
+                $hide[]                               = 'order_charges_info';
             } else {
                 $remove_class['order_charges_container'] = 'very_discreet';
-                $show[] = 'order_charges_info';
+                $show[]                                  = 'order_charges_info';
             }
 
 
@@ -463,14 +479,13 @@ VALUES (%s,%s,%f,%s,%f,%s,%s,%s,%s,%s,
             }
 
 
-            if($this->get('Order Number Items')==0){
+            if ($this->get('Order Number Items') == 0) {
                 $hide[] = 'order_payments_list';
-            }else{
+            } else {
 
             }
 
-            
-            
+
             $this->update_metadata = array(
 
                 'class_html'   => array(
@@ -719,12 +734,7 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
-
 
         return $items;
 

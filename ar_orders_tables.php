@@ -2470,6 +2470,8 @@ function delivery_note_items($_data, $db, $user) {
 
     global $_locale;// fix this locale stuff
 
+
+
     $rtext_label = 'item';
 
 

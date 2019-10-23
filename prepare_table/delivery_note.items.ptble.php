@@ -69,7 +69,3 @@ sum(`Packed`) as `Packed`,
 sum(`Given`) as `Given`,`Part Distinct Locations`
 ";
 
-//	$sql="select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-//print $sql;
-
-?>

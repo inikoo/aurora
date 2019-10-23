@@ -286,18 +286,6 @@ class DeliveryNote extends DB_Table {
                 $this->db->exec($sql);
 
 
-                //  print $sql;
-
-
-                if ($this->update_stock) {
-
-
-                    //$part_location=new PartLocation($part_data['Part SKU'].'_'.$location_key);
-                    //$part_location->update_stock();
-                }
-                //print "$sql\n";
-
-
                 $part_index++;
 
             }
@@ -689,7 +677,7 @@ class DeliveryNote extends DB_Table {
                     if ($this->data['Delivery Note Shipper Key'] != '') {
                         $shipper     = $this->get('Shipper');
                         $consignment = sprintf(
-                            '<span class="link" onclick="change_view(\'warehouse/%d/shippers/%d\' title="%s")">%s</span>', $this->data['Delivery Note Warehouse Key'], $this->data['Delivery Note Shipper Key'], $shipper->get('Name'), $shipper->get('Code')
+                            '<span class="link" onclick="change_view(\'warehouse/%d/shippers/%d\')"  title="%s" >%s</span>', $this->data['Delivery Note Warehouse Key'], $this->data['Delivery Note Shipper Key'], $shipper->get('Name'), $shipper->get('Code')
 
                         );
 
@@ -957,7 +945,7 @@ class DeliveryNote extends DB_Table {
 
 
                         }
-                    } 
+                    }
 
                 }
             }
@@ -1011,7 +999,7 @@ class DeliveryNote extends DB_Table {
 
                 $transactions++;
 
-                $metadata = preg_split('/\;/', $row['Map To Order Transaction Fact Metadata']);
+                $metadata = preg_split('/;/', $row['Map To Order Transaction Fact Metadata']);
                 $ratio    = $metadata[1];
                 $part     = get_object('Part', $row['Part SKU']);
 
@@ -1078,6 +1066,9 @@ class DeliveryNote extends DB_Table {
 
                 $this->update_field($field, $value, $options);
 
+                /**
+                 * @var $shipper    \Shipper
+                 */
                 $shipper = $this->get('Shipper');
 
                 if ($shipper) {
@@ -1117,6 +1108,9 @@ class DeliveryNote extends DB_Table {
             case 'Delivery Note Shipper Tracking':
 
                 $this->update_field($field, $value, $options);
+                /**
+                 * @var $shipper    \Shipper
+                 */
                 $shipper = $this->get('Shipper');
 
                 if ($shipper) {
@@ -1609,10 +1603,6 @@ class DeliveryNote extends DB_Table {
                                         $itf_transfer_factor[$row2['Inventory Transaction Key']] = $row2['Part Cost in Warehouse'] * $row2['Inventory Transaction Quantity'];
                                         $sum_itfs                                                += $row2['Part Cost in Warehouse'] * $row2['Inventory Transaction Quantity'];
                                     }
-                                } else {
-                                    print_r($error_info = $this->db->errorInfo());
-                                    print "$sql\n";
-                                    exit;
                                 }
 
 
@@ -1650,18 +1640,10 @@ class DeliveryNote extends DB_Table {
 
 
                             }
-                        } else {
-                            print_r($error_info = $this->db->errorInfo());
-                            print "$sql\n";
-                            exit;
                         }
                     }
 
 
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
                 $history_data = array(
@@ -2027,16 +2009,16 @@ class DeliveryNote extends DB_Table {
         switch ($data['field']) {
             case 'Picked':
                 return $this->update_item_picked_quantity($data);
-                break;
+
             case 'Out_of_stock':
                 return $this->update_item_not_picked_quantity($data);
-                break;
+
             case 'Packed':
                 return $this->update_item_packed_quantity($data);
-                break;
-            default:
 
-                break;
+            default:
+                return false;
+
         }
 
 
@@ -2054,7 +2036,7 @@ class DeliveryNote extends DB_Table {
             $this->error = true;
             $this->msg   = 'delivery packed';
 
-            return;
+            return false;
         }
 
 
@@ -2089,20 +2071,16 @@ class DeliveryNote extends DB_Table {
                     $this->error = true;
                     $this->msg   = 'Error, trying to pick more items than required';
 
-                    return;
+                    return false;
                 }
 
                 if ($qty < $row['Packed']) {
                     $this->error = true;
                     $this->msg   = 'Error, trying to set as picked '.$qty.' less items than packed '.$row['Packed'];
 
-                    return;
+                    return false;
                 }
 
-
-                //   $location = new Location($row['Location Key']);
-
-                // $qty = $row['Picked'] + $qty;
 
                 $sql = sprintf(
                     "UPDATE `Inventory Transaction Fact` SET  `Inventory Transaction Type`='Sale' ,`Inventory Transaction Section`='Out',`Picked`=%f,`Inventory Transaction Quantity`=%f,`Inventory Transaction Amount`=%f,`Date Picked`=%s,`Date`=%s ,`Picker Key`=%s WHERE `Inventory Transaction Key`=%d  ",
@@ -2112,9 +2090,6 @@ class DeliveryNote extends DB_Table {
                 $this->db->exec($sql);
 
 
-                //   print $_pending;
-
-
                 $part_location = new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
                 $part_location->update_stock();
 
@@ -2122,10 +2097,6 @@ class DeliveryNote extends DB_Table {
                 $picked  = $qty;
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -2405,6 +2376,7 @@ class DeliveryNote extends DB_Table {
                     } else {
                         $updating_picking = false;
                         $picked           = $row['Picked'];
+                        $transaction_value=0;
                     }
 
                     $part_location = new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
@@ -2635,10 +2607,7 @@ class DeliveryNote extends DB_Table {
                                   `Date Picked`=%s ,`Date Packed`=%s ,`Date`=%s ,`Location Key`=%d ,`Inventory Transaction Type`=%s ,`Inventory Transaction Section`=%s ,
                                   `Inventory Transaction Quantity`=%f, `Inventory Transaction Amount`=%.3f,`Inventory Transaction Weight`=%f,
                                   `Picked`=%f,`Packed`=%f,`Out of Stock`=%f,
-                                  `Picker Key`=%d,`Packer Key`=%d
-                                  
-                                  
-                                  WHERE `Inventory Transaction Key`=%d ',
+                                  `Picker Key`=%d,`Packer Key`=%d WHERE `Inventory Transaction Key`=%d ',
 
                         prepare_mysql($date_picked), prepare_mysql($date_packed), prepare_mysql($date), $transaction['location_key'], prepare_mysql($transaction_type), prepare_mysql($transaction_section), $qty, $cost, $weight, $transaction['qty'], $transaction['qty'],
                         $out_of_stock, $this->get('Delivery Note Assigned Picker Key'), $this->get('Delivery Note Assigned Packer Key'), $transaction['transaction_key']
@@ -2718,7 +2687,6 @@ class DeliveryNote extends DB_Table {
                 'Delivery_Note_Dispatched_Approved_Datetime'  => '&nbsp;'.$this->get('Dispatched Approved Datetime').'&nbsp;',
                 'Delivery_Note_Dispatched_Datetime'           => '&nbsp;'.$this->get('Dispatched Datetime').'&nbsp;',
 
-                'Delivery_Note_State' => $this->get('State'),
                 'Items_Cost'          => $this->get('Items Cost')
 
 
@@ -2754,7 +2722,7 @@ class DeliveryNote extends DB_Table {
                 break;
 
             case('None'):
-                return;
+                return '';
                 break;
 
             default:
@@ -2793,4 +2761,3 @@ class DeliveryNote extends DB_Table {
 }
 
 
-?>
