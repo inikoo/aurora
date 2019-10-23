@@ -120,7 +120,7 @@ events: {
 
 {
 name: "user_name_bis",
-label: "{t}User{/t}",
+label: "{t}Aurora username{/t}",
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({
 events: {

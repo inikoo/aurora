@@ -17,6 +17,15 @@ function get_employees_navigation($data, $smarty, $user, $db) {
     $right_buttons = array();
     $sections      = get_sections('hr', '');
 
+
+    if(!$user->can_edit('Staff')){
+        unset($sections['clocking_machines']);
+        unset($sections['contractors']);
+        unset($sections['hr.history']);
+    }
+
+
+
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;
     }
@@ -365,6 +374,12 @@ function get_employee_navigation($data, $smarty, $user, $db) {
     }
 
     $sections = get_sections('hr', '');
+    if(!$user->can_edit('Staff')){
+        unset($sections['clocking_machines']);
+        unset($sections['contractors']);
+        unset($sections['hr.history']);
+    }
+
 
 
     if (isset($sections[$_section])) {
@@ -934,6 +949,11 @@ function get_timesheet_navigation($data, $smarty, $user, $db) {
 
 
     $sections = get_sections('hr', '');
+    if(!$user->can_edit('Staff')){
+        unset($sections['clocking_machines']);
+        unset($sections['contractors']);
+        unset($sections['hr.history']);
+    }
 
 
     if (isset($sections[$_section])) {
@@ -1376,6 +1396,12 @@ function get_timesheets_navigation($data, $smarty, $user, $db) {
     $left_buttons[] = $next_button;
 
     $sections = get_sections('hr', '');
+    if(!$user->can_edit('Staff')){
+        unset($sections['clocking_machines']);
+        unset($sections['contractors']);
+        unset($sections['hr.history']);
+    }
+
 
     $right_buttons[] = array(
         'icon'      => 'calendar',

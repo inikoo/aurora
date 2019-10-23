@@ -41,6 +41,9 @@ switch ($tipo) {
     case 'employees':
         employees(get_table_parameters(), $db, $user, 'current');
         break;
+    case 'employees_restricted_view':
+        employees_restricted_view(get_table_parameters(), $db, $user, 'current');
+        break;
     case 'exemployees':
         employees(get_table_parameters(), $db, $user, 'ex');
         break;
@@ -228,6 +231,115 @@ function employees($_data, $db, $user, $type = '') {
         print $sql;
         exit;
     }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+
+function employees_restricted_view($_data, $db, $user, $type = '') {
+
+    if ($type == 'current') {
+        $extra_where = ' and `Staff Currently Working`="Yes"';
+        $rtext_label = 'employee';
+
+    } elseif ($type == 'ex') {
+        $extra_where = ' and `Staff Currently Working`="No"';
+        $rtext_label = 'ex employee';
+
+    }
+
+    include_once 'prepare_table/init.php';
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+    // exit;
+
+
+    $adata = array();
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            switch ($data['User Active']) {
+                case 'Yes':
+                    $user_active = _('Active');
+                    break;
+                case 'No':
+                    $user_active = _('Suspended');
+                    break;
+                case '':
+                    $user_active = _("Don't set up");
+                    break;
+                default:
+                    $user_active = $data['User Active'];
+                    break;
+            }
+
+            switch ($data['Staff Type']) {
+                case 'Employee':
+                    $type = _('Employee');
+                    break;
+                case 'Volunteer':
+                    $type = _('Volunteer');
+                    break;
+                case 'TemporalWorker':
+                    $type = _("Temporal worker");
+                    break;
+                case 'WorkExperience':
+                    $type = _("Work experience");
+                    break;
+                default:
+                    $type = $data['Staff Type'];
+                    break;
+            }
+
+            $adata[] = array(
+                'id'           => (integer)$data['Staff Key'],
+                'formatted_id' => sprintf("%04d", $data['Staff Key']),
+                'payroll_id'   => $data['Staff ID'],
+                'name'         => $data['Staff Name'],
+                'code'         => sprintf('<span class="link" onCLick="change_view(\'employee/%d\')">%s</span>', $data['Staff Key'], $data['Staff Alias']),
+                'code_link'    => $data['Staff Alias'],
+                'type'  => $type,
+                'job_title'  => $data['Staff Job Title'],
+
+
+
+            );
+
+
+        }
+    }
+
+
 
 
     $response = array(

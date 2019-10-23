@@ -3716,6 +3716,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
     );
 
+
     if ($data['section'] == 'customer') {
         if ($data['store']->get('Store Type') == 'Dropshipping') {
             $_content['tabs']['customer.clients']['class'] = '';
@@ -3729,8 +3730,20 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
+    }elseif ($data['section'] == 'employees') {
+
+        if(!$user->can_edit('Staff')){
+            $_content['tabs']['exemployees']['class'] = 'hide';
+            $_content['tabs']['deleted.employees']['class'] = 'hide';
+
+            if ($data['tab'] == 'exemployees' or $data['tab'] == 'deleted.employees'  ) {
+                $data['tab'] = 'employees';
+            }
+        }
+
+
     }
-    if ($data['section'] == 'mailshot') {
+    elseif ($data['section'] == 'mailshot') {
 
 
         $_content['tabs']['mailshot.set_mail_list']['class'] = 'hide';
@@ -4059,7 +4072,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 */
 
-    } elseif ($data['section'] == 'category') {
+    }
+    elseif ($data['section'] == 'category') {
 
         if ($data['_object']->get('Category Scope') == 'Product') {
 
@@ -4204,7 +4218,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         //print_r($_content);
 
 
-    } elseif ($data['section'] == 'prospects.email_template') {
+    }
+    elseif ($data['section'] == 'prospects.email_template') {
 
         if ($requested_tab != '') {
             $data['tab'] = $requested_tab;

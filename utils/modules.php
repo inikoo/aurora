@@ -6842,19 +6842,13 @@ $modules = array(
                         )
                     ),
                     'deleted.employees' => array(
-                        'label' => _(
-                            'Deleted employees'
-                        ),
+                        'label' => _('Deleted employees'),
                         'icon'  => 'trash',
                         'class' => 'right icon_only'
                     ),
                     'exemployees'       => array(
-                        'label' => _(
-                            'Ex employees'
-                        ),
-                        'title' => _(
-                            'Ex Employees'
-                        ),
+                        'label' => _('Ex employees'),
+                        'title' => _('Ex Employees'),
                         'class' => ''
                     ),
 
@@ -8720,6 +8714,10 @@ function get_sections($module, $parent_key = false) {
     foreach ($modules[$module]['sections'] as $key => $value) {
 
         if ($value['type'] == 'navigation') {
+
+
+
+
             if ($parent_key) {
                 $value['reference'] = sprintf($value['reference'], $parent_key);
             }
@@ -8734,4 +8732,3 @@ function get_sections($module, $parent_key = false) {
 }
 
 
-?>

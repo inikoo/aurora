@@ -65,7 +65,7 @@
 
                 <span data-group_id="15" class=" button permission_type {if 15|in_array:$user_groups}{else}discreet_on_hover{/if}">
                 <i class="far {if 15|in_array:$user_groups}fa-check-square{else}fa-square{/if} fa-fw "></i>
-            <span title="{t}View users activity{/t}" class="padding_right_10">{t}Users activity{/t}</i></span>
+            <span title="{t}View other users activity, performance reports and timesheets{/t}" class="padding_right_10">{t}Users activity{/t}</i></span>
             </span>
             </div>
 
@@ -76,12 +76,12 @@
     <tr style="height: 37px">
         <td style="padding-top: 10px" class="icons"><i class="far fa-fw fa-briefcase"></i> <i class="far fa-fw fa-users-class"></i></td>
 
-        <td style="padding-top: 10px" class="label">{t}System management & Users{/t} </td>
+        <td style="padding-top: 10px" class="label">{t}Aurora settings & users{/t} </td>
 
         <td style="padding-top: 10px">
              <span data-group_id="1" class=" button permission_type {if 1|in_array:$user_groups}{else}discreet_on_hover{/if} ">
             <i class="far {if 1|in_array:$user_groups}fa-dot-circle{else}fa-circle{/if} fa-fw "></i>
-            <span title="{t}Create and edit system users, employees and contractors, create stores, edit account settings{/t}" class="padding_right_10">{t}Admin{/t}</span>
+            <span title="{t}Create and edit system users, employees and contractors, create stores, edit account settings{/t}" class="padding_right_10">{t}System admin team{/t}</span>
             </span>
 
 
@@ -98,13 +98,15 @@
         <td>
              <span data-group_id="6" class=" button permission_type  {if 6|in_array:$user_groups}{else}discreet_on_hover{/if}  ">
             <i class="far   {if 6|in_array:$user_groups}fa-dot-circle{else}fa-circle{/if} fa-fw  "></i>
-            <span title="{t}Create and edit employees and contractors{/t}" class="padding_right_10">{t}Admin{/t}</span>
+            <span title="{t}Create and edit employees and contractors{/t}" class="padding_right_10">{t}Human resources team{/t}</span>
             </span>
+
+            <div class="hide">
             <span data-group_id="20" class=" button permission_type {if 20|in_array:$user_groups}{else}discreet_on_hover{/if} ">
             <i class="far {if 20|in_array:$user_groups}fa-dot-circle{else}fa-circle{/if} fa-fw "></i>
             <span title="{t}Restricted view (time sheets) employees under user supervision{/t}" class="padding_right_10">{t}Only workers under supervision{/t}</span>
             </span>
-
+            </div>
 
         </td>
 
@@ -178,7 +180,7 @@
 
             <span data-group_id="23" class=" button permission_type {if 23|in_array:$user_groups}{else}discreet_on_hover{/if}">
             <i class="far {if 23|in_array:$user_groups}fa-dot-circle{else}fa-circle{/if} fa-fw "></i>
-            <span title="{t}Can edit invoices, payments and customer credits{/t}" class="padding_right_10">{t}Accounting{/t}</span>
+            <span title="{t}Can edit invoices, payments and customer credits{/t}" class="padding_right_10">{t}Accounting team{/t}</span>
             </span>
 
 
