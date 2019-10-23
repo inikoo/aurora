@@ -29,6 +29,7 @@ $user_groups = array(
             'UE',
             'EV',
             'EE',
+            'URV'
 
         )
     ),
@@ -380,10 +381,8 @@ $user_groups = array(
         'View'   => '',
         'Edit'   => '',
         'Rights' => array(
-            'URV',
-            'UV',
-            'UA',
-            'EV'
+            'EV',
+            'UA'
         )
 
     ),

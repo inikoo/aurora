@@ -41,7 +41,11 @@ switch ($tipo) {
         break;
 }
 
-
+/**
+ * @param $_data
+ * @param $db \PDO
+ * @param $user \User
+ */
 function attachments($_data, $db, $user) {
 
 
@@ -54,6 +58,12 @@ function attachments($_data, $db, $user) {
     if ($_data['parameters']['parent'] == 'supplierdelivery') {
 
         $delivery = get_object('SupplierDelivery', $_data['parameters']['parent_key']);
+    }elseif ($_data['parameters']['parent'] == 'employee') {
+
+        if(!$user->can_edit('Staff')){
+            exit;
+        }
+
     }
 
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
@@ -207,4 +217,3 @@ function attachments($_data, $db, $user) {
 }
 
 
-?>

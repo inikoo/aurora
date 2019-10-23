@@ -200,7 +200,7 @@ class Timesheet_Record extends DB_Table {
 
 
                 $sql          = sprintf(
-                    'SELECT `Timesheet Record Ignored Due Missing End`,`Staff Alias`,`Timesheet Remover Key`,`Timesheet Record Action Type`,`Timesheet Record Key`   FROM `Timesheet Record Dimension` LEFT JOIN  `Staff Dimension` S ON (`Timesheet Remover Key`=S.`Staff Key`) WHERE `Timesheet Record Timesheet Key`=%d   AND `Timesheet Record Type`="ClockingRecord" ',
+                    "SELECT `Timesheet Record Ignored Due Missing End`,`Staff Alias`,`Timesheet Remover Key`,`Timesheet Record Action Type`,`Timesheet Record Key`   FROM `Timesheet Record Dimension` LEFT JOIN  `Staff Dimension` S ON (`Timesheet Remover Key`=S.`Staff Key`) WHERE `Timesheet Record Timesheet Key`=%d   AND `Timesheet Record Type`='ClockingRecord'",
                     $this->data['Timesheet Record Timesheet Key']
                 );
                 $records_data = array();
@@ -230,9 +230,7 @@ class Timesheet_Record extends DB_Table {
                                 $action_type = '<span id="action_type_'.$row['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-question"></i> '._('Unknown').'</span></span>';
                                 break;
                             case 'Ignored':
-
-
-                                $action_type = '<span id="action_type_'.$row['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-eye-slash"></i> '._('Ignoredx').' '
+                                $action_type = '<span id="action_type_'.$row['Timesheet Record Key'].'"  ><span class="disabled"><i class="fa fa-fw fa-eye-slash"></i> '._('Ignored').' '
                                     .($row['Staff Alias'] != '' ? '('.$row['Staff Alias'].')' : '').'</span></span>';
                                 break;
 
@@ -252,24 +250,14 @@ class Timesheet_Record extends DB_Table {
                 $this->other_fields_updated = array(
                     'records_data'   => $records_data,
                     'updated_data'   => array(
-                        'Timesheet_Clocked_Time'    => $timesheet->get(
-                            'Clocked Time'
-                        ),
-                        'Timesheet_Working_Time'    => $timesheet->get(
-                            'Working Time'
-                        ),
-                        'Timesheet_Breaks_Time'     => $timesheet->get(
-                            'Breaks Time'
-                        ),
-                        'Timesheet_Unpaid_Overtime' => $timesheet->get(
-                            'Unpaid Overtime'
-                        )
+                        'Timesheet_Clocked_Time'    => $timesheet->get('Clocked Time'),
+                        'Timesheet_Working_Time'    => $timesheet->get('Working Time'),
+                        'Timesheet_Breaks_Time'     => $timesheet->get('Breaks Time'),
+                        'Timesheet_Unpaid_Overtime' => $timesheet->get('Unpaid Overtime')
 
                     ),
                     'updated_titles' => array(
-                        'Timesheet_Clocked_Time' => $timesheet->get(
-                            'Clocked Hours'
-                        )
+                        'Timesheet_Clocked_Time' => $timesheet->get('Clocked Hours')
                     )
 
                 );
@@ -285,6 +273,22 @@ class Timesheet_Record extends DB_Table {
         }
         $this->reread();
 
+    }
+
+
+    /**
+     * @param        $user \User
+     * @param string $field
+     *
+     * @return bool
+     */
+    public function can_edit_field($user,$field=''){
+
+        if($user->can_edit('Staff')){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 

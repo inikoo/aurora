@@ -6978,9 +6978,7 @@ $modules = array(
                         'class' => 'right icon_only'
                     ),
                     'employee.attachments'             => array(
-                        'label'         => _(
-                            'Attachments'
-                        ),
+                        'label'         => _('Attachments'),
                         'icon'          => 'paperclip',
                         'class'         => 'right icon_only',
                         'quantity_data' => array(
@@ -7136,8 +7134,8 @@ $modules = array(
             ),
             'timesheets' => array(
                 'type'      => 'navigation',
-                'icon'      => 'user-clock',
-                'label'     => _('Clocking'),
+                'icon'      => 'stopwatch',
+                'label'     => _('Timesheets'),
                 'reference' => 'timesheets/day/'.date('Ymd'),
                 'tabs'      => array(
                     'timesheets.months'     => array(

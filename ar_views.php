@@ -1570,7 +1570,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             break;
         case 'employee':
             include_once 'showcase/employee.show.php';
-            $html         = get_employee_showcase($data, $smarty, $user, $db);
+            $html         = get_employee_showcase($data, $smarty, $user);
             $title        = $data['_object']->get('Name');
             $web_location = '<i class="fal fa-fw fa-hand-rock"></i> '.$data['_object']->get('ID');
 
@@ -3738,6 +3738,19 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
             if ($data['tab'] == 'exemployees' or $data['tab'] == 'deleted.employees'  ) {
                 $data['tab'] = 'employees';
+            }
+        }
+
+
+    }elseif ($data['section'] == 'employee') {
+
+        if(!$user->can_edit('Staff')){
+            $_content['tabs']['employee.details']['class'] = 'hide';
+            $_content['tabs']['employee.attachments']['class'] = 'hide';
+            $_content['tabs']['employee.history']['class'] = 'hide';
+
+            if ($data['tab'] == 'employee.details' or $data['tab'] == 'employee.attachment' or $data['tab'] == 'employee.history'  ) {
+                $data['tab'] = 'employee.today_timesheet.record';
             }
         }
 

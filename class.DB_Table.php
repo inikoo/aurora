@@ -43,7 +43,6 @@ abstract class DB_Table extends stdClass {
 
     public function update($data, $options = '', $metadata = '') {
 
-
         $this->error = false;
         $this->msg   = '';
         if (!is_array($data)) {
@@ -82,6 +81,18 @@ abstract class DB_Table extends stdClass {
             $this->msg .= _('Nothing to be updated')."\n";
         }
     }
+
+
+    /**
+     * @param        $user \User
+     * @param string $field
+     *
+     * @return bool
+     */
+    public function can_edit_field($user,$field=''){
+        return true;
+    }
+
 
     protected function update_field_switcher($field, $value, $options = '', $metadata = '') {
 

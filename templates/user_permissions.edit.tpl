@@ -65,7 +65,7 @@
 
                 <span data-group_id="15" class=" button permission_type {if 15|in_array:$user_groups}{else}discreet_on_hover{/if}">
                 <i class="far {if 15|in_array:$user_groups}fa-check-square{else}fa-square{/if} fa-fw "></i>
-            <span title="{t}View other users activity, performance reports and timesheets{/t}" class="padding_right_10">{t}Users activity{/t}</i></span>
+            <span title="{t}Timesheets & other system users activity{/t}" class="padding_right_10">{t}Timesheets{/t}</i></span>
             </span>
             </div>
 

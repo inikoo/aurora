@@ -199,7 +199,7 @@ function get_employee_navigation($data, $smarty, $user, $db) {
     $_user = $object->get_user();
 
 
-    if ($_user and is_object($_user) and $_user->id) {
+    if ($_user and is_object($_user) and $_user->id and $user->can_view('Users')) {
 
         $right_buttons[]
             = array(
@@ -318,9 +318,6 @@ function get_employee_navigation($data, $smarty, $user, $db) {
 
 
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
 
