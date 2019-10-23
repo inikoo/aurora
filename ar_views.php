@@ -1570,7 +1570,7 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             break;
         case 'employee':
             include_once 'showcase/employee.show.php';
-            $html         = get_employee_showcase($data, $smarty, $user, $db);
+            $html         = get_employee_showcase($data, $smarty, $user);
             $title        = $data['_object']->get('Name');
             $web_location = '<i class="fal fa-fw fa-hand-rock"></i> '.$data['_object']->get('ID');
 
@@ -3716,6 +3716,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
     );
 
+
     if ($data['section'] == 'customer') {
         if ($data['store']->get('Store Type') == 'Dropshipping') {
             $_content['tabs']['customer.clients']['class'] = '';
@@ -3729,8 +3730,33 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
+    }elseif ($data['section'] == 'employees') {
+
+        if(!$user->can_edit('Staff')){
+            $_content['tabs']['exemployees']['class'] = 'hide';
+            $_content['tabs']['deleted.employees']['class'] = 'hide';
+
+            if ($data['tab'] == 'exemployees' or $data['tab'] == 'deleted.employees'  ) {
+                $data['tab'] = 'employees';
+            }
+        }
+
+
+    }elseif ($data['section'] == 'employee') {
+
+        if(!$user->can_edit('Staff')){
+            $_content['tabs']['employee.details']['class'] = 'hide';
+            $_content['tabs']['employee.attachments']['class'] = 'hide';
+            $_content['tabs']['employee.history']['class'] = 'hide';
+
+            if ($data['tab'] == 'employee.details' or $data['tab'] == 'employee.attachment' or $data['tab'] == 'employee.history'  ) {
+                $data['tab'] = 'employee.today_timesheet.record';
+            }
+        }
+
+
     }
-    if ($data['section'] == 'mailshot') {
+    elseif ($data['section'] == 'mailshot') {
 
 
         $_content['tabs']['mailshot.set_mail_list']['class'] = 'hide';
@@ -4059,7 +4085,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 */
 
-    } elseif ($data['section'] == 'category') {
+    }
+    elseif ($data['section'] == 'category') {
 
         if ($data['_object']->get('Category Scope') == 'Product') {
 
@@ -4204,7 +4231,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         //print_r($_content);
 
 
-    } elseif ($data['section'] == 'prospects.email_template') {
+    }
+    elseif ($data['section'] == 'prospects.email_template') {
 
         if ($requested_tab != '') {
             $data['tab'] = $requested_tab;
@@ -7754,7 +7782,7 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     break;
                 case 'hr.history':
                     $branch[] = array(
-                        'label'     => _('Manpower history'),
+                        'label'     => _('Staff history'),
                         'icon'      => '',
                         'reference' => 'hr/history'
                     );

@@ -113,7 +113,7 @@ switch ($tipo) {
                      )
         );
 
-        edit_field($account, $db, $editor, $data, $smarty);
+        edit_field($account, $db, $editor, $data, $smarty, $user);
         break;
     case 'object_operation':
 
@@ -315,10 +315,11 @@ switch ($tipo) {
  * @param $editor  array
  * @param $data    array
  * @param $smarty  \Smarty
+ * @param $user    \User
  *
  * @throws \SmartyException
  */
-function edit_field($account, $db, $editor, $data, $smarty) {
+function edit_field($account, $db, $editor, $data, $smarty, $user) {
 
 
     $object = get_object($data['object'], $data['key']);
@@ -333,6 +334,20 @@ function edit_field($account, $db, $editor, $data, $smarty) {
         exit;
 
     }
+
+    $field = preg_replace('/_/', ' ', $data['field']);
+
+
+    if(!$object->can_edit_field($user,$data['field'])){
+        $response = array(
+            'state' => 400,
+            'msg'   => _("Sorry you don't have permission to do this")
+
+        );
+        echo json_encode($response);
+        exit;
+    }
+
 
     $object->editor = $editor;
     $object->smarty = $smarty;
@@ -372,7 +387,6 @@ function edit_field($account, $db, $editor, $data, $smarty) {
 
         $object->update_settings(array(preg_replace('/_/', ' ', preg_replace('/^Website_Settings_/', '', $data['field'])) => $data['value']));
 
-        $field           = preg_replace('/_/', ' ', $data['field']);
         $formatted_field = preg_replace('/^Website /', '', $field);
 
         $response = array(
@@ -399,7 +413,8 @@ function edit_field($account, $db, $editor, $data, $smarty) {
     }
 
 
-    $field = preg_replace('/_/', ' ', $data['field']);
+
+
 
     if ($object->get_object_name() == 'Page') {
         $formatted_field = preg_replace('/^Webpage /', '', $field);
@@ -429,15 +444,11 @@ function edit_field($account, $db, $editor, $data, $smarty) {
     }
 
 
+
+
     if (isset($data['metadata'])) {
-
-
         $object->update(array($field => $data['value']), $options, $data['metadata']);
-
-
     } else {
-
-
         $object->update(array($field => $data['value']), $options);
     }
 
@@ -2924,9 +2935,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             /**
              * @var $parent \Store
              */
-            $_result  = $parent->create_customer($data['fields_data']);
-            $customer = $_result['Customer'];
-            $website_user=$_result['Website_User'];
+            $_result      = $parent->create_customer($data['fields_data']);
+            $customer     = $_result['Customer'];
+            $website_user = $_result['Website_User'];
 
             if ($parent->new_customer) {
 
@@ -3007,35 +3018,60 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             }
             break;
         case 'Contractor':
-            include_once 'class.Staff.php';
 
-            $data['fields_data']['Staff Type'] = 'Contractor';
 
-            $object = $parent->create_staff($data['fields_data']);
-            if (!$parent->error) {
-                $smarty->assign('account', $account);
-                $smarty->assign('object', $object);
+            if ($user->can_edit('Staff')) {
+                include_once 'class.Staff.php';
 
-                $new_object_html = $smarty->fetch(
-                    'presentation_cards/contractor.pcard.tpl'
+                $data['fields_data']['Staff Type'] = 'Contractor';
+
+                $object = $parent->create_staff($data['fields_data']);
+                if (!$parent->error) {
+                    $smarty->assign('account', $account);
+                    $smarty->assign('object', $object);
+
+                    $new_object_html = $smarty->fetch(
+                        'presentation_cards/contractor.pcard.tpl'
+                    );
+                    $updated_data    = array();
+                }
+                break;
+
+            } else {
+                $response = array(
+                    'state' => 400,
+                    'msg'   => _("Sorry you don't have permission to do this")
+
                 );
-                $updated_data    = array();
+                echo json_encode($response);
+                exit;
             }
-            break;
+
         case 'Staff':
-            include_once 'class.Staff.php';
 
-            $object = $parent->create_staff($data['fields_data']);
-            if (!$parent->error) {
-                $smarty->assign('account', $account);
-                $smarty->assign('object', $object);
+            if ($user->can_edit('Staff')) {
+                include_once 'class.Staff.php';
 
-                $new_object_html = $smarty->fetch(
-                    'presentation_cards/employee.pcard.tpl'
+                $object = $parent->create_staff($data['fields_data']);
+                if (!$parent->error) {
+                    $smarty->assign('account', $account);
+                    $smarty->assign('object', $object);
+
+                    $new_object_html = $smarty->fetch(
+                        'presentation_cards/employee.pcard.tpl'
+                    );
+                    $updated_data    = array();
+                }
+
+            } else {
+                $response = array(
+                    'state' => 400,
+                    'msg'   => _("Sorry you don't have permission to do this")
+
                 );
-                $updated_data    = array();
+                echo json_encode($response);
+                exit;
             }
-
 
             break;
         case 'API_Key':
@@ -3067,13 +3103,25 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             }
             break;
         case 'Timesheet_Record':
-            include_once 'class.Timesheet_Record.php';
-            $object = $parent->create_timesheet_record($data['fields_data']);
-            if (!$parent->error) {
-                $new_object_html = '';
-                $updated_data    = array(
-                    'Timesheet_Clocked_Hours' => $parent->get('Clocked Hours')
+
+            if ($user->can_edit('Staff')) {
+
+                include_once 'class.Timesheet_Record.php';
+                $object = $parent->create_timesheet_record($data['fields_data']);
+                if (!$parent->error) {
+                    $new_object_html = '';
+                    $updated_data    = array(
+                        'Timesheet_Clocked_Hours' => $parent->get('Clocked Hours')
+                    );
+                }
+            } else {
+                $response = array(
+                    'state' => 400,
+                    'msg'   => _("Sorry you don't have permission to do this")
+
                 );
+                echo json_encode($response);
+                exit;
             }
             break;
         case 'Supplier Part':

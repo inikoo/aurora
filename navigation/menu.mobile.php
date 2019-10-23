@@ -358,7 +358,7 @@ function get_mobile_menu($data,$user, $smarty) {
     if ($user->can_view('staff')) {
         $nav_menu[] = array(
             '<i class="fa fa-hand-rock fa-fw"></i>',
-            _('Manpower'),
+            _('Staff'),
             'hr',
             'hr',
             'module',

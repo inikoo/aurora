@@ -18,6 +18,12 @@ require_once 'trait.AttachmentSubject.php';
 require_once 'trait.ImageSubject.php';
 
 class Staff extends DB_Table {
+
+    /**
+     * @var \PDO
+     */
+    public $db;
+
     use AttachmentSubject;
     use ImageSubject;
 
@@ -507,7 +513,7 @@ class Staff extends DB_Table {
                             3 => _('Wednesday'),
                             4 => _('Thursday'),
                             5 => _('Friday'),
-                            6 => _('Satday'),
+                            6 => _('Saturday'),
                             7 => _('Sunday')
                         );
 
@@ -565,7 +571,7 @@ class Staff extends DB_Table {
                             3 => _('Wednesday'),
                             4 => _('Thursday'),
                             5 => _('Friday'),
-                            6 => _('Satday'),
+                            6 => _('Saturday'),
                             7 => _('Sunday')
                         );
 
@@ -581,7 +587,7 @@ class Staff extends DB_Table {
                         3 => _('Wednesday'),
                         4 => _('Thursday'),
                         5 => _('Friday'),
-                        6 => _('Satday'),
+                        6 => _('Saturday'),
                         7 => _('Sunday')
                     );
 
@@ -596,11 +602,8 @@ class Staff extends DB_Table {
                 }
 
 
-                //print $salary;exit;
                 return $salary;
 
-                //{"metadata":{},"data":{"frequency":"monthly","payday":"23","type":"prorata_hour","amount":"2323"}}
-                break;
             case('Working Hours'):
                 include_once 'utils/natural_language.php';
 
@@ -724,33 +727,32 @@ class Staff extends DB_Table {
 
             case('Address'):
                 return nl2br($this->data['Staff Address']);
-                break;
+
             case('Staff User Password'):
             case('Staff PIN'):
                 return '';
-                break;
+
 
             case('PIN'):
                 return '****';
-                break;
+
             case('User Password'):
             case('Password'):
                 return '******';
-                break;
+
 
             case('Telephone'):
                 return $this->data['Staff Telephone Formatted'];
-                break;
+
             case('Email'):
                 return $this->data['Staff Email'] != '' ? sprintf(
                     '<a href="mailto:%s" target="_top">%s</a>', $this->data['Staff Email'], $this->data['Staff Email']
                 ) : '';
-                break;
+
 
             case 'Staff User Groups':
             case 'Staff User Stores':
             case 'Staff User Websites':
-
             case 'Staff User Warehouses':
             case 'Staff User Productions':
                 $field = preg_replace('/^Staff /', '', $key);
@@ -760,12 +762,13 @@ class Staff extends DB_Table {
                 }
                 if (is_object($this->system_user)) {
                     return $this->system_user->get($field);
+                } else {
+                    return '';
                 }
-                break;
+
             case 'User Groups':
             case 'User Stores':
             case 'User Websites':
-
             case 'User Warehouses':
             case 'User Productions':
                 $field = preg_replace('/^User /', '', $key);
@@ -774,8 +777,10 @@ class Staff extends DB_Table {
                 }
                 if (is_object($this->system_user)) {
                     return $this->system_user->get($field);
+                } else {
+                    return '';
                 }
-                break;
+
 
             case('User Active'):
                 if (array_key_exists('Staff User Active', $this->data)) {
@@ -786,7 +791,6 @@ class Staff extends DB_Table {
                         case('No'):
                             $formatted_value = _('No');
                             break;
-
                         default:
                             $formatted_value = $this->data['Staff User Active'];
                     }
@@ -797,13 +801,9 @@ class Staff extends DB_Table {
                     return _('No');
                 }
 
-                break;
-
 
             case('Staff PIN'):
                 return '';
-                break;
-
             case('Staff Position'):
 
                 $positions = '';
@@ -816,40 +816,11 @@ class Staff extends DB_Table {
                 }
 
                 return $positions;
-
-                break;
             case('Position'):
                 $positions = '';
 
                 return $positions;
-                /*
-                include 'conf/roles.php';
 
-                $sql = sprintf(
-                    'SELECT `Role Code` FROM `Staff Role Bridge` WHERE  `Staff Key`=%d ', $this->id
-                );
-
-                if ($result = $this->db->query($sql)) {
-                    foreach ($result as $row) {
-
-
-                        $positions .= $roles[$row['Role Code']]['title'].', ';
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
-                }
-                $positions = preg_replace('/, $/', '', $positions);
-
-                return $positions;
-                break;
-            case('Staff Supervisor'):
-                return $this->get_supervisors();
-                break;
-            case('Supervisor'):
-                return $this->get_formatted_supervisors();
-                */
-                break;
 
             case ('Valid From'):
             case ('Valid To'):
@@ -862,7 +833,7 @@ class Staff extends DB_Table {
                         "%x", strtotime($this->data['Staff '.$key])
                     );
 
-                break;
+
             case ('Deleted Date'):
 
 
@@ -872,7 +843,6 @@ class Staff extends DB_Table {
                         "%a %e %b %Y %H:%M %Z", strtotime($this->data['Staff '.$key])
                     );
 
-                break;
 
             case('Currently Working'):
 
@@ -883,14 +853,13 @@ class Staff extends DB_Table {
                     case('No'):
                         $formatted_value = _('No');
                         break;
-
                     default:
                         $formatted_value = $this->data['Staff Currently Working'];
                 }
 
                 return $formatted_value;
 
-                break;
+
             case('Type'):
                 switch ($this->data['Staff Type']) {
                     case('Employee'):
@@ -914,7 +883,7 @@ class Staff extends DB_Table {
                 }
 
                 return $type;
-                break;
+
             case 'Staff Clocking Data':
                 $sql = sprintf(
                     "SELECT ( CASE WHEN `Timesheet Clocking Records` = 0 THEN 'Off' WHEN (`Timesheet Clocking Records` %% 2) = 0 THEN 'Out' ELSE 'In' END) AS `Clocking Status`, (SELECT max(`Timesheet Record Date`) FROM `Timesheet Record Dimension` WHERE `Timesheet Record Timesheet Key`=TD.`Timesheet Key` ) AS `Last Clocking`,  `Timesheet Clocking Records` , `Timesheet Ignored Clocking Records` , TD.`Timesheet Key` FROM `Timesheet Dimension` AS TD WHERE `Timesheet Staff Key`=%d AND  date(`Timesheet Date`)=%s",
@@ -966,6 +935,9 @@ class Staff extends DB_Table {
                 }
 
                 break;
+            case 'Number Attachments':
+                return number($this->data['Staff '.$key]);
+
 
             default:
                 if (array_key_exists($key, $this->data)) {
@@ -1027,35 +999,6 @@ class Staff extends DB_Table {
         }
 
 
-    }
-
-    function get_supervisors() {
-        $supervisors = '';
-        $sql         = sprintf(
-            'SELECT GROUP_CONCAT(B.`Supervisor Key`) AS supervisors  FROM `Staff Supervisor Bridge` B WHERE  `Staff Key`=%d ', $this->id
-        );
-
-        if ($row = $this->db->query($sql)->fetch()) {
-            $supervisors = $row['supervisors'];
-        }
-
-        return $supervisors;
-    }
-
-    function get_formatted_supervisors() {
-
-        $supervisors = '';
-        $sql         = sprintf(
-            'SELECT GROUP_CONCAT(`Staff Alias`  ORDER BY `Staff Alias` SEPARATOR ", ") AS supervisors   FROM  `Staff Supervisor Bridge` B LEFT JOIN `Staff Dimension` S ON (B.`Supervisor Key`=S.`Staff Key`)  WHERE  B.`Staff Key`=%d ', $this->id
-        );
-        if ($row = $this->db->query($sql)->fetch()) {
-
-            $supervisors = $row['supervisors'];
-        }
-
-        $supervisors = preg_replace('/, $/', '', $supervisors);
-
-        return $supervisors;
     }
 
     function create_user($data) {
@@ -1133,6 +1076,34 @@ class Staff extends DB_Table {
 
     }
 
+    function get_supervisors() {
+        $supervisors = '';
+        $sql         = sprintf(
+            'SELECT GROUP_CONCAT(B.`Supervisor Key`) AS supervisors  FROM `Staff Supervisor Bridge` B WHERE  `Staff Key`=%d ', $this->id
+        );
+
+        if ($row = $this->db->query($sql)->fetch()) {
+            $supervisors = $row['supervisors'];
+        }
+
+        return $supervisors;
+    }
+
+    function get_formatted_supervisors() {
+
+        $supervisors = '';
+        $sql         = sprintf(
+            'SELECT GROUP_CONCAT(`Staff Alias`  ORDER BY `Staff Alias` SEPARATOR ", ") AS supervisors   FROM  `Staff Supervisor Bridge` B LEFT JOIN `Staff Dimension` S ON (B.`Supervisor Key`=S.`Staff Key`)  WHERE  B.`Staff Key`=%d ', $this->id
+        );
+        if ($row = $this->db->query($sql)->fetch()) {
+
+            $supervisors = $row['supervisors'];
+        }
+
+        $supervisors = preg_replace('/, $/', '', $supervisors);
+
+        return $supervisors;
+    }
 
     function create_timesheet_record($data) {
 
@@ -2118,7 +2089,22 @@ class Staff extends DB_Table {
 
     }
 
+    /**
+     * @param        $user \User
+     * @param string $field
+     *
+     * @return bool
+     */
+    public function can_edit_field($user,$field=''){
+
+        if($user->can_edit('Staff')){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 }
 
 
-?>
+

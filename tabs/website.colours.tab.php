@@ -30,5 +30,5 @@ if ($user->can_supervisor('websites') and in_array($website->get('Website Store 
 
 
 }else{
-    $html = '<div style="padding:20px"><i class="fa error fa-octagon padding_right_5" ></i>  '.("Sorry you dont have permission to access this area").'</div>';
+    $html = '<div style="padding:20px"><i class="fa error fa-octagon padding_right_5" ></i>  '._("Sorry you don't have permission to access this area").'</div>';
 }

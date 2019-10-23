@@ -11,8 +11,20 @@
 
 */
 
-
+/**
+ * Trait AttachmentSubject
+ */
 trait AttachmentSubject {
+
+    /**
+     * @param $raw_data
+     * @return \Attachment
+     */
+
+    /**
+     * @var \PDO
+     */
+    public $db;
 
 
     function add_attachment($raw_data) {
@@ -21,12 +33,6 @@ trait AttachmentSubject {
         );
 
         $attach = new Attachment('find', $data, 'create');
-
-
-        //$subject_key = $this->id;
-
-
-        //$subject = $this->get_object_name();
 
 
         if ($attach->id) {
@@ -78,81 +84,6 @@ trait AttachmentSubject {
     }
 
 
-    function get_attachments_data() {
-
-        include_once 'utils/units_functions.php';
-
-
-        $subject = $this->table_name;
-
-
-        $sql = sprintf(
-            'SELECT A.`Attachment Key`,`Attachment MIME Type`,`Attachment Type`,`Attachment Caption`,`Attachment Public`,`Attachment File Original Name`,`Attachment Thumbnail Image Key`,`Attachment File Size` FROM `Attachment Bridge` B LEFT JOIN `Attachment Dimension` A ON  (A.`Attachment Key`=B.`Attachment Key`) WHERE `Subject`=%s AND `Subject Key`=%d',
-            prepare_mysql($subject), $subject_key
-        );
-
-
-        $attachment_data = array();
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-
-                if ($row['Attachment Type'] == 'Image') {
-                    $icon = '<img class="icon" src="art/icons/page_white_picture.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'" />';
-                } elseif ($row['Attachment Type'] == 'Image') {
-                    $icon = '<img class="icon"  src="art/icons/page_white_excel.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
-                } elseif ($row['Attachment Type'] == 'Word') {
-                    $icon = '<img class="icon" src="art/icons/page_white_word.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
-                } elseif ($row['Attachment Type'] == 'PDF') {
-                    $icon = '<img class="icon" src="art/icons/page_white_acrobat.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
-                } elseif ($row['Attachment Type'] == 'Compressed') {
-                    $icon = '<img class="icon" src="art/icons/page_white_compressed.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
-                } elseif ($row['Attachment Type'] == 'Text') {
-                    $icon = '<img class="icon" src="art/icons/page_white_text.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
-                } else {
-                    $icon = '<img class="icon" src="art/icons/attach.png" alt="'.$row['Attachment MIME Type'].'" title="'.$row['Attachment MIME Type'].'"/>';
-
-                }
-
-                $name = $row['Attachment File Original Name'];
-                if (strlen($name) > 20) {
-
-                    $exts = preg_split("/\./i", $name);
-                    $n    = count($exts) - 1;
-
-                    $_exts = $exts[$n];
-                    unset($exts[$n]);
-                    $name = join(',', $exts);
-
-
-                    $name = substr($name, 0, 15)." <b>&hellip;</b> ".$_exts;
-                }
-
-
-                $attachment_data[] = array(
-                    'key'       => $row['Attachment Key'],
-                    'type'      => $row['Attachment Type'],
-                    'caption'   => $row['Attachment Caption'],
-                    'public'    => $row['Attachment Public'],
-                    'name'      => $name,
-                    'full_name' => $row['Attachment File Original Name'],
-                    'size'      => file_size($row['Attachment File Size']),
-                    'thumbnail' => $row['Attachment Thumbnail Image Key'],
-                    'icon'      => $icon
-                );
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $attachment_data;
-    }
-
     function delete_attachment($attachment_bridge_key) {
 
         $sql = sprintf(
@@ -202,15 +133,10 @@ trait AttachmentSubject {
             if ($row = $result->fetch()) {
                 $number=$row['num'];
         	}
-        }else {
-        	print_r($error_info=$this->db->errorInfo());
-        	print "$sql\n";
-        	exit;
         }
 
-        $this->update(
-            array($this->get_object_name().' Number Attachments'=>$number),
-            'no_history'
+        $this->fast_update(
+            array($this->get_object_name().' Number Attachments'=>$number)
         );
 
 
@@ -219,4 +145,4 @@ trait AttachmentSubject {
 
 }
 
-?>
+

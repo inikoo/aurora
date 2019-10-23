@@ -41,6 +41,9 @@ switch ($tipo) {
     case 'employees':
         employees(get_table_parameters(), $db, $user, 'current');
         break;
+    case 'employees_restricted_view':
+        employees_restricted_view(get_table_parameters(), $db, $user, 'current');
+        break;
     case 'exemployees':
         employees(get_table_parameters(), $db, $user, 'ex');
         break;
@@ -227,6 +230,95 @@ function employees($_data, $db, $user, $type = '') {
         print_r($error_info = $db->errorInfo());
         print $sql;
         exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $adata,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
+function employees_restricted_view($_data, $db, $user, $type = '') {
+
+    if ($type == 'current') {
+        $extra_where = ' and `Staff Currently Working`="Yes"';
+        $rtext_label = 'employee';
+
+    } elseif ($type == 'ex') {
+        $extra_where = ' and `Staff Currently Working`="No"';
+        $rtext_label = 'ex employee';
+
+    }
+
+    include_once 'prepare_table/init.php';
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+    // exit;
+
+
+    $adata = array();
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            switch ($data['Staff Type']) {
+                case 'Employee':
+                    $type = _('Employee');
+                    break;
+                case 'Volunteer':
+                    $type = _('Volunteer');
+                    break;
+                case 'TemporalWorker':
+                    $type = _("Temporal worker");
+                    break;
+                case 'WorkExperience':
+                    $type = _("Work experience");
+                    break;
+                default:
+                    $type = $data['Staff Type'];
+                    break;
+            }
+
+            $adata[] = array(
+                'id'           => (integer)$data['Staff Key'],
+                'formatted_id' => sprintf("%04d", $data['Staff Key']),
+                'payroll_id'   => $data['Staff ID'],
+                'name'         => $data['Staff Name'],
+                'code'         => sprintf('<span class="link" onCLick="change_view(\'employee/%d\')">%s</span>', $data['Staff Key'], $data['Staff Alias']),
+                'type'         => $type,
+                'job_title'    => $data['Staff Job Title'],
+
+
+            );
+
+
+        }
     }
 
 
@@ -481,8 +573,22 @@ function timesheets($_data, $db, $user) {
     echo json_encode($response);
 }
 
-
+/**
+ * @param $_data
+ * @param $db \PDO
+ * @param $user \User
+ *
+ * @throws \Exception
+ */
 function timesheet_records($_data, $db, $user) {
+
+    if($user->can_edit('Staff')){
+        $can_edit=true;
+    }else{
+        $can_edit=false;
+    }
+
+
 
     $rtext_label = 'request';
     include_once 'prepare_table/init.php';
@@ -614,11 +720,18 @@ function timesheet_records($_data, $db, $user) {
                 $used    = '';
             }
 
-            $notes = sprintf(
-                '<span class="button" key="%d" onclick="open_timesheet_record_notes(this)" id="notes_%d" >%s<span class="note">%s</span></span>', $data['Timesheet Record Key'], $data['Timesheet Record Key'],
-                '<i class="far fa-sticky-note very_discreet '.($data['Timesheet Record Note'] != '' ? 'hide' : '').'" aria-hidden="true"></i> ', ($data['Timesheet Record Note'])
-            );
 
+
+
+            if($can_edit) {
+                $notes = sprintf(
+                    '<span class="button" key="%d" onclick="open_timesheet_record_notes(this)" id="notes_%d" >%s<span class="note">%s</span></span>', $data['Timesheet Record Key'], $data['Timesheet Record Key'],
+                    '<i class="far fa-sticky-note very_discreet '.($data['Timesheet Record Note'] != '' ? 'hide' : '').'" aria-hidden="true"></i> ', ($data['Timesheet Record Note'])
+                );
+            }else{
+                $used    = '';
+                $notes=$data['Timesheet Record Note'];
+            }
             date_default_timezone_set($data['Timesheet Timezone']);
             if ($data['Timesheet Record Date'] != '') {
                 $_date = new DateTime($data['Timesheet Record Date'], new DateTimeZone($data['Timesheet Timezone']));
@@ -635,11 +748,8 @@ function timesheet_records($_data, $db, $user) {
             $adata[] = array(
 
                 'id'                     => (integer)$data['Timesheet Record Key'],
-                'staff_key'              => (integer)$data['Timesheet Record Staff Key'],
-                'timesheet_key'          => (integer)$data['Timesheet Record Timesheet Key'],
                 'staff_formatted_id'     => sprintf("%04d", $data['Timesheet Record Staff Key']),
                 'formatted_id'           => sprintf("%06d", $data['Timesheet Record Key']),
-                'formatted_timesheet_id' => sprintf("%06d", $data['Timesheet Record Timesheet Key']),
                 'alias'                  => $data['Staff Alias'],
                 'name'                   => $data['Staff Name'],
                 'type'                   => $type,
@@ -648,7 +758,6 @@ function timesheet_records($_data, $db, $user) {
                 'ignored'                => $ignored,
                 'used'                   => $used,
                 'notes'                  => $notes,
-                //  'date'                   => ($data['Timesheet Record Date'] != '' ? strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Timesheet Record Date'])) : ''),
                 'time'                   => $time
 
 
@@ -1666,8 +1775,8 @@ function clocking_machines($_data, $db, $user) {
 
 
             $table_data[] = array(
-                'id'             => (integer)$data['Clocking Machine Key'],
-                'code'           => sprintf('<span class="link" onclick="change_view(\'clocking_machines/%d\')">%s</span>', $data['Clocking Machine Key'], $data['Clocking Machine Code']),
+                'id'   => (integer)$data['Clocking Machine Key'],
+                'code' => sprintf('<span class="link" onclick="change_view(\'clocking_machines/%d\')">%s</span>', $data['Clocking Machine Key'], $data['Clocking Machine Code']),
 
 
             );

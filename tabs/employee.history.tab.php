@@ -9,27 +9,34 @@
 
 */
 
-$tab     = 'employee.history';
-$ar_file = 'ar_history_tables.php';
-$tipo    = 'object_history';
+if ($user->can_edit('Staff')) {
 
-$default = $user->get_tab_defaults($tab);
+    $tab     = 'employee.history';
+    $ar_file = 'ar_history_tables.php';
+    $tipo    = 'object_history';
 
-$table_views = array();
+    $default = $user->get_tab_defaults($tab);
 
-$table_filters = array(
-    'note' => array(
-        'label' => _('Notes'),
-        'title' => _('Notes')
-    ),
-);
+    $table_views = array();
 
-$parameters = array(
-    'parent'     => $state['object'],
-    'parent_key' => $state['key'],
+    $table_filters = array(
+        'note' => array(
+            'label' => _('Notes'),
+            'title' => _('Notes')
+        ),
+    );
 
-);
+    $parameters = array(
+        'parent'     => $state['object'],
+        'parent_key' => $state['key'],
 
-include('utils/get_table_html.php');
+    );
 
-?>
+    include('utils/get_table_html.php');
+
+
+} else {
+    $html = '<div style="padding: 20px"><i class="fa error fa-octagon " ></i>  '._('Access denied').'</div>';
+}
+
+
