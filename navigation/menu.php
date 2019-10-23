@@ -295,7 +295,7 @@ if ($user->can_view('production') and $account->get('Account Manufacturers') > 0
 
 if ($user->can_view('staff')) {
     $nav_menu[] = array(
-        '<i class="button far fa-sitemap fa-fw"></i>',
+        '<i class="button far fa-clipboard-user fa-fw"></i>',
         _('Staff'),
         'hr',
         'hr',
