@@ -6842,19 +6842,13 @@ $modules = array(
                         )
                     ),
                     'deleted.employees' => array(
-                        'label' => _(
-                            'Deleted employees'
-                        ),
+                        'label' => _('Deleted employees'),
                         'icon'  => 'trash',
                         'class' => 'right icon_only'
                     ),
                     'exemployees'       => array(
-                        'label' => _(
-                            'Ex employees'
-                        ),
-                        'title' => _(
-                            'Ex Employees'
-                        ),
+                        'label' => _('Ex employees'),
+                        'title' => _('Ex Employees'),
                         'class' => ''
                     ),
 
@@ -6984,9 +6978,7 @@ $modules = array(
                         'class' => 'right icon_only'
                     ),
                     'employee.attachments'             => array(
-                        'label'         => _(
-                            'Attachments'
-                        ),
+                        'label'         => _('Attachments'),
                         'icon'          => 'paperclip',
                         'class'         => 'right icon_only',
                         'quantity_data' => array(
@@ -7142,8 +7134,8 @@ $modules = array(
             ),
             'timesheets' => array(
                 'type'      => 'navigation',
-                'icon'      => 'calendar',
-                'label'     => _('Calendar'),
+                'icon'      => 'stopwatch',
+                'label'     => _('Timesheets'),
                 'reference' => 'timesheets/day/'.date('Ymd'),
                 'tabs'      => array(
                     'timesheets.months'     => array(
@@ -7156,14 +7148,10 @@ $modules = array(
                         'label' => _('Days')
                     ),
                     'timesheets.employees'  => array(
-                        'label' => _(
-                            "Employes'"
-                        )
+                        'label' => _("Employes'")
                     ),
                     'timesheets.timesheets' => array(
-                        'label' => _(
-                            'Timesheets'
-                        )
+                        'label' => _('Timesheets')
                     ),
                 )
             ),
@@ -8724,6 +8712,10 @@ function get_sections($module, $parent_key = false) {
     foreach ($modules[$module]['sections'] as $key => $value) {
 
         if ($value['type'] == 'navigation') {
+
+
+
+
             if ($parent_key) {
                 $value['reference'] = sprintf($value['reference'], $parent_key);
             }
@@ -8738,4 +8730,3 @@ function get_sections($module, $parent_key = false) {
 }
 
 
-?>

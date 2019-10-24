@@ -32,10 +32,12 @@ if (isset($parameters['period'])) {
     include_once 'utils/date_functions.php';
 
 
-    list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
-        = calculate_interval_dates(
-        $db, $parameters['period'], $parameters['from'], $parameters['to']
-    );
+    if($parameters['period']=='all'){
+        $parameters['period']='up_today';
+    }
+
+
+    list($db_interval, $from, $to, $from_date_1yb, $to_1yb) = calculate_interval_dates($db, $parameters['period'], $parameters['from'], $parameters['to']);
 
 
     $where_interval = prepare_mysql_dates($from, $to, '`Timesheet Date`');
@@ -45,7 +47,7 @@ if (isset($parameters['period'])) {
         '/ \d{2}:\d{2}:\d{2}/', '', $where_interval['mysql']
     );
 
-    //	print " $from, $to $where\n";
+
 
 }
 
@@ -58,19 +60,6 @@ if ($parameters['f_field'] == 'alias' and $f_value != '') {
         '  and  `Staff Name`  REGEXP "[[:<:]]%s" ', addslashes($f_value)
     );
 }
-/*
-	'id'=>(integer) $data['Timesheet Key'],
-			'staff_key'=>(integer) $data['Timesheet Staff Key'],
-			'formatted_id'=>sprintf("%05d", $data['Timesheet Key']),
-
-			'staff_formatted_id'=>sprintf("%04d", $data['Timesheet Staff Key']),
-			'alias'=>$data['Staff Alias'],
-			'name'=>$data['Staff Name'],
-			'payroll_id'=>$data['Staff ID'],
-			'date'=>($data['Timesheet Date']!=''?strftime("%a %e %b %Y", strtotime($data['Timesheet Date'])):''),
-			'clocked_hours'=>number($data['Timesheet Clocked Hours'],2).' '._('hours'),
-			'clocking_records'=>number($data['Timesheet Clocking Records'])
-*/
 
 
 $_order = $order;

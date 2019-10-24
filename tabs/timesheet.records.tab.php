@@ -11,6 +11,11 @@
 
 include_once 'utils/timezones.php';
 
+
+
+$smarty->assign('can_edit', $user->can_edit('Staff'));
+
+
 $tab     = 'timesheet.records';
 $ar_file = 'ar_hr_tables.php';
 $tipo    = 'timesheet_records';
@@ -28,22 +33,24 @@ $parameters    = array(
 
 
 $table_buttons   = array();
-$table_buttons[] = array(
-    'icon'              => 'plus',
-    'title'             => _('New timesheet record'),
-    'id'                => 'new_record',
-    'inline_new_object' => array(
-        'field_id'    => 'Timesheet_Record_Date',
-        'field_label' => _('New clocking record').':',
-        'field_edit'  => 'time',
-        'date'        => $state['_object']->get('IsoDate'),
-        'object'      => 'Timesheet_Record',
-        'parent'      => $state['object'],
-        'parent_key'  => $state['key']
+if($user->can_edit('Staff')) {
+    $table_buttons[] = array(
+        'icon'              => 'plus',
+        'title'             => _('New timesheet record'),
+        'id'                => 'new_record',
+        'inline_new_object' => array(
+            'field_id'    => 'Timesheet_Record_Date',
+            'field_label' => _('New clocking record').':',
+            'field_edit'  => 'time',
+            'date'        => $state['_object']->get('IsoDate'),
+            'object'      => 'Timesheet_Record',
+            'parent'      => $state['object'],
+            'parent_key'  => $state['key']
 
-    )
+        )
 
-);
+    );
+}
 $smarty->assign('table_buttons', $table_buttons);
 
 $smarty->assign(

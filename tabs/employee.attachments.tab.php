@@ -8,33 +8,40 @@
  Version 3
 
 */
+if ($user->can_edit('Staff')) {
 
-$tab     = 'employee.attachments';
-$ar_file = 'ar_attachments_tables.php';
-$tipo    = 'attachments';
 
-$default = $user->get_tab_defaults($tab);
+    $tab     = 'employee.attachments';
+    $ar_file = 'ar_attachments_tables.php';
+    $tipo    = 'attachments';
 
-$table_views = array();
+    $default = $user->get_tab_defaults($tab);
 
-$table_filters = array(
-    'caption' => array('label' => _('Caption')),
-);
+    $table_views = array();
 
-$parameters = array(
-    'parent'     => $state['object'],
-    'parent_key' => $state['key'],
+    $table_filters = array(
+        'caption' => array('label' => _('Caption')),
+    );
 
-);
+    $parameters = array(
+        'parent'     => $state['object'],
+        'parent_key' => $state['key'],
 
-$table_buttons   = array();
-$table_buttons[] = array(
-    'icon'      => 'plus',
-    'title'     => _('New attachment'),
-    'reference' => $state['object']."/".$state['key']."/attachment/new"
-);
-$smarty->assign('table_buttons', $table_buttons);
+    );
 
-include('utils/get_table_html.php');
+    $table_buttons   = array();
+    $table_buttons[] = array(
+        'icon'      => 'plus',
+        'title'     => _('New attachment'),
+        'reference' => $state['object']."/".$state['key']."/attachment/new"
+    );
+    $smarty->assign('table_buttons', $table_buttons);
 
-?>
+    include('utils/get_table_html.php');
+
+
+} else {
+    $html = '<div style="padding: 20px"><i class="fa error fa-octagon " ></i>  '._('Access denied').'</div>';
+
+}
+

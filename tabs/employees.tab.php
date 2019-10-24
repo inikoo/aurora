@@ -9,74 +9,97 @@
 
 */
 
+if($user->can_view('Staff')) {
 
-$tab     = 'employees';
-$ar_file = 'ar_hr_tables.php';
-$tipo    = 'employees';
+    $default = $user->get_tab_defaults($tab);
+    $ar_file = 'ar_hr_tables.php';
+    if($user->can_edit('Staff')) {
+        $tab  = 'employees';
+        $tipo = 'employees';
 
-$default = $user->get_tab_defaults($tab);
+        $table_views = array(
+            'overview'      => array(
+                'label' => _('Overview'),
+                'title' => _('Overview')
+            ),
+            'personal_info' => array(
+                'label' => _('Personal information'),
+                'title' => _('Personal information')
+            ),
+            'employment'    => array(
+                'label' => _('Employment'),
+                'title' => _('Employment')
+            ),
+            'system_roles'  => array('label' => _('System roles')),
+            'system_user'   => array('label' => _('System user'))
 
-$table_views = array(
-    'overview'      => array(
-        'label' => _('Overview'),
-        'title' => _('Overview')
-    ),
-    'personal_info' => array(
-        'label' => _('Personal information'),
-        'title' => _('Personal information')
-    ),
-    'employment'    => array(
-        'label' => _('Employment'),
-        'title' => _('Employment')
-    ),
-    'system_roles'  => array('label' => _('System roles')),
-    'system_user'   => array('label' => _('System user'))
+        );
+    }else{
+        $tab  = 'employees_restricted_view';
+        $tipo = 'employees_restricted_view';
 
-);
-
-$table_filters = array(
-    'name' => array(
-        'label' => _('Name'),
-        'title' => _('Employee name')
-    ),
-
-);
-
-$parameters = array(
-    'parent'     => 'account',
-    'parent_key' => 1,
-
-);
+        $table_views = array(
+            'overview'      => array(
+                'label' => _('Overview'),
+                'title' => _('Overview')
+            ),
 
 
-$table_buttons   = array();
-$table_buttons[] = array(
-    'icon'      => 'plus',
-    'title'     => _('New employee'),
-    'reference' => "employee/new"
-);
+        );
+    }
 
 
 
-$smarty->assign('table_buttons', $table_buttons);
-$smarty->assign(
-    'upload_file', array(
-        'tipo'       => 'upload_objects',
-        'parent'     => $state['parent'],
-        'parent_key' => $state['parent_key'],
-        'object'     => 'employee',
-        'label'      => _('Upload employees')
 
-    )
-);
+    $table_filters = array(
+        'name' => array(
+            'label' => _('Name'),
+            'title' => _('Employee name')
+        ),
 
+    );
 
-$smarty->assign('tipo', $tipo);
+    $parameters = array(
+        'parent'     => 'account',
+        'parent_key' => 1,
 
-
-$smarty->assign('title', _('Employees'));
-
-include('utils/get_table_html.php');
+    );
 
 
-?>
+    $table_buttons   = array();
+
+
+
+    $table_buttons[] = array(
+        'icon'      => 'plus',
+        'title'     => _('New employee'),
+        'reference' => "employee/new"
+    );
+
+    if($user->can_edit('Staff')) {
+
+        $smarty->assign('table_buttons', $table_buttons);
+        $smarty->assign(
+            'upload_file', array(
+                             'tipo'       => 'upload_objects',
+                             'parent'     => $state['parent'],
+                             'parent_key' => $state['parent_key'],
+                             'object'     => 'employee',
+                             'label'      => _('Upload employees')
+
+                         )
+        );
+    }
+
+    $smarty->assign('tipo', $tipo);
+
+
+    $smarty->assign('title', _('Employees'));
+
+    include('utils/get_table_html.php');
+
+}else{
+    $html='<div style="padding: 20px"><i class="fa error fa-octagon " ></i>  '._('Access denied').'</div>';
+
+}
+

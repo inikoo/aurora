@@ -9,38 +9,41 @@
 
 */
 
+if ($user->can_edit('Staff')) {
 
-$tab     = 'deleted.employees';
-$ar_file = 'ar_hr_tables.php';
-$tipo    = 'deleted.employees';
+    $tab     = 'deleted.employees';
+    $ar_file = 'ar_hr_tables.php';
+    $tipo    = 'deleted.employees';
 
-$default = $user->get_tab_defaults($tab);
+    $default = $user->get_tab_defaults($tab);
 
-$table_views = array();
+    $table_views = array();
 
-$table_filters = array(
-    'name' => array(
-        'label' => _('Name'),
-        'title' => _('Employee name')
-    ),
+    $table_filters = array(
+        'name' => array(
+            'label' => _('Name'),
+            'title' => _('Employee name')
+        ),
 
-);
+    );
 
-$parameters = array(
-    'parent'     => 'account',
-    'parent_key' => 1,
+    $parameters = array(
+        'parent'     => 'account',
+        'parent_key' => 1,
 
-);
-
-
-$smarty->assign('title', _('Deleted employees'));
-$smarty->assign('view_position', _('Deleted employees'));
+    );
 
 
-$smarty->assign('tipo', $tipo);
+    $smarty->assign('title', _('Deleted employees'));
+    $smarty->assign('view_position', _('Deleted employees'));
 
 
-include 'utils/get_table_html.php';
+    $smarty->assign('tipo', $tipo);
 
 
-?>
+    include 'utils/get_table_html.php';
+
+
+} else {
+    $html = '<div style="padding: 20px"><i class="fa error fa-octagon " ></i>  '._('Access denied').'</div>';
+}
