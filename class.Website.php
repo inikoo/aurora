@@ -1208,13 +1208,6 @@ class Website extends DB_Table {
 
         $page->reset_object();
 
-        $sql = "INSERT INTO `Product Webpage Bridge` (`Product Webpage Product ID`,`Product Webpage Webpage Key`,`Product Webpage Block`,`Product Webpage Type`) values (?,?,'product','product')";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(1, $product->id);
-        $stmt->bindValue(2, $page->id);
-
-        $stmt->execute();
 
 
         //todo: AUR-33

@@ -114,8 +114,6 @@ class Page extends DB_Table {
         }
 
 
-
-
         if ($this->data = $this->db->query($sql)->fetch()) {
 
             $this->id = $this->data['Page Key'];
@@ -231,7 +229,7 @@ class Page extends DB_Table {
 
     }
 
-    function create($raw_data, $migration_hack = false) {
+    function create($raw_data) {
 
 
         $this->new = false;
@@ -343,11 +341,12 @@ class Page extends DB_Table {
             $this->get_data('id', $this->id);
             $this->new = true;
 
-
+            /*
             $sql = sprintf(
                 "INSERT INTO `Webpage Analytics Data` (`Webpage Analytics Webpage Key`) VALUES (%d)", $this->id
             );
             $this->db->exec($sql);
+            */
 
             $sql = sprintf(
                 "INSERT INTO `Page Store Data Dimension` (`Page Key`) VALUES (%d)", $this->id
@@ -493,12 +492,7 @@ class Page extends DB_Table {
             case 'Telephone':
             case 'Address':
             case 'Google Map URL':
-                include_once('class.Store.php');
-                $store = new Store($this->data['Webpage Store Key']);
 
-                return $store->get($key);
-
-                break;
             case 'Store Email':
             case 'Store Company Name':
             case 'Store VAT Number':
@@ -506,8 +500,7 @@ class Page extends DB_Table {
             case 'Store Telephone':
             case 'Store Address':
             case 'Store Google Map URL':
-                include_once('class.Store.php');
-                $store = new Store($this->data['Webpage Store Key']);
+                $store = get_object('Store', $this->data['Webpage Store Key']);
 
                 return $store->get($key);
 
@@ -616,26 +609,6 @@ class Page extends DB_Table {
         return false;
     }
 
-
-    function load_scope() {
-
-        $this->scope_load = true;
-
-
-        if ($this->data['Webpage Scope'] == 'Product') {
-            $this->scope       = get_object('Public_Product', $this->data['Webpage Scope Key']);
-            $this->scope_found = 'Product';
-
-        } elseif ($this->data['Webpage Scope'] == 'Category Categories' or $this->data['Webpage Scope'] == 'Category Products') {
-
-            $this->scope       = get_object('Public_Category', $this->data['Webpage Scope Key']);
-            $this->scope_found = 'Category';
-
-        }
-
-
-    }
-
     function display($tipo = 'link') {
 
         switch ($tipo) {
@@ -673,6 +646,7 @@ class Page extends DB_Table {
                         $image_key         = $_page_image->id;
                     }
                 }
+                break;
             case 'Product':
                 include_once 'class.Product.php';
                 $product = new Product('id', $this->data['Page Parent Key']);
@@ -683,7 +657,7 @@ class Page extends DB_Table {
                         $image_key         = $_page_image->id;
                     }
                 }
-
+                break;
             default:
 
                 break;
@@ -702,11 +676,10 @@ class Page extends DB_Table {
     }
 
     function refresh_cache() {
-        global $memcache_ip;
+
 
 
         $account      = new Account($this->db);
-        $account_code = $account->get('Account Code');
 
 
         $template_response = '';
@@ -714,17 +687,18 @@ class Page extends DB_Table {
 
         $smarty_web = new Smarty();
 
+
         if (empty($this->fork)) {
             $base = '';
         } else {
             $account = get_object('Account', 1);
-            $base    = 'base_dirs/_home.'.strtoupper($account->get('Account Code')).'/';
+            $base    = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';
         }
 
-        $smarty_web->template_dir = $base.'EcomB2B/templates';
-        $smarty_web->compile_dir  = $base.'EcomB2B/server_files/smarty/templates_c';
-        $smarty_web->cache_dir    = $base.'EcomB2B/server_files/smarty/cache';
-        $smarty_web->config_dir   = $base.'EcomB2B/server_files/smarty/configs';
+        $smarty_web->template_dir = 'EcomB2B/templates';
+        $smarty_web->compile_dir  = $base.'smarty/templates_c';
+        $smarty_web->cache_dir    = $base.'smarty/cache';
+        $smarty_web->config_dir   = $base.'smarty/configs';
         $smarty_web->addPluginsDir('./smarty_plugins');
 
 
@@ -754,31 +728,9 @@ class Page extends DB_Table {
     }
 
 
-    function get_options() {
-
-        if (array_key_exists('Page Options', $this->data)) {
-
-            return unserialize($this->data['Page Options']);
-        } else {
-            return false;
-        }
-
-    }
-
-
-    function update_store_search() {
-
-
-        //todo redo this using elastic search
-
-
-    }
-
-
     function unpublish() {
 
         $this->update_state('Offline');
-
 
 
         $smarty_web = new Smarty();
@@ -788,13 +740,13 @@ class Page extends DB_Table {
             $base = '';
         } else {
             $account = get_object('Account', 1);
-            $base    = 'base_dirs/_home.'.strtoupper($account->get('Account Code')).'/';
+            $base    = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';
         }
 
-        $smarty_web->template_dir = $base.'EcomB2B/templates';
-        $smarty_web->compile_dir  = $base.'EcomB2B/server_files/smarty/templates_c';
-        $smarty_web->cache_dir    = $base.'EcomB2B/server_files/smarty/cache';
-        $smarty_web->config_dir   = $base.'EcomB2B/server_files/smarty/configs';
+        $smarty_web->template_dir = 'EcomB2B/templates';
+        $smarty_web->compile_dir  = $base.'smarty/templates_c';
+        $smarty_web->cache_dir    = $base.'smarty/cache';
+        $smarty_web->config_dir   = $base.'smarty/configs';
         $smarty_web->addPluginsDir('./smarty_plugins');
 
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
@@ -905,7 +857,6 @@ class Page extends DB_Table {
 
     }
 
-
     function reindex_items() {
 
         $this->updated = false;
@@ -954,13 +905,13 @@ class Page extends DB_Table {
             $base = '';
         } else {
             $account = get_object('Account', 1);
-            $base    = 'base_dirs/_home.'.strtoupper($account->get('Account Code')).'/';
+            $base    = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';
         }
 
-        $smarty_web->template_dir = $base.'EcomB2B/templates';
-        $smarty_web->compile_dir  = $base.'EcomB2B/server_files/smarty/templates_c';
-        $smarty_web->cache_dir    = $base.'EcomB2B/server_files/smarty/cache';
-        $smarty_web->config_dir   = $base.'EcomB2B/server_files/smarty/configs';
+        $smarty_web->template_dir = 'EcomB2B/templates';
+        $smarty_web->compile_dir  = $base.'smarty/templates_c';
+        $smarty_web->cache_dir    = $base.'smarty/cache';
+        $smarty_web->config_dir   = $base.'smarty/configs';
         $smarty_web->addPluginsDir('./smarty_plugins');
 
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
@@ -985,30 +936,6 @@ class Page extends DB_Table {
         }
 
 
-    }
-
-    function reindex_webpage_scope_map() {
-        $index = 0;
-        $sql   = 'select `Website Webpage Scope Key` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=?  order by `Website Webpage Block Index`,`Website Webpage Scope Index`  ';
-        $stmt  = $this->db->prepare($sql);
-        $stmt->execute(
-            array($this->id)
-        );
-
-        while ($row = $stmt->fetch()) {
-            $index++;
-            $sql = 'update `Website Webpage Scope Map` set `Website Webpage Scope Webpage Index`=? where `Website Webpage Scope Key`=? ';
-
-
-            $this->db->prepare($sql)->execute(
-                [
-                    $index,
-                    $row['Website Webpage Scope Key']
-                ]
-            );
-
-
-        }
     }
 
     function reindex_category_products($block_index) {
@@ -1164,7 +1091,7 @@ class Page extends DB_Table {
 
         $this->update_field_switcher('Page Store Content Data', json_encode($content_data), 'no_history');
 
-        $sql = sprintf('DELETE FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d AND `Website Webpage Scope Type`="Category_Products_Item" ', $this->id);
+        $sql = sprintf("DELETE FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d AND `Website Webpage Scope Type`='Category_Products_Item'", $this->id);
         $this->db->exec($sql);
 
         $index = 0;
@@ -1281,13 +1208,10 @@ class Page extends DB_Table {
             case('Webpage Scope Metadata'):
             case('Webpage Website Key'):
             case('Webpage Store Key'):
-            case ('Webpage Redirection Code'):
+            case 'Webpage Redirection Code':
 
             case('Webpage Type Key'):
             case 'Webpage Launch Date':
-            case 'Webpage Name':
-            case 'Webpage Browser Title':
-            case 'Webpage Meta Description':
             case 'Webpage URL':
 
                 $this->update_field($field, $value, $options);
@@ -1413,157 +1337,6 @@ class Page extends DB_Table {
 
     }
 
-
-    function publish($note = '') {
-
-
-        $website = get_object('Website', $this->get('Webpage Website Key'));
-
-
-        if ($website->get('Website Status') != 'Active') {
-            $this->error = true;
-            $this->msg   = 'Website not active';
-
-            return;
-        }
-
-
-        if ($this->get('Webpage State') == 'Offline' or $this->get('Webpage State') == 'InProcess' or $this->get('Webpage State') == 'Ready') {
-
-            if ($this->data['Webpage Scope'] == 'Category Products' or $this->data['Webpage Scope'] == 'Category Categories') {
-                $scope = get_object('Category', $this->data['Webpage Scope Key']);
-                if ($scope->get('Product Category Public') == 'Yes') {
-                    $this->update_state('Online');
-                }
-            } elseif ($this->data['Webpage Scope'] == 'Product') {
-                $scope = get_object('Product', $this->data['Webpage Scope Key']);
-                if ($scope->get('Product Public') == 'Yes' and in_array(
-                        $scope->get('Product Web State'), array(
-                                                            'For Sale',
-                                                            'Out of Stock'
-                                                        )
-                    )) {
-                    $this->update_state('Online');
-                }
-            } else {
-                $this->update_state('Online');
-            }
-
-
-        }
-
-
-        if ($this->get('Webpage Launch Date') == '') {
-            $this->fast_update(array('Webpage Launch Date' => gmdate('Y-m-d H:i:s')));
-            $msg              = _('Webpage launched');
-            $publish_products = true;
-        } else {
-            $msg              = _('Webpage published');
-            $publish_products = false;
-        }
-
-
-        $content_data = $this->get('Content Data');
-
-
-        $sql = sprintf(
-            'UPDATE `Page Store Dimension` SET  `Page Store Content Published Data`=`Page Store Content Data`,`Page Store Published CSS`=`Page Store CSS` WHERE `Page Key`=%d ', $this->id
-        );
-
-        $this->db->exec($sql);
-
-
-        $history_data = array(
-            'Date'              => gmdate('Y-m-d H:i:s'),
-            'Direct Object'     => 'Webpage',
-            'Direct Object Key' => $this->id,
-            'History Details'   => '',
-            'History Abstract'  => $msg.($note != '' ? ', '.$note : ''),
-        );
-
-        $history_key = $this->add_history($history_data, $force_save = true);
-        $sql         = sprintf(
-            "INSERT INTO `Webpage Publishing History Bridge` VALUES (%d,%d,'No','No','Deployment')", $this->id, $history_key
-        );
-
-
-        $this->db->exec($sql);
-
-
-        if ($this->get('Webpage Scope') == 'Category Products' and $publish_products) {
-
-
-            include_once 'class.Page.php';
-
-
-            $sql = sprintf('SELECT `Product Category Index Product ID` FROM `Product Category Index`    WHERE `Product Category Index Website Key`=%d', $this->id);
-
-
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-
-                    $webpage = new Page('scope', 'Product', $row['Product Category Index Product ID']);
-
-                    if ($webpage->id) {
-
-                        $webpage->publish();
-                    }
-
-                }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
-            }
-
-
-        } elseif ($this->get('Webpage Scope') == 'Product') {
-
-
-            if (isset($content_data['description_block']['content'])) {
-                $web_text = $content_data['description_block']['content'];
-            } else {
-                $web_text = '';
-            }
-
-
-            $product = get_object('Product', $this->get('Webpage Scope Key'));
-            $product->fast_update(array('Product Published Webpage Description' => $web_text));
-
-        }
-
-
-        $this->get_data('id', $this->id);
-
-
-        $account = get_object('Account', 1);
-        require_once 'utils/new_fork.php';
-        new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'        => 'clean_webpage_cache',
-            'webpage_key' => $this->id,
-        ), $account->get('Account Code'), $this->db
-        );
-
-
-        $this->update_metadata = array(
-            'class_html'    => array(
-                'Webpage_State_Icon'    => $this->get('State Icon'),
-                'Webpage_State'         => $this->get('State'),
-                'preview_publish_label' => _('Publish')
-
-            ),
-            'hide_by_id'    => array(
-                'republish_webpage_field',
-                'launch_webpage_field'
-            ),
-            'show_by_id'    => array('unpublish_webpage_field'),
-            'visible_by_id' => array('link_to_live_webpage'),
-        );
-
-
-    }
-
     function update_content_data($field, $value, $options = '') {
 
         $content_data = $this->get('Content Data');
@@ -1575,11 +1348,17 @@ class Page extends DB_Table {
 
     }
 
+    function update_store_search() {
+
+
+        //todo redo this using elastic search
+
+
+    }
 
     function reset_object() {
 
 
-        $website = get_object('Website', $this->get('Webpage Website Key'));
 
         if ($this->get('Webpage Scope') == 'Category Products') {
 
@@ -1863,7 +1642,6 @@ class Page extends DB_Table {
 
     }
 
-
     function update_public_navigation() {
 
         $navigation_data = array(
@@ -1930,7 +1708,7 @@ class Page extends DB_Table {
                 $prev_key = 0;
 
                 $sql = sprintf(
-                    'SELECT `Website Webpage Scope Index` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND `Website Webpage Scope Scope`="Category" AND `Website Webpage Scope Scope Key`=%d ', $parent_webpage_key, $category->id
+                    "SELECT `Website Webpage Scope Index` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND `Website Webpage Scope Scope`='Category' AND `Website Webpage Scope Scope Key`=%d ", $parent_webpage_key, $category->id
 
                 );
                 // print $sql;
@@ -2295,7 +2073,6 @@ class Page extends DB_Table {
 
     }
 
-
     function update_internal_navigation() {
 
 
@@ -2515,13 +2292,7 @@ class Page extends DB_Table {
 
                         );
 
-                        $sql = "INSERT INTO `Product Webpage Bridge` (`Product Webpage Product ID`,`Product Webpage Webpage Key`,`Product Webpage Block`,`Product Webpage Type`) values (?,?,'see_also','link')";
 
-                        $stmt = $this->db->prepare($sql);
-                        $stmt->bindValue(1, $product->id);
-                        $stmt->bindValue(2, $this->id);
-
-                        $stmt->execute();
 
 
                         break;
@@ -2583,9 +2354,6 @@ class Page extends DB_Table {
                         }
                     }
                 }
-
-
-
 
 
                 if ($number_links < $max_links) {
@@ -3067,6 +2835,30 @@ class Page extends DB_Table {
 
     }
 
+    function reindex_webpage_scope_map() {
+        $index = 0;
+        $sql   = 'select `Website Webpage Scope Key` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=?  order by `Website Webpage Block Index`,`Website Webpage Scope Index`  ';
+        $stmt  = $this->db->prepare($sql);
+        $stmt->execute(
+            array($this->id)
+        );
+
+        while ($row = $stmt->fetch()) {
+            $index++;
+            $sql = 'update `Website Webpage Scope Map` set `Website Webpage Scope Webpage Index`=? where `Website Webpage Scope Key`=? ';
+
+
+            $this->db->prepare($sql)->execute(
+                [
+                    $index,
+                    $row['Website Webpage Scope Key']
+                ]
+            );
+
+
+        }
+    }
+
     function reindex_category_categories($block_index) {
 
         include_once('utils/image_functions.php');
@@ -3436,6 +3228,155 @@ class Page extends DB_Table {
 
     }
 
+    function publish($note = '') {
+
+
+        $website = get_object('Website', $this->get('Webpage Website Key'));
+
+
+        if ($website->get('Website Status') != 'Active') {
+            $this->error = true;
+            $this->msg   = 'Website not active';
+
+            return;
+        }
+
+
+        if ($this->get('Webpage State') == 'Offline' or $this->get('Webpage State') == 'InProcess' or $this->get('Webpage State') == 'Ready') {
+
+            if ($this->data['Webpage Scope'] == 'Category Products' or $this->data['Webpage Scope'] == 'Category Categories') {
+                $scope = get_object('Category', $this->data['Webpage Scope Key']);
+                if ($scope->get('Product Category Public') == 'Yes') {
+                    $this->update_state('Online');
+                }
+            } elseif ($this->data['Webpage Scope'] == 'Product') {
+                $scope = get_object('Product', $this->data['Webpage Scope Key']);
+                if ($scope->get('Product Public') == 'Yes' and in_array(
+                        $scope->get('Product Web State'), array(
+                                                            'For Sale',
+                                                            'Out of Stock'
+                                                        )
+                    )) {
+                    $this->update_state('Online');
+                }
+            } else {
+                $this->update_state('Online');
+            }
+
+
+        }
+
+
+        if ($this->get('Webpage Launch Date') == '') {
+            $this->fast_update(array('Webpage Launch Date' => gmdate('Y-m-d H:i:s')));
+            $msg              = _('Webpage launched');
+            $publish_products = true;
+        } else {
+            $msg              = _('Webpage published');
+            $publish_products = false;
+        }
+
+
+        $content_data = $this->get('Content Data');
+
+
+        $sql = sprintf(
+            'UPDATE `Page Store Dimension` SET  `Page Store Content Published Data`=`Page Store Content Data`,`Page Store Published CSS`=`Page Store CSS` WHERE `Page Key`=%d ', $this->id
+        );
+
+        $this->db->exec($sql);
+
+
+        $history_data = array(
+            'Date'              => gmdate('Y-m-d H:i:s'),
+            'Direct Object'     => 'Webpage',
+            'Direct Object Key' => $this->id,
+            'History Details'   => '',
+            'History Abstract'  => $msg.($note != '' ? ', '.$note : ''),
+        );
+
+        $history_key = $this->add_history($history_data, $force_save = true);
+        $sql         = sprintf(
+            "INSERT INTO `Webpage Publishing History Bridge` VALUES (%d,%d,'No','No','Deployment')", $this->id, $history_key
+        );
+
+
+        $this->db->exec($sql);
+
+
+        if ($this->get('Webpage Scope') == 'Category Products' and $publish_products) {
+
+
+            include_once 'class.Page.php';
+
+
+            $sql = sprintf('SELECT `Product Category Index Product ID` FROM `Product Category Index`    WHERE `Product Category Index Website Key`=%d', $this->id);
+
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+
+                    $webpage = new Page('scope', 'Product', $row['Product Category Index Product ID']);
+
+                    if ($webpage->id) {
+
+                        $webpage->publish();
+                    }
+
+                }
+            } else {
+                print_r($error_info = $this->db->errorInfo());
+                print "$sql\n";
+                exit;
+            }
+
+
+        } elseif ($this->get('Webpage Scope') == 'Product') {
+
+
+            if (isset($content_data['description_block']['content'])) {
+                $web_text = $content_data['description_block']['content'];
+            } else {
+                $web_text = '';
+            }
+
+
+            $product = get_object('Product', $this->get('Webpage Scope Key'));
+            $product->fast_update(array('Product Published Webpage Description' => $web_text));
+
+        }
+
+
+        $this->get_data('id', $this->id);
+
+
+        $account = get_object('Account', 1);
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'        => 'clean_webpage_cache',
+            'webpage_key' => $this->id,
+        ), $account->get('Account Code'), $this->db
+        );
+
+
+        $this->update_metadata = array(
+            'class_html'    => array(
+                'Webpage_State_Icon'    => $this->get('State Icon'),
+                'Webpage_State'         => $this->get('State'),
+                'preview_publish_label' => _('Publish')
+
+            ),
+            'hide_by_id'    => array(
+                'republish_webpage_field',
+                'launch_webpage_field'
+            ),
+            'show_by_id'    => array('unpublish_webpage_field'),
+            'visible_by_id' => array('link_to_live_webpage'),
+        );
+
+
+    }
 
     function delete($create_deleted_page_record = true) {
 
@@ -3464,7 +3405,6 @@ class Page extends DB_Table {
             "DELETE FROM `Page Redirection Dimension` WHERE `Page Target Key`=%d", $this->id
         );
         $this->db->exec($sql);
-
 
 
         $sql = sprintf(
@@ -3666,42 +3606,6 @@ class Page extends DB_Table {
 
     }
 
-
-    function get_analytics_data($from, $to) {
-
-
-        include_once('utils/google_api_functions.php');
-
-
-        list($url_base, $url_suffix) = preg_split('/\//', $this->get('URL'));
-
-        try {
-            $analytics_data = get_analytics_data($url_base, $url_suffix, $from, $to);
-        } catch (Exception $e) {
-            // echo 'Caught exception: ',  $e->getMessage(), "\n";
-            $analytics_data = array(
-                'pageviews'                  => 0,
-                'pageviews_registered_users' => 0,
-                'page_value'                 => 0,
-                'users'                      => 0,
-                'registered_users'           => 0,
-                'sessions'                   => 0,
-                'sessions_registered_users'  => 0,
-                'impressions'                => 0,
-                'clicks'                     => 0,
-                'ctr'                        => 0,
-                'position'                   => 0,
-
-
-            );
-
-        }
-
-
-        return $analytics_data;
-
-    }
-
     function update_analytics($interval, $this_period = true, $last_period = true) {
 
         include_once 'utils/date_functions.php';
@@ -3762,49 +3666,40 @@ class Page extends DB_Table {
 
         }
 
-        /*
 
-        if (in_array(
-            $db_interval, [
-                'Total',
-                'Year To Date',
-                'Quarter To Date',
-                'Week To Date',
-                'Month To Date',
-                'Today'
-            ]
-        )) {
-
-            $this->fast_update(['Store Acc To Day Updated' => gmdate('Y-m-d H:i:s')]);
-
-        } elseif (in_array(
-            $db_interval, [
-                '1 Year',
-                '1 Month',
-                '1 Week',
-                '1 Quarter'
-            ]
-        )) {
-
-            $this->fast_update(['Store Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')]);
-        } elseif (in_array(
-            $db_interval, [
-                'Last Month',
-                'Last Week',
-                'Yesterday',
-                'Last Year'
-            ]
-        )) {
-
-            $this->fast_update(['Store Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')]);
-        }
-*/
 
     }
 
+    function get_analytics_data($from, $to) {
 
-    function properties($key) {
-        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
+        include_once('utils/google_api_functions.php');
+        list($url_base, $url_suffix) = preg_split('/\//', $this->get('URL'));
+
+        try {
+            $analytics_data = get_analytics_data($url_base, $url_suffix, $from, $to);
+        } catch (Exception $e) {
+            // echo 'Caught exception: ',  $e->getMessage(), "\n";
+            $analytics_data = array(
+                'pageviews'                  => 0,
+                'pageviews_registered_users' => 0,
+                'page_value'                 => 0,
+                'users'                      => 0,
+                'registered_users'           => 0,
+                'sessions'                   => 0,
+                'sessions_registered_users'  => 0,
+                'impressions'                => 0,
+                'clicks'                     => 0,
+                'ctr'                        => 0,
+                'position'                   => 0,
+
+
+            );
+
+        }
+
+
+        return $analytics_data;
+
     }
 
     function update_screenshots($type = 'current') {
@@ -4093,6 +3988,10 @@ class Page extends DB_Table {
 
         return true;
 
+    }
+
+    function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
     }
 
 }
