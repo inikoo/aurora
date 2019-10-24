@@ -620,8 +620,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
             /**
              * @var $part \Part
-             */
-            $part = get_object('Part', $data['part_sku']);
+             */ $part = get_object('Part', $data['part_sku']);
 
             $part->editor = $data['editor'];
 
@@ -1435,8 +1434,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
         case 'update_part_products_availability':
             /**
              * @var $part \Part
-             */
-            $part = get_object('Part', $data['part_sku']);
+             */ $part = get_object('Part', $data['part_sku']);
 
             if (isset($data['editor'])) {
                 $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
@@ -2838,14 +2836,13 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
             $account = get_object('Account', 1);
-            $base    = 'base_dirs/_home.'.strtoupper($account->get('Account Code')).'/';
+            $base    = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';
 
 
-            $smarty_web->setTemplateDir($base.'EcomB2B/templates');
-
-            $smarty_web->setCompileDir($base.'EcomB2B/server_files/smarty/templates_c');
-            $smarty_web->setCacheDir($base.'EcomB2B/server_files/smarty/cache');
-            $smarty_web->setConfigDir($base.'EcomB2B/server_files/smarty/configs');
+            $smarty_web->template_dir = 'EcomB2B/templates';
+            $smarty_web->compile_dir  = $base.'smarty/templates_c';
+            $smarty_web->cache_dir    = $base.'smarty/cache';
+            $smarty_web->config_dir   = $base.'smarty/configs';
             $smarty_web->addPluginsDir('./smarty_plugins');
 
 
