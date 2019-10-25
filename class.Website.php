@@ -278,10 +278,9 @@ class Website extends DB_Table {
             }
 
 
-            include_once 'class.Store.php';
-            $store = new Store($this->get('Website Store Key'));
+            $store = get_object('Store',$this->get('Website Store Key'));
 
-            $account         = new Account($this->db);
+            $account         = get_object('Account',1);
             $account->editor = $this->editor;
 
             $families_category_data = array(
@@ -717,15 +716,12 @@ class Website extends DB_Table {
 
             'Page URL'                 => $this->data['Website URL'].'/'.strtolower($data['Webpage Code']),
             'Page Type'                => 'Store',
-            'Page Store Key'           => $this->get('Website Store Key'),
             'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'    => 0,
 
             'Page Title'             => $data['Webpage Name'],
             'Page Short Title'       => $data['Webpage Browser Title'],
             'Page Parent Key'        => 0,
-            'Page State'             => 'Online',
-            'Page Store Description' => $data['Webpage Meta Description'],
 
 
             'Webpage Scope'                 => $data['Webpage Scope'],
@@ -1037,7 +1033,6 @@ class Website extends DB_Table {
         $page_data = array(
             'Page URL'                 => $this->data['Website URL'].'/'.strtolower($page_code),
             'Page Type'                => 'Store',
-            'Page Store Key'           => $category->get('Category Store Key'),
             'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'    => ($category->get('Category Subject') == 'Product' ? 5 : 0),
 
@@ -1151,7 +1146,6 @@ class Website extends DB_Table {
         $page_data = array(
             'Page URL'                 => $this->data['Website URL'].'/'.strtolower($page_code),
             'Page Type'                => 'Store',
-            'Page Store Key'           => $product->get('Product Store Key'),
             'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'    => 5,
 

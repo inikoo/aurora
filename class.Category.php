@@ -2528,7 +2528,7 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
                         if ($this->webpage->id) {
-                            $this->webpage->update(array('Page State' => 'Online'));
+                            $this->webpage->update(array('Webpage State' => 'Online'));
 
 
 

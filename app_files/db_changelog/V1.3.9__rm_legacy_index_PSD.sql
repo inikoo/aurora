@@ -1,0 +1,1 @@
+ALTER TABLE `Page Store Dimension` DROP INDEX `Webpage Code`;

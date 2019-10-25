@@ -25,7 +25,7 @@ function website_system_webpages_config($website_type) {
         array('text' => 'Telephone<br/>#tel<br/><br/>Email<br/>#email<br/><br/>Address<br/>#adr')
     );
 
-    $EcomB2B = array(
+    $_base = array(
 
 
         'home.sys' => array(
@@ -368,7 +368,7 @@ function website_system_webpages_config($website_type) {
                             'bottom_margin' => 60,
                             'labels'        => array(
                                 '_unsubscribe_title'            => _('Email subscriptions'),
-                                '_unsubscribe_text'             => _('Select which kind of emails you want to receive from us'),
+                                '_unsubscribe_text'             => _('Choose which kind of emails you want to receive from us'),
                                 '_save_unsubscribe_label'       => _('Save'),
                                 '_newsletter'                   => _('Newsletter'),
                                 '_marketing_emails'             => _('Marketing emails and special offers'),
@@ -886,6 +886,11 @@ function website_system_webpages_config($website_type) {
             )
         ),
 
+
+
+    );
+
+    $EcomDS =array(
         'portfolio.sys' => array(
             'Webpage Scope'             => 'Portfolio',
             'Webpage Scope Metadata'    => '',
@@ -915,17 +920,11 @@ function website_system_webpages_config($website_type) {
             )
 
         ),
-
-
-
     );
-
-
     $website_system_webpages = array(
 
-        'EcomB2B' => $EcomB2B
-
-
+        'EcomB2B' => $_base,
+        'EcomDS' => array_merge($_base,$EcomDS)
     );
 
     return $website_system_webpages[$website_type];
