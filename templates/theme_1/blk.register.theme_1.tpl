@@ -113,7 +113,7 @@
         <tr>
             <td>{t}Post town{/t}</td>
             <td><input id="locality_post_town" class="website_localized_label" style="width:100%"
-                       value="{if isset($labels.locality_post_town) and $labels.locality_post_town!=''}{$labels.locality_post_town}{else}{t}Post town{/t}{/if}"/></td>
+                       value="{if !empty($labels.locality_post_town)}{$labels.locality_post_town}{else}{t}Post town{/t}{/if}"/></td>
         </tr>
 
 
@@ -489,8 +489,10 @@
     }
 
     function save_address_labels() {
+
+
+
         $('#address_labels_editor').addClass('hide')
-        var element = $('#' + $('#input_editor').attr('element_id'))
 
         $('#save_button', window.parent.document).addClass('save button changed valid')
     }
