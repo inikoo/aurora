@@ -70,6 +70,9 @@
             {assign "with_checkout" false}
             {assign "with_profile" false}
             {assign "with_favourites" false}
+            {assign "with_portfolio" false}
+            {assign "with_clients" false}
+            {assign "with_clients_orders" false}
             {assign "with_search" false}
             {assign "with_thanks" false}
             {assign "with_gallery" false}
@@ -77,6 +80,7 @@
             {assign "with_reset_password" false}
             {assign "with_unsubscribe" false}
             {assign "with_category_products" false}
+            {assign "with_datatables" false}
 
             {if !empty($content.blocks) and  $content.blocks|is_array}
             {foreach from=$content.blocks item=$block key=key}
@@ -129,6 +133,36 @@
                                     <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>
                                 </div>
                             </div>
+                        {else}
+                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                        {/if}
+                    {elseif $block.type=='portfolio'}
+
+                        {if $logged_in}
+                            {assign "with_portfolio" 1}
+                            {assign "with_datatables" 1}
+                            {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
+
+                        {else}
+                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                        {/if}
+                    {elseif $block.type=='clients'}
+
+                        {if $logged_in}
+                            {assign "with_clients" 1}
+                            {assign "with_datatables" 1}
+                            {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
+
+                        {else}
+                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                        {/if}
+                    {elseif $block.type=='clients_orders'}
+
+                        {if $logged_in}
+                            {assign "with_clients_orders" 1}
+                            {assign "with_datatables" 1}
+                            {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
+
                         {else}
                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
                         {/if}
@@ -774,7 +808,7 @@
 
             },
 
-                // Messages for form validation
+
                 messages:
                 {
 
@@ -863,18 +897,43 @@
                     }
 
 
-                }
-            ,
+                },
 
-                // Do not change code below
+
                 errorPlacement: function (error, element) {
                     error.insertAfter(element.parent());
                 }
             })
-                ;
+
             })
 
             {/if}
+
+                            {if $with_portfolio==1}
+                            getScript("/assets/datatables.min.js", function () {
+                                $('#portfolio_items').DataTable( {
+                                    "ajax": "ar_web_portfolio.php?tipo=get_portfolio_items"
+                                } );
+                            })
+                            {/if}
+                            {if $with_clients==1}
+                            getScript("/assets/datatables.min.js", function () {
+                                $('#clients').DataTable( {
+                                    "ajax": "ar_web_clients.php?tipo=get_clients"
+                                } );
+                            })
+                            {/if}
+                            {if $with_clients_orders==1}
+                            getScript("/assets/datatables.min.js", function () {
+                                $('#clients_orders').DataTable( {
+                                    "ajax": "ar_web_clients_orders.php?tipo=get_orders"
+                                } );
+                            })
+                            {/if}
+
+
+
+
             {if $with_login==1}
             $('.control_panel').addClass('hide')
             getScript("/assets/desktop.forms.min.js", function () {

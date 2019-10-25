@@ -895,7 +895,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope'             => 'Portfolio',
             'Webpage Scope Metadata'    => '',
             'Webpage Type'              => 'Portfolio',
-            'Webpage Code'              => 'Portfolio.sys',
+            'Webpage Code'              => 'portfolio.sys',
             'Webpage Browser Title'     => _('Portfolio'),
             'Webpage Name'              => _('Portfolio'),
             'Webpage Meta Description'  => '',
@@ -906,7 +906,66 @@ function website_system_webpages_config($website_type) {
                         array(
                             'type'          => 'portfolio',
                             'label'         => _('Portfolio'),
-                            'icon'          => 'fa-cube',
+                            'icon'          => 'fa-store-alt',
+                            'show'          => 1,
+                            'top_margin'    => 40,
+                            'bottom_margin' => 60,
+                            'labels'        => array(
+
+                            )
+                        )
+
+                    )
+                )
+            )
+
+        ),
+
+        'clients.sys' => array(
+            'Webpage Scope'             => 'Clients',
+            'Webpage Scope Metadata'    => '',
+            'Webpage Type'              => 'Clients',
+            'Webpage Code'              => 'clients.sys',
+            'Webpage Browser Title'     => _('Clients'),
+            'Webpage Name'              => _('Clients'),
+            'Webpage Meta Description'  => '',
+            'Webpage Scope Metadata'    => '',
+            'Page Store Content Data'   => json_encode(
+                array(
+                    'blocks' => array(
+                        array(
+                            'type'          => 'clients',
+                            'label'         => _('Clients'),
+                            'icon'          => 'fa-user',
+                            'show'          => 1,
+                            'top_margin'    => 40,
+                            'bottom_margin' => 60,
+                            'labels'        => array(
+
+                            )
+                        )
+
+                    )
+                )
+            )
+
+        ),
+        'clients_orders.sys' => array(
+            'Webpage Scope'             => 'Clients_Orders',
+            'Webpage Scope Metadata'    => '',
+            'Webpage Type'              => 'Clients_Orders',
+            'Webpage Code'              => 'clients_orders.sys',
+            'Webpage Browser Title'     => _("Client's orders"),
+            'Webpage Name'              =>_("Client's orders"),
+            'Webpage Meta Description'  => '',
+            'Webpage Scope Metadata'    => '',
+            'Page Store Content Data'   => json_encode(
+                array(
+                    'blocks' => array(
+                        array(
+                            'type'          => 'clients_orders',
+                            'label'         => _("Client's orders"),
+                            'icon'          => 'fa-shopping-cart',
                             'show'          => 1,
                             'top_margin'    => 40,
                             'bottom_margin' => 60,

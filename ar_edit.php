@@ -997,6 +997,9 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
             $request = $object->reject();
             break;
         case 'reindex':
+            /**
+             * @var $object \Page
+             */
             $request = $object->reindex();
             break;
         case 'archive':

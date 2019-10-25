@@ -41,11 +41,14 @@ module.exports = function (grunt) {
                 options: {
                     sourceMap: true,
                 }, src: [
-
                     'EcomB2B/js/images/photoswipe.js', 'EcomB2B/js/images/photoswipe-ui-default.js',
-
-
                 ], dest: 'EcomB2B/assets/image_gallery.min.js',
+            }, ecom_datatables: {
+                options: {
+                    sourceMap: true,
+                }, src: [
+                    'EcomB2B/js/libs/datatables.js',
+                ], dest: 'EcomB2B/assets/datatables.min.js',
             }, ecom_desktop_forms: {
                 options: {
                     sourceMap: true,
@@ -219,6 +222,8 @@ module.exports = function (grunt) {
                 files: {
                     'EcomB2B/assets/desktop.min.css': [
                         'node_modules/@fortawesome/fontawesome-pro/css/all.css', 'EcomB2B/css/staging/style.theme_1.EcomB2B.desktop.css'],
+                    'EcomB2B/assets/datatables.min.css': [
+                        'EcomB2B/css/datatables.css'],
                     'EcomB2B/assets/forms.min.css': [
                         'EcomB2B/css/sweetalert.css', 'EcomB2B/css/sky-forms.css', 'EcomB2B/css/sky_forms.aurora.css'],
                     'EcomB2B/assets/image_gallery.min.css': [
@@ -312,7 +317,13 @@ module.exports = function (grunt) {
                     }
                 }]
             },
-
+            ecom_datatables: {
+                files: [{
+                    expand: true, dot: true, cwd: 'EcomB2B/assets', dest: 'EcomB2B/assets/', src: ['datatables.min.js'], rename: function (dest, src) {
+                        return dest + src.replace('.min', '.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min');
+                    }
+                }]
+            },
             ecom_desktop_forms: {
                 files: [{
                     expand: true, dot: true, cwd: 'EcomB2B/assets', dest: 'EcomB2B/assets/', src: ['desktop.forms.min.js'], rename: function (dest, src) {
@@ -493,7 +504,11 @@ module.exports = function (grunt) {
                 src: ['EcomB2B/templates/theme_1/webpage_blocks.theme_1.*tpl'], overwrite: true, replacements: [{
                     from: /image_gallery.\.*min.js"/g, to: 'image_gallery.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
-            }, ecom_desktop_forms: {
+            }, ecom_datatables: {
+                src: ['EcomB2B/templates/theme_1/webpage_blocks.theme_1.*tpl'], overwrite: true, replacements: [{
+                    from: /datatables.\.*min.js"/g, to: 'datatables.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
+                }]
+            },ecom_desktop_forms: {
                 src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl', 'EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
                     from: /desktop.forms.\.*min.js"/g, to: 'desktop.forms.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
@@ -538,6 +553,9 @@ module.exports = function (grunt) {
                         from: /desktop.\.*min.css"/g, to: 'desktop.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.css"'
                     },
                     {
+                        from: /datatables.\.*min.css"/g, to: 'datatables.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.css"'
+                    },
+                    {
                         from: /forms.\.*min.css"/g, to: 'forms.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.css"'
                     },
                     {
@@ -578,8 +596,12 @@ module.exports = function (grunt) {
     grunt.registerTask('ecom_mobile_forms', ['uglify:ecom_mobile_forms', 'copy:ecom_mobile_forms', 'replace:ecom_mobile_forms']);
     grunt.registerTask('ecom_mobile', ['uglify:ecom_mobile', 'copy:ecom_mobile', 'replace:ecom_mobile']);
     grunt.registerTask('ecom_mobile_custom', ['uglify:ecom_mobile_custom', 'copy:ecom_mobile_custom', 'replace:ecom_mobile_custom']);
-    
-    grunt.registerTask('ecom_libs_headers', ['ecom_desktop_in','ecom_desktop_out','ecom_desktop_forms','ecom_mobile_forms','ecom_mobile','ecom_mobile_custom']);
+
+    grunt.registerTask('ecom_datatables', ['uglify:ecom_datatables', 'copy:ecom_datatables', 'replace:ecom_datatables']);
+
+
+
+    grunt.registerTask('ecom_libs_headers', ['ecom_desktop_in','ecom_desktop_out','ecom_desktop_forms','ecom_mobile_forms','ecom_mobile','ecom_mobile_custom','ecom_datatables']);
 
     grunt.registerTask('ecom_desktop_logged_in', ['uglify:ecom_desktop_logged_in', 'copy:ecom_desktop_logged_in', 'replace:ecom_desktop_logged_in']);
     grunt.registerTask('ecom_image_gallery', ['uglify:ecom_image_gallery', 'copy:ecom_image_gallery', 'replace:ecom_image_gallery']);
@@ -615,7 +637,7 @@ module.exports = function (grunt) {
 
 
     grunt.registerTask('pweb', ['copy:fa_webfonts', 'sass:ecom_css', 'cssmin:ecom_css',
-            'uglify:ecom_desktop_in','uglify:ecom_desktop_out','uglify:ecom_desktop_forms','uglify:ecom_mobile_forms','uglify:ecom_mobile','uglify:ecom_mobile_custom',
+            'uglify:ecom_desktop_in','uglify:ecom_desktop_out','uglify:ecom_desktop_forms','uglify:ecom_mobile_forms','uglify:ecom_mobile','uglify:ecom_mobile_custom','uglify:ecom_datatables',
             'uglify:ecom_desktop_logged_in','uglify:ecom_image_gallery','uglify:ecom_desktop_basket', 'uglify:ecom_desktop_checkout', 'uglify:ecom_desktop_profile',
         'uglify:ecom_mobile_basket', 'uglify:ecom_mobile_profile', 'uglify:ecom_mobile_checkout','uglify:ecom_mobile_in'
 

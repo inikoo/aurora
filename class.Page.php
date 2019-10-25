@@ -1435,7 +1435,8 @@ class Page extends DB_Table {
             $this->update_navigation();
 
 
-        } elseif ($this->get('Webpage Scope') == 'Category Categories') {
+        }
+        elseif ($this->get('Webpage Scope') == 'Category Categories') {
 
 
             $items = array();
@@ -1619,7 +1620,6 @@ class Page extends DB_Table {
             $website = get_object('Website', $this->get('Webpage Website Key'));
 
             $website_system_webpages = website_system_webpages_config($website->get('Website Type'));
-
 
             if (isset($website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data'])) {
 

@@ -118,11 +118,11 @@
                 <div class="control_panel">
 
 
-                    <a id="portfolio_button" href="portfolio.sys" class="button">
+                    <a id="portfolio_button" href="clients_orders.sys" class="button">
                         <i class=" far fa-shopping-cart  "  ></i> {if empty($labels._Orders)}{t}Orders{/t}{else}{$labels._Orders}{/if}
                     </a>
 
-                    <a id="portfolio_button" href="portfolio.sys" class="button">
+                    <a id="portfolio_button" href="clients.sys" class="button">
                         <i class=" fal fa-user  "  ></i> {if empty($labels._Custoemrs)}{t}Customers{/t}{else}{$labels._Custoemrs}{/if}
                     </a>
 
