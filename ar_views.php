@@ -2127,7 +2127,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
                 case ('mailshot.new'):
                     return get_mailshot_new_navigation($data, $smarty, $user, $db, $account);
-
+                case ('settings'):
+                    return get_settings_navigation($data, $smarty);
 
 
             }

@@ -3192,4 +3192,43 @@ function get_mailshot_new_navigation($data, $smarty, $user, $db, $account) {
 
 }
 
+/**
+ * @param $data
+ * @param $smarty \Smarty
+ *
+ * @return mixed
+ * @throws \SmartyException
+ */
+function get_settings_navigation($data, $smarty) {
+
+
+    $left_buttons  = array();
+    $right_buttons = array();
+    $sections      = get_sections('products', $data['key']);
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+
+    $_content = array(
+
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => _('Settings').' <span class="id">'.$data['_object']->get('Store Code').'</span>',
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search store').' '.$data['_object']->get('Store Code')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
 

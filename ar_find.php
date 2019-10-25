@@ -3363,54 +3363,7 @@ function find_category_webpages($db, $account, $memcache_ip, $data, $smarty) {
     }
 
 
-    /*
 
-    if (isset($data['metadata']['option'])) {
-        switch ($data['metadata']['option']) {
-            case 'only_online':
-                $where .= sprintf(' and `Page State`="Online"');
-                break;
-            default:
-
-                break;
-        }
-
-    }
-
-    if (isset($data['metadata']['exclude']) and count(
-            $data['metadata']['exclude']
-        ) > 0
-    ) {
-        $where .= sprintf(
-            ' and `Product Category Key` not in (%s) ', join(',', $data['metadata']['exclude'])
-        );
-
-    }
-
-    */
-    /*
-        $memcache_fingerprint = $account->get('Account Code').'FIND_CatWebP'.md5($q);
-
-        $cache = new Memcached();
-        $cache->addServer($memcache_ip, 11211);
-
-
-        if (strlen($q) <= 2) {
-            $memcache_time = 295200;
-        }
-        if (strlen($q) <= 3) {
-            $memcache_time = 86400;
-        }
-        if (strlen($q) <= 4) {
-            $memcache_time = 3600;
-        } else {
-            $memcache_time = 300;
-
-        }
-
-
-        $results_data = $cache->get($memcache_fingerprint);
-    */
 
     if (true) {
 

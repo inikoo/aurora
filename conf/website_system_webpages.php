@@ -41,12 +41,6 @@ function website_system_webpages_config($website_type) {
                     'blocks' => array(
 
 
-                       // $blocks['iframe'],
-                        //$blocks['six_pack'],
-                      //  $blocks['images'],
-                        // $blocks['counter'],
-                        //$blocks['three_pack'],
-
                     )
 
                 )
@@ -68,13 +62,6 @@ function website_system_webpages_config($website_type) {
                     'blocks' => array(
 
 
-                        //$blocks['iframe'],
-                        //$blocks['button'],
-
-                        //   $blocks['six_pack'],
-                        //$blocks['images'],
-                        // $blocks['counter'],
-                        //   $blocks['three_pack'],
 
                     )
 
@@ -897,7 +884,38 @@ function website_system_webpages_config($website_type) {
                 )
 
             )
-        )
+        ),
+
+        'portfolio.sys' => array(
+            'Webpage Scope'             => 'Portfolio',
+            'Webpage Scope Metadata'    => '',
+            'Webpage Type'              => 'Portfolio',
+            'Webpage Code'              => 'Portfolio.sys',
+            'Webpage Browser Title'     => _('Portfolio'),
+            'Webpage Name'              => _('Portfolio'),
+            'Webpage Meta Description'  => '',
+            'Webpage Scope Metadata'    => '',
+            'Page Store Content Data'   => json_encode(
+                array(
+                    'blocks' => array(
+                        array(
+                            'type'          => 'portfolio',
+                            'label'         => _('Portfolio'),
+                            'icon'          => 'fa-cube',
+                            'show'          => 1,
+                            'top_margin'    => 40,
+                            'bottom_margin' => 60,
+                            'labels'        => array(
+
+                            )
+                        )
+
+                    )
+                )
+            )
+
+        ),
+
 
 
     );
@@ -914,4 +932,4 @@ function website_system_webpages_config($website_type) {
 
 }
 
-?>
+
