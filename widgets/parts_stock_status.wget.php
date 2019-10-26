@@ -11,7 +11,7 @@
 */
 
 
-function get_dashboard_parts_stock_status($db, $account, $user, $smarty, $parent = '', $display_device_version = 'desktop') {
+function get_dashboard_parts_stock_status( $user, $smarty, $parent = '', $display_device_version = 'desktop') {
 
 
     include_once 'utils/date_functions.php';
@@ -47,4 +47,4 @@ function get_dashboard_parts_stock_status($db, $account, $user, $smarty, $parent
 }
 
 
-?>
+

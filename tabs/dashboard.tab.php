@@ -56,10 +56,9 @@ foreach ($user->get_dashboard_items() as $item) {
         }
 
 
-        $html .= get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $sub_type,$period, $currency, $orders_view_type, $_SESSION['display_device_version']);
+        $html .= get_dashboard_sales_overview($db, $account, $user, $smarty, $type, $sub_type, $period, $currency, $orders_view_type, (!empty($_SESSION['display_device_version'])?$_SESSION['display_device_version']:'desktop'));
 
-    }
-    elseif ($item == 'pending_orders_and_customers') {
+    } elseif ($item == 'pending_orders_and_customers') {
 
         $period = '1y';
 
@@ -79,15 +78,13 @@ foreach ($user->get_dashboard_items() as $item) {
         }
 
 
+        $html .= get_dashboard_pending_orders($db, $account, $user, $smarty, $parent, $currency, (!empty($_SESSION['display_device_version'])?$_SESSION['display_device_version']:'desktop'));
+        $html .= get_dashboard_customers($db, $account, $user, $smarty, $parent, $currency, (!empty($_SESSION['display_device_version'])?$_SESSION['display_device_version']:'desktop'));
+
+    } elseif ($item == 'inventory_warehouse') {
 
 
-        $html .= get_dashboard_pending_orders($db, $account, $user, $smarty, $parent,$currency, $_SESSION['display_device_version']);
-        $html .= get_dashboard_customers($db, $account, $user, $smarty, $parent,$currency, $_SESSION['display_device_version']);
-
-    }elseif ($item == 'inventory_warehouse') {
-
-
-      include_once 'widgets/parts_stock_status.wget.php';
+        include_once 'widgets/parts_stock_status.wget.php';
         include_once 'widgets/inventory.wget.php';
 
         $currency = 'account';
@@ -100,19 +97,13 @@ foreach ($user->get_dashboard_items() as $item) {
             $parent = '';
 
 
-
-
         }
 
 
+        $html .= get_dashboard_parts_stock_status($user, $smarty, $parent, (!empty($_SESSION['display_device_version'])?$_SESSION['display_device_version']:'desktop'));
+        $html .= get_dashboard_inventory($db, $account, $user, $smarty, $parent, (!empty($_SESSION['display_device_version'])?$_SESSION['display_device_version']:'desktop'));
 
-
-       $html .= get_dashboard_parts_stock_status($db, $account, $user, $smarty, $parent,$currency, $_SESSION['display_device_version']);
-        $html .= get_dashboard_inventory($db, $account, $user, $smarty, $parent, $_SESSION['display_device_version']);
-
-    }
-
-    elseif ($item == 'kpis') {
+    } elseif ($item == 'kpis') {
 
         $period = '1y';
 
@@ -125,14 +116,11 @@ foreach ($user->get_dashboard_items() as $item) {
         }
 
 
-
-
-
-        $html .= get_dashboard_kpis($db, $account, $user, $smarty, $period, $_SESSION['display_device_version']);
+        $html .= get_dashboard_kpis($db, $account, $user, $smarty, $period, (!empty($_SESSION['display_device_version'])?$_SESSION['display_device_version']:'desktop'));
 
     }
 
 }
 
 
-?>
+
