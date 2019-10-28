@@ -26,8 +26,6 @@ function digest_website_content_data_blocks($content_data) {
             case 'blackboard':
 
 
-
-
                 $items = array();
                 $index = 0;
 
@@ -57,7 +55,7 @@ function digest_website_content_data_blocks($content_data) {
 
                         $content_data['blocks'][$block_key]['images'][$key_item]['image_website'] = $image_website;
 
-                        $item['image_website']                                                    = $image_website;
+                        $item['image_website'] = $image_website;
 
                     }
 
@@ -65,8 +63,6 @@ function digest_website_content_data_blocks($content_data) {
                     $counter++;
 
                 }
-
-
 
 
                 $index = 5;
@@ -156,20 +152,18 @@ function digest_website_content_data_blocks($content_data) {
                 }
 
 
-                $mobile_html = preg_replace('/\<p\>\<br\>\<\/p\>/', '', $mobile_html);
-                $mobile_html = preg_replace('/\<p style\=\"text-align: left;\"\><br\>\<\/p\>/', '', $mobile_html);
-                $mobile_html = preg_replace('/\<p style\=\"\"\>\<br\>\<\/p\>/', '', $mobile_html);
+                $mobile_html = preg_replace('/<p><br><\/p>/', '', $mobile_html);
+                $mobile_html = preg_replace('/<p style=\"text-align: left;\"><br><\/p>/', '', $mobile_html);
+                $mobile_html = preg_replace('/<p style=\"\"><br><\/p>/', '', $mobile_html);
 
 
-                $tablet_html = preg_replace('/\<p\>\<br\>\<\/p\>/', '', $tablet_html);
-                $tablet_html = preg_replace('/\<p style\=\"text-align: left;\"\><br\>\<\/p\>/', '', $tablet_html);
-                $tablet_html = preg_replace('/\<p style\=\"\"\>\<br\>\<\/p\>/', '', $tablet_html);
+                $tablet_html = preg_replace('/<p><br><\/p>/', '', $tablet_html);
+                $tablet_html = preg_replace('/<p style=\"text-align: left;\"><br><\/p>/', '', $tablet_html);
+                $tablet_html = preg_replace('/<p style=\"\"><br><\/p>/', '', $tablet_html);
 
                 // print_r($mobile_html);
                 $content_data['blocks'][$block_key]['mobile_html'] = $mobile_html;
                 $content_data['blocks'][$block_key]['tablet_html'] = $tablet_html;
-
-
 
 
                 break;
@@ -177,76 +171,71 @@ function digest_website_content_data_blocks($content_data) {
                 foreach ($block['items'] as $item_key => $item) {
                     if ($item['type'] == 'product') {
 
-                            $image_mobile_website = $item['image_src'];
-                            if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                $image_key = $matches[1];
-//340x214id
-                                $image_mobile_website = 'wi.php?s='.get_image_size($image_key,340,214,'height').'&id='.$image_key;
+                        $image_mobile_website = $item['image_src'];
+                        if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                            $image_key            = $matches[1];
+                            $image_mobile_website = 'wi.php?s='.get_image_size($image_key, 340, 214, 'height').'&id='.$image_key;
 
-                            }
-
-
-                            $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = $image_mobile_website;
+                        }
 
 
+                        $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = $image_mobile_website;
 
 
+                        $image_website = $item['image_src'];
+                        if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                            $image_key     = $matches[1];
+                            $image_website = 'wi.php?id='.$image_key.'&s='.get_image_size($image_key, 432, 330, 'fit_highest');
 
-                            $image_website = $item['image_src'];
-                            if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                $image_key     = $matches[1];
-                                $image_website = 'wi.php?id='.$image_key.'&s='.get_image_size($image_key, 432, 330, 'fit_highest');
-
-                            }
+                        }
 
 
-                            $content_data['blocks'][$block_key]['items'][$item_key]['image_website'] = $image_website;
-
+                        $content_data['blocks'][$block_key]['items'][$item_key]['image_website'] = $image_website;
 
 
                     } elseif ($item['type'] == 'image') {
 
 
-                            $image_website = $item['image_src'];
-                            if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                $image_key = $matches[1];
+                        $image_website = $item['image_src'];
+                        if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                            $image_key = $matches[1];
 
-                                if ($content_data['blocks'][$block_key]['item_headers']) {
-                                    $height = 330;
-                                } else {
-                                    $height = 290;
-                                }
-
-
-                                switch ($item['size_class']) {
-                                    case 'panel_1':
-                                        $width = 226;
-
-                                        break;
-                                    case 'panel_2':
-                                        $width = 470;
-                                        break;
-                                    case 'panel_3':
-                                        $width = 714;
-                                        break;
-                                    case 'panel_4':
-                                        $width = 958;
-                                        break;
-                                    case 'panel_5':
-                                        $width = 1202;
-                                        break;
-
-                                }
-
-                                $image_website = 'wi.php?id='.$image_key.'&s='.$width.'x'.$height;
-
+                            if ($content_data['blocks'][$block_key]['item_headers']) {
+                                $height = 330;
+                            } else {
+                                $height = 290;
                             }
 
 
-                            $content_data['blocks'][$block_key]['items'][$item_key]['image_website'] = $image_website;
+                            switch ($item['size_class']) {
+                                case 'panel_1':
+                                    $width = 226;
+
+                                    break;
+                                case 'panel_2':
+                                    $width = 470;
+                                    break;
+                                case 'panel_3':
+                                    $width = 714;
+                                    break;
+                                case 'panel_4':
+                                    $width = 958;
+                                    break;
+                                case 'panel_5':
+                                    $width = 1202;
+                                    break;
+                                default:
+                                    $width = 226;
+                                    break;
+
+                            }
+
+                            $image_website = 'wi.php?id='.$image_key.'&s='.$width.'x'.$height;
+
+                        }
 
 
-
+                        $content_data['blocks'][$block_key]['items'][$item_key]['image_website'] = $image_website;
 
 
                     }
@@ -263,34 +252,28 @@ function digest_website_content_data_blocks($content_data) {
                     $content_data['blocks'][$block_key]['items'][$item_key]['image_src'] = preg_replace('/image_root/', 'wi', $item['image_src']);
 
 
-                        $image_mobile_website = $item['image_src'];
-                        if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                            $image_key = $matches[1];
+                    $image_mobile_website = $item['image_src'];
+                    if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                        $image_key = $matches[1];
 
-                            $image_mobile_website = 'wi.php?id='.$image_key.'&s=340x214';
-
-
-                        }
+                        $image_mobile_website = 'wi.php?id='.$image_key.'&s=340x214';
 
 
-                        $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = $image_mobile_website;
+                    }
 
 
+                    $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = $image_mobile_website;
 
 
+                    $image_website = $item['image_src'];
+                    if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                        $image_key     = $matches[1];
+                        $image_website = 'wi.php?id='.$image_key.'&s='.get_image_size($image_key, 432, 330, 'fit_highest');
 
-                        $image_website = $item['image_src'];
-                        if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                            $image_key     = $matches[1];
-                            $image_website = 'wi.php?id='.$image_key.'&s='.get_image_size($image_key, 432, 330, 'fit_highest');
-
-                        }
-
-
-                        $content_data['blocks'][$block_key]['items'][$item_key]['image_website'] = $image_website;
+                    }
 
 
-
+                    $content_data['blocks'][$block_key]['items'][$item_key]['image_website'] = $image_website;
 
 
                     //   print_r( $content_data['blocks'][$block_key]['items'][$item_key]);
@@ -305,38 +288,33 @@ function digest_website_content_data_blocks($content_data) {
                     $content_data['blocks'][$block_key]['items'][$item_key]['image_src'] = preg_replace('/image_root/', 'wi', $item['image_src']);
 
 
-                        $image_mobile_website = $item['image_src'];
-                        if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                            $image_key = $matches[1];
+                    $image_mobile_website = $item['image_src'];
+                    if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                        $image_key = $matches[1];
 
-                            $image_mobile_website = 'wi.php?id='.$image_key.'&s=320x200';
-
-
-                        }
+                        $image_mobile_website = 'wi.php?id='.$image_key.'&s=320x200';
 
 
-                        $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = $image_mobile_website;
+                    }
 
 
+                    $content_data['blocks'][$block_key]['items'][$item_key]['image_mobile_website'] = $image_mobile_website;
 
 
-                        $image_website = $item['image_src'];
-                        if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                            $image_key     = $matches[1];
-                            $image_website = 'wi.php?id='.$image_key.'&s='.get_image_size($image_key, 432, 330, 'fit_highest');
+                    $image_website = $item['image_src'];
+                    if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                        $image_key     = $matches[1];
+                        $image_website = 'wi.php?id='.$image_key.'&s='.get_image_size($image_key, 432, 330, 'fit_highest');
 
-                        }
+                    }
 
 
-                        $content_data['blocks'][$block_key]['items'][$item_key]['image_website'] = $image_website;
-
+                    $content_data['blocks'][$block_key]['items'][$item_key]['image_website'] = $image_website;
 
 
                 }
                 break;
             case 'category_categories':
-
-
 
 
                 foreach ($block['sections'] as $section_key => $section) {
@@ -348,63 +326,61 @@ function digest_website_content_data_blocks($content_data) {
 
                             if ($item['type'] == 'category') {
 
-                                    $image_mobile_website = $item['image_src'];
-                                    if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                        $image_key            = $matches[1];
-                                        $image_mobile_website = 'wi.php?id='.$image_key.'&s=320x200';
-                                    }
-                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website'] = $image_mobile_website;
+                                $image_mobile_website = $item['image_src'];
+                                if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                                    $image_key            = $matches[1];
+                                    $image_mobile_website = 'wi.php?id='.$image_key.'&s=320x200';
+                                }
+                                $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_mobile_website'] = $image_mobile_website;
 
 
-
-                                    $image_website = $item['image_src'];
-                                    if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                        $image_key     = $matches[1];
-                                        $image_website = 'wi.php?id='.$image_key.'&s='.get_image_size($image_key, 432, 330, 'fit_highest');
-
-
-                                    }
+                                $image_website = $item['image_src'];
+                                if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                                    $image_key     = $matches[1];
+                                    $image_website = 'wi.php?id='.$image_key.'&s='.get_image_size($image_key, 432, 330, 'fit_highest');
 
 
-                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website'] = $image_website;
+                                }
 
+
+                                $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website'] = $image_website;
 
 
                             } elseif ($item['type'] == 'image') {
 
 
-                                    $image_website = $item['image_src'];
-                                    if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
-                                        $image_key = $matches[1];
-                                        $height    = 220;
-                                        switch ($item['size_class']) {
-                                            case 'panel_1':
-                                                $width = 226;
-
-                                                break;
-                                            case 'panel_2':
-                                                $width = 470;
-                                                break;
-                                            case 'panel_3':
-                                                $width = 714;
-                                                break;
-                                            case 'panel_4':
-                                                $width = 958;
-                                                break;
-                                            case 'panel_5':
-                                                $width = 1202;
-                                                break;
-
-                                        }
-
-                                        $image_website = 'wi.php?id='.$image_key.'&s='.$width.'x'.$height;
+                                $image_website = $item['image_src'];
+                                if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {
+                                    $image_key = $matches[1];
+                                    $height    = 220;
+                                    switch ($item['size_class']) {
+                                        case 'panel_1':
+                                            $width = 226;
+                                            break;
+                                        case 'panel_2':
+                                            $width = 470;
+                                            break;
+                                        case 'panel_3':
+                                            $width = 714;
+                                            break;
+                                        case 'panel_4':
+                                            $width = 958;
+                                            break;
+                                        case 'panel_5':
+                                            $width = 1202;
+                                            break;
+                                        default:
+                                            $width = 226;
+                                            break;
 
                                     }
 
+                                    $image_website = 'wi.php?id='.$image_key.'&s='.$width.'x'.$height;
 
-                                    $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website'] = $image_website;
+                                }
 
 
+                                $content_data['blocks'][$block_key]['sections'][$section_key]['items'][$item_key]['image_website'] = $image_website;
 
                             }
                         }
@@ -412,21 +388,6 @@ function digest_website_content_data_blocks($content_data) {
                 }
 
                 break;
-
-            case 'images':
-
-
-                if (isset($block['images'])) {
-
-
-                    foreach ($block['images'] as $_key => $_data) {
-
-
-                        $content_data['blocks'][$block_key]['images'][$_key]['src'] = preg_replace('/image_root.php/', 'iw.php', $_data['src']);
-
-                    }
-
-                }
 
 
             default:
