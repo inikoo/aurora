@@ -32,7 +32,7 @@ module.exports = function (grunt) {
                     sourceMap: true,},
                 src: ['EcomB2B/js/aurora/validation.EcomB2B.js', 'EcomB2B/js/aurora/aurora.logged_in.js', 'EcomB2B/js/aurora/ordering.js','EcomB2B/js/aurora/logout.js',
                 ], dest: 'EcomB2B/assets/desktop.logged_in.min.js',
-            }, dropshipping_logged_in: {
+            }, ecom_dropshipping_logged_in: {
                 options: {
                     sourceMap: true,},
                 src: ['EcomB2B/js/dropshipping/portfolio.js','EcomB2B/js/dropshipping/logout.js',
@@ -652,7 +652,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('pweb', ['copy:fa_webfonts', 'sass:ecom_css', 'cssmin:ecom_css',
             'uglify:ecom_desktop_in','uglify:ecom_desktop_out','uglify:ecom_desktop_forms','uglify:ecom_mobile_forms','uglify:ecom_mobile','uglify:ecom_mobile_custom','uglify:ecom_datatables',
-            'uglify:ecom_desktop_logged_in', 'uglify:ecom_desktop_logged_in','uglify:ecom_image_gallery','uglify:ecom_desktop_basket', 'uglify:ecom_desktop_checkout', 'uglify:ecom_desktop_profile',
+            'uglify:ecom_desktop_logged_in', 'uglify:ecom_dropshipping_logged_in','uglify:ecom_image_gallery','uglify:ecom_desktop_basket', 'uglify:ecom_desktop_checkout', 'uglify:ecom_desktop_profile',
         'uglify:ecom_mobile_basket', 'uglify:ecom_mobile_profile', 'uglify:ecom_mobile_checkout','uglify:ecom_mobile_in'
 
     ]);

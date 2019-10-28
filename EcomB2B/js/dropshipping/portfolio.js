@@ -1,7 +1,13 @@
+/*Author: Raul Perusquia <raul@inikoo.com>
+ Created: Mon 28 Oct 2019 23:46:57 +0800 MYT. Kuala Lumpur, Malaysia
+ Copyright (c) 2015, Inikoo
+ Version 3.0*/
+
 $(function () {
 
     $(document).on('click', '.order_row .edit_portfolio_item', function (evt) {
-        let action;
+
+        var action;
 
 
         if ($(this).find('i').hasClass('fa-spinner')) return;
