@@ -29,14 +29,14 @@ module.exports = function (grunt) {
                 dest: 'EcomB2B/assets/desktop.out.min.js'
             }, ecom_desktop_logged_in: {
                 options: {
-
-                    sourceMap: true,
-                },
-
-                src: ['EcomB2B/js/aurora/validation.EcomB2B.js', 'EcomB2B/js/aurora/aurora.logged_in.js', 'EcomB2B/js/aurora/ordering.js',
-
-
+                    sourceMap: true,},
+                src: ['EcomB2B/js/aurora/validation.EcomB2B.js', 'EcomB2B/js/aurora/aurora.logged_in.js', 'EcomB2B/js/aurora/ordering.js','EcomB2B/js/aurora/logout.js',
                 ], dest: 'EcomB2B/assets/desktop.logged_in.min.js',
+            }, dropshipping_logged_in: {
+                options: {
+                    sourceMap: true,},
+                src: ['EcomB2B/js/dropshipping/portfolio.js','EcomB2B/js/dropshipping/logout.js',
+                ], dest: 'EcomB2B/assets/dropshipping,logged_in.min.js',
             }, ecom_image_gallery: {
                 options: {
                     sourceMap: true,
@@ -359,6 +359,13 @@ module.exports = function (grunt) {
                     }
                 }]
             },
+            ecom_dropshipping_logged_in: {
+                files: [{
+                    expand: true, dot: true, cwd: 'EcomB2B/assets', dest: 'EcomB2B/assets/', src: ['dropshipping.logged_in.min.js'], rename: function (dest, src) {
+                        return dest + src.replace('.min', '.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min');
+                    }
+                }]
+            },
             ecom_image_gallery: {
                 files: [{
                     expand: true, dot: true, cwd: 'EcomB2B/assets', dest: 'EcomB2B/assets/', src: ['image_gallery.min.js'], rename: function (dest, src) {
@@ -496,6 +503,10 @@ module.exports = function (grunt) {
                 src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl', 'EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
                     from: /desktop.logged_in.\.*min.js"/g, to: 'desktop.logged_in.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
                 }]
+            },ecom_dropshipping_logged_in: {
+                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.tpl', 'EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
+                    from: /dropshipping.logged_in.\.*min.js"/g, to: 'dropshipping.logged_in.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
+                }]
             }, ecom_desktop_out: {
                 src: ['EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.tpl'], overwrite: true, replacements: [{
                     from: /desktop.out.\.*min.js"/g, to: 'desktop.out.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.js"'
@@ -604,6 +615,9 @@ module.exports = function (grunt) {
     grunt.registerTask('ecom_libs_headers', ['ecom_desktop_in','ecom_desktop_out','ecom_desktop_forms','ecom_mobile_forms','ecom_mobile','ecom_mobile_custom','ecom_datatables']);
 
     grunt.registerTask('ecom_desktop_logged_in', ['uglify:ecom_desktop_logged_in', 'copy:ecom_desktop_logged_in', 'replace:ecom_desktop_logged_in']);
+    grunt.registerTask('ecom_dropshipping_logged_in', ['uglify:ecom_dropshipping_logged_in', 'copy:ecom_dropshipping_logged_in', 'replace:ecom_dropshipping_logged_in']);
+
+
     grunt.registerTask('ecom_image_gallery', ['uglify:ecom_image_gallery', 'copy:ecom_image_gallery', 'replace:ecom_image_gallery']);
 
     grunt.registerTask('ecom_basket_checkout', ['uglify:ecom_desktop_basket', 'uglify:ecom_desktop_checkout', 'uglify:ecom_desktop_profile',
@@ -638,7 +652,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('pweb', ['copy:fa_webfonts', 'sass:ecom_css', 'cssmin:ecom_css',
             'uglify:ecom_desktop_in','uglify:ecom_desktop_out','uglify:ecom_desktop_forms','uglify:ecom_mobile_forms','uglify:ecom_mobile','uglify:ecom_mobile_custom','uglify:ecom_datatables',
-            'uglify:ecom_desktop_logged_in','uglify:ecom_image_gallery','uglify:ecom_desktop_basket', 'uglify:ecom_desktop_checkout', 'uglify:ecom_desktop_profile',
+            'uglify:ecom_desktop_logged_in', 'uglify:ecom_desktop_logged_in','uglify:ecom_image_gallery','uglify:ecom_desktop_basket', 'uglify:ecom_desktop_checkout', 'uglify:ecom_desktop_profile',
         'uglify:ecom_mobile_basket', 'uglify:ecom_mobile_profile', 'uglify:ecom_mobile_checkout','uglify:ecom_mobile_in'
 
     ]);

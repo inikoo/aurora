@@ -99,44 +99,6 @@ $(function() {
 
 
 
-    $('#logout').on("click", function () {
-
-
-
-        var ajaxData = new FormData();
-
-        ajaxData.append("tipo", 'logout')
-
-        ajaxData.append("webpage_key", $('#webpage_data').data('webpage_key'))
-
-        $.ajax({
-            url: "/ar_web_logout.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-
-
-            complete: function () {
-
-            }, success: function (data) {
-
-                // console.log(data)
-
-                if (data.state == '200') {
-                    ga('auTracker.send', 'event', 'Login', 'logout');
-                    location.reload();
-
-                } else if (data.state == '400') {
-                    swal(data.msg);
-                }
-
-
-            }, error: function () {
-
-            }
-        });
-
-
-    });
-
-
     $(".label_when_log_out").each(function (index) {
 
 
@@ -236,88 +198,6 @@ $(function() {
     }
 
 
-
-
-    /*
-
-     $('.order_row .label').on( 'click',function () {
-
-
-
-
-
-            var element = $(this);
-            var order_row = $(this).closest('.order_row');
-            if ($(this).find('i').hasClass('fa-spinner')) return;
-
-
-            var input = order_row.find('.order_input')
-
-            var order_qty = input.val()
-            $(this).find('i').removeClass('fa-hand-pointer').addClass('fa-spinner fa-spin  ')
-            input.prop('readonly', true);
-
-            var order_key = $('#webpage_data').data('order_key');
-            if (order_key == '') order_key = 0;
-
-            if (order_qty > 0) {
-                order_row.addClass('ordered').removeClass('empty')
-            } else {
-                //   order_row.removeClass('ordered').addClass('empty')
-
-            }
-
-
-            var request = 'ar_web_basket.php?tipo=update_item&product_id=' + $(this).closest('.product_container').data('product_id') + '&order_key=' + order_key + '&qty=' + order_qty + '&webpage_key=' + $('#webpage_data').data('webpage_key') + '&page_section_type=Family'
-
-            //console.log(request)
-            $.getJSON(request, function (data) {
-
-
-                if (data.state == 200) {
-
-
-
-                    for (var key in data.metadata.class_html) {
-                        $('.' + key).html(data.metadata.class_html[key])
-                    }
-
-
-                    if (data.quantity > 0) {
-                        element.html($('#ordering_settings').data('labels').ordered)
-                        order_row.addClass('ordered').removeClass('empty')
-                    } else {
-                        element.html($('#ordering_settings').data('labels').order)
-                        order_row.removeClass('ordered').addClass('empty')
-                    }
-
-                    if (data.quantity == 0) data.quantity = ''
-
-                    input.val(data.quantity).data('ovalue', data.quantity).prop('readonly', false);
-                    //console.log(data.analytics)
-                    if(data.analytics.action!=''){
-
-
-                        ga('ec:addProduct', data.analytics.product_data);
-                        ga('ec:setAction', data.analytics.action);
-                        ga('send', 'event', 'UX', 'click',data.analytics.event);
-                    }
-
-
-
-
-                } else if (data.state == 201) {
-
-
-
-                }
-
-
-            })
-
-
-        });
-    */
 
 
 });

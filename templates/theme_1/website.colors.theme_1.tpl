@@ -548,7 +548,7 @@
                     </tr>
 
                     <tr>
-                        <td id="" class="label">{t}Order button text{/t}</td>
+                        <td  class="label">{if $store->get('Store Type')=='Dropshipping'}{t}Edit portfolio text{/t}{else}{t}Order button text{/t}{/if}</td>
                         <td>
 
 
@@ -566,8 +566,9 @@
                         </td>
                     </tr>
 
-                    <tr>
-                        <td id="" class="label">{t}Order button background{/t}</td>
+                    <tr class="order_button_background_tr">
+                        <td class="label">{if $store->get('Store Type')=='Dropshipping'}{t}Edit portfolio background{/t}{else}{t}Order button background{/t}{/if}</td>
+
                         <td>
                     <span data-scope="footer_background-color" class="fa-stack color_picker scope_footer_background-color like_button">
                          <i class="fas fa-circle fa-stack-1x "></i>
@@ -823,7 +824,7 @@
                 <div style="clear:both"></div>
             </div>
             <div class="products no_items_header"  style="margin-top: 20px;margin-bottom: 60px" >
-                <div class="product_wrap wrap type_product " data-element=".empty" onClick="open_edit_product_wrap_style(this)"  >
+                <div class="product_wrap wrap type_product " data-element="{if $store->get('Store Type')=='Dropshipping'}.add_to_portfolio{else}.empty{/if}" onClick="open_edit_product_wrap_style(this)"  >
                     <div class="product_block item product_container" >
                         <div class="wrap_to_center product_image" >
                                     <i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i>
@@ -836,7 +837,7 @@
 
 
                                 <div class="product_description"  >
-                                    <span class="code">Fruit-01</span>
+                                    <span class="code">Fruit-01x/span>
                                     <div class="name item_name">Fuji apple, Enjoy the full flavor of a Fuji!</div>
 
                                 </div>
@@ -854,7 +855,13 @@
                                 {/if}
 
 
-
+                                        {if $store->get('Store Type')=='Dropshipping'}
+                                            <div class="portfolio_row  ">
+                                                <div class="edit_portfolio_item add_to_portfolio sim_button " style="text-align: center"> <i class="fa fa-plus padding_right_5"></i>
+                                                    {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}</span>
+                                                </div>
+                                            </div>
+                                        {else}
 
                                         <div class="order_row empty  order_row_ ">
                                             <input maxlength=6 style="" class='order_input  ' type="text"' size='2' value='' data-ovalue=''>
@@ -865,6 +872,7 @@
 
 
                                         </div>
+                                    {/if}
 
 
 
@@ -876,7 +884,7 @@
 
                             </div>
                 </div>
-                <div class="product_wrap wrap type_product " data-element=".ordered"  onClick="open_edit_product_wrap_style(this)">
+                <div class="product_wrap wrap type_product " data-element="{if $store->get('Store Type')=='Dropshipping'}.remove_from_portfolio{else}.ordered{/if}"  onClick="open_edit_product_wrap_style(this)">
                     <div class="product_block item product_container" >
                         <div class="wrap_to_center product_image" >
                             <a href="#"><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"  title="{t}More info{/t}"  ></i></a>
@@ -911,18 +919,22 @@
 
 
                             </div>
-
-                            <div class="order_row ordered  order_row_ ">
-                                <input maxlength=6 style="" class='order_input  ' type="text"' size='2' value='1' data-ovalue=''>
+                            {if $store->get('Store Type')=='Dropshipping'}
+                                <div class="portfolio_row  ">
+                                    <div class="edit_portfolio_item remove_from_portfolio  " style="text-align: center"> <i class="fal fa-store-alt padding_right_5"></i>
+                                        {if empty($labels._in_portfolio)}{t}In portfolio{/t}{else}{$labels._in_portfolio}{/if}
+                                        <i style="position: absolute;right:10px;bottom:-2.5px" class="fa fa-trash-alt  sim_button" title="{if empty($labels._remove_from_portfolio)}{t}Remove from portfolio{/t}{else}{$labels._remove_from_portfolio}{/if}"></i>
+                                    </div>
+                                </div>
+                            {else}
+                            <div class="order_row {if $store->get('Store Type')=='Dropshipping'}remove_from_portfolio{else}ordered{/if}  order_row_ ">
+                                <input maxlength=6 style="" class='order_input  ' type="text"' size='2' value='1' >
 
                                 <div class="label sim_button" style="margin-left:57px">
                                     <i class=" fa fa-thumbs-up fa-fw" aria-hidden="true"></i> <span class="">{if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}</span>
                                 </div>
-
-
-
-
                             </div>
+                            {/if}
 
 
 
@@ -960,16 +972,17 @@
 
 
 
-
-
-                            <div class="ordering log_in can_not_order  out_of_stock_row out_of_stock  ">
-
-                                <span class="product_footer label ">{t}Out of stock{/t}</span>
-                                <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
-
-
-                            </div>
-
+                            {if $store->get('Store Type')=='Dropshipping'}
+                                <div class="ordering log_in can_not_order  out_of_stock_row out_of_stock  ">
+                                    <span class="product_footer label ">{t}Discontinued{/t}</span>
+                                    <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
+                                </div>
+                            {else}
+                                <div class="ordering log_in can_not_order  out_of_stock_row out_of_stock  ">
+                                    <span class="product_footer label ">{t}Out of stock{/t}</span>
+                                    <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
+                                </div>
+                            {/if}
 
 
 
