@@ -24,7 +24,6 @@ if ($redis->connect('127.0.0.1', 6379)) {
     $redis_on = false;
 }
 
-include('utils/find_website_key.include.php');
 
 session_start();
 if (empty($_SESSION['website_key'])) {

@@ -689,7 +689,7 @@ class Page extends DB_Table {
 
 
         if (empty($this->fork)) {
-            $base = '';
+            $base = 'EcomB2B/server_files/';
         } else {
             $account = get_object('Account', 1);
             $base    = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';
@@ -737,7 +737,7 @@ class Page extends DB_Table {
 
 
         if (empty($this->fork)) {
-            $base = '';
+            $base = 'EcomB2B/server_files/';
         } else {
             $account = get_object('Account', 1);
             $base    = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';
@@ -901,7 +901,7 @@ class Page extends DB_Table {
         $smarty_web = new Smarty();
 
         if (empty($this->fork)) {
-            $base = '';
+            $base = 'EcomB2B/server_files/';
         } else {
             $account = get_object('Account', 1);
             $base    = 'base_dirs/server_files_EcomB2B.'.strtoupper($account->get('Account Code')).'/';
@@ -914,6 +914,8 @@ class Page extends DB_Table {
         $smarty_web->addPluginsDir('./smarty_plugins');
 
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
+
+
 
 
         $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
