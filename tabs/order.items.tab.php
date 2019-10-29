@@ -50,13 +50,13 @@ $parameters = array(
 $table_buttons   = array();
 
 
-if($state['_object']->get('State Index')>0 and  $state['_object']->get('State Index')<80){
+if($state['_object']->get('State Index')>0 and  $state['_object']->get('State Index')<=40){
 
     $table_buttons[] = array(
         'icon'     => 'plus',
         'title'    => _('New item'),
         'id'       => 'new_item',
-        'class'    => 'items_operation',
+        'class'    => 'items_operation '.(($state['_object']->get('State Index')>0 and  $state['_object']->get('State Index')<40)?'':'hide'),
         'add_item' => array(
 
             'field_label' => _("Product").':',
@@ -74,6 +74,16 @@ if($state['_object']->get('State Index')>0 and  $state['_object']->get('State In
         )
 
     );
+}
+
+if($state['_object']->get('State Index')==40){
+
+    $table_buttons[] = array(
+        'icon'     => 'pencil-alt',
+        'title'    => _('Edit items'),
+        'id'       => 'edit_order_in_warehouse_items',
+    );
+
 }
 
 
@@ -103,4 +113,4 @@ $smarty->assign(
 include('utils/get_table_html.php');
 
 
-?>
+

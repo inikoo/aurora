@@ -534,12 +534,9 @@
 
 
                 <div data-title="{t}Are you sure you want to modify an order already in warehouse?{/t}"
-                     data-html='{t}Please notify warehouse staff of changes{/t}'
-                     data-confirmButtonText="{t}Yes, i want to modify it!{/t}"
-                     class="order_operation edit_order_in_warehouse {if $order->get('Order State')!='InWarehouse'  }hide{/if}">
-                    <div class="square_button right" title="{t}Edit order items{/t}">
-                        <i class="far fa-pencil-alt" aria-hidden="true" onclick="edit_order_in_warehouse()"></i>
-                    </div>
+                     data-html="{t}Please notify warehouse staff of changes{/t}"  data-confirm="{t}Yes, i want to modify it!{/t}"
+                     class=" edit_order_in_warehouse">
+
                 </div>
 
             </div>

@@ -3002,11 +3002,11 @@ function set_charges_as_auto() {
 
 }
 
+$(document).on('click', '#edit_order_in_warehouse_items', function (evt) {
+    edit_order_in_warehouse();
+})
+
 function edit_order_in_warehouse(){
-
-
-
-    if($('#forward_operations .edit_order_in_warehouse i').hasClass('far')){
 
 
         Swal.fire({
@@ -3016,9 +3016,13 @@ function edit_order_in_warehouse(){
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: $('.edit_order_in_warehouse').data('confirmButtonText')
+            confirmButtonText: $('.edit_order_in_warehouse').data('confirm')
         }).then(function (result) {
             if (result.value) {
+
+                $('#new_item').removeClass('hide')
+                $('#edit_order_in_warehouse_items').addClass('hide')
+
                 grid.columns.findWhere({
                     name: 'quantity'
                 }).set("renderable", false);
@@ -3028,24 +3032,6 @@ function edit_order_in_warehouse(){
                 $('#forward_operations .edit_order_in_warehouse i').removeClass('far').addClass('fas');
             }
         });
-
-
-
-
-
-
-
-
-
-
-    }else{
-        grid.columns.findWhere({ name: 'quantity'} ).set("renderable", true)
-        grid.columns.findWhere({ name: 'quantity_edit'} ).set("renderable", false)
-        $('#forward_operations .edit_order_in_warehouse i').addClass('far').removeClass('fas')
-
-    }
-
-
 
 
 }

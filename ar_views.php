@@ -4366,7 +4366,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
 
             $order_state_index = $data['_object']->get('State Index');
-            if ($order_state_index > 40 or $order_state_index < 0) {
+            if ($order_state_index >= 40 or $order_state_index < 0) {
 
                 $_content['tabs']['order.all_products']['class'] = 'hide';
 
