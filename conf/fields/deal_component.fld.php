@@ -199,7 +199,7 @@ if( $object->get('Deal Component Status')!='Finish') {
                     'render'    => ($deal_component->get('Deal Component Status') == 'Suspended' ? false : true),
                     'value'     => '',
                     'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$deal_component->get_object_name().'", "key":"'.$deal_component->id
-                        .'"}\' onClick="suspend__parent_object(this)" class="delete_object disabled">'._("Suspend offer").' <i class="fa fa-stop error new_button link"></i></span>',
+                        .'"}\' onClick="suspend_parent_object(this)" class="delete_object disabled">'._("Suspend offer").' <i class="fa fa-stop error new_button link"></i></span>',
                     'reference' => '',
                     'type'      => 'operation'
                 ),

@@ -111,9 +111,7 @@ function subject_sent_emails($_data, $db, $user) {
                 case 'Sent to SES':
                     $state = _('Sending');
                     break;
-
-                    break;
-                case 'Delivered':
+                    case 'Delivered':
                     $state = _('Delivered');
                     break;
                 case 'Opened':
@@ -367,7 +365,6 @@ function sent_emails($_data, $db, $user) {
                 case 'Sent to SES':
                     $state = _('Sending');
                     break;
-                    break;
                 case 'Delivered':
                     $state = _('Delivered');
                     break;
@@ -533,7 +530,6 @@ function user_notification_sent_emails($_data, $db, $user) {
                     break;
                 case 'Sent to SES':
                     $state = _('Sending');
-                    break;
                     break;
                 case 'Delivered':
                     $state = _('Delivered');

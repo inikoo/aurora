@@ -461,7 +461,6 @@ if ($validator->isValid($sns)) {
                     case 'Sent to SES':
                         $state = _('Sending');
                         break;
-                        break;
                     case 'Delivered':
                         $state = _('Delivered');
                         break;

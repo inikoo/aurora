@@ -70,8 +70,6 @@ switch ($tipo) {
         break;
 
 
-
-
     case 'orders_server':
         orders_server(get_table_parameters(), $db, $user);
         break;
@@ -291,7 +289,7 @@ function orders_in_process_paid($_data, $db, $user, $account) {
             foreach (preg_split('/,/', $data['payments']) as $payment_data) {
                 $payment_data = preg_split('/\|/', $payment_data);
 
-                if(count($payment_data)==2){
+                if (count($payment_data) == 2) {
                     if ($payment_data[1] == 'Accounts') {
                         $payment_name = _('Credit');
                     } else {
@@ -302,14 +300,10 @@ function orders_in_process_paid($_data, $db, $user, $account) {
                 }
 
 
-
-
             }
             $payments = preg_replace('/, $/', '', $payments);
 
         }
-
-
 
 
         // include_once 'class.Order.php';
@@ -458,10 +452,8 @@ function orders_in_warehouse_no_alerts($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-     //  print $sql;
+    //  print $sql;
     foreach ($db->query($sql) as $data) {
-
-
 
 
         $operations = '<div id="operations'.$data['Order Key'].'">';
@@ -536,7 +528,7 @@ function orders_in_warehouse_no_alerts($_data, $db, $user, $account) {
                 '<span class="link"  onclick="change_view(\'orders/%s/dashboard/in_warehouse/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
             ),
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['submitted_date'].' +0:00')),
-           // 'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
+            // 'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
             'customer'       => sprintf('<span class="link" onClick="change_view(\'customers/%d/%d\')">%s</span>', $data['Order Store Key'], $data['Order Customer Key'], $data['Order Customer Name']),
             'dispatch_state' => get_order_formatted_dispatch_state($data['Order State'], $data['Order Replacement State'], $data['Order Key']),
             'payment_state'  => $payment_state,
@@ -918,7 +910,6 @@ function orders_in_website($_data, $db, $user, $account) {
 }
 
 
-
 function orders_server($_data, $db, $user) {
     $rtext_label = 'order';
 
@@ -1111,7 +1102,6 @@ function delivery_notes($_data, $db, $user) {
         $notes = '';
 
         switch ($data['Delivery Note State']) {
-
 
 
             case 'Ready to be Picked':
@@ -1617,7 +1607,6 @@ function order_items($_data, $db, $user) {
         $description .= ' '.$name;
 
 
-
         if ($data['Product UN Number']) {
 
             $description .= ' <span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;padding:0px;font-size:90%">'.$data['Product UN Number'].'</span>';
@@ -1639,8 +1628,6 @@ function order_items($_data, $db, $user) {
         }
 
 
-
-
         if ($data['Order Quantity'] != $data['Delivery Note Quantity'] and in_array(
                 $customer_order->get('Order State'), array(
                                                        'PackedDone',
@@ -1649,10 +1636,10 @@ function order_items($_data, $db, $user) {
                                                    )
             )) {
             $quantity = '<span class="discreet " title="'.sprintf(_('%s ordered by customer'), number($data['Order Quantity'])).'" >(<span class="strikethrough">'.number($data['Order Quantity']).'</span>)</span> '.number($data['Delivery Note Quantity']);
-            $weight=weight($data['Product Package Weight'] * $data['Delivery Note Quantity'],'Kg',3,false,true);
+            $weight   = weight($data['Product Package Weight'] * $data['Delivery Note Quantity'], 'Kg', 3, false, true);
         } else {
             $quantity = number($data['Order Quantity']);
-            $weight=weight($data['Product Package Weight'] * $data['Order Quantity'],'Kg',3,false,true);
+            $weight   = weight($data['Product Package Weight'] * $data['Order Quantity'], 'Kg', 3, false, true);
 
         }
 
@@ -1709,9 +1696,9 @@ function order_items($_data, $db, $user) {
 
             'discounts' => '<span id="transaction_discounts_'.$data['Order Transaction Fact Key'].'" class="_item_discounts">'.$discounts.'</span>',
 
-            'weight' => $weight,
-            'package_weight' => weight($data['Product Package Weight'],'Kg',3,false,true),
-            'tariff_code'=>$data['Product Tariff Code'],
+            'weight'         => $weight,
+            'package_weight' => weight($data['Product Package Weight'], 'Kg', 3, false, true),
+            'tariff_code'    => $data['Product Tariff Code'],
 
             'net' => sprintf('<span  id="transaction_item_net_'.$data['Order Transaction Fact Key'].'" class="_order_item_net">%s</span>', money($data['Order Transaction Amount'], $data['Order Currency Code'])),
 
@@ -2139,8 +2126,6 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
             ).'</div>';
 
 
-
-
         /*
         if ($data['Picked'] == $data['quantity']) {
             $picked_info = '<i class="fa fa-fw fa-check success" aria-hidden="true"></i>';
@@ -2178,11 +2163,6 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
             $no_picked_qty  = 0;
             $status_icon    = 'success  fa-check-circle';
         }
-
-
-
-
-
 
 
         $picked_offline_status = sprintf(
@@ -2252,8 +2232,6 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
         );
 
     }
-
-
 
 
     if ($total_number_items > 0) {
@@ -2469,7 +2447,6 @@ function delivery_note_items($_data, $db, $user) {
 
 
     global $_locale;// fix this locale stuff
-
 
 
     $rtext_label = 'item';
@@ -3074,7 +3051,7 @@ function refund_new_items_tax($_data, $db, $user, $account) {
 }
 
 
-function replacement_new_items($_data, $db, $user){
+function replacement_new_items($_data, $db, $user) {
 
     global $_locale;// fix this locale stuff
 
@@ -3432,8 +3409,6 @@ function order_sent_emails($_data, $db, $user) {
                     break;
                 case 'Sent to SES':
                     $state = _('Sending');
-                    break;
-
                     break;
                 case 'Delivered':
                     $state = _('Delivered');

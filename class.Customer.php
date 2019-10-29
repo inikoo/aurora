@@ -293,7 +293,6 @@ class Customer extends Subject {
                     return _('Unrelated to contact address');
                 }
 
-                break;
             case 'Fiscal Name':
             case 'Invoice Name':
 
@@ -306,7 +305,6 @@ class Customer extends Subject {
 
                 return $this->data['Customer Name'];
 
-                break;
             case 'Tax Number Formatted':
 
                 switch ($this->data['Customer Tax Number Validation Source']) {
@@ -377,9 +375,6 @@ class Customer extends Subject {
                     }
                 }
 
-                break;
-
-
             case('Tax Number Valid'):
                 if ($this->data['Customer Tax Number'] != '') {
 
@@ -435,20 +430,19 @@ class Customer extends Subject {
                         case 'Unknown':
                         case 'API_Down':
                             return _('Not validated').$validation_data;
-                            break;
                         case 'Yes':
                             return _('Validated').$validation_data;
-                            break;
                         case 'No':
                             return _('Not valid').$validation_data;
-                            break;
                         default:
                             return $this->data['Customer Tax Number Valid'].$validation_data;
 
-                            break;
+
                     }
+                }else{
+                    return '';
                 }
-                break;
+
             case('Tax Number Details Match'):
                 switch ($this->data['Customer '.$key]) {
                     case 'Unknown':
@@ -2114,7 +2108,6 @@ class Customer extends Subject {
     }
 
 
-
     function get_last_order() {
         $order_key = 0;
         $sql       = sprintf(
@@ -2613,8 +2606,8 @@ class Customer extends Subject {
 
 
         $products = 0;
-        $sql     = "SELECT count(*) AS num FROM `Customer Portfolio Fact` WHERE `Customer Portfolio Customers State`='Active' and  `Customer Portfolio Customer Key`=?  ";
-        $stmt    = $this->db->prepare($sql);
+        $sql      = "SELECT count(*) AS num FROM `Customer Portfolio Fact` WHERE `Customer Portfolio Customers State`='Active' and  `Customer Portfolio Customer Key`=?  ";
+        $stmt     = $this->db->prepare($sql);
         $stmt->execute(
             array($this->id)
         );

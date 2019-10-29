@@ -172,8 +172,6 @@ class Public_Invoice extends DBW_Table {
                         return _('Unknown');
                         break;
 
-
-                        break;
                     default:
                         return $this->data['Invoice Main Payment Method'];
                         break;

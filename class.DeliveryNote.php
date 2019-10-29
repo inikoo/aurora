@@ -715,10 +715,7 @@ class DeliveryNote extends DB_Table {
                     case('Small Parcel'):
                         $parcel_type = sprintf('<i class="fal fa-hand-holding-box" title="%s" aria-hidden="true"></i>\'', ngettext('small parcel', 'small parcels', $this->data['Delivery Note Number Parcels']));
                         break;
-                        break;
-
-
-                    default:
+                        default:
                         $parcel_type = $this->data['Delivery Note Parcel Type'];
                 }
 

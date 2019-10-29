@@ -81,12 +81,12 @@ function get_widget_details($db, $smarty, $user, $account, $modules) {
 }
 
 /**
- * @param $db \PDO
- * @param $smarty \Smarty
- * @param $user \User
+ * @param $db      \PDO
+ * @param $smarty  \Smarty
+ * @param $user    \User
  * @param $account \Account
  * @param $modules
- * @param $redis \Redis
+ * @param $redis   \Redis
  *
  * @throws \ZMQSocketException
  */
@@ -219,18 +219,18 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
             break;
         case 'page':
-            $_parent = get_object('Webpage', $state['parent_key']);
-            $website = get_object('Website', $_parent->get('Webpage Website Key'));
+            $_parent                  = get_object('Webpage', $state['parent_key']);
+            $website                  = get_object('Website', $_parent->get('Webpage Website Key'));
             $state['current_website'] = $website->id;
 
             break;
         case 'webpage_type':
-            $_parent = get_object('Webpage_Type', $state['parent_key']);
-            $website = get_object('Website', $_parent->get('Webpage Type Website Key'));
+            $_parent                  = get_object('Webpage_Type', $state['parent_key']);
+            $website                  = get_object('Website', $_parent->get('Webpage Type Website Key'));
             $state['current_website'] = $website->id;
 
 
-            if(!$_parent->id){
+            if (!$_parent->id) {
                 $state = array(
                     'old_state'  => $state,
                     'module'     => 'utils',
@@ -361,11 +361,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     }
 
 
-
-    $state['_parent']=$_parent;
-
-
-
+    $state['_parent'] = $_parent;
 
 
     if ($state['object'] != '') {
@@ -435,10 +431,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
             }
         }
 
-        if ($state['object'] == 'customer' and $state['tab'] != 'customer.new' and  $_object->id) {
-
-
-
+        if ($state['object'] == 'customer' and $state['tab'] != 'customer.new' and $_object->id) {
 
 
             if ($state['parent'] == 'store' and $state['parent_key'] == '') {
@@ -577,7 +570,6 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
         if (!$_object->id and $modules[$state['module']]['sections'][$state['section']]['type'] == 'object') {
 
 
-
             if ($state['object'] == 'api_key') {
                 $_object          = new API_Key('deleted', $state['key']);
                 $state['_object'] = $_object;
@@ -586,7 +578,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                     $state['tab']     = 'api_key.history';
 
                 }
-            }elseif ($state['object'] == 'barcode') {
+            } elseif ($state['object'] == 'barcode') {
                 $_object          = new Barcode('deleted', $state['key']);
                 $state['_object'] = $_object;
                 if ($_object->id) {
@@ -594,8 +586,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                     $state['tab']     = 'barcode.history';
 
                 }
-            }elseif ($state['object'] == 'customer') {
-
+            } elseif ($state['object'] == 'customer') {
 
 
                 $_object          = new Customer('deleted', $state['key']);
@@ -607,7 +598,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
                     $state['tab']     = 'customer.history';
 
                 }
-            }elseif ($state['object'] == 'Customer_Poll_Query_Option') {
+            } elseif ($state['object'] == 'Customer_Poll_Query_Option') {
                 $_object          = new Customer_Poll_Query_Option('deleted', $state['key']);
                 $state['_object'] = $_object;
                 if ($_object->id) {
@@ -1442,7 +1433,7 @@ function get_tab($db, $smarty, $user, $account, $tab, $subtab, $state = false, $
  * @param $user    \User
  * @param $db      \PDO
  * @param $account \Account
- * @param $redis \Redis
+ * @param $redis   \Redis
  *
  * @return mixed|string
  * @throws \SmartyException
@@ -2043,7 +2034,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
 
 
-
                 case ('campaign'):
                 case ('campaign_order_recursion'):
                 case ('vouchers'):
@@ -2245,7 +2235,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
 
 
-
                 case 'email_campaign_type':
                     return get_email_campaign_type_navigation(
                         $data, $smarty, $user, $db, $account
@@ -2298,7 +2287,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
 
 
-
             }
 
             break;
@@ -2329,7 +2317,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
                 case ('group_by_store'):
                     return get_orders_server_group_by_store_navigation($data, $smarty, $user, $db, $account);
-
 
 
                 case ('orders'):
@@ -2370,7 +2357,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
                 case ('group_by_store'):
                     return get_delivery_notes_server_group_by_store_navigation($data, $smarty, $user, $db, $account);
-
 
 
             }
@@ -2644,7 +2630,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_server_settings_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-
 
 
             }
@@ -3068,7 +3053,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
 
 
-
                 case ('location'):
                     return get_location_navigation(
                         $data, $smarty, $user, $db, $account
@@ -3128,7 +3112,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_feedback_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-
 
 
             }
@@ -3460,7 +3443,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
 
 
-
             }
 
 
@@ -3477,7 +3459,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_agent_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-
 
 
             }
@@ -3530,7 +3511,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
 
 
-
             }
         case 'agent_client_deliveries':
 
@@ -3547,7 +3527,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
 
 
-
             }
             break;
         case 'agent_parts':
@@ -3559,7 +3538,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     );
 
 
-
             }
             break;
         case 'users':
@@ -3569,7 +3547,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_users_navigation(
                         $data, $smarty, $user, $db, $account
                     );
-
 
 
                 case ('staff'):
@@ -3731,33 +3708,32 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
-    }elseif ($data['section'] == 'employees') {
+    } elseif ($data['section'] == 'employees') {
 
-        if(!$user->can_edit('Staff')){
-            $_content['tabs']['exemployees']['class'] = 'hide';
+        if (!$user->can_edit('Staff')) {
+            $_content['tabs']['exemployees']['class']       = 'hide';
             $_content['tabs']['deleted.employees']['class'] = 'hide';
 
-            if ($data['tab'] == 'exemployees' or $data['tab'] == 'deleted.employees'  ) {
+            if ($data['tab'] == 'exemployees' or $data['tab'] == 'deleted.employees') {
                 $data['tab'] = 'employees';
             }
         }
 
 
-    }elseif ($data['section'] == 'employee') {
+    } elseif ($data['section'] == 'employee') {
 
-        if(!$user->can_edit('Staff')){
-            $_content['tabs']['employee.details']['class'] = 'hide';
+        if (!$user->can_edit('Staff')) {
+            $_content['tabs']['employee.details']['class']     = 'hide';
             $_content['tabs']['employee.attachments']['class'] = 'hide';
-            $_content['tabs']['employee.history']['class'] = 'hide';
+            $_content['tabs']['employee.history']['class']     = 'hide';
 
-            if ($data['tab'] == 'employee.details' or $data['tab'] == 'employee.attachment' or $data['tab'] == 'employee.history'  ) {
+            if ($data['tab'] == 'employee.details' or $data['tab'] == 'employee.attachment' or $data['tab'] == 'employee.history') {
                 $data['tab'] = 'employee.today_timesheet.record';
             }
         }
 
 
-    }
-    elseif ($data['section'] == 'mailshot') {
+    } elseif ($data['section'] == 'mailshot') {
 
 
         $_content['tabs']['mailshot.set_mail_list']['class'] = 'hide';
@@ -4086,8 +4062,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 */
 
-    }
-    elseif ($data['section'] == 'category') {
+    } elseif ($data['section'] == 'category') {
 
         if ($data['_object']->get('Category Scope') == 'Product') {
 
@@ -4232,8 +4207,7 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         //print_r($_content);
 
 
-    }
-    elseif ($data['section'] == 'prospects.email_template') {
+    } elseif ($data['section'] == 'prospects.email_template') {
 
         if ($requested_tab != '') {
             $data['tab'] = $requested_tab;
@@ -5817,16 +5791,16 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     break;
 
                 case 'deleted_customer':
-                        $branch[] = array(
-                            'label'     => _('Customers').' '.$state['store']->get('Store Code'),
-                            'icon'      => 'users',
-                            'reference' => 'customers/'.$state['store']->id
-                        );
-                        $branch[] = array(
-                            'label'     => $state['_object']->get_formatted_id().' ('._('Deleted').')',
-                            'icon'      => 'user',
-                            'reference' => 'customer/'.$state['_object']->id
-                        );
+                    $branch[] = array(
+                        'label'     => _('Customers').' '.$state['store']->get('Store Code'),
+                        'icon'      => 'users',
+                        'reference' => 'customers/'.$state['store']->id
+                    );
+                    $branch[] = array(
+                        'label'     => $state['_object']->get_formatted_id().' ('._('Deleted').')',
+                        'icon'      => 'user',
+                        'reference' => 'customer/'.$state['_object']->id
+                    );
 
 
                     break;
@@ -6053,8 +6027,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                         'icon'      => 'envelope',
                         'reference' => ''
                     );
-                    break;
-
                     break;
                 case 'dashboard':
                     $branch[] = array(
@@ -10880,7 +10852,6 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                 'reference' => ''
             );
 
-            break;
 
             break;
         case 'marketing':

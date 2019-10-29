@@ -1941,9 +1941,6 @@
 
                     break;
 
-
-                    break;
-
                 case 'image':
 
                     blocks.push({
