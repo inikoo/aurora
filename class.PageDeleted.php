@@ -9,17 +9,46 @@
  Version 2.0
 */
 
-
+/**
+ * Class PageDeleted
+ */
 class PageDeleted {
 
-    var $deleted=true;
+    /**
+     * @var $db PDO
+     */
+    public $db;
+    /**
+     * @var int
+     */
+    public $id = 0;
+    /**
+     * @var array
+     */
+    public $data = array();
+    /**
+     * @var bool
+     */
+    public $new = false;
+    /**
+     * @var string
+     */
+    public $msg = '';
+    var $deleted = true;
+    /**
+     * @var string
+     */
+    protected $table_name;
+    /**
+     * @var array
+     */
+    protected $ignore_fields = array();
 
     function __construct($a1 = false, $a2 = false) {
 
         global $db;
-        $this->db = $db;
-        $this->table_name    = 'Page Store Deleted';
-
+        $this->db         = $db;
+        $this->table_name = 'Page Store Deleted';
 
 
         $this->ignore_fields = array('Page Store Deleted Key');
@@ -62,25 +91,26 @@ class PageDeleted {
 
     function create($data) {
         $this->new = false;
-        $keys      = '(';
-        $values    = 'values(';
-        foreach ($data as $key => $value) {
-            $keys .= "`$key`,";
-            if (preg_match('/Page Title|Page Description/i', $key)) {
-                $values .= "'".addslashes($value)."',";
-            } else {
-                $values .= prepare_mysql($value).",";
-            }
-        }
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
-        $sql    = sprintf(
-            "INSERT INTO `Page Store Deleted Dimension` %s %s", $keys, $values
+
+
+        $sql = sprintf(
+            "INSERT INTO `Page Store Deleted Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($data)).'`', join(',', array_fill(0, count($data), '?'))
         );
 
 
-        if ($this->db->exec($sql)) {
-            $this->id  =$this->db->lastInsertId();
+        $stmt = $this->db->prepare($sql);
+
+        $i = 1;
+        foreach ($this->data as $key => $value) {
+
+            $stmt->bindValue($i, $value);
+            $i++;
+        }
+
+
+        if ($stmt->execute()) {
+
+            $this->id  = $this->db->lastInsertId();
             $this->msg = "Page Deleted Created";
             $this->get_data('id', $this->id);
             $this->new = true;
@@ -93,7 +123,7 @@ class PageDeleted {
     }
 
 
-    function get($key, $data = false) {
+    function get($key) {
         switch ($key) {
 
             default:
@@ -104,19 +134,8 @@ class PageDeleted {
                 }
         }
 
-        return '';
+
     }
-
-
-    function get_snapshot_date() {
-
-        if ($this->data['Page Snapshot Last Update'] != '') {
-            return strftime(
-                "%a %e %b %Y %H:%M %Z", strtotime($this->data['Page Snapshot Last Update'].' UTC')
-            );
-        }
-    }
-
 
 
 }
