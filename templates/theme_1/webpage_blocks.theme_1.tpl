@@ -1073,6 +1073,63 @@
 
 
                     break;
+                case 'portfolio':
+
+                    var content_data = {
+                    }
+
+                    $('[contenteditable=true]', obj).each(function (i, obj2) {
+                        content_data[$(obj2).attr('id')] = $(obj2).html()
+                    })
+
+                    blocks.push({
+                        type: 'portfolio',
+                        label: '{t}Portfolio{/t}',
+                        icon: 'fa-store-alt',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        labels: content_data
+                    })
+                    break;
+                case 'clients':
+
+                    var content_data = {
+                    }
+
+                    $('[contenteditable=true]', obj).each(function (i, obj2) {
+                        content_data[$(obj2).attr('id')] = $(obj2).html()
+                    })
+
+                    blocks.push({
+                        type: 'clients',
+                        label: '{t}Clients{/t}',
+                        icon: 'fa-user',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        labels: content_data
+                    })
+                    break;
+                case 'clients_orders':
+
+                    var content_data = {
+                    }
+
+                    $('[contenteditable=true]', obj).each(function (i, obj2) {
+                        content_data[$(obj2).attr('id')] = $(obj2).html()
+                    })
+
+                    blocks.push({
+                        type: 'clients_orders',
+                        label: '{t}Clients's orders{/t}',
+                        icon: 'fa-shopping-cart',
+                        show: ($(obj).hasClass('hide') ? 0 : 1),
+                        top_margin: $(obj).attr('top_margin'),
+                        bottom_margin: $(obj).attr('bottom_margin'),
+                        labels: content_data
+                    })
+                    break;
 
                 case 'register':
 

@@ -90,7 +90,7 @@ class Page extends DB_Table {
             );
         } elseif ($tipo == 'store_page_code') {
             $sql = sprintf(
-                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Code`=%s AND `Page Store Key`=%d ", prepare_mysql($tag2), $tag
+                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Code`=%s AND `Webpage Store Key`=%d ", prepare_mysql($tag2), $tag
             );
         } elseif ($tipo == 'website_code') {
             $sql = sprintf(
@@ -285,7 +285,7 @@ class Page extends DB_Table {
 
             $sql = sprintf(
                 "INSERT INTO `Page State Timeline`  (`Page Key`,`Website Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Created') ", $this->id, $this->data['Webpage Website Key'], $this->data['Webpage Store Key'],
-                prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($this->data['Page State'])
+                prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($this->data['Webpage State'])
 
             );
             $this->db->exec($sql);
@@ -786,7 +786,6 @@ class Page extends DB_Table {
         $old_state = $this->data['Webpage State'];
 
 
-        $this->update_field('Page State', $value, 'no_history');
         $this->update_field('Webpage State', $value, $options);
 
 
@@ -1167,8 +1166,6 @@ class Page extends DB_Table {
             case 'Webpage Meta Description':
 
 
-                $sql = sprintf('UPDATE `Page Store Dimension` SET `Page Store Description`=%s WHERE `Page Key`=%d ', prepare_mysql($value), $this->id);
-                $this->db->exec($sql);
                 $this->update_field($field, $value, $options);
                 break;
 
@@ -1438,7 +1435,8 @@ class Page extends DB_Table {
             $this->update_navigation();
 
 
-        } elseif ($this->get('Webpage Scope') == 'Category Categories') {
+        }
+        elseif ($this->get('Webpage Scope') == 'Category Categories') {
 
 
             $items = array();
@@ -1622,7 +1620,6 @@ class Page extends DB_Table {
             $website = get_object('Website', $this->get('Webpage Website Key'));
 
             $website_system_webpages = website_system_webpages_config($website->get('Website Type'));
-
 
             if (isset($website_system_webpages[$this->get('Webpage Code')]['Page Store Content Data'])) {
 
@@ -2340,8 +2337,7 @@ class Page extends DB_Table {
                     foreach ($result as $row) {
                         $_family  = get_object('Category', $row['Category B Key']);
                         $_webpage = $_family->get_webpage();
-                        // and $_webpage->data['Page Stealth Mode'] == 'No'
-                        if ($_webpage->id and $_webpage->data['Page State'] == 'Online') {
+                        if ($_webpage->id and $_webpage->data['Webpage State'] == 'Online') {
                             $see_also[$_webpage->id] = array(
                                 'type'     => 'Sales',
                                 'value'    => $row['Correlation'],
@@ -2374,8 +2370,7 @@ class Page extends DB_Table {
 
                                 $_family  = get_object('Category', $row['Category Key']);
                                 $_webpage = $_family->get_webpage();
-                                // and $_webpage->data['Page Stealth Mode'] == 'No'
-                                if ($_webpage->id and $_webpage->data['Page State'] == 'Online') {
+                                if ($_webpage->id and $_webpage->data['Webpage State'] == 'Online') {
                                     $see_also[$_webpage->id] = array(
                                         'type'     => 'SameParent',
                                         'value'    => .2,
@@ -2417,8 +2412,7 @@ class Page extends DB_Table {
 
                                 $_family  = get_object('Category', $row['Category Key']);
                                 $_webpage = $_family->get_webpage();
-                                // and $_webpage->data['Page Stealth Mode'] == 'No'
-                                if ($_webpage->id and $_webpage->data['Page State'] == 'Online') {
+                                if ($_webpage->id and $_webpage->data['Webpage State'] == 'Online') {
                                     $see_also[$_webpage->id] = array(
                                         'type'     => 'Other',
                                         'value'    => .1,
@@ -2455,7 +2449,6 @@ class Page extends DB_Table {
                 );
 
 
-                //  $see_also_page->data['Page Stealth Mode'] == 'No')
 
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
@@ -3467,7 +3460,7 @@ class Page extends DB_Table {
                 'Page Code'                   => $this->data['Webpage Code'],
                 'Page Key'                    => $this->id,
                 'Website Key'                 => $this->data['Webpage Website Key'],
-                'Store Key'                   => $this->data['Page Store Key'],
+                'Store Key'                   => $this->data['Webpage Store Key'],
                 'Page Store Section'          => $this->data['Page Store Section'],
                 'Page Parent Key'             => $this->data['Page Parent Key'],
                 'Page Parent Code'            => $this->data['Page Parent Code'],

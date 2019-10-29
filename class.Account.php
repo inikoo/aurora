@@ -12,6 +12,10 @@
 include_once 'class.DB_Table.php';
 
 class Account extends DB_Table {
+    /**
+     * @var \PDO
+     */
+    public $db;
 
     function __construct($_db = false) {
 
@@ -69,20 +73,10 @@ class Account extends DB_Table {
 
     }
 
-    function update_name($value) {
 
-
-        $sql = sprintf(
-            "UPDATE `Account Dimension` SET `Account Name`=%s", prepare_mysql($value)
-        );
-        $this->db->exec($sql);
-
-        $this->updated   = true;
-        $this->new_value = $value;
-    }
 
     function add_account_history($history_key, $type = false) {
-        $this->post_add_history($history_key, $type = false);
+        $this->post_add_history($history_key, $type );
     }
 
     function post_add_history($history_key, $type = false) {
@@ -98,44 +92,6 @@ class Account extends DB_Table {
         //print $sql;
     }
 
-    function get_current_staff_with_position_code($position_code, $options = '') {
-
-
-        if (preg_match('/smarty/i', $options)) {
-            $smarty = true;
-        } else {
-            $smarty = false;
-        }
-
-        $positions = array();
-        $sql       = sprintf(
-            'SELECT * FROM `Staff Dimension` SD  LEFT JOIN `Company Position Staff Bridge` B ON (B.`Staff Key`=SD.`Staff Key`)  WHERE  `Position Code`=%s AND `Staff Currently Working`="Yes"', prepare_mysql($position_code)
-        );
-
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-
-                if ($smarty) {
-                    $_row = array();
-                    foreach ($row as $key => $value) {
-                        $_row[preg_replace('/\s/', '', $key)] = $value;
-                    }
-
-                    $positions[$row['Staff Key']] = $_row;
-                } else {
-                    $positions[$row['Staff Key']] = $row;
-                }
-
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
-        }
-
-
-        return $positions;
-    }
 
 
     function create_staff($data) {
@@ -173,7 +129,7 @@ class Account extends DB_Table {
     function update_employees_data() {
         $number_employees = 0;
         $sql              = sprintf(
-            'SELECT count(*) AS num FROM `Staff Dimension` WHERE `Staff Currently Working`="Yes" '
+            "SELECT count(*) AS num FROM `Staff Dimension` WHERE `Staff Currently Working`='Yes' "
         );
         if ($row = $this->db->query($sql)->fetch()) {
             $number_employees = $row['num'];

@@ -91,12 +91,14 @@
 
                         {if $logged_in}
                             {if $store->get('Store Type')=='Dropshipping'}
-                                <div class="order_row empty  order_row_{$item.product_id} ">
+                                <div class="order_row empty  order_row_{$item.product_id} "  style="background: none;color:#000" >
 
-                                    <div class="label sim_button" style="text-align: center">
+                                    <div class="edit_portfolio_item add_to_portfolio sim_button " style="text-align: center"> <i class="fal fa-store-alt padding_right_5"></i>
                                        {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}</span>
                                     </div>
-
+                                    <div class="edit_portfolio_item remove_from_portfolio hide sim_button " style="text-align: center">
+                                        {if empty($labels._remove_from_portfolio)}{t}Remove from portfolio{/t}{else}{$labels._add_to_portfolio}{/if}</span>
+                                    </div>
 
                                 </div>
                             {else}

@@ -997,6 +997,9 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
             $request = $object->reject();
             break;
         case 'reindex':
+            /**
+             * @var $object \Page
+             */
             $request = $object->reindex();
             break;
         case 'archive':
@@ -3273,6 +3276,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             $data['fields_data']['user'] = $user;
 
+            /**
+             * @var $parent \Warehouse
+             */
             $object = $parent->create_shipper($data['fields_data']);
             if (!$parent->error) {
                 $smarty->assign('object', $object);

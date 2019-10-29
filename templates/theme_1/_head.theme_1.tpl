@@ -217,7 +217,6 @@
         {if isset($extra_style)}{$extra_style}{/if}
 
 
-        {if isset($extra_style)}{$extra_style}{/if}
 
         {if $with_not_found==1 or $with_offline==1}
 

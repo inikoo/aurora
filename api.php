@@ -9,15 +9,6 @@
 
  Version 2.0
 */
-//header('Access-Control-Allow-Origin: *');
-//header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
-//header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-
-//header("Access-Control-Allow-Origin", "*");
-//header("Access-Control-Allow-Credentials", "true");
-//header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-//header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
-//header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
 
 require_once 'vendor/autoload.php';
@@ -148,10 +139,10 @@ function authorization($db, $user_key, $api_key_key, $scope) {
             include_once 'api_stock.php';
             break;
         case 'Picking':
-
             include_once 'api_picking.php';
-
-
+            break;
+        case 'Box':
+            include_once 'api_box.php';
             break;
         default:
             $response = log_api_key_access_failure(
@@ -184,6 +175,8 @@ function parse_scope($request) {
         return 'Stock';
     } elseif ($request == '/api/picking') {
         return 'Picking';
+    }elseif ($request == '/api/box') {
+        return 'Box';
     }
 
     return false;
@@ -307,9 +300,7 @@ function authenticate($db) {
 
 
 
-
             if ($row = $db->query($sql)->fetch()) {
-
 
 
 
@@ -334,7 +325,7 @@ function authenticate($db) {
                 }
 
 
-                if($row['API Key Scope']!='Nano Services'){
+                if(!in_array($row['API Key Scope'],array('Nano Services','Box'))){
 
                     if ($row['User Active'] != 'Yes') {
 
@@ -446,4 +437,4 @@ function log_api_key_access_success($db, $api_key_key, $success_reason, $debug =
 }
 
 
-?>
+

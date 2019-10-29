@@ -189,7 +189,6 @@ $_service = array(
         'service.customers.customers'  => 'service.customers',
         'service.customers.favourites' => 'service.customers',
         'service.website.webpage'      => 'service.website',
-        'service.website.pages'        => 'service.website',
     ),
 
     'tabs' => array(

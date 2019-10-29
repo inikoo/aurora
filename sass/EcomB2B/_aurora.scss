@@ -1621,3 +1621,19 @@ i.product_stock_dot {
 .dropshipping  .products.no_items_header i.stock_dot {
   top:10px;
 }
+
+.portfolio_row{
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  padding: 0px;
+  bottom: 0;
+  font-weight:800;
+  text-align:center;
+  .add_to_portfolio{
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+  }
+
+
+}

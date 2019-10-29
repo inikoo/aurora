@@ -44,7 +44,7 @@ class Public_Webpage {
 
         } elseif ($tipo == 'store_page_code') {
             $sql = sprintf(
-                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Code`=%s AND `Page Store Key`=%d ", prepare_mysql($tag2), $tag
+                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Code`=%s AND `Webpage Store Key`=%d ", prepare_mysql($tag2), $tag
             );
         } elseif ($tipo == 'website_code') {
             $sql = sprintf(

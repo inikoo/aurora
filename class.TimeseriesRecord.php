@@ -14,7 +14,10 @@
 include_once('class.DB_Table.php');
 
 class TimeseriesRecord extends DB_Table {
-
+    /**
+     * @var \PDO
+     */
+    public $db;
 
     function __construct($a1, $a2 = false) {
 

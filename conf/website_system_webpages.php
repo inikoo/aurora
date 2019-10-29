@@ -25,7 +25,7 @@ function website_system_webpages_config($website_type) {
         array('text' => 'Telephone<br/>#tel<br/><br/>Email<br/>#email<br/><br/>Address<br/>#adr')
     );
 
-    $EcomB2B = array(
+    $_base = array(
 
 
         'home.sys' => array(
@@ -40,12 +40,6 @@ function website_system_webpages_config($website_type) {
                 array(
                     'blocks' => array(
 
-
-                       // $blocks['iframe'],
-                        //$blocks['six_pack'],
-                      //  $blocks['images'],
-                        // $blocks['counter'],
-                        //$blocks['three_pack'],
 
                     )
 
@@ -68,13 +62,6 @@ function website_system_webpages_config($website_type) {
                     'blocks' => array(
 
 
-                        //$blocks['iframe'],
-                        //$blocks['button'],
-
-                        //   $blocks['six_pack'],
-                        //$blocks['images'],
-                        // $blocks['counter'],
-                        //   $blocks['three_pack'],
 
                     )
 
@@ -381,7 +368,7 @@ function website_system_webpages_config($website_type) {
                             'bottom_margin' => 60,
                             'labels'        => array(
                                 '_unsubscribe_title'            => _('Email subscriptions'),
-                                '_unsubscribe_text'             => _('Select which kind of emails you want to receive from us'),
+                                '_unsubscribe_text'             => _('Choose which kind of emails you want to receive from us'),
                                 '_save_unsubscribe_label'       => _('Save'),
                                 '_newsletter'                   => _('Newsletter'),
                                 '_marketing_emails'             => _('Marketing emails and special offers'),
@@ -897,21 +884,110 @@ function website_system_webpages_config($website_type) {
                 )
 
             )
-        )
+        ),
+
 
 
     );
 
+    $EcomDS =array(
+        'portfolio.sys' => array(
+            'Webpage Scope'             => 'Portfolio',
+            'Webpage Scope Metadata'    => '',
+            'Webpage Type'              => 'Portfolio',
+            'Webpage Code'              => 'portfolio.sys',
+            'Webpage Browser Title'     => _('Portfolio'),
+            'Webpage Name'              => _('Portfolio'),
+            'Webpage Meta Description'  => '',
+            'Webpage Scope Metadata'    => '',
+            'Page Store Content Data'   => json_encode(
+                array(
+                    'blocks' => array(
+                        array(
+                            'type'          => 'portfolio',
+                            'label'         => _('Portfolio'),
+                            'icon'          => 'fa-store-alt',
+                            'show'          => 1,
+                            'top_margin'    => 40,
+                            'bottom_margin' => 60,
+                            'labels'        => array(
 
+                            )
+                        )
+
+                    )
+                )
+            )
+
+        ),
+
+        'clients.sys' => array(
+            'Webpage Scope'             => 'Clients',
+            'Webpage Scope Metadata'    => '',
+            'Webpage Type'              => 'Clients',
+            'Webpage Code'              => 'clients.sys',
+            'Webpage Browser Title'     => _('Clients'),
+            'Webpage Name'              => _('Clients'),
+            'Webpage Meta Description'  => '',
+            'Webpage Scope Metadata'    => '',
+            'Page Store Content Data'   => json_encode(
+                array(
+                    'blocks' => array(
+                        array(
+                            'type'          => 'clients',
+                            'label'         => _('Clients'),
+                            'icon'          => 'fa-user',
+                            'show'          => 1,
+                            'top_margin'    => 40,
+                            'bottom_margin' => 60,
+                            'labels'        => array(
+
+                            )
+                        )
+
+                    )
+                )
+            )
+
+        ),
+        'clients_orders.sys' => array(
+            'Webpage Scope'             => 'Clients_Orders',
+            'Webpage Scope Metadata'    => '',
+            'Webpage Type'              => 'Clients_Orders',
+            'Webpage Code'              => 'clients_orders.sys',
+            'Webpage Browser Title'     => _("Client's orders"),
+            'Webpage Name'              =>_("Client's orders"),
+            'Webpage Meta Description'  => '',
+            'Webpage Scope Metadata'    => '',
+            'Page Store Content Data'   => json_encode(
+                array(
+                    'blocks' => array(
+                        array(
+                            'type'          => 'clients_orders',
+                            'label'         => _("Client's orders"),
+                            'icon'          => 'fa-shopping-cart',
+                            'show'          => 1,
+                            'top_margin'    => 40,
+                            'bottom_margin' => 60,
+                            'labels'        => array(
+
+                            )
+                        )
+
+                    )
+                )
+            )
+
+        ),
+    );
     $website_system_webpages = array(
 
-        'EcomB2B' => $EcomB2B
-
-
+        'EcomB2B' => $_base,
+        'EcomDS' => array_merge($_base,$EcomDS)
     );
 
     return $website_system_webpages[$website_type];
 
 }
 
-?>
+

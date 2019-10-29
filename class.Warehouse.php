@@ -17,6 +17,11 @@ include_once 'class.DB_Table.php';
 
 class Warehouse extends DB_Table {
 
+    /**
+     * @var \PDO
+     */
+    public $db;
+
     var $areas = false;
     var $locations = false;
 
@@ -77,6 +82,7 @@ class Warehouse extends DB_Table {
     }
 
     function find($raw_data, $options) {
+
         if (isset($raw_data['editor'])) {
             foreach ($raw_data['editor'] as $key => $value) {
                 if (array_key_exists($key, $this->editor)) {
@@ -167,43 +173,35 @@ class Warehouse extends DB_Table {
         $this->new = false;
         $base_data = $this->base_data();
 
+
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $base_data)) {
                 $base_data[$key] = _trim($value);
             }
         }
 
-        $keys   = '(';
-        $values = 'values(';
-        foreach ($base_data as $key => $value) {
-            $keys .= "`$key`,";
-            if (preg_match(
-                '/^(Warehouse Address|Warehouse Company Name|Warehouse Company Number|Warehouse VAT Number|Warehouse Telephone|Warehouse Email)$/i', $key
-            )) {
-                $values .= prepare_mysql($value, false).",";
-            } else {
-                $values .= prepare_mysql($value).",";
-            }
-        }
-        $keys   = preg_replace('/,$/', ')', $keys);
-        $values = preg_replace('/,$/', ')', $values);
-        $sql    = sprintf(
-            "INSERT INTO `Warehouse Dimension` %s %s", $keys, $values
+
+        $sql = sprintf(
+            "INSERT INTO `Warehouse Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
         );
 
-        if ($this->db->exec($sql)) {
+        $stmt = $this->db->prepare($sql);
+
+
+        $i = 1;
+        foreach ($base_data as $key => $value) {
+            $stmt->bindValue($i, $value);
+            $i++;
+        }
+
+
+        if ($stmt->execute()) {
+
+
             $this->id  = $this->db->lastInsertId();
             $this->msg = _("Warehouse added");
             $this->get_data('id', $this->id);
             $this->new = true;
-
-            $sql = sprintf(
-                "INSERT INTO `Warehouse Data` VALUES('Warehouse Key')", $this->id
-            );
-
-            $this->db->exec($sql);
-
-
 
 
             $flags = array(
@@ -237,15 +235,11 @@ class Warehouse extends DB_Table {
             $this->fast_update(
                 array(
                     'Warehouse Unknown Location Key' => $unknown_location->id,
-                    'Warehouse Properties'=>'{}',
-                    'Warehouse Settings'=>'{}',
+                    'Warehouse Properties'           => '{}',
+                    'Warehouse Settings'             => '{}',
                 )
 
             );
-
-
-
-
 
 
             return;
@@ -274,7 +268,7 @@ class Warehouse extends DB_Table {
             $this->error_code = 'location_code_missing';
             $this->metadata   = '';
 
-            return;
+            return false;
         }
 
         $sql = sprintf(
@@ -293,14 +287,10 @@ class Warehouse extends DB_Table {
                     $this->error_code = 'duplicate_location_code_reference';
                     $this->metadata   = $data['Location Code'];
 
-                    return;
+                    return false;
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
-
 
 
         if (!empty($data['Location Flag Color'])) {
@@ -389,6 +379,7 @@ class Warehouse extends DB_Table {
             $this->error = true;
             $this->msg   = $location->msg;
 
+            return false;
         }
 
     }
@@ -501,29 +492,8 @@ class Warehouse extends DB_Table {
 
 
         switch ($key) {
-            case('num_areas'):
-            case('number_areas'):
-                if (!$this->areas) {
-                    $this->load('areas');
-                }
 
-                return count($this->areas);
-                break;
-            case('areas'):
-                if (!$this->areas) {
-                    $this->load('areas');
-                }
 
-                return $this->areas;
-                break;
-            case('area'):
-                if (!$this->areas) {
-                    $this->load('areas');
-                }
-                if (isset($this->areas[$data['id']])) {
-                    return $this->areas[$data['id']];
-                }
-                break;
             case('Leakage Timeseries From'):
                 if ($this->data['Warehouse Leakage Timeseries From'] == '') {
                     return '';
@@ -603,6 +573,10 @@ class Warehouse extends DB_Table {
         }
 
         return '';
+    }
+
+    function properties($key) {
+        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
     }
 
     function create_shipper($data) {
@@ -1076,8 +1050,8 @@ class Warehouse extends DB_Table {
                     }
                 }
 
-                $parts_with_stock_left_1_year=0;
-                $sql = sprintf(
+                $parts_with_stock_left_1_year = 0;
+                $sql                          = sprintf(
                     "select  count(distinct `Part SKU`) as  num FROM `Inventory Spanshot Fact` WHERE `Warehouse Key`=%d AND `Date`=%s and `Inventory Spanshot Stock Left 1 Year Ago`>0 ", $this->id, prepare_mysql($row['Date'])
 
                 );
@@ -1096,7 +1070,7 @@ class Warehouse extends DB_Table {
 
                 );
 
-                $parts_no_sales_1_year=0;
+                $parts_no_sales_1_year = 0;
 
                 if ($result2 = $this->db->query($sql)) {
                     if ($row2 = $result2->fetch()) {
@@ -1154,14 +1128,12 @@ class Warehouse extends DB_Table {
                             $row2['value_at_cost'], $row2['value_at_day'], $row2['commercial_value'],
 
 
-                            $dormant_1y_open_value_at_day, $row2['amount_in_po'], $row2['amount_in_other'], $row2['amount_out_sales'], $row2['amount_out_other'],
-                            $parts_no_sales_1_year,$parts_with_stock_left_1_year,
+                            $dormant_1y_open_value_at_day, $row2['amount_in_po'], $row2['amount_in_other'], $row2['amount_out_sales'], $row2['amount_out_other'], $parts_no_sales_1_year, $parts_with_stock_left_1_year,
 
                             $row2['value_at_cost'], $row2['value_at_day'], $row2['commercial_value'],
 
 
-                            $row2['parts'], $row2['locations'], $dormant_1y_open_value_at_day, $row2['amount_in_po'], $row2['amount_in_other'], $row2['amount_out_sales'], $row2['amount_out_other'],
-$parts_no_sales_1_year,$parts_with_stock_left_1_year
+                            $row2['parts'], $row2['locations'], $dormant_1y_open_value_at_day, $row2['amount_in_po'], $row2['amount_in_other'], $row2['amount_out_sales'], $row2['amount_out_other'], $parts_no_sales_1_year, $parts_with_stock_left_1_year
 
                         );
 
@@ -1410,7 +1382,6 @@ $parts_no_sales_1_year,$parts_with_stock_left_1_year
 
     }
 
-
     function update_warehouse_paid_ordered_parts() {
 
         $paid_ordered_parts                               = 0;
@@ -1486,7 +1457,6 @@ $parts_no_sales_1_year,$parts_with_stock_left_1_year
 
 
     }
-
 
     function update_warehouse_part_locations_to_replenish() {
 
@@ -2025,7 +1995,6 @@ and `Part Distinct Locations`>1
         return $shippers;
     }
 
-
     function update_delivery_notes() {
 
         $ready_to_pick_number            = 0;
@@ -2076,14 +2045,8 @@ and `Part Distinct Locations`>1
 
     }
 
-
     function settings($key) {
         return (isset($this->settings[$key]) ? $this->settings[$key] : '');
-    }
-
-
-    function properties($key) {
-        return (isset($this->properties[$key]) ? $this->properties[$key] : '');
     }
 }
 

@@ -11,7 +11,7 @@
 */
 
 
-include_once 'keyring/dns.php';
+include_once 'keyring/box_dns.php';
 require_once 'vendor/autoload.php';
 
 if (defined('SENTRY_DNS_API')) {
@@ -58,7 +58,6 @@ if ($authenticated == 'OK') {
             if (isset($_REQUEST['register'])) {
 
 
-
                 $_data = json_decode($row['Box Aurora Account Data'], true);
 
                 $_timezone = new DateTimeZone($_data['timezone']);
@@ -73,7 +72,7 @@ if ($authenticated == 'OK') {
 
 
                 $response = array(
-                    'state' => 'Registered',
+                    'state'       => 'Registered',
                     'name'        => $_data['name'].'@'.strtolower($row['Box Aurora Account Code']).'.au.sys',
                     'time_offset' => timezone_offset_get($_timezone, $_datetime),
                     'SSID'        => $_data['SSID'],
@@ -86,16 +85,15 @@ if ($authenticated == 'OK') {
                 exit;
 
 
-                echo json_encode($response);
-                exit;
-
-
             } elseif (!empty($_REQUEST['get'])) {
                 switch ($_REQUEST['get']) {
+
+
                     case 'time_offset':
                         $_data = json_decode($row['Box Aurora Account Data'], true);
 
                         $_timezone = new DateTimeZone($_data['timezone']);
+
                         $_datetime = new DateTime("now", $_timezone);
                         $response  = array(
                             'offset' => timezone_offset_get($_timezone, $_datetime),
@@ -119,11 +117,112 @@ if ($authenticated == 'OK') {
 
                         break;
                     default:
-                        $response = array(
-                        );
+                        $response = array();
 
                 }
                 echo json_encode($response);
+                exit;
+
+
+            } elseif (!empty($_REQUEST['send_tag_id'])) {
+
+                $_data = json_decode($row['Box Aurora Account Data'], true);
+
+                $_timezone = new DateTimeZone($_data['timezone']);
+
+                $tag_id = $_REQUEST['send_tag_id'];
+
+                if (!empty($_REQUEST['timestamp'])) {
+                    $_datetime = new DateTime();
+                    $_datetime->setTimestamp($_REQUEST['timestamp']);
+                    $_datetime->setTimezone($_timezone);
+
+                } else {
+                    $_datetime = new DateTime("now", $_timezone);
+
+                }
+
+
+                list($encrypted_api_secret, $enc_iv) = explode("::", $_data['api_secret']);
+
+                $cipher_method = 'aes-128-ctr';
+                $enc_key       = openssl_digest(SHARED_KEY, 'SHA256', true);
+                $api_secret    = openssl_decrypt($encrypted_api_secret, $cipher_method, $enc_key, 0, hex2bin($enc_iv));
+                unset($encrypted_api_secret, $cipher_method, $enc_key, $enc_iv);
+
+
+                $api_url = $_data['api_url'].'/api/box?action=send_tag_id&box_key='.$_data['box_key'].'&tag_id='.$tag_id.'&date='.urlencode($_datetime->format('Y-m-d H:i:s'));
+
+                $api_url = 'au.geko/'.'/api/box?action=send_tag_id&box_key='.$_data['box_key'].'&tag_id='.$tag_id.'&date='.urlencode($_datetime->format('Y-m-d H:i:s'));
+
+                //  print $api_url."\n";
+
+
+                $curl = curl_init();
+
+                curl_setopt_array(
+                    $curl, array(
+
+                             CURLOPT_URL            => $api_url,
+                             CURLOPT_RETURNTRANSFER => true,
+                             CURLOPT_ENCODING       => "",
+                             CURLOPT_MAXREDIRS      => 10,
+                             CURLOPT_TIMEOUT        => 30,
+                             CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+                             CURLOPT_CUSTOMREQUEST  => "GET",
+                             CURLOPT_POSTFIELDS     => "",
+                             CURLOPT_HTTPHEADER     => array(
+                                 "X-Auth-Key: ".$_data['api_code'].'.'.$api_secret,
+                                 "cache-control: no-cache"
+                             )
+                         )
+                );
+
+
+
+                $response = json_decode(curl_exec($curl), true);
+                $err      = curl_error($curl);
+
+
+                curl_close($curl);
+
+                if ($err) {
+
+                    $_response = array(
+                        'state' => 'Fail',
+                    );
+
+                } else {
+
+
+                    if ($response['state'] == 'Success') {
+
+                            $_response = array(
+                                'state' => 'Success',
+                                'code'  => $response['staff_name']
+                            );
+
+
+                    }elseif ($response['state'] == 'Pending_Tag') {
+
+                            $_response = array(
+                                'state' => 'Pending_Tag',
+                                'code'  => $response['nfc_tag_hash']
+                            );
+
+
+                    } else {
+                        $_response = array(
+                            'state' => 'Fail',
+                            'msg'   => $response['msg']
+                        );
+                    }
+
+
+                }
+
+
+                echo json_encode($_response);
                 exit;
 
 

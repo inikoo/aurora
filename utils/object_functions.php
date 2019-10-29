@@ -15,7 +15,7 @@
  * @param      $key
  * @param bool $load_other_data
  *
- * @return \Account|bool|\Customer|\Product|\Public_Category|\Public_Product|\Store|\PurchaseOrder|\Part|\Location|\Order|\DeliveryNote|\Website|\Attachment
+ * @return \Account|bool|\Customer|\Product|\Public_Category|\Public_Product|\Store|\PurchaseOrder|\Part|\Location|\Order|\DeliveryNote|\Website|\Attachment|Warehouse
  */
 function get_object($object_name, $key, $load_other_data = false) {
 
@@ -531,6 +531,10 @@ function get_object($object_name, $key, $load_other_data = false) {
         case 'clocking_machine':
             include_once 'class.Clocking_Machine.php';
             $object = new Clocking_Machine('id', $key);
+            break;
+        case 'clocking_machine_nfc_tag':
+            include_once 'class.Clocking_Machine_NFC_Tag.php';
+            $object = new Clocking_Machine_NFC_Tag('id', $key);
             break;
         default:
             exit('need to complete E1: x>>>>|'.strtolower($object_name).'|<<<<++>>'.$load_other_data."<\n");

@@ -70,6 +70,9 @@
             {assign "with_checkout" false}
             {assign "with_profile" false}
             {assign "with_favourites" false}
+            {assign "with_portfolio" false}
+            {assign "with_clients" false}
+            {assign "with_clients_orders" false}
             {assign "with_search" false}
             {assign "with_thanks" false}
             {assign "with_gallery" false}
@@ -77,6 +80,7 @@
             {assign "with_reset_password" false}
             {assign "with_unsubscribe" false}
             {assign "with_category_products" false}
+            {assign "with_datatables" false}
 
             {if !empty($content.blocks) and  $content.blocks|is_array}
             {foreach from=$content.blocks item=$block key=key}
@@ -132,6 +136,36 @@
                         {else}
                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
                         {/if}
+                    {elseif $block.type=='portfolio'}
+
+                        {if $logged_in}
+                            {assign "with_portfolio" 1}
+                            {assign "with_datatables" 1}
+                            {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
+
+                        {else}
+                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                        {/if}
+                    {elseif $block.type=='clients'}
+
+                        {if $logged_in}
+                            {assign "with_clients" 1}
+                            {assign "with_datatables" 1}
+                            {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
+
+                        {else}
+                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                        {/if}
+                    {elseif $block.type=='clients_orders'}
+
+                        {if $logged_in}
+                            {assign "with_clients_orders" 1}
+                            {assign "with_datatables" 1}
+                            {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
+
+                        {else}
+                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                        {/if}
 
                     {elseif $block.type=='thanks'}
 
@@ -174,7 +208,10 @@
                         {if $block.type=='product'   }{assign "with_gallery" 1}{/if}
                         {if $block.type=='reset_password' }{assign "with_reset_password" 1}{/if}
                         {if $block.type=='unsubscribe'}{assign "with_unsubscribe" 1}{/if}
-                        {if $block.type=='category_products' or   $block.type=='products'  or   $block.type=='product' }{assign "with_product_order_input" 1}{/if}
+                        {if $block.type=='category_products' or   $block.type=='products'  or   $block.type=='product' }
+                            {assign "with_product_order_input" 1}
+
+                            {/if}
                         {if $block.type=='category_products'  }
                             {assign "with_category_products" 1}
 
@@ -774,7 +811,7 @@
 
             },
 
-                // Messages for form validation
+
                 messages:
                 {
 
@@ -863,18 +900,43 @@
                     }
 
 
-                }
-            ,
+                },
 
-                // Do not change code below
+
                 errorPlacement: function (error, element) {
                     error.insertAfter(element.parent());
                 }
             })
-                ;
+
             })
 
             {/if}
+
+                            {if $with_portfolio==1}
+                            getScript("/assets/datatables.min.js", function () {
+                                $('#portfolio_items').DataTable( {
+                                    "ajax": "ar_web_portfolio.php?tipo=get_portfolio_items"
+                                } );
+                            })
+                            {/if}
+                            {if $with_clients==1}
+                            getScript("/assets/datatables.min.js", function () {
+                                $('#clients').DataTable( {
+                                    "ajax": "ar_web_clients.php?tipo=get_clients"
+                                } );
+                            })
+                            {/if}
+                            {if $with_clients_orders==1}
+                            getScript("/assets/datatables.min.js", function () {
+                                $('#clients_orders').DataTable( {
+                                    "ajax": "ar_web_clients_orders.php?tipo=get_orders"
+                                } );
+                            })
+                            {/if}
+
+
+
+
             {if $with_login==1}
             $('.control_panel').addClass('hide')
             getScript("/assets/desktop.forms.min.js", function () {
@@ -1181,9 +1243,45 @@
 
             {/if}
             {if $logged_in}
+
+             {if $store->get('Store Type')=='Dropshipping'}
+                            $.getJSON("ar_web_portfolio.php?tipo=category_products&with_category_products={if $with_category_products==1}Yes{else}No{/if}&webpage_key={$webpage->id}", function (data) {
+                                $('.order_row i').removeClass('hide')
+                                $('.order_row span').removeClass('hide')
+
+                                $.each(data.ordered_products, function (index, value) {
+                                    $('.order_row_' + index).find('input').val(value).data('ovalue', value)
+                                    $('.order_row_' + index).find('i').removeClass('fa-hand-pointer fa-flip-horizontal').addClass('fa-thumbs-up fa-flip-horizontal')
+                                    $('.order_row_' + index).find('.label span').html('{if empty($labels._ordering_ordered)}{t}Ordered{/t}{else}{$labels._ordering_ordered}{/if}')
+                                });
+
+                                $.each(data.favourite, function (index, value) {
+                                    $('.favourite_' + index).removeClass('far').addClass('marked fas').data('favourite_key', value)
+                                });
+
+                                $.each(data.out_of_stock_reminders, function (index, value) {
+                                    var reminder_icon = $('.out_of_stock_reminders_' + index)
+                                    reminder_icon.removeClass('far').addClass('fas').data('out_of_stock_reminder_key', value).attr('title', reminder_icon.data('label_remove_notification'))
+                                });
+
+                                $.each(data.stock, function (index, value) {
+                                    if (value[0] != '') {
+                                        $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title', value[1])
+                                        $('.product_stock_label_' + index).html(value[1])
+                                    }
+                                });
+
+                                $('#header_order_totals').find('.ordered_products_number').html(data.items)
+                                $('#header_order_totals').find('.order_amount').html(data.total)
+                                $('#header_order_totals').find('i').attr('title', data.label)
+                            });
+             {else}
+
                 {if $with_product_order_input==1}
 
-            $.getJSON("ar_web_customer_products.php?with_category_products={if $with_category_products==1}Yes{else}No{/if}&tipo=category_products&webpage_key={$webpage->id}", function (data) {
+
+
+                $.getJSON("ar_web_customer_products.php?&tipo=category_productswith_category_products={if $with_category_products==1}Yes{else}No{/if}&webpage_key={$webpage->id}", function (data) {
                 $('.order_row i').removeClass('hide')
                 $('.order_row span').removeClass('hide')
 
@@ -1212,7 +1310,7 @@
                 $('#header_order_totals').find('.ordered_products_number').html(data.items)
                 $('#header_order_totals').find('.order_amount').html(data.total)
                 $('#header_order_totals').find('i').attr('title', data.label)
-            });
+                });
                 {else}
                 $.getJSON("ar_web_customer_products.php?tipo=total_basket", function (data) {
                     $('#header_order_totals').find('.ordered_products_number').html(data.items)
@@ -1284,6 +1382,8 @@
 
 
             })
+
+                {/if}
             {/if}
 
 

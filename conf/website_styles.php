@@ -22,11 +22,6 @@ $website_styles=array(
 
 
 
-    #top_header height: 60px;
-    #top_header line-height: 60px;
-    #top_header h1 line-height: 60px;
-
-
     array('#top_header', 'height','60px'),
 
     array('#header_logo', 'flex-basis','80px'),
@@ -103,6 +98,15 @@ $website_styles=array(
     array('.empty:hover', 'color','white'),
 
 
+    array('.add_to_portfolio', 'color','#727272'),
+    array('.add_to_portfolio:hover', 'color','#727272'),
+
+    array('.remove_from_portfolio', 'background-color','rgba(255, 165, 0, 0.9)'),
+    array('.remove_from_portfolio', 'color','white'),
+    array('.remove_from_portfolio:hover', 'background-color','orange'),
+    array('.remove_from_portfolio:hover', 'color','white'),
+
+
     array('.ordered', 'background-color','rgba(255, 165, 0, 0.9)'),
     array('.ordered', 'color','white'),
     array('.ordered:hover', 'background-color','orange'),
@@ -133,6 +137,3 @@ $website_styles=array(
 );
 
 
-
-
-?>

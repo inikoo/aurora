@@ -14,7 +14,10 @@ include_once('class.DB_Table.php');
 
 class WarehouseArea extends DB_Table {
 
-
+    /**
+     * @var \PDO
+     */
+    public $db;
     var $locations = false;
 
     var $warehouse = false;
@@ -79,11 +82,12 @@ class WarehouseArea extends DB_Table {
 
 
 
+
+
         $sql = sprintf(
-            "INSERT INTO `Warehouse Area Dimension` (`%s`) values (%s)",
-            join('`,`', array_keys($this->data)),
-            join(',', array_fill(0, count($this->data), '?'))
+            "INSERT INTO `Warehouse Area Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($this->data)).'`', join(',', array_fill(0, count($this->data), '?'))
         );
+
 
         $stmt = $this->db->prepare($sql);
 
@@ -170,10 +174,10 @@ class WarehouseArea extends DB_Table {
         if (preg_match('/^warehouse (code|name)/i', $key)) {
 
             if (!$this->warehouse) {
-                $warehouse = get_object('Warehouse', $this->data['Warehouse Key']);
+                $this->warehouse = get_object('Warehouse', $this->data['Warehouse Key']);
             }
 
-            return $warehouse->get($key);
+            return $this->warehouse->get($key);
         }
 
         switch ($key) {
@@ -292,15 +296,12 @@ class WarehouseArea extends DB_Table {
                 $this->found_key        = $row['Warehouse Area Key'];
                 $this->duplicated_field = 'Warehouse Area Code';
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
         if ($this->found) {
             $this->get_data('id', $this->found_key);
+            return;
         }
 
 

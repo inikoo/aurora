@@ -13,7 +13,6 @@
 
 include_once 'utils/date_functions.php';
 
-//$period_tag = get_interval_db_name($parameters['f_period']);
 
 $table          = " `Customer Portfolio Fact` CPF left join    `Product Dimension` P  on (`Customer Portfolio Product ID`=P.`Product ID`) left join `Product Data` PD on (PD.`Product ID`=P.`Product ID`) left join `Product DC Data` PDCD on (PDCD.`Product ID`=P.`Product ID`) left join `Store Dimension` S on (`Product Store Key`=`Store Key`)";
 $where_interval = '';
