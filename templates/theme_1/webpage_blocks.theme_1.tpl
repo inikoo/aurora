@@ -1122,7 +1122,7 @@
 
                     blocks.push({
                         type: 'clients_orders',
-                        label: '{t}Clients's orders{/t}',
+                        label: "{t}Clients's orders{/t}",
                         icon: 'fa-shopping-cart',
                         show: ($(obj).hasClass('hide') ? 0 : 1),
                         top_margin: $(obj).attr('top_margin'),
