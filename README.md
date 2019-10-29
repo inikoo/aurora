@@ -1,3 +1,5 @@
+[![CodeFactor](https://www.codefactor.io/repository/github/inikoo/aurora/badge)](https://www.codefactor.io/repository/github/inikoo/aurora)
+
 ## Synopsis
 
 Aurora is a Business Operations/Intelligence system targeted to B2B and dropshippers, it cover all supply chain operations from purchasing, manufacturing, stocking in warehouse through selling the products online.
