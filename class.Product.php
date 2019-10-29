@@ -2574,7 +2574,7 @@ class Product extends Asset {
                     return;
                 }
 
-                $sql  = "SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Code`=%s AND `Product Store Key`=%d AND  `Product Status`!='Discontinued'  AND `Product ID`!=? ";
+                $sql  = "SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Code`=? AND `Product Store Key`=? AND  `Product Status`!='Discontinued'  AND `Product ID`!=? ";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(
                     array(
