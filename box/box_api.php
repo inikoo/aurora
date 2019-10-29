@@ -58,7 +58,6 @@ if ($authenticated == 'OK') {
             if (isset($_REQUEST['register'])) {
 
 
-
                 $_data = json_decode($row['Box Aurora Account Data'], true);
 
                 $_timezone = new DateTimeZone($_data['timezone']);
@@ -73,7 +72,7 @@ if ($authenticated == 'OK') {
 
 
                 $response = array(
-                    'state' => 'Registered',
+                    'state'       => 'Registered',
                     'name'        => $_data['name'].'@'.strtolower($row['Box Aurora Account Code']).'.au.sys',
                     'time_offset' => timezone_offset_get($_timezone, $_datetime),
                     'SSID'        => $_data['SSID'],
@@ -92,10 +91,13 @@ if ($authenticated == 'OK') {
 
             } elseif (!empty($_REQUEST['get'])) {
                 switch ($_REQUEST['get']) {
+
+
                     case 'time_offset':
                         $_data = json_decode($row['Box Aurora Account Data'], true);
 
                         $_timezone = new DateTimeZone($_data['timezone']);
+
                         $_datetime = new DateTime("now", $_timezone);
                         $response  = array(
                             'offset' => timezone_offset_get($_timezone, $_datetime),
@@ -119,10 +121,37 @@ if ($authenticated == 'OK') {
 
                         break;
                     default:
-                        $response = array(
-                        );
+                        $response = array();
 
                 }
+                echo json_encode($response);
+                exit;
+
+
+            } elseif (!empty($_REQUEST['send_tag_id'])) {
+
+                $_data = json_decode($row['Box Aurora Account Data'], true);
+
+                $_timezone = new DateTimeZone($_data['timezone']);
+
+                $tag_id=$_REQUEST['send_tag_id'];
+
+                if(!empty($_REQUEST['timestamp'])){
+                    $_datetime = new DateTime();
+                    $_datetime->setTimestamp($_REQUEST['timestamp']);
+                    $_datetime->setTimezone($_timezone);
+
+                }else{
+                    $_datetime = new DateTime("now", $_timezone);
+
+                }
+
+                print_r($tag_id);
+                print_r($_datetime);
+
+
+                exit;
+
                 echo json_encode($response);
                 exit;
 
