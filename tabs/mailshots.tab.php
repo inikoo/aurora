@@ -41,14 +41,10 @@ $table_filters = array(
 
 );
 
-
 $table_buttons = array();
 
-
 $smarty->assign('table_buttons', $table_buttons);
-
 
 include 'utils/get_table_html.php';
 
 
-?>

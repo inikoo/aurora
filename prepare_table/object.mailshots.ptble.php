@@ -33,8 +33,45 @@ switch ($parameters['parent']) {
             ' where `Email Campaign Scope` in ("Product Wide","Product Targeted","Product Donut") and  `Email Campaign Scope Key`=%d', $parameters['parent_key']
         );
         break;
+    case('account'):
+        $where = 'where true';
+        break;
     default:
         $where = 'where false';
+}
+
+
+switch ($parameters['elements_type']) {
+
+    case 'type':
+        $_elements      = '';
+        $count_elements = 0;
+        foreach (
+            $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
+        ) {
+            if ($_value['selected']) {
+                $count_elements++;
+
+                if($_key=='OOSNotification'){
+                    $_key='OOS Notification';
+                }elseif($_key=='GRReminder'){
+                    $_key='GR Reminder';
+                }
+
+                $_elements .= ','.prepare_mysql($_key);
+
+            }
+        }
+        $_elements = preg_replace('/^\,/', '', $_elements);
+        if ($_elements == '') {
+            $where .= ' and false';
+        } elseif ($count_elements < 5) {
+            $where .= ' and `Email Campaign Type` in ('.$_elements.')';
+        }
+        break;
+
+
+
 }
 
 
@@ -61,8 +98,9 @@ if ($order == 'name') {
 } else {
     $order = '`Email Campaign Key`';
 }
-$table  = '`Email Campaign Dimension`  ';
+$table  = '`Email Campaign Dimension` left join `Store Dimension` on (`Store Key`=`Email Campaign Store Key`) ';
 $fields = "`Email Campaign Key`,`Email Campaign Name`,`Email Campaign Store Key`,`Email Campaign Last Updated Date`,`Email Campaign State`,`Email Campaign Number Estimated Emails`,
+`Email Campaign Type`,`Store Key`,`Store Name`,`Email Campaign Email Template Type Key`,`Store Code`,
 `Email Campaign Sent`,`Email Campaign Delivered`,`Email Campaign Hard Bounces`,`Email Campaign Soft Bounces`,(`Email Campaign Hard Bounces`+`Email Campaign Soft Bounces`) as `Email Campaign Bounces`,`Email Campaign Open`,`Email Campaign Clicked`,`Email Campaign Spams`,`Email Campaign Unsubscribed`
 
 ";

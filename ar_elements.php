@@ -3806,16 +3806,10 @@ function get_account_mailshots_elements($db, $data) {
     );
 
 
-    $table = '`Email Campaign Dimension`   ';
-
-
-    $where = sprintf(
-        ' where true '
-    );
 
 
     $sql = sprintf(
-        "select count(*) as number,`Email Campaign Type` as element from $table $where  group by `Email Campaign Type` "
+        "select count(*) as number,`Email Campaign Type` as element from `Email Campaign Dimension`   group by `Email Campaign Type` "
     );
 
 
