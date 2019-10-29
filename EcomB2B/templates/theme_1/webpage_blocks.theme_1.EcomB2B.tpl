@@ -1281,7 +1281,7 @@
 
 
 
-                $.getJSON("ar_web_customer_products.php?&tipo=category_productswith_category_products={if $with_category_products==1}Yes{else}No{/if}&webpage_key={$webpage->id}", function (data) {
+                $.getJSON("ar_web_customer_products.php?&tipo=category_products&with_category_products={if $with_category_products==1}Yes{else}No{/if}&webpage_key={$webpage->id}", function (data) {
                 $('.order_row i').removeClass('hide')
                 $('.order_row span').removeClass('hide')
 
