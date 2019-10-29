@@ -71,15 +71,10 @@ class Clocking_Machine extends DB_Table {
 
     }
 
-    function metadata($key) {
-        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
-    }
-
-
     function create($raw_data, $settings) {
 
         include 'keyring/dns.php';
-        $box_db=get_box_db();
+        $box_db = get_box_db();
 
         $account = get_object('Account', 1);
 
@@ -145,7 +140,7 @@ class Clocking_Machine extends DB_Table {
             }
 
             $api_key_data = array(
-                'API Key Scope'                => 'Timesheet',
+                'API Key Scope'                => 'Box',
                 'API Key Clocking Machine Key' => $this->id
             );
 
@@ -171,6 +166,7 @@ class Clocking_Machine extends DB_Table {
 
             $box_data = array(
                 'name'       => $this->data['Clocking Machine Code'],
+                'box_key'    => $this->id,
                 'timezone'   => $this->settings('timezone'),
                 'SSID'       => $this->settings('SSID'),
                 'wifi_token' => $this->settings('wifi_token'),
@@ -215,6 +211,9 @@ class Clocking_Machine extends DB_Table {
 
     }
 
+    function settings($key) {
+        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
+    }
 
     function get($key) {
 
@@ -253,9 +252,8 @@ class Clocking_Machine extends DB_Table {
 
     }
 
-
-    function settings($key) {
-        return (isset($this->settings[$key]) ? $this->settings[$key] : '');
+    function metadata($key) {
+        return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
     }
 
     function update_field_switcher($field, $value, $options = '', $metadata = array()) {
@@ -304,6 +302,39 @@ class Clocking_Machine extends DB_Table {
 
         return $label;
 
+    }
+
+    function create_nfc_tag($data) {
+
+        include_once 'class.Clocking_Machine_NFC_Tag.php';
+        $this->new_nfc_tag = false;
+
+        $data['editor']                                     = $this->editor;
+        $data['Clocking Machine NFC Tag Last Scan Box Key'] = $this->id;
+
+        $nfc_tag = new Clocking_Machine_NFC_Tag('find', $data, 'create');
+        if ($nfc_tag->id) {
+            $this->new_nfc_tag_msg = $nfc_tag->msg;
+
+            if ($nfc_tag->new) {
+                $this->new_nfc_tag = true;
+            } else {
+                $this->error = true;
+                if ($nfc_tag->found) {
+                    $this->msg            = _('Duplicated NFC tag if');
+                    $this->error_code     = 'duplicated_field';
+                    $this->error_metadata = json_encode(array('ID'));
+
+                } else {
+                    $this->msg = $nfc_tag->msg;
+                }
+            }
+
+            return $nfc_tag;
+        } else {
+            $this->error = true;
+            $this->msg   = $nfc_tag->msg;
+        }
     }
 
 

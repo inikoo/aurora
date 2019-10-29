@@ -12,7 +12,6 @@
 include_once 'utils/timezones.php';
 
 
-
 $smarty->assign('can_edit', $user->can_edit('Staff'));
 
 

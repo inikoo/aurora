@@ -13,6 +13,11 @@
 
 class Timesheet_Record extends DB_Table {
 
+    /**
+     * @var \PDO
+     */
+    public $db;
+
 
     function __construct($arg1 = false, $arg2 = false) {
         global $db;

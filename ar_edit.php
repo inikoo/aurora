@@ -3276,6 +3276,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             $data['fields_data']['user'] = $user;
 
+            /**
+             * @var $parent \Warehouse
+             */
             $object = $parent->create_shipper($data['fields_data']);
             if (!$parent->error) {
                 $smarty->assign('object', $object);

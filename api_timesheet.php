@@ -79,7 +79,6 @@ function post_timesheet($db, $editor, $api_key_key) {
         echo json_encode($response);
         exit;
     } else {
-        //	$response= log_api_key_access_success($db, $api_key_key , 'Record created',json_encode($data).' '.json_encode($_REQUEST).' '.$staff->id);
         $response = log_api_key_access_success(
             $db, $api_key_key, 'Record created'
         );
@@ -92,4 +91,4 @@ function post_timesheet($db, $editor, $api_key_key) {
 }
 
 
-?>
+
