@@ -11,7 +11,7 @@
 */
 
 
-include_once 'keyring/dns.php';
+include_once 'keyring/box_dns.php';
 require_once 'vendor/autoload.php';
 
 if (defined('SENTRY_DNS_API')) {
