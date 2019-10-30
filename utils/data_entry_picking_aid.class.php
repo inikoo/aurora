@@ -9,7 +9,9 @@
 
 */
 
-
+/**
+ * Class data_entry_picking_aid
+ */
 class data_entry_picking_aid {
 
     /** @var PDO */
@@ -237,7 +239,7 @@ class data_entry_picking_aid {
                 }
 
 
-                if ($transaction['location_key'] <= 0 and  $transaction['qty']>0  ) {
+                if ($transaction['location_key'] <= 0 and $transaction['qty'] > 0) {
 
                     $response = array(
                         'state' => 400,
@@ -362,7 +364,16 @@ class data_entry_picking_aid {
             );
         }
 
-        if (!empty($this->data['fields']['Delivery Note Parcel Type']) and  in_array($this->data['fields']['Delivery Note Parcel Type'],array('Box','Pallet','Envelope','Small Parcel','Other','None')) ) {
+        if (!empty($this->data['fields']['Delivery Note Parcel Type']) and in_array(
+                $this->data['fields']['Delivery Note Parcel Type'], array(
+                                                                      'Box',
+                                                                      'Pallet',
+                                                                      'Envelope',
+                                                                      'Small Parcel',
+                                                                      'Other',
+                                                                      'None'
+                                                                  )
+            )) {
             $this->dn->fast_update(
                 array(
                     'Delivery Note Parcel Type' => $this->data['fields']['Delivery Note Parcel Type'],
@@ -395,10 +406,10 @@ class data_entry_picking_aid {
     }
 
 
-    function process_transactions($options='{}') {
+    function process_transactions($options = '{}') {
 
 
-        $options = json_decode($options,true);
+        $options = json_decode($options, true);
         if (!empty($options['date'])) {
             $date = $options['date'];
         } else {
@@ -407,15 +418,13 @@ class data_entry_picking_aid {
 
         $this->clean_transactions();
         $this->recreate_itfs();
+        //exit;
         $this->pack_transactions($date);
     }
 
     function clean_transactions() {
 
-
         foreach ($this->data['items'] as $part_sku => $_transaction) {
-
-
             foreach ($_transaction as $_key => $transaction) {
 
                 if (!$transaction['qty'] > 0 and !$transaction['itf_key'] > 0) {
@@ -423,7 +432,6 @@ class data_entry_picking_aid {
                 }
             }
         }
-
 
     }
 
@@ -438,8 +446,8 @@ class data_entry_picking_aid {
             $total_qty        = 0;
             foreach ($_transaction as $transaction) {
 
-                if($transaction['qty']==''){
-                    $transaction['qty']=0;
+                if ($transaction['qty'] == '') {
+                    $transaction['qty'] = 0;
                 }
 
                 $total_qty += $transaction['qty'];
@@ -472,7 +480,7 @@ class data_entry_picking_aid {
                     $part_transactions[$row['Inventory Transaction Key']]              = $row;
                     $part_transactions[$row['Inventory Transaction Key']]['_required'] = $_required;
 
-                    if (isset($itf_indexed_data[$row['Inventory Transaction Key']]['qty'])  and is_numeric($itf_indexed_data[$row['Inventory Transaction Key']]['qty'])   ) {
+                    if (isset($itf_indexed_data[$row['Inventory Transaction Key']]['qty']) and is_numeric($itf_indexed_data[$row['Inventory Transaction Key']]['qty'])) {
                         $_diff = $itf_indexed_data[$row['Inventory Transaction Key']]['qty'] - $_required;
                     } else {
                         $_diff = -$_required;
@@ -489,18 +497,14 @@ class data_entry_picking_aid {
 
 
                         $original_diff = $_diff;
-                        //  $original_qty  = $row['Required'] + $row['Given'];
 
                         $_diff = abs($_diff);
                         $tmp   = min($row['Required'], $_diff);
-                        //$required = $row['Required'] - $tmp;
 
                         $_required = $tmp;
                         $_given    = 0;
-                        //$given     = $row['Given'];
-                        $_diff = -$_diff - $tmp;
+                        $_diff     = -$_diff - $tmp;
                         if ($_diff > 0) {
-                            //$given  = $given - $tmp;
                             $_given = min($row['Given'], $_diff);
                         }
 
@@ -518,46 +522,47 @@ class data_entry_picking_aid {
                         );
 
 
-                        //    if ($original_qty > abs($original_diff)) {
+                        $sql = 'update `Inventory Transaction Fact` set `Required`=`Required`-? ,`Given`=`Given`-? where `Inventory Transaction Key`=? ';
+                        /*
+                        print $sql;
 
-                        $sql = 'update  `Inventory Transaction Fact` set `Required`=`Required`-? ,`Given`=`Given`-? where `Inventory Transaction Key`=? ';
-
-
-                        $stmt = $this->db->prepare($sql);
-                        if (!$stmt) {
-                            print_r($this->db->errorInfo());
-                        }
-
-
-                        if (!$stmt->execute(
+                        print_r(
                             [
                                 $_required,
                                 $_given,
                                 $row['Inventory Transaction Key']
                             ]
-                        )) {
-                            print_r($stmt->errorInfo());
-                        }
+                        );
+                        */
 
 
-                        // } else {
-                        //     $sql = 'delete from  `Inventory Transaction Fact` WHERE  `Inventory Transaction Key` =?';
-                        //     $stmt = $this->db->prepare($sql);
-                        //     $stmt->bindParam(1, $row['Inventory Transaction Key']);
-                        //     $stmt->execute();
-                        // }
+
+                         $stmt = $this->db->prepare($sql);
+                         if (!$stmt) {
+                             print_r($this->db->errorInfo());
+                         }
+
+
+                         if (!$stmt->execute(
+                             [
+                                 $_required,
+                                 $_given,
+                                 $row['Inventory Transaction Key']
+                             ]
+                         )) {
+                             print_r($stmt->errorInfo());
+                         }
+
+
 
 
                     }
 
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit();
             }
 
-
+            //print_r($otf_maps);
             foreach ($_transaction as $index_transaction => $transaction) {
 
                 if ($transaction['itf_key'] == '') {
@@ -569,11 +574,13 @@ class data_entry_picking_aid {
                     // print_r($transaction);
 
                     foreach ($otf_maps as $_key => $otf_map) {
-                        //  print_r($otf_map);
+                        //print_r($otf_map);
+                        //print "$qty\n";
 
                         if ($otf_map['qty'] == $qty) {
 
-                            // print '==a==';
+                            //print '==a==';
+                            //exit;
 
                             $itf_key = $this->create_itf($part_sku, $transaction['location_key'], $otf_map['required'], $otf_map['given'], $otf_map['otf_map'], $otf_map['otf_map_metadata']);
 
@@ -586,7 +593,8 @@ class data_entry_picking_aid {
 
                         } elseif ($otf_map['qty'] < $qty) {
 
-                            //  print '==b==';
+                            //print '==b==';
+                            //exit;
                             //$itf_key = $this->create_itf($part_sku, $transaction['location_key'], $otf_map['required'], $otf_map['given'], $otf_map['otf_map'], $otf_map['otf_map_metadata']);
 
                             $this->create_itf($part_sku, $transaction['location_key'], $otf_map['required'], $otf_map['given'], $otf_map['otf_map'], $otf_map['otf_map_metadata']);
@@ -599,9 +607,19 @@ class data_entry_picking_aid {
 
 
                         } else {
-                            //  print '==c==';
+                            //print '==c==';
+                            //print_r($otf_map);
+                            //print '==qty=='.$qty."\n";
+
+                            //exit;
                             $taken_off_required = min($otf_map['required'], $qty);
+
+                            //print '==$taken_off_required=='.$taken_off_required."\n";
+
                             $_required          = $otf_map['required'] - $taken_off_required;
+
+                            //print '==$_required=='.$_required."\n";
+
 
                             $qty = $qty - $taken_off_required;
 
@@ -611,8 +629,12 @@ class data_entry_picking_aid {
                             // $qty = $qty - $taken_off_given;
 
                             $itf_key                     = $this->create_itf($part_sku, $transaction['location_key'], $taken_off_required, $taken_off_given, $otf_map['otf_map'], $otf_map['otf_map_metadata']);
-                            $otf_maps[$_key]['required'] = $otf_maps[$_key]['required'] - $_required;
-                            $otf_maps[$_key]['given']    = $otf_maps[$_key]['given'] - $_given;
+
+                            //$otf_maps[$_key]['required'] = $otf_maps[$_key]['required'] - $_required;
+                            //$otf_maps[$_key]['given']    = $otf_maps[$_key]['given'] - $_given;
+
+                            $otf_maps[$_key]['required'] =$_required;
+                            $otf_maps[$_key]['given'] =$_given;
                             $otf_maps[$_key]['qty']      = $otf_maps[$_key]['required'] + $otf_maps[$_key]['given'];
                             $otf_maps[$_key]['diff']     = $otf_maps[$_key]['diff'] + $taken_off_required + $taken_off_given;
 
@@ -634,6 +656,10 @@ class data_entry_picking_aid {
                 }
             }
 
+          //  continue;
+
+            //print_r($otf_maps);
+
 
             foreach ($otf_maps as $otf_map) {
 
@@ -641,8 +667,16 @@ class data_entry_picking_aid {
 
 
                     $sql = 'update  `Inventory Transaction Fact` set `Required`=`Required`+? ,`Given`=`Given`+? where `Inventory Transaction Key`=? ';
-
-
+                    /*
+                    print $sql;
+                    print_r(
+                        [
+                            $otf_map['required'],
+                            $otf_map['given'],
+                            $otf_map['itf_key']
+                        ]
+                    );
+                    */
                     $stmt = $this->db->prepare($sql);
                     if (!$stmt) {
                         print_r($this->db->errorInfo());
@@ -666,6 +700,8 @@ class data_entry_picking_aid {
 
         }
 
+
+        
 
     }
 
@@ -738,8 +774,6 @@ class data_entry_picking_aid {
                         if ($row = $result->fetch()) {
 
 
-
-
                             if ($transaction['qty'] == '') {
                                 $transaction['qty'] = 0;
                             }
@@ -754,21 +788,18 @@ class data_entry_picking_aid {
                             $out_of_stock = $row['Required'] + $row['Given'] + -$transaction['qty'];
 
 
-
-
-
                             if ($transaction['qty'] == 0) {
-                                $transaction_record_type='Info';
-                                $transaction_type    = 'No Dispatched';
-                                $transaction_section = 'NoDispatched';
-                                $date_picked         = '';
-                                $date_packed         = '';
+                                $transaction_record_type = 'Info';
+                                $transaction_type        = 'No Dispatched';
+                                $transaction_section     = 'NoDispatched';
+                                $date_picked             = '';
+                                $date_packed             = '';
                             } else {
-                                $transaction_record_type='Movement';
-                                $transaction_type    = 'Sale';
-                                $transaction_section = 'Out';
-                                $date_picked         = $date;
-                                $date_packed         = $date;
+                                $transaction_record_type = 'Movement';
+                                $transaction_type        = 'Sale';
+                                $transaction_section     = 'Out';
+                                $date_picked             = $date;
+                                $date_packed             = $date;
                             }
 
 
@@ -849,9 +880,9 @@ class data_entry_picking_aid {
 
     }
 
-    function finish_packing($options='{}') {
+    function finish_packing($options = '{}') {
 
-        $options = json_decode($options,true);
+        $options = json_decode($options, true);
         if (!empty($options['date'])) {
             $date = $options['date'];
         } else {
@@ -864,21 +895,21 @@ class data_entry_picking_aid {
             )
         );
 
-        $this->dn->update_state('Packed',json_encode(array('date'=>$date)));
+        $this->dn->update_state('Packed', json_encode(array('date' => $date)));
 
         if ($this->level >= 10) {
-            $this->dn->update_state('Packed Done',json_encode(array('date'=>$date)));
+            $this->dn->update_state('Packed Done', json_encode(array('date' => $date)));
         }
 
 
         if ($this->level >= 20 and $this->dn->get('Delivery Note Type') == 'Order') {
             $order         = get_object('order', $this->data['order_key']);
             $order->editor = $this->editor;
-            $order->update_state('Approved',json_encode(array('date'=>$date)));
+            $order->update_state('Approved', json_encode(array('date' => $date)));
             $this->dn->get_data('id', $this->dn->id);
         }
         if ($this->level >= 30) {
-            $this->dn->update_state('Dispatched',json_encode(array('date'=>$date)));
+            $this->dn->update_state('Dispatched', json_encode(array('date' => $date)));
         }
 
     }

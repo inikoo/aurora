@@ -3722,37 +3722,36 @@ function find_employees($db, $account, $memcache_ip, $data) {
         exit;
     }
 
-    $sql = sprintf(
-        "select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension`   where  `Staff Name`   REGEXP '[[:<:]]%s' %s  limit $max_results ", $q, $where
-    );
+    $sql = "select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension`   where  `Staff Name`   REGEXP ? $where  limit $max_results ";
 
-    // print $sql;
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
 
-            if ($row['Staff Alias'] == $q) {
-                $candidates[$row['Staff Key']] = 400;
-            } else {
+     $stmt = $db->prepare($sql);
+     $stmt->execute(
+         array(
+             '[[:<:]]'.$q
+         )
+     );
+     while ($row = $stmt->fetch()) {
+         if ($row['Staff Alias'] == $q) {
+             $candidates[$row['Staff Key']] = 400;
+         } else {
 
-                $len_name                      = strlen($row['Staff Alias']);
-                $len_q                         = strlen($q);
-                $factor                        = $len_q / $len_name;
-                $candidates[$row['Staff Key']] = 200 * $factor;
-            }
+             $len_name                      = strlen($row['Staff Alias']);
+             $len_q                         = strlen($q);
+             $factor                        = $len_q / $len_name;
+             $candidates[$row['Staff Key']] = 200 * $factor;
+         }
 
-            $candidates_data[$row['Staff Key']] = array(
-                'Staff Alias' => $row['Staff Alias'],
-                'Staff Name'  => $row['Staff Name'],
-                'Staff ID'    => $row['Staff ID'],
-                'Status'      => $row['Staff Currently Working']
+         $candidates_data[$row['Staff Key']] = array(
+             'Staff Alias' => $row['Staff Alias'],
+             'Staff Name'  => $row['Staff Name'],
+             'Staff ID'    => $row['Staff ID'],
+             'Status'      => $row['Staff Currently Working']
 
-            );
+         );
+         }
 
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
-    }
+
 
 
     arsort($candidates);
