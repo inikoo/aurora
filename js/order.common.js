@@ -5,7 +5,7 @@
 
 
 
-$(document).on('input propertychange', '.order_qty', function (evt) {
+$(document).on('input propertychange', '.order_qty', function () {
 
     if ($(this).val() == $(this).attr('ovalue')) {
         $(this).closest('span').find('i.plus').removeClass('fa-cloud fa-exclamation-circle error').addClass('fa-plus')
@@ -33,7 +33,7 @@ $(document).on('input propertychange', '.order_qty', function (evt) {
 
 
 
-$(document).on('click', '.order_item_percentage_discount', function (evt) {
+$(document).on('click', '.order_item_percentage_discount', function () {
 
     $(this).addClass('hide').closest('td').find('.order_item_percentage_discount_form').removeClass('hide')
 
@@ -42,7 +42,7 @@ $(document).on('click', '.order_item_percentage_discount', function (evt) {
 
 
 
-$(document).on('input propertychange', '.order_item_percentage_discount_input', function (evt) {
+$(document).on('input propertychange', '.order_item_percentage_discount_input', function () {
 
 
     icon=$(this).closest('.order_item_percentage_discount_form').find('i')
@@ -67,7 +67,7 @@ $(document).on('input propertychange', '.order_item_percentage_discount_input', 
 
 
 
-$(document).on('click', '.order_item_percentage_discount_form i', function (evt) {
+$(document).on('click', '.order_item_percentage_discount_form i', function () {
 
     var icon=$(this)
 
@@ -122,14 +122,6 @@ $(document).on('click', '.order_item_percentage_discount_form i', function (evt)
 
 
         if (data.state == 200) {
-
-            //console.log(data)
-            //console.log(table_metadata)
-
-
-
-
-
 
             icon.closest('tr').find('._order_item_net').html(data.transaction_data.to_charge)
             icon.closest('tr').find('._item_discounts').html(data.transaction_data.item_discounts)
