@@ -633,7 +633,7 @@ module.exports = function (grunt) {
     grunt.registerTask('au_sass', ['sass:aurora', 'sass:login']);
     grunt.registerTask('cssmin_au_css', ['cssmin:au', 'cssmin:au_login']);
 
-    grunt.registerTask('au_css', ['cssmin_au_css',  'copy:au_css', 'replace:js_login']);
+    grunt.registerTask('au_css', ['cssmin_au_css',  'copy:au_css', 'replace:au_css']);
 
 
     grunt.registerTask('au_libs', ['uglify:aurora_libs', 'uglify:login_libs','copy:au_libs', 'replace:js_libs', 'replace:js_login_libs']);
