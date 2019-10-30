@@ -607,12 +607,14 @@ module.exports = function (grunt) {
     grunt.registerTask('ecom_mobile_forms', ['uglify:ecom_mobile_forms', 'copy:ecom_mobile_forms', 'replace:ecom_mobile_forms']);
     grunt.registerTask('ecom_mobile', ['uglify:ecom_mobile', 'copy:ecom_mobile', 'replace:ecom_mobile']);
     grunt.registerTask('ecom_mobile_custom', ['uglify:ecom_mobile_custom', 'copy:ecom_mobile_custom', 'replace:ecom_mobile_custom']);
-
     grunt.registerTask('ecom_datatables', ['uglify:ecom_datatables', 'copy:ecom_datatables', 'replace:ecom_datatables']);
 
 
 
     grunt.registerTask('ecom_libs_headers', ['ecom_desktop_in','ecom_desktop_out','ecom_desktop_forms','ecom_mobile_forms','ecom_mobile','ecom_mobile_custom','ecom_datatables']);
+
+    grunt.registerTask('ecom_libs_headers_replace', ['replace:ecom_desktop_in','replace:ecom_desktop_out','replace:ecom_desktop_forms','replace:ecom_mobile_forms','replace:ecom_mobile','replace:ecom_mobile_custom','replace:ecom_datatables']);
+
 
     grunt.registerTask('ecom_desktop_logged_in', ['uglify:ecom_desktop_logged_in', 'copy:ecom_desktop_logged_in', 'replace:ecom_desktop_logged_in']);
     grunt.registerTask('ecom_dropshipping_logged_in', ['uglify:ecom_dropshipping_logged_in', 'copy:ecom_dropshipping_logged_in', 'replace:ecom_dropshipping_logged_in']);
