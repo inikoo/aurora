@@ -672,10 +672,10 @@ class User extends DB_Table {
     function get_groups() {
         $this->groups = array();
         $sql          = sprintf(
-            "SELECT GROUP_CONCAT(`User Group Key`) AS groups FROM `User Group User Bridge` UGUB  WHERE UGUB.`User Key`=%d", $this->id
+            "SELECT GROUP_CONCAT(`User Group Key`) AS _groups FROM `User Group User Bridge` UGUB  WHERE UGUB.`User Key`=%d", $this->id
         );
         if ($row = $this->db->query($sql)->fetch()) {
-            $groups       = $row['groups'];
+            $groups       = $row['_groups'];
             $this->groups = preg_split('/,/', $groups);
         }
 
@@ -716,10 +716,10 @@ class User extends DB_Table {
     function get_number_groups() {
         $number_groups = 0;
         $sql           = sprintf(
-            "SELECT count(*) AS groups FROM `User Group User Bridge` UGUB  WHERE UGUB.`User Key`=%d", $this->id
+            "SELECT count(*) AS _groups FROM `User Group User Bridge` UGUB  WHERE UGUB.`User Key`=%d", $this->id
         );
         if ($row = $this->db->query($sql)->fetch()) {
-            $number_groups = $row['groups'];
+            $number_groups = $row['_groups'];
         }
 
         return $number_groups;

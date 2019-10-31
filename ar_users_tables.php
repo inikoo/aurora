@@ -133,10 +133,7 @@ function users($_data, $db, $user) {
         }
 
 
-        // $groups     = preg_split('/,/', $data['Groups']);
-        // $stores     = preg_split('/,/', $data['Stores']);
-        // $warehouses = preg_split('/,/', $data['Warehouses']);
-        //$sites      = preg_split('/,/', $data['Sites']);
+
 
         $adata[] = array(
             'id'              => (integer)$data['User Key'],
@@ -151,10 +148,7 @@ function users($_data, $db, $user) {
             'fail_logins'     => number($data['User Failed Login Count']),
             'fail_last_login' => ($data ['User Last Failed Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Failed Login']." +00:00"))),
 
-            //'groups'     => $data['Groups'],
-            //'stores'     => $stores,
-            //'warehouses' => $warehouses,
-            //'websites'   => $data['Sites'],
+
         );
 
     }
@@ -210,7 +204,7 @@ function staff($_data, $db, $user) {
             'fail_logins'     => number($data['User Failed Login Count']),
             'fail_last_login' => ($data ['User Last Failed Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Failed Login']." +00:00"))),
 
-            'groups'     => $data['Groups'],
+            'groups'     => $data['_Groups'],
             'stores'     => $stores,
             'warehouses' => $warehouses,
             'websites'   => $data['Sites'],
@@ -240,7 +234,7 @@ function contractors($_data, $db, $user) {
 
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
-    //print $sql;
+
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
@@ -271,7 +265,7 @@ function contractors($_data, $db, $user) {
             'fail_logins'     => number($data['User Failed Login Count']),
             'fail_last_login' => ($data ['User Last Failed Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Failed Login']." +00:00"))),
 
-            'groups'     => $data['Groups'],
+            'groups'     => $data['_Groups'],
             'stores'     => $stores,
             'warehouses' => $warehouses,
             'websites'   => $data['Sites'],

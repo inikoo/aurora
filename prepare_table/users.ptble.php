@@ -101,4 +101,4 @@ $sql_totals
 
 $fields
     = "`User Failed Login Count`,`User Last Failed Login`,`User Last Login`,`User Login Count`,`User Alias`,`User Handle`,`User Password Recovery Email`,`User Type`,`User Parent Key`,`User Key`,`User Active`";
-?>
+
