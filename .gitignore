@@ -165,6 +165,8 @@ websocket_server/composer.lock
 /bower_components/
 
 /box/keyring/dns.php
+/box/keyring/box_dns.php
+
 /box/tests/box_registration.test.php
 /cron/fix_po_states.php
 /post_deploy.sh

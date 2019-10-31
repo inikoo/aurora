@@ -53,7 +53,6 @@ class Store extends DB_Table {
 
     }
 
-
     function get_data($tipo, $tag) {
 
         if ($tipo == 'id') {
