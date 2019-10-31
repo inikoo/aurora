@@ -1256,7 +1256,7 @@ $elements_options = array(
             'label' => _('State'),
             'items' => array(
                 'InProcess' => array(
-                    'label'    => _('In process'),
+                    'label'    => _('In transit'),
                     'selected' => true
                 ),
 

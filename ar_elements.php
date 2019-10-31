@@ -2730,8 +2730,9 @@ function get_supplier_deliveries_element_numbers($db, $data) {
         case 'account':
             $table = '`Supplier Delivery Dimension` D left join `Supplier Dimension` on (`Supplier Key`=`Supplier Delivery Parent Key`)   ';
 
+
             $where = sprintf(
-                'where  `Supplier Delivery Parent`="Supplier" and  `Supplier Production`="No"  '
+                'where (( `Supplier Delivery Parent`="Supplier" and  `Supplier Production`="No"  ) or  `Supplier Delivery Parent`="Agent" )'
             );
             break;
         case 'production':

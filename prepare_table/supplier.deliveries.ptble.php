@@ -26,7 +26,7 @@ if ($parameters['parent'] == 'account') {
     $table = '`Supplier Delivery Dimension` D left join `Supplier Dimension` on (`Supplier Key`=`Supplier Delivery Parent Key`)   ';
 
     $where = sprintf(
-        'where ( `Supplier Delivery Parent`="Supplier" and  `Supplier Production`="No"  ) or  `Supplier Delivery Parent`="Agent" '
+        'where (( `Supplier Delivery Parent`="Supplier" and  `Supplier Production`="No"  ) or  `Supplier Delivery Parent`="Agent" )'
     );
 
 
