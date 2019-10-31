@@ -153,7 +153,7 @@ if ($authenticated == 'OK') {
 
                 $api_url = $_data['api_url'].'/api/box?action=send_tag_id&box_key='.$_data['box_key'].'&tag_id='.$tag_id.'&date='.urlencode($_datetime->format('Y-m-d H:i:s'));
 
-                $api_url = 'au.geko/'.'/api/box?action=send_tag_id&box_key='.$_data['box_key'].'&tag_id='.$tag_id.'&date='.urlencode($_datetime->format('Y-m-d H:i:s'));
+                //$api_url = 'au.geko/'.'/api/box?action=send_tag_id&box_key='.$_data['box_key'].'&tag_id='.$tag_id.'&date='.urlencode($_datetime->format('Y-m-d H:i:s'));
 
                 //  print $api_url."\n";
 
