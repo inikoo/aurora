@@ -6,7 +6,20 @@ cell: "integer",
 renderable: false
 
 
-}, {
+},
+
+{
+name: "size_icon",
+label: "",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({
+className: "width_30 align_center"
+})
+
+},
+
+{
 name: "public_id",
 label: "{t}Number{/t}",
 editable: false,
@@ -36,7 +49,17 @@ label: "{t}State{/t}",
 editable: false,
 sortType: "toggle",
 cell: "html"
-}, {
+},
+{
+name: "cbm",
+label: "{t}CBM{/t}",
+editable: false,
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='date'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},{
 name: "total_amount",
 label: "{t}Total{/t}",
 editable: false,

@@ -10,35 +10,39 @@
  Version 3.0
 */
 
-
-function get_dashboard_inventory($db, $account, $user, $smarty, $parent = '', $display_device_version = 'desktop') {
+/**
+ * @param        $user   \User
+ * @param        $smarty \Smarty
+ * @param string $parent
+ * @param string $display_device_version
+ *
+ * @return mixed
+ * @throws \SmartyException
+ */
+function get_dashboard_inventory($user, $smarty, $parent = '', $display_device_version = 'desktop') {
 
 
     include_once 'utils/date_functions.php';
 
     $smarty->assign('user', $user);
 
-
     if ($parent != '') {
 
-        $object = get_object('Warehouse',$parent);
-
-        //  print_r($_object);
-        $title = sprintf(_('Warehouse %d'),$object->get('Name'));
+        $object = get_object('Warehouse', $parent);
+        $title  = sprintf(_('Warehouse %d'), $object->get('Name'));
 
     } else {
-        $object = new Account();
+        $object = get_object('Account',1);
         $object->load_acc_data();
         $title = _('Warehouse');
     }
-
 
 
     $smarty->assign('store_title', $title);
     $smarty->assign('object', $object);
     $smarty->assign('parent', $parent);
 
-
+    
     if ($display_device_version == 'mobile') {
         return $smarty->fetch('dashboard/inventory.mobile.dbard.tpl');
     } else {
@@ -47,4 +51,4 @@ function get_dashboard_inventory($db, $account, $user, $smarty, $parent = '', $d
 }
 
 
-?>
+

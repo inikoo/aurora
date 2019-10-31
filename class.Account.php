@@ -74,9 +74,8 @@ class Account extends DB_Table {
     }
 
 
-
     function add_account_history($history_key, $type = false) {
-        $this->post_add_history($history_key, $type );
+        $this->post_add_history($history_key, $type);
     }
 
     function post_add_history($history_key, $type = false) {
@@ -91,7 +90,6 @@ class Account extends DB_Table {
         $this->db->exec($sql);
         //print $sql;
     }
-
 
 
     function create_staff($data) {
@@ -341,18 +339,45 @@ class Account extends DB_Table {
 
                 $number = 0;
 
-                $sql = sprintf(
-                    'SELECT count(*) AS num FROM `Order Dimension` WHERE `Order State`="Dispatched" AND `Order Dispatched Date`>%s   AND  `Order Dispatched Date`<%s   ', prepare_mysql(date('Y-m-d 00:00:00')), prepare_mysql(date('Y-m-d 23:59:59'))
-                );
 
-                if ($result = $this->db->query($sql)) {
-                    if ($row = $result->fetch()) {
-                        $number = $row['num'];
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
+                $sql  = "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order State`='Dispatched' AND `Order Dispatched Date`>?   AND  `Order Dispatched Date`<? ";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        date('Y-m-d 00:00:00'),
+                        date('Y-m-d 23:59:59')
+                    )
+                );
+                if ($row = $stmt->fetch()) {
+                    $number = $row['num'];
+                }
+
+
+                return number($number);
+            case 'Containers in Transit':
+
+                $number = 0;
+
+
+                $sql  = "SELECT count(*) AS num FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery State`='Dispatched' and `Supplier Delivery Parent`!='Order'  and `Supplier Delivery CBM`>=25 ";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute();
+                if ($row = $stmt->fetch()) {
+                    $number = $row['num'];
+                }
+
+
+                return number($number);
+            case 'Small Deliveries in Transit':
+
+                $number = 0;
+
+
+                $sql  = "SELECT count(*) AS num FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery State`='Dispatched' and `Supplier Delivery Parent`!='Order'  and ( `Supplier Delivery CBM`<25 or `Supplier Delivery CBM` is null )" ;
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute();
+                if ($row = $stmt->fetch()) {
+                    $number = $row['num'];
                 }
 
 
@@ -2691,10 +2716,9 @@ class Account extends DB_Table {
 
 
         include 'keyring/dns.php';
-        $box_db=get_box_db();
+        $box_db = get_box_db();
 
         $this->new_clocking_machine = false;
-
 
 
         $sql = "SELECT `Box Key`,`Box Aurora Account Code`,`Box Model`  FROM box.`Box Dimension`  WHERE  `Box ID`=?    ";

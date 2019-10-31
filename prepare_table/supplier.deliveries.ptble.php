@@ -162,13 +162,16 @@ if ($order == 'public_id') {
     $order = 'D.`Supplier Delivery State`';
 } elseif ($order == 'total_amount') {
     $order = 'D.`Supplier Delivery Total Amount`';
+} elseif ($order == 'cbm') {
+    $order = 'D.`Supplier Delivery CBM`';
 } else {
     $order = 'D.`Supplier Delivery Key`';
 }
 
 $fields
     = '`Supplier Delivery Parent`,`Supplier Delivery Parent Key`,D.`Supplier Delivery Key`,`Supplier Delivery State`,`Supplier Delivery Public ID`,D.`Supplier Delivery Last Updated Date`,`Supplier Delivery Creation Date`,
-`Supplier Delivery Parent Code`,`Supplier Delivery Parent Name`,`Supplier Delivery Total Amount`,`Supplier Delivery Currency Code`,`Supplier Delivery Invoice Public ID`,`Supplier Delivery Invoice Date`
+`Supplier Delivery Parent Code`,`Supplier Delivery Parent Name`,`Supplier Delivery Total Amount`,`Supplier Delivery Currency Code`,`Supplier Delivery Invoice Public ID`,`Supplier Delivery Invoice Date`,
+`Supplier Delivery CBM`,`Supplier Delivery Weight`
 ';
 
 $sql_totals

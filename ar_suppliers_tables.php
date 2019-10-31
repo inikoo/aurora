@@ -1149,6 +1149,16 @@ function deliveries($_data, $db, $user) {
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
 
+            if ($data['Supplier Delivery CBM'] ==0 or $data['Supplier Delivery CBM'] =='') {
+                $size_icon = '';
+            }elseif ($data['Supplier Delivery CBM'] > 25) {
+                $size_icon = '<i class="fa fa-container-storage"></i>';
+            } elseif ($data['Supplier Delivery CBM'] < .2) {
+                $size_icon = '<i class="fa fa-box-alt"></i>';
+            } else {
+                $size_icon = '<i class="fal fa-pallet-alt"></i>';
+            }
+
             switch ($data['Supplier Delivery State']) {
                 case 'InProcess':
                     $state = sprintf('%s', _('In Process'));
@@ -1191,10 +1201,19 @@ function deliveries($_data, $db, $user) {
                     break;
             }
 
-            $table_data[] = array(
-                'id'        => (integer)$data['Supplier Delivery Key'],
 
-                //'public_id'   => $data['Supplier Delivery Public ID'],
+            if ($data['Supplier Delivery CBM'] == 0 or $data['Supplier Delivery CBM'] == '') {
+                $cbm='';
+            }elseif ($data['Supplier Delivery CBM'] <.2) {
+                $cbm='<0.2'.' m³';;
+            }else{
+                $cbm=number($data['Supplier Delivery CBM']).' m³';
+            }
+
+            $table_data[] = array(
+                'id' => (integer)$data['Supplier Delivery Key'],
+
+                'size_icon' => $size_icon,
                 'date'      => strftime("%e %b %Y", strtotime($data['Supplier Delivery Creation Date'].' +0:00')),
                 'last_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Supplier Delivery Last Updated Date'].' +0:00')),
                 // 'parent_name' => $data['Supplier Delivery Parent Name'],
@@ -1205,7 +1224,7 @@ function deliveries($_data, $db, $user) {
                     '<span class="link" onclick="change_view(\'%s/%d/delivery/%d\')" >%s</span>  ', strtolower($data['Supplier Delivery Parent']), $data['Supplier Delivery Parent Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
                 ),
 
-
+                'cbm'          => $cbm,
                 'state'        => $state,
                 'total_amount' => money($data['Supplier Delivery Total Amount'], $data['Supplier Delivery Currency Code'])
 
@@ -1989,14 +2008,14 @@ function order_items($_data, $db, $user, $account) {
 
             $table_data[] = array(
 
-                'id'         => (integer)$data['Purchase Order Transaction Fact Key'],
-                'operations' => $operations,
-                'reference' => $reference,
-                'unit_description' => $data['Supplier Part Description'].'<br><span class="discreet">'._('Unit cost').':</span> '.money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
-                'units_per_sko'    => number($units_per_sko),
-                'unit_cost'        => money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
-                'skos_per_carton'  => number($skos_per_carton),
-                'supplier'         => $data['Supplier Code'],
+                'id'                  => (integer)$data['Purchase Order Transaction Fact Key'],
+                'operations'          => $operations,
+                'reference'           => $reference,
+                'unit_description'    => $data['Supplier Part Description'].'<br><span class="discreet">'._('Unit cost').':</span> '.money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
+                'units_per_sko'       => number($units_per_sko),
+                'unit_cost'           => money($data['Supplier Part Unit Cost'], $purchase_order->get('Purchase Order Currency Code')),
+                'skos_per_carton'     => number($skos_per_carton),
+                'supplier'            => $data['Supplier Code'],
                 'image'               => $image,
                 'state'               => $state,
                 'description_units'   => $description_units,
@@ -2006,9 +2025,9 @@ function order_items($_data, $db, $user, $account) {
                 'quantity_skos'       => $quantity_skos,
                 'quantity_cartons'    => $quantity_cartons,
                 'items_qty'           => $items_qty,
-                'amount' => $amount,
-                'weight' => $weight,
-                'cbm'    => $cbm,
+                'amount'              => $amount,
+                'weight'              => $weight,
+                'cbm'                 => $cbm,
 
 
             );
@@ -2048,7 +2067,6 @@ function client_order_items($_data, $db, $user, $account) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
 
 
             $units_per_carton = $data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'];
@@ -2239,7 +2257,6 @@ function delivery_items($_data, $db, $user, $account) {
                 'cbm'    => $cbm,
 
 
-
             );
 
 
@@ -2352,7 +2369,6 @@ function delivery_items_mismatch($_data, $db, $user, $account) {
                 'diff'        => delta($data['Supplier Delivery Checked Units'], $data['Supplier Delivery Units']),
                 'diff_units'  => ($diff_units > 0 ? '+' : '').$diff_units,
                 'diff_skos'   => ($diff_units > 0 ? '+' : '').($diff_units) / $data['Part Units Per Package'],
-
 
 
             );
@@ -2553,12 +2569,12 @@ function delivery_checking_items($_data, $db, $user, $account) {
                 ),
 
 
-                'reference' => sprintf(
+                'reference'                 => sprintf(
                     '<span class="link" onclick="change_view(\'/%s/%d/part/%d\')" >%s</span>  ', strtolower($supplier_delivery->get('Supplier Delivery Parent')), $supplier_delivery->get('Supplier Delivery Parent Key'), $data['Supplier Part Key'],
                     $data['Supplier Part Reference']
                 ),
-                'part_reference' => sprintf('<span class="link" onclick="change_view(\'/part/%d\')" >%s</span>  ', $data['Part SKU'], $data['Part Reference']),
-                'description'    => $description,
+                'part_reference'            => sprintf('<span class="link" onclick="change_view(\'/part/%d\')" >%s</span>  ', $data['Part SKU'], $data['Part Reference']),
+                'description'               => $description,
                 'sko_edit_checked_quantity' => $edit_sko_checked_quantity,
                 'sko_checked_quantity'      => number($sko_checked_quantity),
                 'subtotals'                 => $subtotals,
@@ -4712,17 +4728,17 @@ function delivery_items_done($_data, $db, $user) {
 
 
             $table_data[] = array(
-                'id'                => (integer)$data['Part SKU'],
-                'supplier_part_key' => (integer)$data['Supplier Part Key'],
-                'part_reference' => $reference,
-                'description'    => $data['Part Package Description'],
+                'id'                            => (integer)$data['Part SKU'],
+                'supplier_part_key'             => (integer)$data['Supplier Part Key'],
+                'part_reference'                => $reference,
+                'description'                   => $data['Part Package Description'],
                 'received_quantity'             => number($data['skos_in']),
                 'items_amount'                  => $items_amount,
                 'extra_amount'                  => $extra_amount,
                 'extra_amount_account_currency' => $extra_amount_account_currency,
                 'paid_account_currency'         => money($data['Supplier Delivery Net Amount'] * $supplier_delivery->get('Supplier Delivery Currency Exchange'), $account->get('Currency Code')),
-                'total_paid' => $total_paid,
-                'sko_cost'   => $sko_cost
+                'total_paid'                    => $total_paid,
+                'sko_cost'                      => $sko_cost
             );
 
 

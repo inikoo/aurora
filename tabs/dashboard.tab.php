@@ -101,7 +101,7 @@ foreach ($user->get_dashboard_items() as $item) {
 
 
         $html .= get_dashboard_parts_stock_status($user, $smarty, $parent, (!empty($_SESSION['display_device_version'])?$_SESSION['display_device_version']:'desktop'));
-        $html .= get_dashboard_inventory($db, $account, $user, $smarty, $parent, (!empty($_SESSION['display_device_version'])?$_SESSION['display_device_version']:'desktop'));
+        $html .= get_dashboard_inventory($user, $smarty, $parent, (!empty($_SESSION['display_device_version'])?$_SESSION['display_device_version']:'desktop'));
 
     } elseif ($item == 'kpis') {
 

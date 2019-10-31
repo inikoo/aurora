@@ -31,4 +31,4 @@ $html .= '<div class="widget_container">'.get_warehouse_alerts( $db,$warehouse, 
 $html .= '<div id="widget_details" class="hide" style="clear:both;font-size:90%;border-top:1px solid #ccc"><div>';
 
 
-?>
+

@@ -6,7 +6,20 @@ cell: "integer",
 renderable: false
 
 
-}, {
+},
+
+{
+name: "size_icon",
+label: "",
+editable: false,
+sortable: false,
+cell: Backgrid.HtmlCell.extend({
+className: "width_30 align_center"
+})
+
+},
+
+{
 name: "public_id",
 label: "{t}Number{/t}",
 editable: false,
