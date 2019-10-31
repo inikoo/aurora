@@ -285,7 +285,7 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
 
     }
 
-    $title = $icon.' <span class="id Webpage_Code">'.$object->get('Name').'</span> <span class="url" style="padding-left:10px">'.strtolower($object->get('Code')).'</span>';
+    $title = $icon.' <span class="id Webpage_Code">'.(strlen($object->get('Name')) > 40 ? substr($object->get('Name'),0,40)."&#8230;" : $object->get('Name'))   .'</span> <span class="url" style="padding-left:10px">'.strtolower($object->get('Code')).'</span>';
 
 
     if (preg_match('/online/', $data['request'])) {

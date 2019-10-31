@@ -3892,47 +3892,45 @@ function search_webpages($db, $account, $user, $data) {
                 exit;
             }
 
-            $sql = sprintf(
-                "select `Page Key`,`Webpage Code`,`Webpage Name`  ,`Webpage State`  from `Page Store Dimension` where true $where_store and `Webpage Name`  REGEXP '[[:<:]]%s' limit 100 ", $q
+            $sql = "select `Page Key`,`Webpage Code`,`Webpage Name`  ,`Webpage State`  from `Page Store Dimension` where true $where_store and `Webpage Name`  REGEXP ? limit 100 ";
+
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array(
+                    '[[:<:]]'.$q
+                )
             );
+            while ($row = $stmt->fetch()) {
+                if ($row['Webpage Name'] == $q) {
 
-            if ($result = $db->query($sql)) {
-                foreach ($result as $row) {
-                    if ($row['Webpage Name'] == $q) {
-
-                        if (isset($candidates['P'.$row['Page Key']])) {
-                            $candidates['P'.$row['Page Key']] += 55;
-                        } else {
-                            $candidates['P'.$row['Page Key']] = 55;
-                        }
-
+                    if (isset($candidates['P'.$row['Page Key']])) {
+                        $candidates['P'.$row['Page Key']] += 55;
                     } else {
+                        $candidates['P'.$row['Page Key']] = 55;
+                    }
 
-                        $len_name = strlen($row['Webpage Name']);
-                        $len_q    = strlen($q);
-                        $factor   = $len_q / $len_name;
+                } else {
 
-                        if (isset($candidates['P'.$row['Page Key']])) {
-                            $candidates['P'.$row['Page Key']] += 50 * $factor;
-                        } else {
-                            $candidates['P'.$row['Page Key']] = 50 * $factor;
-                        }
+                    $len_name = strlen($row['Webpage Name']);
+                    $len_q    = strlen($q);
+                    $factor   = $len_q / $len_name;
 
+                    if (isset($candidates['P'.$row['Page Key']])) {
+                        $candidates['P'.$row['Page Key']] += 50 * $factor;
+                    } else {
+                        $candidates['P'.$row['Page Key']] = 50 * $factor;
                     }
 
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
-            }
+                }
+
+
 
 
         }
-        //   print_r($candidates);
 
         arsort($candidates);
 
-        //print_r($candidates);
 
         $total_candidates = count($candidates);
 
