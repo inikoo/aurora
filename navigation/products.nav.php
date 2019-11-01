@@ -3062,7 +3062,7 @@ function get_shipping_zone_schema_navigation($data, $smarty, $user, $db, $accoun
             $up_button = array(
                 'icon'      => 'arrow-up',
                 'title'     => _("Store").' '.$data['_parent']->get('Code'),
-                'reference' => 'store/'.$data['_parent']->id
+                'reference' => 'store/'.$data['_parent']->id.'/settings'
             );
 
             if ($prev_key) {
@@ -3117,7 +3117,7 @@ function get_shipping_zone_schema_navigation($data, $smarty, $user, $db, $accoun
     //$right_buttons[]=array('icon'=>'plus', 'title'=>_('New store'), 'id'=>"new_store");
 
     $sections = get_sections('products', $data['store']->id);
-    $_section = 'products';
+    $_section = 'settings';
     if (isset($sections[$_section])) {
         $sections[$_section]['selected'] = true;
     }
