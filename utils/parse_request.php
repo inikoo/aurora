@@ -1522,9 +1522,25 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                     if (is_numeric($view_path[2])) {
                                         $key = $view_path[2];
 
+                                        if (isset($view_path[3])) {
+                                            if ($view_path[3] == 'attachment') {
+                                                $section    = 'supplier_delivery.attachment';
+                                                $object     = 'attachment';
+                                                $parent     = 'supplier_delivery';
+                                                $parent_key = $key;
+                                                if (isset($view_path[4])) {
+                                                    if (is_numeric($view_path[4])) {
+                                                        $key = $view_path[4];
 
+                                                    } elseif ($view_path[4] == 'new') {
+                                                        $section = 'supplier_delivery.attachment.new';
+
+                                                        $key = 0;
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
-
 
                                 }
 

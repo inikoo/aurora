@@ -10,12 +10,22 @@
  Version 3.0
 */
 
+/**
+ * @param $db          \PDO
+ * @param $user        \User
+ * @param $public      string
+ * @param $subject     string
+ * @param $subject_key integer
+ *
+ * @return bool
+ */
 function authorize_file_view($db, $user, $public, $subject, $subject_key) {
 
     if ($public == 'Yes') {
         return true;
     }
 
+    print $subject;
     switch ($subject) {
 
         case 'Part':
@@ -24,7 +34,7 @@ function authorize_file_view($db, $user, $public, $subject, $subject_key) {
                 return true;
             }
 
-
+            break;
         case 'Staff':
 
             if ($user->can_view('staff')) {
@@ -39,6 +49,7 @@ function authorize_file_view($db, $user, $public, $subject, $subject_key) {
 
             break;
         case 'Supplier':
+        case 'Supplier Delivery':
 
 
             if ($user->can_view('suppliers')) {

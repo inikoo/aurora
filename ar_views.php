@@ -2787,9 +2787,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 
                 case ('delivery'):
-                    return get_delivery_navigation(
-                        $data, $smarty, $user, $db, $account
-                    );
+                    return get_delivery_navigation($data, $smarty, $user, $db);
 
                 case ('agents'):
                     return get_agents_navigation(

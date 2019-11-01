@@ -26,7 +26,7 @@ switch ($parameters['parent']) {
             " where `Subject`='Part' and `Subject Key`=%d ", $parameters['parent_key']
         );
         break;
-    case 'supplierdelivery':
+    case 'supplier_delivery':
         $where = sprintf(
             " where `Subject`='Supplier Delivery' and `Subject Key`=%d ", $parameters['parent_key']
         );
@@ -35,7 +35,6 @@ switch ($parameters['parent']) {
         exit('error parent not set up '.$parameters['parent']);
         break;
 }
-//'Part','Staff','Customer Communications','Customer History Attachment','Product History Attachment','Part History Attachment','Part MSDS','Product MSDS','Supplier Product MSDS','Product Info Sheet','Purchase Order History Attachment','Purchase Order','Supplier Delivery Note History Attachment','Supplier Delivery Note','Supplier Invoice History Attachment','Supplier Invoice','Order Note History Attachment','Delivery Note History Attachment','Invoice History Attachment','Supplier'
 
 $wheref = '';
 if ($parameters['f_field'] == 'caption' and $f_value != '') {
@@ -81,4 +80,4 @@ $fields
     = "`Attachment Bridge Key`,B.`Attachment Key`,`Attachment Subject Type`,`Attachment Caption`,`Attachment File Original Name`,`Attachment Public`,`Attachment MIME Type`,`Attachment Type`,`Attachment File Size`,`Attachment Thumbnail Image Key`";
 
 
-?>
+

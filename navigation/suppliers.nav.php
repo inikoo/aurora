@@ -1807,7 +1807,7 @@ function get_purchase_order_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-function get_delivery_navigation($data, $smarty, $user, $db, $account) {
+function get_delivery_navigation($data, $smarty, $user, $db) {
 
 
     $object        = $data['_object'];

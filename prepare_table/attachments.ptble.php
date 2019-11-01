@@ -33,4 +33,3 @@ $sql_totals
 $fields
     = "`Attachment Key`,`Attachment MIME Type`,	`Attachment Type`,`Attachment File Size`,`Attachment Thumbnail Image Key`,`Attachment Thumbnail Image Key`";
 
-?>

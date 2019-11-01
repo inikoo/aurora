@@ -55,7 +55,7 @@ function attachments($_data, $db, $user) {
     $rtext_label = 'attachment';
     include_once 'prepare_table/init.php';
 
-    if ($_data['parameters']['parent'] == 'supplierdelivery') {
+    if ($_data['parameters']['parent'] == 'supplier_delivery') {
 
         $delivery = get_object('SupplierDelivery', $_data['parameters']['parent_key']);
     }elseif ($_data['parameters']['parent'] == 'employee') {
@@ -168,9 +168,8 @@ function attachments($_data, $db, $user) {
         }
 
 
-       // print_r($_data);
 
-        if ($_data['parameters']['parent'] == 'supplierdelivery') {
+        if ($_data['parameters']['parent'] == 'supplier_delivery') {
             $caption = sprintf(
                 '<span class="link" onclick="change_view(\'%s/%d/delivery/%d/attachment/%d\')">%s</span>',
                 strtolower($delivery->get('Supplier Delivery Parent')), $delivery->get('Supplier Delivery Parent Key'), $_data['parameters']['parent_key'],
