@@ -4734,13 +4734,8 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                         $key = 0;
                                     }
                                 }
-
-
                             }
-
-
                         }
-
 
                     } elseif ($view_path[0] == 'new') {
                         $section = 'employee.new';

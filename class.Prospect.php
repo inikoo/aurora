@@ -1240,10 +1240,6 @@ class Prospect extends Subject {
 
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         return $templates;
@@ -1291,7 +1287,30 @@ class Prospect extends Subject {
 
     }
 
+    function has_telephone() {
+
+
+        if (!empty($this->data[$this->table_name.' Main Plain Telephone']) or !empty($this->data[$this->table_name.' Main Plain Mobile'])) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    function has_address() {
+
+        if (empty($this->data[$this->table_name.' Contact Address Line 1']) and empty($this->data[$this->table_name.' Contact Address Line 1']) and empty($this->data[$this->table_name.' Postal Code']) and empty($this->data[$this->table_name.' Address Sorting Code'])
+
+        ) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
 }
 
 
-?>
+

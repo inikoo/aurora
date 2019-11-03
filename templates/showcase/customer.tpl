@@ -31,7 +31,7 @@
             <div style="min-height:80px;float:left;width:28px">
                 <i class="fa fa-fw fa-map-marker-alt"></i>
             </div>
-            <div class="Contact_Address" style="float:left;min-width:242px">
+            <div class="Contact_Address" style="float:left;max-width:242px;">
                 {$customer->get('Contact Address')}
             </div>
 

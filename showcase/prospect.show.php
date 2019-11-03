@@ -26,4 +26,3 @@ function get_prospect_showcase($data, $smarty) {
 }
 
 
-?>

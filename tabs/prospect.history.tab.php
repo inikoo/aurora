@@ -15,6 +15,12 @@ $tipo    = 'object_history';
 
 $default = $user->get_tab_defaults($tab);
 
+/**
+ * @var $prospect \Prospect
+ */
+$prospect=$state['_object'];
+
+
 $table_views = array();
 
 $table_filters = array(
@@ -40,13 +46,18 @@ $table_buttons[] = array(
 
 
 if (in_array(
-    $state['_object']->get('Prospect Status'), array(
+    $prospect->get('Prospect Status'), array(
                                                  'Contacted',
                                                  'NoContacted'
                                              )
 )) {
 
-    if ($state['_object']->has_address()) {
+
+
+
+
+
+    if ($prospect->has_address()) {
         $table_buttons[] = array(
             'icon'  => 'person-carry',
             'title' => _('Log postal mail'),
@@ -56,7 +67,7 @@ if (in_array(
 
     }
 
-    if ($state['_object']->has_telephone()) {
+    if ($prospect->has_telephone()) {
 
         $table_buttons[] = array(
             'icon'  => 'phone',
@@ -77,9 +88,9 @@ if (in_array(
 
 
 $smarty->assign('table_buttons', $table_buttons);
-$smarty->assign('prospect', $state['_object']);
+$smarty->assign('prospect', $prospect);
 
-$templates=$state['_object']->get_templates('objects','Active');
+$templates=$prospect->get_templates('objects','Active');
 
 $smarty->assign('templates', $templates);
 $smarty->assign('number_templates', count($templates));
@@ -98,7 +109,7 @@ $smarty->assign(
     'history_notes_data', array(
 
                             'object' => 'prospect',
-                            'key'    => $state['_object']->id
+                            'key'    => $prospect->id
                         )
 );
 
@@ -118,4 +129,4 @@ $smarty->assign(
 
 include('utils/get_table_html.php');
 
-?>
+

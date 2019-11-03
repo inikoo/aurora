@@ -441,6 +441,9 @@ if ($validator->isValid($sns)) {
 
                 switch ($email_tracking->get('Email Tracking Recipient')) {
                     case 'Prospect':
+                        /**
+                         * @var $prospect \Prospect
+                         */
                         $prospect = get_object('Prospect', $email_tracking->get('Email Tracking Recipient Key'));
                         $prospect->update_prospect_data();
                         break;

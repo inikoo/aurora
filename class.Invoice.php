@@ -2428,10 +2428,8 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
         if ($this->get('Store Key')) {
             $store   = get_object('Store', $this->get('Store Key'));
             $country = $store->get('Store Home Country Code 2 Alpha');
-            //$locale  = $store->get('Store Locale');
         } else {
             $country = $account->get('Account Country 2 Alpha Code');
-            //$locale  = $account->get('Account Locale');
         }
 
 
@@ -2450,20 +2448,10 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
 
         $xhtml_address = $formatter->format($address);
-
-
-
-
-
         $xhtml_address = preg_replace('/class="address-line1"/', 'class="address-line1 street-address"', $xhtml_address);
         $xhtml_address = preg_replace('/class="address-line2"/', 'class="address-line2 extended-address"', $xhtml_address);
         $xhtml_address = preg_replace('/class="sort-code"/', 'class="sort-code postal-code"', $xhtml_address);
         $xhtml_address = preg_replace('/class="country"/', 'class="country country-name"', $xhtml_address);
-
-
-        //$xhtml_address = preg_replace('/(class="address-line1 street-address"><\/span>)<br>/', '$1', $xhtml_address);
-
-
         $xhtml_address = preg_replace('/<br>/', '<br/>', $xhtml_address);
 
 

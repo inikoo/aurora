@@ -60,6 +60,14 @@ switch ($tipo) {
 
 }
 
+/**
+ * @param $data
+ * @param $customer \Public_Customer
+ * @param $db \PDO
+ * @param $account \Public_Account
+ *
+ * @throws \SmartyException
+ */
 function get_thanks_html($data, $customer, $db,$account) {
 
 
@@ -73,7 +81,9 @@ function get_thanks_html($data, $customer, $db,$account) {
     $smarty->setConfigDir('server_files/smarty/configs');
     $smarty->addPluginsDir('./smarty_plugins');
 
-
+    /**
+     * @var $order \Public_Order
+     */
      $order= get_object('Order', $data['order_key']);
 
     if (!$order->id or $order->get('Order Customer Key') != $customer->id) {
