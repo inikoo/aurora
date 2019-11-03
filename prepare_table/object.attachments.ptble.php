@@ -27,7 +27,9 @@ switch ($parameters['parent']) {
         );
         break;
     case 'supplier_delivery':
-        $where = sprintf(
+    case 'supplierdelivery':
+
+    $where = sprintf(
             " where `Subject`='Supplier Delivery' and `Subject Key`=%d ", $parameters['parent_key']
         );
         break;
