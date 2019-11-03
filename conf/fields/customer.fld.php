@@ -96,7 +96,7 @@ if ($new) {
                     'value'           => htmlspecialchars($object->get('Customer Main Contact Name')),
                     'formatted_value' => $object->get('Main Contact Name'),
                     'label'           => ucfirst($object->get_field_label('Customer Main Contact Name')),
-                    'required'        => true,
+                    'required'        => false,
                     'type'            => 'value'
                 ),
                 array(
@@ -383,7 +383,7 @@ if ($new) {
                 'value'           => htmlspecialchars($object->get('Customer Company Name')),
                 'formatted_value' => $object->get('Company Name'),
                 'label'           => ucfirst($object->get_field_label('Customer Company Name')),
-                'required'        => false,
+                'required'        => ($object->get('Customer Main Contact Name')==''?true:false),
                 'type'            => 'value'
             ),
             array(
@@ -392,7 +392,7 @@ if ($new) {
                 'value'           => htmlspecialchars($object->get('Customer Main Contact Name')),
                 'formatted_value' => $object->get('Main Contact Name'),
                 'label'           => ucfirst($object->get_field_label('Customer Main Contact Name')),
-                'required'        => true,
+                'required'        => ($object->get('Customer Company Name')==''?true:false),
                 'type'            => 'value'
             ),
             array(

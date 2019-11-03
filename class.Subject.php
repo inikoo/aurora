@@ -17,14 +17,12 @@ include_once 'trait.Address.php';
 
 
 class Subject extends DB_Table {
-    use ImageSubject, NotesSubject, AttachmentSubject,Address;
+    use ImageSubject, NotesSubject, AttachmentSubject, Address;
 
 
     function get_name() {
         return $this->data[$this->table_name.' Name'];
     }
-
-
 
 
     function get_greetings($locale = false) {
@@ -525,13 +523,13 @@ class Subject extends DB_Table {
 
 
                 $this->update_field($field, $value, $options);
-                $_updated=$this->updated;
+                $_updated = $this->updated;
 
 
                 $this->update_field($this->table_name.' Preferred Contact Number Formatted Number', $this->get('Main XHTML '.$value), $options);
 
 
-                $table_name=preg_replace('/\s/','_',$this->table_name);
+                $table_name = preg_replace('/\s/', '_', $this->table_name);
 
                 $this->other_fields_updated[$table_name.'_Main_Plain_Mobile'] = array(
                     'field'  => $table_name.'_Main_Plain_Mobile',
@@ -567,7 +565,7 @@ class Subject extends DB_Table {
                             ).'" class="fal fa-star very_discreet button"></i>') : ''),
                 );
 
-                $this->updated=$_updated;
+                $this->updated = $_updated;
 
                 return true;
 
@@ -642,37 +640,36 @@ class Subject extends DB_Table {
 
                 $this->update_metadata = array(
                     'class_html' => array(
-                        'Name_Truncated' => $this->get('Name Truncated'),
-                        'Subject_Name'   => $this->get('Name')
-
-                    )
-                );
-
-
-                /*
-                $this->other_fields_updated = array(
-                    $this->table_name.'_Name' => array(
-                        'field'           => $this->table_name.'_Name',
-                        'render'          => true,
-                        'value'           => $this->get(
-                            $this->table_name.' Name'
-                        ),
-                        'formatted_value' => $this->get('Name'),
+                        'Name_Truncated'         => $this->get('Name Truncated'),
+                        'Subject_Name'           => $this->get('Name'),
+                        'Company_Name_Formatted' => $this->get('Company Name Formatted')
 
 
                     )
                 );
-*/
+
+
+                if ($this->table_name == 'Customer') {
+                    $this->other_fields_updated = array(
+                        'Customer_Main_Contact_Name' => array(
+                            'field'    => 'Customer_Main_Contact_Name',
+                            'render'=>true,
+                            'required' => ($value == '' ? true : false),
+
+
+                        )
+                    );
+                }
 
                 return true;
-                break;
+
             case $this->table_name.' Main Contact Name':
 
 
                 $old_value = $this->get('Main Contact Name');
 
                 if ($value == '' and $this->data[$this->table_name.' Company Name'] == '') {
-                    $this->msg   = "Contact name can't be empty if the company name is empty";
+                    $this->msg   = _("Contact name can't be empty if the company name is empty");
                     $this->error = true;
 
                     return;
@@ -717,19 +714,42 @@ class Subject extends DB_Table {
 
                 }
 
-                $this->other_fields_updated = array(
-                    $this->table_name.'_Name' => array(
-                        'field'           => $this->table_name.'_Name',
-                        'render'          => true,
-                        'value'           => $this->get($this->table_name.' Name'),
-                        'formatted_value' => $this->get('Name'),
-
+                $this->update_metadata = array(
+                    'class_html' => array(
+                        'Name_Truncated'              => $this->get('Name Truncated'),
+                        'Subject_Name'                => $this->get('Name'),
+                        'Main_Contact_Name_Formatted' => $this->get('Main Contact Name Formatted')
 
                     )
+
                 );
 
+
+                if ($this->table_name == 'Customer') {
+                    $this->other_fields_updated = array(
+                        'Customer_Company_Name' => array(
+                            'field'    => 'Customer_Company_Name',
+                            'render'=>true,
+                            'required' => ($value == '' ? true : false),
+
+
+                        )
+                    );
+                } else {
+                    $this->other_fields_updated = array(
+                        $this->table_name.'_Name' => array(
+                            'field'           => $this->table_name.'_Name',
+                            'render'          => true,
+                            'value'           => $this->get($this->table_name.' Name'),
+                            'formatted_value' => $this->get('Name'),
+
+
+                        )
+                    );
+                }
+
+
                 return true;
-                break;
 
 
             default:
@@ -1723,8 +1743,6 @@ class Subject extends DB_Table {
             case 'Delivery Address':
 
 
-
-
                 return array(
                     true,
                     $this->get(
@@ -1775,6 +1793,24 @@ class Subject extends DB_Table {
 
 
                 break;
+            case 'Company Name Formatted':
+            case 'Main Contact Name Formatted':
+
+
+                $_key = $this->table_name.' '.preg_replace('/ Formatted$/', '', $key);
+
+                if ($this->data[$_key] == '') {
+                    return array(
+                        true,
+                        '<span class="very_discreet italic">'._('Not set').'</span>'
+                    );
+                } else {
+                    return array(
+                        true,
+                        $this->get($_key)
+                    );
+                }
+
 
             default:
 
@@ -1905,8 +1941,6 @@ class Subject extends DB_Table {
         }
 
     }
-
-
 
 
 }

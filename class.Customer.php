@@ -166,6 +166,15 @@ class Customer extends Subject {
         unset($raw_data['editor']);
 
 
+
+        if($raw_data['Customer Company Name']=='' and $raw_data['Customer Main Contact Name']==''){
+            $this->error=true;
+            $this->msg=_('Customer company name or contact name required');
+            return false;
+        }
+
+
+
         $raw_data['Customer First Contacted Date'] = gmdate('Y-m-d H:i:s');
         $raw_data['Customer Sticky Note']          = '';
         $raw_data['Customer Metadata']             = '{}';
@@ -447,20 +456,20 @@ class Customer extends Subject {
                 switch ($this->data['Customer '.$key]) {
                     case 'Unknown':
                         return _('Unknown');
-                        break;
+
                     case 'Yes':
                         return _('Yes');
-                        break;
+
                     case 'No':
                         return _('No');
-                        break;
+
                     default:
                         return $this->data['Customer '.$key];
 
-                        break;
+
                 }
 
-                break;
+
             case('Lost Date'):
             case('Last Order Date'):
             case('First Order Date'):
@@ -468,20 +477,21 @@ class Customer extends Subject {
             case('Tax Number Validation Date'):
                 if ($this->data['Customer '.$key] == '') {
                     return '';
+                }else {
+
+                    return '<span title="'.strftime(
+                            "%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Customer '.$key]." +00:00")
+                        ).'">'.strftime(
+                            "%a %e %b %Y", strtotime($this->data['Customer '.$key]." +00:00")
+                        ).'</span>';
                 }
 
-                return '<span title="'.strftime(
-                        "%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Customer '.$key]." +00:00")
-                    ).'">'.strftime(
-                        "%a %e %b %Y", strtotime($this->data['Customer '.$key]." +00:00")
-                    ).'</span>';
-                break;
             case('Orders'):
                 return number($this->data['Customer Orders']);
                 break;
             case('Notes'):
                 $sql   = sprintf(
-                    "SELECT count(*) AS total FROM  `Customer History Bridge`     WHERE `Customer Key`=%d AND `Type`='Notes'  ", $this->id
+                    "SELECT count(*) AS total FROM  `Customer History Bridge` WHERE `Customer Key`=%d AND `Type`='Notes'  ", $this->id
                 );
                 $notes = 0;
 

@@ -15,10 +15,10 @@
             <h1 style="margin-bottom: 0px;position: relative;top:-10px" class="Customer_Name Subject_Name">{$customer->get('Customer Name')}</h1>
         </div>
         <div class="data_container" >
-
             <div class="data_field" style="min-width: 270px;">
-                <i title="{t}Contact name{/t}" class="fa fa-fw  fa-male"></i><span class="Customer_Main_Contact_Name">{$customer->get('Customer Main Contact Name')}</span>
+                <i title="{t}Company name{/t}" class="fa fa-fw  fa-building"></i><span class="Company_Name_Formatted">{$customer->get('Company Name Formatted')}</span>
             </div>
+
             <div class="data_field Customer_Tax_Number_display {if !$customer->get('Customer Tax Number')}hide{/if}" style="min-width: 270px;">
                 <i title="{t}Tax number{/t}" class="fal fa-fw fa-passport"></i></i><span
                         class="Customer_Tax_Number_Formatted">{$customer->get('Tax Number Formatted')}</span>
@@ -37,6 +37,11 @@
 
         </div>
         <div class="data_container" >
+            <div class="data_field" style="min-width: 270px;">
+                <i title="{t}Contact name{/t}" class="fa fa-fw  fa-male"></i><span class="Main_Contact_Name_Formatted">{$customer->get('Main Contact Name Formatted')}</span>
+            </div>
+            <div class="data_field" style="min-width: 270px;">
+                <i title
             <div id="Customer_Main_Plain_Email_display"
                  class="data_field   {if !$customer->get('Customer Main Plain Email')}hide{/if}">
                 <i class="fa fa-fw fa-at"></i> <span
