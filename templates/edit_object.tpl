@@ -275,7 +275,7 @@
                                 <i id="{$field.id}_edit_button" class="fa fa-pencil fw edit {if $edit=='' or $linked!=''  or $edit=='custom' or $edit=='no_icon'  or $class=='operation_with_field'  }hide{/if}  edit_button" onclick="open_edit_this_field(this)"></i>
                                 </span>
                             </td>
-                            <td id="{$field.id}_container" class="container value  " _required="{$required}"
+                            <td id="{$field.id}_container" class="container value  " data-object_field_required="{$required}"
                                 field_type='{$field_type}' server_validation='{$server_validation}'
                                 object='{$state._object->get_object_name()}' key='{$state.key}' parent='{$state.parent}'
                                 parent_key='{$state.parent_key}'>

@@ -613,7 +613,7 @@ function validate(field, value) {
         var required = field_data.closest('tbody.address_fields').attr('_required')
 
     } else {
-        var required = field_data.attr('_required')
+        var required = field_data.data('object_field_required')
     }
 
 
@@ -910,7 +910,7 @@ function save_field(object, key, field) {
     var field_data = $('#' + field + '_container')
 
     var type = field_data.attr('field_type')
-    required = field_data.attr('_required')
+    var required = field_data.data('object_field_required')
     var field_element = $('#' + field);
     var value = field_element.val()
 
@@ -1419,12 +1419,14 @@ function update_field(data) {
 
         if (data.required) {
             $("#" + field + '_validation').addClass('required')
+            $("#" + field + '_container').data('object_field_required', true)
 
         } else {
+
             $("#" + field + '_validation').removeClass('required')
+            $("#" + field + '_container').data('object_field_required', false)
 
         }
-        $("#" + field + '_container').attr('_required', data.required)
 
     }
 
