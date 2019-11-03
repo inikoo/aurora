@@ -834,7 +834,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
     // todo implement correctly if multi-warehouses ever done, special care has to be done when visiting warehouses servers becuse current_warehouse will be set to null, and if then jump to a invengtory/part it may be still null causing avok
     //if (isset($state['current_warehouse'])) {$session->set('current_warehouse', $state['current_warehouse']);}
 
-    // todo implement correctly if multi-prouction ever done,
+    // todo implement correctly if multi-production ever done,
 
     //if (isset($state['current_production'])) {$session->set('current_production', $state['current_production']);}
 
@@ -2455,7 +2455,7 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
 
                 case ('invoice'):
-                    include_once 'navigation/invoice.nav.php';
+                    include_once 'navigation/accounting.nav.php';
 
                     return get_invoice_navigation($data, $smarty, $user, $db, $account);
 
@@ -3293,7 +3293,6 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_payments_by_store_navigation($data, $user, $smarty, $db);
 
                 case ('invoice'):
-                    include_once 'navigation/invoice.nav.php';
 
                     return get_invoice_navigation($data, $smarty, $user, $db, $account);
 
