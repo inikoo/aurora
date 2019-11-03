@@ -197,11 +197,15 @@
 
                         <table>
                             <tbody>
+                            <tr data-field='pro_mode' class="button pdf_option" onclick="check_field_value(this)">
+                                <td>
+                                    <i class="far {if $pdf_pro_mode}fa-check-square{else}fa-square{/if} margin_right_10"></i> <span {if !$pdf_pro_mode}class="discreet"{/if}>{t}Pro mode{/t}</span>
+                                </td>
+                            </tr>
                             <tr data-field='rrp' class="button pdf_option" onclick="check_field_value(this)">
                                 <td>
                                     <i class="far {if $pdf_with_rrp}fa-check-square{else}fa-square{/if} margin_right_10"></i> <span {if !$pdf_with_rrp}class="discreet"{/if}>{t}Recommended retail prices{/t}</span>
                                 </td>
-
                             </tr>
                             <tr data-field='parts' class="button pdf_option" onclick="check_field_value(this)">
                                 <td>

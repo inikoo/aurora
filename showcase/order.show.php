@@ -70,6 +70,13 @@ function get_order_showcase($data, $smarty, $user, $db) {
     }
     $smarty->assign('pdf_with_commodity', $pdf_with_commodity);
 
+    if ($store->settings('invoice_show_pro_mode') == 'Yes') {
+        $pdf_pro_mode = true;
+    } else {
+        $pdf_pro_mode = false;
+    }
+    $smarty->assign('pdf_pro_mode', $pdf_pro_mode);
+
     if ($store->get('Store Locale') != 'en_GB') {
         $pdf_show_locale_option = true;
     } else {

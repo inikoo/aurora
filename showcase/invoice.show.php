@@ -10,6 +10,14 @@
  Version 3.0
 */
 
+/**
+ * @param $data
+ * @param $smarty \Smarty
+ * @param $user \User
+ * @param $db \PDO
+ *
+ * @return string
+ */
 function get_invoice_showcase($data, $smarty, $user, $db) {
     require_once 'utils/geography_functions.php';
 
@@ -49,7 +57,8 @@ $order=get_object('order', $data['_object']->get('Invoice Order Key'));
 
     $tax_data = array();
     $sql      = sprintf(
-        "SELECT `Tax Category Code`,`Tax Category Rate`,`Tax Category Name`,`Tax Amount`  FROM  `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Tax Code`)  WHERE B.`Invoice Key`=%d  AND `Tax Category Country Code`=%s  ", $invoice->id,
+        "SELECT `Tax Category Code`,`Tax Category Rate`,`Tax Category Name`,`Tax Amount`  FROM  `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Tax Code`)  WHERE B.`Invoice Key`=%d  AND `Tax Category Country Code`=%s  ",
+        $invoice->id,
         prepare_mysql($account->get('Account Country Code'))
     );
 
@@ -58,6 +67,7 @@ $order=get_object('order', $data['_object']->get('Invoice Order Key'));
     } else {
         $factor = 1;
     }
+
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
 
@@ -86,10 +96,6 @@ $order=get_object('order', $data['_object']->get('Invoice Order Key'));
                 )
             );
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
 
@@ -102,6 +108,13 @@ $order=get_object('order', $data['_object']->get('Invoice Order Key'));
         $pdf_with_commodity = false;
     }
     $smarty->assign('pdf_with_commodity', $pdf_with_commodity);
+
+    if ($store->settings('invoice_show_pro_mode') == 'Yes') {
+        $pdf_pro_mode = true;
+    } else {
+        $pdf_pro_mode = false;
+    }
+    $smarty->assign('pdf_pro_mode', $pdf_pro_mode);
 
     if ($store->get('Store Locale') != 'en_GB') {
         $pdf_show_locale_option = true;

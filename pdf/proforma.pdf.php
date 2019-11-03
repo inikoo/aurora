@@ -46,6 +46,12 @@ if(!empty($_REQUEST['locale'])){
 }
 
 
+if (!empty($_REQUEST['pro_mode'])) {
+    $pro_mode = true;
+} else {
+    $pro_mode = false;
+}
+
 if (!empty($_REQUEST['parts'])) {
     $parts = true;
 } else {
@@ -119,6 +125,7 @@ if (isset($_REQUEST['print'])) {
 $smarty->assign('store', $store);
 
 $smarty->assign('order', $order);
+$smarty->assign('pro_mode', $pro_mode);
 
 
 $smarty->assign('label_title', _('Proforma'));
@@ -142,10 +149,11 @@ $sql          = sprintf(
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
+        $currency = $row['Order Currency Code'];
 
-        $row['Amount'] = money(
-            ($row['Order Transaction Amount']), $row['Order Currency Code']
-        );
+        $amount        = $row['Order Transaction Amount'];
+
+        $row['Amount'] = money($amount, $currency, $_locale);
 
 
         $discount = ($row['Order Transaction Total Discount Amount'] == 0
@@ -158,23 +166,49 @@ if ($result = $db->query($sql)) {
         $units    = $row['Product Units Per Case'];
         $name     = $row['Product History Name'];
         $price    = $row['Product History Price'];
-        $currency = $row['Product Currency'];
 
 
-        $desc = '';
-        if ($units > 1) {
-            $desc = number($units).'x ';
+
+
+        if ($pro_mode) {
+
+            $desc             = $name;
+            $row['Qty_Units'] = $units * $row['Order Quantity'];
+
+            $unit_cost = $amount / $row['Qty_Units'];
+            if (preg_match('/0000$/', $unit_cost)) {
+                $unit_cost = money($unit_cost, $currency, $_locale, 'NO_FRACTION_DIGITS');
+
+            } elseif (preg_match('/00$/', $unit_cost)) {
+                $unit_cost = money($unit_cost, $currency, $_locale);
+
+            } else {
+                $unit_cost = money($unit_cost, $currency, $_locale, 'FOUR_FRACTION_DIGITS');
+
+            }
+
+
+            $row['Unit_Price'] = $unit_cost;
+
+        } else {
+
+            $desc = '';
+            if ($units > 1) {
+                $desc = number($units).'x ';
+            }
+            $desc .= ' '.$name;
+            if ($price > 0) {
+                $desc .= ' ('.money($price, $currency, $_locale).')';
+            }
         }
-        $desc .= ' '.$name;
-        if ($price > 0) {
-            $desc .= ' ('.money($price, $currency, $_locale).')';
-        }
+
+
+
+
 
         $description = $desc;
 
-        // if ($discount != '') {
-        //      $description .= ' '._('Discount').':'.$discount;
-        //  }
+
 
         if ($row['Product RRP'] != 0 and $print_rrp) {
             $description .= ' <br>'._('RRP').': '.money($row['Product RRP'], $row['Order Currency Code']);
@@ -449,6 +483,7 @@ $html = $smarty->fetch('proforma.pdf.tpl');
 
 
 $mpdf->WriteHTML($html);
+
 
 $mpdf->Output($order->get('Public ID').'_proforma.pdf', 'I');
 

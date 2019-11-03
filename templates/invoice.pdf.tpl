@@ -241,20 +241,32 @@
     <tr>
         <td style="width:14%;text-align:left">{t}Code{/t}</td>
         <td style="text-align:left">{t}Description{/t}</td>
-        <td style="width:10%;text-align:right">{if $invoice->get('Invoice Type')=='Invoice'}{t}Discount{/t}{/if}</td>
-        <td style="width:11%;text-align:right">{t}Quantity{/t}</td>
+        {if $pro_mode}
+            <td style="width:14%;text-align:right">{t}Unit price{/t}</td>
+            <td style="width:11%;text-align:right">{t}Units{/t}</td>
+         {else}
+            <td style="width:10%;text-align:right;font-size: 10px">{if $invoice->get('Invoice Type')=='Invoice'}{t}Discount{/t}{/if}</td>
+            <td style="width:11%;text-align:right">{t}Quantity{/t}</td>
+        {/if}
         <td style="width:10%;text-align:right">{t}Amount{/t}</td>
     </tr>
     </thead>
     <tbody>
     {foreach from=$transactions item=transaction name=products}
         <tr class="{if $smarty.foreach.products.last}last{/if}">
-            <td style="width:14%;text-align:left">{$transaction['Product Code']}</td>
+            <td style="text-align:left">{$transaction['Product Code']}</td>
             <td style="text-align:left">{$transaction['Description']}</td>
-            <td style="width:10%;text-align:right">{$transaction['Discount']}</td>
 
-            <td style="width:11%;text-align:right">{$transaction['Qty']}</td>
-            <td style="width:10%;text-align:right">{$transaction['Amount']}</td>
+            {if $pro_mode}
+
+                <td style="text-align:right">{$transaction['Unit_Price']}</td>
+                <td style="text-align:right">{$transaction['Qty_Units']}</td>
+            {else}
+
+                <td style="text-align:right">{$transaction['Discount']}</td>
+            <td style="text-align:right">{$transaction['Qty']}</td>
+            {/if}
+            <td style="text-align:right">{$transaction['Amount']}</td>
         </tr>
     {/foreach}
     </tbody>
@@ -266,10 +278,10 @@
     <tbody class="out_of_stock">
     {foreach from=$transactions_out_of_stock item=transaction name=products}
         <tr class="{if $smarty.foreach.products.last}last{/if}">
-            <td style="width:14%;text-align:left">{$transaction['Product Code']}</td>
+            <td style="text-align:left">{$transaction['Product Code']}</td>
             <td style="text-align:left">{$transaction['Description']}</td>
-            <td colspan="2" style="width:16%;text-align:right"><span>{t}Out of Stock{/t}</span> {$transaction['Quantity']}</td>
-            <td style="width:10%;text-align:right">{$transaction['Amount']}</td>
+            <td colspan="2" style="text-align:right"><span>{t}Out of Stock{/t}</span> {$transaction['Quantity']}</td>
+            <td style="text-align:right">{$transaction['Amount']}</td>
         </tr>
     {/foreach}
     </tbody>
