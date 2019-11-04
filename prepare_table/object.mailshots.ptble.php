@@ -40,40 +40,40 @@ switch ($parameters['parent']) {
         $where = 'where false';
 }
 
+if(isset($parameters['elements_type'])) {
 
-switch ($parameters['elements_type']) {
+    switch ($parameters['elements_type']) {
 
-    case 'type':
-        $_elements      = '';
-        $count_elements = 0;
-        foreach (
-            $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-        ) {
-            if ($_value['selected']) {
-                $count_elements++;
+        case 'type':
+            $_elements      = '';
+            $count_elements = 0;
+            foreach (
+                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
+            ) {
+                if ($_value['selected']) {
+                    $count_elements++;
 
-                if($_key=='OOSNotification'){
-                    $_key='OOS Notification';
-                }elseif($_key=='GRReminder'){
-                    $_key='GR Reminder';
+                    if ($_key == 'OOSNotification') {
+                        $_key = 'OOS Notification';
+                    } elseif ($_key == 'GRReminder') {
+                        $_key = 'GR Reminder';
+                    }
+
+                    $_elements .= ','.prepare_mysql($_key);
+
                 }
-
-                $_elements .= ','.prepare_mysql($_key);
-
             }
-        }
-        $_elements = preg_replace('/^\,/', '', $_elements);
-        if ($_elements == '') {
-            $where .= ' and false';
-        } elseif ($count_elements < 5) {
-            $where .= ' and `Email Campaign Type` in ('.$_elements.')';
-        }
-        break;
+            $_elements = preg_replace('/^\,/', '', $_elements);
+            if ($_elements == '') {
+                $where .= ' and false';
+            } elseif ($count_elements < 5) {
+                $where .= ' and `Email Campaign Type` in ('.$_elements.')';
+            }
+            break;
 
 
-
+    }
 }
-
 
 
 $wheref = '';
