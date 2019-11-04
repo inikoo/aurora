@@ -51,12 +51,9 @@ switch ($tipo) {
     case 'sent_emails':
         sent_emails(get_table_parameters(), $db, $user);
         break;
-
     case 'user_notification_sent_emails':
         user_notification_sent_emails(get_table_parameters(), $db, $user);
         break;
-
-
     case 'email_tracking_events':
         email_tracking_events(get_table_parameters(), $db, $user);
         break;
@@ -111,7 +108,7 @@ function subject_sent_emails($_data, $db, $user) {
                 case 'Sent to SES':
                     $state = _('Sending');
                     break;
-                    case 'Delivered':
+                case 'Delivered':
                     $state = _('Delivered');
                     break;
                 case 'Opened':
@@ -279,7 +276,6 @@ function email_tracking_events($_data, $db, $user) {
     );
     echo json_encode($response);
 }
-
 
 
 function sent_emails($_data, $db, $user) {
@@ -482,7 +478,6 @@ function sent_emails($_data, $db, $user) {
 }
 
 
-
 function user_notification_sent_emails($_data, $db, $user) {
 
     $rtext_label = 'email';
@@ -521,7 +516,6 @@ function user_notification_sent_emails($_data, $db, $user) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
 
 
             switch ($data['Email Tracking State']) {
@@ -565,11 +559,11 @@ function user_notification_sent_emails($_data, $db, $user) {
             $state = sprintf('<span class="email_tracking_state_%d">%s</span>', $data['Email Tracking Key'], $state);
 
 
-            if($data['recipient_key']){
-                $recipient  = sprintf('<span class="link" onclick="change_view(\'users/%d\')"  >%s</span>', $data['recipient_key'], $data['recipient_name']);
+            if ($data['recipient_key']) {
+                $recipient = sprintf('<span class="link" onclick="change_view(\'users/%d\')"  >%s</span>', $data['recipient_key'], $data['recipient_name']);
 
-            }else{
-                $recipient  = sprintf('<span class="italic discreet"   >%s</span>',_('External email'));
+            } else {
+                $recipient = sprintf('<span class="italic discreet"   >%s</span>', _('External email'));
 
             }
 
@@ -579,12 +573,12 @@ function user_notification_sent_emails($_data, $db, $user) {
 
 
             $adata[] = array(
-                'id'       => (integer)$data['Email Tracking Key'],
-                'state'    => $state,
-                'email'    => $email,
-                'subject'  => $subject,
+                'id'        => (integer)$data['Email Tracking Key'],
+                'state'     => $state,
+                'email'     => $email,
+                'subject'   => $subject,
                 'recipient' => $recipient,
-                'date'     => strftime("%a, %e %b %Y %R:%S", strtotime($data['Email Tracking Created Date'].' +0:00')),
+                'date'      => strftime("%a, %e %b %Y %R:%S", strtotime($data['Email Tracking Created Date'].' +0:00')),
 
 
             );
@@ -777,9 +771,15 @@ function mailshots($_data, $db, $user) {
                     $state = $data['Email Campaign State'];
             }
 
+            $subject = $data['Email Template Subject'];
+            if ($subject == '') {
+                $subject = '<span class="discreet italic">'.$data['Email Campaign Name'].'</span>';
+
+            }
+
 
             $name = sprintf(
-                '<span class="link" onclick="change_view(\''.$link.'\')"  >%s</span>', $data['Email Campaign Store Key'], $_data['parameters']['parent_key'], $data['Email Campaign Key'], $data['Email Campaign Name']
+                '<span class="link" onclick="change_view(\''.$link.'\')"  title="%s" >%s</span>', $data['Email Campaign Store Key'], $_data['parameters']['parent_key'], $data['Email Campaign Key'], $data['Email Campaign Name'], $subject
             );
 
 

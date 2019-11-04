@@ -19,7 +19,7 @@ cell: "string",
 
 {
 name: "name",
-label: "{t}Name{/t}",
+label: "{t}Subject{/t}",
 editable: false,
 sortType: "toggle",
 {if $sort_key=='name'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}

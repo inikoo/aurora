@@ -35,8 +35,8 @@ $table_views = array(
 
 $table_filters = array(
     'name' => array(
-        'label' => _('Name'),
-        'title' => _('name')
+        'label' => _('Subject'),
+        'title' => _('Subject')
     )
 
 );
@@ -73,21 +73,6 @@ if ($state['_object']->get('Code') == 'Newsletter') {
 
     );
 
-/*
-    $table_buttons[] = array(
-        'icon'  => 'plus',
-        'title' => _('New marketing mailshot'),
-        'id'    => 'new_mailshot',
-        'attr'  => array(
-            'parent'     => 'Store',
-            'parent_key' => $state['_object']->get('Store Key'),
-
-        )
-
-    );
-*/
-
-  //  $smarty->assign('js_code', 'js/injections/new_marketing_mailshot.'.(_DEVEL ? '' : 'min.').'js');
 
 
 } elseif ($state['_object']->get('Code') == 'AbandonedCart') {
@@ -117,4 +102,3 @@ $smarty->assign('table_buttons', $table_buttons);
 include 'utils/get_table_html.php';
 
 
-?>

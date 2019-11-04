@@ -58,6 +58,9 @@ if ($user->can_view('customers')) {
 
 if ($user->can_view('stores')) {
 
+
+
+
     if ($user->get('User Hooked Store Key')) {
         $nav_menu[] = array(
             '<i class="button far fa-store-alt fa-fw"></i>',

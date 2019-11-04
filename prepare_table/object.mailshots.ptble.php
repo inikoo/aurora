@@ -79,7 +79,7 @@ if(isset($parameters['elements_type'])) {
 $wheref = '';
 if ($parameters['f_field'] == 'name' and $f_value != '') {
     $wheref = sprintf(
-        ' and `Email Campaign Name` REGEXP "[[:<:]]%s" ', addslashes($f_value)
+        " and `Email Template Subject` REGEXP '%s' ", addslashes($f_value)
     );
 }
 
@@ -88,7 +88,7 @@ $_dir   = $order_direction;
 
 
 if ($order == 'name') {
-    $order = '`Email Campaign Name`';
+    $order = '`Email Template Subject`';
 } elseif ($order == 'date') {
     $order = '`Email Campaign Last Updated Date`';
 } elseif ($order == 'state') {
@@ -98,9 +98,9 @@ if ($order == 'name') {
 } else {
     $order = '`Email Campaign Key`';
 }
-$table  = '`Email Campaign Dimension` left join `Store Dimension` on (`Store Key`=`Email Campaign Store Key`) ';
+$table  = '`Email Campaign Dimension` left join `Store Dimension` on (`Store Key`=`Email Campaign Store Key`) left join `Email Template Dimension` ETD on (`Email Template Key`=`Email Campaign Email Template Key`)';
 $fields = "`Email Campaign Key`,`Email Campaign Name`,`Email Campaign Store Key`,`Email Campaign Last Updated Date`,`Email Campaign State`,`Email Campaign Number Estimated Emails`,
-`Email Campaign Type`,`Store Key`,`Store Name`,`Email Campaign Email Template Type Key`,`Store Code`,
+`Email Campaign Type`,`Store Key`,`Store Name`,`Email Campaign Email Template Type Key`,`Store Code`,`Email Template Subject`,
 `Email Campaign Sent`,`Email Campaign Delivered`,`Email Campaign Hard Bounces`,`Email Campaign Soft Bounces`,(`Email Campaign Hard Bounces`+`Email Campaign Soft Bounces`) as `Email Campaign Bounces`,`Email Campaign Open`,`Email Campaign Clicked`,`Email Campaign Spams`,`Email Campaign Unsubscribed`
 
 ";

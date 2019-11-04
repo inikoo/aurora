@@ -379,7 +379,6 @@
     </div>
 
 
-
     <div id="filter_container" class="hide {if $f_field==''}hide{/if}">
         <div id="show_filter" onclick="show_filter()" class="square_button right " title="{t}Filter table{/t}" style="border-left:1px solid #aaa">
             <i class="fa fa-filter fa-fw"></i>
@@ -809,7 +808,10 @@
 
             $('#table_buttons').removeClass('hide')
 
-            if (total_pages > 1 && '{if isset($f_label)}{$f_label}{/if}' != '') {
+
+
+
+            if (total_pages > 0 && '{if isset($f_label)}{$f_label}{/if}' != '') {
                 $('#filter_container').removeClass('hide')
             }
 
