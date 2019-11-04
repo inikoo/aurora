@@ -87,9 +87,7 @@ class Shipping_Zone extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT `Shipping Zone Key` FROM `Shipping Zone Dimension` WHERE  `Shipping Zone Shipping Zone Schema Key`=%d and `Shipping Zone Code`=%s   ",
-            $data['Shipping Zone Shipping Zone Schema Key'],
-            prepare_mysql($data['Shipping Zone Code'])
+            "SELECT `Shipping Zone Key` FROM `Shipping Zone Dimension` WHERE  `Shipping Zone Shipping Zone Schema Key`=%d and `Shipping Zone Code`=%s   ", $data['Shipping Zone Shipping Zone Schema Key'], prepare_mysql($data['Shipping Zone Code'])
 
         );
 
@@ -100,17 +98,11 @@ class Shipping_Zone extends DB_Table {
                 $this->found_key        = $row['Shipping Zone Key'];
                 $this->duplicated_field = 'Shipping Zone Code';
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         if (!$this->found) {
             $sql = sprintf(
-                "SELECT `Shipping Zone Key` FROM `Shipping Zone Dimension` WHERE   `Shipping Zone Shipping Zone Schema Key`=%d and `Shipping Zone Name`=%s   ",
-                $data['Shipping Zone Shipping Zone Schema Key'],
-                prepare_mysql($data['Shipping Zone Name'])
+                "SELECT `Shipping Zone Key` FROM `Shipping Zone Dimension` WHERE   `Shipping Zone Shipping Zone Schema Key`=%d and `Shipping Zone Name`=%s   ", $data['Shipping Zone Shipping Zone Schema Key'], prepare_mysql($data['Shipping Zone Name'])
 
             );
 
@@ -121,10 +113,6 @@ class Shipping_Zone extends DB_Table {
                     $this->found_key        = $row['Shipping Zone Key'];
                     $this->duplicated_field = 'Shipping Zone Name';
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
         }
@@ -145,20 +133,10 @@ class Shipping_Zone extends DB_Table {
 
     function create($data) {
 
-
-        print_r($data);
-
-
-
         $data['Shipping Zone Creation Date'] = gmdate('Y-m-d H:i:s');
-
-
-
-
-
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $data) and is_string($value)) {
-             //   $data[$key] = _trim($value);
+                //   $data[$key] = _trim($value);
             }
         }
 
@@ -167,9 +145,7 @@ class Shipping_Zone extends DB_Table {
 
 
         $sql = sprintf(
-            "INSERT INTO `Shipping Zone Dimension` (%s) values (%s)",
-            '`'.join('`,`', array_keys($data)).'`',
-            join(',', array_fill(0, count($data), '?'))
+            "INSERT INTO `Shipping Zone Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($data)).'`', join(',', array_fill(0, count($data), '?'))
         );
 
         $stmt = $this->db->prepare($sql);
@@ -183,8 +159,8 @@ class Shipping_Zone extends DB_Table {
 
 
         if ($stmt->execute()) {
-            $this->id = $this->db->lastInsertId();
-            $this->new=true;
+            $this->id  = $this->db->lastInsertId();
+            $this->new = true;
             $this->get_data('id', $this->id);
 
             $history_data = array(
@@ -199,10 +175,7 @@ class Shipping_Zone extends DB_Table {
 
 
         } else {
-
             print_r($stmt->errorInfo());
-
-
             print "Error can not create shipping zone  $sql\n";
             exit;
 
@@ -283,7 +256,6 @@ class Shipping_Zone extends DB_Table {
     function update_usage() {
 
 
-
         $sql = sprintf(
             "SELECT min( O.`Order Date`) AS first,max( O.`Order Date`) AS last FROM `Order No Product Transaction Fact` B LEFT  JOIN `Order Dimension` O ON (O.`Order Key`=B.`Order Key`) LEFT  JOIN `Shipping Zone Dimension` SZ ON (SZ.`Shipping Zone Key`=B.`Transaction Type Key`)    WHERE `Transaction Type Key`=%d AND `Transaction Type`='Shipping' AND `Order State` not in ('InBasket','Cancelled') ",
             $this->id
@@ -294,13 +266,12 @@ class Shipping_Zone extends DB_Table {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
 
-               // print_r($row);
 
                 $this->fast_update(
                     array(
-                        'Shipping Zone First Used' =>  $row['first'],
-                        'Shipping Zone Last Used' => $row['last'],
-                    ),'Shipping Zone Dimension'
+                        'Shipping Zone First Used' => $row['first'],
+                        'Shipping Zone Last Used'  => $row['last'],
+                    ), 'Shipping Zone Dimension'
 
                 );
 
@@ -320,15 +291,10 @@ class Shipping_Zone extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-               // print_r($row);
                 $orders    = $row['orders'];
                 $customers = $row['customers'];
-                $amount    = ($row['amount']==''?0:$row['amount']);
+                $amount    = ($row['amount'] == '' ? 0 : $row['amount']);
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -336,7 +302,7 @@ class Shipping_Zone extends DB_Table {
             array(
                 'Shipping Zone Number Orders'    => $orders,
                 'Shipping Zone Number Customers' => $customers,
-                'Shipping Zone Amount'    => $amount,
+                'Shipping Zone Amount'           => $amount,
             )
 
         );

@@ -66,9 +66,6 @@ class Shipping_Zone_Schema extends DB_Table {
                     $this->data[$key] = $value;
                 }
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -123,10 +120,6 @@ class Shipping_Zone_Schema extends DB_Table {
                 $this->found_key = $row['Shipping Zone Schema Key'];
                 $this->duplicated_field='Shipping Zone Schema Label';
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -360,10 +353,6 @@ class Shipping_Zone_Schema extends DB_Table {
 
                 $zones= $row['num'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
