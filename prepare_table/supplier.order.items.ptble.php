@@ -17,59 +17,53 @@ $where  = sprintf(
 
 
 
+if(isset($parameters['elements_type'])) {
+    switch ($parameters['elements_type']) {
 
-switch ($parameters['elements_type']) {
-
-    case 'state':
-        $_elements      = '';
-        $count_elements = 0;
-        foreach (
-            $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
-        ) {
-            if ($_value['selected']) {
-                $count_elements++;
+        case 'state':
+            $_elements      = '';
+            $count_elements = 0;
+            foreach (
+                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
+            ) {
+                if ($_value['selected']) {
+                    $count_elements++;
 
 
+                    if ($_key == 'InProcess') {
+                        $_elements .= ",'InProcess','ProblemSupplier'";
+                    } elseif ($_key == 'Submitted') {
+                        $_elements .= ",'Submitted','ReceivedAgent','Confirmed'";
 
-                if($_key=='InProcess'){
-                    $_elements .= ",'InProcess','ProblemSupplier'";
-                }elseif($_key=='Submitted'){
-                    $_elements .= ",'Submitted','ReceivedAgent','Confirmed'";
+                    } elseif ($_key == 'InDelivery') {
+                        $_elements .= ",'InDelivery','Dispatched','Inputted'";
 
-                }elseif($_key=='InDelivery'){
-                    $_elements .= ",'InDelivery','Dispatched','Inputted'";
+                    } elseif ($_key == 'Receiving') {
+                        $_elements .= ",'Received','Checked','Inputted'";
 
-                }elseif($_key=='Receiving'){
-                    $_elements .= ",'Received','Checked','Inputted'";
+                    } elseif ($_key == 'Received') {
+                        $_elements .= ",'Placed','InvoiceChecked'";
 
-                }elseif($_key=='Received'){
-                    $_elements .= ",'Placed','InvoiceChecked'";
+                    } elseif ($_key == 'Cancelled') {
+                        $_elements .= ",'Cancelled','NoReceived'";
 
-                }elseif($_key=='Cancelled'){
-                    $_elements .= ",'Cancelled','NoReceived'";
+                    }
 
                 }
-
             }
-        }
-        $_elements = preg_replace('/^\,/', '', $_elements);
+            $_elements = preg_replace('/^\,/', '', $_elements);
 
 
+            if ($_elements == '') {
+                $where .= ' and false';
+            } elseif ($count_elements < 6) {
+                $where .= ' and `Purchase Order Transaction State` in ('.$_elements.')';
+            }
+            break;
 
-
-
-        if ($_elements == '') {
-            $where .= ' and false';
-        } elseif ($count_elements < 6) {
-            $where .= ' and `Purchase Order Transaction State` in ('.$_elements.')';
-        }
-        break;
-
-
+    }
 
 }
-
-
 
 
 
