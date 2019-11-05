@@ -197,11 +197,7 @@
 
             <h4 id="_customer_profile_title" contenteditable="true">{$data.labels._customer_profile_title}</h4>
 
-
-
-
                         <ul >
-
                             <li>
                                 <span class="block_link    selected">
                                     <i class="fa fa-angle-right"></i>

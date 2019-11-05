@@ -853,10 +853,13 @@ trait Send_Email {
                 $link_label = _('Link to customer');
 
 
-                $info = sprintf(
-                    _('%s (%s) has registered'), '<b>'.$this->new_customer->get('Name').'</b>', '<a href="href="mailto:'.$this->new_customer->get('Customer Main Plain Email').'"">'.$this->new_customer->get('Customer Main Plain Email').'</a>'
 
-                );
+                    $info = sprintf(
+                        _('%s (%s) has registered'), '<b>'.$this->new_customer->get('Name').'</b>', '<a href="href="mailto:'.$this->new_customer->get('Customer Main Plain Email').'"">'.$this->new_customer->get('Customer Main Plain Email').'</a>'
+                    );
+
+
+
 
                 $link = sprintf(
                     '%s/customers/%d/%d', $this->account->get('Account System Public URL'), $this->store->id, $this->new_customer->id
@@ -886,10 +889,19 @@ trait Send_Email {
                 );
 
 
-                $info = sprintf(
-                    _('New order %s (%s) has been placed by %s'), '<a href="'.$link.'">'.$this->order->get('Public ID').'</a>', '<b>'.$this->order->get('Total Amount').'</b>', '<b>'.$this->notification_trigger_author->get('Name').'</b>'
+                if($this->account->get('Currency Code')==$this->store->get('Store Currency Code')){
+                    $info = sprintf(
+                        _('New order %s (%s) has been placed by %s'), '<a href="'.$link.'">'.$this->order->get('Public ID').'</a>', '<b>'.$this->order->get('Total Amount').'</b>', '<b>'.$this->notification_trigger_author->get('Name').'</b>'
 
-                );
+                    );
+                }else{
+                    $info = sprintf(
+                        _('New order %s (%s) has been placed by %s'), '<a href="'.$link.'">'.$this->order->get('Public ID').'</a>',   '<span>'.$this->order->get('DC Total Amount').'</span> <b>'.$this->order->get('Total Amount').'</b>', '<b>'.$this->notification_trigger_author->get('Name').'</b>'
+
+                    );
+                }
+
+
 
 
                 $smarty->assign('type', 'Success');

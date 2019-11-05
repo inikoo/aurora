@@ -474,27 +474,18 @@ class Order extends DB_Table {
 
                 break;
 
-            case('Corporate Currency Invoiced Total Amount'):
 
-                global $corporate_currency;
-                $_key = preg_replace('/Corporate Currency /', '', $key);
-
-                return money(
-                    ($this->data['Order Invoiced Net Amount'] + $this->data['Order Invoiced Tax Amount']) * $this->data['Order Currency Exchange'], $corporate_currency
-                );
-                break;
-            case('Corporate Currency Balance Total Amount'):
-                global $corporate_currency;
-                $_key = preg_replace('/Corporate Currency /', '', $key);
+            case('DC Total Amount'):
+                $account=get_object('Account',1);
 
                 return money(
-                    $this->data['Order '.$_key] * $this->data['Order Currency Exchange'], $corporate_currency
+                    $this->data['Order Total Amount'] * $this->data['Order Currency Exchange'], $account->get('Currency Code')
                 );
-                break;
+
 
             case("Sticky Note"):
                 return nl2br($this->data['Order Sticky Note']);
-                break;
+
             case('Deal Amount Off'):
                 return money(
                     -1 * $this->data['Order Deal Amount Off'], $this->currency_code
@@ -505,7 +496,7 @@ class Order extends DB_Table {
                 );
             case('Tax Rate'):
                 return percentage($this->data['Order Tax Rate'], 1);
-                break;
+
             case('Order Out of Stock Amount'):
                 return $this->data['Order Out of Stock Net Amount'] + $this->data['Order Out of Stock Tax Amount'];
             case('Out of Stock Amount'):
@@ -516,17 +507,17 @@ class Order extends DB_Table {
                 return money(
                     $this->data['Order Invoiced Tax Amount'], $this->data['Order Currency']
                 );
-                break;
+
             case('Out of Stock Net Amount'):
                 return money(
                     -1 * $this->data['Order Out of Stock Net Amount'], $this->data['Order Currency']
                 );
-                break;
+
             case('Not Found Net Amount'):
                 return money(
                     -1 * $this->data['Order Not Found Net Amount'], $this->data['Order Currency']
                 );
-                break;
+
             case('Not Due Other Net Amount'):
                 return money(
                     -1 * $this->data['Order Not Due Other Net Amount'], $this->data['Order Currency']
@@ -536,7 +527,7 @@ class Order extends DB_Table {
                 return money(
                     -1 * $this->data['Order No Authorized Net Amount'], $this->data['Order Currency']
                 );
-                break;
+
             case('Invoiced Total Net Amount'):
                 return money(
                     $this->data['Order Invoiced Net Amount'], $this->data['Order Currency']
@@ -546,7 +537,7 @@ class Order extends DB_Table {
                 return money(
                     $this->data['Order Invoiced Net Amount'] + $this->data['Order Invoiced Tax Amount'], $this->data['Order Currency']
                 );
-                break;
+
             case ('Invoiced Refund Total Amount'):
                 return money(
                     $this->data['Order Invoiced Refund Net Amount'] + $this->data['Order Invoiced Refund Tax Amount'], $this->data['Order Currency']
@@ -559,19 +550,19 @@ class Order extends DB_Table {
                 return money(
                     $this->data['Order '.$key], $this->data['Order Currency']
                 );
-                break;
+
 
             case('To Pay Amount Absolute'):
                 return money(
                     abs($this->data['Order To Pay Amount']), $this->data['Order Currency']
                 );
-                break;
+
             case('Order To Pay Amount Absolute'):
                 return abs($this->data['Order To Pay Amount']);
-                break;
+
             case('Shipping And Handing Net Amount'):
                 return money($this->data['Order Shipping Net Amount'] + $this->data['Order Charges Net Amount']);
-                break;
+
             case('Date'):
             case('Last Updated Date'):
             case('Cancelled Date'):
@@ -592,7 +583,7 @@ class Order extends DB_Table {
                 }
 
 
-                break;
+
             case('Submitted by Customer Interval'):
                 if ($this->data['Order Submitted by Customer Date'] == '') {
                     return '';
@@ -696,7 +687,7 @@ class Order extends DB_Table {
                 }
 
                 return $state;
-                break;
+
 
             case 'Number Items':
             case 'Number Items Out of Stock':
@@ -704,7 +695,7 @@ class Order extends DB_Table {
             case 'Number Items with Deals':
 
                 return number($this->data['Order '.$key]);
-                break;
+
 
             case 'Pinned Deal Deal Components':
 
@@ -714,7 +705,7 @@ class Order extends DB_Table {
                     return json_decode($this->data['Order Pinned Deal Components'], true);
                 }
 
-                break;
+
             case 'Available Credit Amount':
 
                 if ($this->data['Order Total Amount'] > $this->data['Order Available Credit Amount']) {
@@ -725,7 +716,7 @@ class Order extends DB_Table {
                 }
 
 
-                break;
+
             case 'Basket To Pay Amount':
 
 
@@ -738,7 +729,7 @@ class Order extends DB_Table {
                 }
 
 
-                break;
+
             case 'Order Basket To Pay Amount':
 
                 if ($this->data['Order To Pay Amount'] > $this->data['Order Available Credit Amount']) {
@@ -748,7 +739,7 @@ class Order extends DB_Table {
 
                 }
 
-                break;
+
 
             case 'Order Hanging Charges Net Amount':
 
