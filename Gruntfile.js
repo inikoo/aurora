@@ -12,7 +12,7 @@ module.exports = function (grunt) {
             assets:["assets/*min*","EcomB2B/assets/**"]
 
         },
-        uglify: {
+        terser: {
             ecom_desktop_in: {
                 options: {
                     sourceMap: true,
@@ -591,7 +591,8 @@ module.exports = function (grunt) {
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-terser');
+
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-copy');
@@ -601,13 +602,13 @@ module.exports = function (grunt) {
 
 
 
-    grunt.registerTask('ecom_desktop_in', ['uglify:ecom_desktop_in', 'copy:ecom_desktop_in', 'replace:ecom_desktop_in']);
-    grunt.registerTask('ecom_desktop_out', ['uglify:ecom_desktop_out', 'copy:ecom_desktop_out', 'replace:ecom_desktop_out']);
-    grunt.registerTask('ecom_desktop_forms', ['uglify:ecom_desktop_forms', 'copy:ecom_desktop_forms', 'replace:ecom_desktop_forms']);
-    grunt.registerTask('ecom_mobile_forms', ['uglify:ecom_mobile_forms', 'copy:ecom_mobile_forms', 'replace:ecom_mobile_forms']);
-    grunt.registerTask('ecom_mobile', ['uglify:ecom_mobile', 'copy:ecom_mobile', 'replace:ecom_mobile']);
-    grunt.registerTask('ecom_mobile_custom', ['uglify:ecom_mobile_custom', 'copy:ecom_mobile_custom', 'replace:ecom_mobile_custom']);
-    grunt.registerTask('ecom_datatables', ['uglify:ecom_datatables', 'copy:ecom_datatables', 'replace:ecom_datatables']);
+    grunt.registerTask('ecom_desktop_in', ['terser:ecom_desktop_in', 'copy:ecom_desktop_in', 'replace:ecom_desktop_in']);
+    grunt.registerTask('ecom_desktop_out', ['terser:ecom_desktop_out', 'copy:ecom_desktop_out', 'replace:ecom_desktop_out']);
+    grunt.registerTask('ecom_desktop_forms', ['terser:ecom_desktop_forms', 'copy:ecom_desktop_forms', 'replace:ecom_desktop_forms']);
+    grunt.registerTask('ecom_mobile_forms', ['terser:ecom_mobile_forms', 'copy:ecom_mobile_forms', 'replace:ecom_mobile_forms']);
+    grunt.registerTask('ecom_mobile', ['terser:ecom_mobile', 'copy:ecom_mobile', 'replace:ecom_mobile']);
+    grunt.registerTask('ecom_mobile_custom', ['terser:ecom_mobile_custom', 'copy:ecom_mobile_custom', 'replace:ecom_mobile_custom']);
+    grunt.registerTask('ecom_datatables', ['terser:ecom_datatables', 'copy:ecom_datatables', 'replace:ecom_datatables']);
 
 
 
@@ -616,18 +617,18 @@ module.exports = function (grunt) {
     grunt.registerTask('ecom_libs_headers_replace', ['replace:ecom_desktop_in','replace:ecom_desktop_out','replace:ecom_desktop_forms','replace:ecom_mobile_forms','replace:ecom_mobile','replace:ecom_mobile_custom','replace:ecom_datatables']);
 
 
-    grunt.registerTask('ecom_desktop_logged_in', ['uglify:ecom_desktop_logged_in', 'copy:ecom_desktop_logged_in', 'replace:ecom_desktop_logged_in']);
-    grunt.registerTask('ecom_dropshipping_logged_in', ['uglify:ecom_dropshipping_logged_in', 'copy:ecom_dropshipping_logged_in', 'replace:ecom_dropshipping_logged_in']);
+    grunt.registerTask('ecom_desktop_logged_in', ['terser:ecom_desktop_logged_in', 'copy:ecom_desktop_logged_in', 'replace:ecom_desktop_logged_in']);
+    grunt.registerTask('ecom_dropshipping_logged_in', ['terser:ecom_dropshipping_logged_in', 'copy:ecom_dropshipping_logged_in', 'replace:ecom_dropshipping_logged_in']);
 
 
-    grunt.registerTask('ecom_image_gallery', ['uglify:ecom_image_gallery', 'copy:ecom_image_gallery', 'replace:ecom_image_gallery']);
+    grunt.registerTask('ecom_image_gallery', ['terser:ecom_image_gallery', 'copy:ecom_image_gallery', 'replace:ecom_image_gallery']);
 
-    grunt.registerTask('ecom_basket_checkout', ['uglify:ecom_desktop_basket', 'uglify:ecom_desktop_checkout', 'uglify:ecom_desktop_profile',
-        'uglify:ecom_mobile_basket', 'uglify:ecom_mobile_profile', 'uglify:ecom_mobile_checkout','copy:ecom_basket_checkout', 'replace:ecom_basket_checkout'
+    grunt.registerTask('ecom_basket_checkout', ['terser:ecom_desktop_basket', 'terser:ecom_desktop_checkout', 'terser:ecom_desktop_profile',
+        'terser:ecom_mobile_basket', 'terser:ecom_mobile_profile', 'terser:ecom_mobile_checkout','copy:ecom_basket_checkout', 'replace:ecom_basket_checkout'
 
     ]);
 
-    grunt.registerTask('ecom_mobile_in', ['uglify:ecom_mobile_in', 'copy:ecom_mobile_in', 'replace:ecom_mobile_in']);
+    grunt.registerTask('ecom_mobile_in', ['terser:ecom_mobile_in', 'copy:ecom_mobile_in', 'replace:ecom_mobile_in']);
 
 
     grunt.registerTask('ecom_css', ['cssmin:ecom_css',  'copy:ecom_css', 'replace:ecom_css']);
@@ -638,8 +639,8 @@ module.exports = function (grunt) {
     grunt.registerTask('au_css', ['cssmin_au_css',  'copy:au_css', 'replace:au_css']);
 
 
-    grunt.registerTask('au_libs', ['uglify:aurora_libs', 'uglify:login_libs','copy:au_libs', 'replace:js_libs', 'replace:js_login_libs']);
-    grunt.registerTask('au_js', ['uglify:aurora', 'uglify:login','copy:au_js', 'replace:js', 'replace:js_login']);
+    grunt.registerTask('au_libs', ['terser:aurora_libs', 'terser:login_libs','copy:au_libs', 'replace:js_libs', 'replace:js_login_libs']);
+    grunt.registerTask('au_js', ['terser:aurora', 'terser:login','copy:au_js', 'replace:js', 'replace:js_login']);
 
 
 
@@ -649,13 +650,13 @@ module.exports = function (grunt) {
 
 
 
-    grunt.registerTask('au', ['copy:fa_webfonts', 'sass:aurora', 'sass:login', 'cssmin:au', 'cssmin:au_login', 'uglify:aurora_libs', 'uglify:login_libs', 'uglify:login', 'uglify:aurora']);
+    grunt.registerTask('au', ['copy:fa_webfonts', 'sass:aurora', 'sass:login', 'cssmin:au', 'cssmin:au_login', 'terser:aurora_libs', 'terser:login_libs', 'terser:login', 'terser:aurora']);
 
 
     grunt.registerTask('pweb', ['copy:fa_webfonts', 'sass:ecom_css', 'cssmin:ecom_css',
-            'uglify:ecom_desktop_in','uglify:ecom_desktop_out','uglify:ecom_desktop_forms','uglify:ecom_mobile_forms','uglify:ecom_mobile','uglify:ecom_mobile_custom','uglify:ecom_datatables',
-            'uglify:ecom_desktop_logged_in', 'uglify:ecom_dropshipping_logged_in','uglify:ecom_image_gallery','uglify:ecom_desktop_basket', 'uglify:ecom_desktop_checkout', 'uglify:ecom_desktop_profile',
-        'uglify:ecom_mobile_basket', 'uglify:ecom_mobile_profile', 'uglify:ecom_mobile_checkout','uglify:ecom_mobile_in'
+            'terser:ecom_desktop_in','terser:ecom_desktop_out','terser:ecom_desktop_forms','terser:ecom_mobile_forms','terser:ecom_mobile','terser:ecom_mobile_custom','terser:ecom_datatables',
+            'terser:ecom_desktop_logged_in', 'terser:ecom_dropshipping_logged_in','terser:ecom_image_gallery','terser:ecom_desktop_basket', 'terser:ecom_desktop_checkout', 'terser:ecom_desktop_profile',
+        'terser:ecom_mobile_basket', 'terser:ecom_mobile_profile', 'terser:ecom_mobile_checkout','terser:ecom_mobile_in'
 
     ]);
 
