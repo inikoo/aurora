@@ -937,8 +937,9 @@
 
                 case 'profile':
 
+                    console.log('xxxx')
 
-                    content_data = {
+                    labels = {
 
                     };
 
@@ -948,7 +949,7 @@
                         if ($(obj2).hasClass('poll_query_label')) {
                             poll_labels[$(obj2).data('query_key')] = base64_url_encode($(obj2).html())
                         } else {
-                            content_data[$(obj2).attr('id')] = $(obj2).html()
+                            labels[$(obj2).attr('id')] = $(obj2).html()
                         }
 
 
@@ -960,12 +961,12 @@
 
 
                     $('.register_field', obj).each(function (i, obj2) {
-                        content_data[$(obj2).attr('id')] = $(obj2).attr('placeholder')
+                        labels[$(obj2).attr('id')] = $(obj2).attr('placeholder')
                     })
 
 
                     $('.tooltip', obj).each(function (i, obj2) {
-                        if ($(obj2).attr('id') != undefined) content_data[$(obj2).attr('id')] = $(obj2).html()
+                        if ($(obj2).attr('id') != undefined) labels[$(obj2).attr('id')] = $(obj2).html()
                     })
 
 
@@ -978,6 +979,8 @@
 
                     })
 
+                    console.log(labels)
+
 
                     blocks.push({
                         type: 'profile',
@@ -986,7 +989,7 @@
                         show: ($(obj).hasClass('hide') ? 0 : 1),
                         top_margin: $(obj).attr('top_margin'),
                         bottom_margin: $(obj).attr('bottom_margin'),
-                        labels: content_data
+                        labels: labels
 
                     })
 

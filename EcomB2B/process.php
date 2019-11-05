@@ -15,8 +15,6 @@ require 'keyring/dns.php';
 require_once 'utils/sentry.php';
 
 
-//error_reporting(E_ALL ^ E_DEPRECATED);
-
 $redis = new Redis();
 if ($redis->connect('127.0.0.1', 6379)) {
     $redis_on = true;
@@ -24,8 +22,8 @@ if ($redis->connect('127.0.0.1', 6379)) {
     $redis_on = false;
 }
 
-
 session_start();
+
 if (empty($_SESSION['website_key'])) {
 
 
@@ -147,7 +145,6 @@ $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$_SESSION['website_key'].'_'.$url;
 if ($redis->exists($url_cache_key)) {
     $webpage_id = $redis->get($url_cache_key);
 
-
 } else {
 
 
@@ -156,6 +153,8 @@ if ($redis->exists($url_cache_key)) {
 
 
 }
+
+
 
 
 if (is_numeric($webpage_id)) {

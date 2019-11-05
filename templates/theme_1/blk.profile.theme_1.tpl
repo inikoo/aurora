@@ -205,14 +205,14 @@
                             <li>
                                 <span class="block_link    selected">
                                     <i class="fa fa-angle-right"></i>
-                                    <span contenteditable="true" class="_contact_details_title">{$data.labels._contact_details_title}</span>
+                                    <span contenteditable="true" id="menu_contact_details_title">{if !empty($data.labels.menu_contact_details_title)}{$data.labels.menu_contact_details_title}{else}{t}Contact details{/t}{/if}</span>
                                     <i data-block="_contact_details" onClick="change_block(this)" style="color:mediumpurple" class="padding_left_10 fa like_button fa-arrow-right"></i>
                                 </span>
                             </li>
                             <li>
                                 <span class="block_link ">
                                     <i class="fa fa-angle-right"></i>
-                                    <span contenteditable="true" class="_login_details_title">{$data.labels._login_details_title}</span>
+                                    <span contenteditable="true" class="menu_login_details_title">{if !empty($data.labels.menu_login_details_title)}{$data.labels.menu_login_details_title}{else}{t}Login details{/t}{/if}</span>
                                     <i data-block="_login_details" onClick="change_block(this)" style="color:mediumpurple"  class="padding_left_10 fa like_button fa-arrow-right"></i>
                                 </span>
                             </li>
@@ -220,7 +220,7 @@
                             <li>
                                 <span class="block_link like_button">
                                     <i class="fa fa-angle-right"></i>
-                                    <span id="_invoice_address_title" contenteditable="true" class="_invoice_address_title">{$data.labels._invoice_address_title}</span>
+                                    <span  contenteditable="true" id="menu_invoice_address_title">{if !empty($data.labels.menu_invoice_address_title)}{$data.labels.menu_invoice_address_title}{else}{t}Invoice address{/t}{/if}</span>
                                     <i data-block="_invoice_address_details" onClick="change_block(this)" style="color:mediumpurple"  class="padding_left_10 fa like_button fa-arrow-right"></i>
                                     </span>
                             </li>
@@ -228,7 +228,7 @@
                             <li>
                                 <span class="block_link like_button">
                                     <i class="fa fa-angle-right"></i>
-                                    <span id="_delivery_addresses_title"  contenteditable="true" class="_delivery_addresses_title">{$data.labels._delivery_addresses_title}</span>
+                                    <span contenteditable="true" id="menu_delivery_addresses_title">{if !empty($data.labels.menu_delivery_addresses_title)}{$data.labels.menu_delivery_addresses_title}{else}{t}Delivery address{/t}{/if}</span>
                                     <i data-block="_delivery_addresses_details" onClick="change_block(this)" style="color:mediumpurple"  class="padding_left_10 fa like_button fa-arrow-right"></i>
                                     </span>
                             </li>
@@ -237,7 +237,7 @@
                             <li>
                                 <span class="block_link like_button">
                                     <i class="fa fa-angle-right"></i>
-                                    <span id="_poll_title"  contenteditable="true" class="_poll_title">{if empty($data.labels._poll_title)}{t}Poll{/t}{else}{$data.labels._poll_title}{/if}</span>
+                                    <span id="_poll_title"  contenteditable="true" id="menu_poll_title">{if empty($data.labels.menu_poll_title)}{t}Poll{/t}{else}{$data.labels.menu_poll_title}{/if}</span>
                                     <i data-block="_poll_details" onClick="change_block(this)" style="color:mediumpurple"  class="padding_left_10 fa like_button fa-arrow-right"></i>
                                     </span>
                             </li>
@@ -254,7 +254,7 @@
                             <li>
                                 <span class="block_link    selected">
                                     <i class="fa fa-angle-right"></i>
-                                    <span contenteditable="true" class="_orders_title">{$data.labels._orders_title}</span>
+                                    <span contenteditable="true" id="menu_orders_title">{if !empty($data.labels.menu_orders_title)}{$data.labels.menu_orders_title}{else}{t}Orders{/t}{/if}</span>
                                     <i data-block="_orders" onClick="change_block(this)" style="color:mediumpurple"  class="padding_left_10 fa like_button fa-arrow-right"></i>
                                 </span>
                             </li>

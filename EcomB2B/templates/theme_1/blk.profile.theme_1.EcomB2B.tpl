@@ -27,27 +27,27 @@
                 <li>
                             <span data-block="_contact_details" onClick="change_block(this)" class="block_link  like_button  selected" style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
-                                    <span class="_contact_details_title">{$data.labels._contact_details_title}</span>
+                                    <span>{if !empty($data.labels.menu_contact_details_title)}{$data.labels.menu_contact_details_title}{else}{t}Contact details{/t}{/if}</span>
                                 </span>
                 </li>
                 <li>
                                 <span data-block="_login_details" onClick="change_block(this)" class="block_link  like_button" style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
-                                    <span class="_login_details_title">{$data.labels._login_details_title}</span>
+                                    <span>{if !empty($data.labels.menu_login_details_title)}{$data.labels.menu_login_details_title}{else}{t}Login details{/t}{/if}</span>
                                 </span>
                 </li>
 
                 <li>
                                 <span data-block="_invoice_address_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
-                                    <span class="_invoice_address_title">{$data.labels._invoice_address_title}</span>
+                                    <span>{if !empty($data.labels.menu_invoice_address_title)}{$data.labels.menu_invoice_address_title}{else}{t}Invoice address{/t}{/if}</span>
                                     </span>
                 </li>
                 {if $store->get('Store Type')!='Dropshipping'}
                 <li>
                                 <span data-block="_delivery_addresses_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
-                                    <span class="_delivery_addresses_title">{$data.labels._delivery_addresses_title}</span>
+                                    <span>{if !empty($data.labels.menu_delivery_addresses_title)}{$data.labels.menu_delivery_addresses_title}{else}{t}Delivery address{/t}{/if}</span>
 
                                     </span>
                 </li>
@@ -55,7 +55,7 @@
                 <li>
                                 <span data-block="_poll_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
-                                    <span class="_poll_address_title">{if empty($data.labels._poll_title)}{t}Poll{/t}{else}{$data.labels._poll_title}{/if}</span>
+                                    <span>{if empty($data.labels.menu_poll_title)}{t}Poll{/t}{else}{$data.labels.menu_poll_title}{/if}</span>
                                     </span>
                 </li>
 
