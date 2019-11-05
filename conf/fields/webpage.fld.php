@@ -439,27 +439,7 @@ if (in_array($object->get('Webpage Scope'), array('Register'))) {
 
         )
     );
-    /*
 
-    $object_fields[] = array(
-        'label'      => _('Customer insights'),
-        'show_title' => true,
-        'fields'     => array(
-            array(
-                'id'              => 'Webpage_Customers_Source',
-                'edit'            => 'webpage_customers_source',
-                'value'           => '',
-                'formatted_value' => $object->get('Webpage Customers Source'),
-                'label'           => _('Where you found us?'),
-                'required'        => false,
-                'type'            => ''
-            ),
-
-
-        )
-    );
-
-    */
 }
 
 
@@ -474,10 +454,7 @@ $operations = array(
             'id'        => 'reindex_webpage',
             'class'     => 'operation',
             'value'     => '',
-            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "old_page", "key":"'.$object->id
-                .'"}\' onClick="reindex_object(this)" class="delete_object disabled ">'._(
-                    "Reindex"
-                ).' <i class="fa fa-indent  "></i></span>',
+            'label'     => '<span data-data=\'{ "object": "old_page", "key":"'.$object->id.'"}\' style="margin-left:41px" onClick="reindex_object(this)" class="delete_object button">'._("Reindex").' <i class="fa fa-indent  "></i></span>',
             'reference' => '',
             'type'      => 'operation'
         ),
@@ -487,7 +464,9 @@ $operations = array(
             'id'        => 'reset_webpage',
             'class'     => 'operation',
             'value'     => '',
-            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "webpage", "key":"'.$object->id.'"}\' onClick="reset_object(this)" class="delete_object disabled ">'
+
+
+            'label'     => '<i class="fa fa-fw fa-lock-alt button"    onClick="'.($edit ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'SS\')').'"  style="margin-right:20px"></i> <span data-data=\'{ "object": "webpage", "key":"'.$object->id.'"}\' onClick="reset_object(this)" class="delete_object disabled ">'
                 ._(
                     "Reset webpage"
                 ).' <i class="fa fa-recycle  "></i></span>',
@@ -516,70 +495,3 @@ if (!$new) {
     $object_fields[] = $operations;
 }
 
-/*
-
-if (in_array(
-    $object->get('Webpage Scope'), array(
-                                     'Category Categories',
-                                     'Product',
-                                     'Category Products'
-                                 )
-)) {
-
-    if (!$new and $can_delete) {
-        $operations = array(
-            'label'      => _('Operations'),
-            'show_title' => true,
-            'class'      => 'operations',
-            'fields'     => array(
-
-                array(
-                    'id'        => 'delete_website',
-                    'class'     => 'operation',
-                    'value'     => '',
-                    'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'
-                        .$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete webpage")
-                        .' <i class="far fa-trash-alt new_button link"></i></span>',
-                    'reference' => '',
-                    'type'      => 'operation'
-                ),
-
-
-            )
-
-        );
-
-        $object_fields[] = $operations;
-    }
-
-} else {
-
-    $operations      = array(
-        'label'      => _('Operations'),
-        'show_title' => true,
-        'class'      => 'operations',
-        'fields'     => array(
-
-
-            array(
-                'id'        => 'reset_webpage',
-                'class'     => 'operation',
-                'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "webpage", "key":"'
-                    .$object->id.'"}\' onClick="reset_object(this)" class="delete_object disabled ">'._("Reset webpage").' <i class="fa fa-recycle  "></i></span>',
-                'reference' => '',
-                'type'      => 'operation'
-            ),
-
-
-        )
-
-    );
-    $object_fields[] = $operations;
-
-
-}
-
-*/
-
-?>

@@ -29,7 +29,6 @@ $smarty->assign('key', $state['key']);
 $smarty->assign('object_fields', $object_fields);
 $smarty->assign('state', $state);
 
-$smarty->assign('js_code', 'js/injections/invoice_details.'.(_DEVEL ? '' : 'min.').'js');
 
 $customer = get_object('Customer', $state['_object']->get('Invoice Customer Key'));
 

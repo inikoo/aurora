@@ -27,9 +27,6 @@ websocket_server/vendor/*
 node_modules/*
 
 
-package.json
-package-lock.json
-
 websocket_server/composer.lock
 /bower_components/*
 /box/tests/box_registration.test.php

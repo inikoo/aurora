@@ -3232,3 +3232,49 @@ function get_settings_navigation($data, $smarty) {
 
 }
 
+/**
+ * @param $data array
+ * @param $smarty   \Smarty
+ *
+ * @return mixed
+ */
+function get_website_new_navigation($data, $smarty) {
+
+
+
+
+    $sections_class = '';
+    $title          = sprintf(_('New website for %s'),'<span class="id">'.$data['store']->get('Code')).'</span>';
+
+    $left_buttons = array();
+
+
+    $right_buttons = array();
+
+
+    $sections = get_sections('websites_server');
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+
+    $_content = array(
+        'sections_class' => $sections_class,
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search store').' '.$data['store']->get('Store Code')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}
+

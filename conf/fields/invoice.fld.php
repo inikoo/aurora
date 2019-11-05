@@ -205,7 +205,7 @@ if ($invoice->get('Invoice Type') == 'Invoice') {
                     ).'", "button_text":"'._('Delete').'",  "title":"'._(
                         'Deleting invoice'
                     ).'", "text":"'._("This operation cannot be undone").'",  "placeholder":"'._('Write the reason for deleting this invoice').'" }\'  data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                    .'"}\' onClick="delete_invoice(this)" class="delete_object disabled">'._('Delete invoice').' <i class="far fa-trash-alt new_button link"></i></span>',
+                    .'"}\' onClick="delete_object_with_note(this)" class="delete_object disabled">'._('Delete invoice').' <i class="far fa-trash-alt new_button link"></i></span>',
                 'reference' => '',
                 'type'      => 'operation'
             ),
@@ -234,11 +234,11 @@ if ($invoice->get('Invoice Type') == 'Invoice') {
             'id'        => 'delete_refund',
             'class'     => 'operation',
             'value'     => '',
-            'label'     => '<i class="fa fa-fw fa-'.($can_supervisor_accounting ? 'lock-alt' : 'lock').' button" onClick="'.($can_supervisor_accounting ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(\'IS\')').'" 
+            'label'     => '<i class="fa fa-fw fa-'.($can_supervisor_accounting ? 'lock-alt' : 'lock').' button" onClick="'.($can_supervisor_accounting ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'IS\')').'" 
                             style="margin-right:20px"></i> <span data-labels=\'{ "no_message":"'._('A reason should be provided').'", "button_text":"'._('Delete').'",  "title":"'._(
                     'Deleting refund'
                 ).'", "text":"'._("This operation cannot be undone").'",  "placeholder":"'._('Write the reason for deleting this refund').'" }\' data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                .'"}\' onClick="delete_invoice(this)" class="delete_object disabled">'._('Delete refund').' <i class="far fa-trash-alt new_button link "></i></span>',
+                .'"}\' onClick="delete_object_with_note(this)" class="delete_object disabled">'._('Delete refund').' <i class="far fa-trash-alt new_button link "></i></span>',
             'reference' => '',
             'type'      => 'operation'
         );

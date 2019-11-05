@@ -37,7 +37,6 @@
 
     function change_webpage_favourites_view(view) {
 
-console.log(view)
         if (view == 'with_items') {
 
             $('#edit_mode_{$key} .with_items').addClass('hide')

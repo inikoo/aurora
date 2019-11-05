@@ -144,21 +144,15 @@ function create_email_templates($db, $store) {
                     switch ($email_campaign_type->get('Email Campaign Type Code')) {
                         case 'New Order':
                             $subject = _('New order').' '.$store->get('Name');
-                        // $html    = file_get_contents('templates/notification_emails/new_order.ntfy.tpl');
                             break;
                         case 'New Customer':
                             $subject = _('New customer registration').' '.$store->get('Name');
-                            // $html    = file_get_contents('templates/notification_emails/alert.ntfy.tpl');
                             break;
                         case 'Delivery Note Undispatched':
                             $subject = _('Delivery note undispatched').' '.$store->get('Name');
-                            //   $html    = file_get_contents('templates/notification_emails/alert.ntfy.tpl');
-
                             break;
                         case 'Invoice Deleted':
                             $subject = _('Invoice deleted').' '.$store->get('Name');
-                            //    $html    = file_get_contents('templates/notification_emails/alert.ntfy.tpl');
-
                             break;
                     }
 

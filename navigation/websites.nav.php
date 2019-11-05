@@ -1333,108 +1333,6 @@ function get_no_website_navigation($data, $smarty, $user, $db, $account) {
 }
 
 
-function get_website_new_navigation($data, $smarty, $user, $db, $account) {
-
-
-    $website = $data['_object'];
-
-    $block_view = $data['section'];
-
-
-    $sections_class = '';
-    $title          = _('New website');
-
-    $left_buttons  = array();
-    $right_buttons = array();
-
-
-    $websites = array();
-
-    $sql  = sprintf('select `Website Key` from `Website Dimension`');
-    $stmt = $db->prepare($sql);
-    $stmt->execute();
-    while ($row = $stmt->fetch()) {
-        $websites[] = $row['Website Key'];
-    }
-
-
-    list($prev_key, $next_key) = get_prev_next(
-        $website->id, $websites
-    );
-    $sql = sprintf(
-        "SELECT `Website Code` FROM `Website Dimension` WHERE `Website Key`=%d", $prev_key
-    );
-
-
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
-            $prev_title = _('Website').' '.$row['Website Code'];
-        } else {
-            $prev_title = '';
-        }
-    }
-
-
-    $sql = sprintf(
-        "SELECT `Website Code` FROM `Website Dimension` WHERE `Website Key`=%d", $next_key
-    );
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
-            $next_title = _('Website').' '.$row['Website Code'];
-        } else {
-            $next_title = '';
-        }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
-    }
-
-
-    $left_buttons[] = array(
-        'icon'      => 'arrow-left',
-        'title'     => $prev_title,
-        'reference' => 'website/'.$prev_key
-    );
-    $left_buttons[] = array(
-        'icon'      => 'arrow-up',
-        'title'     => _('Websites'),
-        'reference' => 'websites',
-        'parent'    => ''
-    );
-
-    $left_buttons[] = array(
-        'icon'      => 'arrow-right',
-        'title'     => $next_title,
-        'reference' => 'website/'.$next_key
-    );
-
-
-    $sections = get_sections('products', $website->get('Store Key'));
-    if (isset($sections[$data['section']])) {
-        $sections[$data['section']]['selected'] = true;
-    }
-
-
-    $_content = array(
-        'sections_class' => $sections_class,
-        'sections'       => $sections,
-        'left_buttons'   => $left_buttons,
-        'right_buttons'  => $right_buttons,
-        'title'          => $title,
-        'search'         => array(
-            'show'        => true,
-            'placeholder' => _('Search products').' '.$data['store']->get('Code')
-        )
-
-    );
-    $smarty->assign('_content', $_content);
-
-    $html = $smarty->fetch('navigation.tpl');
-
-    return $html;
-
-}
-
 function get_deleted_webpage_navigation($data, $smarty, $user, $db, $account) {
 
 
@@ -1521,5 +1419,4 @@ function get_new_webpage_navigation($data, $smarty, $user, $db, $account) {
 
 
 }
-
 

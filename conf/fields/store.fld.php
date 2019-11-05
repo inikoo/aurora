@@ -10,17 +10,17 @@
  Version 3.0
 */
 
+if ($user->can_supervisor('stores') and in_array($object->id, $user->stores)) {
+    $edit = true;
+} else {
+    $edit = false;
+}
 
 include_once 'utils/static_data.php';
 
 
 $countries = get_countries($db);
 
-if (isset($options['new']) and $options['new']) {
-    $new = true;
-} else {
-    $new = false;
-}
 
 $options_yes_no = array(
     'Yes' => _('Yes'),
@@ -82,10 +82,10 @@ asort($options_currencies);
 
 $options_Staff    = array();
 $options_Staff[0] = _('No default');
-$sql              = sprintf(
-    'SELECT `Staff Name`,`Staff Key`,`Staff Alias` FROM `Staff Dimension` WHERE `Staff Currently Working`="Yes" order by `Staff Alias` '
-);
-foreach ($db->query($sql) as $row) {
+$sql              = "SELECT `Staff Name`,`Staff Key`,`Staff Alias` FROM `Staff Dimension` WHERE `Staff Currently Working`='Yes' order by `Staff Alias` ";
+$stmt             = $db->prepare($sql);
+$stmt->execute();
+while ($row = $stmt->fetch()) {
     $options_Staff[$row['Staff Key']] = $row['Staff Alias'];
 
 }
@@ -93,13 +93,13 @@ foreach ($db->query($sql) as $row) {
 
 $options_Shipper    = array();
 $options_Shipper[0] = _('No default');
-$sql                = sprintf(
-    'SELECT `Shipper Name`,`Shipper Key`,`Shipper Code` FROM `Shipper Dimension` WHERE  `Shipper Status`="Active" order by `Shipper Name` '
-);
-foreach ($db->query($sql) as $row) {
+$sql                = "SELECT `Shipper Name`,`Shipper Key`,`Shipper Code` FROM `Shipper Dimension` WHERE  `Shipper Status`='Active' order by `Shipper Name` ";
+$stmt               = $db->prepare($sql);
+$stmt->execute();
+while ($row = $stmt->fetch()) {
     $options_Shipper[$row['Shipper Key']] = $row['Shipper Name'].' ('.$row['Shipper Code'].')';
-
 }
+
 
 $object->smarty = $smarty;
 
@@ -266,13 +266,13 @@ $object_fields = array(
     array(
         'label'      => _('Collection'),
         'show_title' => true,
-        'class'      =>  ($new ? 'hide' :''),
+        'class'      => '',
         'fields'     => array(
 
             array(
                 'id'              => 'Store_Can_Collect',
                 'edit'            => ($edit ? 'option' : ''),
-                'render'          => ($new ? false : true),
+                'render'          => true,
                 'options'         => $options_yes_no,
                 'value'           => $object->get('Store Can Collect'),
                 'formatted_value' => $object->get('Can Collect'),
@@ -300,16 +300,16 @@ $object_fields = array(
 
 
     array(
-        'label'      => _('Order numbering'),
-        'class'      =>  ($new ? 'hide' : ''),
+        'label' => _('Order numbering'),
+        'class' => '',
 
         'show_title' => true,
         'fields'     => array(
 
 
             array(
-                'edit'     => ($edit ? 'string' : ''),
-                'render'      =>  ($new ? false : true),
+                'edit'   => ($edit ? 'string' : ''),
+                'render' => true,
 
                 'id'       => 'Store_Order_Public_ID_Format',
                 'value'    => $object->get('Store Order Public ID Format'),
@@ -322,8 +322,8 @@ $object_fields = array(
             ),
 
             array(
-                'edit'     => ($edit ? 'numeric' : ''),
-                'render'      =>  ($new ? false : true),
+                'edit'   => ($edit ? 'numeric' : ''),
+                'render' => true,
 
                 'id'       => 'Store_Order_Last_Order_ID',
                 'value'    => $object->get('Store Order Last Order ID'),
@@ -336,8 +336,8 @@ $object_fields = array(
             ),
 
             array(
-                'edit'            => ($edit ? 'option' : ''),
-                'render'      =>  ($new ? false : true),
+                'edit'   => ($edit ? 'option' : ''),
+                'render' => true,
 
                 'options'         => $options_next_invoice_number,
                 'id'              => 'Store_Next_Invoice_Public_ID_Method',
@@ -354,7 +354,7 @@ $object_fields = array(
             array(
                 'edit'   => ($edit ? 'string' : ''),
                 'id'     => 'Store_Invoice_Public_ID_Format',
-                'render' =>  ($new ? false :($object->get('Store Next Invoice Public ID Method') == 'Invoice Public ID' ? true : false)),
+                'render' => ($object->get('Store Next Invoice Public ID Method') == 'Invoice Public ID' ? true : false),
                 'value'  => $object->get('Store Invoice Public ID Format'),
 
                 'label'    => ucfirst($object->get_field_label('Store Invoice Public ID Format')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new invoices')
@@ -370,9 +370,7 @@ $object_fields = array(
                 'edit'     => ($edit ? 'numeric' : ''),
                 'id'       => 'Store_Invoice_Last_Invoice_Public_ID',
                 'value'    => $object->get('Store Invoice Last Invoice Public ID'),
-                'render'   =>
-                    ($new ? false :
-                    ($object->get('Store Next Invoice Public ID Method') == 'Invoice Public ID' ? true : false)),
+                'render'   => ($object->get('Store Next Invoice Public ID Method') == 'Invoice Public ID' ? true : false),
                 'label'    => ucfirst($object->get_field_label('Store Invoice Last Invoice Public ID')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new invoices')
                     .'" ></i>',
                 'required' => true,
@@ -386,9 +384,7 @@ $object_fields = array(
             array(
                 'edit'    => ($edit ? 'option' : ''),
                 'options' => $options_next_refund_number,
-                'render'  =>
-                    ($new ? false :
-                    ($object->get('Store Next Invoice Public ID Method') == 'Invoice Public ID' ? true : false)),
+                'render'  => ($object->get('Store Next Invoice Public ID Method') == 'Invoice Public ID' ? true : false),
 
                 'id'              => 'Store_Refund_Public_ID_Method',
                 'value'           => $object->get('Store Refund Public ID Method'),
@@ -404,8 +400,7 @@ $object_fields = array(
             array(
                 'edit'   => ($edit ? 'string' : ''),
                 'id'     => 'Store_Refund_Public_ID_Format',
-                'render' => ($new ? false :
-                    (($object->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' or $object->get('Store Refund Public ID Method') != 'Store Own Index') ? false : true)),
+                'render' => (($object->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' or $object->get('Store Refund Public ID Method') != 'Store Own Index') ? false : true),
                 'value'  => $object->get('Store Refund Public ID Format'),
 
                 'label'    => ucfirst($object->get_field_label('Store Refund Public ID Format')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new refunds').'" ></i>',
@@ -420,8 +415,7 @@ $object_fields = array(
                 'edit'     => ($edit ? 'numeric' : ''),
                 'id'       => 'Store_Invoice_Last_Refund_Public_ID',
                 'value'    => $object->get('Store Invoice Last Refund Public ID'),
-                'render'   => ($new ? false :
-                    (($object->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' or $object->get('Store Refund Public ID Method') != 'Store Own Index') ? false : true)),
+                'render'   => (($object->get('Store Next Invoice Public ID Method') == 'Same Invoice ID' or $object->get('Store Refund Public ID Method') != 'Store Own Index') ? false : true),
                 'label'    => ucfirst($object->get_field_label('Store Invoice Last Refund Public ID')).' <i class="fa fa-exclamation-triangle yellow" aria-hidden="true"  title="'._('Warning, misconfiguration of this variable can affect the creation of new refunds')
                     .'" ></i>',
                 'required' => true,
@@ -439,14 +433,14 @@ $object_fields = array(
     array(
         'label'      => _('Data entry of paper picking aid').' <i class="fa fa-keyboard padding_left_5" style="font-size: 110%;position: relative;top:.5px"></i>',
         'show_title' => true,
-        'class'      =>  ($new ? 'hide' : ''),
+        'class'      => '',
 
-        'fields'     => array(
+        'fields' => array(
 
 
             array(
-                'edit'            => 'no_icon',
-                'render'      =>  ($new ? false : true),
+                'edit'   => 'no_icon',
+                'render' => true,
 
                 'id'              => 'Store_Allow_Data_Entry_Picking_Aid',
                 'value'           => $object->settings('data_entry_picking_aid'),
@@ -539,11 +533,10 @@ $object_fields = array(
     ),
 
 
-
     array(
         'label'      => _('PDF Invoices'),
         'show_title' => true,
-        'class'      =>  ($new ? 'hide' :''),
+        'class'      => '',
         'fields'     => array(
 
             array(
@@ -554,14 +547,14 @@ $object_fields = array(
                 'value'           => '',
                 'formatted_value' => '
                     <div style="line-height: 20px">
-                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_rrp"  ><i class=" far fa-fw '.($object->settings('invoice_show_rrp')=='Yes'?'fa-check-square':'fa-square').'" ></i> '._('Recommended retail prices').'</span>  <br>
+                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_rrp"  ><i class=" far fa-fw '.($object->settings('invoice_show_rrp') == 'Yes' ? 'fa-check-square' : 'fa-square').'" ></i> '._('Recommended retail prices').'</span>  <br>
              
-                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_parts"  ><i class=" far fa-fw '.($object->settings('invoice_show_parts')=='Yes'?'fa-check-square':'fa-square').'" ></i> '._('Parts').' </span>  <br>
-                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_tariff_codes"><i class=" far fa-fw '.($object->settings('invoice_show_tariff_codes')=='Yes'?'fa-check-square':'fa-square').'" ></i> '._('Commodity codes').' </span>  <br>
-                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_barcode"  ><i class=" far fa-fw '.($object->settings('invoice_show_barcode')=='Yes'?'fa-check-square':'fa-square').'" ></i> '._('Product barcode').' </span>  <br>
-                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_weight"  ><i class=" far fa-fw '.($object->settings('invoice_show_weight')=='Yes'?'fa-check-square':'fa-square').'" ></i> '._('Weight').' </span>  <br>
-                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_origin"  > <i class=" far fa-fw '.($object->settings('invoice_show_origin')=='Yes'?'fa-check-square':'fa-square').'" ></i> '._('Country of origin').'</span>  <br>
-                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_CPNP"  > <i class=" far fa-fw '.($object->settings('invoice_show_CPNP')=='Yes'?'fa-check-square':'fa-square').'" ></i> '._('CPNP').'</span>  <br>
+                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_parts"  ><i class=" far fa-fw '.($object->settings('invoice_show_parts') == 'Yes' ? 'fa-check-square' : 'fa-square').'" ></i> '._('Parts').' </span>  <br>
+                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_tariff_codes"><i class=" far fa-fw '.($object->settings('invoice_show_tariff_codes') == 'Yes' ? 'fa-check-square' : 'fa-square').'" ></i> '._('Commodity codes').' </span>  <br>
+                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_barcode"  ><i class=" far fa-fw '.($object->settings('invoice_show_barcode') == 'Yes' ? 'fa-check-square' : 'fa-square').'" ></i> '._('Product barcode').' </span>  <br>
+                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_weight"  ><i class=" far fa-fw '.($object->settings('invoice_show_weight') == 'Yes' ? 'fa-check-square' : 'fa-square').'" ></i> '._('Weight').' </span>  <br>
+                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_origin"  > <i class=" far fa-fw '.($object->settings('invoice_show_origin') == 'Yes' ? 'fa-check-square' : 'fa-square').'" ></i> '._('Country of origin').'</span>  <br>
+                    <span   class="button  " onclick="toggle_invoice_show(this)"  data-field="invoice_show_CPNP"  > <i class=" far fa-fw '.($object->settings('invoice_show_CPNP') == 'Yes' ? 'fa-check-square' : 'fa-square').'" ></i> '._('CPNP').'</span>  <br>
                    </div>
                     ',
 
@@ -575,11 +568,11 @@ $object_fields = array(
             array(
                 'id'              => 'send_invoice_attachment_in_delivery_confirmation',
                 'edit'            => ($edit ? 'option' : ''),
-                'render'          => ($new ? false : true),
+                'render'          => true,
                 'options'         => $options_yes_no,
                 'value'           => $object->settings('send_invoice_attachment_in_delivery_confirmation'),
                 'formatted_value' => $object->get('send invoice attachment in delivery confirmation'),
-                'label'           => sprintf(_('Send %s in delivery conformation email'),'<i class="fal fa-paperclip"></i>'),
+                'label'           => sprintf(_('Send %s in delivery conformation email'), '<i class="fal fa-paperclip"></i>'),
                 'type'            => ''
             ),
 
@@ -590,17 +583,17 @@ $object_fields = array(
     array(
         'label'      => _('PDF Delivery notes'),
         'show_title' => true,
-        'class'      =>  ($new ? 'hide' :''),
+        'class'      => '',
         'fields'     => array(
 
             array(
                 'id'              => 'send_dn_attachment_in_delivery_confirmation',
                 'edit'            => ($edit ? 'option' : ''),
-                'render'          => ($new ? false : true),
+                'render'          => true,
                 'options'         => $options_yes_no,
                 'value'           => $object->settings('send_dn_attachment_in_delivery_confirmation'),
                 'formatted_value' => $object->get('send dn attachment in delivery confirmation'),
-                'label'           => sprintf(_('Send %s in delivery conformation email'),'<i class="fal fa-paperclip"></i>'),
+                'label'           => sprintf(_('Send %s in delivery conformation email'), '<i class="fal fa-paperclip"></i>'),
                 'type'            => ''
             ),
 
@@ -610,13 +603,13 @@ $object_fields = array(
 
     array(
         'label'      => _('Signatures'),
-        'class'      =>  ($new ? 'hide' : ''),
+        'class'      => '',
         'show_title' => true,
         'fields'     => array(
 
             array(
-                'edit'     => ($edit ? 'textarea' : ''),
-                'render'      =>  ($new ? false : true),
+                'edit'   => ($edit ? 'textarea' : ''),
+                'render' => true,
 
                 'id'       => 'Store_Email_Template_Signature',
                 'value'    => $object->get('Store Email Template Signature'),
@@ -629,8 +622,8 @@ $object_fields = array(
             ),
 
             array(
-                'edit'     => ($edit ? 'textarea' : ''),
-                'render'      =>  ($new ? false : true),
+                'edit'   => ($edit ? 'textarea' : ''),
+                'render' => true,
 
                 'id'       => 'Store_Invoice_Message',
                 'value'    => $object->get('Store Invoice Message'),
@@ -642,8 +635,8 @@ $object_fields = array(
 
             ),
             array(
-                'edit'     => ($edit ? 'textarea' : ''),
-                'render'      =>  ($new ? false : true),
+                'edit'   => ($edit ? 'textarea' : ''),
+                'render' => true,
 
                 'id'       => 'Store_Proforma_Message',
                 'value'    => $object->get('Store Proforma Message'),
@@ -662,13 +655,13 @@ $object_fields = array(
     array(
         'label'      => _('Notifications'),
         'show_title' => true,
-        'class'      =>  ($new ? 'hide' : ''),
+        'class'      => '',
         'fields'     => array(
 
 
             array(
-                'id'              => 'Store_Notification_New_Order_Recipients',
-                'render'      =>  ($new ? false : true),
+                'id'     => 'Store_Notification_New_Order_Recipients',
+                'render' => true,
 
                 'edit'            => 'mixed_recipients',
                 'value'           => '',
@@ -678,8 +671,8 @@ $object_fields = array(
                 'type'            => ''
             ),
             array(
-                'id'              => 'Store_Notification_New_Customer_Recipients',
-                'render'      =>  ($new ? false : true),
+                'id'     => 'Store_Notification_New_Customer_Recipients',
+                'render' => true,
 
                 'edit'            => 'mixed_recipients',
                 'value'           => '',
@@ -689,8 +682,8 @@ $object_fields = array(
                 'type'            => ''
             ),
             array(
-                'id'              => 'Store_Notification_Invoice_Deleted_Recipients',
-                'render'      =>  ($new ? false : true),
+                'id'     => 'Store_Notification_Invoice_Deleted_Recipients',
+                'render' => true,
 
                 'edit'            => 'mixed_recipients',
                 'value'           => '',
@@ -700,8 +693,8 @@ $object_fields = array(
                 'type'            => ''
             ),
             array(
-                'id'              => 'Store_Notification_Delivery_Note_Undispatched_Recipients',
-                'render'      =>  ($new ? false : true),
+                'id'     => 'Store_Notification_Delivery_Note_Undispatched_Recipients',
+                'render' => true,
 
                 'edit'            => 'mixed_recipients',
                 'value'           => '',
@@ -719,14 +712,14 @@ $object_fields = array(
     array(
         'label'      => _('Product labels'),
         'show_title' => true,
-        'class'      =>  ($new ? 'hide' : ''),
+        'class'      => '',
 
-        'fields'     => array(
+        'fields' => array(
 
 
             array(
-                'edit'            => ($edit ? 'textarea' : ''),
-                'render'      =>  ($new ? false : true),
+                'edit'   => ($edit ? 'textarea' : ''),
+                'render' => true,
 
                 'id'              => 'Store_Label_Signature',
                 'value'           => $object->get('Store Label Signature'),
@@ -746,31 +739,45 @@ $object_fields = array(
 );
 
 
-if (!$new) {
-    $operations = array(
-        'label'      => _('Operations'),
-        'show_title' => true,
-        'class'      => 'operations',
-        'fields'     => array(
+$operations = array(
+    'label'      => _('Operations'),
+    'show_title' => true,
+    'class'      => 'operations',
+    'fields'     => array(
 
 
-            array(
-                'id'        => 'delete_store',
-                'class'     => 'operation',
-                'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'.($object->get('Store Contacts') > 0 ? _('Close store') : _("Delete store")).' <i class="far fa-trash-alt new_button link"></i></span>',
-                'reference' => '',
-                'type'      => 'operation'
-            ),
+        array(
+            'id'    => 'delete_store',
+            'class' => 'operation',
+            'value' => '',
+
+            'label' => '<i class="fa fa-fw fa-'.($edit ? 'lock-alt' : 'lock').' button" onClick="'.($edit ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'SS\')').'" 
+                            style="margin-right:20px"></i> 
+                            <span 
+                                    data-labels=\'{ "no_message":"'._('A reason should be provided').'", "button_text":"'._('Delete').'",  "title":"'._('Deleting store').'","text":"'._("This operation cannot be undone").'",  
+                                                "placeholder":"'._('Write the reason for deleting this store').'" }\' 
+                                    data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' 
+                                    onClick="delete_object_with_note(this)" class="delete_object disabled">'._('Delete store').' <i class="far fa-trash-alt new_button link "></i>
+                            </span>',
+
+            'reference' => '',
+            'type'      => 'operation'
+        ),
+
+        array(
+            'id'        => 'create_website',
+            'class'     => 'operation',
+            'value'     => '',
+            'label'     => '<span  onClick="change_view(\'store/'.$object->id.'/website/new\')" class="create_object button" style="margin-left:42px">'._('Create website').' <i class="far fa-plus new_button link"></i>',
+            'reference' => '',
+            'type'      => 'operation'
+        ),
+    )
+
+);
+
+$object_fields[] = $operations;
 
 
-        )
-
-    );
-
-    $object_fields[] = $operations;
-}
 
 
-?>

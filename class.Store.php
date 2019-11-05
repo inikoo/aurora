@@ -249,8 +249,6 @@ class Store extends DB_Table {
             require_once 'conf/timeseries.php';
 
             $timeseries = get_time_series_config();
-
-
             $timeseries_data = $timeseries['Store'];
 
             include_once 'class.Timeserie.php';
@@ -343,16 +341,15 @@ class Store extends DB_Table {
                 'Deal Trigger XHTML Label'           => '',
                 'Deal Terms Type'                    => 'Order Interval',
                 'Deal Terms'                         => '30 day'
-
-
             );
+
+
             $order_recursion_campaign->create_deal($deal_data);
 
 
             $bulk_discounts_campaign_data = array(
                 'Deal Campaign Name' => 'Bulk discount',
                 'Deal Campaign Icon' => '<i class="far fa-ball-pile"></i>',
-
                 'Deal Campaign Code'       => 'VL',
                 'Deal Campaign Valid From' => gmdate('Y-m-d'),
                 'Deal Campaign Valid To'   => '',
@@ -360,7 +357,6 @@ class Store extends DB_Table {
             );
 
             $bulk_discounts_campaign = $this->create_campaign($bulk_discounts_campaign_data);
-
 
             $first_order_incentive_campaign_data = array(
                 'Deal Campaign Code'       => 'FO',

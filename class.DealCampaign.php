@@ -273,8 +273,6 @@ class DealCampaign extends DB_Table {
                 break;
 
 
-
-
             default:
 
 
@@ -442,7 +440,7 @@ class DealCampaign extends DB_Table {
 
     }
 
-    function create_deal($data, $component_data) {
+    function create_deal($data, $component_data = '') {
 
 
         include_once 'class.Deal.php';
@@ -479,13 +477,11 @@ class DealCampaign extends DB_Table {
 
             if ($deal->new) {
                 $this->new_object = true;
-                $deal_component   = $deal->add_component($component_data);
 
-
-                $this->new_deal_component = $deal_component;
-
-                // print_r($data);
-
+                if ($component_data != '') {
+                    $deal_component           = $deal->add_component($component_data);
+                    $this->new_deal_component = $deal_component;
+                }
 
                 if (!empty($data['Voucher'])) {
                     include_once 'class.Voucher.php';

@@ -552,7 +552,6 @@
 
 <script>
 
-
     $(document).delegate('a', 'click', function (e) {
 
         return false
@@ -810,12 +809,11 @@
         })
 
 
-        console.log(labels)
+
 
 
 
         $('._block').each(function (i, obj) {
-
 
 
             switch ($(obj).attr('block')) {
@@ -2119,13 +2117,32 @@
 
                         src: $(obj).find('iframe').attr('_src'), top_margin: $(obj).attr('top_margin'), bottom_margin: $(obj).attr('bottom_margin'),
                     })
+                    break;
+                case 'launching':
 
+                    var content_data = {
+                    }
+
+                    $('[contenteditable=true]', obj).each(function (i, obj2) {
+                        content_data[$(obj2).attr('id')] = $(obj2).html()
+                    })
+
+                    blocks.push({
+                        type: 'launching',
+                        label: '{t}Launching website{/t}',
+                        icon: 'fa-rocket',
+                        show: 1,
+                        image: $('.big_img').data('img'),
+                        labels: content_data
+                    })
+                    break;
 
 
 
             }
 
         });
+
 
 
         content_data.blocks = blocks
@@ -2173,6 +2190,7 @@
 
     $(document).on('input paste', '[contenteditable=true]', function (e) {
         $('#save_button', window.parent.document).addClass('save button changed valid')
+
     });
 
 

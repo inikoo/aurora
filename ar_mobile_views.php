@@ -163,23 +163,10 @@ function get_view($db, $smarty, $user, $account, $modules) {
             $_parent                  = get_object(
                 'Website', $state['parent_key']
             );
-            $website                  = $_parent;
-            //$state['current_website'] = $_parent->id;
+
             $website                  = $_parent;
 
             break;
-        case 'node':
-            $_parent                  = get_object(
-                'WebsiteNode', $state['parent_key']
-            );
-            $website                  = get_object(
-                'Website', $_parent->get('Website Node Website Key')
-            );
-            //$state['current_website'] = $website->id;
-
-
-            break;
-
 
         case 'warehouse':
             include_once 'class.Warehouse.php';

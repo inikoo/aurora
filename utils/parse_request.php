@@ -102,7 +102,8 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                 $section = 'dashboard';
                             } elseif ($view_path[1] == 'settings') {
                                 $section = 'settings';
-                            } /*
+                            }
+
                             elseif ($view_path[1] == 'website') {
 
 
@@ -112,41 +113,16 @@ function parse_request($_data, $db, $modules, $account, $user) {
                                     break;
                                 }
 
-                                $module  = 'products';
-                                $section = 'website';
 
-
-                                $parent     = 'store';
-                                $parent_key = $key;
-
-                                $object = 'website';
-                                $key    = '';
 
 
                                 if (isset($view_path[2])) {
-                                    if ($view_path[1] == 'page') {
-                                        $section    = 'page';
-                                        $object     = 'page';
-                                        $parent     = 'website';
+                                    if ($view_path[2] == 'new') {
+
+                                        $module  = 'products';
+                                        $parent     = 'store';
                                         $parent_key = $key;
-
-                                        if (is_numeric($view_path[3])) {
-                                            $key = $view_path[3];
-                                        }
-
-
-                                    } elseif ($view_path[2] == 'user') {
-                                        $section    = 'website.user';
-                                        $object     = 'user';
-                                        $parent     = 'website';
-                                        $parent_key = $key;
-
-                                        if (is_numeric($view_path[3])) {
-                                            $key = $view_path[3];
-                                        }
-
-
-                                    } elseif ($view_path[2] == 'new') {
+                                        $key    = '';
                                         $section = 'website.new';
                                         $object  = 'website';
 
@@ -157,7 +133,7 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
 
                             }
-                            */ elseif ($view_path[1] == 'charge') {
+                             elseif ($view_path[1] == 'charge') {
                                 $section = 'charge';
                                 $object  = 'charge';
 

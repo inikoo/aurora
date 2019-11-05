@@ -57,6 +57,7 @@ $fields = "`Email Campaign Type Mailshots`,`Email Campaign Type Status`,`Email C
 
 
 $sql_totals = "select count(*) as num from $table $where ";
+print $sql_totals;
 
 
 

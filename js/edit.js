@@ -1929,11 +1929,10 @@ function assign_available_barcode(field) {
 }
 
 
-function not_authorised_toggle_unlock_delete_object(element, right_code) {
+function not_authorised_toggle_unlock_delete_object(element, right_code,right_scope) {
 
     var _labels = $(element).data('labels');
-    console.log(_labels)
-    console.log(element)
+
 
     var request = '/ar_find.php?tipo=users_with_right&right=' + right_code
     $.getJSON(request, function (data) {
@@ -1957,11 +1956,11 @@ function not_authorised_toggle_unlock_delete_object(element, right_code) {
 
 function toggle_unlock_delete_object(element) {
 
-    if ($(element).hasClass('fa-lock')) {
-        $(element).removeClass('fa-lock').addClass('fa-unlock')
+    if ($(element).hasClass('fa-lock-alt')) {
+        $(element).removeClass('fa-lock-alt').addClass('fa-unlock')
         $(element).nextAll('span:first').removeClass('disabled').addClass('button')
     } else {
-        $(element).addClass('fa-lock').removeClass('fa-unlock')
+        $(element).addClass('fa-lock-alt').removeClass('fa-unlock')
         $(element).nextAll('span:first').addClass('disabled').removeClass('button')
     }
 }
@@ -2472,3 +2471,33 @@ $(document).on('click', '.locked_show_edit_button', function (evt) {
 
 
 });
+
+
+async function delete_object_with_note(element) {
+    if ($(element).hasClass('disabled')) {
+        return;
+    }
+
+    var labels = $(element).data('labels');
+
+    var _ref = await Swal.fire({
+            title: labels.title,
+            text: labels.text,
+            type: 'warning',
+            input: 'textarea',
+            inputPlaceholder: labels.placeholder,
+            confirmButtonText: labels.button_text
+        }),
+        text = _ref.value;
+
+    if (text) {
+        save_object_operation('delete', element, {
+            note: text
+        });
+    } else {
+        Swal.fire({
+            type: 'error',
+            title: labels.no_message
+        });
+    }
+}

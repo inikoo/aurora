@@ -180,11 +180,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             return $object_fields;
             break;
 
-        case 'Website Node':
-            include 'fields/website.node.fld.php';
 
-            return $object_fields;
-            break;
         case 'Category':
 
             if (isset($options['type']) and $options['type'] == 'webpage_settings') {
@@ -374,17 +370,15 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             return $object_fields;
             break;
         case 'Website':
-
-
-            if (!empty($options['localization'])) {
-                include 'fields/website_localization.fld.php';
-
-
-            }  else {
-                include 'fields/website.fld.php';
+            if (!empty($options['new'])) {
+                include 'fields/website.new.fld.php';
+            } else {
+                if (!empty($options['localization'])) {
+                    include 'fields/website_localization.fld.php';
+                } else {
+                    include 'fields/website.fld.php';
+                }
             }
-
-
             return $object_fields;
             break;
         case 'Agent':
@@ -463,11 +457,10 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             } else {
 
 
-
                 if ($user->get('User Type') == 'Agent') {
                     include 'fields/agent_supplier.fld.php';
 
-                }else{
+                } else {
                     include 'fields/supplier.fld.php';
 
                 }
@@ -512,8 +505,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                                     'label' => '<i class="fa fa-fw fa-'.($super_edit ? 'lock-alt' : 'lock').'  button" 
                                                 data-labels=\'{ "text":"'._('Please ask an authorised user to delete this supplier part').'","title":"'._('Restricted operation').'","footer":"'._('Authorised users').': "}\'  
                                             onClick="'.($super_edit ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'PS\')').'"  
-                                            style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                                        .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._(
+                                            style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._(
                                             "Delete supplier's part & related part"
                                         ).' <i class="far fa-trash-alt new_button link"></i></span>',
 
@@ -634,20 +626,13 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
             return $object_fields;
             break;
         case 'Store':
-
-            if (isset($options['new'])) {
-
-
+            if (!empty($options['new'])) {
+                include 'fields/store.new.fld.php';
             } else {
-
-
-                if (!in_array($object->id, $user->stores)) {
-                    $edit = false;
-                }
+                include 'fields/store.fld.php';
             }
-            include 'fields/store.fld.php';
-
             return $object_fields;
+
             break;
         case 'Staff':
 
@@ -740,7 +725,7 @@ function get_object_fields($object, $db, $user, $smarty, $options = false) {
                 case 'Registration Approved':
                 case 'Registration Rejected':
 
-                include 'fields/email_campaign_type.registration.fld.php';
+                    include 'fields/email_campaign_type.registration.fld.php';
                     break;
                 case 'Password Reminder':
                     include 'fields/email_campaign_type.password_reminder.fld.php';

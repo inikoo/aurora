@@ -255,22 +255,11 @@ function save_new_object(object, form_type) {
         $(".value").each(function (index) {
 
 
-           // var field_tr = $(this).closest('tr')
-           // console.log($(this).attr('field'))
-
-            //      if (!field_tr.hasClass('hidden') && field_tr.hasClass('hide')) {
-            //         return
-            //    }
-
 
             var field = $(this).attr('field')
             var field_type = $(this).attr('field_type')
 
-            //console.log(field)
-            console.log(field_type+' '+field)
-
-
-            if (field_type == 'time') {
+                       if (field_type == 'time') {
                 value = clean_time($('#' + field).val())
             }else if (field_type == 'date' || field_type == 'date_interval') {
 
@@ -281,7 +270,6 @@ function save_new_object(object, form_type) {
                 }
 
 
-               // console.log(field_type+' '+field+' '+value)
 
             } else if (field_type == 'password' || field_type == 'password_with_confirmation' || field_type == 'password_with_confirmation_paranoid' || field_type == 'pin' || field_type == 'pin_with_confirmation' || field_type == 'pin_with_confirmation_paranoid') {
                 value = sha256_digest($('#' + field).val())
@@ -408,12 +396,12 @@ function save_new_object(object, form_type) {
 
 
         // used only for debug
-        var request = '/' + ar_file + '?tipo=' + (form_type != '' ? form_type : tipo) + '&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
-        console.log(request)
+        //var request = '/' + ar_file + '?tipo=' + (form_type != '' ? form_type : tipo) + '&object=' + object + '&parent=' + $('#fields').attr('parent') + '&parent_key=' + $('#fields').attr('parent_key') + '&fields_data=' + JSON.stringify(fields_data)
+        //console.log(request)
 
 
 
-        //=====
+
         form_data.append("tipo", (form_type != '' ? form_type : tipo))
         form_data.append("object", object)
         form_data.append("parent", $('#fields').attr('parent'))
@@ -550,7 +538,7 @@ function save_inline_new_object(trigger) {
 
 
     fields_data[field.replace(re, ' ')] = value
-    var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + parent + '&parent_key=' + parent_key + '&fields_data=' + JSON.stringify(fields_data)
+    //var request = '/ar_edit.php?tipo=new_object&object=' + object + '&parent=' + parent + '&parent_key=' + parent_key + '&fields_data=' + JSON.stringify(fields_data)
     //console.log(request)
     var form_data = new FormData();
     form_data.append("tipo", 'new_object')
@@ -850,3 +838,4 @@ function select_option_for_new_object(element, field, value, formatted_value) {
     on_changed_value(field, value)
 
 }
+

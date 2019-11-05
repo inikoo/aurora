@@ -3045,9 +3045,7 @@ $modules = array(
                 'type' => 'new_object',
                 'tabs' => array(
                     'website.new' => array(
-                        'label' => _(
-                            'New website'
-                        )
+                        'label' => _('New website')
                     ),
 
                 )
