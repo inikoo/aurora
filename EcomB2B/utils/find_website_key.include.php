@@ -11,7 +11,7 @@
 
 
 if ( preg_match('/bali|sasi|sakoi|geko/', gethostname()) ) {
-    $_SESSION['website_key'] = 1;
+    $_SESSION['website_key'] = 16;
 } else {
 
     include_once 'utils/general_functions.php';

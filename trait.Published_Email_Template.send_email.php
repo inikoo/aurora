@@ -502,7 +502,7 @@ trait Send_Email {
                 $products = '';
 
                 $sql = sprintf(
-                    'select `Back in Stock Reminder Product ID`,`Back in Stock Reminder Key` from `Back in Stock Reminder Fact` where `Back in Stock Reminder Customer Key`=%d and `Back in Stock Reminder State`="Ready"  ', $recipient->id
+                    "select `Back in Stock Reminder Product ID`,`Back in Stock Reminder Key` from `Back in Stock Reminder Fact` where `Back in Stock Reminder Customer Key`=%d and `Back in Stock Reminder State`='Ready'  ", $recipient->id
                 );
 
 
@@ -881,7 +881,6 @@ trait Send_Email {
 
 
                 $subject    = _('New order').' '.$this->store->get('Name');
-                $title      = '<b>'._('New order').'</b> '.$this->order->get('Total Amount').' '.$this->store->get('Name');
                 $link_label = _('Link to order');
 
                 $link = sprintf(
@@ -890,15 +889,23 @@ trait Send_Email {
 
 
                 if($this->account->get('Currency Code')==$this->store->get('Store Currency Code')){
+                    /*
                     $info = sprintf(
                         _('New order %s (%s) has been placed by %s'), '<a href="'.$link.'">'.$this->order->get('Public ID').'</a>', '<b>'.$this->order->get('Total Amount').'</b>', '<b>'.$this->notification_trigger_author->get('Name').'</b>'
 
                     );
+                    */
+                    $title      = '<b>'._('New order').'</b> '.$this->order->get('Total Amount').' '.$this->store->get('Name');
+
                 }else{
+                    /*
                     $info = sprintf(
                         _('New order %s (%s) has been placed by %s'), '<a href="'.$link.'">'.$this->order->get('Public ID').'</a>',   '<span>'.$this->order->get('DC Total Amount').'</span> <b>'.$this->order->get('Total Amount').'</b>', '<b>'.$this->notification_trigger_author->get('Name').'</b>'
 
                     );
+                    */
+                    $title      = '<b>'._('New order').'</b> <span style="font-style: italic">('.$this->order->get('DC Total Amount').')</span> '.$this->order->get('Total Amount').' '.$this->store->get('Name');
+
                 }
 
 
@@ -912,7 +919,7 @@ trait Send_Email {
                 $smarty->assign('subject', $subject);
                 $smarty->assign('link_label', $link_label);
                 $smarty->assign('link', $link);
-                $smarty->assign('info', $info);
+                //$smarty->assign('info', $info);
 
                 $smarty->assign('customer', $this->notification_trigger_author);
                 $smarty->assign('order', $this->order);
