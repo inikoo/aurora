@@ -149,7 +149,9 @@ trait OrderItems {
 
                     $estimated_weight = $total_quantity * $product->data['Product Package Weight'];
                     $gross            = round($quantity * $product->data['Product History Price'], 2);
-                    $cost             = round($quantity * $product->get('Product Cost'), 4);
+
+                    $product_cost = (is_numeric($product->get('Product Cost')) ? $product->get('Product Cost') : 0);
+                    $cost         = round($quantity * $product_cost, 4);
 
                     $sql = sprintf(
                         "update `Order Transaction Fact` set  `Estimated Weight`=%s,`Order Quantity`=%f,`Order Bonus Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%.2f ,`Order Transaction Total Discount Amount`=%.2f,`Order Transaction Amount`=%.2f,`Current Dispatching State`=%s  ,`Cost Supplier`=%.4f where `Order Transaction Fact Key`=%d ",
@@ -164,10 +166,6 @@ trait OrderItems {
                                 'Order Last Updated Date', gmdate('Y-m-d H:i:s'), 'no_history'
                             );
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        print "$sql\n";
-                        exit;
                     }
 
 
@@ -207,7 +205,10 @@ trait OrderItems {
                     $product          = get_object('Product', $data['item_historic_key'], 'historic_key');
                     $gross            = round($quantity * $product->data['Product History Price'], 2);
                     $estimated_weight = $total_quantity * $product->data['Product Package Weight'];
-                    $cost             = round($total_quantity * $product->get('Product Cost'), 4);
+
+                    $product_cost = (is_numeric($product->get('Product Cost')) ? $product->get('Product Cost') : 0);
+                    $cost         = round($total_quantity * $product_cost, 4);
+
 
 
                     $sql = sprintf(
