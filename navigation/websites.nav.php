@@ -121,7 +121,7 @@ function get_website_navigation($data, $smarty, $user, $db, $account) {
 
             break;
         case 'settings':
-            $title         = '<i class="fal fa-fw fa-globe padding_right_5 '.$status_class.' " ></i> <span class="Website_Name id">'.$website->get('Name').'</span> <span class="Website_cpde small padding_left_10">('.$website->get('Code').')</span> <span class="Website_URL url small padding_left_10">'.$website->get('URL').'</span>';
+            $title         = '<i class="website_status_icon fal fa-fw fa-globe padding_right_5 '.$status_class.' " ></i> <span class="Website_Name id">'.$website->get('Name').'</span> <span class="Website_Code small padding_left_10">('.$website->get('Code').')</span> <span class="Website_URL url small padding_left_10">'.$website->get('URL').'</span>';
             $link          = 'settings';
             $right_buttons = array(
                 array(

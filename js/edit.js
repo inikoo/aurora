@@ -2501,3 +2501,50 @@ async function delete_object_with_note(element) {
         });
     }
 }
+
+function launch_website(element){
+
+    if($(element).hasClass('wait')){
+        return;
+    }
+
+
+
+    $(element).addClass('wait')
+    $(element).find('i').addClass('fa-spinner fa-spin').removeClass('fa-rocket')
+
+    var website_key=$(element).data('website_key')
+
+
+    var ajaxData = new FormData();
+
+
+    ajaxData.append("tipo", 'launch_website')
+    ajaxData.append("key", website_key)
+
+
+
+    $.ajax({
+        url: "/ar_edit_website.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+        complete: function () {
+        }, success: function (data) {
+
+            if (data.state == '200') {
+                $('.website_status_icon').removeClass('discreet').addClass('success')
+
+                $('#launch_webpage_field').addClass('hide')
+                $('.launch_website_header').addClass('hide')
+
+
+            } else if (data.state == '400') {
+                $(element).find('i').removeClass('fa-spinner fa-spin').addClass('fa-rocket')
+
+                swal(data.msg);
+            }
+
+            }, error: function () {
+
+        }
+    });
+
+}

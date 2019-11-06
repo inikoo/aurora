@@ -11,7 +11,11 @@
 <body xmlns="http://www.w3.org/1999/html" data-device_prefix="">
 {include file="analytics.tpl"}
 
-
+{if $website->get('Website Status')=='InProcess'}
+    {foreach from=$content.blocks item=$block key=key}
+        {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
+    {/foreach}
+{else}
 
 {if $logged_in}
     <span id="ordering_settings" class="hide"  data-website_key="{$website->id}" data-labels='{
@@ -1400,7 +1404,6 @@
     {/if}
 
 </script>
-
 {if $with_gallery==1}
     <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="pswp__bg"></div>
@@ -1439,7 +1442,6 @@
         </div>
     </div>
 {/if}
-
 {if $smarty.server.SERVER_NAME!='ecom.bali' and !empty($tawk_chat_code)}
     <script type="text/javascript">
         var Tawk_API=Tawk_API||{
@@ -1455,7 +1457,6 @@
         })();
     </script>
 {/if}
-
+{/if}
 
 </body></html>
-

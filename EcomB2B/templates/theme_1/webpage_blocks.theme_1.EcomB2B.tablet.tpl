@@ -10,6 +10,13 @@
 *}{include file="theme_1/_head.theme_1.EcomB2B.tablet.tpl"}
 <body data-device_prefix="tablet">
 {include file="analytics.tpl"}
+{if $website->get('Website Status')=='InProcess'}
+{foreach from=$content.blocks item=$block key=key}
+    {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.mobile.tpl" data=$block key=$key  }
+{/foreach}
+{else}
+{include file="analytics.tpl"}
+
 {if $logged_in}
     <span id="ordering_settings" class="hide"  data-website_key="{$website->id}" ></span>
 {/if}
@@ -1254,7 +1261,6 @@
         </div>
     </div>
 {/if}
-
-
+{/if}
 </body>
 </html>

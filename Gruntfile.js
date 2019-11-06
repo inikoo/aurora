@@ -5,10 +5,6 @@ module.exports = function (grunt) {
         clean: {
             fork: ["../fork/*", "!../fork/keyring/**", "!../fork/server_files/**"],
             css: ["assets/images"],
-            ecom_deployment_step2: ["EcomB2B/assets/*.min.js", "EcomB2B/assets/*.min.css"],
-            ecom_deployment_step4: ["EcomB2B/assets/*.tmp.*"],
-            au_deployment_step2: ["assets/*.min.js", "assets/*.min.css"],
-            au_deployment_step4: ["assets/*.tmp.*"],
             assets:["assets/*min*","EcomB2B/assets/**"]
 
         },

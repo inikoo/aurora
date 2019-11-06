@@ -9,6 +9,10 @@
 
 */
 
+/**
+ * @var $website \Website
+ */
+$website=$state['_parent'];
 
 $tab     = 'website.online_webpages';
 $ar_file = 'ar_websites_tables.php';
@@ -20,7 +24,7 @@ $default = $user->get_tab_defaults($tab);
 $table_views = array();
 
 $table_filters = array(
-    'code'  => array('label' => _('Code')),
+    'code' => array('label' => _('Code')),
 
 );
 
@@ -29,8 +33,9 @@ $parameters = array(
     'parent_key' => $state['parent_key'],
 );
 
+if($website->get('Website Status')=='Active'){
+    $smarty->assign('website', $website);
+    $smarty->assign('table_top_template', 'showcase/website.online_webpages.tpl');
+}
 
 include('utils/get_table_html.php');
-
-
-?>

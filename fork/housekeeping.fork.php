@@ -1278,10 +1278,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             $website->editor        = $data['editor'];
 
 
-            $sql = sprintf(
-                "SELECT `Page Key` FROM `Page Store Dimension`  P LEFT JOIN `Webpage Type Dimension` WTD ON (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  WHERE `Webpage Website Key`=%d AND `Webpage Scope`  IN ('Category Products','Category Categories') AND `Webpage State`='Ready'  ",
-                $website->id
-            );
+
 
             $sql = sprintf(
                 "SELECT `Page Key` FROM `Page Store Dimension`  P LEFT JOIN `Webpage Type Dimension` WTD ON (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  WHERE `Webpage Website Key`=%d AND `Webpage Scope`  IN ('Category Products','Category Categories')   ",
@@ -1294,7 +1291,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                     $webpage         = get_object('Webpage', $row['Page Key']);
                     $webpage->editor = $website->editor;
 
-                    // print $webpage->get('Webpage Code')."\n";
 
                     if ($webpage->get('Webpage State') == 'Ready') {
                         $webpage->publish();
@@ -1315,7 +1311,6 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
                     $webpage         = get_object('Webpage', $row['Page Key']);
                     $webpage->editor = $website->editor;
-                    // print $webpage->get('Webpage Code')." ** \n";
 
                     if ($webpage->get('Webpage State') == 'Ready') {
                         $webpage->publish();

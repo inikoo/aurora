@@ -1261,7 +1261,6 @@ class Website extends DB_Table {
 
     function launch() {
 
-        include_once 'class.Page.php';
 
 
         $this->update(array('Website Status' => 'Active'));
@@ -1275,19 +1274,21 @@ class Website extends DB_Table {
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-                $webpage         = new Page($row['Page Key']);
+                $webpage         = get_object('Webpage',$row['Page Key']);
                 $webpage->editor = $this->editor;
 
                 if ($webpage->get('Webpage Code') == 'launching.sys') {
                     $webpage->update(array('Webpage State' => 'Offline'));
                 } else {
                     $webpage->update(array('Webpage State' => 'Online'));
-                    $webpage->update(array('Webpage Launch Date' => gmdate('Y-m-d H:i:s')), 'no_history');
+                    $webpage->fast_update(array('Webpage Launch Date' => gmdate('Y-m-d H:i:s')));
                 }
 
 
             }
         }
+
+        $this->clean_cache();
 
         include_once 'utils/new_fork.php';
         global $account;

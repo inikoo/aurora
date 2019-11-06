@@ -9,6 +9,11 @@
 
 */
 
+/**
+ * @var $website \Website
+ */
+$website=$state['_parent'];
+
 $tab     = 'website.webpage.types';
 $ar_file = 'ar_websites_tables.php';
 $tipo    = 'webpage_types';
@@ -25,6 +30,11 @@ $parameters = array(
 
 );
 
+if($website->get('Website Status')=='Active'){
+    $smarty->assign('website', $website);
+    $smarty->assign('table_top_template', 'showcase/website.online_webpages.tpl');
+}
+
 include('utils/get_table_html.php');
 
-?>
+
