@@ -766,7 +766,8 @@ $operations = array(
 
         array(
             'id'        => 'create_website',
-            'class'     => 'operation',
+
+            'class'     => 'operation '.($object->get('Store Website Key')>0?'hide':''),
             'value'     => '',
             'label'     => '<span  onClick="change_view(\'store/'.$object->id.'/website/new\')" class="create_object button" style="margin-left:42px">'._('Create website').' <i class="far fa-plus new_button link"></i>',
             'reference' => '',
