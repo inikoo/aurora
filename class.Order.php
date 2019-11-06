@@ -299,7 +299,7 @@ class Order extends DB_Table {
 
                 return $tax_description;
 
-                break;
+
             case 'Margin':
 
                 if (is_numeric($this->data['Order Margin'])) {
@@ -317,17 +317,19 @@ class Order extends DB_Table {
                     switch ($payment_account->get('Payment Account Block')) {
                         case 'ConD':
                             return _('Cash on delivery').' (<b>'.money($this->data['Order To Pay Amount'], $this->data['Order Currency']).'</b>)';
-                            break;
+
                         case 'Bank':
                             return sprintf(_('Waiting for a %s bank transfer'), '<b>'.money($this->data['Order To Pay Amount'], $this->data['Order Currency']).'</b>');
-                            break;
+
                         case 'Cash':
                             return sprintf(_('Will pay %s with cash'), '<b>'.money($this->data['Order To Pay Amount'], $this->data['Order Currency']).'</b>');
-                            break;
+
                         default:
-                            break;
+                            return '';
                     }
 
+                } else {
+                    return '';
                 }
 
             case 'Expected Payment':
@@ -339,18 +341,20 @@ class Order extends DB_Table {
                     switch ($payment_account->get('Payment Account Block')) {
                         case 'ConD':
                             return '<i class="fa fa-handshake" aria-hidden="true"></i> '._('Cash on delivery');
-                            break;
+
                         case 'Bank':
                             return _('Waiting bank transfer');
-                            break;
+
                         case 'Cash':
                             return _('Will pay with cash');
-                            break;
+
                         default:
-                            break;
+                            return '';
                     }
 
 
+                } else {
+                    return '';
                 }
 
 
@@ -413,33 +417,31 @@ class Order extends DB_Table {
                 switch ($this->data['Order State']) {
                     case 'InBasket':
                         return 10;
-                        break;
 
 
                     case 'InProcess':
                         return 30;
-                        break;
+
                     case 'InWarehouse':
                         return 40;
-                        break;
+
 
                     case 'PackedDone':
                         return 80;
-                        break;
+
                     case 'Approved':
                         return 90;
-                        break;
+
                     case 'Dispatched':
                         return 100;
-                        break;
+
                     case 'Cancelled':
                         return -10;
-                        break;
 
 
                     default:
                         return 0;
-                        break;
+
                 }
 
 
@@ -720,10 +722,10 @@ class Order extends DB_Table {
 
                 return $amount;
 
-                break;
+
             case 'replacements_in_process':
                 return $this->data['Order Replacements In Warehouse without Alerts'] + $this->data['Order Replacements In Warehouse with Alerts'] + $this->data['Order Replacements Packed Done'] + $this->data['Order Replacements Approved'];
-                break;
+
 
             case('Tax Number Valid'):
                 if ($this->data['Order Tax Number'] != '') {
@@ -778,19 +780,21 @@ class Order extends DB_Table {
                     switch ($this->data['Order Tax Number Valid']) {
                         case 'Unknown':
                             return _('Not validated').$validation_data;
-                            break;
+
                         case 'Yes':
                             return _('Validated').$validation_data;
-                            break;
+
                         case 'No':
                             return _('Not valid').$validation_data;
                         default:
                             return $this->data['Order Tax Number Valid'].$validation_data;
 
-                            break;
+
                     }
+                } else {
+                    return '';
                 }
-                break;
+
 
             case 'Tax Number Formatted':
 
@@ -2381,7 +2385,6 @@ class Order extends DB_Table {
                             "image"   => $item['image'],
                             "pageUrl" => $item['webpage_url'],
 
-                            //"pageUrl" => ($item['webpage_state'] == 'Online' ? $item['webpage_url'] : ''),
                         );
                         $counter++;
                     }
@@ -2400,11 +2403,9 @@ class Order extends DB_Table {
 
                 try {
 
-                    // Queue Product Invitation
                     $ch = curl_init();
                     curl_setopt($ch, CURLOPT_URL, 'https://api.reviews.co.uk/product/invitation');
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    //curl_setopt($ch, CURLOPT_HEADER, true);
                     curl_setopt($ch, CURLOPT_HTTPHEADER, $headersRequest);
                     curl_setopt($ch, CURLOPT_POST, 1);
                     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($bodyRequest));
@@ -2421,7 +2422,7 @@ class Order extends DB_Table {
 
 
                 } catch (Exception $e) {
-
+                    return;
 
                 }
 
@@ -3123,10 +3124,6 @@ class Order extends DB_Table {
             } else {
                 return $refund_id.$suffix_counter;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
