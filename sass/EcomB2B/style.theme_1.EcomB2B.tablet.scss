@@ -73,8 +73,8 @@ p.strong {
 
 .profile_form header {
   font-size: 100%;
-  padding: 10px 0px;
-  margin-top: 0px;
+  padding: 10px 0;
+  margin-top: 0;
   font-weight: 800;
   border: 1px solid #ccc;
   text-align: center;
@@ -93,7 +93,7 @@ p.strong {
 }
 
 .order_totals td {
-  padding: 4px 10px 4px 0px;
+  padding: 4px 10px 4px 0;
   text-align: left;
   border-left: none;
   border-right: none;
@@ -454,7 +454,7 @@ Images blocks
 }
 
 div.blk_images figure {
-  margin: 0px
+  margin: 0
 
 }
 
@@ -573,7 +573,7 @@ p {
 .page_break {
 
   border-top: 1px solid #ccc;
-  margin: 0px 20px 10px 20px;
+  margin: 0 20px 10px;
   height: 30px;
   position: relative;
 
@@ -581,8 +581,8 @@ p {
 
 .page_break .title {
 
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   float: left;
   padding-top: 5px;
   font-weight: 800;
@@ -592,8 +592,8 @@ p {
 
 .page_break .sub_title {
 
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   float: right;
   padding-top: 5px;
   min-width: 60px;
@@ -611,7 +611,7 @@ p {
 
   position: relative;
   margin-bottom: 10px;
-  margin-top: 0px
+  margin-top: 0
 }
 
 .category_wrap .panel_1 {
@@ -654,7 +654,7 @@ p {
 
 .category_wrap > div, .category_wrap > img {
 
-  padding: 0px 0px 0px 0px;
+  padding: 0;
 }
 
 .category_wrap img.panel_1 {
@@ -697,14 +697,14 @@ p {
   border: 1px solid transparent;
   cursor: text;
   padding-top: 10px;
-  padding-bottom: 0px;
+  padding-bottom: 0;
   font-weight: 800;
 
 }
 
 .category_header_text p {
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   text-align: center;
   z-index: 100;
   position: relative;
@@ -742,7 +742,7 @@ p {
   border: 1px solid transparent;
   cursor: text;
   padding-top: 10px;
-  padding-bottom: 0px;
+  padding-bottom: 0;
   font-weight: 800;
   z-index: 100;
   line-height: normal;
@@ -751,8 +751,8 @@ p {
 }
 
 .item_header_text p {
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   text-align: center;
   z-index: 100;
   position: relative;
@@ -794,19 +794,19 @@ p {
   .videoz {
     max-width: 470px;
     max-height: 330px;
-    margin: auto auto;
+    margin: auto;
   }
 
   .videoz > div {
     position: relative;
     padding-bottom: 75%;
-    height: 0px;
+    height: 0;
   }
 
   .videoz iframe {
     position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
   }
@@ -819,7 +819,7 @@ p {
   border: 1px solid #ccc;
 
   background: #fff;
-  padding: 0px 0px 0px 0px;
+  padding: 0;
   line-height: normal;
   font-size: 14px !important;
 
@@ -841,7 +841,7 @@ p {
   p {
 
     line-height: normal;
-    margin: 1em 0px;
+    margin: 1em 0;
     font-size: 14px;
   }
 
@@ -855,8 +855,8 @@ p {
   }
 
   .product_header_text p {
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
     text-align: center;
     z-index: 0;
     position: relative;
@@ -874,7 +874,7 @@ p {
     background-color: #fff;
     border: 1px solid #ccc;
     border-left: none;
-    margin: 0px;
+    margin: 0;
     font-family: inherit;
     font-size: 100%;
     line-height: normal;
@@ -889,7 +889,7 @@ p {
     width: 100%;
     height: 42px;
     line-height: 42px;
-    padding: 0px 10px;
+    padding: 0 10px;
 
     text-align: left;font-weight: 800;
 
@@ -1002,7 +1002,7 @@ p {
 .header {
   .control_panel {
     right: 50px;
-    top: 0px;
+    top: 0;
     wixdth: 100px;
     position: absolute;
 
@@ -1033,7 +1033,7 @@ p {
 
 .log_out_prod_links{
 
-  display: flex;margin-top: 0px;margin-bottom: 15px;
+  display: flex;margin-top: 0;margin-bottom: 15px;
   div{
     flex-grow:1;text-align: center;
   }

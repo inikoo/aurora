@@ -15,8 +15,8 @@
     font-family: $font_title;
     font-weight: 300;
     list-style-type: none;
-    padding: 0px;
-    margin: 0px 0px 0px 0px;
+    padding: 0;
+    margin: 0;
     @include unselectable;
   }
   li {
@@ -79,7 +79,7 @@
     height: $height_row;
     line-height: $height_row;
     border-bottom: 1px solid $color_dark_darker_font;
-    padding: 0px;
+    padding: 0;
     background-color: $color_dark;
     font-size: 11px;
     text-align: center;
@@ -99,7 +99,7 @@
   #aurora_logo {
     width: $height_row;
     border-right: 1px solid $color_dark_darker_font;
-    padding: 0px;
+    padding: 0;
     vertical-align: middle;
     img {
       width: $height_row*.7;

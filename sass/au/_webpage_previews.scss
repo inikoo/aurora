@@ -1,5 +1,5 @@
 .website_navigation{
-  padding:5px 10px 5px 10px;position:relative;top:1px;
+  padding:5px 10px;position:relative;top:1px;
   border-bottom: 1px solid #999;border-top: 1px solid #aaa;background: #fafafa;
 }
 
@@ -9,7 +9,7 @@
         position: absolute;
         background: #fff;
         border: 1px solid #ccc;
-        padding: 10px 20px 20px 20px;
+        padding: 10px 20px 20px;
         z-index: 3000;
     }
     #images_layout_ideas div.options {
@@ -31,7 +31,7 @@
   position: absolute;
   background: #fff;
   border: 1px solid #ccc;
-  padding: 10px 20px 20px 20px;
+  padding: 10px 20px 20px;
   z-index: 3000;
 }
 #text_layout_ideas div.options {
@@ -57,7 +57,7 @@
 
   &.bottom{
     border-bottom:2px solid #000;
-  ;border-left:none;
+  border-left:none;
   }
 
 }
@@ -69,18 +69,18 @@
     .control_panel {
 
       .columns {
-        margin: 0px;
+        margin: 0;
         position: relative;
 
-        padding: 0px;
+        padding: 0;
         float: left;
       }
 
 
 
       .sortable2 {
-        margin: 0px;
-        padding: 0px;
+        margin: 0;
+        padding: 0;
         float: left;
       }
 
@@ -128,19 +128,19 @@
 
 
 
-        padding:4px 8px 4px 8px;
+        padding:4px 8px;
 
         .handle2,.label{
           display:none
         }
 
         .open_edit i{
-          margin-left:0px;
-          margin-right:0px;
+          margin-left:0;
+          margin-right:0;
         }
 
         .column_show{
-          margin-left:0px;
+          margin-left:0;
         }
 
 
