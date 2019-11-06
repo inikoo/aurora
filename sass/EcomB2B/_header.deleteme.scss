@@ -13,7 +13,7 @@
 		display: block;
 		width: 100%;
 		min-height: 50px;
-		margin-top: 0px;
+		margin-top: 0;
 		position: relative;
 		text-indent: -999em;
 		background: url(../images/logo.png) no-repeat left top;
@@ -36,7 +36,7 @@
 		display: block;
 		width: 100%;
 		min-height: 50px;
-		margin-top: 0px;
+		margin-top: 0;
 		position: relative;
 		text-indent: -999em;
 		background: url(../images/logo-2.png) no-repeat left top;
@@ -132,13 +132,13 @@
 	}
 	.top_nav ul.topsocial {
 		float: right;
-		padding: 0px;
-		margin: 0px 0px 0px 16px;
+		padding: 0;
+		margin: 0 0 0 16px;
 	}
 	.top_nav .topsocial li {
 		float: left;
-		padding: 0px;
-		margin: 0px 5px 0px 0px;
+		padding: 0;
+		margin: 0 5px 0 0;
 	}
 	.top_nav .topsocial li a {
 		float: left;
@@ -152,7 +152,7 @@
 		vertical-align: middle;
 		line-height: 23px;
 		transition: all 0.3s ease;
-		margin-right: 0px;
+		margin-right: 0;
 	}
 	.top_nav .topsocial li a:hover {
 		background: #fff;
@@ -178,7 +178,7 @@
 	}
 	.top_nav.two .right a {
 		color: #999;
-		margin-right: 0px;
+		margin-right: 0;
 		margin-left: 14px;
 	}
 	.top_nav.two .left a:hover,
@@ -186,7 +186,7 @@
 		color: #fff;
 	}
 	.top_nav.two .topsocial li a {
-		margin-left: 0px;
+		margin-left: 0;
 	}
 	.top_nav.two .topsocial li a:hover {
 		background: #999;
@@ -208,7 +208,7 @@
 	}
 	.top_nav.three .right a {
 		color: #999;
-		margin-right: 0px;
+		margin-right: 0;
 		margin-left: 14px;
 	}
 	.top_nav.three .left a:hover,
@@ -216,7 +216,7 @@
 		color: #333;
 	}
 	.top_nav.three .topsocial li a {
-		margin-left: 0px;
+		margin-left: 0;
 	}
 	.top_nav.three .topsocial li a {
 		color: #fff;
@@ -244,7 +244,7 @@
 	}
 	.top_nav.four .right a {
 		color: #727272;
-		margin-right: 0px;
+		margin-right: 0;
 		margin-left: 14px;
 	}
 	.top_nav.four .left a:hover,
@@ -252,7 +252,7 @@
 		color: #999;
 	}
 	.top_nav.four .topsocial li a {
-		margin-left: 0px;
+		margin-left: 0;
 		width: 21px;
 		height: 21px;
 		line-height: 21px;
@@ -386,8 +386,8 @@
 	}
 
 	.list-unstyled.two li:first-child {
-		border-bottom: 0px solid #fff;
-		margin-bottom: 0px;
+		border-bottom: 0 solid #fff;
+		margin-bottom: 0;
 	}
 
 	.list-unstyled li p {
@@ -395,7 +395,7 @@
 		font-size: 15px;
 		color: #777;
 		font-weight: 500;
-		padding: 0px 0px 5px 0px;
+		padding: 0 0 5px;
 	}
 
 	.list-unstyled li i {
@@ -437,7 +437,7 @@
 	}
 
 	.row-border + .row .caption h3 {
-		margin-top: 0px;
+		margin-top: 0;
 	}
 
 	.row-border {
@@ -564,7 +564,7 @@
 	}
 	@media (min-width: 769px) {
 		.dropdown-submenu > .dropdown-menu:last-child {
-			border-top: 0px solid #000;
+			border-top: 0 solid #000;
 
 		}
 	}
@@ -595,7 +595,7 @@
 	}
 
 	.wrapper {
-		margin-top: 0px;
+		margin-top: 0;
 	}
 	.navbar-fixed-top +
 	.wrapper {
@@ -614,7 +614,7 @@
 		border-bottom: 1px solid #e6e6e6;
 	}
 	.dropdown-menu > li:last-child > a {
-		border-bottom: 0px solid #d1d1d1;
+		border-bottom: 0 solid #d1d1d1;
 	}
 
 	.help {
@@ -657,24 +657,24 @@
 			color: #ffffff;
 			background-color: transparent;
 			padding: 10px 20px;
-			border-bottom: 0px;
+			border-bottom: 0;
 
 		}
 
 		.dropdown-menu > li > a {
-			padding: 8px 0px 8px 20px !important;
-			border-bottom: 0px;
+			padding: 8px 0 8px 20px !important;
+			border-bottom: 0;
 		}
 
 		.dropdown-submenu > .dropdown-menu:last-child {
-			border-top: 0px;
+			border-top: 0;
 		}
 
 	}
 
 	/*-------------- header animation End -------------------*/
 	.navbar-nav > li > a {
-		box-shadow: 0 0px 0 rgba(255, 255, 255, 0.25);
+		box-shadow: 0 0 0 rgba(255, 255, 255, 0.25);
 	}
 
 	.callus {
@@ -722,8 +722,8 @@
 	}
 
 	a.login_but {
-		padding: 0px;
-		margin: 0px;
+		padding: 0;
+		margin: 0;
 		float: left;
 		margin: 2% 18px 0 48%;
 		margin-top: 2%;
@@ -731,7 +731,7 @@
 
 	}
 	a.registerbut {
-		padding: 0px;
+		padding: 0;
 		margin-top: 2%;
 		float: left;
 		color: #727272;
@@ -760,12 +760,12 @@
 		font-family: 'Raleway', sans-serif;
 		position: relative;
 		float: none;
-		padding: 10px 10px;
+		padding: 10px;
 		margin-top: 10px;
 		margin-bottom: 10px;
 		margin-right: 15px;
 		background-color: transparent;
-		border: 0px solid transparent;
+		border: 0 solid transparent;
 		border-radius: 0;
 		margin-left: 15px;
 		background: #272727;
@@ -915,10 +915,10 @@
 	}
 
 	.container > .navbar-collapse {
-		margin-right: 0px;
+		margin-right: 0;
 	}
 	.navbar-brand, .navbar-nav > li > a {
-		text-shadow: 0 0px 0 rgba(255, 255, 255, 0.25);
+		text-shadow: 0 0 0 rgba(255, 255, 255, 0.25);
 	}
 	button.navbar-toggle {
 		clear: right;
@@ -1073,7 +1073,7 @@ background-color: #454545;
 		}
 
 		.menu_main {
-			padding: 0px 0px 0px 0px;
+			padding: 0;
 		}
 
 		.navbar-default {
@@ -1082,7 +1082,7 @@ background-color: #454545;
 
 		.navbar-nav > li > a {
 			border: none;
-			margin-left: 0px;
+			margin-left: 0;
 			line-height: 20px;
 		}
 		.navbar-nav > li.hfl {
@@ -1111,7 +1111,7 @@ background-color: #454545;
 		}
 
 		.menu_main {
-			padding: 0px 0px 0px 0px;
+			padding: 0;
 		}
 
 		.navbar-default {
@@ -1120,7 +1120,7 @@ background-color: #454545;
 
 		.navbar-nav > li > a {
 			border: none;
-			margin-left: 0px;
+			margin-left: 0;
 			line-height: 20px;
 		}
 		.navbar-nav > li.hfl {
@@ -1149,7 +1149,7 @@ background-color: #454545;
 		}
 
 		.menu_main {
-			padding: 0px 0px 0px 0px;
+			padding: 0;
 		}
 
 		.navbar-default {
@@ -1158,7 +1158,7 @@ background-color: #454545;
 
 		.navbar-nav > li > a {
 			border: none;
-			margin-left: 0px;
+			margin-left: 0;
 			line-height: 20px;
 		}
 		.navbar-nav > li.hfl {
@@ -1253,14 +1253,14 @@ background-color: #454545;
 		clear: both
 	}
 	#header {
-		margin: 0px 0 0;
+		margin: 0;
 	}
 
 	#trueHeader {
 		z-index: 8000;
 		left: 0;
 		right: 0;
-		padding: 0px 0;
+		padding: 0;
 		box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 		-khtml-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 		-webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
@@ -1278,7 +1278,7 @@ background-color: #454545;
 	}
 
 	#topHeader {
-		padding: 27px 0px;
+		padding: 27px 0;
 		background: #333;
 
 	}
@@ -1295,7 +1295,7 @@ background-color: #454545;
 		top: 0
 	}
 	#header.sticky.condensed #trueHeader {
-		padding: 0px 0
+		padding: 0
 	}
 
 

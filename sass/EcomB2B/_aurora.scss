@@ -28,7 +28,7 @@ body, input, textarea {
 }
 
 p {
-  margin: 0px 0px 0.5em 0px;
+  margin: 0 0 0.5em;
   line-height: 140%;
   font-size: 16px;
 }
@@ -270,13 +270,13 @@ input:-ms-input-placeholder {
 }
 
 .reg_form {
-  margin: 0px auto 0 auto;
+  margin: 0 auto;
   width: 550px;
 
 }
 
 .login_form, .password_reset_form {
-  margin: 0px auto 0 auto;
+  margin: 0 auto;
   width: 440px;
 
 }
@@ -290,9 +290,9 @@ input:-ms-input-placeholder {
 
 
   .reg_form, .login_form, .password_reset_form {
-    margin: 10px auto 0 auto;
+    margin: 10px auto 0;
     width: 400px;
-    padding: 18px 20px 13px 20px;
+    padding: 18px 20px 13px;
   }
 
 
@@ -302,15 +302,15 @@ input:-ms-input-placeholder {
 @media only screen and (max-width: 479px) {
 
   .login_form {
-    margin: 0px auto 0 auto;
+    margin: 0 auto;
     width: 250px;
-    padding: 13px 20px 13px 20px;
+    padding: 13px 20px;
   }
 
   .reg_form {
-    margin: 10px auto 0 auto;
+    margin: 10px auto 0;
     width: 280px;
-    padding: 8px 10px 13px 10px;
+    padding: 8px 10px 13px;
   }
 
 }
@@ -383,7 +383,7 @@ label.toggle {
   width: 100%;
 
 
-  padding: 0px;
+  padding: 0;
 
   display: flex;
   justify-content: flex-start;
@@ -425,7 +425,7 @@ font-size:14px;
   border: 1px dashed transparent;
   margin-top: 25px;
   margin-bottom: 10px;
-  padding: 0px;
+  padding: 0;
   cursor: text
 
 }
@@ -433,10 +433,10 @@ font-size:14px;
 
 .gallery {
   width: 400px;
-  margin-left: 0px;
+  margin-left: 0;
   list-style: none;
   padding: 0;
-  margin: 10px 0px 0px 0px;
+  margin: 10px 0 0;
 }
 
 .gallery li {
@@ -449,7 +449,7 @@ font-size:14px;
   float: left;
   border: 1px solid #ccc;
   padding: 2px;
-  margin: 2px 2px 6px 2px;
+  margin: 2px 2px 6px;
   cursor: pointer
 }
 
@@ -538,7 +538,7 @@ font-size:14px;
   border-top: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
   position: relative;
-  top: 0px
+  top: 0
 }
 
 
@@ -579,7 +579,7 @@ font-size:14px;
   .link {
     text-align: center;
     margin-top: 10px;
-    padding: 0px 5px;
+    padding: 0 5px;
     width: 218px
   }
 
@@ -678,7 +678,7 @@ font-size:14px;
   }
 
   .wrap_to_center img {
-    margin-top: 0px;
+    margin-top: 0;
     vertical-align: bottom;
     max-width: 216px;
     max-height: 150px;
@@ -699,7 +699,7 @@ font-size:14px;
 
 .category_wrap > div, .category_wrap > img {
 
-  padding: 0px 0px 0px 0px;
+  padding: 0;
 }
 
 .category_wrap img.panel_1 {
@@ -744,14 +744,14 @@ font-size:14px;
   border: 1px solid transparent;
   cursor: text;
   padding-top: 10px;
-  padding-bottom: 0px;
+  padding-bottom: 0;
   font-weight: 800;
 
 }
 
 .category_header_text p {
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   text-align: center;
   z-index: 100;
   position: relative;
@@ -761,7 +761,7 @@ font-size:14px;
 .page_break {
 
   border-top: 1px solid #ccc;
-  margin: 0px 20px 10px 20px;
+  margin: 0 20px 10px;
   height: 30px;
   position: relative;
 
@@ -769,8 +769,8 @@ font-size:14px;
 
 .page_break .title {
 
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   float: left;
   padding-top: 5px;
   font-weight: 800;
@@ -781,8 +781,8 @@ font-size:14px;
 
 .page_break .sub_title {
 
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   float: right;
   padding-top: 5px;
   min-width: 60px;
@@ -794,7 +794,7 @@ font-size:14px;
 
   position: relative;
   margin-bottom: 10px;
-  margin-top: 0px
+  margin-top: 0
 }
 
 .section_items {
@@ -809,7 +809,7 @@ section.product_tabs {
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
 
-  margin: 0px 20px
+  margin: 0 20px
 
 }
 
@@ -883,11 +883,11 @@ section.product_tabs input[type=radio]:checked + label + div {
 
 .item_header_text {
   padding: 8px;
-  margin-bottom: 0px;
+  margin-bottom: 0;
   border: 1px solid transparent;
   cursor: text;
   padding-top: 10px;
-  padding-bottom: 0px;
+  padding-bottom: 0;
   font-weight: 800;
   z-index: 100;
   line-height: normal;
@@ -896,8 +896,8 @@ section.product_tabs input[type=radio]:checked + label + div {
 }
 
 .item_header_text p {
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   text-align: center;
   z-index: 100;
   position: relative;
@@ -1007,7 +1007,7 @@ section.product_tabs input[type=radio]:checked + label + div {
 
 
 div.blk_images figure {
-  margin: 0px
+  margin: 0
 
 }
 
@@ -1130,19 +1130,19 @@ div.blk_images figcaption.caption_hide {
   .videoz {
     max-width: 470px;
     max-height: 330px;
-    margin: auto auto;
+    margin: auto;
   }
 
   .videoz > div {
     position: relative;
     padding-bottom: 75%;
-    height: 0px;
+    height: 0;
   }
 
   .videoz iframe {
     position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
   }
@@ -1162,7 +1162,7 @@ div.blk_images figcaption.caption_hide {
     background-color: #fff;
     border: 1px solid #ccc;
 
-    margin: 0px;
+    margin: 0;
     font-family: inherit;
     font-size: 100%;
     line-height: normal;
@@ -1177,7 +1177,7 @@ div.blk_images figcaption.caption_hide {
     width: 100%;
     height: 30px;
     line-height: 30px;
-    padding: 0px 10px;
+    padding: 0 10px;
     bottom: 0;
     text-align: left;
   }
@@ -1192,7 +1192,7 @@ div.blk_images figcaption.caption_hide {
 
   .properties td {
 
-    padding: 5px 0px;
+    padding: 5px 0;
     vertical-align: top;
     line-height: 150%;
 
@@ -1211,14 +1211,14 @@ div.blk_images figcaption.caption_hide {
 
 
   background: #fff;
-  padding: 0px 0px 0px 0px;
+  padding: 0;
   line-height: normal;
 
 
   p {
 
     line-height: normal;
-    margin: 1em 0px;
+    margin: 1em 0;
   }
 
   .product_header_text {
@@ -1231,8 +1231,8 @@ div.blk_images figcaption.caption_hide {
   }
 
   .product_header_text p {
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
     text-align: center;
     z-index: 0;
     position: relative;
@@ -1266,7 +1266,7 @@ div.blk_images figcaption.caption_hide {
     background-color: #fff;
     border: 1px solid #ccc;
     border-left: none;
-    margin: 0px;
+    margin: 0;
     font-family: inherit;
     font-size: 100%;
     line-height: normal;
@@ -1282,7 +1282,7 @@ div.blk_images figcaption.caption_hide {
     width: 100%;
     height: 30px;
     line-height: 30px;
-    padding: 0px;
+    padding: 0;
     bottom: 0;
     text-align: left;
 
@@ -1432,7 +1432,7 @@ small {
 
 .navigation {
   width: 100%;
-  padding: 7px 0px 5px 0px;
+  padding: 7px 0 5px;
 
   .breadcrumbs {
     float: left;
@@ -1452,7 +1452,7 @@ small {
 
 
 a.real_link span {
-  border-bottom-width: 0px;
+  border-bottom-width: 0;
   border-bottom-style: dashed;
   border-bottom-color: rgba(256, 256, 256, 0.25);
   padding-bottom: 2px;
@@ -1490,7 +1490,7 @@ a.real_link span {
 .product_properties {
   font-size: 14px;
   flex-grow: 1;
-  padding-left: 0px;
+  padding-left: 0;
   flex-basis: auto;
   flex-grow: 1;
   padding-right: 20px
@@ -1502,7 +1502,7 @@ a.real_link span {
     color: #ff1493;
   }
 
-  padding: 0px 30px;
+  padding: 0 30px;
   min-width: 500px;
   flex-basis: auto;
   flex-grow: 1;
@@ -1626,7 +1626,7 @@ i.product_stock_dot {
   width: 100%;
   height: 30px;
   line-height: 30px;
-  padding: 0px;
+  padding: 0;
   bottom: 0;
   font-weight:800;
   text-align:center;

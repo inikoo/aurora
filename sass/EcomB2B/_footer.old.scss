@@ -7,7 +7,7 @@
 .footer {
 	float: left;
 	width: 100%;
-	padding: 0px 0px 0px 0px;
+	padding: 0;
 	background: #303030 url(../theme_1/images/footer-graph2.png) no-repeat right bottom;
 	color:#727272;
 }
@@ -15,7 +15,7 @@
 	float: left;
 	width: 100%;
 	background: #333 url(../theme_1/images/footer-graph.png) no-repeat center top;
-	padding: 40px 0px 35px 0px;
+	padding: 40px 0 35px;
 	margin-bottom: 75px;
 }
 
@@ -23,8 +23,8 @@
 	float: left;
 	width: 100%;
 	background: url(../theme_1/images/footer-graph.png) no-repeat center top;
-	padding: 112px 0px 0px 0px;
-	margin-bottom: 0px;
+	padding: 112px 0 0;
+	margin-bottom: 0;
 }
 
 .footer .top_footer .colleft,
@@ -68,7 +68,7 @@
 	background: #f4f4f4 url(../theme_1/images/footer-graph2.png) no-repeat right bottom;
 }
 .footer.light .top_footer {
-	padding: 40px 0px 0px 0px;
+	padding: 40px 0 0;
 	background: url(../theme_1/images/footer-graph4.png) no-repeat center top;
 }
 .footer.light .top_footer h6 {
@@ -146,12 +146,12 @@
 
 .twitter_feeds_three {
 	float: left;
-	padding: 0px;
-	margin: 0px 0px 0px 0px;
+	padding: 0;
+	margin: 0;
 }
 .twitter_feeds_three li {
-	padding: 0px;
-	margin: 0px;
+	padding: 0;
+	margin: 0;
 	float: left;
 }
 .twitter_feeds_three li.bhline {
@@ -167,8 +167,8 @@
 	color: #fff;
 }
 .twitter_feeds_three li i {
-	padding: 0px;
-	margin: 0px 5px 0px 0px;
+	padding: 0;
+	margin: 0 5px 0 0;
 }
 .twitter_feeds_three li em {
 	float: left;
@@ -209,7 +209,7 @@
 }
 .newsletter_two input.enter_email_input {
 	float: left;
-	padding: 3px 0px 2px 18px;
+	padding: 3px 0 2px 18px;
 	height: 56px;
 	width: 225px;
 	background: none;
@@ -219,9 +219,9 @@
 }
 .newsletter_two .input_submit {
 	float: left;
-	padding: 16px 25px 15px 25px;
+	padding: 16px 25px 15px;
 	background-color: #484848;
-	border: 0px;
+	border: 0;
 	font-family: 'Open Sans', sans-serif;
 	font-size: 14px;
 	font-weight: normal;
@@ -249,12 +249,12 @@
 ul.faddress {
 	float: left;
 	width: 100%;
-	padding: 0px;
-	margin: 0px;
+	padding: 0;
+	margin: 0;
 }
 .faddress li {
-	padding: 2px 0px;
-	margin: 0px;
+	padding: 2px 0;
+	margin: 0;
 }
 .faddress li a {
 	color: #727272;
@@ -267,20 +267,20 @@ ul.faddress {
 /* Tweets */
 .twitter_feed {
 	float: left;
-	padding: 0px;
-	margin: 0px;
+	padding: 0;
+	margin: 0;
 	width: 100%;
 }
 .twitter_feed .left {
 	float: left;
-	padding: 0px;
-	margin: -7px 0px 0px 0px;
+	padding: 0;
+	margin: -7px 0 0;
 	width: 20px;
 }
 .twitter_feed .right {
 	float: right;
-	padding: 0px;
-	margin: -10px 0px 0px 0px;
+	padding: 0;
+	margin: -10px 0 0;
 	width: 89%;
 }
 .twitter_feed a {
@@ -300,8 +300,8 @@ ul.faddress {
 
 /* flickr */
 #flickr_badge_wrapper {
-	padding: 0px;
-	margin: 0px;
+	padding: 0;
+	margin: 0;
 	width: 100%;
 }
 #flickr_badge_wrapper img {
@@ -309,11 +309,11 @@ ul.faddress {
 	height: 70px;
 	margin-right: 8px;
 	margin-bottom: 2px;
-	border: 0px solid #999 !important;
+	border: 0 solid #999 !important;
 }
 #flickr_www {
 	display:block;
-	padding:0 10px 0 10px !important;
+	padding:0 10px !important;
 }
 #flickr_badge_uber_wrapper a:hover,
 #flickr_badge_uber_wrapper a:link,
@@ -339,10 +339,10 @@ ul.faddress {
 	float: left;
 	width: 75%;
 	height: 39px;
-	padding: 0px 7px;
+	padding: 0 7px;
 	line-height: 39px;
 	background: #fff;
-	border: 0px;
+	border: 0;
 	font-size: 13px;
 	font-weight: 600;
 	color: #999;
@@ -351,9 +351,9 @@ ul.faddress {
 	float: left;
 	color: #fff;
 	height: 39px;
-	padding: 0px 10px;
+	padding: 0 10px;
 	background-color: #13afeb;
-	border: 0px;
+	border: 0;
 	cursor: pointer;
 }
 .newsletter .input_submit:hover {
@@ -369,12 +369,12 @@ ul.faddress {
 .qlinks ul {
 	float: left;
 	width: 100%;
-	padding: 0px;
-	margin: 0px;
+	padding: 0;
+	margin: 0;
 }
 .qlinks li {
-	padding: 4px 0px;
-	margin: 0px;
+	padding: 4px 0;
+	margin: 0;
 }
 .qlinks li a {
 	color: #727272;
@@ -391,14 +391,14 @@ ul.faddress {
 .footer.style2 {
 	float: left;
 	width: 100%;
-	padding: 95px 0px 0px 0px;
+	padding: 95px 0 0;
 	border-top: 5px solid #212121;
 	background: #333 url(../theme_1/images/footer-graph3.png) no-repeat right bottom;
 }
 .footer.style3 {
 	float: left;
 	width: 100%;
-	padding: 95px 0px 0px 0px;
+	padding: 95px 0 0;
 	border-top: 5px solid #212121;
 	background: #333 url(../theme_1/images/footer-graph5.png) no-repeat right bottom;
 }
@@ -433,7 +433,7 @@ ul.faddress {
 	float: left;
 	color: #999;
 	padding: 5px 10px;
-	margin: 0px 5px 10px 5px;
+	margin: 0 5px 10px;
 	transition: all 0.3s ease;
 	background: rgba(0, 0, 0, 0.2);
 }
@@ -450,8 +450,8 @@ ul.faddress {
 /* copyrights */
 .copyright_info {
 	float: left;
-	padding: 30px 0px 25px 0px;
-	margin: 70px 0px 0px 0px;
+	padding: 30px 0 25px;
+	margin: 70px 0 0;
 	width: 100%;
 	color: #727272;
 	font-size: 12px;
@@ -508,7 +508,7 @@ ul.faddress {
 .copyright_info.five {
 	background: none;
 	color: #999;
-	margin-top: 0px;
+	margin-top: 0;
 }
 .copyright_info.five a {
 	color: #999;
@@ -522,13 +522,13 @@ ul.faddress {
 /* footer social links */
 ul.footer_social_links {
 	float: right;
-	padding: 0px;
-	margin: 0px 0px 0px 0px;
+	padding: 0;
+	margin: 0;
 }
 .footer_social_links li {
 	float: left;
-	padding: 0px;
-	margin: 0px 0px 0px 5px;
+	padding: 0;
+	margin: 0 0 0 5px;
 }
 .footer_social_links li a i {
 	width: 24px;

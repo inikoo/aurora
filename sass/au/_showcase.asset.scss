@@ -1,13 +1,13 @@
 .name_and_categories {
   width: 100;
-  padding: 5px 20px 5px 20px;
+  padding: 5px 20px;
   .strong {
     font-size: 110%;
   }
 }
 
 .asset_container {
-  padding: 0px 0px 20px 20px;
+  padding: 0 0 20px 20px;
   border-bottom: 1px solid #ccc;
   .block {
     float: left;
@@ -32,14 +32,14 @@
       td {
         border: 1px solid #efefef;
         border-bottom: 1px solid #ddd;
-        padding: 1px 5px 1px 0px;
+        padding: 1px 5px 1px 0;
         min-width: 70px;
         text-align: right;
       }
       .header td {
         border-top: 1px solid #ccc;
         text-align: center;
-        border-spacing: 5px 0px;
+        border-spacing: 5px 0;
       }
       .total_sales td {
         min-width: 120px;
@@ -68,7 +68,7 @@
 
   .carton_sko_units {
     padding-left: 5px;
-    padding-top: 0px;
+    padding-top: 0;
     font-size: 90%;
     color: $color_font_soft;
     width: 390px;
@@ -79,13 +79,13 @@
       }
     }
     td.info {
-      padding: 0px 10px;
+      padding: 0 10px;
       vertical-align: top;
       div {
         margin-top: 4px;
       }
       div:first-of-type {
-        margin-top: 0px;
+        margin-top: 0;
         margin-bottom: 2px;
       }
     }

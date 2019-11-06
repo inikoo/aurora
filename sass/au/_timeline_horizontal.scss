@@ -1,6 +1,6 @@
 .timeline_horizontal {
 
-  padding: 10px 0px 5px 0px;
+  padding: 10px 0 5px;
   border-bottom: 1px solid #ccc;
   font-size: 80%;
 
@@ -20,7 +20,7 @@
 
   .timestamp {
     margin-bottom: 10px;
-    padding: 0px 0px;
+    padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -32,19 +32,19 @@
 
   .timestamp .start_date {
     margin-bottom: 10px;
-    padding: 0px 0px;
+    padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     font-weight: 100;
     position: absolute;
-    top: 0px;
+    top: 0;
     left: -80%
   }
 
   .label {
-    margin-bottom: 0px;
-    padding: 0px 0px;
+    margin-bottom: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -58,19 +58,19 @@
   .label .start {
   
     margin-bottom: 10px;
-    padding: 0px 0px;
+    padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     font-weight: 100;
     position: absolute;
-    top: 0px;
+    top: 0;
     left: -66%
   }
   
 
   .dot {
-    padding: 0px 40px;
+    padding: 0 40px;
     display: flex;
     justify-content: center;
     border-top: 2px solid #D6DCE0;
@@ -81,7 +81,7 @@
   }
 
   .truck,.industry {
-    padding: 0px 40px;
+    padding: 0 40px;
     display: flex;
     justify-content: center;
     border-top: 2px solid #D6DCE0;
@@ -93,7 +93,7 @@
 
   &.with_time {
     .dot, .truck,.industry {
-      padding: 0px 50px;
+      padding: 0 50px;
     }
 
   }
@@ -107,7 +107,7 @@
     color: #aaa;
     background-color: $color_background;
     // border-radius: 15px;
-    border: 0px solid red;
+    border: 0 solid red;
     padding-left: 6px;
     padding-top: 5px;
     position: absolute;
@@ -127,7 +127,7 @@
     color: #aaa;
     background-color: $color_background;
     // border-radius: 15px;
-    border: 0px solid red;
+    border: 0 solid red;
     padding-left: 6px;
     padding-top: 5px;
     position: absolute;

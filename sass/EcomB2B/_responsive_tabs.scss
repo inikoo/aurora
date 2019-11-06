@@ -11,7 +11,7 @@ ul.tabs {
 	margin-left: 0%;
 }
 .tabs li {
-	margin: 0px 0px 25px 0px;
+	margin: 0 0 25px;
 	text-align: center;
 }
 .tabs li i {
@@ -24,7 +24,7 @@ ul.tabs {
 	color: #454545;
 	display: block;
 	height: 98px;
-	padding: 22px 0px 20px 0px;
+	padding: 22px 0 20px;
 	text-decoration: none;
 	font-size: 14px;
 	background-color: #eee;
@@ -154,7 +154,7 @@ ul.tabs {
 	float: left;
 	color: #272727;
 	height: 54px;
-	padding: 0px 40px;
+	padding: 0 40px;
 	font-weight: 400;
 	text-decoration: none;
 	line-height: 50px;
@@ -173,9 +173,9 @@ ul.tabs {
 .tabs-content3 {
 	float: left;
 	width: 91%;
-	padding: 5% 4% 3% 4%;
+	padding: 5% 4% 3%;
 	text-align: left;
-	margin-bottom: 0px;
+	margin-bottom: 0;
 	margin-top: -1px;
 	border: 1px solid #e0e0e0;
 	background-color: #fff;
@@ -195,13 +195,13 @@ ul.tabs {
 }
 .tabs-content3.two {
 	width: 99%;
-	padding: 5% 4% 5% 4%;
+	padding: 5% 4%;
 }
 .tabs3.two li a {
-	padding: 0px 20px;
+	padding: 0 20px;
 }
 .tabs3.three li a {
-	padding: 0px 20px;
+	padding: 0 20px;
 }
 .tabs-content3.three {
 	width: 99%;
@@ -242,11 +242,11 @@ color: #0b8593;
 @media only screen and (min-width: 1000px) and (max-width: 1169px){
 
 .tabs3 li a {
-	padding: 0px 20px;
+	padding: 0 20px;
 }
 
 .tabs3.three li a {
-	padding: 0px 10px;
+	padding: 0 10px;
 }
 
 }
@@ -254,16 +254,16 @@ color: #0b8593;
 @media only screen and (min-width: 768px) and (max-width: 999px){
 
 .tabs3 li a {
-	padding: 0px 10px;
+	padding: 0 10px;
 	font-size: 13px;
 }
 
 .tabs3.two li a {
-	padding: 0px 10px;
+	padding: 0 10px;
 }
 
 .tabs3.three li a {
-	padding: 0px 4px;
+	padding: 0 4px;
 }
 
 
@@ -272,7 +272,7 @@ color: #0b8593;
 
 @media only screen and (min-width: 480px) and (max-width: 767px){
 .tabs3 li a {
-	padding: 0px 10px;
+	padding: 0 10px;
 }
 
 .tabs-content3.three {
@@ -284,17 +284,17 @@ color: #0b8593;
 
 @media only screen and (max-width: 479px){
 .tabs3 li a {
-	padding: 0px 5px;
+	padding: 0 5px;
 	font-size: 13px;
 }
 
 .tabs-content3 img.img_left2 {
 	width: 100%;
-	margin-right: 0px;
+	margin-right: 0;
 }
 
 .tabs3.three li a {
-	padding: 0px 10px;
+	padding: 0 10px;
 }
 	
 }
