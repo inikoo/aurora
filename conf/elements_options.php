@@ -1427,7 +1427,7 @@ $elements_options = array(
                 ),
                 'InProcess' => array(
                     'label'    => _('In construction'),
-                    'selected' => false
+                    'selected' => true
                 ),
 
                 'Closed' => array(
