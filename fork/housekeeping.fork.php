@@ -2730,7 +2730,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
                     $order->update_number_products();
-                    $order->update_insurance();
+                    //$order->update_insurance();
 
                     $order->update_discounts_items();
                     $order->update_totals();

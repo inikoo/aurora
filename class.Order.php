@@ -122,7 +122,7 @@ class Order extends DB_Table {
                         ' <div class="node"  id="delivery_node_%d"><span class="node_label"><i class="fa fa-truck fa-flip-horizontal fa-fw" aria-hidden="true"></i> 
                                <span class="link" onClick="change_view(\'%s\')">%s</span> (<span class="Delivery_Note_State">%s</span>)
                                 <a title="%s" class="pdf_link %s" target="_blank" href="/pdf/order_pick_aid.pdf.php?id=%d"> <i class="fal fa-clipboard-list-check " style="font-size: larger"></i></a>
-                                <a class="pdf_link %s" target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
+                                <a class="pdf_link %s" target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img alt="pdf" style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>
                                </span>
                                 <div class="order_operation data_entry_delivery_note %s"><div class="square_button right" title="%s"><i class="fa fa-keyboard" aria-hidden="true" onclick="data_entry_delivery_note(%s)"></i></div></div>
                                </div>', $dn->id, 'delivery_notes/'.$dn->get('Delivery Note Store Key').'/'.$dn->id, $dn->get('ID'), $dn->get('Abbreviated State'), _('Picking sheet'), ($dn->get('State Index') != 10 ? 'hide' : ''), $dn->id,
@@ -219,7 +219,7 @@ class Order extends DB_Table {
     function get($key = '') {
 
         if (!$this->id) {
-            return;
+            return '';
         }
 
 
@@ -266,7 +266,7 @@ class Order extends DB_Table {
 
                 return $date;
 
-                break;
+
             case 'Tax Description':
 
                 switch ($this->data['Order Tax Code']) {
@@ -308,8 +308,6 @@ class Order extends DB_Table {
                     return '';
                 }
 
-
-                break;
             case 'Expected Payment Amount':
 
 
@@ -330,10 +328,8 @@ class Order extends DB_Table {
                             break;
                     }
 
-
                 }
 
-                break;
             case 'Expected Payment':
 
 
@@ -357,49 +353,27 @@ class Order extends DB_Table {
 
                 }
 
-                break;
 
             case 'Items Discount Percentage':
-
                 return percentage($this->data['Order Items Discount Amount'], $this->data['Order Items Gross Amount']);
-                break;
             case 'Charges Discount Percentage':
-
                 return percentage($this->data['Order Charges Discount Amount'], $this->data['Order Charges Gross Amount']);
-                break;
             case 'Shipping Discount Percentage':
                 return percentage($this->data['Order Shipping Discount Amount'], $this->data['Order Shipping Gross Amount']);
-                break;
             case 'Insurance Discount Percentage':
-
                 return percentage($this->data['Order Insurance Discount Amount'], $this->data['Order Insurance Gross Amount']);
-                break;
             case 'Amount Off Percentage':
-
                 return percentage($this->data['Order Deal Amount Off'], $this->data['Order Total Net Amount']);
-                break;
             case 'Amount Off':
-
                 return money($this->data['Order Deal Amount Off'], $this->data['Order Currency']);
-                break;
-
             case 'Waiting days':
-
-
                 return floor((gmdate('U') - strtotime($this->data['Order Submitted by Customer Date'].' +0:00')) / 3600 / 24);
-
-                break;
             case 'Waiting days decimal':
-
-
                 return number((gmdate('U') - strtotime($this->data['Order Submitted by Customer Date'].' +0:00')) / 3600 / 24, 1, true).' '._('days');
 
-                break;
             case 'Currency Code':
 
                 return $this->data['Order Currency'];
-                break;
-
 
             case 'Order Invoice Address':
             case 'Order Delivery Address':
@@ -428,15 +402,11 @@ class Order extends DB_Table {
                 );
 
                 return json_encode($address_fields);
-                break;
+
             case 'Invoice Address':
             case 'Delivery Address':
 
                 return $this->get('Order '.$key.' Formatted');
-                break;
-
-            //'InBasket','InProcess','InWarehouse','PackedDone','Approved','Dispatched','Cancelled'
-
             case ('State Index'):
 
 
@@ -472,11 +442,9 @@ class Order extends DB_Table {
                         break;
                 }
 
-                break;
-
 
             case('DC Total Amount'):
-                $account=get_object('Account',1);
+                $account = get_object('Account', 1);
 
                 return money(
                     $this->data['Order Total Amount'] * $this->data['Order Currency Exchange'], $account->get('Currency Code')
@@ -543,7 +511,6 @@ class Order extends DB_Table {
                     $this->data['Order Invoiced Refund Net Amount'] + $this->data['Order Invoiced Refund Tax Amount'], $this->data['Order Currency']
                 );
 
-                break;
 
             case('Total Balance'):
             case('Total Refunds'):
@@ -581,7 +548,6 @@ class Order extends DB_Table {
                 } else {
                     return strftime("%e %b %y %H:%M", strtotime($this->data['Order '.$key].' +0:00'));
                 }
-
 
 
             case('Submitted by Customer Interval'):
@@ -642,10 +608,6 @@ class Order extends DB_Table {
                 include_once 'utils/natural_language.php';
 
                 return "&#8494;".smart_weight($this->data['Order Estimated Weight'], 1);
-
-
-                break;
-
 
             case ('State'):
 
@@ -716,7 +678,6 @@ class Order extends DB_Table {
                 }
 
 
-
             case 'Basket To Pay Amount':
 
 
@@ -729,7 +690,6 @@ class Order extends DB_Table {
                 }
 
 
-
             case 'Order Basket To Pay Amount':
 
                 if ($this->data['Order To Pay Amount'] > $this->data['Order Available Credit Amount']) {
@@ -740,12 +700,11 @@ class Order extends DB_Table {
                 }
 
 
-
             case 'Order Hanging Charges Net Amount':
 
                 $amount = 0;
                 $sql    = sprintf(
-                    'select sum(`Transaction Net Amount`) as amount from `Order No Product Transaction Fact`  left join `Charge Dimension` on (`Charge Key`=`Transaction Type Key`)   where  `Charge Scope`="Hanging" and  `Transaction Type`="Charges" and `Order Key`=%d  ',
+                    "select sum(`Transaction Net Amount`) as amount from `Order No Product Transaction Fact`  left join `Charge Dimension` on (`Charge Key`=`Transaction Type Key`)   where  `Charge Scope`='Hanging' and  `Transaction Type`='Charges' and `Order Key`=%d  ",
                     $this->id
                 );
 
@@ -1089,14 +1048,8 @@ class Order extends DB_Table {
 
 
                 case 'Cancelled':
-
-
                     $this->updated = $this->cancel();
-
-
                     break;
-
-
                 case 'InBasket':
 
 
@@ -1329,7 +1282,7 @@ class Order extends DB_Table {
                     );
                     $this->db->exec($sql);
                     $sql = sprintf(
-                        "UPDATE `Order No Product Transaction Deal Bridge` SET `Order Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ", $this->id
+                        "UPDATE `Order No Product Transaction Deal Bridge` SET `Order No Product Transaction Deal Pinned`='Yes' WHERE `Order Key`=%d   ", $this->id
                     );
 
                     $this->db->exec($sql);
@@ -2557,11 +2510,6 @@ class Order extends DB_Table {
     }
 
 
-    function get_currency_symbol() {
-        return currency_symbol($this->data['Order Currency']);
-    }
-
-
     function get_formatted_payment_state() {
         return get_order_formatted_payment_state($this->data);
 
@@ -2599,10 +2547,6 @@ class Order extends DB_Table {
 
                 $affected_rows++;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -2651,7 +2595,7 @@ class Order extends DB_Table {
 
 
             $this->update_number_products();
-            $this->update_insurance();
+            //$this->update_insurance();
 
             $this->update_discounts_items();
             $this->update_totals();
@@ -2736,6 +2680,7 @@ class Order extends DB_Table {
         return $number;
     }
 
+    /*
     function update_insurance($dn_key = false) {
 
         if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
@@ -2942,7 +2887,7 @@ class Order extends DB_Table {
         return $insurances;
 
     }
-
+    */
     function create_refund($date, $transactions, $tax_only = false) {
 
 
