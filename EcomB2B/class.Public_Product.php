@@ -234,6 +234,7 @@ class Public_Product {
 
 
             case 'Product Name':
+            case 'Product Cost':
             case 'Product Price':
             case 'Product Unit Weight':
             case 'Product Barcode Number':
