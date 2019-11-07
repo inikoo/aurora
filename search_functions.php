@@ -466,9 +466,9 @@ function search_suppliers($db, $account, $user, $data) {
                         $candidates['D'.$row['Supplier Delivery Key']] = 1000;
                     } else {
 
-                        $len_name                                   = strlen($row['Supplier Delivery Public ID']);
-                        $len_q                                      = strlen($q);
-                        $factor                                     = $len_q / $len_name;
+                        $len_name                                      = strlen($row['Supplier Delivery Public ID']);
+                        $len_q                                         = strlen($q);
+                        $factor                                        = $len_q / $len_name;
                         $candidates['D'.$row['Supplier Delivery Key']] = 500 * $factor;
                     }
 
@@ -494,18 +494,18 @@ function search_suppliers($db, $account, $user, $data) {
             return;
         }
 
-        $counter                     = 0;
-        $supplier_parts_keys         = '';
-        $supplier_keys               = '';
-        $agent_keys                  = '';
-        $category_keys               = '';
-        $purchase_orders_keys        = array();
-        $deliveries_keys             =  array();
-        $results                     = array();
-        $number_supplier_parts_keys  = 0;
-        $number_supplier_keys        = 0;
-        $number_agent_keys           = 0;
-        $number_category_keys        = 0;
+        $counter                    = 0;
+        $supplier_parts_keys        = '';
+        $supplier_keys              = '';
+        $agent_keys                 = '';
+        $category_keys              = '';
+        $purchase_orders_keys       = array();
+        $deliveries_keys            = array();
+        $results                    = array();
+        $number_supplier_parts_keys = 0;
+        $number_supplier_keys       = 0;
+        $number_agent_keys          = 0;
+        $number_category_keys       = 0;
 
 
         foreach ($candidates as $_key => $val) {
@@ -541,9 +541,9 @@ function search_suppliers($db, $account, $user, $data) {
                 $results[$_key]         = '';
 
             } elseif ($_key[0] == 'D') {
-                $key             = preg_replace('/^D/', '', $_key);
+                $key               = preg_replace('/^D/', '', $_key);
                 $deliveries_keys[] = $key;
-                $results[$_key]  = '';
+                $results[$_key]    = '';
 
             }
 
@@ -555,7 +555,6 @@ function search_suppliers($db, $account, $user, $data) {
         $supplier_keys       = preg_replace('/^,/', '', $supplier_keys);
         $agent_keys          = preg_replace('/^,/', '', $agent_keys);
         $category_keys       = preg_replace('/^,/', '', $category_keys);
-
 
 
         if ($number_supplier_parts_keys) {
@@ -685,14 +684,15 @@ function search_suppliers($db, $account, $user, $data) {
 
         if (count($purchase_orders_keys) > 0) {
 
-            $in = str_repeat('?,', count($purchase_orders_keys) - 1).'?';
-            $sql  = "SELECT `Purchase Order Public ID`,`Purchase Order Parent`,`Purchase Order Parent Name`,`Purchase Order Currency Code`,`Purchase Order Total Amount`,`Purchase Order Parent Key`,`Purchase Order Key` FROM `Purchase Order Dimension` WHERE `Purchase Order Key` IN ($in)";
+            $in   = str_repeat('?,', count($purchase_orders_keys) - 1).'?';
+            $sql  =
+                "SELECT `Purchase Order Public ID`,`Purchase Order Parent`,`Purchase Order Parent Name`,`Purchase Order Currency Code`,`Purchase Order Total Amount`,`Purchase Order Parent Key`,`Purchase Order Key` FROM `Purchase Order Dimension` WHERE `Purchase Order Key` IN ($in)";
             $stmt = $db->prepare($sql);
             $stmt->execute(
                 $purchase_orders_keys
             );
             while ($row = $stmt->fetch()) {
-                $icon = '<i class="far fa-clipboard fa-fw padding_right_5"></i> ';
+                $icon                                    = '<i class="far fa-clipboard fa-fw padding_right_5"></i> ';
                 $results['O'.$row['Purchase Order Key']] = array(
                     'label'   => $icon.highlightkeyword(sprintf('%s', $row['Purchase Order Public ID']), $queries),
                     'details' => $row['Purchase Order Parent Name'].' '.money($row['Purchase Order Total Amount'], $row['Purchase Order Currency Code']),
@@ -702,18 +702,19 @@ function search_suppliers($db, $account, $user, $data) {
         }
         if (count($deliveries_keys) > 0) {
 
-            $in = str_repeat('?,', count($deliveries_keys) - 1).'?';
-            $sql  = "SELECT `Supplier Delivery Public ID`,`Supplier Delivery Parent`,`Supplier Delivery Parent Name`,`Supplier Delivery Currency Code`,`Supplier Delivery Total Amount`,`Supplier Delivery Parent Key`,`Supplier Delivery Key` FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Key` IN ($in)";
+            $in   = str_repeat('?,', count($deliveries_keys) - 1).'?';
+            $sql  =
+                "SELECT `Supplier Delivery Public ID`,`Supplier Delivery Parent`,`Supplier Delivery Parent Name`,`Supplier Delivery Currency Code`,`Supplier Delivery Total Amount`,`Supplier Delivery Parent Key`,`Supplier Delivery Key` FROM `Supplier Delivery Dimension` WHERE `Supplier Delivery Key` IN ($in)";
             $stmt = $db->prepare($sql);
             $stmt->execute(
                 $deliveries_keys
             );
             while ($row = $stmt->fetch()) {
-                $icon = '<i class="far fa-truck fa-fw padding_right_5"></i> ';
+                $icon                                       = '<i class="far fa-truck fa-fw padding_right_5"></i> ';
                 $results['D'.$row['Supplier Delivery Key']] = array(
                     'label'   => $icon.highlightkeyword(sprintf('%s', $row['Supplier Delivery Public ID']), $queries),
                     'details' => $row['Supplier Delivery Parent Name'].' '.money($row['Supplier Delivery Total Amount'], $row['Supplier Delivery Currency Code']),
-                    'view'    => sprintf('%s/%d/delivery/%d', strtolower($row['Supplier Delivery Parent']),$row['Supplier Delivery Parent Key'],$row['Supplier Delivery Key'])
+                    'view'    => sprintf('%s/%d/delivery/%d', strtolower($row['Supplier Delivery Parent']), $row['Supplier Delivery Parent Key'], $row['Supplier Delivery Key'])
                 );
             }
         }
@@ -1198,65 +1199,63 @@ function search_inventory($db, $account, $user, $data) {
         }
 
 
-        $sql = sprintf(
-            "SELECT `Part SKU`,`Part Reference`,`Part Package Description`,`Part Status` FROM `Part Dimension` WHERE `Part Package Description`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
+        $sql = "SELECT `Part SKU`,`Part Reference`,`Part Package Description`,`Part Status` FROM `Part Dimension` WHERE `Part Package Description`  REGEXP ? LIMIT 100 ";
+
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                '[[:<:]]'.$q
+            )
         );
+        while ($row = $stmt->fetch()) {
+            if ($row['Part Package Description'] == $q) {
+                if ($row['Part Status'] == 'In Use') {
 
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Part Package Description'] == $q) {
-                    if ($row['Part Status'] == 'In Use') {
-
-                        if (isset($candidates['P'.$row['Part SKU']])) {
-                            $candidates['P'.$row['Part SKU']] += 55;
-
-                        } else {
-                            $candidates['P'.$row['Part SKU']] = 55;
-
-                        }
+                    if (isset($candidates['P'.$row['Part SKU']])) {
+                        $candidates['P'.$row['Part SKU']] += 55;
 
                     } else {
+                        $candidates['P'.$row['Part SKU']] = 55;
 
-                        if (isset($candidates['P'.$row['Part SKU']])) {
-                            $candidates['P'.$row['Part SKU']] += 35;
+                    }
 
-                        } else {
-                            $candidates['P'.$row['Part SKU']] = 35;
+                } else {
 
-                        }
+                    if (isset($candidates['P'.$row['Part SKU']])) {
+                        $candidates['P'.$row['Part SKU']] += 35;
+
+                    } else {
+                        $candidates['P'.$row['Part SKU']] = 35;
+
+                    }
+
+                }
+            } else {
+
+                $len_name = strlen($row['Part Package Description']);
+                $len_q    = strlen($q);
+                $factor   = $len_q / $len_name;
+                if ($row['Part Status'] == 'In Use') {
+                    if (isset($candidates['P'.$row['Part SKU']])) {
+                        $candidates['P'.$row['Part SKU']] += 50 * $factor;
+
+                    } else {
+                        $candidates['P'.$row['Part SKU']] = 50 * $factor;
 
                     }
                 } else {
 
-                    $len_name = strlen($row['Part Package Description']);
-                    $len_q    = strlen($q);
-                    $factor   = $len_q / $len_name;
-                    if ($row['Part Status'] == 'In Use') {
-                        if (isset($candidates['P'.$row['Part SKU']])) {
-                            $candidates['P'.$row['Part SKU']] += 50 * $factor;
+                    if (isset($candidates['P'.$row['Part SKU']])) {
+                        $candidates['P'.$row['Part SKU']] += 30 * $factor;
 
-                        } else {
-                            $candidates['P'.$row['Part SKU']] = 50 * $factor;
-
-                        }
                     } else {
-
-                        if (isset($candidates['P'.$row['Part SKU']])) {
-                            $candidates['P'.$row['Part SKU']] += 30 * $factor;
-
-                        } else {
-                            $candidates['P'.$row['Part SKU']] = 30 * $factor;
-
-                        }
+                        $candidates['P'.$row['Part SKU']] = 30 * $factor;
 
                     }
-                }
 
+                }
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            print $sql;
-            exit;
         }
 
 
@@ -1287,38 +1286,37 @@ function search_inventory($db, $account, $user, $data) {
         }
 
 
-        $sql = sprintf(
-            "SELECT `Category Key`,`Category Code`,`Category Label` FROM `Category Dimension` WHERE `Category Scope`='Part'  AND `Category Label`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
+        $sql = "SELECT `Category Key`,`Category Code`,`Category Label` FROM `Category Dimension` WHERE `Category Scope`='Part'  AND `Category Label`  REGEXP  ? LIMIT 100 ";
+
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                '[[:<:]]'.$q
+            )
         );
+        while ($row = $stmt->fetch()) {
+            if ($row['Category Label'] == $q) {
 
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Category Label'] == $q) {
-
-                    if (isset($candidates['C'.$row['Category Key']])) {
-                        $candidates['C'.$row['Category Key']] += 55;
-                    } else {
-                        $candidates['C'.$row['Category Key']] = 55;
-                    }
-
+                if (isset($candidates['C'.$row['Category Key']])) {
+                    $candidates['C'.$row['Category Key']] += 55;
                 } else {
+                    $candidates['C'.$row['Category Key']] = 55;
+                }
 
-                    $len_name = strlen($row['Category Label']);
-                    $len_q    = strlen($q);
-                    $factor   = $len_q / $len_name;
+            } else {
 
-                    if (isset($candidates['C'.$row['Category Key']])) {
-                        $candidates['C'.$row['Category Key']] += 50 * $factor;
-                    } else {
-                        $candidates['C'.$row['Category Key']] = 50 * $factor;
-                    }
+                $len_name = strlen($row['Category Label']);
+                $len_q    = strlen($q);
+                $factor   = $len_q / $len_name;
 
+                if (isset($candidates['C'.$row['Category Key']])) {
+                    $candidates['C'.$row['Category Key']] += 50 * $factor;
+                } else {
+                    $candidates['C'.$row['Category Key']] = 50 * $factor;
                 }
 
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
 
@@ -1612,39 +1610,38 @@ function search_products($db, $account, $user, $data) {
             exit;
         }
 
-        $sql = sprintf(
-            "select `Product ID`,`Product Code`,`Product Name` from `Product Dimension` where true $where_store and `Product Name`  REGEXP '[[:<:]]%s' limit 100 ", $q
+        $sql = "select `Product ID`,`Product Code`,`Product Name` from `Product Dimension` where true $where_store and `Product Name`  REGEXP ?  limit 100 ";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                '[[:<:]]'.$q
+            )
         );
+        while ($row = $stmt->fetch()) {
+            if ($row['Product Name'] == $q) {
 
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Product Name'] == $q) {
-
-                    if (isset($candidates['P'.$row['Product ID']])) {
-                        $candidates['P'.$row['Product ID']] += 55;
-                    } else {
-                        $candidates['P'.$row['Product ID']] = 55;
-                    }
-
+                if (isset($candidates['P'.$row['Product ID']])) {
+                    $candidates['P'.$row['Product ID']] += 55;
                 } else {
+                    $candidates['P'.$row['Product ID']] = 55;
+                }
 
-                    $len_name = strlen($row['Product Name']);
-                    $len_q    = strlen($q);
-                    $factor   = $len_q / $len_name;
+            } else {
 
-                    if (isset($candidates['P'.$row['Product ID']])) {
-                        $candidates['P'.$row['Product ID']] += 50 * $factor;
-                    } else {
-                        $candidates['P'.$row['Product ID']] = 50 * $factor;
-                    }
+                $len_name = strlen($row['Product Name']);
+                $len_q    = strlen($q);
+                $factor   = $len_q / $len_name;
 
+                if (isset($candidates['P'.$row['Product ID']])) {
+                    $candidates['P'.$row['Product ID']] += 50 * $factor;
+                } else {
+                    $candidates['P'.$row['Product ID']] = 50 * $factor;
                 }
 
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
+
 
         $sql = sprintf(
             "select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Scope`='Product'   $where_cat_store and `Category Code` like '%s%%' limit 20 ", $q
@@ -1667,44 +1664,38 @@ function search_products($db, $account, $user, $data) {
                 }
 
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
+        $sql = "select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Scope`='Product'   $where_cat_store and  `Category Label`  REGEXP ? limit 100 ";
 
-        $sql = sprintf(
-            "select `Category Key`,`Category Code`,`Category Label` from `Category Dimension` where `Category Scope`='Product'   $where_cat_store and  `Category Label`  REGEXP '[[:<:]]%s' limit 100 ", $q
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                '[[:<:]]'.$q
+            )
         );
+        while ($row = $stmt->fetch()) {
+            if ($row['Category Label'] == $q) {
 
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Category Label'] == $q) {
-
-                    if (isset($candidates['C'.$row['Category Key']])) {
-                        $candidates['C'.$row['Category Key']] += 55;
-                    } else {
-                        $candidates['C'.$row['Category Key']] = 55;
-                    }
-
+                if (isset($candidates['C'.$row['Category Key']])) {
+                    $candidates['C'.$row['Category Key']] += 55;
                 } else {
+                    $candidates['C'.$row['Category Key']] = 55;
+                }
 
-                    $len_name = strlen($row['Category Label']);
-                    $len_q    = strlen($q);
-                    $factor   = $len_q / $len_name;
+            } else {
 
-                    if (isset($candidates['C'.$row['Category Key']])) {
-                        $candidates['C'.$row['Category Key']] += 50 * $factor;
-                    } else {
-                        $candidates['C'.$row['Category Key']] = 50 * $factor;
-                    }
+                $len_name = strlen($row['Category Label']);
+                $len_q    = strlen($q);
+                $factor   = $len_q / $len_name;
 
+                if (isset($candidates['C'.$row['Category Key']])) {
+                    $candidates['C'.$row['Category Key']] += 50 * $factor;
+                } else {
+                    $candidates['C'.$row['Category Key']] = 50 * $factor;
                 }
 
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
 
@@ -3922,9 +3913,7 @@ function search_webpages($db, $account, $user, $data) {
                     }
 
                 }
-                }
-
-
+            }
 
 
         }
@@ -4112,74 +4101,66 @@ function search_parts($db, $account, $data, $response_type = 'echo') {
                 }
 
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            print $sql;
-            exit;
         }
 
 
-        $sql = sprintf(
-            "SELECT `Part SKU`,`Part Reference`,`Part Package Description`,`Part Status` FROM `Part Dimension` WHERE `Part Package Description`  REGEXP '[[:<:]]%s' LIMIT 100 ", $q
+        $sql = "SELECT `Part SKU`,`Part Reference`,`Part Package Description`,`Part Status` FROM `Part Dimension` WHERE `Part Package Description`  REGEXP ? LIMIT 100 ";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                '[[:<:]]'.$q
+            )
         );
+        while ($row = $stmt->fetch()) {
+            if ($row['Part Package Description'] == $q) {
+                if ($row['Part Status'] == 'In Use') {
 
-        if ($result = $db->query($sql)) {
-            foreach ($result as $row) {
-                if ($row['Part Package Description'] == $q) {
-                    if ($row['Part Status'] == 'In Use') {
-
-                        if (isset($candidates['P'.$row['Part SKU']])) {
-                            $candidates['P'.$row['Part SKU']] += 55;
-
-                        } else {
-                            $candidates['P'.$row['Part SKU']] = 55;
-
-                        }
+                    if (isset($candidates['P'.$row['Part SKU']])) {
+                        $candidates['P'.$row['Part SKU']] += 55;
 
                     } else {
+                        $candidates['P'.$row['Part SKU']] = 55;
 
-                        if (isset($candidates['P'.$row['Part SKU']])) {
-                            $candidates['P'.$row['Part SKU']] += 35;
+                    }
 
-                        } else {
-                            $candidates['P'.$row['Part SKU']] = 35;
+                } else {
 
-                        }
+                    if (isset($candidates['P'.$row['Part SKU']])) {
+                        $candidates['P'.$row['Part SKU']] += 35;
+
+                    } else {
+                        $candidates['P'.$row['Part SKU']] = 35;
+
+                    }
+
+                }
+            } else {
+
+                $len_name = strlen($row['Part Package Description']);
+                $len_q    = strlen($q);
+                $factor   = $len_q / $len_name;
+                if ($row['Part Status'] == 'In Use') {
+                    if (isset($candidates['P'.$row['Part SKU']])) {
+                        $candidates['P'.$row['Part SKU']] += 50 * $factor;
+
+                    } else {
+                        $candidates['P'.$row['Part SKU']] = 50 * $factor;
 
                     }
                 } else {
 
-                    $len_name = strlen($row['Part Package Description']);
-                    $len_q    = strlen($q);
-                    $factor   = $len_q / $len_name;
-                    if ($row['Part Status'] == 'In Use') {
-                        if (isset($candidates['P'.$row['Part SKU']])) {
-                            $candidates['P'.$row['Part SKU']] += 50 * $factor;
+                    if (isset($candidates['P'.$row['Part SKU']])) {
+                        $candidates['P'.$row['Part SKU']] += 30 * $factor;
 
-                        } else {
-                            $candidates['P'.$row['Part SKU']] = 50 * $factor;
-
-                        }
                     } else {
-
-                        if (isset($candidates['P'.$row['Part SKU']])) {
-                            $candidates['P'.$row['Part SKU']] += 30 * $factor;
-
-                        } else {
-                            $candidates['P'.$row['Part SKU']] = 30 * $factor;
-
-                        }
+                        $candidates['P'.$row['Part SKU']] = 30 * $factor;
 
                     }
+
                 }
-
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            print $sql;
-            exit;
         }
-
 
     }
 
