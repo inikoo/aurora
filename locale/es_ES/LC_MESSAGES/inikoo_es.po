@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Inikoo\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-06 13:53+0100\n"
-"PO-Revision-Date: 2019-11-06 14:23+0100\n"
+"PO-Revision-Date: 2019-11-07 16:08+0100\n"
 "Last-Translator: Raul <raul@inikoo.com>\n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -117,8 +117,9 @@ msgid "Sorry, we don't accept this credit card type"
 msgstr "Lo sentimos, no aceptamos este tipo de tarjeta de crédito"
 
 #: EcomB2B/ar_web_checkout.php:342
+#, fuzzy
 msgid "Sorry, we don't support this payment instrument"
-msgstr "Lo sentimos, no aceptamos este instrumento de pago."
+msgstr "Lo sentimos, no aceptamos este instrumento de pago"
 
 #: EcomB2B/ar_web_checkout.php:345
 msgid ""
@@ -134,7 +135,7 @@ msgstr "El numero de telefono es invalido"
 
 #: EcomB2B/ar_web_checkout.php:352 EcomB2B/ar_web_checkout.php:367
 msgid "CVV is required"
-msgstr "campo requerido"
+msgstr "Numero CVV es requerido"
 
 #: EcomB2B/ar_web_checkout.php:355
 msgid "CVV must be 3 or 4 digits"
@@ -2127,7 +2128,7 @@ msgstr "Prohibida"
 #: navigation/orders.nav.php:2102 navigation/orders.nav.php:2322
 #: trait.Published_Email_Template.send_email.php:229
 msgid "Invoice"
-msgstr "factura"
+msgstr "Factura"
 
 #: EcomB2B/invoice.pdf.common.php:160 invoice.pdf.common.php:160
 msgid "Invoice No."
@@ -2498,7 +2499,7 @@ msgstr "% s off"
 #: EcomB2B/trait.OrderItems.php:265 trait.OrderItems.php:265
 #, php-format
 msgid "%1$s %2$s added"
-msgstr "% 1 $ s% 2 $ s agregado"
+msgstr "%1$s %2$s agregado"
 
 #: EcomB2B/trait.OrderItems.php:271 trait.OrderItems.php:271
 #, php-format
@@ -2889,9 +2890,8 @@ msgid "province"
 msgstr "provincia"
 
 #: EcomB2B/utils/get_addressing.php:183 utils/get_addressing.php:183
-#, fuzzy
 msgid "island"
-msgstr "Finlandia"
+msgstr "isla"
 
 #: EcomB2B/utils/get_addressing.php:186 utils/get_addressing.php:186
 msgid "parish"
@@ -4951,17 +4951,12 @@ msgid "Today's dispatched orders"
 msgstr "Se distribuye después de la Orden Items"
 
 #: app_files/po_sources_from_smarty/au.php:332
-#, fuzzy
-#| msgid "Storing Area"
 msgid "Staging area"
-msgstr "área de almacenamiento"
+msgstr "area de almacenamiento"
 
 #: app_files/po_sources_from_smarty/au.php:335
-#, fuzzy
-#| msgid "delivery note"
-#| msgid_plural "delivery notes"
 msgid "New delivery notes"
-msgstr "albarán"
+msgstr "Nuevo albarán"
 
 #: app_files/po_sources_from_smarty/au.php:338
 #, fuzzy
@@ -5069,10 +5064,8 @@ msgstr "Tipo de código de barras"
 
 #: app_files/po_sources_from_smarty/au.php:407 ar_views.php:8473
 #: ar_views.php:8488
-#, fuzzy
-#| msgid "warehouses"
 msgid "All warehouses"
-msgstr "almacenes"
+msgstr "todos los almacenes"
 
 #: app_files/po_sources_from_smarty/au.php:410
 #: app_files/po_sources_from_smarty/au.php:992
@@ -5092,9 +5085,8 @@ msgstr "excedentes"
 
 #: app_files/po_sources_from_smarty/au.php:413
 #: app_files/po_sources_from_smarty/au.php:995
-#, fuzzy
 msgid "Number active parts with surplus stock"
-msgstr "con SKU como"
+msgstr "Numerar partes activas con stock excedente"
 
 #: app_files/po_sources_from_smarty/au.php:416
 #: app_files/po_sources_from_smarty/au.php:431
@@ -5187,9 +5179,8 @@ msgstr "Bajo"
 
 #: app_files/po_sources_from_smarty/au.php:443
 #: app_files/po_sources_from_smarty/au.php:1025
-#, fuzzy
 msgid "Number active parts with low stock"
-msgstr "con SKU como"
+msgstr "numero de piezas activas con bajo stock"
 
 #: app_files/po_sources_from_smarty/au.php:455
 #: app_files/po_sources_from_smarty/au.php:1037
@@ -6115,10 +6106,8 @@ msgid "Customers"
 msgstr "Clientes"
 
 #: app_files/po_sources_from_smarty/au.php:1148
-#, fuzzy
-#| msgid "Uploaded"
 msgid "Uploaded by"
-msgstr "archivos subidos"
+msgstr "archivos subidos por"
 
 #: app_files/po_sources_from_smarty/au.php:1154
 #: app_files/po_sources_from_smarty/au.php:4970
@@ -6211,10 +6200,8 @@ msgstr ""
 #: app_files/po_sources_from_smarty/au.php:2255
 #: app_files/po_sources_from_smarty/au.php:3296
 #: app_files/po_sources_from_smarty/au.php:13202
-#, fuzzy
-#| msgid "New Product"
 msgid "New products"
-msgstr "Añadir Producto"
+msgstr " Productos nuevos"
 
 #: app_files/po_sources_from_smarty/au.php:1175
 #: app_files/po_sources_from_smarty/au.php:2258
@@ -7237,9 +7224,8 @@ msgstr "Tipo"
 
 #: app_files/po_sources_from_smarty/au.php:1577
 #: app_files/po_sources_from_smarty/au.php:13352 utils/modules.php:6395
-#, fuzzy
 msgid "Consignments"
-msgstr "consignación"
+msgstr "envio"
 
 #: app_files/po_sources_from_smarty/au.php:1580
 msgid "Payroll Id"
@@ -7784,7 +7770,6 @@ msgstr "Facturado"
 #: app_files/po_sources_from_smarty/au.php:1775
 #: app_files/po_sources_from_smarty/au.php:3023 class.DeliveryNote.php:493
 #: class.DeliveryNote.php:542 class.Order.php:675
-#, fuzzy
 msgid "Collected"
 msgstr "Recogido"
 
@@ -7983,10 +7968,8 @@ msgstr "Ingles"
 #: app_files/po_sources_from_smarty/au.php:1877
 #: app_files/po_sources_from_smarty/au.php:1880
 #: app_files/po_sources_from_smarty/au.php:4169
-#, fuzzy
-#| msgid "Create Refund"
 msgid "Create refund"
-msgstr "Crear Devolución"
+msgstr "Crear devolución"
 
 #: app_files/po_sources_from_smarty/au.php:1883
 #: app_files/po_sources_from_smarty/au.php:1892
@@ -8078,9 +8061,8 @@ msgid "Please notify warehouse staff of changes"
 msgstr "Ubicación del área de almacén cambiado"
 
 #: app_files/po_sources_from_smarty/au.php:1955
-#, fuzzy
 msgid "Yes, i want to modify it!"
-msgstr "<i>unidades</i> x <i>nombre</i> PVP"
+msgstr "Si, yo quiero modificar esto!"
 
 #: app_files/po_sources_from_smarty/au.php:1958
 #, fuzzy
@@ -8349,10 +8331,8 @@ msgid "Amount to be credited"
 msgstr "establece como completado"
 
 #: app_files/po_sources_from_smarty/au.php:2156 navigation/orders.nav.php:1273
-#, fuzzy
-#| msgid "Clone me"
 msgid "Clone order"
-msgstr "cloname"
+msgstr "Orden de clonacion"
 
 #: app_files/po_sources_from_smarty/au.php:2159
 #: app_files/po_sources_from_smarty/au.php:2354 class.PurchaseOrder.php:817
@@ -8407,11 +8387,8 @@ msgstr "Proveedor Código"
 #: app_files/po_sources_from_smarty/au.php:2615
 #: app_files/po_sources_from_smarty/au.php:3248
 #: app_files/po_sources_from_smarty/au.php:4589
-#, fuzzy
-#| msgid "delivery note"
-#| msgid_plural "delivery notes"
 msgid "Input delivery note"
-msgstr "albarán"
+msgstr "entrada de albarán"
 
 #: app_files/po_sources_from_smarty/au.php:2228
 #: app_files/po_sources_from_smarty/au.php:2681
@@ -9240,10 +9217,8 @@ msgstr "notas de envío"
 #: app_files/po_sources_from_smarty/au.php:2861
 #: app_files/po_sources_from_smarty/au.php:3062
 #: app_files/po_sources_from_smarty/au.php:3065
-#, fuzzy
-#| msgid "Opened"
 msgid "Open boxes"
-msgstr "abierto"
+msgstr "Cajas abiertas"
 
 #: app_files/po_sources_from_smarty/au.php:2867
 #: app_files/po_sources_from_smarty/au.php:3083
@@ -10738,9 +10713,8 @@ msgstr "País (1ª división)"
 #: app_files/po_sources_from_smarty/au.php:6782
 #: conf/fields/website_localization.fld.php:608
 #: conf/fields/website_localization.fld.php:609
-#, fuzzy
 msgid "Province"
-msgstr "con el correo electrónico"
+msgstr "provincia"
 
 #: app_files/po_sources_from_smarty/au.php:4982
 #: app_files/po_sources_from_smarty/au.php:4985
@@ -11542,10 +11516,8 @@ msgstr "país"
 #: app_files/po_sources_from_smarty/au.php:6947
 #: app_files/po_sources_from_smarty/au.php:6989
 #: app_files/po_sources_from_smarty/au.php:21155
-#, fuzzy
-#| msgid "changes"
 msgid "Apply changes"
-msgstr "cambios"
+msgstr "aplicar cambios"
 
 #: app_files/po_sources_from_smarty/au.php:5492
 #: app_files/po_sources_from_smarty/au.php:6545 tabs/agent.images.tab.php:37
@@ -12174,16 +12146,12 @@ msgid "headers"
 msgstr "cabecera"
 
 #: app_files/po_sources_from_smarty/au.php:6011
-#, fuzzy
-#| msgid "Width"
 msgid "Width:"
-msgstr "Ancho"
+msgstr "ancho"
 
 #: app_files/po_sources_from_smarty/au.php:6014
-#, fuzzy
-#| msgid "Height"
 msgid "Height:"
-msgstr "Altura"
+msgstr "altura"
 
 #: app_files/po_sources_from_smarty/au.php:6017
 #, fuzzy
@@ -12750,10 +12718,8 @@ msgstr "Secciones"
 
 #: app_files/po_sources_from_smarty/au.php:6926
 #: app_files/po_sources_from_smarty/au.php:15731
-#, fuzzy
-#| msgid "Sections"
 msgid "Section"
-msgstr "Secciones"
+msgstr "Sección"
 
 #: app_files/po_sources_from_smarty/au.php:6938
 #: app_files/po_sources_from_smarty/au.php:21773
@@ -12778,10 +12744,8 @@ msgstr ""
 
 #: app_files/po_sources_from_smarty/au.php:6956
 #: app_files/po_sources_from_smarty/au.php:7004
-#, fuzzy
-#| msgid "Link"
 msgid "Links"
-msgstr "Enlazar"
+msgstr "Enlaces"
 
 #: app_files/po_sources_from_smarty/au.php:6959
 #: app_files/po_sources_from_smarty/au.php:6965
@@ -12853,7 +12817,7 @@ msgstr "Quitar creditos"
 
 #: app_files/po_sources_from_smarty/au.php:7070
 msgid "text"
-msgstr ""
+msgstr "texto"
 
 #: app_files/po_sources_from_smarty/au.php:7076 conf/footer_data.php:62
 msgid "Useful Links"
@@ -12989,8 +12953,6 @@ msgstr "Número de pedido"
 
 #: app_files/po_sources_from_smarty/au.php:7187
 #: conf/website_system_webpages.php:611
-#, fuzzy
-#| msgid "Credit Card"
 msgid "Credit card"
 msgstr "Tarjeta de crédito"
 
@@ -13758,17 +13720,13 @@ msgstr "Código Postal / ZIP"
 
 #: app_files/po_sources_from_smarty/au.php:7625
 #: app_files/po_sources_from_smarty/au.php:21377
-#, fuzzy
-#| msgid "postal codes with code like"
 msgid "Add postal code condition"
-msgstr "código postal con el código como"
+msgstr "Agregar condición de codigo postal"
 
 #: app_files/po_sources_from_smarty/au.php:7628
 #: app_files/po_sources_from_smarty/au.php:21380
-#, fuzzy
-#| msgid "postcode"
 msgid "Only this postal codes"
-msgstr "código postal"
+msgstr "Solo estos códigos postales"
 
 #: app_files/po_sources_from_smarty/au.php:7631
 #: app_files/po_sources_from_smarty/au.php:21383
@@ -14186,10 +14144,8 @@ msgstr "de"
 #: app_files/po_sources_from_smarty/au.php:19028
 #: app_files/po_sources_from_smarty/au.php:19514
 #: app_files/po_sources_from_smarty/au.php:20162
-#, fuzzy
-#| msgid "Add Template"
 msgid "template"
-msgstr "Añadir Plantilla"
+msgstr "plantilla"
 
 #: app_files/po_sources_from_smarty/au.php:7964
 msgid "Check if you want to add a new supplier to an existing part"
@@ -14894,10 +14850,8 @@ msgstr "Estado"
 
 #: app_files/po_sources_from_smarty/au.php:8708
 #: app_files/po_sources_from_smarty/au.php:11951
-#, fuzzy
-#| msgid "Current extra cost %"
 msgid "Current supplier cost per SKO"
-msgstr "Costo extra actual%"
+msgstr "Costo actual del proveedor por SKO"
 
 #: app_files/po_sources_from_smarty/au.php:8711
 #: app_files/po_sources_from_smarty/au.php:11954
@@ -15314,10 +15268,8 @@ msgid "Billing region"
 msgstr "Datos de facturación"
 
 #: app_files/po_sources_from_smarty/au.php:8990
-#, fuzzy
-#| msgid "Tax Code"
 msgid "Tax code"
-msgstr "código de impuestos"
+msgstr "codigo de impuestos"
 
 #: app_files/po_sources_from_smarty/au.php:9020
 #: app_files/po_sources_from_smarty/au.php:10757
@@ -15682,16 +15634,14 @@ msgstr "Categorías del cliente"
 #: app_files/po_sources_from_smarty/au.php:9569
 #: app_files/po_sources_from_smarty/au.php:15722
 #: app_files/po_sources_from_smarty/au.php:18230
-#, fuzzy
 msgid "Customers that order A but no B "
-msgstr "Cesta"
+msgstr "clientes que ordenan A pero no B"
 
 #: app_files/po_sources_from_smarty/au.php:9572
 #: app_files/po_sources_from_smarty/au.php:15725
 #: app_files/po_sources_from_smarty/au.php:18233
-#, fuzzy
 msgid "Customers that order B but no A "
-msgstr "Cesta"
+msgstr "clientes que ordenan B pero no A"
 
 #: app_files/po_sources_from_smarty/au.php:9575
 #: app_files/po_sources_from_smarty/au.php:13070
@@ -15780,10 +15730,8 @@ msgid "In Other"
 msgstr "Otros"
 
 #: app_files/po_sources_from_smarty/au.php:9707
-#, fuzzy
-#| msgid "On sale"
 msgid "Out sales"
-msgstr "a la venta"
+msgstr "Fuera de venta"
 
 #: app_files/po_sources_from_smarty/au.php:9710
 #, fuzzy
@@ -16442,10 +16390,8 @@ msgstr ""
 
 #: app_files/po_sources_from_smarty/au.php:10925
 #: app_files/po_sources_from_smarty/au.php:17930
-#, fuzzy
-#| msgid "delivery notes with customer"
 msgid "Deliveries with errors"
-msgstr "albaranes con el cliente"
+msgstr "entregas con errores"
 
 #: app_files/po_sources_from_smarty/au.php:10931
 #: app_files/po_sources_from_smarty/au.php:17936
@@ -16454,15 +16400,13 @@ msgstr ""
 
 #: app_files/po_sources_from_smarty/au.php:10937
 #: app_files/po_sources_from_smarty/au.php:17942
-#, fuzzy
 msgid "Picks with errors"
-msgstr "con SKU como"
+msgstr "recogidas con errores"
 
 #: app_files/po_sources_from_smarty/au.php:10943
 #: app_files/po_sources_from_smarty/au.php:17948
-#, fuzzy
 msgid "Percentage picks with errors"
-msgstr "con SKU como"
+msgstr "porcentaje recogidas con errores"
 
 #: app_files/po_sources_from_smarty/au.php:11015
 #, fuzzy
@@ -16626,10 +16570,8 @@ msgid "Can make up"
 msgstr ""
 
 #: app_files/po_sources_from_smarty/au.php:11513
-#, fuzzy
-#| msgid "Mailshot"
 msgid "Mailshot type"
-msgstr "correos electrónicos"
+msgstr "Tipo envio por email "
 
 #: app_files/po_sources_from_smarty/au.php:11573
 #, fuzzy
@@ -17372,10 +17314,8 @@ msgid "Emails sent"
 msgstr "Correo electrónico enviado"
 
 #: app_files/po_sources_from_smarty/au.php:16916
-#, fuzzy
-#| msgid "Opened"
 msgid "Open %"
-msgstr "abierto"
+msgstr "abierto %"
 
 #: app_files/po_sources_from_smarty/au.php:16919
 #, fuzzy
@@ -17786,9 +17726,8 @@ msgstr "No recibido"
 #: app_files/po_sources_from_smarty/au.php:20234
 #: app_files/po_sources_from_smarty/au.php:20243
 #: app_files/po_sources_from_smarty/au.php:20276
-#, fuzzy
 msgid "string"
-msgstr "Almacenamiento"
+msgstr "almacenamiento"
 
 #: app_files/po_sources_from_smarty/au.php:18314
 #: app_files/po_sources_from_smarty/au.php:18617
@@ -18000,10 +17939,8 @@ msgstr ""
 #: app_files/po_sources_from_smarty/au.php:19268
 #: app_files/po_sources_from_smarty/au.php:19628
 #: app_files/po_sources_from_smarty/au.php:19913
-#, fuzzy
-#| msgid "Change Delivery Address"
 msgid "Average delivery time"
-msgstr "Cambiar de Dir. e/"
+msgstr "tiempo de entrega promedio"
 
 #: app_files/po_sources_from_smarty/au.php:18380
 #: app_files/po_sources_from_smarty/au.php:18683
@@ -18136,7 +18073,7 @@ msgstr "Plazo debe ser numérico"
 #: app_files/po_sources_from_smarty/au.php:20024
 #: app_files/po_sources_from_smarty/au.php:20057
 msgid "Kilograms"
-msgstr ""
+msgstr "Kilogramos"
 
 #: app_files/po_sources_from_smarty/au.php:18476
 #: app_files/po_sources_from_smarty/au.php:18779
@@ -18406,9 +18343,8 @@ msgstr "9 meses"
 
 #: app_files/po_sources_from_smarty/au.php:19013
 #: app_files/po_sources_from_smarty/au.php:20147
-#, fuzzy
 msgid "How to add new employees?"
-msgstr "Agregar Empleado"
+msgstr "Agregar Empleado?"
 
 #: app_files/po_sources_from_smarty/au.php:19019
 #: app_files/po_sources_from_smarty/au.php:20153
@@ -18771,9 +18707,8 @@ msgstr "Fecha Albarán"
 
 #: app_files/po_sources_from_smarty/au.php:20567
 #: app_files/po_sources_from_smarty/au.php:21245
-#, fuzzy
 msgid "Consignment"
-msgstr "consignación"
+msgstr "envio"
 
 #: app_files/po_sources_from_smarty/au.php:20579
 #: app_files/po_sources_from_smarty/au.php:21254
@@ -18913,10 +18848,8 @@ msgid "Log email send with another application"
 msgstr ""
 
 #: app_files/po_sources_from_smarty/au.php:20807
-#, fuzzy
-#| msgid "email"
 msgid "Log email"
-msgstr "correo electrónico"
+msgstr "correo electrónico de registro"
 
 #: app_files/po_sources_from_smarty/au.php:20810
 #, fuzzy
@@ -18953,10 +18886,8 @@ msgid "Log phone invitation"
 msgstr "Invitaciones de prospecto"
 
 #: app_files/po_sources_from_smarty/au.php:20840
-#, fuzzy
-#| msgid "No email set"
 msgid "Log mail send by post"
-msgstr "aún no hay correo electrónico configurado"
+msgstr "correo de registro enviado por correo"
 
 #: app_files/po_sources_from_smarty/au.php:20852
 #: app_files/po_sources_from_smarty/au.php:20861
@@ -19049,10 +18980,8 @@ msgstr "Añadir otro Fax"
 #: app_files/po_sources_from_smarty/au.php:21125
 #: app_files/po_sources_from_smarty/au.php:21137
 #: app_files/po_sources_from_smarty/au.php:21149
-#, fuzzy
-#| msgid "Clone me"
 msgid "Clone it"
-msgstr "cloname"
+msgstr "Clonarlo"
 
 #: app_files/po_sources_from_smarty/au.php:20891
 #: navigation/inventory.nav.php:376 navigation/inventory.nav.php:381
@@ -19129,10 +19058,8 @@ msgid "Attach other file"
 msgstr "Adjuntar archivo"
 
 #: app_files/po_sources_from_smarty/au.php:20987
-#, fuzzy
-#| msgid "Attachments"
 msgid "Attachment's list"
-msgstr "Archivo Adjuntos "
+msgstr "archivo Adjuntos "
 
 #: app_files/po_sources_from_smarty/au.php:21020
 #, fuzzy
@@ -19251,10 +19178,8 @@ msgid "There is not enough stock in this location"
 msgstr "Todavía hay valores en esta ubicación"
 
 #: app_files/po_sources_from_smarty/au.php:21296
-#, fuzzy
-#| msgid "Are you sure the you want to unlink this product"
 msgid "Are you sure you want to proceed?"
-msgstr "¿Estás seguro de la que desea desvincular este producto"
+msgstr "¿Estás seguro que quieres proceder?"
 
 #: app_files/po_sources_from_smarty/au.php:21299
 #, fuzzy
@@ -19624,10 +19549,8 @@ msgid "Picked by"
 msgstr "Recolectado por"
 
 #: app_files/po_sources_from_smarty/au.php:21812
-#, fuzzy
-#| msgid "Qty"
 msgid "qty"
-msgstr "Cant."
+msgstr "cant."
 
 #: app_files/po_sources_from_smarty/au.php:21818
 #, fuzzy
@@ -19640,15 +19563,12 @@ msgid "Set all allowances as suspended"
 msgstr ""
 
 #: app_files/po_sources_from_smarty/au.php:21827
-#, fuzzy
 msgid "Allowance"
-msgstr "asignación debe ser numérico"
+msgstr ""
 
 #: app_files/po_sources_from_smarty/au.php:21842
-#, fuzzy
-#| msgid "Total Lost"
 msgid "Total cost"
-msgstr "Total Perdido"
+msgstr "Coste total"
 
 #: app_files/po_sources_from_smarty/au.php:21935
 msgid "QC"
@@ -19712,10 +19632,8 @@ msgid "Logout"
 msgstr "Salir"
 
 #: app_files/po_sources_from_smarty/au.php:22040
-#, fuzzy
-#| msgid "Deleted Customer"
 msgid "Real time users"
-msgstr "Cliente eliminado "
+msgstr "Usuarios en tiempo real"
 
 #: app_files/po_sources_from_smarty/au.php:22049
 #, fuzzy
@@ -19768,10 +19686,8 @@ msgid "Current SKO cost"
 msgstr "Costo unitario actual"
 
 #: app_files/po_sources_from_smarty/au.php:22133
-#, fuzzy
-#| msgid "Don't set up"
 msgid "Cost not set up"
-msgstr "aún no configurado"
+msgstr "costo no configurado"
 
 #: app_files/po_sources_from_smarty/au.php:22136
 #, fuzzy
@@ -20089,17 +20005,14 @@ msgstr ""
 #: app_files/po_sources_from_smarty/web.php:458
 #: app_files/po_sources_from_smarty/web.php:791
 #: app_files/po_sources_from_smarty/web.php:1544
-#, fuzzy
-#| msgid "Save"
 msgid "Saved"
-msgstr "Guardar"
+msgstr "Guardado"
 
 #: app_files/po_sources_from_smarty/web.php:488
 #: app_files/po_sources_from_smarty/web.php:581
 #: app_files/po_sources_from_smarty/web.php:1460
-#, fuzzy
 msgid "Delete card"
-msgstr "Eliminar"
+msgstr "Borrar tarjeta"
 
 #: app_files/po_sources_from_smarty/web.php:491
 msgid "Select"
@@ -20203,10 +20116,8 @@ msgstr "unidades del artículo"
 #: app_files/po_sources_from_smarty/web.php:773
 #: app_files/po_sources_from_smarty/web.php:1526
 #: app_files/po_sources_from_smarty/web.php:2810
-#, fuzzy
-#| msgid "In basket"
 msgid "Empty basket"
-msgstr "En cesta"
+msgstr "Cesta vacia"
 
 #: app_files/po_sources_from_smarty/web.php:908
 #: app_files/po_sources_from_smarty/web.php:1202
@@ -20927,7 +20838,7 @@ msgstr "margen% s"
 #: ar_edit.php:2157 ar_edit.php:2165 ar_edit.php:2381
 #, php-format
 msgid "%s%% off"
-msgstr "% descuento"
+msgstr "%s%% descuento"
 
 #: ar_edit.php:1168 ar_edit.php:1646 ar_edit.php:1739 ar_edit.php:1961
 #: ar_edit.php:2160
@@ -21104,7 +21015,7 @@ msgstr "Plantilla no encontrada"
 #: ar_edit_marketing.php:308
 #, php-format
 msgid "Bulk discount %s"
-msgstr "Gran descuentos"
+msgstr "Descuento por volumen %s"
 
 #: ar_edit_marketing.php:309
 #, fuzzy
@@ -21421,7 +21332,7 @@ msgstr "No hay reloj asociado"
 msgid "%s job position"
 msgid_plural "%s job positions"
 msgstr[0] "puesto de trabajo% s"
-msgstr[1] "posiciones"
+msgstr[1] "puestos de trabajo% s"
 
 #: ar_images_tables.php:87
 msgid "Set as first"
@@ -21581,10 +21492,8 @@ msgid "Create family"
 msgstr "Crear familia"
 
 #: ar_inventory_tables.php:1842 ar_inventory_tables.php:1853
-#, fuzzy
-#| msgid "Changes History"
 msgid "Carton's store"
-msgstr "Cambios "
+msgstr "tienda de cartón"
 
 #: ar_inventory_tables.php:1847
 #, php-format
@@ -21634,10 +21543,8 @@ msgid "Show as discontinued"
 msgstr "suspendido"
 
 #: ar_inventory_tables.php:2769
-#, fuzzy
-#| msgid "out of stock"
 msgid "Show as out of stock"
-msgstr "agotado"
+msgstr "fuera de stock"
 
 #: ar_inventory_tables.php:2793
 msgid "No active products"
@@ -21680,14 +21587,14 @@ msgstr ""
 msgid "The mailing list will have %s recipient"
 msgid_plural "The mailing list will have %s recipients"
 msgstr[0] "La lista de correo tendrá% s destinatario"
-msgstr[1] ""
+msgstr[1] "La lista de correo tendrá% s destinatarios."
 
 #: ar_lists.php:116
 #, php-format
 msgid "The list will have %s customer"
 msgid_plural "The list will have %s customers"
 msgstr[0] "La lista tendrá% s cliente."
-msgstr[1] "No hay ningún orden con el cliente"
+msgstr[1] "La lista tendrá% s clientes."
 
 #: ar_mailshots_tables.php:106 ar_mailshots_tables.php:359
 #: ar_mailshots_tables.php:523 ar_marketing_tables.php:791
@@ -21792,9 +21699,8 @@ msgid "Password reset"
 msgstr "Restablecimiento de contraseña"
 
 #: ar_marketing_tables.php:881
-#, fuzzy
 msgid "order confirmation"
-msgstr "Confirmar pedido"
+msgstr "confirmacion del pedido"
 
 #: ar_mobile_views.php:493 ar_views.php:1008 ar_views.php:1041
 #: ar_views.php:1173 ar_views.php:1476 ar_views.php:4786 ar_views.php:10393
@@ -21827,7 +21733,7 @@ msgstr "% s ordenado por un cliente"
 msgid "item"
 msgid_plural "items"
 msgstr[0] "Artículo"
-msgstr[1] ""
+msgstr[1] "Ar"
 
 #: ar_orders_tables.php:2239
 #, fuzzy
@@ -21847,14 +21753,14 @@ msgstr "Estado de la forma"
 msgid "%s charged transaction"
 msgid_plural "%s charged transactions"
 msgstr[0] "% s transacción cargada"
-msgstr[1] "transacciones"
+msgstr[1] "% s transacciones cargadas"
 
 #: ar_orders_tables.php:3135 ar_orders_tables.php:3228
 #, php-format
 msgid "%s send part"
 msgid_plural "%s send parts"
 msgstr[0] "% s enviar parte"
-msgstr[1] "Con piezas marcadas"
+msgstr[1] "% s enviar partes"
 
 #: ar_orders_tables.php:3440
 msgid "Dispatch notification"
@@ -21999,16 +21905,12 @@ msgid "Unlink"
 msgstr "Desenlazar"
 
 #: ar_products_tables.php:1561
-#, fuzzy
-#| msgid "postcode"
 msgid "Exclude postal codes"
-msgstr "código postal"
+msgstr "codigos postales excluidos"
 
 #: ar_products_tables.php:1564
-#, fuzzy
-#| msgid "postcode"
 msgid "Include postal codes"
-msgstr "código postal"
+msgstr "codigos postales incluidos"
 
 #: ar_products_tables.php:1585
 msgid "free"
@@ -22068,8 +21970,8 @@ msgstr "Nombre del producto"
 #, php-format
 msgid "%s Customer/Tax number/Country"
 msgid_plural "%s Customers/Tax number/Country"
-msgstr[0] "% s Cliente / Número de impuestos / País"
-msgstr[1] "País del Cliente"
+msgstr[0] "%s Cliente / Número R.O.I (Intracomunitario)/ País"
+msgstr[1] "%s Cliente / Número R.O.I (Intracomunitario)/ País"
 
 #: ar_reports_tables.php:334 ar_views.php:10773 ar_views.php:10809
 #: navigation/reports.nav.php:501
@@ -22137,7 +22039,7 @@ msgstr[1] "unidades por SKO"
 msgid "%s sales representative"
 msgid_plural "%s sales representatives"
 msgstr[0] "Representante de ventas de% s"
-msgstr[1] ""
+msgstr[1] "Representantes de ventas de% s"
 
 #: ar_reports_tables.php:2089 utils/table_functions.php:124
 #, php-format
@@ -22150,8 +22052,8 @@ msgstr[1] "%s tiendas"
 #, php-format
 msgid "%s category"
 msgid_plural "%s categories"
-msgstr[0] "categoría% s"
-msgstr[1] "categorias"
+msgstr[0] "%s categoria"
+msgstr[1] "%s categoria"
 
 #: ar_setup.php:580
 msgid "Account Setup"
@@ -22453,10 +22355,8 @@ msgid "Image width must to be %s (px)"
 msgstr "El ancho de la imagen debe ser% s (px)"
 
 #: ar_upload.php:474
-#, fuzzy
-#| msgid "Wrong email"
 msgid "Wrong image width"
-msgstr "correo electrónico incorrecta"
+msgstr "correo electronico incorrecta"
 
 #: ar_upload.php:483
 #, php-format
@@ -22464,10 +22364,8 @@ msgid "Image height must to be %s (px)"
 msgstr "La altura de la imagen debe ser% s (px)"
 
 #: ar_upload.php:486
-#, fuzzy
-#| msgid "Wrong email"
 msgid "Wrong image height"
-msgstr "correo electrónico incorrecta"
+msgstr "altura de imagen incorrecta"
 
 #: ar_upload.php:497
 #, php-format
@@ -22599,10 +22497,8 @@ msgstr ""
 
 #: ar_users_tables.php:625 ar_users_tables.php:689 class.API_Key.php:177
 #: tabs/user.api_key.new.tab.php:22
-#, fuzzy
-#| msgid "Picking Area"
 msgid "Picking app"
-msgstr "área de recolleción"
+msgstr "Aplicación de recogida"
 
 #: ar_users_tables.php:738 class.API_Key.php:246 navigation/hr.nav.php:799
 #: navigation/hr.nav.php:817
@@ -22769,10 +22665,8 @@ msgid "Barcode used"
 msgstr "Tipo de código de barras"
 
 #: ar_validation.php:1102
-#, fuzzy
-#| msgid "Reference"
 msgid "Reference used"
-msgstr "Referencia"
+msgstr "Referencia usada"
 
 #: ar_views.php:1004
 #, fuzzy
@@ -22789,8 +22683,6 @@ msgstr "Piezas de las categorías"
 #: ar_views.php:1014 navigation/inventory.nav.php:729
 #: navigation/inventory.nav.php:774 navigation/inventory.nav.php:791
 #: utils/modules.php:5789 utils/modules.php:6011
-#, fuzzy
-#| msgid "Stock History"
 msgid "Stock history"
 msgstr "Historia del inventario"
 
@@ -23322,10 +23214,8 @@ msgstr "Páginas"
 #: ar_views.php:7798 tabs/employee.attachments.tab.php:35
 #: tabs/part.attachments.tab.php:33 tabs/supplier.attachments.tab.php:33
 #: tabs/supplier.delivery.attachments.tab.php:33 utils/modules.php:4772
-#, fuzzy
-#| msgid "Attachment"
 msgid "New attachment"
-msgstr "Archivo Adj."
+msgstr "archivo Adj."
 
 #: ar_views.php:7812 tabs/account.setup.add_employees.tab.php:58
 #: tabs/employees.tab.php:75
@@ -23447,11 +23337,8 @@ msgid "Locations's categories"
 msgstr "Principales Categorías"
 
 #: ar_views.php:8728 utils/modules.php:6208
-#, fuzzy
-#| msgid "warehouse"
-#| msgid_plural "warehouses"
 msgid "New warehouse"
-msgstr "almacén"
+msgstr "nuevo almacén"
 
 #: ar_views.php:8737 utils/modules.php:6218
 #, fuzzy
@@ -23591,10 +23478,8 @@ msgid "Order's index"
 msgstr "Índice de productos"
 
 #: ar_views.php:9928
-#, fuzzy
-#| msgid "Deleted Customer"
 msgid "Deteted users"
-msgstr "Cliente eliminado "
+msgstr "cliente eliminado "
 
 #: ar_views.php:9988 navigation/users.nav.php:930
 #, fuzzy
@@ -23785,10 +23670,8 @@ msgstr "Instrucciones enviadas"
 #: ar_websites_tables.php:244 class.Store.php:600 class.Website.php:440
 #: conf/elements_options.php:541 conf/elements_options.php:1434
 #: conf/fields/webpage.fld.php:16
-#, fuzzy
-#| msgid "Close"
 msgid "Closed"
-msgstr "Cerrar"
+msgstr "Cerrado"
 
 #: ar_websites_tables.php:250
 #, fuzzy
@@ -23869,9 +23752,8 @@ msgid "API key deleted"
 msgstr "Área eliminado"
 
 #: class.API_Key.php:400
-#, fuzzy
 msgid "Allowed IPs"
-msgstr "asignación debe ser numérico"
+msgstr "IP permitidas"
 
 #: class.API_Key.php:404
 #, fuzzy
@@ -23928,9 +23810,9 @@ msgid "Warehouse created"
 msgstr "Área del almacén"
 
 #: class.Account.php:745
-#, fuzzy, php-format
+#, php-format
 msgid "Warehouse (%s) created"
-msgstr "área del almacén"
+msgstr "almacén (%s) creado"
 
 #: class.Account.php:811
 #, fuzzy
@@ -24528,10 +24410,9 @@ msgid "Valid"
 msgstr "Válido"
 
 #: class.Customer.php:373 class.Order.php:876
-#, fuzzy, php-format
-#| msgid "Unknown stock in this location"
+#, php-format
 msgid "Unknown if is valid"
-msgstr "acciones desconocido en esta ubicación"
+msgstr "Desconocido si es válido"
 
 #: class.Customer.php:377 class.Invoice.php:800 class.Invoice.php:804
 #: class.Order.php:880
@@ -24769,9 +24650,8 @@ msgid "Option for customer poll created"
 msgstr "Anónimo cliente de creación"
 
 #: class.Customer_Poll_Query_Option.php:180
-#, fuzzy
 msgid "answer code"
-msgstr "Código de la página"
+msgstr "código de respuesta"
 
 #: class.Customer_Poll_Query_Option.php:183
 msgid "answer"
@@ -24784,10 +24664,8 @@ msgid "Data Sets already exists"
 msgstr "El nombre ya existe"
 
 #: class.Deal.php:400
-#, fuzzy
-#| msgid "Category not found"
 msgid "Error category not found"
-msgstr "categoría no encontrada"
+msgstr "error categoría no encontrada"
 
 #: class.Deal.php:633 class.Deal.php:651 class.DealComponent.php:358
 #: class.DealComponent.php:376
@@ -24830,10 +24708,9 @@ msgid "Get %d %s product free"
 msgstr "Partes por producto"
 
 #: class.Deal.php:820 class.DealComponent.php:502
-#, fuzzy, php-format
-#| msgid "free charges"
+#, php-format
 msgid "Free %s"
-msgstr "cargos gratis"
+msgstr "gratis %s"
 
 #: class.Deal.php:1339
 msgid "Can not delete the offer, because it has been applied to an order"
@@ -24876,10 +24753,8 @@ msgid "start date"
 msgstr "Fecha de inicio"
 
 #: class.DealCampaign.php:958
-#, fuzzy
-#| msgid "Deleted date"
 msgid "end date"
-msgstr "Borrar Fecha"
+msgstr "fecha final"
 
 #: class.DealComponent.php:421
 #, fuzzy, php-format
@@ -25117,16 +24992,12 @@ msgid "active customers"
 msgstr "N º de clientes activos"
 
 #: class.List.php:291
-#, fuzzy
-#| msgid "Losing Customers"
 msgid "loosing customers"
-msgstr "Clientes Perdiéndose"
+msgstr "Clientes Perdidos"
 
 #: class.List.php:294
-#, fuzzy
-#| msgid "Lost Customers"
 msgid "lost customers"
-msgstr "Clientes Perdidos"
+msgstr "clientes Perdidos"
 
 #: class.List.php:307
 #, fuzzy, php-format
@@ -25197,10 +25068,8 @@ msgid "dispatched"
 msgstr "enviado"
 
 #: class.List.php:524
-#, fuzzy
-#| msgid "Cancelled"
 msgid "cancelled"
-msgstr "Cancelado"
+msgstr "cancelado"
 
 #: class.Location.php:80 class.Location.php:340
 msgid "Wrong location code"
@@ -25221,10 +25090,8 @@ msgid "Other location has this code"
 msgstr "Otro lugar tiene el código"
 
 #: class.Location.php:382
-#, fuzzy
-#| msgid "Warehouse Area Code"
 msgid "Warehouse area not found"
-msgstr "Código de área almacén "
+msgstr "Area de almacen no encontrada"
 
 #: class.Location.php:405
 msgid "The maximum weight for this location show be numeric"
@@ -25302,7 +25169,7 @@ msgstr "Seleccionado"
 
 #: class.Location.php:1064
 msgid "flag"
-msgstr ""
+msgstr "badera"
 
 #: class.Location.php:1067 conf/export_edit_template_fields.php:887
 #: conf/export_fields.php:677
@@ -25407,9 +25274,8 @@ msgid "reward type"
 msgstr "Terminos"
 
 #: class.Manufacture_Task.php:419
-#, fuzzy
 msgid "reward amount"
-msgstr "Cantidad Total"
+msgstr "recompensa total"
 
 #: class.Material.php:81
 #, fuzzy
@@ -25535,9 +25401,8 @@ msgid "Order cancelled"
 msgstr "Orden cancelada"
 
 #: class.Order.php:3626
-#, fuzzy
 msgid "customer's purchase order number"
-msgstr "Cliente ya tiene este número"
+msgstr "número de orden de compra del cliente"
 
 #: class.Order.php:3632
 #, fuzzy
@@ -25680,10 +25545,8 @@ msgid "SKO stock value"
 msgstr "Colección de valor"
 
 #: class.Part.php:987
-#, fuzzy
-#| msgid "Stock value"
 msgid "total stock value"
-msgstr "Colección de valor"
+msgstr "valor total de los stock"
 
 #: class.Part.php:1002
 #, fuzzy, php-format
@@ -25918,10 +25781,8 @@ msgid "carton barcode"
 msgstr "country_code"
 
 #: class.Part.php:4483
-#, fuzzy
-#| msgid "Change Delivery Address"
 msgid "average delivery days"
-msgstr "Cambiar de Dir. e/"
+msgstr "dias de entrega promedio"
 
 #: class.Part.php:4555 class.Supplier.php:1345
 msgid "Duplicated supplier's part reference"
@@ -26152,9 +26013,8 @@ msgid "webpage META description"
 msgstr "Plantilla descripción"
 
 #: class.Product.php:1075
-#, fuzzy
 msgid "web configuration"
-msgstr "Configuración Web"
+msgstr "configuracion Web"
 
 #: class.Product.php:2231
 #, fuzzy
@@ -26396,9 +26256,8 @@ msgid "Shipping company (%s) created"
 msgstr "Proveedor nombre de la empresa ha cambiado"
 
 #: class.Shipper.php:271
-#, fuzzy
 msgid "tracking link"
-msgstr "Ayuda Empaquetado"
+msgstr "enlace de seguimiento"
 
 #: class.Shipper.php:332
 msgid "Can;t delete shipper if has been used before"
@@ -26545,9 +26404,8 @@ msgid "next of kin"
 msgstr ""
 
 #: class.Staff.php:1723
-#, fuzzy
 msgid "currently working"
-msgstr "Accedido"
+msgstr "Actualmente trabajando"
 
 #: class.Staff.php:1726
 #, fuzzy
@@ -27099,16 +26957,12 @@ msgid "Supplier record %s deleted"
 msgstr "Productos Pedidos"
 
 #: class.SupplierDelivery.php:202
-#, fuzzy
-#| msgid "Supplier Delivery Note"
 msgid "Supplier delivery created"
-msgstr "Albarán del Proveedor "
+msgstr "entrada del proveedor creada"
 
 #: class.SupplierDelivery.php:321
-#, fuzzy
-#| msgid "Checked"
 msgid "checked"
-msgstr "Comprobar"
+msgstr "comprobado"
 
 #: class.SupplierDelivery.php:327
 #, fuzzy
@@ -27143,10 +26997,8 @@ msgid "No invoice number"
 msgstr "Número de factura"
 
 #: class.SupplierDelivery.php:586
-#, fuzzy
-#| msgid "Supplier Delivery Note"
 msgid "Supplier delivery invoice date missing"
-msgstr "Albarán del Proveedor "
+msgstr "Falta la fecha de factura de entrega del proveedor"
 
 #: class.SupplierDelivery.php:586
 #, fuzzy
@@ -27155,10 +27007,8 @@ msgid "Date missing"
 msgstr "Falta"
 
 #: class.SupplierDelivery.php:1231
-#, fuzzy
-#| msgid "Supplier Delivery Note"
 msgid "Supplier delivery cancelled"
-msgstr "Albarán del Proveedor "
+msgstr "Entrega del proveedor cancelada"
 
 #: class.SupplierDelivery.php:1351
 #, php-format
@@ -27329,10 +27179,8 @@ msgid "availability"
 msgstr "Disponibilidad"
 
 #: class.SupplierPart.php:2056
-#, fuzzy
-#| msgid "Location Code"
 msgid "carton CBM"
-msgstr "Código de ubicación"
+msgstr "Carton CBM"
 
 #: class.SupplierPart.php:2059 conf/export_edit_template_fields.php:170
 #: conf/export_fields.php:487 conf/export_fields.php:574
@@ -27358,10 +27206,8 @@ msgid "part reference"
 msgstr "Referencia piezas"
 
 #: class.SupplierPart.php:2074
-#, fuzzy
-#| msgid "Barcode"
 msgid "part barcode"
-msgstr "Código de barras"
+msgstr "código de barras"
 
 #: class.SupplierPart.php:2083
 #, fuzzy
@@ -27394,9 +27240,8 @@ msgid "unit recommended description"
 msgstr "Descripción unitaria"
 
 #: class.SupplierPart.php:2104
-#, fuzzy
 msgid "carton gross weight"
-msgstr "Altura"
+msgstr "peso bruto del carton"
 
 #: class.Timeserie.php:182
 #, fuzzy
@@ -27409,11 +27254,9 @@ msgid "Daily"
 msgstr "Diario"
 
 #: class.TimeseriesRecord.php:77
-#, fuzzy, php-format
-#| msgid "months"
-#| msgid_plural "month"
+#, php-format
 msgid "month %s"
-msgstr "mes"
+msgstr "mes %s"
 
 #: class.TimeseriesRecord.php:80 utils/get_table_html.php:184
 msgid "Quarterly"
@@ -27469,10 +27312,8 @@ msgstr "ubicación"
 
 #: class.Upload.php:194 navigation/warehouses.nav.php:2123
 #: navigation/warehouses.nav.php:2191
-#, fuzzy
-#| msgid "Warehouse Areas"
 msgid "warehouse areas"
-msgstr "Áreas de Almacén"
+msgstr "areas de Almacén"
 
 #: class.Upload.php:210
 #, fuzzy, php-format
@@ -27487,17 +27328,14 @@ msgid "warehouse %s"
 msgstr "almacenes"
 
 #: class.Upload.php:217
-#, fuzzy, php-format
-#| msgid "Part Category"
+#, php-format
 msgid "part's category %s"
-msgstr "Categoría de las piezas"
+msgstr "categoría de la parte %s"
 
 #: class.Upload.php:221
-#, fuzzy, php-format
-#| msgid "category"
-#| msgid_plural "categories"
+#, php-format
 msgid "category %s"
-msgstr "categoria"
+msgstr "categoria %s"
 
 #: class.Upload.php:287
 msgid "Imported customers list"
@@ -27570,7 +27408,7 @@ msgstr "Azul"
 
 #: class.User.php:419 conf/fields/profile.fld.php:27
 msgid "Black"
-msgstr ""
+msgstr "Negro"
 
 #: class.User.php:449 class.User.php:489 class.User.php:524 class.User.php:558
 #: class.User.php:692
@@ -27580,7 +27418,7 @@ msgstr "inexistente"
 #: class.User.php:451 class.User.php:491 class.User.php:526 class.User.php:560
 #: class.User.php:697
 msgid "all"
-msgstr "todos los"
+msgstr "todos"
 
 #: class.User.php:1084
 #, fuzzy, php-format
@@ -27633,9 +27471,8 @@ msgid "warehouses"
 msgstr "almacenes"
 
 #: class.User.php:1703
-#, fuzzy
 msgid "theme"
-msgstr "Cambiar Tema del usuario"
+msgstr "tema"
 
 #: class.User.php:1706
 #, fuzzy
@@ -27704,9 +27541,9 @@ msgid "Calculate leakage from"
 msgstr "Contacto cambiado de"
 
 #: class.WarehouseArea.php:120
-#, fuzzy, php-format
+#, php-format
 msgid "Warehouse area %s (%s) created"
-msgstr "área del almacén"
+msgstr "area de almacen creada%s (%s) created"
 
 #: class.WarehouseArea.php:274
 #, fuzzy
@@ -28115,10 +27952,8 @@ msgstr "Pieza"
 #: conf/fields/production_part.fld.php:129
 #: conf/fields/supplier_part.fld.php:500
 #: conf/fields/supplier_part.new.fld.php:451
-#, fuzzy
-#| msgid "Picking Aid"
 msgid "for picking aid"
-msgstr "Ayuda Recolección"
+msgstr "ayuda para Recogida"
 
 #: conf/export_edit_template_fields.php:98
 #: conf/export_edit_template_fields.php:108 conf/fields/agent_part.fld.php:106
@@ -28133,10 +27968,8 @@ msgid "stock control"
 msgstr "acciones en"
 
 #: conf/export_edit_template_fields.php:108
-#, fuzzy
-#| msgid "country_code"
 msgid "Carton Barcode"
-msgstr "country_code"
+msgstr "codigo de barras de carton"
 
 #: conf/export_edit_template_fields.php:130
 #: conf/export_edit_template_fields.php:497
@@ -28454,9 +28287,8 @@ msgid "In process parts"
 msgstr "esta en proceso"
 
 #: conf/export_fields.php:800
-#, fuzzy
 msgid "Active parts with surplus stock"
-msgstr "con SKU como"
+msgstr "Partes activas con exceso de stock"
 
 #: conf/export_fields.php:805
 msgid "Active parts with optimal stock"
@@ -28479,9 +28311,8 @@ msgid "Active parts out of stock"
 msgstr "por fuera de stock"
 
 #: conf/export_fields.php:825
-#, fuzzy
 msgid "Parts with stock errors"
-msgstr "con SKU como"
+msgstr "Piezas con errores de stock"
 
 #: conf/export_fields.php:840
 #, fuzzy
@@ -28666,10 +28497,8 @@ msgstr "Nombre del producto"
 
 #: conf/fields/account.setup.fld.php:19 conf/fields/store.fld.php:32
 #: conf/fields/store.new.fld.php:39
-#, fuzzy
-#| msgid "English"
 msgid "British English"
-msgstr "Ingles"
+msgstr "Ingles britanico"
 
 #: conf/fields/account.setup.fld.php:20 conf/fields/store.fld.php:33
 #: conf/fields/store.new.fld.php:40 locale.php:13
@@ -28872,9 +28701,8 @@ msgstr "Terminos"
 #: conf/fields/bulk_deal.fld.php:111
 #: conf/fields/bulk_deal_component.fld.php:110
 #: conf/fields/order_recursion_deal_component.fld.php:56
-#, fuzzy
 msgid "Allowance label"
-msgstr "asignación debe ser numérico"
+msgstr "etiqueta de asignación"
 
 #: conf/fields/bulk_deal.fld.php:141
 #: conf/fields/bulk_deal_component.fld.php:139 conf/fields/deal.fld.php:146
@@ -29326,9 +29154,8 @@ msgstr "Terminos"
 
 #: conf/fields/deal.fld.php:77 conf/fields/deal_component.fld.php:63
 #: conf/fields/first_order_offer.fld.php:79 conf/fields/voucher.fld.php:79
-#, fuzzy
 msgid "Allowance info"
-msgstr "asignación debe ser numérico"
+msgstr "información de asignación"
 
 #: conf/fields/deal.fld.php:94 conf/fields/deal_component.fld.php:83
 #: conf/fields/first_order_offer.fld.php:95 conf/fields/invoice.fld.php:148
@@ -29700,11 +29527,8 @@ msgid "Anyone"
 msgstr ""
 
 #: conf/fields/new_deal.fld.php:72
-#, fuzzy
-#| msgid "customer"
-#| msgid_plural "customers"
 msgid "A customer"
-msgstr "cliente"
+msgstr "un cliente"
 
 #: conf/fields/new_deal.fld.php:73
 #, fuzzy
@@ -29997,9 +29821,8 @@ msgstr "precio"
 
 #: conf/fields/part.supplier_part.new.fld.php:214
 #: conf/fields/part.supplier_part.new.fld.php:254
-#, fuzzy
 msgid "select supplier"
-msgstr "Con clientes marcadas"
+msgstr "seleccione proveedores"
 
 #: conf/fields/payment_account.fld.php:79
 #, fuzzy
@@ -30140,11 +29963,8 @@ msgid "Delete prospect"
 msgstr "Eliminar"
 
 #: conf/fields/prospect.fld.php:459
-#, fuzzy
-#| msgid "customer"
-#| msgid_plural "customers"
 msgid "Unlink customer"
-msgstr "cliente"
+msgstr "Desvincular cliente"
 
 #: conf/fields/prospect.fld.php:470
 msgid "Undo set as not interested"
@@ -30275,10 +30095,8 @@ msgid "PDF Delivery notes"
 msgstr "nota de envío"
 
 #: conf/fields/store.fld.php:605 conf/fields/store.new.fld.php:615
-#, fuzzy
-#| msgid "Pictures"
 msgid "Signatures"
-msgstr "Imágenes"
+msgstr "Firmas"
 
 #: conf/fields/store.fld.php:680 conf/fields/store.new.fld.php:690
 #, fuzzy
@@ -31233,9 +31051,8 @@ msgstr ""
 #: conf/website_system_webpages.php:640 conf/website_system_webpages.php:641
 #: conf/website_system_webpages.php:642 conf/website_system_webpages.php:643
 #: conf/website_system_webpages.php:644 conf/website_system_webpages.php:645
-#, fuzzy
 msgid "Place order"
-msgstr "a hecho un solo pedido"
+msgstr "Realizar pedido"
 
 #: conf/website_system_webpages.php:662
 msgid "Thanks for your order"
@@ -31631,10 +31448,9 @@ msgstr "Proveedores"
 
 #: navigation/agent.nav.php:1011 navigation/hr.nav.php:1020
 #: navigation/inventory.nav.php:1711 navigation/suppliers.nav.php:2591
-#, fuzzy, php-format
-#| msgid "Attachments"
+#, php-format
 msgid "New attachment for %s"
-msgstr "Archivo Adjuntos "
+msgstr "nuevo archivo Adjunto para %s"
 
 #: navigation/agent.nav.php:1488
 #, fuzzy
@@ -31971,10 +31787,9 @@ msgid "other supplier"
 msgstr "New"
 
 #: navigation/inventory.nav.php:407
-#, fuzzy, php-format
-#| msgid "associated with Supplier:"
+#, php-format
 msgid "other %d suppliers"
-msgstr "asociado con proveedores:"
+msgstr "otros %d proveedores"
 
 #: navigation/inventory.nav.php:443 navigation/inventory.nav.php:638
 #: navigation/inventory.nav.php:1048 navigation/inventory.nav.php:1087
@@ -32036,11 +31851,9 @@ msgid "Category: %s"
 msgstr "Categoría"
 
 #: navigation/inventory.nav.php:1876
-#, fuzzy, php-format
-#| msgid "main category"
-#| msgid_plural "main categories"
+#, php-format
 msgid "Upload into category %s"
-msgstr "categoría principal"
+msgstr "Subir categoria %s"
 
 #: navigation/marketing.nav.php:34 navigation/marketing.nav.php:83
 #, php-format
@@ -32114,15 +31927,13 @@ msgid "Pending deliveries"
 msgstr "notas de envío"
 
 #: navigation/orders.nav.php:259
-#, fuzzy
 msgid "Orders in website"
-msgstr "Pedidos de almacén"
+msgstr "Pedidos en la cesta"
 
 #: navigation/orders.nav.php:312 navigation/orders.nav.php:574
-#, fuzzy, php-format
-#| msgid "Orders"
+#, php-format
 msgid "Orders %s"
-msgstr "Pedidos"
+msgstr "Pedidos %s"
 
 #: navigation/orders.nav.php:340 navigation/orders.nav.php:473
 #: navigation/orders.nav.php:586 navigation/orders.nav.php:640
@@ -32317,17 +32128,14 @@ msgid "Search products all stores"
 msgstr "Todas las tiendas"
 
 #: navigation/products.nav.php:663
-#, fuzzy, php-format
-#| msgid "department"
-#| msgid_plural "departments"
+#, php-format
 msgid "%s departments"
-msgstr "departamento"
+msgstr "%s departamentos"
 
 #: navigation/products.nav.php:673
-#, fuzzy, php-format
-#| msgid "families"
+#, php-format
 msgid "%s families"
-msgstr "familias"
+msgstr "%s familias"
 
 #: navigation/products.nav.php:718
 #, fuzzy
@@ -32570,10 +32378,8 @@ msgid "Supplier's time series"
 msgstr "Proveedores Categorías"
 
 #: navigation/suppliers.nav.php:2901 navigation/suppliers.nav.php:2955
-#, fuzzy
-#| msgid "Supplier Delivery Note"
 msgid "Supplier's delivery"
-msgstr "Albarán del Proveedor "
+msgstr "Entrega del proveedor"
 
 #: navigation/suppliers.nav.php:2910
 #, php-format
@@ -32768,9 +32574,8 @@ msgid "New shipping company"
 msgstr "Edición de la empresa"
 
 #: navigation/warehouses.nav.php:1658
-#, fuzzy
 msgid "Search consignments"
-msgstr "consignación"
+msgstr "buscar envios"
 
 #: navigation/warehouses.nav.php:2059
 #, php-format
@@ -32981,10 +32786,9 @@ msgid "Postal code: %s"
 msgstr "Lista de códigos postales"
 
 #: search_functions.php:2092
-#, fuzzy, php-format
-#| msgid "Town"
+#, php-format
 msgid "Town: %s"
-msgstr "Ciudad"
+msgstr "Ciudad: %s"
 
 #: search_functions.php:3162
 #, fuzzy
@@ -33317,10 +33121,8 @@ msgid "Upload employees"
 msgstr "Empleado"
 
 #: tabs/account.setup.error.tab.php:15
-#, fuzzy
-#| msgid "Critical"
 msgid "Critical error"
-msgstr "Critico"
+msgstr "Error critico"
 
 #: tabs/account.setup.error.tab.php:15
 msgid "Please contact service support"
@@ -33435,10 +33237,8 @@ msgstr "Detalles del Proveedor"
 
 #: tabs/agent.suppliers.tab.php:83 tabs/agent.suppliers.tab.php:88
 #: tabs/category.subjects.tab.php:401 tabs/category.subjects.tab.php:405
-#, fuzzy
-#| msgid "associated with Supplier:"
 msgid "Associate supplier"
-msgstr "asociado con proveedores:"
+msgstr "Familia asociada"
 
 #: tabs/agent.users.tab.php:22 tabs/users.agents.tab.php:21
 #: tabs/users.contractors.tab.php:24 tabs/users.staff.tab.php:24
@@ -33447,8 +33247,6 @@ msgid "Syslog"
 msgstr ""
 
 #: tabs/agent.users.tab.php:41
-#, fuzzy
-#| msgid "New customer"
 msgid "New user"
 msgstr "Nuevo cliente"
 
@@ -33629,15 +33427,12 @@ msgid "Category code"
 msgstr "Código de categoría"
 
 #: tabs/category.all_subjects.tab.php:141
-#, fuzzy
 msgid "Associated parts"
-msgstr "asociados"
+msgstr "partes asociadas"
 
 #: tabs/category.all_subjects.tab.php:252
-#, fuzzy
-#| msgid "associated with Supplier:"
 msgid "Associated suppliers"
-msgstr "asociado con proveedores:"
+msgstr "Proveedores asociados"
 
 #: tabs/category.categories.tab.php:24 tabs/category.subjects.tab.php:37
 #: tabs/category.subjects.tab.php:247 tabs/inventory.parts.tab.php:29
@@ -33778,9 +33573,8 @@ msgid "Product's code"
 msgstr "Código del Producto"
 
 #: tabs/category.subjects.tab.php:199 tabs/category.subjects.tab.php:203
-#, fuzzy
 msgid "Associate family"
-msgstr "asociados"
+msgstr "familia asociada"
 
 #: tabs/category.subjects.tab.php:265
 #: tabs/supplier.order.supplier_parts.tab.php:34
@@ -33907,9 +33701,8 @@ msgstr "Nombre del la tienda"
 
 #: tabs/credits_group_by_store.tab.php:42
 #: tabs/credits_group_by_store.tab.php:43
-#, fuzzy
 msgid "credits per store"
-msgstr "Clientes por tienda"
+msgstr "clientes por tienda"
 
 #: tabs/customer.active_portfolio.tab.php:50
 #, fuzzy
@@ -34005,10 +33798,8 @@ msgstr "Nombre en el pedido"
 
 #: tabs/deleted.users.tab.php:46 tabs/deleted.users.tab.php:47
 #: utils/modules.php:7485 utils/modules.php:7518 utils/modules.php:7541
-#, fuzzy
-#| msgid "Deleted Customer"
 msgid "Deleted users"
-msgstr "Cliente eliminado "
+msgstr "usuarios eliminados"
 
 #: tabs/deleted_invoices.tab.php:40 tabs/deleted_invoices_server.tab.php:40
 #, fuzzy
@@ -34239,10 +34030,8 @@ msgstr ""
 
 #: tabs/manufacture_task.details.tab.php:26
 #: tabs/manufacture_task.new.tab.php:27 tabs/manufacture_task.new.tab.php:236
-#, fuzzy
-#| msgid "On sale"
 msgid "On top salary"
-msgstr "a la venta"
+msgstr "Sobre el salario"
 
 #: tabs/manufacture_task.details.tab.php:27
 #: tabs/manufacture_task.new.tab.php:28
@@ -34444,11 +34233,8 @@ msgid "New shipping zone"
 msgstr "portes gratis"
 
 #: tabs/store.charges.tab.php:47 utils/modules.php:4020
-#, fuzzy
-#| msgid "charge"
-#| msgid_plural "charges"
 msgid "New charge"
-msgstr "cargo"
+msgstr "nuevo cargo"
 
 #: tabs/store.departments.tab.php:38
 #, fuzzy
@@ -34482,9 +34268,8 @@ msgid "Ordering units"
 msgstr "Listas de pedidos"
 
 #: tabs/supplier.order.supplier_parts.tab.php:48
-#, fuzzy
 msgid "items"
-msgstr "Artículos"
+msgstr "artículos"
 
 #: tabs/supplier.supplier_parts.tab.php:21
 #, fuzzy
@@ -34582,9 +34367,8 @@ msgid "Delete API key"
 msgstr "Eliminar"
 
 #: tabs/users.agents.tab.php:31
-#, fuzzy
 msgid "agent code"
-msgstr "Código de la página"
+msgstr "codigo de agente"
 
 #: tabs/users_by_category.tab.php:30 tabs/users_by_category.tab.php:31
 #, fuzzy
@@ -34610,9 +34394,8 @@ msgid "Upload warehouse areas"
 msgstr "Áreas de Almacén"
 
 #: tabs/warehouse.areas.tab.php:103
-#, fuzzy
 msgid "Edit warehouse areas"
-msgstr "área del almacén"
+msgstr "editar areas de Almacen"
 
 #: tabs/warehouse.locations.tab.php:58 tabs/warehouse_area.locations.tab.php:57
 #, fuzzy
@@ -34639,10 +34422,8 @@ msgstr "Lista de Ubicaciones"
 
 #: tabs/warehouse_area.locations.tab.php:113
 #: tabs/warehouse_area.locations.tab.php:117
-#, fuzzy
-#| msgid "associated with location"
 msgid "Associate location"
-msgstr "asociadas con la localización"
+msgstr "Ubicación permitida"
 
 #: tabs/warehouse_area.locations.tab.php:122
 #, fuzzy
@@ -35179,18 +34960,12 @@ msgid "Correlations"
 msgstr "Las correlaciones"
 
 #: utils/modules.php:134
-#, fuzzy
-#| msgid "correlation"
-#| msgid_plural "correlations"
 msgid "Sales correlation"
-msgstr "correlación"
+msgstr "correlacion de ventas"
 
 #: utils/modules.php:139
-#, fuzzy
-#| msgid "correlation"
-#| msgid_plural "correlations"
 msgid "Sales anticorrelation"
-msgstr "correlación"
+msgstr "anticorrelacion de ventas"
 
 #: utils/modules.php:149 utils/modules.php:1067 utils/modules.php:2930
 #: utils/modules.php:3527 utils/modules.php:3570 utils/modules.php:3701
@@ -35706,10 +35481,8 @@ msgstr "Gráfico de adquisiciones "
 
 #: utils/modules.php:5051 utils/modules.php:5941 utils/modules.php:7024
 #: utils/modules.php:8241
-#, fuzzy
-#| msgid "Attachment"
 msgid "new attachment"
-msgstr "Archivo Adj."
+msgstr "nuevo Archivo Adj."
 
 #: utils/modules.php:5112 utils/modules.php:5119 utils/modules.php:5173
 #: utils/modules.php:5180 utils/modules.php:5291 utils/modules.php:5297
@@ -35790,10 +35563,8 @@ msgid "Stock cost"
 msgstr "Coste del inventario"
 
 #: utils/modules.php:5906
-#, fuzzy
-#| msgid "Add new part"
 msgid "new part"
-msgstr "Añadir pieza"
+msgstr "pieza nieva"
 
 #: utils/modules.php:6017
 #, fuzzy
@@ -35883,9 +35654,8 @@ msgid "Today timesheet"
 msgstr ""
 
 #: utils/modules.php:7012
-#, fuzzy
 msgid "new employee"
-msgstr "Agregar Empleado"
+msgstr "agregar nuevo Empleado"
 
 #: utils/modules.php:7036 utils/modules.php:7048
 #, fuzzy
@@ -35905,14 +35675,10 @@ msgid "Months"
 msgstr "Mes"
 
 #: utils/modules.php:7142
-#, fuzzy
-#| msgid "Week"
 msgid "Weeks"
-msgstr "Semana"
+msgstr "Semanas"
 
 #: utils/modules.php:7148
-#, fuzzy
-#| msgid "Employees"
 msgid "Employes'"
 msgstr "Empleados"
 
@@ -36109,7 +35875,6 @@ msgid "Waiting Payment"
 msgstr "Esperando pago"
 
 #: utils/order_functions.php:232
-#, fuzzy
 msgid "Overpaid"
 msgstr "Sobrepagado"
 
@@ -36620,12 +36385,11 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: utils/table_functions.php:258
-#, fuzzy, php-format
-#| msgid "Attachment"
+#, php-format
 msgid "%s attachment"
 msgid_plural "%s attachments"
-msgstr[0] "Archivo Adj."
-msgstr[1] "Archivo Adj."
+msgstr[0] "Archivo Adj.%s"
+msgstr[1] "Archivos Adj.%s"
 
 #: utils/table_functions.php:262
 #, fuzzy, php-format
@@ -37395,12 +37159,11 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: utils/table_functions.php:760
-#, fuzzy, php-format
-#| msgid "Attachments"
+#, php-format
 msgid "%s attachment of %s"
 msgid_plural "%s attachments of %s"
-msgstr[0] "Archivo Adjuntos "
-msgstr[1] "Archivo Adjuntos "
+msgstr[0] "%s adjunto de %s"
+msgstr[1] "%s adjuntos de %s"
 
 #: utils/table_functions.php:765
 #, fuzzy, php-format
