@@ -785,7 +785,7 @@ class Product extends Asset {
         //  print_r($this->data);
 
         foreach ($this->data as $key => $value) {
-            $keys .= ",`".$key."`";
+            $keys   .= ",`".$key."`";
             $values .= ','.prepare_mysql($value, true);
 
         }
@@ -1708,9 +1708,6 @@ class Product extends Asset {
 
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
         return $categories;
@@ -3264,19 +3261,23 @@ class Product extends Asset {
             foreach ($result as $row) {
 
 
-                $sql = sprintf(
-                    "SELECT `Category Label`,`Category Code` FROM `Category Dimension` WHERE `Category Key`=%d", $row['Category Root Key']
+                $sql = "SELECT `Category Key`,`Category Label`,`Category Code` FROM `Category Dimension` WHERE `Category Key`=?";
+
+
+                $stmt2 = $this->db->prepare($sql);
+                $stmt2->execute(
+                    array(
+                        $row['Category Root Key']
+                    )
                 );
-
-
-                if ($result2 = $this->db->query($sql)) {
-                    if ($row2 = $result2->fetch()) {
-                        $root_label = $row2['Category Label'];
-                        $root_code  = $row2['Category Code'];
-                    }
+                if ($row2 = $stmt2->fetch()) {
+                    $root_label = $row2['Category Label'];
+                    $root_code  = $row2['Category Code'];
+                    $root_key   = $row2['Category Key'];
                 } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
+                    $root_label = '';
+                    $root_code  = '';
+                    $root_key   = '';
                 }
 
 
@@ -3286,18 +3287,16 @@ class Product extends Asset {
                     $value = $row['Category Label'];
                 }
                 $category_data[] = array(
-                    'root_label'   => $root_label,
-                    'root_code'    => $root_code,
-                    'label'        => $row['Category Label'],
-                    'code'         => $row['Category Code'],
-                    'value'        => $value,
-                    'category_key' => $row['Category Key']
+                    'root_label'        => $root_label,
+                    'root_code'         => $root_code,
+                    'root_category_key' => $root_key,
+                    'label'             => $row['Category Label'],
+                    'code'              => $row['Category Code'],
+                    'value'             => $value,
+                    'category_key'      => $row['Category Key']
                 );
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 

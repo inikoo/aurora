@@ -10,11 +10,7 @@
 */
 
 
-
-function get_omega_export_text($db,$account,$invoice) {
-
-
-
+function get_omega_export_text($db, $account, $invoice) {
 
 
     $european_union_2alpha = array(
@@ -48,11 +44,10 @@ function get_omega_export_text($db,$account,$invoice) {
     );
 
 
-    $store    = get_object('Store', $invoice->get('Invoice Store Key'));
+    $store = get_object('Store', $invoice->get('Invoice Store Key'));
 
 
     $order = get_object('Order', $invoice->get('Invoice Order Key'));
-
 
 
     if ($invoice->get('Invoice Currency') == 'EUR') {
@@ -83,6 +78,7 @@ function get_omega_export_text($db,$account,$invoice) {
     if ($account->get('Account Country 2 Alpha Code') == $invoice->get('Invoice Address Country 2 Alpha Code')) {
         $invoice_numeric_code          = 100;
         $invoice_alpha_code            = 'OF';
+        $invoice_alpha_code_bis        = 'OF';
         $invoice_numeric_code_total    = 100;
         $invoice_numeric_code_shipping = 101;
         $invoice_numeric_code_charges  = 102;
@@ -94,6 +90,8 @@ function get_omega_export_text($db,$account,$invoice) {
         $invoice_numeric_code_charges  = 202;
 
         $invoice_alpha_code = 'zOF';
+
+        $invoice_alpha_code_bis = 'zOF'.$store->get('Store Code');
     }
 
     if ($invoice->get('Invoice Address Country 2 Alpha Code') == 'SK') {
@@ -132,17 +130,19 @@ function get_omega_export_text($db,$account,$invoice) {
 
     }
 
-    $_total_amount_exchange = round( ($invoice->get('Invoice Items Net Amount')-$invoice->get('Invoice Net Amount Off') ) * $exchange_rate, 2) + round($invoice->get('Invoice Shipping Net Amount') * $exchange_rate, 2) + round($invoice->get('Invoice Charges Net Amount') * $exchange_rate, 2) + round(
+    $_total_amount_exchange =
+        round(($invoice->get('Invoice Items Net Amount') - $invoice->get('Invoice Net Amount Off')) * $exchange_rate, 2) + round($invoice->get('Invoice Shipping Net Amount') * $exchange_rate, 2) + round($invoice->get('Invoice Charges Net Amount') * $exchange_rate, 2)
+        + round(
             $invoice->get('Invoice Total Tax Amount') * $exchange_rate, 2
         );
 
 
-    $text='';
+    $text                = '';
     $invoice_header_data = array(
         'R01',
         $invoice_numeric_code,
         $invoice_alpha_code,
-        $invoice_alpha_code,
+        $invoice_alpha_code_bis,
         $invoice->get('Invoice Public ID'),
         $order->get('Order Public ID'),
         $invoice->get('Invoice Customer Name'),
@@ -162,7 +162,7 @@ function get_omega_export_text($db,$account,$invoice) {
         10,
         20,
         '0.000',
-        $invoice->get('Invoice Items Net Amount') -$invoice->get('Invoice Net Amount Off')+ $invoice->get('Invoice Shipping Net Amount') + $invoice->get('Invoice Charges Net Amount'),
+        $invoice->get('Invoice Items Net Amount') - $invoice->get('Invoice Net Amount Off') + $invoice->get('Invoice Shipping Net Amount') + $invoice->get('Invoice Charges Net Amount'),
         '0.000',
         '0.000',
         '0.000',
@@ -258,8 +258,8 @@ function get_omega_export_text($db,$account,$invoice) {
         '',
         604,
         $invoice_numeric_code_total,
-        round(($invoice->get('Invoice Items Net Amount') -$invoice->get('Invoice Net Amount Off'))* $exchange_rate, 2),
-        $invoice->get('Invoice Items Net Amount')-$invoice->get('Invoice Net Amount Off'),
+        round(($invoice->get('Invoice Items Net Amount') - $invoice->get('Invoice Net Amount Off')) * $exchange_rate, 2),
+        $invoice->get('Invoice Items Net Amount') - $invoice->get('Invoice Net Amount Off'),
         'Items '.$store->get('Code').' '.$invoice->get('Invoice Tax Code'),
         $code_sum,
         '',
@@ -434,7 +434,6 @@ function get_omega_export_text($db,$account,$invoice) {
 
 
     return $text;
-
 
 
 }

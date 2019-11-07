@@ -2360,7 +2360,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                     if ($value) {
 
-                        if ($this->data['Product Category Department Category Key'] != $value) {
+
+
+                        if ($this->data['Product Category Department Category Key'] != $value ) {
 
                             $old_parent_category = get_object('Category', $this->data['Product Category Department Category Key']);
                             $new_parent_category = get_object('Category', $value);
@@ -2443,6 +2445,9 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
                     //$this->update_subject_field($field, $value, 'no_history');
                     $this->update_table_field($field, $value, 'no_history', 'Product Category', 'Product Category Dimension', $this->id);
+
+
+
 
                     $categories = '';
                     foreach ($this->get_category_data() as $item) {
@@ -2795,7 +2800,6 @@ VALUES (%d,%s, %d, %d, %s,%s, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
         }
 
 
-        // print $this->data['Category Subject Multiplicity']."\n";
 
         if ($this->data['Category Subject Multiplicity'] == 'Yes' or $force_associate) {
 
