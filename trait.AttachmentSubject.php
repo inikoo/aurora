@@ -18,6 +18,7 @@ trait AttachmentSubject {
 
     /**
      * @param $raw_data
+     *
      * @return \Attachment
      */
 
@@ -39,10 +40,9 @@ trait AttachmentSubject {
 
 
             $sql = sprintf(
-                "INSERT INTO `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`,`Attachment Subject Type`,`Attachment Public`) VALUES (%d,%s,%d,%s,%s,%s,%s)",
-                $attach->id, prepare_mysql($this->get_object_name()), $this->id, prepare_mysql($raw_data['Attachment File Original Name']),
-                prepare_mysql($raw_data['Attachment Caption'], false), prepare_mysql($raw_data['Attachment Subject Type']),
-                 prepare_mysql((isset($raw_data['Attachment Public'])?$raw_data['Attachment Public']:'No'))
+                "INSERT INTO `Attachment Bridge` (`Attachment Key`,`Subject`,`Subject Key`,`Attachment File Original Name`,`Attachment Caption`,`Attachment Subject Type`,`Attachment Public`) VALUES (%d,%s,%d,%s,%s,%s,%s)", $attach->id,
+                prepare_mysql($this->get_object_name()), $this->id, prepare_mysql($raw_data['Attachment File Original Name']), prepare_mysql($raw_data['Attachment Caption'], false), prepare_mysql($raw_data['Attachment Subject Type']),
+                prepare_mysql((isset($raw_data['Attachment Public']) ? $raw_data['Attachment Public'] : 'No'))
 
 
             );
@@ -83,62 +83,54 @@ trait AttachmentSubject {
         return $attach;
     }
 
-
-    function delete_attachment($attachment_bridge_key) {
-
-        $sql = sprintf(
-            'SELECT `Subject Key`,`Attachment Bridge Key` FROM `Attachment Bridge` WHERE `Attachment Bridge Key`=%d ', $attachment_bridge_key
-        );
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-
-
-                $sql = sprintf(
-                    'DELETE FROM `Attachment Bridge` WHERE `Attachment Bridge Key`=%d ', $attachment_bridge_key
-                );
-                $this->db->exec($sql);
-
-                $attachment         = new Attachment(
-                    'bridge_key', $row['Attachment Bridge Key']
-                );
-                $attachment->editor = $this->editor;
-
-                $attachment->delete();
-
-
-            } else {
-                $this->error;
-                $this->msg = _('Attachment not found');
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql";
-            exit;
-        }
-
-        $this->update_attachments_data();
-
-    }
-
-
     function update_attachments_data() {
 
         $sql = sprintf(
-            'SELECT count(*) AS num FROM `Attachment Bridge` WHERE `Subject`=%s AND `Subject Key`=%d ',prepare_mysql( $this->get_object_name()) , $this->id
+            'SELECT count(*) AS num FROM `Attachment Bridge` WHERE `Subject`=%s AND `Subject Key`=%d ', prepare_mysql($this->get_object_name()), $this->id
         );
 
-        $number=0;
+        $number = 0;
 
-        if ($result=$this->db->query($sql)) {
+        if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-                $number=$row['num'];
-        	}
+                $number = $row['num'];
+            }
         }
 
         $this->fast_update(
-            array($this->get_object_name().' Number Attachments'=>$number)
+            array($this->get_object_name().' Number Attachments' => $number)
         );
 
+
+    }
+
+    function delete_attachment($attachment_bridge_key) {
+
+        $sql = "SELECT `Subject Key`,`Attachment Bridge Key` FROM `Attachment Bridge` WHERE `Attachment Bridge Key`=? ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $attachment_bridge_key
+            )
+        );
+        if ($row = $stmt->fetch()) {
+
+            $attachment         = new Attachment('bridge_key', $row['Attachment Bridge Key']);
+            $attachment->editor = $this->editor;
+
+            $sql = 'DELETE FROM `Attachment Bridge` WHERE `Attachment Bridge Key`=?';
+            $this->db->prepare($sql)->execute(array($attachment_bridge_key));
+
+
+            $attachment->delete();
+        } else {
+            $this->error;
+            $this->msg = _('Attachment not found');
+        }
+
+
+        $this->update_attachments_data();
 
     }
 

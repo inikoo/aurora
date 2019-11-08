@@ -32,6 +32,7 @@ $stmt->execute(
 if ($row = $stmt->fetch()) {
     if (authorize_file_view($db, $user, $row['Attachment Public'], $row['Subject'], $row['Subject Key'])) {
         header('Content-Type: '.$row['Attachment MIME Type']);
+        header('Content-Transfer-Encoding: binary');
         header('Content-Disposition: inline; filename='.$row['Attachment File Original Name']);
         echo $row['Attachment Data'];
     } else {

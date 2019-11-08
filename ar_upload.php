@@ -42,19 +42,7 @@ switch ($tipo) {
 
         get_data($account, $db, $user, $data, $smarty);
         break;
-    case 'upload_objects_to_delete':
 
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'parent'     => array('type' => 'string'),
-                         'parent_key' => array('type' => 'numeric'),
-                         'object'     => array('type' => 'string'),
-
-                     )
-        );
-
-        upload_objects($account, $db, $user, $editor, $data, $smarty);
-        break;
     case 'edit_objects':
 
         $data = prepare_values(
@@ -62,7 +50,10 @@ switch ($tipo) {
                          'parent'                         => array('type' => 'string'),
                          'parent_key'                     => array('type' => 'numeric'),
                          'objects'                        => array('type' => 'string'),
-                         'upload_type'                        => array('type' => 'string','optional'=>true),
+                         'upload_type'                    => array(
+                             'type'     => 'string',
+                             'optional' => true
+                         ),
                          'allow_duplicate_part_reference' => array(
                              'type'     => 'string',
                              'optional' => true
@@ -104,12 +95,12 @@ switch ($tipo) {
                              'type'     => 'string',
                              'optional' => true
                          ),
-                         'metadata'             => array(
+                         'metadata'            => array(
                              'type'     => 'string',
                              'optional' => true
                          ),
 
-                         'response_type'       => array(
+                         'response_type' => array(
                              'type'     => 'string',
                              'optional' => true
                          ),
@@ -151,10 +142,9 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
     // print_r($data);
 
 
-    if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD'])
-        && strtolower($_SERVER['REQUEST_METHOD']) == 'post') { //catch file overload error...
-        $postMax  = ini_get('post_max_size'); //grab the size limits...
-        $msg      = "File can not be attached, please note files larger than {$postMax} will result in this error!, let's us know, an we will increase the size limits"; // echo out error and solutions...
+    if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
+        $postMax  = ini_get('post_max_size');
+        $msg      = "File can not be attached, please note files larger than {$postMax} will result in this error!, let's us know, an we will increase the size limits";
         $response = array(
             'state' => 400,
             'msg'   => _('Files could not be attached').".<br>".$msg,
@@ -169,11 +159,10 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
 
 
         if ($file_data['error']) {
-            $msg = $file_data['error'];
 
             if ($file_data['error'] === UPLOAD_ERR_INI_SIZE) {
                 $msg = sprintf(
-                    _('file exceeds the upload max filesize (%s)'), ini_get('upload_max_filesize')
+                    _('file exceeds the upload max file size (%s)'), ini_get('upload_max_filesize')
                 );
 
             } elseif ($file_data['error'] === UPLOAD_ERR_FORM_SIZE) {
@@ -227,9 +216,7 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
             }
             $response = array(
                 'state' => 400,
-                'msg'   => _(
-                        'Files could not be attached'
-                    )." ".$msg,
+                'msg'   => _('Files could not be attached')." $msg",
                 'key'   => 'attach'
             );
             echo json_encode($response);
@@ -263,9 +250,7 @@ function upload_attachment($account, $db, $user, $editor, $data, $smarty) {
                 $smarty->assign('parent', $parent_reference);
                 $smarty->assign('parent_key', $parent->id);
 
-                $pcard        = $smarty->fetch(
-                    'presentation_cards/attachment.pcard.tpl'
-                );
+                $pcard        = $smarty->fetch('presentation_cards/attachment.pcard.tpl');
                 $updated_data = array();
                 break;
             case 'Image':
@@ -319,7 +304,6 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
     $images = array();
 
 
-
     if (isset($data['parent_object_scope'])) {
         $parent_object_scope = $data['parent_object_scope'];
     } else {
@@ -327,21 +311,17 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
     }
 
 
-
-
-
     if (isset($data['options'])) {
-        $options =$data['options'];
+        $options = $data['options'];
     } else {
         $options = '';
     }
 
     if (isset($data['metadata'])) {
-        $metadata =json_decode($data['metadata'],true);
+        $metadata = json_decode($data['metadata'], true);
     } else {
         $metadata = '';
     }
-
 
 
     $_options = json_decode($options, true);
@@ -349,8 +329,6 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
     if (!empty($_options['parent_object_scope'])) {
         $parent_object_scope = $_options['parent_object_scope'];
     }
-
-
 
 
     $parent         = get_object($data['parent'], $data['parent_key']);
@@ -448,10 +426,6 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
 
         list($width, $height) = getimagesize($tmp_name);
-
-
-
-
 
 
         if (isset($_options['width']) and isset($_options['height'])) {
@@ -793,23 +767,23 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
 
             $response = array(
-                'state'          => 200,
-                'tipo'           => 'upload_images',
-                'msg'            => $msg,
-                'errors'         => $errors,
-                'error_msg'      => $error_msg,
-                'uploads'        => $uploads,
-                'number_images'  => $parent->get_number_images(),
+                'state'         => 200,
+                'tipo'          => 'upload_images',
+                'msg'           => $msg,
+                'errors'        => $errors,
+                'error_msg'     => $error_msg,
+                'uploads'       => $uploads,
+                'number_images' => $parent->get_number_images(),
 
                 'main_image_key' => $parent->get_main_image_key(),
                 'image_src'      => sprintf('/image.php?id=%d', $image->id),
                 'thumbnail'      => sprintf('<img src="/image.php?id=%d&size=25x20">', $image->id),
                 'small_image'    => sprintf('<img src="/image.php?id=%d&size=320x280">', $image->id),
 
-                'img_key'        => $image->id,
-                'height'         => $image->get('Image Height'),
-                'width'          => $image->get('Image Width'),
-                'ratio'          => $image->get('Image Width') / $image->get('Image Height'),
+                'img_key' => $image->id,
+                'height'  => $image->get('Image Height'),
+                'width'   => $image->get('Image Width'),
+                'ratio'   => $image->get('Image Width') / $image->get('Image Height'),
             );
 
 
@@ -843,7 +817,6 @@ function upload_images($account, $db, $user, $editor, $data, $smarty) {
 
 
 }
-
 
 
 function parse_upload_file_error_msg($file_data_error) {
@@ -1102,9 +1075,9 @@ function edit_objects($account, $db, $user, $editor, $data, $smarty) {
 
     if ($number_files_uploaded) {
         $upload_data = array(
-            'editor'            => $editor,
-            'Upload Type'       => 'EditObjects',
-            'Upload Type'       => (!empty($data['upload_type']) ?$data['upload_type']:  'EditObjects'),
+            'editor'      => $editor,
+            'Upload Type' => 'EditObjects',
+            'Upload Type' => (!empty($data['upload_type']) ? $data['upload_type'] : 'EditObjects'),
 
 
             'Upload Object'     => $data['objects'],

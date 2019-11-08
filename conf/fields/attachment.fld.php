@@ -141,7 +141,7 @@ if ($new) {
                 'id'        => 'delete_attachment',
                 'class'     => 'operation',
                 'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{  "attachment_bridge_key":"'
+                'label'     => '<i class="fa fa-fw fa-lock-alt button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{  "attachment_bridge_key":"'
                     .$object->get(
                         'Attachment Bridge Key'
                     ).'"}\' onClick="delete_attachment(this)" class="delete_object disabled">'._("Delete attachment").' <i class="far fa-trash-alt new_button link"></i></span>',
@@ -159,4 +159,3 @@ if ($new) {
 }
 
 
-?>

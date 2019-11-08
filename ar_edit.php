@@ -214,7 +214,7 @@ switch ($tipo) {
                      )
         );
 
-        delete_attachment($account, $db, $user, $editor, $data, $smarty);
+        delete_attachment($db, $editor, $data);
         break;
 
 
@@ -338,7 +338,7 @@ function edit_field($account, $db, $editor, $data, $smarty, $user) {
     $field = preg_replace('/_/', ' ', $data['field']);
 
 
-    if(!$object->can_edit_field($user,$data['field'])){
+    if (!$object->can_edit_field($user, $data['field'])) {
         $response = array(
             'state' => 400,
             'msg'   => _("Sorry you don't have permission to do this")
@@ -413,9 +413,6 @@ function edit_field($account, $db, $editor, $data, $smarty, $user) {
     }
 
 
-
-
-
     if ($object->get_object_name() == 'Page') {
         $formatted_field = preg_replace('/^Webpage /', '', $field);
         $formatted_field = preg_replace('/^'.$object->get_object_name().' /', '', $formatted_field);
@@ -442,8 +439,6 @@ function edit_field($account, $db, $editor, $data, $smarty, $user) {
     } else {
         $options = '';
     }
-
-
 
 
     if (isset($data['metadata'])) {
@@ -999,8 +994,7 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
         case 'reindex':
             /**
              * @var $object \Page
-             */
-            $request = $object->reindex();
+             */ $request = $object->reindex();
             break;
         case 'archive':
             $request = $object->archive();
@@ -3545,66 +3539,67 @@ function set_as_principal_image($account, $db, $user, $editor, $data, $smarty) {
     }
 }
 
-
-function delete_attachment($account, $db, $user, $editor, $data, $smarty) {
+/**
+ * @param $db \PDO
+ * @param $editor
+ * @param $data
+ */
+function delete_attachment($db, $editor, $data) {
 
     include_once 'class.Attachment.php';
 
 
-    $sql = sprintf(
-        'SELECT `Subject`,`Subject Key`,`Attachment Key` FROM `Attachment Bridge` WHERE `Attachment Bridge Key`=%d ', $data['attachment_bridge_key']
+    $sql = "SELECT `Subject`,`Subject Key`,`Attachment Key` FROM `Attachment Bridge` WHERE `Attachment Bridge Key`=? ";
+
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $data['attachment_bridge_key']
+        )
     );
-    if ($result = $db->query($sql)) {
-        if ($row = $result->fetch()) {
+    if ($row = $stmt->fetch()) {
 
-            switch ($row['Subject']) {
-                case 'Customer Communications':
-                case 'Customer History Attachment':
-                    $_object = 'Customer';
-                    break;
-                case 'Staff':
-                    $_object = 'Staff';
-                    $request = 'employee/'.$row['Subject Key'];
-                    break;
-                case 'Supplier':
-                    $_object = 'Supplier';
-                    $request = 'supplier/'.$row['Subject Key'];
-                    break;
-                default:
-                    $_object = $row['Subject'];
-                    break;
-            }
+        switch ($row['Subject']) {
+            case 'Customer Communications':
+            case 'Customer History Attachment':
+                $_object = 'Customer';
+                $object  = get_object($_object, $row['Subject Key']);
 
-            $object         = get_object($_object, $row['Subject Key']);
-            $object->editor = $editor;
+                break;
+            case 'Staff':
+                $_object = 'Staff';
+                $object  = get_object($_object, $row['Subject Key']);
 
-            if (!$object->id) {
-                $msg      = 'object key not found';
-                $response = array(
-                    'state' => 400,
-                    'msg'   => $msg
+                $request = 'employee/'.$row['Subject Key'];
+                break;
+            case 'Supplier':
+                $_object = 'Supplier';
+                $object  = get_object($_object, $row['Subject Key']);
+
+                $request = 'supplier/'.$row['Subject Key'];
+                break;
+            case 'Supplier Delivery':
+                $_object = 'SupplierDelivery';
+                /**
+                 * @var $object \SupplierDelivery
+                 */
+                $object = get_object($_object, $row['Subject Key']);
+
+                $request = sprintf(
+                    '%s/%d/delivery/%d', strtolower($object->get('Supplier Delivery Parent')), $object->get('Supplier Delivery Parent Key'), $object->id
+
                 );
-                echo json_encode($response);
-                exit;
-            }
+            default:
+                $_object = $row['Subject'];
+                $object  = get_object($_object, $row['Subject Key']);
 
-            $object->delete_attachment($data['attachment_bridge_key']);
+                break;
+        }
 
-            $response = array(
-                'state' => 200,
-                'msg'   => _('Attachment deleted')
+        $object->editor = $editor;
 
-            );
-
-            if (isset($request)) {
-                $response['request'] = $request;
-            }
-
-            echo json_encode($response);
-            exit;
-
-        } else {
-            $msg      = _('Attachment not found');
+        if (!$object->id) {
+            $msg      = 'object key not found';
             $response = array(
                 'state' => 400,
                 'msg'   => $msg
@@ -3612,10 +3607,34 @@ function delete_attachment($account, $db, $user, $editor, $data, $smarty) {
             echo json_encode($response);
             exit;
         }
+
+
+
+        $object->delete_attachment($data['attachment_bridge_key']);
+
+        $response = array(
+            'state' => 200,
+            'msg'   => _('Attachment deleted')
+
+        );
+
+        if (isset($request)) {
+            $response['request'] = $request;
+        }
+
+        echo json_encode($response);
+        exit;
     } else {
-        print_r($error_info = $db->errorInfo());
+        $msg      = _('Attachment not found');
+        $response = array(
+            'state' => 400,
+            'msg'   => $msg
+        );
+        echo json_encode($response);
         exit;
     }
+
+
 }
 
 

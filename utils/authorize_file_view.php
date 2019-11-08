@@ -25,7 +25,7 @@ function authorize_file_view($db, $user, $public, $subject, $subject_key) {
         return true;
     }
 
-    print $subject;
+
     switch ($subject) {
 
         case 'Part':
@@ -67,9 +67,6 @@ function authorize_file_view($db, $user, $public, $subject, $subject_key) {
                     if ($row = $result->fetch()) {
                         $found = $row['num'];
                     }
-                } else {
-                    print_r($error_info = $db->errorInfo());
-                    exit;
                 }
 
                 if ($found > 0) {
