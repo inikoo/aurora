@@ -1,0 +1,1 @@
+picker.delivery_notes.cols.tpl
