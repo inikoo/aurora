@@ -4006,6 +4006,30 @@ $tab_defaults = array(
         'period'      => 'last_w'
 
     ),
+    'picker.delivery_notes' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => '',
+        'export_fields' => $export_fields['delivery_notes'],
+        'period'      => 'last_w',
+        'from'          => '',
+        'to'            => '',
+
+    ),
+    'picker.feedback'                 => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'period'      => 'last_w',
+        'from'          => '',
+        'to'            => '',
+    ),
     'packers'                  => array(
         'view'        => 'overview',
         'sort_key'    => 'name',
@@ -4013,9 +4037,35 @@ $tab_defaults = array(
         'rpp'         => 500,
         'rpp_options' => $default_rrp_options,
         'f_field'     => 'name',
-        'from'        => '',
-        'to'          => '',
-        'period'      => 'last_w'
+        'period'      => 'last_w',
+        'from'          => '',
+        'to'            => '',
+
+    ),
+    'packer.delivery_notes' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => '',
+        'export_fields' => $export_fields['delivery_notes'],
+        'period'      => 'last_w',
+        'from'          => '',
+        'to'            => '',
+
+
+    ),
+    'packer.feedback'                 => array(
+        'view'        => 'overview',
+        'sort_key'    => 'date',
+        'sort_order'  => -1,
+        'rpp'         => 100,
+        'rpp_options' => $default_rrp_options,
+        'f_field'     => 'reference',
+        'period'      => 'last_w',
+        'from'          => '',
+        'to'            => '',
 
     ),
     'sales_representatives'    => array(

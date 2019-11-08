@@ -26,6 +26,7 @@ $fields = "
 
 switch ($parameters['parent']) {
 
+
     case 'supplier':
         $where = sprintf("where `Feedback Supplier`='Yes'  and `Supplier Key`=%d ", $parameters['parent_key']);
 
@@ -85,6 +86,7 @@ switch ($parameters['parent']) {
 
         break;
     default:
+        exit('unknown parent '.$parameters['parent']);
         break;
 }
 
@@ -150,3 +152,5 @@ if ($order == 'reference') {
 
 $sql_totals = "select count(*) as num from $table  $where  ";
 
+print $sql_totals;
+exit;

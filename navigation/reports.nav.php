@@ -11,7 +11,6 @@
 */
 
 
-
 function get_lost_stock_navigation($user, $smarty, $data) {
 
 
@@ -115,14 +114,12 @@ function get_report_orders_navigation($user, $smarty, $data) {
     $sections      = array();
 
 
-
-    $right_buttons[]
-        = array(
-        'icon'  => 'tasks',
-        'title' => '',
-        'click'=>"change_view('/report/report_orders_components')",
-        'pre_text'=>_("X-rays"),
-        'class'=>'text'
+    $right_buttons[] = array(
+        'icon'     => 'tasks',
+        'title'    => '',
+        'click'    => "change_view('/report/report_orders_components')",
+        'pre_text' => _("X-rays"),
+        'class'    => 'text'
     );
 
 
@@ -159,14 +156,12 @@ function get_report_orders_components_navigation($user, $smarty, $data) {
     $sections      = array();
 
 
-
-    $right_buttons[]
-        = array(
-        'icon'  => 'fa-dollar-sign',
-        'title' => '',
-        'click'=>"change_view('/report/report_orders')",
-        'pre_text'=>_("Sales"),
-        'class'=>'text'
+    $right_buttons[] = array(
+        'icon'     => 'fa-dollar-sign',
+        'title'    => '',
+        'click'    => "change_view('/report/report_orders')",
+        'pre_text' => _("Sales"),
+        'class'    => 'text'
     );
 
 
@@ -193,7 +188,6 @@ function get_report_orders_components_navigation($user, $smarty, $data) {
     return $html;
 
 }
-
 
 
 function get_report_delivery_notes_navigation($user, $smarty, $data) {
@@ -236,18 +230,18 @@ function get_pickers_navigation($user, $smarty, $data) {
     $sections      = array();
 
 
-    $right_buttons[]
-        = array(
-        'icon'  => 'arrow-right',
-        'title' => '',
-        'click'=>"change_view('/report/packers')",
-        'pre_text'=>_('Packers'),
-        'class'=>'text'
+    $right_buttons[] = array(
+        'icon'     => 'arrow-right',
+        'title'    => '',
+        'click'    => "change_view('/report/packers')",
+        'pre_text' => _('Packers'),
+        'class'    => 'text'
     );
 
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;
     }
+
 
     $title = _('Pickers productivity');
 
@@ -277,14 +271,13 @@ function get_packers_navigation($user, $smarty, $data) {
     $sections      = array();
 
 
-    $right_buttons[]
-        = array(
+    $right_buttons[] = array(
         'icon'  => 'arrow-left',
         'title' => '',
-        'click'=>"change_view('/report/pickers')",
-        'text'=>_('Pickers'),
-        'class'=>'text'
-        );
+        'click' => "change_view('/report/pickers')",
+        'text'  => _('Pickers'),
+        'class' => 'text'
+    );
 
 
     if (isset($sections[$data['section']])) {
@@ -542,7 +535,6 @@ function get_invoices_georegion_taxcategory_navigation($user, $smarty, $data, $t
 }
 
 
-
 function get_intrastat_imports_navigation($user, $smarty, $data) {
 
 
@@ -607,7 +599,6 @@ function get_intrastat_navigation($user, $smarty, $data) {
 }
 
 function get_intrastat_products_navigation($user, $smarty, $data) {
-
 
 
     $up_button = array(
@@ -698,7 +689,6 @@ function get_intrastat_orders_navigation($user, $smarty, $data) {
 }
 
 
-
 function get_sales_representatives_navigation($user, $smarty, $data) {
 
 
@@ -706,16 +696,16 @@ function get_sales_representatives_navigation($user, $smarty, $data) {
     $right_buttons = array();
     $sections      = array();
 
-/*
-    $right_buttons[]
-        = array(
-        'icon'  => 'arrow-right',
-        'title' => '',
-        'click'=>"change_view('/report/packers')",
-        'pre_text'=>_('Packers'),
-        'class'=>'text'
-    );
-*/
+    /*
+        $right_buttons[]
+            = array(
+            'icon'  => 'arrow-right',
+            'title' => '',
+            'click'=>"change_view('/report/packers')",
+            'pre_text'=>_('Packers'),
+            'class'=>'text'
+        );
+    */
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;
     }
@@ -739,7 +729,6 @@ function get_sales_representatives_navigation($user, $smarty, $data) {
     return $html;
 
 }
-
 
 
 function get_sales_representative_navigation($user, $smarty, $data) {
@@ -767,7 +756,7 @@ function get_sales_representative_navigation($user, $smarty, $data) {
         'reference' => 'report/sales_representatives'
     );
 
-    $left_buttons  = array($up_button);
+    $left_buttons = array($up_button);
 
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;
@@ -836,9 +825,6 @@ function get_prospect_agents_navigation($user, $smarty, $data) {
 }
 
 
-
-
-
 function get_prospect_agent_navigation($user, $smarty, $data) {
 
 
@@ -864,7 +850,7 @@ function get_prospect_agent_navigation($user, $smarty, $data) {
         'reference' => 'report/prospect_agents'
     );
 
-    $left_buttons  = array($up_button);
+    $left_buttons = array($up_button);
 
     if (isset($sections[$data['section']])) {
         $sections[$data['section']]['selected'] = true;
@@ -900,8 +886,6 @@ function get_prospect_agent_email_tracking_navigation($data, $smarty, $user, $db
 
     $left_buttons  = array();
     $right_buttons = array();
-
-
 
 
     if ($data['parent']) {
@@ -1015,9 +999,9 @@ function get_prospect_agent_email_tracking_navigation($data, $smarty, $user, $db
         switch ($data['parent']) {
             case 'prospect_agent':
 
-                $receiver    = get_object($data['_object']->get('Email Tracking Recipient'),$data['_object']->get('Email Tracking Recipient Key'));
+                $receiver    = get_object($data['_object']->get('Email Tracking Recipient'), $data['_object']->get('Email Tracking Recipient Key'));
                 $placeholder = _('Search reports');
-                $sections      = get_sections('reports', '');
+                $sections    = get_sections('reports', '');
 
 
                 $up_button = array(
@@ -1064,7 +1048,6 @@ function get_prospect_agent_email_tracking_navigation($data, $smarty, $user, $db
                 break;
 
 
-
         }
 
 
@@ -1099,7 +1082,6 @@ function get_prospect_agent_email_tracking_navigation($data, $smarty, $user, $db
 
 
 function get_intrastat_parts_navigation($user, $smarty, $data) {
-
 
 
     $up_button = array(
@@ -1190,4 +1172,170 @@ function get_intrastat_deliveries_navigation($user, $smarty, $data) {
 }
 
 
+function get_picker_packer_navigation($data, $db, $user, $smarty) {
 
+
+    $object        = get_object('Staff', $data['key']);
+    $left_buttons  = array();
+    $right_buttons = array();
+
+    $sections      = array();
+
+
+
+    switch ($data['section']) {
+        case 'picker':
+            $tab      = 'pickers';
+            $_section = 'pickers';
+            $parent_title=_('Pickers productivity');
+            break;
+        case 'packer':
+            $tab      = 'packers';
+            $_section = 'packers';
+            $parent_title=_('Packers productivity');
+            break;
+        default:
+            exit();
+
+    }
+
+
+    if (isset($_SESSION['table_state'][$tab])) {
+        $number_results  = $_SESSION['table_state'][$tab]['nr'];
+        $start_from      = 0;
+        $order           = $_SESSION['table_state'][$tab]['o'];
+        $order_direction = ($_SESSION['table_state'][$tab]['od'] == 1 ? 'desc' : '');
+        $f_value         = $_SESSION['table_state'][$tab]['f_value'];
+        $parameters      = $_SESSION['table_state'][$tab];
+    } else {
+
+        $default                  = $user->get_tab_defaults($tab);
+        $number_results           = $default['rpp'];
+        $start_from               = 0;
+        $order                    = $default['sort_key'];
+        $order_direction          = ($default['sort_order'] == 1 ? 'desc' : '');
+        $f_value                  = '';
+        $parameters               = $default;
+        $parameters['parent']     = $data['parent'];
+        $parameters['parent_key'] = $data['parent_key'];
+    }
+
+    include_once 'prepare_table/'.$tab.'.ptble.php';
+
+    $_order_field       = $order;
+    $order              = preg_replace('/^.*\.`/', '', $order);
+    $order              = preg_replace('/^`/', '', $order);
+    $order              = preg_replace('/`$/', '', $order);
+    $_order_field_value = $object->get($order);
+
+
+    $prev_title = '';
+    $next_title = '';
+    $prev_key   = 0;
+    $next_key   = 0;
+
+
+    $sql = sprintf(
+        "select `Staff Name` object_name,S.`Staff Key` as object_key from  %s  
+	                and ($_order_field < %s OR ($_order_field = %s AND S.`Staff Key` < %d))  order by $_order_field desc , S.`Staff Key` desc limit 1", "$table   $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+    );
+
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $prev_key   = $row['object_key'];
+            $prev_title = _("Employee").' '.$row['object_name'].' ('.$row['object_key'].')';
+        }
+    }
+
+
+    $sql = sprintf(
+        "select `Staff Name` object_name,S.`Staff Key` as object_key from %s  
+	                and ($_order_field  > %s OR ($_order_field  = %s AND S.`Staff Key` > %d))  order by $_order_field   , S.`Staff Key`  limit 1", "$table   $where $wheref", prepare_mysql($_order_field_value), prepare_mysql($_order_field_value), $object->id
+    );
+
+
+    if ($result = $db->query($sql)) {
+        if ($row = $result->fetch()) {
+            $next_key   = $row['object_key'];
+            $next_title = _("Employee").' '.$row['object_name'].' ('.$row['object_key'].')';
+
+        }
+    }
+
+    if ($order_direction == 'desc') {
+        $_tmp1      = $prev_key;
+        $_tmp2      = $prev_title;
+        $prev_key   = $next_key;
+        $prev_title = $next_title;
+        $next_key   = $_tmp1;
+        $next_title = $_tmp2;
+    }
+
+
+    $up_button = array(
+        'icon'      => 'arrow-up',
+        'title'     => $parent_title,
+        'reference' => 'report/'.$_section
+    );
+
+    if ($prev_key) {
+        $left_buttons[] = array(
+            'icon'      => 'arrow-left',
+            'title'     => $prev_title,
+            'reference' => 'report/'.$_section.'/'.$prev_key
+        );
+
+    } else {
+        $left_buttons[] = array(
+            'icon'  => 'arrow-left disabled',
+            'title' => '',
+            'url'   => ''
+        );
+
+    }
+    $left_buttons[] = $up_button;
+
+
+    if ($next_key) {
+        $left_buttons[] = array(
+            'icon'      => 'arrow-right',
+            'title'     => $next_title,
+            'reference' =>  'report/'.$_section.'/'.$next_key
+        );
+
+    } else {
+        $left_buttons[] = array(
+            'icon'  => 'arrow-right disabled',
+            'title' => '',
+            'url'   => ''
+        );
+
+    }
+
+
+
+
+    $title = '<span class="id Staff_Name">'.$object->get('Alias').'</span> (<span class="id Staff_ID ">'.$object->get('ID').'</span>)';
+
+
+    $_content = array(
+        'sections_class' => '',
+        'sections'       => $sections,
+        'left_buttons'   => $left_buttons,
+        'right_buttons'  => $right_buttons,
+        'title'          => $title,
+        'search'         => array(
+            'show'        => true,
+            'placeholder' => _('Search staff')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+
+    $html = $smarty->fetch('navigation.tpl');
+
+    return $html;
+
+}

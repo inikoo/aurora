@@ -2542,6 +2542,11 @@ function get_navigation($user, $smarty, $data, $db, $account) {
 
                 case ('packers'):
                     return get_packers_navigation($user, $smarty, $data);
+                case ('picker'):
+                    return get_picker_packer_navigation($data,$db,$user, $smarty);
+
+                case ('packer'):
+                    return get_picker_packer_navigation($data,$db,$user, $smarty);
 
                 case ('sales_representatives'):
                     return get_sales_representatives_navigation($user, $smarty, $data);
@@ -10479,14 +10484,43 @@ function get_view_position($db, $state, $user, $smarty, $account) {
                     'reference' => ''
                 );
 
-            } elseif ($state['section'] == 'packers') {
+            } elseif ($state['section'] == 'picker') {
+                $branch[] = array(
+                    'label'     => _('Pickers productivity'),
+                    'icon'      => '',
+                    'reference' => 'report/pickers',
+                );
+                $staff=get_object('Staff',$state['key']);
+
+                $branch[] = array(
+                    'label'     => $staff->get('Name'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            }elseif ($state['section'] == 'packers') {
                 $branch[] = array(
                     'label'     => _('Packers productivity'),
                     'icon'      => '',
                     'reference' => ''
                 );
 
-            } elseif ($state['section'] == 'sales_representatives') {
+            } elseif ($state['section'] == 'packer') {
+                $branch[] = array(
+                    'label'     => _('Packers productivity'),
+                    'icon'      => '',
+                    'reference' => 'report/packers',
+                );
+
+                $staff=get_object('Staff',$state['key']);
+
+                $branch[] = array(
+                    'label'     => $staff->get('Name'),
+                    'icon'      => '',
+                    'reference' => ''
+                );
+
+            }elseif ($state['section'] == 'sales_representatives') {
                 $branch[] = array(
                     'label'     => _('Sales representatives productivity'),
                     'icon'      => '',

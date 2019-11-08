@@ -24,7 +24,6 @@ if (!$user->can_view('staff')) {
     exit;
 }
 
-
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
         'state' => 405,
@@ -86,6 +85,10 @@ switch ($tipo) {
         break;
     case 'clocking_machines':
         clocking_machines(get_table_parameters(), $db, $user);
+        break;
+    case 'picker_feedback':
+    case 'packer_feedback':
+        picker_packer_feedback(get_table_parameters(), $db, $user, $account);
         break;
     default:
         $response = array(
@@ -575,19 +578,18 @@ function timesheets($_data, $db, $user) {
 
 /**
  * @param $_data
- * @param $db \PDO
+ * @param $db   \PDO
  * @param $user \User
  *
  * @throws \Exception
  */
 function timesheet_records($_data, $db, $user) {
 
-    if($user->can_edit('Staff')){
-        $can_edit=true;
-    }else{
-        $can_edit=false;
+    if ($user->can_edit('Staff')) {
+        $can_edit = true;
+    } else {
+        $can_edit = false;
     }
-
 
 
     $rtext_label = 'request';
@@ -721,16 +723,14 @@ function timesheet_records($_data, $db, $user) {
             }
 
 
-
-
-            if($can_edit) {
+            if ($can_edit) {
                 $notes = sprintf(
                     '<span class="button" key="%d" onclick="open_timesheet_record_notes(this)" id="notes_%d" >%s<span class="note">%s</span></span>', $data['Timesheet Record Key'], $data['Timesheet Record Key'],
                     '<i class="far fa-sticky-note very_discreet '.($data['Timesheet Record Note'] != '' ? 'hide' : '').'" aria-hidden="true"></i> ', ($data['Timesheet Record Note'])
                 );
-            }else{
-                $used    = '';
-                $notes=$data['Timesheet Record Note'];
+            } else {
+                $used  = '';
+                $notes = $data['Timesheet Record Note'];
             }
             date_default_timezone_set($data['Timesheet Timezone']);
             if ($data['Timesheet Record Date'] != '') {
@@ -747,18 +747,18 @@ function timesheet_records($_data, $db, $user) {
 
             $adata[] = array(
 
-                'id'                     => (integer)$data['Timesheet Record Key'],
-                'staff_formatted_id'     => sprintf("%04d", $data['Timesheet Record Staff Key']),
-                'formatted_id'           => sprintf("%06d", $data['Timesheet Record Key']),
-                'alias'                  => $data['Staff Alias'],
-                'name'                   => $data['Staff Name'],
-                'type'                   => $type,
-                'action_type'            => $action_type,
-                'source'                 => $source,
-                'ignored'                => $ignored,
-                'used'                   => $used,
-                'notes'                  => $notes,
-                'time'                   => $time
+                'id'                 => (integer)$data['Timesheet Record Key'],
+                'staff_formatted_id' => sprintf("%04d", $data['Timesheet Record Staff Key']),
+                'formatted_id'       => sprintf("%06d", $data['Timesheet Record Key']),
+                'alias'              => $data['Staff Alias'],
+                'name'               => $data['Staff Name'],
+                'type'               => $type,
+                'action_type'        => $action_type,
+                'source'             => $source,
+                'ignored'            => $ignored,
+                'used'               => $used,
+                'notes'              => $notes,
+                'time'               => $time
 
 
             );
@@ -1799,4 +1799,56 @@ function clocking_machines($_data, $db, $user) {
     echo json_encode($response);
 }
 
+
+function picker_packer_feedback($_data, $db, $user, $account) {
+
+
+    $rtext_label = 'issue';
+
+    include_once 'prepare_table/init.php';
+
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    $record_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            $record_data[] = array(
+                'id'       => (integer)$data['Feedback Key'],
+                'delivery_note' => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']),
+                'reference' => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+                'delivery_note_date'     => strftime("%a %e %b %Y", strtotime($data['Delivery Note Date']." +00:00")),
+
+                'date'     => strftime("%a %e %b %Y", strtotime($data['Feedback Date']." +00:00")),
+                'note'     => $data['Feedback Message'],
+                'author'   => $data['User Alias'],
+
+            );
+
+
+        }
+    }else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 

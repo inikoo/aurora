@@ -254,7 +254,6 @@ function change_view_if_has_link_class(element, _request, metadata) {
 
 function change_view(_request, metadata) {
 
-
     $.urlParam = function (name, str) {
         var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(str);
         if (results == null) {
@@ -305,7 +304,6 @@ function change_view(_request, metadata) {
 
                 state = data.app_state;
 
-                console.log(state)
 
                 if (typeof (data.navigation) != "undefined" && data.navigation !== null && data.navigation != '') {
                     $('#navigation').html(data.navigation);

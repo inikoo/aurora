@@ -6563,7 +6563,20 @@ $modules = array(
                 'type' => '',
                 'tabs' => array(
                     'pickers' => array(),
+                )
 
+            ),
+            'picker'               => array(
+                'type' => '',
+                'tabs' => array(
+                    'picker.delivery_notes' => array(
+                        'label' => _('Deliveries'),
+                        'icon'  => 'truck'
+                    ),
+                    'picker.feedback' => array(
+                        'label' => _('Feedback'),
+                        'icon'  => 'poop'
+                    ),
                 )
 
             ),
@@ -6572,6 +6585,20 @@ $modules = array(
                 'tabs' => array(
                     'packers' => array(),
 
+                )
+
+            ),
+            'packer'               => array(
+                'type' => '',
+                'tabs' => array(
+                    'packer.delivery_notes' => array(
+                        'label' => _('Deliveries'),
+                        'icon'  => 'truck'
+                    ),
+                    'packer.feedback' => array(
+                        'label' => _('Feedback'),
+                        'icon'  => 'poop'
+                    ),
                 )
 
             ),

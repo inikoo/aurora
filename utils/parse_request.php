@@ -4869,11 +4869,21 @@ function parse_request($_data, $db, $modules, $account, $user) {
 
                     } elseif ($view_path[0] == 'pickers') {
                         $section = 'pickers';
-
+                        if (isset($view_path[1])) {
+                            if (is_numeric($view_path[1])) {
+                                $section = 'picker';
+                                $key     = $view_path[1];
+                            }
+                        }
 
                     } elseif ($view_path[0] == 'packers') {
                         $section = 'packers';
-
+                        if (isset($view_path[1])) {
+                            if (is_numeric($view_path[1])) {
+                                $section = 'packer';
+                                $key     = $view_path[1];
+                            }
+                        }
 
                     } elseif ($view_path[0] == 'sales_representatives') {
                         $section = 'sales_representatives';

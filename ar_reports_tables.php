@@ -1843,21 +1843,16 @@ function pickers($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
 
             $adata[] = array(
-
-                'name'              => $data['Staff Name'],
+                'id'                => $data['Staff Key'],
+                'name'              => sprintf('<span class="link" onclick="change_view(\'report/pickers/%d\', {parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'],$_data['parameters']['period'], $data['Staff Name']),
                 'deliveries'        => number($data['deliveries']),
-                'issues'            => number($data['issues']),
-                'issues_percentage' => percentage($data['issues'], $data['dp']),
-                //'deliveries_with_errors'            => number($data['deliveries_with_errors']),
-                //'deliveries_with_errors_percentage' => percentage($data['deliveries_with_errors'], $data['deliveries']),
-                //'picks_with_errors'                 => number($data['picks_with_errors']),
-                //'picks_with_errors_percentage'      => percentage($data['picks_with_errors_percentage'], 1),
+                'issues'              => sprintf('<span class="link" onclick="change_view(\'report/pickers/%d\', {tab:\'picker.feedback\'  ,parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'],$_data['parameters']['period'],  number($data['issues'])),
+                'issues_percentage'              => sprintf('<span class="link" onclick="change_view(\'report/pickers/%d\', {tab:\'picker.feedback\'  ,parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'],$_data['parameters']['period'],  percentage($data['issues'], $data['dp'])),
                 'picked'            => number($data['picked'], 0),
                 'dp'                => number($data['dp']),
                 'dp_percentage'     => percentage($data['dp'], $total_dp),
@@ -1891,7 +1886,6 @@ function packers($_data, $db, $user, $account) {
 
     $rtext_label = 'packer';
 
-
     foreach ($_data['parameters'] as $parameter => $parameter_value) {
         $_SESSION['table_state']['pickers'][$parameter] = $parameter_value;
 
@@ -1899,18 +1893,14 @@ function packers($_data, $db, $user, $account) {
 
     include_once 'prepare_table/init.php';
 
-
     $total_dp = 0;
     $sql      = sprintf("select sum(`Inventory Transaction Weight`) as weight,count(distinct `Delivery Note Key`) as delivery_notes,count(distinct `Delivery Note Key`,`Part SKU`) as units  from  `Inventory Transaction Fact` $where group by `Packer Key` ");
-
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $total_dp += ($row['units']);
-
         }
     }
-
 
     if ($total_dp == 0) {
         $total_dp = 1;
@@ -1920,37 +1910,25 @@ function packers($_data, $db, $user, $account) {
     $sql   = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
 
-    //print $sql;
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
 
             $adata[] = array(
-
-                'name'              => $data['Staff Name'],
+                'id'                => $data['Staff Key'],
+                'name'              => sprintf('<span class="link" onclick="change_view(\'report/packers/%d\', {parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'],$_data['parameters']['period'], $data['Staff Name']),
                 'deliveries'        => number($data['deliveries']),
+                'issues'              => sprintf('<span class="link" onclick="change_view(\'report/packers/%d\', {tab:\'packer.feedback\'  ,parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'],$_data['parameters']['period'],  number($data['issues'])),
+                'issues_percentage'              => sprintf('<span class="link" onclick="change_view(\'report/packers/%d\', {tab:\'packer.feedback\'  ,parameters:{period:\'%s\'}})">%s</span>', $data['Staff Key'],$_data['parameters']['period'],  percentage($data['issues'], $data['dp'])),
                 'packed'            => number($data['packed'], 0),
                 'dp'                => number($data['dp']),
                 'dp_percentage'     => percentage($data['dp'], $total_dp),
                 'hrs'               => number($data['hrs'], 1, true),
                 'dp_per_hour'       => ($data['dp_per_hour'] == '' ? '' : number($data['dp_per_hour'], 1, true)),
-                'issues'            => number($data['issues']),
-                'issues_percentage' => percentage($data['issues'], $data['dp']),
-                //'deliveries_with_errors'            => number($data['deliveries_with_errors']),
-                //'deliveries_with_errors_percentage' => percentage($data['deliveries_with_errors'], $data['deliveries']),
-                //'picks_with_errors'                 => number($data['picks_with_errors']),
-                //'picks_with_errors_percentage'      => percentage($data['picks_with_errors_percentage'], 1),
-
-
             );
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
-
 
     $response = array(
         'resultset' => array(

@@ -10,6 +10,20 @@ $wheref   = '';
 $group_by = '';
 
 
+if (isset($parameters['period'])) {
+    include_once('utils/date_functions.php');
+    list(
+        $db_interval, $from, $to, $from_date_1yb, $to_1yb
+        ) = calculate_interval_dates(
+        $db, $parameters['period'], $parameters['from'], $parameters['to']
+    );
+
+    $where_interval = prepare_mysql_dates($from, $to, '`Delivery Note Date`');
+} else {
+    $where_interval = '';
+}
+
+
 if (isset($parameters['awhere']) and $parameters['awhere']) {
     $tmp = preg_replace('/\\\"/', '"', $parameters['awhere']);
     $tmp = preg_replace('/\\\\\"/', '"', $tmp);
@@ -21,11 +35,10 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 
     $where_type     = '';
     $where_interval = '';
-}  elseif ($parameters['parent'] == 'store') {
+} elseif ($parameters['parent'] == 'store') {
     if (is_numeric($parameters['parent_key']) and in_array(
             $parameters['parent_key'], $user->stores
-        )
-    ) {
+        )) {
         $where = sprintf(
             ' where  `Delivery Note Store Key`=%d ', $parameters['parent_key']
         );
@@ -40,8 +53,7 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 } elseif ($parameters['parent'] == 'account') {
     if (is_numeric($parameters['parent_key']) and in_array(
             $parameters['parent_key'], $user->stores
-        )
-    ) {
+        )) {
 
         if (count($user->stores) == 0) {
             $where = ' where false';
@@ -56,41 +68,45 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
     global $corporate_currency;
     $where = sprintf(' where  `Part SKU`=%d ', $parameters['parent_key']);
 
-    $table
-              = '`Inventory Transaction Fact` ITF left join  `Delivery Note Dimension` D  on (ITF.`Delivery Note Key`=D.`Delivery Note Key`) ';
+    $table    = '`Inventory Transaction Fact` ITF left join  `Delivery Note Dimension` D  on (ITF.`Delivery Note Key`=D.`Delivery Note Key`) ';
     $group_by = ' group by ITF.`Delivery Note Key`';
     $currency = $corporate_currency;
 
 
 } elseif ($parameters['parent'] == 'order') {
 
-     $where = sprintf('where  `Delivery Note Order Key`=%d  ', $parameters['parent_key']);
+    $where = sprintf('where  `Delivery Note Order Key`=%d  ', $parameters['parent_key']);
 
 
-}elseif ($parameters['parent'] == 'customer_client') {
-
+} elseif ($parameters['parent'] == 'customer_client') {
     $where = sprintf('where  `Delivery Note Customer Client Key`=%d  ', $parameters['parent_key']);
+} elseif ($parameters['parent'] == 'picker') {
+    $where = sprintf(' where `Inventory Transaction Type` = "Sale" and  `Picker Key`=%d ', $parameters['parent_key']);
 
+    $table          = '`Inventory Transaction Fact` ITF left join  `Delivery Note Dimension` D  on (ITF.`Delivery Note Key`=D.`Delivery Note Key`) ';
+    $group_by       = ' group by ITF.`Delivery Note Key`';
+    $where_interval = preg_replace('/Delivery Note Date/', 'Date',$where_interval);
+
+} elseif ($parameters['parent'] == 'packer') {
+    $where = sprintf(' where `Inventory Transaction Type` =  "Sale" and `Packer Key`=%d ', $parameters['parent_key']);
+
+    $table    = '`Inventory Transaction Fact` ITF left join  `Delivery Note Dimension` D  on (ITF.`Delivery Note Key`=D.`Delivery Note Key`) ';
+    $group_by = ' group by ITF.`Delivery Note Key`';
+    $where_interval = preg_replace('/Delivery Note Date/', 'Date',$where_interval);
 
 } elseif ($parameters['parent'] == 'invoice') {
 
-    $table
-           = '`Invoice Delivery Note Bridge` B left join  `Delivery Note Dimension` D  on (D.`Delivery Note Key`=B.`Delivery Note Key`)  ';
-    $where = sprintf('where  B.`Invoice Key`=%d  ', $parameters['parent_key']);
+    $table          = '`Invoice Delivery Note Bridge` B left join  `Delivery Note Dimension` D  on (D.`Delivery Note Key`=B.`Delivery Note Key`)  ';
+    $where          = sprintf('where  B.`Invoice Key`=%d  ', $parameters['parent_key']);
+    $where_interval = preg_replace('/Delivery Note Date/', 'Date',$where_interval);
 
 
 } else {
     exit("unknown parent ".$parameters['parent']."\n");
 }
 
-if (isset($parameters['period'])) {
-    include_once('utils/date_functions.php');
-    list($db_interval, $from, $to, $from_date_1yb, $to_1yb)
-        = calculate_interval_dates(
-        $db, $parameters['period'], $parameters['from'], $parameters['to']
-    );
+if ($where_interval != '') {
 
-    $where_interval = prepare_mysql_dates($from, $to, '`Delivery Note Date`');
     $where .= $where_interval['mysql'];
 }
 
@@ -129,7 +145,7 @@ if (isset($parameters['elements'])) {
 
             } else {
                 $_elements = preg_replace('/^,/', '', $_elements);
-                $where .= ' and `Delivery Note State` in ('.$_elements.')';
+                $where     .= ' and `Delivery Note State` in ('.$_elements.')';
             }
             break;
 
@@ -158,7 +174,7 @@ if (isset($parameters['elements'])) {
 
             } else {
                 $_elements = preg_replace('/^,/', '', $_elements);
-                $where .= ' and `Delivery Note Type` in ('.$_elements.')';
+                $where     .= ' and `Delivery Note Type` in ('.$_elements.')';
             }
             break;
 
@@ -194,21 +210,20 @@ if ($parameters['f_field'] == 'customer' and $f_value != '') {
     $wheref .= " and  `Delivery Note ID` like '".addslashes($f_value)."%'";
 } elseif ($parameters['f_field'] == 'country' and $f_value != '') {
     if ($f_value == 'UNK') {
-        $wheref .= " and  `Delivery Note Country Code`='".$f_value."'    ";
+        $wheref    .= " and  `Delivery Note Country Code`='".$f_value."'    ";
         $find_data = ' '._('a unknown country');
     } else {
         $f_value = Address::parse_country($f_value);
         if ($f_value != 'UNK') {
-            $wheref .= " and  `Delivery Note Country Code`='".$f_value."'    ";
+            $wheref    .= " and  `Delivery Note Country Code`='".$f_value."'    ";
             $country   = new Country('code', $f_value);
-            $find_data = ' '.$country->data['Country Name'].' <img style="vertical-align: text-bottom;position:relative;bottom:2px" src="art/flags/'.strtolower($country->data['Country 2 Alpha Code'])
-                .'.gif" alt="'.$country->data['Country Code'].'"/>';
+            $find_data = ' '.$country->data['Country Name'].' <img style="vertical-align: text-bottom;position:relative;bottom:2px" src="art/flags/'.strtolower($country->data['Country 2 Alpha Code']).'.gif" alt="'.$country->data['Country Code'].'"/>';
         }
     }
 }
 
-$fields = '*';
-$sql_totals = "select count(Distinct `Delivery Note Key`) as num from $table $where ";
+$fields     = '*';
+$sql_totals = "select count(Distinct D.`Delivery Note Key`) as num from $table $where ";
 
 
 function dn_awhere($awhere) {
@@ -475,9 +490,8 @@ function dn_awhere($awhere) {
     );
 
 
-    $where .= $date_interval_created['mysql'].$date_interval_start_picking['mysql'].$date_interval_finish_picking['mysql'].$date_interval_start_packing['mysql'].$date_interval_finish_packing['mysql']
-        .$date_interval_dispatched_approved['mysql'].$date_interval_delivery_note['mysql'];
-
+    $where .= $date_interval_created['mysql'].$date_interval_start_picking['mysql'].$date_interval_finish_picking['mysql'].$date_interval_start_packing['mysql'].$date_interval_finish_packing['mysql'].$date_interval_dispatched_approved['mysql']
+        .$date_interval_delivery_note['mysql'];
 
 
     return array(
