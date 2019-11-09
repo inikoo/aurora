@@ -87,7 +87,7 @@
     </style>
 
 <script src="js/website_header.js?v=3"></script>
-<script src="js/edit_webpage_upload_images_from_iframe.js"></script>
+<script src="js/edit_webpage_upload_images_from_iframe.js?v2"></script>
 
 
 <body xmlns="http://www.w3.org/1999/html">
@@ -132,25 +132,10 @@
     <div class="site_wrapper ">
 
 
-        <span id="webpage_data" style="display:none" data-website_key="{$website->id}"
-                {foreach from=$website->style  item=style  }
-                    {$style[0]}{ {$style[1]}: {$style[2]}}
-                {/foreach}
-        ></span>
+        <span id="webpage_data" style="display:none" data-website_key="{$website->id}"></span>
 
 
-
-
-
-
-        <div id="top_header" style="width: 100%; display: flex;"  >
-
-
-
-
-
-
-
+        <div id="top_header" style="width: 100%; display: flex;"  class="{$website->get('header_background_type')}" >
             <div id="header_logo" style="flex-grow:1;flex-grow: 0;flex-shrink: 0; border-right:1px dashed #ccc;flex-grow: 0;flex-shrink: 0; ;text-align: center">
 
 
@@ -314,8 +299,26 @@
 
 
 
-                    </td>
 
+                    </td>
+                    <td>
+
+                        <div  class="background_editor header_background">
+                            <input style="display:none" type="file" name="header_background" id="update_header_background" class="image_upload_from_iframe"
+                                   data-parent="Website"  data-parent_key="{$website->id}"  data-parent_object_scope="header_background"  data-metadata=""  data-options=""  data-response_type="website" />
+
+                            <label style="cursor: pointer" for="update_header_background">
+                                <i class="add_background fa fa-image {if $styles['#top_header background-image'][2]=='none'}very_discreet{/if}"></i>
+                            </label>
+
+                            <i style="margin-left:10px;padding: 0px 10px" onclick="change_background_type(this)" data-element="#top_header" data-type="{$website->get('header_background_type')}" class="unselectable button fa-fw background_type {$website->settings('header_background_type')}  {if $styles['#top_header background-image'][2]=='none'}hide{/if}  fal {$website->get('header_background_icon')} "></i>
+                            <i style="margin-left:10px;padding: 0px 10px" onclick="delete_background(this)" data-element="#top_header" class="button background_delete {if $styles['#top_header background-image'][2]=='none'}hide{/if}  fal fa-trash-alt "></i>
+                        </div>
+
+
+
+
+                    </td>
 
 
                 </tr>
@@ -420,6 +423,9 @@
     {/foreach}
 
     }
+
+
+    console.log(styles['#top_header background-image'])
 
     function set_logo_position(){
         var height=$('#header_logo').height()

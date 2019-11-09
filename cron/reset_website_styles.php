@@ -22,12 +22,10 @@ if ($result = $db->query($sql)) {
 
         $old_styles=$website->style;
 
+        $website_styles=get_default_websites();
+
         foreach($website_styles as $key=>$style){
 
-
-
-
-            $found=false;
             foreach($old_styles as $old_style){
                 if($old_style[0]==$style[0] and $old_style[1]==$style[1]){
                     $website_styles[$key][2]=$old_style[2];

@@ -151,6 +151,8 @@ if (isset($_REQUEST['snapshot'])) {
 
 }
 
+
+
 //if ($logged_in and !$is_devel) {
 if ($logged_in) {
 

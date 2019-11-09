@@ -86,6 +86,7 @@ class Public_Website {
             }
 
 
+
             if (empty($this->data['Website Mobile Style'])) {
                 $this->mobile_style = array();
             } else {

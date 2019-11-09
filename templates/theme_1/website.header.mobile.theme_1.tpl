@@ -69,7 +69,7 @@
     }
 
 
-    getScript('/theme_1/js/mobile.min.js', function () {
+    getScript('/EcomB2B/assets/mobile.min.js', function () {
 
 
         {if $website->get('Website Text Font')!=''  and !$logged_in}

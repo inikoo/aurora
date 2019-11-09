@@ -25,24 +25,15 @@ if (!isset($_REQUEST['theme']) or !preg_match('/^theme\_\d+$/', $_REQUEST['theme
     return;
 }
 
-
 $website_key=$_REQUEST['website_key'];
 $theme=$_REQUEST['theme'];
-
 $website=get_object('Website',$website_key);
 $store=new Public_Store($website->get('Website Store Key'));
-
-
-
 
 $header_data = $website->get('Header Data');
 $header_key=$website->get('Website Header Key');
 $smarty->assign('header_data', $header_data);
 $smarty->assign('header_key', $header_key);
-
-
-
-
 
 $header_data = $website->get('Footer Data');
 $header_key=$website->get('Website Footer Key');
@@ -72,6 +63,9 @@ $smarty->assign('settings',$settings);
 
 
 
+$smarty->assign('styles',$website->style);
+
+
 $template = $theme.'/website.header.'.$theme.'.tpl';
 
 if (file_exists('templates/'.$template)) {
@@ -80,4 +74,4 @@ if (file_exists('templates/'.$template)) {
     printf("template %s not found",$template);
 }
 
-?>
+

@@ -256,7 +256,7 @@ class Website extends DB_Table {
 
 
             include_once 'conf/webpage_types.php';
-            $webpage_types=get_webpage_types();
+            $webpage_types = get_webpage_types();
             foreach ($webpage_types as $webpage_type) {
                 $sql = sprintf(
                     'INSERT INTO `Webpage Type Dimension` (`Webpage Type Website Key`,`Webpage Type Code`) VALUES (%d,%s) ', $this->id, prepare_mysql($webpage_type['code'])
@@ -278,9 +278,9 @@ class Website extends DB_Table {
             }
 
 
-            $store = get_object('Store',$this->get('Website Store Key'));
+            $store = get_object('Store', $this->get('Website Store Key'));
 
-            $account         = get_object('Account',1);
+            $account         = get_object('Account', 1);
             $account->editor = $this->editor;
 
             $families_category_data = array(
@@ -323,7 +323,7 @@ class Website extends DB_Table {
 
             $this->fast_update(
                 array(
-                    'Website Style' => json_encode($website_styles)
+                    'Website Style' => json_encode(get_default_websites())
                 )
             );
 
@@ -512,10 +512,6 @@ class Website extends DB_Table {
                     } else {
                         return false;
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
                 break;
 
@@ -564,6 +560,37 @@ class Website extends DB_Table {
                         break;
                     default:
                         return _('No');
+                }
+            case 'header_background_type':
+            case 'content_background_type':
+            case 'background_type':
+                if ($this->settings($key) == '') {
+                    return 'no_repeat';
+                } else {
+                    return $this->settings($key);
+                }
+            case 'header_background_icon':
+            case 'content_background_icon':
+            case 'background_icon':
+                switch ($this->get(preg_replace('/icon/','type',$key))) {
+
+                    case 'no_repeat':
+                        return 'fa-arrow-to-left';
+                    case 'repeat_horizontal':
+                        return 'fa-ellipsis-h';
+                    case 'repeat_vertical':
+                        return 'fa-ellipsis-v';
+                    case 'repeat':
+                        return 'fa-th';
+                    case 'expand_horizontal':
+                        return 'fa-arrows-h';
+                    case 'expand_vertical':
+                        return 'fa-arrows-v';
+                    case 'expand':
+                        return 'fa-arrows';
+                    default:
+                        return '';
+
                 }
 
 
@@ -685,21 +712,21 @@ class Website extends DB_Table {
             $this->error = true;
             $this->msg   = 'Webpage code empty';
 
-            return;
+            return false;
         }
 
         if (empty($data['Webpage Name'])) {
             $this->error = true;
             $this->msg   = 'Webpage name empty';
 
-            return;
+            return false;
         }
 
         if (empty($data['Webpage Browser Title'])) {
             $this->error = true;
             $this->msg   = 'Webpage Browser Title empty';
 
-            return;
+            return false;
         }
 
         if (empty($data['Webpage Meta Description'])) {
@@ -719,9 +746,9 @@ class Website extends DB_Table {
             'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'    => 0,
 
-            'Page Title'             => $data['Webpage Name'],
-            'Page Short Title'       => $data['Webpage Browser Title'],
-            'Page Parent Key'        => 0,
+            'Page Title'       => $data['Webpage Name'],
+            'Page Short Title' => $data['Webpage Browser Title'],
+            'Page Parent Key'  => 0,
 
 
             'Webpage Scope'                 => $data['Webpage Scope'],
@@ -802,9 +829,9 @@ class Website extends DB_Table {
     function update_labels_in_localised_labels($labels, $operation = 'append') {
 
         $localised_labels = $this->get('Localised Labels');
-       // print_r($labels);
+        // print_r($labels);
 
-      //  print_r($localised_labels);
+        //  print_r($localised_labels);
 
         switch ($operation) {
             case 'append':
@@ -1203,7 +1230,6 @@ class Website extends DB_Table {
         $page->reset_object();
 
 
-
         //todo: AUR-33
         // 'InProcess','Active','Suspended','Discontinuing','Discontinued'
         if ($product->get('Product Status') == 'Discontinued' or $product->get('Product Status') == 'Suspended') {
@@ -1262,7 +1288,6 @@ class Website extends DB_Table {
     function launch() {
 
 
-
         $this->update(array('Website Status' => 'Active'));
 
 
@@ -1274,7 +1299,7 @@ class Website extends DB_Table {
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
 
-                $webpage         = get_object('Webpage',$row['Page Key']);
+                $webpage         = get_object('Webpage', $row['Page Key']);
                 $webpage->editor = $this->editor;
 
                 if ($webpage->get('Webpage Code') == 'launching.sys') {

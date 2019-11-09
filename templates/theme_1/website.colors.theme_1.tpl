@@ -28,7 +28,7 @@
     </style>
 
 <script src="js/website_style.js?v=3"></script>
-<script src="js/edit_webpage_upload_images_from_iframe.js"></script>
+<script src="js/edit_webpage_upload_images_from_iframe.js?v2"></script>
 
 
 <body xmlns="http://www.w3.org/1999/html">
@@ -609,16 +609,7 @@
     <div class="site_wrapper ">
 
 
-        <span id="webpage_data" style="display:none" data-website_key="{$website->id}"
-
-                {foreach from=$website->style  item=style  }
-                    {$style[0]}{ {$style[1]}: {$style[2]}}
-                {/foreach}
-
-
-
-
-        ></span>
+        <span id="webpage_data" style="display:none" data-website_key="{$website->id}"></span>
 
         <div id="top_header" style="width: 100%; display: flex;"  >
 
@@ -674,7 +665,7 @@
             </div>
 
 
-            <div id="search_header" style="padding-top:5px;flex-grow:1;text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:350px;position: relative" oncxlick="open_header_style()" >
+            <div id="search_header" style="padding-top:5px;flex-grow:1;text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:350px;position: relative" onxclick="open_header_style()" >
 
 
                 <div id="search_hanger" style="position: absolute;left:10px;top:{if isset($settings.search_top)}{$settings.search_top}{else}0{/if}px"><input/> <i class="button fa fa-search"></i></div>
@@ -793,7 +784,7 @@
             {/foreach}
         </div>
 
-        <div id=body"   >
+        <div id="body"   >
             <div class="navigation top_body" onclick="open_navigation_style()" >
                 <div class="breadcrumbs" style="">
                     <span class="breadcrumb ">
@@ -1086,6 +1077,21 @@
 
                     </div>
 
+
+
+                    <div style="padding-left:20px" class="background_editor content_background">
+                        <input style="display:none" type="file" name="content_background" id="update_content_background" class="image_upload_from_iframe"
+                               data-parent="Website"  data-parent_key="{$website->id}"  data-parent_object_scope="content_background"  data-metadata=""  data-options=""  data-response_type="website" />
+
+                        <label style="cursor: pointer" for="update_content_background">
+                            <i class="add_background fa fa-image {if $styles['#body background-image'][2]=='none'}very_discreet{/if}"></i>
+                        </label>
+
+                        <i style="margin-left:10px;padding: 0px 10px" onclick="change_background_type(this)" data-element="#body" data-type="{$website->get('content_background_type')}" class="unselectable button fa-fw background_type {$website->settings('content_background_type')}  {if $styles['#body background-image'][2]=='none'}hide{/if}  fal {$website->get('content_background_icon')} "></i>
+                        <i style="margin-left:10px;padding: 0px 10px" onclick="delete_background(this)" data-element="#body" class="button background_delete {if $styles['#body background-image'][2]=='none'}hide{/if}  fal fa-trash-alt "></i>
+                    </div>
+
+
                 </div>
 
 
@@ -1233,6 +1239,20 @@
         </footer>
 
     </div>
+
+    <div style="padding-left:20px;padding-top: 10px" class="background_editor background">
+        <input style="display:none" type="file" name="background" id="update_background" class="image_upload_from_iframe"
+               data-parent="Website"  data-parent_key="{$website->id}"  data-parent_object_scope="background"  data-metadata=""  data-options=""  data-response_type="website" />
+
+        <label style="cursor: pointer" for="update_background">
+            <i class="add_background fa fa-image {if $styles['body background-image'][2]=='none'}very_discreet{/if}"></i>
+        </label>
+
+        <i style="margin-left:10px;padding: 0px 10px" onclick="change_background_type(this)" data-element="body" data-type="{$website->get('background_type')}" class="unselectable button fa-fw background_type {$website->settings('background_type')}  {if $styles['body background-image'][2]=='none'}hide{/if}  fal {$website->get('background_icon')} "></i>
+        <i style="margin-left:10px;padding: 0px 10px" onclick="delete_background(this)" data-element="body" class="button background_delete {if $styles['body background-image'][2]=='none'}hide{/if}  fal fa-trash-alt "></i>
+    </div>
+
+
 </div>
 
 

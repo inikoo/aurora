@@ -414,16 +414,14 @@ function save_header(){
 
     if (!$('#save_button', window.parent.document).hasClass('save')) {
         return
-
-
-
     }
 
 
     var settings={
         'search_top':$('#search_hanger').offset().top,
         'logo_website':  $('#website_logo').attr('src'),
-        'logo_top_margin':  $('#website_logo').css('margin-top')
+        'logo_top_margin':  $('#website_logo').css('margin-top'),
+        'header_background_type':  $('.header_background_type').data('type')
     }
 
     if($('#favicon', window.parent.document).attr('src')!='/art/favicon_empty.png'){
@@ -472,7 +470,7 @@ function save_header(){
 
 
 
-    console.log(settings)
+    console.log(styles)
    // return;
 
     var ajaxData = new FormData();
@@ -481,7 +479,6 @@ function save_header(){
     ajaxData.append("key",$('#webpage_data').data('website_key') )
     ajaxData.append("styles", JSON.stringify(styles))
     ajaxData.append("settings", JSON.stringify(settings))
-
 
 
 

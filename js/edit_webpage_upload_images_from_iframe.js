@@ -53,17 +53,41 @@ $(document).on('change', '.image_upload_from_iframe', function (e) {
             if (data.state == '200') {
 
 
-console.log(element.attr('name'))
+                console.log(element.attr('name'))
                 switch (element.attr('name')) {
-
                     case 'logo':
                         $('#website_logo').attr('src', '/wi.php?id='+data.img_key);
                         break;
+                    case 'header_background':
+                        $('#top_header').css('background-image',   'url(' + '/wi.php?id='+data.img_key + ')'   );
+
+                        var editor=$('.header_background')
+                        editor.find('.background_delete').removeClass('hide')
+                        editor.find('.background_type').removeClass('hide')
+                        editor.find('.add_background').removeClass('very_discreet')
+                        styles['#top_header background-image'][2]='url(' + '/wi.php?id='+data.img_key + ')';
+                        break;
+                    case 'content_background':
+                        $('#body').css('background-image',   'url(' + '/wi.php?id='+data.img_key + ')'   );
+                        var editor=$('.content_background')
+                        editor.find('.background_delete').removeClass('hide')
+                        editor.find('.background_type').removeClass('hide')
+                        editor.find('.add_background').removeClass('very_discreet')
+                        styles['#body background-image'][2]='url(' + '/wi.php?id='+data.img_key + ')';
+                        break;
+                    case 'background':
+                        $('body').css('background-image',   'url(' + '/wi.php?id='+data.img_key + ')'   );
+                        var editor=$('.background')
+                        editor.find('.background_delete').removeClass('hide')
+                        editor.find('.background_type').removeClass('hide')
+                        editor.find('.add_background').removeClass('very_discreet')
+                        styles['body background-image'][2]='url(' + '/wi.php?id='+data.img_key + ')';
+                        break;
 
 
-                    case 'menu':
+
+                        case 'menu':
                         $('#image_control_panel').data('element').attr('src', '/wi.php?id='+data.img_key).attr('image_key', data.img_key).data('src', '/wi.php?id='+data.img_key)
-
                         break;
 
                     case 'two_pack':
@@ -72,11 +96,9 @@ console.log(element.attr('name'))
                     case 'images':
                     case 'category_categories':
                     case 'category_products':
-
                         var img_element = $('#image_control_panel').find('.image_upload_from_iframe').data('img')
                         $(img_element).attr('src', '/wi.php?id='+data.img_key);
                         $(img_element).data('src', '/wi.php?id='+data.img_key);
-
                         break;
                     case 'category_categories_category':
                         var img_element = element.closest('.category_wrap').find('.wrap_to_center img')
@@ -134,7 +156,6 @@ console.log(element.attr('name'))
                         $('#change_image').data('element').attr('src', 'wi.php?id=' + data.img_key).attr('web_image_key', data.img_key)
                         break;
                 }
-
                 $('#save_button', window.parent.document).addClass('save button changed valid')
 
             } else if (data.state == '400') {

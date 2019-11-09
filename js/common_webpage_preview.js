@@ -98,4 +98,78 @@ jQuery(document).ready(function($) {
 
 });
 
+function change_background_type(element){
+
+    var _element=$(element).data('element')
+
+    switch($(element).data('type')){
+        case 'no_repeat':
+
+            var icon='fa-arrows-h';
+            var type='expand_horizontal';
+
+            break;
+        case 'expand_horizontal':
+
+            var icon='fa-arrows-v';
+            var type='expand_vertical';
+
+            break;
+        case 'expand_vertical':
+
+            var icon='fa-arrows';
+            var type='expand';
+
+            break;
+        case 'expand':
+
+            var icon='fa-ellipsis-h';
+            var type='repeat_horizontal';
+
+            break;
+        case 'repeat_horizontal':
+            var icon='fa-ellipsis-v';
+            var type='repeat_vertical';
+            break;
+        case 'repeat_vertical':
+            var icon='fa-th';
+            var type='repeat';
+            break;
+        case 'repeat':
+            var icon='fa-arrow-to-left';
+            var type='no_repeat';
+            break;
+
+    }
+    $(element).data('type',type)
+    $(_element).removeClass('no_repeat expand_horizontal expand_vertical expand  repeat_horizontal repeat_vertical  repeat')
+    $(_element).addClass(type)
+
+    $(element).removeClass('fa-arrows fa-arrows-h fa-arrows-v fa-album fa-arrow-to-left  fa-ellipsis-h fa-ellipsis-v fa-th ')
+    $(element).addClass(icon);
+
+    $('#save_button', window.parent.document).addClass('save button changed valid')
+
+
+}
+
+function delete_background(element){
+
+    var _element=$(element).data('element')
+
+    var editor=$(element).closest('.background_editor')
+
+    $(_element).css('background-image',   'none'   );
+
+    editor.find('.background_delete').addClass('hide')
+    editor.find('.background_type').addClass('hide')
+    editor.find('.add_background').addClass('very_discreet')
+
+    styles[_element+' background-image']='none'
+
+    $('#save_button', window.parent.document).addClass('save button changed valid')
+
+
+}
+
 

@@ -8,6 +8,33 @@
 */
 
 
+.no_repeat{
+  background-repeat: no-repeat;
+}
+
+.expand_horizontal{
+  background-size: 100% auto;background-repeat: no-repeat;
+}
+.expand_vertical{
+  background-size: auto 100% ;background-repeat: no-repeat;
+}
+
+.expand{
+  background-size: 100% 100% ;background-repeat: no-repeat;
+}
+
+
+.repeat_horizontal{
+  background-repeat:repeat-x;
+}
+.repeat_vertical{
+  background-repeat:repeat-y;
+}
+
+.repeat{
+  background-repeat:repeat;
+}
+
 #top_header  {
   width: 100%; display: flex;
   input {

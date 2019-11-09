@@ -19,7 +19,7 @@
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
 
-    <link rel="stylesheet" type="text/css" href="/theme_1/css/mobile.min.css?vv181125">
+    <link rel="stylesheet" type="text/css" href="EcomB2B/assets/mobile.min.css">
 
     {assign "with_forms" false}
     {assign "with_not_found" 0}
@@ -113,11 +113,11 @@
     {/foreach}
 
     {if $with_forms==1}
-        <link rel="stylesheet" href="css/forms.min.css?v2.0" type="text/css"/>
+        <link rel="stylesheet" href="EcomB2B/assets/forms.min.css" type="text/css"/>
 
     {/if}
     {if $with_gallery==1}
-    <link rel="stylesheet" href="css/image_gallery.min.css">
+    <link rel="stylesheet" href="EcomB2B/assets/image_gallery.min.css">
     {/if}
 
     {if $website->get('Website Text Font')!=''  and $logged_in}

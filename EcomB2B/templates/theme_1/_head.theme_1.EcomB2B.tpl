@@ -264,13 +264,9 @@
         {/if}
     {/foreach}
     {/if}
-
-
     {if $with_reviews==1}
         <script src="https://widget.reviews.io/rich-snippet-reviews-widgets/dist.js" ></script>
-
     {/if}
-
     {if $with_forms==1}
         <link rel="stylesheet" href="assets/forms.min.css" type="text/css"/>
     {/if}
@@ -280,7 +276,6 @@
     {if $with_gallery==1}
         <link rel="stylesheet" href="assets/image_gallery.min.css" type="text/css"/>
     {/if}
-
     {if !isset($is_devel) or !$is_devel  }
     {if  $zendesk_chat_code!='' }
 
@@ -313,9 +308,6 @@
 
     {/if}
     {/if}
-
-
-
     {if !isset($is_devel) or !$is_devel  }
         {if  !empty($sumo_code)}
             <script async>(function(s,u,m,o,j,v){
@@ -323,14 +315,11 @@
 
         {/if}
     {/if}
-
-
-
     {if !isset($is_devel) or !$is_devel  }
         {if  !empty($one_signal_id)}
             <link rel="manifest" href='data:application/manifest+json,{ "gcm_sender_id": "{$one_signal_id}", "gcm_sender_id_comment": "Do not change the GCM Sender ID"}' />
 
-            <script src="OneSignalSDKWorker.js" async=""></script>
+            <script src="OneSignalSDKWorker.js?v2" async=""></script>
             <script>
                 var OneSignal = window.OneSignal || [];
                 OneSignal.push(function() {

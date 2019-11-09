@@ -171,9 +171,9 @@
 
     <script src="/js_libs/base64.js"></script>
 
-    <script src="/js/edit.js"></script>
-    <script src="/js/validation.js"></script>
-    <script src="/js/common_webpage_preview.js"></script>
+    <script src="/js/edit.js?v2.2"></script>
+    <script src="/js/validation.js?"></script>
+    <script src="/js/common_webpage_preview.js?v2.2"></script>
 
 
     <style>

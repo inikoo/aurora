@@ -8,7 +8,7 @@
  Version 3
 -->
 *}{include file="theme_1/_head.theme_1.EcomB2B.tpl"}
-<body xmlns="http://www.w3.org/1999/html" data-device_prefix="">
+<body xmlns="http://www.w3.org/1999/html" data-device_prefix="" class="{$website->get('background_type')}">
 {include file="analytics.tpl"}
 
 {if $website->get('Website Status')=='InProcess'}
@@ -31,7 +31,7 @@
 
         {include file="theme_1/header.theme_1.EcomB2B.tpl"}
 
-        <div id="body" >
+        <div id="body" class="{$website->get('content_background_type')}">
 
             {if $navigation.show}
                 <div class="navigation top_body">

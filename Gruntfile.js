@@ -555,7 +555,7 @@ module.exports = function (grunt) {
                 }]
             },
             ecom_css: {
-                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.*tpl', 'EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.*tpl'], overwrite: true, replacements: [
+                src: ['EcomB2B/templates/theme_1/_head.theme_1.EcomB2B.*tpl', 'EcomB2B/templates/theme_1/webpage_blocks.theme_1.EcomB2B.*tpl','theme_1/_head.theme_1.mobile.tpl','theme_1/_head.theme_1.tpl'], overwrite: true, replacements: [
                     {
                         from: /desktop.\.*min.css"/g, to: 'desktop.' + grunt.option('au_version_major') + '.' + grunt.option('au_version_minor') + '.' + grunt.option('au_version_patch') + '.min.css"'
                     },

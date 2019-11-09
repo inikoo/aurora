@@ -520,7 +520,7 @@
 
 
 <script src="js/website.menu.edit.js?v=25"></script>
-<script src="js/edit_webpage_upload_images_from_iframe.js"></script>
+<script src="js/edit_webpage_upload_images_from_iframe.js?v2"></script>
 
 
 

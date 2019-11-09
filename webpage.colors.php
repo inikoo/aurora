@@ -68,8 +68,8 @@ $smarty->assign('content', $webpage->get('Content Data'));
 
 $settings=$website->settings;
 $smarty->assign('settings',$settings);
-
-
+$smarty->assign('style_data',$website->style);
+$smarty->assign('styles',$website->style);
 
 
 $template = $theme.'/website.colors.'.$theme.'.tpl';
