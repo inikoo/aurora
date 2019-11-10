@@ -100,13 +100,16 @@ class Page extends DB_Table {
         } elseif ($tipo == 'scope') {
             $sql = sprintf(
                 "SELECT * FROM `Page Store Dimension` PS  WHERE `Webpage Scope`=%s AND `Webpage Scope Key`=%d ", prepare_mysql($tag), $tag2
-
             );
 
         } elseif ($tipo == 'deleted') {
             $this->get_deleted_data($tag);
 
             return;
+        }else{
+            $sql = sprintf(
+                "SELECT * FROM `Page Store Dimension` PS WHERE `Page Key`=%d", $tag
+            );
         }
 
 

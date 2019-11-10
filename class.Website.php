@@ -761,7 +761,6 @@ class Website extends DB_Table {
             'Webpage Creation Date'         => gmdate('Y-m-d H:i:s'),
             'Webpage URL'                   => $this->data['Website URL'].'/'.strtolower($data['Webpage Code']),
             'Webpage Name'                  => $data['Webpage Name'],
-            'Webpage Browser Title'         => $data['Webpage Browser Title'],
             'Webpage State'                 => ($data['Webpage Scope'] == 'HomepageToLaunch' ? 'Online' : 'InProcess'),
             'Webpage Meta Description'      => $data['Webpage Meta Description'],
             'Page Store Content Data'       => (isset($data['Page Store Content Data']) ? $data['Page Store Content Data'] : ''),
