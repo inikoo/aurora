@@ -421,7 +421,7 @@ function save_header(){
         'search_top':$('#search_hanger').offset().top,
         'logo_website':  $('#website_logo').attr('src'),
         'logo_top_margin':  $('#website_logo').css('margin-top'),
-        'header_background_type':  $('.header_background_type').data('type')
+        'header_background_type':  $('.header_background .background_type').data('type')
     }
 
     if($('#favicon', window.parent.document).attr('src')!='/art/favicon_empty.png'){

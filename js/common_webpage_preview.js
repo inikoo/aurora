@@ -164,9 +164,7 @@ function delete_background(element){
     editor.find('.background_delete').addClass('hide')
     editor.find('.background_type').addClass('hide')
     editor.find('.add_background').addClass('very_discreet')
-
-    styles[_element+' background-image']='none'
-
+    styles[_element+' background-image'][2]='none'
     $('#save_button', window.parent.document).addClass('save button changed valid')
 
 

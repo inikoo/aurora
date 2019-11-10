@@ -641,7 +641,7 @@ function change_margins(input) {
 
 }
 
-function save_styles(){
+function save_styles() {
 
     if (!$('#save_button', window.parent.document).hasClass('save')) {
         return;
@@ -650,23 +650,21 @@ function save_styles(){
     $('#save_button', window.parent.document).find('i').addClass('fa-spinner fa-spin')
 
 
-    var settings={
-        }
+    var settings = {
+        'content_background_type': $('.content_background .background_type').data('type'), 'background_type': $('.background .background_type').data('type')
+    }
 
-    if($('#favicon', window.parent.document).attr('src')!='/art/favicon_empty.png'){
-        settings.favicon= $('#favicon', window.parent.document).attr('src')
+    if ($('#favicon', window.parent.document).attr('src') != '/art/favicon_empty.png') {
+        settings.favicon = $('#favicon', window.parent.document).attr('src')
     }
 
 
     var ajaxData = new FormData();
 
     ajaxData.append("tipo", 'update_website_styles')
-    ajaxData.append("key",$('#webpage_data').data('website_key') )
+    ajaxData.append("key", $('#webpage_data').data('website_key'))
     ajaxData.append("styles", JSON.stringify(styles))
     ajaxData.append("settings", JSON.stringify(settings))
-
-
-
 
 
     $.ajax({
@@ -688,8 +686,6 @@ function save_styles(){
 
         }
     });
-
-
 
 
 }
