@@ -745,10 +745,8 @@ class Website extends DB_Table {
         $page_data = array(
 
 
-            'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'    => 0,
 
-            'Page Parent Key'  => 0,
 
 
             'Webpage Scope'                 => $data['Webpage Scope'],
@@ -1063,7 +1061,6 @@ class Website extends DB_Table {
 
 
         $page_data = array(
-            'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'    => ($category->get('Category Subject') == 'Product' ? 5 : 0),
 
 
@@ -1076,11 +1073,9 @@ class Website extends DB_Table {
             'Webpage Number See Also Links' => ($category->get('Category Subject') == 'Product' ? 5 : 0),
             'Webpage Creation Date'         => gmdate('Y-m-d H:i:s'),
             'Webpage Name'                  => $category->get('Label'),
-            'Webpage Browser Title'         => $category->get('Label'),
+            //'Webpage Browser Title'         => $category->get('Label'),
 
 
-            'Page Parent Key'                        => $category->id,
-            'Page Parent Code'                       => $category->get('Code'),
             'Page Store Section Type'                => 'Department',
             'Page Store Section'                     => 'Department Catalogue',
             'Page Store Last Update Date'            => gmdate('Y-m-d H:i:s'),
@@ -1170,7 +1165,6 @@ class Website extends DB_Table {
 
 
         $page_data = array(
-            'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'    => 5,
 
 
@@ -1183,11 +1177,9 @@ class Website extends DB_Table {
             'Webpage Number See Also Links'          => 5,
             'Webpage Creation Date'                  => gmdate('Y-m-d H:i:s'),
             'Webpage Name'                           => $product->get('Name'),
-            'Webpage Browser Title'                  => $product->get('Name'),
+            //'Webpage Browser Title'                  => $product->get('Name'),
 
             //--------   to remove ??
-            'Page Parent Key'                        => $product->id,
-            'Page Parent Code'                       => $product->get('Code'),
             'Page Store Section Type'                => 'Product',
             'Page Store Section'                     => 'Product Description',
             'Page Store Last Update Date'            => gmdate('Y-m-d H:i:s'),

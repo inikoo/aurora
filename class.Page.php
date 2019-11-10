@@ -273,12 +273,7 @@ class Page extends DB_Table {
 
             );
             $this->db->exec($sql);
-
-
             $this->update_url();
-
-
-            $this->update_image_key();
             $this->refresh_cache();
 
             return $this;
@@ -527,57 +522,8 @@ class Page extends DB_Table {
     }
 
 
-    function update_image_key() {
-
-
-        $page_image_source = 'art/nopic.png';
-        $image_key         = '';
-
-
-        switch ($this->data['Webpage Scope']) {
-            case 'Category Categories':
-            case 'Category Products':
-                $category = get_object('Category', $this->data['Page Parent Key']);
-                if ($category->id and $category->get('Category Main Image Key')) {
-                    $_page_image = get_object('Image', $category->get('Category Main Image Key'));
-                    if ($_page_image->id) {
-                        $page_image_source = sprintf("images/%07d.%s", $_page_image->data['Image Key'], $_page_image->data['Image File Format']);
-                        $image_key         = $_page_image->id;
-                    }
-                }
-                break;
-            case 'Product':
-                include_once 'class.Product.php';
-                $product = new Product('id', $this->data['Page Parent Key']);
-                if ($product->id and $product->get('Product Main Image Key')) {
-                    $_page_image = new Image($product->get('Product Main Image Key'));
-                    if ($_page_image->id) {
-                        $page_image_source = sprintf("images/%07d.%s", $_page_image->data['Image Key'], $_page_image->data['Image File Format']);
-                        $image_key         = $_page_image->id;
-                    }
-                }
-                break;
-            default:
-
-                break;
-        }
-
-
-        $sql = sprintf(
-            "UPDATE `Page Store Dimension` SET `Page Store Image Key`=%s ,`Page Store Image URL`=%s   WHERE `Page Key`=%d ", prepare_mysql($image_key), prepare_mysql($page_image_source), $this->id
-        );
-        $this->db->exec($sql);
-
-        $this->data['Page Store Image Key'] = $image_key;
-        $this->data['Page Store Image URL'] = $page_image_source;
-
-
-    }
 
     function refresh_cache() {
-
-
-        $account = new Account($this->db);
 
 
         $template_response = '';
@@ -609,7 +555,6 @@ class Page extends DB_Table {
 
         $redis = new Redis();
         if ($redis->connect('127.0.0.1', 6379)) {
-
 
             $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.$this->get('Webpage Code');
             $redis->set($url_cache_key, $this->id);
@@ -3340,8 +3285,8 @@ class Page extends DB_Table {
                 'Website Key'                 => $this->data['Webpage Website Key'],
                 'Store Key'                   => $this->data['Webpage Store Key'],
                 'Page Store Section'          => $this->data['Page Store Section'],
-                'Page Parent Key'             => $this->data['Page Parent Key'],
-                'Page Parent Code'            => $this->data['Page Parent Code'],
+                'Page Parent Key'             => $this->data['Webpage Scope Key'],
+                'Page Parent Code'            => '',
                 'Page Title'                  => $this->data['Webpage Name'],
                 'Page Description'            => $this->data['Webpage Meta Description'],
                 'Page URL'                    => $this->data['Webpage URL'],
@@ -3427,9 +3372,9 @@ class Page extends DB_Table {
                 $label = _('email');
                 break;
 
-            case 'Webpage Browser Title':
-                $label = _('browser title');
-                break;
+           // case 'Webpage Browser Title':
+           //     $label = _('browser title');
+           //     break;
             case 'Webpage Meta Description':
                 $label = _('meta description');
                 break;

@@ -73,9 +73,7 @@ switch ($tipo) {
     case 'pages':
         pages(get_table_parameters(), $db, $user);
         break;
-    case 'pageviews':
-        pageviews(get_table_parameters(), $db, $user);
-        break;
+
     case 'queries':
         queries(get_table_parameters(), $db, $user);
         break;
@@ -300,113 +298,6 @@ function websites($_data, $db, $user, $account, $redis) {
     echo json_encode($response);
 }
 
-
-function pageviews($_data, $db, $user) {
-
-    $rtext_label = 'pageview';
-    include_once 'prepare_table/init.php';
-
-    $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-    $adata = array();
-
-    // print $sql;
-
-    $interval_db = get_interval_db_name($parameters['f_period']);
-    foreach ($db->query($sql) as $data) {
-
-        switch ($data['Page Store Section']) {
-            case 'Department Catalogue':
-                $type = sprintf(
-                    "d(<span class=\"link\" onClick=\"change_view('department/%d')\"  >%s</span>)", $data['Page Parent Key'], $data['Page Parent Code']
-                );
-                break;
-            case 'Family Catalogue':
-                $type = sprintf(
-                    "f(<span class=\"link\" onClick=\"change_view('family/%d')\"  >%s</span>)", $data['Page Parent Key'], $data['Page Parent Code']
-                );
-                break;
-            case 'Product Description':
-                $type = sprintf(
-                    "p(<span class=\"link\" onClick=\"change_view('product/%d')\"  >%s</span>)", $data['Page Parent Key'], $data['Page Parent Code']
-                );
-                break;
-
-            case 'Welcome':
-                $type = _('Welcome');
-                break;
-            case 'Login':
-                $type = _('Login');
-                break;
-            case 'Information':
-                $type = _('Information');
-                break;
-            case 'Checkout':
-                $type = _('Checkout');
-                break;
-            case 'Reset':
-                $type = _('Reset');
-                break;
-            case 'Registration':
-                $type = _('Registration');
-                break;
-            case 'Not Found':
-                $type = _('Not Found');
-                break;
-            case 'Client Section':
-                $type = _('Client Section');
-                break;
-            case 'Client Section':
-                $type = _('Client Section');
-                break;
-            case 'Front Page Store':
-                $type = _('Home');
-                break;
-            case 'Basket':
-                $type = _('Basket');
-                break;
-            case 'Thanks':
-                $type = _('Thanks');
-                break;
-            case 'Payment Limbo':
-                $type = _('Payment Limbo');
-                break;
-            case 'Search':
-                $type = _('Search');
-                break;
-            default:
-                $type = _('Other').' '.$data['Page Store Section'];
-                break;
-        }
-
-        $adata[] = array(
-            'id'    => (integer)$data['User Request Key'],
-            'page'  => $data['Webpage Code'],
-            'title' => $data['Webpage Browsert Title'],
-            'type'  => $type,
-
-            'page_key' => $data['Page Key'],
-            'site_key' => $data['Webpage Website Key'],
-            'date'     => strftime(
-                "%a %e %b %Y %H:%M:%S %Z", strtotime($data['Date'])
-            ),
-
-        );
-
-    }
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
-}
 
 
 function blocks($_data, $db, $user) {
