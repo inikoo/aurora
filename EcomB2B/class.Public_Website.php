@@ -234,7 +234,7 @@ class Public_Website {
                 }
 
                 return $labels;
-                break;
+
 
 
             case 'Website Store Key':
@@ -265,7 +265,15 @@ class Public_Website {
             case 'Website Text Font':
             case 'Website Registration Type':
                 return $this->data[$key];
-                break;
+
+            case 'Website Settings Browser Title Format':
+
+             
+                if ($this->settings('Browser Title Format') == '') {
+                    return '--[Webpage]';
+                } else {
+                    return $this->settings('Browser Title Format');
+                }
 
         }
 

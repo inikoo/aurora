@@ -592,7 +592,13 @@ class Website extends DB_Table {
                         return '';
 
                 }
-
+            case 'Website Settings Browser Title Format':
+            case 'Settings Browser Title Format':
+                if ($this->settings('Browser Title Format') == '') {
+                    return '[Webpage]';
+                } else {
+                    return $this->settings('Browser Title Format');
+                }
 
             default:
 
@@ -722,12 +728,7 @@ class Website extends DB_Table {
             return false;
         }
 
-        if (empty($data['Webpage Browser Title'])) {
-            $this->error = true;
-            $this->msg   = 'Webpage Browser Title empty';
 
-            return false;
-        }
 
         if (empty($data['Webpage Meta Description'])) {
             $data['Webpage Meta Description'] = '';
@@ -874,6 +875,7 @@ class Website extends DB_Table {
         }
 
 
+
         $this->fast_update(array('Website Settings' => json_encode($this->settings)));
 
 
@@ -950,6 +952,15 @@ class Website extends DB_Table {
 
         switch ($field) {
 
+            case 'Website Settings Browser Title Format':
+
+
+
+                $this->fast_update_json_field('Website Settings',$field,$value);
+
+                $this->clean_cache();
+                break;
+
             case 'User Password Recovery Email':
 
                 global $user;
@@ -960,12 +971,8 @@ class Website extends DB_Table {
 
 
             case 'Website URL':
-
-
                 $this->update_field($field, $value, $options);
-
                 $this->clean_cache();
-
                 break;
 
 

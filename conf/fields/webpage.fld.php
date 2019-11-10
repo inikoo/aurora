@@ -211,6 +211,7 @@ $object_fields[] = array(
 
         ),
 
+        /*
         array(
             'id'   => 'Webpage_Browser_Title',
             'edit' => ($edit ? 'string' : ''),
@@ -223,6 +224,8 @@ $object_fields[] = array(
 
 
         ),
+        */
+
 
         array(
             'id'   => 'Webpage_Meta_Description',
@@ -400,7 +403,7 @@ if (!$new and $object->get('Webpage Scope') == 'Product') {
                 'value'     => '',
                 'label'     => sprintf(
                     '<span type="submit" class="button" file="/webpage_images.zip.php?parent=product&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fa fa-file-archive" aria-hidden="true"></i> %s</span>
-<span type="submit" class="padding_left_30 button" file="/webpage_texts.txt.php?parent=product&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fal fa-file-alt" aria-hidden="true"></i> %s</span>
+                    <span type="submit" class="padding_left_30 button" file="/webpage_texts.txt.php?parent=product&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fal fa-file-alt" aria-hidden="true"></i> %s</span>
 
 ', $object->get('Webpage Scope Key'), _('Images'), $object->get('Webpage Scope Key'), _('Text')
 

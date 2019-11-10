@@ -32,7 +32,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope'            => 'Homepage',
             'Webpage Type'             => 'Home',
             'Webpage Code'             => 'home.sys',
-            'Webpage Browser Title'    => _('Homepage'),
+            //'Webpage Browser Title'    => _('Homepage'),
             'Webpage Name'             => _("Customer's homepage"),
             'Webpage Meta Description' => '',
 
@@ -50,7 +50,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope'            => 'HomepageLogout',
             'Webpage Type'             => 'Home',
             'Webpage Code'             => 'home_logout.sys',
-            'Webpage Browser Title'    => _('Homepage'),
+            //'Webpage Browser Title'    => _('Homepage'),
             'Webpage Name'             => _("Visitor's homepage"),
             'Webpage Meta Description' => '',
 
@@ -69,7 +69,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope'            => 'HomepageToLaunch',
             'Webpage Type'             => 'Home',
             'Webpage Code'             => 'launching.sys',
-            'Webpage Browser Title'    => _('Coming soon'),
+           // 'Webpage Browser Title'    => _('Coming soon'),
             'Webpage Name'             => _('Launching website'),
             'Webpage Meta Description' => '',
             'Page Store Content Data'  => json_encode(
@@ -108,7 +108,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Portfolio',
             'Webpage Code'             => 'favourites.sys',
-            'Webpage Browser Title'    => _('Favourites'),
+           // 'Webpage Browser Title'    => _('Favourites'),
             'Webpage Name'             => _('Favourites'),
             'Webpage Meta Description' => '',
             'Webpage Scope Metadata'   => '',
@@ -140,7 +140,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Customer',
             'Webpage Code'             => 'login.sys',
-            'Webpage Browser Title'    => _('Login'),
+           // 'Webpage Browser Title'    => _('Login'),
             'Webpage Name'             => _('Login'),
             'Webpage Meta Description' => '',
             'Webpage Scope Metadata'   => json_encode(
@@ -200,7 +200,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Customer',
             'Webpage Code'             => 'register.sys',
-            'Webpage Browser Title'    => _('Register'),
+            //'Webpage Browser Title'    => _('Register'),
             'Webpage Name'             => _('Register'),
             'Webpage Meta Description' => '',
             'Webpage Scope Metadata'   => json_encode(
@@ -273,7 +273,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Customer',
             'Webpage Code'             => 'welcome.sys',
-            'Webpage Browser Title'    => _('Welcome'),
+            //'Webpage Browser Title'    => _('Welcome'),
             'Webpage Name'             => _('Welcome'),
             'Webpage Meta Description' => '',
             'Page Store Content Data'  => json_encode(
@@ -294,7 +294,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Customer',
             'Webpage Code'             => 'reset_pwd.sys',
-            'Webpage Browser Title'    => _('Reset password'),
+            //'Webpage Browser Title'    => _('Reset password'),
             'Webpage Name'             => _('Reset password'),
             'Webpage Meta Description' => '',
             'Page Store Content Data'  => json_encode(
@@ -350,7 +350,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Customer',
             'Webpage Code'             => 'unsubscribe.sys',
-            'Webpage Browser Title'    => _('Unsubscribe'),
+            //'Webpage Browser Title'    => _('Unsubscribe'),
             'Webpage Name'             => _('Unsubscribe'),
             'Webpage Meta Description' => '',
             'Page Store Content Data'  => json_encode(
@@ -393,7 +393,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Customer',
             'Webpage Code'             => 'profile.sys',
-            'Webpage Browser Title'    => _('Customer section'),
+            //'Webpage Browser Title'    => _('Customer section'),
             'Webpage Name'             => _('Customer section'),
             'Webpage Meta Description' => '',
             'Page Store Content Data'  => json_encode(
@@ -496,7 +496,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Info',
             'Webpage Code'             => 'contact.sys',
-            'Webpage Browser Title'    => _('Contact'),
+            //'Webpage Browser Title'    => _('Contact'),
             'Webpage Name'             => _('Contact'),
             'Webpage Meta Description' => '',
             'Page Store Content Data'  => json_encode(
@@ -520,7 +520,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Ordering',
             'Webpage Code'             => 'basket.sys',
-            'Webpage Browser Title'    => _('Basket'),
+            //'Webpage Browser Title'    => _('Basket'),
             'Webpage Name'             => _('Basket'),
             'Webpage Meta Description' => '',
             'Page Store Content Data'  => json_encode(
@@ -578,7 +578,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Ordering',
             'Webpage Code'             => 'checkout.sys',
-            'Webpage Browser Title'    => _('Checkout'),
+            //'Webpage Browser Title'    => _('Checkout'),
             'Webpage Name'             => _('Checkout'),
             'Webpage Meta Description' => '',
             'Webpage Scope Metadata'   => json_encode(
@@ -659,7 +659,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Ordering',
             'Webpage Code'             => 'thanks.sys',
-            'Webpage Browser Title'    => _('Thanks for your order'),
+           // 'Webpage Browser Title'    => _('Thanks for your order'),
             'Webpage Name'             => _('Thanks'),
             'Webpage Meta Description' => '',
             'Page Store Content Data'  => json_encode(
@@ -693,7 +693,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Sys',
             'Webpage Code'             => 'not_found.sys',
-            'Webpage Browser Title'    => _('Not found'),
+            //'Webpage Browser Title'    => _('Not found'),
             'Webpage Name'             => _('Not found'),
             'Webpage Meta Description' => '',
             'Page Store Content Data'  => json_encode(
@@ -729,7 +729,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Sys',
             'Webpage Code'             => 'offline.sys',
-            'Webpage Browser Title'    => _('Offline'),
+           // 'Webpage Browser Title'    => _('Offline'),
             'Webpage Name'             => _('Offline'),
             'Webpage Meta Description' => '',
 
@@ -768,7 +768,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Sys',
             'Webpage Code'             => 'in_process.sys',
-            'Webpage Browser Title'    => _('Under construction'),
+            //'Webpage Browser Title'    => _('Under construction'),
             'Webpage Name'             => _('Under construction'),
             'Webpage Meta Description' => '',
             'Page Store Content Data'  => json_encode(
@@ -798,7 +798,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Portfolio',
             'Webpage Code'             => 'search.sys',
-            'Webpage Browser Title'    => _('Search'),
+            //'Webpage Browser Title'    => _('Search'),
             'Webpage Name'             => _('Search'),
             'Webpage Meta Description' => '',
             'Page Store Content Data'  => json_encode(
@@ -824,7 +824,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Portfolio',
             'Webpage Code'             => 'catalogue.sys',
-            'Webpage Browser Title'    => _('Catalogue'),
+            //'Webpage Browser Title'    => _('Catalogue'),
             'Webpage Name'             => _('Catalogue'),
             'Webpage Meta Description' => ''
         ),
@@ -833,7 +833,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Info',
             'Webpage Code'             => 'tac.sys',
-            'Webpage Browser Title'    => _('Terms & Conditions'),
+           // 'Webpage Browser Title'    => _('Terms & Conditions'),
             'Webpage Name'             => _('Terms & Conditions'),
             'Webpage Meta Description' => '',
             'Page Store Content Data'  => json_encode(
@@ -850,7 +850,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Info',
             'Webpage Code'             => 'shipping.sys',
-            'Webpage Browser Title'    => _('Shipping info'),
+            //'Webpage Browser Title'    => _('Shipping info'),
             'Webpage Name'             => _('Shipping info'),
             'Webpage Meta Description' => '',
             'Page Store Content Data'  => json_encode(
@@ -868,7 +868,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Info',
             'Webpage Code'             => 'about.sys',
-            'Webpage Browser Title'    => _('About us'),
+            //'Webpage Browser Title'    => _('About us'),
             'Webpage Name'             => _('About us'),
             'Webpage Meta Description' => '',
             'Page Store Content Data'  => json_encode(
@@ -892,7 +892,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Portfolio',
             'Webpage Code'             => 'portfolio.sys',
-            'Webpage Browser Title'    => _('Portfolio'),
+            //'Webpage Browser Title'    => _('Portfolio'),
             'Webpage Name'             => _('Portfolio'),
             'Webpage Meta Description' => '',
             'Webpage Scope Metadata'   => '',
@@ -920,7 +920,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Clients',
             'Webpage Code'             => 'clients.sys',
-            'Webpage Browser Title'    => _('Clients'),
+           // 'Webpage Browser Title'    => _('Clients'),
             'Webpage Name'             => _('Clients'),
             'Webpage Meta Description' => '',
             'Webpage Scope Metadata'   => '',
@@ -947,7 +947,7 @@ function website_system_webpages_config($website_type) {
             'Webpage Scope Metadata'   => '',
             'Webpage Type'             => 'Clients_Orders',
             'Webpage Code'             => 'clients_orders.sys',
-            'Webpage Browser Title'    => _("Client's orders"),
+           // 'Webpage Browser Title'    => _("Client's orders"),
             'Webpage Name'             => _("Client's orders"),
             'Webpage Meta Description' => '',
             'Webpage Scope Metadata'   => '',

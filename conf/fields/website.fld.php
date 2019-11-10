@@ -140,6 +140,28 @@ $object_fields[] = array(
 );
 
 $object_fields[] = array(
+    'label'      => _('Browser title'),
+    'show_title' => true,
+    'fields'     => array(
+
+
+        array(
+            'id'         => 'Website_Settings_Browser_Title_Format',
+            'edit'       => 'string',
+            'right_code' => 'WS-'.$store_key,
+            'render'     => true,
+            'options'         => $options_basket_amount,
+            'value'           =>$website->get('Website Settings Browser Title Format'),
+            'formatted_value' => $website->get('Website Settings Browser Title Format'),
+            'label'           => _('Format'),
+            'type'            => 'value'
+        ),
+
+
+    )
+);
+
+$object_fields[] = array(
     'label'      => _('Menu basket button'),
     'show_title' => true,
     'fields'     => array(
@@ -150,7 +172,6 @@ $object_fields[] = array(
             'edit'       => ($supervisor_edit ? 'option' : ''),
             'right_code' => 'WS-'.$store_key,
             'render'     => true,
-
             'options'         => $options_basket_amount,
             'value'           => ($website->get('Website Settings Info Bar Basket Amount Type') == '' ? 'total' : $website->get('Website Settings Info Bar Basket Amount Type')),
             'formatted_value' => ($website->get('Website Settings Info Bar Basket Amount Type') == '' ? _('Total') : $website->get('Settings Info Bar Basket Amount Type')),

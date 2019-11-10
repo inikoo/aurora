@@ -68,7 +68,7 @@ class Public_Webpage {
     }
 
 
-    function get($key, $arg1 = '') {
+    function get($key) {
 
         switch ($key) {
 
@@ -96,14 +96,25 @@ class Public_Webpage {
                 return $content_data;
                 break;
 
+            case 'Webpage Browser Title':
             case 'Browser Title':
+
+                $website=get_object('Website',$this->get('Webpage Website Key'));
+                $title_format=$website->get('Website Settings Browser Title Format');
+
+                $placeholders=array(
+                    '[Webpage]'=>$this->data['Webpage Name'],
+                    '[Website]'=>$website->get('Webpage Name')
+                );
+
+                return strtr($title_format,$placeholders);
+                break;
             case 'Meta Description':
                 return $this->data['Webpage '.$key];
 
                 break;
 
             case 'Webpage Website Key':
-            case 'Webpage Browser Title':
             case 'Webpage Meta Description':
             case 'Webpage Redirection Code':
             case 'Webpage State':
@@ -153,16 +164,8 @@ class Public_Webpage {
                     $navigation_data = json_decode($this->data['Webpage '.$key], true);
                 }
 
-
-
-
-
-               // print_r(json_decode($this->data['Webpage '.$key], true));
-
-               // exit('caca');
-
                 return $navigation_data;
-                break;
+
 
 
 
@@ -322,4 +325,3 @@ FROM `Deal Component Dimension`   left join
 }
 
 
-?>
