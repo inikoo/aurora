@@ -1727,16 +1727,7 @@ $tab_defaults = array(
         'f_period'    => 'all',
 
     ),
-    'website.user.pageviews'       => array(
-        'view'        => 'overview',
-        'sort_key'    => 'id',
-        'sort_order'  => 1,
-        'rpp'         => 100,
-        'rpp_options' => $default_rrp_options,
-        'f_field'     => 'page',
-        'f_period'    => 'all',
 
-    ),
 
 
     'webpage.assets'    => array(
