@@ -268,9 +268,9 @@ class Public_Website {
 
             case 'Website Settings Browser Title Format':
 
-             
+
                 if ($this->settings('Browser Title Format') == '') {
-                    return '--[Webpage]';
+                    return '[Webpage]';
                 } else {
                     return $this->settings('Browser Title Format');
                 }
