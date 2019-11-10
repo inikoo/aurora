@@ -518,23 +518,11 @@ trait Send_Email {
                                 '<a ses:tags="scope:product;scope_key:%d;webpage_key:%d;" href="%s"><b>%s</b> %s</a>, ', $product->id, $webpage->id, $webpage->get('Webpage URL'), $product->get('Code'), $product->get('Name')
 
                             );
-
-
                         }
-
-
                     }
-
-
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
-
                 $products = preg_replace('/\, $/', '', $products);
-
                 $this->placeholders['[Products]'] = $products;
 
                 break;
@@ -661,10 +649,7 @@ trait Send_Email {
 
                 }
 
-
                 if ($delivery_note->id) {
-
-
                     $this->placeholders['[Delivery Note Number]'] = $delivery_note->get('Delivery Note ID');
 
                     $auth_data = json_encode(
@@ -676,13 +661,8 @@ trait Send_Email {
                             )
                         )
                     );
-
                     $sak = safeEncrypt($auth_data, md5('82$je&4WN1g2B^{|bRbcEdx!Nz$OAZDI3ZkNs[cm9Q1)8buaLN'.SKEY));
-
-
                     $this->dn_pdf = file_get_contents($aurora_url.'/pdf/dn.pdf.php?id='.$delivery_note->id.'&sak='.$sak);
-
-
                 }
 
 

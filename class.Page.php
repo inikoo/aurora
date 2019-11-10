@@ -3539,7 +3539,7 @@ class Page extends DB_Table {
                 $label = _('code');
                 break;
             case 'Webpage Name':
-                $label = _('name');
+                $label = _('title (name)');
                 break;
 
             case 'Webpage Locale':

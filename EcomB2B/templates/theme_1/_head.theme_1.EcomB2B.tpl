@@ -117,7 +117,7 @@
         </script>
     {/if}
 
-    <title>{$webpage->get('Webpage Browser Title')}</title>
+    <title>{$webpage->get('Browser Title')}</title>
     <meta charset="utf-8">
     <meta name="keywords" content=""/>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
@@ -125,12 +125,9 @@
        <link rel="shortcut icon" type="image/png" href="{$settings['favicon_website']}"/>
     {/if}
 
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--[if lt IE 9]>
     <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-
-
     <![endif]-->
 
     {if isset($sentry_js)  }
@@ -153,9 +150,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     {/if}
 
-
     <link rel="stylesheet" href="assets/desktop.min.css" type="text/css"/>
-
     {assign "with_forms" false}
     {assign "with_not_found" 0}
     {assign "with_offline" 0}
