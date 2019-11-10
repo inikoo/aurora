@@ -274,6 +274,17 @@ class Public_Website {
                 } else {
                     return $this->settings('Browser Title Format');
                 }
+            case 'header_background_type':
+
+            case 'content_background_type':
+            case 'background_type':
+
+
+                if ($this->settings($key) == '') {
+                    return 'no_repeat';
+                } else {
+                    return $this->settings($key);
+                }
 
         }
 

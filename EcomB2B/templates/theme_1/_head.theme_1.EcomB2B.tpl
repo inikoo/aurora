@@ -237,11 +237,9 @@
             {assign "with_reset_password" 1}
             {assign "with_forms" 1}
 
-
             <script src="assets/desktop.in.min.js"></script>
             <script src="assets/desktop.forms.min.js"></script>
             <script src="js/libs/sweetalert.min.js"></script>
-
 
 
         {else}

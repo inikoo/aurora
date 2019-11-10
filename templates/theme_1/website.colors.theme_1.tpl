@@ -1079,7 +1079,7 @@
 
 
 
-                    <div style="padding-left:20px" class="background_editor content_background">
+                    <div style="margin-left:15px;clear:both;margin-top:5px ;padding-left:20px;padding: 10px;background:#fff;width:120px;border:1px solid #ccc"  class="background_editor content_background">
                         <input style="display:none" type="file" name="content_background" id="update_content_background" class="image_upload_from_iframe"
                                data-parent="Website"  data-parent_key="{$website->id}"  data-parent_object_scope="content_background"  data-metadata=""  data-options=""  data-response_type="website" />
 
@@ -1101,15 +1101,6 @@
             <div class="clear" style="margin-bottom: 40px"></div>
 
         </div>
-
-
-
-
-
-
-
-
-
         <footer   onclick="open_footer_style()">
 
 
@@ -1240,7 +1231,7 @@
 
     </div>
 
-    <div style="padding-left:20px;padding-top: 10px" class="background_editor background">
+    <div style="margin-top:5px ;padding-left:20px;padding: 10px;background:#fff;width:110px;" class="background_editor background">
         <input style="display:none" type="file" name="background" id="update_background" class="image_upload_from_iframe"
                data-parent="Website"  data-parent_key="{$website->id}"  data-parent_object_scope="background"  data-metadata=""  data-options=""  data-response_type="website" />
 
@@ -1248,7 +1239,7 @@
             <i class="add_background fa fa-image {if $styles['body background-image'][2]=='none'}very_discreet{/if}"></i>
         </label>
 
-        <i style="margin-left:10px;padding: 0px 10px" onclick="change_background_type(this)" data-element="body" data-type="{$website->get('background_type')}" class="unselectable button fa-fw background_type {$website->settings('background_type')}  {if $styles['body background-image'][2]=='none'}hide{/if}  fal {$website->get('background_icon')} "></i>
+        <i style="margin-left:0px;padding: 0px 10px" onclick="change_background_type(this)" data-element="body" data-type="{$website->get('background_type')}" class="unselectable button fa-fw background_type {$website->settings('background_type')}  {if $styles['body background-image'][2]=='none'}hide{/if}  fal {$website->get('background_icon')} "></i>
         <i style="margin-left:10px;padding: 0px 10px" onclick="delete_background(this)" data-element="body" class="button background_delete {if $styles['body background-image'][2]=='none'}hide{/if}  fal fa-trash-alt "></i>
     </div>
 

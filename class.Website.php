@@ -564,6 +564,8 @@ class Website extends DB_Table {
             case 'header_background_type':
             case 'content_background_type':
             case 'background_type':
+
+
                 if ($this->settings($key) == '') {
                     return 'no_repeat';
                 } else {
@@ -742,13 +744,10 @@ class Website extends DB_Table {
 
         $page_data = array(
 
-            'Page URL'                 => $this->data['Website URL'].'/'.strtolower($data['Webpage Code']),
-            'Page Type'                => 'Store',
+
             'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'    => 0,
 
-            'Page Title'       => $data['Webpage Name'],
-            'Page Short Title' => $data['Webpage Browser Title'],
             'Page Parent Key'  => 0,
 
 
@@ -1065,8 +1064,6 @@ class Website extends DB_Table {
 
 
         $page_data = array(
-            'Page URL'                 => $this->data['Website URL'].'/'.strtolower($page_code),
-            'Page Type'                => 'Store',
             'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'    => ($category->get('Category Subject') == 'Product' ? 5 : 0),
 
@@ -1092,10 +1089,6 @@ class Website extends DB_Table {
             'Page Locale'                            => $this->data['Website Locale'],
             'Page Source Template'                   => '',
             'Page Description'                       => '',
-            'Page Title'                             => $category->get('Label'),
-            'Page Short Title'                       => $category->get('Label'),
-            'Page Store Title'                       => $category->get('Label'),
-
             'editor' => $this->editor,
 
         );
@@ -1178,8 +1171,6 @@ class Website extends DB_Table {
 
 
         $page_data = array(
-            'Page URL'                 => $this->data['Website URL'].'/'.strtolower($page_code),
-            'Page Type'                => 'Store',
             'Page Store Creation Date' => gmdate('Y-m-d H:i:s'),
             'Number See Also Links'    => 5,
 
@@ -1205,11 +1196,6 @@ class Website extends DB_Table {
             'Page Locale'                            => $this->data['Website Locale'],
             'Page Source Template'                   => '',
             'Page Description'                       => '',
-            'Page Title'                             => $product->get('Name'),
-            'Page Short Title'                       => $product->get('Name'),
-            'Page Store Title'                       => $product->get('Name'),
-
-
             'editor' => $this->editor
 
         );

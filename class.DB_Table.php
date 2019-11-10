@@ -174,7 +174,7 @@ abstract class DB_Table extends stdClass {
             $key_field = "Page Key";
         }
 
-        if ($table_name == 'Page' and $this->type == 'Store') {
+        if ($table_name == 'Page' ) {
             $extra_data = $this->store_base_data();
 
 
