@@ -969,9 +969,6 @@ class Product extends Asset {
             case 'Product Description':
                 $label = _('Product description');
                 break;
-            case 'Product Webpage Name':
-                $label = _('Webpage title');
-                break;
             case 'Product Code':
                 $label = _('code');
                 break;

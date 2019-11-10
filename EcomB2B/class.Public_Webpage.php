@@ -39,20 +39,20 @@ class Public_Webpage {
 
 
             $sql = sprintf(
-                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Scope`=%s AND `Webpage Scope Key`=%d ", prepare_mysql($tag), $tag2
+                "SELECT * FROM `Page Store Dimension` PS WHERE `Webpage Scope`=%s AND `Webpage Scope Key`=%d ", prepare_mysql($tag), $tag2
             );
 
         } elseif ($tipo == 'store_page_code') {
             $sql = sprintf(
-                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Code`=%s AND `Webpage Store Key`=%d ", prepare_mysql($tag2), $tag
+                "SELECT * FROM `Page Store Dimension` PS WHERE `Webpage Code`=%s AND `Webpage Store Key`=%d ", prepare_mysql($tag2), $tag
             );
         } elseif ($tipo == 'website_code') {
             $sql = sprintf(
-                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Code`=%s AND PS.`Webpage Website Key`=%d ", prepare_mysql($tag2), $tag
+                "SELECT * FROM `Page Store Dimension` PS  WHERE `Webpage Code`=%s AND PS.`Webpage Website Key`=%d ", prepare_mysql($tag2), $tag
             );
 
         } else {
-            $sql = sprintf("SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE  PS.`Page Key`=%d", $tag);
+            $sql = sprintf("SELECT * FROM `Page Store Dimension` PS  WHERE  PS.`Page Key`=%d", $tag);
         }
 
 
@@ -108,11 +108,10 @@ class Public_Webpage {
                 );
 
                 return strtr($title_format,$placeholders);
-                break;
+
             case 'Meta Description':
                 return $this->data['Webpage '.$key];
 
-                break;
 
             case 'Webpage Website Key':
             case 'Webpage Meta Description':
@@ -125,13 +124,13 @@ class Public_Webpage {
             case 'Webpage Website Key':
             case 'Website URL':
                 return $this->data[$key];
-                break;
+
 
 
             case 'Name':
 
                 return $this->data['Webpage Name'];
-                break;
+
             case 'URL':
 
                 return $this->data['Webpage URL'];
@@ -140,7 +139,7 @@ class Public_Webpage {
             case 'CSS':
             case 'Published CSS':
                 return $this->data['Page Store '.$key];
-                break;
+
             case 'Content Data':
             case 'Content Published Data':
                 if ($this->data['Page Store '.$key] == '') {
@@ -150,7 +149,7 @@ class Public_Webpage {
                 }
 
                 return $content_data;
-                break;
+
             case 'Navigation Data':
                 if ($this->data['Webpage '.$key] == '') {
                     $navigation_data = array(

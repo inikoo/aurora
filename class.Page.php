@@ -86,20 +86,20 @@ class Page extends DB_Table {
 
         if (preg_match('/url|address|www/i', $tipo)) {
             $sql = sprintf(
-                "SELECT * FROM `Page Dimension` WHERE  `Page URL`=%s", prepare_mysql($tag)
+                "SELECT * FROM `Page Store Dimension` PS WHERE `Webpage URL`=%s", prepare_mysql($tag)
             );
         } elseif ($tipo == 'store_page_code') {
             $sql = sprintf(
-                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Code`=%s AND `Webpage Store Key`=%d ", prepare_mysql($tag2), $tag
+                "SELECT * FROM `Page Store Dimension` PS  WHERE `Webpage Code`=%s AND `Webpage Store Key`=%d ", prepare_mysql($tag2), $tag
             );
         } elseif ($tipo == 'website_code') {
             $sql = sprintf(
-                "SELECT * FROM `Page Store Dimension`  PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Code`=%s AND PS.`Webpage Website Key`=%d ", prepare_mysql($tag2), $tag
+                "SELECT * FROM `Page Store Dimension` PS  WHERE `Webpage Code`=%s AND PS.`Webpage Website Key`=%d ", prepare_mysql($tag2), $tag
             );
 
         } elseif ($tipo == 'scope') {
             $sql = sprintf(
-                "SELECT * FROM `Page Store Dimension` PS LEFT JOIN `Page Dimension` P  ON (P.`Page Key`=PS.`Page Key`) WHERE `Webpage Scope`=%s AND `Webpage Scope Key`=%d ", prepare_mysql($tag), $tag2
+                "SELECT * FROM `Page Store Dimension` PS  WHERE `Webpage Scope`=%s AND `Webpage Scope Key`=%d ", prepare_mysql($tag), $tag2
 
             );
 
@@ -107,10 +107,6 @@ class Page extends DB_Table {
             $this->get_deleted_data($tag);
 
             return;
-        } else {
-            $sql = sprintf(
-                "SELECT * FROM `Page Dimension` WHERE  `Page Key`=%d", $tag
-            );
         }
 
 
@@ -119,43 +115,22 @@ class Page extends DB_Table {
             $this->id = $this->data['Page Key'];
 
 
-            $this->type = $this->data['Page Type'];
-
-            if ($this->type == 'Store') {
-                $sql = sprintf("SELECT * FROM `Page Store Dimension` WHERE  `Page Key`=%d", $this->id);
+            $sql = sprintf("SELECT * FROM `Page Store Dimension` WHERE  `Page Key`=%d", $this->id);
 
 
-                if ($result2 = $this->db->query($sql)) {
-                    if ($row2 = $result2->fetch()) {
-                        foreach ($row2 as $key => $value) {
-                            $this->data[$key] = $value;
-                        }
-
-                        $this->properties = json_decode($this->data['Webpage Properties'], true);
-
-
+            if ($result2 = $this->db->query($sql)) {
+                if ($row2 = $result2->fetch()) {
+                    foreach ($row2 as $key => $value) {
+                        $this->data[$key] = $value;
                     }
+
+                    $this->properties = json_decode($this->data['Webpage Properties'], true);
+
+
                 }
-
-
-            } elseif ($this->type == 'Internal') {
-                $sql = sprintf("SELECT * FROM `Page Internal Dimension` WHERE  `Page Key`=%d", $this->id);
-
-
-                if ($result2 = $this->db->query($sql)) {
-                    if ($row2 = $result2->fetch()) {
-                        foreach ($row2 as $key => $value) {
-                            $this->data[$key] = $value;
-                        }
-                    }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
-                }
-
-
             }
+
+
         }
 
 
@@ -229,8 +204,8 @@ class Page extends DB_Table {
 
     }
 
-    function create($raw_data) {
 
+    function create($raw_data) {
 
         $this->new = false;
         if (!isset($raw_data['Webpage Code']) or $raw_data['Webpage Code'] == '') {
@@ -239,70 +214,6 @@ class Page extends DB_Table {
 
         }
 
-        if (!isset($raw_data['Page URL']) or $raw_data['Page URL'] == '') {
-
-            $raw_data['Page URL'] = "info.php?page=".$raw_data['Webpage Code'];
-        }
-
-        if (!isset($raw_data['Page Short Title']) or $raw_data['Page Short Title'] == '') {
-
-            $raw_data['Page Short Title'] = $raw_data['Page Title'];
-        }
-
-
-        $data = $this->base_data();
-        foreach ($raw_data as $key => $value) {
-            if (array_key_exists($key, $data)) {
-                $data[$key] = _trim($value);
-            }
-        }
-
-
-        $sql = sprintf(
-            "INSERT INTO `Page Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($data)).'`', join(',', array_fill(0, count($data), '?'))
-        );
-
-        $stmt = $this->db->prepare($sql);
-
-        $i = 1;
-        foreach ($data as $key => $value) {
-            $stmt->bindValue($i, $value);
-            $i++;
-        }
-
-
-        if ($stmt->execute()) {
-            $this->id = $this->db->lastInsertId();
-
-
-            $this->get_data('id', $this->id);
-
-
-            if ($this->data['Page Type'] == 'Store') {
-                $this->create_store_page($raw_data);
-
-            }
-
-            $sql = sprintf(
-                "INSERT INTO `Page State Timeline`  (`Page Key`,`Website Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Created') ", $this->id, $this->data['Webpage Website Key'], $this->data['Webpage Store Key'],
-                prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($this->data['Webpage State'])
-
-            );
-            $this->db->exec($sql);
-
-
-        } else {
-            $this->error = true;
-            $this->msg   = 'Can not insert Page Dimension';
-            print_r($stmt->errorInfo());
-            exit();
-        }
-
-
-    }
-
-
-    function create_store_page($raw_data) {
 
         $data = $this->store_base_data();
         foreach ($raw_data as $key => $value) {
@@ -317,7 +228,6 @@ class Page extends DB_Table {
         }
 
 
-        $data['Page Key']           = $this->id;
         $data['Webpage Properties'] = '{}';
 
         $sql = sprintf(
@@ -350,6 +260,14 @@ class Page extends DB_Table {
 
             $sql = sprintf(
                 "INSERT INTO `Page Store Data Dimension` (`Page Key`) VALUES (%d)", $this->id
+            );
+            $this->db->exec($sql);
+
+
+            $sql = sprintf(
+                "INSERT INTO `Page State Timeline`  (`Page Key`,`Website Key`,`Store Key`,`Date`,`State`,`Operation`) VALUES (%d,%d,%d,%s,%s,'Created') ", $this->id, $this->data['Webpage Website Key'], $this->data['Webpage Store Key'],
+                prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($this->data['Webpage State'])
+
             );
             $this->db->exec($sql);
 
@@ -409,32 +327,20 @@ class Page extends DB_Table {
                 $website = get_object('website', $this->get('Webpage Website Key'));
 
                 return $website->get($key);
-
-
-                break;
-
-
-            case 'Browser Title':
-
-                return $this->data['Webpage '.$key];
-                break;
             case 'Icon':
 
                 switch ($this->data['Webpage Scope']) {
                     case 'Product':
                         return 'cube';
-                        break;
+
                     case 'Category Products':
                         return 'folder-open';
-                        break;
                     case 'Category Categories':
                         return 'folder-tree';
-                        break;
                     default:
                         return '';
                 }
 
-                break;
             case 'State Icon':
 
                 switch ($this->data['Webpage State']) {
@@ -451,7 +357,7 @@ class Page extends DB_Table {
                         return $this->data['Webpage State'];
                 }
 
-                break;
+
 
 
             case 'State':
@@ -470,20 +376,20 @@ class Page extends DB_Table {
                         return $this->data['Webpage State'];
                 }
 
-                break;
+
 
             case 'Send Email Address':
                 $store = get_object('Store', $this->data['Webpage Store Key']);
 
                 return $store->get('Store Email');
 
-                break;
+
             case 'Send Email Signature':
                 $store = get_object('Store', $this->data['Webpage Store Key']);
 
                 return $store->get('Store Email Template Signature');
 
-                break;
+
 
             case 'Email':
             case 'Company Name':
@@ -525,7 +431,7 @@ class Page extends DB_Table {
 
                 return false;
 
-                break;
+
             case 'Navigation Data':
                 if ($this->data['Webpage '.$key] == '') {
                     $navigation_data = array(
@@ -541,7 +447,7 @@ class Page extends DB_Table {
 
 
                 return $navigation_data;
-                break;
+
             case 'Content Data':
                 if ($this->data['Page Store '.$key] == '') {
                     $content_data = false;
@@ -550,7 +456,7 @@ class Page extends DB_Table {
                 }
 
                 return $content_data;
-                break;
+
 
 
             case 'Scope Metadata':
@@ -562,7 +468,7 @@ class Page extends DB_Table {
                 }
 
                 return $content_data;
-                break;
+
 
             case 'Webpage Launching Date':
                 $content_data = $this->get('Content Data');
@@ -582,12 +488,20 @@ class Page extends DB_Table {
 
             case 'Code':
                 return $this->data['Webpage Code'];
-                break;
+            case 'Webpage Browser Title':
+            case 'Browser Title':
+
+                $website=get_object('Website',$this->get('Webpage Website Key'));
+                $title_format=$website->get('Website Settings Browser Title Format');
+
+                $placeholders=array(
+                    '[Webpage]'=>$this->data['Webpage Name'],
+                    '[Website]'=>$website->get('Webpage Name')
+                );
+
+                return strtr($title_format,$placeholders);
 
 
-            case('link'):
-                return $this->display();
-                break;
 
             default:
                 if (isset($this->data[$key])) {
@@ -609,26 +523,8 @@ class Page extends DB_Table {
         return false;
     }
 
-    function display($tipo = 'link') {
-
-        switch ($tipo) {
-            case('html'):
-            case('xhtml'):
-            case('link'):
-            default:
-                return '<a href="'.$this->data['Webpage URL'].'">'.$this->data['Page Title'].'</a>';
-
-        }
-
-
-    }
 
     function update_image_key() {
-
-
-        if ($this->data['Page Type'] != 'Store') {
-            return;
-        }
 
 
         $page_image_source = 'art/nopic.png';
@@ -678,8 +574,7 @@ class Page extends DB_Table {
     function refresh_cache() {
 
 
-
-        $account      = new Account($this->db);
+        $account = new Account($this->db);
 
 
         $template_response = '';
@@ -916,8 +811,6 @@ class Page extends DB_Table {
         $smarty_web->setCaching(Smarty::CACHING_LIFETIME_CURRENT);
 
 
-
-
         $cache_id = $this->get('Webpage Website Key').'|'.$this->id;
         $smarty_web->clearCache(null, $cache_id);
         $account = get_object('Account', 1);
@@ -1149,19 +1042,9 @@ class Page extends DB_Table {
                 break;
 
 
-            case 'Webpage Browser Title':
-
-                $sql = sprintf('UPDATE `Page Dimension` SET `Page Title`=%s WHERE `Page Key`=%d ', prepare_mysql($value), $this->id);
-                $this->db->exec($sql);
-                $this->update_field($field, $value, $options);
-                break;
             case 'Webpage Name':
 
 
-                $sql = sprintf('UPDATE `Page Dimension` SET `Page Short Title`=%s WHERE `Page Key`=%d ', prepare_mysql($value), $this->id);
-                $this->db->exec($sql);
-                $sql = sprintf('UPDATE `Page Store Dimension` SET `Page Store Title`=%s WHERE `Page Key`=%d ', prepare_mysql($value), $this->id);
-                $this->db->exec($sql);
                 $this->update_field($field, $value, $options);
                 break;
 
@@ -1358,7 +1241,6 @@ class Page extends DB_Table {
     function reset_object() {
 
 
-
         if ($this->get('Webpage Scope') == 'Category Products') {
 
             include_once 'class.Category.php';
@@ -1437,8 +1319,7 @@ class Page extends DB_Table {
             $this->update_navigation();
 
 
-        }
-        elseif ($this->get('Webpage Scope') == 'Category Categories') {
+        } elseif ($this->get('Webpage Scope') == 'Category Categories') {
 
 
             $items = array();
@@ -2292,8 +2173,6 @@ class Page extends DB_Table {
                         );
 
 
-
-
                         break;
                 }
             }
@@ -2449,7 +2328,6 @@ class Page extends DB_Table {
                     "SELECT `Product Webpage Key`,`Product B ID`,`Correlation` FROM `Product Sales Correlation`  LEFT JOIN `Product Dimension` ON (`Product ID`=`Product B ID`)    LEFT JOIN `Page Store Dimension` ON (`Page Key`=`Product Webpage Key`)  WHERE `Product A ID`=%d AND `Webpage State`='Online' AND `Product Web State`='For Sale'  ORDER BY `Correlation` DESC",
                     $product->id
                 );
-
 
 
                 if ($result = $this->db->query($sql)) {
@@ -3385,12 +3263,7 @@ class Page extends DB_Table {
 
 
         $this->deleted = false;
-        $sql           = sprintf(
-            "DELETE FROM `Page Dimension` WHERE `Page Key`=%d", $this->id
-        );
 
-
-        $this->db->exec($sql);
 
         $sql = sprintf(
             "DELETE FROM `Page Store Dimension` WHERE `Page Key`=%d", $this->id
@@ -3466,8 +3339,7 @@ class Page extends DB_Table {
                 'Page Store Section'          => $this->data['Page Store Section'],
                 'Page Parent Key'             => $this->data['Page Parent Key'],
                 'Page Parent Code'            => $this->data['Page Parent Code'],
-                'Page Title'                  => $this->data['Webpage Browser Title'],
-                'Page Short Title'            => $this->data['Webpage Name'],
+                'Page Title'                  => $this->data['Webpage Name'],
                 'Page Description'            => $this->data['Webpage Meta Description'],
                 'Page URL'                    => $this->data['Webpage URL'],
                 'Page Valid To'               => gmdate('Y-m-d H:i:s'),
@@ -3660,7 +3532,6 @@ class Page extends DB_Table {
 
 
         }
-
 
 
     }

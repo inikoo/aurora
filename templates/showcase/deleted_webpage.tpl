@@ -10,17 +10,7 @@
 *}
 
 <div class="name_and_categories">
-
-
-
-        <span class="strong">{$webpage->get('Page Title')}</span>
-
-
-
-
-
-
-  
+    <span class="strong">{$webpage->get('Page Title')}</span>
     <div style="clear:both"></div>
 </div>
 
