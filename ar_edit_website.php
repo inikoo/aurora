@@ -187,25 +187,6 @@ switch ($tipo) {
         set_webpage_as_not_ready($data, $editor, $db);
         break;
 
-
-
-    case 'edit_webpage':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'key'   => array('type' => 'key'),
-                         'field' => array('type' => 'string'),
-                         'value' => array('type' => 'string'),
-
-                     )
-        );
-        edit_webpage($data, $editor, $db);
-
-        break;
-
-
-
-
-
     case 'launch_website':
         $data = prepare_values(
             $_REQUEST, array(
@@ -223,41 +204,6 @@ switch ($tipo) {
         echo json_encode($response);
         exit;
         break;
-}
-
-
-function edit_webpage($data, $editor, $db) {
-
-
-    // todo migrate to Webpage & WebpageVersion classes
-
-    include_once('class.Page.php');
-    $webpage = new Page($data['key']);
-
-    switch ($data['field']) {
-        case 'css':
-            $value = base64_decode($data['value']);
-
-            //print_r($value);
-
-            $webpage->update(array('Page Store CSS' => $value), 'no_history');
-
-
-            break;
-        default:
-            break;
-    }
-
-    $response = array(
-        'state'   => 200,
-        'content' => (isset($data['value']) ? $data['value'] : ''),
-        'publish' => $webpage->get('Publish')
-
-
-    );
-
-    echo json_encode($response);
-
 }
 
 

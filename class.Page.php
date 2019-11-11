@@ -420,11 +420,7 @@ class Page extends DB_Table {
                     return true;
                 }
 
-                if ($this->data['Page Store CSS'] != $this->data['Page Store Published CSS']) {
 
-
-                    return true;
-                }
 
 
                 return false;
@@ -3102,7 +3098,7 @@ class Page extends DB_Table {
 
 
         $sql = sprintf(
-            'UPDATE `Page Store Dimension` SET  `Page Store Content Published Data`=`Page Store Content Data`,`Page Store Published CSS`=`Page Store CSS` WHERE `Page Key`=%d ', $this->id
+            'UPDATE `Page Store Dimension` SET  `Page Store Content Published Data`=`Page Store Content Data`  WHERE `Page Key`=%d ', $this->id
         );
 
         $this->db->exec($sql);
@@ -3284,7 +3280,7 @@ class Page extends DB_Table {
                 'Page Key'                    => $this->id,
                 'Website Key'                 => $this->data['Webpage Website Key'],
                 'Store Key'                   => $this->data['Webpage Store Key'],
-                'Page Store Section'          => $this->data['Page Store Section'],
+                'Page Store Section'          => '',
                 'Page Parent Key'             => $this->data['Webpage Scope Key'],
                 'Page Parent Code'            => '',
                 'Page Title'                  => $this->data['Webpage Name'],
