@@ -59,11 +59,23 @@
                     {/if}
                 </div>
 
-    </div>
+            </div>
 
 
 
             {elseif $product->get('Web State')=='For Sale'}
+
+            {if $store->get('Store Type')=='Dropshipping'}
+
+
+
+                <div class="log_out_prod_links" >
+                    <div style="width: 100%;" class=" center-text"><span style="padding: 10px 20px;" class="empty"> <i class="fa fa-store-alt  fa-fw" style="padding-right: 5px"></i> {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}</span></div>
+                    <div class="clear"></div>
+                </div>
+
+             {else}
+
                 <div class="store-product-socials full-bottom " style="text-align: center">
                     <div class="mobile_ordering" data-settings='{ "pid":{$product->id} }'>
                         <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
@@ -74,7 +86,7 @@
 
                 </div>
 
-
+            {/if}
             {/if}
 
         {else}

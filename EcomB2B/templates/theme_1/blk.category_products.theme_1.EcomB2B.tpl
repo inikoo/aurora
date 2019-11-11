@@ -54,10 +54,6 @@
                                     {if isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Dot'}
                                         <i class="stock_dot stock_level_{$item.product_id}  fa fa-fw fa-circle" ></i>
                                     {/if}
-
-
-
-
                             {/if}
                             <a href="{$item.link}"
 
@@ -84,16 +80,14 @@
                         {else}
                             <div class="product_prices  " >
                                 <div class="product_price"><small>{if empty($labels._login_to_see)}{t}For prices, please login or register{/t}{else}{$labels._login_to_see}{/if}</small></div>
-
                             </div>
                         {/if}
 
-
                         {if $logged_in}
                             {if $store->get('Store Type')=='Dropshipping'}
-                                <div class="order_row empty  order_row_{$item.product_id} "  style="background: none;color:#000" >
+                                <div class="portfolio_row  portfolio_row_{$item.product_id} "  style="background: none;color:#000" >
 
-                                    <div class="edit_portfolio_item add_to_portfolio sim_button " style="text-align: center"> <i class="fal fa-store-alt padding_right_5"></i>
+                                    <div class=" edit_portfolio_item add_to_portfolio sim_button " style="text-align: center"> <i class="fa fa-plus padding_right_5"></i>
                                        {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}</span>
                                     </div>
                                     <div class="edit_portfolio_item remove_from_portfolio hide sim_button " style="text-align: center">

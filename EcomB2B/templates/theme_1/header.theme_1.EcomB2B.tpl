@@ -14,8 +14,8 @@
     <div id="header_logo" style="flex-grow: 0;flex-shrink: 0;text-align: center">
             {if !empty($settings['logo_website_website'])}
                 <a href="https://{$website->get('Website URL')}"><img id="website_logo" style="margin-top:{if isset($settings['logo_top_margin'])}{$settings['logo_top_margin']}{else}0px{/if};max-height: 100%;max-width:  100%;vertical-align: middle;" alt="" src="{$settings['logo_website_website']}"/></a>
-            {/if}   
-        
+            {/if}
+
     </div>
     <div id="main_header" style="flex-grow:2;position: relative">
 

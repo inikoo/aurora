@@ -49,16 +49,11 @@
                 <div style="float:left;margin-right:4px;min-width:200px">
                     {t}Product code{/t}: <span class="code">{$product->get('Code')} </span>
                 </div>
-
-
                 {if $logged_in}
-                    <i  style="float: right;font-size: 22px"  data-product_code="{$product->get('Code')}" data-product_id="{$product->id}" data-favourite_key="0" class="sim_button favourite_{$product->id} favourite  far  fa-heart" aria-hidden="true"></i>
+                    {if $store->get('Store Type')!='Dropshipping'}
+                    <i style="float: right;font-size: 22px" data-product_code="{$product->get('Code')}" data-product_id="{$product->id}" data-favourite_key="0" class="sim_button favourite_{$product->id} favourite  far  fa-heart" aria-hidden="true"></i>
+                    {/if}
                 {/if}
-
-
-
-
-
             </div>
 
 
@@ -106,22 +101,25 @@
 
                     {elseif  $product->get('Web State')=='For Sale'}
 
+                        {if $store->get('Store Type')=='Dropshipping'}
+                            <div style="margin-left:10px;">
+                                <div class="order_row empty  order_row_{$product->id} ">
+                                    <span class="order_button label sim_button">
+                                    <i class="fa fa-store-alt  fa-fw" style="padding-right: 5px"></i> {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}
+                                </span>
+                                </div>
+                            </div>
+                        {else}
                         <div style="margin-left:10px;">
                             <div class="order_row empty  order_row_{$product->id} ">
                                 <input maxlength=6 class='order_input ' type="text" size='2' value='' data-ovalue=''>
                                 <span class="order_button label sim_button">
-                            <i class="fa fa-hand-pointer  fa-fw" aria-hidden="true"></i> {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}
-                        </span>
+                                    <i class="fa fa-hand-pointer  fa-fw" aria-hidden="true"></i> {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}
+                                </span>
                             </div>
                         </div>
+                        {/if}
                     {/if}
-
-
-
-
-
-
-
                 {else}
                     <div class="ordering log_out " >
 

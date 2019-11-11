@@ -275,7 +275,9 @@
         {/if}
 
 
-
+         {foreach from=$website->style  item=style  }
+         {$style[0]}{ {$style[1]}: {$style[2]}}
+         {/foreach}
 
 
         {foreach from=$website->mobile_style  item=style  }
