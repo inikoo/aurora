@@ -1,2 +1,2 @@
-DROP TABLE `Website Node Dimension`;
-DROP TABLE `Webpage Version Block Bridge`;
+DROP TABLE IF EXISTS `Website Node Dimension`;
+DROP TABLE IF EXISTS `Webpage Version Block Bridge`;

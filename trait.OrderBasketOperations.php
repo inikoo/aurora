@@ -258,20 +258,30 @@ trait OrderBasketOperations {
 
     function add_basket_history($data) {
 
-        $sql = sprintf(
-            "INSERT INTO `Order Basket History Dimension`  (
-		`Date`,`Order Transaction Key`,`Site Key`,`Store Key`,`Customer Key`,`Order Key`,`Page Key`,`Product ID`,`Quantity Delta`,`Quantity`,`Net Amount Delta`,`Net Amount`,`Page Store Section Type`)
-	VALUE (%s,%s,%d,%d,%d,%d,%d,%d,
-		%f,%f,%.2f,%.2f,%s
-		) ", prepare_mysql(gmdate('Y-m-d H:i:s')), prepare_mysql($data['otf_key']), $this->data['Order Website Key'], $this->data['Order Store Key'], $this->data['Order Customer Key'], $this->id, $data['Webpage Key'], $data['Product ID'], $data['Quantity Delta'],
-            $data['Quantity'], $data['Net Amount Delta'], $data['Net Amount'], prepare_mysql($data['Page Store Section Type'])
+        $sql ="INSERT INTO `Order Basket History Dimension`  (
+		`Order Basket History Date`,`Order Basket History Order Transaction Key`,`Order Basket History Website Key`,`Order Basket History Store Key`,`Order Basket History Customer Key`,`Order Basket History Order Key`,`Order Basket History Webpage Key`,`Order Basket History Product ID`,`Order Basket History Quantity Delta`,`Order Basket History Quantity`,`Order Basket History Net Amount Delta`,`Order Basket History Net Amount`,`Order Basket History Source`)
+	VALUE (?,?,?, ?,?,?, ?,?,?, ?,?,?, ?) ";
 
-
+        $stmt= $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                gmdate('Y-m-d H:i:s'),
+                $data['otf_key'],
+                $this->data['Order Website Key'],
+                $this->data['Order Store Key'],
+                $this->data['Order Customer Key'],
+                $this->id,
+                $data['webpage_key'],
+                $data['product_id'],
+                $data['quantity_delta'],
+                $data['quantity'],
+                $data['net_amount_delta'],
+                $data['net_amount'],
+                $data['page_section_type']
+            )
         );
-        //print $sql;
 
         $this->db->exec($sql);
-
 
     }
 
@@ -301,8 +311,6 @@ trait OrderBasketOperations {
 
 
         if ($updated_fields_number > 0) {
-
-
             $this->updated = true;
         }
 

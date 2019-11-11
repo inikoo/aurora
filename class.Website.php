@@ -743,12 +743,6 @@ class Website extends DB_Table {
 
 
         $page_data = array(
-
-
-            'Number See Also Links'    => 0,
-
-
-
             'Webpage Scope'                 => $data['Webpage Scope'],
             'Webpage Scope Key'             => '',
             'Webpage Website Key'           => $this->id,
@@ -1061,9 +1055,6 @@ class Website extends DB_Table {
 
 
         $page_data = array(
-            'Number See Also Links'    => ($category->get('Category Subject') == 'Product' ? 5 : 0),
-
-
             'Webpage Scope'                 => ($category->get('Category Subject') == 'Product' ? 'Category Products' : 'Category Categories'),
             'Webpage Scope Key'             => $category->id,
             'Webpage Website Key'           => $this->id,
@@ -1076,13 +1067,6 @@ class Website extends DB_Table {
             //'Webpage Browser Title'         => $category->get('Label'),
 
 
-            'Page Store Section Type'                => 'Department',
-            'Page Store Section'                     => 'Department Catalogue',
-            'Page Store Last Update Date'            => gmdate('Y-m-d H:i:s'),
-            'Page Store Last Structural Change Date' => gmdate('Y-m-d H:i:s'),
-            'Page Locale'                            => $this->data['Website Locale'],
-            'Page Source Template'                   => '',
-            'Page Description'                       => '',
             'editor' => $this->editor,
 
         );
@@ -1165,9 +1149,6 @@ class Website extends DB_Table {
 
 
         $page_data = array(
-            'Number See Also Links'    => 5,
-
-
             'Webpage Scope'                          => 'Product',
             'Webpage Scope Key'                      => $product->id,
             'Webpage Website Key'                    => $this->id,
@@ -1179,14 +1160,6 @@ class Website extends DB_Table {
             'Webpage Name'                           => $product->get('Name'),
             //'Webpage Browser Title'                  => $product->get('Name'),
 
-            //--------   to remove ??
-            'Page Store Section Type'                => 'Product',
-            'Page Store Section'                     => 'Product Description',
-            'Page Store Last Update Date'            => gmdate('Y-m-d H:i:s'),
-            'Page Store Last Structural Change Date' => gmdate('Y-m-d H:i:s'),
-            'Page Locale'                            => $this->data['Website Locale'],
-            'Page Source Template'                   => '',
-            'Page Description'                       => '',
             'editor' => $this->editor
 
         );

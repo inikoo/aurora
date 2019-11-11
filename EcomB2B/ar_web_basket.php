@@ -70,7 +70,7 @@ switch ($tipo) {
                      )
         );
 
-        update_item($data, $customer, $order, $editor, $db);
+        update_item($data, $website,$customer, $order, $editor, $db);
 
 
         break;
@@ -136,14 +136,20 @@ switch ($tipo) {
 
 }
 
-
-function update_item($_data, $customer, $order, $editor, $db) {
+/**
+ * @param $_data
+ * @param $customer \Public_Customer
+ * @param $website \Public_Website
+ * @param $order \Public_Order
+ * @param $editor
+ * @param $db \PDO
+ */
+function update_item($_data, $website,$customer, $order, $editor, $db) {
 
 
     $customer->editor = $editor;
 
 
-    $website = get_object('Website', $_SESSION['website_key']);
 
     if (!$order->id) {
 
@@ -231,13 +237,13 @@ function update_item($_data, $customer, $order, $editor, $db) {
 
         $basket_history = array(
             'otf_key'                 => $transaction_data['otf_key'],
-            'Webpage Key'             => $_data['webpage_key'],
-            'Product ID'              => $product->id,
-            'Quantity Delta'          => $transaction_data['delta_qty'],
-            'Quantity'                => $transaction_data['qty'],
-            'Net Amount Delta'        => $transaction_data['delta_net_amount'],
-            'Net Amount'              => $transaction_data['net_amount'],
-            'Page Store Section Type' => $_data['page_section_type'],
+            'webpage_key'             => $_data['webpage_key'],
+            'product_id'              => $product->id,
+            'quantity_delta'          => $transaction_data['delta_qty'],
+            'quantity'                => $transaction_data['qty'],
+            'net_amount_delta'        => $transaction_data['delta_net_amount'],
+            'net_amount'              => $transaction_data['net_amount'],
+            'page_section_type' => $_data['page_section_type'],
 
         );
         $order->add_basket_history($basket_history);
