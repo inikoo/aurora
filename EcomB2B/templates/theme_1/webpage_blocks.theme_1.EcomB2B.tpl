@@ -1262,7 +1262,10 @@
                             $.getJSON("ar_web_portfolio.php?tipo=category_products&with_category_products={if $with_category_products==1}Yes{else}No{/if}&webpage_key={$webpage->id}", function (data) {
 
                                 $.each(data.products_in_portfolio, function (index, value) {
-                                    $('.favourite_' + index).removeClass('far').addClass('marked fas').data('favourite_key', value)
+                                    let portfolio_row=$('.portfolio_row_' + index);
+                                    portfolio_row.find('.add_to_portfolio').addClass('hide')
+                                    portfolio_row.find('.remove_from_portfolio').removeClass('hide')
+
                                 });
 
 

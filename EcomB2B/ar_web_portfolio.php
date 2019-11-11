@@ -21,7 +21,7 @@ if (!isset($_REQUEST['tipo'])) {
 }
 
 
-$account=get_object('Account',1);
+$account = get_object('Account', 1);
 
 $tipo = $_REQUEST['tipo'];
 
@@ -48,24 +48,24 @@ switch ($tipo) {
     case 'add_product_to_portfolio':
         $data = prepare_values(
             $_REQUEST, array(
-                         'product_id'    => array('type' => 'key'),
-                         'webpage_key'    => array('type' => 'key')
+                         'product_id'  => array('type' => 'key'),
+                         'webpage_key' => array('type' => 'key')
                      )
         );
 
-            add_product_to_portfolio($data, $db, $customer,$account) ;
+        add_product_to_portfolio($data, $db, $customer, $account);
 
         break;
 
     case 'remove_product_from_portfolio':
         $data = prepare_values(
             $_REQUEST, array(
-                         'product_id'    => array('type' => 'key'),
-                         'webpage_key'    => array('type' => 'key'),
+                         'product_id'  => array('type' => 'key'),
+                         'webpage_key' => array('type' => 'key'),
                      )
         );
 
-        remove_product_from_portfolio($data, $db, $customer,$account) ;
+        remove_product_from_portfolio($data, $db, $customer, $account);
         break;
 
 
@@ -220,12 +220,12 @@ function category_products($data, $db, $customer_key) {
 }
 
 /**
- * @param $data array
- * @param $db   \PDO
+ * @param $data     array
+ * @param $db       \PDO
  * @param $customer \Public_Customer
- * @param $account \Public_Account
+ * @param $account  \Public_Account
  */
-function add_product_to_portfolio($data, $db, $customer,$account) {
+function add_product_to_portfolio($data, $db, $customer, $account) {
 
     include_once 'utils/new_fork.php';
 
@@ -234,7 +234,7 @@ function add_product_to_portfolio($data, $db, $customer,$account) {
     if ($product->get('Store Key') != $customer->get('Store Key')) {
         $response = array(
             'state' => 400,
-            'msg'  => 'Product not in Store'
+            'msg'   => 'Product not in Store'
         );
         echo json_encode($response);
         exit;
@@ -253,7 +253,7 @@ function add_product_to_portfolio($data, $db, $customer,$account) {
     if ($row = $stmt->fetch()) {
         $response = array(
             'state' => 400,
-            'msg'  => _('Product already in portfolio')
+            'msg'   => _('Product already in portfolio')
         );
         echo json_encode($response);
         exit;
@@ -293,13 +293,8 @@ function add_product_to_portfolio($data, $db, $customer,$account) {
         );
 
         $response = array(
-            'state'           => 200,
-            'update_metadata' => array(
-                'class_html' => array(
-                    'Number_Products_in_Portfolio' => '('.$customer->get('Number Products in Portfolio').')'
-
-                )
-            )
+            'state'  => 200,
+            'result' => 'add'
         );
         echo json_encode($response);
         exit;
@@ -310,12 +305,12 @@ function add_product_to_portfolio($data, $db, $customer,$account) {
 
 
 /**
- * @param $data array
- * @param $db   \PDO
+ * @param $data     array
+ * @param $db       \PDO
  * @param $customer \Public_Customer
- * @param $account \Public_Account
+ * @param $account  \Public_Account
  */
-function remove_product_from_portfolio($data, $db, $customer,$account) {
+function remove_product_from_portfolio($data, $db, $customer, $account) {
 
     include_once 'utils/new_fork.php';
 
@@ -324,7 +319,7 @@ function remove_product_from_portfolio($data, $db, $customer,$account) {
     if ($product->get('Store Key') != $customer->get('Store Key')) {
         $response = array(
             'state' => 400,
-            'msg'  => 'Product not in Store'
+            'msg'   => 'Product not in Store'
         );
         echo json_encode($response);
         exit;
@@ -373,20 +368,15 @@ function remove_product_from_portfolio($data, $db, $customer,$account) {
 
 
         $response = array(
-            'state'           => 200,
-            'update_metadata' => array(
-                'class_html' => array(
-                    'Number_Products_in_Portfolio' => '('.$customer->get('Number Products in Portfolio').')'
-
-                )
-            )
+            'state'  => 200,
+            'result' => 'remove'
         );
         echo json_encode($response);
         exit;
     } else {
         $response = array(
             'state' => 400,
-            'msg'  => 'Product not in portfolio'
+            'msg'   => 'Product not in portfolio'
         );
         echo json_encode($response);
         exit;
