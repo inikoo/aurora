@@ -59,7 +59,6 @@
 
     </div>
 
-
     <div id="search_header" style="padding-top:5px;flex-grow:1;text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:350px;position: relative" oncxlick="open_header_style()" >
         {if $store->get('Store Type')=='Dropshipping' and $logged_in}
         <div style="float:right;padding-right: 40px;font-weight: 800;font-size: 14px">

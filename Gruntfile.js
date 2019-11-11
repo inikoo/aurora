@@ -13,14 +13,12 @@ module.exports = function (grunt) {
                 options: {
                     sourceMap: true,
                 },
-
                 src: ['EcomB2B/js/libs/jquery.hoverIntent.js', 'EcomB2B/js/au_header/menu.js', 'EcomB2B/js/au_header/search.js',],
                 dest: 'EcomB2B/assets/desktop.in.min.js'
             }, ecom_desktop_out: {
                 options: {
                     sourceMap: true,
                 },
-
                 src: ['EcomB2B/js/libs/jquery.js', 'EcomB2B/js/libs/jquery.hoverIntent.js', 'EcomB2B/js/au_header/menu.js', 'EcomB2B/js/au_header/search.js',],
                 dest: 'EcomB2B/assets/desktop.out.min.js'
             }, ecom_desktop_logged_in: {
@@ -32,7 +30,7 @@ module.exports = function (grunt) {
                 options: {
                     sourceMap: true,},
                 src: ['EcomB2B/js/dropshipping/portfolio.js','EcomB2B/js/dropshipping/logout.js',
-                ], dest: 'EcomB2B/assets/dropshipping,logged_in.min.js',
+                ], dest: 'EcomB2B/assets/dropshipping.logged_in.min.js',
             }, ecom_image_gallery: {
                 options: {
                     sourceMap: true,
@@ -60,9 +58,7 @@ module.exports = function (grunt) {
                 options: {
                     sourceMap: true,
                 }, src: [
-
                     'EcomB2B/js/basket_checkout/braintree.3.40.0.paypal-checkout.min.js', 'EcomB2B/js/basket_checkout/braintree.3.40.0.min.js', 'EcomB2B/js/basket_checkout/braintree.3.40.0.hosted-fields.min.js', 'EcomB2B/js/basket_checkout/checkout.js', 'EcomB2B/js/basket_checkout/order_totals.js',
-
                 ], dest: 'EcomB2B/assets/desktop.checkout.min.js'
             }, ecom_desktop_profile: {
                 options: {

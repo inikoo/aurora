@@ -80,19 +80,24 @@
                                 <div class="color-red-dark " style="line-height: 20px;font-size: 100%">{t}Expected{/t}: {$product->get('Next Supplier Shipment Timestamp')|date_format:"%x"}</div>
                             {/if}
                         {elseif $product->get('Web State')=='For Sale'}
-                            <div  >
+                            {if $store->get('Store Type')=='Dropshipping'}
+                                <div  style="margin-top:20px;">
+                                <span style="padding:10px 20px" class="empty  order_row_{$product->id} ">
+                                    <span  class="order_button label sim_button" >
+                                        <i class="fa fa-store-alt  fa-fw" style="padding-right: 5px"></i> {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}
+                                    </span>
+                                </span></div>
 
-
-
-
+                            {else}
+                            <div>
                                 <div class="mobile_ordering" data-settings='{ "pid":{$product->id} }'>
                                     <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
                                     <input type="number" min="0" value="" class="needsclick order_qty">
                                     <i onclick="save_item_qty_change(this)" class="hide ordering_button save fa fa-save fa-fw color-blue-dark"></i>
                                     <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
                                 </div>
-
                             </div>
+                            {/if}
                         {/if}
 
 

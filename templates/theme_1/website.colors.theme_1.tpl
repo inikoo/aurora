@@ -828,7 +828,7 @@
 
 
                                 <div class="product_description"  >
-                                    <span class="code">Fruit-01x/span>
+                                    <span class="code">Fruit-01</span>
                                     <div class="name item_name">Fuji apple, Enjoy the full flavor of a Fuji!</div>
 
                                 </div>
@@ -864,15 +864,6 @@
 
                                         </div>
                                     {/if}
-
-
-
-
-
-
-
-
-
                             </div>
                 </div>
                 <div class="product_wrap wrap type_product " data-element="{if $store->get('Store Type')=='Dropshipping'}.remove_from_portfolio{else}.ordered{/if}"  onClick="open_edit_product_wrap_style(this)">
@@ -912,9 +903,9 @@
                             </div>
                             {if $store->get('Store Type')=='Dropshipping'}
                                 <div class="portfolio_row  ">
-                                    <div class="edit_portfolio_item remove_from_portfolio  " style="text-align: center"> <i class="fal fa-store-alt padding_right_5"></i>
+                                    <div class="edit_portfolio_item remove_from_portfolio" style="text-align: left;padding-left: 10px"> <i class="fa fa-store-alt padding_right_5"></i>
                                         {if empty($labels._in_portfolio)}{t}In portfolio{/t}{else}{$labels._in_portfolio}{/if}
-                                        <i style="position: absolute;right:10px;bottom:-2.5px" class="fa fa-trash-alt  sim_button" title="{if empty($labels._remove_from_portfolio)}{t}Remove from portfolio{/t}{else}{$labels._remove_from_portfolio}{/if}"></i>
+                                        <i style="position: absolute;right:10px;bottom:-1px" class="far fa-trash-alt  sim_button" title="{if empty($labels._remove_from_portfolio)}{t}Remove from portfolio{/t}{else}{$labels._remove_from_portfolio}{/if}"></i>
                                     </div>
                                 </div>
                             {else}

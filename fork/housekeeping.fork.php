@@ -3223,7 +3223,11 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
             break;
+        case 'customer_portfolio_changed':
 
+            $customer = get_object('Customer', $data['customer_key']);
+            $customer->update_portfolio();
+            break;
 
         default:
             break;

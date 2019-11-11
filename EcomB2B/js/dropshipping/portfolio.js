@@ -3,9 +3,11 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
+
 $(function () {
 
-    $(document).on('click', '.order_row .edit_portfolio_item', function (evt) {
+    $(document).on('click', '.portfolio_row .edit_portfolio_item', function (evt) {
+
 
         var action;
 
@@ -13,26 +15,21 @@ $(function () {
         if ($(this).find('i').hasClass('fa-spinner')) return;
 
 
-        if ($this.hasClass('add_to_portfolio')) {
-            action = 'add';
+        if ($(this).hasClass('add_to_portfolio')) {
+            action = 'add_product_to_portfolio';
         } else {
-            action = 'remoce';
+            action = 'remove_product_from_portfolio';
         }
 
 
         var ajaxData = new FormData();
 
-
-        ajaxData.append("tipo", 'edit_portfolio_item')
-        ajaxData.append("action", action)
-        ajaxData.append("object", 'product')
-        ajaxData.append("key", $(this).closest('.product_container').data('product_id'))
+        ajaxData.append("tipo", action)
+        ajaxData.append("product_id", $(this).closest('.product_container').data('product_id'))
         ajaxData.append("webpage_key", $('#webpage_data').data('webpage_key'))
 
-
         $.ajax({
-            url: request_file, type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
-
+            url: 'ar_web_portfolio.php', type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
 
             complete: function () {
 
