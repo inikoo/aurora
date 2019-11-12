@@ -10,7 +10,7 @@
 */
 
 $tab     = 'packer.feedback';
-$ar_file = 'ar_hr_tables.php';
+$ar_file = 'ar_reports_tables.php';
 $tipo    = 'packer_feedback';
 
 $default = $user->get_tab_defaults($tab);

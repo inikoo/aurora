@@ -11,11 +11,12 @@
 
 <span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}" ></span>
 <div id="top_header" class="{$website->get('header_background_type')}">
+    <div id="header_logo" style="flex-grow: 0;flex-shrink: 0;text-align: center">
+            {if !empty($settings['logo_website_website'])}
+                <a href="https://{$website->get('Website URL')}"><img id="website_logo" style="margin-top:{if isset($settings['logo_top_margin'])}{$settings['logo_top_margin']}{else}0px{/if};max-height: 100%;max-width:  100%;vertical-align: middle;" alt="" src="{$settings['logo_website_website']}"/></a>
+            {/if}
 
-    <div id="header_logo" style="flex-grow:1;flex-grow: 0;flex-shrink: 0;flex-grow: 0;flex-shrink: 0; ;text-align: center">
-            <a href="https://{$website->get('Website URL')}"><img id="website_logo" style="margin-top:{if isset($settings['logo_top_margin'])}{$settings['logo_top_margin']}{else}0px{/if};max-height: 100%;max-width:  100%;vertical-align: middle;" src="{if empty($settings['logo_website_website'])}https://via.placeholder.com/60x60{else}{$settings['logo_website_website']}{/if}"/></a>
     </div>
-
     <div id="main_header" style="flex-grow:2;position: relative">
 
         {if isset($settings.search_texts)}
@@ -54,12 +55,9 @@
         {/if}
 
     </div>
-
-    <div id="buffer_zone" style="flex-grow:1;text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:100px;" >
-
+    <div id="buffer_zone" style="text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:100px;" >
     </div>
-
-    <div id="search_header" style="padding-top:5px;flex-grow:1;text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:350px;position: relative" oncxlick="open_header_style()" >
+    <div id="search_header" style="padding-top:5px;text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:350px;position: relative" >
         {if $store->get('Store Type')=='Dropshipping' and $logged_in}
         <div style="float:right;padding-right: 40px;font-weight: 800;font-size: 14px">
             <a href="#" id="logout" class="button">
@@ -91,10 +89,7 @@
                 {/if}
             {/foreach}
         {/if}
-
-
     </div>
-
 </div>
 <div id="bottom_header">
 
@@ -109,46 +104,31 @@
 
             {if $store->get('Store Type')=='Dropshipping'}
                 <div class="control_panel">
-
-
                     <a id="portfolio_button" href="clients_orders.sys" class="button">
                         <i class=" far fa-shopping-cart  "  ></i> {if empty($labels._Orders)}{t}Orders{/t}{else}{$labels._Orders}{/if}
                     </a>
-
                     <a id="portfolio_button" href="clients.sys" class="button">
                         <i class=" fal fa-user  "  ></i> {if empty($labels._Custoemrs)}{t}Customers{/t}{else}{$labels._Custoemrs}{/if}
                     </a>
-
                     <a id="portfolio_button" href="portfolio.sys" class="button">
                         <i class=" far fa-store-alt  "  ></i> {if empty($labels._Portfolio)}{t}Portfolio{/t}{else}{$labels._Portfolio}{/if}
                     </a>
 
                     <a id="profile_button" href="profile.sys" class="button"><i class="far fa-cog  " title="{t}Profile{/t}" aria-hidden="true"></i>
                         <span>{if empty($labels._Profile)}{t}Profile{/t}{else}{$labels._Profile}{/if}</span></a>
-
-
-
-
-
-
-
-
                 </div>
 
             {else}
                 <div class="control_panel">
-
                     <a  id="header_order_totals" href="basket.sys" class="button">
                         <span class="ordered_products_number">0</span>
                         <i style="padding-right:5px;padding-left:5px" class="fa fa-shopping-cart fa-flip-horizontal  "  title="{if empty($labels._Basket)}{t}Basket{/t}{else}{$labels._Basket}{/if}"
                            aria-hidden="true"></i>
                         <span class="order_amount" style="padding-right:10px" title="">{$zero_money}</span>
                     </a>
-
                     <a id="favorites_button" href="favourites.sys" class="button">
                         <i class=" far fa-heart fa-flip-horizontal  "  title="{if empty($labels._Favourites)}{t}My favourites{/t}{else}{$labels._Favourites}{/if}" aria-hidden="true"></i>
                     </a>
-
                     <a id="profile_button" href="profile.sys" class="button"><i class="far fa-user fa-flip-horizontal  " title="{t}Profile{/t}" aria-hidden="true"></i>
                         <span>{if empty($labels._Profile)}{t}Profile{/t}{else}{$labels._Profile}{/if}</span></a>
 
@@ -156,16 +136,8 @@
                         <i class="far fa-spinner fa-spin  fa-flip-horizontal  " title="{t}Log out{/t}" aria-hidden="true"></i>
                         <span>{if empty($labels._Logout)}{t}Log out{/t}{else}{$labels._Logout}{/if}</span>
                     </a>
-
-
-
-
-
-
                 </div>
             {/if}
-
-
         {else}
             <div class="control_panel">
                 <a href="/login.sys" class="button"  id="login_header_button" ><i class="fa fa-sign-in" aria-hidden="true"></i> <span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></a>
@@ -174,12 +146,9 @@
         {/if}
 
 
-
-
 </div>
 <div id="_menu_blocks">
 {foreach from=$header_data.menu.columns item=column key=key}
-
     {if $column.show}
     {if $column.type=='three_columns'}
         <div id="menu_block_menu_{$key}" class="_menu_block menu_block hide" data-key="{$key}">
@@ -196,9 +165,9 @@
                     <div class="text">
                         {if isset($sub_column.image)}
                         {if  $sub_column.url!=''}
-                            <a href="{$sub_column.url}"><img style="width: 100%" src="{$sub_column.image}" alt="" class=""/></a>
+                            <a href="{$sub_column.url}"  {if isset({$sub_column.title})}title="{$sub_column.title}"{/if}  ><img style="width: 100%" src="{$sub_column.image}" alt="{if isset({$sub_column.title})}{{$sub_column.title}}{/if}" /></a>
                         {else}
-                            <img src="{$sub_column.image}" alt="" class=""/>
+                            <img src="{$sub_column.image}" alt="{if isset({$sub_column.title})}{{$sub_column.title}}{/if}" />
                         {/if}
                         {/if}
                         <div>
@@ -207,13 +176,17 @@
                     </div>
                 {elseif $sub_column.type=='image'}
                     <div class="image">
-                        <img src="{$sub_column.image}" alt=""/>
+                        {if  $sub_column.url!=''}
+                            <a href="{$sub_column.url}"  {if isset({$sub_column.title})}title="{$sub_column.title}"{/if} ><img style="width: 100%" src="{$sub_column.image}" alt="{if isset({$sub_column.title})}{{$sub_column.title}}{/if}" /></a>
+                        {else}
+                            <img src="{$sub_column.image}" alt="{if isset({$sub_column.title})}{{$sub_column.title}}{/if}"  />
+                        {/if}
                     </div>
                 {elseif $sub_column.type=='departments' or   $sub_column.type=='families' or  $sub_column.type=='web_departments' or   $sub_column.type=='web_families'}
                     <div class="vertical-menu  ">
                         {foreach from=$store->get_categories({$sub_column.type},{$sub_column.page},'menu') item=item}
                             {if !empty($item.url) and !empty($item.label) }
-                                <a href="{$item['url']}"><i class="fa fa-caret-right fa-fw "></i>{$item['label']}</a>
+                                <a href="{$item['url']}"><i class="fa fa-caret-right fa-fw"></i>{$item['label']}</a>
                             {/if}
                         {/foreach}
                     </div>
@@ -221,11 +194,7 @@
             {/foreach}
         </div>
     {elseif $column.type=='single_column'}
-
-
-
         <div id="menu_block_menu_{$key}" class="_menu_block hide vertical-menu single_column " data-key="{$key}">
-
             {foreach from=$column.items item=item}
                 {if $item.type=='item'}
                     {if !empty($item.url) and !empty($item.label) }
@@ -236,7 +205,6 @@
         </div>
     {/if}
     {/if}
-
 {/foreach}
 </div>
 

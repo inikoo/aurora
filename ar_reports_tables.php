@@ -91,11 +91,8 @@ switch ($tipo) {
     case 'intrastat_deliveries_totals':
         intrastat_deliveries_totals($db, $user, $account);
         break;
-
     case 'ec_sales_list_totals':
-
         ec_sales_list_totals($db, $user, $account);
-
         break;
     case 'intrastat_products_totals':
         intrastat_products_totals($db, $user, $account);
@@ -118,7 +115,10 @@ switch ($tipo) {
             get_table_parameters(), $db, $user, $account
         );
         break;
-
+    case 'picker_feedback':
+    case 'packer_feedback':
+        picker_packer_feedback(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -3406,3 +3406,59 @@ sum( `Supplier Delivery Extra Cost Account Currency Amount`+`Supplier Delivery C
 
 
 }
+
+
+
+function picker_packer_feedback($_data, $db, $user, $account) {
+
+
+    $rtext_label = 'issue';
+
+    include_once 'prepare_table/init.php';
+
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    $record_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+
+            $record_data[] = array(
+                'id'       => (integer)$data['Feedback Key'],
+                'delivery_note' => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']),
+                'reference' => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
+                'delivery_note_date'     => strftime("%a %e %b %Y", strtotime($data['Delivery Note Date']." +00:00")),
+
+                'date'     => strftime("%a %e %b %Y", strtotime($data['Feedback Date']." +00:00")),
+                'note'     => $data['Feedback Message'],
+                'author'   => $data['User Alias'],
+
+            );
+
+
+        }
+    }else {
+        print_r($error_info = $db->errorInfo());
+        print $sql;
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
+
