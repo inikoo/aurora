@@ -26,14 +26,9 @@
     <div class="products {if !$data.item_headers}no_items_header{/if}"  data-sort="{$data.sort}" >
         {counter start=-1 print=false assign="counter"}
         {foreach from=$data.items item=item}
-
-
             <div class="product_wrap wrap type_{$item.type} " data-type="{$item.type}" {if $item.type=='product'} data-sort_code="{$item.sort_code}" data-sort_name="{$item.sort_name}{/if} ">
-
-
                 {if $item.type=='product'}
                     {counter print=false assign="counter"}
-
                     <div class="product_block tablet item product_container" data-product_id="{$item.product_id}">
                         <div class="product_header_text fr-view" >
                             {$item.header_text}
@@ -79,7 +74,6 @@
                         {if $logged_in}
                         {if $store->get('Store Type')=='Dropshipping'}
                             <div class="portfolio_row  portfolio_row_{$item.product_id} "  style="background: none;color:#000" >
-
                                 <div class=" edit_portfolio_item edit_portfolio_item_trigger add_to_portfolio sim_button " style="text-align: center"> <i class="fa fa-plus padding_right_5"></i>
                                     {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}</span>
                                 </div>
