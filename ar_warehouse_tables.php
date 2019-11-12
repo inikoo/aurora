@@ -1249,7 +1249,7 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
             'sko_cost'    => money($data['Part Cost in Warehouse'], $account->get('Account Currency')),
             'stock_value' => money($data['Stock Value'], $account->get('Account Currency')),
             'quantity'    => sprintf(
-                '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onxClick="open_location_part_stock_quantity_dialog(this)">%s</span>', '', $data['Part SKU'], 1,
+                '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" >%s</span>', '', $data['Part SKU'], 1,
                 $data['Quantity On Hand'], '<strong class="'.($data['Quantity On Hand'] < 0 ? 'success' : 'error').'" >'.($data['Quantity On Hand'] < 0 ? '+' : '').number(-$data['Quantity On Hand']).'</strong>'
             )
 
