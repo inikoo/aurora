@@ -10,37 +10,26 @@
 */
 
 $tab     = 'picker.feedback';
-$ar_file = 'ar_hr_tables.php';
+$ar_file = 'ar_reports_tables.php';
 $tipo    = 'picker_feedback';
 
 $default = $user->get_tab_defaults($tab);
 
-
 $table_views = array(
-
-
-);
+    );
 
 $table_filters = array(
     'reference' => array(
         'label' => _('Delivery note number'),
         'title' => _('Delivery note number'),
-    ),
-
+    )
 );
-
 
 $parameters = array(
     'parent'     =>'picker',
-    'parent_key' => $state['key'],
-
+    'parent_key' => $state['key']
 );
-
 
 $table_buttons = array();
 
-
 include 'utils/get_table_html.php';
-
-
-
