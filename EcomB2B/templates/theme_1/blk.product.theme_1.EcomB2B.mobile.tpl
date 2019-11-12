@@ -21,9 +21,7 @@
 <div class="gallery " style="display: none" itemscope itemtype="http://schema.org/ImageGallery">
 
     {foreach from=$data.other_images item=image name=foo}
-        <figure style="margin: 0px 5px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject"
-
-        >
+        <figure style="margin: 0px 5px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
             <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
                 <img style="height: 50px" src="{if $image.image_website=='' }{$image.src}{else}{$image.image_website}{/if}" itemprop="thumbnail" alt="{$image.caption}"/>
             </a>
@@ -34,8 +32,9 @@
 </div>
 </div>
 
-<div class="content single_line_height">
+<div class="content single_line_height product_container" data-product_id="{$product->id}" >
     <div class="store-product-header">
+        <h3 class="center-text">{$product->get('Code')}</h3>
         <h2 class="center-text">{$product->get('Name')}</h2>
 
         {if $logged_in}
@@ -67,12 +66,18 @@
 
             {if $store->get('Store Type')=='Dropshipping'}
 
+                <div class="portfolio_row  product portfolio_row_{$product->id} "  >
 
+                    <div class=" edit_portfolio_item edit_portfolio_item_trigger add_to_portfolio sim_button " style="text-align: center"> <i class="fa fa-plus padding_right_5"></i>
+                        {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}</span>
+                    </div>
+                    <div class="edit_portfolio_item remove_from_portfolio hide " style="position:relative;"> <i class="fa fa-store-alt padding_right_5"></i>
+                        {if empty($labels._in_portfolio)}{t}In portfolio{/t}{else}{$labels._in_portfolio}{/if} <i style="position: absolute;right:10px;bottom:7.5px" class="far edit_portfolio_item_trigger fa-trash-alt  sim_button" title="{if empty($labels._remove_from_portfolio)}{t}Remove from portfolio{/t}{else}{$labels._remove_from_portfolio}{/if}"></i>
+                    </div>
 
-                <div class="log_out_prod_links" >
-                    <div style="width: 100%;" class=" center-text"><span style="padding: 10px 20px;" class="empty"> <i class="fa fa-store-alt  fa-fw" style="padding-right: 5px"></i> {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}</span></div>
-                    <div class="clear"></div>
                 </div>
+
+
 
              {else}
 

@@ -53,10 +53,6 @@
                 <div class="one-half-responsive last-column ">
                     <h1 class="">{$product->get('Code')}</h1>
                     <h2 class="">{$product->get('Name')}</h2>
-
-
-
-
                     {if $logged_in}
 
 
