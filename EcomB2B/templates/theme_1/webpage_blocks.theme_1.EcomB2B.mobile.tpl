@@ -84,6 +84,8 @@
             {assign "with_checkout" false}
             {assign "with_profile" false}
             {assign "with_favourites" false}
+            {assign "with_portfolio" false}
+            {assign "with_products_portfolio" false}
             {assign "with_search" false}
             {assign "with_thanks" false}
             {assign "with_gallery" false}
@@ -142,7 +144,16 @@
                         {else}
                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.mobile.tpl" data=$block key=$key   }
                         {/if}
+                    {elseif $block.type=='portfolio'}
 
+                        {if $logged_in}
+                            {assign "with_portfolio" 1}
+                            {assign "with_datatables" 1}
+                            {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.mobile.tpl" data=$block key=$key  }
+
+                        {else}
+                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.mobile.tpl" data=$block key=$key   }
+                        {/if}
                     {elseif $block.type=='thanks'}
                         {if $logged_in}{assign "with_thanks" 1}
                             <div id="thanks">

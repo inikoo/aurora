@@ -33,7 +33,7 @@
                         wrap type_{$item.type} " data-type="{$item.type}" {if $item.type=='product'} data-sort_code="{$item.sort_code}" data-sort_name="{$item.sort_name}{/if} ">
 
 
-                <div class="product_block item product_container tablet" >
+                <div class="product_block item product_container tablet" data-product_id="{$item.product_id}">
                     <div class="product_header_text fr-view" >
                         {$item.header_text}
                     </div>
@@ -45,7 +45,9 @@
                            onclick="go_product(this); return !ga.loaded;"><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"></i></a>
 
                         {if $logged_in}
+                            {if $store->get('Store Type')!='Dropshipping'}
                             <i  data-product_code="{$item.code}"  data-product_id="{$item.product_id}" data-favourite_key="0" class="favourite_{$item.product_id} favourite far  fa-heart" aria-hidden="true"></i>
+                            {/if}
                             {if isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Dot'}
                                 <i class="stock_dot stock_level_{$item.product_id}  fa fa-fw fa-circle" ></i>
                             {/if}
@@ -73,7 +75,18 @@
 
 
                     {if $logged_in}
+                    {if $store->get('Store Type')=='Dropshipping'}
+                        <div class="portfolio_row  portfolio_row_{$item.product_id} "  style="background: none;color:#000" >
 
+                            <div class=" edit_portfolio_item edit_portfolio_item_trigger add_to_portfolio sim_button " style="text-align: center"> <i class="fa fa-plus padding_right_5"></i>
+                                {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}</span>
+                            </div>
+                            <div class="edit_portfolio_item remove_from_portfolio hide "> <i class="fa fa-store-alt padding_right_5"></i>
+                                {if empty($labels._in_portfolio)}{t}In portfolio{/t}{else}{$labels._in_portfolio}{/if} <i style="position: absolute;right:10px;bottom:8px" class="far edit_portfolio_item_trigger fa-trash-alt  sim_button" title="{if empty($labels._remove_from_portfolio)}{t}Remove from portfolio{/t}{else}{$labels._remove_from_portfolio}{/if}"></i>
+                            </div>
+
+                        </div>
+                    {else}
                             {if $item.web_state=='Out of Stock'}
                                 <div class="ordering log_in can_not_order  out_of_stock_row  out_of_stock ">
 
@@ -94,7 +107,7 @@
                                 <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
                             </div>
                         {/if}
-
+                    {/if}
                     {else}
                         <div class="ordering log_out " >
 
