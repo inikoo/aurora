@@ -22,9 +22,7 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
-<div id="block_{$key}"  class="{if !$data.show}hide{/if}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
-
-            <div>
+<div id="block_{$key}" class="{if !$data.show}hide{/if} product_container"  data-product_id="{$product->id}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
 
                 <div style="padding:20px">
                 <div class="images one-half-responsive">
@@ -81,12 +79,16 @@
                             {/if}
                         {elseif $product->get('Web State')=='For Sale'}
                             {if $store->get('Store Type')=='Dropshipping'}
-                                <div  style="margin-top:20px;">
-                                <span style="padding:10px 20px" class="empty  order_row_{$product->id} ">
-                                    <span  class="order_button label sim_button" >
-                                        <i class="fa fa-store-alt  fa-fw" style="padding-right: 5px"></i> {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}
-                                    </span>
-                                </span></div>
+                                <div class="portfolio_row  portfolio_row_{$product->id} "  style="background: none;color:#000;border-left:1px solid #ccc;border-right:1px solid #ccc" >
+
+                                    <div class=" edit_portfolio_item edit_portfolio_item_trigger add_to_portfolio sim_button " style="text-align: center"> <i class="fa fa-plus padding_right_5"></i>
+                                        {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}</span>
+                                    </div>
+                                    <div class="edit_portfolio_item remove_from_portfolio hide " style="position:relative;"> <i class="fa fa-store-alt padding_right_5"></i>
+                                        {if empty($labels._in_portfolio)}{t}In portfolio{/t}{else}{$labels._in_portfolio}{/if} <i style="position: absolute;right:10px;bottom:7.5px" class="far edit_portfolio_item_trigger fa-trash-alt  sim_button" title="{if empty($labels._remove_from_portfolio)}{t}Remove from portfolio{/t}{else}{$labels._remove_from_portfolio}{/if}"></i>
+                                    </div>
+
+                                </div>
 
                             {else}
                             <div>
@@ -155,11 +157,7 @@
                 </div>
                     <div class="clear"></div>
                 </div>
-
                 <div class="content single_line_height clear">
-
-
-
                     <div class="store-product-header">
 
                         <div class="one-half-responsive">
@@ -167,7 +165,7 @@
                             {$data.text|replace:'<p><br></p>':''}
                         </p>
 
-</div>
+                        </div>
 
                         <div class="one-half-responsive last-column ">
                         {assign 'origin' $product->get('Origin')}
@@ -259,11 +257,6 @@
                     </div>
                 </div>
                 <div class="clear"></div>
-
-
-
-
-            </div>
 </div>
 
 <script>
