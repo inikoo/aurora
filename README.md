@@ -9,6 +9,10 @@ Aurora is a Business Operations/Intelligence system targeted to B2B and dropship
 
 Raul Perusquia <raul@inikoo.com>,
 
+## Big Thanks
+
+Cross-browser Testing Platform and Open Source <3 Provided by [Sauce Labs](https://saucelabs.com)
+
 ## License
 
 Copyright (C) Raul A Perusquia Flores - All Rights Reserved
