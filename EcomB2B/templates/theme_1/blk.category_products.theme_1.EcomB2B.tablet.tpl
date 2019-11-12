@@ -47,7 +47,9 @@
 
                             ><i class="fal fa-fw fa-external-link-square more_info" aria-hidden="true"></i></a>
                             {if $logged_in}
+                            {if $store->get('Store Type')!='Dropshipping'}
                                 <i data-product_code="{$item.code}" data-product_id="{$item.product_id}" data-favourite_key="0" class="favourite_{$item.product_id} favourite far  fa-heart" aria-hidden="true"></i>
+                              {/if}
                                 {if isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Dot'}
                                     <i class="stock_dot stock_level_{$item.product_id}  fa fa-circle" ></i>
                                 {/if}
@@ -75,6 +77,18 @@
 
 
                         {if $logged_in}
+                        {if $store->get('Store Type')=='Dropshipping'}
+                            <div class="portfolio_row  portfolio_row_{$item.product_id} "  style="background: none;color:#000" >
+
+                                <div class=" edit_portfolio_item edit_portfolio_item_trigger add_to_portfolio sim_button " style="text-align: center"> <i class="fa fa-plus padding_right_5"></i>
+                                    {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}</span>
+                                </div>
+                                <div class="edit_portfolio_item remove_from_portfolio hide "> <i class="fa fa-store-alt padding_right_5"></i>
+                                    {if empty($labels._in_portfolio)}{t}In portfolio{/t}{else}{$labels._in_portfolio}{/if} <i style="position: absolute;right:10px;bottom:8px" class="far edit_portfolio_item_trigger fa-trash-alt  sim_button" title="{if empty($labels._remove_from_portfolio)}{t}Remove from portfolio{/t}{else}{$labels._remove_from_portfolio}{/if}"></i>
+                                </div>
+
+                            </div>
+                        {else}
 
                             {if $item.web_state=='Out of Stock'}
 
@@ -105,6 +119,9 @@
                                     <i onclick="save_item_qty_change(this)" class="hide ordering_button save fa fa-save fa-fw color-blue-dark"></i>
                                     <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
                                 </div>
+
+
+                            {/if}
                             {/if}
 
                         {else}

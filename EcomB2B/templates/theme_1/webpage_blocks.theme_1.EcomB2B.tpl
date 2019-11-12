@@ -1279,7 +1279,6 @@
                             });
              {/if}
              {else}
-
                 {if $with_product_order_input==1}
 
 
@@ -1381,9 +1380,8 @@
 
                 {/if}
                 })
-
                 {/if}
-                {/if}
+              {/if}
 
 
 

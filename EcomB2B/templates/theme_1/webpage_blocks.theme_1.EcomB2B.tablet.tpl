@@ -59,6 +59,8 @@
             {assign "with_basket" false}
             {assign "with_checkout" false}
             {assign "with_profile" false}
+            {assign "with_portfolio" false}
+            {assign "with_products_portfolio" false}
             {assign "with_favourites" false}
             {assign "with_search" false}
             {assign "with_thanks" false}
@@ -120,7 +122,16 @@
                             {else}
                                 {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tablet.tpl" data=$block key=$key   }
                             {/if}
+                        {elseif $block.type=='portfolio'}
 
+                         {if $logged_in}
+                             {assign "with_portfolio" 1}
+                             {assign "with_datatables" 1}
+                             {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tablet.tpl" data=$block key=$key  }
+
+                         {else}
+                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tablet.tpl" data=$block key=$key   }
+                         {/if}
                         {elseif $block.type=='thanks'}
                             {if $logged_in}{assign "with_thanks" 1}
                                 <div id="thanks">
@@ -133,19 +144,13 @@
                                 {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tablet.tpl" data=$block key=$key   }
                             {/if}
                         {elseif $block.type=='login'}
-
                             {if !$logged_in}
-
-
-
                                 {assign "with_login" 1}
                                 {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tablet.tpl" data=$block key=$key  }
-
                             {else}
                                 {include file="theme_1/blk.already_logged_in.theme_1.EcomB2B.tablet.tpl" data=$block key=$key   }
                             {/if}
                         {elseif $block.type=='register'}
-
                             {if !$logged_in}
                                 {assign "with_register" 1}
                                 {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tablet.tpl" data=$block key=$key  }
@@ -162,8 +167,22 @@
 
                             {if $block.type=='iframe'   }{assign "with_iframe" 1}{/if}
                             {if $block.type=='product'   }{assign "with_gallery" 1}{/if}
-                            {if $block.type=='category_products' or   $block.type=='products'  or   $block.type=='product' }{assign "with_product_order_input" 1}{/if}
-                            {if $block.type=='category_products' or   $block.type=='products'  }{assign "with_category_products" 1}{/if}
+
+                         {if $block.type=='category_products' or   $block.type=='products'  or   $block.type=='product' }
+                             {if $store->get('Store Type')=='Dropshipping'}
+                                 {assign "with_products_portfolio" 1}
+                             {else}
+                                 {assign "with_product_order_input" 1}
+                             {/if}
+                            {/if}
+                            {if $block.type=='category_products' or   $block.type=='products'  }
+
+                                {if $store->get('Store Type')=='Dropshipping'}
+                                    {assign "with_products_portfolio" 1}
+                                {else}
+                                    {assign "with_category_products" 1}
+                                {/if}
+                            {/if}
 
                             {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tablet.tpl" data=$block key=$key  }
 
@@ -1147,7 +1166,33 @@
 
 
                 {/if}
+
                 {if $logged_in}
+                {if $store->get('Store Type')=='Dropshipping' }
+                {if $with_products_portfolio==1}
+                getScript("/assets/dropshipping.logged_in.min.js", function () {
+                    $.getJSON("ar_web_portfolio.php?tipo=category_products&with_category_products={if $with_category_products==1}Yes{else}No{/if}&webpage_key={$webpage->id}", function (data) {
+
+                        $.each(data.products_in_portfolio, function (index, value) {
+                            let portfolio_row=$('.portfolio_row_' + index);
+                            portfolio_row.find('.add_to_portfolio').addClass('hide')
+                            portfolio_row.find('.remove_from_portfolio').removeClass('hide')
+
+                        });
+
+
+                        $.each(data.stock, function (index, value) {
+                            if (value[0] != '') {
+                                $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title', value[1])
+                                $('.product_stock_label_' + index).html(value[1])
+                            }
+                        });
+                    });
+                });
+                {/if}
+                {else}
+
+
 
                 {if $with_product_order_input==1}
 
@@ -1187,15 +1232,9 @@
 
                 {else}
                 $.getJSON("ar_web_customer_products.php?tipo=total_basket", function (data) {
-
-
                     $('#header_order_totals').find('.ordered_products_number').html(data.items)
                     $('#header_order_totals').find('.order_amount').html(data.total)
                     $('#header_order_totals').find('i').attr('title',data.label)
-
-
-
-
                 });
                 {/if}
 
@@ -1205,7 +1244,7 @@
                 })
 
                 {/if}
-
+                {/if}
 
             })
 
