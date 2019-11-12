@@ -199,9 +199,9 @@
                     <div class="text">
                         {if isset($sub_column.image)}
                         {if  $sub_column.url!=''}
-                            <a href="{$sub_column.url}"><img style="width: 100%" src="{$sub_column.image}" alt="" class=""/></a>
+                            <a href="{$sub_column.url}"  {if isset({$sub_column.title})}title="{$sub_column.title}"{/if}  ><img style="width: 100%" src="{$sub_column.image}" alt="{if isset({$sub_column.title})}{{$sub_column.title}}{/if}" class=""/></a>
                         {else}
-                            <img src="{$sub_column.image}" alt="" class=""/>
+                            <img src="{$sub_column.image}" alt="{if isset({$sub_column.title})}{{$sub_column.title}}{/if}" class=""/>
                         {/if}
                         {/if}
                         <div>
@@ -210,7 +210,16 @@
                     </div>
                 {elseif $sub_column.type=='image'}
                     <div class="image">
-                        <img src="{$sub_column.image}" alt=""/>
+
+                        {if  $sub_column.url!=''}
+                            <a href="{$sub_column.url}"  {if isset({$sub_column.title})}title="{$sub_column.title}"{/if} ><img style="width: 100%" src="{$sub_column.image}" alt="{if isset({$sub_column.title})}{{$sub_column.title}}{/if}" class=""/></a>
+                        {else}
+                            <img src="{$sub_column.image}" alt="{if isset({$sub_column.title})}{{$sub_column.title}}{/if}"  />
+                        {/if}
+
+
+
+
                     </div>
                 {elseif $sub_column.type=='departments' or   $sub_column.type=='families' or  $sub_column.type=='web_departments' or   $sub_column.type=='web_families'}
                     <div class="vertical-menu  ">
