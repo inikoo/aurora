@@ -61,6 +61,8 @@
             {assign "with_profile" false}
             {assign "with_portfolio" false}
             {assign "with_products_portfolio" false}
+            {assign "with_clients" false}
+            {assign "with_clients_orders" false}
             {assign "with_favourites" false}
             {assign "with_search" false}
             {assign "with_thanks" false}
@@ -867,7 +869,39 @@
 
 
                 {/if}
-                {if $with_login==1}
+
+
+                {if $with_portfolio==1}
+                getScript("/assets/datatables.min.js", function () {
+                    $('#portfolio_items').DataTable( {
+                        "ajax": "ar_web_portfolio.php?tipo=get_portfolio_items",
+                        "language": {
+                            "search": "{if empty($labels._filter_products)}{t}Filter products{/t}{else}{$labels._filter_products}{/if}:"
+                        }
+                    } );
+                })
+                {/if}
+                {if $with_clients==1}
+                getScript("/assets/datatables.min.js", function () {
+                    $('#clients').DataTable( {
+                        "ajax": "ar_web_clients.php?tipo=get_clients"
+                    } );
+                })
+                {/if}
+                {if $with_clients_orders==1}
+                getScript("/assets/datatables.min.js", function () {
+                    $('#clients_orders').DataTable( {
+                        "ajax": "ar_web_clients_orders.php?tipo=get_orders"
+                    } );
+                })
+                {/if}
+
+
+
+
+
+
+            {if $with_login==1}
 
                 getScript("/assets/mobile.forms.min.js", function () {
 

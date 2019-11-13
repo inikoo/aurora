@@ -86,6 +86,8 @@
             {assign "with_favourites" false}
             {assign "with_portfolio" false}
             {assign "with_products_portfolio" false}
+            {assign "with_clients" false}
+            {assign "with_clients_orders" false}
             {assign "with_search" false}
             {assign "with_thanks" false}
             {assign "with_gallery" false}
@@ -154,6 +156,29 @@
                         {else}
                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.mobile.tpl" data=$block key=$key   }
                         {/if}
+                    {elseif $block.type=='clients'}
+
+                        {if $logged_in}
+                            {assign "with_clients" 1}
+                            {assign "with_datatables" 1}
+                            {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
+
+                        {else}
+                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                        {/if}
+                    {elseif $block.type=='clients_orders'}
+
+                        {if $logged_in}
+                            {assign "with_clients_orders" 1}
+                            {assign "with_datatables" 1}
+                            {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tpl" data=$block key=$key  }
+
+                        {else}
+                            {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tpl" data=$block key=$key   }
+                        {/if}
+
+
+
                     {elseif $block.type=='thanks'}
                         {if $logged_in}{assign "with_thanks" 1}
                             <div id="thanks">
@@ -898,6 +923,33 @@
             })
 
             {/if}
+
+                {if $with_portfolio==1}
+                getScript("/assets/datatables.min.js", function () {
+                    $('#portfolio_items').DataTable( {
+                        "ajax": "ar_web_portfolio.php?tipo=get_portfolio_items",
+                        "language": {
+                            "search": "{if empty($labels._filter_products)}{t}Filter products{/t}{else}{$labels._filter_products}{/if}:"
+                        }
+                    } );
+                })
+                {/if}
+                {if $with_clients==1}
+                getScript("/assets/datatables.min.js", function () {
+                    $('#clients').DataTable( {
+                        "ajax": "ar_web_clients.php?tipo=get_clients"
+                    } );
+                })
+                {/if}
+                {if $with_clients_orders==1}
+                getScript("/assets/datatables.min.js", function () {
+                    $('#clients_orders').DataTable( {
+                        "ajax": "ar_web_clients_orders.php?tipo=get_orders"
+                    } );
+                })
+                {/if}
+
+
                 {if $with_login==1}
 
             getScript("/assets/mobile.forms.min.js", function () {
