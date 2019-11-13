@@ -928,7 +928,10 @@
                             {if $with_portfolio==1}
                             getScript("/assets/datatables.min.js", function () {
                                 $('#portfolio_items').DataTable( {
-                                    "ajax": "ar_web_portfolio.php?tipo=get_portfolio_items"
+                                    "ajax": "ar_web_portfolio.php?tipo=get_portfolio_items",
+                                    "language": {
+                                        "search": "{if empty($labels._filter_products)}{t}Filter products{/t}{else}{$labels._filter_products}{/if}:"
+                                    }
                                 } );
                             })
                             {/if}

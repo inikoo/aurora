@@ -41,7 +41,7 @@ module.exports = function (grunt) {
                 options: {
                     sourceMap: true,
                 }, src: [
-                    'EcomB2B/js/libs/datatables.js',
+                     'EcomB2B/js/libs/datatables.js',
                 ], dest: 'EcomB2B/assets/datatables.min.js',
             }, ecom_desktop_forms: {
                 options: {

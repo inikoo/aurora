@@ -44,6 +44,9 @@ switch ($tipo) {
     case 'customers':
         customers(get_table_parameters(), $db, $user);
         break;
+    case 'customers_dropshipping':
+        customers_dropshipping(get_table_parameters(), $db, $user);
+        break;
     case 'prospects':
         prospects(get_table_parameters(), $db, $user);
         break;
@@ -300,6 +303,171 @@ function customers($_data, $db, $user) {
     );
     echo json_encode($response);
 }
+
+
+
+function customers_dropshipping($_data, $db, $user) {
+
+
+    if ($_data['parameters']['parent'] == 'favourites') {
+        $rtext_label = 'customer who favored';
+    } else {
+        $rtext_label = 'customer';
+    }
+
+    include_once 'prepare_table/init.php';
+    /**
+     * @var string $fields
+     * @var string $table
+     * @var string $where
+     * @var string $wheref
+     * @var string $group_by
+     * @var string $order
+     * @var string $order_direction
+     * @var string $start_from
+     * @var string $number_results
+     * @var string $rtext
+     * @var string $_order
+     * @var string $_dir
+     * @var string $total
+     */
+
+    $sql = "select  $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+
+
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+
+        foreach ($result as $data) {
+
+
+            if ($parameters['parent'] == 'category') {
+                $category_other_value = $data['Other Note'];
+            } else {
+                $category_other_value = '';
+            }
+
+
+            if ($data['Customer Orders'] == 0) {
+                $last_order_date = '';
+            } else {
+                $last_order_date = strftime(
+                    "%e %b %y", strtotime($data['Customer Last Order Date'].' +0:00')
+                );
+            }
+
+            if ($data['Customer Number Invoices'] == 0 or $data['Customer Last Invoiced Order Date'] == '') {
+                $last_invoice_date = '';
+            } else {
+                $last_invoice_date = strftime(
+                    "%e %b %y", strtotime(
+                                  $data['Customer Last Invoiced Order Date'].' +0:00'
+                              )
+                );
+            }
+
+
+            $contact_since = strftime("%e %b %y", strtotime($data['Customer First Contacted Date'].' +0:00'));
+
+
+            if ($data['Customer Billing Address Link'] == 'Contact') {
+                $billing_address = '<i>'._('Same as Contact').'</i>';
+            } else {
+                $billing_address = $data['Customer Invoice Address Formatted'];
+            }
+
+
+
+            switch ($data['Customer Type by Activity']) {
+                case 'ToApprove':
+                    $customer_status =sprintf('<i class="fal purple fa-question-circle" title="%s"></i>', _('To be approved'));
+                    break;
+                case 'Lost':
+                    $customer_status =sprintf('<i class="fa error fa-do-not-enter" title="%s"></i>', _('Lost'));
+                    break;
+                case 'Losing':
+                    $customer_status =sprintf('<i class="fa warning fa-check-circle" title="%s"></i>', _('Losing'));
+                    break;
+                case 'Active':
+                    $customer_status = sprintf('<i class="fa success fa-check-circle" title="%s"></i>', _('Active'));
+                    break;
+                case 'Prospect':
+                    $customer_status = sprintf('<i class="fal success fa-user-circle" title="%s"></i>', _('Prospect'));
+
+                    break;
+                default:
+                    $customer_status = $data['Customer Type by Activity'];
+                    break;
+            }
+
+
+                $link_format  = '/customers/%d/%d';
+                $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
+
+
+
+            $table_data[] = array(
+                'id'           => (integer)$data['Customer Key'],
+                'store_key'    => $data['Customer Store Key'],
+                'formatted_id' => $formatted_id,
+
+                'name'         => $data['Customer Name'],
+                'company_name' => $data['Customer Company Name'],
+                'contact_name' => $data['Customer Main Contact Name'],
+
+                'location' => $data['Customer Location'],
+
+                'invoices'  => (integer)$data['Customer Number Invoices'],
+                'email'     => $data['Customer Main Plain Email'],
+                'telephone' => $data['Customer Main XHTML Telephone'],
+                'mobile'    => $data['Customer Main XHTML Mobile'],
+                'orders'    => number($data['Customer Orders']),
+
+                'last_order'    => $last_order_date,
+                'last_invoice'  => $last_invoice_date,
+                'contact_since' => $contact_since,
+
+                'other_value' => $category_other_value,
+
+                'total_payments'            => money($data['Customer Payments Amount'], $currency),
+                'total_invoiced_amount'     => money($data['Customer Invoiced Amount'], $currency),
+                'total_invoiced_net_amount' => money($data['Customer Invoiced Net Amount'], $currency),
+
+
+                'address'          => $data['Customer Contact Address Formatted'],
+                'billing_address'  => $billing_address,
+
+                'customer_status'      => $customer_status,
+
+                'clients'       => number($data['Customer Number Clients']),
+                'portfolio'       => number($data['Customer Number Products in Portfolio']),
+
+
+            );
+        }
+
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print "$sql\n";
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
+
 
 /**
  * @param $_data

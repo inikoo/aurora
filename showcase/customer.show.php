@@ -29,7 +29,7 @@ function get_customer_showcase($data, $smarty, $user, $db, $redis, $account) {
 
         $customer->update_account_balance();
         $customer->update_credit_account_running_balances();
-
+        $customer->update_portfolio();
 
         //$customer->update_orders();
         //$customer->update_last_dispatched_order_key();
