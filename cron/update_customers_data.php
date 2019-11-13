@@ -58,6 +58,9 @@ if ($result = $db->query($sql)) {
 
         $customer->update_orders();
         $customer->update_activity();
+
+        $customer->update_portfolio();
+
        // $customer->update_last_dispatched_order_key();
         //$customer->update_invoices();
         //$customer->update_payments();

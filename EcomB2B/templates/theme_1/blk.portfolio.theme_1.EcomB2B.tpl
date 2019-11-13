@@ -22,15 +22,11 @@
         <h1>
             {if !empty($data.labels.title)}{$data.labels.title}{else}{t}My portfolio{/t}{/if}
         </h1>
-
-
-
-
         <table id="portfolio_items" class="display" style="width:100%">
             <thead>
             <tr>
-                <th>Code</th>
-                <th>Name</th>
+                <th style="text-align: left">Code</th>
+                <th style="text-align: left">Name</th>
             </tr>
             </thead>
 

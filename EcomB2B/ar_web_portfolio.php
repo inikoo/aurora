@@ -73,14 +73,13 @@ switch ($tipo) {
 
 function get_portfolio_items($customer, $db) {
 
-    $portfolio_items = array();
 
 
     $data = array();
 
-    $sql = "SELECT `Product ID`,`Product Code`,`Product Name`,`Product Web State`,`Customer Portfolio Key`,`Product Units Per Case`
+    $sql = "SELECT `Product ID`,`Product Code`,`Product Name`,`Product Web State`,`Customer Portfolio Key`,`Product Units Per Case` 
             FROM 
-                `Customer Portfolio Fact` CPF left join  `Product Dimension` P  on (`Customer Portfolio Product ID`=P.`Product ID`) 
+            `Customer Portfolio Fact` CPF left join  `Product Dimension` P  on (`Customer Portfolio Product ID`=P.`Product ID`) 
             WHERE   `Customer Portfolio Customer Key`=?
             ";
 
@@ -242,7 +241,7 @@ function add_product_to_portfolio($data, $db, $customer, $account) {
     }
 
 
-    $sql  = "select `Customer Portfolio Key` from  `Customer Portfolio Fact` where `Customer Portfolio Customer Key`=? and `Customer Portfolio Product ID`=? and `Customer Portfolio Customers State`='Active'";
+    $sql  = "select `Customer Portfolio Key`,`Customer Portfolio Customers State` from  `Customer Portfolio Fact` where `Customer Portfolio Customer Key`=? and `Customer Portfolio Product ID`=? and `Customer Portfolio Customers State`='Active'";
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array(
@@ -251,12 +250,15 @@ function add_product_to_portfolio($data, $db, $customer, $account) {
         )
     );
     if ($row = $stmt->fetch()) {
-        $response = array(
-            'state' => 400,
-            'msg'   => _('Product already in portfolio')
-        );
-        echo json_encode($response);
-        exit;
+
+            $response = array(
+                'state' => 400,
+                'msg'   => _('Product already in portfolio')
+            );
+            echo json_encode($response);
+            exit;
+
+
     } else {
         $date = gmdate('Y-m-d H:i:s');
 

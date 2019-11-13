@@ -36,7 +36,18 @@ $tab_defaults = array(
 
     ),
 
+    'customers_dropshipping' => array(
+        'view'          => 'overview',
+        'sort_key'      => 'formatted_id',
+        'sort_order'    => 1,
+        'rpp'           => 100,
+        'rpp_options'   => $default_rrp_options,
+        'f_field'       => 'name',
+        'elements_type' => array_keys($elements_options['customers'])[0],
+        'elements'      => $elements_options['customers'],
+        'export_fields' => $export_fields['customers']
 
+    ),
     'customers.list' => array(
         'view'          => 'overview',
         'sort_key'      => 'formatted_id',

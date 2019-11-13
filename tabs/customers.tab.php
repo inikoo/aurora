@@ -11,9 +11,17 @@
 
 if (in_array($state['store']->id, $user->stores) and $user->can_view('customers')) {
 
-    $tab     = 'customers';
-    $ar_file = 'ar_customers_tables.php';
-    $tipo    = 'customers';
+    if($state['store']->get('Type')=='Dropshipping'){
+        $tab     = 'customers_dropshipping';
+        $ar_file = 'ar_customers_tables.php';
+        $tipo    = 'customers_dropshipping';
+    }else{
+        $tab     = 'customers';
+        $ar_file = 'ar_customers_tables.php';
+        $tipo    = 'customers';
+    }
+
+
 
     $default = $user->get_tab_defaults($tab);
 
@@ -30,10 +38,6 @@ if (in_array($state['store']->id, $user->stores) and $user->can_view('customers'
         'invoices' => array(
             'label' => _('Invoices/Balance'),
             'title' => _('Invoices & Account balance')
-        ),
-        'weblog'   => array(
-            'label' => _('Weblog'),
-            'title' => _('Weblog')
         )
 
     );
@@ -64,9 +68,7 @@ if (in_array($state['store']->id, $user->stores) and $user->can_view('customers'
 
     );
 
-    if ($state['store']->get('Store Type') == 'Dropshipping') {
-        $smarty->assign('show_customer_clients', 1);
-    }
+
 
     $table_buttons = array();
 
