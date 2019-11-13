@@ -149,6 +149,7 @@
     {assign "with_product_order_input" false}
     {assign "with_order" false}
     {assign "with_reviews" false}
+    {assign "with_datatables" false}
 
     {if !empty($content.blocks) and  $content.blocks|is_array}
     {foreach from=$content.blocks item=$block }
@@ -174,6 +175,12 @@
                     {assign "with_not_found" 1}
                 {else}
                     {assign "with_favourites" 1}
+                {/if}
+            {elseif $block.type=='portfolio' or $block.type=='clients' or $block.type=='clients_orders'}
+                {if !$logged_in}
+                    {assign "with_not_found" 1}
+                {else}
+                    {assign "with_datatables" 1}
                 {/if}
             {elseif $block.type=='thanks'}
                 {if !$logged_in}
@@ -229,6 +236,11 @@
         <link rel="stylesheet" href="assets/forms.min.css" type="text/css"/>
 
     {/if}
+
+    {if $with_datatables==1}
+        <link rel="stylesheet" href="assets/datatables.min.css" type="text/css"/>
+    {/if}
+
     {if $with_gallery==1}
         <link rel="stylesheet" href="assets/image_gallery.min.css" type="text/css"/>
     {/if}

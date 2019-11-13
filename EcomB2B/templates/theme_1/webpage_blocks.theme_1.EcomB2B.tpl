@@ -925,7 +925,7 @@
 
             {/if}
 
-                            {if $with_portfolio==1}
+             {if $with_portfolio==1}
                             getScript("/assets/datatables.min.js", function () {
                                 $('#portfolio_items').DataTable( {
                                     "ajax": "ar_web_portfolio.php?tipo=get_portfolio_items",
@@ -935,14 +935,14 @@
                                 } );
                             })
                             {/if}
-                            {if $with_clients==1}
+             {if $with_clients==1}
                             getScript("/assets/datatables.min.js", function () {
                                 $('#clients').DataTable( {
                                     "ajax": "ar_web_clients.php?tipo=get_clients"
                                 } );
                             })
                             {/if}
-                            {if $with_clients_orders==1}
+             {if $with_clients_orders==1}
                             getScript("/assets/datatables.min.js", function () {
                                 $('#clients_orders').DataTable( {
                                     "ajax": "ar_web_clients_orders.php?tipo=get_orders"
@@ -956,17 +956,8 @@
             {if $with_login==1}
             $('.control_panel').addClass('hide')
             getScript("/assets/desktop.forms.min.js", function () {
-
-
-
-
-
-
                 $('#open_recovery').on('click', function (e) {
-
-
                     open_recovery()
-
                 });
 
                 function open_recovery() {
