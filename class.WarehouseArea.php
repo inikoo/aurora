@@ -326,9 +326,7 @@ class WarehouseArea extends DB_Table {
 
         } else {
             if ($location->found) {
-                $this->new_location_msg = _(
-                    'Location Code already in the warehouse'
-                );
+                $this->new_location_msg = _('Location Code already in the warehouse');
             }
         }
     }
@@ -544,15 +542,40 @@ class WarehouseArea extends DB_Table {
                 $number_locations = $row['number'];
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $this->fast_update(
             array(
                 'Warehouse Area Number Locations' => $number_locations
+            )
+
+
+        );
+
+
+    }
+
+    /**
+     *
+     * @return void
+     */
+    function update_warehouse_area_number_parts() {
+        $number_parts = 0;
+
+        $sql = sprintf(
+            'SELECT count(Distinct `Part SKU`) AS number FROM `Part Location Dimension`  left join  `Location Dimension` on (`Location Dimension`.`Location Key`=`Part Location Dimension`.`Location Key`)   WHERE `Location Warehouse Area Key`=%d', $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $number_parts = $row['number'];
+
+            }
+        }
+
+        $this->fast_update(
+            array(
+                'Warehouse Area Distinct Parts' => $number_parts
             )
 
 

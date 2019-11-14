@@ -268,21 +268,21 @@ switch ($tipo) {
         break;
 }
 
-function users_with_right($db, $data){
+function users_with_right($db, $data) {
 
-    $users_data=array();
+    $users_data = array();
 
-    if(preg_match('/^(.+)\-(\d+)$/',$data['right'],$matches)){
-        $right_code=$matches[1];
-        $scope_key=$matches[2];
+    if (preg_match('/^(.+)\-(\d+)$/', $data['right'], $matches)) {
+        $right_code = $matches[1];
+        $scope_key  = $matches[2];
 
-        $scope='Store';
+        $scope = 'Store';
 
-        $users_data=array();
-        $sql='select U.`User Key`,`User Alias`,`User Inikoo Rep` as UIR,`Scope`,`Scope Key` 
+        $users_data = array();
+        $sql        = 'select U.`User Key`,`User Alias`,`User Inikoo Rep` as UIR,`Scope`,`Scope Key` 
                 from `User Dimension` U left join `User Rights Bridge` URB on (URB.`User Key`=U.`User Key`)   left join `User Right Scope Bridge`  URSB on (URSB.`User Key`=U.`User Key`)   
                 where `Right Code`=?  and `Scope`=? and `Scope Key`=? ';
-        $stmt = $db->prepare($sql);
+        $stmt       = $db->prepare($sql);
         $stmt->execute(
             array(
                 $right_code,
@@ -293,28 +293,26 @@ function users_with_right($db, $data){
         while ($row = $stmt->fetch()) {
 
 
-            $users_data[]=$row;
+            $users_data[] = $row;
         }
 
-    }else{
+    } else {
 
-        $users_data=array();
-        $sql='select U.`User Key`,`User Alias`,`User Inikoo Rep` as UIR from `User Dimension` U left join `User Rights Bridge` URB on (URB.`User Key`=U.`User Key`) where `Right Code`=?  ';
-        $stmt = $db->prepare($sql);
+        $users_data = array();
+        $sql        = 'select U.`User Key`,`User Alias`,`User Inikoo Rep` as UIR from `User Dimension` U left join `User Rights Bridge` URB on (URB.`User Key`=U.`User Key`) where `Right Code`=?  ';
+        $stmt       = $db->prepare($sql);
         $stmt->execute(
             array($data['right'])
         );
         while ($row = $stmt->fetch()) {
-            $users_data[]=$row;
+            $users_data[] = $row;
         }
 
     }
 
 
-
-
     $response = array(
-        'state'   => 200,
+        'state'      => 200,
         'users_data' => $users_data
     );
     echo json_encode($response);
@@ -1058,41 +1056,34 @@ function find_warehouse_areas($db, $account, $memcache_ip, $data, $user) {
             );
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
 
-    $sql = sprintf(
-        "select `Warehouse Area Key`,`Warehouse Area Code`,`Warehouse Area Name`,`Warehouse Key`,`Warehouse Code` from `Warehouse Area Dimension` left join `Warehouse Dimension` on (`Warehouse Key`=`Warehouse Area Warehouse Key`) where true $where_warehouses and  `Warehouse Area Name` REGEXP \"[[:<:]]%s\"    order by `Warehouse Area Code` limit $max_results ",
-        $q
+    $sql =
+        "select `Warehouse Area Key`,`Warehouse Area Code`,`Warehouse Area Name`,`Warehouse Key`,`Warehouse Code` from `Warehouse Area Dimension` left join `Warehouse Dimension` on (`Warehouse Key`=`Warehouse Area Warehouse Key`) where true $where_warehouses and  `Warehouse Area Name` REGEXP ?    order by `Warehouse Area Code` limit $max_results ";
+
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            '[[:<:]]'.$q
+        )
     );
+    while ($row = $stmt->fetch()) {
+        if ($row['Warehouse Area Name'] == $q) {
+            $candidates[$row['Warehouse Area Key']] = 700;
+        } else {
 
-
-    if ($result = $db->query($sql)) {
-        foreach ($result as $row) {
-
-            if ($row['Warehouse Area Name'] == $q) {
-                $candidates[$row['Warehouse Area Key']] = 700;
-            } else {
-
-                $len_name                               = strlen($row['Warehouse Area Name']);
-                $len_q                                  = strlen($q);
-                $factor                                 = $len_q / $len_name;
-                $candidates[$row['Warehouse Area Key']] = 200 * $factor;
-            }
-
-            $candidates_data[$row['Warehouse Area Key']] = array(
-                'Warehouse Area Code' => $row['Warehouse Area Code'],
-                'Warehouse Code'      => $row['Warehouse Code'],
-                'Warehouse Area Name' => $row['Warehouse Area Name']
-            );
-
+            $len_name                               = strlen($row['Warehouse Area Name']);
+            $len_q                                  = strlen($q);
+            $factor                                 = $len_q / $len_name;
+            $candidates[$row['Warehouse Area Key']] = 200 * $factor;
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
+
+        $candidates_data[$row['Warehouse Area Key']] = array(
+            'Warehouse Area Code' => $row['Warehouse Area Code'],
+            'Warehouse Code'      => $row['Warehouse Code'],
+            'Warehouse Area Name' => $row['Warehouse Area Name']
+        );
     }
 
 
@@ -1385,9 +1376,8 @@ function find_customer_lists($db, $account, $memcache_ip, $data, $user) {
 
         $results[$list_key] = array(
             'code'        => $candidates_data[$list_key]['List Type'],
-            'description' =>
-                sprintf(
-                    '%s', highlightkeyword($candidates_data[$list_key]['List Name'],$q) .' <span class="discreet">('.sprintf(ngettext('%s customer', '%s customers', $candidates_data[$list_key]['Customers']), number($candidates_data[$list_key]['Customers'])).')</span>'
+            'description' => sprintf(
+                '%s', highlightkeyword($candidates_data[$list_key]['List Name'], $q).' <span class="discreet">('.sprintf(ngettext('%s customer', '%s customers', $candidates_data[$list_key]['Customers']), number($candidates_data[$list_key]['Customers'])).')</span>'
 
             ),
 
@@ -2726,7 +2716,7 @@ function orders_in_process($db, $data) {
                 ", <span class='link'  onClick=\"change_view('orders/%d/%d')\" >%s</span>", $row['Order Store Key'], $row['Order Key'], $row['Order Public ID']
             );
             $number_orders_in_process++;
-            $order_public_id= $row['Order Public ID'];
+            $order_public_id = $row['Order Public ID'];
 
             if ($number_orders_in_process == 10) {
                 break;
@@ -2752,11 +2742,11 @@ function orders_in_process($db, $data) {
     if ($number_orders_in_process == 1) {
         $orders_list = _('Current order in process').": ".$orders_list;
         $msg         = _('This customer has already one order in process. Are you sure you want to create a new one?');
-        $clone_msg=sprintf(_('Order %s will be top up with this items'),'<b>'.$order_public_id.'</b>');
+        $clone_msg   = sprintf(_('Order %s will be top up with this items'), '<b>'.$order_public_id.'</b>');
     } elseif ($number_orders_in_process > 1) {
         $orders_list = _('Current orders in process').": ".$orders_list;
         $msg         = _('This customer has already several orders in process. Are you sure you want to create a new one?');
-        $clone_msg=_("Can't clone this order because there is several orders in process");
+        $clone_msg   = _("Can't clone this order because there is several orders in process");
     }
     $response = array(
         'state'             => 200,
@@ -3363,8 +3353,6 @@ function find_category_webpages($db, $account, $memcache_ip, $data, $smarty) {
     }
 
 
-
-
     if (true) {
 
         $candidates      = array();
@@ -3514,7 +3502,6 @@ function find_category_webpages($db, $account, $memcache_ip, $data, $smarty) {
 
                             $image_mobile_website = 'wi.php?id='.$image_key.'&s=320x200';
                             $image_website        = 'wi.php?id='.$image_key.'&s='.get_image_size($image_key, 432, 330, 'fit_highest');
-
 
 
                         } else {
@@ -3725,33 +3712,31 @@ function find_employees($db, $account, $memcache_ip, $data) {
     $sql = "select `Staff Key`,`Staff Alias`,`Staff Name`,`Staff ID`,`Staff Currently Working` from `Staff Dimension`   where  `Staff Name`   REGEXP ? $where  limit $max_results ";
 
 
-     $stmt = $db->prepare($sql);
-     $stmt->execute(
-         array(
-             '[[:<:]]'.$q
-         )
-     );
-     while ($row = $stmt->fetch()) {
-         if ($row['Staff Alias'] == $q) {
-             $candidates[$row['Staff Key']] = 400;
-         } else {
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            '[[:<:]]'.$q
+        )
+    );
+    while ($row = $stmt->fetch()) {
+        if ($row['Staff Alias'] == $q) {
+            $candidates[$row['Staff Key']] = 400;
+        } else {
 
-             $len_name                      = strlen($row['Staff Alias']);
-             $len_q                         = strlen($q);
-             $factor                        = $len_q / $len_name;
-             $candidates[$row['Staff Key']] = 200 * $factor;
-         }
+            $len_name                      = strlen($row['Staff Alias']);
+            $len_q                         = strlen($q);
+            $factor                        = $len_q / $len_name;
+            $candidates[$row['Staff Key']] = 200 * $factor;
+        }
 
-         $candidates_data[$row['Staff Key']] = array(
-             'Staff Alias' => $row['Staff Alias'],
-             'Staff Name'  => $row['Staff Name'],
-             'Staff ID'    => $row['Staff ID'],
-             'Status'      => $row['Staff Currently Working']
+        $candidates_data[$row['Staff Key']] = array(
+            'Staff Alias' => $row['Staff Alias'],
+            'Staff Name'  => $row['Staff Name'],
+            'Staff ID'    => $row['Staff ID'],
+            'Status'      => $row['Staff Currently Working']
 
-         );
-         }
-
-
+        );
+    }
 
 
     arsort($candidates);

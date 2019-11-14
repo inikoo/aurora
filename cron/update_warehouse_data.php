@@ -28,3 +28,18 @@ if ($result = $db->query($sql)) {
 }
 
 
+
+
+$sql = sprintf('SELECT `Warehouse Area Key`  FROM `Warehouse Area Dimension`  ');
+
+
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $warehouse_area = get_object('WarehouseArea',$row['Warehouse Area Key']);
+
+        $warehouse_area->update_warehouse_area_locations();
+        $warehouse_area->update_warehouse_area_number_parts();
+
+    }
+}
+

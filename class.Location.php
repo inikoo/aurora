@@ -892,10 +892,6 @@ class Location extends DB_Table {
             if ($row = $result->fetch()) {
                 $stock_value = $row['value'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         $this->fast_update(
@@ -933,9 +929,6 @@ class Location extends DB_Table {
                 }
 
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -948,6 +941,13 @@ class Location extends DB_Table {
 
         );
 
+        /**
+         * @var $warehouse_area \WarehouseArea
+         */
+        $warehouse_area=get_object('WarehouseArea',$this->data['Location Warehouse Area Key']);
+        if($warehouse_area->id){
+            $warehouse_area->update_warehouse_area_number_parts();
+        }
 
     }
 
