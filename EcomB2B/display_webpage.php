@@ -329,6 +329,32 @@ if (!$smarty->isCached($template, $cache_id) or isset($is_unsubscribe) or isset(
     }
 
 
+
+    if ($webpage->get('Webpage Code') == 'clients.sys') {
+
+        require_once 'utils/get_addressing.php';
+
+        list($address_format, $address_labels, $used_fields, $hidden_fields, $required_fields, $no_required_fields) = get_address_form_data($store->get('Store Home Country Code 2 Alpha'), $website->get('Website Locale'));
+
+        require_once 'utils/get_countries.php';
+        $countries = get_countries($website->get('Website Locale'));
+
+        $required_fields[]='client_reference';
+
+
+        $smarty->assign('address_labels', $address_labels);
+        $smarty->assign('used_address_fields', $used_fields);
+        $smarty->assign('required_fields', $required_fields);
+        $smarty->assign('no_required_fields', $no_required_fields);
+
+
+
+        $smarty->assign('countries', $countries);
+        $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
+
+
+    }
+
     if ($webpage->get('Webpage Code') == 'login.sys') {
 
         if (!empty($_GET['invoice_pdf'])) {

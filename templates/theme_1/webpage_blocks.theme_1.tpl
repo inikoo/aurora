@@ -788,16 +788,7 @@
 
 
             $('.website_localized_label', obj).each(function (i, obj2) {
-
-
-
-
-
-                    labels[$(obj2).attr('id')] = $(obj2).html()
-
-
-
-
+                labels[$(obj2).attr('id')] = $(obj2).html()
             })
 
             discounts_data[$(obj).data('key')]={
@@ -807,10 +798,6 @@
 
             }
         })
-
-
-
-
 
 
         $('._block').each(function (i, obj) {
@@ -849,7 +836,6 @@
 
 
                     break;
-
                 case 'unsubscribe':
 
                     content_data = {
@@ -881,7 +867,6 @@
 
 
                     break;
-
                 case 'reset_password':
 
 
@@ -933,11 +918,8 @@
 
 
                     break;
-
-
                 case 'profile':
 
-                    console.log('xxxx')
 
                     labels = {
 
@@ -995,8 +977,6 @@
 
 
                     break;
-
-
                 case 'checkout':
 
 
@@ -1035,8 +1015,6 @@
                     })
 
                     break;
-
-
                 case 'thanks':
 
                     blocks.push({
@@ -1052,7 +1030,6 @@
 
 
                     break;
-
                 case 'favourites':
 
 
@@ -1102,6 +1079,24 @@
                         content_data[$(obj2).attr('id')] = $(obj2).html()
                     })
 
+                    $('.new_client_field', obj).each(function (i, obj2) {
+                        content_data[$(obj2).attr('id')] = $(obj2).attr('placeholder')
+                    })
+
+                    $('.tooltip', obj).each(function (i, obj2) {
+                        if ($(obj2).attr('id') != undefined) content_data[$(obj2).attr('id')] = $(obj2).html()
+                    })
+
+
+                    $('.website_localized_label', obj).each(function (i, obj2) {
+                        if ($(obj2).val() != '') {
+                            labels[$(obj2).attr('id')] = $(obj2).val()
+
+
+                        }
+
+                    })
+
                     blocks.push({
                         type: 'clients',
                         label: '{t}Clients{/t}',
@@ -1121,6 +1116,17 @@
                         content_data[$(obj2).attr('id')] = $(obj2).html()
                     })
 
+
+
+                    $('.website_localized_label', obj).each(function (i, obj2) {
+                        if ($(obj2).val() != '') {
+                            labels[$(obj2).attr('id')] = $(obj2).val()
+
+
+                        }
+
+                    })
+
                     blocks.push({
                         type: 'clients_orders',
                         label: "{t}Clients's orders{/t}",
@@ -1134,18 +1140,10 @@
 
                 case 'register':
 
-
                     var content_data = {
-
                     }
 
-
-
-
-
                     $('[contenteditable=true]', obj).each(function (i, obj2) {
-
-
                         if ($(obj2).hasClass('poll_query_label')) {
                             poll_labels[$(obj2).data('query_key')] = base64_url_encode($(obj2).html())
                         } else {

@@ -63,7 +63,7 @@ switch ($webpage->get('Webpage Scope')) {
 //print_r($webpage);
 
 
-if ($webpage->get('Webpage Code') == 'register.sys') {
+if ($webpage->get('Webpage Code') == 'register.sys' or  $webpage->get('Webpage Code') == 'clients.sys') {
     $scope_metadata = $webpage->get('Scope Metadata');
 
 

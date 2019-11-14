@@ -15,7 +15,6 @@
             {if !empty($settings['logo_website_website'])}
                 <a href="https://{$website->get('Website URL')}"><img id="website_logo" style="margin-top:{if isset($settings['logo_top_margin'])}{$settings['logo_top_margin']}{else}0px{/if};max-height: 100%;max-width:  100%;vertical-align: middle;" alt="" src="{$settings['logo_website_website']}"/></a>
             {/if}
-
     </div>
     <div id="main_header" style="flex-grow:2;position: relative">
 
@@ -92,8 +91,6 @@
     </div>
 </div>
 <div id="bottom_header">
-
-
     {foreach from=$header_data.menu.columns item=column key=key}
         {if $column.show}
         <a id="menu_{$key}" class="menu {if $column.type=='nothing'}only_link{else}dropdown{/if}  {if !empty($column.link)}real_link{/if} " href="{if !empty($column.link)}{$column.link}{/if}" data-key="{$key}"><i class="far  {$column.icon} "></i> <span>{$column.label|strip_tags}</span> <i  class="down_cadet {if $column.type=='nothing'}hide{/if}  fal fa-angle-down   "></i></a>
