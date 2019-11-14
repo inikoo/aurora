@@ -19,7 +19,7 @@
 
 
 
-            <div class="menu-bottom-bar menu-bottom-bar-{if empty($poll_queries)}five{else}six{/if} color-menu-bar menu-bottom-bar-text flat-menu-bar">
+            <div class="menu-bottom-bar menu-bottom-bar-{if empty($poll_queries)}three{else}four{/if} color-menu-bar menu-bottom-bar-text flat-menu-bar">
 
                 <a  class="like_button profile_button no-smoothState bg-black border-orange-dark  "  data-tab="_contact_details">
                         <i class="fa fa-user  color-orange-dark" aria-hidden="true" style="margin-top: 7px"></i>
@@ -37,6 +37,7 @@
                     <i class="fa fa-dollar-sign color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
                     <em style="font-size: 11px">{$data.labels._invoice_address_title}</em>
                 </a>
+                {if $store->get('Store Type')!='Dropshipping'}
                 <a  class="like_button profile_button no-smoothState bg-black border-black color-gray-light  "  data-tab="_delivery_addresses_details">
                     <i class="fa fa-truck color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
                     <em style="font-size: 11px">{$data.labels._delivery_addresses_title}</em>
@@ -45,6 +46,7 @@
                     <i class="fa fa-shopping-cart color-gray-light" aria-hidden="true"  style="margin-top: 7px"></i>
                     <em style="font-size: 11px">{$data.labels._orders_title}</em>
                 </a>
+                {/if}
 
             </div>
 

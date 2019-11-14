@@ -33,6 +33,7 @@
         <i class="fa fa-map-signs color-gray-light" aria-hidden="true" style="margin-top: 7px"></i>
         <em style="font-size: 11px">{$data.labels._invoice_address_title}</em>
     </a>
+    {if $store->get('Store Type')!='Dropshipping'}
     <a class="like_button profile_button no-smoothState bg-black border-black color-gray-light  " data-tab="_delivery_addresses_details">
         <i class="far fa-map-signs color-gray-light" aria-hidden="true" style="margin-top: 7px"></i>
         <em style="font-size: 11px">{$data.labels._delivery_addresses_title}</em>
@@ -42,7 +43,7 @@
         <i class="fa fa-shopping-cart color-gray-light" aria-hidden="true" style="margin-top: 7px"></i>
         <em style="font-size: 11px">{$data.labels._orders_title}</em>
     </a>
-
+    {/if}
 
 </div>
 

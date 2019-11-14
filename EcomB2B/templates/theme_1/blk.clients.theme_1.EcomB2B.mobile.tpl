@@ -2,14 +2,12 @@
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: Fri 25 Oct 2019 21:24:48 +0800 MYT, Kuala Lumpur , Malaysia
+ Created:  14 November 2019  16:53::10  +0100, Malaga, Spain
  Copyright (c) 2019, Inikoo
 
  Version 3
 -->
 *}
-
-
 
 
 {if isset($data.top_margin)}{assign "top_margin" $data.top_margin}{else}{assign "top_margin" "0"}{/if}
@@ -32,6 +30,8 @@
                         {if empty($labels._add_customer_client)}{t}Add customer{/t}{else}{$labels._add_customer_client}{/if}</span>
                     </button>
                 </a>
+
+
             </div>
         </div>
         <table id="clients" class="display" style="width:100%">
@@ -72,11 +72,7 @@
 
         </fieldset>
 
-        <fieldset>
 
-
-
-        </fieldset>
 
         <fieldset>
             <section>
@@ -87,13 +83,7 @@
                 </label>
             </section>
 
-            <section>
-                <label class="input">
-                    <i class="icon-append far fa-store-alt"></i>
-                    <input class="register_field" type="text" autocomplete="organization" name="organization"  placeholder="{$data.labels._company_placeholder}">
-                    <b  class="tooltip tooltip-bottom-right">{$data.labels._company_tooltip}</b>
-                </label>
-            </section>
+
             <section>
                 <label class="input">
                     <i class="icon-append far fa-envelope" ></i>
@@ -101,13 +91,7 @@
                     <b   class="tooltip tooltip-bottom-right">{$data.labels._email_tooltip}</b>
                 </label>
             </section>
-            <section>
-                <label class="input">
-                    <i class="icon-append far fa-mobile" ></i>
-                    <input class="register_field" type="text" autocomplete="tel"  name="tel" placeholder="{$data.labels._mobile_placeholder}">
-                    <b class="tooltip tooltip-bottom-right">{$data.labels._mobile_tooltip}</b>
-                </label>
-            </section>
+
 
 
         </fieldset>

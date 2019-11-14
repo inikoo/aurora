@@ -938,10 +938,10 @@
              {if $with_clients==1}
              getScript("/assets/desktop.forms.min.js", function () {
                  getScript("/assets/datatables.min.js", function () {
-                                    $('#clients').DataTable({
+                     $('#clients').DataTable({
                                         "ajax": "ar_web_clients.php?tipo=get_clients"
                                     });
-                                })
+                 })
 
 
                  $("form").submit(function(e) {
