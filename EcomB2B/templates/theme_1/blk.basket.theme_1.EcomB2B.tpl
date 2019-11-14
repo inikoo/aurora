@@ -422,7 +422,6 @@
 
 
 
-
         <fieldset id="order_invoice_address_fields" class=" " style="position:relative">
 
 
@@ -544,23 +543,15 @@
 
 <script>
 
-
-
-
     $("form").submit(function(e) {
-
         e.preventDefault();
         e.returnValue = false;
-
-        // do things
     });
 
 
     $(document).on('input propertychange,change', '#voucher_code', function (evt) {
 
-
         var button = $('#voucher .button')
-
         button.css({ 'display': 'block'})
 
         if ($(this).data('old_value') != '') {
@@ -593,32 +584,18 @@
         button.find('i').addClass('fa-spin fa-spinner')
 
         var input=$(this).closest('div').find('input')
-
         var voucher=input.val()
-
-
-
         var ajaxData = new FormData();
-
         ajaxData.append("tipo", 'update_voucher')
         ajaxData.append("voucher",voucher)
-
-
-
-
 
         $.ajax({
             url: "/ar_web_voucher.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
             complete: function () {
             }, success: function (data) {
-
-
                 if (data.state == '200') {
-
-
                     switch (data.action) {
                         case 'deleted':
-
                             button.find('span').html(button.data('add_label'))
                             button.find('i').addClass('fa-plus').removeClass('fa-trash-alt fa-sync-alt')
                             input.val('').data('old_value','')
@@ -626,7 +603,6 @@
                             location.reload();
                             break;
                         case 'add':
-
                             button.find('span').html(button.data('update_label'))
                             button.find('i').addClass('fa-sync-alt').removeClass('fa-trash-alt fa-plus')
                             button.css({ 'display': 'block'})
@@ -634,18 +610,9 @@
                             break;
                     }
 
-
                     for (var key in data.metadata.class_html) {
-
-
                         $('.' + key).html(data.metadata.class_html[key])
                     }
-
-
-
-
-
-
                 } else if (data.state == '400') {
                     swal("{t}Error{/t}!", data.msg, "error")
                 }
@@ -661,37 +628,18 @@
 
     });
 
-
-
-
     $(document).on('change', "#order_for_collection", function(ev){
-
-
         if($(this).is(':checked')){
-
-
             $('#order_delivery_address_fields').addClass('hide')
-
         }else{
             $('#order_delivery_address_fields').removeClass('hide')
-
         }
     });
 
-
-
-
-
-
     $("#order_invoice_address_form").validate(
         {
-
             submitHandler: function(form)
             {
-
-
-
-
                 var button=$('#save_order_invoice_address_button');
 
                 if(button.hasClass('wait')){

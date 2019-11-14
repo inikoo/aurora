@@ -62,6 +62,11 @@
 
 @media only screen  and (max-width: 1000px){
 
+  #main_header{
+    display: none;
+  }
+
+
   #top_header input{
     width: 250px
   }
@@ -91,7 +96,9 @@
 
 @media only screen  and (max-width: 750px){
 
-
+  #main_header{
+    display: none;
+  }
 
   #top_header input{
     width: 200px
@@ -117,9 +124,25 @@
     display:none
   }
 
+
+  #customers_button span{
+    display:none
+  }
+  #portfolio_button span{
+    display:none
+  }
+  #orders_button span{
+    display:none
+  }
+
 }
 
 @media only screen  and (max-width: 550px){
+
+  #main_header{
+    display: none;
+  }
+
 
   .wrapper_boxed{
     width: 550px;
@@ -153,6 +176,16 @@
     display:none
   }
   #profile_button span{
+    display:none
+  }
+
+  #customers_button span{
+    display:none
+  }
+  #portfolio_button span{
+    display:none
+  }
+  #orders_button span{
     display:none
   }
 

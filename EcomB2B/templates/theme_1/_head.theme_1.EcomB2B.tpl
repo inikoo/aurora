@@ -186,9 +186,6 @@
                 {assign "with_not_found" 1}
             {else}
                 {assign "with_checkout" 1} {assign "with_forms" 1} {assign "with_order" 1}
-
-
-
             {/if}
         {elseif $block.type=='favourites'}
             {if !$logged_in}
@@ -201,6 +198,7 @@
                 {assign "with_not_found" 1}
             {else}
                 {assign "with_datatables" 1}
+                {assign "with_forms" 1}
             {/if}
 
         {elseif $block.type=='reviews'}
