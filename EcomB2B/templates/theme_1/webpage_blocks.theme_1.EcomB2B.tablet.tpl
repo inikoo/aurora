@@ -134,6 +134,31 @@
                          {else}
                              {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tablet.tpl" data=$block key=$key   }
                          {/if}
+
+                     {elseif $block.type=='clients'}
+
+                         {if $logged_in}
+                             {assign "with_clients" 1}
+                             {assign "with_datatables" 1}
+                             {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tablet.tpl" data=$block key=$key  }
+
+                         {else}
+                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tablet.tpl" data=$block key=$key   }
+                         {/if}
+                     {elseif $block.type=='clients_orders'}
+
+                         {if $logged_in}
+                             {assign "with_clients_orders" 1}
+                             {assign "with_datatables" 1}
+                             {include file="theme_1/blk.{$block.type}.theme_1.EcomB2B.tablet.tpl" data=$block key=$key  }
+
+                         {else}
+                             {include file="theme_1/blk.forbidden.theme_1.EcomB2B.tablet.tpl" data=$block key=$key   }
+                         {/if}
+
+
+
+
                         {elseif $block.type=='thanks'}
                             {if $logged_in}{assign "with_thanks" 1}
                                 <div id="thanks">
@@ -834,7 +859,6 @@
 
                             },
 
-                        // Messages for form validation
                         messages:
                             {
 
@@ -854,19 +878,12 @@
                                     }
                             },
 
-                        // Do not change code below
                         errorPlacement: function(error, element)
                                         {
                                             error.insertAfter(element.parent());
                                         }
                     });
-
-
-
-
-
                 })
-
 
                 {/if}
 
@@ -882,10 +899,169 @@
                 })
                 {/if}
                 {if $with_clients==1}
+                getScript("/assets/mobile.forms.min.js", function () {
                 getScript("/assets/datatables.min.js", function () {
+
+
                     $('#clients').DataTable( {
-                        "ajax": "ar_web_clients.php?tipo=get_clients"
+                        "ajax": "ar_web_clients.php?tipo=get_clients",
+                        "language": {
+                            "search": "{if empty($labels._filter_customers)}{t}Filter customers{/t}{else}{$labels._filter_customers}{/if}:"
+                        }
                     } );
+                })
+
+
+
+                    $("form").submit(function(e) {
+                        e.preventDefault();
+                        e.returnValue = false;
+                    });
+
+                    $("#new_client_form").validate(
+                        {
+                            submitHandler: function(form)
+                            {
+                                var button=$('#save_new_client_button');
+
+                                if(button.hasClass('wait')){
+                                    return;
+                                }
+
+                                button.addClass('wait')
+                                button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+
+
+                                var register_data={ }
+
+                                $("#new_client_form input:not(.ignore)").each(function(i, obj) {
+                                    if(!$(obj).attr('name')==''){
+                                        register_data[$(obj).attr('name')]=$(obj).val()
+                                    }
+                                });
+
+                                $("#new_client_form select:not(.ignore)").each(function(i, obj) {
+                                    if(!$(obj).attr('name')==''){
+                                        register_data[$(obj).attr('name')]=$(obj).val()
+                                    }
+                                });
+
+
+
+                                var ajaxData = new FormData();
+
+                                ajaxData.append("tipo", 'new_customer_client')
+                                ajaxData.append("data", JSON.stringify(register_data))
+
+
+                                $.ajax({
+                                    url: "/ar_web_clients.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                                    complete: function () {
+                                    }, success: function (data) {
+
+
+                                        $('#sky-form-modal-overlay').fadeOut();
+                                        $('.sky-form-modal').fadeOut();
+
+                                        if (data.state == '200') {
+
+                                            for (var key in data.metadata.class_html) {
+                                                $('.' + key).html(data.metadata.class_html[key])
+                                            }
+
+                                        } else if (data.state == '400') {
+                                            swal("{t}Error{/t}!", data.msg, "error")
+                                        }
+
+
+                                        button.removeClass('wait')
+                                        button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+                                    }, error: function () {
+                                        button.removeClass('wait')
+                                        button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+                                    }
+                                });
+
+
+                            },
+
+                            rules:
+                                {
+                    {foreach from=$required_fields item=required_field }
+                    {$required_field}: { required: true },
+                    {/foreach}
+                    {foreach from=$no_required_fields item=no_required_field }
+                    {$no_required_field}:{   required: false},
+                    {/foreach}
+
+                },
+                    messages:
+                    {
+
+
+                        administrativeArea:
+                        {
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                        },
+                        locality:
+                        {
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                        },
+                        dependentLocality:
+                        {
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                        },
+                        postalCode:
+                        {
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                        },
+                        addressLine1:
+                        {
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                        },
+                        addressLine2:
+                        {
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                        },
+                        sortingCode:
+                        {
+                            required: '{if empty($labels._validation_required)}{t}Required field{/t}{else}{$labels._validation_required|escape}{/if}',
+                        }
+
+
+
+
+                    },
+                    errorPlacement: function(error, element)
+                    {
+                        error.insertAfter(element.parent());
+                    }
+                });
+
+
+
+
+
+                    $('.modal-opener').on('click', function()
+                    {
+                        if( !$('#sky-form-modal-overlay').length )
+                        {
+                            $('body').append('<div id="sky-form-modal-overlay" class="sky-form-modal-overlay"></div>');
+                        }
+
+                        $('#sky-form-modal-overlay').on('click', function()
+                        {
+                            $('#sky-form-modal-overlay').fadeOut();
+                            $('.sky-form-modal').fadeOut();
+                        });
+
+                        form = $($(this).attr('href'));
+                        $('#sky-form-modal-overlay').fadeIn();
+                        form.css('top', '50%').css('left', '50%').css('margin-top', -form.outerHeight()/2).css('margin-left', -form.outerWidth()/2).fadeIn();
+
+                        return false;
+                    });
+
                 })
                 {/if}
                 {if $with_clients_orders==1}

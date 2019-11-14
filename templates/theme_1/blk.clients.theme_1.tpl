@@ -20,16 +20,11 @@
         <div style="display:flex;width: 100%">
             <div style="flex-grow:1">
                 <h1 id="title" contenteditable="true">{if !empty($data.labels.title)}{$data.labels.title}{else}{t}Customers{/t}{/if}</h1>
-
             </div>
-
             <div style="flex-grow:1;text-align: right">
-
                 <button class=" empty " style="cursor:pointer;line-height30px;padding:10px 20px;text-align: center;border:none;position: relative;top:-20px;font-size: 16px"><i class="fa fa-plus padding_right_5"></i>
                     <span id="_add_customer_client" contenteditable="true">{if empty($data.labels._add_customer_client)}{t}Add customer{/t}{else}{$data.labels._add_customer_client}{/if}</span>
                 </button>
-
-
             </div>
         </div>
 

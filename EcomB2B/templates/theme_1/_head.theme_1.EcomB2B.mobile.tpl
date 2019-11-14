@@ -181,6 +181,8 @@
                     {assign "with_not_found" 1}
                 {else}
                     {assign "with_datatables" 1}
+                    {assign "with_forms" 1}
+
                 {/if}
 
             {elseif $block.type=='thanks'}
