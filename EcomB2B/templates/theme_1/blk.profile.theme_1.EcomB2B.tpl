@@ -23,29 +23,28 @@
 
             <h4>{$data.labels._customer_profile_title}</h4>
             <ul>
-
                 <li>
-                            <span data-block="_contact_details" onClick="change_block(this)" class="block_link  like_button  selected" style="cursor: pointer">
+                 <span data-block="_contact_details" onClick="change_block(this)" class="block_link  like_button  selected" style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
                                     <span>{if !empty($data.labels.menu_contact_details_title)}{$data.labels.menu_contact_details_title}{else}{t}Contact details{/t}{/if}</span>
                                 </span>
                 </li>
                 <li>
-                                <span data-block="_login_details" onClick="change_block(this)" class="block_link  like_button" style="cursor: pointer">
+                 <span data-block="_login_details" onClick="change_block(this)" class="block_link  like_button" style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
                                     <span>{if !empty($data.labels.menu_login_details_title)}{$data.labels.menu_login_details_title}{else}{t}Login details{/t}{/if}</span>
                                 </span>
                 </li>
 
                 <li>
-                                <span data-block="_invoice_address_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
+                    <span data-block="_invoice_address_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
                                     <span>{if !empty($data.labels.menu_invoice_address_title)}{$data.labels.menu_invoice_address_title}{else}{t}Invoice address{/t}{/if}</span>
                                     </span>
                 </li>
                 {if $store->get('Store Type')!='Dropshipping'}
                 <li>
-                                <span data-block="_delivery_addresses_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
+                    <span data-block="_delivery_addresses_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
                                     <span>{if !empty($data.labels.menu_delivery_addresses_title)}{$data.labels.menu_delivery_addresses_title}{else}{t}Delivery address{/t}{/if}</span>
 
@@ -53,7 +52,7 @@
                 </li>
                 {/if}
                 <li>
-                                <span data-block="_poll_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
+                    <span data-block="_poll_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
                                     <i class="fa fa-angle-right"></i>
                                     <span>{if empty($data.labels.menu_poll_title)}{t}Poll{/t}{else}{$data.labels.menu_poll_title}{/if}</span>
                                     </span>
@@ -80,25 +79,7 @@
 
                 </ul>
             </div>
-            {else}
-                <div>
 
-                    <h4>{if !empty($data.labels._customer_clients)}{$data.labels._customer_clients}{else}{t}Customers{/t}{/if}</h4>
-
-                    <ul class=" arrows_list1">
-                        <li>
-
-
-                        <span data-block="_orders_details" onClick="change_block(this)" class="block_link like_button " style="cursor: pointer">
-                                    <i class="fa fa-angle-right"></i>
-                                    <span class="_orders_address_title">{if empty($data.labels._orders_title)}{t}Orders{/t}{else}{$data.labels._orders_title}{/if}</span>
-                                    </span>
-
-                        </li>
-
-
-                    </ul>
-                </div>
             {/if}
         </div>
 
